@@ -87,7 +87,7 @@ Generated `CREATE TABLE` statement:
       PRIMARY KEY id
 ```
 
-The generator includes all columns from the PostgreSQL table and adds three extra fields to track record updates (`_siphon_watermark`, `_siphon_replicated_at` and `_siphon_deleted`). In case you want to skip some columns from the ClickHouse schema, you can do that by modifying the generated `CREATE TABLE` statement. Siphon will only insert data for columns which are available in ClickHouse.
+The generator includes all columns from the PostgreSQL table and adds three extra fields to track record updates (`_siphon_watermark`, `_siphon_replicated_at`, and `_siphon_deleted`). In case you want to skip some columns from the ClickHouse schema, you can do that by modifying the generated `CREATE TABLE` statement. Siphon will only insert data for columns which are available in ClickHouse.
 
 - `_siphon_watermark`: row change timestamp which can be used for incremental pulling of changed rows (`WHERE _siphon_watermark > 'LAST_WATERMARK_TIMESTAMP'`).
 - `_siphon_replicated_at`: replication timestamp set by Siphon, the column value mostly correlates with `_siphon_watermark`. Used for row versioning by the `ReplacingMergeTree` table engine.

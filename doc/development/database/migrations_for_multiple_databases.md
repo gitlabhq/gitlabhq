@@ -108,8 +108,8 @@ The DML migrations are all migrations that:
 
 1. Read data via SQL statements (for example, `SELECT * FROM projects WHERE id=1`).
 1. Read data via ActiveRecord models (for example, `User < MigrationRecord`).
-1. Create, update or delete data via ActiveRecord models (for example, `User.create!(...)`).
-1. Create, update or delete data via SQL statements (for example, `DELETE FROM projects WHERE id=1`).
+1. Create, update, or delete data via ActiveRecord models (for example, `User.create!(...)`).
+1. Create, update, or delete data via SQL statements (for example, `DELETE FROM projects WHERE id=1`).
 1. Update columns in batches (for example, `update_column_in_batches(:projects, :archived, true)`).
 1. Schedule background migrations (for example, `queue_batched_background_migration`).
 1. Access application settings (for example, `ApplicationSetting.last` if run for `main:` database).

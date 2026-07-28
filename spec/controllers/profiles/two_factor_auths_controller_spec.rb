@@ -25,7 +25,7 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
       go
 
       expect(flash[:notice])
-        .to eq _('You need to verify your primary email first before enabling Two-Factor Authentication.')
+        .to eq _('You need to verify your primary email first before enabling two-factor authentication (2FA).')
     end
   end
 

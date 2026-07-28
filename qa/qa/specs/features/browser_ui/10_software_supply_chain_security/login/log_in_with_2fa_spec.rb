@@ -33,7 +33,7 @@ module QA
       end
 
       let(:two_fa_expected_text) do
-        /The group settings for.*require you to enable Two-Factor Authentication for your account.*You need to do this/
+        /One or more groups require you to add 2FA to your account.*You need to do this/
       end
 
       before do

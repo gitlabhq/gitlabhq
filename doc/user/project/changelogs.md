@@ -320,7 +320,7 @@ In an entry, the following variables are available (here `foo.bar` means that
   Status: important
   ```
 
-  The `Changelog`, `Issue` and `Status` trailers can be accessed in the template as follows:
+  The `Changelog`, `Issue`, and `Status` trailers can be accessed in the template as follows:
 
   ```yaml
   {% each entries %}

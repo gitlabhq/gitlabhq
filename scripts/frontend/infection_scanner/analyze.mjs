@@ -128,9 +128,7 @@ export function createResolver({ aliasMap = {}, rootPath, fallbackResolve }) {
         let exportsEntry;
         if (typeof pkg.exports === 'string' || !pkg.exports['.']) {
           exportsEntry =
-            subpath === '.'
-              ? pkg.exports
-              : pkg.exports[subpath] || pkg.exports[`${subpath}/index`];
+            subpath === '.' ? pkg.exports : pkg.exports[subpath] || pkg.exports[`${subpath}/index`];
         } else {
           exportsEntry = pkg.exports[subpath];
         }
@@ -142,13 +140,17 @@ export function createResolver({ aliasMap = {}, rootPath, fallbackResolve }) {
       }
 
       if (subpath === '.' || subpath === '/') {
+        // main/module may omit the extension (e.g. jszip's "./lib/index");
+        // resolve like bundlers do so the browser-map remap below sees the
+        // entry instead of falling through to require.resolve, which
+        // ignores the browser field.
         if (pkg.module) {
-          const esmPath = path.resolve(pkgDir, pkg.module);
-          if (tryFile(esmPath)) results.add(esmPath);
+          const esmPath = resolveFile(path.resolve(pkgDir, pkg.module));
+          if (esmPath) results.add(esmPath);
         }
         if (pkg.main) {
-          const mainPath = path.resolve(pkgDir, pkg.main);
-          if (tryFile(mainPath)) results.add(mainPath);
+          const mainPath = resolveFile(path.resolve(pkgDir, pkg.main));
+          if (mainPath) results.add(mainPath);
         }
       } else {
         const subDir = path.resolve(pkgDir, subpath.startsWith('.') ? subpath : subpath.slice(1));
@@ -177,11 +179,17 @@ export function createResolver({ aliasMap = {}, rootPath, fallbackResolve }) {
         const excluded = new Set();
         for (const resolved of results) {
           const relPath = `./${path.relative(pkgDir, resolved).replace(/\\/g, '/')}`;
-          if (Object.hasOwn(pkg.browser, relPath)) {
-            if (pkg.browser[relPath] === false) {
+          // Browser-map keys may omit the extension (e.g. jszip maps
+          // "./lib/index"); bundler resolvers match those against the
+          // resolved file, so try the extensionless spelling too.
+          const relPathKey = [relPath, relPath.replace(/\.(js|cjs|mjs|json)$/, '')].find((key) =>
+            Object.hasOwn(pkg.browser, key),
+          );
+          if (relPathKey) {
+            if (pkg.browser[relPathKey] === false) {
               excluded.add(resolved);
             } else {
-              const browserPath = path.resolve(pkgDir, pkg.browser[relPath]);
+              const browserPath = path.resolve(pkgDir, pkg.browser[relPathKey]);
               if (tryFile(browserPath)) remapped.add(browserPath);
             }
           }
@@ -435,7 +443,13 @@ export function computeInfected(graph, appRootSet, infectionSpecifiers) {
   return { infectedSet, infectionTriggers };
 }
 
-function findNearestInfectionReasons({ file, infectionTriggers, graph, infectionSpecifiers, maxShown = 3 }) {
+function findNearestInfectionReasons({
+  file,
+  infectionTriggers,
+  graph,
+  infectionSpecifiers,
+  maxShown = 3,
+}) {
   const reasons = [];
   let totalCount = 0;
   const visited = new Set();
@@ -484,7 +498,14 @@ function findNearestInfectionReasons({ file, infectionTriggers, graph, infection
  * @returns {Promise<{entrypoints: Object, graph: Object}>} The annotated graph. Each graph entry
  *   contains `imports`, `infected`, `appRoot`, and (if infected) `infectionReasons` and `infectionReasonCount`.
  */
-export async function analyze({ rootPath, entrypoints, infectionSpecifiers, aliasMap = {}, fallbackResolve, onProgress }) {
+export async function analyze({
+  rootPath,
+  entrypoints,
+  infectionSpecifiers,
+  aliasMap = {},
+  fallbackResolve,
+  onProgress,
+}) {
   const resolver = createResolver({ aliasMap, rootPath, fallbackResolve });
   const { graph, appRootSet } = await buildGraph(entrypoints, resolver, { onProgress });
   const { infectedSet, infectionTriggers } = computeInfected(

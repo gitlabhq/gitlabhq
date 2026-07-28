@@ -229,7 +229,7 @@ When you want another group's members to have access to your group,
 you can invite the [group](../../group/_index.md) to your group.
 The group's direct members get access to the group, which becomes a **shared group**.
 
-Only direct members of the invited group get access to the shared group, not inherited, shared or subgroup members. To grant subgroup members access, invite the subgroup directly.
+Only direct members of the invited group get access to the shared group, not inherited, shared, or subgroup members. To grant subgroup members access, invite the subgroup directly.
 
 The following table provides an overview of the group members that get access to a shared group:
 

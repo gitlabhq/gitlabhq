@@ -7732,7 +7732,7 @@ msgstr ""
 msgid "Administrator Account Setup"
 msgstr ""
 
-msgid "Administrator users are required to enable Two-Factor Authentication for their account."
+msgid "Administrator users are required to enable two-factor authentication (2FA) for their account."
 msgstr ""
 
 msgid "Administrators"
@@ -22593,6 +22593,9 @@ msgstr ""
 msgid "ContinuousDeployment|Cancelled"
 msgstr ""
 
+msgid "ContinuousDeployment|Clear filters"
+msgstr ""
+
 msgid "ContinuousDeployment|Cluster agent"
 msgstr ""
 
@@ -22609,6 +22612,9 @@ msgid "ContinuousDeployment|Collapse services"
 msgstr ""
 
 msgid "ContinuousDeployment|Continuous Deployment"
+msgstr ""
+
+msgid "ContinuousDeployment|Create applications to track them and deploy them to environments"
 msgstr ""
 
 msgid "ContinuousDeployment|Created"
@@ -22768,6 +22774,12 @@ msgid "ContinuousDeployment|Name is required."
 msgstr ""
 
 msgid "ContinuousDeployment|New application"
+msgstr ""
+
+msgid "ContinuousDeployment|No applications match your filters"
+msgstr ""
+
+msgid "ContinuousDeployment|No applications yet"
 msgstr ""
 
 msgid "ContinuousDeployment|No artifact sources configured."
@@ -53364,6 +53376,9 @@ msgstr ""
 msgid "One or more groups could not be found"
 msgstr ""
 
+msgid "One or more groups require you to add 2FA to your account. Choose your preferred method below or review and leave groups to continue using your account."
+msgstr ""
+
 msgid "One or more groups that you don't have access to."
 msgstr ""
 
@@ -58122,7 +58137,22 @@ msgstr ""
 msgid "PolicyStore|Audit"
 msgstr ""
 
+msgid "PolicyStore|Build policy"
+msgstr ""
+
+msgid "PolicyStore|Create new policy"
+msgstr ""
+
+msgid "PolicyStore|Describe what this policy does"
+msgstr ""
+
+msgid "PolicyStore|Description"
+msgstr ""
+
 msgid "PolicyStore|Disabled"
+msgstr ""
+
+msgid "PolicyStore|Edit policy"
 msgstr ""
 
 msgid "PolicyStore|Enforce"
@@ -58137,10 +58167,25 @@ msgstr ""
 msgid "PolicyStore|Mode"
 msgstr ""
 
+msgid "PolicyStore|Name"
+msgstr ""
+
+msgid "PolicyStore|New policy"
+msgstr ""
+
 msgid "PolicyStore|Policies"
 msgstr ""
 
+msgid "PolicyStore|Review"
+msgstr ""
+
 msgid "PolicyStore|Scope"
+msgstr ""
+
+msgid "PolicyStore|This step is coming soon."
+msgstr ""
+
+msgid "PolicyStore|Untitled policy"
 msgstr ""
 
 msgid "PolicyStore|Warn"
@@ -64204,6 +64249,9 @@ msgstr ""
 msgid "Review and edit media"
 msgstr ""
 
+msgid "Review and leave groups"
+msgstr ""
+
 msgid "Review approval"
 msgstr ""
 
@@ -67733,6 +67781,9 @@ msgid "Secure files"
 msgstr ""
 
 msgid "Secure token that identifies an external storage request."
+msgstr ""
+
+msgid "Secure your account with two-factor authentication (2FA)"
 msgstr ""
 
 msgid "SecureFiles|%{name} Metadata"
@@ -78327,16 +78378,13 @@ msgstr ""
 msgid "The git server, Gitaly, is not available at this time. Please contact your administrator."
 msgstr ""
 
-msgid "The global settings require you to enable Two-Factor Authentication for your account."
+msgid "The global settings require you to enable two-factor authentication (2FA) for your account."
 msgstr ""
 
 msgid "The group export can be downloaded from:"
 msgstr ""
 
 msgid "The group has already been shared with this group"
-msgstr ""
-
-msgid "The group settings for %{group_links} require you to enable Two-Factor Authentication for your account. You can %{leave_group_links}."
 msgstr ""
 
 msgid "The group_project_ids parameter is only allowed for a group"
@@ -90591,6 +90639,9 @@ msgstr ""
 msgid "You are receiving this message because you are a GitLab administrator for %{url}."
 msgstr ""
 
+msgid "You are the last owner"
+msgstr ""
+
 msgid "You are trying to upload something other than an image. Please upload a .png, .jpg, .jpeg, .gif, .bmp, .tiff or .ico."
 msgstr ""
 
@@ -91182,7 +91233,7 @@ msgstr ""
 msgid "You need to upload a GitLab project export archive (ending in .gz)."
 msgstr ""
 
-msgid "You need to verify your primary email first before enabling Two-Factor Authentication."
+msgid "You need to verify your primary email first before enabling two-factor authentication (2FA)."
 msgstr ""
 
 msgid "You published branch %{branchName}. Take the next step when you are ready."
@@ -93304,9 +93355,6 @@ msgid "latest deployment"
 msgstr ""
 
 msgid "latest version"
-msgstr ""
-
-msgid "leave %{group_name}"
 msgstr ""
 
 msgid "less than a minute"

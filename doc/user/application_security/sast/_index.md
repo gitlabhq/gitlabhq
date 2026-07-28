@@ -540,7 +540,7 @@ A FIPS-compliant image is only available for the GitLab Advanced SAST and Semgre
 
 Prerequisites:
 
-- The Developer, Maintainer or Owner role for the project.
+- The Developer, Maintainer, or Owner role for the project.
 
 Each SAST analyzer outputs a JSON report as a job artifact. The file contains details of all
 detected vulnerabilities. You can download the file for processing outside GitLab.

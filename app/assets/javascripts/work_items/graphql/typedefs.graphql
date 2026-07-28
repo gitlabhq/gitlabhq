@@ -126,6 +126,7 @@ extend type Mutation {
   updateNewWorkItem(input: LocalUpdateNewWorkItemInput!): LocalWorkItemPayload
   localUpdateWorkItem(input: LocalUpdateWorkItemInput!): LocalWorkItemPayload
   updateActiveDesignDiscussion(id: ID!, source: String!): Boolean
+  updateWorkItemsGroupByVisibleGroups(visibleGroups: [String!]): [String!]
 }
 
 type ActiveDesignDiscussion {
@@ -135,6 +136,7 @@ type ActiveDesignDiscussion {
 
 extend type Query {
   activeDesignDiscussion: ActiveDesignDiscussion
+  workItemsGroupByVisibleGroups: [String!]
 }
 
 type LocalWorkItemChildIsExpanded {

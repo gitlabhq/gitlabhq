@@ -32,7 +32,7 @@ Analytics dashboard can be broken down into the following logical components:
 
 ### Dashboard
 
-A dashboard combines a collection of data sources, panels and visualizations into a single page to visually represent data.
+A dashboard combines a collection of data sources, panels, and visualizations into a single page to visually represent data.
 
 Each panel in the dashboard queries the relevant data source and displays the resulting data as the specified visualization. Visualizations serve as templates for how to display data and can be reused across different panels.
 
@@ -256,7 +256,7 @@ To create a built-in analytics dashboard:
    ```
 
 1. Register the dashboard by adding it to `builtin_dashboards` in [ee/app/models/analytics/dashboard.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/analytics/dashboard.rb).
-   Here you can make your dashboard available at project-level or group-level (or both), restrict access based on feature flags, license or user role etc.
+   Here you can make your dashboard available at project-level or group-level (or both), restrict access based on feature flags, license, or user role etc.
 1. Optional. Register visualization templates by adding them to `get_path_for_visualization` in [ee/app/models/analytics/visualization.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/analytics/visualization.rb).
 
 For a complete example, refer to the GitLab Duo and SDLC trends [dashboard config](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/analytics/ai_impact_dashboard/dashboard.yaml).

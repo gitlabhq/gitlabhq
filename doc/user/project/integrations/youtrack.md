@@ -40,7 +40,7 @@ Configure project [visibility](../../public_access.md#change-project-visibility)
 
 ## Reference YouTrack issues in GitLab
 
-You can reference issues in YouTrack using `<PROJECT>-<ID>` (for example `YT-101`, `Api_32-143` or `gl-030`) where:
+You can reference issues in YouTrack using `<PROJECT>-<ID>` (for example `YT-101`, `Api_32-143`, or `gl-030`) where:
 
 - `<PROJECT>` starts with a letter and is followed by letters, numbers, or underscores.
 - `<ID>` is a number.

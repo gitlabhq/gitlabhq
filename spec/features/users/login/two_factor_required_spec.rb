@@ -44,7 +44,7 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
 
             expect(page).to have_current_path profile_two_factor_auth_path, ignore_query: true
             expect(page).to have_content(
-              'The global settings require you to enable Two-Factor Authentication for your account. ' \
+              'The global settings require you to enable two-factor authentication (2FA) for your account. ' \
                 'You need to do this before '
             )
           end
@@ -75,7 +75,7 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
 
             expect(page).to have_current_path profile_two_factor_auth_path, ignore_query: true
             expect(page).to have_content(
-              'The global settings require you to enable Two-Factor Authentication for your account.'
+              'The global settings require you to enable two-factor authentication (2FA) for your account.'
             )
           end
 
@@ -104,7 +104,7 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
 
           expect(page).to have_current_path profile_two_factor_auth_path, ignore_query: true
           expect(page).to have_content(
-            'The global settings require you to enable Two-Factor Authentication for your account.'
+            'The global settings require you to enable two-factor authentication (2FA) for your account.'
           )
         end
       end
@@ -132,13 +132,19 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
 
             expect(page).to have_current_path profile_two_factor_auth_path, ignore_query: true
             expect(page).to have_content(
-              'The group settings for Group 1 and Group 2 require you to enable ' \
-                'Two-Factor Authentication for your account. ' \
-                'You can leave Group 1 and leave Group 2. ' \
-                'You need to do this ' \
-                'before ' \
-                "#{(Time.zone.now + 2.days).strftime('%a, %d %b %Y %H:%M:%S %z')}"
+              'One or more groups require you to add 2FA to your account. Choose your preferred method below ' \
+                'or review and leave groups to continue using your account.'
             )
+            expect(page).to have_content('You need to do this before')
+
+            within('.gl-alert-actions') do
+              expect(page).to have_link('Configure it later')
+            end
+
+            find('summary', text: _('Review and leave groups')).click
+            expect(page).to have_link('Group 1')
+            expect(page).to have_link('Group 2')
+            expect(page).to have_link('Leave group', count: 2)
           end
 
           it 'allows skipping two-factor configuration' do
@@ -167,9 +173,15 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
 
             expect(page).to have_current_path profile_two_factor_auth_path, ignore_query: true
             expect(page).to have_content(
-              'The group settings for Group 1 and Group 2 require you to enable ' \
-                'Two-Factor Authentication for your account.'
+              'One or more groups require you to add 2FA to your account. Choose your preferred method below ' \
+                'or review and leave groups to continue using your account.'
             )
+            expect(page).not_to have_link('Configure it later')
+
+            find('summary', text: _('Review and leave groups')).click
+            expect(page).to have_link('Group 1')
+            expect(page).to have_link('Group 2')
+            expect(page).to have_link('Leave group', count: 2)
           end
 
           it 'disallows skipping two-factor configuration' do
@@ -197,10 +209,14 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
 
           expect(page).to have_current_path profile_two_factor_auth_path, ignore_query: true
           expect(page).to have_content(
-            'The group settings for Group 1 and Group 2 require you to enable ' \
-              'Two-Factor Authentication for your account. ' \
-              'You can leave Group 1 and leave Group 2.'
+            'One or more groups require you to add 2FA to your account. Choose your preferred method below ' \
+              'or review and leave groups to continue using your account.'
           )
+
+          find('summary', text: _('Review and leave groups')).click
+          expect(page).to have_link('Group 1')
+          expect(page).to have_link('Group 2')
+          expect(page).to have_link('Leave group', count: 2)
         end
       end
     end

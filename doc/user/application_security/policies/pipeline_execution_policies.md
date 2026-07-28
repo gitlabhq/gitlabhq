@@ -884,7 +884,7 @@ In this case, the job variable value `Project job variable value` takes preceden
 >
 > For more information, see [recreate pipeline execution policies](#recreate-pipeline-execution-policies).
 
-You can use the `description`, `value` and `options` keywords to define CI/CD variables
+You can use the `description`, `value`, and `options` keywords to define CI/CD variables
 that are [prefilled when a user runs a pipeline manually](../../../ci/pipelines/_index.md#prefill-variables-in-manual-pipelines).
 Use the description to provide relevant information, such as what the variable is used for and what the acceptable values are.
 

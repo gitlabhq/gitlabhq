@@ -1442,7 +1442,7 @@ The AI-generated source code examples are available in the [`scala` directory in
 
 ### Shell scripts code generation prompts
 
-Create a script `mytop.sh` that displays the top 10 processes by CPU, memory and disk I/O usage.
+Create a script `mytop.sh` that displays the top 10 processes by CPU, memory, and disk I/O usage.
 Start with the first code comment, and let Code Suggestions generate everything else.
 
 ```shell

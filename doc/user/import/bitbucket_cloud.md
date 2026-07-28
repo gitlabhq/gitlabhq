@@ -60,7 +60,7 @@ For pull requests, the importer:
 
 For issues, the importer:
 
-- Adds a label corresponding to the type of issue on Bitbucket. Either `bug`, `enhancement`, `proposal` or `task`.
+- Adds a label corresponding to the type of issue on Bitbucket. Either `bug`, `enhancement`, `proposal`, or `task`.
 - If the issue on Bitbucket was one of `resolved`, `invalid`, `duplicate`, `wontfix`, or `closed`, closes the issue on
   GitLab.
 

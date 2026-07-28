@@ -95,8 +95,6 @@ app/models/project.rb:
   - pages_metadata_not_migrated
 app/models/projects/import_export/relation_export.rb:
   - by_relation
-app/models/snippet.rb:
-  - are_secret
 app/models/user.rb:
   - for_todos
   - ordered_by_id_desc

@@ -10,7 +10,9 @@ import { RELATIVE_POSITION_ASC } from '~/work_items/list/constants';
 import getWorkItemsCountOnlyQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_count_only.query.graphql';
 import { findDetailPanelWorkItem } from '../utils';
 import updateBoardWorkItemMutation from './graphql/update_board_work_item.mutation.graphql';
-import { groupingStrategyFor } from './grouping';
+import { DEFAULT_GROUP_BY, groupingStrategyFor } from './grouping';
+import { SHOW_ALL_GROUPS, isGroupVisible } from './grouping/visibility';
+import workItemsGroupByVisibleGroupsQuery from './grouping/graphql/client/visible_groups.query.graphql';
 import {
   boardColumnQuery,
   boardColumnQueryVariables,
@@ -64,13 +66,6 @@ export default {
       required: false,
       default: true,
     },
-    // null means every group is visible; otherwise it holds the ids of the
-    // groups to render. Not typed Array so a null default doesn't warn.
-    visibleGroups: {
-      required: false,
-      default: null,
-      validator: (value) => value === null || Array.isArray(value),
-    },
     updatedWorkItem: {
       type: Object,
       required: false,
@@ -80,9 +75,9 @@ export default {
   emits: ['set-error', 'set-active-item', 'toggle-collapse'],
   data() {
     return {
-      groupBy: { property: 'status' },
       groupByValues: [],
       gateData: null,
+      workItemsGroupByVisibleGroups: SHOW_ALL_GROUPS,
       // Column value ids the in-flight dragged item may not be dropped into.
       invalidValueIds: [],
       // Locks dragging while a move mutation is in flight so a second drop can't
@@ -91,11 +86,14 @@ export default {
     };
   },
   computed: {
-    isLoading() {
-      return this.$apollo.queries.groupByValues.loading;
+    groupBy() {
+      return DEFAULT_GROUP_BY;
     },
     strategy() {
       return groupingStrategyFor(this.groupBy.property);
+    },
+    isLoading() {
+      return this.$apollo.queries.groupByValues.loading;
     },
     columnQuery() {
       return boardColumnQuery(this.glFeatures);
@@ -107,10 +105,9 @@ export default {
     },
     // Columns hidden via display settings are removed from the board entirely.
     visibleGroupByValues() {
-      if (this.visibleGroups === null) {
-        return this.groupByValues;
-      }
-      return this.groupByValues.filter((value) => this.visibleGroups.includes(this.groupId(value)));
+      return this.groupByValues.filter((value) =>
+        isGroupVisible(this.workItemsGroupByVisibleGroups, this.groupBy, value),
+      );
     },
   },
   watch: {
@@ -119,6 +116,9 @@ export default {
     },
   },
   apollo: {
+    workItemsGroupByVisibleGroups: {
+      query: workItemsGroupByVisibleGroupsQuery,
+    },
     groupByValues() {
       return {
         query: this.strategy?.valuesQuery,

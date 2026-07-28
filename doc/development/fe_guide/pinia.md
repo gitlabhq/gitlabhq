@@ -65,7 +65,7 @@ flowchart TD
 ### Single file stores
 
 Place state, actions, and getters in a single file.
-Do not create 'barrel' store index files which import everything from `actions.js`, `state.js` and `getters.js`.
+Do not create 'barrel' store index files which import everything from `actions.js`, `state.js`, and `getters.js`.
 
 If your store file gets too big it's time to consider splitting that store into multiple stores.
 
@@ -256,7 +256,7 @@ Migration to Pinia could be completed in two ways: a single step migration and a
 Follow single step migration if your store meets these criteria:
 
 1. Store contains only one module
-1. Actions, getters and mutations cumulatively do not exceed 1000 lines
+1. Actions, getters, and mutations cumulatively do not exceed 1000 lines
 
 In any other case prefer the multi-step migration.
 
@@ -293,14 +293,14 @@ Follow these steps to iterate over the migration process and split the work onto
 1. Create a new CODEOWNERS (`.gitlab/CODEOWNERS`) rule for the store files you're migrating, include all the Vuex module dependencies and store specs.
 
    If you are migrating only a single store module then you would need to include only `state.js` (or your `index.js`),
-   `actions.js`, `mutations.js` and `getters.js` and their respective spec files.
+   `actions.js`, `mutations.js`, and `getters.js` and their respective spec files.
 
    Assign at least two individuals responsible for reviewing changes made to the Vuex store.
    Always sync your changes from Vuex store to Pinia. This is very important so you don't introduce regressions with the Pinia store.
 1. Copy existing store as-is to a new location (you can call it `stores/legacy_store` for example). Preserve the file structure.
    Do this for every store module you're going to migrate. Split this into multiple merge requests if necessary.
 1. Create an index file (`index.js`) with a store definition (`defineStore`) and define your state in there.
-   Copy the state definition from `state.js`. Do not import actions, mutations and getters yet.
+   Copy the state definition from `state.js`. Do not import actions, mutations, and getters yet.
 1. Use [code mods](#automated-migration-using-codemods) to migrate the store files.
    Import migrated modules in your new store's definition (`index.js`).
 1. If you have circular dependencies in your stores consider [using `tryStore` plugin](#avoiding-circular-dependencies).
@@ -360,7 +360,7 @@ You can use [ast-grep](https://ast-grep.github.io/) codemods to simplify migrati
 1. [Install ast-grep](https://ast-grep.github.io/guide/quick-start.html#installation) on your system before proceeding.
 1. Run `scripts/frontend/codemods/vuex-to-pinia/migrate.sh path/to/your/store`
 
-The codemods will migrate `actions.js`, `mutations.js` and `getters.js` located in your store folder.
+The codemods will migrate `actions.js`, `mutations.js`, and `getters.js` located in your store folder.
 Manually scan these files after running the codemods to ensure they are properly migrated.
 Vuex specs can not be automatically migrated, migrate them by hand.
 

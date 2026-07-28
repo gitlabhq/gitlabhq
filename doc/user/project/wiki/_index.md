@@ -344,7 +344,7 @@ Prerequisites:
 
 - Redirects for moved or renamed wiki pages [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/257892) in GitLab 17.1 [with a feature flag](../../../administration/feature_flags/_index.md) named `wiki_redirection`. Enabled by default.
 - Separation of page title and path [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30758) in GitLab 17.2 [with feature flags](../../../administration/feature_flags/_index.md) named `wiki_front_matter` and `wiki_front_matter_title`. Enabled by default.
-- Feature flags `wiki_redirection`, `wiki_front_matter` and `wiki_front_matter_title` removed in GitLab 17.3.
+- Feature flags `wiki_redirection`, `wiki_front_matter`, and `wiki_front_matter_title` removed in GitLab 17.3.
 
 {{< /history >}}
 

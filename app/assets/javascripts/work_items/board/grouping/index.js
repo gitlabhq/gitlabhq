@@ -41,6 +41,9 @@ import { strategies } from 'ee_else_ce/work_items/board/grouping/strategies';
  * @property {(args: { item: Object, value: GroupingValue, gateData: * }) => boolean} [isDropAllowed] - Whether the dragged work item `item` may be dropped into `value`'s column. Omit to allow all drops.
  */
 
+// Only grouping supported so far; not yet user-selectable.
+export const DEFAULT_GROUP_BY = { property: 'status' };
+
 // The available strategies differ by edition (status is EE-only), so the list
 // is supplied by an `ee_else_ce` module and keyed by property here.
 /** @type {Object<string, GroupingStrategy>} */

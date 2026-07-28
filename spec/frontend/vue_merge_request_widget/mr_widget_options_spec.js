@@ -366,7 +366,7 @@ describe('MrWidgetOptions', () => {
 
     describe('methods', () => {
       describe('checkStatus', () => {
-        const updatedMrData = { foo: 1 };
+        const updatedMrData = { foo: 1, title: '<test>' };
         beforeEach(() => {
           mock
             .onGet(mockData.merge_request_widget_path)
@@ -389,13 +389,13 @@ describe('MrWidgetOptions', () => {
           jest.spyOn(notify, 'notifyMe').mockImplementation(() => {});
           const logoFilename = 'logo.png';
           await createComponent({
-            updatedMrData: { gitlabLogo: logoFilename, ci_status: 'failed' },
+            updatedMrData: { gitlabLogo: logoFilename, ci_status: 'failed', title: '<test>' },
           });
           eventHub.$emit('MRWidgetUpdateRequested');
           await waitForPromises();
           expect(notify.notifyMe).toHaveBeenCalledWith(
             `Pipeline passed`,
-            `Pipeline passed for "${mockData.title}"`,
+            `Pipeline passed for "<test>"`,
             logoFilename,
           );
         });

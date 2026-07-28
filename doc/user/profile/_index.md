@@ -92,7 +92,7 @@ Prerequisites:
   - Must not:
     - Start with `_`, `-`, or `.`.
     - Contain emoji.
-    - End with `.` or `.<reserved file extension>`, for example `jon.png`, `jon.git` or `jon.atom`. However,
+    - End with `.` or `.<reserved file extension>`, for example `jon.png`, `jon.git`, or `jon.atom`. However,
       `jonpng` is valid.
 
 To change your username:

@@ -86,7 +86,7 @@ To run a DAST authenticated scan:
 
 - Read the [prerequisite](#prerequisites) conditions for authentication.
 - [Update your target website](#update-the-target-website) to a landing page of an authenticated user.
-- If your login form has the username, password and submit button on a single page, use the [CI/CD variables](#available-cicd-variables) to configure [single-step](#configuration-for-a-single-step-login-form) login form authentication.
+- If your login form has the username, password, and submit button on a single page, use the [CI/CD variables](#available-cicd-variables) to configure [single-step](#configuration-for-a-single-step-login-form) login form authentication.
 - If your login form has the username and password fields on different pages, use the [CI/CD variables](#available-cicd-variables) to configure [multi-step](#configuration-for-a-multi-step-login-form) login form authentication.
 - Make sure the user isn't [logged out](#excluding-logout-urls) during the scan.
 
@@ -500,7 +500,7 @@ In order of preference, you should choose as selectors:
 
 When using selectors to locate specific fields you should avoid searching on:
 
-- Any `id`, `name`, `attribute`, `class` or `value` that is dynamically generated.
+- Any `id`, `name`, `attribute`, `class`, or `value` that is dynamically generated.
 - Generic class names, such as `column-10` and `dark-grey`.
 - XPath searches as they are less performant than other selector searches.
 - Unscoped searches, such as those beginning with `css:*` and `xpath://*`.

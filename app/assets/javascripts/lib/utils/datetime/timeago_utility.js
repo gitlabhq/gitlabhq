@@ -213,6 +213,10 @@ export const localTimeAgo = (elements, updateTooltip = true) => {
   requestIdleCallback(addTimeAgoTooltip);
 };
 
+export const renderLocalDateTime = (el) => {
+  el.textContent = localeDateFormat.asDateTimeWithTimezone.format(newDate(el.dateTime));
+};
+
 /**
  * Replaces the relative text ("2 days ago") of every `<time datetime>` element with an
  * absolute date, so printed/exported pages remain meaningful without the "now" reference.
@@ -226,13 +230,10 @@ const renderAbsoluteTimesForPrint = () => {
     }
 
     try {
-      // Include the timezone (e.g. "GMT+1") so printed dates are unambiguous.
-      const absolute = localeDateFormat.asDateTimeWithTimezone.format(newDate(el.dateTime));
-
       if (el.dataset.relativeText === undefined) {
         el.dataset.relativeText = el.textContent;
       }
-      el.textContent = absolute;
+      renderLocalDateTime(el);
     } catch {
       // Ignore elements with an invalid `datetime` so printing is never interrupted.
     }

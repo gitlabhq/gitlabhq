@@ -24,7 +24,7 @@ Milestones:
 
 Milestones can belong to a [project](../_index.md) or [group](../../group/_index.md).
 Project milestones apply to issues and merge requests in that project only.
-Group milestones apply to any issue, epic or merge request in that group's projects.
+Group milestones apply to any issue, epic, or merge request in that group's projects.
 
 For information about project and group milestones API, see:
 

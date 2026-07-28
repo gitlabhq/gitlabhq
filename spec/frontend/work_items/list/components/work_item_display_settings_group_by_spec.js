@@ -6,6 +6,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import { groupingStrategyFor } from '~/work_items/board/grouping';
+import workItemsGroupByVisibleGroupsQuery from '~/work_items/board/grouping/graphql/client/visible_groups.query.graphql';
 import WorkItemDisplaySettingsGroupBy from '~/work_items/list/components/work_item_display_settings_group_by.vue';
 import { buildNamespaceStatusesResponse } from '../../board/mock_data';
 
@@ -28,8 +29,12 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
   const findHideAll = () => wrapper.findByTestId('hide-all');
   const findValueRows = () => wrapper.findAllComponents(GlToggle);
 
-  const createComponent = ({ props = {} } = {}) => {
+  const createComponent = ({ props = {}, visibleGroups = null } = {}) => {
     const apolloProvider = createMockApollo([[statusesQuery, statusesQueryHandler]]);
+    apolloProvider.clients.defaultClient.writeQuery({
+      query: workItemsGroupByVisibleGroupsQuery,
+      data: { workItemsGroupByVisibleGroups: visibleGroups },
+    });
 
     wrapper = shallowMountExtended(WorkItemDisplaySettingsGroupBy, {
       apolloProvider,

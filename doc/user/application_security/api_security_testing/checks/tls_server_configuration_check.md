@@ -7,7 +7,7 @@ title: TLS server configuration
 
 ## Description
 
-Check for various TLS Server configuration issues. Checks TLS versions, hmacs, ciphers and compression algs supported by server.
+Check for various TLS Server configuration issues. Checks TLS versions, hmacs, ciphers, and compression algs supported by server.
 
 ## Remediation
 

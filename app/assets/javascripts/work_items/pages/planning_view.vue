@@ -138,6 +138,7 @@ import {
   preferencesChanged,
 } from '~/work_items/list/view_change_detection';
 import { persistSortPreference } from '~/work_items/list/display_settings_preferences';
+import updateVisibleGroupsMutation from '~/work_items/board/grouping/graphql/client/update_visible_groups.mutation.graphql';
 import { buildInitialViewState } from '~/work_items/list/saved_view_config';
 
 import searchProjectsQuery from '../list/graphql/search_projects.query.graphql';
@@ -1112,6 +1113,16 @@ export default {
       if (this.isSavedView) {
         this.restoreViewDraft();
       }
+    },
+    // Ensures the local visibility cache is seeded with the saved view's visibleGroups
+    visibleGroups: {
+      immediate: true,
+      handler(visibleGroups) {
+        this.$apollo.mutate({
+          mutation: updateVisibleGroupsMutation,
+          variables: { visibleGroups },
+        });
+      },
     },
     eeSearchTokens() {
       if (this.isSavedView && Boolean(this.savedView)) {
@@ -2285,7 +2296,6 @@ export default {
       :root-page-full-path="rootPageFullPath"
       :query-variables="queryVariables"
       :collapsed-groups="collapsedGroups"
-      :visible-groups="visibleGroups"
       :hidden-metadata-keys="hiddenMetadataKeys"
       :active-item="activeItem"
       :detail-panel-enabled="workItemDetailPanelEnabled"

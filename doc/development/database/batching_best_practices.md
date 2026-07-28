@@ -9,7 +9,7 @@ This document gives an overview about the available batching strategies we use a
 
 ## Why do we need batching
 
-When dealing with a large volume of records, reading, updating or deleting the records in one database query can be challenging; the operation could easily time out. To avoid this problem, we should process the records in batches. Batching usually happens in background jobs, where runtime constraints are more relaxed than during web requests.
+When dealing with a large volume of records, reading, updating, or deleting the records in one database query can be challenging; the operation could easily time out. To avoid this problem, we should process the records in batches. Batching usually happens in background jobs, where runtime constraints are more relaxed than during web requests.
 
 ### Use batching in background jobs and not in web requests
 

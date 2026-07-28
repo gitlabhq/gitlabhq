@@ -136,7 +136,7 @@ To keep your emails on brand, you can create a custom new note email template. T
 {{< /details >}}
 
 Instance administrators can add a header, footer, or additional text to the GitLab instance and apply
-them to all emails sent from GitLab. If you're using a custom `thank_you.md`, `new_participant.md` or `new_note.md`, to include
+them to all emails sent from GitLab. If you're using a custom `thank_you.md`, `new_participant.md`, or `new_note.md`, to include
 this content, add `%{SYSTEM_HEADER}`, `%{SYSTEM_FOOTER}`, or `%{ADDITIONAL_TEXT}` to your templates.
 
 For more information, see [system header and footer messages](../../../administration/appearance.md#add-system-header-and-footer-messages) and [custom additional text](../../../administration/settings/email.md#custom-additional-text).

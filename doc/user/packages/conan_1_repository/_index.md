@@ -403,7 +403,7 @@ The GitLab Conan repository supports the following Conan CLI commands:
 
 When you upload a Conan package, GitLab automatically extracts metadata from the `conaninfo.txt` file. This metadata includes:
 
-- Package settings (like `os`, `arch`, `compiler` and `build_type`)
+- Package settings (like `os`, `arch`, `compiler`, and `build_type`)
 - Package options
 - Package requirements and dependencies
 

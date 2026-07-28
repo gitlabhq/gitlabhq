@@ -88,7 +88,6 @@ class Snippet < ApplicationRecord
   scope :are_internal, -> { where(visibility_level: Snippet::INTERNAL) }
   scope :are_private, -> { where(visibility_level: Snippet::PRIVATE) }
   scope :are_public, -> { public_only }
-  scope :are_secret, -> { public_only.where(secret: true) }
   scope :fresh, -> { order("created_at DESC") }
   scope :inc_author, -> { includes(:author) }
   scope :inc_relations_for_view, -> { includes(author: :status) }

@@ -719,7 +719,7 @@ to match meaningful and significant words to answer a query.
 For example, if you search for `I am securing information for M&A`,
 GitLab can return results with `securing`, `secured`,
 or `information` in the title or description.
-However, GitLab doesn't match the sentence or the words `I`, `am` or `M&A` exactly,
+However, GitLab doesn't match the sentence or the words `I`, `am`, or `M&A` exactly,
 as they aren't deemed lexically meaningful or significant.
 It's a limitation of PostgreSQL full text search.
 

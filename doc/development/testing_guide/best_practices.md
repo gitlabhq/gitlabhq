@@ -162,6 +162,12 @@ capabilities also reduces the amount of set-up needed.
 test requires JavaScript reactivity in the browser (for example, clicking a Vue.js component). Using a headless
 browser is much slower than parsing the HTML response from the app.
 
+The same principle applies to factory traits. A trait such as `:repository`
+is a capability: it makes the factory create a Git repository, which is far more
+expensive than the database writes around it. Pass only the traits the test
+actually exercises. For repository traits specifically, see
+[Repositories](#repositories).
+
 #### Profiling: see where your test spend its time
 
 [`rspec-stackprof`](https://github.com/dkhroad/rspec-stackprof) can be used to generate a flame graph that shows you where you test spend its time.
@@ -310,15 +316,29 @@ There are various ways to create objects and store them in variables in your tes
 - `let_it_be_with_reload` creates an object one time for all examples in the same context, but after each example, the database changes are rolled back, and `object.reload` will be called to restore the object to its original state. This means you can make changes to the object before or during an example. However, there are cases where [state leaks across other models](https://github.com/test-prof/test-prof/blob/master/docs/recipes/let_it_be.md#state-leakage-detection) can occur. In these cases, `let` may be an easier option, especially if only a few examples exist.
 - `let_it_be` creates an object one time for all of the examples in the same context. This is a great alternative to `let` and `let!` for objects that do not need to change from one example to another. Using `let_it_be` can dramatically speed up tests that create database models. See <https://github.com/test-prof/test-prof/blob/master/docs/recipes/let_it_be.md#let-it-be> for more details and examples.
 
-Pro-tip: When writing tests, it is best to consider the objects inside a `let_it_be` as **immutable**, as there are some important caveats when modifying objects inside a `let_it_be` declaration ([1](https://github.com/test-prof/test-prof/blob/master/docs/recipes/let_it_be.md#database-is-rolled-back-to-a-pristine-state-but-the-objects-are-not), [2](https://github.com/test-prof/test-prof/blob/master/docs/recipes/let_it_be.md#modifiers)). To make your `let_it_be` objects immutable, consider using `freeze: true`:
+Objects inside a `let_it_be` are immutable. In this project, `let_it_be`
+defaults to `freeze: true`, which is configured in
+[`spec/support/let_it_be.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/0c856315b96340eaeb51720e7155f4c9eb4dff43/spec/support/let_it_be.rb).
+A mutation raises a `FrozenError` at the point it happens, which surfaces the
+caveats that otherwise apply to objects changed inside a `let_it_be`
+declaration ([1](https://github.com/test-prof/test-prof/blob/master/docs/recipes/let_it_be.md#database-is-rolled-back-to-a-pristine-state-but-the-objects-are-not), [2](https://github.com/test-prof/test-prof/blob/master/docs/recipes/let_it_be.md#modifiers)).
 
-```shell
-# Before
-let_it_be(:namespace) { create_default(:namespace) }
+When an example must modify the object, use `let_it_be_with_reload` or
+`let_it_be_with_refind`. Both set `freeze: false` and restore the object between
+examples, through the different mechanisms described above:
 
-# After
-let_it_be(:namespace, freeze: true) { create_default(:namespace) }
+```ruby
+# Raises FrozenError when an example modifies the project
+let_it_be(:project) { create(:project) }
+
+# The object can be modified, and is restored between examples
+let_it_be_with_reload(:project) { create(:project) }
 ```
+
+`freeze: false` on its own unfreezes the object but does not restore it between
+examples. Use it only when the object is never mutated in a way that later
+examples can observe, such as when the mutation happens inside a `before_all`
+hook. When in doubt, use `let_it_be_with_reload`.
 
 See <https://github.com/test-prof/test-prof/blob/master/docs/recipes/let_it_be.md#state-leakage-detection> for more information on `let_it_be` freezing.
 
@@ -342,7 +362,7 @@ let_it_be(:user) { create(:user) }
 let_it_be_with_reload(:project) { create(:project) } # The test will fail if `let_it_be` is used
 
 context 'with a developer' do
-  before do
+  before_all do
     project.add_developer(user)
   end
 
@@ -352,7 +372,7 @@ context 'with a developer' do
 end
 
 context 'with a maintainer' do
-  before do
+  before_all do
     project.add_maintainer(user)
   end
 
@@ -361,6 +381,67 @@ context 'with a maintainer' do
   end
 end
 ```
+
+Each `before_all` runs once for its context instead of once per example, and the
+membership is rolled back when the context ends. The
+`RSpec/BeforeAllRoleAssignment` RuboCop rule enforces this: a `before` hook that
+assigns a role to a `let_it_be` object is an offense.
+
+#### Assigning members through the factory
+
+When every example in a context needs the same membership, pass it to the
+factory instead of a hook. Project and group factories accept one
+transient attribute per role, such as `guests`, `reporters`, `developers`,
+`maintainers`, and `owners`. Each accepts a single user or an array:
+
+```ruby
+let_it_be(:reviewer) { create(:user) }
+let_it_be(:approver) { create(:user) }
+let_it_be(:project) { create(:project, developers: reviewer) }
+let_it_be(:group) { create(:group, maintainers: [reviewer, approver]) }
+```
+
+The user factory accepts the same relationships from the other direction, with
+attributes such as `guest_of`, `reporter_of`, `developer_of`, `maintainer_of`,
+and `owner_of`:
+
+```ruby
+let_it_be(:project) { create(:project) }
+let_it_be(:maintainer) { create(:user, maintainer_of: project) }
+```
+
+These attributes create the membership through the same code path as
+`add_developer` and the other role methods. For a single user this does not by
+itself reduce the number of queries compared to an equivalent `before_all`. For
+an array of users, such as `maintainers: [reviewer, approver]` above, it does:
+the user, email, and existing-membership lookups run once for the whole batch
+instead of once per `before_all` call, though each membership is still
+authorized and inserted individually. Either way, factory attributes are
+preferred because the setup stays in one place, and because the membership
+exists before the object is frozen, so the spec needs neither a separate hook
+nor `let_it_be_with_reload`.
+
+#### When not to convert `let` to `let_it_be`
+
+Danger suggests that you convert `let(:project) { create(:project) }` to
+`let_it_be` whenever it sees a project factory. The suggestion is a heuristic,
+and it is reasonable to decline it in these cases:
+
+- Examples modify the object under test. Use `let_it_be_with_reload`, or keep
+  `let` when only a few examples exist.
+- The factory stubs methods with `allow`. See
+  [Stubbing methods in factories](#stubbing-methods-within-factories).
+- The spec is a migration spec, a Rake task spec, or is tagged `:delete`. See
+  [Common test setup](#common-test-setup).
+
+A context with only one example is a weak reason on its own. When the example
+uses the object, both `let` and `let_it_be` create it once, so neither is
+faster. The exception is an object that some examples never reference: `let` is
+lazy and skips it, whereas `let_it_be` is eager and always creates it. Check
+whether the object is actually used before you decline on this basis.
+
+When you decline a suggestion, say which of these applies, so the next reader
+does not have to work it out again.
 
 #### Stubbing methods within factories
 
@@ -2254,21 +2335,53 @@ All fixtures should be placed under `spec/fixtures/`.
 ### Repositories
 
 Testing some functionality, such as merging a merge request, requires a Git
-repository with a certain state to be present in the test environment. GitLab
-maintains the [`gitlab-test`](https://gitlab.com/gitlab-org/gitlab-test)
-repository for certain common cases - you can ensure a copy of the repository is
-used with the `:repository` trait for project factories:
+repository with a certain state to be present in the test environment.
+
+A repository is one of the most expensive things a project factory can create,
+so pick the trait that matches what the test actually needs:
+
+| Trait               | Use it when the test needs                                                      |
+|---------------------|---------------------------------------------------------------------------------|
+| No repository trait | No Git access at all                                                            |
+| `:small_repo`       | A repository with one commit and a valid default branch                         |
+| `:custom_repo`      | Specific file paths or contents                                                 |
+| `:repository`       | The `gitlab-test` history, such as multiple branches, tags, or merge conflicts  |
+
+Before you reach for any of them, check whether the test touches Git at all. A
+spec that only exercises database records, permissions, or serialization does
+not need a repository. Remove the trait for the largest single saving
+available.
+
+The traits are roughly ordered by cost, but `:custom_repo` and `:small_repo`
+create one commit per file, so a `:custom_repo` with many files can cost more
+than `:repository`, which loads its history in a single step. Choose by what the
+test needs rather than by position in the table alone.
+
+Use `:empty_repo` when the code under test must distinguish a repository that
+exists but has no commits from a project with no repository. The trait expresses
+a behavioral requirement rather than a cheaper alternative to the traits above,
+so choose it only when the test depends on that state.
+
+#### `:small_repo`
+
+The `:small_repo` trait creates a repository with a single `test.txt` file
+and sets the default branch as `HEAD`. Use it when the test needs a repository
+that resolves a commit, but does not care what is in it:
 
 ```ruby
-let(:project) { create(:project, :repository) }
+let_it_be(:project) { create(:project, :small_repo) }
 ```
 
-Where you can, consider using the `:custom_repo` trait instead of `:repository`.
-This allows you to specify exactly what files appear in the `main` branch
-of the project's repository. For example:
+Use this trait for specs that call `project.commit`, create a pipeline against a
+`ref`, or otherwise need the repository to be non-empty.
+
+#### `:custom_repo`
+
+The `:custom_repo` trait specifies exactly which files appear in the default
+branch of the project's repository. Each file is created in its own commit:
 
 ```ruby
-let(:project) do
+let_it_be(:project) do
   create(
     :project, :custom_repo,
     files: {
@@ -2281,6 +2394,22 @@ end
 
 This creates a repository containing two files, with default permissions and
 the specified content.
+
+#### `:repository`
+
+GitLab maintains the [`gitlab-test`](https://gitlab.com/gitlab-org/gitlab-test)
+repository for cases that need realistic history. Use the `:repository` trait to
+get a copy of it:
+
+```ruby
+let_it_be(:project) { create(:project, :repository) }
+```
+
+The trait loads the repository from a bundle prepared by the test environment,
+so the project gets the whole `gitlab-test` history at once. Reserve it for
+tests that depend on that history, such as its branches, tags, submodules, or
+merge conflicts. If the test only needs some commit to exist, use `:small_repo`
+instead.
 
 ### Configuration
 

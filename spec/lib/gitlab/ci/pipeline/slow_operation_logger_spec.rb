@@ -53,6 +53,8 @@ RSpec.describe Gitlab::Ci::Pipeline::SlowOperationLogger, :request_store, featur
       end
 
       it 'captures instrumentation counters' do
+        allow(Gitlab::GitalyClient).to receive(:get_request_count).and_return(0, 1)
+
         expect(Gitlab::AppJsonLogger).to receive(:info).with(a_hash_including(
           message: "CI slow operation alert for #{operation_name}",
           duration_s: a_kind_of(Numeric),
@@ -61,7 +63,7 @@ RSpec.describe Gitlab::Ci::Pipeline::SlowOperationLogger, :request_store, featur
           db_main_cached_count: 0,
           gitaly_calls: 1,
           gitaly_duration_s: a_kind_of(Numeric),
-          redis_calls: 6,
+          redis_calls: 2,
           redis_duration_s: a_kind_of(Numeric),
           project_id: project.id,
           user_id: user.id
@@ -70,9 +72,8 @@ RSpec.describe Gitlab::Ci::Pipeline::SlowOperationLogger, :request_store, featur
         instance.perform_operation(operation_name: operation_name, context: context) do
           Project.find(project.id) # 1 DB call
           User.find(user.id) # 1 DB call
-          project.repository.root_ref # 1 Gitaly call and 4 Redis calls
-          Gitlab::Redis::Cache.with { |redis| redis.get('test_key1') }
-          Gitlab::Redis::Cache.with { |redis| redis.get('test_key2') }
+          Gitlab::Redis::Cache.with { |redis| redis.get('test_key1') } # 1 Redis call
+          Gitlab::Redis::Cache.with { |redis| redis.get('test_key2') } # 1 Redis call
         end
       end
     end

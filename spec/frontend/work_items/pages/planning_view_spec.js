@@ -10,6 +10,8 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { resolvers } from '~/graphql_shared/issuable_client';
+import workItemsGroupByVisibleGroupsQuery from '~/work_items/board/grouping/graphql/client/visible_groups.query.graphql';
 import { createAlert, VARIANT_INFO } from '~/alert';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
@@ -195,6 +197,7 @@ const subscribeToSavedViewHandler = jest.fn().mockResolvedValue({
 /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */
 let wrapper;
 let router;
+let apolloProvider;
 
 Vue.use(VueApollo);
 Vue.use(VueRouter);
@@ -281,17 +284,20 @@ const mountComponent = async ({
 } = {}) => {
   const { glFeatures: provideGlFeatures, ...restProvide } = provide;
 
-  const apolloProvider = createMockApollo([
-    [namespaceWorkItemTypesQuery, namespaceQueryHandler],
-    [hasWorkItemsQuery, hasWorkItemsHandler],
-    [getWorkItemsCountOnlyQuery, countsOnlyHandler],
-    [getUserWorkItemsPreferences, mockPreferencesHandler],
-    [namespaceSavedViewQuery, savedViewHandler],
-    [getSubscribedSavedViewsQuery, subscribedSavedViewsHandler],
-    [subscribeToSavedViewMutation, subscribeHandler],
-    [updateWorkItemListUserPreference, userPreferenceMutationResponse],
-    ...additionalHandlers,
-  ]);
+  apolloProvider = createMockApollo(
+    [
+      [namespaceWorkItemTypesQuery, namespaceQueryHandler],
+      [hasWorkItemsQuery, hasWorkItemsHandler],
+      [getWorkItemsCountOnlyQuery, countsOnlyHandler],
+      [getUserWorkItemsPreferences, mockPreferencesHandler],
+      [namespaceSavedViewQuery, savedViewHandler],
+      [getSubscribedSavedViewsQuery, subscribedSavedViewsHandler],
+      [subscribeToSavedViewMutation, subscribeHandler],
+      [updateWorkItemListUserPreference, userPreferenceMutationResponse],
+      ...additionalHandlers,
+    ],
+    resolvers,
+  );
 
   router = new VueRouter({
     mode: 'history',
@@ -2813,7 +2819,6 @@ describe('planning-view', () => {
         'collapsedGroups',
         'activeItem',
         'detailPanelEnabled',
-        'visibleGroups',
       ],
       template: '<div />',
     };
@@ -3158,6 +3163,11 @@ describe('planning-view', () => {
     describe('column collapse', () => {
       const collapsedId = 'status:gid://gitlab/WorkItems::Statuses::Custom::Status/2';
 
+      const readVisibleGroups = () =>
+        apolloProvider.clients.defaultClient.readQuery({
+          query: workItemsGroupByVisibleGroupsQuery,
+        });
+
       const mountAllItemsBoard = async (options = {}) => {
         await mountComponent({
           provide: {
@@ -3185,20 +3195,28 @@ describe('planning-view', () => {
           expect(findBoardView().props('collapsedGroups')).toEqual([collapsedId]);
         });
 
-        it('passes the persisted visible groups to the board view', async () => {
-          await mountAllItemsBoard({
-            mockPreferencesHandler: preferencesHandlerWith({ visibleGroups: [collapsedId] }),
+        describe('when visible groups are persisted', () => {
+          beforeEach(async () => {
+            await mountAllItemsBoard({
+              mockPreferencesHandler: preferencesHandlerWith({ visibleGroups: [collapsedId] }),
+            });
           });
 
-          expect(findBoardView().props('visibleGroups')).toEqual([collapsedId]);
+          it('hydrates the local visible-groups cache with them', () => {
+            expect(readVisibleGroups()).toEqual({ workItemsGroupByVisibleGroups: [collapsedId] });
+          });
         });
 
-        it('defaults visibleGroups to null when none are persisted', async () => {
-          await mountAllItemsBoard({
-            mockPreferencesHandler: preferencesHandlerWith({}),
+        describe('when no visible groups are persisted', () => {
+          beforeEach(async () => {
+            await mountAllItemsBoard({
+              mockPreferencesHandler: preferencesHandlerWith({}),
+            });
           });
 
-          expect(findBoardView().props('visibleGroups')).toBeNull();
+          it('hydrates the local visible-groups cache with null', () => {
+            expect(readVisibleGroups()).toEqual({ workItemsGroupByVisibleGroups: null });
+          });
         });
 
         it('persists a newly collapsed column, merged with existing display settings', async () => {

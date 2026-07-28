@@ -87,7 +87,7 @@ Execution plan:
                I/O Timings: read=0.983 write=0.000
 ```
 
-As you can see the query read 22 rows using the same index. The database compared the 20th, 21th and 22th value of the `created_at` column and determined that the 22th value differ thus checking the next record is not needed. In this example the 20th and 21th column had the same `created_at` value.
+As you can see the query read 22 rows using the same index. The database compared the 20th, 21th, and 22th value of the `created_at` column and determined that the 22th value differ thus checking the next record is not needed. In this example the 20th and 21th column had the same `created_at` value.
 
 Incremental sorting works well with timestamp columns where duplicated values are unlikely hence the incremental sorting will perform badly or won't be used at all when the column has very few distinct values (like an enum).
 

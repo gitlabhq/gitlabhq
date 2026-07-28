@@ -16,7 +16,7 @@ listed below.
 
 ## Avoid `forEach`
 
-Avoid `forEach` when mutating data. Use `map`, `reduce` or `filter` instead of `forEach`
+Avoid `forEach` when mutating data. Use `map`, `reduce`, or `filter` instead of `forEach`
 when mutating data. This minimizes mutations in functions,
 which aligns with [the Airbnb style guide](https://github.com/airbnb/javascript#testing--for-real).
 

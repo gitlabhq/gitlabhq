@@ -335,7 +335,7 @@ class CheckCiPartitionPruning
 
         ----
 
-        <small>Something doesn't look right? [Share your feedback](https://gitlab.com/gitlab-org/gitlab/-/work_items/606192).</small>
+        <small>Something doesn't look right? Share your feedback: `gitlab.com/gitlab-org/gitlab/-/work_items/607056`</small>
       BODY
     end
 

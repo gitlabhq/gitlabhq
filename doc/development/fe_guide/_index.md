@@ -71,11 +71,11 @@ As Frontend engineers, we strive to give users **delightful experiences**. We sh
 
 ### Values
 
-We define three core values, Stability, Speed and Maintainability (SSM)
+We define three core values, Stability, Speed, and Maintainability (SSM)
 
 #### Stability
 
-Although velocity is extremely important, we believe that GitLab is now an enterprise-grade platform that requires even the smallest MVC to be **stable, tested and with a good architecture**. We should not merge code, even as an MVC, that could introduce degradation, poor performance, confusion or generally lower our users expectations.
+Although velocity is extremely important, we believe that GitLab is now an enterprise-grade platform that requires even the smallest MVC to be **stable, tested, and with a good architecture**. We should not merge code, even as an MVC, that could introduce degradation, poor performance, confusion, or generally lower our users expectations.
 
 This is an extension of the core value that want our users to have confidence in their own software and to do so, they need to have **confidence in GitLab first**. This means that our own confidence in our software should be at the absolute maximum.
 
@@ -83,7 +83,7 @@ This is an extension of the core value that want our users to have confidence in
 
 Users should be able to navigate through the GitLab application with ease. This implies fast load times, easy to find pages, clear UX and an overall sense that they can accomplish their goal without friction.
 
-Additionally, we want our speed to be felt and appreciated by our developers. This means that we should put a lot of effort and thoughts into processes, tools and documentation that help us achieve success faster across our department. This benefits us as engineers, but also our users that end up receiving quality features at a faster rate.
+Additionally, we want our speed to be felt and appreciated by our developers. This means that we should put a lot of effort and thoughts into processes, tools, and documentation that help us achieve success faster across our department. This benefits us as engineers, but also our users that end up receiving quality features at a faster rate.
 
 #### Maintainability
 
@@ -100,7 +100,7 @@ By focusing on these aspects, we aim to allow engineers to contain complexity in
 
 Now that our values have been defined, we can base our goals on these values and determine what we would like to achieve at GitLab with this in mind.
 
-- Lowest possible FID, LCP and cross-page navigation times
+- Lowest possible FID, LCP, and cross-page navigation times
 - Minimal page reloads when interacting with the UI
 - [Have as little Vue applications per page as possible](vue.md#avoid-multiple-vue-applications-on-the-page)
 - Leverage [Ruby ViewComponents](view_component.md) for simple pages and avoid Vue overhead when possible

@@ -71,7 +71,7 @@ regression.
 
 Prerequisites:
 
-- The Security Manager, Maintainer or Owner role for the project.
+- The Security Manager, Maintainer, or Owner role for the project.
 
 To change a vulnerability's status to resolved:
 
@@ -95,7 +95,7 @@ detected in subsequent scans.
 
 Prerequisites:
 
-- The Security Manager, Maintainer or Owner role for the project.
+- The Security Manager, Maintainer, or Owner role for the project.
 
 To dismiss a vulnerability:
 

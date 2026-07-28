@@ -274,7 +274,7 @@ A simple query from the `events` table:
 rows = ClickHouse::Client.select('SELECT * FROM events', :main)
 ```
 
-When working with queries with placeholders you can use the `ClickHouse::Query` object where you need to specify the placeholder name and its data type. The actual variable replacement, quoting and escaping will be done by the ClickHouse server.
+When working with queries with placeholders you can use the `ClickHouse::Query` object where you need to specify the placeholder name and its data type. The actual variable replacement, quoting, and escaping will be done by the ClickHouse server.
 
 ```ruby
 raw_query = 'SELECT * FROM events WHERE id > {min_id:UInt64}'

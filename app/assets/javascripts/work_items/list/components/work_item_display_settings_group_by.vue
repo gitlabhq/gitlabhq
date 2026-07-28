@@ -9,11 +9,18 @@ import {
 import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import {
+  DEFAULT_GROUP_BY,
   groupingStrategyFor,
   hasDecorationIcon,
   decorationIconStyle,
 } from '~/work_items/board/grouping';
-import { getGroupId } from '~/work_items/board/utils';
+import {
+  SHOW_ALL_GROUPS,
+  isGroupVisible as computeGroupVisible,
+  toggleGroupVisibility as computeToggleGroupVisibility,
+} from '~/work_items/board/grouping/visibility';
+import workItemsGroupByVisibleGroupsQuery from '~/work_items/board/grouping/graphql/client/visible_groups.query.graphql';
+import updateVisibleGroupsMutation from '~/work_items/board/grouping/graphql/client/update_visible_groups.mutation.graphql';
 import { persistMetadataPreference, alertPreferenceError } from '../display_settings_preferences';
 
 export default {
@@ -60,37 +67,20 @@ export default {
     },
   },
   emits: ['update-settings'],
-  // Status is the only supported grouping today, so the identifier scheme is
-  // scoped to it. Kept generic so future groupings can reuse the same shape.
-  groupBy: { property: 'status' },
   GROUP_BY_LABEL_ID: 'work-item-display-settings-group-by-label',
   SORT_LABEL_ID: 'work-item-display-settings-sort-label',
   data() {
     return {
       groupByValues: [],
+      workItemsGroupByVisibleGroups: SHOW_ALL_GROUPS,
     };
   },
-  apollo: {
-    groupByValues() {
-      return {
-        query: this.strategy.valuesQuery,
-        variables() {
-          return { fullPath: this.fullPath };
-        },
-        update: (data) => this.strategy.extractValues(data),
-        error(error) {
-          createAlert({
-            message: s__('WorkItems|Something went wrong while fetching the groups.'),
-            captureError: true,
-            error,
-          });
-        },
-      };
-    },
-  },
   computed: {
+    groupBy() {
+      return DEFAULT_GROUP_BY;
+    },
     strategy() {
-      return groupingStrategyFor('status');
+      return groupingStrategyFor(this.groupBy.property);
     },
     isLoading() {
       return this.$apollo.queries.groupByValues.loading;
@@ -112,39 +102,55 @@ export default {
         };
       });
     },
-    // null means every group is visible; otherwise it holds the ids of the
-    // groups to render.
-    visibleGroups() {
-      return this.namespacePreferences?.visibleGroups ?? null;
+  },
+  apollo: {
+    groupByValues() {
+      return {
+        query: this.strategy.valuesQuery,
+        skip() {
+          return !this.strategy;
+        },
+        variables() {
+          return { fullPath: this.fullPath };
+        },
+        update: (data) => this.strategy.extractValues(data),
+        error(error) {
+          createAlert({
+            message: s__('WorkItems|Something went wrong while fetching the groups.'),
+            captureError: true,
+            error,
+          });
+        },
+      };
     },
-    allGroupIds() {
-      return this.groupByValues.map((value) => this.groupId(value));
+    workItemsGroupByVisibleGroups: {
+      query: workItemsGroupByVisibleGroupsQuery,
     },
   },
   methods: {
-    groupId(value) {
-      return getGroupId({ groupBy: this.$options.groupBy, value });
-    },
     isGroupVisible(value) {
-      return this.visibleGroups === null || this.visibleGroups.includes(this.groupId(value));
+      return computeGroupVisible(this.workItemsGroupByVisibleGroups, this.groupBy, value);
     },
-    toggleGroupVisibility(value) {
-      const id = this.groupId(value);
-      const current = this.visibleGroups ?? this.allGroupIds;
-      const nextVisible = current.includes(id)
-        ? current.filter((groupId) => groupId !== id)
-        : [...current, id];
-
-      // Collapse back to null once every group is shown again so the "all
-      // visible" default stays represented consistently.
-      const normalized = this.allGroupIds.every((groupId) => nextVisible.includes(groupId))
-        ? null
-        : nextVisible;
-
-      this.persist(normalized);
+    async toggleGroupVisibility(value) {
+      const next = computeToggleGroupVisibility({
+        visibleGroups: this.workItemsGroupByVisibleGroups,
+        groupBy: this.groupBy,
+        value,
+        allValues: this.groupByValues,
+      });
+      await this.$apollo.mutate({
+        mutation: updateVisibleGroupsMutation,
+        variables: { visibleGroups: next },
+      });
+      this.persist(next);
     },
-    hideAll() {
-      if (this.visibleGroups?.length === 0) return;
+    async hideAll() {
+      // Everything is already hidden, so skip the redundant preference write.
+      if (this.workItemsGroupByVisibleGroups?.length === 0) return;
+      await this.$apollo.mutate({
+        mutation: updateVisibleGroupsMutation,
+        variables: { visibleGroups: [] },
+      });
       this.persist([]);
     },
     async persist(visibleGroups) {

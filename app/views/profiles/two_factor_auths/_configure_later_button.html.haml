@@ -1,4 +1,7 @@
 = message
-= _("You need to do this before %{grace_period_deadline}.") % { grace_period_deadline: l(grace_period_deadline) }
+- deadline_tag = content_tag(:time, "#{l(grace_period_deadline.utc, format: :long)} UTC", class: 'js-local-datetime', datetime: grace_period_deadline.utc.iso8601)
+= safe_format(_("You need to do this before %{grace_period_deadline}."), grace_period_deadline: deadline_tag)
+- if group_list
+  = group_list
 .gl-alert-actions
   = link_button_to(_('Configure it later'), skip_profile_two_factor_auth_path, { variant: :confirm, method: :patch, data: { testid: 'configure-it-later-button' } })

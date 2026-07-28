@@ -8,7 +8,7 @@ title: Database required stops
 This page describes which database changes require GitLab upgrade stops. If you're interested
 about a comprehensive list of causes, refer to [causes of required stops](../avoiding_required_stops.md#causes-of-required-stops).
 
-[Required stops](../../update/upgrade_paths.md) will now consistently land on minor versions X.2, X.5, X.8 and X.11. This is to ensure predictable upgrade paths for users. Any changes to the database that require a stop can make use of these releases. The instructions below are used to add required upgrade stops.
+[Required stops](../../update/upgrade_paths.md) will now consistently land on minor versions X.2, X.5, X.8, and X.11. This is to ensure predictable upgrade paths for users. Any changes to the database that require a stop can make use of these releases. The instructions below are used to add required upgrade stops.
 
 ## Common database changes that require stops
 

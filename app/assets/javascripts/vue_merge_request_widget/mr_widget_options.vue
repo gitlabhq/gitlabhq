@@ -488,10 +488,14 @@ export default {
 
       const { label } = pipeline.details.status;
       const title = sprintf(__('Pipeline %{label}'), { label });
-      const message = sprintf(__('Pipeline %{label} for "%{dataTitle}"'), {
-        dataTitle: this.mr.title,
-        label,
-      });
+      const message = sprintf(
+        __('Pipeline %{label} for "%{dataTitle}"'),
+        {
+          dataTitle: this.mr.title,
+          label,
+        },
+        false,
+      );
 
       notify.notifyMe(title, message, this.mr.gitlabLogo);
     },

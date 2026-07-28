@@ -71,7 +71,7 @@ functionality is extended with additional features, without affecting the standa
 The following features are not found in standard Markdown:
 
 - [Alerts](#alerts)
-- [Color chips written in `HEX`, `RGB` or `HSL`](#colors)
+- [Color chips written in `HEX`, `RGB`, or `HSL`](#colors)
 - [Description lists](#description-lists)
 - [Diagrams and flowcharts](#diagrams-and-flowcharts)
 - [Emoji](#emoji)
@@ -459,7 +459,7 @@ When rendered, the example looks similar to:
 >    1. Next ordered sub-list item
 > 1. And another item.
 
-For an unordered list, add a `-`, `*` or `+`, followed by a space, at the start of
+For an unordered list, add a `-`, `*`, or `+`, followed by a space, at the start of
 each line. Don't mix the characters in the same list.
 
 ```markdown
@@ -887,7 +887,7 @@ To include an extended summary in the rendered link of an epic, issue, task, obj
 
 - Add a `+s` at the end of the reference.
 
-Summary includes information about **assignees**, **milestone** and **health status**, as applicable by work item type, of referenced item.
+Summary includes information about **assignees**, **milestone**, and **health status**, as applicable by work item type, of referenced item.
 
 For example, a reference like `#123+s` is rendered as
 `The issue title (#123) • First Assignee, Second Assignee+ • v15.10 • Needs attention`.
@@ -2255,7 +2255,7 @@ You can also use raw HTML in your Markdown, and it usually works pretty well.
 
 See the documentation for `HTML::Pipeline`'s [SanitizationFilter](https://github.com/gjtorikian/html-pipeline/blob/v2.12.3/lib/html/pipeline/sanitization_filter.rb#L42)
 class for the list of allowed HTML tags and attributes. In addition to the default
-`SanitizationFilter` allowlist, GitLab allows `span`, `abbr`, `details` and `summary` elements.
+`SanitizationFilter` allowlist, GitLab allows `span`, `abbr`, `details`, and `summary` elements.
 `rel="license"` is allowed on links to support the [Rel-License microformat](https://microformats.org/wiki/rel-license) and license attribution.
 
 ```html

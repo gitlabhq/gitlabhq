@@ -153,7 +153,7 @@ From the [TypeScript guide](https://www.typescriptlang.org/docs/handbook/2/every
 
 ### Use `type` to define aliases for existing types
 
-Use type to define aliases for existing types, classes or interfaces. Use
+Use type to define aliases for existing types, classes, or interfaces. Use
 the TypeScript [Utility Types](https://www.typescriptlang.org/docs/handbook/utility-types.html)
 to provide transformations.
 

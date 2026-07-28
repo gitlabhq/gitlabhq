@@ -196,12 +196,7 @@ describe('infection scanner', () => {
         aliasMap: {},
         rootPath: fixture('nested_node_modules'),
       });
-      const from = fixture(
-        'nested_node_modules',
-        'node_modules',
-        'outer-pkg',
-        'index.js',
-      );
+      const from = fixture('nested_node_modules', 'node_modules', 'outer-pkg', 'index.js');
       expect(nestedResolver.resolveModule('inner-pkg', from)).toBe(
         fixture(
           'nested_node_modules',
@@ -241,6 +236,21 @@ describe('infection scanner', () => {
       );
       expect(all).toContain(
         fixture('browser_object_remap', 'node_modules', 'remap-pkg', 'dist', 'browser.js'),
+      );
+    });
+
+    it('applies browser remaps keyed without an extension (jszip-style main)', () => {
+      const remapResolver = createResolver({
+        aliasMap: {},
+        rootPath: fixture('browser_remap_extensionless'),
+      });
+      const from = fixture('browser_remap_extensionless', 'entry.js');
+      const all = remapResolver.resolveModuleAll('zip-pkg', from);
+      expect(all).toContain(
+        fixture('browser_remap_extensionless', 'node_modules', 'zip-pkg', 'lib', 'index.js'),
+      );
+      expect(all).toContain(
+        fixture('browser_remap_extensionless', 'node_modules', 'zip-pkg', 'dist', 'zip.min.js'),
       );
     });
 
