@@ -28,7 +28,7 @@ describe('EmailOtpActionConfirm', () => {
     });
   };
 
-  const findCheckbox = () => wrapper.findByTestId('email-otp-required-as-boolean');
+  const findCheckbox = () => wrapper.findComponentByTestId('email-otp-required-as-boolean');
   const findButton = () => wrapper.findByTestId('email-otp-action-button');
   const findModal = () => wrapper.findComponent(GlModal);
   const findForm = () => wrapper.find('form');

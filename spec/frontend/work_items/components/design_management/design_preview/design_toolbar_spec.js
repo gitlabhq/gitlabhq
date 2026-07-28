@@ -101,7 +101,7 @@ describe('DesignToolbar', () => {
   it('emits toggle-sidebar event when clicking on toggle sidebar button', async () => {
     createComponent();
 
-    wrapper.findByTestId('toggle-design-sidebar').vm.$emit('click');
+    wrapper.findComponentByTestId('toggle-design-sidebar').vm.$emit('click');
     await nextTick();
 
     expect(wrapper.emitted('toggle-sidebar')).toHaveLength(1);

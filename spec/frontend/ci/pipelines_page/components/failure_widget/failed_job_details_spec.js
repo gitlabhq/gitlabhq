@@ -46,7 +46,7 @@ describe('FailedJobDetails component', () => {
 
   const findJobId = () => wrapper.findByTestId('job-id-link');
   const findJobName = () => wrapper.findByTestId('job-name-link');
-  const findRetryButton = () => wrapper.findByTestId('retry-button');
+  const findRetryButton = () => wrapper.findComponentByTestId('retry-button');
   const findStageName = () => wrapper.findByTestId('job-stage-name');
 
   beforeEach(() => {

@@ -31,9 +31,9 @@ describe('FormStepper', () => {
     });
   };
 
-  const findBackButton = () => wrapper.findByTestId('back-button');
-  const findContinueButton = () => wrapper.findByTestId('continue-button');
-  const findCompletionButton = () => wrapper.findByTestId('completion-button');
+  const findBackButton = () => wrapper.findComponentByTestId('back-button');
+  const findContinueButton = () => wrapper.findComponentByTestId('continue-button');
+  const findCompletionButton = () => wrapper.findComponentByTestId('completion-button');
   const findAllStepHeadings = () => wrapper.findAll('[data-testid^="step-nav"]');
   const findAllStepContents = () => wrapper.findAll('[data-testid^="step-content"]');
 

@@ -77,7 +77,7 @@ describe('WorkItemBulkMove', () => {
   };
 
   const findListbox = () => wrapper.findComponent(GlCollapsibleListbox);
-  const findButton = () => wrapper.find('[data-testid="submit-move-button"]');
+  const findButton = () => wrapper.findComponent('[data-testid="submit-move-button"]');
   const findFormGroup = () => wrapper.findComponent(GlFormGroup);
 
   it('renders a listbox', () => {

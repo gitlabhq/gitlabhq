@@ -36,7 +36,7 @@ describe('PersonalAccessTokenResourcesList', () => {
   const findCategoryNames = () => wrapper.findAllByTestId('category-name');
   const findCollapses = () => wrapper.findAllComponents(GlCollapse);
   const findChevron = () => wrapper.findComponent(GlAnimatedChevronRightDownIcon);
-  const findCategoryCheckboxes = () => wrapper.findAllByTestId('category-select-all');
+  const findCategoryCheckboxes = () => wrapper.findAllComponentsByTestId('category-select-all');
   const findResourceCheckboxes = () =>
     wrapper
       .findAllComponents(GlFormCheckbox)

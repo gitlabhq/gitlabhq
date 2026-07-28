@@ -6,7 +6,7 @@ import GraphViewSelector from '~/ci/pipeline_details/graph/components/graph_view
 describe('the graph view selector component', () => {
   let wrapper;
 
-  const findDependenciesToggle = () => wrapper.find('[data-testid="show-links-toggle"]');
+  const findDependenciesToggle = () => wrapper.findComponent('[data-testid="show-links-toggle"]');
   const findViewTypeSelector = () => wrapper.findComponent(GlButtonGroup);
   const findStageViewButton = () => findViewTypeSelector().findAllComponents(GlButton).at(0);
   const findLayerViewButton = () => findViewTypeSelector().findAllComponents(GlButton).at(1);

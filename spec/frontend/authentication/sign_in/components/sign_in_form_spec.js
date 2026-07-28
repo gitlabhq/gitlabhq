@@ -96,7 +96,7 @@ describe('SignInForm', () => {
   const findRememberMeCheckbox = () => wrapper.findByLabelText('Remember me');
   const findPasskeysForm = () => wrapper.findByTestId('passkey-form');
   const findSignInForm = () => wrapper.findByTestId('sign-in-form');
-  const findSubmitButton = () => wrapper.findByTestId('sign-in-button');
+  const findSubmitButton = () => wrapper.findComponentByTestId('sign-in-button');
   const fillInLoginAndContinue = async () => {
     await findLoginField().setValue('foo@bar.com');
     await findSubmitButton().trigger('click');

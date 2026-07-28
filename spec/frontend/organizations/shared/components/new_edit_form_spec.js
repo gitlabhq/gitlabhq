@@ -316,7 +316,7 @@ describe('NewEditForm', () => {
     });
 
     it('shows button with loading icon', () => {
-      expect(wrapper.findByTestId('submit-button').props('loading')).toBe(true);
+      expect(wrapper.findComponentByTestId('submit-button').props('loading')).toBe(true);
     });
   });
 

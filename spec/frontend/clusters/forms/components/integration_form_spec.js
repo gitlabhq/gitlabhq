@@ -30,7 +30,8 @@ describe('ClusterIntegrationForm', () => {
 
   const findSubmitButton = () => wrapper.findComponent(GlButton);
   const findGlToggle = () => wrapper.findComponent(GlToggle);
-  const findClusterEnvironmentScopeInput = () => wrapper.find('[id="cluster_environment_scope"]');
+  const findClusterEnvironmentScopeInput = () =>
+    wrapper.findComponent('[id="cluster_environment_scope"]');
 
   describe('rendering', () => {
     beforeEach(() => createWrapper());

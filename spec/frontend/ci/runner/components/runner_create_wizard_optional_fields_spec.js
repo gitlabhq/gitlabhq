@@ -26,7 +26,7 @@ describe('Create Runner Optional Fields', () => {
   const findForm = () => wrapper.findComponent(GlForm);
   const findGlMultiStepFormTemplate = () => wrapper.findComponent(GlMultiStepFormTemplate);
   const findNextButton = () => wrapper.findByTestId('next-button');
-  const findBackButton = () => wrapper.findByTestId('back-button');
+  const findBackButton = () => wrapper.findComponentByTestId('back-button');
 
   describe('form', () => {
     it('passes the correct props to GlMultiStepFormTemplate', () => {

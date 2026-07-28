@@ -34,7 +34,7 @@ describe('FormCustomHeaders', () => {
 
   const findCustomHeadersCard = () => wrapper.findByTestId('custom-headers-card');
   const findAllCustomHeaderItems = () => wrapper.findAllComponents(FormCustomHeaderItem);
-  const findAddItem = () => wrapper.findByTestId('add-custom-header');
+  const findAddItem = () => wrapper.findComponentByTestId('add-custom-header');
 
   describe('template', () => {
     it('renders custom headers card', () => {

@@ -53,7 +53,7 @@ describe('Branch rule protection', () => {
   const findHeader = () => wrapper.findByText(protectionPropsMock.header);
   const findProtectionRows = () => wrapper.findAllComponents(ProtectionRow);
   const findEmptyState = () => wrapper.findByTestId('protection-empty-state');
-  const findEditButton = () => wrapper.findByTestId('edit-rule-button');
+  const findEditButton = () => wrapper.findComponentByTestId('edit-rule-button');
 
   it('renders a crud component', () => {
     expect(findCrudComponent().exists()).toBe(true);

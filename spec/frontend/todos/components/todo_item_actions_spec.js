@@ -67,7 +67,7 @@ describe('TodoItemActions', () => {
   };
 
   const findToggleSnoozedStatus = () => wrapper.findComponent(ToggleSnoozedStatus);
-  const findToggleStatusButton = () => wrapper.findByTestId('toggle-status-button');
+  const findToggleStatusButton = () => wrapper.findComponentByTestId('toggle-status-button');
 
   it('sets correct icon for pending todo action button', () => {
     createComponent();

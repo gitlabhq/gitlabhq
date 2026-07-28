@@ -19,7 +19,7 @@ describe('GroupItem spec', () => {
   };
 
   const findAvatarLabeled = () => wrapper.findComponent(GlAvatarLabeled);
-  const findDeleteButton = () => wrapper.findByTestId('delete-group-btn');
+  const findDeleteButton = () => wrapper.findComponentByTestId('delete-group-btn');
 
   beforeEach(() => createComponent());
 

@@ -122,12 +122,12 @@ describe('WorkItemLinksForm', () => {
   };
 
   const findForm = () => wrapper.findComponent(GlForm);
-  const findFormGroup = () => wrapper.findByTestId('work-items-create-form-group');
+  const findFormGroup = () => wrapper.findComponentByTestId('work-items-create-form-group');
   const findWorkItemTokenInput = () => wrapper.findComponent(WorkItemTokenInput);
   const findInput = () => wrapper.findComponent(GlFormInput);
   const findConfidentialCheckbox = () => wrapper.findComponent(GlFormCheckbox);
   const findTooltip = () => wrapper.findComponent(GlTooltip);
-  const findAddChildButton = () => wrapper.findByTestId('add-child-form-button');
+  const findAddChildButton = () => wrapper.findComponentByTestId('add-child-form-button');
   const findValidationElement = () => wrapper.findByTestId('work-items-invalid');
   const findWorkItemLimitValidationMessage = () => wrapper.findByTestId('work-items-limit-error');
   const findErrorMessageElement = () => wrapper.findByTestId('work-items-error');

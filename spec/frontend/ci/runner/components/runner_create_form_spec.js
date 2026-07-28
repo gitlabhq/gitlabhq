@@ -41,7 +41,7 @@ describe('RunnerCreateForm', () => {
 
   const findForm = () => wrapper.findComponent(GlForm);
   const findRunnerFormFields = () => wrapper.findComponent(RunnerFormFields);
-  const findSubmitBtn = () => wrapper.find('[type="submit"]');
+  const findSubmitBtn = () => wrapper.findComponent('[type="submit"]');
 
   const createComponent = ({ props } = {}) => {
     wrapper = shallowMountExtended(RunnerCreateForm, {

@@ -7,6 +7,7 @@
 .flash-container.flash-container-page.sticky{ data: { testid: 'flash-container' }, class: flash_container_class }
   - flash.each do |key, value|
     - next if key == 'timedout' # used by Warden for state tracking, not meant to be rendered
+    - next if value == I18n.t('devise.failure.unauthenticated') && current_user
 
     - if key == 'toast' && value
       -# Frontend renders toast messages as text and not as HTML.

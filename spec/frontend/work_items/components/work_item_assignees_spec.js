@@ -43,7 +43,7 @@ describe('WorkItemAssignees component', () => {
   });
 
   const findInviteMembersTrigger = () => wrapper.findComponent(InviteMembersTrigger);
-  const findAssignSelfButton = () => wrapper.findByTestId('assign-self');
+  const findAssignSelfButton = () => wrapper.findComponentByTestId('assign-self');
   const findSidebarDropdownWidget = () => wrapper.findComponent(WorkItemSidebarDropdownWidget);
   const findAssigneeList = () => wrapper.findComponent(UncollapsedAssigneeList);
 

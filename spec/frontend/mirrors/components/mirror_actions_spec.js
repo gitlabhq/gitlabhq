@@ -12,9 +12,9 @@ describe('MirrorActions', () => {
     });
   };
 
-  const findSyncButton = () => wrapper.findByTestId('update-now-button');
-  const findDeleteButton = () => wrapper.findByTestId('delete-mirror-button');
-  const findDisableButton = () => wrapper.findByTestId('disable-mirror-button');
+  const findSyncButton = () => wrapper.findComponentByTestId('update-now-button');
+  const findDeleteButton = () => wrapper.findComponentByTestId('delete-mirror-button');
+  const findDisableButton = () => wrapper.findComponentByTestId('disable-mirror-button');
   const findEnableButton = () => wrapper.findByTestId('enable-mirror-button');
   const findCopyButton = () => wrapper.findByTestId('copy-public-key-button');
 

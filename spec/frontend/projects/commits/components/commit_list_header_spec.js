@@ -58,8 +58,8 @@ describe('CommitListHeader', () => {
 
   const findCommitFilteredSearch = () => wrapper.findComponent(CommitFilteredSearch);
   const findOverflowMenu = () => wrapper.findComponent(GlDisclosureDropdown);
-  const findBrowseFilesItem = () => wrapper.findByTestId('browse-files-link');
-  const findCommitsFeedItem = () => wrapper.findByTestId('commits-feed-link');
+  const findBrowseFilesItem = () => wrapper.findComponentByTestId('browse-files-link');
+  const findCommitsFeedItem = () => wrapper.findComponentByTestId('commits-feed-link');
   const findCommitListBreadcrumb = () => wrapper.findComponent(CommitListBreadcrumb);
   const findRefSelector = () => wrapper.findComponent(RefSelector);
   const findOpenMrBadge = () => wrapper.findComponent(OpenMrBadge);

@@ -90,10 +90,10 @@ describe('WorkItemLinks', () => {
 
   const findErrorMessage = () => wrapper.findComponent(GlAlert);
   const findEmptyState = () => wrapper.findByTestId('crud-empty');
-  const findToggleFormDropdown = () => wrapper.findByTestId('toggle-form');
-  const findToggleAddFormButton = () => wrapper.findByTestId('toggle-add-form');
-  const findToggleCreateFormButton = () => wrapper.findByTestId('toggle-create-form');
-  const findAddLinksForm = () => wrapper.findByTestId('add-links-form');
+  const findToggleFormDropdown = () => wrapper.findComponentByTestId('toggle-form');
+  const findToggleAddFormButton = () => wrapper.findComponentByTestId('toggle-add-form');
+  const findToggleCreateFormButton = () => wrapper.findComponentByTestId('toggle-create-form');
+  const findAddLinksForm = () => wrapper.findComponentByTestId('add-links-form');
   const findChildrenCount = () => wrapper.findByTestId('crud-count');
   const findWorkItemDetailModal = () => wrapper.findComponent(WorkItemDetailModal);
   const findAbuseCategoryModal = () => wrapper.findComponent(WorkItemAbuseModal);
@@ -301,7 +301,7 @@ describe('WorkItemLinks', () => {
   });
 
   describe('pagination', () => {
-    const findWorkItemChildrenLoadMore = () => wrapper.findByTestId('work-item-load-more');
+    const findWorkItemChildrenLoadMore = () => wrapper.findComponentByTestId('work-item-load-more');
     let workItemTreeQueryHandler;
 
     beforeEach(async () => {

@@ -23,7 +23,7 @@ describe('Merge requests app component', () => {
   let subscriptionHandler;
 
   const findMergeRequests = () => wrapper.findAllComponents(MergeRequest);
-  const findLoadMoreButton = () => wrapper.findByTestId('load-more');
+  const findLoadMoreButton = () => wrapper.findComponentByTestId('load-more');
   const findCountExplanation = () => wrapper.findByTestId('merge-request-count-explanation');
 
   const $router = {
@@ -188,7 +188,7 @@ describe('Merge requests app component', () => {
   it('does not call $router.push if clicking the current tab', async () => {
     createComponent();
 
-    await wrapper.findByTestId('merge-request-dashboard-tab').vm.$emit('click');
+    await wrapper.findComponentByTestId('merge-request-dashboard-tab').vm.$emit('click');
 
     expect($router.push).not.toHaveBeenCalled();
   });
@@ -196,7 +196,7 @@ describe('Merge requests app component', () => {
   it('calls $router.push when clicking different tab to current tab', async () => {
     createComponent();
 
-    await wrapper.findAllByTestId('merge-request-dashboard-tab').at(1).vm.$emit('click');
+    await wrapper.findAllComponentsByTestId('merge-request-dashboard-tab').at(1).vm.$emit('click');
 
     expect($router.push).toHaveBeenCalledWith({ path: 'merged' });
   });

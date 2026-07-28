@@ -26,8 +26,8 @@ describe('IssueToken', () => {
 
   const findLink = () => wrapper.findComponent({ ref: 'link' });
   const findReference = () => wrapper.findComponent({ ref: 'reference' });
-  const findReferenceIcon = () => wrapper.findByTestId('referenceIcon');
-  const findRemoveBtn = () => wrapper.findByTestId('removeBtn');
+  const findReferenceIcon = () => wrapper.findComponentByTestId('referenceIcon');
+  const findRemoveBtn = () => wrapper.findComponentByTestId('removeBtn');
   const findTitle = () => wrapper.findComponent({ ref: 'title' });
 
   describe('with reference supplied', () => {

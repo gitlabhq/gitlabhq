@@ -51,11 +51,11 @@ describe('ImportByUrlToExistingProjectForm', () => {
     mockAxios.restore();
   });
 
-  const findUrlInput = () => wrapper.findByTestId('project_import_url');
+  const findUrlInput = () => wrapper.findComponentByTestId('project_import_url');
   const findUrlInputWrapper = () => wrapper.findByTestId('repository-url-form-group');
-  const findUsernameInput = () => wrapper.findByTestId('repository-username');
-  const findPasswordInput = () => wrapper.findByTestId('repository-password');
-  const findCheckConnectionButton = () => wrapper.findByTestId('check-connection');
+  const findUsernameInput = () => wrapper.findComponentByTestId('repository-username');
+  const findPasswordInput = () => wrapper.findComponentByTestId('repository-password');
+  const findCheckConnectionButton = () => wrapper.findComponentByTestId('check-connection');
   const findMirrorCheckbox = () => wrapper.findByTestId('import-project-by-url-repo-mirror');
 
   const triggerConnectionCheck = () => {

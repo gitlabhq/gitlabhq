@@ -21,8 +21,8 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
   // query in EE), so take it from the strategy the component actually uses.
   const statusesQuery = groupingStrategyFor('status').valuesQuery;
 
-  const findGroupByListbox = () => wrapper.findByTestId('group-by-listbox');
-  const findSortListbox = () => wrapper.findByTestId('sort-listbox');
+  const findGroupByListbox = () => wrapper.findComponentByTestId('group-by-listbox');
+  const findSortListbox = () => wrapper.findComponentByTestId('sort-listbox');
   const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findHideAll = () => wrapper.findByTestId('hide-all');

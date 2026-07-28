@@ -740,7 +740,7 @@ RSpec.describe Gitlab::Database::LoadBalancing, :suppress_gitlab_schemas_validat
         Ci::Build.first
       end).to eq({ cached: 2, queries: 0 })
 
-      # Clear just one pool to demonstrate they are seperate
+      # Clear just one pool to demonstrate they are separate
 
       Ci::ApplicationRecord.connection_pool.clear_query_cache
 

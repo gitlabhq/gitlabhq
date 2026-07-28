@@ -84,8 +84,8 @@ describe('~/environments/components/flux_resource_selector.vue', () => {
 
   const findFluxResourceSelector = () => wrapper.findComponent(GlCollapsibleListbox);
   const findAlert = () => wrapper.findComponent(GlAlert);
-  const findRequestLink = () => wrapper.findByTestId('request-version-support-link');
-  const findDocsLink = () => wrapper.findByTestId('api-docs-link');
+  const findRequestLink = () => wrapper.findComponentByTestId('request-version-support-link');
+  const findDocsLink = () => wrapper.findComponentByTestId('api-docs-link');
   const findFormGroup = () => wrapper.findComponent(GlFormGroup);
 
   describe('default', () => {

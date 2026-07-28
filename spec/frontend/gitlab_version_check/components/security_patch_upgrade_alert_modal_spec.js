@@ -57,8 +57,8 @@ describe('SecurityPatchUpgradeAlertModal', () => {
   const findGlModalBody = () => wrapper.findByTestId('alert-modal-body');
   const findGlModalDetails = () => wrapper.findByTestId('alert-modal-details');
   const findGlLink = () => wrapper.findComponent(GlLink);
-  const findGlRemindButton = () => wrapper.findByTestId('alert-modal-remind-button');
-  const findGlUpgradeButton = () => wrapper.findByTestId('alert-modal-upgrade-button');
+  const findGlRemindButton = () => wrapper.findComponentByTestId('alert-modal-remind-button');
+  const findGlUpgradeButton = () => wrapper.findComponentByTestId('alert-modal-upgrade-button');
 
   describe('template defaults', () => {
     beforeEach(() => {

@@ -3,12 +3,12 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import NamespaceForm from '~/token_access/components/namespace_form.vue';
-import addNamespaceMutation from '~/token_access/graphql/mutations/inbound_add_group_or_project_ci_job_token_scope.mutation.graphql';
-import editNamespaceMutation from '~/token_access/graphql/mutations/edit_namespace_job_token_scope.mutation.graphql';
+import NamespaceForm from '~/ci/job_token_access/components/namespace_form.vue';
+import addNamespaceMutation from '~/ci/job_token_access/graphql/mutations/inbound_add_group_or_project_ci_job_token_scope.mutation.graphql';
+import editNamespaceMutation from '~/ci/job_token_access/graphql/mutations/edit_namespace_job_token_scope.mutation.graphql';
 import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
-import PoliciesSelector from '~/token_access/components/policies_selector.vue';
+import PoliciesSelector from '~/ci/job_token_access/components/policies_selector.vue';
 import { getSaveNamespaceHandler } from './mock_data';
 
 Vue.use(VueApollo);
@@ -41,8 +41,8 @@ describe('Namespace form component', () => {
 
   const findFormGroup = () => wrapper.findComponent(GlFormGroup);
   const findFormInput = () => wrapper.findComponent(GlFormInput);
-  const findSubmitButton = () => wrapper.findByTestId('submit-button');
-  const findCancelButton = () => wrapper.findByTestId('cancel-button');
+  const findSubmitButton = () => wrapper.findComponentByTestId('submit-button');
+  const findCancelButton = () => wrapper.findComponentByTestId('cancel-button');
   const findPoliciesSelector = () => wrapper.findComponent(PoliciesSelector);
 
   describe('on page load', () => {

@@ -50,8 +50,8 @@ describe('issue_note_form component', () => {
     textarea = wrapper.find('textarea');
   };
 
-  const findCancelButton = () => wrapper.findByTestId('cancel');
-  const findCancelCommentButton = () => wrapper.findByTestId('cancelBatchCommentsEnabled');
+  const findCancelButton = () => wrapper.findComponentByTestId('cancel');
+  const findCancelCommentButton = () => wrapper.findComponentByTestId('cancelBatchCommentsEnabled');
   const findAddToStartReviewButton = () => wrapper.findByTestId('start-review-button');
   const findMarkdownField = () => wrapper.findComponent(MarkdownField);
 
@@ -223,7 +223,7 @@ describe('issue_note_form component', () => {
         createComponentWrapper();
 
         textarea.setValue('Foo');
-        const saveButton = wrapper.find('.js-vue-issue-save');
+        const saveButton = wrapper.findComponent('.js-vue-issue-save');
         saveButton.vm.$emit('click');
 
         expect(wrapper.emitted('handleFormUpdate')).toHaveLength(1);
@@ -233,7 +233,7 @@ describe('issue_note_form component', () => {
         createComponentWrapper();
 
         textarea.setValue('Foo');
-        const saveButton = wrapper.find('.js-vue-issue-save');
+        const saveButton = wrapper.findComponent('.js-vue-issue-save');
         saveButton.vm.$emit('click');
 
         expect(trackingSpy).toHaveBeenCalledWith(undefined, 'save_markdown', {

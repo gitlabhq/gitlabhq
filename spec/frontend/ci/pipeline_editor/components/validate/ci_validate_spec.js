@@ -70,9 +70,9 @@ describe('Pipeline Editor Validate Tab', () => {
   };
 
   const findAlert = () => wrapper.findComponent(GlAlert);
-  const findCancelBtn = () => wrapper.findByTestId('cancel-simulation');
-  const findContentChangeStatus = () => wrapper.findByTestId('content-status');
-  const findCta = () => wrapper.findByTestId('simulate-pipeline-button');
+  const findCancelBtn = () => wrapper.findComponentByTestId('cancel-simulation');
+  const findContentChangeStatus = () => wrapper.findComponentByTestId('content-status');
+  const findCta = () => wrapper.findComponentByTestId('simulate-pipeline-button');
   const findLintLink = () => wrapper.findByTestId('lint-link');
   const findDisabledCtaTooltip = () => wrapper.findByTestId('cta-tooltip');
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);

@@ -51,7 +51,7 @@ describe('WorkItemDetailPanel', () => {
 
   const findGlDrawer = () => wrapper.findComponent(GlDrawer);
   const findWorkItem = () => wrapper.findComponent(WorkItemDetail);
-  const findLinkButton = () => wrapper.findByTestId('work-item-detail-panel-link-button');
+  const findLinkButton = () => wrapper.findComponentByTestId('work-item-detail-panel-link-button');
   const findReferenceLink = () => wrapper.findComponent(GlLink);
 
   const createComponent = ({

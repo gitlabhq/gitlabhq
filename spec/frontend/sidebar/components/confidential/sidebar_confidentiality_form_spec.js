@@ -16,8 +16,8 @@ describe('Sidebar Confidentiality Form', () => {
   let wrapper;
 
   const findWarningMessage = () => wrapper.find(`[data-testid="warning-message"]`);
-  const findConfidentialToggle = () => wrapper.find(`[data-testid="confidential-toggle"]`);
-  const findCancelButton = () => wrapper.find(`[data-testid="confidential-cancel"]`);
+  const findConfidentialToggle = () => wrapper.findComponent(`[data-testid="confidential-toggle"]`);
+  const findCancelButton = () => wrapper.findComponent(`[data-testid="confidential-cancel"]`);
 
   let mutationHandler;
 

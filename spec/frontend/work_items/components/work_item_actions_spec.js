@@ -55,19 +55,20 @@ describe('WorkItemActions component', () => {
 
   const findModal = () => wrapper.findComponent(GlModal);
   const findConfidentialityToggleButton = () =>
-    wrapper.findByTestId('confidentiality-toggle-action');
-  const findLockDiscussionButton = () => wrapper.findByTestId('lock-action');
-  const findDeleteButton = () => wrapper.findByTestId('delete-action');
-  const findPromoteButton = () => wrapper.findByTestId('promote-action');
-  const findCopyReferenceButton = () => wrapper.findByTestId('copy-reference-action');
+    wrapper.findComponentByTestId('confidentiality-toggle-action');
+  const findLockDiscussionButton = () => wrapper.findComponentByTestId('lock-action');
+  const findDeleteButton = () => wrapper.findComponentByTestId('delete-action');
+  const findPromoteButton = () => wrapper.findComponentByTestId('promote-action');
+  const findCopyReferenceButton = () => wrapper.findComponentByTestId('copy-reference-action');
   const findWorkItemToggleOption = () => wrapper.findComponent(WorkItemStateToggle);
-  const findCopyCreateNoteEmailButton = () => wrapper.findByTestId('copy-create-note-email-action');
-  const findReportAbuseButton = () => wrapper.findByTestId('report-abuse-action');
-  const findSubmitAsSpamItem = () => wrapper.findByTestId('submit-as-spam-item');
-  const findNewRelatedItemButton = () => wrapper.findByTestId('new-related-work-item');
-  const findChangeTypeButton = () => wrapper.findByTestId('change-type-action');
-  const findTruncationToggle = () => wrapper.findByTestId('truncation-toggle-action');
-  const findSidebarToggle = () => wrapper.findByTestId('sidebar-toggle-action');
+  const findCopyCreateNoteEmailButton = () =>
+    wrapper.findComponentByTestId('copy-create-note-email-action');
+  const findReportAbuseButton = () => wrapper.findComponentByTestId('report-abuse-action');
+  const findSubmitAsSpamItem = () => wrapper.findComponentByTestId('submit-as-spam-item');
+  const findNewRelatedItemButton = () => wrapper.findComponentByTestId('new-related-work-item');
+  const findChangeTypeButton = () => wrapper.findComponentByTestId('change-type-action');
+  const findTruncationToggle = () => wrapper.findComponentByTestId('truncation-toggle-action');
+  const findSidebarToggle = () => wrapper.findComponentByTestId('sidebar-toggle-action');
   const findReportAbuseModal = () => wrapper.findComponent(WorkItemAbuseModal);
   const findCreateWorkItemModal = () => wrapper.findComponent(CreateWorkItemModal);
   const findWorkItemChangeTypeModal = () => wrapper.findComponent(WorkItemChangeTypeModal);
@@ -92,9 +93,10 @@ describe('WorkItemActions component', () => {
         text: x.text(),
       };
     });
-  const findNotificationsToggleForm = () => wrapper.findByTestId('notifications-toggle-form');
-  const findNotificationsToggle = () => wrapper.findByTestId('notifications-toggle');
-  const findMoveButton = () => wrapper.findByTestId('move-action');
+  const findNotificationsToggleForm = () =>
+    wrapper.findComponentByTestId('notifications-toggle-form');
+  const findNotificationsToggle = () => wrapper.findComponentByTestId('notifications-toggle');
+  const findMoveButton = () => wrapper.findComponentByTestId('move-action');
   const findMoveModal = () => wrapper.findComponent(MoveWorkItemModal);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 

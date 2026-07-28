@@ -38,16 +38,16 @@ describe('MessageForm', () => {
   const findPreview = () => wrapper.findComponent(GlBroadcastMessage);
   const findThemeSelect = () => wrapper.findByTestId('theme-select');
   const findDismissable = () => wrapper.findByTestId('dismissable-checkbox');
-  const findTargetRoles = () => wrapper.findByTestId('target-roles-checkboxes');
+  const findTargetRoles = () => wrapper.findComponentByTestId('target-roles-checkboxes');
   const findTargetAccessLevelsCheckboxGroup = () =>
-    wrapper.findByTestId('target-access-levels-checkbox-group');
-  const findSubmitButton = () => wrapper.findByTestId('submit-button');
+    wrapper.findComponentByTestId('target-access-levels-checkbox-group');
+  const findSubmitButton = () => wrapper.findComponentByTestId('submit-button');
   const findCancelButton = () => wrapper.findByTestId('cancel-button');
   const findForm = () => wrapper.findComponent(GlForm);
   const findModal = () => wrapper.findComponent(GlModal);
   const findShowInCli = () => wrapper.findByTestId('show-in-cli-checkbox');
-  const findTargetSelect = () => wrapper.findByTestId('target-select');
-  const findTargetPath = () => wrapper.findByTestId('target-path-input');
+  const findTargetSelect = () => wrapper.findComponentByTestId('target-select');
+  const findTargetPath = () => wrapper.findComponentByTestId('target-path-input');
   const emitSubmitForm = () => findForm().vm.$emit('submit', { preventDefault: () => {} });
 
   function createComponent({ broadcastMessage = {} } = {}) {

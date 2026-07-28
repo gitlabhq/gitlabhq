@@ -23,7 +23,7 @@ describe('~/access_tokens/components/new_access_token_app', () => {
   };
 
   const findButtonEl = () => document.querySelector('[type=submit]');
-  const findGlAlertError = () => wrapper.findByTestId('error-message');
+  const findGlAlertError = () => wrapper.findComponentByTestId('error-message');
   const findGlAlertSuccess = () => wrapper.findByTestId('success-message');
 
   const triggerSuccess = async (newToken = 'new token') => {

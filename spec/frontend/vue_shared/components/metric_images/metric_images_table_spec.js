@@ -48,8 +48,8 @@ describe('Metrics upload item', () => {
   const findCollapseButton = () => wrapper.find('[data-testid="collapse-button"]');
   const findMetricImageBody = () => wrapper.find('[data-testid="metric-image-body"]');
   const findModal = () => wrapper.findComponent(GlModal);
-  const findDeleteButton = () => wrapper.find('[data-testid="delete-button"]');
-  const findEditButton = () => wrapper.find('[data-testid="edit-button"]');
+  const findDeleteButton = () => wrapper.findComponent('[data-testid="delete-button"]');
+  const findEditButton = () => wrapper.findComponent('[data-testid="edit-button"]');
   const findImageDetailsModal = () => wrapper.findComponent(MetricImageDetailsModal);
   const closeModal = () => findModal().vm.$emit('hidden');
   const submitModal = () => findModal().vm.$emit('primary', mockEvent);

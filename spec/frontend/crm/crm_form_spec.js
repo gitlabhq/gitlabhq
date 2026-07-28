@@ -78,7 +78,7 @@ describe('Reusable form component', () => {
 
   const mockToastShow = jest.fn();
 
-  const findSaveButton = () => wrapper.findByTestId('save-button');
+  const findSaveButton = () => wrapper.findComponentByTestId('save-button');
   const findForm = () => wrapper.find('form');
   const findError = () => wrapper.findComponent(GlAlert);
   const findFormGroup = (at) => wrapper.findAllComponents(GlFormGroup).at(at);
@@ -199,16 +199,16 @@ describe('Reusable form component', () => {
       });
 
       it('should be disabled when required fields are empty', async () => {
-        wrapper.find('#firstName').vm.$emit('input', '');
+        wrapper.findComponent('#firstName').vm.$emit('input', '');
         await waitForPromises();
 
         expect(findSaveButton().props('disabled')).toBe(true);
       });
 
       it('should not be disabled when required fields have values', async () => {
-        wrapper.find('#firstName').vm.$emit('input', 'A');
-        wrapper.find('#lastName').vm.$emit('input', 'B');
-        wrapper.find('#email').vm.$emit('input', 'C');
+        wrapper.findComponent('#firstName').vm.$emit('input', 'A');
+        wrapper.findComponent('#lastName').vm.$emit('input', 'B');
+        wrapper.findComponent('#email').vm.$emit('input', 'C');
         await waitForPromises();
 
         expect(findSaveButton().props('disabled')).toBe(false);
@@ -222,14 +222,14 @@ describe('Reusable form component', () => {
     });
 
     it('should be disabled when required field is empty', async () => {
-      wrapper.find('#name').vm.$emit('input', '');
+      wrapper.findComponent('#name').vm.$emit('input', '');
       await waitForPromises();
 
       expect(findSaveButton().props('disabled')).toBe(true);
     });
 
     it('should not be disabled when required field has a value', async () => {
-      wrapper.find('#name').vm.$emit('input', 'A');
+      wrapper.findComponent('#name').vm.$emit('input', 'A');
       await waitForPromises();
 
       expect(findSaveButton().props('disabled')).toBe(false);
@@ -314,9 +314,9 @@ describe('Reusable form component', () => {
     });
 
     it('should include updated values in update mutation', () => {
-      wrapper.find('#firstName').vm.$emit('input', 'Michael');
+      wrapper.findComponent('#firstName').vm.$emit('input', 'Michael');
       wrapper
-        .find('#organizationId')
+        .findComponent('#organizationId')
         .vm.$emit('input', 'gid://gitlab/CustomerRelations::Organization/1');
 
       findForm().trigger('submit');

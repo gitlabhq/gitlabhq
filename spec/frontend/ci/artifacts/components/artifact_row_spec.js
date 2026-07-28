@@ -15,7 +15,7 @@ describe('ArtifactRow component', () => {
   const findBadge = () => wrapper.findComponent(GlBadge);
   const findSize = () => wrapper.findByTestId('job-artifact-row-size');
   const findDownloadButton = () => wrapper.findByTestId('job-artifact-row-download-button');
-  const findDeleteButton = () => wrapper.findByTestId('job-artifact-row-delete-button');
+  const findDeleteButton = () => wrapper.findComponentByTestId('job-artifact-row-delete-button');
   const findCheckbox = () => wrapper.findComponent(GlFormCheckbox);
 
   const createComponent = ({ canDestroyArtifacts = true, props = {} } = {}) => {

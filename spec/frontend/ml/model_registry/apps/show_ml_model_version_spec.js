@@ -125,7 +125,8 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
   const findLoadOrErrorOrShow = () => wrapper.findComponent(LoadOrErrorOrShow);
   const findModelMetadata = () => wrapper.findByTestId('metadata');
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
-  const findModelVersionEditButton = () => wrapper.findByTestId('edit-model-version-button');
+  const findModelVersionEditButton = () =>
+    wrapper.findComponentByTestId('edit-model-version-button');
   const findTabs = () => wrapper.findComponent(GlTabs);
   const findDetailTab = () => wrapper.findAllComponents(GlTab).at(0);
   const findArtifactsTab = () => wrapper.findAllComponents(GlTab).at(1);
@@ -133,8 +134,8 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
   const findPerformanceTab = () => wrapper.findAllComponents(GlTab).at(2);
   const findModelVersionPerformance = () => wrapper.findComponent(ModelVersionPerformance);
   const findModelVersionArtifacts = () => wrapper.findComponent(ModelVersionArtifacts);
-  const findMlflowRunId = () => wrapper.findByTestId('mlflow-id');
-  const findCopyMlflowIdButton = () => wrapper.findByTestId('mlflow-id-button');
+  const findMlflowRunId = () => wrapper.findComponentByTestId('mlflow-id');
+  const findCopyMlflowIdButton = () => wrapper.findComponentByTestId('mlflow-id-button');
   const findCandidateLink = () => wrapper.findByTestId('mlflow-id-link');
 
   it('renders the title', () => {

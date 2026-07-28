@@ -137,7 +137,7 @@ describe('AlertManagementTable', () => {
   let mock;
 
   const findAlertsTable = () => wrapper.findComponent(GlTable);
-  const findAlerts = () => wrapper.findAll('table tbody tr');
+  const findAlerts = () => wrapper.findAllComponents('table tbody tr');
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findLoader = () => wrapper.findComponent(GlLoadingIcon);
   const findStatusDropdown = () => wrapper.findComponent(GlDisclosureDropdown);

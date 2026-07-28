@@ -1516,14 +1516,12 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
     end
 
     it 'opens a dedicated reconcile MR carrying only the fence update' do
-      date = Time.now.utc.strftime('%Y%m%d')
-
       reconcile
 
       expect(sync.workflow).to have_received(:post_json)
         .with(a_string_including('/merge_requests'), hash_including(body: hash_including(
           title: a_string_starting_with('reconcile fences: '),
-          source_branch: "docs-sync/principles-#{date}-reconcile-fences"
+          source_branch: 'docs-sync/principles-reconcile-fences'
         )))
     end
 
@@ -1571,6 +1569,16 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
 
         expect(sync.workflow).not_to have_received(:post_json)
       end
+    end
+  end
+
+  describe '#reconcile_branch_name' do
+    subject(:branch_name) { sync.reconcile_branch_name(auto_mr_cfg) }
+
+    let(:auto_mr_cfg) { { 'branch_prefix' => 'docs-sync/principles' } }
+
+    it 'is date-free so the daily job reuses one MR across runs' do
+      expect(branch_name).to eq('docs-sync/principles-reconcile-fences')
     end
   end
 

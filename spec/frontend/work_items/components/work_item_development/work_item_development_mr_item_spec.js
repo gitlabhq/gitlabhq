@@ -49,7 +49,8 @@ describe('WorkItemDevelopmentMRItem', () => {
   const findAssigneeAvatars = () => wrapper.findComponent(GlAvatarsInline);
   const findAvatarLink = () => wrapper.findComponent(GlAvatarLink);
   const findAvatar = () => wrapper.findComponent(GlAvatar);
-  const findCopyReferenceDropdownItem = () => wrapper.find('[data-testid="mr-copy-reference"]');
+  const findCopyReferenceDropdownItem = () =>
+    wrapper.findComponent('[data-testid="mr-copy-reference"]');
   const findBadge = () => wrapper.findComponent(GlBadge);
 
   describe('MR title', () => {

@@ -201,7 +201,7 @@ describe('content_editor/components/bubble_menus/link_bubble_menu', () => {
 
       jest.spyOn(navigator.clipboard, 'writeText');
 
-      await wrapper.findByTestId('copy-link-url').vm.$emit('click');
+      await wrapper.findComponentByTestId('copy-link-url').vm.$emit('click');
 
       const expectedUrl = `${window.gon.gitlab_url}/path/to/project/-/wikis/uploads/my_file.pdf`;
       expect(navigator.clipboard.writeText).toHaveBeenCalledWith(expectedUrl);
@@ -215,7 +215,7 @@ describe('content_editor/components/bubble_menus/link_bubble_menu', () => {
 
       jest.spyOn(navigator.clipboard, 'writeText');
 
-      await wrapper.findByTestId('copy-link-url').vm.$emit('click');
+      await wrapper.findComponentByTestId('copy-link-url').vm.$emit('click');
 
       const expectedUrl = `${window.gon.gitlab_url}/path/to/project/-/wikis/uploads/my_file.pdf`;
       expect(navigator.clipboard.writeText).toHaveBeenCalledWith(expectedUrl);
@@ -225,7 +225,7 @@ describe('content_editor/components/bubble_menus/link_bubble_menu', () => {
   describe('remove link button', () => {
     it('removes the link', async () => {
       await buildWrapperAndDisplayMenu();
-      await wrapper.findByTestId('remove-link').vm.$emit('click');
+      await wrapper.findComponentByTestId('remove-link').vm.$emit('click');
 
       expect(tiptapEditor.getHTML()).toBe('<p dir="auto">Download PDF File</p>');
     });
@@ -236,7 +236,7 @@ describe('content_editor/components/bubble_menus/link_bubble_menu', () => {
 
     beforeEach(async () => {
       await buildWrapperAndDisplayMenu();
-      await wrapper.findByTestId('edit-link').vm.$emit('click');
+      await wrapper.findComponentByTestId('edit-link').vm.$emit('click');
 
       linkHrefInput = wrapper.findByTestId('link-href');
     });
@@ -284,7 +284,7 @@ describe('content_editor/components/bubble_menus/link_bubble_menu', () => {
       beforeEach(async () => {
         linkHrefInput.setValue('https://google.com');
 
-        await wrapper.findByTestId('cancel-link').vm.$emit('click');
+        await wrapper.findComponentByTestId('cancel-link').vm.$emit('click');
       });
 
       it('hides the form and shows the copy/edit/remove link buttons', () => {

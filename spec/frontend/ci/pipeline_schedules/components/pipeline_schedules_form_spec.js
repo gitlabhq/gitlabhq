@@ -101,11 +101,11 @@ describe('Pipeline schedules form', () => {
   };
 
   const findForm = () => wrapper.findComponent(GlForm);
-  const findDescription = () => wrapper.findByTestId('schedule-description');
+  const findDescription = () => wrapper.findComponentByTestId('schedule-description');
   const findIntervalComponent = () => wrapper.findComponent(IntervalPatternInput);
   const findTimezoneDropdown = () => wrapper.findComponent(TimezoneDropdown);
   const findRefSelector = () => wrapper.findComponent(RefSelector);
-  const findSubmitButton = () => wrapper.findByTestId('schedule-submit-button');
+  const findSubmitButton = () => wrapper.findComponentByTestId('schedule-submit-button');
   const findCancelButton = () => wrapper.findByTestId('schedule-cancel-button');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findPipelineInputsForm = () => wrapper.findComponent(PipelineInputsForm);

@@ -24,10 +24,10 @@ describe('Pipeline config reference section', () => {
     });
   };
 
-  const findCiExamplesLink = () => wrapper.findByTestId('ci-examples-link');
-  const findCiHelpLink = () => wrapper.findByTestId('ci-help-link');
-  const findCiNeedsLink = () => wrapper.findByTestId('ci-needs-link');
-  const findCiYamlLink = () => wrapper.findByTestId('ci-yaml-link');
+  const findCiExamplesLink = () => wrapper.findComponentByTestId('ci-examples-link');
+  const findCiHelpLink = () => wrapper.findComponentByTestId('ci-help-link');
+  const findCiNeedsLink = () => wrapper.findComponentByTestId('ci-needs-link');
+  const findCiYamlLink = () => wrapper.findComponentByTestId('ci-yaml-link');
   const findSectionComponent = () => wrapper.findComponent(SectionComponent);
 
   beforeEach(() => {

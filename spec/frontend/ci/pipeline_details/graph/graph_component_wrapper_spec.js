@@ -67,8 +67,8 @@ describe('Pipeline graph wrapper', () => {
   let pipelineNeedsHandler;
 
   const findAlert = () => wrapper.findByTestId('error-alert');
-  const findJobCountWarning = () => wrapper.findByTestId('job-count-warning');
-  const findDependenciesToggle = () => wrapper.findByTestId('show-links-toggle');
+  const findJobCountWarning = () => wrapper.findComponentByTestId('job-count-warning');
+  const findDependenciesToggle = () => wrapper.findComponentByTestId('show-links-toggle');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findLinksLayer = () => wrapper.findComponent(LinksLayer);
   const findGraph = () => wrapper.findComponent(PipelineGraph);

@@ -14,7 +14,7 @@ jest.mock('~/lib/mousetrap');
 describe('WorkItemSidebarDropdownWidget component', () => {
   let wrapper;
 
-  const findEditButton = () => wrapper.findByTestId('edit-button');
+  const findEditButton = () => wrapper.findComponentByTestId('edit-button');
   const findApplyButton = () => wrapper.findByTestId('apply-button');
   const findCollapsibleListbox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findWorkItemSidebarWidget = () => wrapper.findComponent(WorkItemSidebarWidget);

@@ -78,7 +78,7 @@ describe('ForkInfo component', () => {
   const findLink = () => wrapper.findComponent(GlLink);
   const findSkeleton = () => wrapper.findComponent(GlSkeletonLoader);
   const findIcon = () => wrapper.findComponent(GlIcon);
-  const findUpdateForkButton = () => wrapper.findByTestId('update-fork-button');
+  const findUpdateForkButton = () => wrapper.findComponentByTestId('update-fork-button');
   const findCreateMrButton = () => wrapper.findByTestId('create-mr-button');
   const findViewMrButton = () => wrapper.findByTestId('view-mr-button');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);

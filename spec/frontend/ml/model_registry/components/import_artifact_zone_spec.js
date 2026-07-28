@@ -29,13 +29,13 @@ describe('ImportArtifactZone', () => {
   const zone = () => wrapper.findComponent(UploadDropzone);
   const progressBar = (ix = 0) => wrapper.findByTestId(`progress-${ix}`);
   const uploadFeedback = (ix = 0) => wrapper.findByTestId(`fb-${ix}`);
-  const subfolderInput = () => wrapper.findByTestId('subfolderId');
+  const subfolderInput = () => wrapper.findComponentByTestId('subfolderId');
   const subfolderLabel = () => wrapper.findByTestId('subfolderLabel');
   const subfolderLabelOptional = () => wrapper.findByTestId('subfolderLabelOptional');
   const subfolderGroup = () => wrapper.findByTestId('subfolderGroup');
   const alert = () => wrapper.findComponent(GlAlert);
-  const cancelButton = (ix = 0) => wrapper.findByTestId(`cancel-button-${ix}`);
-  const clearButton = () => wrapper.findByTestId(`clear-button`);
+  const cancelButton = (ix = 0) => wrapper.findComponentByTestId(`cancel-button-${ix}`);
+  const clearButton = () => wrapper.findComponentByTestId(`clear-button`);
 
   const emulateFileDrop = (files = validFiles) => zone().vm.$emit('change', files);
 

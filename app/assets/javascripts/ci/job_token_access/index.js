@@ -12,7 +12,7 @@ const apolloProvider = new VueApollo({
   defaultClient: createDefaultClient({}, { cacheConfig }),
 });
 
-export const initTokenAccess = (containerId = 'js-ci-token-access-app') => {
+export const initJobTokenAccess = (containerId = 'js-ci-job-token-access-app') => {
   const containerEl = document.getElementById(containerId);
 
   if (!containerEl) {

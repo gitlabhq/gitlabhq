@@ -39,13 +39,13 @@ describe('Release block deployments', () => {
   const findCollapse = () => wrapper.findComponent(GlCollapse);
   const findTable = () => wrapper.findComponent(GlTableLite);
   const findTableHeaders = () => findTable().find('thead').findAll('th');
-  const findEnvironmentName = () => wrapper.findByTestId('environment-name');
-  const findDeploymentUrl = () => wrapper.findByTestId('deployment-url');
+  const findEnvironmentName = () => wrapper.findComponentByTestId('environment-name');
+  const findDeploymentUrl = () => wrapper.findComponentByTestId('deployment-url');
   const findDeploymentStatusLink = () => wrapper.findComponent(DeploymentStatusLink);
   const findDeploymentTriggerer = () => wrapper.findComponent(DeploymentTriggerer);
   const findCommit = () => wrapper.findComponent(Commit);
-  const findCreatedAt = () => wrapper.findByTestId('deployment-created-at');
-  const findFinishedAt = () => wrapper.findByTestId('deployment-finished-at');
+  const findCreatedAt = () => wrapper.findComponentByTestId('deployment-created-at');
+  const findFinishedAt = () => wrapper.findComponentByTestId('deployment-finished-at');
 
   beforeEach(() => {
     createComponent();

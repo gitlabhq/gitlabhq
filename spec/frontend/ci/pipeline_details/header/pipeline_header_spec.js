@@ -71,14 +71,14 @@ describe('Pipeline header', () => {
   const findBadges = () => wrapper.findComponent(HeaderBadges);
   const findHeaderActions = () => wrapper.findComponent(HeaderActions);
   const findCreatedStatus = () => wrapper.findByTestId('pipeline-created-status');
-  const findCreatedTimeAgo = () => wrapper.findByTestId('pipeline-created-time-ago');
-  const findFinishedTimeAgo = () => wrapper.findByTestId('pipeline-finished-time-ago');
+  const findCreatedTimeAgo = () => wrapper.findComponentByTestId('pipeline-created-time-ago');
+  const findFinishedTimeAgo = () => wrapper.findComponentByTestId('pipeline-finished-time-ago');
   const findPipelineId = () => wrapper.findByTestId('pipeline-id');
   const findPipelineName = () => wrapper.findByTestId('pipeline-name');
   const findTotalJobs = () => wrapper.findByTestId('total-jobs');
   const findCommitLink = () => wrapper.findByTestId('commit-link');
   const findCommitTitle = () => wrapper.findByTestId('commit-title');
-  const findCommitCopyButton = () => wrapper.findByTestId('commit-copy-sha');
+  const findCommitCopyButton = () => wrapper.findComponentByTestId('commit-copy-sha');
   const findPipelineRunningText = () => wrapper.findByTestId('pipeline-running-text').text();
   const findPipelineRefText = () => wrapper.findByTestId('pipeline-ref-text').text();
   const findPipelineUserLink = () => wrapper.findByTestId('pipeline-user-link');

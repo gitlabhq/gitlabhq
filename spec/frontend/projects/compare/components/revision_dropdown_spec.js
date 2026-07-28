@@ -153,7 +153,7 @@ describe('RevisionDropdown component', () => {
       });
 
       findGlListbox().vm.$emit('shown');
-      findGlListbox().find('button').vm.$emit('click');
+      findGlListbox().findComponent('button').vm.$emit('click');
 
       expect(findGlListbox().emitted('hidden')).toBeUndefined();
 
@@ -173,7 +173,7 @@ describe('RevisionDropdown component', () => {
       });
 
       findGlListbox().vm.$emit('shown');
-      findGlListbox().find('button').vm.$emit('click');
+      findGlListbox().findComponent('button').vm.$emit('click');
 
       expect(findGlListbox().emitted('hidden')).toBeUndefined();
 

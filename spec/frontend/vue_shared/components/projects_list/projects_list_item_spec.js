@@ -44,10 +44,10 @@ describe('ProjectsListItem', () => {
   };
 
   const findAvatarLabeled = () => wrapper.findComponent(GlAvatarLabeled);
-  const findStarsStat = () => wrapper.findByTestId('stars-btn');
-  const findMergeRequestsStat = () => wrapper.findByTestId('mrs-btn');
-  const findIssuesStat = () => wrapper.findByTestId('issues-btn');
-  const findForksStat = () => wrapper.findByTestId('forks-btn');
+  const findStarsStat = () => wrapper.findComponentByTestId('stars-btn');
+  const findMergeRequestsStat = () => wrapper.findComponentByTestId('mrs-btn');
+  const findIssuesStat = () => wrapper.findComponentByTestId('issues-btn');
+  const findForksStat = () => wrapper.findComponentByTestId('forks-btn');
   const findVisibilityIcon = () => findAvatarLabeled().findComponent(GlIcon);
   const findListActions = () => wrapper.findComponent(ProjectListItemActions);
   const findAccessLevelBadge = () => wrapper.findByTestId('user-access-role');

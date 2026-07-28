@@ -43,9 +43,9 @@ describe('Work item add note', () => {
   let workItemResponseHandler;
 
   const findCommentForm = () => wrapper.findComponent(WorkItemCommentForm);
-  const findErrorAlert = () => wrapper.findByTestId('error-alert');
+  const findErrorAlert = () => wrapper.findComponentByTestId('error-alert');
   const findReplyPlaceholder = () => wrapper.findComponent(DiscussionReplyPlaceholder);
-  const findSuccessAlert = () => wrapper.findByTestId('success-alert');
+  const findSuccessAlert = () => wrapper.findComponentByTestId('success-alert');
   const findWorkItemLockedComponent = () => wrapper.findComponent(WorkItemCommentLocked);
   const findResolveDiscussionButton = () => wrapper.findComponent(ResolveDiscussionButton);
 

@@ -50,7 +50,7 @@ const findDiffHeader = (wrapper) => wrapper.findComponent(DiffFileHeaderComponen
 const findDiffContentArea = (wrapper) => wrapper.findByTestId('content-area');
 const findLoader = (wrapper) => wrapper.findByTestId('loader-icon');
 const findToggleButton = (wrapper) => wrapper.findByTestId('expand-button');
-const findNoteForm = (wrapper) => wrapper.findByTestId('file-note-form');
+const findNoteForm = (wrapper) => wrapper.findComponentByTestId('file-note-form');
 
 const toggleFile = (wrapper) => findDiffHeader(wrapper).vm.$emit('toggleFile');
 const getReadableFile = () => getDiffFileMock();

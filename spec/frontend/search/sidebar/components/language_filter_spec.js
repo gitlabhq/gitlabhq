@@ -49,7 +49,7 @@ describe('GlobalSearchSidebarLanguageFilter', () => {
   };
 
   const findCheckboxFilter = () => wrapper.findComponent(CheckboxFilter);
-  const findShowMoreButton = () => wrapper.findByTestId('show-more-button');
+  const findShowMoreButton = () => wrapper.findComponentByTestId('show-more-button');
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findAllCheckboxes = () => wrapper.findAllComponents(GlFormCheckbox);
   const findHasOverMax = () => wrapper.findByTestId('has-over-max-text');

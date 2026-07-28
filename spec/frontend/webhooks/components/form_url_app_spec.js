@@ -21,10 +21,10 @@ describe('FormUrlApp', () => {
     });
   };
 
-  const findUrlInput = () => wrapper.findByTestId('webhook-url');
+  const findUrlInput = () => wrapper.findComponentByTestId('webhook-url');
   const findUrlInputGroup = () => wrapper.findAllComponents(GlFormGroup).at(0);
   const findUrlPreview = () => wrapper.findByTestId('webhook-url-preview');
-  const findAddItemButton = () => wrapper.findByTestId('add-item-button');
+  const findAddItemButton = () => wrapper.findComponentByTestId('add-item-button');
   const findAllUrlMaskItems = () => wrapper.findAllComponents(FormUrlMaskItem);
   const findFormEl = () => document.querySelector('.js-webhook-form');
   const findAlert = () => wrapper.findComponent(GlAlert);

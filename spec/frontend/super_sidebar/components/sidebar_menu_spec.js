@@ -533,7 +533,7 @@ describe('Sidebar Menu', () => {
 
   describe('Feature Library modal', () => {
     const findFeatureLibraryModal = () => wrapper.findComponent({ name: 'FeatureLibraryModal' });
-    const findTrigger = () => wrapper.findByTestId('feature-library-trigger');
+    const findTrigger = () => wrapper.findComponentByTestId('feature-library-trigger');
 
     describe('when feature_library_modal FF is off', () => {
       beforeEach(() => {

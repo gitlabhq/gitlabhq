@@ -39,8 +39,8 @@ describe('CollapsibleCommitInfo', () => {
   const findDefaultAvatar = () => wrapper.findComponent(UserAvatarImage);
   const findCommitTimeAgo = () => wrapper.findComponent(TimeagoTooltip);
   const findCommitId = () => wrapper.findByText('12345678');
-  const findHistoryButton = () => wrapper.findByTestId('collapsible-commit-history');
-  const findTextExpander = () => wrapper.findByTestId('text-expander');
+  const findHistoryButton = () => wrapper.findComponentByTestId('collapsible-commit-history');
+  const findTextExpander = () => wrapper.findComponentByTestId('text-expander');
   const findCommitRowDescription = () => wrapper.find('pre');
   const findCommitTitle = () => wrapper.findByTestId('commit-title');
   const findCommitterName = () => wrapper.findByText('John Doe');

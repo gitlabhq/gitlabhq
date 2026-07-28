@@ -72,7 +72,9 @@ describe('WikiSidebar', () => {
       });
 
       it('shows the pages list toggle with chevron-right icon', () => {
-        expect(wrapper.findByTestId('expand-pages-list').props('icon')).toBe('chevron-right');
+        expect(wrapper.findComponentByTestId('expand-pages-list').props('icon')).toBe(
+          'chevron-right',
+        );
       });
 
       it('emits the toggle event when the pages list toggle is clicked', () => {
@@ -95,7 +97,9 @@ describe('WikiSidebar', () => {
       });
 
       it('shows the pages list toggle with chevron-down icon', () => {
-        expect(wrapper.findByTestId('expand-pages-list').props('icon')).toBe('chevron-down');
+        expect(wrapper.findComponentByTestId('expand-pages-list').props('icon')).toBe(
+          'chevron-down',
+        );
       });
     });
 
@@ -104,7 +108,7 @@ describe('WikiSidebar', () => {
         createComponent({}, { hasCustomSidebar: false, canCreate: true });
 
         expect(wrapper.findByTestId('edit-wiki-sidebar-button').exists()).toBe(true);
-        expect(wrapper.findByTestId('edit-wiki-sidebar-button').props('href')).toBe(
+        expect(wrapper.findComponentByTestId('edit-wiki-sidebar-button').props('href')).toBe(
           '/gitlab-test/-/wikis/_sidebar/edit',
         );
         expect(wrapper.findByTestId('edit-wiki-sidebar-button').attributes('aria-label')).toBe(
@@ -119,7 +123,7 @@ describe('WikiSidebar', () => {
         createComponent({}, { hasCustomSidebar: true, canCreate: true });
 
         expect(wrapper.findByTestId('edit-wiki-sidebar-button').exists()).toBe(true);
-        expect(wrapper.findByTestId('edit-wiki-sidebar-button').props('href')).toBe(
+        expect(wrapper.findComponentByTestId('edit-wiki-sidebar-button').props('href')).toBe(
           '/gitlab-test/-/wikis/_sidebar/edit',
         );
         expect(wrapper.findByTestId('edit-wiki-sidebar-button').attributes('aria-label')).toBe(

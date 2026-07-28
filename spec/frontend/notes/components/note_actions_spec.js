@@ -37,7 +37,7 @@ describe('noteActions', () => {
   const findUserAccessRoleBadge = (idx) => wrapper.findAllComponents(UserAccessRoleBadge).at(idx);
   const findUserAccessRoleBadgeText = (idx) => findUserAccessRoleBadge(idx).text().trim();
   const findTimelineButton = () => wrapper.findComponent(TimelineEventButton);
-  const findReportAbuseButton = () => wrapper.find(`[data-testid="report-abuse-button"]`);
+  const findReportAbuseButton = () => wrapper.findComponent(`[data-testid="report-abuse-button"]`);
   const findDisclosureDropdownGroup = () => wrapper.findComponent(GlDisclosureDropdownGroup);
   const findFeedbackButton = () => wrapper.find('[data-testid="amazon-q-feedback-button"]');
   const findDeleteButton = () => wrapper.find('.js-note-delete');

@@ -9,8 +9,8 @@ import {
 describe('Work Item History Filter note', () => {
   let wrapper;
 
-  const findShowAllActivityButton = () => wrapper.findByTestId('show-all-activity');
-  const findShowCommentsButton = () => wrapper.findByTestId('show-comments-only');
+  const findShowAllActivityButton = () => wrapper.findComponentByTestId('show-all-activity');
+  const findShowCommentsButton = () => wrapper.findComponentByTestId('show-comments-only');
 
   const createComponent = () => {
     wrapper = shallowMountExtended(WorkItemHistoryOnlyFilterNote, {

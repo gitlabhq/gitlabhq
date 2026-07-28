@@ -41,7 +41,7 @@ describe('WorkItemLinkChild', () => {
   Vue.use(VueApollo);
 
   const findWorkItemLinkChildContents = () => wrapper.findComponent(WorkItemLinkChildContents);
-  const findExpandButton = () => wrapper.findByTestId('expand-child');
+  const findExpandButton = () => wrapper.findComponentByTestId('expand-child');
   const findTreeChildren = () => wrapper.findComponent(WorkItemChildrenWrapper);
   const getWidgetHierarchy = () =>
     workItemHierarchyTreeResponse.data.workItem.widgets.find(
@@ -223,12 +223,12 @@ describe('WorkItemLinkChild', () => {
         });
       });
 
-      it('re-emits `removeChild` event', () => {
+      it('re-emits `remove-child` event', () => {
         createComponent();
 
-        findWorkItemLinkChildContents().vm.$emit('removeChild');
+        findWorkItemLinkChildContents().vm.$emit('remove-child');
 
-        expect(wrapper.emitted('removeChild')).toEqual([[workItemObjectiveWithChild]]);
+        expect(wrapper.emitted('remove-child')).toEqual([[workItemObjectiveWithChild]]);
       });
     });
 
@@ -249,7 +249,8 @@ describe('WorkItemLinkChild', () => {
     });
 
     describe('pagination', () => {
-      const findWorkItemChildrenLoadMore = () => wrapper.findByTestId('work-item-load-more');
+      const findWorkItemChildrenLoadMore = () =>
+        wrapper.findComponentByTestId('work-item-load-more');
       let workItemTreeQueryHandler;
 
       beforeEach(async () => {

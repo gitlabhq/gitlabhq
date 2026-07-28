@@ -46,9 +46,10 @@ describe('Merge Conflict Resolver App', () => {
   const findFiles = () => wrapper.findAllByTestId('files');
   const findFileHeader = (w = wrapper) => extendedWrapper(w).findByTestId('file-name');
   const findFileInteractiveButton = (w = wrapper) =>
-    extendedWrapper(w).findByTestId('interactive-button');
-  const findFileInlineButton = (w = wrapper) => extendedWrapper(w).findByTestId('inline-button');
-  const findSideBySideButton = () => wrapper.findByTestId('side-by-side');
+    extendedWrapper(w).findComponentByTestId('interactive-button');
+  const findFileInlineButton = (w = wrapper) =>
+    extendedWrapper(w).findComponentByTestId('inline-button');
+  const findSideBySideButton = () => wrapper.findComponentByTestId('side-by-side');
   const findInlineConflictLines = (w = wrapper) => w.findComponent(InlineConflictLines);
   const findParallelConflictLines = (w = wrapper) => w.findComponent(ParallelConflictLines);
   const findCommitMessageTextarea = () => wrapper.findByTestId('commit-message');

@@ -69,7 +69,7 @@ describe('Pipeline New Form', () => {
   const findPipelineInputsForm = () => wrapper.findComponent(PipelineInputsForm);
   const findPipelineVariablesForm = () => wrapper.findComponent(PipelineVariablesForm);
   const findRefsDropdown = () => wrapper.findComponent(RefsDropdown);
-  const findSubmitButton = () => wrapper.findByTestId('run-pipeline-button');
+  const findSubmitButton = () => wrapper.findComponentByTestId('run-pipeline-button');
   const findErrorAlert = () => wrapper.findByTestId('run-pipeline-error-alert');
   const findPipelineConfigButton = () => wrapper.findByTestId('ci-cd-pipeline-configuration');
   const findWarningAlert = () => wrapper.findByTestId('run-pipeline-warning-alert');

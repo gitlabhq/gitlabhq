@@ -49,9 +49,10 @@ describe('WebAuthnAuthentication', () => {
 
   const findInProgress = () => wrapper.findByTestId('webauthn-in-progress');
   const findForm = () => wrapper.find('form');
-  const findTryAgainButton = () => wrapper.findByTestId('try-again-button');
-  const findAuthenticatorAppButton = () => wrapper.findByTestId('authenticator-app-button');
-  const findRecoveryButton = () => wrapper.findByTestId('recovery-button');
+  const findTryAgainButton = () => wrapper.findComponentByTestId('try-again-button');
+  const findAuthenticatorAppButton = () =>
+    wrapper.findComponentByTestId('authenticator-app-button');
+  const findRecoveryButton = () => wrapper.findComponentByTestId('recovery-button');
   const findDeviceResponseInput = () => wrapper.find('input[name="user[device_response]"]');
   const findRememberMeInput = () => wrapper.find('input[name="user[remember_me]"]');
   const findCsrfInput = () => wrapper.find('input[name="authenticity_token"]');

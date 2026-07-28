@@ -28,7 +28,7 @@ describe('Create Runner Required Fields', () => {
   const findNextButton = () => wrapper.findComponent(GlButton);
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findTagsInput = () => wrapper.findByTestId('runner-tags-input');
-  const findRunUntaggedCheckbox = () => wrapper.findByTestId('runner-untagged-checkbox');
+  const findRunUntaggedCheckbox = () => wrapper.findComponentByTestId('runner-untagged-checkbox');
 
   describe('form', () => {
     it('passes the correct props to GlMultiStepFormTemplate', () => {

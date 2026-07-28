@@ -221,7 +221,7 @@ describe('Merge request dashboard merge request component', () => {
 
     createComponent({});
 
-    const reviewerUpdatedAt = wrapper.findByTestId('reviewer-updated-at');
+    const reviewerUpdatedAt = wrapper.findComponentByTestId('reviewer-updated-at');
 
     expect(reviewerUpdatedAt.exists()).toBe(true);
     expect(reviewerUpdatedAt.props('time')).toBe('2024-04-22T10:13:09Z');

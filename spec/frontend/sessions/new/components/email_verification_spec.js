@@ -56,7 +56,7 @@ describe('EmailVerification', () => {
   const findForm = () => wrapper.findComponent(GlForm);
   const findSecondaryEmailForm = () => wrapper.findComponent(EmailForm);
   const findCodeInput = () => wrapper.findComponent(GlFormInput);
-  const findSubmitButton = () => wrapper.find('[type="submit"]');
+  const findSubmitButton = () => wrapper.findComponent('[type="submit"]');
   const findResendLink = () => wrapper.findByText(I18N_RESEND_CODE);
   const findShowSecondaryEmailFormLink = () =>
     wrapper.findByText(I18N_SEND_TO_SECONDARY_EMAIL_BUTTON_TEXT);

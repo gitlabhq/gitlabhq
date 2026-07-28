@@ -33,7 +33,7 @@ describe('OrganizationCard', () => {
 
   const findCard = () => wrapper.findComponent(GlCard);
   const findAvatar = () => wrapper.findComponent(GlAvatarLabeled);
-  const findVisibilityIcon = () => wrapper.findByTestId('organization-visibility');
+  const findVisibilityIcon = () => wrapper.findComponentByTestId('organization-visibility');
 
   describe('avatar', () => {
     it('renders organization name and avatar', () => {

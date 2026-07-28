@@ -13,8 +13,8 @@ describe('ArtifactsBulkDelete component', () => {
   ];
 
   const findText = () => wrapper.findByTestId('banner-text').text();
-  const findDeleteButton = () => wrapper.findByTestId('bulk-delete-delete-button');
-  const findClearButton = () => wrapper.findByTestId('bulk-delete-clear-button');
+  const findDeleteButton = () => wrapper.findComponentByTestId('bulk-delete-delete-button');
+  const findClearButton = () => wrapper.findComponentByTestId('bulk-delete-clear-button');
   const findAlertText = () => wrapper.findComponent(GlAlert).text();
 
   const createComponent = (props) => {

@@ -94,7 +94,7 @@ describe('IssuableItem', () => {
   const findRelationshipIcons = () => wrapper.findComponent(WorkItemRelationshipIcons);
   const findIssuableTitleLink = () => wrapper.findByTestId('issuable-title-link');
   const findIssuableCardLinkOverlay = () => wrapper.findByTestId('issuable-card-link-overlay');
-  const findDraftStatusBadge = () => wrapper.findByTestId('issuable-draft-status-badge');
+  const findDraftStatusBadge = () => wrapper.findComponentByTestId('issuable-draft-status-badge');
 
   describe('computed', () => {
     describe('author', () => {

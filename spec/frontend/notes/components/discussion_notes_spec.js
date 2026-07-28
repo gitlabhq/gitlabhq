@@ -183,7 +183,7 @@ describe('DiscussionNotes', () => {
       let note;
       beforeEach(() => {
         createComponent();
-        note = wrapper.find('.notes > *');
+        note = wrapper.findComponent('.notes > *');
       });
 
       it('emits delete-note when first note emits handleDeleteNote', async () => {

@@ -49,7 +49,7 @@ describe('HeaderArea', () => {
   const findBreadcrumbs = () => wrapper.findComponent(Breadcrumbs);
   const findFileTreeToggle = () => wrapper.findComponent(FileTreeBrowserToggle);
   const findRefSelector = () => wrapper.findComponent(RefSelector);
-  const findFindFileButton = () => wrapper.findByTestId('tree-find-file-control');
+  const findFindFileButton = () => wrapper.findComponentByTestId('tree-find-file-control');
   const findWebIdeButton = () => wrapper.findByTestId('js-tree-web-ide-link');
   const findCompactCodeDropdown = () => wrapper.findComponent(CompactCodeDropdown);
   const findAddToTreeDropdown = () => wrapper.findComponent(AddToTree);

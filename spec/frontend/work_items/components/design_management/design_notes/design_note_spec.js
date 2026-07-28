@@ -181,10 +181,10 @@ describe('Design note component', () => {
   const findUserLink = () => wrapper.findByTestId('user-link');
   const findDesignNoteAwardsList = () => wrapper.findComponent(AwardsList);
   const findReplyForm = () => wrapper.findComponent(DesignReplyForm);
-  const findEmojiPicker = () => wrapper.findByTestId('note-emoji-button');
-  const findEditButton = () => wrapper.findByTestId('note-edit');
+  const findEmojiPicker = () => wrapper.findComponentByTestId('note-emoji-button');
+  const findEditButton = () => wrapper.findComponentByTestId('note-edit');
   const findNoteContent = () => wrapper.findByTestId('note-text');
-  const findDropdown = () => wrapper.findByTestId('more-actions');
+  const findDropdown = () => wrapper.findComponentByTestId('more-actions');
   const findDropdownItems = () => findDropdown().findAllComponents(GlDisclosureDropdownItem);
   const findEditDropdownItem = () => findDropdownItems().at(0);
   const findCopyLinkDropdownItem = () => findDropdownItems().at(1);

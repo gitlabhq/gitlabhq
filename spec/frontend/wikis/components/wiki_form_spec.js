@@ -47,7 +47,7 @@ describe('WikiForm', () => {
   const findMarkdownEditor = () => wrapper.findComponent(MarkdownEditor);
   const findCancelButton = () => wrapper.findByTestId('wiki-cancel-button');
   const findTemplatesDropdown = () => wrapper.findComponent(WikiTemplate);
-  const findPathGenerationToggle = () => wrapper.findByTestId('path-generation-toggle');
+  const findPathGenerationToggle = () => wrapper.findComponentByTestId('path-generation-toggle');
 
   const getFormData = () => new FormData(findForm().element);
 
@@ -816,7 +816,7 @@ describe('WikiForm', () => {
       await waitForPromises();
       mutateSpy = jest.spyOn(wrapper.vm.$apollo.provider.defaultClient, 'mutate');
 
-      wrapper.findByTestId('wiki-submit-message-mode').vm.$emit('select', 'CUSTOM');
+      wrapper.findComponentByTestId('wiki-submit-message-mode').vm.$emit('select', 'CUSTOM');
     });
 
     afterEach(() => {
@@ -824,7 +824,7 @@ describe('WikiForm', () => {
     });
 
     it('shows the commit message modal', () => {
-      expect(wrapper.findByTestId('commit-message-modal').props('visible')).toBe(true);
+      expect(wrapper.findComponentByTestId('commit-message-modal').props('visible')).toBe(true);
     });
 
     it('shows the input field', () => {
@@ -850,7 +850,7 @@ describe('WikiForm', () => {
     });
 
     describe('auto commit message toggle', () => {
-      const findToggle = () => wrapper.findByTestId('auto-commit-message-toggle');
+      const findToggle = () => wrapper.findComponentByTestId('auto-commit-message-toggle');
 
       it('renders the toggle in the modal', () => {
         expect(findToggle().exists()).toBe(true);
@@ -900,7 +900,7 @@ describe('WikiForm', () => {
       await waitForPromises();
       submitSpy = jest.spyOn(findForm().element, 'submit');
 
-      wrapper.findByTestId('wiki-submit-message-mode').vm.$emit('select', 'CUSTOM');
+      wrapper.findComponentByTestId('wiki-submit-message-mode').vm.$emit('select', 'CUSTOM');
 
       await waitForPromises();
 
@@ -949,7 +949,7 @@ describe('WikiForm', () => {
         await waitForPromises();
         const submitSpy = jest.spyOn(findForm().element, 'submit');
 
-        wrapper.findByTestId('wiki-submit-button').vm.$emit('click', new Event('click'));
+        wrapper.findComponentByTestId('wiki-submit-button').vm.$emit('click', new Event('click'));
         await nextTick();
 
         expect(submitSpy).toHaveBeenCalled();
@@ -963,10 +963,10 @@ describe('WikiForm', () => {
         await waitForPromises();
         const submitSpy = jest.spyOn(findForm().element, 'submit');
 
-        wrapper.findByTestId('wiki-submit-button').vm.$emit('click', new Event('click'));
+        wrapper.findComponentByTestId('wiki-submit-button').vm.$emit('click', new Event('click'));
         await nextTick();
 
-        expect(wrapper.findByTestId('commit-message-modal').props('visible')).toBe(true);
+        expect(wrapper.findComponentByTestId('commit-message-modal').props('visible')).toBe(true);
         expect(submitSpy).not.toHaveBeenCalled();
       });
 
@@ -977,7 +977,7 @@ describe('WikiForm', () => {
         await waitForPromises();
         const spy = jest.spyOn(wrapper.vm.$apollo.provider.defaultClient, 'mutate');
 
-        wrapper.findByTestId('wiki-submit-button').vm.$emit('click', new Event('click'));
+        wrapper.findComponentByTestId('wiki-submit-button').vm.$emit('click', new Event('click'));
         await nextTick();
 
         expect(spy).not.toHaveBeenCalled();
@@ -1006,7 +1006,9 @@ describe('WikiForm', () => {
           submitSpy = jest.spyOn(findForm().element, 'submit');
           mutateSpyLocal = jest.spyOn(wrapper.vm.$apollo.provider.defaultClient, 'mutate');
 
-          wrapper.findByTestId('wiki-submit-message-mode').vm.$emit('select', selectedMode);
+          wrapper
+            .findComponentByTestId('wiki-submit-message-mode')
+            .vm.$emit('select', selectedMode);
           await waitForPromises();
         });
 
@@ -1016,7 +1018,9 @@ describe('WikiForm', () => {
 
         if (shouldOpenCommitMessageModal) {
           it('opens commit message modal', () => {
-            expect(wrapper.findByTestId('commit-message-modal').props('visible')).toBe(true);
+            expect(wrapper.findComponentByTestId('commit-message-modal').props('visible')).toBe(
+              true,
+            );
             expect(submitSpy).not.toHaveBeenCalled();
           });
         } else {
@@ -1053,15 +1057,19 @@ describe('WikiForm', () => {
               }),
             );
 
-            wrapper.findByTestId('wiki-submit-message-mode').vm.$emit('select', selectedMode);
+            wrapper
+              .findComponentByTestId('wiki-submit-message-mode')
+              .vm.$emit('select', selectedMode);
             await nextTick();
 
-            expect(wrapper.findByTestId('wiki-submit-button').props('loading')).toBe(true);
+            expect(wrapper.findComponentByTestId('wiki-submit-button').props('loading')).toBe(true);
 
             resolveMutate();
             await waitForPromises();
 
-            expect(wrapper.findByTestId('wiki-submit-button').props('loading')).toBe(false);
+            expect(wrapper.findComponentByTestId('wiki-submit-button').props('loading')).toBe(
+              false,
+            );
           });
         } else {
           it('does not update the preference via mutation', () => {

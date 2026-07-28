@@ -94,7 +94,7 @@ describe('MainSetting', () => {
     it('shows error message when name is empty', () => {
       createComponent({ name: '' });
 
-      const nameGroup = wrapper.findByTestId('full-name-group');
+      const nameGroup = wrapper.findComponentByTestId('full-name-group');
       expect(nameGroup.props('state')).toBe(false);
       expect(nameGroup.props('invalidFeedback')).toBe(i18n.nameRequired);
     });
@@ -102,7 +102,7 @@ describe('MainSetting', () => {
     it('shows no error when name is provided', () => {
       createComponent({ name: 'John Doe' });
 
-      const nameGroup = wrapper.findByTestId('full-name-group');
+      const nameGroup = wrapper.findComponentByTestId('full-name-group');
       const description = `${i18n.fullNameDescription} ${i18n.fullNameSafeDescription}`;
       expect(nameGroup.props('state')).toBe(true);
       expect(nameGroup.props('description')).toBe(description);

@@ -77,7 +77,7 @@ describe('InviteGroupsModal', () => {
   const hideModal = () => findModal().vm.$emit('hidden', { preventDefault: jest.fn() });
 
   const emitClickFromModal = (testId) => () =>
-    wrapper.findByTestId(testId).vm.$emit('click', { preventDefault: jest.fn() });
+    wrapper.findComponentByTestId(testId).vm.$emit('click', { preventDefault: jest.fn() });
 
   const triggerOpenModal = async ({ source } = {}) => {
     eventHub.$emit('open-group-modal', { source });

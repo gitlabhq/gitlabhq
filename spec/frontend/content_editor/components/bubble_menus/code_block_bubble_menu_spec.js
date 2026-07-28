@@ -103,7 +103,7 @@ describe('content_editor/components/bubble_menus/code_block_bubble_menu', () => 
 
       tiptapEditor.commands.insertContent(preTag({ language: 'javascript', content }));
 
-      await wrapper.findByTestId('copy-code-block').vm.$emit('click');
+      await wrapper.findComponentByTestId('copy-code-block').vm.$emit('click');
 
       expect(navigator.clipboard.writeText).toHaveBeenCalledWith(content);
     });
@@ -113,7 +113,7 @@ describe('content_editor/components/bubble_menus/code_block_bubble_menu', () => 
     it('deletes the code block', async () => {
       tiptapEditor.commands.insertContent(preTag({ language: 'javascript' }));
 
-      await wrapper.findByTestId('delete-code-block').vm.$emit('click');
+      await wrapper.findComponentByTestId('delete-code-block').vm.$emit('click');
 
       expect(tiptapEditor.getText()).toBe('');
     });
@@ -134,7 +134,7 @@ describe('content_editor/components/bubble_menus/code_block_bubble_menu', () => 
       tiptapEditor.commands.insertContent(diagramCode);
 
       await nextTick();
-      await wrapper.findByTestId('preview-diagram').vm.$emit('click');
+      await wrapper.findComponentByTestId('preview-diagram').vm.$emit('click');
 
       expect(tiptapEditor.getAttributes(Diagram.name)).toEqual({
         isDiagram: true,
@@ -142,7 +142,7 @@ describe('content_editor/components/bubble_menus/code_block_bubble_menu', () => 
         showPreview: false,
       });
 
-      await wrapper.findByTestId('preview-diagram').vm.$emit('click');
+      await wrapper.findComponentByTestId('preview-diagram').vm.$emit('click');
 
       expect(tiptapEditor.getAttributes(Diagram.name)).toEqual({
         isDiagram: true,

@@ -47,11 +47,12 @@ describe('GitlabDuoSettings', () => {
   };
 
   const findCard = () => wrapper.findByTestId('gitlab-duo-settings');
-  const findSaveButton = () => wrapper.findByTestId('gitlab-duo-save-button');
-  const findDuoSettings = () => wrapper.findByTestId('duo-settings');
+  const findSaveButton = () => wrapper.findComponentByTestId('gitlab-duo-save-button');
+  const findDuoSettings = () => wrapper.findComponentByTestId('duo-settings');
   const findDuoEnabledToggle = () => wrapper.findByTestId('duo_features_enabled_toggle');
-  const findDuoCascadingLockIcon = () => wrapper.findByTestId('duo-cascading-lock-icon');
-  const findDuoFeaturesEnabledToggle = () => wrapper.findByTestId('duo_features_enabled_toggle');
+  const findDuoCascadingLockIcon = () => wrapper.findComponentByTestId('duo-cascading-lock-icon');
+  const findDuoFeaturesEnabledToggle = () =>
+    wrapper.findComponentByTestId('duo_features_enabled_toggle');
   const findExclusionSettings = () => wrapper.findComponent(ExclusionSettings);
   const findExclusionRulesHiddenInputs = () =>
     wrapper.findAll(
@@ -63,24 +64,28 @@ describe('GitlabDuoSettings', () => {
     wrapper.find(
       'input[name="project[project_setting_attributes][duo_foundational_flows_enabled]"]',
     );
-  const findDuoRemoteFlowsToggle = () => wrapper.findByTestId('duo-remote-flows-enabled');
+  const findDuoRemoteFlowsToggle = () => wrapper.findComponentByTestId('duo-remote-flows-enabled');
   const findDuoFoundationalFlowsToggle = () =>
-    wrapper.findByTestId('duo-foundational-flows-enabled');
+    wrapper.findComponentByTestId('duo-foundational-flows-enabled');
   const findDuoFoundationalFlowsCascadingLockIcon = () =>
     wrapper.findByTestId('duo-foundational-flows-cascading-lock-icon');
-  const findDuoSastFpDetectionToggle = () => wrapper.findByTestId('duo-sast-fp-detection-enabled');
+  const findDuoSastFpDetectionToggle = () =>
+    wrapper.findComponentByTestId('duo-sast-fp-detection-enabled');
   const findDuoSecretDetectionFpToggle = () =>
-    wrapper.findByTestId('duo-secret-detection-fp-enabled');
+    wrapper.findComponentByTestId('duo-secret-detection-fp-enabled');
   const findDuoDependencyBumpToggle = () =>
     wrapper.findByTestId('duo-dependency-bump-breaking-changes-enabled');
-  const findDuoSastVrWorkflowToggle = () => wrapper.findByTestId('duo-sast-vr-workflow-enabled');
-  const findAutoReviewToggle = () => wrapper.findByTestId('amazon-q-auto-review-enabled');
-  const findToolApprovalToggle = () => wrapper.findByTestId('tool-approval-for-session-enabled');
+  const findDuoSastVrWorkflowToggle = () =>
+    wrapper.findComponentByTestId('duo-sast-vr-workflow-enabled');
+  const findAutoReviewToggle = () => wrapper.findComponentByTestId('amazon-q-auto-review-enabled');
+  const findToolApprovalToggle = () =>
+    wrapper.findComponentByTestId('tool-approval-for-session-enabled');
   const findToolApprovalCascadingLockIcon = () =>
     wrapper.findByTestId('tool-approval-cascading-lock-icon');
-  const findDapSessionTrackingToggle = () => wrapper.findByTestId('dap-session-tracking-enabled');
+  const findDapSessionTrackingToggle = () =>
+    wrapper.findComponentByTestId('dap-session-tracking-enabled');
   const findAuditEventsStorageToggle = () =>
-    wrapper.findByTestId('ai-audit-events-storage-enabled');
+    wrapper.findComponentByTestId('ai-audit-events-storage-enabled');
   const findAuditEventsStorageHiddenInput = () =>
     wrapper.find(
       'input[name="project[project_setting_attributes][ai_audit_events_storage_enabled]"]',

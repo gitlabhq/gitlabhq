@@ -20,10 +20,10 @@ describe('Package Additional Metadata', () => {
     });
   };
 
-  const findPypiRequiredPython = () => wrapper.findByTestId('pypi-required-python');
-  const findPypiAuthorEmail = () => wrapper.findByTestId('pypi-author-email');
-  const findPypiSummary = () => wrapper.findByTestId('pypi-summary');
-  const findPypiKeywords = () => wrapper.findByTestId('pypi-keywords');
+  const findPypiRequiredPython = () => wrapper.findComponentByTestId('pypi-required-python');
+  const findPypiAuthorEmail = () => wrapper.findComponentByTestId('pypi-author-email');
+  const findPypiSummary = () => wrapper.findComponentByTestId('pypi-summary');
+  const findPypiKeywords = () => wrapper.findComponentByTestId('pypi-keywords');
 
   beforeEach(() => {
     mountComponent();

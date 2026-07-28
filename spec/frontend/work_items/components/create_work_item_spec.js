@@ -116,12 +116,12 @@ describe('Create work item component', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findSelect = () => wrapper.findComponent(GlFormSelect);
   const findTitleSuggestions = () => wrapper.findComponent(TitleSuggestions);
-  const findConfidentialCheckbox = () => wrapper.findByTestId('confidential-checkbox');
-  const findRelatesToCheckbox = () => wrapper.findByTestId('relates-to-checkbox');
+  const findConfidentialCheckbox = () => wrapper.findComponentByTestId('confidential-checkbox');
+  const findRelatesToCheckbox = () => wrapper.findComponentByTestId('relates-to-checkbox');
   const findCreateWorkItemView = () => wrapper.findByTestId('create-work-item-view');
   const findFormButtons = () => wrapper.findByTestId('form-buttons');
-  const findCreateButton = () => wrapper.findByTestId('create-button');
-  const findCancelButton = () => wrapper.findByTestId('cancel-button');
+  const findCreateButton = () => wrapper.findComponentByTestId('create-button');
+  const findCancelButton = () => wrapper.findComponentByTestId('cancel-button');
   const findResolveDiscussionSection = () => wrapper.findByTestId('work-item-resolve-discussion');
   const findResolveDiscussionLink = () =>
     wrapper.findByTestId('work-item-resolve-discussion').findComponent(GlLink);

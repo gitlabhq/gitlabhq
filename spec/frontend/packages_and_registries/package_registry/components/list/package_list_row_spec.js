@@ -39,12 +39,12 @@ describe('packages_list_row', () => {
 
   const findPackageTags = () => wrapper.findComponent(PackageTags);
   const findDeprecatedBadge = () => wrapper.findComponent(GlBadge);
-  const findDeleteDropdown = () => wrapper.findByTestId('delete-dropdown');
-  const findDeleteButton = () => wrapper.findByTestId('action-delete');
+  const findDeleteDropdown = () => wrapper.findComponentByTestId('delete-dropdown');
+  const findDeleteButton = () => wrapper.findComponentByTestId('action-delete');
   const findErrorMessage = () => wrapper.findByTestId('error-message');
   const findPackageType = () => wrapper.findByTestId('package-type');
-  const findPackageLink = () => wrapper.findByTestId('details-link');
-  const findWarningIcon = () => wrapper.findByTestId('warning-icon');
+  const findPackageLink = () => wrapper.findComponentByTestId('details-link');
+  const findWarningIcon = () => wrapper.findComponentByTestId('warning-icon');
   const findLeftSecondaryInfos = () => wrapper.findByTestId('left-secondary-infos');
   const findPackageVersion = () => findLeftSecondaryInfos().findComponent(GlTruncate);
   const findPublishMessage = () => wrapper.findComponent(PublishMessage);

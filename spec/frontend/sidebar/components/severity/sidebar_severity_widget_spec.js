@@ -50,7 +50,7 @@ describe('SidebarSeverityWidget', () => {
   });
 
   const findSeverityToken = () => wrapper.findAllComponents(SeverityToken);
-  const findEditBtn = () => wrapper.findByTestId('edit-button');
+  const findEditBtn = () => wrapper.findComponentByTestId('edit-button');
   const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findTooltip = () => wrapper.findComponent(GlTooltip);

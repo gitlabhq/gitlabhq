@@ -109,7 +109,7 @@ describe('Snippet header component', () => {
   const findSpamAction = () => wrapper.findByText('Submit as spam');
   const findDeleteAction = () => wrapper.findByText('Delete');
   const findDeleteModal = () => wrapper.findComponent(GlModal);
-  const findDeleteModalDeleteAction = () => wrapper.findByTestId('delete-snippet-button');
+  const findDeleteModalDeleteAction = () => wrapper.findComponentByTestId('delete-snippet-button');
   const findIcon = () => wrapper.findComponent(GlIcon);
   const findTooltip = () => getBinding(findIcon().element, 'gl-tooltip');
   const findSpamIcon = () => wrapper.findByTestId('snippets-spam-icon');
@@ -348,7 +348,7 @@ describe('Snippet header component', () => {
         blobs,
       },
     });
-    expect(wrapper.find('[href*="edit"]').props('disabled')).toBe(isDisabled);
+    expect(wrapper.findComponent('[href*="edit"]').props('disabled')).toBe(isDisabled);
   });
 
   describe('Delete mutation', () => {

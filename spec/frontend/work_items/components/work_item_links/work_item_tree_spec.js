@@ -63,7 +63,7 @@ describe('WorkItemTree', () => {
   const findMoreActions = () => wrapper.findComponent(WorkItemMoreActions);
   const findShowClosedButton = () => wrapper.findComponent(WorkItemToggleClosedItems);
   const findCrudComponent = () => wrapper.findComponent(CrudComponent);
-  const findCrudCollapseToggle = () => wrapper.findByTestId('crud-collapse-toggle');
+  const findCrudCollapseToggle = () => wrapper.findComponentByTestId('crud-collapse-toggle');
   const findRolledUpData = () => wrapper.findComponent(WorkItemRolledUpData);
   const findRolledUpCount = () => wrapper.findComponent(WorkItemRolledUpCount);
 
@@ -273,7 +273,7 @@ describe('WorkItemTree', () => {
   });
 
   describe('pagination', () => {
-    const findWorkItemChildrenLoadMore = () => wrapper.findByTestId('work-item-load-more');
+    const findWorkItemChildrenLoadMore = () => wrapper.findComponentByTestId('work-item-load-more');
     let workItemTreeQueryHandler;
 
     beforeEach(async () => {

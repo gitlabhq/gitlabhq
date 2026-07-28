@@ -14,9 +14,9 @@ describe('Header actions', () => {
   let glModalDirective;
 
   const findModal = () => wrapper.findComponent(GlModal);
-  const findRetryButton = () => wrapper.findByTestId('retry-pipeline');
-  const findCancelButton = () => wrapper.findByTestId('cancel-pipeline');
-  const findDeleteButton = () => wrapper.findByTestId('delete-pipeline');
+  const findRetryButton = () => wrapper.findComponentByTestId('retry-pipeline');
+  const findCancelButton = () => wrapper.findComponentByTestId('cancel-pipeline');
+  const findDeleteButton = () => wrapper.findComponentByTestId('delete-pipeline');
 
   const defaultProps = {
     isRetrying: false,

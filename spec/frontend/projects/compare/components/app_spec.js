@@ -20,8 +20,8 @@ jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
 describe('CompareApp component', () => {
   let wrapper;
   const findForm = () => wrapper.find('form');
-  const findSourceRevisionCard = () => wrapper.findByTestId('sourceRevisionCard');
-  const findTargetRevisionCard = () => wrapper.findByTestId('targetRevisionCard');
+  const findSourceRevisionCard = () => wrapper.findComponentByTestId('sourceRevisionCard');
+  const findTargetRevisionCard = () => wrapper.findComponentByTestId('targetRevisionCard');
   const findPageTitle = () => wrapper.findByTestId('page-heading');
   const findPageDescription = () => wrapper.findByTestId('page-heading-description');
 
@@ -137,7 +137,7 @@ describe('CompareApp component', () => {
   });
 
   describe('swap revisions button', () => {
-    const findSwapRevisionsButton = () => wrapper.findByTestId('swapRevisionsButton');
+    const findSwapRevisionsButton = () => wrapper.findComponentByTestId('swapRevisionsButton');
 
     it('renders the swap revisions button', () => {
       expect(findSwapRevisionsButton().exists()).toBe(true);
@@ -239,7 +239,7 @@ describe('CompareApp component', () => {
           changeType          | action
           ${'source branch'}  | ${() => findSourceRevisionCard().vm.$emit('selectRevision', { direction: 'to', revision: 'new-source-branch' })}
           ${'target branch'}  | ${() => findTargetRevisionCard().vm.$emit('selectRevision', { direction: 'from', revision: 'new-target-branch' })}
-          ${'swap revisions'} | ${() => wrapper.findByTestId('swapRevisionsButton').vm.$emit('click')}
+          ${'swap revisions'} | ${() => wrapper.findComponentByTestId('swapRevisionsButton').vm.$emit('click')}
         `('replaces button with message when $changeType changes', async ({ action }) => {
           expect(findProjectMrButton().exists() || findCreateMrButton().exists()).toBe(true);
           expect(findMrStatusMessage().exists()).toBe(false);
@@ -316,7 +316,7 @@ describe('CompareApp component', () => {
         it('does not show message when swapping identical branches', async () => {
           expect(findMrStatusMessage().exists()).toBe(false);
 
-          wrapper.findByTestId('swapRevisionsButton').vm.$emit('click');
+          wrapper.findComponentByTestId('swapRevisionsButton').vm.$emit('click');
 
           await nextTick();
 

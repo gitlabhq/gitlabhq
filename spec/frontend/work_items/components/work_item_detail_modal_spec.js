@@ -142,7 +142,7 @@ describe('WorkItemDetailModal component', () => {
       },
     });
 
-    const workItemDetailComponent = wrapper.find('[data-testid="work-item-stub"]');
+    const workItemDetailComponent = wrapper.findComponent('[data-testid="work-item-stub"]');
     workItemDetailComponent.vm.$emit('update-modal', undefined, {
       iid: '2',
       id: 'gid://gitlab/WorkItem/2',

@@ -42,7 +42,7 @@ describe('WikiCommentForm', () => {
 
   const findWikiDiscussionsSignedOut = () => wrapper.findComponent(WikiDiscussionsSignedOut);
   const findWikiNoteCommentForm = () => wrapper.findByTestId('wiki-note-comment-form');
-  const findResolveCheckbox = () => wrapper.findByTestId('wiki-note-resolve-checkbox');
+  const findResolveCheckbox = () => wrapper.findComponentByTestId('wiki-note-resolve-checkbox');
   const findUnresolveCheckbox = () => wrapper.findByTestId('wiki-note-unresolve-checkbox');
 
   describe('user is not logged in', () => {
@@ -393,7 +393,7 @@ describe('WikiCommentForm', () => {
       });
 
       describe('handle comment button and internal note check box', () => {
-        const submitButton = () => wrapper.findByTestId('wiki-note-comment-button');
+        const submitButton = () => wrapper.findComponentByTestId('wiki-note-comment-button');
         const internalNoteCheckbox = () => wrapper.findByTestId('wiki-internal-note-checkbox');
 
         beforeEach(() => {
@@ -435,7 +435,7 @@ describe('WikiCommentForm', () => {
       });
 
       describe('reply and edit buttons', () => {
-        const saveButton = () => wrapper.findByTestId('wiki-note-save-button');
+        const saveButton = () => wrapper.findComponentByTestId('wiki-note-save-button');
         const cancelButton = () => wrapper.findByTestId('wiki-note-cancel-button');
 
         beforeEach(() => {

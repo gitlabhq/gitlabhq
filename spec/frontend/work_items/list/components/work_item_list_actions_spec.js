@@ -50,11 +50,11 @@ describe('WorkItemsListActions component', () => {
   }
 
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
-  const findExportButton = () => wrapper.findByTestId('export-as-csv-button');
+  const findExportButton = () => wrapper.findComponentByTestId('export-as-csv-button');
   const findExportModal = () => wrapper.findComponent(WorkItemCsvExportModal);
-  const findImportButton = () => wrapper.findByTestId('import-csv-button');
+  const findImportButton = () => wrapper.findComponentByTestId('import-csv-button');
   const findImportModal = () => wrapper.findComponent(WorkItemsCsvImportModal);
-  const findImportFromJiraLink = () => wrapper.findByTestId('import-from-jira-link');
+  const findImportFromJiraLink = () => wrapper.findComponentByTestId('import-from-jira-link');
   const findRssLink = () => wrapper.findByTestId('subscribe-rss');
   const findCalendarLink = () => wrapper.findByTestId('subscribe-calendar');
   const findWorkItemByEmail = () => wrapper.findComponent(WorkItemByEmail);

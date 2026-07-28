@@ -19,7 +19,7 @@ describe('Conan Metadata', () => {
     });
   };
 
-  const findConanRecipe = () => wrapper.findByTestId('conan-recipe');
+  const findConanRecipe = () => wrapper.findComponentByTestId('conan-recipe');
 
   beforeEach(() => {
     mountComponent();

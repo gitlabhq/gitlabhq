@@ -31,14 +31,14 @@ describe('ml/experiment_tracking/routes/candidates/show/candidate_detail.vue', (
   const findAllTabs = () => wrapper.findAll('.gl-tab-nav-item');
   const findMetricsTab = () => wrapper.findByTestId('metrics');
   const findMlflowIdButton = () => wrapper.findComponent(GlButton);
-  const findMetricsTable = () => wrapper.findByTestId('metrics-table');
+  const findMetricsTable = () => wrapper.findComponentByTestId('metrics-table');
   const findMetadata = () => wrapper.findByTestId('metadata');
   const findMlflowRunId = () => wrapper.findByTestId('mlflow-run-id');
   const findCiJobPathLink = () => wrapper.findByTestId('ci-job-path');
   const findPackageFiles = () => wrapper.findComponent(PackageFiles);
   const findAvatarLabeled = () => wrapper.findComponent(GlAvatarLabeled);
   const findParametersSection = () => wrapper.findByTestId('parameters');
-  const findParametersTable = () => wrapper.findByTestId('parameters-table');
+  const findParametersTable = () => wrapper.findComponentByTestId('parameters-table');
   const findCiSection = () => wrapper.findByTestId('ci');
 
   describe('Basic rendering', () => {

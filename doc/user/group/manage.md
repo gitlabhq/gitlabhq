@@ -684,6 +684,61 @@ To enable this setting:
 1. Under **Merge checks**, select **All threads must be resolved**.
 1. Select **Save changes**.
 
+## Require a commit SHA on the merge requests API
+
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244421) in GitLab 19.2. Enabled by default for new groups.
+- Group and instance settings UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243465) in GitLab 19.3.
+
+{{< /history >}}
+
+Require a commit SHA on the merge requests API to ensure that only reviewed commits are merged. When this
+setting is enabled, GitLab rejects calls to the
+[merge a merge request](../../api/merge_requests.md#merge-a-merge-request) endpoint that omit the
+`sha` parameter, and returns a `400` error. The merge fails if the `sha` parameter doesn't match the
+current HEAD of the source branch.
+
+This setting is enabled by default for groups created in GitLab 19.2 or later.
+
+Prerequisites:
+
+- The Owner role for the group.
+
+To require a commit SHA on the merge requests API:
+
+1. In the top bar, select **Search or go to** and find your group.
+1. In the left sidebar, select **Settings** > **General**.
+1. Expand **Merge requests**.
+1. Select the **Require commit SHA on merge API** checkbox.
+1. Optional. To enforce this setting for all subgroups and prevent subgroups from changing it, select
+   the **Enforce for all subgroups** checkbox.
+1. Select **Save changes**.
+
+Administrators can set an instance-wide default for all groups. New groups inherit this value
+unless a parent group overrides it.
+
+Prerequisites:
+
+- Administrator access to the instance.
+
+To set the default for all groups:
+
+1. In the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings** > **General**.
+1. Expand **Merge requests**.
+1. Select the **Require commit SHA on merge API** checkbox.
+1. Optional. To enforce this setting for all groups on the instance and prevent groups from
+   changing it, select the **Enforce this setting for all groups on this instance** checkbox.
+1. Select **Save changes**.
+
 ## Group merge request approval settings
 
 {{< details >}}

@@ -2918,6 +2918,7 @@ curl --request DELETE \
   `fix_merge_api_train_bypass`. Disabled by default. The merge request is added to the merge
   train instead of merging directly.
 - Feature flag `fix_merge_api_train_bypass` removed in GitLab 19.1.
+- Setting to require a commit `sha` on the merge requests API [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244421) in GitLab 19.2.
 
 {{< /history >}}
 
@@ -2936,7 +2937,7 @@ Supported attributes:
 | `auto_merge`                   | boolean           | No       | If `true`, the merge request merges when checks pass. |
 | `merge_commit_message`         | string            | No       | Custom merge commit message. |
 | `merge_when_pipeline_succeeds` | boolean           | No       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/521291) in GitLab 17.11. Use `auto_merge` instead. |
-| `sha`                          | string            | No       | If present, this SHA must match the HEAD of the source branch. Use to ensure that only reviewed commits are merged. |
+| `sha`                          | string            | Conditional | If present, this SHA must match the HEAD of the source branch. Use to ensure that only reviewed commits are merged. Required if the [require a commit SHA on the merge requests API](../user/group/manage.md#require-a-commit-sha-on-the-merge-requests-api) setting is enabled for the group or instance. |
 | `should_remove_source_branch`  | boolean           | No       | If `true`, removes the source branch. |
 | `squash_commit_message`        | string            | No       | Custom squash commit message. |
 | `squash`                       | boolean           | No       | If `true`, squash all commits into a single commit on merge. |
@@ -2945,6 +2946,7 @@ This API returns specific HTTP status codes on failure:
 
 | HTTP Status | Message                                    | Reason |
 |-------------|--------------------------------------------|--------|
+| `400`       | `SHA must be provided when merging`        | [Require a commit SHA on the merge requests API](../user/group/manage.md#require-a-commit-sha-on-the-merge-requests-api) is enabled, but no `sha` parameter was provided. |
 | `401`       | `401 Unauthorized`                         | This user does not have permission to accept this merge request. |
 | `405`       | `405 Method Not Allowed`                   | The merge request cannot merge. |
 | `409`       | `SHA does not match HEAD of source branch` | The provided `sha` parameter does not match the HEAD of the source. |

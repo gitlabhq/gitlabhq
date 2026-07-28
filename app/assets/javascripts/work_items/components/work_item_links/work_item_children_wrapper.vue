@@ -647,7 +647,7 @@ export default {
       @drop="$emit('drop')"
       @mouseover="prefetchWorkItem(child)"
       @mouseout="clearPrefetching"
-      @removeChild="removeChild"
+      @remove-child="removeChild"
       @error="$emit('error', $event)"
       @toggleDrawer="onClick($event, child)"
     />

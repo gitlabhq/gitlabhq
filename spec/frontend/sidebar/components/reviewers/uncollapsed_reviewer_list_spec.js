@@ -26,7 +26,8 @@ jest.mock('~/alert');
 describe('UncollapsedReviewerList component', () => {
   let wrapper;
 
-  const findAllRerequestButtons = () => wrapper.findAll('[data-testid="re-request-button"]');
+  const findAllRerequestButtons = () =>
+    wrapper.findAllComponents('[data-testid="re-request-button"]');
   const findAllReviewerApprovalIcons = () => wrapper.findAll('[name="check-circle"]');
   const findAllReviewerAvatarLinks = () => wrapper.findAllComponents(ReviewerAvatarLink);
 
@@ -244,7 +245,9 @@ describe('UncollapsedReviewerList component', () => {
           users: [user],
         });
 
-        expect(wrapper.find('[data-testid="reviewer-state-icon"]').props('name')).toBe(icon);
+        expect(wrapper.findComponent('[data-testid="reviewer-state-icon"]').props('name')).toBe(
+          icon,
+        );
         expect(wrapper.find('[data-testid="reviewer-state-icon"]').classes()).toEqual([iconClass]);
       },
     );

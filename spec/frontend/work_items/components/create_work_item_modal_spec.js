@@ -32,7 +32,7 @@ describe('CreateWorkItemModal', () => {
     base: 'basePath',
   });
 
-  const findTrigger = () => wrapper.find('[data-testid="new-epic-button"]');
+  const findTrigger = () => wrapper.findComponent('[data-testid="new-epic-button"]');
   const findDropdownItem = () => wrapper.findComponent(GlDisclosureDropdownItem);
   const findCreateModal = () => wrapper.findComponent(GlModal);
   const findForm = () => wrapper.findComponent(CreateWorkItem);

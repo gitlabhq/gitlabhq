@@ -158,9 +158,9 @@ describe('View branch rules', () => {
   const findBranchName = () => wrapper.findByTestId('branch');
   const findAllBranches = () => wrapper.findByTestId('all-branches');
   const findSettingsSection = () => wrapper.findComponent(SettingsSection);
-  const findAllowedToMerge = () => wrapper.findByTestId('allowed-to-merge-content');
-  const findAllowedToPush = () => wrapper.findByTestId('allowed-to-push-content');
-  const findAllowForcePushToggle = () => wrapper.findByTestId('force-push-content');
+  const findAllowedToMerge = () => wrapper.findComponentByTestId('allowed-to-merge-content');
+  const findAllowedToPush = () => wrapper.findComponentByTestId('allowed-to-push-content');
+  const findAllowForcePushToggle = () => wrapper.findComponentByTestId('force-push-content');
   const findStatusChecksTitle = () => wrapper.findByText(I18N.statusChecksTitle);
   const findDeleteRuleButton = () => wrapper.findByTestId('delete-rule-button');
   const findDeleteRuleButtonPopover = () => wrapper.findComponent(GlPopover);
@@ -170,7 +170,7 @@ describe('View branch rules', () => {
   const findBranchRuleListbox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findNoDataTitle = () => wrapper.findByText(I18N.noData);
   const findAccessLevelsDrawer = () => wrapper.findComponent(AccessLevelsDrawer);
-  const findSquashSettingSection = () => wrapper.findByTestId('squash-setting-content');
+  const findSquashSettingSection = () => wrapper.findComponentByTestId('squash-setting-content');
   const findSquashSettingsDrawer = () => wrapper.findComponent(SquashSettingsDrawer);
 
   const findMatchingBranchesLink = () =>

@@ -145,13 +145,13 @@ describe('WorkItemsNewSavedViewModal', () => {
 
   const findModal = () => wrapper.findComponent(GlModal);
   const findForm = () => wrapper.findComponent(GlForm);
-  const findTitleInput = () => wrapper.find('#saved-view-title');
+  const findTitleInput = () => wrapper.findComponent('#saved-view-title');
   const findTitleFormGroup = () => wrapper.findByTestId('saved-view-title');
-  const findDescriptionInput = () => wrapper.find('#saved-view-description');
+  const findDescriptionInput = () => wrapper.findComponent('#saved-view-description');
   const findDescriptionFormGroup = () => wrapper.findByTestId('saved-view-description');
   const findVisibilityInputs = () => wrapper.findByTestId('saved-view-visibility');
   const findReadOnlyVisibility = () => wrapper.findByText('Shared');
-  const findCreateButton = () => wrapper.findByTestId('create-view-button');
+  const findCreateButton = () => wrapper.findComponentByTestId('create-view-button');
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findVisibilityGlRadioButtons = () => findVisibilityInputs().findAllComponents(GlFormRadio);
   const findWarningMessage = () => wrapper.findByTestId('subscription-limit-warning');

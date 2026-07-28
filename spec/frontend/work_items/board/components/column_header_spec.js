@@ -15,7 +15,7 @@ describe('ColumnHeader', () => {
   const findIconByName = (name) => findIcons().wrappers.find((icon) => icon.props('name') === name);
   const findHeading = () => wrapper.findByTestId('column-header-name');
   const findCount = () => wrapper.findByTestId('column-header-count');
-  const findCollapseToggle = () => wrapper.findByTestId('column-collapse-toggle');
+  const findCollapseToggle = () => wrapper.findComponentByTestId('column-collapse-toggle');
 
   const createComponent = ({ props = {} } = {}) => {
     wrapper = shallowMountExtended(ColumnHeader, {

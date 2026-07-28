@@ -42,9 +42,9 @@ describe('Packages Cleanup Policy Settings Form', () => {
   const defaultQueryResolver = jest.fn().mockResolvedValue(packagesCleanupPolicyPayload());
 
   const findForm = () => wrapper.findComponent({ ref: 'form-element' });
-  const findSaveButton = () => wrapper.findByTestId('save-button');
+  const findSaveButton = () => wrapper.findComponentByTestId('save-button');
   const findKeepNDuplicatedPackageFilesDropdown = () =>
-    wrapper.findByTestId('keep-n-duplicated-package-files-dropdown');
+    wrapper.findComponentByTestId('keep-n-duplicated-package-files-dropdown');
   const findNextRunAt = () => wrapper.findByTestId('next-run-at');
 
   const submitForm = () => {

@@ -7996,6 +7996,9 @@ msgstr ""
 msgid "AgentArtifacts|Filter agent artifacts"
 msgstr ""
 
+msgid "AgentArtifacts|GitLab Duo"
+msgstr ""
+
 msgid "AgentArtifacts|Goal"
 msgstr ""
 
@@ -30623,9 +30626,6 @@ msgstr ""
 msgid "DuoSlack|Not helpful"
 msgstr ""
 
-msgid "DuoSlack|On it! Working on your request."
-msgstr ""
-
 msgid "DuoSlack|Plan"
 msgstr ""
 
@@ -30648,6 +30648,12 @@ msgid "DuoSlack|View session in GitLab"
 msgstr ""
 
 msgid "DuoSlack|Your message is too long for me to process (the limit is about %{limit} characters). Shorten it and mention me again."
+msgstr ""
+
+msgid "DuoSlack|is thinking it through…"
+msgstr ""
+
+msgid "DuoSlack|is working on your request…"
 msgstr ""
 
 msgid "DuoTrialDiscover|Ask questions, explore concepts, test ideas, and receive instant feedback directly in your workflow."

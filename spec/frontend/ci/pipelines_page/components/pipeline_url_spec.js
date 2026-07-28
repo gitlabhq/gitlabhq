@@ -19,15 +19,16 @@ describe('Pipeline Url Component', () => {
   let trackingSpy;
 
   const findTableCell = () => wrapper.findByTestId('pipeline-url-table-cell');
-  const findPipelineUrlLink = () => wrapper.findByTestId('pipeline-url-link');
-  const findPipelineIdentifierLink = () => wrapper.findByTestId('pipeline-identifier-link');
+  const findPipelineUrlLink = () => wrapper.findComponentByTestId('pipeline-url-link');
+  const findPipelineIdentifierLink = () =>
+    wrapper.findComponentByTestId('pipeline-identifier-link');
   const findPipelineIdentifierMissingMessage = () =>
     wrapper.findByTestId('pipeline-identifier-missing-message');
-  const findRefName = () => wrapper.findByTestId('merge-request-ref');
-  const findCommitShortSha = () => wrapper.findByTestId('commit-short-sha');
+  const findRefName = () => wrapper.findComponentByTestId('merge-request-ref');
+  const findCommitShortSha = () => wrapper.findComponentByTestId('commit-short-sha');
   const findCommitIcon = () => wrapper.findByTestId('commit-icon');
   const findCommitIconType = () => wrapper.findByTestId('commit-icon-type');
-  const findCommitRefName = () => wrapper.findByTestId('commit-ref-name');
+  const findCommitRefName = () => wrapper.findComponentByTestId('commit-ref-name');
   const findCommitPopover = () => wrapper.findComponent(CommitPopover);
 
   const defaultProps = { ...mockPipeline(projectPath) };

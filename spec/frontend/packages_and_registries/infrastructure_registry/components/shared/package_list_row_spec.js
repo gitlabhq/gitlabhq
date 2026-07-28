@@ -21,10 +21,10 @@ describe('packages_list_row', () => {
 
   const findPackageTags = () => wrapper.findComponent(PackageTags);
   const findPackagePath = () => wrapper.findComponent(PackagePath);
-  const findDeleteButton = () => wrapper.findByTestId('action-delete');
+  const findDeleteButton = () => wrapper.findComponentByTestId('action-delete');
   const findInfrastructureIconAndName = () => wrapper.findComponent(InfrastructureIconAndName);
   const findPackageLink = () => wrapper.findComponent(GlLink);
-  const findWarningIcon = () => wrapper.findByTestId('warning-icon');
+  const findWarningIcon = () => wrapper.findComponentByTestId('warning-icon');
 
   const mountComponent = ({
     isGroup = false,

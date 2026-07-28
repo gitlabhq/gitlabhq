@@ -51,7 +51,7 @@ describe('TokensApp', () => {
       'data-method': 'put',
       href: expectedResetPath,
     });
-    expect(container.props()).toMatchObject(expectedProps);
+    expect(wrapper.findComponentByTestId(testId).props()).toMatchObject(expectedProps);
   };
 
   it('renders all enabled tokens', () => {

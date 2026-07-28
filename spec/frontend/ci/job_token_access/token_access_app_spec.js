@@ -1,8 +1,8 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlIntersectionObserver } from '@gitlab/ui';
-import InboundTokenAccess from '~/token_access/components/inbound_token_access.vue';
-import TokenAccessApp from '~/token_access/components/token_access_app.vue';
-import TokenPermissions from '~/token_access/components/token_permissions.vue';
+import InboundTokenAccess from '~/ci/job_token_access/components/inbound_token_access.vue';
+import TokenAccessApp from '~/ci/job_token_access/components/token_access_app.vue';
+import TokenPermissions from '~/ci/job_token_access/components/token_permissions.vue';
 
 describe('TokenAccessApp component', () => {
   let wrapper;

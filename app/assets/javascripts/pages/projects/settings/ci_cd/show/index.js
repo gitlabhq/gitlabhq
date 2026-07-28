@@ -6,7 +6,7 @@ import initInheritedGroupCiVariables from '~/ci/inherited_ci_variables';
 import initDeployFreeze from '~/deploy_freeze';
 import initRefSwitcherBadges from '~/projects/settings/mount_ref_switcher_badges';
 import initSettingsPanels from '~/settings_panels';
-import { initTokenAccess } from '~/token_access';
+import { initJobTokenAccess } from '~/ci/job_token_access';
 import { initCiSecureFiles } from '~/ci_secure_files';
 import initDeployTokens from '~/deploy_tokens';
 import { initProjectRunnersSettings } from '~/ci/runner/project_runners_settings/index';
@@ -36,7 +36,7 @@ initArtifactsSettings();
 initVariablesMinimumOverrideRole();
 
 initRefSwitcherBadges();
-initTokenAccess();
+initJobTokenAccess();
 initCiSecureFiles();
 initGeneralPipelinesOptions();
 initProjectRunnersSettings();

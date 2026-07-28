@@ -1,6 +1,6 @@
 import { GlBadge, GlTable, GlLoadingIcon } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import TokenAccessTable from '~/token_access/components/token_access_table.vue';
+import TokenAccessTable from '~/ci/job_token_access/components/token_access_table.vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { mockGroups, mockProjects } from './mock_data';
 
@@ -19,11 +19,11 @@ describe('Token access table', () => {
 
   const findTable = () => wrapper.findComponent(GlTable);
   const findCurrentProjectBadge = () => wrapper.findComponent(GlBadge);
-  const findEditButton = () => wrapper.findByTestId('token-access-table-edit-button');
-  const findRemoveButton = () => wrapper.findByTestId('token-access-table-remove-button');
+  const findEditButton = () => wrapper.findComponentByTestId('token-access-table-edit-button');
+  const findRemoveButton = () => wrapper.findComponentByTestId('token-access-table-remove-button');
   const findAllTableRows = () => findTable().findAll('tbody tr');
-  const findIcon = () => wrapper.findByTestId('token-access-icon');
-  const findProjectAvatar = () => wrapper.findByTestId('token-access-avatar');
+  const findIcon = () => wrapper.findComponentByTestId('token-access-icon');
+  const findProjectAvatar = () => wrapper.findComponentByTestId('token-access-avatar');
   const findName = () => wrapper.findByTestId('token-access-name');
   const findPolicies = () => findAllTableRows().at(0).findAll('td').at(1);
   const findLoadingMessage = () => wrapper.findByTestId('loading-message');

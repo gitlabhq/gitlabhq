@@ -5,8 +5,8 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
-import AuthLog from '~/token_access/components/auth_log.vue';
-import getAuthLogsQuery from '~/token_access/graphql/queries/get_auth_logs.query.graphql';
+import AuthLog from '~/ci/job_token_access/components/auth_log.vue';
+import getAuthLogsQuery from '~/ci/job_token_access/graphql/queries/get_auth_logs.query.graphql';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { mockAuthLogsResponse } from './mock_data';
 
@@ -34,7 +34,7 @@ describe('TokenAccess component', () => {
   const findGlTable = () => wrapper.findComponent(GlTableLite);
   const findAllTableRows = () => wrapper.findAllByTestId('auth-logs-table-row');
   const findCrudComponentBody = () => wrapper.findByTestId('crud-body');
-  const findDownloadButton = () => wrapper.findByTestId('auth-log-download-csv-button');
+  const findDownloadButton = () => wrapper.findComponentByTestId('auth-log-download-csv-button');
   const findPagination = () => wrapper.findByTestId('auth-log-pagination');
 
   const createComponent = (requestHandlers, mountFn = shallowMountExtended) => {

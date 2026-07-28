@@ -34,7 +34,7 @@ describe('DeleteServiceAccountModal', () => {
   const findModal = () => wrapper.findComponent(GlModal);
   const findForm = () => wrapper.findComponent(GlFormFields);
   const findCancelButton = () => wrapper.findByTestId('cancel-button');
-  const findSubmitButton = () => wrapper.find('button[type=submit]');
+  const findSubmitButton = () => wrapper.findComponent('button[type=submit]');
   const findInput = () => wrapper.findComponent(GlFormInput);
 
   describe('modal', () => {

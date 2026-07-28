@@ -53,7 +53,7 @@ describe('UpdateUsername component', () => {
     return {
       modal,
       input: wrapper.find(`#${wrapper.vm.$options.inputId}`),
-      openModalBtn: wrapper.find('[data-testid="username-change-confirmation-modal"]'),
+      openModalBtn: wrapper.findComponent('[data-testid="username-change-confirmation-modal"]'),
       modalBody: modal.find('.modal-body'),
       modalHeader: modal.find('.modal-title'),
       confirmModalBtn: wrapper.find('.btn-confirm'),

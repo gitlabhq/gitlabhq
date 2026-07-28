@@ -276,7 +276,7 @@ export default {
           }"
           :contextual-view-enabled="contextualViewEnabled"
           @click="handleLinkedItemClick($event, linkedItem)"
-          @removeChild="$emit('removeLinkedItem', linkedItem.workItem)"
+          @remove-child="$emit('removeLinkedItem', linkedItem.workItem)"
         />
       </li>
     </component>

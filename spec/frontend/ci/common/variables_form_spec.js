@@ -25,19 +25,25 @@ describe('Pipeline variables form group', () => {
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findVariableRows = () => wrapper.findAllByTestId('ci-variable-row-container');
-  const findVariableTypes = () => wrapper.findAllByTestId('pipeline-form-ci-variable-type');
+  const findVariableTypes = () =>
+    wrapper.findAllComponentsByTestId('pipeline-form-ci-variable-type');
   const findKeyInputs = () => wrapper.findAllByTestId('pipeline-form-ci-variable-key-field');
-  const findValueInputs = () => wrapper.findAllByTestId('pipeline-form-ci-variable-value-field');
+  const findKeyInputComponents = () =>
+    wrapper.findAllComponentsByTestId('pipeline-form-ci-variable-key-field');
+  const findValueInputs = () =>
+    wrapper.findAllComponentsByTestId('pipeline-form-ci-variable-value-field');
   const findHiddenValueInputs = () =>
     wrapper.findAllByTestId('pipeline-form-ci-variable-hidden-value');
-  const findVariableSecurityBtn = () => wrapper.findByTestId('variable-security-btn');
+  const findVariableSecurityBtn = () => wrapper.findComponentByTestId('variable-security-btn');
   const findRemoveButtonAt = (i) =>
-    extendedWrapper(findVariableRows().at(i)).findByTestId('remove-ci-variable-button');
+    extendedWrapper(findVariableRows().at(i)).findComponentByTestId('remove-ci-variable-button');
   const findRemoveButtonDesktopAt = (i) =>
-    extendedWrapper(findVariableRows().at(i)).findByTestId('remove-ci-variable-button-desktop');
+    extendedWrapper(findVariableRows().at(i)).findComponentByTestId(
+      'remove-ci-variable-button-desktop',
+    );
   const findMarkdown = () => wrapper.findComponent(Markdown);
   const findVariableValuesListbox = () =>
-    wrapper.findAllByTestId('pipeline-form-ci-variable-value-dropdown');
+    wrapper.findAllComponentsByTestId('pipeline-form-ci-variable-value-dropdown');
   const findKeyValidationErrorAt = (i) =>
     wrapper.findAllByTestId('pipeline-form-ci-variable-key-group').at(i).find('.invalid-feedback');
   const findKeyInputsAt = (i) => findKeyInputs().at(i);
@@ -71,7 +77,7 @@ describe('Pipeline variables form group', () => {
     });
     it('creates an empty variable row when initialVariables is set', () => {
       expect(findVariableRows()).toHaveLength(1);
-      expect(findKeyInputs().at(0).props('value')).toBe('');
+      expect(findKeyInputComponents().at(0).props('value')).toBe('');
       expect(findValueInputs().at(0).props('value')).toBe('');
     });
 
@@ -91,9 +97,9 @@ describe('Pipeline variables form group', () => {
 
       expect(findVariableRows()).toHaveLength(2);
 
-      expect(findKeyInputs().at(0).props('value')).toBe('NEW_VAR');
+      expect(findKeyInputComponents().at(0).props('value')).toBe('NEW_VAR');
       expect(findValueInputs().at(0).props('value')).toBe('new-value');
-      expect(findKeyInputs().at(1).props('value')).toBe('');
+      expect(findKeyInputComponents().at(1).props('value')).toBe('');
     });
   });
 
@@ -115,7 +121,7 @@ describe('Pipeline variables form group', () => {
       await addVariableToForm();
 
       expect(findVariableRows()).toHaveLength(2);
-      expect(findKeyInputs().at(1).props('value')).toBe('');
+      expect(findKeyInputComponents().at(1).props('value')).toBe('');
       expect(findValueInputs().at(1).props('value')).toBe('');
     });
 
@@ -400,8 +406,8 @@ describe('Pipeline variables form group', () => {
 
     it('displays existing variables', () => {
       expect(findVariableRows()).toHaveLength(3); // 2 existing + 1 empty
-      expect(findKeyInputs().at(0).props('value')).toBe(mockVariables[0].key);
-      expect(findKeyInputs().at(1).props('value')).toBe(mockVariables[1].key);
+      expect(findKeyInputComponents().at(0).props('value')).toBe(mockVariables[0].key);
+      expect(findKeyInputComponents().at(1).props('value')).toBe(mockVariables[1].key);
     });
 
     it('shows variable security button when editing with variables', () => {

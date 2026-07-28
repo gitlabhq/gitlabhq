@@ -131,7 +131,7 @@ describe('ClustersViewAllComponent', () => {
     });
 
     describe('when the agents are present', () => {
-      const findFooterLink = () => wrapper.findByTestId('agents-tab-footer-link');
+      const findFooterLink = () => wrapper.findComponentByTestId('agents-tab-footer-link');
       const agentsNumber = 7;
 
       beforeEach(() => {
@@ -176,7 +176,7 @@ describe('ClustersViewAllComponent', () => {
     });
 
     describe('when the clusters are present', () => {
-      const findFooterLink = () => wrapper.findByTestId('clusters-tab-footer-link');
+      const findFooterLink = () => wrapper.findComponentByTestId('clusters-tab-footer-link');
 
       const clustersNumber = 7;
       const initialState = {

@@ -10,7 +10,7 @@ describe('Deploy freeze timezone dropdown', () => {
   let store;
 
   const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
-  const findSearchBox = () => wrapper.findByTestId('listbox-search-input');
+  const findSearchBox = () => wrapper.findComponentByTestId('listbox-search-input');
 
   const createComponent = async (searchTerm, selectedTimezone = '') => {
     wrapper = shallowMountExtended(TimezoneDropdown, {

@@ -12,10 +12,10 @@ describe('TaskListItemActions component', () => {
   let wrapper;
 
   const findGlDisclosureDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
-  const findConvertToChildItemItem = () => wrapper.findByTestId('convert');
-  const findDeleteItem = () => wrapper.findByTestId('delete');
-  const findDisableItem = () => wrapper.findByTestId('disable');
-  const findEnableItem = () => wrapper.findByTestId('enable');
+  const findConvertToChildItemItem = () => wrapper.findComponentByTestId('convert');
+  const findDeleteItem = () => wrapper.findComponentByTestId('delete');
+  const findDisableItem = () => wrapper.findComponentByTestId('disable');
+  const findEnableItem = () => wrapper.findComponentByTestId('enable');
 
   const mountComponent = ({ issuableType = TYPE_ISSUE, enabled = true } = {}) => {
     setHTMLFixture(`

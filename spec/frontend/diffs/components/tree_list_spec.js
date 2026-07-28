@@ -18,7 +18,7 @@ describe('Diffs tree list component', () => {
   let wrapper;
   let pinia;
   const getScroller = () => wrapper.findComponent({ name: 'RecycleScroller' });
-  const findDiffTreeSearch = () => wrapper.findByTestId('diff-tree-search');
+  const findDiffTreeSearch = () => wrapper.findComponentByTestId('diff-tree-search');
 
   const createComponent = ({ hideFileStats = false, ...rest } = {}, { stubs } = {}) => {
     wrapper = shallowMountExtended(TreeList, {
@@ -328,7 +328,7 @@ describe('Diffs tree list component', () => {
       ({ toggle, renderTreeList }) => {
         createComponent();
 
-        wrapper.findByTestId(toggle).vm.$emit('click');
+        wrapper.findComponentByTestId(toggle).vm.$emit('click');
 
         expect(useFileBrowser().setRenderTreeList).toHaveBeenCalledWith(renderTreeList);
       },
@@ -345,8 +345,8 @@ describe('Diffs tree list component', () => {
 
         createComponent();
 
-        expect(wrapper.findByTestId(deselectedToggle).props('selected')).toBe(false);
-        expect(wrapper.findByTestId(selectedToggle).props('selected')).toBe(true);
+        expect(wrapper.findComponentByTestId(deselectedToggle).props('selected')).toBe(false);
+        expect(wrapper.findComponentByTestId(selectedToggle).props('selected')).toBe(true);
       },
     );
 

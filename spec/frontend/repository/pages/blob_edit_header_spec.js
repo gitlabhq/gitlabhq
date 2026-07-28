@@ -95,7 +95,8 @@ describe('BlobEditHeader', () => {
   const findTitle = () => wrapper.find('h1');
   const findButtons = () => wrapper.findAllComponents(GlButton);
   const findCommitChangesModal = () => wrapper.findComponent(CommitChangesModal);
-  const findCommitChangesButton = () => wrapper.findByTestId('blob-edit-header-commit-button');
+  const findCommitChangesButton = () =>
+    wrapper.findComponentByTestId('blob-edit-header-commit-button');
   const findCancelButton = () => wrapper.findByTestId('blob-edit-header-cancel-button');
 
   const clickCommitChangesButton = async () => {

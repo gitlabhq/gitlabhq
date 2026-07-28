@@ -270,7 +270,7 @@ describe('File row component', () => {
   });
 
   describe('Tree toggle chevron button', () => {
-    const findChevronButton = () => wrapper.findByTestId('tree-toggle-button');
+    const findChevronButton = () => wrapper.findComponentByTestId('tree-toggle-button');
     const folderPath = 'path/to/folder';
     const mockFile = { ...file(folderPath), type: 'tree', opened: false };
 

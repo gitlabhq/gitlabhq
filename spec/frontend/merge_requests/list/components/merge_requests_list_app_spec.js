@@ -63,7 +63,7 @@ let getCountsQueryResponseMock;
 
 const findIssuableList = () => wrapper.findComponent(IssuableList);
 const findNewMrButton = () => wrapper.findByTestId('new-merge-request-button');
-const findBulkEditButton = () => wrapper.findByTestId('bulk-edit');
+const findBulkEditButton = () => wrapper.findComponentByTestId('bulk-edit');
 
 const sourceBranchPath = 'source-branches';
 const targetBranchPath = 'target-branches';

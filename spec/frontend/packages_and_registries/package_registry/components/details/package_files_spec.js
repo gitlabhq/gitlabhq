@@ -48,22 +48,25 @@ describe('Package Files', () => {
   let apolloProvider;
 
   const findAllRows = () => wrapper.findAllByTestId('file-row');
-  const findDeleteSelectedButton = () => wrapper.findByTestId('delete-selected');
-  const findDeleteFilesModal = () => wrapper.findByTestId('delete-files-modal');
+  const findDeleteSelectedButton = () => wrapper.findComponentByTestId('delete-selected');
+  const findDeleteFilesModal = () => wrapper.findComponentByTestId('delete-files-modal');
   const findFirstRow = () => extendedWrapper(findAllRows().at(0));
   const findSecondRow = () => extendedWrapper(findAllRows().at(1));
   const findPackageFilesAlert = () => wrapper.findComponent(GlAlert);
   const findPagination = () => wrapper.findComponent(GlKeysetPagination);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findFirstRowDownloadLink = () => findFirstRow().findByTestId('download-link');
+  const findFirstRowDownloadLink = () => findFirstRow().findComponentByTestId('download-link');
   const findFirstRowFileIcon = () => findFirstRow().findComponent(FileIcon);
   const findFirstRowCreatedAt = () => findFirstRow().findComponent(TimeAgoTooltip);
   const findFirstActionMenu = () =>
     extendedWrapper(findFirstRow().findComponent(GlDisclosureDropdown));
-  const findActionMenuDelete = () => findFirstActionMenu().findByTestId('delete-file');
-  const findFirstToggleDetailsButton = () => findFirstRow().findByTestId('toggle-details-button');
-  const findFirstRowShaComponent = (id) => wrapper.findByTestId(id);
+  const findActionMenuDelete = () => findFirstActionMenu().findComponentByTestId('delete-file');
+  const findFirstToggleDetailsButton = () =>
+    findFirstRow().findComponentByTestId('toggle-details-button');
+  const findFirstRowShaComponent = (id) => wrapper.findComponentByTestId(id);
   const findCheckAllCheckbox = () => wrapper.findByTestId('package-files-checkbox-all');
+  const findCheckAllCheckboxComponent = () =>
+    wrapper.findComponentByTestId('package-files-checkbox-all');
   const findAllRowCheckboxes = () => wrapper.find('tbody').findAllComponents(GlFormCheckbox);
 
   const files = packageFilesMock();
@@ -331,7 +334,7 @@ describe('Package Files', () => {
 
         it('will toggle the indeterminate state when some but not all files are selected', async () => {
           const expectIndeterminateState = (state) =>
-            expect(findCheckAllCheckbox().props('indeterminate')).toBe(state);
+            expect(findCheckAllCheckboxComponent().props('indeterminate')).toBe(state);
 
           createComponent({
             resolver: jest.fn().mockResolvedValue(packageFilesQuery()),

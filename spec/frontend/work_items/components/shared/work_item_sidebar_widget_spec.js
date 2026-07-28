@@ -7,8 +7,8 @@ import WorkItemSidebarWidget from '~/work_items/components/shared/work_item_side
 describe('WorkItemSidebarWidget component', () => {
   let wrapper;
 
-  const findApplyButton = () => wrapper.findByTestId('apply-button');
-  const findEditButton = () => wrapper.findByTestId('edit-button');
+  const findApplyButton = () => wrapper.findComponentByTestId('apply-button');
+  const findEditButton = () => wrapper.findComponentByTestId('edit-button');
 
   const createComponent = ({ canUpdate = false, isUpdating = false, tooltipText } = {}) => {
     wrapper = shallowMountExtended(WorkItemSidebarWidget, {

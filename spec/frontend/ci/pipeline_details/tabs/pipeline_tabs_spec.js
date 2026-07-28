@@ -12,15 +12,15 @@ describe('The Pipeline Tabs', () => {
 
   const $router = { push: jest.fn() };
 
-  const findFailedJobsTab = () => wrapper.findByTestId('failed-jobs-tab');
+  const findFailedJobsTab = () => wrapper.findComponentByTestId('failed-jobs-tab');
   const findJobsTab = () => wrapper.findByTestId('jobs-tab');
   const findPipelineTab = () => wrapper.findByTestId('pipeline-tab');
-  const findTestsTab = () => wrapper.findByTestId('tests-tab');
+  const findTestsTab = () => wrapper.findComponentByTestId('tests-tab');
 
   const findFailedJobsBadge = () => wrapper.findByTestId('failed-builds-counter');
   const findJobsBadge = () => wrapper.findByTestId('builds-counter');
   const findTestsBadge = () => wrapper.findByTestId('tests-counter');
-  const findManualVariablesTab = () => wrapper.findByTestId('manual-variables-tab');
+  const findManualVariablesTab = () => wrapper.findComponentByTestId('manual-variables-tab');
   const findManualVariablesBadge = () => wrapper.findByTestId('manual-variables-counter');
 
   const defaultProvide = {

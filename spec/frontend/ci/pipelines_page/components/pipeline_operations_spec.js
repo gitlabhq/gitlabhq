@@ -40,8 +40,8 @@ describe('Pipeline operations', () => {
 
   const findManualActions = () => wrapper.findComponent(PipelinesManualActions);
   const findMultiActions = () => wrapper.findComponent(PipelineMultiActions);
-  const findRetryBtn = () => wrapper.findByTestId('pipelines-retry-button');
-  const findCancelBtn = () => wrapper.findByTestId('pipelines-cancel-button');
+  const findRetryBtn = () => wrapper.findComponentByTestId('pipelines-retry-button');
+  const findCancelBtn = () => wrapper.findComponentByTestId('pipelines-cancel-button');
   const findPipelineStopModal = () => wrapper.findComponent(PipelineStopModal);
 
   it('should display pipeline manual actions', () => {

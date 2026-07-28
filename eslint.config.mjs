@@ -85,6 +85,13 @@ const jestConfig = {
     // resolve to different files, but in FOSS the latter falls back to
     // the former, collapsing both imports onto the same path.
     'local-rules/no-mixed-jest-aliases': 'error',
+    // Specs must not rely on the VTU v1 "find upgrade" (string-selector
+    // find() returning component wrappers), which the vue-test-utils-compat
+    // shim emulates in the Vue 3 jest lane via
+    // WRAPPER_FIND_BY_CSS_SELECTOR_RETURNS_COMPONENTS. Use the explicit
+    // component finders (findComponent/findComponentByTestId) instead.
+    // Batch-fix with `scripts/frontend/codemods/vue3_find_component_upgrade.mjs`.
+    'local-rules/vue3-find-component-upgrade': 'error',
   },
 };
 

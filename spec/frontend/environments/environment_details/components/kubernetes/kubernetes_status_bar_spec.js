@@ -35,13 +35,14 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_st
   let wrapper;
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findHealthBadge = () => wrapper.findByTestId('health-badge');
-  const findSyncBadge = () => wrapper.findByTestId('sync-badge');
+  const findHealthBadge = () => wrapper.findComponentByTestId('health-badge');
+  const findSyncBadge = () => wrapper.findComponentByTestId('sync-badge');
   const findFluxPopoverText = () => wrapper.findByTestId('flux-popover-text');
   const findPopover = () => wrapper.findComponent(GlPopover);
-  const findDashboardConnectionStatus = () => wrapper.findByTestId('dashboard-status-badge');
+  const findDashboardConnectionStatus = () =>
+    wrapper.findComponentByTestId('dashboard-status-badge');
   const findFluxConnectionStatusBadge = () => wrapper.findByTestId('flux-status-badge');
-  const findFluxConnectionStatus = () => wrapper.findByTestId('flux-connection-status');
+  const findFluxConnectionStatus = () => wrapper.findComponentByTestId('flux-connection-status');
 
   const createWrapper = ({
     clusterHealthStatus = '',

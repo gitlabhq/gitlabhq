@@ -28,7 +28,7 @@ describe('TwoFactorActionConfirm', () => {
     });
   };
 
-  const findButton = () => wrapper.findByTestId('2fa-action-button');
+  const findButton = () => wrapper.findComponentByTestId('2fa-action-button');
   const findModal = () => wrapper.findComponent(GlModal);
   const findForm = () => wrapper.find('form');
   const findPasswordInput = () => wrapper.findComponent(PasswordInput);

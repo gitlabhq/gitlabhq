@@ -213,7 +213,7 @@ describe('AgentTable', () => {
       ({ agentMockIdx, agentVersion, agentWarnings, versionMismatch, text, title }) => {
         const currentAgent = clusterAgents[agentMockIdx];
         const showWarning = versionMismatch || agentWarnings?.length;
-        const popover = () => wrapper.findByTestId(`popover-${currentAgent.name}`);
+        const popover = () => wrapper.findComponentByTestId(`popover-${currentAgent.name}`);
 
         beforeEach(() => {
           createWrapper({

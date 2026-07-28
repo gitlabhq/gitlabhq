@@ -22,7 +22,7 @@ describe('Job Sidebar Retry Button', () => {
   const findRetryButton = () => wrapper.findByTestId('retry-job-button');
   const findRetryLink = () => wrapper.findByTestId('retry-job-link');
   const findManualRetryButton = () => wrapper.findByTestId('manual-run-again-btn');
-  const findManualRunEditButton = () => wrapper.findByTestId('manual-run-edit-btn');
+  const findManualRunEditButton = () => wrapper.findComponentByTestId('manual-run-edit-btn');
   const findActionsDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
 
   const createWrapper = ({ mountFn = shallowMountExtended, props = {}, provide = {} } = {}) => {

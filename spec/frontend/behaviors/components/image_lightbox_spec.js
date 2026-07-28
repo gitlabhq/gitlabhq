@@ -28,7 +28,7 @@ describe('ImageLightbox', () => {
     });
   };
 
-  const findCloseButton = () => wrapper.find('#image-lightbox-close');
+  const findCloseButton = () => wrapper.findComponent('#image-lightbox-close');
   const findDownloadButton = () => wrapper.findComponent('[icon="download"]');
   const findClipboardButton = () => wrapper.findComponent(ClipboardButton);
   const findPrevButton = () => wrapper.findComponent('[icon="chevron-lg-left"]');

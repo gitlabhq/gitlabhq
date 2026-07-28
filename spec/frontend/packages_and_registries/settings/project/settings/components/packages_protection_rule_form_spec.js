@@ -34,7 +34,7 @@ describe('Packages Protection Rule Form', () => {
   const findMinimumAccessLevelForDeleteSelect = () =>
     wrapper.findByRole('combobox', { name: /minimum access level for delete/i });
   const findCancelButton = () => wrapper.findByRole('button', { name: /cancel/i });
-  const findSubmitButton = () => wrapper.findByTestId('submit-btn');
+  const findSubmitButton = () => wrapper.findComponentByTestId('submit-btn');
   const findForm = () => wrapper.findComponent(GlForm);
 
   const setSelectValue = async (selectWrapper, value) => {

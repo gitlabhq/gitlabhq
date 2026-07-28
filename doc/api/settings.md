@@ -463,6 +463,7 @@ This heading is referenced by a script: `scripts/cells/application-settings-anal
 - `built_in_project_templates_enabled` and `lock_built_in_project_templates_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235504) in GitLab 19.0 [with a feature flag](../administration/feature_flags/_index.md) named `use_built_in_project_templates_enabled`. Disabled by default.
 - `email_otp_enabled` introduced in GitLab 19.1.
 - `built_in_project_templates_enabled` and `lock_built_in_project_templates_enabled` [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/593623) in GitLab 19.2. Feature flag `use_built_in_project_templates_enabled` removed.
+- `require_sha_for_merge` and `lock_require_sha_for_merge` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236732) in GitLab 19.2.
 - `sidekiq_timezone_override` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244922) in GitLab 19.2.
 
 {{< /history >}}
@@ -776,6 +777,8 @@ to configure other related settings. These requirements are in the `Required` co
 | `require_admin_approval_after_user_signup` | boolean        | no                                   | When enabled, any user that signs up for an account using the registration form is placed under a **Pending approval** state and has to be explicitly [approved](../administration/moderate_users.md) by an administrator. |
 | `require_email_verification_on_account_locked` | boolean    | no                                   | If `true`, all users on the instance must verify their identity after suspicious sign-in activity is detected. |
 | `require_personal_access_token_expiry`   | boolean          | no                                   | When enabled, users must set an expiration date when creating a group or project access token, or a personal access token owned by a non-service account. |
+| `require_sha_for_merge`                  | boolean          | no                                   | Instance default that requires a valid commit `sha` for calls to the [merge a merge request](merge_requests.md#merge-a-merge-request) endpoint. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236732) in GitLab 19.2. |
+| `lock_require_sha_for_merge`             | boolean          | no                                   | Enforce the `require_sha_for_merge` setting for all groups on the instance. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236732) in GitLab 19.2. |
 | `require_two_factor_authentication`      | boolean          | no                                   | (**If enabled, requires**: `two_factor_grace_period`) Require all users to set up two-factor authentication. |
 | `resource_usage_limits`                | hash             | no                                   | Definition for resource usage limits enforced in Sidekiq workers. This setting is available for GitLab.com only. |
 | `restricted_visibility_levels`           | array of strings | no                                   | Selected levels cannot be used by non-Administrator users for groups, projects, or snippets. Can take `private`, `internal`, and `public` as a parameter. Default is `null` which means there is no restriction. Cannot select levels that are set as `default_project_visibility` and `default_group_visibility`. |

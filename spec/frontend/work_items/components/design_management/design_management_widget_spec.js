@@ -77,12 +77,12 @@ describe('DesignWidget', () => {
   const findWidgetWrapper = () => wrapper.findComponent(CrudComponent);
   const findDesignDropzoneComponent = () => wrapper.findComponent(DesignDropzone);
   const findAllDesignItems = () => wrapper.findAllComponents(DesignItem);
-  const findArchiveButton = () => wrapper.findByTestId('archive-button');
-  const findSelectAllButton = () => wrapper.findByTestId('select-all-designs-button');
+  const findArchiveButton = () => wrapper.findComponentByTestId('archive-button');
+  const findSelectAllButton = () => wrapper.findComponentByTestId('select-all-designs-button');
   const findDesignCheckboxes = () => wrapper.findAllByTestId('design-checkbox');
   const findVueDraggable = () => wrapper.findComponent(VueDraggable);
   const findAlert = () => wrapper.findComponent(GlAlert);
-  const findCrudCollapseToggle = () => wrapper.findByTestId('crud-collapse-toggle');
+  const findCrudCollapseToggle = () => wrapper.findComponentByTestId('crud-collapse-toggle');
 
   async function moveDesigns() {
     await waitForPromises();

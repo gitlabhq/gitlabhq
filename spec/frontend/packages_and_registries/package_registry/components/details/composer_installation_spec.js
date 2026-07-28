@@ -16,8 +16,8 @@ describe('ComposerInstallation', () => {
   let wrapper;
 
   const findRootNode = () => wrapper.findByTestId('root-node');
-  const findRegistryInclude = () => wrapper.findByTestId('registry-include');
-  const findPackageInclude = () => wrapper.findByTestId('package-include');
+  const findRegistryInclude = () => wrapper.findComponentByTestId('registry-include');
+  const findPackageInclude = () => wrapper.findComponentByTestId('package-include');
   const findHelpText = () => wrapper.findByTestId('help-text');
   const findHelpLink = () => wrapper.findComponent(GlLink);
   const findInstallationMethod = () => wrapper.findComponent(InstallationMethod);

@@ -64,13 +64,13 @@ describe('Import Project by URL Form', () => {
     mockAxios.restore();
   });
 
-  const findImportButton = () => wrapper.findByTestId('import-project-by-url-button');
-  const findBackButton = () => wrapper.findByTestId('import-project-by-url-back-button');
-  const findUrlInput = () => wrapper.findByTestId('repository-url');
+  const findImportButton = () => wrapper.findComponentByTestId('import-project-by-url-button');
+  const findBackButton = () => wrapper.findComponentByTestId('import-project-by-url-back-button');
+  const findUrlInput = () => wrapper.findComponentByTestId('repository-url');
   const findUrlInputWrapper = () => wrapper.findByTestId('repository-url-form-group');
-  const findUsernameInput = () => wrapper.findByTestId('repository-username');
-  const findPasswordInput = () => wrapper.findByTestId('repository-password');
-  const findCheckConnectionButton = () => wrapper.findByTestId('check-connection');
+  const findUsernameInput = () => wrapper.findComponentByTestId('repository-username');
+  const findPasswordInput = () => wrapper.findComponentByTestId('repository-password');
+  const findCheckConnectionButton = () => wrapper.findComponentByTestId('check-connection');
   const findMirrorCheckbox = () => wrapper.findByTestId('import-project-by-url-repo-mirror');
   const findSharedFields = () => wrapper.findComponent(SharedProjectCreationFields);
   const findMultiStepTemplate = () => wrapper.findComponent(GlMultiStepFormTemplate);

@@ -25,7 +25,7 @@ describe('RapidDiffsToggle', () => {
     jest.spyOn(window.history, 'replaceState').mockImplementation();
   });
 
-  const findTryButton = () => wrapper.findByTestId('rapid-diffs-try-button');
+  const findTryButton = () => wrapper.findComponentByTestId('rapid-diffs-try-button');
   const findBadge = () => wrapper.findByTestId('rapid-diffs-beta-badge');
   const findPopover = () => wrapper.findComponent(GlPopover);
   const findLearnMoreButton = () => wrapper.findByTestId('rapid-diffs-learn-more-button');

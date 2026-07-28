@@ -22,7 +22,7 @@ describe('Pipeline editor empty state', () => {
   const findExternalConfigEmptyState = () => wrapper.findComponent(ExternalConfigEmptyState);
   const findCards = () => wrapper.findAllComponents(GlCard);
   const findBrowseCatalogButton = () => wrapper.findByTestId('browse-catalog-button');
-  const findCreateNewCiButton = () => wrapper.findByTestId('create-new-ci-button');
+  const findCreateNewCiButton = () => wrapper.findComponentByTestId('create-new-ci-button');
 
   describe('when project uses an external CI config', () => {
     const newPipelinePath = '/path-to-new-pipeline';

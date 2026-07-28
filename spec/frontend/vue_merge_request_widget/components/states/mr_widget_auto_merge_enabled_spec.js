@@ -170,7 +170,7 @@ describe('MRWidgetAutoMergeEnabled', () => {
 
       await findCancelAutoMergeButton().trigger('click');
 
-      expect(wrapper.find('.js-cancel-auto-merge').props('loading')).toBe(true);
+      expect(wrapper.findComponent('.js-cancel-auto-merge').props('loading')).toBe(true);
     });
 
     it('should render the status text as "to be merged automatically..." if MWCP is selected', async () => {

@@ -33,7 +33,7 @@ describe('SuperTopbar', () => {
   const findSidebarToggle = () => wrapper.findComponent(SuperSidebarToggle);
   const findCreateMenu = () => wrapper.findComponent(CreateMenu);
   const findOrganizationSwitcher = () => wrapper.findComponent(OrganizationSwitcherStub);
-  const findSearchButton = () => wrapper.findByTestId('super-topbar-search-button');
+  const findSearchButton = () => wrapper.findComponentByTestId('super-topbar-search-button');
   const findSmallSearchButton = () => wrapper.findByTestId('super-topbar-search-button-xs');
   const findSearchModal = () => wrapper.findComponent(SearchModal);
   const findUserCounts = () => wrapper.findComponent(UserCounts);

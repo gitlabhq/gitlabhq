@@ -90,13 +90,14 @@
 
   = render ::Layouts::SettingsBlockComponent.new(_('Job token permissions'),
     id: 'js-token-access',
+    testid: 'job-token-permissions-content',
     expanded: expanded) do |c|
     - zones_link_url = help_page_path('ci/jobs/ci_job_token.md', anchor: 'gitlab-cicd-job-token-security')
     - zones_link = link_to('', zones_link_url, target: '_blank', rel: 'noopener noreferrer')
     - c.with_description do
       = safe_format(_("Control which groups and projects can use CI/CD job tokens to authenticate with this project. Learn more about %{link_start}job token security%{link_end}."), tag_pair(zones_link, :link_start, :link_end))
     - c.with_body do
-      = render 'ci/token_access/index'
+      = render 'ci/job_token_access/index'
 
   - if show_secure_files_setting(@project, current_user)
     = render ::Layouts::SettingsBlockComponent.new(_('Secure files'),

@@ -50,8 +50,8 @@ describe('Role details drawer', () => {
   const findRoleSelector = () => wrapper.findComponent(RoleSelector);
   const findRoleDescription = () => wrapper.findByTestId('description-value');
   const findRoleUpdater = () => wrapper.findComponent(RoleUpdater);
-  const findSaveButton = () => wrapper.findByTestId('save-button');
-  const findCancelButton = () => wrapper.findByTestId('cancel-button');
+  const findSaveButton = () => wrapper.findComponentByTestId('save-button');
+  const findCancelButton = () => wrapper.findComponentByTestId('cancel-button');
   const findAlert = () => wrapper.findComponent(GlAlert);
 
   const createWrapperAndChangeRole = () => {
@@ -110,7 +110,7 @@ describe('Role details drawer', () => {
       });
 
       it('shows the View permissions button', () => {
-        const button = wrapper.findByTestId('view-permissions-button');
+        const button = wrapper.findComponentByTestId('view-permissions-button');
 
         expect(button.text()).toBe('View permissions');
         expect(button.attributes('href')).toBe('/help/user/permissions');

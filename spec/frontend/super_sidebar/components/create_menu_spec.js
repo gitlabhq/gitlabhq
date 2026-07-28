@@ -21,8 +21,9 @@ describe('CreateMenu component', () => {
   const findGlDisclosureDropdownGroups = () => wrapper.findAllComponents(GlDisclosureDropdownGroup);
   const findGlDisclosureDropdownItems = () => wrapper.findAllComponents(GlDisclosureDropdownItem);
   const findInviteMembersTrigger = () => wrapper.findComponent(InviteMembersTrigger);
-  const findCreateWorkItemModalTrigger = () => wrapper.findByTestId('new-work-item-trigger');
-  const findCreateWorkItemModal = () => wrapper.findByTestId('new-work-item-modal');
+  const findCreateWorkItemModalTrigger = () =>
+    wrapper.findComponentByTestId('new-work-item-trigger');
+  const findCreateWorkItemModal = () => wrapper.findComponentByTestId('new-work-item-modal');
 
   const createWrapper = ({ props = {}, provide = {}, stubs = {} } = {}) => {
     wrapper = shallowMountExtended(CreateMenu, {

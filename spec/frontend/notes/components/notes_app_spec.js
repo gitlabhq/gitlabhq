@@ -103,7 +103,7 @@ describe('note_app', () => {
     );
   };
 
-  const findCommentButton = () => wrapper.find('[data-testid="comment-button"]');
+  const findCommentButton = () => wrapper.findComponent('[data-testid="comment-button"]');
 
   const getComponentOrder = () => {
     const nodes = wrapper.findAll('#notes-list,.js-comment-form');

@@ -45,7 +45,7 @@ describe('Markdown field header component', () => {
     });
   };
 
-  const findPreviewToggle = () => wrapper.findByTestId('preview-toggle');
+  const findPreviewToggle = () => wrapper.findComponentByTestId('preview-toggle');
   const findToolbar = () => wrapper.findByTestId('md-header-toolbar');
   const findToolbarButtons = () => wrapper.findAllComponents(ToolbarButton);
   const findDividers = () => wrapper.findAllComponents(HeaderDividerComponent);
@@ -438,16 +438,16 @@ describe('Markdown field header component', () => {
       return root;
     };
 
-    const findFindInput = () => wrapper.findByTestId('find-input');
-    const findReplaceInput = () => wrapper.findByTestId('replace-input');
+    const findFindInput = () => wrapper.findComponentByTestId('find-input');
+    const findReplaceInput = () => wrapper.findComponentByTestId('replace-input');
     const findReplaceButton = () => wrapper.findByTestId('replace-button');
     const findReplaceAllButton = () => wrapper.findByTestId('replace-all-button');
     const findCloneDiv = () => formWrapper.findByTestId('find-and-replace-clone');
     const findFindAndReplaceBar = () => wrapper.findByTestId('find-and-replace');
     const findAndReplaceMatchCount = () => wrapper.findByTestId('find-and-replace-matches').text();
-    const findNextButton = () => wrapper.findByTestId('find-next');
-    const findPrevButton = () => wrapper.findByTestId('find-prev');
-    const findCloseButton = () => wrapper.findByTestId('find-and-replace-close');
+    const findNextButton = () => wrapper.findComponentByTestId('find-next');
+    const findPrevButton = () => wrapper.findComponentByTestId('find-prev');
+    const findCloseButton = () => wrapper.findComponentByTestId('find-and-replace-close');
     const findTextarea = () => document.querySelector('textarea');
     const findToggleReplaceSectionButton = () =>
       wrapper.findByTestId('replace-section-toggle').findComponent(GlButton);

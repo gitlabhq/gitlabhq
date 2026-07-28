@@ -44,8 +44,8 @@ describe('group_settings/components/shared_runners_form', () => {
   };
 
   const findAlert = () => wrapper.findComponent(GlAlert);
-  const findSharedRunnersToggle = () => wrapper.findByTestId('shared-runners-toggle');
-  const findOverrideToggle = () => wrapper.findByTestId('override-runners-toggle');
+  const findSharedRunnersToggle = () => wrapper.findComponentByTestId('shared-runners-toggle');
+  const findOverrideToggle = () => wrapper.findComponentByTestId('override-runners-toggle');
   const getSharedRunnersSetting = () => {
     return updateGroup.mock.calls[0][1].shared_runners_setting;
   };

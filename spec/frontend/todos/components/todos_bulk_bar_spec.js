@@ -94,9 +94,9 @@ describe('TodosBulkBar', () => {
   };
 
   const findSnoozeButton = () => wrapper.findComponent(SnoozeTimePicker);
-  const findUnsnoozeButton = () => wrapper.findByTestId('bulk-action-unsnooze');
-  const findResolveButton = () => wrapper.findByTestId('bulk-action-resolve');
-  const findRestoreButton = () => wrapper.findByTestId('bulk-action-restore');
+  const findUnsnoozeButton = () => wrapper.findComponentByTestId('bulk-action-unsnooze');
+  const findResolveButton = () => wrapper.findComponentByTestId('bulk-action-resolve');
+  const findRestoreButton = () => wrapper.findComponentByTestId('bulk-action-restore');
 
   it('shows number of selected items', () => {
     createComponent({ ids: ['1', '2', '3'] });

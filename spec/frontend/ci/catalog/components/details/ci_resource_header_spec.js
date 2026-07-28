@@ -39,7 +39,7 @@ describe('CiResourceHeader', () => {
     push: jest.fn(),
   };
 
-  const findReportAbuseButton = () => wrapper.findByTestId('report-abuse-button');
+  const findReportAbuseButton = () => wrapper.findComponentByTestId('report-abuse-button');
   const findAbuseCategorySelector = () => wrapper.findComponent(AbuseCategorySelector);
   const findAvatar = () => wrapper.findComponent(GlAvatar);
   const findAvatarLink = () => wrapper.findComponent(GlAvatarLink);

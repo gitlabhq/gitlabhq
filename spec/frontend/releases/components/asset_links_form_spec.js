@@ -77,7 +77,7 @@ describe('Release edit component', () => {
     it('calls the "removeAssetLinks" store method when the remove button is clicked', () => {
       expect(actions.removeAssetLink).not.toHaveBeenCalled();
 
-      wrapper.find('.remove-button').vm.$emit('click');
+      wrapper.findComponent('.remove-button').vm.$emit('click');
 
       expect(actions.removeAssetLink).toHaveBeenCalledTimes(1);
     });

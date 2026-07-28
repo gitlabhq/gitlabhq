@@ -39,7 +39,7 @@ describe('New Runner Registration Operation Systems Instructions', () => {
 
       expect(wrapper.findByTestId('how-to-install-btn').exists()).toBe(true);
 
-      await wrapper.findByTestId('how-to-install-btn').vm.$emit('click');
+      await wrapper.findComponentByTestId('how-to-install-btn').vm.$emit('click');
       expect(findPlatformsDrawer().props('open')).toBe(true);
 
       await findPlatformsDrawer().vm.$emit('close');

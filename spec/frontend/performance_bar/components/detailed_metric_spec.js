@@ -26,10 +26,10 @@ describe('detailedMetric', () => {
 
   const findAllTraceBlocks = () => wrapper.findAll('pre');
   const findTraceBlockAtIndex = (index) => findAllTraceBlocks().at(index);
-  const findExpandBacktraceBtns = () => wrapper.findAllByTestId('backtrace-expand-btn');
+  const findExpandBacktraceBtns = () => wrapper.findAllComponentsByTestId('backtrace-expand-btn');
   const findExpandedBacktraceBtnAtIndex = (index) => findExpandBacktraceBtns().at(index);
   const findDetailsLabel = () => wrapper.findByTestId('performance-bar-details-label');
-  const findSortOrderDropdown = () => wrapper.findByTestId('performance-bar-sort-order');
+  const findSortOrderDropdown = () => wrapper.findComponentByTestId('performance-bar-sort-order');
   const selectSortOrder = (sortOrder) =>
     findSortOrderDropdown().vm.$emit('select', sortOrderOptions[sortOrder].value);
   const findEmptyDetailNotice = () => wrapper.findByTestId('performance-bar-empty-detail-notice');

@@ -69,7 +69,7 @@ describe('Merge requests compare app component', () => {
       },
     });
 
-    wrapper.findByTestId('compare-dropdown').vm.$emit('selected', { value: 'main' });
+    wrapper.findComponentByTestId('compare-dropdown').vm.$emit('selected', { value: 'main' });
 
     expect(wrapper.emitted('select-branch')).toEqual([['main']]);
   });

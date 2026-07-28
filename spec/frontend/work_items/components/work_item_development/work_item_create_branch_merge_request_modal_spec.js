@@ -94,7 +94,7 @@ describe('CreateBranchMergeRequestModal', () => {
   const findRefSelector = () => wrapper.findComponent(RefSelector);
   const findRefSelectorListBox = () =>
     wrapper.findComponent(RefSelector).findComponent(GlCollapsibleListbox);
-  const findTargetBranch = () => wrapper.find('[data-testid="target-name"]');
+  const findTargetBranch = () => wrapper.findComponent('[data-testid="target-name"]');
   const findCopyToClipboardButton = () => wrapper.findComponent(SimpleCopyButton);
 
   describe('when hosted at the root', () => {

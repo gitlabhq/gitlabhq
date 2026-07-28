@@ -23,8 +23,8 @@ describe('Blob Header Default Actions', () => {
   const findTableContents = () => wrapper.findComponent(TableContents);
   const findViewSwitcher = () => wrapper.findComponent(ViewerSwitcher);
   const findBlobFilePath = () => wrapper.findComponent(BlobFilepath);
-  const findRichTextEditorBtn = () => wrapper.findByTestId('rich-blob-viewer-button');
-  const findSimpleTextEditorBtn = () => wrapper.findByTestId('simple-blob-viewer-button');
+  const findRichTextEditorBtn = () => wrapper.findComponentByTestId('rich-blob-viewer-button');
+  const findSimpleTextEditorBtn = () => wrapper.findComponentByTestId('simple-blob-viewer-button');
   const findDuoWorkflowActionSlot = () => wrapper.findByTestId('ee-duo-workflow-action');
 
   async function createComponent({

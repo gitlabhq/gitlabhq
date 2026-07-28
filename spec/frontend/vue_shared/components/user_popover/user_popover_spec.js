@@ -59,7 +59,7 @@ describe('User Popover Component', () => {
   const findTarget = () => document.querySelector('.js-user-link');
   const findSecurityBotDocsLink = () => wrapper.findByTestId('user-popover-bot-docs-link');
   const findUserLocalTime = () => wrapper.findByTestId('user-popover-local-time');
-  const findToggleFollowButton = () => wrapper.findByTestId('toggle-follow-button');
+  const findToggleFollowButton = () => wrapper.findComponentByTestId('toggle-follow-button');
 
   const itTracksToggleFollowButtonClick = (expectedLabel) => {
     it('tracks click', async () => {

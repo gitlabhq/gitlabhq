@@ -21,8 +21,8 @@ describe('Job Cell', () => {
 
   const findJobIdLink = () => wrapper.findByTestId('job-id-link');
   const findJobIdNoLink = () => wrapper.findByTestId('job-id-limited-access');
-  const findJobRef = () => wrapper.findByTestId('job-ref');
-  const findJobSha = () => wrapper.findByTestId('job-sha');
+  const findJobRef = () => wrapper.findComponentByTestId('job-ref');
+  const findJobSha = () => wrapper.findComponentByTestId('job-sha');
   const findLabelIcon = () => wrapper.findByTestId('label-icon');
   const findForkIcon = () => wrapper.findByTestId('fork-icon');
   const findStuckIcon = () => wrapper.findByTestId('stuck-icon');

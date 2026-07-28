@@ -21,7 +21,7 @@ import { parseBoolean } from '~/lib/utils/common_utils';
 describe('RelatedIssuesBlock', () => {
   let wrapper;
 
-  const findToggleButton = () => wrapper.findByTestId('crud-collapse-toggle');
+  const findToggleButton = () => wrapper.findComponentByTestId('crud-collapse-toggle');
   const findRelatedIssuesBody = () => wrapper.findByTestId('crud-body');
   const findIssueCountBadgeAddButton = () => wrapper.findByTestId('crud-form-toggle');
   const findAddForm = () => wrapper.findByTestId('crud-form');

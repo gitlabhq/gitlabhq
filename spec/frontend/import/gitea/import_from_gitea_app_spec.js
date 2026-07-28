@@ -80,7 +80,7 @@ describe('Import from Gitea app', () => {
       findGiteaHostUrlInput().trigger('blur');
       await nextTick();
 
-      const formGroup = wrapper.findByTestId('gitea-host-url-group');
+      const formGroup = wrapper.findComponentByTestId('gitea-host-url-group');
       expect(formGroup.vm.$attrs['invalid-feedback']).toBe('Please enter a valid Gitea host URL.');
     });
 
@@ -89,7 +89,7 @@ describe('Import from Gitea app', () => {
       findPersonalAccessTokenInput().trigger('blur');
       await nextTick();
 
-      const formGroup = wrapper.findByTestId('personal-access-token-group');
+      const formGroup = wrapper.findComponentByTestId('personal-access-token-group');
       expect(formGroup.vm.$attrs['invalid-feedback']).toBe(
         'Please enter a valid personal access token.',
       );

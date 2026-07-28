@@ -110,7 +110,7 @@ describe('WorkItemLabels component', () => {
   const findRegularLabel = () => findAllLabels().at(0);
   const findLabelWithDescription = () => findAllLabels().at(2);
   const findDropdownContentsCreateView = () => wrapper.findComponent(DropdownContentsCreateView);
-  const findCreateLabelButton = () => wrapper.findByTestId('create-label');
+  const findCreateLabelButton = () => wrapper.findComponentByTestId('create-label');
   const findManageLabelsButton = () => wrapper.findByTestId('manage-labels');
 
   const showDropdown = () => {

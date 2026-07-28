@@ -4,8 +4,8 @@ import ForksButton from '~/forks/components/forks_button.vue';
 describe('ForksButton', () => {
   let wrapper;
 
-  const findForkButton = () => wrapper.findByTestId('fork-button');
-  const findForksCountButton = () => wrapper.findByTestId('forks-count');
+  const findForkButton = () => wrapper.findComponentByTestId('fork-button');
+  const findForksCountButton = () => wrapper.findComponentByTestId('forks-count');
 
   const mountComponent = ({ injections } = {}) => {
     wrapper = mountExtended(ForksButton, {

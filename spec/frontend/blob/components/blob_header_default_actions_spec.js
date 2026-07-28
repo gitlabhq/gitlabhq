@@ -37,7 +37,7 @@ describe('Blob Header Default Actions', () => {
 
   describe('renders', () => {
     const findButtonGroup = () => wrapper.findComponent(GlButtonGroup);
-    const findCopyButton = () => wrapper.findByTestId('copy-contents-button');
+    const findCopyButton = () => wrapper.findComponentByTestId('copy-contents-button');
     const findViewRawButton = () => wrapper.findByTestId('viewRawButton');
     const findDownloadButton = () => wrapper.findByTestId('download-button');
     const findOpenNewWindowButton = () => wrapper.findByTestId('open-new-window-button');
@@ -129,7 +129,7 @@ describe('Blob Header Default Actions', () => {
   });
 
   describe('view on environment button', () => {
-    const findEnvironmentButton = () => wrapper.findByTestId('environment');
+    const findEnvironmentButton = () => wrapper.findComponentByTestId('environment');
 
     it.each`
       environmentName        | environmentPath        | isVisible

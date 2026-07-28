@@ -16,8 +16,8 @@ describe('BoardAddNewColumnForm', () => {
   };
 
   const formTitle = () => wrapper.findByTestId('board-add-column-form-title').text();
-  const cancelButton = () => wrapper.findByTestId('cancelAddNewColumn');
-  const submitButton = () => wrapper.findByTestId('addNewColumnButton');
+  const cancelButton = () => wrapper.findComponentByTestId('cancelAddNewColumn');
+  const submitButton = () => wrapper.findComponentByTestId('addNewColumnButton');
   const formGroup = () => wrapper.findByTestId('boardValueDropdown');
 
   it('shows form title', () => {

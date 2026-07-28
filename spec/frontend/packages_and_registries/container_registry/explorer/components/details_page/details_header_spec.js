@@ -35,15 +35,15 @@ describe('Details Header', () => {
   // set the date to Dec 4, 2020
   useFakeDate(2020, 11, 4);
 
-  const findCreatedAndVisibility = () => wrapper.findByTestId('created-and-visibility');
-  const findLastPublishedAt = () => wrapper.findByTestId('last-published-at');
+  const findCreatedAndVisibility = () => wrapper.findComponentByTestId('created-and-visibility');
+  const findLastPublishedAt = () => wrapper.findComponentByTestId('last-published-at');
   const findTitle = () => wrapper.findByTestId('title');
-  const findTagsCount = () => wrapper.findByTestId('tags-count');
-  const findCleanup = () => wrapper.findByTestId('cleanup');
+  const findTagsCount = () => wrapper.findComponentByTestId('tags-count');
+  const findCleanup = () => wrapper.findComponentByTestId('cleanup');
   const findDeleteButton = () => wrapper.findComponent(GlDisclosureDropdownItem);
   const findInfoIcon = () => wrapper.findComponent(GlIcon);
   const findMenu = () => wrapper.findComponent(GlDisclosureDropdown);
-  const findSize = () => wrapper.findByTestId('image-size');
+  const findSize = () => wrapper.findComponentByTestId('image-size');
 
   const defaultProvide = {
     config: {

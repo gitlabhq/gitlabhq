@@ -15,7 +15,7 @@ describe('VersionSelectForm', () => {
   const findInstanceUrlFormGroup = () => wrapper.findComponent(GlFormGroup);
   const findSelfManagedAlert = () => wrapper.findComponent(SelfManagedAlert);
   const findSetupInstructions = () => wrapper.findComponent(SetupInstructions);
-  const findBackButton = () => wrapper.findByTestId('back-button');
+  const findBackButton = () => wrapper.findComponentByTestId('back-button');
   const findSubmitButton = () => wrapper.findByTestId('submit-button');
 
   const submitForm = () => findForm().vm.$emit('submit', new Event('submit'));

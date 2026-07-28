@@ -24,7 +24,7 @@ describe('SearchItem', () => {
   };
 
   const findAvatar = () => wrapper.findComponent(GlAvatar);
-  const findIcon = () => wrapper.findByTestId('icon');
+  const findIcon = () => wrapper.findComponentByTestId('icon');
   const findNamespace = () => wrapper.findByTestId('namespace');
   const findNamespaceBullet = () => wrapper.findByTestId('namespace-bullet');
 
@@ -92,7 +92,7 @@ describe('SearchItem', () => {
 
       expect(findNamespaceBullet().exists()).toBe(true);
 
-      const namespaceHighlight = wrapper.findByTestId('namespace');
+      const namespaceHighlight = wrapper.findComponentByTestId('namespace');
       expect(namespaceHighlight.props('text')).toBe('test-namespace');
       expect(namespaceHighlight.props('match')).toBe('root');
     });

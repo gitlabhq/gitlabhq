@@ -37,11 +37,11 @@ describe('ReviewDrawer', () => {
   const findDrawer = () => wrapper.findComponent(GlDrawer);
   const findDrawerHeading = () => wrapper.findByTestId('reviewer-drawer-heading');
   const findCommentTextarea = () => wrapper.findByTestId('comment-textarea');
-  const findSubmitButton = () => wrapper.findByTestId('submit-review-button');
-  const findForm = () => wrapper.findByTestId('submit-gl-form');
-  const findPlaceholderField = () => wrapper.findByTestId('placeholder-input-field');
-  const findDiscardReviewButton = () => wrapper.findByTestId('discard-review-btn');
-  const findDiscardReviewModal = () => wrapper.findByTestId('discard-review-modal');
+  const findSubmitButton = () => wrapper.findComponentByTestId('submit-review-button');
+  const findForm = () => wrapper.findComponentByTestId('submit-gl-form');
+  const findPlaceholderField = () => wrapper.findComponentByTestId('placeholder-input-field');
+  const findDiscardReviewButton = () => wrapper.findComponentByTestId('discard-review-btn');
+  const findDiscardReviewModal = () => wrapper.findComponentByTestId('discard-review-modal');
   const findMarkdownField = () => wrapper.findComponent(MarkdownField);
 
   const submitForm = async () => {

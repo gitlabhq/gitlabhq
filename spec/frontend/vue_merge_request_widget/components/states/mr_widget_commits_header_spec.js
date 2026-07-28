@@ -22,7 +22,7 @@ describe('Commits header component', () => {
   };
 
   const findHeaderWrapper = () => wrapper.find('.js-mr-widget-commits-count');
-  const findCommitToggle = () => wrapper.find('.commit-edit-toggle');
+  const findCommitToggle = () => wrapper.findComponent('.commit-edit-toggle');
   const findTargetBranchMessage = () => wrapper.find('[data-testid="widget-target-branch"]');
   const findModifyButton = () => wrapper.find('.modify-message-button');
 

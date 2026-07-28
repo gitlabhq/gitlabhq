@@ -13,11 +13,11 @@ describe('GKE Node Pool Group', () => {
 
   // Node pool labels
   const findNodePoolLabelRows = () => wrapper.findAllByTestId('node-pool-label-row-container');
-  const findKeyInputs = () => wrapper.findAllByTestId('node-pool-label-key-field');
+  const findKeyInputs = () => wrapper.findAllComponentsByTestId('node-pool-label-key-field');
   const findValueInputs = () => wrapper.findAllByTestId('node-pool-label-value-field');
-  const findRemoveIcons = () => wrapper.findAllByTestId('remove-node-pool-label');
+  const findRemoveIcons = () => wrapper.findAllComponentsByTestId('remove-node-pool-label');
 
-  const findRemoveNodePoolButton = () => wrapper.findByTestId('remove-node-pool-button');
+  const findRemoveNodePoolButton = () => wrapper.findComponentByTestId('remove-node-pool-button');
 
   const fillInTextField = (formGroup, value) => {
     const input = formGroup.find('input');

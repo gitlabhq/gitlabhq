@@ -19,8 +19,9 @@ describe('registry_header', () => {
 
   const findTitleArea = () => wrapper.findComponent(TitleArea);
   const findCommandsSlot = () => wrapper.find('[data-testid="commands-slot"]');
-  const findImagesCountSubHeader = () => wrapper.find('[data-testid="images-count"]');
-  const findExpirationPolicySubHeader = () => wrapper.find('[data-testid="expiration-policy"]');
+  const findImagesCountSubHeader = () => wrapper.findComponent('[data-testid="images-count"]');
+  const findExpirationPolicySubHeader = () =>
+    wrapper.findComponent('[data-testid="expiration-policy"]');
   const findSetupCleanUpLink = () => wrapper.findComponent(GlLink);
 
   const mountComponent = async (propsData, slots) => {

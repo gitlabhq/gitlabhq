@@ -19,11 +19,11 @@ describe('ExportConfigTab', () => {
     });
   };
 
-  const findAccessKeyId = () => wrapper.findByTestId('access-key-id-input');
+  const findAccessKeyId = () => wrapper.findComponentByTestId('access-key-id-input');
   const findSecretAccessKey = () => wrapper.findComponent(PasswordInput);
-  const findRegion = () => wrapper.findByTestId('region-input');
-  const findBucketName = () => wrapper.findByTestId('bucket-name-input');
-  const findPathStyle = () => wrapper.findByTestId('path-style-checkbox');
+  const findRegion = () => wrapper.findComponentByTestId('region-input');
+  const findBucketName = () => wrapper.findComponentByTestId('bucket-name-input');
+  const findPathStyle = () => wrapper.findComponentByTestId('path-style-checkbox');
 
   describe('default renders', () => {
     beforeEach(() => createComponent());

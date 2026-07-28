@@ -97,12 +97,12 @@ describe('ImportProjectMembersModal', () => {
   const findIntroText = () => wrapper.findComponent({ ref: 'modalIntro' }).text();
   const clickImportButton = () => findGlModal().vm.$emit('primary', { preventDefault: jest.fn() });
   const closeModal = () => findGlModal().vm.$emit('hidden', { preventDefault: jest.fn() });
-  const findFormGroup = () => wrapper.findByTestId('form-group');
+  const findFormGroup = () => wrapper.findComponentByTestId('form-group');
   const formGroupInvalidFeedback = () => findFormGroup().props('invalidFeedback');
   const formGroupErrorState = () => findFormGroup().props('state');
   const findProjectSelect = () => wrapper.findComponent(ProjectSelect);
-  const findMemberErrorAlert = () => wrapper.findByTestId('alert-member-error');
-  const findMoreInviteErrorsButton = () => wrapper.findByTestId('accordion-button');
+  const findMemberErrorAlert = () => wrapper.findComponentByTestId('alert-member-error');
+  const findMoreInviteErrorsButton = () => wrapper.findComponentByTestId('accordion-button');
   const findAccordion = () => wrapper.findComponent(GlCollapse);
   const findErrorsIcon = () => wrapper.findComponent(GlIcon);
   const findSeatOveragesAlert = () =>

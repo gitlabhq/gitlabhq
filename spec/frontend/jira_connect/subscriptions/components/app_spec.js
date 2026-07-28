@@ -27,7 +27,7 @@ describe('JiraConnectApp', () => {
 
   const mockCurrentUser = { name: 'root' };
 
-  const findAlert = () => wrapper.findByTestId('jira-connect-persisted-alert');
+  const findAlert = () => wrapper.findComponentByTestId('jira-connect-persisted-alert');
   const findJiraConnectApp = () => wrapper.findByTestId('jira-connect-app');
   const findAlertLink = () => findAlert().findComponent(GlLink);
   const findSignInPage = () => wrapper.findComponent(SignInPage);

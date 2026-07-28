@@ -53,7 +53,7 @@ describe('NewEditForm', () => {
   const findNameField = () => wrapper.findByLabelText('Group name');
   const findPathField = () => wrapper.findComponent(GroupPathField);
   const findVisibilityLevelField = () => wrapper.findComponent(VisibilityLevelRadioButtons);
-  const findSubmitButton = () => wrapper.findByTestId('submit-button');
+  const findSubmitButton = () => wrapper.findComponentByTestId('submit-button');
 
   const setPathFieldValue = async (value) => {
     findPathField().vm.$emit('input', value);

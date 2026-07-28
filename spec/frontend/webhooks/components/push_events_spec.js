@@ -10,8 +10,10 @@ describe('Webhook push events form editor component', () => {
   const findPushEventsIndicator = (w = wrapper) => w.find('input[name="hook[push_events]"]');
   const findPushEventRulesGroup = (w = wrapper) => w.findComponent(GlFormRadioGroup);
   const getPushEventsRuleValue = (w = wrapper) => findPushEventRulesGroup(w).props().checked;
-  const findWildcardRuleInput = (w = wrapper) => w.findByTestId('webhook_branch_filter_field');
-  const findRegexRuleInput = (w = wrapper) => w.findByTestId('webhook_branch_filter_field');
+  const findWildcardRuleInput = (w = wrapper) =>
+    w.findComponentByTestId('webhook_branch_filter_field');
+  const findRegexRuleInput = (w = wrapper) =>
+    w.findComponentByTestId('webhook_branch_filter_field');
 
   const createComponent = (props = {}) =>
     shallowMountExtended(PushEvents, {

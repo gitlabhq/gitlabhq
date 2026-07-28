@@ -41,10 +41,11 @@ describe('PackageTitle', () => {
   }
 
   const findTitleArea = () => wrapper.findComponent(TitleArea);
-  const findPackageType = () => wrapper.findByTestId('package-type');
-  const findPipelineProject = () => wrapper.findByTestId('pipeline-project');
-  const findPackageRef = () => wrapper.findByTestId('package-ref');
-  const findPackageLastDownloadedAt = () => wrapper.findByTestId('package-last-downloaded-at');
+  const findPackageType = () => wrapper.findComponentByTestId('package-type');
+  const findPipelineProject = () => wrapper.findComponentByTestId('pipeline-project');
+  const findPackageRef = () => wrapper.findComponentByTestId('package-ref');
+  const findPackageLastDownloadedAt = () =>
+    wrapper.findComponentByTestId('package-last-downloaded-at');
   const findPackageTags = () => wrapper.findComponent(PackageTags);
   const findSubHeaderText = () => wrapper.findByTestId('sub-header');
   const findSubHeaderTimeAgo = () => wrapper.findComponent(TimeAgoTooltip);

@@ -21,7 +21,8 @@ describe('Issuable Time Tracker', () => {
   const findByTestId = (testId) => wrapper.find(`[data-testid=${testId}]`);
   const findComparisonMeter = () => findByTestId('compareMeter').attributes('title');
   const findCollapsedState = () => findByTestId('collapsedState');
-  const findTimeRemainingProgress = () => findByTestId('timeRemainingProgress');
+  const findTimeRemainingProgress = () =>
+    wrapper.findComponent('[data-testid=timeRemainingProgress]');
   const findReportLink = () => findByTestId('reportLink');
 
   const defaultProps = {

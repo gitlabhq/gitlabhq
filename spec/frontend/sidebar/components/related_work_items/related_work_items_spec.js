@@ -111,7 +111,7 @@ describe('MRRelatedWorkItems', () => {
   const findAllLinks = () => wrapper.findAllComponents(GlLink);
   const findNoneText = () => wrapper.find('.hide-collapsed.gl-text-subtle');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findAddButton = () => wrapper.findByTestId('add-work-item-button');
+  const findAddButton = () => wrapper.findComponentByTestId('add-work-item-button');
   const findAddForm = () => wrapper.findComponent(RelatedWorkItemsAddForm);
 
   const createComponent = ({

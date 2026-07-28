@@ -365,6 +365,15 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
             .to output(/altered, omitted, or duplicated 1 baseline rule/).to_stderr
           expect(sync.workflow).to have_received(:distill).twice
         end
+
+        it 'uses the short deterministic backoff, not the long Gitaly one', :aggregate_failures do
+          distill
+
+          expect(sync.workflow).to have_received(:sleep_with_heartbeat)
+            .with(described_class::DISTILL_BASELINE_DRIFT_BACKOFF_SECONDS, anything, anything)
+          expect(sync.workflow).not_to have_received(:sleep_with_heartbeat)
+            .with(described_class::DISTILL_RETRY_BACKOFF_SECONDS[0], anything, anything)
+        end
       end
 
       context 'when the output omits a baseline rule' do
@@ -422,6 +431,32 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
 
         it 'accepts the content on the first attempt' do
           expect(distill).to include('verify the current')
+          expect(sync.workflow).to have_received(:distill).once
+        end
+      end
+
+      context 'when the output renders a baseline paragraph as a bullet' do
+        # Regression: the database-fundamentals baseline stores the
+        # "When a diff modifies..." rule as a bare paragraph that precedes
+        # nested sub-bullets, but every reasonable distillation renders it
+        # as a bullet so the sub-bullets attach. Keeping the leading list
+        # marker in the normalized unit made the two forms compare unequal,
+        # so the guard flagged drift on byte-identical rule text and burned
+        # every retry (which timed out the weekly ai-principles-sync job).
+        # The marker is presentation, not content, so this must be accepted.
+        let(:bulletized_content) do
+          verbatim_content.sub(
+            'When a diff modifies an existing structure',
+            '- When a diff modifies an existing structure'
+          )
+        end
+
+        before do
+          allow(sync.workflow).to receive(:distill).and_return(bulletized_content)
+        end
+
+        it 'accepts the content on the first attempt' do
+          expect(distill).to include('When a diff modifies an existing structure')
           expect(sync.workflow).to have_received(:distill).once
         end
       end

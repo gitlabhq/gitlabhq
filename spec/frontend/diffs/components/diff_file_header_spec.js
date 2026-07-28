@@ -73,7 +73,7 @@ describe('DiffFileHeader component', () => {
     wrapper.findComponent(GlAnimatedChevronRightDownIcon).attributes('is-on') ||
     wrapper.findComponent(GlAnimatedChevronRightDownIcon).attributes('ison');
   const findEditButton = () => wrapper.findComponent({ ref: 'editButton' });
-  const findReviewFileCheckbox = () => wrapper.find("[data-testid='fileReviewCheckbox']");
+  const findReviewFileCheckbox = () => wrapper.findComponent("[data-testid='fileReviewCheckbox']");
 
   const createComponent = ({ props, options = {} } = {}) => {
     wrapper = shallowMountExtended(DiffFileHeader, {

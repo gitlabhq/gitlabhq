@@ -198,7 +198,9 @@ describe('Repository table row component', () => {
       },
     });
 
-    expect(wrapper.find('.tree-item-link').props('to')).toBe(`/-/tree/main/test%23?ref_type=heads`);
+    expect(wrapper.findComponent('.tree-item-link').props('to')).toBe(
+      `/-/tree/main/test%23?ref_type=heads`,
+    );
   });
 
   it('renders commit ID for submodule', () => {

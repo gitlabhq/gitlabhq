@@ -19,8 +19,8 @@ describe('OrganizationGroupCard', () => {
     });
   };
 
-  const findVisibilityIcon = () => wrapper.findByTestId('group-visibility');
-  const findVisibilityWarning = () => wrapper.findByTestId('visibility-warning');
+  const findVisibilityIcon = () => wrapper.findComponentByTestId('group-visibility');
+  const findVisibilityWarning = () => wrapper.findComponentByTestId('visibility-warning');
   const findAllStats = () => wrapper.findAllComponents(ListItemStat);
 
   const expectVisibilityIcon = ({ expectedIcon, expectedTooltip }) => {

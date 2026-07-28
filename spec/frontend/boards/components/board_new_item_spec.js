@@ -35,12 +35,12 @@ describe('BoardNewItem', () => {
   describe('template', () => {
     describe('when the user provides a valid input', () => {
       it('finds an enabled create button', async () => {
-        expect(wrapper.findByTestId('create-button').props('disabled')).toBe(true);
+        expect(wrapper.findComponentByTestId('create-button').props('disabled')).toBe(true);
 
         wrapper.findComponent(GlFormInput).vm.$emit('input', 'hello');
         await nextTick();
 
-        expect(wrapper.findByTestId('create-button').props('disabled')).toBe(false);
+        expect(wrapper.findComponentByTestId('create-button').props('disabled')).toBe(false);
       });
     });
 
@@ -50,7 +50,7 @@ describe('BoardNewItem', () => {
 
         await nextTick();
 
-        expect(wrapper.findByTestId('create-button').props('disabled')).toBe(true);
+        expect(wrapper.findComponentByTestId('create-button').props('disabled')).toBe(true);
       });
     });
 

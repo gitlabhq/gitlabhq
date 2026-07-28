@@ -83,7 +83,7 @@ describe('DependencyProxyApp', () => {
   const findClearCacheDropdownList = () => wrapper.findComponent(GlDisclosureDropdown);
   const findClearCacheModal = () => wrapper.findComponent(GlModal);
   const findClearCacheAlert = () => wrapper.findComponent(GlAlert);
-  const findSettingsLink = () => wrapper.findByTestId('settings-link');
+  const findSettingsLink = () => wrapper.findComponentByTestId('settings-link');
 
   beforeEach(() => {
     resolver = jest.fn().mockResolvedValue(proxyDetailsQuery());

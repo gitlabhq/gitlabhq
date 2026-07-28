@@ -39,8 +39,9 @@ const createComponent = (mountFn = shallowMountExtended, stubs = {}) => {
 const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
 const findModal = () => wrapper.findComponent(GlModal);
 const findConfirmationButton = () =>
-  wrapper.findByTestId('delete-merged-branches-confirmation-button');
-const findCancelButton = () => wrapper.findByTestId('delete-merged-branches-cancel-button');
+  wrapper.findComponentByTestId('delete-merged-branches-confirmation-button');
+const findCancelButton = () =>
+  wrapper.findComponentByTestId('delete-merged-branches-cancel-button');
 const findFormInput = () => wrapper.findComponent(GlFormInput);
 const findForm = () => wrapper.find('form');
 

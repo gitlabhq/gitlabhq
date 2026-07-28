@@ -151,7 +151,8 @@ describe('Pipeline editor app component', () => {
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findEditorHome = () => wrapper.findComponent(PipelineEditorHome);
   const findEmptyState = () => wrapper.findComponent(PipelineEditorEmptyState);
-  const findEmptyStateButton = () => findEmptyState().find('[data-testid="create-new-ci-button"]');
+  const findEmptyStateButton = () =>
+    findEmptyState().findComponent('[data-testid="create-new-ci-button"]');
   const findValidationSegment = () => wrapper.findComponent(ValidationSegment);
   const findConfirmUnsavedChangesDialog = () => wrapper.findComponent(ConfirmUnsavedChangesDialog);
 

@@ -1890,7 +1890,6 @@ lib/gitlab/checks/
 # Verify Frontend, optional approvals
 ^[Verify frontend] @gitlab-org/ci-cd/verify/frontend
 /**/javascripts/ci/
-/**/javascripts/token_access/
 /**/javascripts/admin/application_settings/runner_token_expiration/
 /**/javascripts/editor/schema/ci.json
 /app/**/ci/*.haml

@@ -20,15 +20,15 @@ describe('Edit Access Levels Drawer', () => {
   let wrapper;
 
   const findDrawer = () => wrapper.findComponent(GlDrawer);
-  const findCancelButton = () => wrapper.findByTestId('cancel-btn');
+  const findCancelButton = () => wrapper.findComponentByTestId('cancel-btn');
   const findHeader = () => wrapper.find('h2');
-  const findSaveButton = () => wrapper.findByTestId('save-allowed-to-merge');
+  const findSaveButton = () => wrapper.findComponentByTestId('save-allowed-to-merge');
   const findCheckboxes = () => wrapper.findAllComponents(GlFormCheckbox);
-  const findAdministratorsCheckbox = () => wrapper.findByTestId('admins-role-checkbox');
-  const findMaintainersCheckbox = () => wrapper.findByTestId('maintainers-role-checkbox');
+  const findAdministratorsCheckbox = () => wrapper.findComponentByTestId('admins-role-checkbox');
+  const findMaintainersCheckbox = () => wrapper.findComponentByTestId('maintainers-role-checkbox');
   const findDevelopersAndMaintainersCheckbox = () =>
-    wrapper.findByTestId('developers-role-checkbox');
-  const findNoOneCheckbox = () => wrapper.findByTestId('no-one-role-checkbox');
+    wrapper.findComponentByTestId('developers-role-checkbox');
+  const findNoOneCheckbox = () => wrapper.findComponentByTestId('no-one-role-checkbox');
 
   const createComponent = (props = allowedToMergeDrawerProps) => {
     wrapper = shallowMountExtended(AccessLevelsDrawer, {

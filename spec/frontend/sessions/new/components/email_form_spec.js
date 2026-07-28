@@ -24,7 +24,7 @@ describe('EmailForm', () => {
 
   const findForm = () => wrapper.findComponent(GlForm);
   const findEmailInput = () => wrapper.findComponent(GlFormInput);
-  const findSubmitButton = () => wrapper.find('[type="submit"]');
+  const findSubmitButton = () => wrapper.findComponent('[type="submit"]');
   const findCancelLink = () => wrapper.findByText(I18N_CANCEL);
   const enterEmail = (email) => findEmailInput().setValue(email);
   const submitForm = () => findForm().trigger('submit');

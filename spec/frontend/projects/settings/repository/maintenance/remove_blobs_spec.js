@@ -44,10 +44,10 @@ describe('Remove blobs', () => {
     });
   };
 
-  const findDrawerTrigger = () => wrapper.findByTestId('drawer-trigger');
+  const findDrawerTrigger = () => wrapper.findComponentByTestId('drawer-trigger');
   const findDrawer = () => wrapper.findComponent(GlDrawer);
   const findWarningModal = () => wrapper.findComponent(WarningModal);
-  const removeBlobsButton = () => wrapper.findByTestId('remove-blobs');
+  const removeBlobsButton = () => wrapper.findComponentByTestId('remove-blobs');
   const findTextarea = () => wrapper.findComponent(GlFormTextarea);
 
   beforeEach(() => createComponent());

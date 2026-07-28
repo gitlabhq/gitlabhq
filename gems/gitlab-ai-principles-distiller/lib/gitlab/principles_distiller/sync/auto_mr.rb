@@ -205,8 +205,10 @@ module Gitlab
         # would derive the fences from the pre-merge working tree and the
         # resulting MR could fail its own (strict) guard against the newer base.
         # Regenerating on the freshly checked-out branch keeps the reconcile a
-        # pure projection of the branch's base. Same-day re-runs update the
-        # existing open MR (see submit_mr).
+        # pure projection of the branch's base. The reconcile branch is
+        # date-free, so every re-run reuses the one open reconcile MR
+        # (see reconcile_branch_name and submit_mr) rather than opening a new
+        # one each time.
         #
         # `regenerate` yields true when the projection changed the file on disk.
         # If nothing changed, master's fences already match its distilled files
@@ -221,7 +223,7 @@ module Gitlab
           end
 
           base_branch = workflow.default_branch
-          branch = reconcile_branch_name(auto_mr_cfg, date)
+          branch = reconcile_branch_name(auto_mr_cfg)
           duo_path = Manifest::DUO_REVIEW_INSTRUCTIONS_PATH
 
           # Cut the branch first so the projection below reads the distilled
@@ -258,8 +260,8 @@ module Gitlab
           create_reconcile_mr(branch, project_id, api_token, auto_mr_cfg, title)
         end
 
-        def reconcile_branch_name(auto_mr_cfg, date)
-          "#{auto_mr_cfg['branch_prefix']}-#{date}-reconcile-fences"
+        def reconcile_branch_name(auto_mr_cfg)
+          "#{auto_mr_cfg['branch_prefix']}-reconcile-fences"
         end
 
         def team_branch_name(auto_mr_cfg, date, team)

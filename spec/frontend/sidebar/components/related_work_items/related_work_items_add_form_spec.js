@@ -60,7 +60,7 @@ describe('RelatedWorkItemsAddForm', () => {
   const findRelationshipListbox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findTokenInput = () => wrapper.findComponent(WorkItemTokenInput);
   const findCreateModal = () => wrapper.findComponent(CreateWorkItemModal);
-  const findCreateButton = () => wrapper.findByTestId('add-work-item-create');
+  const findCreateButton = () => wrapper.findComponentByTestId('add-work-item-create');
   const findModal = () => wrapper.findComponent(GlModal);
 
   const createComponent = ({

@@ -67,7 +67,7 @@ describe('DropdownContentsLabelsView', () => {
   const findDropdownTitle = () => wrapper.findByTestId('dropdown-title');
   const findDropdownFooter = () => wrapper.findByTestId('dropdown-footer');
   const findNoMatchingResults = () => wrapper.findByTestId('no-matching-results');
-  const findCreateLabelLink = () => wrapper.findByTestId('create-label-link');
+  const findCreateLabelLink = () => wrapper.findComponentByTestId('create-label-link');
   const findLabelsList = () => wrapper.findByTestId('labels-list');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findSearchBoxByType = () => wrapper.findComponent(GlSearchBoxByType);

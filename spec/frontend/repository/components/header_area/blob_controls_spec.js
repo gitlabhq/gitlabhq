@@ -138,8 +138,8 @@ describe('Blob controls component', () => {
   };
 
   const findOpenMrBadge = () => wrapper.findComponent(OpenMrBadge);
-  const findFindButton = () => wrapper.findByTestId('find');
-  const findBlameButton = () => wrapper.findByTestId('blame');
+  const findFindButton = () => wrapper.findComponentByTestId('find');
+  const findBlameButton = () => wrapper.findComponentByTestId('blame');
   const findWebIdeLink = () => wrapper.findComponent(WebIdeLink);
   const findForkSuggestionModal = () => wrapper.findComponent(ForkSuggestionModal);
   const findOverflowMenu = () => wrapper.findComponent(OverflowMenu);

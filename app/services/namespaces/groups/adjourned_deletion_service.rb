@@ -9,7 +9,7 @@ module Namespaces
   module Groups
     class AdjournedDeletionService < ::BaseGroupService
       def execute
-        if can_current_user_remove_group?
+        if removable_group? && current_user_can_remove_group?
           delete_group
         else
           restore_group
@@ -18,7 +18,11 @@ module Namespaces
 
       private
 
-      def can_current_user_remove_group?
+      def removable_group?
+        !group.linked_to_subscription?
+      end
+
+      def current_user_can_remove_group?
         return false unless current_user
 
         Gitlab::Auth::CurrentUserMode.optionally_run_in_admin_mode(current_user) do

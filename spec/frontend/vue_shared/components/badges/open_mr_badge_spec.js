@@ -61,7 +61,7 @@ describe('OpenMrBadge', () => {
   }
 
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
-  const findOpenMrBadge = () => wrapper.findByTestId('open-mr-badge');
+  const findOpenMrBadge = () => wrapper.findComponentByTestId('open-mr-badge');
   const findAllMergeRequestItems = () => wrapper.findAllComponents(MergeRequestListItem);
   const findLoader = () => wrapper.findComponent(GlSkeletonLoader);
 

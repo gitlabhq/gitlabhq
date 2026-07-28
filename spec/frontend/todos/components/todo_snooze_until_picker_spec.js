@@ -19,7 +19,7 @@ describe('SnoozeTimePicker', () => {
   useFakeDate(mockCurrentTime);
 
   const findGlTooltip = () => wrapper.findComponent(GlTooltip);
-  const findSnoozeDropdown = () => wrapper.findByTestId('snooze-dropdown');
+  const findSnoozeDropdown = () => wrapper.findComponentByTestId('snooze-dropdown');
   const getPredefinedSnoozingOption = (index) =>
     findSnoozeDropdown().props('items')[0].items[index];
 

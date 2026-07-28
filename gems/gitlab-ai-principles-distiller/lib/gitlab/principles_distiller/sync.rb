@@ -41,6 +41,16 @@ module Gitlab
       # immediately would hit the same overloaded node.
       DISTILL_RETRY_BACKOFF_SECONDS = [300, 900, 1800].freeze
 
+      # Baseline drift is DETERMINISTIC: the same SSOT sources and baseline
+      # produce the same drift on every attempt, so the long Gitaly-oriented
+      # backoff above is pure waste - the retry re-runs the identical input.
+      # When the prior attempt failed on baseline drift (not a transient
+      # fetch/agent error), retry almost immediately so a systematic baseline
+      # mismatch fails fast (~seconds) instead of consuming ~24 min of
+      # backoff and risking the job-level timeout. A small non-zero wait
+      # still lets genuinely nondeterministic agent output settle.
+      DISTILL_BASELINE_DRIFT_BACKOFF_SECONDS = 5
+
       # Documentation pointer shown on failure so an author who trips the
       # --check-duo-instructions guard (it also runs on doc/**/*.md changes)
       # knows where to get context. Links the published docs page rather than a
@@ -482,9 +492,10 @@ module Gitlab
         log_warn.call(Rainbow("  WARNING: --rewrite is a no-op with the Workflow API backend").yellow) if rewrite
 
         updated = nil
+        prior_failure_was_drift = false
         DISTILL_MAX_RETRIES.times do |attempt|
           if attempt.positive?
-            backoff = DISTILL_RETRY_BACKOFF_SECONDS[attempt - 1]
+            backoff = retry_backoff(attempt, deterministic: prior_failure_was_drift)
             log.call(Rainbow("  Waiting #{backoff}s before retry #{attempt} for #{name}...").faint)
             workflow.sleep_with_heartbeat(backoff, "retry #{attempt} for #{name}", log)
           end
@@ -501,8 +512,11 @@ module Gitlab
             end
 
             warn_baseline_drift(name, baseline_missing, attempt, log_warn)
+            prior_failure_was_drift = true
             next
           end
+
+          prior_failure_was_drift = false
 
           msg = "  WARNING: Duo returned invalid content for #{name} (attempt #{attempt + 1}/#{DISTILL_MAX_RETRIES})"
           log_warn.call(Rainbow(msg).yellow)
@@ -519,6 +533,18 @@ module Gitlab
         end
 
         Diff.strip_preamble(updated)
+      end
+
+      # Chooses the pre-retry backoff. A deterministic failure (baseline
+      # drift on the prior attempt) uses a short fixed wait since the retry
+      # re-runs identical input; every other failure (transient fetch, agent
+      # crash, invalid content) uses the long Gitaly-oriented backoff, which
+      # gives an overloaded node time to recover. `attempt` is 1-based for
+      # the backoff schedule (attempt 0 never waits).
+      def retry_backoff(attempt, deterministic:)
+        return DISTILL_BASELINE_DRIFT_BACKOFF_SECONDS if deterministic
+
+        DISTILL_RETRY_BACKOFF_SECONDS[attempt - 1]
       end
 
       # Mechanical guard for distillation prompt rule 15: baseline rules must
@@ -558,6 +584,18 @@ module Gitlab
       # one unit, with hard-wrapped continuation lines joined and inner
       # whitespace collapsed. Heading lines and blank lines terminate the
       # current unit and are excluded from the result.
+      #
+      # The leading list marker (-, *, +, or an ordered "1." / "1)") is
+      # stripped during normalization so a rule's identity is its TEXT, not
+      # its bullet-vs-paragraph presentation. A baseline may store a rule as
+      # a bare paragraph (e.g. an intro sentence ending in "For example:"
+      # that precedes nested sub-bullets), while every reasonable
+      # distillation renders that same rule as a bullet so the sub-bullets
+      # attach - a legitimate reformat, not corruption. Keeping the marker in
+      # the unit made those two forms compare unequal, so the guard flagged
+      # drift on byte-identical rule text and burned every retry (observed
+      # with the database-fundamentals baseline). Rewording, omission, and
+      # duplication still change the text itself and remain detected.
       def logical_units(text)
         units = []
         current = nil
@@ -577,7 +615,7 @@ module Gitlab
         end
 
         units << current if current
-        units.map { |unit| unit.gsub(/\s+/, ' ') }
+        units.map { |unit| unit.sub(/\A(?:[-*+]|\d+[.)])\s+/, '').gsub(/\s+/, ' ') }
       end
 
       def warn_baseline_drift(name, drifted, attempt, log_warn)

@@ -8,7 +8,7 @@ import {
 } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import PoliciesSelector from '~/token_access/components/policies_selector.vue';
+import PoliciesSelector from '~/ci/job_token_access/components/policies_selector.vue';
 import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
 import { POLICIES_BY_RESOURCE } from './mock_data';
 
@@ -37,8 +37,8 @@ describe('Policies selector component', () => {
   };
 
   const findRadioGroup = () => wrapper.findComponent(GlFormRadioGroup);
-  const findDefaultRadio = () => wrapper.findByTestId('default-radio');
-  const findFineGrainedRadio = () => wrapper.findByTestId('fine-grained-radio');
+  const findDefaultRadio = () => wrapper.findComponentByTestId('default-radio');
+  const findFineGrainedRadio = () => wrapper.findComponentByTestId('fine-grained-radio');
   const findResourcesFormGroup = () => wrapper.findComponent(GlFormGroup);
   const findResourcesDescription = () =>
     findResourcesFormGroup().find('[data-testid="slot-label-description"]');

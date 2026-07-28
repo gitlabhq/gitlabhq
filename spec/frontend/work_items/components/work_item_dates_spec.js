@@ -25,11 +25,11 @@ describe('WorkItemDueDate component', () => {
   const updateWorkItemMutationHandler = jest.fn().mockResolvedValue(updateWorkItemMutationResponse);
 
   const findWorkItemSidebarWidget = () => wrapper.findComponent(WorkItemSidebarWidget);
-  const findStartDatePicker = () => wrapper.findByTestId('start-date-picker');
+  const findStartDatePicker = () => wrapper.findComponentByTestId('start-date-picker');
   const findDatePickersWrapper = () => wrapper.findByTestId('date-pickers-wrapper');
-  const findDueDatePicker = () => wrapper.findByTestId('due-date-picker');
-  const findApplyButton = () => wrapper.findByTestId('apply-button');
-  const findEditButton = () => wrapper.findByTestId('edit-button');
+  const findDueDatePicker = () => wrapper.findComponentByTestId('due-date-picker');
+  const findApplyButton = () => wrapper.findComponentByTestId('apply-button');
+  const findEditButton = () => wrapper.findComponentByTestId('edit-button');
   const findStartDateValue = () => wrapper.findByTestId('start-date-value');
   const findDueDateValue = () => wrapper.findByTestId('due-date-value');
 

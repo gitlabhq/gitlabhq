@@ -123,7 +123,7 @@ describe('WorkItemDetail component', () => {
   const findWorkItemDescription = () => wrapper.findComponent(WorkItemDescription);
   const findWorkItemAttributesWrapper = () => wrapper.findComponent(WorkItemAttributesWrapper);
   const findAncestors = () => wrapper.findComponent(WorkItemAncestors);
-  const findCloseButton = () => wrapper.findByTestId('work-item-close');
+  const findCloseButton = () => wrapper.findComponentByTestId('work-item-close');
   const findWorkItemType = () => wrapper.findByTestId('work-item-type');
   const findErrorTrackingWidget = () => wrapper.findComponent(WorkItemErrorTracking);
   const findLinkedResourcesWidget = () => wrapper.findComponent(WorkItemLinkedResources);
@@ -135,7 +135,7 @@ describe('WorkItemDetail component', () => {
   const findStickyHeader = () => wrapper.findComponent(WorkItemStickyHeader);
   const findWorkItemTwoColumnViewContainer = () => wrapper.findByTestId('work-item-overview');
   const findRightSidebar = () => wrapper.findByTestId('work-item-overview-right-sidebar');
-  const findEditButton = () => wrapper.findByTestId('work-item-edit-form-button');
+  const findEditButton = () => wrapper.findComponentByTestId('work-item-edit-form-button');
   const findWorkItemDesigns = () => wrapper.findComponent(DesignWidget);
   const findDesignUploadButton = () => wrapper.findComponent(DesignUploadButton);
   const findDetailWrapper = () => wrapper.findByTestId('detail-wrapper');
@@ -144,7 +144,8 @@ describe('WorkItemDetail component', () => {
     wrapper.findComponent(WorkItemCreateBranchMergeRequestSplitButton);
   const findDesignDropzone = () => wrapper.findComponent(DesignDropzone);
   const findWorkItemDetailInfo = () => wrapper.findByTestId('info-alert');
-  const findShowSidebarButton = () => wrapper.findByTestId('work-item-show-sidebar-button');
+  const findShowSidebarButton = () =>
+    wrapper.findComponentByTestId('work-item-show-sidebar-button');
   const findDetailLayoutContainer = () => wrapper.findByTestId('detail-layout-container');
   const findRootNode = () => wrapper.findByTestId('work-item-detail');
   const findRefetchAlert = () => wrapper.findByTestId('work-item-refetch-alert');

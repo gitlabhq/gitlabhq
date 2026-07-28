@@ -42,7 +42,8 @@ describe('JiraIssuesFields', () => {
   const findEnableCheckboxDisabled = () =>
     findEnableCheckbox().find('[type=checkbox]').attributes('disabled');
   const findProjectKeysGroup = () => wrapper.findByTestId('jira-project-keys');
-  const findJiraForVulnerabilities = () => wrapper.findByTestId('jira-for-vulnerabilities');
+  const findJiraForVulnerabilities = () =>
+    wrapper.findComponentByTestId('jira-for-vulnerabilities');
   const setEnableCheckbox = (isEnabled = true) => findEnableCheckbox().vm.$emit('input', isEnabled);
 
   describe('template', () => {

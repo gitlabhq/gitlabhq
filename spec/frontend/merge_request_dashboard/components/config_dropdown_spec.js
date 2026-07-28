@@ -22,7 +22,7 @@ describe('Merge request dashboard config dropdown component', () => {
 
   const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
   const findPopover = () => wrapper.findComponent(GlPopover);
-  const findDraftsToggle = () => wrapper.findByTestId('show-drafts-toggle');
+  const findDraftsToggle = () => wrapper.findComponentByTestId('show-drafts-toggle');
   const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
   function createComponent({ isShowingLabels = false, shouldShowCallout = true } = {}) {
@@ -125,7 +125,7 @@ describe('Merge request dashboard config dropdown component', () => {
 
       createComponent({ isShowingLabels });
 
-      wrapper.findByTestId('show-labels-toggle').vm.$emit('change');
+      wrapper.findComponentByTestId('show-labels-toggle').vm.$emit('change');
 
       await waitForPromises();
 
@@ -149,7 +149,7 @@ describe('Merge request dashboard config dropdown component', () => {
     async ({ isShowingLabels, mutationValue }) => {
       createComponent({ isShowingLabels });
 
-      wrapper.findByTestId('show-labels-toggle').vm.$emit('change');
+      wrapper.findComponentByTestId('show-labels-toggle').vm.$emit('change');
 
       await nextTick();
 

@@ -50,7 +50,7 @@ describe('PersonalAccessTokenNamespaceSelector', () => {
   const findCrudComponent = () => wrapper.findComponent(CrudComponent);
   const findListbox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findSelectedNamespaces = () => wrapper.findByTestId('selected-namespaces');
-  const findRemoveButtons = () => wrapper.findAllByTestId('remove-namespace');
+  const findRemoveButtons = () => wrapper.findAllComponentsByTestId('remove-namespace');
   const findDescendantCounts = () => wrapper.findByTestId('descendant-counts');
 
   const waitForQuery = async () => {

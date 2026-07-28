@@ -69,7 +69,8 @@ describe('WorkItemParent component', () => {
   const findSidebarDropdownWidget = () => wrapper.findComponent(WorkItemSidebarDropdownWidget);
   const findAncestorUnavailable = () => wrapper.findByTestId('ancestor-not-available');
   const findLink = () => wrapper.findComponent(GlLink);
-  const findInaccessibleParentPopover = () => wrapper.findByTestId('inaccessible-parent-popover');
+  const findInaccessibleParentPopover = () =>
+    wrapper.findComponentByTestId('inaccessible-parent-popover');
   const findWorkItemPopover = () => wrapper.findComponent(WorkItemPopover);
 
   const successUpdateWorkItemMutationHandler = jest

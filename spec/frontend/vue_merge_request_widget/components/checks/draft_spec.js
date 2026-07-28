@@ -40,7 +40,7 @@ describe('~/vue_merge_request_widget/components/checks/draft.vue', () => {
   let draftQuerySpy;
   let removeDraftMutationSpy;
 
-  const findMarkReadyButton = () => wrapper.findByTestId('mark-as-ready-button');
+  const findMarkReadyButton = () => wrapper.findComponentByTestId('mark-as-ready-button');
 
   const createDraftQueryResponse = (canUpdateMergeRequest) => ({
     data: {

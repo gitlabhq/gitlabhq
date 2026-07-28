@@ -64,7 +64,7 @@ describe('NoteActions', () => {
     wrapper.findAllComponents(GlButton).filter((item) => item.props('icon') === 'remove');
   const findDeleteButton = () => findAllDeleteButtons().at(0);
   const findMoreActionsDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
-  const findReportAbuseItem = () => wrapper.find('[data-testid="report-abuse-button"]');
+  const findReportAbuseItem = () => wrapper.findComponent('[data-testid="report-abuse-button"]');
   const findAbuseDrawer = () => wrapper.findComponent(AbuseCategorySelector);
   const findDropdownDeleteButton = () =>
     wrapper
@@ -312,7 +312,8 @@ describe('NoteActions', () => {
   });
 
   describe('Resolve Button', () => {
-    const findResolveButton = () => wrapper.find('[data-testid="resolve-discussion-button"]');
+    const findResolveButton = () =>
+      wrapper.findComponent('[data-testid="resolve-discussion-button"]');
 
     it('renders when canResolve is true', () => {
       createComponent({ canResolve: true });

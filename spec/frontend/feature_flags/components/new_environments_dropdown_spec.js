@@ -25,7 +25,7 @@ describe('New Environments Dropdown', () => {
   };
 
   const findListbox = () => wrapper.findComponent(GlCollapsibleListbox);
-  const findCreateEnvironmentButton = () => wrapper.findByTestId('add-environment-button');
+  const findCreateEnvironmentButton = () => wrapper.findComponentByTestId('add-environment-button');
 
   afterEach(() => {
     axiosMock.restore();

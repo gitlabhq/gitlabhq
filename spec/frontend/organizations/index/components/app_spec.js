@@ -56,7 +56,7 @@ describe('OrganizationsIndexApp', () => {
   // Finders
   const findOrganizationHeaderText = () => wrapper.findByText('Organizations');
   const findNewOrganizationButton = () => wrapper.findByText('New organization');
-  const findClaimOrgButton = () => wrapper.findByTestId('claim-org-button');
+  const findClaimOrgButton = () => wrapper.findComponentByTestId('claim-org-button');
   const findOrganizationsView = () => wrapper.findComponent(OrganizationsView);
   const findReconciliationModal = () => wrapper.findComponent(ReconciliationModal);
 

@@ -395,6 +395,38 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
       end
     end
 
+    context 'when the from_ref and to_ref have the same name but point to different commits' do
+      let(:from_project_id) { public_fork.id }
+      let(:from_ref) { 'feature' }
+      let(:to_ref) { 'feature' }
+
+      before do
+        public_fork.repository.create_ref(TestEnv::BRANCH_SHA['master'], 'refs/heads/feature')
+      end
+
+      it 'shows the comparison', :aggregate_failures do
+        show_request
+
+        expect(response).to be_successful
+        expect(assigns(:commits).length).to be >= 1
+        expect(response.body).to include('data-rapid-diffs')
+        expect(response.body).not_to include('are the same')
+      end
+    end
+
+    context 'when the from_ref and to_ref have different names but point to the same commit' do
+      let(:from_project_id) { nil }
+      let(:from_ref) { 'master' }
+      let(:to_ref) { TestEnv::BRANCH_SHA['master'] }
+
+      it 'shows a message that refs are identical', :aggregate_failures do
+        show_request
+
+        expect(response).to be_successful
+        expect(response.body).to include('are the same')
+      end
+    end
+
     context 'when the source ref is invalid' do
       let(:from_project_id) { nil }
       let(:from_ref) { "master%' AND 2554=4423 AND '%'='" }

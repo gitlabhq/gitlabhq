@@ -13,7 +13,8 @@ describe('EmptyStateComponent', () => {
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findButton = () => wrapper.findComponent(GlButton);
   const findCopyModal = () => wrapper.findComponent(InitCommandModal);
-  const findCopyButton = () => wrapper.find('[data-testid="terraform-state-copy-init-command"]');
+  const findCopyButton = () =>
+    wrapper.findComponent('[data-testid="terraform-state-copy-init-command"]');
 
   beforeEach(() => {
     wrapper = shallowMount(EmptyState, { propsData });

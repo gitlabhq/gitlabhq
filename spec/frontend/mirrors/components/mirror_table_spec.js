@@ -40,7 +40,7 @@ describe('MirrorTable', () => {
   const findTableRows = () => findTable().findAll('tbody tr');
   const findBranchSettingBadge = () => wrapper.findByTestId('mirror-branches-badge');
   const findDeleteButtons = () => wrapper.findAllByTestId('delete-mirror-button');
-  const findSyncButtons = () => wrapper.findAllByTestId('update-now-button');
+  const findSyncButtons = () => wrapper.findAllComponentsByTestId('update-now-button');
   const findDisableButtons = () => wrapper.findAllByTestId('disable-mirror-button');
   const findEnableButtons = () => wrapper.findAllByTestId('enable-mirror-button');
   const findRowContainers = () => wrapper.findAllByTestId('mirrored-repository-row-container');

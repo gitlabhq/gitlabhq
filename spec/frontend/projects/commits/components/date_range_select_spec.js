@@ -33,8 +33,8 @@ describe('DateRangeSelect', () => {
   const findBadges = () => wrapper.findAllComponents(GlBadge);
   const findApplyButton = () => wrapper.findByTestId('apply-date-filters');
   const findClearButton = () => wrapper.findByTestId('clear-date-filters');
-  const findCommittedAfterInput = () => wrapper.findByTestId('committed-after-input');
-  const findCommittedBeforeInput = () => wrapper.findByTestId('committed-before-input');
+  const findCommittedAfterInput = () => wrapper.findComponentByTestId('committed-after-input');
+  const findCommittedBeforeInput = () => wrapper.findComponentByTestId('committed-before-input');
 
   const setCommittedAfter = (date) => findCommittedAfterInput().vm.$emit('input', newDate(date));
   const setCommittedBefore = (date) => findCommittedBeforeInput().vm.$emit('input', newDate(date));

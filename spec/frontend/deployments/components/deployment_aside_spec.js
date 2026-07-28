@@ -26,13 +26,14 @@ jest.mock('~/panel_breakpoint_instance');
 describe('~/deployments/components/deployment_aside.vue', () => {
   let wrapper;
 
-  const findSidebarToggleButton = () => wrapper.findByTestId('deployment-sidebar-toggle-button');
+  const findSidebarToggleButton = () =>
+    wrapper.findComponentByTestId('deployment-sidebar-toggle-button');
   const findSidebar = () => wrapper.findByTestId('deployment-sidebar');
   const findSidebarItems = () => wrapper.findByTestId('deployment-sidebar-items');
   const findUrlButtonWrapper = () => wrapper.findByTestId('deployment-url-button-wrapper');
   const findTriggererItem = () => wrapper.findByTestId('deployment-triggerer-item');
   const findPipelineSection = () => wrapper.findByTestId('deployment-pipeline');
-  const findPipelineLink = () => wrapper.findByTestId('deployment-pipeline-link');
+  const findPipelineLink = () => wrapper.findComponentByTestId('deployment-pipeline-link');
   const findJobLink = () => wrapper.findByTestId('deployment-job');
 
   const createComponent = ({ propsData = {} } = {}) => {

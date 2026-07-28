@@ -71,9 +71,9 @@ describe('RunnersTabs', () => {
   };
 
   const findTabs = () => wrapper.findComponent(GlTabs);
-  const findRunnerTab = (testid) => wrapper.findByTestId(testid);
+  const findRunnerTab = (testid) => wrapper.findComponentByTestId(testid);
   const findRunnerTabs = () => wrapper.findAllComponents(RunnersTab);
-  const findRunnerToggleAssignButton = (testid) => wrapper.findByTestId(testid);
+  const findRunnerToggleAssignButton = (testid) => wrapper.findComponentByTestId(testid);
 
   beforeEach(() => {
     mockRefresh = jest.fn();

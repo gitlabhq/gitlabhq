@@ -53,7 +53,7 @@ describe('BoardForm', () => {
   const findDeleteLastBoardMessage = () => wrapper.findByTestId('delete-last-board-message');
   const findInput = () => wrapper.find('#board-new-name');
   const findInputFormWrapper = () => wrapper.findComponent(GlForm);
-  const findDeleteButton = () => wrapper.findByTestId('delete-board-button');
+  const findDeleteButton = () => wrapper.findComponentByTestId('delete-board-button');
 
   const defaultHandlers = {
     createBoardMutationHandler: jest.fn().mockResolvedValue({

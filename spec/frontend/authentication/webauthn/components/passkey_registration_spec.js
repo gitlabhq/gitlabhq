@@ -35,7 +35,7 @@ describe('Registration', () => {
   };
 
   const findPrimaryButton = () => wrapper.findComponent(GlButton);
-  const findCancelButton = () => wrapper.findByTestId('cancel-btn');
+  const findCancelButton = () => wrapper.findComponentByTestId('cancel-btn');
   const findForm = () => wrapper.findComponent(GlForm);
 
   describe(`when unsupported 'error' state`, () => {
@@ -123,8 +123,9 @@ describe('Registration', () => {
     describe(`when 'success' state`, () => {
       const credentials = 1;
 
-      const findCurrentPasswordInput = () => wrapper.findByTestId('current-password-input');
-      const findDeviceNameInput = () => wrapper.findByTestId('device-name-input');
+      const findCurrentPasswordInput = () =>
+        wrapper.findComponentByTestId('current-password-input');
+      const findDeviceNameInput = () => wrapper.findComponentByTestId('device-name-input');
 
       beforeEach(() => {
         mockCreate.mockResolvedValueOnce(true);

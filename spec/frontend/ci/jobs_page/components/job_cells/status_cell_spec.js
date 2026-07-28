@@ -7,8 +7,8 @@ describe('Duration Cell', () => {
 
   const findJobDuration = () => wrapper.findByTestId('job-duration');
   const findJobFinishedTime = () => wrapper.findByTestId('job-finished-time');
-  const findDurationIcon = () => wrapper.findByTestId('duration-icon');
-  const findFinishedTimeIcon = () => wrapper.findByTestId('finished-time-icon');
+  const findDurationIcon = () => wrapper.findComponentByTestId('duration-icon');
+  const findFinishedTimeIcon = () => wrapper.findComponentByTestId('finished-time-icon');
 
   const createComponent = (props) => {
     wrapper = extendedWrapper(

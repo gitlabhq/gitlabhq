@@ -14,7 +14,7 @@ describe('PickUpWidget', () => {
 
   const findWidget = () => wrapper.findByTestId('homepage-pick-up-widget');
   const findCreateMrButton = () => wrapper.findByTestId('create-merge-request-button');
-  const findDismissButton = () => wrapper.findByTestId('dismiss-button');
+  const findDismissButton = () => wrapper.findComponentByTestId('dismiss-button');
   const findProjectLink = () => wrapper.findByTestId('project-link');
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
 

@@ -7,8 +7,8 @@ describe('PromoMenu', () => {
 
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findMenu = () => wrapper.findByTestId('menu');
-  const findSigninButton = () => wrapper.findByTestId('topbar-signin-button');
-  const findSignupButton = () => wrapper.findByTestId('topbar-signup-button');
+  const findSigninButton = () => wrapper.findComponentByTestId('topbar-signin-button');
+  const findSignupButton = () => wrapper.findComponentByTestId('topbar-signup-button');
 
   const createComponent = (props = {}, provideOverrides = {}) => {
     wrapper = shallowMountExtended(PromoMenu, {

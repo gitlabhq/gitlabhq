@@ -179,7 +179,7 @@ describe('Incidents List', () => {
   const findLoader = () => wrapper.findComponent(GlLoadingIcon);
   const findTimeAgo = () => wrapper.findAllComponents(TimeAgoTooltip);
   const findAssignees = () => wrapper.findAllByTestId('incident-assignees');
-  const findCreateIncidentBtn = () => wrapper.findByTestId('create-incident-button');
+  const findCreateIncidentBtn = () => wrapper.findComponentByTestId('create-incident-button');
   const findClosedIcon = () => wrapper.findAllByTestId('incident-closed');
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findSeverity = () => wrapper.findAllComponents(SeverityToken);

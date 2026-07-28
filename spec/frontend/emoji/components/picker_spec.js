@@ -40,7 +40,7 @@ describe('Emoji Picker component', () => {
     wrapper.find('[data-testid="category-buttons"]').findAllComponents(GlButton);
   const findVirtualList = () => wrapper.findComponent(VirtualList);
   const findCreateNewEmojiLink = () => wrapper.find('[data-testid="create-new-emoji"]');
-  const findReactionToggle = () => wrapper.find('[data-testid="add-reaction-button"]');
+  const findReactionToggle = () => wrapper.findComponent('[data-testid="add-reaction-button"]');
 
   const showDropdown = async () => {
     await findDropdown().vm.$emit('shown');

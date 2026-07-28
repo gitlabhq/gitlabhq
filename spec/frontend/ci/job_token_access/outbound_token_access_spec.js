@@ -5,11 +5,11 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
-import OutboundTokenAccess from '~/token_access/components/outbound_token_access.vue';
-import removeProjectCIJobTokenScopeMutation from '~/token_access/graphql/mutations/remove_project_ci_job_token_scope.mutation.graphql';
-import updateCIJobTokenScopeMutation from '~/token_access/graphql/mutations/update_ci_job_token_scope.mutation.graphql';
-import getCIJobTokenScopeQuery from '~/token_access/graphql/queries/get_ci_job_token_scope.query.graphql';
-import getProjectsWithCIJobTokenScopeQuery from '~/token_access/graphql/queries/get_projects_with_ci_job_token_scope.query.graphql';
+import OutboundTokenAccess from '~/ci/job_token_access/components/outbound_token_access.vue';
+import removeProjectCIJobTokenScopeMutation from '~/ci/job_token_access/graphql/mutations/remove_project_ci_job_token_scope.mutation.graphql';
+import updateCIJobTokenScopeMutation from '~/ci/job_token_access/graphql/mutations/update_ci_job_token_scope.mutation.graphql';
+import getCIJobTokenScopeQuery from '~/ci/job_token_access/graphql/queries/get_ci_job_token_scope.query.graphql';
+import getProjectsWithCIJobTokenScopeQuery from '~/ci/job_token_access/graphql/queries/get_projects_with_ci_job_token_scope.query.graphql';
 import ConfirmActionModal from '~/vue_shared/components/confirm_action_modal.vue';
 import {
   enabledJobTokenScope,

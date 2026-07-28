@@ -99,7 +99,7 @@ describe('WhatsNewForYouMenuItem', () => {
     it('lazy-loads the drawer module and calls it with the sidebar payload + placement', async () => {
       createWrapper({ placement: 'profile_menu' });
 
-      wrapper.findByTestId('whats-new-for-you-profile-menu-item').vm.$emit('action');
+      wrapper.findComponentByTestId('whats-new-for-you-profile-menu-item').vm.$emit('action');
       await waitForPromises();
 
       expect(toggleWhatsNewDrawer).toHaveBeenCalledWith(
@@ -116,7 +116,7 @@ describe('WhatsNewForYouMenuItem', () => {
 
     it('reuses the cached toggle on subsequent clicks (passes no arguments)', async () => {
       createWrapper();
-      const item = wrapper.findByTestId('whats-new-for-you-help-menu-item');
+      const item = wrapper.findComponentByTestId('whats-new-for-you-help-menu-item');
 
       item.vm.$emit('action');
       await waitForPromises();
@@ -129,7 +129,7 @@ describe('WhatsNewForYouMenuItem', () => {
 
     it('updates the unread count when the drawer reports articles read', async () => {
       createWrapper();
-      wrapper.findByTestId('whats-new-for-you-help-menu-item').vm.$emit('action');
+      wrapper.findComponentByTestId('whats-new-for-you-help-menu-item').vm.$emit('action');
       await waitForPromises();
 
       const [, updateBadge] = toggleWhatsNewDrawer.mock.calls[0];

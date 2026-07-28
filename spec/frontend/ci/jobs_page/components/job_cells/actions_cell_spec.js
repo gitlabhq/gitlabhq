@@ -47,14 +47,14 @@ describe('Job actions cell', () => {
   const cannotPlayScheduledJob = findMockJob('scheduled', mockJobsNodesAsGuest);
   const cannotCancelJob = findMockJob('cancelable', mockJobsNodesAsGuest);
 
-  const findRetryButton = () => wrapper.findByTestId('retry');
-  const findPlayButton = () => wrapper.findByTestId('play');
-  const findCancelButton = () => wrapper.findByTestId('cancel-button');
+  const findRetryButton = () => wrapper.findComponentByTestId('retry');
+  const findPlayButton = () => wrapper.findComponentByTestId('play');
+  const findCancelButton = () => wrapper.findComponentByTestId('cancel-button');
   const findDownloadArtifactsButton = () => wrapper.findByTestId('download-artifacts');
   const findBrowseArtifactsButton = () => wrapper.findByTestId('browse-artifacts');
   const findCountdownButton = () => wrapper.findByTestId('countdown');
-  const findPlayScheduledJobButton = () => wrapper.findByTestId('play-scheduled');
-  const findUnscheduleButton = () => wrapper.findByTestId('unschedule');
+  const findPlayScheduledJobButton = () => wrapper.findComponentByTestId('play-scheduled');
+  const findUnscheduleButton = () => wrapper.findComponentByTestId('unschedule');
 
   const findModal = () => wrapper.findComponent(GlModal);
 

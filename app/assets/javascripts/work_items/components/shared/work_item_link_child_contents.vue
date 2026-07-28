@@ -101,7 +101,7 @@ export default {
       default: false,
     },
   },
-  emits: ['click', 'mouseout', 'mouseover', 'removeChild'],
+  emits: ['click', 'mouseout', 'mouseover', 'remove-child'],
   computed: {
     shouldShowAssignees() {
       const showAssignee =
@@ -350,7 +350,7 @@ export default {
         :aria-label="$options.i18n.remove"
         :title="$options.i18n.remove"
         data-testid="remove-work-item-link"
-        @click.stop="$emit('removeChild', childItem)"
+        @click.stop="$emit('remove-child', childItem)"
       />
     </div>
   </div>

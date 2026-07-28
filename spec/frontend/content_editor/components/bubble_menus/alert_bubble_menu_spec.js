@@ -40,7 +40,7 @@ describe('content_editor/components/bubble_menus/alert_bubble_menu', () => {
 
   const findBubbleMenu = () => wrapper.findComponent(BubbleMenu);
   const findAlertTypeListbox = () => wrapper.findComponent(GlCollapsibleListbox);
-  const findRemoveButton = () => wrapper.findByTestId('remove-alert');
+  const findRemoveButton = () => wrapper.findComponentByTestId('remove-alert');
 
   const showBubbleMenu = async () => {
     findBubbleMenu().vm.$emit('show');

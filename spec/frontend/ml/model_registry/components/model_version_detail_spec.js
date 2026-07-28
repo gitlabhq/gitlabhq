@@ -27,7 +27,7 @@ const createWrapper = (modelVersion = modelVersionWithCandidate, props = {}, pro
   });
 };
 
-const findDescription = () => wrapper.findByTestId('description');
+const findDescription = () => wrapper.findComponentByTestId('description');
 const findEmptyDescriptionState = () => wrapper.findByTestId('emptyDescriptionState');
 
 describe('ml/model_registry/components/model_version_detail.vue', () => {

@@ -72,7 +72,7 @@ describe('LabelsSelectRoot', () => {
   const findEmbeddedLabelsList = () => wrapper.findComponent(EmbeddedLabelsList);
   const findDropdownContents = () => wrapper.findComponent(DropdownContents);
   const findCreateView = () => wrapper.findComponent(DropdownContentsCreateView);
-  const findCreateLabelButton = () => wrapper.findByTestId('create-label');
+  const findCreateLabelButton = () => wrapper.findComponentByTestId('create-label');
 
   const createComponent = ({
     config = mockConfig,

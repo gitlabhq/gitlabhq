@@ -77,8 +77,9 @@ describe('JobArtifactsTable component', () => {
 
   const findDownloadButton = () => wrapper.findByTestId('job-artifacts-download-button');
   const findBrowseButton = () => wrapper.findByTestId('job-artifacts-browse-button');
-  const findDeleteButton = () => wrapper.findByTestId('job-artifacts-delete-button');
-  const findArtifactDeleteButton = () => wrapper.findByTestId('job-artifact-row-delete-button');
+  const findDeleteButton = () => wrapper.findComponentByTestId('job-artifacts-delete-button');
+  const findArtifactDeleteButton = () =>
+    wrapper.findComponentByTestId('job-artifact-row-delete-button');
 
   // first checkbox is the "select all" checkbox in the table header
   const findSelectAllCheckbox = () => wrapper.findComponent(GlFormCheckbox);

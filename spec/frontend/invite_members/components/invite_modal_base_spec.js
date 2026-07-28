@@ -61,12 +61,12 @@ describe('InviteModalBase', () => {
     wrapper.findByTestId('invite-modal-access-expiration-link');
 
   const findIntroText = () => wrapper.findByTestId('modal-base-intro-text').text();
-  const findMembersFormGroup = () => wrapper.findByTestId('members-form-group');
+  const findMembersFormGroup = () => wrapper.findComponentByTestId('members-form-group');
   const findDisabledInput = () => wrapper.findByTestId('disabled-input');
   const findCancelButton = () => wrapper.findByTestId('invite-modal-cancel');
-  const findActionButton = () => wrapper.findByTestId('invite-modal-submit');
+  const findActionButton = () => wrapper.findComponentByTestId('invite-modal-submit');
   const findModal = () => wrapper.findComponent(GlModal);
-  const findTemporaryAccessToggle = () => wrapper.findByTestId('temporary-access-toggle');
+  const findTemporaryAccessToggle = () => wrapper.findComponentByTestId('temporary-access-toggle');
   const findTemporaryAccessSection = () => wrapper.findByTestId('temporary-access-section');
   const findCollapse = () => wrapper.findComponent(GlCollapse);
 

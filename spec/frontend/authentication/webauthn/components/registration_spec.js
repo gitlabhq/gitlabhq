@@ -122,8 +122,9 @@ describe('Registration', () => {
     describe(`when ${STATE_SUCCESS} state`, () => {
       const credentials = 1;
 
-      const findCurrentPasswordInput = () => wrapper.findByTestId('current-password-input');
-      const findDeviceNameInput = () => wrapper.findByTestId('device-name-input');
+      const findCurrentPasswordInput = () =>
+        wrapper.findComponentByTestId('current-password-input');
+      const findDeviceNameInput = () => wrapper.findComponentByTestId('device-name-input');
 
       beforeEach(() => {
         mockCreate.mockResolvedValueOnce(true);

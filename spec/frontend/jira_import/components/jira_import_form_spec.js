@@ -49,7 +49,8 @@ describe('JiraImportForm', () => {
 
   const getHeader = (name) => getByRole(wrapper.element, 'columnheader', { name });
 
-  const findLoadMoreUsersButton = () => wrapper.find('[data-testid="load-more-users-button"]');
+  const findLoadMoreUsersButton = () =>
+    wrapper.findComponent('[data-testid="load-more-users-button"]');
 
   const mountComponent = ({
     hasMoreUsers = false,

@@ -25,7 +25,7 @@ describe('Repository last commit component', () => {
   let apolloProvider;
 
   const findLastCommitLabel = () => wrapper.findByTestId('last-commit-id-label');
-  const findHistoryButton = () => wrapper.findByTestId('last-commit-history');
+  const findHistoryButton = () => wrapper.findComponentByTestId('last-commit-history');
   const findLoadingSkeleton = () => wrapper.findByTestId('last-commit-loading');
   const findStatusBox = () => wrapper.findComponent(SignatureBadge);
   const findCommitInfo = () => wrapper.findComponent(CommitInfo);

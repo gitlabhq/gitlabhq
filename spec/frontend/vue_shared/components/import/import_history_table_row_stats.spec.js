@@ -14,7 +14,7 @@ describe('ImportHistoryTableRowStats component', () => {
   const findStatNames = () => wrapper.findAllByTestId('import-history-table-row-stat-name');
   const findStatCounts = () => wrapper.findAllByTestId('import-history-table-row-stat-count');
   const findErrorsToggleButton = () =>
-    wrapper.findByTestId('import-history-table-row-stats-show-errors-button');
+    wrapper.findComponentByTestId('import-history-table-row-stats-show-errors-button');
   const findDrawer = () => wrapper.findComponent(GlDrawer);
 
   const createComponent = (props = {}) => {

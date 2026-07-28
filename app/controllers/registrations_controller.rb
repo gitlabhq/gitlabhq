@@ -387,7 +387,7 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def ensure_signup_enabled
-    return if Gitlab::CurrentSettings.signup_enabled?
+    return if Gitlab::CurrentSettings.allow_signup?
 
     redirect_to new_user_session_path,
       alert: _('New accounts are not permitted. Please contact a GitLab administrator if you need an account.')

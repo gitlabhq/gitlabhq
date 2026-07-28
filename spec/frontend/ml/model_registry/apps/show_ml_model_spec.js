@@ -120,7 +120,7 @@ describe('ml/model_registry/apps/show_ml_model', () => {
   const findDeleteModel = () => wrapper.findComponent(DeleteModel);
   const findModelVersionCreateButton = () => wrapper.findByTestId('model-version-create-button');
   const findLoadOrErrorOrShow = () => wrapper.findComponent(LoadOrErrorOrShow);
-  const findModelEditButton = () => wrapper.findByTestId('edit-model-button');
+  const findModelEditButton = () => wrapper.findComponentByTestId('edit-model-button');
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
   const findCandidateTab = () => wrapper.findAllComponents(GlTab).at(2);
   const findCandidatesCountBadge = () => findCandidateTab().findComponent(GlBadge);

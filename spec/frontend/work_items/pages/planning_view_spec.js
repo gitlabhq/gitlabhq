@@ -237,18 +237,18 @@ const findFilteredSearchBar = () => wrapper.findComponent(FilteredSearchBar);
 const findGlIntersectionObserver = () => wrapper.findComponent(GlIntersectionObserver);
 const findStickySearchContainer = () => wrapper.findByTestId('issuable-sticky-search-container');
 const findSaveViewButton = () => wrapper.findByTestId('save-view-button');
-const findResetViewButton = () => wrapper.findByTestId('reset-view-button');
-const findUpdateViewButton = () => wrapper.findByTestId('update-view-button');
+const findResetViewButton = () => wrapper.findComponentByTestId('reset-view-button');
+const findUpdateViewButton = () => wrapper.findComponentByTestId('update-view-button');
 const findSaveChangesSeparator = () => wrapper.findByTestId('save-changes-separator');
 const findNewSavedViewModal = () => wrapper.findComponent(WorkItemsNewSavedViewModal);
 const findWorkItemsSavedViewsSelectors = () => wrapper.findComponent(WorkItemsSavedViewsSelectors);
-const findViewNotFoundModal = () => wrapper.findByTestId('view-not-found-modal');
-const findViewLimitWarningModal = () => wrapper.findByTestId('view-limit-warning-modal');
+const findViewNotFoundModal = () => wrapper.findComponentByTestId('view-not-found-modal');
+const findViewLimitWarningModal = () => wrapper.findComponentByTestId('view-limit-warning-modal');
 const findDisplaySettingsDrawer = () => wrapper.findComponent(WorkItemDisplaySettingsDrawer);
-const findDisplaySettingsButton = () => wrapper.findByTestId('display-settings-button');
+const findDisplaySettingsButton = () => wrapper.findComponentByTestId('display-settings-button');
 const findServiceDeskInfoBanner = () => wrapper.findComponent(InfoBanner);
 const findWorkItemListActions = () => wrapper.findComponent(WorkItemListActions);
-const findBulkEditStartButton = () => wrapper.findByTestId('bulk-edit-start-button');
+const findBulkEditStartButton = () => wrapper.findComponentByTestId('bulk-edit-start-button');
 const findServiceDeskEmptyStateWithAnyIssues = () =>
   wrapper.findComponent(EmptyStateWithAnyTickets);
 const findServiceDeskEmptyStateWithoutAnyIssues = () =>

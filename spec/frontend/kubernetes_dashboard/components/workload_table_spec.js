@@ -35,7 +35,8 @@ const findAllBadges = () => wrapper.findAllComponents(GlBadge);
 const findBadge = (at) => findAllBadges().at(at);
 const findPagination = () => wrapper.findComponent(GlPagination);
 const findAllPodLogsButtons = () => wrapper.findAllComponents(PodLogsButton);
-const findAllActionButtons = () => wrapper.findAll('[data-testid="delete-action-button"]');
+const findAllActionButtons = () =>
+  wrapper.findAllComponents('[data-testid="delete-action-button"]');
 const findAllPodNameButtons = () => wrapper.findAllComponents(GlButton);
 
 describe('Workload table component', () => {

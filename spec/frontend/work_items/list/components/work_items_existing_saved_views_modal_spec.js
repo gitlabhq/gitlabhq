@@ -172,12 +172,12 @@ describe('WorkItemsExistingSavedViewsModal', () => {
 
   const findModal = () => wrapper.findComponent(GlModal);
   const findSearch = () => wrapper.findComponent(GlSearchBoxByType);
-  const findNewViewButton = () => wrapper.findByTestId('new-view-button');
+  const findNewViewButton = () => wrapper.findComponentByTestId('new-view-button');
   const findSavedViewItems = () => wrapper.findAllByTestId('saved-view-item');
   const findSubscribedIcons = () => wrapper.findAllByTestId('subscribed-view-icon');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findNoPermissionAlert = () => wrapper.findByTestId('no-permission-alert');
-  const findLoadMoreButton = () => wrapper.findByTestId('load-more-button');
+  const findLoadMoreButton = () => wrapper.findComponentByTestId('load-more-button');
   const findWarningMessage = () => wrapper.find('.gl-bg-orange-50');
   const findWarningIcon = () => findWarningMessage().findComponent(GlIcon);
   const findLearnMoreLink = () => findWarningMessage().findComponent(GlLink);

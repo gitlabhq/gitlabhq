@@ -48,8 +48,8 @@ describe('Edit Actions component', () => {
   };
 
   const findEditButtons = () => wrapper.findAllComponents(GlButton);
-  const findSaveButton = () => wrapper.findByTestId('issuable-save-button');
-  const findCancelButton = () => wrapper.findByTestId('issuable-cancel-button');
+  const findSaveButton = () => wrapper.findComponentByTestId('issuable-save-button');
+  const findCancelButton = () => wrapper.findComponentByTestId('issuable-cancel-button');
 
   beforeEach(() => {
     mockIssueStateData = jest.fn();

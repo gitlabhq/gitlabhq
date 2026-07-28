@@ -53,7 +53,7 @@ describe('ProjectStorageDetail', () => {
   };
 
   const findTable = () => wrapper.findComponent(GlTableLite);
-  const findShowDetailsButton = (id) => wrapper.findByTestId(`${id}-show-details-button`);
+  const findShowDetailsButton = (id) => wrapper.findComponentByTestId(`${id}-show-details-button`);
   const findRowDetails = () => wrapper.findComponent(RepositoryHealthDetailsSection);
   const findRowData = () => wrapper.findByTestId('storage-type-row').find('td');
 
@@ -67,7 +67,7 @@ describe('ProjectStorageDetail', () => {
       ({ id, name, value, description, helpPath, warning }) => {
         expect(wrapper.findByTestId(`${id}-name`).text()).toBe(name);
         expect(wrapper.findByTestId(`${id}-description`).text()).toContain(description);
-        expect(wrapper.findByTestId(`${id}-icon`).props('name')).toBe(id);
+        expect(wrapper.findComponentByTestId(`${id}-icon`).props('name')).toBe(id);
         expect(wrapper.findByTestId(`${id}-help-link`).attributes('href')).toBe(helpPath);
         expect(wrapper.findByTestId(`${id}-help-link`).text()).toBe('Learn more.');
         expect(wrapper.findByTestId(`${id}-value`).text()).toContain(numberToHumanSize(value, 1));

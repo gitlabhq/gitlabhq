@@ -114,6 +114,24 @@ module Slack
       handle_http_error(e, 'Slack API error when updating message', channel)
     end
 
+    # Sets a thread's AI status indicator. loading_messages (max 10) auto-rotate
+    # as a loading animation; the status clears when the app posts a reply, and
+    # otherwise times out after 2 minutes. Needs only chat:write.
+    # See https://docs.slack.dev/reference/methods/assistant.threads.setStatus
+    def set_status(channel:, thread_ts:, status:, loading_messages: nil)
+      Gitlab::IntegrationsLogger.info(
+        message: 'Slack API: setting status',
+        channel_id: channel
+      )
+      payload = { channel_id: channel, thread_ts: thread_ts, status: status }
+      payload[:loading_messages] = loading_messages if loading_messages.present?
+      response = post('assistant.threads.setStatus', payload)
+      log_error('Slack API error when setting status', response, channel) unless response['ok']
+      response
+    rescue *Gitlab::HTTP::HTTP_ERRORS => e
+      handle_http_error(e, 'Slack API error when setting status', channel)
+    end
+
     # Fetches metadata about a conversation (channel, private channel, DM, or
     # group DM). Requires the matching read scope for the conversation type
     # (channels:read, groups:read, im:read, or mpim:read).

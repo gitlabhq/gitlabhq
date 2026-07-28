@@ -88,6 +88,28 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
         expect(flash[:alert]).to eq('New accounts are not permitted. Please contact a GitLab administrator if you need an account.')
       end
     end
+
+    context 'when signup is enabled but password authentication for the web is disabled' do
+      before do
+        stub_application_setting(signup_enabled: true, password_authentication_enabled_for_web: false)
+      end
+
+      it 'redirects to sign in page on new action' do
+        get :new
+        expect(response).to redirect_to(new_user_session_path)
+      end
+
+      it 'redirects to sign in page on create action' do
+        allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(false)
+        post :create, params: { user: { first_name: 'first', last_name: 'last', username: 'test_user', email: 'test@example.com', password: User.random_password } }
+        expect(response).to redirect_to(new_user_session_path)
+      end
+
+      it 'sets alert flash message' do
+        get :new
+        expect(flash[:alert]).to eq('New accounts are not permitted. Please contact a GitLab administrator if you need an account.')
+      end
+    end
   end
 
   describe '#create' do

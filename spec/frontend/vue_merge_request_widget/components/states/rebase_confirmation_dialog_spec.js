@@ -32,8 +32,8 @@ describe('RebaseConfirmationDialog', () => {
   };
 
   const findModal = () => wrapper.findComponent(GlModal);
-  const findRebaseBtn = () => wrapper.find('[data-testid="confirm-rebase"]');
-  const findCancelBtn = () => wrapper.find('[data-testid="rebase-cancel-btn"]');
+  const findRebaseBtn = () => wrapper.findComponent('[data-testid="confirm-rebase"]');
+  const findCancelBtn = () => wrapper.findComponent('[data-testid="rebase-cancel-btn"]');
 
   beforeEach(() => {
     createComponent();

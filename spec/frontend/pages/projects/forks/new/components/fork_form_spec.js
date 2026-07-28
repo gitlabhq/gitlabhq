@@ -136,11 +136,12 @@ describe('ForkForm component', () => {
   const findPrivateRadio = () => wrapper.findByTestId('radio-private');
   const findInternalRadio = () => wrapper.findByTestId('radio-internal');
   const findPublicRadio = () => wrapper.findByTestId('radio-public');
-  const findForkNameInput = () => wrapper.findByTestId('fork-name-input');
+  const findForkNameInput = () => wrapper.findComponentByTestId('fork-name-input');
   const findForkUrlInput = () => wrapper.findComponent(ProjectNamespace);
-  const findForkSlugInput = () => wrapper.findByTestId('fork-slug-input');
+  const findForkSlugInput = () => wrapper.findComponentByTestId('fork-slug-input');
   const findForkDescriptionTextarea = () => wrapper.findByTestId('fork-description-textarea');
-  const findVisibilityRadioGroup = () => wrapper.findByTestId('fork-visibility-radio-group');
+  const findVisibilityRadioGroup = () =>
+    wrapper.findComponentByTestId('fork-visibility-radio-group');
   const findBranchesRadioGroup = () => wrapper.findByTestId('fork-branches-radio-group');
 
   it('will go to cancelPath when click cancel button', () => {

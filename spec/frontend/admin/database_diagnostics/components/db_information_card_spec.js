@@ -15,8 +15,8 @@ describe('DbInformationCard component', () => {
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findAllAlerts = () => wrapper.findAllComponents(GlAlert);
   const findSchemasSection = () => wrapper.findComponent(DbSchemasSection);
-  const findStatusIcon = () => wrapper.findByTestId('status-icon');
-  const findToggle = () => wrapper.findByTestId('search-path-toggle');
+  const findStatusIcon = () => wrapper.findComponentByTestId('status-icon');
+  const findToggle = () => wrapper.findComponentByTestId('search-path-toggle');
   const findDetails = () => wrapper.findByTestId('search-path-details');
   const findCountBadge = () => wrapper.findByTestId('findings-count');
   const findCurrentUser = () => wrapper.findByTestId('current-user');

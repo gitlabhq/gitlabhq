@@ -35,6 +35,7 @@ describe('Board list component', () => {
   let resolveMutation;
 
   const findByTestId = (testId) => wrapper.find(`[data-testid="${testId}"]`);
+  const findTreeRootWrapper = () => wrapper.findComponent('[data-testid="tree-root-wrapper"]');
   const findDraggable = () => wrapper.findComponent(Draggable);
   const findMoveToPositionComponent = () => wrapper.findComponent(BoardCardMoveToPosition);
   const findIntersectionObserver = () => wrapper.findComponent(GlIntersectionObserver);
@@ -60,11 +61,11 @@ describe('Board list component', () => {
       },
     },
   ) => {
-    findByTestId('tree-root-wrapper').vm.$emit('start', params);
+    findTreeRootWrapper().vm.$emit('start', params);
   };
 
   const endDrag = (params) => {
-    findByTestId('tree-root-wrapper').vm.$emit('end', params);
+    findTreeRootWrapper().vm.$emit('end', params);
   };
 
   useFakeRequestAnimationFrame();

@@ -10,7 +10,7 @@ const modalText =
 describe('ArchiveDesignButton', () => {
   let wrapper;
 
-  const findArchiveDesignButton = () => wrapper.findByTestId('archive-design-button');
+  const findArchiveDesignButton = () => wrapper.findComponentByTestId('archive-design-button');
   const findArchiveModal = () => wrapper.findComponent(GlModal);
 
   function createComponent({ hasSelectedDesigns = false } = {}) {

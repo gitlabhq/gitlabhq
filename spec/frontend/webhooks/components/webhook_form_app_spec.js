@@ -46,9 +46,9 @@ describe('WebhookFormApp', () => {
     });
   };
 
-  const findNameInput = () => wrapper.findByTestId('webhook-name');
-  const findDescriptionInput = () => wrapper.findByTestId('webhook-description');
-  const findSecretTokenInput = () => wrapper.findByTestId('webhook-secret-token');
+  const findNameInput = () => wrapper.findComponentByTestId('webhook-name');
+  const findDescriptionInput = () => wrapper.findComponentByTestId('webhook-description');
+  const findSecretTokenInput = () => wrapper.findComponentByTestId('webhook-secret-token');
   const findWebhookTokenInput = () => wrapper.findComponent(WebhookTokenInput);
   const findFormUrlApp = () => wrapper.findComponent(FormUrlApp);
   const findFormCustomHeaders = () => wrapper.findComponent(FormCustomHeaders);

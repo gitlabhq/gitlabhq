@@ -40,7 +40,7 @@ describe('NotificationsDropdown', () => {
   }
 
   const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
-  const findSplitIcon = () => wrapper.findByTestId('notification-split-icon');
+  const findSplitIcon = () => wrapper.findComponentByTestId('notification-split-icon');
   const findAllNotificationsDropdownItems = () => wrapper.findAllComponents(GlListboxItem);
   const findListboxItemAt = (index) => findAllNotificationsDropdownItems().at(index);
   const findListboxItem = (value) => wrapper.findByTestId(`listbox-item-${value}`);

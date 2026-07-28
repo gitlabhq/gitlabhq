@@ -45,7 +45,7 @@ describe('Blob Header Viewer Switcher', () => {
 
   const findSimpleViewerButton = () => wrapper.findComponent('[data-viewer="simple"]');
   const findRichViewerButton = () => wrapper.findComponent('[data-viewer="rich"]');
-  const findBlameButton = () => wrapper.findByTestId('blame-button');
+  const findBlameButton = () => wrapper.findComponentByTestId('blame-button');
   const findInlineBlamePopover = () => wrapper.findComponent(InlineBlamePopover);
   const findUserCalloutDismisser = () => wrapper.findComponent(UserCalloutDismisser);
 

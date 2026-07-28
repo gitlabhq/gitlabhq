@@ -44,7 +44,7 @@ describe('Packages protection rules project settings', () => {
   const findMinimumAccessLevelForDeleteInTableRow = (i) =>
     findTableRow(i).findByTestId('minimum-access-level-delete-value');
   const findTableRowButtonDelete = (i) =>
-    extendedWrapper(wrapper.findAllByTestId('delete-rule-btn').at(i));
+    extendedWrapper(wrapper.findAllComponentsByTestId('delete-rule-btn').at(i));
   const findTableLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findTableRowButtonEdit = (i) => findTableRow(i).findByRole('button', { name: /edit/i });
   const findProtectionRuleForm = () => wrapper.findComponent(PackagesProtectionRuleForm);

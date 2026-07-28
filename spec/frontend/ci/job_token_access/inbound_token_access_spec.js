@@ -5,17 +5,17 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
-import InboundTokenAccess from '~/token_access/components/inbound_token_access.vue';
-import { JOB_TOKEN_FORM_ADD_GROUP_OR_PROJECT } from '~/token_access/constants';
-import NamespaceForm from '~/token_access/components/namespace_form.vue';
-import inboundRemoveGroupCIJobTokenScopeMutation from '~/token_access/graphql/mutations/inbound_remove_group_ci_job_token_scope.mutation.graphql';
-import inboundRemoveProjectCIJobTokenScopeMutation from '~/token_access/graphql/mutations/inbound_remove_project_ci_job_token_scope.mutation.graphql';
-import inboundUpdateCIJobTokenScopeMutation from '~/token_access/graphql/mutations/inbound_update_ci_job_token_scope.mutation.graphql';
-import inboundGetCIJobTokenScopeQuery from '~/token_access/graphql/queries/inbound_get_ci_job_token_scope.query.graphql';
-import getCiJobTokenScopeAllowlistQuery from '~/token_access/graphql/queries/get_ci_job_token_scope_allowlist.query.graphql';
+import InboundTokenAccess from '~/ci/job_token_access/components/inbound_token_access.vue';
+import { JOB_TOKEN_FORM_ADD_GROUP_OR_PROJECT } from '~/ci/job_token_access/constants';
+import NamespaceForm from '~/ci/job_token_access/components/namespace_form.vue';
+import inboundRemoveGroupCIJobTokenScopeMutation from '~/ci/job_token_access/graphql/mutations/inbound_remove_group_ci_job_token_scope.mutation.graphql';
+import inboundRemoveProjectCIJobTokenScopeMutation from '~/ci/job_token_access/graphql/mutations/inbound_remove_project_ci_job_token_scope.mutation.graphql';
+import inboundUpdateCIJobTokenScopeMutation from '~/ci/job_token_access/graphql/mutations/inbound_update_ci_job_token_scope.mutation.graphql';
+import inboundGetCIJobTokenScopeQuery from '~/ci/job_token_access/graphql/queries/inbound_get_ci_job_token_scope.query.graphql';
+import getCiJobTokenScopeAllowlistQuery from '~/ci/job_token_access/graphql/queries/get_ci_job_token_scope_allowlist.query.graphql';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import ConfirmActionModal from '~/vue_shared/components/confirm_action_modal.vue';
-import TokenAccessTable from '~/token_access/components/token_access_table.vue';
+import TokenAccessTable from '~/ci/job_token_access/components/token_access_table.vue';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { stubComponent } from 'helpers/stub_component';
 import {
@@ -58,11 +58,12 @@ describe('TokenAccess component', () => {
   const failureHandler = jest.fn().mockRejectedValue(error);
   const mockToastShow = jest.fn();
 
-  const findFormSelector = () => wrapper.findByTestId('form-selector');
+  const findFormSelector = () => wrapper.findComponentByTestId('form-selector');
   const findRadioGroup = () => wrapper.findComponent(GlFormRadioGroup);
   const findTokenDisabledAlert = () => wrapper.findComponent(GlAlert);
   const findNamespaceForm = () => wrapper.findComponent(NamespaceForm);
-  const findSaveChangesBtn = () => wrapper.findByTestId('save-ci-job-token-scope-changes-btn');
+  const findSaveChangesBtn = () =>
+    wrapper.findComponentByTestId('save-ci-job-token-scope-changes-btn');
   const findCountLoadingIcon = () => wrapper.findByTestId('count-loading-icon');
   const findGroupCount = () => wrapper.findByTestId('group-count');
   const findProjectCount = () => wrapper.findByTestId('project-count');

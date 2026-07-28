@@ -10,8 +10,8 @@ describe('Image item', () => {
   let wrapper;
 
   const findLink = () => wrapper.findComponent(GlLink);
-  const findImageNameInput = () => wrapper.findByTestId('image-name-input');
-  const findImageEntrypointInput = () => wrapper.findByTestId('image-entrypoint-input');
+  const findImageNameInput = () => wrapper.findComponentByTestId('image-name-input');
+  const findImageEntrypointInput = () => wrapper.findComponentByTestId('image-entrypoint-input');
 
   const dummyImageName = 'a';
   const dummyImageEntrypoint = ['b', 'c'];

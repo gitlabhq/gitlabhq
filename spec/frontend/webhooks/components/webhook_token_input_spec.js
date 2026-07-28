@@ -23,9 +23,9 @@ describe('WebhookTokenInput', () => {
   const findTokenInput = () => wrapper.findByTestId('webhook-signing-token-input');
   const findToggleVisibilityButton = () => wrapper.findByTestId('toggle-visibility-button');
   const findClipboardButton = () => wrapper.findComponent(ClipboardButton);
-  const findRegenerateButton = () => wrapper.findByTestId('regenerate-token-button');
+  const findRegenerateButton = () => wrapper.findComponentByTestId('regenerate-token-button');
   const findGenerateSigningTokenButton = () =>
-    wrapper.findByTestId('generate-signing-token-button');
+    wrapper.findComponentByTestId('generate-signing-token-button');
   const findFormGroup = () => wrapper.findComponent(GlFormGroup);
   const findAlert = () => wrapper.findComponent(GlAlert);
 

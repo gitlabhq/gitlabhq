@@ -21,12 +21,12 @@ describe('TotpCode', () => {
   const findIllustration = () => wrapper.find('img');
   const findForm = () => wrapper.find('form');
   const findField = () => wrapper.findByTestId('two-fa-code-field');
-  const findVerifyButton = () => wrapper.findByTestId('verify-code-button');
+  const findVerifyButton = () => wrapper.findComponentByTestId('verify-code-button');
   const findCsrfInput = () => wrapper.find('input[name="authenticity_token"]');
   const findRememberMeInput = () => wrapper.find('input[name="user[remember_me]"]');
   const findMethodInput = () => wrapper.find('input[name="two_factor_method"]');
   const findRecoverButton = () => wrapper.findByTestId('recovery-button');
-  const findSecurityDeviceButton = () => wrapper.findByTestId('security-device-button');
+  const findSecurityDeviceButton = () => wrapper.findComponentByTestId('security-device-button');
 
   beforeEach(() => {
     createComponent();

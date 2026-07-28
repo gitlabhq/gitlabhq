@@ -35,15 +35,20 @@ describe('Project creation form fields component', () => {
   };
 
   const findProjectNameInput = () => wrapper.findByTestId('project-name-input');
+  const findProjectNameInputComponent = () => wrapper.findComponentByTestId('project-name-input');
   const findProjectSlugInput = () => wrapper.findByTestId('project-slug-input');
   const findNamespaceSelect = () => wrapper.findComponent(NewProjectDestinationSelect);
-  const findDeploymentTargetSelect = () => wrapper.findByTestId('deployment-target-select');
+  const findDeploymentTargetSelect = () =>
+    wrapper.findComponentByTestId('deployment-target-select');
   const findKubernetesHelpLink = () => wrapper.findByTestId('kubernetes-help-link');
   const findVisibilitySelector = () => wrapper.findComponent(SingleChoiceSelector);
   const findProjectNameValidator = () => wrapper.findComponent(ProjectNameValidator);
-  const findPrivateVisibilityLevelOption = () => wrapper.findByTestId('private-visibility-level');
-  const findInternalVisibilityLevelOption = () => wrapper.findByTestId('internal-visibility-level');
-  const findPublicVisibilityLevelOption = () => wrapper.findByTestId('public-visibility-level');
+  const findPrivateVisibilityLevelOption = () =>
+    wrapper.findComponentByTestId('private-visibility-level');
+  const findInternalVisibilityLevelOption = () =>
+    wrapper.findComponentByTestId('internal-visibility-level');
+  const findPublicVisibilityLevelOption = () =>
+    wrapper.findComponentByTestId('public-visibility-level');
 
   describe('target select', () => {
     it('renders the optional deployment target select', () => {
@@ -73,7 +78,7 @@ describe('Project creation form fields component', () => {
     // while the vue2 needs either .setValue(value) or vm.$emit('input', value)
     const value = 'My Awesome Project 123';
     findProjectNameInput().setValue(value);
-    findProjectNameInput().vm.$emit('input', value);
+    findProjectNameInputComponent().vm.$emit('input', value);
     await nextTick();
 
     expect(findProjectSlugInput().element.value).toBe('my-awesome-project-123');
@@ -100,7 +105,7 @@ describe('Project creation form fields component', () => {
       findProjectNameInput().trigger('blur');
       await nextTick();
 
-      const formGroup = wrapper.findByTestId('project-name-group');
+      const formGroup = wrapper.findComponentByTestId('project-name-group');
       expect(formGroup.vm.$attrs['invalid-feedback']).toBe('Please enter project name.');
     });
 
@@ -111,7 +116,7 @@ describe('Project creation form fields component', () => {
       findProjectSlugInput().trigger('blur');
       await nextTick();
 
-      const formGroup = wrapper.findByTestId('project-slug-group');
+      const formGroup = wrapper.findComponentByTestId('project-slug-group');
       expect(formGroup.vm.$attrs['invalid-feedback']).toBe('Please enter project slug.');
     });
 

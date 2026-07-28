@@ -82,7 +82,7 @@ describe('PipelineSecretDetectionFeatureCard component', () => {
   const findSuccessIcon = () => wrapper.findComponent(GlIcon);
   const findConfigGuideButton = () => wrapper.findComponent(GlButton);
   const findValidityChecksSection = () => wrapper.findByTestId('validity-checks-section');
-  const findValidityChecksToggle = () => wrapper.findByTestId('validity-checks-toggle');
+  const findValidityChecksToggle = () => wrapper.findComponentByTestId('validity-checks-toggle');
   const findValidityChecksAlert = () => wrapper.findComponent(GlAlert);
 
   afterEach(() => {

@@ -122,13 +122,14 @@ describe('Access Level Dropdown', () => {
   const findAllDropdownHeaders = () => findDropdown().findAllComponents(GlDropdownSectionHeader);
   const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
   const findDeployKeyDropdownItem = () => wrapper.findByTestId('deploy_key-dropdown-item');
-  const findMemberRoleDropdownItems = () => wrapper.findAllByTestId('member-role-dropdown-item');
+  const findMemberRoleDropdownItems = () =>
+    wrapper.findAllComponentsByTestId('member-role-dropdown-item');
 
   const findDropdownItemWithText = (items, text) =>
     items.filter((item) => item.text().includes(text)).at(0);
 
   const findSelected = (type) =>
-    wrapper.findAllByTestId(`${type}-dropdown-item`).filter((w) => w.props('isChecked'));
+    wrapper.findAllComponentsByTestId(`${type}-dropdown-item`).filter((w) => w.props('isChecked'));
 
   describe('data request', () => {
     it('should make an api call for users, groups && deployKeys when user has a license', () => {

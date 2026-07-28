@@ -11,8 +11,8 @@ describe('Diff settings dropdown component', () => {
   let wrapper;
 
   const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
-  const findWhitespaceCheckbox = () => wrapper.findByTestId('show-whitespace');
-  const findFileByFileCheckbox = () => wrapper.findByTestId('file-by-file');
+  const findWhitespaceCheckbox = () => wrapper.findComponentByTestId('show-whitespace');
+  const findFileByFileCheckbox = () => wrapper.findComponentByTestId('file-by-file');
 
   const createComponent = (propsData) => {
     wrapper = shallowMountExtended(SettingsDropdown, {

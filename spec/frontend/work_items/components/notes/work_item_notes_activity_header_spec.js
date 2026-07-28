@@ -8,8 +8,8 @@ describe('WorkItemNotesActivityHeader component', () => {
 
   const findActivityLabelH2Heading = () => wrapper.find('h2');
   const findActivityLabelH3Heading = () => wrapper.find('h3');
-  const findActivityFilterDropdown = () => wrapper.findByTestId('work-item-filter');
-  const findActivitySortDropdown = () => wrapper.findByTestId('work-item-sort');
+  const findActivityFilterDropdown = () => wrapper.findComponentByTestId('work-item-filter');
+  const findActivitySortDropdown = () => wrapper.findComponentByTestId('work-item-sort');
 
   const createComponent = ({ useH2 = false } = {}) => {
     wrapper = shallowMountExtended(WorkItemNotesActivityHeader, {

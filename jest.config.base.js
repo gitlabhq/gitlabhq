@@ -79,6 +79,8 @@ module.exports = (path, options = {}) => {
         },
       });
     }
+  } else {
+    setupFilesAfterEnv.unshift('<rootDir>/spec/frontend/__helpers__/vtu1_dom_find_parity.js');
   }
 
   // To have consistent date time parsing both in local and CI environments we set

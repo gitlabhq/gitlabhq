@@ -156,7 +156,7 @@ describe('UserMenu component', () => {
         { status: { ...userMenuMockStatus, can_update: canUpdate, busy, customized } },
         stubs,
       );
-      item = wrapper.findByTestId('status-item');
+      item = wrapper.findComponentByTestId('status-item');
     };
 
     describe('When user cannot update the status', () => {
@@ -234,7 +234,7 @@ describe('UserMenu component', () => {
             status: { ...userMenuMockStatus, can_update: true, busy, customized },
           });
 
-          wrapper.findByTestId('status-item').vm.$emit('action');
+          wrapper.findComponentByTestId('status-item').vm.$emit('action');
           await nextTick();
 
           expect(findSetStatusModal().exists()).toBe(true);
@@ -252,7 +252,7 @@ describe('UserMenu component', () => {
             status: { can_update: true, busy, customized },
           });
 
-          wrapper.findByTestId('status-item').vm.$emit('action');
+          wrapper.findComponentByTestId('status-item').vm.$emit('action');
           await nextTick();
 
           expect(findSetStatusModal().exists()).toBe(true);
@@ -272,7 +272,7 @@ describe('UserMenu component', () => {
             status: { ...userMenuMockStatus, can_update: true, busy: false, customized: false },
           });
 
-          wrapper.findByTestId('status-item').vm.$emit('action');
+          wrapper.findComponentByTestId('status-item').vm.$emit('action');
           await nextTick();
 
           expect(findSetStatusModal().exists()).toBe(true);
@@ -519,7 +519,7 @@ describe('UserMenu component', () => {
 
   describe('GitLab Next item', () => {
     const findGitlabNextItem = () => wrapper.findByTestId('gitlab-next-item');
-    const findGitlabNextToggle = () => wrapper.findByTestId('gitlab-next-toggle');
+    const findGitlabNextToggle = () => wrapper.findComponentByTestId('gitlab-next-toggle');
     const findGitlabNextLabel = () => findGitlabNextItem().find('.gl-grow');
 
     let setGitlabNextSpy;
@@ -690,7 +690,7 @@ describe('UserMenu component', () => {
   });
 
   describe('Sign out group', () => {
-    const findSignOutGroup = () => wrapper.findByTestId('sign-out-group');
+    const findSignOutGroup = () => wrapper.findComponentByTestId('sign-out-group');
 
     beforeEach(() => {
       createWrapper();

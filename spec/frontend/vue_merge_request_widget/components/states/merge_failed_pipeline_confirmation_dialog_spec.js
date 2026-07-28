@@ -45,9 +45,9 @@ describe('MergeFailedPipelineConfirmationDialog', () => {
   };
 
   const findModal = () => wrapper.findComponent(GlModal);
-  const findMergeBtn = () => wrapper.find('[data-testid="merge-unverified-changes"]');
-  const findCancelBtn = () => wrapper.find('[data-testid="merge-cancel-btn"]');
-  const findRunPipelineButton = () => wrapper.find('[data-testid="run-pipeline-button"]');
+  const findMergeBtn = () => wrapper.findComponent('[data-testid="merge-unverified-changes"]');
+  const findCancelBtn = () => wrapper.findComponent('[data-testid="merge-cancel-btn"]');
+  const findRunPipelineButton = () => wrapper.findComponent('[data-testid="run-pipeline-button"]');
 
   beforeEach(() => {
     createComponent();

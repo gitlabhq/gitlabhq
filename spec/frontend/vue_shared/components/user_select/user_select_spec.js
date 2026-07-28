@@ -63,7 +63,7 @@ describe('User select dropdown', () => {
     findUnselectedParticipants().at(index).findComponent(SidebarParticipant);
   const findCurrentUser = () => wrapper.findAllByTestId('current-user');
   const findIssuableAuthor = () => wrapper.findAllByTestId('issuable-author');
-  const findUnassignLink = () => wrapper.findByTestId('unassign');
+  const findUnassignLink = () => wrapper.findComponentByTestId('unassign');
   const findEmptySearchResults = () => wrapper.findAllByTestId('empty-results');
 
   const searchQueryHandlerSuccess = jest.fn().mockResolvedValue(projectAutocompleteMembersResponse);

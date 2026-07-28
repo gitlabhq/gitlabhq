@@ -48,7 +48,7 @@ describe('Design discussions component', () => {
   const findReplyPlaceholder = () => wrapper.findComponent(DiscussionReplyPlaceholder);
   const findReplyForm = () => wrapper.findComponent(DesignReplyForm);
   const findRepliesWidget = () => wrapper.findComponent(ToggleRepliesWidget);
-  const findResolveButton = () => wrapper.find('[data-testid="resolve-button"]');
+  const findResolveButton = () => wrapper.findComponent('[data-testid="resolve-button"]');
   const findResolvedMessage = () => wrapper.find('[data-testid="resolved-message"]');
   const findResolveCheckbox = () => wrapper.findComponent(GlFormCheckbox);
   const findDesignNoteSignedOut = () => wrapper.findComponent(DesignNoteSignedOut);

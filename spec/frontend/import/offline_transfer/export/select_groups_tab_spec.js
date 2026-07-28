@@ -22,8 +22,8 @@ describe('SelectGroupsTab', () => {
   const findList = () => wrapper.find('ul');
   const findAllRows = () => wrapper.findAllComponents(GroupRow);
   const findCount = () => wrapper.findByTestId('selected-count');
-  const findSelectCurrentPage = () => wrapper.findByTestId('select-current-page');
-  const findDeselectAll = () => wrapper.findByTestId('deselect-all');
+  const findSelectCurrentPage = () => wrapper.findComponentByTestId('select-current-page');
+  const findDeselectAll = () => wrapper.findComponentByTestId('deselect-all');
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findNoGroupsSelectedError = () => wrapper.findByTestId('selected-error');
   const findPagination = () => wrapper.findComponent(GlKeysetPagination);

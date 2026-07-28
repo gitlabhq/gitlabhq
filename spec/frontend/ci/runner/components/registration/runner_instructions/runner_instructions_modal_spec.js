@@ -53,7 +53,7 @@ describe('RunnerInstructionsModal component', () => {
     );
   };
   const findModal = () => wrapper.findComponent(GlModal);
-  const findPlatformButtonGroup = () => wrapper.findByTestId('platform-buttons');
+  const findPlatformButtonGroup = () => wrapper.findComponentByTestId('platform-buttons');
   const findPlatformButtons = () => findPlatformButtonGroup().findAllComponents(GlButton);
   const findRunnerCliInstructions = () => wrapper.findComponent(RunnerCliInstructions);
 

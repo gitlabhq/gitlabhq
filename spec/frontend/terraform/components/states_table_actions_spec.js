@@ -79,12 +79,13 @@ describe('StatesTableActions', () => {
   };
 
   const findActionsDropdown = () => wrapper.findComponent(GlDropdown);
-  const findCopyBtn = () => wrapper.find('[data-testid="terraform-state-copy-init-command"]');
+  const findCopyBtn = () =>
+    wrapper.findComponent('[data-testid="terraform-state-copy-init-command"]');
   const findCopyModal = () => wrapper.findComponent(InitCommandModal);
-  const findLockBtn = () => wrapper.find('[data-testid="terraform-state-lock"]');
-  const findUnlockBtn = () => wrapper.find('[data-testid="terraform-state-unlock"]');
+  const findLockBtn = () => wrapper.findComponent('[data-testid="terraform-state-lock"]');
+  const findUnlockBtn = () => wrapper.findComponent('[data-testid="terraform-state-unlock"]');
   const findDownloadBtn = () => wrapper.find('[data-testid="terraform-state-download"]');
-  const findRemoveBtn = () => wrapper.find('[data-testid="terraform-state-remove"]');
+  const findRemoveBtn = () => wrapper.findComponent('[data-testid="terraform-state-remove"]');
   const findRemoveModal = () => wrapper.findComponent(GlModal);
   const findFormInput = () => wrapper.findComponent(GlFormInput);
 

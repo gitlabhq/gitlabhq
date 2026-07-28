@@ -41,8 +41,8 @@ const createComponent = () => {
 
 const findModal = () => wrapper.findComponent(GlModal);
 const findModalMessage = () => wrapper.findByTestId('modal-message');
-const findDeleteButton = () => wrapper.findByTestId('delete-branch-confirmation-button');
-const findCancelButton = () => wrapper.findByTestId('delete-branch-cancel-button');
+const findDeleteButton = () => wrapper.findComponentByTestId('delete-branch-confirmation-button');
+const findCancelButton = () => wrapper.findComponentByTestId('delete-branch-cancel-button');
 const findFormInput = () => wrapper.findComponent(GlFormInput);
 const findForm = () => wrapper.find('form');
 const createSubmitFormSpy = () => jest.spyOn(findForm().element, 'submit');

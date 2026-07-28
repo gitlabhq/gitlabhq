@@ -60,13 +60,13 @@ describe('SignUpRestrictionsApp', () => {
             expect(formElement.attributes(formElementKey)).toBe(expected);
             break;
           case 'prop':
-            expect(formElement.props(formElementKey)).toBe(expected);
+            expect(wrapper.findComponent(elementSelector).props(formElementKey)).toBe(expected);
             break;
           case 'value':
             expect(formElement.element.value).toBe(expected);
             break;
           default:
-            expect(formElement.props(formElementKey)).toBe(expected);
+            expect(wrapper.findComponent(elementSelector).props(formElementKey)).toBe(expected);
             break;
         }
       },

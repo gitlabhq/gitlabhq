@@ -40,7 +40,7 @@ describe('QuickStartSnippets', () => {
   });
 
   const findTabs = () => wrapper.findComponent(GlTabs);
-  const findCopyButton = () => wrapper.findByTestId('copy-snippet-button');
+  const findCopyButton = () => wrapper.findComponentByTestId('copy-snippet-button');
 
   const triggerCopy = async () => {
     await findCopyButton().vm.$emit('click');

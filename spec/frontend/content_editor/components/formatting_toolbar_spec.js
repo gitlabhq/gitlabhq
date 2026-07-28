@@ -60,7 +60,7 @@ describe('content_editor/components/formatting_toolbar', () => {
       expect(wrapper.findByTestId(testId).exists()).toBe(true);
 
       Object.keys(controlProps).forEach((propName) => {
-        expect(wrapper.findByTestId(testId).props(propName)).toBe(controlProps[propName]);
+        expect(wrapper.findComponentByTestId(testId).props(propName)).toBe(controlProps[propName]);
       });
     });
 
@@ -68,7 +68,7 @@ describe('content_editor/components/formatting_toolbar', () => {
       const eventData = { contentType: 'blockquote', value: 1 };
       const { contentType, value } = eventData;
 
-      wrapper.findByTestId(testId).vm.$emit('execute', eventData);
+      wrapper.findComponentByTestId(testId).vm.$emit('execute', eventData);
 
       expect(trackingSpy).toHaveBeenCalledWith(undefined, TOOLBAR_CONTROL_TRACKING_ACTION, {
         label: CONTENT_EDITOR_TRACKING_LABEL,
@@ -92,7 +92,7 @@ describe('content_editor/components/formatting_toolbar', () => {
       ${'strike'} | ${'Strikethrough (⌘⇧X)'}
       ${'link'}   | ${'Insert link (⌘K)'}
     `('shows label $label for $testId', ({ testId, label }) => {
-      expect(wrapper.findByTestId(testId).props('label')).toBe(label);
+      expect(wrapper.findComponentByTestId(testId).props('label')).toBe(label);
     });
   });
 

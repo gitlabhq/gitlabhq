@@ -154,7 +154,7 @@ describe('TodoItemBody', () => {
         targetUrl: sourceUrl,
       });
 
-      const retryButton = wrapper.find('[data-testid="todo-transfer-failed-retry"]');
+      const retryButton = wrapper.findComponent('[data-testid="todo-transfer-failed-retry"]');
       expect(retryButton.exists()).toBe(true);
       retryButton.vm.$emit('click', new MouseEvent('click'));
       await waitForPromises();
@@ -176,7 +176,7 @@ describe('TodoItemBody', () => {
         transferFailedRetryUrl: retryUrl,
       });
 
-      const retryButton = wrapper.find('[data-testid="todo-transfer-failed-retry"]');
+      const retryButton = wrapper.findComponent('[data-testid="todo-transfer-failed-retry"]');
       expect(retryButton.exists()).toBe(true);
       retryButton.vm.$emit('click', new MouseEvent('click'));
       await waitForPromises();

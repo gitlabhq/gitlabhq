@@ -23,7 +23,7 @@ describe('RecoveryCode', () => {
 
   const findForm = () => wrapper.find('form');
   const findField = () => wrapper.findByTestId('recovery-code-field');
-  const findVerifyButton = () => wrapper.findByTestId('verify-recovery-code-button');
+  const findVerifyButton = () => wrapper.findComponentByTestId('verify-recovery-code-button');
   const findCsrfInput = () => wrapper.find('input[name="authenticity_token"]');
   const findRememberMeInput = () => wrapper.find('input[name="user[remember_me]"]');
   const findMethodInput = () => wrapper.find('input[name="two_factor_method"]');

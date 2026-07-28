@@ -96,7 +96,7 @@ export default {
       default: false,
     },
   },
-  emits: ['drag', 'drop', 'error', 'mouseout', 'mouseover', 'removeChild', 'toggleDrawer'],
+  emits: ['drag', 'drop', 'error', 'mouseout', 'mouseover', 'remove-child', 'toggleDrawer'],
   data() {
     return {
       isExpanded: false,
@@ -295,7 +295,7 @@ export default {
           @mouseover="$emit('mouseover')"
           @mouseout="$emit('mouseout')"
           @click="$emit('toggleDrawer', $event)"
-          @removeChild="$emit('removeChild', childItem)"
+          @remove-child="$emit('remove-child', childItem)"
         />
       </div>
     </div>

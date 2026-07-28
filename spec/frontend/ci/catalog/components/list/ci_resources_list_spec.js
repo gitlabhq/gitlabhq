@@ -33,8 +33,8 @@ describe('CiResourcesList', () => {
   const findResourcesListContainer = () => wrapper.findByTestId('catalog-list-container');
   const findResourcesAnalytics = () => wrapper.findComponent(CiAnalyticsList);
   const findResourcesListItems = () => wrapper.findAllComponents(CiResourcesListItem);
-  const findPrevBtn = () => wrapper.findByTestId('prevButton');
-  const findNextBtn = () => wrapper.findByTestId('nextButton');
+  const findPrevBtn = () => wrapper.findComponentByTestId('prevButton');
+  const findNextBtn = () => wrapper.findComponentByTestId('nextButton');
 
   describe('contains only one page', () => {
     const { nodes, pageInfo } = catalogSinglePageResponse.data.ciCatalogResources;

@@ -31,7 +31,7 @@ describe('WorkItemDisplaySettingsDrawer', () => {
   const findUserPreferences = () => wrapper.findComponent(WorkItemDisplaySettingsUserPreferences);
   const findViewModeToggle = () => wrapper.findComponent(GlSegmentedControl);
   const findGroupByRow = () => wrapper.findByTestId('group-by-row');
-  const findGroupByBackButton = () => wrapper.findByTestId('group-by-back-button');
+  const findGroupByBackButton = () => wrapper.findComponentByTestId('group-by-back-button');
   const findGroupBy = () => wrapper.findComponent(WorkItemDisplaySettingsGroupBy);
   const findTitle = () => wrapper.find('h2');
 

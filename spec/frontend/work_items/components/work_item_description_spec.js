@@ -60,15 +60,15 @@ describe('WorkItemDescription', () => {
   const findDescriptionTemplateListbox = () =>
     wrapper.findComponent(WorkItemDescriptionTemplatesListbox);
   const findDescriptionTemplateWarning = () => wrapper.findByTestId('description-template-warning');
-  const findApplyTemplate = () => wrapper.findByTestId('template-apply');
-  const findCancelApplyTemplate = () => wrapper.findByTestId('template-cancel');
+  const findApplyTemplate = () => wrapper.findComponentByTestId('template-apply');
+  const findCancelApplyTemplate = () => wrapper.findComponentByTestId('template-cancel');
 
   const findCloseConfirmModal = () => wrapper.findComponent(WorkItemCloseConfirmModal);
 
   const editDescription = (newText) => findMarkdownEditor().vm.$emit('input', newText);
 
   const findCancelButton = () => wrapper.findByTestId('cancel');
-  const findSubmitButton = () => wrapper.findByTestId('save-description');
+  const findSubmitButton = () => wrapper.findComponentByTestId('save-description');
   const clickCancel = () => findForm().vm.$emit('reset', new Event('reset'));
 
   const successfulTemplateHandler = jest.fn().mockResolvedValue({

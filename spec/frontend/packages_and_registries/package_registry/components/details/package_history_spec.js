@@ -64,7 +64,7 @@ describe('Package History', () => {
   });
 
   const findPackageHistoryLoader = () => wrapper.findComponent(PackageHistoryLoader);
-  const findHistoryElement = (testId) => wrapper.findByTestId(testId);
+  const findHistoryElement = (testId) => wrapper.findComponentByTestId(testId);
   const findElementLink = (container) => container.findComponent(GlLink);
   const findElementTimeAgo = (container) => container.findComponent(TimeAgoTooltip);
   const findPackageHistoryAlert = () => wrapper.findComponent(GlAlert);

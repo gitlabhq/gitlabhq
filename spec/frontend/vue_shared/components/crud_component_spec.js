@@ -28,7 +28,7 @@ describe('CRUD Component', () => {
   const findDescription = () => wrapper.findByTestId('crud-description');
   const findCount = () => wrapper.findByTestId('crud-count');
   const findIcon = () => wrapper.findComponent(GlIcon);
-  const findFormToggle = () => wrapper.findByTestId('crud-form-toggle');
+  const findFormToggle = () => wrapper.findComponentByTestId('crud-form-toggle');
   const findActions = () => wrapper.findByTestId('crud-actions');
   const findForm = () => wrapper.findByTestId('crud-form');
   const findSkeletonLoader = () => wrapper.findByTestId('crud-loading');
@@ -36,7 +36,7 @@ describe('CRUD Component', () => {
   const findBody = () => wrapper.findByTestId('crud-body');
   const findFooter = () => wrapper.findByTestId('crud-footer');
   const findPagination = () => wrapper.findByTestId('crud-pagination');
-  const findCollapseToggle = () => wrapper.findByTestId('crud-collapse-toggle');
+  const findCollapseToggle = () => wrapper.findComponentByTestId('crud-collapse-toggle');
   const findChevronIcon = () => wrapper.findComponent(GlAnimatedChevronLgDownUpIcon);
 
   afterEach(() => {

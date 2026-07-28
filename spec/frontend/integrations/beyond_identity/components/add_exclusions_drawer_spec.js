@@ -19,7 +19,7 @@ describe('AddExclusionsDrawer component', () => {
   const findListSelectors = () => wrapper.findAllComponents(ListSelector);
   const findGroupsListSelector = () => findListSelectors().at(0);
   const findProjectsListSelector = () => findListSelectors().at(1);
-  const findAddExclusionsButton = () => wrapper.findByTestId('add-button');
+  const findAddExclusionsButton = () => wrapper.findComponentByTestId('add-button');
 
   const createComponent = (props) => {
     return shallowMountExtended(AddExclusionsDrawer, {

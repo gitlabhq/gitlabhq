@@ -52,11 +52,13 @@ describe('HomepageApp', () => {
 
   let wrapper;
 
-  const findReviewRequestedWidget = () => wrapper.findByTestId('review-requested-widget');
+  const findReviewRequestedWidget = () => wrapper.findComponentByTestId('review-requested-widget');
   const findAssignedMergeRequestsWidget = () =>
-    wrapper.findByTestId('assigned-merge-requests-widget');
-  const findAssignedWorkItemsWidget = () => wrapper.findByTestId('assigned-work-items-widget');
-  const findAuthoredWorkItemsWidget = () => wrapper.findByTestId('authored-work-items-widget');
+    wrapper.findComponentByTestId('assigned-merge-requests-widget');
+  const findAssignedWorkItemsWidget = () =>
+    wrapper.findComponentByTestId('assigned-work-items-widget');
+  const findAuthoredWorkItemsWidget = () =>
+    wrapper.findComponentByTestId('authored-work-items-widget');
   const findBaseWidget = () => wrapper.findComponent(BaseWidget);
   const findPickUpWidget = () => wrapper.findComponent(PickUpWidget);
 

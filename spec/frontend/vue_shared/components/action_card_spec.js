@@ -20,7 +20,7 @@ describe('Action card', () => {
   const findTitle = () => wrapper.findByTestId('action-card-title');
   const findTitleLink = () => wrapper.findComponent(GlLink);
   const findDescription = () => wrapper.findByTestId('action-card-description');
-  const findCardIcon = () => wrapper.findByTestId('action-card-icon');
+  const findCardIcon = () => wrapper.findComponentByTestId('action-card-icon');
   const findArrowIcon = () => wrapper.findByTestId('action-card-arrow-icon');
 
   describe('default', () => {

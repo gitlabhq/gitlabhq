@@ -11,7 +11,7 @@ describe('Dependency proxy usage component', () => {
   };
 
   const findDependencyProxySizeSection = () =>
-    wrapper.findByTestId('dependency-proxy-size-content');
+    wrapper.findComponentByTestId('dependency-proxy-size-content');
 
   const createComponent = ({ props = {} } = {}) => {
     wrapper = shallowMountExtended(DependencyProxyUsage, {

@@ -16,10 +16,10 @@ describe('SchemaIssuesSection component', () => {
   const findTablesCount = () => wrapper.findByTestId('tables-count');
   const findForeignKeysCount = () => wrapper.findByTestId('foreignKeys-count');
   const findSequencesCount = () => wrapper.findByTestId('sequences-count');
-  const findIndexesToggle = () => wrapper.findByTestId('indexes-toggle');
-  const findTablesToggle = () => wrapper.findByTestId('tables-toggle');
-  const findForeignKeysToggle = () => wrapper.findByTestId('foreignKeys-toggle');
-  const findSequencesToggle = () => wrapper.findByTestId('sequences-toggle');
+  const findIndexesToggle = () => wrapper.findComponentByTestId('indexes-toggle');
+  const findTablesToggle = () => wrapper.findComponentByTestId('tables-toggle');
+  const findForeignKeysToggle = () => wrapper.findComponentByTestId('foreignKeys-toggle');
+  const findSequencesToggle = () => wrapper.findComponentByTestId('sequences-toggle');
 
   const findMissingSequencesCount = () => wrapper.findByTestId('missing-sequences-count');
   const findSequenceOwnershipCount = () => wrapper.findByTestId('sequence-ownership-count');

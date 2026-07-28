@@ -16,7 +16,7 @@ describe('Pipelines Nav Controls', () => {
   };
 
   const findRunPipelineButton = () => wrapper.findByTestId('run-pipeline-button');
-  const findClearCacheButton = () => wrapper.findByTestId('clear-cache-button');
+  const findClearCacheButton = () => wrapper.findComponentByTestId('clear-cache-button');
   const findViewAnalyticsLink = () => wrapper.findByTestId('view-analytics-link');
 
   it('should render link to navigate to CI/CD analytics', () => {

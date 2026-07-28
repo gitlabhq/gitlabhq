@@ -53,7 +53,7 @@ describe('LabelItem', () => {
           isLabelIndeterminate,
         });
 
-        const iconEl = wrapperTemp.find(`[data-testid="${testId}"]`);
+        const iconEl = wrapperTemp.findComponent(`[data-testid="${testId}"]`);
 
         expect(iconEl.isVisible()).toBe(true);
         expect(iconEl.props('name')).toBe(iconName);

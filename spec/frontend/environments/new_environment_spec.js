@@ -48,7 +48,7 @@ describe('~/environments/components/new.vue', () => {
   const findNameInput = () => wrapper.findByLabelText('Name');
   const findExternalUrlInput = () => wrapper.findByLabelText('External URL');
   const findForm = () => wrapper.findByRole('form', { name: 'New environment' });
-  const showsLoading = () => wrapper.findByTestId('save-environment').props('loading');
+  const showsLoading = () => wrapper.findComponentByTestId('save-environment').props('loading');
 
   const submitForm = async () => {
     await findNameInput().setValue('test');

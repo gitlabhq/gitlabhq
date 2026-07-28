@@ -187,7 +187,7 @@ describe('MrWidgetOptions', () => {
   const findApprovalsWidget = () => wrapper.findComponent(Approvals);
   const findPreparingWidget = () => wrapper.findComponent(Preparing);
   const findMergedPipelineContainer = () => wrapper.findByTestId('merged-pipeline-container');
-  const findPipelineContainer = () => wrapper.findByTestId('pipeline-container');
+  const findPipelineContainer = () => wrapper.findComponentByTestId('pipeline-container');
   const findAlertMessage = () => wrapper.findComponent(MrWidgetAlertMessage);
   const findMergePipelineForkAlert = () => wrapper.findByTestId('merge-pipeline-fork-warning');
   const findSuggestPipeline = () => wrapper.findComponent(WidgetSuggestPipeline);

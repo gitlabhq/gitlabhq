@@ -13,7 +13,8 @@ describe('Form group component', () => {
   let wrapper;
 
   const findGlLink = () => wrapper.findComponent(GlLink);
-  const findDeletionAdjournedPeriodInput = () => wrapper.findByTestId('deletion_adjourned_period');
+  const findDeletionAdjournedPeriodInput = () =>
+    wrapper.findComponentByTestId('deletion_adjourned_period');
 
   const createComponent = ({ props = {}, provide = {} } = {}) => {
     wrapper = mountExtended(FormGroup, {

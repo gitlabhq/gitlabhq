@@ -58,7 +58,7 @@ describe('CreateTokenModal', () => {
       .findAllComponents(GlButton)
       .wrappers.find((button) => button.props('variant') === variant);
   const findActionButton = () => findButtonByVariant('confirm');
-  const findCancelButton = () => wrapper.findByTestId('agent-token-close-button');
+  const findCancelButton = () => wrapper.findComponentByTestId('agent-token-close-button');
 
   const expectDisabledAttribute = (element, disabled) => {
     if (disabled) {

@@ -44,7 +44,7 @@ describe('ClustersMainViewComponent', () => {
   const findTabs = () => wrapper.findComponent(GlTabs);
   const findAllTabs = () => wrapper.findAllComponents(GlTab);
   const findGlTabAtIndex = (index) => findAllTabs().at(index);
-  const findComponent = () => wrapper.findByTestId('clusters-tab-component');
+  const findComponent = () => wrapper.findComponentByTestId('clusters-tab-component');
   const findModal = () => wrapper.findComponent(InstallAgentModal);
   const findAlert = () => wrapper.findComponent(GlAlert);
 

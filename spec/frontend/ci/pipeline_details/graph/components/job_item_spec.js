@@ -30,7 +30,7 @@ describe('pipeline graph job item', () => {
   let mockAxios;
 
   const findActionVueComponent = () => wrapper.findComponent(ActionComponent);
-  const findActionComponent = () => wrapper.findByTestId('ci-action-button');
+  const findActionComponent = () => wrapper.findComponentByTestId('ci-action-button');
   const findJobItemContent = () => wrapper.findByTestId('ci-job-item-content');
   const findBadge = () => wrapper.findByTestId('job-bridge-badge');
   const findJobSourceBadge = () => wrapper.findComponent(JobSourceBadge);

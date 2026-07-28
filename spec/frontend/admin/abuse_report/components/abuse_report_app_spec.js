@@ -18,14 +18,14 @@ describe('AbuseReportApp', () => {
   const findReportHeader = () => wrapper.findComponent(ReportHeader);
   const findUserDetails = () => wrapper.findComponent(UserDetails);
 
-  const findReportedContent = () => wrapper.findByTestId('reported-content');
+  const findReportedContent = () => wrapper.findComponentByTestId('reported-content');
   const findReportedContentForSimilarReports = () =>
     wrapper.findAllByTestId('reported-content-similar-open-reports');
   const firstReportedContentForSimilarReports = () =>
     findReportedContentForSimilarReports().at(0).findComponent(ReportedContent);
 
   const findActivityList = () => wrapper.findComponent(ActivityEventsList);
-  const findActivityItem = () => wrapper.findByTestId('activity');
+  const findActivityItem = () => wrapper.findComponentByTestId('activity');
 
   const findActivityForSimilarReports = () =>
     wrapper.findAllByTestId('activity-similar-open-reports');

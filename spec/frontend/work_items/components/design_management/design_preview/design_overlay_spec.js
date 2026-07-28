@@ -18,8 +18,8 @@ describe('Design overlay component', () => {
   const mockDimensions = { width: 100, height: 100 };
 
   const findOverlay = () => wrapper.findComponentByTestId('design-overlay');
-  const findAllNotes = () => wrapper.findAllByTestId('note-pin');
-  const findCommentBadge = () => wrapper.findByTestId('comment-badge');
+  const findAllNotes = () => wrapper.findAllComponentsByTestId('note-pin');
+  const findCommentBadge = () => wrapper.findComponentByTestId('comment-badge');
   const findBadgeAtIndex = (noteIndex) => findAllNotes().at(noteIndex);
   const findFirstBadge = () => findBadgeAtIndex(0);
   const findSecondBadge = () => findBadgeAtIndex(1);

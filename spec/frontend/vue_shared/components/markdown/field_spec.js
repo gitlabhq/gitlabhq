@@ -97,7 +97,7 @@ describe('Markdown field component', () => {
     });
   }
 
-  const getPreviewToggle = () => subject.findByTestId('preview-toggle');
+  const getPreviewToggle = () => subject.findComponentByTestId('preview-toggle');
   const getSkipButton = () => subject.findByTestId('skip-to-input');
   const getMarkdownButton = () => subject.find('.js-md');
   const getListBulletedButton = () => subject.findAll('.js-md[title="Add a bullet list"]');

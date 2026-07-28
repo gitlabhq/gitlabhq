@@ -30,7 +30,7 @@ describe('Sidebar Subscriptions Widget', () => {
     const icon = findNotificationIcon();
     return icon.props('isOn') ?? parseBoolean(icon.attributes('is-on'));
   };
-  const findSubscribeButton = () => wrapper.findByTestId('subscribe-button');
+  const findSubscribeButton = () => wrapper.findComponentByTestId('subscribe-button');
 
   const createComponent = ({
     subscriptionsQueryHandler = jest.fn().mockResolvedValue(issueSubscriptionsResponse()),

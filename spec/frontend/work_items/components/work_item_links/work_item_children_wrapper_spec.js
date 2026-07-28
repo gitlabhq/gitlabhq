@@ -462,7 +462,7 @@ describe('WorkItemChildrenWrapper', () => {
     describe('when successful', () => {
       beforeEach(async () => {
         createComponent();
-        findFirstWorkItemLinkChildItem().vm.$emit('removeChild', workItem);
+        findFirstWorkItemLinkChildItem().vm.$emit('remove-child', workItem);
         await waitForPromises();
       });
 
@@ -490,7 +490,7 @@ describe('WorkItemChildrenWrapper', () => {
         createComponent({
           mutationHandler: jest.fn().mockResolvedValue(updateWorkItemMutationErrorResponse),
         });
-        findFirstWorkItemLinkChildItem().vm.$emit('removeChild', workItem);
+        findFirstWorkItemLinkChildItem().vm.$emit('remove-child', workItem);
         await waitForPromises();
       });
 
