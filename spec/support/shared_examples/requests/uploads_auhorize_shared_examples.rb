@@ -14,10 +14,12 @@ RSpec.shared_examples 'handle uploads authorize request' do
       expect(json_response['TempPath']).to eq(uploader_class.workhorse_local_upload_path)
     end
 
-    it 'rejects requests that bypassed gitlab-workhorse' do
+    it 'rejects requests that bypassed gitlab-workhorse', :verify_workhorse_jwt do
       workhorse_headers.delete(Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER)
 
-      expect { subject }.to raise_error(JWT::DecodeError)
+      subject
+
+      expect(response).to have_gitlab_http_status(:forbidden)
     end
 
     context 'when using remote storage' do

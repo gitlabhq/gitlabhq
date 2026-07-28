@@ -3,8 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Ci::CompareTestReportsService, feature_category: :continuous_integration do
-  let(:service) { described_class.new(project) }
+  let(:service) { described_class.new(project, user) }
   let_it_be(:project) { create(:project, :repository) }
+  # get_report scopes to what the user may read; use a maintainer so the
+  # comparison examples see the reports (access control is covered separately).
+  let_it_be(:user) { create(:user, maintainer_of: project) }
 
   describe '#execute' do
     subject(:comparison) { service.execute(base_pipeline, head_pipeline) }
@@ -16,6 +19,33 @@ RSpec.describe Ci::CompareTestReportsService, feature_category: :continuous_inte
       it 'returns status and data' do
         expect(comparison[:status]).to eq(:parsed)
         expect(comparison[:data]).to match_schema('entities/test_reports_comparer')
+      end
+    end
+
+    context 'when the head pipeline has a maintainer-only test report' do
+      let_it_be(:maintainer) { create(:user, maintainer_of: project) }
+      let_it_be(:guest) { create(:user, guest_of: project) }
+
+      let!(:base_pipeline) { nil }
+      let!(:head_pipeline) { create(:ci_pipeline, project: project) }
+
+      before do
+        build = create(:ci_build, :success, pipeline: head_pipeline, project: project)
+        # Reports-only job: maintainer-only JUnit report with no archive, so the
+        # report's own accessibility gates the MR widget comparison.
+        create(:ci_job_artifact, :junit, :maintainer_only_access, job: build, project: project)
+      end
+
+      it 'excludes the report from a user without artifact access' do
+        comparison = described_class.new(project, guest).execute(base_pipeline, head_pipeline)
+
+        expect(comparison.dig(:data, 'summary', 'total')).to eq(0)
+      end
+
+      it 'includes the report for a user who can read maintainer artifacts' do
+        comparison = described_class.new(project, maintainer).execute(base_pipeline, head_pipeline)
+
+        expect(comparison.dig(:data, 'summary', 'total')).to be > 0
       end
     end
 

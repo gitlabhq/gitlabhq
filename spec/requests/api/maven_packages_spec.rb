@@ -1015,7 +1015,7 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
       expect(response).to have_gitlab_http_status(:forbidden)
     end
 
-    it 'rejects requests that did not go through gitlab-workhorse' do
+    it 'rejects requests that did not go through gitlab-workhorse', :verify_workhorse_jwt do
       headers.delete(Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER)
 
       authorize_upload_with_token

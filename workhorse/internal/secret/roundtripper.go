@@ -2,6 +2,9 @@ package secret
 
 import (
 	"net/http"
+	"time"
+
+	jwt "github.com/golang-jwt/jwt/v5"
 )
 
 const (
@@ -21,7 +24,15 @@ func NewRoundTripper(next http.RoundTripper, version string) http.RoundTripper {
 }
 
 func (r *roundTripper) RoundTrip(req *http.Request) (*http.Response, error) {
-	tokenString, err := JWTTokenString(DefaultClaims)
+	// Stamp the per-request IssuedAt so Rails can enforce a max-age window
+	// via iat_after. Using DefaultClaims directly would emit a JWT with no
+	// iat claim, leaving leaked tokens valid until the workhorse secret is
+	// rotated.
+	claims := jwt.RegisteredClaims{
+		Issuer:   DefaultClaims.Issuer,
+		IssuedAt: jwt.NewNumericDate(time.Now()),
+	}
+	tokenString, err := JWTTokenString(claims)
 	if err != nil {
 		return nil, err
 	}

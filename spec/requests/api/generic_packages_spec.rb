@@ -876,7 +876,7 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
         expect(response).to have_gitlab_http_status(:bad_request)
       end
 
-      it 'rejects request without workhorse header' do
+      it 'rejects request without workhorse header', :verify_workhorse_jwt do
         expect(Gitlab::ErrorTracking).to receive(:track_exception).once
 
         upload_file(params, personal_access_token_header)
