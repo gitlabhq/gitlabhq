@@ -47435,7 +47435,6 @@ Fields:
 | <a id="mergerequest-divergedfromtargetbranch"></a>`divergedFromTargetBranch` | [`Boolean!`](#boolean) | Indicates if the source branch is behind the target branch. |
 | <a id="mergerequest-downvotes"></a>`downvotes` | [`Int!`](#int) | Number of downvotes for the merge request. |
 | <a id="mergerequest-draft"></a>`draft` | [`Boolean!`](#boolean) | Indicates if the merge request is a draft. |
-| <a id="mergerequest-duodependencybumpbreakingchangesavailable"></a>`duoDependencyBumpBreakingChangesAvailable` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.2. Status: Experiment. Indicates whether the GitLab Duo resolve dependency bump breaking changes flow can be triggered for the merge request. |
 | <a id="mergerequest-duoworkflows"></a>`duoWorkflows` {{< icon name="warning-solid" >}} | [`DuoWorkflowConnection`](#duoworkflowconnection) | Introduced in GitLab 18.10. Status: Experiment. Duo Workflow sessions associated with the merge request. |
 | <a id="mergerequest-forceremovesourcebranch"></a>`forceRemoveSourceBranch` | [`Boolean`](#boolean) | Indicates if the project settings will lead to source branch deletion after merge. |
 | <a id="mergerequest-hasci"></a>`hasCi` | [`Boolean!`](#boolean) | Indicates if the merge request has CI. |

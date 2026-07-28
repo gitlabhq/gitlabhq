@@ -14,6 +14,8 @@ module Ci
     # We validate the size of the serialized value because encryption is expensive.
     # The maximum permitted size is equivalent to the maximum size permitted for an interpolated input value.
     validate :value_does_not_exceed_max_size
+    validate :pipeline_schedule_id_immutable, on: :update
+    validate :project_id_immutable, on: :update
 
     encrypts :value
 
@@ -29,6 +31,14 @@ module Ci
       return if Gitlab::Json.encode(value).size <= MAX_VALUE_SIZE
 
       errors.add(:value, "exceeds max serialized size: #{MAX_VALUE_SIZE} characters")
+    end
+
+    def pipeline_schedule_id_immutable
+      errors.add(:pipeline_schedule_id, 'is immutable') if pipeline_schedule_id_changed?
+    end
+
+    def project_id_immutable
+      errors.add(:project_id, 'is immutable') if project_id_changed?
     end
 
     def assign_project_id

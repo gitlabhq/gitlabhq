@@ -178,11 +178,6 @@ export default {
       type: Number,
       required: true,
     },
-    iid: {
-      type: [Number, String],
-      required: false,
-      default: null,
-    },
   },
   data() {
     return {
@@ -468,7 +463,6 @@ export default {
               :merge-request-path="mergeRequestPath"
               :target-project-full-path="targetProjectFullPath"
               :source-branch="sourceBranch"
-              :iid="iid"
             />
           </div>
         </div>
