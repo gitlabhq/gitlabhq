@@ -7,7 +7,7 @@ module Sidebars
       class ObservabilityMenu < ::Sidebars::Menu
         override :title
         def title
-          s_('Navigation|Observability')
+          s_('Navigation|Observe')
         end
 
         override :sprite_icon

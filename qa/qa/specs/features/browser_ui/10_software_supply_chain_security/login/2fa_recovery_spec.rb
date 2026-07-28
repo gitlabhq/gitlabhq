@@ -30,21 +30,15 @@ module QA
 
         Flow::Login.sign_in(as: developer_user, skip_page_validation: true)
 
-        Page::Main::TwoFactorAuth.perform do |two_fa_auth|
-          two_fa_auth.set_2fa_code(recovery_code)
-          two_fa_auth.click_verify_code_button
-        end
+        Flow::Login.submit_2fa_code(recovery_code)
 
-        expect(Page::Main::Menu.perform(&:signed_in?)).to be_truthy
+        expect(Page::Main::Menu.perform(&:has_personal_area?)).to be_truthy
 
         Page::Main::Menu.perform(&:sign_out)
 
         Flow::Login.sign_in(as: developer_user, skip_page_validation: true)
 
-        Page::Main::TwoFactorAuth.perform do |two_fa_auth|
-          two_fa_auth.set_2fa_code(recovery_code)
-          two_fa_auth.click_verify_code_button
-        end
+        Flow::Login.submit_2fa_code(recovery_code)
 
         expect(page).to have_text('Invalid two-factor code')
       end

@@ -9,17 +9,31 @@ RSpec.describe ServiceDeskSetting, feature_category: :service_desk do
     subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::PROJECT,
     subject_key: :project_id,
     source_type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_SERVICE_DESK_SETTINGS,
-    claiming_attributes: [:custom_email]
+    claiming_attributes: [:custom_email, :project_key_address_slug]
+
+  describe '#handle_grpc_error' do
+    context 'when error is ALREADY_EXISTS' do
+      let(:grpc_error) { GRPC::AlreadyExists.new('conflict') }
+
+      it 'assigns attribute-specific message' do
+        setting.handle_grpc_error(grpc_error)
+
+        expect(setting.errors[:base])
+          .to include('custom_email or project_key_address_slug has already been taken')
+      end
+    end
+  end
 
   describe '.cells_claims_scope' do
     let!(:with_email) { create(:service_desk_setting, custom_email: 'support@example.com') }
-    let!(:without_email) { create(:service_desk_setting, custom_email: nil) }
+    let!(:with_project_key) { create(:service_desk_setting, project_key: 'key1') }
+    let!(:without_claimable_attributes) { create(:service_desk_setting, custom_email: nil, project_key: nil) }
 
-    it 'returns only settings with a non-nil custom_email' do
+    it 'returns only settings with a non-nil custom_email or project_key_address_slug' do
       scope = described_class.cells_claims_scope
 
-      expect(scope).to include(with_email)
-      expect(scope).not_to include(without_email)
+      expect(scope).to include(with_email, with_project_key)
+      expect(scope).not_to include(without_claimable_attributes)
     end
   end
 

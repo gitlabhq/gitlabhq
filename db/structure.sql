@@ -45485,6 +45485,8 @@ CREATE UNIQUE INDEX idx_security_sep_schedules_on_rule_schedule_id_and_project_i
 
 CREATE INDEX idx_security_sep_schedules_on_security_policy_id_and_project_id ON security_scan_execution_project_schedules USING btree (security_policy_id, project_id);
 
+CREATE INDEX idx_service_desk_settings_where_custom_email_or_project_key ON service_desk_settings USING btree (project_id) WHERE ((custom_email IS NOT NULL) OR (project_key IS NOT NULL));
+
 CREATE INDEX idx_slack_integrations_scopes_on_slack_api_scope_id ON slack_integrations_scopes USING btree (slack_api_scope_id);
 
 CREATE UNIQUE INDEX idx_snippet_uploads_on_id ON snippet_uploads USING btree (id);

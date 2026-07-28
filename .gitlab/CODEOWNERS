@@ -2333,7 +2333,6 @@ frontend/**/geo_* @zcuddy
 /app/workers/repositories/
 /app/workers/object_pool/
 /app/workers/flush_counter_increments_worker.rb
-/app/workers/trending_projects_worker.rb
 /app/workers/post_receive.rb
 /app/workers/project_cache_worker.rb
 /app/workers/system_hook_push_worker.rb

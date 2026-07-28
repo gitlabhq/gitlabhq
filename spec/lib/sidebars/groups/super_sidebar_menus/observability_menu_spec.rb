@@ -8,7 +8,7 @@ RSpec.describe Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu, feature_c
   let(:items) { observability_menu.instance_variable_get(:@items) }
 
   it 'has title and sprite_icon' do
-    expect(observability_menu.title).to eq(s_('Navigation|Observability'))
+    expect(observability_menu.title).to eq(s_('Navigation|Observe'))
     expect(observability_menu.sprite_icon).to eq('eye')
   end
 

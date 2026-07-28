@@ -39,7 +39,7 @@ class Migrate
   BRANCH_NAME = ENV.fetch('BASE_REF', 'master')
 
   def require_commands!(*commands)
-    missing_commands = commands.reject { |command| system("command", "-v", command, out: File::NULL) }
+    missing_commands = commands.reject { |command| system("which", command, out: File::NULL, err: File::NULL) }
 
     abort("This script requires #{missing_commands.join(', ')} to be installed.") unless missing_commands.empty?
   end

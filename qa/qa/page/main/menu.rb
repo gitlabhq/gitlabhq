@@ -77,6 +77,10 @@ module QA
           click_element('brand-header-default-logo')
         end
 
+        # Non-waiting snapshot of the current signed-in state, for use in conditionals
+        # (e.g. `unless signed_in?`). Do not assert with it after an action: it does not
+        # wait, so `expect(signed_in?).to be_truthy` right after a sign-in races the
+        # redirect and flakes. For an assertion, wait on has_personal_area? instead.
         def signed_in?
           return false if Page::Main::Login.perform(&:on_login_page?)
 

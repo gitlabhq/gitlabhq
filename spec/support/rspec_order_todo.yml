@@ -7480,7 +7480,6 @@
 - './spec/workers/todos_destroyer/group_private_worker_spec.rb'
 - './spec/workers/todos_destroyer/private_features_worker_spec.rb'
 - './spec/workers/todos_destroyer/project_private_worker_spec.rb'
-- './spec/workers/trending_projects_worker_spec.rb'
 - './spec/workers/update_container_registry_info_worker_spec.rb'
 - './spec/workers/update_external_pull_requests_worker_spec.rb'
 - './spec/workers/update_head_pipeline_for_merge_request_worker_spec.rb'

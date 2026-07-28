@@ -81,6 +81,31 @@ describe IpynbDiff::Transformer do
       end
     end
 
+    context 'when cells is not an array' do
+      where(:notebook) do
+        [
+          ['{"cells":"..."}'],
+          ['{"cells":{}}'],
+          ['{"cells":null}'],
+          ['{"cells":1}']
+        ]
+      end
+
+      with_them do
+        it 'raises error' do
+          expect { subject }.to raise_error(IpynbDiff::InvalidNotebookError)
+        end
+      end
+    end
+
+    context 'when the parsed notebook is not a hash' do
+      let(:notebook) { '[]' }
+
+      it 'raises error' do
+        expect { subject }.to raise_error(IpynbDiff::InvalidNotebookError)
+      end
+    end
+
     context 'when notebook can not be parsed' do
       let(:notebook) { '{"cells":[]}' }
 

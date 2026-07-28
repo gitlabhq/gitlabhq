@@ -203,7 +203,6 @@ SidekiqLoadBalancing/WorkerDataConsistency:
     - 'app/workers/todos_destroyer/group_private_worker.rb'
     - 'app/workers/todos_destroyer/private_features_worker.rb'
     - 'app/workers/todos_destroyer/project_private_worker.rb'
-    - 'app/workers/trending_projects_worker.rb'
     - 'app/workers/update_container_registry_info_worker.rb'
     - 'app/workers/update_external_pull_requests_worker.rb'
     - 'app/workers/update_head_pipeline_for_merge_request_worker.rb'

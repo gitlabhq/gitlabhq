@@ -34,7 +34,7 @@ module Sidebars
 
         override :title
         def title
-          _('Observability')
+          _('Observe')
         end
 
         override :sprite_icon

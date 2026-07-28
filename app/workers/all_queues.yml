@@ -1456,16 +1456,6 @@
   :idempotent: false
   :tags: []
   :queue_namespace: :cronjob
-- :name: cronjob:trending_projects
-  :worker_name: TrendingProjectsWorker
-  :feature_category: :source_code_management
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-  :queue_namespace: :cronjob
 - :name: cronjob:update_container_registry_info
   :worker_name: UpdateContainerRegistryInfoWorker
   :feature_category: :container_registry

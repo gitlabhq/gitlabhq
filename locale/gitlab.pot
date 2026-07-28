@@ -49852,7 +49852,7 @@ msgstr ""
 msgid "Navigation|Monitor settings"
 msgstr ""
 
-msgid "Navigation|Observability"
+msgid "Navigation|Observe"
 msgstr ""
 
 msgid "Navigation|Operate"
@@ -52563,6 +52563,9 @@ msgid "Observability|this group"
 msgstr ""
 
 msgid "Observability|this project"
+msgstr ""
+
+msgid "Observe"
 msgstr ""
 
 msgid "Oct"

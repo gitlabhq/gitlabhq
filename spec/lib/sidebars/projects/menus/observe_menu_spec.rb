@@ -138,7 +138,7 @@ RSpec.describe Sidebars::Projects::Menus::ObserveMenu, feature_category: :observ
 
   describe 'menu metadata' do
     it 'has the correct title, icon, active routes, and container options', :aggregate_failures do
-      expect(observe_menu.title).to eq 'Observability'
+      expect(observe_menu.title).to eq 'Observe'
       expect(observe_menu.sprite_icon).to eq 'eye'
       expect(observe_menu.active_routes).to eq({ controller: 'projects/observability' })
       expect(observe_menu.extra_container_html_options).to eq({ class: 'shortcuts-observability' })

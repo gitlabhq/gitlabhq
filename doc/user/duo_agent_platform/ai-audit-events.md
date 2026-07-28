@@ -96,17 +96,19 @@ Prerequisites:
 
 1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **GitLab Duo**.
-1. In the **Data privacy** section, select **Enable AI audit event storage**.
+1. Select **Change configuration**.
+1. In the **Data and privacy** section, select **Store AI audit events**.
 1. Select **Save changes**.
 
 ### Enable storage for a project
 
 1. In the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **GitLab Duo**.
-1. In the **Data privacy** section, select **Enable AI audit event storage**.
+1. Select **Settings** > **General**.
+1. Expand the **GitLab Duo** section.
+1. Turn on the **Store AI audit events** toggle.
 1. Select **Save changes**.
 
-If the setting is locked by a parent group, the checkbox is disabled and
+If the setting is locked by a parent group, the control is disabled and
 cannot be changed at the project level.
 
 ## Related topics

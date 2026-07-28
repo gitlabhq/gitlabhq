@@ -9,12 +9,16 @@ class ServiceDeskSetting < ApplicationRecord
   attribute :custom_email_enabled, default: false
 
   cells_claims_scope do
-    where.not(custom_email: nil)
+    where.not(custom_email: nil).or(where.not(project_key_address_slug: nil))
   end
 
   cells_claims_attribute :custom_email,
     type: CLAIMS_BUCKET_TYPE::SERVICE_DESK_CUSTOM_EMAILS,
     if: ->(record) { record.custom_email.present? }
+  cells_claims_attribute :project_key_address_slug,
+    type: CLAIMS_BUCKET_TYPE::SERVICE_DESK_PROJECT_KEY_ADDRESS_SLUGS,
+    feature_flag: :cells_claims_service_desk_settings_project_key_address_slugs,
+    if: ->(record) { record.project_key_address_slug.present? }
   cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::PROJECT, subject_key: :project_id
 
   belongs_to :project
@@ -129,6 +133,10 @@ class ServiceDeskSetting < ApplicationRecord
   end
 
   private
+
+  def unique_attributes
+    [:custom_email, :project_key_address_slug]
+  end
 
   def set_project_key_address_slug
     self.project_key_address_slug =

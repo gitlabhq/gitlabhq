@@ -50,19 +50,13 @@ module QA
 
         Flow::Login.sign_in(as: developer_user, skip_page_validation: true)
 
-        Page::Main::TwoFactorAuth.perform do |two_fa_auth|
-          two_fa_auth.set_2fa_code('000000')
-          two_fa_auth.click_verify_code_button
-        end
+        Flow::Login.submit_2fa_code('000000')
 
         expect(page).to have_text('Invalid two-factor code')
 
-        Page::Main::TwoFactorAuth.perform do |two_fa_auth|
-          two_fa_auth.set_2fa_code(otp.fresh_otp)
-          two_fa_auth.click_verify_code_button
-        end
+        Flow::Login.submit_2fa_code(otp.fresh_otp)
 
-        expect(Page::Main::Menu.perform(&:signed_in?)).to be_truthy
+        expect(Page::Main::Menu.perform(&:has_personal_area?)).to be_truthy
       end
 
       # We are intentionally using the UI to enforce 2FA to exercise the flow with UI.

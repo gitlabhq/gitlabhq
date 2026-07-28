@@ -171,7 +171,7 @@ RSpec.describe Sidebars::Groups::Menus::ObservabilityMenu, feature_category: :ob
     include_context 'with observability sass features enabled and setting persisted'
 
     it 'has the right title' do
-      expect(observability_menu.title).to eq(_('Observability'))
+      expect(observability_menu.title).to eq(_('Observe'))
     end
 
     it 'has the right sprite icon' do
