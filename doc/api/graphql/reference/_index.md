@@ -51461,6 +51461,15 @@ Fields:
 | <a id="namespacesidebar-openmergerequestscount"></a>`openMergeRequestsCount` | [`Int`](#int) | Number of open merge requests of the namespace. |
 | <a id="namespacesidebar-openworkitemscount"></a>`openWorkItemsCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 18.11. Status: Experiment. Number of open work items in the namespace (limited to 10,000). |
 
+### `NamespaceWorkItemChangesPayload`
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="namespaceworkitemchangespayload-action"></a>`action` {{< icon name="warning-solid" >}} | [`WorkItemChangeAction!`](#workitemchangeaction) | Introduced in GitLab 19.3. Status: Experiment. Action that triggered the change event. |
+| <a id="namespaceworkitemchangespayload-workitemid"></a>`workItemId` {{< icon name="warning-solid" >}} | [`WorkItemID!`](#workitemid) | Introduced in GitLab 19.3. Status: Experiment. Global ID of the work item that changed. |
+
 ### `NestedEnvironment`
 
 Describes where code is deployed for a project organized by folder.
@@ -69290,6 +69299,16 @@ Values for work item award emoji update enum.
 | <a id="workitemawardemojiupdateaction-add"></a>`ADD` | Adds the emoji. |
 | <a id="workitemawardemojiupdateaction-remove"></a>`REMOVE` | Removes the emoji. |
 | <a id="workitemawardemojiupdateaction-toggle"></a>`TOGGLE` | Toggles the status of the emoji. |
+
+### `WorkItemChangeAction`
+
+Action that triggered a work item change event.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="workitemchangeaction-created"></a>`CREATED` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.3. Status: Experiment. Work item was created. |
+| <a id="workitemchangeaction-deleted"></a>`DELETED` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.3. Status: Experiment. Work item was deleted. |
+| <a id="workitemchangeaction-updated"></a>`UPDATED` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.3. Status: Experiment. Work item was updated. |
 
 ### `WorkItemDiscussionsSort`
 

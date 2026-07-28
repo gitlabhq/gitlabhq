@@ -165,19 +165,6 @@ module IntegrationsHelper
     !Gitlab.com?
   end
 
-  def integration_todo_target_type(target_type)
-    target_type_i18n_map = {
-      'Commit' => _('Commit'),
-      'Issue' => _('Issue'),
-      'MergeRequest' => _('Merge Request'),
-      'Epic' => _('Epic'),
-      DesignManagement::Design.name => _('design'),
-      AlertManagement::Alert.name => _('alert')
-    }
-
-    target_type_i18n_map[target_type] || target_type
-  end
-
   def integration_webhook_event_human_name(event)
     event_i18n_map = {
       confidential_issues_events: s_('Webhooks|Confidential issue events'),

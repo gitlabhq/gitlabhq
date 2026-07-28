@@ -97,6 +97,7 @@ Predefined variables become available at three different phases of pipeline exec
 | `CI_JOB_NAME_SLUG`                              | Pipeline     | `CI_JOB_NAME` in lowercase, shortened to 63 bytes, and with everything except `0-9` and `a-z` replaced with `-`. No leading / trailing `-`. Use in paths. |
 | `CI_JOB_STAGE`                                  | Pipeline     | The name of the job's stage. |
 | `CI_JOB_STATUS`                                 | Job-only     | The status of the job as each runner stage is executed. Use with [`after_script`](../yaml/_index.md#after_script). Can be `success`, `failed`, or `canceled`. |
+| `CI_JOB_TAGS`                                   | Job-only     | A JSON array of the job's [runner tags](../yaml/_index.md#tags). For example `["tag_1", "tag_2"]`. Introduced in GitLab 19.3. |
 | `CI_JOB_TIMEOUT`                                | Job-only     | The job timeout, in seconds. |
 | `CI_JOB_TOKEN`                                  | Job-only     | A token to authenticate with [certain API endpoints](../jobs/ci_job_token.md). The token is valid as long as the job is running. |
 | `CI_JOB_URL`                                    | Job-only     | The job details URL. |
@@ -145,7 +146,7 @@ Predefined variables become available at three different phases of pipeline exec
 | `CI_RUNNER_ID`                                  | Job-only     | The unique ID of the runner being used. |
 | `CI_RUNNER_REVISION`                            | Job-only     | The revision of the runner running the job. |
 | `CI_RUNNER_SHORT_TOKEN`                         | Job-only     | The runner's unique ID, used to authenticate new job requests. The token contains a prefix, and the first 17 characters are used. |
-| `CI_RUNNER_TAGS`                                | Job-only     | A JSON array of runner tags. For example `["tag_1", "tag_2"]`. |
+| `CI_RUNNER_TAGS`                                | Job-only     | A JSON array of the runner tags configured on the runner that picked up the job. For example `["tag_1", "tag_2"]`. |
 | `CI_RUNNER_VERSION`                             | Job-only     | The version of the GitLab Runner running the job. |
 | `CI_SERVER_FQDN`                                | Pre-pipeline | The fully qualified domain name (FQDN) of the instance. For example `gitlab.example.com:8080`. |
 | `CI_SERVER_HOST`                                | Pre-pipeline | The host of the GitLab instance URL, without protocol or port. For example `gitlab.example.com`. |

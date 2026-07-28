@@ -63,11 +63,11 @@ export default {
   },
   emits: [
     'cancel-editing',
-    'noteEdited',
+    'note-edited',
     'resolve',
     'start-editing',
     'start-replying',
-    'toggleDiscussionReplies',
+    'toggle-discussion-replies',
   ],
   computed: {
     hasReplies() {
@@ -109,7 +109,7 @@ export default {
       :is-resolved="isResolved"
       :is-resolving="isResolving"
       @resolve="$emit('resolve')"
-      @noteEdited="$emit('noteEdited', { note: firstNote, value: $event })"
+      @note-edited="$emit('note-edited', { note: firstNote, value: $event })"
       @start-replying="$emit('start-replying')"
       @start-editing="$emit('start-editing', firstNote)"
       @cancel-editing="$emit('cancel-editing', firstNote)"
@@ -132,7 +132,7 @@ export default {
                 :collapsed="!expanded"
                 :replies="replies"
                 class="gl-mx-2 !gl-border-0 gl-border-t-subtle !gl-px-0"
-                @toggle="$emit('toggleDiscussionReplies')"
+                @toggle="$emit('toggle-discussion-replies')"
               />
             </li>
             <template v-if="expanded">
@@ -148,7 +148,7 @@ export default {
                   :key="note.id"
                   :note="note"
                   :is-last-discussion="isLastDiscussion"
-                  @noteEdited="$emit('noteEdited', { note, value: $event })"
+                  @note-edited="$emit('note-edited', { note, value: $event })"
                   @start-editing="$emit('start-editing', note)"
                   @cancel-editing="$emit('cancel-editing', note)"
                 />

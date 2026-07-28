@@ -38,8 +38,6 @@ ee/app/models/ee/project.rb:
   - search_by_visibility
   - group_ldap_synced?
   - upstream_projects_count
-ee/app/models/ee/user.rb:
-  - ci_namespace_mirrors_permitted_to
 ee/app/models/ee/user_preference.rb:
   - distinct_eligible_duo_add_on_assignments
   - no_eligible_duo_add_on_assignments?
@@ -70,8 +68,6 @@ ee/app/models/security/category.rb:
 ee/app/models/security/orchestration_policy_configuration.rb:
   - compliance_framework_ids_with_policy_index
   - experiment_configuration
-app/helpers/integrations_helper.rb:
-  - integration_todo_target_type
 app/helpers/routing/groups/members_helper.rb:
   - approve_access_request_group_member_path
   - resend_invite_group_member_path

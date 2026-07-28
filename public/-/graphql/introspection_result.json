@@ -272416,6 +272416,49 @@
           ]
         },
         {
+          "kind": "OBJECT",
+          "name": "NamespaceWorkItemChangesPayload",
+          "description": null,
+          "fields": [
+            {
+              "name": "action",
+              "description": "Action that triggered the change event. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "WorkItemChangeAction",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
+              "name": "workItemId",
+              "description": "Global ID of the work item that changed. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "WorkItemID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
           "kind": "INTERFACE",
           "name": "NamespacesLinkPaths",
           "description": null,
@@ -375850,6 +375893,35 @@
               "deprecationReason": null
             },
             {
+              "name": "namespaceWorkItemChanges",
+              "description": "Triggered when a work item in a namespace is created, updated, or deleted. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [
+                {
+                  "name": "namespaceId",
+                  "description": "Namespace to receive work item updates for.",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "NamespaceID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "NamespaceWorkItemChangesPayload",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
               "name": "securityPolicyProjectCreated",
               "description": "Triggered when the security policy project is created for a specific group or project. Introduced in GitLab 17.3: Status: Experiment.",
               "args": [
@@ -424903,6 +424975,35 @@
           "inputFields": null,
           "interfaces": [],
           "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "WorkItemChangeAction",
+          "description": "Action that triggered a work item change event.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "CREATED",
+              "description": "Work item was created. Introduced in GitLab 19.3: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
+              "name": "UPDATED",
+              "description": "Work item was updated. Introduced in GitLab 19.3: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
+              "name": "DELETED",
+              "description": "Work item was deleted. Introduced in GitLab 19.3: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            }
+          ],
           "possibleTypes": null
         },
         {

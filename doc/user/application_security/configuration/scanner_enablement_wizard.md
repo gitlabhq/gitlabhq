@@ -15,12 +15,9 @@ title: Scanner Enablement Wizard
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/21626) in GitLab 19.1 [with a feature flag](../../../administration/feature_flags/_index.md) named `group_security_configuration_scanners_tab`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/597648) in GitLab 19.3. Feature flag `group_security_configuration_scanners_tab` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 Use the Scanner Enablement Wizard to apply [security configuration profiles](security_configuration_profiles.md)
 to projects that lack scanner coverage. The wizard configures dependency scanning, SAST, and secret

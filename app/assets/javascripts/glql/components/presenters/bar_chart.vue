@@ -1,14 +1,12 @@
 <script>
-import { GlSkeletonLoader } from '@gitlab/ui';
-import { dimensionsOf, metricsOf } from '../../utils/chart_data';
-import { dimensionMetricValidationError } from '../../utils/chart_validation';
 import SingleDimensionBarChart from './bar_chart/single_dimension_bar_chart.vue';
 import TwoDimensionsBarChart from './bar_chart/two_dimensions_bar_chart.vue';
+import DimensionRoutedChart from './chart/dimension_routed_chart.vue';
 
 export default {
   name: 'BarChartPresenter',
   components: {
-    GlSkeletonLoader,
+    DimensionRoutedChart,
     SingleDimensionBarChart,
     TwoDimensionsBarChart,
   },
@@ -36,53 +34,35 @@ export default {
   },
   emits: { error: null },
   computed: {
-    dimensions() {
-      return dimensionsOf(this.fields);
-    },
-    metrics() {
-      return metricsOf(this.fields);
-    },
-    validationError() {
-      if (!this.fields.length) return null;
-      return dimensionMetricValidationError({
-        displayType: 'barChart',
-        dimensions: this.dimensions,
-        metrics: this.metrics,
-      });
-    },
     stacked() {
       return this.displayConfig?.stacked === true;
-    },
-  },
-  watch: {
-    validationError: {
-      immediate: true,
-      handler(message) {
-        if (message) this.$emit('error', new Error(message));
-      },
     },
   },
 };
 </script>
 
 <template>
-  <div>
-    <gl-skeleton-loader v-if="loading" />
-    <template v-else-if="!validationError">
+  <dimension-routed-chart
+    display-type="barChart"
+    :fields="fields"
+    :loading="loading"
+    @error="$emit('error', $event)"
+  >
+    <template #one-dimension="{ dimension, metrics }">
       <single-dimension-bar-chart
-        v-if="dimensions.length === 1"
         :data="data"
-        :dimension="dimensions[0]"
+        :dimension="dimension"
         :metrics="metrics"
         :stacked="stacked"
       />
+    </template>
+    <template #two-dimensions="{ dimensions, metric }">
       <two-dimensions-bar-chart
-        v-else-if="dimensions.length === 2"
         :data="data"
         :primary-dimension="dimensions[0]"
         :secondary-dimension="dimensions[1]"
-        :metric="metrics[0]"
+        :metric="metric"
       />
     </template>
-  </div>
+  </dimension-routed-chart>
 </template>

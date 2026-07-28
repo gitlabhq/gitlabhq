@@ -237,3 +237,37 @@ Example response:
   "cached": true
 }
 ```
+
+### Clear a variant assignment
+
+Remove a forced variant assignment from the experiment cache for a given context,
+returning the actor to normal rollout assignment.
+
+```plaintext
+DELETE /experiments/:experiment_name/assignments
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `experiment_name` | string | Yes | Name of the experiment. |
+| `context[user]` | string | No | Username for context. |
+| `context[namespace]` | string | No | Full path of the namespace for context. |
+| `context[project]` | string | No | Full path of the project for context. |
+
+Context resolution matches [Get the current assignment](#get-the-current-assignment):
+if you omit `context[user]`, the API uses the authenticated user, and if the
+experiment declares `actor`, the actor is resolved from `context[user]`.
+
+If successful, returns [`204 No Content`](rest/troubleshooting.md#status-codes).
+
+The operation is idempotent: clearing a context that has no cached assignment also returns `204 No Content`.
+
+Example request:
+
+```shell
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/experiments/my_experiment/assignments?context[user]=sidney-jones"
+```

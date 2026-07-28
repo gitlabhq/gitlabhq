@@ -1,6 +1,7 @@
 import { GlStackedColumnChart } from '@gitlab/ui/src/charts';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import TwoDimensionsColumnChart from '~/glql/components/presenters/column_chart/two_dimensions_column_chart.vue';
+import { chartTooltipStub } from '../../../chart_helpers';
 
 const PRIMARY_DIM = { key: 'user', label: 'User', name: 'user', type: 'dimension' };
 const SECONDARY_DIM = { key: 'language', label: 'Language', name: 'language', type: 'dimension' };
@@ -80,11 +81,6 @@ describe('TwoDimensionsColumnChart', () => {
   });
 
   describe('rendered tooltip', () => {
-    const chartStub = (testParams) => ({
-      template: `<div><slot name="tooltip-content" :params="params"/></div>`,
-      data: () => ({ params: testParams }),
-    });
-
     it('formats tooltip values with the metric unit, regardless of series label', () => {
       const w = mountExtended(TwoDimensionsColumnChart, {
         propsData: {
@@ -94,7 +90,7 @@ describe('TwoDimensionsColumnChart', () => {
           metric: METRIC,
         },
         stubs: {
-          GlStackedColumnChart: chartStub({
+          GlStackedColumnChart: chartTooltipStub({
             seriesData: [
               { seriesName: 'ruby', value: ['u0', 1234], color: '#aaa' },
               { seriesName: 'python', value: ['u0', 567], color: '#bbb' },

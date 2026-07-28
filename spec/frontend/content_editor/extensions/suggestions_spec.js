@@ -18,15 +18,16 @@ jest.mock('tippy.js');
 
 describe('content_editor/extensions/suggestions', () => {
   let editor;
+  let searchMock;
 
-  const buildEditorWithExtension = (autocompleteResults) => {
+  const buildEditorWithExtension = (autocompleteResults, { serialized = '/command' } = {}) => {
+    searchMock = jest.fn().mockImplementation(() => Promise.resolve(autocompleteResults));
+
     const mockAutocompleteHelper = {
-      getDataSource: jest.fn().mockReturnValue({
-        search: jest.fn().mockImplementation(() => Promise.resolve(autocompleteResults)),
-      }),
+      getDataSource: jest.fn().mockReturnValue({ search: searchMock }),
     };
 
-    const serializer = { serialize: jest.fn().mockReturnValue('/command') };
+    const serializer = { serialize: jest.fn().mockReturnValue(serialized) };
 
     editor = createTestEditor({
       extensions: [
@@ -35,23 +36,31 @@ describe('content_editor/extensions/suggestions', () => {
     });
   };
 
-  const mockEditorCtx = () => ({
+  const mockEditorCtx = (references = []) => ({
     state: {
       doc: {
         slice: jest.fn().mockReturnValue({ content: {} }),
+        descendants: (callback) => references.forEach(callback),
       },
       selection: { to: 10 },
     },
     isActive: jest.fn().mockReturnValue(false),
   });
 
-  const getSlashItems = () => {
+  const getItemsForChar = (char) => {
     const SuggestionMock = jest.requireMock('@tiptap/suggestion');
-    const configs = SuggestionMock.getCaptured();
-    const slashConfig = configs.find((c) => c.char === '/');
-    if (!slashConfig) throw new Error('Slash suggestion config not captured');
-    return slashConfig.items;
+    const config = SuggestionMock.getCaptured().find((c) => c.char === char);
+    if (!config) throw new Error(`Suggestion config for "${char}" not captured`);
+    return config.items;
   };
+
+  const getSlashItems = () => getItemsForChar('/');
+  const getAtItems = () => getItemsForChar('@');
+
+  const userReference = (text) => ({
+    type: { name: 'reference' },
+    attrs: { referenceType: 'user', text },
+  });
 
   afterEach(() => {
     const SuggestionMock = jest.requireMock('@tiptap/suggestion');
@@ -99,6 +108,54 @@ describe('content_editor/extensions/suggestions', () => {
       const result = await items({ query: 'a', editor: mockEditorCtx() });
 
       expect(result.map((r) => r.name)).toEqual(['beta', 'alpha', 'zebra']);
+    });
+  });
+
+  describe('prioritizing already-mentioned users', () => {
+    it('passes usernames mentioned in the document to the data source for member quick actions', async () => {
+      buildEditorWithExtension([], { serialized: '/request_review @' });
+
+      const items = getAtItems();
+      await items({
+        query: '',
+        editor: mockEditorCtx([
+          userReference('@deloras'),
+          { type: { name: 'reference' }, attrs: { referenceType: 'issue', text: '#1' } },
+          userReference('@arlie'),
+        ]),
+      });
+
+      expect(searchMock).toHaveBeenCalledWith('/request_review', '', {
+        prioritizeUsernames: ['deloras', 'arlie'],
+      });
+    });
+
+    it('does not collect mentions for a plain @ outside a member quick action', async () => {
+      buildEditorWithExtension([], { serialized: '@' });
+
+      const items = getAtItems();
+      await items({ query: '', editor: mockEditorCtx([userReference('@deloras')]) });
+
+      expect(searchMock).toHaveBeenCalledWith(undefined, '', { prioritizeUsernames: [] });
+    });
+
+    it('floats the mentioned user to the top while keeping the rest alphabetical', async () => {
+      buildEditorWithExtension(
+        [
+          { username: 'zelda', name: 'Zelda' },
+          { username: 'deloras', name: 'Jimmy Stanton' },
+          { username: 'aaron', name: 'Aaron' },
+        ],
+        { serialized: '/request_review @' },
+      );
+
+      const items = getAtItems();
+      const result = await items({
+        query: '',
+        editor: mockEditorCtx([userReference('@deloras')]),
+      });
+
+      expect(result.map((r) => r.username)).toEqual(['deloras', 'aaron', 'zelda']);
     });
   });
 

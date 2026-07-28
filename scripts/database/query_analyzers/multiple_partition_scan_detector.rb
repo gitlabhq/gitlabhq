@@ -12,11 +12,18 @@ module Database
       # churns as tables are added/dropped, so we can't just allowlist it.
       TABLE_EXISTENCE_PROBE_REGEX = /SELECT\s+EXISTS\s*\(\s*SELECT\s+\*\s+FROM\s+(?:"?\w+"?\.)?"?\w+"?\s*\)/i
 
+      # `DatabaseCleanerDeletionBatchPatch` (spec/support/db_cleaner.rb) batches suite cleanup
+      # into a single `execute` of bare `DELETE FROM <table>;` statements. Full-table cleanup
+      # must touch every partition, and the table list (and so the fingerprint) churns as
+      # tables are added/dropped, so we can't just allowlist it.
+      DELETION_SWEEP_REGEX = /DELETE\s+FROM\s+(?:"?\w+"?\.)?"?\w+"?\s*;/i
+
       def analyze(query)
         super
 
         return if allowlisted?(query['fingerprint'])
         return if table_existence_sweep?(query['query'])
+        return if deletion_sweep?(query['query'])
 
         # "Subplans Removed"=>0 only appears for a partitioned scan that pruned nothing.
         # This isn't a guaranteed signal for _all_ unpruned queries, so it may miss some.
@@ -41,6 +48,10 @@ module Database
 
       def table_existence_sweep?(query)
         query.to_s.scan(TABLE_EXISTENCE_PROBE_REGEX).size > 1
+      end
+
+      def deletion_sweep?(query)
+        query.to_s.scan(DELETION_SWEEP_REGEX).size > 1
       end
 
       def allowlisted?(fingerprint)

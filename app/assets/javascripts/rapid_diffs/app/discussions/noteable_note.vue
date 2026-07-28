@@ -93,7 +93,7 @@ export default {
       default: false,
     },
   },
-  emits: ['cancel-editing', 'noteEdited', 'resolve', 'start-editing', 'start-replying'],
+  emits: ['cancel-editing', 'note-edited', 'resolve', 'start-editing', 'start-replying'],
   data() {
     return {
       isDeleting: false,
@@ -330,7 +330,7 @@ export default {
             :save-note-error-messages="$options.UPDATE_COMMENT_FORM"
             :is-first-note="isFirstNote"
             @cancel-editing="onCancelEditing"
-            @input="$emit('noteEdited', $event)"
+            @input="$emit('note-edited', $event)"
             @award="toggleAward"
           />
         </div>

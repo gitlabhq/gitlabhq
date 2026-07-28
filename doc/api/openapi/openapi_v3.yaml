@@ -8487,6 +8487,39 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/RequestBody_bddd5de04ffa"
+    delete:
+      operationId: deleteApiV4ExperimentsExperimentNameAssignments
+      summary: Clear a variant assignment for an experiment context
+      description: Removes the cached variant assignment for the given experiment
+        and context, returning the actor to normal rollout assignment. Defaults to
+        current user if no context is provided.
+      tags:
+      - Experiments
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      parameters:
+      - name: experiment_name
+        required: true
+        schema:
+          type: string
+        in: path
+      - name: context
+        required: false
+        description: Context parameters (user, namespace, project). An actor context
+          is resolved from the user. Defaults to current user.
+        schema:
+          type: object
+          nullable: true
+        in: query
   "/api/v4/elasticsearch_indexed_namespaces/rollout":
     put:
       operationId: putApiV4ElasticsearchIndexedNamespacesRollout

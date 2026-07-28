@@ -1,13 +1,11 @@
 <script>
-import { GlSkeletonLoader } from '@gitlab/ui';
-import { dimensionsOf, metricsOf } from '../../utils/chart_data';
-import { dimensionMetricValidationError } from '../../utils/chart_validation';
+import DimensionRoutedChart from './chart/dimension_routed_chart.vue';
 import SingleDimensionSeriesChart from './chart/single_dimension_series_chart.vue';
 
 export default {
   name: 'LineChartPresenter',
   components: {
-    GlSkeletonLoader,
+    DimensionRoutedChart,
     SingleDimensionSeriesChart,
   },
   props: {
@@ -28,43 +26,24 @@ export default {
     },
   },
   emits: { error: null },
-  computed: {
-    dimensions() {
-      return dimensionsOf(this.fields);
-    },
-    metrics() {
-      return metricsOf(this.fields);
-    },
-    validationError() {
-      if (!this.fields.length) return null;
-      return dimensionMetricValidationError({
-        displayType: 'lineChart',
-        dimensions: this.dimensions,
-        metrics: this.metrics,
-        maxDimensions: 1,
-      });
-    },
-  },
-  watch: {
-    validationError: {
-      immediate: true,
-      handler(message) {
-        if (message) this.$emit('error', new Error(message));
-      },
-    },
-  },
 };
 </script>
 
 <template>
-  <div>
-    <gl-skeleton-loader v-if="loading" />
-    <single-dimension-series-chart
-      v-else-if="!validationError && dimensions.length === 1"
-      variant="line"
-      :data="data"
-      :dimension="dimensions[0]"
-      :metrics="metrics"
-    />
-  </div>
+  <dimension-routed-chart
+    display-type="lineChart"
+    :fields="fields"
+    :loading="loading"
+    :max-dimensions="1"
+    @error="$emit('error', $event)"
+  >
+    <template #one-dimension="{ dimension, metrics }">
+      <single-dimension-series-chart
+        variant="line"
+        :data="data"
+        :dimension="dimension"
+        :metrics="metrics"
+      />
+    </template>
+  </dimension-routed-chart>
 </template>

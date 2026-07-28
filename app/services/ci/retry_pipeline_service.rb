@@ -6,8 +6,6 @@ module Ci
       access_response = check_access(pipeline)
       return access_response if access_response.error?
 
-      pipeline.ensure_scheduling_type!
-
       builds_relation(pipeline).find_each do |job|
         next unless can_be_retried?(job)
 

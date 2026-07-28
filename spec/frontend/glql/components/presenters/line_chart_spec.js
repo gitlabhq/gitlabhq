@@ -1,6 +1,7 @@
 import { GlSkeletonLoader } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import LineChartPresenter from '~/glql/components/presenters/line_chart.vue';
+import DimensionRoutedChart from '~/glql/components/presenters/chart/dimension_routed_chart.vue';
 import SingleDimensionSeriesChart from '~/glql/components/presenters/chart/single_dimension_series_chart.vue';
 
 const DIMENSION = { key: 'language', label: 'Language', name: 'language', type: 'dimension' };
@@ -33,6 +34,9 @@ describe('LineChartPresenter', () => {
         fields: [DIMENSION, TOTAL_COUNT],
         ...props,
       },
+      // Render the real routing shell (validation/loading covered in
+      // dimension_routed_chart_spec.js) while its chart children stay stubbed.
+      stubs: { DimensionRoutedChart },
     });
   };
 
@@ -40,15 +44,10 @@ describe('LineChartPresenter', () => {
   const findSeriesChart = () => wrapper.findComponent(SingleDimensionSeriesChart);
 
   describe('loading state', () => {
-    beforeEach(() => {
+    it('renders the skeleton loader and no chart while loading', () => {
       createComponent({ loading: true });
-    });
 
-    it('renders the skeleton loader', () => {
       expect(findSkeletonLoader().exists()).toBe(true);
-    });
-
-    it('does not render the chart', () => {
       expect(findSeriesChart().exists()).toBe(false);
     });
   });
@@ -66,17 +65,8 @@ describe('LineChartPresenter', () => {
     });
   });
 
-  describe('validation', () => {
-    const findEmittedErrorMessage = () => wrapper.emitted('error')?.[0]?.[0]?.message;
-
-    it('emits error when there are no dimensions', () => {
-      createComponent({ fields: [TOTAL_COUNT] });
-
-      expect(findEmittedErrorMessage()).toBe('lineChart requires at least one dimension');
-      expect(findSeriesChart().exists()).toBe(false);
-    });
-
-    it('emits error when there are more than 1 dimension', () => {
+  describe('validation wiring', () => {
+    it('emits the single-dimension error when there are more than 1 dimension', () => {
       createComponent({
         fields: [
           { key: 'a', label: 'A', name: 'a', type: 'dimension' },
@@ -85,21 +75,9 @@ describe('LineChartPresenter', () => {
         ],
       });
 
-      expect(findEmittedErrorMessage()).toBe('lineChart supports exactly one dimension');
-      expect(findSeriesChart().exists()).toBe(false);
-    });
-
-    it('emits error when there are no metrics', () => {
-      createComponent({ fields: [DIMENSION] });
-
-      expect(findEmittedErrorMessage()).toBe('lineChart requires at least one metric');
-      expect(findSeriesChart().exists()).toBe(false);
-    });
-
-    it('does not emit error and does not render chart before fields are populated', () => {
-      createComponent({ fields: [] });
-
-      expect(wrapper.emitted('error')).toBeUndefined();
+      expect(wrapper.emitted('error')?.[0]?.[0]?.message).toBe(
+        'lineChart supports exactly one dimension',
+      );
       expect(findSeriesChart().exists()).toBe(false);
     });
   });

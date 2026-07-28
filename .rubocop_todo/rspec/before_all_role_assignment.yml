@@ -392,7 +392,7 @@ RSpec/BeforeAllRoleAssignment:
     - 'spec/features/projects/settings/access_tokens_spec.rb'
     - 'spec/features/projects/settings/branch_names_settings_spec.rb'
     - 'spec/features/projects/settings/service_desk_setting_spec.rb'
-    - 'spec/features/projects/show/clone_button_spec.rb'
+    - 'spec/features/projects/show/repository_actions_spec.rb'
     - 'spec/features/projects/snippets/user_comments_on_snippet_spec.rb'
     - 'spec/features/projects/snippets/user_updates_snippet_spec.rb'
     - 'spec/features/projects/snippets/user_views_snippets_spec.rb'

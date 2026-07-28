@@ -7930,9 +7930,6 @@ msgstr ""
 msgid "Agent Information"
 msgstr ""
 
-msgid "Agent artifacts"
-msgstr ""
-
 msgid "Agent not found for provided id."
 msgstr ""
 
@@ -10673,6 +10670,9 @@ msgid "AnalyticsDashboards|Next"
 msgstr ""
 
 msgid "AnalyticsDashboards|No dashboards found"
+msgstr ""
+
+msgid "AnalyticsDashboards|Panel query"
 msgstr ""
 
 msgid "AnalyticsDashboards|Projects"
@@ -49210,12 +49210,6 @@ msgid "Monitor and address security vulnerabilities"
 msgstr ""
 
 msgid "Monitor and enforce compliance status and reports"
-msgstr ""
-
-msgid "Monitor and observe AI agent behavior and activities across your group."
-msgstr ""
-
-msgid "Monitor and observe AI agent behavior and activities across your project."
 msgstr ""
 
 msgid "Monitor automation session history"

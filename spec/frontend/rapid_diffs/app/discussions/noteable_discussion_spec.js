@@ -138,7 +138,7 @@ describe('NoteableDiscussion', () => {
     await wrapper.findComponent(NoteForm).vm.$emit('cancel', false, false);
     await nextTick();
     expect(confirmAction).not.toHaveBeenCalled();
-    expect(wrapper.emitted('stopReplying')).toStrictEqual([[]]);
+    expect(wrapper.emitted('stop-replying')).toStrictEqual([[]]);
   });
 
   it('shows confirmation when form is dirty', async () => {
@@ -148,7 +148,7 @@ describe('NoteableDiscussion', () => {
     expect(confirmAction).toHaveBeenCalled();
     await waitForPromises();
     await nextTick();
-    expect(wrapper.emitted('stopReplying')).toStrictEqual([[]]);
+    expect(wrapper.emitted('stop-replying')).toStrictEqual([[]]);
   });
 
   it('does not hide form when confirmation is declined', async () => {
@@ -158,7 +158,7 @@ describe('NoteableDiscussion', () => {
     await nextTick();
     expect(wrapper.findComponent(NoteForm).exists()).toBe(true);
     expect(wrapper.findComponent(DiscussionReplyPlaceholder).exists()).toBe(false);
-    expect(wrapper.emitted('stopReplying')).toBe(undefined);
+    expect(wrapper.emitted('stop-replying')).toBe(undefined);
   });
 
   it('propagates start-editing event', () => {
@@ -175,12 +175,12 @@ describe('NoteableDiscussion', () => {
     expect(wrapper.emitted('cancel-editing')).toStrictEqual([[note]]);
   });
 
-  it('propagates noteEdited event', () => {
+  it('propagates note-edited event', () => {
     const note = {};
     const value = 'edit';
     createComponent();
-    wrapper.findComponent(DiscussionNotes).vm.$emit('noteEdited', { note, value });
-    expect(wrapper.emitted('noteEdited')).toStrictEqual([[{ note, value }]]);
+    wrapper.findComponent(DiscussionNotes).vm.$emit('note-edited', { note, value });
+    expect(wrapper.emitted('note-edited')).toStrictEqual([[{ note, value }]]);
   });
 
   describe('timelineLayout prop', () => {
@@ -217,7 +217,7 @@ describe('NoteableDiscussion', () => {
       createComponent({ props: { discussion } });
       await wrapper.findComponent(NoteForm).props('saveNote')('test note');
       expect(store.replyToDiscussion).toHaveBeenCalledWith(discussion, 'test note');
-      expect(wrapper.emitted('stopReplying')).toStrictEqual([[]]);
+      expect(wrapper.emitted('stop-replying')).toStrictEqual([[]]);
     });
 
     it('does not save when sensitive token detection is declined', async () => {
@@ -240,7 +240,7 @@ describe('NoteableDiscussion', () => {
           message: COMMENT_FORM.GENERIC_UNSUBMITTABLE_NETWORK,
         }),
       );
-      expect(wrapper.emitted('stopReplying')).toBe(undefined);
+      expect(wrapper.emitted('stop-replying')).toBe(undefined);
     });
 
     it('shows generic alert when save fails without a response', async () => {
@@ -254,7 +254,7 @@ describe('NoteableDiscussion', () => {
           message: COMMENT_FORM.GENERIC_UNSUBMITTABLE_NETWORK,
         }),
       );
-      expect(wrapper.emitted('stopReplying')).toBe(undefined);
+      expect(wrapper.emitted('stop-replying')).toBe(undefined);
     });
   });
 
@@ -328,7 +328,7 @@ describe('NoteableDiscussion', () => {
         createComponent({ props: { discussion } });
         await wrapper.findComponent(NoteForm).props('saveDraft')('draft text', false);
         expect(store.addDraftToDiscussion).toHaveBeenCalledWith(discussion, 'draft text', false);
-        expect(wrapper.emitted('stopReplying')).toStrictEqual([[]]);
+        expect(wrapper.emitted('stop-replying')).toStrictEqual([[]]);
       });
 
       it('does not save draft when sensitive token detection is declined', async () => {
@@ -349,7 +349,7 @@ describe('NoteableDiscussion', () => {
         });
         await wrapper.findComponent(NoteForm).props('saveDraft')('draft text');
         expect(createAlert).toHaveBeenCalled();
-        expect(wrapper.emitted('stopReplying')).toBe(undefined);
+        expect(wrapper.emitted('stop-replying')).toBe(undefined);
       });
 
       it('shows generic alert when draft save fails without a response', async () => {
@@ -363,7 +363,7 @@ describe('NoteableDiscussion', () => {
             message: COMMENT_FORM.GENERIC_UNSUBMITTABLE_NETWORK,
           }),
         );
-        expect(wrapper.emitted('stopReplying')).toBe(undefined);
+        expect(wrapper.emitted('stop-replying')).toBe(undefined);
       });
 
       it('cancels form when empty text is passed', async () => {

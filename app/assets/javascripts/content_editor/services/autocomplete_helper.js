@@ -11,6 +11,7 @@ import {
   supportedConversionTypes,
 } from '~/graphql_shared/issuable_client_state';
 import { REFERENCE_TYPES } from '~/content_editor/constants/reference_types';
+import { prioritizeMentionedMembers } from '~/lib/utils/autocomplete_mentions';
 import { isCurrentViewWorkItem } from '~/work_items/utils';
 import { COMMANDS, COMMANDS_WITH_LOCAL_DATA } from '../constants';
 
@@ -130,9 +131,15 @@ export function createDataSource({
   filterOnBackend = false,
   isWorkItemsView,
 }) {
-  const fetchData = async ({ query }) => {
+  const fetchData = async ({ query, mentioned = [] }) => {
     try {
-      const queryOptions = filterOnBackend ? { params: { search: query } } : {};
+      const params = {};
+      if (filterOnBackend) params.search = query;
+      // Ask the backend to include already-mentioned members even when they
+      // fall outside the search-limited default set, so they can be surfaced.
+      if (mentioned.length) params.mentioned = mentioned;
+
+      const queryOptions = Object.keys(params).length ? { params } : {};
       return source ? (await axios.get(source, queryOptions)).data : [];
     } catch {
       return [];
@@ -143,7 +150,7 @@ export function createDataSource({
   const memoizedFetchData = memoize(fetchData, cacheTimeoutFn);
 
   return {
-    search: async (prefixCommand = '', query) => {
+    search: async (prefixCommand = '', query, { prioritizeUsernames = [] } = {}) => {
       let results = [];
 
       // We only want to fetch autocomplete data over the network
@@ -151,7 +158,9 @@ export function createDataSource({
       // eg; `/unassign` shows list of currently assigned users (available locally)
       //     Same is the case with `/unlabel` and `/unlink`.
       if (!isWorkItemsView || !COMMANDS_WITH_LOCAL_DATA.includes(prefixCommand)) {
-        results = filterOnBackend ? await fetchData({ query }) : await memoizedFetchData({ query });
+        results = filterOnBackend
+          ? await fetchData({ query, mentioned: prioritizeUsernames })
+          : await memoizedFetchData({ query });
       }
 
       results = results.map(mapper);
@@ -172,7 +181,11 @@ export function createDataSource({
         }
       }
 
-      return sorter(results, query).slice(0, limit);
+      // For member quick actions, float users already mentioned in the editor
+      // to the top before truncating, so they survive the limit.
+      const sorted = prioritizeMentionedMembers(sorter(results, query), prioritizeUsernames);
+
+      return sorted.slice(0, limit);
     },
   };
 }

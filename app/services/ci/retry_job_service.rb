@@ -10,7 +10,6 @@ module Ci
         processed_inputs = process_job_inputs(job, inputs)
         return processed_inputs if processed_inputs.error?
 
-        job.ensure_scheduling_type!
         new_job = retry_job(job, variables: variables, inputs: processed_inputs.payload[:inputs])
 
         track_retry_with_new_input_values(processed_inputs.payload[:inputs])

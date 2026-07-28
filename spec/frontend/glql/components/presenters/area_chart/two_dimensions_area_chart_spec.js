@@ -1,6 +1,7 @@
 import { GlAreaChart } from '@gitlab/ui/src/charts';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import TwoDimensionsAreaChart from '~/glql/components/presenters/area_chart/two_dimensions_area_chart.vue';
+import { chartTooltipStub } from '../../../chart_helpers';
 
 const PRIMARY_DIM = { key: 'week', label: 'Week', name: 'week', type: 'dimension' };
 const SECONDARY_DIM = { key: 'language', label: 'Language', name: 'language', type: 'dimension' };
@@ -90,11 +91,6 @@ describe('TwoDimensionsAreaChart', () => {
   });
 
   describe('rendered tooltip', () => {
-    const chartStub = (testParams) => ({
-      template: `<div><slot name="tooltip-content" :params="params"/></div>`,
-      data: () => ({ params: testParams }),
-    });
-
     it('formats tooltip values with the metric unit, regardless of series label', () => {
       const w = mountExtended(TwoDimensionsAreaChart, {
         propsData: {
@@ -104,7 +100,7 @@ describe('TwoDimensionsAreaChart', () => {
           metric: METRIC,
         },
         stubs: {
-          GlAreaChart: chartStub({
+          GlAreaChart: chartTooltipStub({
             seriesData: [
               { seriesName: 'ruby', value: ['2026-W23', 1234], color: '#aaa' },
               { seriesName: 'python', value: ['2026-W23', 567], color: '#bbb' },

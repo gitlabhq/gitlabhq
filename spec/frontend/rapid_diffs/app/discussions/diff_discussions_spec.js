@@ -72,17 +72,17 @@ describe('DiffDiscussions', () => {
     expect(useDiffDiscussions().startReplying).toHaveBeenCalledWith(discussion);
   });
 
-  it('handles stopReplying event', () => {
+  it('handles stop-replying event', () => {
     const discussion = { id: '1' };
     createComponent({ discussions: [discussion] });
-    wrapper.findComponent(NoteableDiscussion).vm.$emit('stopReplying');
+    wrapper.findComponent(NoteableDiscussion).vm.$emit('stop-replying');
     expect(useDiffDiscussions().stopReplying).toHaveBeenCalledWith(discussion);
   });
 
   it('toggles replies', () => {
     const discussion = { id: '1' };
     createComponent({ discussions: [discussion] });
-    wrapper.findComponent(NoteableDiscussion).vm.$emit('toggleDiscussionReplies');
+    wrapper.findComponent(NoteableDiscussion).vm.$emit('toggle-discussion-replies');
     expect(useDiffDiscussions().toggleDiscussionReplies).toHaveBeenCalledWith(discussion);
   });
 
@@ -100,11 +100,11 @@ describe('DiffDiscussions', () => {
     expect(useDiffDiscussions().setEditingMode).toHaveBeenCalledWith(note, false);
   });
 
-  it('handles noteEdited event', () => {
+  it('handles note-edited event', () => {
     const note = { id: '1' };
     const value = 'edit';
     createComponent({ discussions: [{ id: '1', notes: [note] }] });
-    wrapper.findComponent(NoteableDiscussion).vm.$emit('noteEdited', { note, value });
+    wrapper.findComponent(NoteableDiscussion).vm.$emit('note-edited', { note, value });
     expect(useDiffDiscussions().editNote).toHaveBeenCalledWith({ note, value });
   });
 

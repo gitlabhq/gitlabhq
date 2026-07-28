@@ -9,8 +9,9 @@ import {
   prioritizeCommandsWithFrequent,
   recordFrequentCommandUsage,
 } from '~/editor/quick_action_suggestions';
+import { prioritizeMentionedMembers } from '~/lib/utils/autocomplete_mentions';
 import SuggestionsDropdown from '../components/suggestions_dropdown.vue';
-import { COMMANDS } from '../constants';
+import { COMMANDS, MEMBER_COMMANDS } from '../constants';
 import CodeBlockHighlight from './code_block_highlight';
 import Diagram from './diagram';
 import Frontmatter from './frontmatter';
@@ -36,6 +37,23 @@ function expandRangeToIncludeText(range, text, tiptapEditor) {
   }
   const expandedTo = Math.max(originalTo, from + matchedLen);
   return { from, to: expandedTo };
+}
+
+// Collects usernames already mentioned in the document, in order of first
+// appearance. Reads the structured `reference` nodes directly; a `@mention`
+// typed inside code never becomes a reference node, so code is excluded for
+// free and no text parsing is needed.
+function mentionedUsernamesInDoc(doc) {
+  const usernames = [];
+
+  doc.descendants((node) => {
+    if (node.type.name === 'reference' && node.attrs.referenceType === REFERENCE_TYPES.USER) {
+      const text = node.attrs.originalText || node.attrs.text;
+      if (text?.startsWith('@')) usernames.push(text.slice(1).toLowerCase());
+    }
+  });
+
+  return [...new Set(usernames)];
 }
 
 function createSuggestionPlugin({
@@ -98,6 +116,13 @@ function createSuggestionPlugin({
 
       activeReferenceType = resolveReferenceType?.(prefixCommand) || referenceType;
 
+      // For member quick actions, collect users already mentioned in the
+      // document so the data source can float them to the top.
+      const prioritizeUsernames =
+        activeReferenceType === REFERENCE_TYPES.USER && MEMBER_COMMANDS.includes(prefixCommand)
+          ? mentionedUsernamesInDoc(tiptapEditor.state.doc)
+          : [];
+
       return autocompleteHelper
         .getDataSource(activeReferenceType, {
           command: prefixCommand,
@@ -105,13 +130,15 @@ function createSuggestionPlugin({
           limit,
           ...options,
         })
-        .search(prefixCommand, query)
+        .search(prefixCommand, query, { prioritizeUsernames })
         .then((data) => {
-          if (!query) {
-            return prioritizeCommandsWithFrequent(data);
-          }
+          // Apply the usual empty-query ordering (frequent commands / alphabetical
+          // members), then float any already-mentioned users on top of it so only
+          // those users change position. The data source already floated them
+          // before applying its result limit, so they survive truncation here.
+          const ordered = query ? data : prioritizeCommandsWithFrequent(data);
 
-          return data;
+          return prioritizeMentionedMembers(ordered, prioritizeUsernames);
         });
     },
 

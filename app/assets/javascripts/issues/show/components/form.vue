@@ -66,7 +66,7 @@ export default {
       default: '',
     },
   },
-  emits: ['updateForm'],
+  emits: ['update-form'],
   data() {
     const autosaveKey = [document.location.pathname, document.location.search];
     const descriptionAutosaveKey = [...autosaveKey, 'description'];
@@ -97,7 +97,7 @@ export default {
   watch: {
     formData: {
       handler(value) {
-        this.$emit('updateForm', value);
+        this.$emit('update-form', value);
       },
       deep: true,
     },
@@ -158,6 +158,7 @@ export default {
 <template>
   <form data-testid="issuable-form" class="gl-mt-1">
     <locked-warning v-if="showLockedWarning" :issuable-type="issuableType" />
+    <!-- eslint-disable vue/v-on-event-hyphenation -- GlAlert emits camelCase primaryAction/secondaryAction events -->
     <gl-alert
       v-if="showOutdatedDescriptionWarning"
       class="gl-mb-5"
@@ -173,6 +174,7 @@ export default {
         )
       }}</gl-alert
     >
+    <!-- eslint-enable vue/v-on-event-hyphenation -->
     <div class="row gl-mb-3">
       <div class="gl-col-12">
         <issuable-title-field ref="title" v-model="formData.title" @input="updateTitleDraft" />

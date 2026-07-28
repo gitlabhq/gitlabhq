@@ -260,10 +260,9 @@ RSpec.describe Gitlab::Checks::BranchCheck, feature_category: :source_code_manag
                 .with('feature')
                 .and_return(true)
 
-              allow(project.repository)
-                .to receive(:branch_names_contains_sha)
-                .with(newrev)
-                .and_return(['branch'])
+              allow_next_instance_of(Gitlab::Repositories::ContainingCommitFinder) do |finder|
+                allow(finder).to receive(:ref_names).and_return(['branch'])
+              end
             end
 
             context "newrev isn't in any protected branches" do

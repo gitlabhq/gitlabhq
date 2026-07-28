@@ -1,6 +1,7 @@
 import { GlSkeletonLoader } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ColumnChartPresenter from '~/glql/components/presenters/column_chart.vue';
+import DimensionRoutedChart from '~/glql/components/presenters/chart/dimension_routed_chart.vue';
 import SingleDimensionColumnChart from '~/glql/components/presenters/column_chart/single_dimension_column_chart.vue';
 import TwoDimensionsColumnChart from '~/glql/components/presenters/column_chart/two_dimensions_column_chart.vue';
 import {
@@ -21,6 +22,9 @@ describe('ColumnChartPresenter', () => {
         fields: MOCK_AGGREGATED_FIELDS_ONE_DIM_ONE_METRIC,
         ...props,
       },
+      // Render the real routing shell (validation/loading covered in
+      // dimension_routed_chart_spec.js) while its chart children stay stubbed.
+      stubs: { DimensionRoutedChart },
     });
   };
 
@@ -29,15 +33,10 @@ describe('ColumnChartPresenter', () => {
   const findTwoDim = () => wrapper.findComponent(TwoDimensionsColumnChart);
 
   describe('loading state', () => {
-    beforeEach(() => {
+    it('renders the skeleton loader and no chart while loading', () => {
       createComponent({ loading: true });
-    });
 
-    it('renders the skeleton loader', () => {
       expect(findSkeletonLoader().exists()).toBe(true);
-    });
-
-    it('does not render any chart', () => {
       expect(findSingleDim().exists()).toBe(false);
       expect(findTwoDim().exists()).toBe(false);
     });
@@ -76,17 +75,7 @@ describe('ColumnChartPresenter', () => {
       expect(findSingleDim().props('stacked')).toBe(true);
     });
 
-    it('routes to the two-dimension chart for 2 dimensions', () => {
-      createComponent({
-        fields: MOCK_AGGREGATED_FIELDS_TWO_DIMS_ONE_METRIC,
-        data: MOCK_AGGREGATED_DATA_TWO_DIMS,
-      });
-
-      expect(findTwoDim().exists()).toBe(true);
-      expect(findSingleDim().exists()).toBe(false);
-    });
-
-    it('ignores displayConfig.stacked with 2 dimensions', () => {
+    it('routes to the two-dimension chart for 2 dimensions, ignoring displayConfig.stacked', () => {
       createComponent({
         fields: MOCK_AGGREGATED_FIELDS_TWO_DIMS_ONE_METRIC,
         data: MOCK_AGGREGATED_DATA_TWO_DIMS,
@@ -96,66 +85,39 @@ describe('ColumnChartPresenter', () => {
       expect(findTwoDim().exists()).toBe(true);
       expect(findSingleDim().exists()).toBe(false);
     });
+
+    it('forwards both dimensions and the metric to the two-dimension chart', () => {
+      createComponent({
+        fields: MOCK_AGGREGATED_FIELDS_TWO_DIMS_ONE_METRIC,
+        data: MOCK_AGGREGATED_DATA_TWO_DIMS,
+      });
+
+      const [primaryDimension, secondaryDimension] =
+        MOCK_AGGREGATED_FIELDS_TWO_DIMS_ONE_METRIC.filter((f) => f.type === 'dimension');
+      const [metric] = MOCK_AGGREGATED_FIELDS_TWO_DIMS_ONE_METRIC.filter(
+        (f) => f.type === 'metric',
+      );
+
+      expect(findTwoDim().props()).toMatchObject({
+        data: MOCK_AGGREGATED_DATA_TWO_DIMS,
+        primaryDimension,
+        secondaryDimension,
+        metric,
+      });
+    });
   });
 
-  describe('validation', () => {
-    const findEmittedErrorMessage = () => wrapper.emitted('error')?.[0]?.[0]?.message;
-
-    it('emits error when there are no dimensions', () => {
+  describe('validation wiring', () => {
+    it('emits errors naming the display type', () => {
       createComponent({
         fields: [{ key: 'totalCount', label: 'Total count', name: 'totalCount', type: 'metric' }],
       });
 
-      expect(findEmittedErrorMessage()).toBe('columnChart requires at least one dimension');
+      expect(wrapper.emitted('error')?.[0]?.[0]?.message).toBe(
+        'columnChart requires at least one dimension',
+      );
       expect(findSingleDim().exists()).toBe(false);
       expect(findTwoDim().exists()).toBe(false);
-    });
-
-    it('emits error when there are more than 2 dimensions', () => {
-      createComponent({
-        fields: [
-          { key: 'a', label: 'A', name: 'a', type: 'dimension' },
-          { key: 'b', label: 'B', name: 'b', type: 'dimension' },
-          { key: 'c', label: 'C', name: 'c', type: 'dimension' },
-          { key: 'm', label: 'M', name: 'm', type: 'metric' },
-        ],
-      });
-
-      expect(findEmittedErrorMessage()).toBe('columnChart supports a maximum of 2 dimensions');
-    });
-
-    it('emits error when there are no metrics', () => {
-      createComponent({
-        fields: [{ key: 'language', label: 'Language', name: 'language', type: 'dimension' }],
-      });
-
-      expect(findEmittedErrorMessage()).toBe('columnChart requires at least one metric');
-    });
-
-    it('emits error when there are 2 dimensions and more than one metric', () => {
-      createComponent({
-        fields: [
-          { key: 'user', label: 'User', name: 'user', type: 'dimension' },
-          { key: 'language', label: 'Language', name: 'language', type: 'dimension' },
-          { key: 'totalCount', label: 'Total count', name: 'totalCount', type: 'metric' },
-          {
-            key: 'acceptanceRate',
-            label: 'Acceptance rate',
-            name: 'acceptanceRate',
-            type: 'metric',
-          },
-        ],
-      });
-
-      expect(findEmittedErrorMessage()).toBe(
-        'columnChart with 2 dimensions supports only a single metric',
-      );
-    });
-
-    it('does not emit error before fields are populated', () => {
-      createComponent({ fields: [] });
-
-      expect(wrapper.emitted('error')).toBeUndefined();
     });
   });
 });

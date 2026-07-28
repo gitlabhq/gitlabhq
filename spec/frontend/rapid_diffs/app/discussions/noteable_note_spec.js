@@ -143,7 +143,7 @@ describe('NoteableNote', () => {
   it('propagates note edited event', () => {
     createComponent();
     findNoteBody().vm.$emit('input', 'edit');
-    expect(wrapper.emitted('noteEdited')).toStrictEqual([['edit']]);
+    expect(wrapper.emitted('note-edited')).toStrictEqual([['edit']]);
   });
 
   describe('TimelineEntryItem', () => {

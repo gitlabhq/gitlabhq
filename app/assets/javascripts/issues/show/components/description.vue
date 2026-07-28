@@ -82,10 +82,10 @@ export default {
     },
   },
   emits: [
-    'saveDescription',
-    'taskListUpdateFailed',
-    'taskListUpdateStarted',
-    'taskListUpdateSucceeded',
+    'save-description',
+    'task-list-update-failed',
+    'task-list-update-started',
+    'task-list-update-succeeded',
   ],
   data() {
     return {
@@ -172,8 +172,8 @@ export default {
           fieldName: 'description',
           lockVersion: this.lockVersion,
           selector: '.detail-page-description',
-          onUpdate: () => this.$emit('taskListUpdateStarted'),
-          onSuccess: () => this.$emit('taskListUpdateSucceeded'),
+          onUpdate: () => this.$emit('task-list-update-started'),
+          onSuccess: () => this.$emit('task-list-update-succeeded'),
           onError: this.taskListUpdateError.bind(this),
         });
 
@@ -206,7 +206,7 @@ export default {
             ...taskListSortableOptions,
             onUpdate: (event) => {
               const description = convertDescriptionWithNewSort(this.descriptionText, event.to);
-              this.$emit('saveDescription', description);
+              this.$emit('save-description', description);
             },
           }),
         );
@@ -265,7 +265,7 @@ export default {
       );
       createAlert({ message: sprintf(message, { issueType: this.issuableType }) });
 
-      this.$emit('taskListUpdateFailed');
+      this.$emit('task-list-update-failed');
     },
     createTaskListItemActions() {
       const app = new Vue({
@@ -285,7 +285,7 @@ export default {
         oldDescription,
         sourcepos,
       );
-      this.$emit('saveDescription', newDescription);
+      this.$emit('save-description', newDescription);
       this.createTask({ taskTitle, taskDescription, oldDescription });
     },
     deleteTaskListItem({ id, sourcepos }) {
@@ -293,7 +293,7 @@ export default {
         return;
       }
       const { newDescription } = deleteTaskListItem(this.descriptionText, sourcepos);
-      this.$emit('saveDescription', newDescription);
+      this.$emit('save-description', newDescription);
     },
     renderTaskListItemActions() {
       const taskListItems = this.$el.querySelectorAll?.(
@@ -366,7 +366,7 @@ export default {
       }
     },
     async undoCreateTask(oldDescription, id) {
-      this.$emit('saveDescription', oldDescription);
+      this.$emit('save-description', oldDescription);
 
       try {
         const { data } = await this.$apollo.mutate({

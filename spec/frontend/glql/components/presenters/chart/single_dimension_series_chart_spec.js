@@ -1,6 +1,7 @@
 import { GlAreaChart, GlLineChart } from '@gitlab/ui/src/charts';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SingleDimensionSeriesChart from '~/glql/components/presenters/chart/single_dimension_series_chart.vue';
+import { chartTooltipStub } from '../../../chart_helpers';
 
 const DIMENSION = { key: 'language', label: 'Language', name: 'language', type: 'dimension' };
 const TOTAL_COUNT = {
@@ -275,13 +276,8 @@ describe('SingleDimensionSeriesChart', () => {
   });
 
   describe('rendered tooltip', () => {
-    const chartStub = (testParams) => ({
-      template: `<div><slot name="tooltip-content" :params="params"/></div>`,
-      data: () => ({ params: testParams }),
-    });
-
     const mountWithTooltip = ({ variant = 'line', metrics, seriesData, data = DATA }) => {
-      const stub = chartStub({ seriesData });
+      const stub = chartTooltipStub({ seriesData });
       return mountExtended(SingleDimensionSeriesChart, {
         propsData: { variant, data, dimension: DIMENSION, metrics },
         stubs: { GlLineChart: stub, GlAreaChart: stub },

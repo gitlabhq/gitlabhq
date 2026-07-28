@@ -25,6 +25,10 @@ module Gitlab
         branches + find_matching_tags(tags_limit: remaining_limit)
       end
 
+      def ref_names
+        execute.map { |ref| ref[:name] } # rubocop:disable Rails/Pluck -- execute returns an Array
+      end
+
       private
 
       attr_reader :repository, :sha, :params

@@ -308,6 +308,16 @@
     }
   }
 
+  .content-editor-code-block {
+    .hljs-addition {
+      background-color: var(--diff-addition-color);
+    }
+
+    .hljs-deletion {
+      background-color: var(--diff-deletion-color);
+    }
+  }
+
   .dl-content {
     width: 100%;
 

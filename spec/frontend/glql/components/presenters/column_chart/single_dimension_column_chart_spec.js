@@ -1,6 +1,7 @@
 import { GlColumnChart, GlStackedColumnChart } from '@gitlab/ui/src/charts';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SingleDimensionColumnChart from '~/glql/components/presenters/column_chart/single_dimension_column_chart.vue';
+import { chartTooltipStub } from '../../../chart_helpers';
 
 const DIMENSION = { key: 'language', label: 'Language', name: 'language', type: 'dimension' };
 const TOTAL_COUNT = {
@@ -254,13 +255,8 @@ describe('SingleDimensionColumnChart', () => {
     // Stub the chart and render its `#tooltip-content` slot with fixed params,
     // so we can assert on the resulting tooltip DOM rather than reaching into
     // component internals.
-    const chartStub = (testParams) => ({
-      template: `<div><slot name="tooltip-content" :params="params"/></div>`,
-      data: () => ({ params: testParams }),
-    });
-
     const mountWithTooltip = ({ metrics, stacked = false, seriesData, data = DATA }) => {
-      const stub = chartStub({ seriesData });
+      const stub = chartTooltipStub({ seriesData });
       return mountExtended(SingleDimensionColumnChart, {
         propsData: { data, dimension: DIMENSION, metrics, stacked },
         stubs: { GlColumnChart: stub, GlStackedColumnChart: stub },

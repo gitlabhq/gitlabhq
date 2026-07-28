@@ -19,7 +19,7 @@ export default {
     GlDisclosureDropdownItem,
   },
   inject: ['iid', 'issueType', 'projectPath', 'fullPath'],
-  emits: ['closeActionsDropdown'],
+  emits: ['close-actions-dropdown'],
   data() {
     return {
       confidential: false,
@@ -97,7 +97,7 @@ export default {
                 message: errors[0],
               });
             } else {
-              this.$emit('closeActionsDropdown');
+              this.$emit('close-actions-dropdown');
               this.$toast.show(this.confidentialityText);
             }
           },

@@ -297,7 +297,7 @@ describe('Description component', () => {
    1. [ ] item 3
    1. [ ] item 4;`;
 
-          expect(wrapper.emitted('saveDescription')).toEqual([[newDescriptionText]]);
+          expect(wrapper.emitted('save-description')).toEqual([[newDescriptionText]]);
         });
 
         it('calls a mutation to create a task', () => {
@@ -375,7 +375,7 @@ describe('Description component', () => {
 
         eventHub.$emit('delete-task-list-item', { id: '1', sourcepos: '4:4-5:19' });
 
-        expect(wrapper.emitted('saveDescription')).toEqual([[newDescriptionText]]);
+        expect(wrapper.emitted('save-description')).toEqual([[newDescriptionText]]);
       });
     });
   });

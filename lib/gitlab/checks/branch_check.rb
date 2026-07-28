@@ -158,7 +158,11 @@ module Gitlab
       end
 
       def safe_commit_for_new_protected_branch?
-        ProtectedBranch.any_protected?(project, project.repository.branch_names_contains_sha(newrev))
+        branch_names = Gitlab::Repositories::ContainingCommitFinder
+          .new(project.repository, newrev, type: 'branch')
+          .ref_names
+
+        ProtectedBranch.any_protected?(project, branch_names)
       end
     end
   end

@@ -769,7 +769,7 @@ To link an item to a task:
 When you have finished adding all linked items, you can see
 them categorized so their relationships can be better understood visually.
 
-![Linked items block](img/linked_items_list_v16_5.png)
+![Linked work items grouped as Blocking, Blocked by, and Related to in the Linked items section.](img/linked_items_list_v16_5.png)
 
 ### Remove a linked item
 

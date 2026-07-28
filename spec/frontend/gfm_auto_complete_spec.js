@@ -287,6 +287,75 @@ describe('GfmAutoComplete', () => {
           expect(axios.get).not.toHaveBeenCalled();
         });
       });
+
+      describe('members with already-mentioned users', () => {
+        const buildContext = (overrides = {}) => ({
+          isLoadingData: { '@': false },
+          dataSources: { members: 'members_autocomplete_url' },
+          cachedData: { '@': { '': [{ username: 'cached' }] } },
+          cachedMentioned: {},
+          loadData: jest.fn(),
+          ...overrides,
+        });
+
+        it('sends the mentioned usernames from the input and bypasses the cache', async () => {
+          mock.onGet('members_autocomplete_url').reply(HTTP_STATUS_OK, []);
+          const $input = { val: () => '@deloras please review' };
+
+          fetchData.call(buildContext(), $input, '@', '');
+
+          expect(axios.get).toHaveBeenCalledWith('members_autocomplete_url', {
+            params: { search: '', mentioned: ['deloras'] },
+            signal: expect.any(AbortSignal),
+          });
+
+          await waitForPromises();
+        });
+
+        it('uses the cache and omits the param when there are no mentions', () => {
+          const context = buildContext();
+          const $input = { val: () => 'no mentions here' };
+
+          fetchData.call(context, $input, '@', '');
+
+          expect(axios.get).not.toHaveBeenCalled();
+          expect(context.loadData).toHaveBeenCalled();
+        });
+
+        it('serves from cache without refetching when the mentioned set is unchanged', () => {
+          const context = buildContext({
+            cachedData: { '@': { ab: [{ username: 'cached' }] } },
+            cachedMentioned: { '@': ['deloras'] },
+          });
+          const $input = { val: () => '@deloras please review' };
+
+          fetchData.call(context, $input, '@', 'ab');
+
+          expect(axios.get).not.toHaveBeenCalled();
+          expect(context.loadData).toHaveBeenCalledWith($input, '@', [{ username: 'cached' }], {
+            search: 'ab',
+          });
+        });
+
+        it('drops the cache and refetches when the mentioned set changes', async () => {
+          mock.onGet('members_autocomplete_url').reply(HTTP_STATUS_OK, []);
+          const context = buildContext({
+            cachedData: { '@': { ab: [{ username: 'cached' }] } },
+            cachedMentioned: { '@': ['deloras'] },
+          });
+          const $input = { val: () => '@deloras @arlie please review' };
+
+          fetchData.call(context, $input, '@', 'ab');
+
+          expect(context.cachedData['@']).toBeUndefined();
+          expect(axios.get).toHaveBeenCalledWith('members_autocomplete_url', {
+            params: { search: 'ab', mentioned: ['deloras', 'arlie'] },
+            signal: expect.any(AbortSignal),
+          });
+
+          await waitForPromises();
+        });
+      });
     });
 
     describe('frontend filtering', () => {
@@ -1675,6 +1744,45 @@ describe('GfmAutoComplete', () => {
           expect(getDropdownItems()).toEqual([mockAssignees[1]].map(reviewerMatcher));
           expect(currentReviewers).toHaveBeenCalled();
         });
+      });
+    });
+
+    describe('prioritizing already-mentioned users', () => {
+      const getDropdownItems = () => getAutocompleteDropdownItems('at-view-users');
+      let mock;
+
+      beforeEach(() => {
+        // A mention in the editor bypasses the local cache and refetches, so the
+        // backend can include mentioned members outside the default set.
+        mock = new MockAdapter(axios);
+        mock
+          .onGet(`${TEST_HOST}/autocomplete_sources/members`)
+          .reply(HTTP_STATUS_OK, mockAssignees);
+
+        currentReviewers.mockReturnValue([]);
+        currentAssignees.mockImplementation(() => ({ [`${mockWorkItemId}`]: [] }));
+
+        autocomplete.setup($textarea, { members: true });
+      });
+
+      afterEach(() => {
+        mock.restore();
+      });
+
+      it('floats a user already @-mentioned in the comment to the top for member quick actions', async () => {
+        $textarea.val('@nancee_simonis can you take a look? ');
+        triggerDropdown($textarea, '/request_review @');
+        await waitForPromises();
+
+        expect(getDropdownItems()[0]).toContain('nancee_simonis');
+      });
+
+      it('does not reorder for a plain @ outside a member quick action', async () => {
+        $textarea.val('@nancee_simonis can you take a look? ');
+        triggerDropdown($textarea, '@');
+        await waitForPromises();
+
+        expect(getDropdownItems()[0]).toContain('root');
       });
     });
 

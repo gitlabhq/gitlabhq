@@ -231,7 +231,7 @@ module Gitlab
         # project, there may be at most a 5-minute window where the `sha` is still considered external.
         Rails.cache.fetch(['project', project.id, 'ref/contains/sha', sha], expires_in: 5.minutes) do
           repo = project.repository
-          repo.branch_names_contains(sha, limit: 1).any? || repo.tag_names_contains(sha, limit: 1).any?
+          Gitlab::Repositories::ContainingCommitFinder.new(repo, sha, limit: 1).execute.any?
         end
       end
     end

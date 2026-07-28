@@ -305,25 +305,6 @@ RSpec.describe Ci::RetryPipelineService, '#execute', feature_category: :continuo
       service.execute(pipeline)
     end
 
-    context 'when pipeline has processables with nil scheduling_type' do
-      let!(:build1) { create_build('build1', :success, build_stage) }
-      let!(:build2) { create_build('build2', :failed, build_stage) }
-      let!(:build3) { create_build('build3', :failed, test_stage) }
-      let!(:build3_needs_build1) { create(:ci_build_need, build: build3, name: build1.name) }
-
-      before do
-        statuses.update_all(scheduling_type: nil)
-      end
-
-      it 'populates scheduling_type of processables' do
-        service.execute(pipeline)
-
-        expect(build1.reload.scheduling_type).to eq('stage')
-        expect(build2.reload.scheduling_type).to eq('stage')
-        expect(build3.reload.scheduling_type).to eq('dag')
-      end
-    end
-
     shared_examples 'updates the bridge status when authorized' do
       before do
         create(:ci_sources_pipeline, pipeline: pipeline, source_job: bridge)

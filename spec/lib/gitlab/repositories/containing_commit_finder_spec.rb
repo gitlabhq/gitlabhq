@@ -168,4 +168,12 @@ RSpec.describe Gitlab::Repositories::ContainingCommitFinder, feature_category: :
       end
     end
   end
+
+  describe '#ref_names' do
+    subject(:ref_names) { finder.ref_names }
+
+    it 'returns the names of matching branches and tags' do
+      expect(ref_names).to match_array(%w[develop master v1.0 v2.0])
+    end
+  end
 end

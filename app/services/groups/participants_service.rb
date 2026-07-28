@@ -11,7 +11,8 @@ module Groups
       participants =
         noteable_owner +
         participants_in_noteable +
-        group_hierarchy_users
+        group_hierarchy_users +
+        mentioned_users(group_members_relation)
 
       participants += groups unless relation_at_search_limit?(group_hierarchy_users)
 
@@ -24,12 +25,17 @@ module Groups
       group
     end
 
+    def group_members_relation
+      return unless group
+
+      Autocomplete::GroupUsersFinder.new(group: group, current_user: current_user).execute
+    end
+    strong_memoize_attr :group_members_relation
+
     def group_hierarchy_users
-      return [] unless group
+      return [] unless group_members_relation
 
-      relation = Autocomplete::GroupUsersFinder.new(group: group, current_user: current_user).execute
-
-      filter_and_sort_users(relation)
+      filter_and_sort_users(group_members_relation)
     end
     strong_memoize_attr :group_hierarchy_users
   end

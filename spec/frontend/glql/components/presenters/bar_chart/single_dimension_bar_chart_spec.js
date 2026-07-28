@@ -2,6 +2,7 @@ import { GlBarChart } from '@gitlab/ui/src/charts';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SingleDimensionBarChart from '~/glql/components/presenters/bar_chart/single_dimension_bar_chart.vue';
 import { barCategoryAxisOptions } from '~/glql/components/presenters/bar_chart/bar_chart_options';
+import { chartTooltipStub } from '../../../chart_helpers';
 
 const DIMENSION = { key: 'language', label: 'Language', name: 'language', type: 'dimension' };
 const CREATED = { key: 'created', label: 'Created', name: 'created', type: 'dimension' };
@@ -189,13 +190,8 @@ describe('SingleDimensionBarChart', () => {
     // Stub the chart and render its `#tooltip-content` slot with fixed params,
     // so we can assert on the resulting tooltip DOM rather than reaching into
     // component internals.
-    const chartStub = (testParams) => ({
-      template: `<div><slot name="tooltip-content" :params="params"/></div>`,
-      data: () => ({ params: testParams }),
-    });
-
     const mountWithTooltip = ({ metrics, stacked = false, seriesData, data = DATA }) => {
-      const stub = chartStub({ seriesData });
+      const stub = chartTooltipStub({ seriesData });
       return mountExtended(SingleDimensionBarChart, {
         propsData: { data, dimension: DIMENSION, metrics, stacked },
         stubs: { GlBarChart: stub },

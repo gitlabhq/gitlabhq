@@ -499,14 +499,12 @@
 - spec/features/projects/settings/user_transfers_a_project_spec.rb
 - spec/features/projects/settings/visibility_settings_spec.rb
 - spec/features/projects/show/access_spec.rb
-- spec/features/projects/show/clone_button_spec.rb
 - spec/features/projects/show/content_display_spec.rb
 - spec/features/projects/show/download_buttons_spec.rb
+- spec/features/projects/show/repository_actions_spec.rb
 - spec/features/projects/show/user_interactions_spec.rb
 - spec/features/projects/show/user_interacts_with_auto_devops_banner_spec.rb
-- spec/features/projects/show/user_sees_git_instructions_spec.rb
 - spec/features/projects/show/user_sees_setup_shortcut_buttons_spec.rb
-- spec/features/projects/show/user_uploads_files_spec.rb
 - spec/features/projects/snippets/show_spec.rb
 - spec/features/projects/snippets/user_updates_snippet_spec.rb
 - spec/features/projects/sourcegraph_csp_spec.rb

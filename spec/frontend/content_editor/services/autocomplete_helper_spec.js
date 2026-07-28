@@ -289,6 +289,50 @@ describe('createDataSource', () => {
 
     expect(mock.history.get).toHaveLength(1);
   });
+
+  it('floats mentioned usernames to the top before applying the limit', async () => {
+    mock
+      .onGet('/source')
+      .reply(HTTP_STATUS_OK, [{ username: 'aaa' }, { username: 'bbb' }, { username: 'ccc' }]);
+
+    const dataSource = createDataSource({
+      source: '/source',
+      searchFields: ['username'],
+      limit: 2,
+    });
+
+    const results = await dataSource.search('/assign', '', { prioritizeUsernames: ['ccc'] });
+
+    expect(results).toEqual([{ username: 'ccc' }, { username: 'aaa' }]);
+  });
+
+  it('sends mentioned usernames to the backend when provided', async () => {
+    mock.onGet('/source').reply(HTTP_STATUS_OK, []);
+
+    const dataSource = createDataSource({
+      source: '/source',
+      searchFields: ['username'],
+      filterOnBackend: true,
+    });
+
+    await dataSource.search('/assign', 'foo', { prioritizeUsernames: ['deloras', 'arlie'] });
+
+    expect(mock.history.get[0].params).toEqual({ search: 'foo', mentioned: ['deloras', 'arlie'] });
+  });
+
+  it('omits the mentioned param when no users are mentioned', async () => {
+    mock.onGet('/source').reply(HTTP_STATUS_OK, []);
+
+    const dataSource = createDataSource({
+      source: '/source',
+      searchFields: ['username'],
+      filterOnBackend: true,
+    });
+
+    await dataSource.search('/assign', 'foo');
+
+    expect(mock.history.get[0].params).toEqual({ search: 'foo' });
+  });
 });
 
 describe('AutocompleteHelper', () => {

@@ -2,6 +2,7 @@ import { GlBarChart } from '@gitlab/ui/src/charts';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import TwoDimensionsBarChart from '~/glql/components/presenters/bar_chart/two_dimensions_bar_chart.vue';
 import { barCategoryAxisOptions } from '~/glql/components/presenters/bar_chart/bar_chart_options';
+import { chartTooltipStub } from '../../../chart_helpers';
 
 const PRIMARY_DIM = { key: 'user', label: 'User', name: 'user', type: 'dimension' };
 const SECONDARY_DIM = { key: 'language', label: 'Language', name: 'language', type: 'dimension' };
@@ -115,11 +116,6 @@ describe('TwoDimensionsBarChart', () => {
   });
 
   describe('rendered tooltip', () => {
-    const chartStub = (testParams) => ({
-      template: `<div><slot name="tooltip-content" :params="params"/></div>`,
-      data: () => ({ params: testParams }),
-    });
-
     it('formats tooltip values with the metric unit, regardless of series label', () => {
       const w = mountExtended(TwoDimensionsBarChart, {
         propsData: {
@@ -129,7 +125,7 @@ describe('TwoDimensionsBarChart', () => {
           metric: METRIC,
         },
         stubs: {
-          GlBarChart: chartStub({
+          GlBarChart: chartTooltipStub({
             seriesData: [
               { seriesName: 'ruby', value: [1234, 'u0'], color: '#aaa' },
               { seriesName: 'python', value: [567, 'u0'], color: '#bbb' },

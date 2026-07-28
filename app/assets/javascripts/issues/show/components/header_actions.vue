@@ -377,7 +377,7 @@ export default {
         </template>
         <header-actions-confidentiality-toggle
           v-if="showConfidentialityToggle"
-          @closeActionsDropdown="closeActionsDropdown"
+          @close-actions-dropdown="closeActionsDropdown"
         />
         <gl-disclosure-dropdown-item
           :data-clipboard-text="issuableReference"
@@ -471,7 +471,7 @@ export default {
       </template>
       <header-actions-confidentiality-toggle
         v-if="showConfidentialityToggle"
-        @closeActionsDropdown="closeActionsDropdown"
+        @close-actions-dropdown="closeActionsDropdown"
       />
       <gl-disclosure-dropdown-item
         :data-clipboard-text="issuableReference"

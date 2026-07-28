@@ -410,28 +410,6 @@ RSpec.describe IntegrationsHelper, feature_category: :integrations do
     end
   end
 
-  describe '#integration_todo_target_type' do
-    using RSpec::Parameterized::TableSyntax
-    let!(:todo) { create(:todo, commit_id: '123') }
-
-    where(:target_type, :expected_i18n_target_type) do
-      "Commit"                      | _("Commit")
-      "Issue"                       | _("Issue")
-      "MergeRequest"                | _("Merge Request")
-      'Epic'                        | _('Epic')
-      DesignManagement::Design.name | _('design')
-      AlertManagement::Alert.name   | _('alert')
-    end
-
-    with_them do
-      before do
-        todo.update!(target_type: target_type)
-      end
-
-      it { expect(described_class.integration_todo_target_type(todo.target_type)).to eq(expected_i18n_target_type) }
-    end
-  end
-
   describe '#integration_webhook_event_human_name' do
     where(:event, :mapping) do
       :repository_update_events | 'Repository update events'

@@ -1773,12 +1773,6 @@ module Ci
       "#{url}@#{source_ref_path}"
     end
 
-    # Set scheduling type of processables if they were created before scheduling_type
-    # data was deployed (https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22246).
-    def ensure_scheduling_type!
-      processables.populate_scheduling_type!
-    end
-
     def ensure_ci_ref!
       self.ci_ref = Ci::Ref.ensure_for(self)
     end

@@ -547,7 +547,7 @@ export default {
         :project-namespace="projectNamespace"
         :enable-autocomplete="enableAutocomplete"
         :issuable-type="issuableType"
-        @updateForm="setFormState"
+        @update-form="setFormState"
       />
     </div>
     <div v-else>
@@ -621,10 +621,10 @@ export default {
         :update-url="updateEndpoint"
         :lock-version="state.lock_version"
         :is-updating="formState.updateLoading"
-        @saveDescription="handleSaveDescription"
-        @taskListUpdateStarted="taskListUpdateStarted"
-        @taskListUpdateSucceeded="taskListUpdateSucceeded"
-        @taskListUpdateFailed="taskListUpdateFailed"
+        @save-description="handleSaveDescription"
+        @task-list-update-started="taskListUpdateStarted"
+        @task-list-update-succeeded="taskListUpdateSucceeded"
+        @task-list-update-failed="taskListUpdateFailed"
       />
 
       <edited-component

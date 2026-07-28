@@ -38,7 +38,10 @@ module Gitlab
       end
 
       def commit_exists?
-        project.repository.branch_names_contains(sha).include?(ref)
+        Gitlab::Repositories::ContainingCommitFinder
+          .new(project.repository, sha, type: 'branch')
+          .ref_names
+          .include?(ref)
       end
 
       def short_id

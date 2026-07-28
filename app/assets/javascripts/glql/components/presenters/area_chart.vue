@@ -1,14 +1,12 @@
 <script>
-import { GlSkeletonLoader } from '@gitlab/ui';
-import { dimensionsOf, metricsOf } from '../../utils/chart_data';
-import { dimensionMetricValidationError } from '../../utils/chart_validation';
-import SingleDimensionSeriesChart from './chart/single_dimension_series_chart.vue';
 import TwoDimensionsAreaChart from './area_chart/two_dimensions_area_chart.vue';
+import DimensionRoutedChart from './chart/dimension_routed_chart.vue';
+import SingleDimensionSeriesChart from './chart/single_dimension_series_chart.vue';
 
 export default {
   name: 'AreaChartPresenter',
   components: {
-    GlSkeletonLoader,
+    DimensionRoutedChart,
     SingleDimensionSeriesChart,
     TwoDimensionsAreaChart,
   },
@@ -36,54 +34,36 @@ export default {
   },
   emits: { error: null },
   computed: {
-    dimensions() {
-      return dimensionsOf(this.fields);
-    },
-    metrics() {
-      return metricsOf(this.fields);
-    },
-    validationError() {
-      if (!this.fields.length) return null;
-      return dimensionMetricValidationError({
-        displayType: 'areaChart',
-        dimensions: this.dimensions,
-        metrics: this.metrics,
-      });
-    },
     stacked() {
       return this.displayConfig?.stacked === true;
-    },
-  },
-  watch: {
-    validationError: {
-      immediate: true,
-      handler(message) {
-        if (message) this.$emit('error', new Error(message));
-      },
     },
   },
 };
 </script>
 
 <template>
-  <div>
-    <gl-skeleton-loader v-if="loading" />
-    <template v-else-if="!validationError">
+  <dimension-routed-chart
+    display-type="areaChart"
+    :fields="fields"
+    :loading="loading"
+    @error="$emit('error', $event)"
+  >
+    <template #one-dimension="{ dimension, metrics }">
       <single-dimension-series-chart
-        v-if="dimensions.length === 1"
         variant="area"
         :data="data"
-        :dimension="dimensions[0]"
+        :dimension="dimension"
         :metrics="metrics"
         :stacked="stacked"
       />
+    </template>
+    <template #two-dimensions="{ dimensions, metric }">
       <two-dimensions-area-chart
-        v-else-if="dimensions.length === 2"
         :data="data"
         :primary-dimension="dimensions[0]"
         :secondary-dimension="dimensions[1]"
-        :metric="metrics[0]"
+        :metric="metric"
       />
     </template>
-  </div>
+  </dimension-routed-chart>
 </template>

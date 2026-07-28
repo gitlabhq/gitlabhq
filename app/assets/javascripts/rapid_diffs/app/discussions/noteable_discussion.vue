@@ -72,11 +72,11 @@ export default {
   },
   emits: [
     'cancel-editing',
-    'noteEdited',
+    'note-edited',
     'start-editing',
     'start-replying',
-    'stopReplying',
-    'toggleDiscussionReplies',
+    'stop-replying',
+    'toggle-discussion-replies',
   ],
   data() {
     return {
@@ -186,7 +186,7 @@ export default {
         }
       }
 
-      this.$emit('stopReplying');
+      this.$emit('stop-replying');
     }),
     async saveNote(noteText, shouldResolve) {
       if (!noteText) {
@@ -205,7 +205,7 @@ export default {
         if (shouldResolve) {
           await this.toggleResolve();
         }
-        this.$emit('stopReplying');
+        this.$emit('stop-replying');
       } catch (e) {
         const message = getNoteFormErrorMessages(e.response)[0];
         createAlert({ message, parent: this.$el });
@@ -225,7 +225,7 @@ export default {
 
       try {
         await this.store.addDraftToDiscussion(this.discussion, noteText, shouldResolve);
-        this.$emit('stopReplying');
+        this.$emit('stop-replying');
       } catch (e) {
         const message = getNoteFormErrorMessages(e.response)[0];
         createAlert({ message, parent: this.$el });
@@ -253,9 +253,9 @@ export default {
       :is-resolved="discussion.resolved"
       :is-resolving="isResolving"
       @resolve="toggleResolve"
-      @toggleDiscussionReplies="$emit('toggleDiscussionReplies')"
+      @toggle-discussion-replies="$emit('toggle-discussion-replies')"
       @start-replying="showReplyForm"
-      @noteEdited="$emit('noteEdited', $event)"
+      @note-edited="$emit('note-edited', $event)"
       @start-editing="$emit('start-editing', $event)"
       @cancel-editing="$emit('cancel-editing', $event)"
     >

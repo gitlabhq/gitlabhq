@@ -165,6 +165,38 @@ RSpec.describe Namespaces::ProjectNamespace, type: :model, feature_category: :gr
     end
   end
 
+  describe '#member?' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:project_namespace) { project.project_namespace }
+    let_it_be(:user) { create(:user) }
+
+    context 'when user is a project member' do
+      before_all do
+        project.add_developer(user)
+      end
+
+      it 'returns true' do
+        expect(project_namespace.member?(user)).to be_truthy
+      end
+
+      it 'returns false when min_access_level is above the user access level' do
+        expect(project_namespace.member?(user, Gitlab::Access::MAINTAINER)).to be_falsey
+      end
+    end
+
+    context 'when user is not a project member' do
+      it 'returns false' do
+        expect(project_namespace.member?(user)).to be_falsey
+      end
+    end
+
+    context 'when user is nil' do
+      it 'returns false' do
+        expect(project_namespace.member?(nil)).to be_falsey
+      end
+    end
+  end
+
   describe 'state transitions' do
     it { is_expected.to reject_events :unarchive, when: :ancestor_inherited }
     it { is_expected.to reject_events :cancel_deletion, when: :ancestor_inherited }
