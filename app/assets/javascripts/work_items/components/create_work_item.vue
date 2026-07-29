@@ -80,8 +80,7 @@ import {
   WORK_ITEM_CREATE_SOURCES,
   WORK_ITEM_TYPE_NAME_TICKET,
   CREATION_CONTEXT_DESCRIPTION_CHECKLIST,
-  CREATION_CONTEXT_RELATED_ITEM,
-  CREATION_CONTEXT_SUPER_SIDEBAR,
+  CREATION_CONTEXT_NEW_ROUTE,
 } from '../constants';
 import { TITLE_LENGTH_MAX } from '../../issues/constants';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
@@ -788,20 +787,19 @@ export default {
         return;
       }
 
-      // The follow up title and description can come from the backend for the following three use cases except for
-      // when Work Item is being created from contexts like; super-sidebar, related-item or description checklist
-      // 1. when resolving a discussion in the MR and we have the merge request id in the query param
-      // 2. when the issue and title are added in the query param . read https://docs.gitlab.com/user/project/issues/create_issues/#using-a-url-with-prefilled-values
-      // 3. when following up a work item with a vulnerability, where we have the vulnerability id in the query param
+      // The follow-up title and description are server-rendered into hidden
+      // `.params-*` nodes only on the new work item full page (the `new`
+      // controller action renders the show view with an unsaved work item) for:
+      // 1. resolving a discussion in an MR (merge request id query param)
+      // 2. prefilling via URL query params, see https://docs.gitlab.com/user/project/issues/create_issues/#using-a-url-with-prefilled-values
+      // 3. following up a work item with a vulnerability (vulnerability id query param)
+      // Only the new-route page carries these nodes. Other contexts (e.g. the list
+      // modal) share the SPA document with the work item detail view, whose
+      // `.params-*` nodes hold the viewed item's title and description and would
+      // otherwise leak into the new item form.
       let workItemTitle = '';
       let workItemDescription = '';
-      if (
-        ![
-          CREATION_CONTEXT_SUPER_SIDEBAR,
-          CREATION_CONTEXT_RELATED_ITEM,
-          CREATION_CONTEXT_DESCRIPTION_CHECKLIST,
-        ].includes(this.creationContext)
-      ) {
+      if (this.creationContext === CREATION_CONTEXT_NEW_ROUTE) {
         workItemTitle = document.querySelector('.params-title')?.textContent.trim();
         workItemDescription = document.querySelector('.params-description')?.textContent.trim();
       }

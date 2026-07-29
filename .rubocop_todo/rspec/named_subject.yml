@@ -768,7 +768,6 @@ RSpec/NamedSubject:
     - 'ee/spec/services/security/training_urls_service_spec.rb'
     - 'ee/spec/services/security/vulnerability_scanning/finding_map_spec.rb'
     - 'ee/spec/services/sitemap/create_service_spec.rb'
-    - 'ee/spec/services/software_license_policies/create_service_spec.rb'
     - 'ee/spec/services/status_page/mark_for_publication_service_spec.rb'
     - 'ee/spec/services/status_page/publish_attachments_service_spec.rb'
     - 'ee/spec/services/status_page/publish_details_service_spec.rb'

@@ -4,7 +4,7 @@ module Types
   module MergeRequests
     class MergeabilityCheckStatusEnum < BaseEnum
       graphql_name 'MergeabilityCheckStatus'
-      description 'Representation of whether a mergeability check passed, checking, failed or is inactive.'
+      description 'Representation of whether a mergeability check passed, checking, failed, or is inactive.'
 
       value 'SUCCESS',
         value: 'success',

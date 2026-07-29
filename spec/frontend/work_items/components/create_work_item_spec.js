@@ -23,6 +23,7 @@ import TitleSuggestions from '~/work_items/components/title_suggestions.vue';
 import {
   CREATION_CONTEXT_DESCRIPTION_CHECKLIST,
   CREATION_CONTEXT_LIST_ROUTE,
+  CREATION_CONTEXT_NEW_ROUTE,
   CREATION_CONTEXT_RELATED_ITEM,
   CREATION_CONTEXT_SUPER_SIDEBAR,
   WIDGET_TYPE_START_AND_DUE_DATE,
@@ -1373,7 +1374,7 @@ describe('Create work item component', () => {
   });
 
   describe('title and description query parameters', () => {
-    it('saves to the cache when the backend provides them', async () => {
+    it('saves to the cache when the backend provides them on the new work item page', async () => {
       setHTMLFixture(`
         <div class="new-issue-params hidden">
           <div class="params-title">
@@ -1394,6 +1395,7 @@ describe('Create work item component', () => {
         </div>`);
       createComponent({
         props: {
+          creationContext: CREATION_CONTEXT_NEW_ROUTE,
           relatedItem: mockRelatedItem,
         },
       });
@@ -1402,7 +1404,7 @@ describe('Create work item component', () => {
       expect(setNewWorkItemCache).toHaveBeenCalledWith(
         expect.objectContaining({
           fullPath: expect.anything(),
-          context: CREATION_CONTEXT_LIST_ROUTE,
+          context: CREATION_CONTEXT_NEW_ROUTE,
           widgetDefinitions: expect.anything(),
           workItemType: expect.anything(),
           workItemTypeId: expect.anything(),
@@ -1419,6 +1421,7 @@ describe('Create work item component', () => {
     });
 
     it.each([
+      CREATION_CONTEXT_LIST_ROUTE,
       CREATION_CONTEXT_SUPER_SIDEBAR,
       CREATION_CONTEXT_RELATED_ITEM,
       CREATION_CONTEXT_DESCRIPTION_CHECKLIST,

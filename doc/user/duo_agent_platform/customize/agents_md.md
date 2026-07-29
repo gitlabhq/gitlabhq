@@ -170,6 +170,10 @@ Project-level `AGENTS.md` files apply only to a specific project.
 1. In the root of your project, create an `AGENTS.md` file.
 1. Add instructions to the file. For example:
 
+   {{< tabs >}}
+
+   {{< tab title="Project guidelines" >}}
+
    ```markdown
    # Project-specific guidelines
 
@@ -178,6 +182,23 @@ Project-level `AGENTS.md` files apply only to a specific project.
    - Use our custom hooks from /src/hooks
    - State management uses Redux Toolkit
    ```
+
+   {{< /tab >}}
+
+   {{< tab title="Database migrations" >}}
+
+   ```markdown
+   # Database migrations
+
+   - To run database migrations, use `bin/rails db:migrate` from the project root
+   - Do not run `rake db:migrate` directly
+   - If a migration fails with a lock timeout, wait and retry once. Do not attempt
+     a schema workaround
+   ```
+
+   {{< /tab >}}
+
+   {{< /tabs >}}
 
 1. Save the file.
 1. To apply the instructions, start a new conversation or flow. You must do this every time you

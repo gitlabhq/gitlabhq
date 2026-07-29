@@ -20352,11 +20352,19 @@ CREATE TABLE duo_workflows_workflows (
     title text,
     model_metadata_json text,
     incremental_checkpoints_enabled boolean DEFAULT false NOT NULL,
+    agent_type text,
+    jsonl_sha256 text,
+    idempotency_key text,
+    sync_type smallint,
+    agent_identity_id bigint,
     CONSTRAINT check_1033e7a455 CHECK ((char_length(title) <= 40)),
     CONSTRAINT check_13bb5688db CHECK ((char_length(summary) <= 1024)),
     CONSTRAINT check_30ca07a4ef CHECK ((char_length(goal) <= 16384)),
     CONSTRAINT check_3a9162f1ae CHECK ((char_length(image) <= 2048)),
+    CONSTRAINT check_733b5742d3 CHECK ((char_length(agent_type) <= 50)),
     CONSTRAINT check_73884a5839 CHECK ((num_nonnulls(namespace_id, project_id) = 1)),
+    CONSTRAINT check_9903236764 CHECK ((char_length(idempotency_key) <= 255)),
+    CONSTRAINT check_9c1be2907a CHECK ((char_length(jsonl_sha256) <= 64)),
     CONSTRAINT check_e39af3a04c CHECK ((char_length(model_metadata_json) <= 1024)),
     CONSTRAINT check_ec723e2a1a CHECK ((char_length(workflow_definition) <= 255)),
     CONSTRAINT check_workflows_single_noteable CHECK ((num_nonnulls(issue_id, merge_request_id) <= 1))
@@ -47351,6 +47359,8 @@ CREATE INDEX index_duo_workflows_events_on_workflow_id ON duo_workflows_events U
 
 CREATE INDEX index_duo_workflows_on_user_id_and_updated_at ON duo_workflows_workflows USING btree (user_id, updated_at DESC) WHERE (workflow_definition <> 'chat'::text);
 
+CREATE INDEX index_duo_workflows_workflows_on_agent_identity_id ON duo_workflows_workflows USING btree (agent_identity_id) WHERE (agent_identity_id IS NOT NULL);
+
 CREATE INDEX index_duo_workflows_workflows_on_ai_catalog_item_id ON duo_workflows_workflows USING btree (ai_catalog_item_id);
 
 CREATE INDEX index_duo_workflows_workflows_on_ai_catalog_item_version_id ON duo_workflows_workflows USING btree (ai_catalog_item_version_id);
@@ -47364,6 +47374,8 @@ CREATE INDEX index_duo_workflows_workflows_on_namespace_id ON duo_workflows_work
 CREATE INDEX index_duo_workflows_workflows_on_namespace_id_created_at ON duo_workflows_workflows USING btree (namespace_id, created_at DESC) WHERE (workflow_definition <> 'chat'::text);
 
 CREATE INDEX index_duo_workflows_workflows_on_project_id ON duo_workflows_workflows USING btree (project_id);
+
+CREATE UNIQUE INDEX index_duo_workflows_workflows_on_project_user_idempotency_key ON duo_workflows_workflows USING btree (project_id, user_id, idempotency_key) WHERE ((idempotency_key IS NOT NULL) AND (project_id IS NOT NULL));
 
 CREATE INDEX index_duo_workflows_workflows_on_service_account_id ON duo_workflows_workflows USING btree (service_account_id);
 
@@ -59103,6 +59115,9 @@ ALTER TABLE ONLY issuable_resource_links
 
 ALTER TABLE ONLY merge_requests_compliance_violations
     ADD CONSTRAINT fk_ec881c1c6f FOREIGN KEY (violating_user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY duo_workflows_workflows
+    ADD CONSTRAINT fk_ecd6ae5828 FOREIGN KEY (agent_identity_id) REFERENCES ai_agent_identities(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY issue_emails
     ADD CONSTRAINT fk_ed0f4c4b51 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

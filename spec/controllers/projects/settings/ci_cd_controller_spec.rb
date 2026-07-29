@@ -437,6 +437,7 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
             additional_details: hash_including(
               project_path: project.full_path,
               project_id: project.id,
+              organization_id: project.organization_id,
               ip_address: '0.0.0.0',
               timestamp: kind_of(String),
               action: 'project_ci_cd_settings_page_viewed'

@@ -120,6 +120,8 @@ You can use `AGENTS.md` to customize behavior such as:
 - Commit message format for the changes the flow commits.
 - Merge request metadata, such as labels and description, for merge requests the flow creates.
 - How to classify and treat specific types of failures.
+- How to handle repeated failures of the same type, to prevent the flow from making the
+  same unsuccessful fix more than once.
 
 For example:
 
@@ -135,6 +137,20 @@ apply labels based on the following failed pipeline scenarios:
   "main:broken". Do not apply pipeline::tier-1 in this case.
 - Pipeline failed on other branches: apply "pipeline::tier-1". Same treatment as the
   merge_request case.
+```
+
+For example, to handle migration failures:
+
+```markdown
+## Migration failures
+
+If a pipeline fails because of a database migration:
+
+- Run `bin/rails db:migrate:status` to check the current migration state before attempting
+  a fix.
+- Do not edit or delete past migration files.
+- If the migration cannot be safely reversed, post a comment describing the issue instead
+  of attempting a fix.
 ```
 
 ## Known issues

@@ -159,7 +159,7 @@ RSpec.describe Ci::PipelineCreation::PushOptions, feature_category: :pipeline_co
     end
 
     context 'when push options are blank' do
-      it 'initalizes an empty instance of the PushOptions class' do
+      it 'initializes an empty instance of the PushOptions class' do
         push_options = described_class.fabricate(nil)
 
         expect(push_options).to be_a described_class

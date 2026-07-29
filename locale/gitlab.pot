@@ -3711,6 +3711,9 @@ msgstr ""
 msgid "AICatalog|flows"
 msgstr ""
 
+msgid "AICatalog|foundational items must be public"
+msgstr ""
+
 msgid "AICatalog|is private in another project"
 msgstr ""
 

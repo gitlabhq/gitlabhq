@@ -40438,7 +40438,7 @@ Fields:
 
 ### `DesignVersion`
 
-A specific version in which designs were added, modified or deleted.
+A specific version in which designs were added, modified, or deleted.
 
 Fields:
 
@@ -57397,8 +57397,8 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="protectedenvironment-approvalrules"></a>`approvalRules` | [`ProtectedEnvironmentApprovalRuleConnection`](#protectedenvironmentapprovalruleconnection) | Which group, user or role is allowed to approve deployments to the environment. (see [Connections](#connections)) |
-| <a id="protectedenvironment-deployaccesslevels"></a>`deployAccessLevels` | [`ProtectedEnvironmentDeployAccessLevelConnection`](#protectedenvironmentdeployaccesslevelconnection) | Which group, user or role is allowed to execute deployments to the environment. (see [Connections](#connections)) |
+| <a id="protectedenvironment-approvalrules"></a>`approvalRules` | [`ProtectedEnvironmentApprovalRuleConnection`](#protectedenvironmentapprovalruleconnection) | Which group, user, or role is allowed to approve deployments to the environment. (see [Connections](#connections)) |
+| <a id="protectedenvironment-deployaccesslevels"></a>`deployAccessLevels` | [`ProtectedEnvironmentDeployAccessLevelConnection`](#protectedenvironmentdeployaccesslevelconnection) | Which group, user, or role is allowed to execute deployments to the environment. (see [Connections](#connections)) |
 | <a id="protectedenvironment-group"></a>`group` | [`Group`](#group) | Group details. Present if it's group-level protected environment. |
 | <a id="protectedenvironment-name"></a>`name` | [`String`](#string) | Name of the environment if it's a project-level protected environment. Tier of the environment if it's a group-level protected environment. |
 | <a id="protectedenvironment-project"></a>`project` | [`Project`](#project) | Project details. Present if it's project-level protected environment. |
@@ -57406,7 +57406,7 @@ Fields:
 
 ### `ProtectedEnvironmentApprovalRule`
 
-Which group, user or role is allowed to approve deployments to the environment.
+Which group, user, or role is allowed to approve deployments to the environment.
 
 Fields:
 
@@ -57419,7 +57419,7 @@ Fields:
 
 ### `ProtectedEnvironmentApprovalRuleForSummary`
 
-Which group, user or role is allowed to approve deployments to the environment.
+Which group, user, or role is allowed to approve deployments to the environment.
 
 Fields:
 
@@ -57437,7 +57437,7 @@ Fields:
 
 ### `ProtectedEnvironmentDeployAccessLevel`
 
-Which group, user or role is allowed to execute deployments to the environment.
+Which group, user, or role is allowed to execute deployments to the environment.
 
 Fields:
 
@@ -67238,7 +67238,7 @@ Representation of mergeability check identifier.
 
 ### `MergeabilityCheckStatus`
 
-Representation of whether a mergeability check passed, checking, failed or is inactive.
+Representation of whether a mergeability check passed, checking, failed, or is inactive.
 
 | Value | Description |
 | ----- | ----------- |
@@ -68983,7 +68983,7 @@ Sorting values available to value stream stage items.
 
 ### `VerificationStatus`
 
-Verification status of a GPG, X.509 or SSH signature for a commit.
+Verification status of a GPG, X.509, or SSH signature for a commit.
 
 | Value | Description |
 | ----- | ----------- |

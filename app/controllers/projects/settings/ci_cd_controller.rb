@@ -110,6 +110,7 @@ module Projects
           additional_details: {
             project_path: project.full_path,
             project_id: project.id,
+            organization_id: project.organization_id,
             ip_address: request.remote_ip,
             timestamp: Time.current.iso8601,
             action: 'project_ci_cd_settings_page_viewed',

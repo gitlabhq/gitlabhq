@@ -60620,7 +60620,7 @@
         {
           "kind": "OBJECT",
           "name": "DesignVersion",
-          "description": "A specific version in which designs were added, modified or deleted",
+          "description": "A specific version in which designs were added, modified, or deleted",
           "fields": [
             {
               "name": "author",
@@ -174127,7 +174127,7 @@
           "fields": [
             {
               "name": "approvalRules",
-              "description": "Which group, user or role is allowed to approve deployments to the environment.",
+              "description": "Which group, user, or role is allowed to approve deployments to the environment.",
               "args": [
                 {
                   "name": "after",
@@ -174180,7 +174180,7 @@
             },
             {
               "name": "deployAccessLevels",
-              "description": "Which group, user or role is allowed to execute deployments to the environment.",
+              "description": "Which group, user, or role is allowed to execute deployments to the environment.",
               "args": [
                 {
                   "name": "after",
@@ -174288,7 +174288,7 @@
         {
           "kind": "OBJECT",
           "name": "ProtectedEnvironmentApprovalRule",
-          "description": "Which group, user or role is allowed to approve deployments to the environment.",
+          "description": "Which group, user, or role is allowed to approve deployments to the environment.",
           "fields": [
             {
               "name": "accessLevel",
@@ -174445,7 +174445,7 @@
         {
           "kind": "OBJECT",
           "name": "ProtectedEnvironmentApprovalRuleForSummary",
-          "description": "Which group, user or role is allowed to approve deployments to the environment.",
+          "description": "Which group, user, or role is allowed to approve deployments to the environment.",
           "fields": [
             {
               "name": "accessLevel",
@@ -174631,7 +174631,7 @@
         {
           "kind": "OBJECT",
           "name": "ProtectedEnvironmentDeployAccessLevel",
-          "description": "Which group, user or role is allowed to execute deployments to the environment.",
+          "description": "Which group, user, or role is allowed to execute deployments to the environment.",
           "fields": [
             {
               "name": "accessLevel",
@@ -220764,7 +220764,7 @@
         {
           "kind": "ENUM",
           "name": "VerificationStatus",
-          "description": "Verification status of a GPG, X.509 or SSH signature for a commit.",
+          "description": "Verification status of a GPG, X.509, or SSH signature for a commit.",
           "fields": null,
           "inputFields": null,
           "interfaces": null,
