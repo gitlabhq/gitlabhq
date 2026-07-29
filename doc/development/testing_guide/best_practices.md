@@ -1384,6 +1384,47 @@ default RSpec methods instead:
 - `let_it_be_with_refind`: use `let` or `let!` instead.
 - `before_all`: use `before` or `before(:all)` instead.
 
+#### Workhorse JWT verification
+
+Senddata-emitting Rails controllers and Grape API endpoints call
+`verify_workhorse_api!` to reject requests that did not transit Workhorse. The
+canonical enforcement points are the response-writing helpers themselves
+(`app/helpers/workhorse_helper.rb` for Rails controllers, `lib/api/helpers.rb`
+for Grape — `send_git_blob`, `send_git_archive`, `send_artifacts_entry`,
+`present_carrierwave_file!`, `send_workhorse_headers!`, ...). Every emit goes
+through one of these helpers; the helpers verify the JWT before storing the
+`Gitlab-Workhorse-Send-Data` response header.
+
+Two test-side mechanisms in `spec/support/workhorse_jwt_injection.rb` exercise
+this contract in CI:
+
+1. A `before` hook injects a valid Workhorse JWT into every test request. The
+   real `Gitlab::Workhorse.verify_api_request!` runs in the test process —
+   there is no stubbing — and happy-path specs do not need to construct a JWT
+   header.
+1. An `after` hook fails the example if `Gitlab-Workhorse-Send-Data` was
+   emitted but the request lacked a verified JWT. A future endpoint that
+   bypasses the guarded helpers turns its own happy-path test red rather than
+   passing silently.
+
+Tag an example or context with `:verify_workhorse_jwt` only when the test
+asserts the enforcement boundary itself, for example a `403 Forbidden` response
+when the header is absent. The tag opts out of both the injection and the
+detection:
+
+```ruby
+context 'without Workhorse JWT', :verify_workhorse_jwt do
+  it 'returns 403 forbidden' do
+    get api(path)
+
+    expect(response).to have_gitlab_http_status(:forbidden)
+  end
+end
+```
+
+Do not apply the tag to ordinary tests. Auto-injection covers them, and the
+tag forces the test to handle the missing-JWT path explicitly.
+
 #### Redis
 
 GitLab stores two main categories of data in Redis: cached items, and Sidekiq

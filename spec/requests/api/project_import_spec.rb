@@ -960,7 +960,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
       expect(json_response['TempPath']).to eq(ImportExportUploader.workhorse_local_upload_path)
     end
 
-    it 'rejects requests that bypassed gitlab-workhorse' do
+    it 'rejects requests that bypassed gitlab-workhorse', :verify_workhorse_jwt do
       workhorse_headers.delete(Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER)
 
       authorize_import
@@ -1018,7 +1018,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
       expect(json_response['TempPath']).to eq(ImportExportUploader.workhorse_local_upload_path)
     end
 
-    it 'rejects requests that bypassed gitlab-workhorse' do
+    it 'rejects requests that bypassed gitlab-workhorse', :verify_workhorse_jwt do
       workhorse_headers.delete(Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER)
 
       authorize_import

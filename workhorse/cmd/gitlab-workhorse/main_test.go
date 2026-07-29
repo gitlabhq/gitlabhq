@@ -534,7 +534,9 @@ func TestAPIFalsePositivesAreProxied(t *testing.T) {
 		case url[len(url)-1] == '/':
 			w.WriteHeader(500)
 			w.Write([]byte("PreAuthorize request included a trailing slash"))
-		case r.Header.Get(secret.RequestHeader) != "" && r.Method != "GET":
+		case r.Header.Get("Gitlab-Workhorse-Proxy-Start") == "" && r.Method != "GET":
+			// Gitlab-Workhorse-Proxy-Start absent → this is an internal preAuth call, not a proxied user request.
+			// A preAuth call for a non-GET method at these paths indicates a routing bug.
 			w.WriteHeader(500)
 			w.Write([]byte("non-GET request went through PreAuthorize handler"))
 		default:
@@ -718,8 +720,17 @@ func testAuthServer(t *testing.T, url *regexp.Regexp, params url.Values, code in
 	ts := testhelper.TestServerWithHandler(t, url, func(w http.ResponseWriter, r *http.Request) {
 		assert.NotEmpty(t, r.Header.Get("X-Request-Id"))
 
-		// return a 204 No Content response if we don't receive the JWT header
+		// return a 204 No Content response if we don't receive the JWT header (direct access)
 		if r.Header.Get(secret.RequestHeader) == "" {
+			w.WriteHeader(204)
+			return
+		}
+
+		// Gitlab-Workhorse-Proxy-Start is added by the proxy director for all proxied user
+		// requests but NOT by Workhorse's internal preAuth calls (api.doRequestWithoutRedirects).
+		// Return 204 to simulate Rails returning a normal response for requests that fall
+		// through the default proxy rather than being handled by a specialized route.
+		if r.Header.Get("Gitlab-Workhorse-Proxy-Start") != "" {
 			w.WriteHeader(204)
 			return
 		}

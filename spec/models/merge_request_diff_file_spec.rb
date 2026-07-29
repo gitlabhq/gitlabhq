@@ -17,6 +17,24 @@ RSpec.describe MergeRequestDiffFile, feature_category: :code_review_workflow do
   let(:packed) { [unpacked].pack('m0') }
   let(:unpacked) { 'unpacked' }
 
+  shared_examples 'external diff size guard' do |method_name:, storage_method:|
+    before do
+      allow(file.merge_request_diff).to receive(:stored_externally?).and_return(true)
+    end
+
+    context 'when too_large is already true' do
+      before do
+        file.too_large = true
+      end
+
+      it 'returns an empty string without reading from storage', :aggregate_failures do
+        expect(file.merge_request_diff).not_to receive(storage_method)
+
+        expect(file.public_send(method_name)).to eq('')
+      end
+    end
+  end
+
   # rubocop:disable Database/MultipleDatabases -- This is a test for a partitioned table, which doesn't have an ActiveRecord model
   def load_partitioned_mrdf(mrd_id)
     ActiveRecord::Base.connection.execute(
@@ -220,6 +238,84 @@ RSpec.describe MergeRequestDiffFile, feature_category: :code_review_workflow do
     end
   end
 
+  describe '#too_large' do
+    let(:file) { build(:merge_request_diff_file) }
+    let(:current_limit) { 300.kilobytes }
+
+    before do
+      stub_application_setting(diff_max_patch_bytes: current_limit)
+    end
+
+    context 'when diff is stored externally' do
+      before do
+        allow(file.merge_request_diff).to receive(:stored_externally?).and_return(true)
+      end
+
+      context 'when external_diff_size is at or above diff_max_patch_bytes' do
+        it 'returns true at the exact boundary' do
+          file.external_diff_size = current_limit
+
+          expect(file.too_large).to be(true)
+        end
+
+        it 'returns true above the boundary' do
+          file.external_diff_size = current_limit + 1
+
+          expect(file.too_large).to be(true)
+        end
+      end
+
+      context 'when external_diff_size is below diff_max_patch_bytes' do
+        before do
+          file.external_diff_size = current_limit - 1
+        end
+
+        it 'returns false when the too_large column is false' do
+          expect(file.too_large).to be(false)
+        end
+
+        it 'returns true when the too_large column is true' do
+          file.too_large = true
+
+          expect(file.too_large).to be(true)
+        end
+      end
+
+      context 'when diff_max_patch_bytes setting is changed' do
+        it 'reflects the updated setting at read time' do
+          file.external_diff_size = current_limit - 1
+
+          expect(file.too_large).to be(false)
+
+          stub_application_setting(diff_max_patch_bytes: current_limit - 2)
+
+          expect(file.too_large).to be(true)
+        end
+      end
+
+      context 'when external_diff_size is nil' do
+        before do
+          file.external_diff_size = nil
+        end
+
+        it 'treats nil as 0 and falls back to the too_large column' do
+          expect(file.too_large).to be(false)
+        end
+      end
+    end
+
+    context 'when diff is not stored externally' do
+      before do
+        allow(file.merge_request_diff).to receive(:stored_externally?).and_return(false)
+        file.external_diff_size = current_limit
+      end
+
+      it 'does not apply the size guard and falls back to the too_large column' do
+        expect(file.too_large).to be(false)
+      end
+    end
+  end
+
   describe '#diff' do
     let(:file) { build(:merge_request_diff_file) }
 
@@ -282,6 +378,10 @@ RSpec.describe MergeRequestDiffFile, feature_category: :code_review_workflow do
       it 'returns UTF-8 string' do
         expect(file.diff.encoding).to eq Encoding::UTF_8
       end
+
+      it_behaves_like 'external diff size guard',
+        method_name: :diff,
+        storage_method: :opening_external_diff
     end
   end
 
@@ -404,6 +504,10 @@ RSpec.describe MergeRequestDiffFile, feature_category: :code_review_workflow do
           file.utf8_diff
         end
       end
+
+      it_behaves_like 'external diff size guard',
+        method_name: :utf8_diff,
+        storage_method: :cached_external_diff
     end
 
     context 'when diff is not stored externally' do

@@ -1994,6 +1994,42 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
   end
 
+  describe '#test_report_readable_by?' do
+    let_it_be(:artifact_project) { create(:project, :private) }
+    let_it_be(:maintainer) { create(:user, maintainer_of: artifact_project) }
+    let_it_be(:guest) { create(:user, guest_of: artifact_project) }
+
+    let(:build) { create(:ci_build, :success, pipeline: create(:ci_pipeline, project: artifact_project)) }
+
+    context 'when the build has a maintainer-only JUnit report and no archive' do
+      before do
+        create(:ci_job_artifact, :junit, :maintainer_only_access, job: build)
+      end
+
+      it 'authorizes the report artifact itself, not the build or its (absent) archive', :aggregate_failures do
+        expect(build.test_report_readable_by?(maintainer)).to be(true)
+        expect(build.test_report_readable_by?(guest)).to be(false)
+        expect(build.test_report_readable_by?(nil)).to be(false)
+      end
+    end
+
+    context 'when the build has a public JUnit report' do
+      before do
+        create(:ci_job_artifact, :junit, job: build)
+      end
+
+      it 'is readable by a user who can read the build' do
+        expect(build.test_report_readable_by?(guest)).to be(true)
+      end
+    end
+
+    context 'when the build has no test report artifact' do
+      it 'is not readable' do
+        expect(build.test_report_readable_by?(maintainer)).to be(false)
+      end
+    end
+  end
+
   describe '#hide_secrets' do
     let(:metrics) { spy('metrics') }
     let(:subject) { build.hide_secrets(data) }

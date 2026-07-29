@@ -8130,6 +8130,32 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
             .to be_falsey
         end
       end
+
+      context 'when the target project merge requests access level is reduced' do
+        before do
+          target_project.project_feature.update!(merge_requests_access_level: ProjectFeature::PRIVATE)
+        end
+
+        it 'returns false' do
+          expect(project.branch_allows_collaboration?(user, 'awesome-feature-1'))
+            .to be_falsey
+        end
+      end
+
+      context 'when the target project repository access level is reduced' do
+        before do
+          target_project.project_feature.update!(
+            repository_access_level: ProjectFeature::PRIVATE,
+            merge_requests_access_level: ProjectFeature::PRIVATE,
+            builds_access_level: ProjectFeature::PRIVATE
+          )
+        end
+
+        it 'returns false' do
+          expect(project.branch_allows_collaboration?(user, 'awesome-feature-1'))
+            .to be_falsey
+        end
+      end
     end
   end
 

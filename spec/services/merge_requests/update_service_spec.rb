@@ -1512,6 +1512,22 @@ RSpec.describe MergeRequests::UpdateService, :mailer, :request_store, feature_ca
         expect(merge_request.title).to eq('Updated title')
         expect(merge_request.allow_collaboration).to be_falsy
       end
+
+      it 'does not allow re-enabling collaboration after the target project becomes private' do
+        # The user can push to the source and update the MR, so they would normally
+        # be allowed to toggle collaboration.
+        merge_request.update!(assignees: [user], allow_maintainer_to_push: false)
+        source_project.add_developer(user)
+
+        # Once the target project access is reduced, collaboration can no longer be re-enabled.
+        target_project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+
+        update_merge_request(allow_collaboration: true, title: 'Updated title')
+
+        expect(merge_request.title).to eq('Updated title')
+        expect(merge_request.allow_collaboration).to be_falsy
+        expect(merge_request.reload.allow_maintainer_to_push).to be_falsy
+      end
     end
 
     context 'updating `force_remove_source_branch`' do

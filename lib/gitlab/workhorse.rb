@@ -17,6 +17,21 @@ module Gitlab
     DETECT_HEADER = 'Gitlab-Workhorse-Detect-Content-Type'
     ARCHIVE_FORMATS = %w[zip tar.gz tar.bz2 tar].freeze
 
+    # Maximum age of the Gitlab-Workhorse-Api-Request JWT accepted by
+    # `verify_api_request!`. Workhorse stamps `iat` on every request (see
+    # workhorse/internal/secret/roundtripper.go), and Rails rejects tokens
+    # whose `iat` is older than this window. Caps the replay value of a
+    # leaked JWT regardless of whether the workhorse secret has rotated.
+    # A leaked senddata payload is also bounded by the freshness of the
+    # JWT that authorized it, so this also caps senddata replayability.
+    #
+    # Defaults to 90 seconds to absorb clock skew across distributed
+    # deployments and the request's own in-flight time; narrow further once
+    # production telemetry confirms the floor. Operators can override via
+    # the `WORKHORSE_API_REQUEST_JWT_VALIDITY_SECONDS` environment variable
+    # (positive integer); an unset or `0` value falls back to the default.
+    API_REQUEST_JWT_VALIDITY = (ENV.fetch('WORKHORSE_API_REQUEST_JWT_VALIDITY_SECONDS', 0).to_i.nonzero? || 90).seconds
+
     include JwtAuthenticatable
 
     class << self
@@ -338,10 +353,20 @@ module Gitlab
         path.readable? ? path.read.chomp : 'unknown'
       end
 
+      # Verifies the `Gitlab-Workhorse-Api-Request` JWT prepended to a request
+      # by Workhorse's signing round-tripper. Enforces `iat_after` against
+      # `API_REQUEST_JWT_VALIDITY` so a captured token expires quickly
+      # regardless of secret rotation.
       def verify_api_request!(request_headers)
-        decode_jwt_with_issuer(request_headers[INTERNAL_API_REQUEST_HEADER])
+        decode_jwt(request_headers[INTERNAL_API_REQUEST_HEADER],
+          issuer: 'gitlab-workhorse',
+          iat_after: API_REQUEST_JWT_VALIDITY.ago)
       end
 
+      # Issuer-only JWT decode. Used by callers that handle other Workhorse
+      # JWT payloads whose signers do not stamp `iat` (notably the multipart
+      # middleware, which decodes the upload-finalize token). Leave the
+      # `iat_after` enforcement on `verify_api_request!` only.
       def decode_jwt_with_issuer(encoded_message)
         decode_jwt(encoded_message, issuer: 'gitlab-workhorse')
       end
@@ -380,8 +405,6 @@ module Gitlab
         Gitlab::Redis::Workhorse.with(&blk) # rubocop:disable CodeReuse/ActiveRecord
       end
 
-      # This is the outermost encoding of a senddata: header. It is safe for
-      # inclusion in HTTP response headers
       def encode(hash)
         Base64.urlsafe_encode64(Gitlab::Json.dump(hash))
       end

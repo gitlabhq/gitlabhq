@@ -207,6 +207,8 @@ RSpec.describe API::Snippets, :aggregate_failures, :with_current_organization, f
   end
 
   describe 'GET /snippets/:id/raw' do
+    include_context 'workhorse headers'
+
     let(:snippet) { private_snippet }
 
     it_behaves_like 'snippet access with different users' do
@@ -214,7 +216,7 @@ RSpec.describe API::Snippets, :aggregate_failures, :with_current_organization, f
     end
 
     it 'returns raw text' do
-      get api("/snippets/#{snippet.id}/raw", personal_access_token: user_token)
+      get api("/snippets/#{snippet.id}/raw", personal_access_token: user_token), headers: workhorse_headers
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response.media_type).to eq 'text/plain'
@@ -224,13 +226,13 @@ RSpec.describe API::Snippets, :aggregate_failures, :with_current_organization, f
 
     it_behaves_like 'authorizing granular token permissions', :read_snippet do
       let(:boundary_object) { :user }
-      let(:request) { get api("/snippets/#{private_snippet.id}/raw", personal_access_token: pat) }
+      let(:request) { get api("/snippets/#{private_snippet.id}/raw", personal_access_token: pat), headers: workhorse_headers }
     end
 
     it 'returns 404 for invalid snippet id' do
       snippet.destroy!
 
-      get api("/snippets/#{snippet.id}/raw", personal_access_token: user_token)
+      get api("/snippets/#{snippet.id}/raw", personal_access_token: user_token), headers: workhorse_headers
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 Snippet Not Found')
@@ -239,11 +241,13 @@ RSpec.describe API::Snippets, :aggregate_failures, :with_current_organization, f
     it_behaves_like 'snippet blob content' do
       let_it_be(:snippet_with_empty_repo) { create(:personal_snippet, :empty_repo, :private, author: user) }
 
-      subject { get api("/snippets/#{snippet.id}/raw", snippet.author, personal_access_token: user_token) }
+      subject { get api("/snippets/#{snippet.id}/raw", snippet.author, personal_access_token: user_token), headers: workhorse_headers }
     end
   end
 
   describe 'GET /snippets/:id/files/:ref/:file_path/raw' do
+    include_context 'workhorse headers'
+
     let_it_be(:snippet) { private_snippet }
 
     it_behaves_like 'raw snippet files' do
@@ -256,7 +260,7 @@ RSpec.describe API::Snippets, :aggregate_failures, :with_current_organization, f
 
     it_behaves_like 'authorizing granular token permissions', :read_snippet do
       let(:boundary_object) { :user }
-      let(:request) { get api("/snippets/#{private_snippet.id}/files/master/%2Egitattributes/raw", personal_access_token: pat) }
+      let(:request) { get api("/snippets/#{private_snippet.id}/files/master/%2Egitattributes/raw", personal_access_token: pat), headers: workhorse_headers }
     end
   end
 

@@ -16,7 +16,7 @@ module Projects
           format.json do
             render json: TestReportSummarySerializer
               .new(project: project, current_user: @current_user)
-              .represent(pipeline.test_report_summary)
+              .represent(pipeline.accessible_test_report_summary(current_user))
           end
         end
       end
@@ -42,7 +42,23 @@ module Projects
       end
 
       def builds
-        @builds ||= pipeline.latest_test_report_builds_in_self_and_project_descendants.id_in(build_ids)
+        @builds ||= begin
+          candidates = pipeline
+            .latest_test_report_builds_in_self_and_project_descendants
+            .id_in(build_ids)
+            .to_a
+
+          # Preload the user's access level across the builds' projects so the
+          # per-artifact :read_job_artifacts check does not trigger a
+          # project-authorizations query per build (multi-project hierarchies).
+          if current_user
+            ::Preloaders::UserMaxAccessLevelInProjectsPreloader
+              .new(candidates.map(&:project).uniq, current_user)
+              .execute
+          end
+
+          candidates.select { |build| build.test_report_readable_by?(current_user) }
+        end
       end
 
       def build_ids

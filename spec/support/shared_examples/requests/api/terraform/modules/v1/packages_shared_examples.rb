@@ -186,7 +186,7 @@ RSpec.shared_examples 'process terraform module workhorse authorization' do |use
       expect(response.media_type).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
     end
 
-    context 'with a request that bypassed gitlab-workhorse' do
+    context 'with a request that bypassed gitlab-workhorse', :verify_workhorse_jwt do
       let(:headers) do
         { 'HTTP_PRIVATE_TOKEN' => personal_access_token.token }
           .merge(workhorse_headers)

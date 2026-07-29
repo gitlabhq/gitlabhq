@@ -60,6 +60,11 @@ RSpec.describe WorkhorseHelper, feature_category: :source_code_management do
     subject(:send_dependency) { helper.send_dependency(*args) }
 
     before do
+      # The senddata helpers call `verify_workhorse_api!` (defined on
+      # ApplicationController via WorkhorseAuthenticatable) before storing
+      # the response header. The helper-spec synthetic class does not
+      # inherit from ApplicationController, so stub it here.
+      allow(helper).to receive(:verify_workhorse_api!)
       allow(helper).to receive(:headers).and_return(headers)
     end
 

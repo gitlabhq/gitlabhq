@@ -378,6 +378,20 @@ class MergeRequest < ApplicationRecord
     end
   end
 
+  # Disables collaboration (allow_maintainer_to_push) on open fork merge requests
+  # that target the given project. Used when the target project's access is reduced
+  # (for example, visibility lowered) so that members of the target project can no
+  # longer push to the source branch.
+  def self.disable_collaboration_for_target_project(project, batch_size: 100)
+    where(target_project_id: project.id)
+      .from_fork
+      .opened
+      .with_collaboration_allowed
+      .each_batch(of: batch_size, order_hint: :created_at) do |batch|
+        batch.update_all(allow_maintainer_to_push: false, updated_at: Time.current)
+      end
+  end
+
   # Returns current merge_status except it returns `cannot_be_merged_rechecking` as `checking`
   # to avoid exposing unnecessary internal state
   def public_merge_status
@@ -415,6 +429,7 @@ class MergeRequest < ApplicationRecord
   scope :from_and_to_forks, ->(project) do
     from_fork.where('source_project_id = ? OR target_project_id = ?', project.id, project.id)
   end
+  scope :with_collaboration_allowed, -> { where(allow_maintainer_to_push: true) }
   scope :merged, -> { with_state(:merged) }
   scope :non_closed, -> { where.not(state_id: available_states[:closed]) }
   scope :open_and_closed, -> { with_state(:opened, :closed) }
@@ -2231,12 +2246,12 @@ class MergeRequest < ApplicationRecord
   end
   # rubocop: enable Metrics/AbcSize
 
-  def compare_test_reports
+  def compare_test_reports(current_user = nil)
     unless has_test_reports?
       return { status: :error, status_reason: 'This merge request does not have test reports' }
     end
 
-    compare_reports(Ci::CompareTestReportsService)
+    compare_reports(Ci::CompareTestReportsService, current_user)
   end
 
   def has_accessibility_reports?
@@ -2600,6 +2615,8 @@ class MergeRequest < ApplicationRecord
     source_project.present? && for_fork? &&
       target_project.visibility_level > Gitlab::VisibilityLevel::PRIVATE &&
       source_project.visibility_level > Gitlab::VisibilityLevel::PRIVATE &&
+      target_project.merge_requests_access_level >= ProjectFeature::ENABLED &&
+      target_project.repository_access_level >= ProjectFeature::ENABLED &&
       !ProtectedBranch.protected?(source_project, source_branch)
   end
 
