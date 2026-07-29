@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'raw snippet files' do
+  include_context 'workhorse headers'
+
   let(:snippet_id) { snippet.id }
   let_it_be(:user) { snippet.author }
   let(:file_path)  { '%2Egitattributes' }
@@ -14,7 +16,7 @@ RSpec.shared_examples 'raw snippet files' do
     end
   end
 
-  subject { get api(api_path, personal_access_token: user_token) }
+  subject { get api(api_path, personal_access_token: user_token), headers: workhorse_headers }
 
   context 'with an invalid snippet ID' do
     let(:snippet_id) { non_existing_record_id }
@@ -220,6 +222,7 @@ RSpec.shared_examples 'invalid snippet updates' do
 end
 
 RSpec.shared_examples 'snippet access with different users' do
+  include_context 'workhorse headers'
   using RSpec::Parameterized::TableSyntax
 
   where(:requester, :visibility, :status) do
@@ -245,7 +248,7 @@ RSpec.shared_examples 'snippet access with different users' do
 
       admin_mode = requester == :admin
 
-      get api(path, request_user, admin_mode: admin_mode)
+      get api(path, request_user, admin_mode: admin_mode), headers: workhorse_headers
 
       expect(response).to have_gitlab_http_status(status)
     end
@@ -275,8 +278,10 @@ RSpec.shared_examples 'snippet access with different users' do
 end
 
 RSpec.shared_examples 'expected response status' do
+  include_context 'workhorse headers'
+
   it 'returns the correct response' do
-    get api(path, personal_access_token: user_token)
+    get api(path, personal_access_token: user_token), headers: workhorse_headers
 
     expect(response).to have_gitlab_http_status(status)
   end

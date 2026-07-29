@@ -51,5 +51,41 @@ RSpec.describe Resolvers::Ci::TestSuiteResolver do
         expect(test_suite).to be_nil
       end
     end
+
+    context 'when the build has a maintainer-only test report' do
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+      let_it_be(:maintainer_build) { create(:ci_build, :success, name: 'maintainer-suite', pipeline: pipeline) }
+      let_it_be(:public_build) { create(:ci_build, :success, name: 'public-suite', pipeline: pipeline) }
+      let_it_be(:guest) { create(:user, guest_of: project) }
+      let_it_be(:maintainer) { create(:user, maintainer_of: project) }
+
+      before do
+        # Reports-only jobs: JUnit reports with no archive. :read_build alone must
+        # not expose maintainer-only content over GraphQL (same leak #show blocks).
+        create(:ci_job_artifact, :junit_with_three_failures, :maintainer_only_access, job: maintainer_build)
+        create(:ci_job_artifact, :junit_with_three_failures, job: public_build)
+      end
+
+      it 'does not expose a maintainer-only report to a user who can read the build but not its artifacts' do
+        result = resolve(described_class, obj: pipeline, args: { build_ids: [maintainer_build.id] },
+          ctx: { current_user: guest })
+
+        expect(result).to be_nil
+      end
+
+      it 'still serves a report the guest may read (confirms the guest holds :read_build)' do
+        result = resolve(described_class, obj: pipeline, args: { build_ids: [public_build.id] },
+          ctx: { current_user: guest })
+
+        expect(result[:name]).to eq('public-suite')
+      end
+
+      it 'exposes the maintainer-only report to a user who can read maintainer artifacts' do
+        result = resolve(described_class, obj: pipeline, args: { build_ids: [maintainer_build.id] },
+          ctx: { current_user: maintainer })
+
+        expect(result[:name]).to eq('maintainer-suite')
+      end
+    end
   end
 end

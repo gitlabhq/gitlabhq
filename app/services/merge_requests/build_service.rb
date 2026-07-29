@@ -305,7 +305,15 @@ module MergeRequests
     def title_from_issue
       return unless issue
 
-      return "Resolve \"#{issue.title}\"" if issue.is_a?(Issue)
+      if issue.is_a?(Issue)
+        # A confidential issue's title must not be baked into the broadly-readable
+        # merge_request.title column. Fall through to the branch-name title rather
+        # than emitting a "Resolve #<iid>" reference, which IssuableTitlePipeline
+        # would expand back into the confidential title via the link's title= attr.
+        return if issue.confidential?
+
+        return "Resolve \"#{issue.title}\""
+      end
 
       return if issue_iid.blank?
 

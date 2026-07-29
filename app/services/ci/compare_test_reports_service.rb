@@ -11,7 +11,10 @@ module Ci
     end
 
     def get_report(pipeline)
-      pipeline&.test_reports
+      # Scope to the reports the requesting user may read; the MR widget reaches
+      # this via MergeRequest#compare_test_reports(current_user), and the user is
+      # part of the reactive-cache key so filtered results are not shared.
+      pipeline&.accessible_test_reports(current_user)
     end
 
     def build_comparer(base_report, head_report)

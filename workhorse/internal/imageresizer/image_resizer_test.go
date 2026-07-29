@@ -34,6 +34,7 @@ func TestMain(m *testing.M) {
 }
 
 func requestScaledImage(t *testing.T, httpHeaders http.Header, params resizeParams, cfg config.ImageResizerConfig) *http.Response {
+	t.Helper()
 	httpRequest := httptest.NewRequest("GET", "/image", nil)
 	if httpHeaders != nil {
 		httpRequest.Header = httpHeaders
@@ -303,13 +304,12 @@ func TestResizeImageFromHTTPServer(t *testing.T) {
 	testhelper.AssertMetrics(t, req)
 }
 
-// The Rails applications sends a Base64 encoded JSON string carrying
+// The Rails application sends a base64-encoded JSON string carrying
 // these parameters in an HTTP response header
 func encodeParams(t *testing.T, p *resizeParams) string {
+	t.Helper()
 	json, err := json.Marshal(*p)
-	if err != nil {
-		require.NoError(t, err, "JSON encoder encountered unexpected error")
-	}
+	require.NoError(t, err, "JSON encoder encountered unexpected error")
 	return base64.StdEncoding.EncodeToString(json)
 }
 

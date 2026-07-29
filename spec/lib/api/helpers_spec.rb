@@ -1161,6 +1161,13 @@ RSpec.describe API::Helpers, feature_category: :api do
       allow(helper).to receive(:content_type)
       allow(helper).to receive(:header).and_return({})
       allow(helper).to receive(:body).and_return('')
+      # The senddata helpers call `verify_workhorse_api!` before storing
+      # the response header. The synthetic helper class in this spec does
+      # not include the Grape framework, so the rescue path's `forbidden!`
+      # call surfaces as `NoMethodError: undefined method 'error!'`. Stub
+      # the verify so we exercise the helper's own logic, not the Grape
+      # error-rendering chain.
+      allow(helper).to receive(:verify_workhorse_api!)
       allow(Gitlab::Workhorse).to receive(:send_git_blob)
     end
 
@@ -1590,6 +1597,15 @@ RSpec.describe API::Helpers, feature_category: :api do
     let(:content_disposition) { nil }
     let(:extra_response_headers) { {} }
     let(:extra_send_url_params) { {} }
+
+    before do
+      allow(helper).to receive(:headers).and_return({})
+      allow(helper).to receive(:header)
+      # See the #send_git_blob describe above: the synthetic helper class
+      # does not include Grape, so the `verify_workhorse_api!` rescue path
+      # cannot call `forbidden!`. Stub to skip the chokepoint guard.
+      allow(helper).to receive(:verify_workhorse_api!)
+    end
 
     subject do
       helper.present_carrierwave_file!(
@@ -2225,8 +2241,14 @@ RSpec.describe API::Helpers, feature_category: :api do
           allow(JWT).to receive(:decode).and_return([{ 'iss' => 'gitlab-workhorse' }])
         end
 
+        # `require_gitlab_workhorse!` now performs two gates: the JWT
+        # verification via `verify_workhorse_api!`, and the legacy
+        # `HTTP_GITLAB_WORKHORSE` header check. Both can call `forbidden!`
+        # in this synthetic spec because the stub does not halt control
+        # flow the way Grape's `error!` does in production. Assert
+        # `forbidden!` is called at least once rather than exactly once.
         it 'unauthorized' do
-          expect(helper).to receive(:forbidden!)
+          expect(helper).to receive(:forbidden!).at_least(:once)
 
           helper.authenticate_by_gitlab_shell_or_workhorse_token!
         end

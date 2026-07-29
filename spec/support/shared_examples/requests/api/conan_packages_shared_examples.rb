@@ -1272,7 +1272,7 @@ RSpec.shared_examples 'workhorse authorization' do
     expect(response).to have_gitlab_http_status(:forbidden)
   end
 
-  it 'rejects requests that bypassed gitlab-workhorse' do
+  it 'rejects requests that bypassed gitlab-workhorse', :verify_workhorse_jwt do
     headers_with_token.delete(Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER)
 
     subject

@@ -251,7 +251,34 @@ module Projects
 
       audit_topic_change(from: @previous_topics)
 
+      disable_unauthorized_merge_request_collaboration if target_project_access_reduced?
+
       publish_events
+    end
+
+    def disable_unauthorized_merge_request_collaboration
+      ::MergeRequests::DisableCollaborationOnUnauthorizedWorker.perform_async(project.id)
+    end
+
+    def target_project_access_reduced?
+      visibility_reduced_below_collaboration_threshold? ||
+        repository_or_merge_requests_access_reduced_below_collaboration_threshold?
+    end
+
+    def visibility_reduced_below_collaboration_threshold?
+      before, after = project.visibility_level_previous_changes
+      return false unless before && after
+
+      before > Gitlab::VisibilityLevel::PRIVATE && after <= Gitlab::VisibilityLevel::PRIVATE
+    end
+
+    def repository_or_merge_requests_access_reduced_below_collaboration_threshold?
+      feature_changes = project.project_feature.previous_changes
+
+      %w[repository_access_level merge_requests_access_level].any? do |attr|
+        before, after = feature_changes[attr]
+        before && after && before >= ProjectFeature::ENABLED && after < ProjectFeature::ENABLED
+      end
     end
 
     def after_rename_service(project)

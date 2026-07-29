@@ -256,6 +256,8 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
   end
 
   describe "GET /projects/:id/repository/blobs/:sha/raw" do
+    include_context 'workhorse headers'
+
     let(:route) { "/projects/#{project.id}/repository/blobs/#{sample_blob.oid}/raw" }
 
     shared_examples_for 'repository raw blob' do
@@ -265,7 +267,7 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
           expect(blob.loaded_size).to eq(0)
         end
 
-        get api(route, current_user)
+        get api(route, current_user), headers: workhorse_headers
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(headers[Gitlab::Workhorse::DETECT_HEADER]).to eq "true"
@@ -273,13 +275,13 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
       end
 
       it 'sets inline content disposition by default' do
-        get api(route, current_user)
+        get api(route, current_user), headers: workhorse_headers
 
         expect(headers['Content-Disposition']).to eq 'inline'
       end
 
       it 'defines an uncached header response' do
-        get api(route, current_user)
+        get api(route, current_user), headers: workhorse_headers
 
         expect(response.headers["Cache-Control"]).to eq("max-age=0, private, must-revalidate, no-store, no-cache")
         expect(response.headers["Expires"]).to eq("Fri, 01 Jan 1990 00:00:00 GMT")
@@ -287,7 +289,7 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
 
       context 'when sha does not exist' do
         it_behaves_like '404 response' do
-          let(:request) { get api(route.sub(sample_blob.oid, 'abcd9876'), current_user) }
+          let(:request) { get api(route.sub(sample_blob.oid, 'abcd9876'), current_user), headers: workhorse_headers }
           let(:message) { '404 Blob Not Found' }
         end
       end
@@ -296,7 +298,7 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
         include_context 'disabled repository'
 
         it_behaves_like '403 response' do
-          let(:request) { get api(route, current_user) }
+          let(:request) { get api(route, current_user), headers: workhorse_headers }
         end
       end
     end
@@ -323,19 +325,21 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
 
     context 'when authenticated', 'as a guest' do
       it_behaves_like '403 response' do
-        let(:request) { get api(route, guest) }
+        let(:request) { get api(route, guest), headers: workhorse_headers }
       end
     end
 
     it_behaves_like 'authorizing granular token permissions', :read_repository_blob do
       let(:boundary_object) { project }
       let(:request) do
-        get api(route, personal_access_token: pat)
+        get api(route, personal_access_token: pat), headers: workhorse_headers
       end
     end
   end
 
   describe "GET /projects/:id/repository/archive(.:format)?:sha" do
+    include_context 'workhorse headers'
+
     let(:project_id) { CGI.escape(project.full_path) }
     let(:route) { "/projects/#{project_id}/repository/archive" }
 
@@ -364,7 +368,7 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
 
     shared_examples_for 'repository archive' do
       it 'returns the repository archive' do
-        get api(route, current_user)
+        get api(route, current_user), headers: workhorse_headers
 
         expect(response).to have_gitlab_http_status(:ok)
 
@@ -377,7 +381,7 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
       end
 
       it 'returns the repository archive archive.zip' do
-        get api("/projects/#{project_id}/repository/archive.zip", user)
+        get api("/projects/#{project_id}/repository/archive.zip", user), headers: workhorse_headers
 
         expect(response).to have_gitlab_http_status(:ok)
 
@@ -388,7 +392,7 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
       end
 
       it 'returns the repository archive archive.tar.bz2' do
-        get api("/projects/#{project_id}/repository/archive.tar.bz2", user)
+        get api("/projects/#{project_id}/repository/archive.tar.bz2", user), headers: workhorse_headers
 
         expect(response).to have_gitlab_http_status(:ok)
 
@@ -400,14 +404,14 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
 
       context 'when sha does not exist' do
         it_behaves_like '404 response' do
-          let(:request) { get api("#{route}?sha=xxx", current_user) }
+          let(:request) { get api("#{route}?sha=xxx", current_user), headers: workhorse_headers }
           let(:message) { '404 File Not Found' }
         end
       end
 
       context 'when include_lfs_blobs is false' do
         it 'returns the correct GetArchiveRequest' do
-          get api("#{route}?include_lfs_blobs=false", current_user)
+          get api("#{route}?include_lfs_blobs=false", current_user), headers: workhorse_headers
 
           expect(response).to have_gitlab_http_status(:ok)
 
@@ -421,7 +425,7 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
 
       context 'with exclude_paths present in params' do
         it 'returns the correct GetArchiveRequest' do
-          get api("#{route}?exclude_paths=lib,test", current_user)
+          get api("#{route}?exclude_paths=lib,test", current_user), headers: workhorse_headers
 
           expect(response).to have_gitlab_http_status(:ok)
 
@@ -435,7 +439,7 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
 
       it 'returns only a part of the repository with path set' do
         path = 'bar'
-        get api("#{route}?path=#{path}", current_user)
+        get api("#{route}?path=#{path}", current_user), headers: workhorse_headers
 
         expect(response).to have_gitlab_http_status(:ok)
 
@@ -448,14 +452,14 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
       it 'rate limits user when thresholds hit' do
         allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
 
-        get api("/projects/#{project_id}/repository/archive.tar.bz2", user)
+        get api("/projects/#{project_id}/repository/archive.tar.bz2", user), headers: workhorse_headers
 
         expect(response).to have_gitlab_http_status(:too_many_requests)
       end
 
       it_behaves_like "hotlink interceptor" do
         let(:http_request) do
-          get api(route, current_user), headers: headers
+          get api(route, current_user), headers: workhorse_headers.merge(headers || {})
         end
       end
 
@@ -479,7 +483,7 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
           end
 
           it 'redirects to the new project location' do
-            get api(route, current_user)
+            get api(route, current_user), headers: workhorse_headers
 
             expect(response).to have_gitlab_http_status(:moved_permanently)
             # We use `start_with?` instead of `eq` because `api` appends a
@@ -519,7 +523,7 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
 
     context 'when authenticated', 'as a guest' do
       it_behaves_like '403 response' do
-        let(:request) { get api(route, guest) }
+        let(:request) { get api(route, guest), headers: workhorse_headers }
       end
     end
 
@@ -545,18 +549,20 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
     it_behaves_like 'authorizing granular token permissions', :read_repository_archive do
       let(:boundary_object) { project }
       let(:request) do
-        get api(route, personal_access_token: pat)
+        get api(route, personal_access_token: pat), headers: workhorse_headers
       end
     end
   end
 
   describe 'HEAD /projects/:id/repository/archive' do
+    include_context 'workhorse headers'
+
     let(:route) { "/projects/#{project.id}/repository/archive" }
 
     it 'returns 200 OK with headers for authenticated user' do
       expect(Gitlab::Workhorse).not_to receive(:send_git_archive)
 
-      head api(route, user)
+      head api(route, user), headers: workhorse_headers
 
       expect(response).to have_gitlab_http_status(:ok)
       # Content-Type is aligned with Workhorse: application/octet-stream for non-zip formats
@@ -568,7 +574,7 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
       let_it_be(:public_project) { create(:project, :public, :repository) }
 
       it 'returns 200 OK for unauthenticated user' do
-        head api("/projects/#{public_project.id}/repository/archive")
+        head api("/projects/#{public_project.id}/repository/archive"), headers: workhorse_headers
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.headers['Content-Type']).to include('application/octet-stream')
@@ -577,7 +583,7 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
 
     context 'with specific format' do
       it 'returns correct content type for zip' do
-        head api("#{route}.zip", user)
+        head api("#{route}.zip", user), headers: workhorse_headers
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.headers['Content-Type']).to include('application/zip')

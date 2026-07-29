@@ -95,7 +95,7 @@ RSpec.shared_examples Repositories::GitHttpController do
       expect(response).to have_gitlab_http_status(:ok)
     end
 
-    context 'when JWT token is not provided' do
+    context 'when JWT token is not provided', :verify_workhorse_jwt do
       it 'returns 403' do
         post :git_upload_pack, params: params
 

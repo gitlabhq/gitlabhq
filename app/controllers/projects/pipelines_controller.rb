@@ -323,7 +323,7 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   def pipeline_test_report
     strong_memoize(:pipeline_test_report) do
-      @pipeline.test_reports.tap do |reports|
+      @pipeline.accessible_test_reports(current_user).tap do |reports|
         reports.with_attachment! if params[:scope] == 'with_attachment'
       end
     end

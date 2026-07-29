@@ -220,7 +220,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def test_reports
-    reports_response(@merge_request.compare_test_reports)
+    reports_response(@merge_request.compare_test_reports(current_user))
   end
 
   def accessibility_reports

@@ -2381,7 +2381,9 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
   end
 
   describe 'GET /projects/:id/merge_requests/:merge_request_iid/raw_diffs' do
-    let_it_be(:merge_request) do
+    include_context 'workhorse headers'
+
+    let_it_be(:merge_request, freeze: false) do
       create(
         :merge_request,
         :simple,
@@ -2396,12 +2398,12 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
     end
 
     it 'returns a 404 when merge_request_iid not found' do
-      get api("/projects/#{project.id}/merge_requests/0/raw_diffs", user)
+      get api("/projects/#{project.id}/merge_requests/0/raw_diffs", user), headers: workhorse_headers
       expect(response).to have_gitlab_http_status(:not_found)
     end
 
     it 'returns a 404 when merge_request id is used instead of iid' do
-      get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/raw_diffs", user)
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/raw_diffs", user), headers: workhorse_headers
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
@@ -2413,7 +2415,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
     end
 
     it 'returns the a workhorse git-diff url' do
-      get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/raw_diffs", user)
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/raw_diffs", user), headers: workhorse_headers
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("git-diff:")
@@ -2422,7 +2424,8 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
     it_behaves_like 'authorizing granular token permissions', :read_merge_request_raw_diff do
       let(:boundary_object) { project }
       let(:request) do
-        get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/raw_diffs", personal_access_token: pat)
+        get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/raw_diffs", personal_access_token: pat),
+          headers: workhorse_headers
       end
     end
   end

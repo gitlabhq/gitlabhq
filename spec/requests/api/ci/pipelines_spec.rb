@@ -1655,6 +1655,49 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       end
     end
 
+    context 'when the pipeline has maintainer-only test artifacts' do
+      let(:pipeline) { create(:ci_pipeline, project: project) }
+
+      let_it_be(:guest) { create(:user, guest_of: project) }
+
+      let!(:public_build) { create(:ci_build, :success, name: 'rspec', pipeline: pipeline) }
+      let!(:maintainer_build) { create(:ci_build, :success, name: 'java', pipeline: pipeline) }
+
+      before do
+        create(:ci_job_artifact, :junit, job: public_build)
+        # Reports-only job: maintainer-only JUnit report with no archive, so the
+        # report's own accessibility must gate access (not the build/archive).
+        create(:ci_job_artifact, :junit_with_ant, :maintainer_only_access, job: maintainer_build)
+      end
+
+      it 'excludes suites whose artifacts the requesting user cannot access', :aggregate_failures do
+        get api("/projects/#{project.id}/pipelines/#{pipeline.id}/test_report", guest)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['test_suites'].pluck('name')).to contain_exactly('rspec')
+      end
+
+      it 'returns every suite for a user who can access maintainer artifacts', :aggregate_failures do
+        get api("/projects/#{project.id}/pipelines/#{pipeline.id}/test_report", user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['test_suites'].pluck('name')).to contain_exactly('rspec', 'java')
+      end
+
+      # The cached response is keyed on the requesting user, so a maintainer's
+      # cached entry must never be served to a guest requesting the same endpoint.
+      it 'does not serve a cached maintainer response to a guest',
+        :use_clean_rails_redis_caching, :clean_gitlab_redis_shared_state, :aggregate_failures do
+        # Warm the cache as the maintainer.
+        get api("/projects/#{project.id}/pipelines/#{pipeline.id}/test_report", user)
+        expect(json_response['test_suites'].pluck('name')).to contain_exactly('rspec', 'java')
+
+        # The guest must recompute a filtered response instead of hitting the maintainer's cache.
+        get api("/projects/#{project.id}/pipelines/#{pipeline.id}/test_report", guest)
+        expect(json_response['test_suites'].pluck('name')).to contain_exactly('rspec')
+      end
+    end
+
     context 'unauthorized user' do
       it 'does not return project pipelines', :aggregate_failures do
         get api("/projects/#{project.id}/pipelines/#{pipeline.id}/test_report", non_member)

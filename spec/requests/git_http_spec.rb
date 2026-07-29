@@ -500,7 +500,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
         end
 
         context 'when the request is not from gitlab-workhorse' do
-          it 'responds with 403 Forbidden' do
+          it 'responds with 403 Forbidden', :verify_workhorse_jwt do
             get("/#{project.full_path}.git/info/refs?service=git-upload-pack")
 
             expect(response).to have_gitlab_http_status(:forbidden)
@@ -1407,7 +1407,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
         end
 
         context 'when the request is not from gitlab-workhorse' do
-          it 'responds with 403 Forbidden' do
+          it 'responds with 403 Forbidden', :verify_workhorse_jwt do
             get("/#{project.full_path}.git/info/refs?service=git-upload-pack")
 
             expect(response).to have_gitlab_http_status(:forbidden)

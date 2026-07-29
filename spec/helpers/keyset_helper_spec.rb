@@ -84,6 +84,51 @@ RSpec.describe KeysetHelper, type: :controller do
           expect(response.body).to have_css('a:not(disabled)', text: 'Last')
         end
       end
+
+      context 'with unsafe query parameters' do
+        let(:query_params) do
+          {
+            host: 'x',
+            protocol: 'javascript',
+            x: '%0Aalert(document.domain)//',
+            safe_param: 'capybara'
+          }
+        end
+
+        it 'does not propagate unsafe parameters to links' do
+          get :index, params: query_params
+
+          expect(response.body).to have_css('.gl-pagination')
+          expect(response.body).to have_css('a:not(disabled)', text: 'Next')
+          expect(response.body).to have_css('a:not(disabled)', text: 'Last')
+          expect(response.body).not_to include(/alert/)
+          expect(response.body).not_to include(/document\.domain/)
+        end
+
+        context 'when rendering with specific, permitted params' do
+          controller(Admin::UsersController) do
+            def index
+              @users = User
+                .where(admin: false)
+                .order(id: :desc)
+                .keyset_paginate(cursor: params[:cursor], per_page: 2)
+
+              render inline: "<%= keyset_paginate @users, permitted_params: [:safe_param] %>", layout: false
+            end
+          end
+
+          it 'propagates only safe parameters to links' do
+            get :index, params: query_params
+
+            expect(response.body).to have_css('.gl-pagination')
+            expect(response.body).to have_css('a:not(disabled)', text: 'Next')
+            expect(response.body).to have_css('a:not(disabled)', text: 'Last')
+            expect(response.body).to include(/safe_param=capybara/)
+            expect(response.body).not_to include(/alert/)
+            expect(response.body).not_to include(/document\.domain/)
+          end
+        end
+      end
     end
   end
 end

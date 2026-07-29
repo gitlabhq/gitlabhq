@@ -140,7 +140,9 @@ module Gitlab
 
         def generate_imported_object
           if @relation_name == :merge_requests
-            MergeRequestParser.new(@importable, @relation_hash.delete('diff_head_sha'), super, @relation_hash).parse!
+            MergeRequestParser.new(
+              @importable, @relation_hash.delete('diff_head_sha'), super, @relation_hash, user: @user
+            ).parse!
           else
             super
           end

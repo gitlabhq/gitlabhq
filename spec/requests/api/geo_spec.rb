@@ -31,7 +31,7 @@ RSpec.describe API::Geo, feature_category: :geo_replication do
       end
     end
 
-    it 'rejects requests that bypassed gitlab-workhorse' do
+    it 'rejects requests that bypassed gitlab-workhorse', :verify_workhorse_jwt do
       workhorse_headers.delete(Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER)
 
       subject
