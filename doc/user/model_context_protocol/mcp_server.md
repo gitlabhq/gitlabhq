@@ -448,6 +448,12 @@ You can now start a new chat and ask a question depending on the [available tool
 
 {{< /details >}}
 
+{{< history >}}
+
+- OAuth application creation through the UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245979) in GitLab 19.3.
+
+{{< /history >}}
+
 When an MCP client connects to the GitLab MCP server,
 it uses OAuth 2.0 Dynamic Client Registration (DCR)
 to create a new OAuth application on your GitLab instance.
@@ -462,7 +468,7 @@ all connections reuse the same OAuth application instead of creating new ones.
 
 When a user authenticates with the shared `clientId`, GitLab reuses the same OAuth application
 for every subsequent authentication from any user with the same configuration.
-User authorize with OAuth and receive their own access token.
+Users authorize with OAuth and receive their own access token.
 The shared application is the OAuth client identity, not a shared credential.
 
 Prerequisites:
@@ -472,11 +478,15 @@ Prerequisites:
   - Pre-configured OAuth credentials
   - The `clientId` field in its configuration
 
-1. Use the [REST API](../../api/applications.md#create-an-application) to create a single OAuth application
-   for the instance. Set `mcp` as the scope and `confidential: false`
-1. Give the `application_id` in the response to your users. This is the `clientID` that users
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Applications** > **New application**.
+1. Complete the fields. Select the **mcp** scope and clear the **Confidential** checkbox.
+1. Select **Save application**.
+1. Give the application ID to your users. This is the `clientId` that users
    configure in the MCP client. The configuration key varies by client, but is typically named `clientId` or `client_id`
    in the OAuth configuration of the GitLab MCP server. This is typically in an `mcp.json` file.
+
+You can also use the [REST API](../../api/applications.md#create-an-application) to create the application.
 
 > [!note]
 > The redirect URI registered on the OAuth application must exactly match the redirect URI

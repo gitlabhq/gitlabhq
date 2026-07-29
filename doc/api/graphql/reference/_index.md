@@ -68941,7 +68941,6 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenum-secrets_manager_nav_badge"></a>`SECRETS_MANAGER_NAV_BADGE` | Callout feature name for secrets_manager_nav_badge. |
 | <a id="usercalloutfeaturenameenum-security_configuration_devops_alert"></a>`SECURITY_CONFIGURATION_DEVOPS_ALERT` | Callout feature name for security_configuration_devops_alert. |
 | <a id="usercalloutfeaturenameenum-security_configuration_upgrade_banner"></a>`SECURITY_CONFIGURATION_UPGRADE_BANNER` | Callout feature name for security_configuration_upgrade_banner. |
-| <a id="usercalloutfeaturenameenum-security_manager_role"></a>`SECURITY_MANAGER_ROLE` | Callout feature name for security_manager_role. |
 | <a id="usercalloutfeaturenameenum-security_policy_protected_branch_modification"></a>`SECURITY_POLICY_PROTECTED_BRANCH_MODIFICATION` | Callout feature name for security_policy_protected_branch_modification. |
 | <a id="usercalloutfeaturenameenum-security_scanner_profiles_announcement"></a>`SECURITY_SCANNER_PROFILES_ANNOUNCEMENT` | Callout feature name for security_scanner_profiles_announcement. |
 | <a id="usercalloutfeaturenameenum-single_origin_fallback_callout"></a>`SINGLE_ORIGIN_FALLBACK_CALLOUT` | Callout feature name for single_origin_fallback_callout. |

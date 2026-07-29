@@ -25,7 +25,7 @@ export default {
       required: true,
     },
   },
-  emits: ['cancel', 'mergeWithFailedPipeline'],
+  emits: ['cancel', 'merge-with-failed-pipeline'],
   methods: {
     hide() {
       this.$refs.modal.hide();
@@ -38,7 +38,7 @@ export default {
       this.$refs.cancelButton.$el.focus();
     },
     mergeChanges() {
-      this.$emit('mergeWithFailedPipeline');
+      this.$emit('merge-with-failed-pipeline');
       this.hide();
     },
   },

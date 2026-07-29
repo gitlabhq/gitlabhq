@@ -11,9 +11,9 @@ import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/toolt
 import { s__, __, sprintf } from '~/locale';
 import { reportToSentry } from '~/ci/utils';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
-import { getQueryHeaders, setupQueryPollingByVisibility } from '~/ci/pipeline_details/graph/utils';
+import { getQueryHeaders } from '~/ci/pipeline_details/graph/utils';
 import { graphqlEtagPipelinePath } from '~/ci/pipeline_details/utils';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { getIdFromGraphQLId, setupQueryPollingByVisibility } from '~/graphql_shared/utils';
 import { PIPELINE_POLL_INTERVAL_DEFAULT } from '~/ci/constants';
 import JobDropdownItem from '~/ci/common/private/job_dropdown_item.vue';
 import { sortJobsByStatus } from './utils/data_utils';

@@ -227,18 +227,6 @@ To set a custom default CI/CD configuration file path:
 Individual projects can override this instance default by
 [specifying a custom CI/CD configuration file](../../ci/pipelines/settings.md#specify-a-custom-cicd-configuration-file).
 
-#### Display or hide the pipeline suggestion banner
-
-Control whether to display a guidance banner in merge requests that have no pipelines.
-This banner provides a walkthrough on how to add a `.gitlab-ci.yml` file.
-
-![A banner displays guidance on how to get started with GitLab pipelines.](img/suggest_pipeline_banner_v14_5.png)
-
-The pipeline suggestion banner is displayed by default. To hide it:
-
-1. Clear the **Enable pipeline suggestion banner** checkbox.
-1. Select **Save changes**.
-
 #### Display or hide the Jenkins migration banner
 
 {{< history >}}

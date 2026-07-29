@@ -399880,12 +399880,6 @@
               "deprecationReason": null
             },
             {
-              "name": "SECURITY_MANAGER_ROLE",
-              "description": "Callout feature name for security_manager_role.",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "SECRETS_MANAGER_NAV_BADGE",
               "description": "Callout feature name for secrets_manager_nav_badge.",
               "isDeprecated": false,

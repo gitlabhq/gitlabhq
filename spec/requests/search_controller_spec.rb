@@ -324,6 +324,18 @@ RSpec.describe SearchController, :with_current_organization, feature_category: :
     end
   end
 
+  describe 'GET /search/opensearch' do
+    # Asserted through the request options rather than through a Redis or Set-Cookie side effect:
+    # an unchanged session is also left alone by write throttling, so an observable effect would
+    # not tell the two apart.
+    it 'renders the document without committing the session', :aggregate_failures do
+      get search_opensearch_path(format: :xml)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(request.session_options[:skip]).to be(true)
+    end
+  end
+
   describe 'GET /search/autocomplete' do
     let_it_be(:work_item) { create(:work_item, project: project, title: 'autocomplete fix') }
 

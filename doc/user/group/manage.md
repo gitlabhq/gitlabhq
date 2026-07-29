@@ -717,7 +717,7 @@ To require a commit SHA on the merge requests API:
 1. In the top bar, select **Search or go to** and find your group.
 1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Merge requests**.
-1. Select the **Require commit SHA on merge API** checkbox.
+1. Select the **Require commit SHA on merge requests API** checkbox.
 1. Optional. To enforce this setting for all subgroups and prevent subgroups from changing it, select
    the **Enforce for all subgroups** checkbox.
 1. Select **Save changes**.
@@ -734,7 +734,7 @@ To set the default for all groups:
 1. In the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Merge requests**.
-1. Select the **Require commit SHA on merge API** checkbox.
+1. Select the **Require commit SHA on merge requests API** checkbox.
 1. Optional. To enforce this setting for all groups on the instance and prevent groups from
    changing it, select the **Enforce this setting for all groups on this instance** checkbox.
 1. Select **Save changes**.

@@ -826,7 +826,6 @@ to configure other related settings. These requirements are in the `Required` co
 | `spam_check_endpoint_enabled`            | boolean          | no                                   | Enables spam checking using external Spam Check API endpoint. Default is `false`. |
 | `spam_check_endpoint_url`                | string           | no                                   | URL of the external Spamcheck service endpoint. Valid URI schemes are `grpc` or `tls`. Specifying `tls` forces communication to be encrypted. |
 | `spam_check_api_key`                     | string           | no                                   | API key used by GitLab for accessing the Spam Check service endpoint. |
-| `suggest_pipeline_enabled`               | boolean          | no                                   | Enable pipeline suggestion banner. |
 | `enable_artifact_external_redirect_warning_page` | boolean  | no                                   | Show the external redirect page that warns you about user-generated content in GitLab Pages. |
 | `terminal_max_session_time`              | integer          | no                                   | Maximum time for web terminal websocket connection (in seconds). Set to `0` for unlimited time. |
 | `terms`                                  | text             | required by: `enforce_terms`         | (**Required by**: `enforce_terms`) Markdown content for the ToS. |

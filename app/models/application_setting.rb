@@ -14,6 +14,7 @@ class ApplicationSetting < ApplicationRecord
 
   ignore_column :model_prompt_cache_enabled, remove_with: '18.5', remove_after: '2025-10-05'
   ignore_column :lock_model_prompt_cache_enabled, remove_with: '18.5', remove_after: '2025-10-05'
+  ignore_column :suggest_pipeline_enabled, remove_with: '19.4', remove_after: '2026-08-21' # https://gitlab.com/groups/gitlab-org/-/work_items/20607
 
   INSTANCE_REVIEW_MIN_USERS = 50
 

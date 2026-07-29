@@ -66,6 +66,11 @@ export default {
       required: false,
       default: false,
     },
+    showBusyIndicator: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     collapsed: {
       type: Boolean,
       required: false,
@@ -137,6 +142,16 @@ export default {
         baseQueryVariables: this.baseQueryVariables,
         columnFilter: this.strategy.columnFilter(this.value),
       });
+    },
+    columnClasses() {
+      return [
+        this.collapsed ? 'gl-w-8 gl-self-start' : 'gl-h-full gl-w-48',
+        {
+          'gl-opacity-5': this.dropDisabled || this.showBusyIndicator,
+          'gl-cursor-not-allowed': this.dropDisabled,
+          'gl-cursor-wait': this.showBusyIndicator && !this.dropDisabled,
+        },
+      ];
     },
   },
   apollo: {
@@ -243,10 +258,8 @@ export default {
 <template>
   <div
     class="gl-flex gl-shrink-0 gl-flex-col gl-rounded-xl gl-bg-strong dark:gl-bg-subtle"
-    :class="[
-      collapsed ? 'gl-w-8 gl-self-start' : 'gl-h-full gl-w-48',
-      { 'gl-cursor-not-allowed gl-opacity-5': dropDisabled },
-    ]"
+    :class="columnClasses"
+    :aria-busy="showBusyIndicator"
   >
     <column-header
       :value="value"

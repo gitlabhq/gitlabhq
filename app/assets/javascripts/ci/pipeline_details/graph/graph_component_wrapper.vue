@@ -1,6 +1,6 @@
 <script>
 import { GlAlert, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
-import { isGid, getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { isGid, getIdFromGraphQLId, setupQueryPollingByVisibility } from '~/graphql_shared/utils';
 import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
 import getPipelineNeeds from 'shared_queries/pipelines/get_pipeline_needs.query.graphql';
 import getUserCallouts from '~/graphql_shared/queries/get_user_callouts.query.graphql';
@@ -26,7 +26,6 @@ import {
   calculatePipelineLayersInfo,
   getQueryHeaders,
   serializeLoadErrors,
-  setupQueryPollingByVisibility,
   unwrapPipelineData,
   mergePipelineWithNeeds,
 } from './utils';

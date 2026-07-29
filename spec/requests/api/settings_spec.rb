@@ -75,7 +75,6 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['admin_mode']).to be(false)
       expect(json_response['whats_new_variant']).to eq('all_tiers')
       expect(json_response['user_deactivation_emails_enabled']).to be(true)
-      expect(json_response['suggest_pipeline_enabled']).to be(true)
       expect(json_response['runner_token_expiration_interval']).to be_nil
       expect(json_response['group_runner_token_expiration_interval']).to be_nil
       expect(json_response['project_runner_token_expiration_interval']).to be_nil
@@ -290,7 +289,6 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             personal_access_token_prefix: "GL-",
             user_deactivation_emails_enabled: false,
             admin_mode: true,
-            suggest_pipeline_enabled: false,
             users_get_by_id_limit: 456,
             delete_inactive_projects: true,
             inactive_projects_delete_after_months: 24,
@@ -395,7 +393,6 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['personal_access_token_prefix']).to eq("GL-")
         expect(json_response['admin_mode']).to be(true)
         expect(json_response['user_deactivation_emails_enabled']).to be(false)
-        expect(json_response['suggest_pipeline_enabled']).to be(false)
         expect(json_response['users_get_by_id_limit']).to eq(456)
         expect(json_response['delete_inactive_projects']).to be(true)
         expect(json_response['inactive_projects_delete_after_months']).to eq(24)

@@ -913,25 +913,25 @@ export default {
         v-if="mr.mergeImmediatelyDocsPath"
         ref="confirmationDialog"
         :docs-url="mr.mergeImmediatelyDocsPath"
-        @mergeImmediately="onMergeImmediatelyConfirmation"
+        @merge-immediately="onMergeImmediatelyConfirmation"
       />
       <merge-train-failed-pipeline-confirmation-dialog
         :visible="isPipelineFailedModalVisibleMergeTrain"
-        @startMergeTrain="onStartMergeTrainConfirmation"
+        @start-merge-train="onStartMergeTrainConfirmation"
         @cancel="isPipelineFailedModalVisibleMergeTrain = false"
       />
       <merge-train-restart-train-confirmation-dialog
         v-if="isSkipMergeTrainAvailable"
         :visible="isMergeTrainBeingForceMerged"
         :merge-train-type="mergeTrainMergeType"
-        @processMergeTrainMerge="processMergeTrain"
+        @process-merge-train-merge="processMergeTrain"
         @cancel="isMergeTrainBeingForceMerged = false"
       />
       <merge-failed-pipeline-confirmation-dialog
         :visible="isPipelineFailedModalVisibleNormalMerge"
         :target-project-id="mr.targetProjectId"
         :iid="mr.iid"
-        @mergeWithFailedPipeline="onMergeWithFailedPipelineConfirmation"
+        @merge-with-failed-pipeline="onMergeWithFailedPipelineConfirmation"
         @cancel="isPipelineFailedModalVisibleNormalMerge = false"
       />
       <rebase-confirmation-dialog

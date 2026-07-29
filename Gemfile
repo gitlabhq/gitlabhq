@@ -161,12 +161,7 @@ gem 'gitlab_omniauth-ldap', '~> 2.3.0', require: 'omniauth-ldap', feature_catego
 gem 'net-ldap', '~> 0.20.0', feature_category: :system_access
 
 # API
-if next?
-  gem 'grape', '~> 2.4', feature_category: :api
-else
-  gem 'grape', '~> 2.0.0', feature_category: :api
-end
-
+gem 'grape', '~> 2.4', feature_category: :api
 gem 'grape-entity', '~> 1.1.0', feature_category: :api
 gem 'grape-swagger', '~> 2.1.2', group: [:development, :test], feature_category: :api
 gem 'grape-swagger-entity', '~> 0.7.0', group: [:development, :test], feature_category: :api
@@ -686,12 +681,7 @@ gem 'gitlab-experiment', '~> 2.0.0', feature_category: :acquisition
 
 # Structured logging
 gem 'lograge', '~> 0.5', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
-
-if next?
-  gem 'grape_logging', '~> 3.0', feature_category: :api
-else
-  gem 'grape_logging', '~> 1.8', '>= 1.8.4', feature_category: :api
-end
+gem 'grape_logging', '~> 3.0', feature_category: :api
 
 # DNS Lookup
 gem 'gitlab-net-dns', '~> 0.15.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839

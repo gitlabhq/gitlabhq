@@ -138,7 +138,7 @@ RSpec.shared_examples 'clone quick action' do
         it_behaves_like 'applies the commands to issues in both projects, target and source'
       end
 
-      context 'applies multiple commands with clone command in the begining' do
+      context 'applies multiple commands with clone command in the beginning' do
         before do
           fill_in('Add a reply', with: "/clone #{target_project.full_path}\n\n/label ~#{bug.title} ~#{wontfix.title}\n\n/milestone %\"#{milestone.title}\"")
           click_button 'Comment'

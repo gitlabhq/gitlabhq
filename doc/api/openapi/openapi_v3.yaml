@@ -17523,7 +17523,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_21e94741100a"
+              "$ref": "#/components/schemas/RequestBody_5a061b2b66c4"
   "/api/v4/service_accounts":
     post:
       operationId: postApiV4ServiceAccounts
@@ -84699,8 +84699,6 @@ components:
           type: string
         sidekiq_timezone_override:
           type: string
-        suggest_pipeline_enabled:
-          type: string
         enable_artifact_external_redirect_warning_page:
           type: string
         search_rate_limit:
@@ -98697,7 +98695,7 @@ components:
           description: Scopes available to the application. Separate multiple scopes
             with a space.
           nullable: true
-    RequestBody_21e94741100a:
+    RequestBody_5a061b2b66c4:
       type: object
       properties:
         admin_mode:
@@ -99421,10 +99419,6 @@ components:
         user_deactivation_emails_enabled:
           type: boolean
           description: Send emails to users upon account deactivation
-          nullable: true
-        suggest_pipeline_enabled:
-          type: boolean
-          description: Enable pipeline suggestion banner
           nullable: true
         show_migrate_from_jenkins_banner:
           type: boolean

@@ -26,29 +26,43 @@ This process is part of a larger workflow:
 
 ## Step 1: Configure your pipeline
 
-To use GitLab CI/CD, you start with a `.gitlab-ci.yml` file at the root of your project.
-This file specifies the stages, jobs, and scripts to be executed during your CI/CD pipeline.
-It is a YAML file with its own custom syntax.
+To use GitLab CI/CD, add a `.gitlab-ci.yml` file to the root of your project.
+The `.gitlab-ci.yml` file defines the stages, jobs, and scripts that make up your CI/CD
+pipeline, including variables, job dependencies, and when and how each job runs.
 
-The filename must be `.gitlab-ci.yml` and is case-sensitive, but you can [configure a different filename](pipelines/settings.md#specify-a-custom-cicd-configuration-file).
-
-In this file, you define variables, dependencies between jobs, and specify when
-and how each job should be executed.
-
-A pipeline is defined in the `.gitlab-ci.yml` file,
-and executes when the file runs on a runner.
+By default, the filename must be `.gitlab-ci.yml`. Filenames are case-sensitive.
+You can also use a custom filename.
 
 Pipelines are made up of stages and jobs:
 
 - Stages define the order of execution. Typical stages might be `build`, `test`, and `deploy`.
 - Jobs specify the tasks to be performed in each stage. For example, a job can compile or test code.
 
-Pipelines can be triggered by various events, like commits or merges, or can be on schedule.
-In your pipeline, you can integrate with a wide range of tools and platforms.
+For example, a `.gitlab-ci.yml` file with a build stage and a test stage might look like this:
+
+```yaml
+stages:
+  - build
+  - test
+
+build-job:
+  stage: build
+  script:
+    - echo "Compiling the code..."
+test-job:
+  stage: test
+  script:
+    - echo "Running tests..."
+```
+
+GitLab creates a pipeline each time it's triggered, for example, by a commit, a merge
+request, on a schedule, or when you manually run one. A runner then executes the
+pipeline's jobs. In your pipeline, you can integrate with a wide range of tools and platforms.
 
 For more information, see:
 
-- [Tutorial: Create and run your first GitLab CI/CD pipeline](quick_start/_index.md)
+- [Tutorial: Create and run your first GitLab CI/CD pipeline](quick_start/_index.md#create-a-gitlab-ciyml-file)
+- [Specify a custom CI/CD configuration file](pipelines/settings.md#specify-a-custom-cicd-configuration-file)
 - [Pipelines](pipelines/_index.md)
 
 ## Step 2: Find or create runners

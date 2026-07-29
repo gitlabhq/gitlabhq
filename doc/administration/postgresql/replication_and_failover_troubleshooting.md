@@ -86,6 +86,40 @@ If a replica cannot start or rejoin the cluster, or when it lags behind and cann
    sudo gitlab-ctl tail patroni
    ```
 
+If you still encounter issues, remove the data directory and reinitialize the replica manually:
+
+1. Stop Patroni:
+
+   ```shell
+   sudo gitlab-ctl stop patroni
+   ```
+
+   > [!warning]
+   > This step permanently deletes all PostgreSQL data on this node. Ensure you are running this on the correct replica node, not the leader.
+
+   ```shell
+   sudo rm -rf /var/opt/gitlab/postgresql/data
+   ```
+
+1. Reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+1. Start Patroni:
+
+   ```shell
+   sudo gitlab-ctl start patroni
+   ```
+
+1. Monitor the logs and check the cluster state:
+
+   ```shell
+   sudo gitlab-ctl tail patroni
+   sudo gitlab-ctl patroni members
+   ```
+
 ## Reset the Patroni state in Consul
 
 > [!warning]

@@ -63,10 +63,10 @@ describe('MergeFailedPipelineConfirmationDialog', () => {
     );
   });
 
-  it('should emit the mergeWithFailedPipeline event', () => {
+  it('should emit the merge-with-failed-pipeline event', () => {
     findMergeBtn().vm.$emit('click');
 
-    expect(wrapper.emitted('mergeWithFailedPipeline')).toHaveLength(1);
+    expect(wrapper.emitted('merge-with-failed-pipeline')).toHaveLength(1);
   });
 
   it('when the cancel button is clicked should emit cancel and call hide', () => {

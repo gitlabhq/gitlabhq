@@ -651,6 +651,9 @@ build:
 If you are using GitLab Runner Operator deployed to an OpenShift cluster, try the
 [tutorial for using Buildah to build images in rootless container](buildah_rootless_tutorial.md).
 
+To build images for multiple CPU architectures, see
+[multi-platform builds with Buildah](buildah_rootless_multi_arch.md).
+
 ## Use the GitLab container registry
 
 After you've built a Docker image, you can push it to the

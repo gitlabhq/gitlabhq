@@ -299,6 +299,35 @@ describe('ColumnGroup', () => {
     });
   });
 
+  describe('busy indicator', () => {
+    it('does not dim or mark the column busy by default', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(wrapper.classes()).not.toContain('gl-opacity-5');
+      expect(wrapper.attributes('aria-busy')).toBeUndefined();
+    });
+
+    it('dims the column, shows a wait cursor and marks it busy when showBusyIndicator is true', async () => {
+      createComponent({ props: { showBusyIndicator: true } });
+      await waitForPromises();
+
+      expect(wrapper.classes()).toEqual(expect.arrayContaining(['gl-opacity-5', 'gl-cursor-wait']));
+      expect(wrapper.classes()).not.toContain('gl-cursor-not-allowed');
+      expect(wrapper.attributes('aria-busy')).toBe('true');
+    });
+
+    it('prefers the not-allowed cursor when both dropDisabled and showBusyIndicator are true', async () => {
+      createComponent({ props: { dropDisabled: true, showBusyIndicator: true } });
+      await waitForPromises();
+
+      expect(wrapper.classes()).toEqual(
+        expect.arrayContaining(['gl-opacity-5', 'gl-cursor-not-allowed']),
+      );
+      expect(wrapper.classes()).not.toContain('gl-cursor-wait');
+    });
+  });
+
   describe('drop-disabled column', () => {
     it('keeps put enabled and the column un-dimmed by default', async () => {
       createComponent();

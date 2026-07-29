@@ -35,7 +35,7 @@ import LinksLayer from '~/ci/common/private/job_links_layer.vue';
 import * as parsingUtils from '~/ci/pipeline_details/utils/parsing_utils';
 import getPipelineHeaderData from '~/ci/pipeline_details/header/graphql/queries/get_pipeline_header_data.query.graphql';
 import * as sentryUtils from '~/ci/utils';
-import { setupQueryPollingByVisibility } from '~/ci/pipeline_details/graph/utils';
+import { setupQueryPollingByVisibility } from '~/graphql_shared/utils';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { mockRunningPipelineHeaderData } from '../mock_data';
 import {
@@ -45,8 +45,8 @@ import {
   mockPipelinePermissions,
 } from './mock_data';
 
-jest.mock('~/ci/pipeline_details/graph/utils', () => ({
-  ...jest.requireActual('~/ci/pipeline_details/graph/utils'),
+jest.mock('~/graphql_shared/utils', () => ({
+  ...jest.requireActual('~/graphql_shared/utils'),
   setupQueryPollingByVisibility: jest.fn(),
 }));
 

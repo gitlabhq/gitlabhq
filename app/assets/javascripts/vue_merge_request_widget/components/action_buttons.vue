@@ -28,7 +28,7 @@ export default {
       default: () => [],
     },
   },
-  emits: ['clickedAction'],
+  emits: ['clicked-action'],
   data: () => {
     return {
       timeout: null,
@@ -59,7 +59,7 @@ export default {
   },
   methods: {
     onClickAction(action) {
-      this.$emit('clickedAction', action);
+      this.$emit('clicked-action', action);
 
       if (action.onClick) {
         action.onClick();

@@ -6601,9 +6601,6 @@ msgstr ""
 msgid "AdminSettings|Disable public access to Pages sites"
 msgstr ""
 
-msgid "AdminSettings|Display a banner on merge requests in projects with no pipelines to initiate steps to add a .gitlab-ci.yml file."
-msgstr ""
-
 msgid "AdminSettings|Domain verification is an essential security measure for public GitLab sites. Users are required to demonstrate they control a domain before it is enabled. %{link_start}Learn more%{link_end}."
 msgstr ""
 
@@ -6653,9 +6650,6 @@ msgid "AdminSettings|Enable kuromoji custom analyzer: Indexing"
 msgstr ""
 
 msgid "AdminSettings|Enable kuromoji custom analyzer: Search"
-msgstr ""
-
-msgid "AdminSettings|Enable pipeline suggestion banner"
 msgstr ""
 
 msgid "AdminSettings|Enable single origin fallback"
@@ -38551,6 +38545,9 @@ msgstr ""
 msgid "GroupSettings|The Policy Store experiment is not enabled for this instance."
 msgstr ""
 
+msgid "GroupSettings|The Policy Store experiment is only available on top-level groups."
+msgstr ""
+
 msgid "GroupSettings|The group from which to source contacts for issues in this group and its subgroups."
 msgstr ""
 
@@ -46892,9 +46889,6 @@ msgstr ""
 msgid "MemberRole|Infrastructure as code"
 msgstr ""
 
-msgid "MemberRole|Learn more"
-msgstr ""
-
 msgid "MemberRole|Learn more about %{linkStart}available custom permissions%{linkEnd}."
 msgstr ""
 
@@ -46908,9 +46902,6 @@ msgid "MemberRole|Member role"
 msgstr ""
 
 msgid "MemberRole|Name"
-msgstr ""
-
-msgid "MemberRole|New Security Manager role now available"
 msgstr ""
 
 msgid "MemberRole|New role"
@@ -47061,9 +47052,6 @@ msgid "MemberRole|The Security Manager role is for security team members who nee
 msgstr ""
 
 msgid "MemberRole|The Security Manager role provides comprehensive access to security features, including vulnerability management, security dashboards, policy configuration, and compliance tools. Designed for users who manage security and compliance across your organization. %{linkStart}Learn more.%{linkEnd}"
-msgstr ""
-
-msgid "MemberRole|The Security Manager role provides comprehensive access to security features, including vulnerability management, security dashboards, policy configuration, and compliance tools. Use this role for users who manage security and compliance across your organization."
 msgstr ""
 
 msgid "MemberRole|This member is an LDAP user. Changing their role will override the settings from the LDAP group sync."
@@ -58152,6 +58140,9 @@ msgstr ""
 msgid "PolicyStore|Build policy"
 msgstr ""
 
+msgid "PolicyStore|Continue editing"
+msgstr ""
+
 msgid "PolicyStore|Create new policy"
 msgstr ""
 
@@ -58164,10 +58155,16 @@ msgstr ""
 msgid "PolicyStore|Disabled"
 msgstr ""
 
-msgid "PolicyStore|Edit policy"
+msgid "PolicyStore|Discard changes"
+msgstr ""
+
+msgid "PolicyStore|Discard this policy?"
 msgstr ""
 
 msgid "PolicyStore|Enforce"
+msgstr ""
+
+msgid "PolicyStore|Esc or click outside to save"
 msgstr ""
 
 msgid "PolicyStore|Evaluations this week"
@@ -58179,19 +58176,22 @@ msgstr ""
 msgid "PolicyStore|Mode"
 msgstr ""
 
-msgid "PolicyStore|Name"
-msgstr ""
-
-msgid "PolicyStore|New policy"
-msgstr ""
-
 msgid "PolicyStore|Policies"
 msgstr ""
 
-msgid "PolicyStore|Review"
+msgid "PolicyStore|Policy creation steps"
+msgstr ""
+
+msgid "PolicyStore|Policy name"
+msgstr ""
+
+msgid "PolicyStore|Review impact"
 msgstr ""
 
 msgid "PolicyStore|Scope"
+msgstr ""
+
+msgid "PolicyStore|Select scope"
 msgstr ""
 
 msgid "PolicyStore|This step is coming soon."
@@ -58201,6 +58201,9 @@ msgid "PolicyStore|Untitled policy"
 msgstr ""
 
 msgid "PolicyStore|Warn"
+msgstr ""
+
+msgid "PolicyStore|Your progress will be lost if you leave without saving."
 msgstr ""
 
 msgid "Polling interval multiplier"
@@ -63940,7 +63943,7 @@ msgstr ""
 msgid "Require additional authentication for administrative tasks."
 msgstr ""
 
-msgid "Require commit SHA on merge API"
+msgid "Require commit SHA on merge requests API"
 msgstr ""
 
 msgid "Require email verification when account is locked."
@@ -64832,7 +64835,7 @@ msgstr ""
 msgid "Runners|Ensure you have the %{linkStart}Owner%{linkEnd} IAM role on your Google Cloud project."
 msgstr ""
 
-msgid "Runners|Enter number of seconds. Must be 600 seconds or more. If not defined, the runner uses the project %{linkStart}job timeout value%{linkEnd}."
+msgid "Runners|Enter number of seconds. Must be %{minValueSecs} seconds or more. If not defined, the runner uses the project %{linkStart}job timeout value%{linkEnd}."
 msgstr ""
 
 msgid "Runners|Environment in Google Cloud where runners execute CI/CD jobs. Runners are created in temporary virtual machines based on demand. To improve security, use a Google Cloud project for CI/CD only."
@@ -87857,7 +87860,7 @@ msgstr ""
 msgid "When all the merge checks for this merge request pass, it will %{linkStart}automatically merge%{linkEnd}."
 msgstr ""
 
-msgid "When configured, a valid commit SHA must be provided when calling the merge request merge API."
+msgid "When configured, a commit SHA must be provided when calling the %{link_start}merge a merge request%{link_end} endpoint in the merge requests API."
 msgstr ""
 
 msgid "When enabled, SSH keys with no expiry date or an invalid expiration date are no longer accepted. Leave blank for no limit."

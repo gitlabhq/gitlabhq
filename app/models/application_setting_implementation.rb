@@ -228,7 +228,6 @@ module ApplicationSettingImplementation
         spam_check_endpoint_enabled: false,
         spam_check_endpoint_url: nil,
         spam_check_api_key: nil,
-        suggest_pipeline_enabled: true,
         terminal_max_session_time: 0,
         terraform_state_encryption_enabled: true,
         throttle_authenticated_api_enabled: false,

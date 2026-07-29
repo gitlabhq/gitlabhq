@@ -758,7 +758,6 @@ RSpec/NamedSubject:
     - 'ee/spec/services/resource_events/change_weight_service_spec.rb'
     - 'ee/spec/services/search/reindexing_service_spec.rb'
     - 'ee/spec/services/security/ingestion/tasks/ingest_vulnerabilities/create_spec.rb'
-    - 'ee/spec/services/security/scanned_resources_service_spec.rb'
     - 'ee/spec/services/security/security_orchestration_policies/create_pipeline_service_spec.rb'
     - 'ee/spec/services/security/security_orchestration_policies/fetch_policy_approvers_service_spec.rb'
     - 'ee/spec/services/security/security_orchestration_policies/scan_pipeline_service_spec.rb'

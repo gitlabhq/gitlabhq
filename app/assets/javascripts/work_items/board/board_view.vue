@@ -27,7 +27,7 @@ import {
   readWorkItemsFromColumn,
   removeWorkItemFromColumn,
 } from './graphql/cache_updates';
-import { I18N_MOVE_ERROR } from './constants';
+import { I18N_MOVE_ERROR, MOVE_IN_PROGRESS_INDICATOR_DELAY } from './constants';
 import ColumnGroup from './components/column_group.vue';
 
 export default {
@@ -83,6 +83,9 @@ export default {
       // Locks dragging while a move mutation is in flight so a second drop can't
       // compute before/after ids against a stale, not-yet-persisted order.
       moveInProgress: false,
+      // Only shown once the lock above has been held for longer than
+      // MOVE_IN_PROGRESS_INDICATOR_DELAY, so quick moves don't flash the columns.
+      showMoveInProgressIndicator: false,
     };
   },
   computed: {
@@ -349,6 +352,9 @@ export default {
       }
 
       this.moveInProgress = true;
+      const indicatorTimer = setTimeout(() => {
+        this.showMoveInProgressIndicator = true;
+      }, MOVE_IN_PROGRESS_INDICATOR_DELAY);
       try {
         // Apollo runs `update` optimistically, then again on the server result; a
         // failure discards the optimistic layer and snaps the card back. We reinsert
@@ -390,7 +396,9 @@ export default {
         this.$toast.show(I18N_MOVE_ERROR);
         Sentry.captureException(error);
       } finally {
+        clearTimeout(indicatorTimer);
         this.moveInProgress = false;
+        this.showMoveInProgressIndicator = false;
       }
     },
   },
@@ -411,6 +419,7 @@ export default {
       :root-page-full-path="rootPageFullPath"
       :base-query-variables="queryVariables"
       :drag-disabled="moveInProgress"
+      :show-busy-indicator="showMoveInProgressIndicator"
       :drop-disabled="invalidValueIds.includes(value.id)"
       :collapsed="isColumnCollapsed(value)"
       :hidden-metadata-keys="hiddenMetadataKeys"

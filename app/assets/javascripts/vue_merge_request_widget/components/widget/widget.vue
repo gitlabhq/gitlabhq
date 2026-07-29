@@ -396,7 +396,7 @@ export default {
             <action-buttons
               v-if="actionButtons.length > 0"
               :tertiary-buttons="actionButtons"
-              @clickedAction="onActionClick"
+              @clicked-action="onActionClick"
             />
           </slot>
         </div>
@@ -458,7 +458,7 @@ export default {
                     :level="2"
                     :row-index="index"
                     data-testid="extension-list-item"
-                    @clickedAction="onActionClick"
+                    @clicked-action="onActionClick"
                   />
                 </dynamic-scroller-item>
               </template>

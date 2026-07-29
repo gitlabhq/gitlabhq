@@ -20,7 +20,6 @@ RSpec.describe 'Admin updates CI/CD settings', :request_store, :enable_admin_mod
       click_checked_field(s_('CICD|Default to Auto DevOps pipeline for all projects'))
       fill_field_with_new_value(s_('AdminSettings|Auto DevOps domain'), 'domain.com')
       click_checked_field(s_('AdminSettings|Keep the latest artifacts for all jobs in the latest successful pipelines'))
-      click_checked_field(s_('AdminSettings|Enable pipeline suggestion banner'))
       click_checked_field(s_('AdminSettings|Show the migrate from Jenkins banner'))
       fill_field_with_new_value(s_('AdminSettings|Maximum includes'), '200')
       fill_field_with_new_value(s_('AdminSettings|Maximum caches per job'), '8')
@@ -32,7 +31,6 @@ RSpec.describe 'Admin updates CI/CD settings', :request_store, :enable_admin_mod
       expect_field_value(s_('AdminSettings|Auto DevOps domain'), 'domain.com')
       expect_field_unchecked(
         s_('AdminSettings|Keep the latest artifacts for all jobs in the latest successful pipelines'))
-      expect_field_unchecked(s_('AdminSettings|Enable pipeline suggestion banner'))
       expect_field_unchecked(s_('AdminSettings|Show the migrate from Jenkins banner'))
       expect_field_value(s_('AdminSettings|Maximum includes'), '200')
       expect_field_value(s_('AdminSettings|Maximum caches per job'), '8')

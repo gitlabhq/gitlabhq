@@ -131,7 +131,7 @@ module Users
       work_items_onboarding_modal: 127,
       duo_panel_empty_state_auto_expanded: 128, # EE-only
       inline_blame_popover: 129,
-      security_manager_role: 130,
+      # 130 removed in revert of https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237413
       secrets_manager_nav_badge: 131 # EE-only
     }
 

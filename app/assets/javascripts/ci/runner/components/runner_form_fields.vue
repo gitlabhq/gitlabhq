@@ -15,6 +15,7 @@ import {
   ACCESS_LEVEL_NOT_PROTECTED,
   ACCESS_LEVEL_REF_PROTECTED,
   PROJECT_TYPE,
+  RUNNER_MAX_TIMEOUT_MIN_SECS,
   RUNNER_TYPES,
 } from '../constants';
 
@@ -86,6 +87,7 @@ export default {
   }),
   ACCESS_LEVEL_NOT_PROTECTED,
   ACCESS_LEVEL_REF_PROTECTED,
+  RUNNER_MAX_TIMEOUT_MIN_SECS,
 };
 </script>
 <template>
@@ -190,10 +192,11 @@ export default {
             <gl-sprintf
               :message="
                 s__(
-                  'Runners|Enter number of seconds. Must be 600 seconds or more. If not defined, the runner uses the project %{linkStart}job timeout value%{linkEnd}.',
+                  'Runners|Enter number of seconds. Must be %{minValueSecs} seconds or more. If not defined, the runner uses the project %{linkStart}job timeout value%{linkEnd}.',
                 )
               "
             >
+              <template #minValueSecs>{{ $options.RUNNER_MAX_TIMEOUT_MIN_SECS }}</template>
               <template #link="{ content }">
                 <gl-link :href="$options.HELP_JOB_TIMEOUT_PAGE_PATH" target="_blank">{{
                   content
@@ -206,6 +209,7 @@ export default {
             v-model.number="model.maximumTimeout"
             name="max-timeout"
             type="number"
+            :min="$options.RUNNER_MAX_TIMEOUT_MIN_SECS"
           />
         </gl-form-group>
       </template>

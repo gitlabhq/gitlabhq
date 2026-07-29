@@ -1,6 +1,7 @@
 import { GlForm, GlFormGroup, GlLink, GlMultiStepFormTemplate, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import RunnerCreateWizardOptionalFields from '~/ci/runner/components/runner_create_wizard_optional_fields.vue';
+import { RUNNER_MAX_TIMEOUT_MIN_SECS } from '~/ci/runner/constants';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
 describe('Create Runner Optional Fields', () => {
@@ -70,6 +71,14 @@ describe('Create Runner Optional Fields', () => {
         }),
       );
       expect(link.attributes('target')).toBe('_blank');
+    });
+
+    it('does not accept a value below the minimum the runner accepts', () => {
+      createComponent();
+
+      expect(wrapper.findByTestId('max-timeout-input').attributes('min')).toBe(
+        `${RUNNER_MAX_TIMEOUT_MIN_SECS}`,
+      );
     });
   });
 });
