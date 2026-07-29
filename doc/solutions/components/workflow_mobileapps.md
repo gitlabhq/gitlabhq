@@ -17,7 +17,7 @@ This document provides the instruction and functional detail for GitLab DevSecOp
 
 For native mobile application using fastlane, refer to product documentation.
 
-The instructions include a sample [**React Native**](https://reactnative.dev) application, bootstrapped using `react-native-community/cli`, and provide a cross-platform solution on both iOS and Android devices. The sample project provides an end-to-end solution for using GitLab CI/CD pipelines to build, test and deploy a mobile application.
+The instructions include a sample [**React Native**](https://reactnative.dev) application, bootstrapped using `react-native-community/cli`, and provide a cross-platform solution on both iOS and Android devices. The sample project provides an end-to-end solution for using GitLab CI/CD pipelines to build, test, and deploy a mobile application.
 
 ## Getting Started
 
@@ -63,7 +63,7 @@ Follow the steps below on how to use this React Native Mobile App sample project
 
 ## How the Pipeline Works
 
-This pipeline is designed for a React Native project, handling both iOS and Android builds, test and deploy the Mobile App.
+This pipeline is designed for a React Native project, handling both iOS and Android builds, test, and deploy the Mobile App.
 
 This project includes a simple reactCounter demo app for React Native build for both iOS and Android. This version does not sign the artifacts yet, so we cannot upload to TestFlight or the Play Store.
 

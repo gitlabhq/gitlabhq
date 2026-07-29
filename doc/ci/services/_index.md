@@ -122,7 +122,7 @@ job:
     - go version
 ```
 
-If you need to have `php`, `node` and `go` available for your script, you should
+If you need to have `php`, `node`, and `go` available for your script, you should
 either:
 
 - Choose an existing Docker image that contains all required tools.

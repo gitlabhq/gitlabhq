@@ -794,7 +794,7 @@ Follow these steps to view details of a vulnerability:
 
 ### Security Dashboard
 
-The Security Dashboard is a good place to get an overview of all the security vulnerabilities in your groups, projects and
+The Security Dashboard is a good place to get an overview of all the security vulnerabilities in your groups, projects, and
 pipelines. For more information, see the [Security Dashboard documentation](../../security_dashboard/_index.md).
 
 ### Interacting with the vulnerabilities

@@ -126,7 +126,7 @@ the underlying Google Cloud service that is used to provision the database insta
 The following databases and versions are supported:
 
 - PostgreSQL: 14, 13, 12, 11, 10, and 9.6
-- MySQL: 8.0, 5.7 and 5.6
+- MySQL: 8.0, 5.7, and 5.6
 - SQL Server
   - 2019: Standard, Enterprise, Express, and Web
   - 2017: Standard, Enterprise, Express, and Web

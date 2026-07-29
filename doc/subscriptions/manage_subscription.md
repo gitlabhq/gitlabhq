@@ -90,7 +90,7 @@ After you buy a subscription:
 To get started using your subscription:
 
 1. For GitLab Self-Managed, [activate your license](../administration/license.md) with the activation code.
-1. View your subscription to confirm the tier, seat count, start and end dates.
+1. View your subscription to confirm the tier, seat count, and start and end dates.
 1. For GitLab.com, if the subscription is not applied to the correct top-level group, link the subscription to a group.
 1. Review your account to verify your payment method, and billing and subscription contacts.
 1. Add or change subscription contacts so the right people receive subscription notifications.

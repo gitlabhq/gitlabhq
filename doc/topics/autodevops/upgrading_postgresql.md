@@ -175,7 +175,7 @@ pvc-9085e3d3-5239-11ea-9c8d-42010a8e0096   8Gi        RWO            Retain     
 > deleted, you can choose to retain the [persistent volume](#retain-persistent-volumes).
 
 You can also modify the steps below to [scope](../../ci/environments/_index.md#limit-the-environment-scope-of-a-cicd-variable)
-the `AUTO_DEVOPS_POSTGRES_CHANNEL`, `AUTO_DEVOPS_POSTGRES_DELETE_V1` and
+the `AUTO_DEVOPS_POSTGRES_CHANNEL`, `AUTO_DEVOPS_POSTGRES_DELETE_V1`, and
 `POSTGRES_VERSION` variables to specific environments, for example, `staging`.
 
 1. Set `AUTO_DEVOPS_POSTGRES_CHANNEL` to `2`. This opts into using the

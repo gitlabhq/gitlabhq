@@ -2295,7 +2295,7 @@ are separated into their own lines:
 When rendered, the example looks similar to:
 
 <!--
-The example below uses HTML to force correct rendering on docs.gitlab.com,
+The example below uses HTML to force correct rendering on `docs.gitlab.com`,
 Markdown is fine in GitLab.
 -->
 
@@ -2363,7 +2363,7 @@ PASTE LOGS HERE
 ````
 
 <!--
-The example below uses HTML to force correct rendering on docs.gitlab.com, Markdown
+The example below uses HTML to force correct rendering on `docs.gitlab.com`, Markdown
 works correctly in GitLab.
 -->
 

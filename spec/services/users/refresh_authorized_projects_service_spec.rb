@@ -178,5 +178,60 @@ RSpec.describe Users::RefreshAuthorizedProjectsService, feature_category: :user_
 
       service.update_authorizations([], to_be_added)
     end
+
+    it 'includes the related_class from the ambient context as the trigger' do
+      user.project_authorizations.delete_all
+
+      to_be_added = [
+        { user_id: user.id, project_id: project.id, access_level: Gitlab::Access::MAINTAINER }
+      ]
+
+      expect(Gitlab::AppJsonLogger).to receive(:info).with(
+        hash_including('authorized_projects_refresh.trigger': 'SomeCaller')
+      )
+
+      Gitlab::ApplicationContext.with_context(related_class: 'SomeCaller') do
+        service.update_authorizations([], to_be_added)
+      end
+    end
+
+    describe 'safety-net refresh metrics', :prometheus do
+      let(:to_be_removed) { [project.id] }
+      let(:to_be_added) do
+        [{ user_id: user.id, project_id: project.id, access_level: Gitlab::Access::MAINTAINER }]
+      end
+
+      let(:service) { described_class.new(user) }
+      let(:counter) { Gitlab::Metrics.counter(:gitlab_authorized_projects_safety_net_refresh_rows_total, 'test') }
+
+      before do
+        allow(Gitlab::Metrics).to receive(:counter).and_return(counter)
+      end
+
+      context 'when the refresh is marked with the safety-net purpose' do
+        it 'increments the refresh trend counter for each direction, including the trigger label' do
+          expect(counter).to receive(:increment)
+            .with(hash_including(trigger: 'SomeCaller', direction: 'deleted'), to_be_removed.size)
+          expect(counter).to receive(:increment)
+            .with(hash_including(trigger: 'SomeCaller', direction: 'added'), to_be_added.size)
+
+          Gitlab::ApplicationContext.with_raw_context(
+            authorized_projects_refresh_purpose: UserProjectAccessChangedService::SAFETY_NET_REFRESH_PURPOSE
+          ) do
+            Gitlab::ApplicationContext.with_context(related_class: 'SomeCaller') do
+              service.update_authorizations(to_be_removed, to_be_added)
+            end
+          end
+        end
+      end
+
+      context "when the refresh isn't marked with the safety-net purpose" do
+        it 'does not increment the refresh trend counter' do
+          expect(counter).not_to receive(:increment)
+
+          service.update_authorizations(to_be_removed, to_be_added)
+        end
+      end
+    end
   end
 end

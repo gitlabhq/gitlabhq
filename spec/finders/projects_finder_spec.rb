@@ -19,7 +19,7 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
       create(:project, :internal, :merge_requests_disabled, group: group, name: 'B', path: 'B', updated_at: 4.days.ago)
     end
 
-    let_it_be(:public_project) do
+    let_it_be(:public_project, freeze: false) do
       create(:project, :public, :merge_requests_enabled, :issues_disabled, group: group, name: 'C', path: 'C')
     end
 
@@ -175,13 +175,9 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
             end
           end
 
-          context 'when updated_after equals updated_before', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9339' do
-            let_it_be(:updated_at) { internal_project.updated_at }
+          context 'when updated_after equals updated_before' do
+            let(:updated_at) { internal_project.reload.updated_at }
             let(:params) { { updated_after: updated_at, updated_before: updated_at } }
-
-            before do
-              internal_project.update_columns(updated_at: updated_at)
-            end
 
             it 'allows an exact match' do
               expect(subject).to contain_exactly(internal_project)
@@ -484,6 +480,10 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
       describe 'filters by without_deleted by default' do
         let_it_be(:pending_delete_project, freeze: false) { create(:project, :public, pending_delete: true) }
 
+        before do
+          stub_feature_flags(use_deletion_in_progress_in_finders: false)
+        end
+
         it 'returns projects that are not pending_delete' do
           expect(subject).not_to include(pending_delete_project)
           expect(subject).to include(public_project, internal_project)
@@ -528,6 +528,11 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
 
           context 'when include_pending_delete param is provided' do
             let(:params) { { include_pending_delete: true } }
+
+            it 'excludes projects with deletion_in_progress state', :aggregate_failures do
+              expect(subject).not_to include(deletion_in_progress_project)
+              expect(subject).to include(public_project, internal_project)
+            end
 
             context 'when user is an admin', :enable_admin_mode do
               let(:current_user) { create(:admin) }
@@ -722,13 +727,13 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
       end
     end
 
-    describe 'with CTE flag disabled', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9339' do
+    describe 'with CTE flag disabled' do
       let(:use_cte) { false }
 
       it_behaves_like 'ProjectFinder#execute examples'
     end
 
-    describe 'with CTE flag enabled', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9339' do
+    describe 'with CTE flag enabled' do
       let(:use_cte) { true }
 
       it_behaves_like 'ProjectFinder#execute examples'

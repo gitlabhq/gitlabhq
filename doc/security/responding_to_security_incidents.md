@@ -89,7 +89,7 @@ Review the [audit events](../administration/compliance/audit_event_reports.md) a
 
 ### CI/CD-related security incidents
 
-CI/CD workflows are an integral part of modern day software development and primarily used by developers and SREs to build, test and deploy code to production. Because these workflows are attached to the production environments, they often require access to sensitive secrets within the CI/CD pipelines. Security incidents related to CI/CD might vary based on your setup, but they can be broadly classified as follows:
+CI/CD workflows are an integral part of modern day software development and primarily used by developers and SREs to build, test, and deploy code to production. Because these workflows are attached to the production environments, they often require access to sensitive secrets within the CI/CD pipelines. Security incidents related to CI/CD might vary based on your setup, but they can be broadly classified as follows:
 
 - Security incidents related to exposed GitLab CI/CD job tokens.
 - Secrets exposed through misconfigured GitLab CI/CD.
@@ -156,7 +156,7 @@ If you suspect that your GitLab instance has been compromised, you should:
 
 #### Event types
 
-Review [system access audit events](../user/compliance/audit_event_types.md#system-access) to determine any changes related to system settings, user permissions and user login events.
+Review [system access audit events](../user/compliance/audit_event_types.md#system-access) to determine any changes related to system settings, user permissions, and user login events.
 
 ### Misconfigured project or group settings
 

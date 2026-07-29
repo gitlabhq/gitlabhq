@@ -9,6 +9,7 @@ stage: ai-powered
 level: secondary
 weight: 50
 ---
+
 The AI Catalog now validates your custom flow configuration before saving or triggering it.
 
 Previously, syntax errors and misconfigured parameters in a custom flow (for example, missing inputs or unknown tool parameters) only surfaced at runtime, after a CI job had already started. This made debugging slow and difficult.

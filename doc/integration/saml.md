@@ -836,7 +836,7 @@ For a full list of supported assertions, see the [OmniAuth SAML gem](https://git
 You can:
 
 - Require users to be members of a certain group.
-- Assign users [external](../administration/external_users.md), administrator or [auditor](../administration/auditor_users.md) roles based on group membership.
+- Assign users [external](../administration/external_users.md), administrator, or [auditor](../administration/auditor_users.md) roles based on group membership.
 
 GitLab checks these groups on each SAML sign in and updates user attributes as necessary.
 This feature does not allow you to automatically add users to GitLab

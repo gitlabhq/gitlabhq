@@ -154,7 +154,6 @@ No port-forward is required.
    A successful response includes `policies  [root]`.
 
 1. Perform the required privileged operations.
-
 1. Revoke the root token:
 
    ```shell

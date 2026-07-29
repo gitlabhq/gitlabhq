@@ -770,7 +770,7 @@ potentially cause downtime.
 ## 15.4.2
 
 - A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) prevents some premium features of GitLab from working correctly if you add a new license. Workarounds for this issue:
-  - Restart all Rails, Sidekiq and Gitaly nodes after applying a new license. This clears the relevant license caches and allows all premium features to operate correctly.
+  - Restart all Rails, Sidekiq, and Gitaly nodes after applying a new license. This clears the relevant license caches and allows all premium features to operate correctly.
   - Upgrade to a version that is not affected by this issue. The following upgrade paths are available for affected versions:
     - 15.2.5 --> 15.3.5
     - 15.3.0 - 15.3.4 --> 15.3.5
@@ -780,7 +780,7 @@ potentially cause downtime.
 ## 15.4.1
 
 - A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) prevents some premium features of GitLab from working correctly if you add a new license. Workarounds for this issue:
-  - Restart all Rails, Sidekiq and Gitaly nodes after applying a new license. This clears the relevant license caches and allows all premium features to operate correctly.
+  - Restart all Rails, Sidekiq, and Gitaly nodes after applying a new license. This clears the relevant license caches and allows all premium features to operate correctly.
   - Upgrade to a version that is not affected by this issue. The following upgrade paths are available for affected versions:
     - 15.2.5 --> 15.3.5
     - 15.3.0 - 15.3.4 --> 15.3.5
@@ -836,7 +836,7 @@ potentially cause downtime.
 
 A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) prevents some premium features of GitLab from working correctly if you add a new license. Workarounds for this issue:
 
-- Restart all Rails, Sidekiq and Gitaly nodes after applying a new license. This clears the relevant license caches and allows all premium features to operate correctly.
+- Restart all Rails, Sidekiq, and Gitaly nodes after applying a new license. This clears the relevant license caches and allows all premium features to operate correctly.
 - Upgrade to a version that is not affected by this issue. The following upgrade paths are available for affected versions:
   - 15.2.5 --> 15.3.5
   - 15.3.0 - 15.3.4 --> 15.3.5
@@ -848,7 +848,7 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
   [the API documentation](../../api/group_members.md).
 - A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) prevents some premium features of GitLab from working correctly if you add a new license. Workarounds for this issue:
 
-  - Restart all Rails, Sidekiq and Gitaly nodes after applying a new license. This clears the relevant license caches and allows all premium features to operate correctly.
+  - Restart all Rails, Sidekiq, and Gitaly nodes after applying a new license. This clears the relevant license caches and allows all premium features to operate correctly.
   - Upgrade to a version that is not affected by this issue. The following upgrade paths are available for affected versions:
     - 15.2.5 --> 15.3.5
     - 15.3.0 - 15.3.4 --> 15.3.5
@@ -858,7 +858,7 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
 
 A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) prevents some premium features of GitLab from working correctly if you add a new license. Workarounds for this issue:
 
-- Restart all Rails, Sidekiq and Gitaly nodes after applying a new license. This clears the relevant license caches and allows all premium features to operate correctly.
+- Restart all Rails, Sidekiq, and Gitaly nodes after applying a new license. This clears the relevant license caches and allows all premium features to operate correctly.
 - Upgrade to a version that is not affected by this issue. The following upgrade paths are available for affected versions:
   - 15.2.5 --> 15.3.5
   - 15.3.0 - 15.3.4 --> 15.3.5
@@ -868,7 +868,7 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
 
 A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) prevents some premium features of GitLab from working correctly if you add a new license. Workarounds for this issue:
 
-- Restart all Rails, Sidekiq and Gitaly nodes after applying a new license. This clears the relevant license caches and allows all premium features to operate correctly.
+- Restart all Rails, Sidekiq, and Gitaly nodes after applying a new license. This clears the relevant license caches and allows all premium features to operate correctly.
 - Upgrade to a version that is not affected by this issue. The following upgrade paths are available for affected versions:
   - 15.2.5 --> 15.3.5
   - 15.3.0 - 15.3.4 --> 15.3.5
@@ -891,7 +891,7 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
 
 - A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) prevents some premium features of GitLab from working correctly if you add a new license. Workarounds for this issue:
 
-  - Restart all Rails, Sidekiq and Gitaly nodes after applying a new license. This clears the relevant license caches and allows all premium features to operate correctly.
+  - Restart all Rails, Sidekiq, and Gitaly nodes after applying a new license. This clears the relevant license caches and allows all premium features to operate correctly.
   - Upgrade to a version that is not affected by this issue. The following upgrade paths are available for affected versions:
     - 15.2.5 --> 15.3.5
     - 15.3.0 - 15.3.4 --> 15.3.5
@@ -952,7 +952,7 @@ should upgrade directly to 15.3.3 to reduce the risk of data loss on secondary s
 
 A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) prevents some premium features of GitLab from working correctly if you add a new license. Workarounds for this issue:
 
-- Restart all Rails, Sidekiq and Gitaly nodes after applying a new license. This clears the relevant license caches and allows all premium features to operate correctly.
+- Restart all Rails, Sidekiq, and Gitaly nodes after applying a new license. This clears the relevant license caches and allows all premium features to operate correctly.
 - Upgrade to a version that is not affected by this issue. The following upgrade paths are available for affected versions:
   - 15.2.5 --> 15.3.5
   - 15.3.0 - 15.3.4 --> 15.3.5

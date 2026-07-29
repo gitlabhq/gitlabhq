@@ -879,7 +879,7 @@ Follow these steps to view details of a fuzzing fault:
 ### Security dashboard
 
 Fuzzing faults show up as vulnerabilities with a severity of Unknown. The security dashboard is a
-good place to get an overview of all the security vulnerabilities in your groups, projects and
+good place to get an overview of all the security vulnerabilities in your groups, projects, and
 pipelines. For more information, see the [security dashboard documentation](../../security_dashboard/_index.md).
 
 ### Interacting with the vulnerabilities

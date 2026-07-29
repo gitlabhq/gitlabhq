@@ -92,7 +92,7 @@ See [CD and Operations Integrations](#cd-and-operations-integrations) below for 
 
 ### CI Integrations
 
-- **Direct CI Integrations That Use Keys, IAM or OIDC/JWT to Authenticate to AWS Services from GitLab Runners**
+- **Direct CI Integrations That Use Keys, IAM, or OIDC/JWT to Authenticate to AWS Services from GitLab Runners**
 - **Amazon CodeGuru Reviewer CI workflows using GitLab CI** - can be done, not yet documented.`[AWS Solution]` `[CI Solution]`
 - [Amazon CodeGuru Secure Scanning using GitLab CI](https://docs.aws.amazon.com/codeguru/latest/security-ug/get-started-gitlab.html) ([06/13/2022](https://aws.amazon.com/about-aws/whats-new/2023/06/amazon-codeguru-security-available-preview/)) `[AWS Solution]` `[CI Solution]`
 

@@ -28,6 +28,27 @@ RSpec.describe UserProjectAccessChangedService, feature_category: :system_access
 
           described_class.new([1, 2]).execute(priority: described_class::LOW_PRIORITY)
         end
+
+        it 'sets the current caller_id as related_class in the context of all the enqueued jobs' do
+          Gitlab::ApplicationContext.with_context(caller_id: 'Foo') do
+            described_class.new([1, 2]).execute(priority: described_class::LOW_PRIORITY)
+          end
+
+          expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker.jobs).to all(
+            include(Labkit::Context.log_key(:related_class) => 'Foo')
+          )
+        end
+
+        it 'tags jobs with the safety-net refresh purpose' do
+          described_class.new([1, 2]).execute(priority: described_class::LOW_PRIORITY)
+
+          expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker.jobs).to all(
+            include(
+              Labkit::Context.log_key(:authorized_projects_refresh_purpose) =>
+                described_class::SAFETY_NET_REFRESH_PURPOSE
+            )
+          )
+        end
       end
 
       it 'does not perform low-priority operation' do
@@ -47,16 +68,6 @@ RSpec.describe UserProjectAccessChangedService, feature_category: :system_access
       )
 
       described_class.new([1, 2]).execute(priority: described_class::MEDIUM_PRIORITY)
-    end
-
-    it 'sets the current caller_id as related_class in the context of all the enqueued jobs' do
-      Gitlab::ApplicationContext.with_context(caller_id: 'Foo') do
-        described_class.new([1, 2]).execute(priority: described_class::LOW_PRIORITY)
-      end
-
-      expect(AuthorizedProjectUpdate::UserRefreshFromReplicaWorker.jobs).to all(
-        include(Labkit::Context.log_key(:related_class) => 'Foo')
-      )
     end
   end
 

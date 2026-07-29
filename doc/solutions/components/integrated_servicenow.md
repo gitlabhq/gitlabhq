@@ -149,7 +149,7 @@ To run a pipeline with custom Change Management:
 1. In GitLab, the pipeline job with the change control function runs.
 
    ![change request creation workflow2](img/snow_cr_creation_workflow2_v17_9.png)
-1. In ServiceNow, a change request is created with custom title, description and any other fields supplied by the pipeline variable values using `servicenowdocker/sndevops` image.
+1. In ServiceNow, a change request is created with custom title, description, and any other fields supplied by the pipeline variable values using `servicenowdocker/sndevops` image.
 
    ![ServiceNow change request created with custom values from pipeline.](img/snow_pipeline_workflow2_v17_9.png)
 1. In GitLab, change request number and other information can be found in the pipeline details. The pipeline job will remain running until the change request is approved, then it will proceed to the next job.

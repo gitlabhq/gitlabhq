@@ -766,7 +766,7 @@ For more information about configuring Gitaly see
 
 ### Install the service
 
-GitLab has always supported SysV init scripts, which are widely supported and portable, but now systemd is the standard for service supervision and is used by all major Linux distributions. You should use native systemd services if you can to benefit from automatic restarts, better sandboxing and resource control.
+GitLab has always supported SysV init scripts, which are widely supported and portable, but now systemd is the standard for service supervision and is used by all major Linux distributions. You should use native systemd services if you can to benefit from automatic restarts, better sandboxing, and resource control.
 
 #### Install systemd units
 

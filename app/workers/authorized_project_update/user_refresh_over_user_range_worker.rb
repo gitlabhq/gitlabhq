@@ -36,8 +36,12 @@ module AuthorizedProjectUpdate
     end
 
     def enqueue_project_authorizations_refresh(user)
-      with_context(user: user) do
-        AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker.perform_async(user.id)
+      Gitlab::ApplicationContext.with_raw_context(
+        authorized_projects_refresh_purpose: UserProjectAccessChangedService::SAFETY_NET_REFRESH_PURPOSE
+      ) do
+        with_context(user: user, related_class: self.class.name) do
+          AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker.perform_async(user.id)
+        end
       end
     end
   end

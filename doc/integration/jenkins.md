@@ -19,7 +19,7 @@ title: Jenkins
 {{< /history >}}
 
 [Jenkins](https://www.jenkins.io/) is an open source automation server that supports
-building, deploying and automating projects.
+building, deploying, and automating projects.
 
 You should use a Jenkins integration with GitLab when:
 

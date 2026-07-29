@@ -66,7 +66,7 @@ For example:
 | `api-read-reporting-dashboard` | Read-only API access for a reporting dashboard |
 | `automation-sync-vulnmapper-staging` | Automation script syncing data in staging |
 
-- Be specific. Avoid generic names like `test`, `mytoken`, `token1`, `GITLAB_API_TOKEN`, `API_TOKEN` or `default`.
+- Be specific. Avoid generic names like `test`, `mytoken`, `token1`, `GITLAB_API_TOKEN`, `API_TOKEN`, or `default`.
   These make it impossible to identify a token's purpose during an audit.
 - Include the consuming system or tool. If a token is used by a specific application,
   script, or integration, include its name. For example: `terraform-state-backend` or
