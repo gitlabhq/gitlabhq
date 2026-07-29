@@ -214464,6 +214464,18 @@
               "deprecationReason": null
             },
             {
+              "name": "duoDependencyBumpBreakingChangesAvailable",
+              "description": "Indicates whether the GitLab Duo resolve dependency bump breaking changes flow can be triggered for the merge request. Introduced in GitLab 19.2: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.2."
+            },
+            {
               "name": "duoWorkflows",
               "description": "Duo Workflow sessions associated with the merge request. Introduced in GitLab 18.10: Status: Experiment.",
               "args": [
