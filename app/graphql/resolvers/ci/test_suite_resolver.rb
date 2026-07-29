@@ -16,12 +16,29 @@ module Resolvers
         description: 'IDs of the builds used to run the test suite.'
 
       def resolve(build_ids:)
-        builds = pipeline.latest_builds.id_in(build_ids).presence
-        return unless builds
+        # rubocop:disable CodeReuse/ActiveRecord -- preload report artifacts and project to avoid N+1 in the per-build access check below
+        builds = pipeline
+          .latest_builds
+          .id_in(build_ids)
+          .preload(:project, job_artifacts: :artifact_report)
+          .to_a
+        # rubocop:enable CodeReuse/ActiveRecord
+
+        # :read_build (authorized above) is not enough to read report content:
+        # the JUnit report artifacts carry their own accessibility, so filter to
+        # the builds whose report the user may actually read.
+        if current_user
+          ::Preloaders::UserMaxAccessLevelInProjectsPreloader
+            .new(builds.map(&:project).uniq, current_user)
+            .execute
+        end
+
+        accessible_builds = builds.select { |build| build.test_report_readable_by?(current_user) }
+        return if accessible_builds.empty?
 
         TestSuiteSerializer
           .new(project: pipeline.project, current_user: @current_user)
-          .represent(load_test_suite_data(builds), details: true)
+          .represent(load_test_suite_data(accessible_builds), details: true)
       end
 
       private

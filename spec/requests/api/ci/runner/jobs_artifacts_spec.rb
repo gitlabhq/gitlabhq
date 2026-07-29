@@ -16,7 +16,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
   let_it_be(:user, freeze: true) { create(:user, developer_of: project) }
 
   let(:job) { create(:ci_build, :pending, user: user, project: project, pipeline: pipeline, runner_id: runner.id) }
-  let(:jwt) { JWT.encode({ 'iss' => 'gitlab-workhorse' }, Gitlab::Workhorse.secret, 'HS256') }
+  let(:jwt) { JWT.encode({ 'iss' => 'gitlab-workhorse', 'iat' => Time.now.to_i }, Gitlab::Workhorse.secret, 'HS256') }
   let(:headers) { { 'GitLab-Workhorse' => '1.0', Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER => jwt } }
   let(:headers_with_token) { headers.merge(API::Ci::Helpers::Runner::JOB_TOKEN_HEADER => job.token) }
   let(:file_upload) { fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif') }
@@ -254,7 +254,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         end
       end
 
-      it 'reject requests that did not go through gitlab-workhorse' do
+      it 'reject requests that did not go through gitlab-workhorse', :verify_workhorse_jwt do
         headers.delete(Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER)
 
         authorize_artifacts
@@ -519,7 +519,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           end
         end
 
-        context 'Is missing GitLab Workhorse token headers' do
+        context 'Is missing GitLab Workhorse token headers', :verify_workhorse_jwt do
           let(:jwt) { JWT.encode({ 'iss' => 'invalid-header' }, Gitlab::Workhorse.secret, 'HS256') }
 
           it 'fails to post artifacts without GitLab-Workhorse' do

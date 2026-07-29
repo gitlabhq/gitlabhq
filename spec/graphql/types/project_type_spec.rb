@@ -1234,8 +1234,23 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       end
     end
 
-    context 'when current_user has limited permission' do
-      let(:current_user) { create(:user) }
+    context 'when current_user has guest permission' do
+      let_it_be(:current_user) { create(:user) }
+
+      before do
+        project.add_guest(current_user)
+      end
+
+      it 'does not leak the import url' do
+        expect(detailed_import_status).to include(
+          'status' => project.import_state.status,
+          'url' => nil
+        )
+      end
+    end
+
+    context 'when current_user has developer permission' do
+      let_it_be(:current_user) { create(:user) }
 
       before do
         project.add_developer(current_user)
@@ -1243,17 +1258,17 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
         project.import_state.save!
       end
 
-      it 'returns detailed information' do
+      it 'returns detailed information but hides the import url' do
         expect(detailed_import_status).to include(
           'status' => project.import_state.status,
-          'url' => project.safe_import_url,
+          'url' => nil,
           'lastError' => nil
         )
       end
     end
 
-    context 'when current_user has permission' do
-      let(:current_user) { create(:user) }
+    context 'when current_user has maintainer permission' do
+      let_it_be(:current_user) { create(:user) }
 
       before do
         project.add_maintainer(current_user)
@@ -1261,7 +1276,25 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
         project.import_state.save!
       end
 
-      it 'returns detailed information' do
+      it 'returns detailed information but hides the import url' do
+        expect(detailed_import_status).to include(
+          'status' => project.import_state.status,
+          'url' => nil,
+          'lastError' => 'Some error'
+        )
+      end
+    end
+
+    context 'when current_user has owner permission' do
+      let_it_be(:current_user) { create(:user) }
+
+      before do
+        project.add_owner(current_user)
+        project.import_state.last_error = 'Some error'
+        project.import_state.save!
+      end
+
+      it 'returns detailed information including the import url' do
         expect(detailed_import_status).to include(
           'status' => project.import_state.status,
           'url' => project.safe_import_url,

@@ -50,7 +50,13 @@ clone-gitlab-repo:
     - .setup:rules:clone-gitlab-repo
   stage: sync
   script:
-    - echo OK
+    # The runner injects CI_JOB_TOKEN into .git/config both as an
+    # authenticated remote URL and as an http.extraheader entry.
+    # Strip both before the artifact is captured so the token is not
+    # exposed in the publicly-browsable artifact.
+    - apk add --no-cache git
+    - git remote set-url origin "${CI_SERVER_URL}/${CI_PROJECT_PATH}.git"
+    - git config --unset-all http.extraheader || true
   variables:
     GIT_STRATEGY: clone
   artifacts:

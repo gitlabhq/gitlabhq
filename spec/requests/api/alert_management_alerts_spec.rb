@@ -36,7 +36,7 @@ RSpec.describe API::AlertManagementAlerts, feature_category: :incident_managemen
       expect(response.media_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
     end
 
-    it 'rejects requests that bypassed gitlab-workhorse' do
+    it 'rejects requests that bypassed gitlab-workhorse', :verify_workhorse_jwt do
       workhorse_headers.delete(Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER)
 
       subject

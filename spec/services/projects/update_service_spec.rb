@@ -302,6 +302,93 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
         end
       end
 
+      context 'when disabling merge request collaboration on access reduction' do
+        let(:project) do
+          create(:project, :public, creator: user, namespace: user.namespace)
+        end
+
+        context 'when visibility is reduced from internal to private' do
+          before do
+            project.update!(visibility: Gitlab::VisibilityLevel::INTERNAL)
+          end
+
+          it 'enqueues the worker' do
+            expect(MergeRequests::DisableCollaborationOnUnauthorizedWorker)
+              .to receive(:perform_async).with(project.id)
+
+            update_project(project, user, visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+          end
+        end
+
+        context 'when visibility is public to private' do
+          it 'enqueues the worker' do
+            expect(MergeRequests::DisableCollaborationOnUnauthorizedWorker)
+              .to receive(:perform_async).with(project.id)
+
+            update_project(project, user, visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+          end
+        end
+
+        context 'when visibility is reduced but stays above private' do
+          it 'does not enqueue the worker' do
+            expect(MergeRequests::DisableCollaborationOnUnauthorizedWorker)
+              .not_to receive(:perform_async)
+
+            update_project(project, user, visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+          end
+        end
+
+        context 'when repository access level is reduced below enabled' do
+          it 'enqueues the worker' do
+            expect(MergeRequests::DisableCollaborationOnUnauthorizedWorker)
+              .to receive(:perform_async).with(project.id)
+
+            update_project(
+              project, user,
+              project_feature_attributes: {
+                repository_access_level: ProjectFeature::PRIVATE,
+                merge_requests_access_level: ProjectFeature::PRIVATE,
+                builds_access_level: ProjectFeature::PRIVATE
+              }
+            )
+          end
+        end
+
+        context 'when merge requests access level is reduced below enabled' do
+          it 'enqueues the worker' do
+            expect(MergeRequests::DisableCollaborationOnUnauthorizedWorker)
+              .to receive(:perform_async).with(project.id)
+
+            update_project(
+              project, user,
+              project_feature_attributes: { merge_requests_access_level: ProjectFeature::PRIVATE }
+            )
+          end
+        end
+
+        context 'when visibility is increased' do
+          let(:project) do
+            create(:project, :private, creator: user, namespace: user.namespace)
+          end
+
+          it 'does not enqueue the worker' do
+            expect(MergeRequests::DisableCollaborationOnUnauthorizedWorker)
+              .not_to receive(:perform_async)
+
+            update_project(project, user, visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+          end
+        end
+
+        context 'when an unrelated attribute changes' do
+          it 'does not enqueue the worker' do
+            expect(MergeRequests::DisableCollaborationOnUnauthorizedWorker)
+              .not_to receive(:perform_async)
+
+            update_project(project, user, description: 'updated description')
+          end
+        end
+      end
+
       context 'when updating shared runners' do
         context 'can enable shared runners' do
           let(:group) { create(:group, shared_runners_enabled: true) }

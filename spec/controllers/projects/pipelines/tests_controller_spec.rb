@@ -144,6 +144,26 @@ RSpec.describe Projects::Pipelines::TestsController, feature_category: :continuo
         end
       end
     end
+
+    context 'when the requested build has maintainer-only artifacts' do
+      let(:pipeline) { create(:ci_pipeline, project: project) }
+      let(:suite_name) { 'test' }
+      let(:guest) { create(:user) }
+      let!(:build) { create(:ci_build, :success, name: 'test', pipeline: pipeline) }
+
+      before do
+        # Reports-only job: maintainer-only JUnit report with no archive, so the
+        # report's own accessibility must gate access (not the build/archive).
+        create(:ci_job_artifact, :junit_with_three_failures, :maintainer_only_access, job: build)
+        sign_in(guest)
+      end
+
+      it 'does not expose maintainer-only test contents to a user without artifact access' do
+        get_tests_show_json([build.id])
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
   end
 
   def get_tests_summary_json

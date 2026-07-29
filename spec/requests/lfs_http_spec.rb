@@ -842,8 +842,10 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
               end
 
               context 'and the request bypassed workhorse' do
-                it 'raises an exception' do
-                  expect { put_authorize(verified: false) }.to raise_error JWT::DecodeError
+                it 'responds with forbidden', :verify_workhorse_jwt do
+                  put_authorize(verified: false)
+
+                  expect(response).to have_gitlab_http_status(:forbidden)
                 end
               end
 
@@ -914,8 +916,10 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
               end
 
               context 'and request to finalize the upload is not sent by gitlab-workhorse' do
-                it 'fails with a JWT decode error' do
-                  expect { put_finalize(verified: false) }.to raise_error(JWT::DecodeError)
+                it 'responds with forbidden', :verify_workhorse_jwt do
+                  put_finalize(verified: false)
+
+                  expect(response).to have_gitlab_http_status(:forbidden)
                 end
               end
 

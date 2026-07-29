@@ -598,12 +598,12 @@ RSpec.describe Projects::EnvironmentsController, feature_category: :continuous_d
     end
 
     context 'with invalid workhorse signature' do
-      it 'aborts with an exception' do
+      it 'returns 403 forbidden' do
         allow(Gitlab::Workhorse).to receive(:verify_api_request!).and_raise(JWT::DecodeError)
 
-        expect { get :terminal_websocket_authorize, params: environment_params }.to raise_error(JWT::DecodeError)
-        # controller tests don't set the response status correctly. It's enough
-        # to check that the action raised an exception
+        get :terminal_websocket_authorize, params: environment_params
+
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
   end

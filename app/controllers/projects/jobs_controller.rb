@@ -12,6 +12,7 @@ class Projects::JobsController < Projects::ApplicationController
   before_action :find_job_as_build, except: [:index, :play, :retry, :show]
   before_action :find_job_as_processable, only: [:play, :retry, :show]
   before_action :authorize_read_build_trace!, only: [:trace, :viewer, :raw]
+  before_action :verify_workhorse_api!, only: :raw
   before_action :authorize_read_build!, except: [:test_report_summary]
   before_action :authorize_read_build_report_results!, only: [:test_report_summary]
   before_action :authorize_update_build!,

@@ -182,6 +182,8 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
   end
 
   describe 'GET /projects/:id/jobs/:job_id/artifacts/:artifact_path' do
+    include_context 'workhorse headers'
+
     context 'when job has artifacts' do
       let(:job) { create(:ci_build, :artifacts, pipeline: pipeline) }
 
@@ -200,7 +202,8 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
 
         let(:request) do
           get api("/projects/#{source_project.id}/jobs/#{job.id}/artifacts/#{artifact}"),
-            params: { job_token: target_job.token }
+            params: { job_token: target_job.token },
+            headers: workhorse_headers
         end
       end
 
@@ -290,7 +293,7 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
 
         it_behaves_like 'authorizing granular token permissions', :download_job_artifact do
           let(:boundary_object) { project }
-          let(:request) { get api("/projects/#{project.id}/jobs/#{job.id}/artifacts/#{artifact}", personal_access_token: pat) }
+          let(:request) { get api("/projects/#{project.id}/jobs/#{job.id}/artifacts/#{artifact}", personal_access_token: pat), headers: workhorse_headers }
         end
       end
     end
@@ -305,11 +308,13 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
 
     def get_artifact_file(artifact_path)
       get api("/projects/#{project.id}/jobs/#{job.id}/" \
-              "artifacts/#{artifact_path}", api_user)
+              "artifacts/#{artifact_path}", api_user), headers: workhorse_headers
     end
   end
 
   describe 'GET /projects/:id/jobs/:job_id/artifacts' do
+    include_context 'workhorse headers'
+
     shared_examples 'downloads artifact' do
       let(:download_headers) do
         { 'Content-Transfer-Encoding' => 'binary',
@@ -336,21 +341,21 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
         context 'when artifacts are stored locally' do
           let(:job) { create(:ci_build, :artifacts, pipeline: pipeline, project: project) }
 
-          subject { get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user) }
+          subject { get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user), headers: workhorse_headers }
 
           context 'authorized user' do
             it_behaves_like 'downloads artifact'
 
             it_behaves_like 'authorizing granular token permissions', :download_job_artifact do
               let(:boundary_object) { project }
-              let(:request) { get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", personal_access_token: pat) }
+              let(:request) { get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", personal_access_token: pat), headers: workhorse_headers }
             end
           end
 
           context 'when job token is used' do
             let(:other_job) { create(:ci_build, :running, user: user) }
 
-            subject(:request) { get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", job_token: other_job.token) }
+            subject(:request) { get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", job_token: other_job.token), headers: workhorse_headers }
 
             before do
               stub_licensed_features(cross_project_pipelines: true)
@@ -406,7 +411,7 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
               let(:origin_project) { other_job.project }
 
               let(:perform_request) do
-                get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", job_token: job_token)
+                get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", job_token: job_token), headers: workhorse_headers
               end
             end
           end
@@ -435,7 +440,7 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
             job.reload
             travel_to fixed_time
 
-            get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
+            get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user), headers: workhorse_headers
           end
 
           context 'when proxy download is enabled' do
@@ -472,7 +477,7 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
               allow(Gitlab::ApplicationContext).to receive(:push).and_call_original
             end
 
-            subject { get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user), env: { REMOTE_ADDR: '18.245.0.1' } }
+            subject { get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user), env: { REMOTE_ADDR: '18.245.0.1' }, headers: workhorse_headers }
 
             it 'returns CDN-signed URL' do
               expect(Gitlab::ApplicationContext).to receive(:push).with(artifact_used_cdn: true).and_call_original
@@ -507,7 +512,7 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
             project.update_column(:visibility_level,
               Gitlab::VisibilityLevel::PUBLIC)
             project.update_column(:public_builds, true)
-            get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
+            get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user), headers: workhorse_headers
           end
 
           it 'rejects access and hides existence of artifacts' do
@@ -516,7 +521,7 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
         end
 
         it 'does not return job artifacts if not uploaded' do
-          get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
+          get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user), headers: workhorse_headers
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
@@ -525,6 +530,8 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
   end
 
   describe 'GET /projects/:id/artifacts/:ref_name/download?job=name' do
+    include_context 'workhorse headers'
+
     let(:api_user) { reporter }
     let(:job) { create(:ci_build, :artifacts, pipeline: pipeline, user: api_user) }
 
@@ -536,7 +543,7 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
     def get_for_ref(ref = pipeline.ref, job_name = job.name, search_recent_successful_pipelines: false)
       params = { job: job_name, search_recent_successful_pipelines: search_recent_successful_pipelines }
 
-      get api("/projects/#{project.id}/jobs/artifacts/#{ref}/download", api_user), params: params
+      get api("/projects/#{project.id}/jobs/artifacts/#{ref}/download", api_user), params: params, headers: workhorse_headers
     end
 
     it_behaves_like 'enforcing job token policies', :read_jobs do
@@ -547,7 +554,8 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
 
       let(:request) do
         get api("/projects/#{source_project.id}/jobs/artifacts/#{pipeline.ref}/download"),
-          params: { job: job.name, job_token: target_job.token }
+          params: { job: job.name, job_token: target_job.token },
+          headers: workhorse_headers
       end
     end
 
@@ -620,7 +628,7 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
           before do
             job.reload
 
-            get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
+            get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user), headers: workhorse_headers
           end
 
           it 'returns location redirect' do
@@ -666,7 +674,7 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
         let(:boundary_object) { project }
         let(:user) { reporter }
         let(:request) do
-          get api("/projects/#{project.id}/jobs/artifacts/#{pipeline.ref}/download", personal_access_token: pat), params: { job: job.name }
+          get api("/projects/#{project.id}/jobs/artifacts/#{pipeline.ref}/download", personal_access_token: pat), params: { job: job.name }, headers: workhorse_headers
         end
 
         before_all do
@@ -729,6 +737,8 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
   end
 
   describe 'GET id/jobs/artifacts/:ref_name/raw/*artifact_path?job=name' do
+    include_context 'workhorse headers'
+
     context 'when job has artifacts' do
       let(:job) { create(:ci_build, :artifacts, pipeline: pipeline, user: api_user) }
       let(:artifact) { 'other_artifacts_0.1.2/another-subdirectory/banana_sample.gif' }
@@ -808,7 +818,8 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
 
             let(:request) do
               get api("/projects/#{source_project.id}/jobs/artifacts/#{pipeline.ref}/raw/#{artifact}"),
-                params: { job: job.name, job_token: target_job.token }
+                params: { job: job.name, job_token: target_job.token },
+                headers: workhorse_headers
             end
           end
         end
@@ -837,7 +848,7 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
         it_behaves_like 'authorizing granular token permissions', :download_job_artifact do
           let(:boundary_object) { project }
           let(:request) do
-            get api("/projects/#{project.id}/jobs/artifacts/#{pipeline.ref}/raw/#{artifact}", personal_access_token: pat), params: { job: job.name }
+            get api("/projects/#{project.id}/jobs/artifacts/#{pipeline.ref}/raw/#{artifact}", personal_access_token: pat), params: { job: job.name }, headers: workhorse_headers
           end
 
           before_all do
@@ -958,7 +969,8 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
 
     def get_artifact_file(artifact_path, ref = pipeline.ref, job_name = job.name, search_recent_successful_pipelines: false)
       get api("/projects/#{project.id}/jobs/artifacts/#{ref}/raw/#{artifact_path}", api_user),
-        params: { job: job_name, search_recent_successful_pipelines: search_recent_successful_pipelines }
+        params: { job: job_name, search_recent_successful_pipelines: search_recent_successful_pipelines },
+        headers: workhorse_headers
     end
   end
 

@@ -22,7 +22,7 @@ module Projects
         suite_endpoint: project_pipeline_test_path(project, pipeline, suite_name: 'suite', format: :json),
         blob_path: project_blob_path(project, pipeline.sha),
         has_test_report: pipeline.has_test_reports?,
-        tests_count: pipeline.test_report_summary.total[:count],
+        tests_count: pipeline.accessible_test_report_summary(current_user).total[:count],
         manual_variables_count: pipeline.variables.count,
         can_read_variables: can?(current_user, :read_pipeline_variable, pipeline).to_s,
         display_pipeline_variables: pipeline.project.ci_display_pipeline_variables?.to_s

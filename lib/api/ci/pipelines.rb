@@ -310,8 +310,8 @@ module API
         get ':id/pipelines/:pipeline_id/test_report', feature_category: :code_testing, urgency: :low do
           authorize! :read_build, pipeline
 
-          cache_action_if(pipeline.has_test_reports?, [user_project, pipeline], expires_in: 2.minutes) do
-            present pipeline.test_reports, with: TestReportEntity, details: true
+          cache_action_if(pipeline.has_test_reports?, [user_project, pipeline, current_user&.id], expires_in: 2.minutes) do
+            present pipeline.accessible_test_reports(current_user), with: TestReportEntity, details: true
           end
         end
 
@@ -333,7 +333,7 @@ module API
         get ':id/pipelines/:pipeline_id/test_report_summary', feature_category: :code_testing do
           authorize! :read_build, pipeline
 
-          present pipeline.test_report_summary, with: TestReportSummaryEntity
+          present pipeline.accessible_test_report_summary(current_user), with: TestReportSummaryEntity
         end
 
         desc 'Delete a pipeline' do

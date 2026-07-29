@@ -1459,7 +1459,7 @@ module Ci
     end
 
     def latest_test_report_builds_in_self_and_project_descendants
-      latest_report_builds_in_self_and_project_descendants(Ci::JobArtifact.of_report_type(:test)).preload(:project, :job_definition, job_artifacts: :artifact_report)
+      latest_report_builds_in_self_and_project_descendants(Ci::JobArtifact.of_report_type(:test)).preload(:project, :job_definition, :job_artifacts_archive, job_artifacts: :artifact_report)
     end
 
     def latest_test_report_builds
@@ -1525,18 +1525,31 @@ module Ci
       complete_and_has_self_or_descendant_reports?(Ci::JobArtifact.of_report_type(:codequality))
     end
 
+    # Full test report summary. For internal callers (e.g. the merge request
+    # test report comparison) that are not scoped to a specific viewer.
     def test_report_summary
       strong_memoize(:test_report_summary) do
-        Gitlab::Ci::Reports::TestReportSummary.new(latest_builds_report_results_in_self_and_descendants)
+        build_test_report_summary(latest_test_report_builds_in_self_and_project_descendants.ids)
       end
     end
 
-    def test_reports
-      Gitlab::Ci::Reports::TestReport.new.tap do |test_reports|
-        latest_test_report_builds_in_self_and_project_descendants.find_each do |build|
-          build.collect_test_reports!(test_reports)
-        end
+    # Test report summary limited to the artifacts `user` may read. `user` may
+    # be `nil` for an anonymous request (filtered to public artifacts only).
+    def accessible_test_report_summary(user)
+      strong_memoize_with(:accessible_test_report_summary, user) do
+        build_test_report_summary(accessible_test_report_builds(user).map(&:id))
       end
+    end
+
+    # Full test report. For internal callers not scoped to a specific viewer.
+    def test_reports
+      collect_test_reports(latest_test_report_builds_in_self_and_project_descendants)
+    end
+
+    # Test report limited to the artifacts `user` may read. `user` may be `nil`
+    # for an anonymous request (filtered to public artifacts only).
+    def accessible_test_reports(user)
+      collect_test_reports(accessible_test_report_builds(user))
     end
 
     def accessibility_reports
@@ -1918,8 +1931,31 @@ module Ci
         .observe({}, age_in_minutes)
     end
 
-    def latest_builds_report_results_in_self_and_descendants
-      Ci::BuildReportResult.where(build_id: latest_test_report_builds_in_self_and_project_descendants.ids)
+    def collect_test_reports(builds)
+      # Batch relations via find_each; iterate arrays (already loaded, e.g. the
+      # access-filtered builds) directly.
+      enumerator = builds.respond_to?(:find_each) ? builds.find_each : builds.each
+
+      Gitlab::Ci::Reports::TestReport.new.tap do |test_reports|
+        enumerator.each { |build| build.collect_test_reports!(test_reports) }
+      end
+    end
+
+    def build_test_report_summary(build_ids)
+      Gitlab::Ci::Reports::TestReportSummary.new(Ci::BuildReportResult.where(build_id: build_ids))
+    end
+
+    # Test-report builds (self and descendants) whose JUnit report `user` may
+    # read. Authorization is per report artifact (see Ci::Build#test_report_readable_by?),
+    # not per build. `user` may be `nil` (anonymous, public only). The user's max
+    # access level is preloaded for the builds' projects so the per-artifact
+    # authorization checks do not trigger a project-authorizations query per build.
+    def accessible_test_report_builds(user)
+      builds = latest_test_report_builds_in_self_and_project_descendants.to_a
+
+      ::Preloaders::UserMaxAccessLevelInProjectsPreloader.new(builds.map(&:project).uniq, user).execute if user
+
+      builds.select { |build| build.test_report_readable_by?(user) }
     end
 
     def age_metric_enabled?

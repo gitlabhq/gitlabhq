@@ -172,6 +172,7 @@
 - :use_sql_query_cache
 - :use_sql_query_cache_for_tracking_db
 - :uses_fast_spec_helper_but_runs_slow
+- :verify_workhorse_jwt
 - :with_active_context_adapter_reset
 - :with_clean_rails_cache
 - :with_cloud_connector

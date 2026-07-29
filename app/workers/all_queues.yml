@@ -4644,6 +4644,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: merge_requests_disable_collaboration_on_unauthorized
+  :worker_name: MergeRequests::DisableCollaborationOnUnauthorizedWorker
+  :feature_category: :code_review_workflow
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: merge_requests_execute_approval_hooks
   :worker_name: MergeRequests::ExecuteApprovalHooksWorker
   :feature_category: :code_review_workflow

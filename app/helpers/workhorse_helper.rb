@@ -2,9 +2,15 @@
 
 # Helpers to send Git blobs, diffs, patches or archives through Workhorse.
 # Workhorse will also serve files when using `send_file`.
+#
+# Every emit point below calls `verify_workhorse_api!` first. This is the
+# canonical chokepoint for the Gitlab-Workhorse-Send-Data response header,
+# so a request that did not transit Workhorse cannot extract Gitaly
+# credentials or pre-signed object storage URLs from these helpers.
 module WorkhorseHelper
   # Send a Git blob through Workhorse
   def send_git_blob(repository, blob, inline: true)
+    verify_workhorse_api!
     headers.store(*Gitlab::Workhorse.send_git_blob(repository, blob))
 
     headers['Content-Disposition'] = content_disposition_for_blob(blob, inline)
@@ -17,6 +23,7 @@ module WorkhorseHelper
 
   # Send a Git diff through Workhorse
   def send_git_diff(repository, diff_refs)
+    verify_workhorse_api!
     headers.store(*Gitlab::Workhorse.send_git_diff(repository, diff_refs))
     headers['Content-Disposition'] = 'inline'
     head :ok
@@ -24,6 +31,7 @@ module WorkhorseHelper
 
   # Send a Git patch through Workhorse
   def send_git_patch(repository, diff_refs)
+    verify_workhorse_api!
     headers.store(*Gitlab::Workhorse.send_git_patch(repository, diff_refs))
     headers['Content-Disposition'] = 'inline'
     head :ok
@@ -31,12 +39,14 @@ module WorkhorseHelper
 
   # Archive a Git repository and send it through Workhorse
   def send_git_archive(repository, **kwargs)
+    verify_workhorse_api!
     headers.store(*Gitlab::Workhorse.send_git_archive(repository, **kwargs))
     head :ok
   end
 
   # Send an entry from artifacts through Workhorse and set safe content type
   def send_artifacts_entry(file, entry)
+    verify_workhorse_api!
     headers.store(*Gitlab::Workhorse.send_artifacts_entry(file, entry))
     headers.store(*Gitlab::Workhorse.detect_content_type)
 
@@ -44,6 +54,7 @@ module WorkhorseHelper
   end
 
   def send_dependency(dependency_headers, url, filename, ssrf_params: {})
+    verify_workhorse_api!
     headers.store(*Gitlab::Workhorse.send_dependency(dependency_headers, url, **ssrf_params))
     headers['Content-Disposition'] =
       ActionDispatch::Http::ContentDisposition.format(disposition: 'attachment', filename: filename)
