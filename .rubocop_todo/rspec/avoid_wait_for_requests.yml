@@ -161,7 +161,6 @@ RSpec/AvoidWaitForRequests:
     - 'ee/spec/support/shared_examples/features/ultimate_trial_callout_shared_examples.rb'
     - 'ee/spec/support/shared_examples/quick_actions/incidents/page_quick_action_shared_examples.rb'
     - 'spec/features/accessibility/create/writing_code_spec.rb'
-    - 'spec/features/admin/admin_abuse_reports_spec.rb'
     - 'spec/features/admin/admin_jobs_spec.rb'
     - 'spec/features/admin/admin_labels_spec.rb'
     - 'spec/features/admin/broadcast_messages_spec.rb'

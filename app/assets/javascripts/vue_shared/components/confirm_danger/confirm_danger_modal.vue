@@ -130,7 +130,6 @@ export default {
     :title="modalTitle"
     :action-primary="actionPrimary"
     :action-cancel="actionCancel"
-    size="sm"
     @primary="$emit('confirm', $event)"
     @change="$emit('change', $event)"
     @shown="focusConfirmInput()"
@@ -152,12 +151,13 @@ export default {
         {{ additionalInformation }}
       </p>
     </slot>
-    <div class="gl-flex gl-flex-wrap">
-      <label data-testid="confirm-danger-phrase" for="confirm_name_input" class="gl-mb-1 gl-w-full">
-        <gl-sprintf :message="$options.i18n.CONFIRM_DANGER_PHRASE_TEXT" />
-      </label>
-      <code class="gl-max-w-fit gl-whitespace-pre-wrap">{{ phrase }}</code>
-    </div>
+    <label data-testid="confirm-danger-phrase" for="confirm_name_input" class="gl-mb-3 gl-block">
+      <gl-sprintf :message="$options.i18n.CONFIRM_DANGER_PHRASE_TEXT">
+        <template #phrase>
+          <code class="gl-whitespace-pre-wrap">{{ phrase }}</code>
+        </template>
+      </gl-sprintf>
+    </label>
     <gl-form-group :state="isValid" class="gl-mb-0">
       <gl-form-input
         id="confirm_name_input"
@@ -166,6 +166,7 @@ export default {
         class="form-control"
         data-testid="confirm-danger-field"
         type="text"
+        autocomplete="off"
       />
     </gl-form-group>
     <slot name="modal-footer"></slot>

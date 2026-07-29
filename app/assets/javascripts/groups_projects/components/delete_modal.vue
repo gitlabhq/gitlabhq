@@ -1,5 +1,5 @@
 <script>
-import { GlFormInput, GlModal, GlSprintf } from '@gitlab/ui';
+import { GlFormGroup, GlFormInput, GlModal, GlSprintf } from '@gitlab/ui';
 import { uniqueId } from 'lodash-es';
 import { __, s__, sprintf } from '~/locale';
 import { RESOURCE_TYPES } from '~/groups_projects/constants';
@@ -33,6 +33,7 @@ export default {
   components: {
     GlModal,
     GlSprintf,
+    GlFormGroup,
     GlFormInput,
     PermanentDeletionConfirmCheckbox,
   },
@@ -185,19 +186,24 @@ export default {
           )
         }}
       </p>
-      <p class="gl-mb-1 gl-font-bold">{{ __('Enter the following to confirm:') }}</p>
-      <p>
-        <code class="gl-whitespace-pre-wrap">{{ confirmPhrase }}</code>
-      </p>
+      <gl-form-group class="gl-mb-5" label-for="confirm_name_input">
+        <template #label>
+          <gl-sprintf :message="__('Enter the following to confirm: %{phrase}')">
+            <template #phrase>
+              <code class="gl-whitespace-pre-wrap">{{ confirmPhrase }}</code>
+            </template>
+          </gl-sprintf>
+        </template>
 
-      <gl-form-input
-        id="confirm_name_input"
-        v-model="userInput"
-        class="gl-mb-5"
-        name="confirm_name_input"
-        type="text"
-        data-testid="confirm-name-field"
-      />
+        <gl-form-input
+          id="confirm_name_input"
+          v-model="userInput"
+          name="confirm_name_input"
+          type="text"
+          autocomplete="off"
+          data-testid="confirm-name-field"
+        />
+      </gl-form-group>
 
       <permanent-deletion-confirm-checkbox
         v-if="checkboxRequired"

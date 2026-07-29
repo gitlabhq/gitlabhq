@@ -33,40 +33,38 @@ RSpec.describe Mcp::Tools::Search::SearchService, feature_category: :mcp_server 
   describe '#input_schema' do
     let(:schema) { service.input_schema }
 
-    it 'returns a valid schema structure' do
-      expect(schema[:type]).to eq('object')
-      expect(schema[:required]).to eq(%w[scope search])
-      expect(schema[:additionalProperties]).to be false
-    end
-
-    it 'includes all expected properties' do
-      properties = schema[:properties]
-
-      expect(properties).to have_key(:scope)
-      expect(properties).to have_key(:search)
-      expect(properties).to have_key(:group_id)
-      expect(properties).to have_key(:project_id)
-      expect(properties).to have_key(:state)
-      expect(properties).to have_key(:confidential)
-      expect(properties).to have_key(:order_by)
-      expect(properties).to have_key(:sort)
-      expect(properties).to have_key(:per_page)
-      expect(properties).to have_key(:page)
-    end
-
-    it 'has correct property types' do
-      properties = schema[:properties]
-
-      expect(properties[:scope][:type]).to eq('string')
-      expect(properties[:search][:type]).to eq('string')
-      expect(properties[:group_id][:type]).to eq('string')
-      expect(properties[:project_id][:type]).to eq('string')
-      expect(properties[:state][:type]).to eq('string')
-      expect(properties[:confidential][:type]).to eq('boolean')
-      expect(properties[:order_by][:type]).to eq('string')
-      expect(properties[:sort][:type]).to eq('string')
-      expect(properties[:per_page][:type]).to eq('integer')
-      expect(properties[:page][:type]).to eq('integer')
+    it 'exposes the expected input schema', unless: Gitlab.ee? do
+      expect(schema).to match(
+        type: 'object',
+        additionalProperties: false,
+        required: %w[scope search],
+        properties: {
+          scope: {
+            type: 'string',
+            description: a_string_including(
+              'GitLab instance: projects, work_items, merge_requests, milestones, users, snippet_titles',
+              'Group: projects, work_items, merge_requests, milestones, users',
+              'Project: blobs, work_items, merge_requests, wiki_blobs, commits, notes, milestones, users',
+              'Use "work_items" to search for issues, tasks, epics, and other work items'
+            )
+          },
+          search: { type: 'string', description: 'The term to search for' },
+          group_id: { type: 'string', description: a_string_including('within a group') },
+          project_id: { type: 'string', description: a_string_including('within a project') },
+          state: {
+            type: 'string',
+            description: a_string_including(
+              'Work items:',
+              'Only applies to work_items and merge_requests scopes.'
+            )
+          },
+          confidential: { type: 'boolean', description: a_string_including('confidentiality') },
+          order_by: { type: 'string', description: a_string_including('created_at') },
+          sort: { type: 'string', description: a_string_including('asc, desc') },
+          per_page: { type: 'integer', minimum: 1, description: a_string_including('per page') },
+          page: { type: 'integer', minimum: 1, description: a_string_including('Page number') }
+        }
+      )
     end
   end
 

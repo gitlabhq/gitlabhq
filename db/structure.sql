@@ -39363,6 +39363,9 @@ ALTER TABLE epic_issues
 ALTER TABLE web_hook_logs_daily
     ADD CONSTRAINT check_19dc80d658 CHECK ((num_nonnulls(group_id, organization_id, project_id) = 1)) NOT VALID;
 
+ALTER TABLE push_rules
+    ADD CONSTRAINT check_1d23f0a102 CHECK ((project_id IS NOT NULL)) NOT VALID;
+
 ALTER TABLE workspaces
     ADD CONSTRAINT check_2a89035b04 CHECK ((personal_access_token_id IS NOT NULL)) NOT VALID;
 

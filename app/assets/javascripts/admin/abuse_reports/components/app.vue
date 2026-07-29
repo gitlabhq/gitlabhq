@@ -40,7 +40,7 @@ export default {
     <filtered-search-bar />
 
     <empty-result v-if="abuseReports.length == 0" />
-    <ul v-else class="gl-pl-0">
+    <ul v-else class="gl-pl-0" data-testid="abuse-reports-list">
       <li v-for="(report, index) in abuseReports" :key="index" class="gl-list-none">
         <abuse-report-row :report="report" />
       </li>

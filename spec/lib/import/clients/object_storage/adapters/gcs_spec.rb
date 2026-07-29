@@ -72,6 +72,31 @@ RSpec.describe Import::Clients::ObjectStorage::Adapters::Gcs, feature_category: 
       end
     end
 
+    context 'when the provider is :gcs_application_default' do
+      let(:provider) { :gcs_application_default }
+      let(:credentials) { { google_project: 'gitlab-project' } }
+
+      before do
+        allow_next_instance_of(Fog::Storage) do |storage|
+          allow(storage).to receive(:get_bucket).with(bucket).and_return(Google::Apis::StorageV1::Bucket.new)
+        end
+      end
+
+      it 'builds a fog-google connection with application default credentials explicitly enabled' do
+        fog_storage = instance_double(Fog::Google::StorageJSON::Mock, get_bucket: Google::Apis::StorageV1::Bucket.new)
+        allow(Fog::Storage).to receive(:new).and_return(fog_storage)
+
+        adapter.test_connection!
+
+        expect(Fog::Storage).to have_received(:new).with(
+          provider: 'Google',
+          google_project: 'gitlab-project',
+          google_application_default: true,
+          universe_domain: 'googleapis.com'
+        )
+      end
+    end
+
     context 'when the bucket is not accessible' do
       before do
         allow_next_instance_of(Fog::Storage) do |storage|

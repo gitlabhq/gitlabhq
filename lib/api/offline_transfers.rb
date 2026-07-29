@@ -13,7 +13,8 @@ module API
       aws_s3_configuration: :aws,
       s3_compatible_configuration: :s3_compatible,
       gcs_configuration: :gcs,
-      gcs_hmac_configuration: :gcs_hmac
+      gcs_hmac_configuration: :gcs_hmac,
+      gcs_adc_configuration: :gcs_application_default
     }.freeze
 
     helpers do
@@ -48,6 +49,11 @@ module API
           requires :region, type: String, desc: 'GCS bucket region'
           optional :path_style, type: Boolean, default: true,
             desc: 'Use path-style URLs instead of virtual-hosted-style URLs'
+        end
+        optional :gcs_adc_configuration, type: Hash,
+          desc: 'Google Cloud Storage configuration using Application Default Credentials. ' \
+            'Available on GitLab Self-Managed or GitLab Dedicated, and must be enabled by an administrator.' do
+          requires :google_project, type: String, desc: 'Google Cloud project ID'
         end
         exactly_one_of(*OBJECT_STORAGE_PROVIDERS.keys)
       end

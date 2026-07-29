@@ -45,21 +45,21 @@ module Mcp
         def properties
           state_description = <<~DESC.strip
             Filter results by state. Available states:
-            - Issues: #{Issue.available_states.keys.join(', ')}
-            - Merge requests: #{MergeRequest.available_states.keys.join(', ')})
+            - Work items: #{Issue.available_states.keys.join(', ')}
+            - Merge requests: #{MergeRequest.available_states.keys.join(', ')}
 
-            Only applies to issues and merge_requests scopes.
+            Only applies to work_items and merge_requests scopes.
           DESC
 
           scope_description = <<~DESC.strip
             Specify the type of content to search for. Available content types vary by search context:
 
-            - GitLab instance: #{::Search::Scope.global.join(', ')}
-            - Group: #{::Search::Scope.group.join(', ')}
-            - Project: #{::Search::Scope.project.join(', ')}
+            - GitLab instance: #{available_search_scopes(:global).join(', ')}
+            - Group: #{available_search_scopes(:group).join(', ')}
+            - Project: #{available_search_scopes(:project).join(', ')}
 
             Examples:
-            - Use "issues" to search for issues
+            - Use "work_items" to search for issues, tasks, epics, and other work items
             - Use "merge_requests" to search for merge requests
             - Use "blobs" to search code files
             - Use "notes" to search comments across different content
@@ -103,7 +103,8 @@ module Mcp
             },
             confidential: {
               type: 'boolean',
-              description: 'Filter results by confidentiality. Available for issues scope; other scopes are ignored.'
+              description: 'Filter results by confidentiality. Available for work_items scope; ' \
+                'other scopes are ignored.'
             },
             order_by: {
               type: 'string',
@@ -165,6 +166,10 @@ module Mcp
           strong_memoize_with(:search_level, args) do
             ::Search::Level.new(args)
           end
+        end
+
+        def available_search_scopes(context)
+          ::Search::Scopes.available_for_context(context: context, include_api_only: false)
         end
 
         # overridden in EE

@@ -626,6 +626,7 @@ module ApplicationSettingsHelper
       :silent_admin_exports_enabled,
       :allow_contribution_mapping_to_admins,
       :allow_s3_compatible_storage_for_offline_transfer,
+      :allow_application_default_credentials_for_offline_transfer,
       :allow_runner_registration_token,
       :valid_runner_registrars,
       :user_defaults_to_private_profile,

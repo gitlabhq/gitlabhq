@@ -79173,6 +79173,17 @@ definitions:
         - google_storage_access_key_id
         - google_storage_secret_access_key
         - region
+      gcs_adc_configuration:
+        type: object
+        description: Google Cloud Storage configuration using Application Default
+          Credentials. Available on GitLab Self-Managed or GitLab Dedicated, and must
+          be enabled by an administrator.
+        properties:
+          google_project:
+            type: string
+            description: Google Cloud project ID
+        required:
+        - google_project
       entities:
         type: array
         description: List of entities to export
@@ -79277,6 +79288,17 @@ definitions:
         - google_storage_access_key_id
         - google_storage_secret_access_key
         - region
+      gcs_adc_configuration:
+        type: object
+        description: Google Cloud Storage configuration using Application Default
+          Credentials. Available on GitLab Self-Managed or GitLab Dedicated, and must
+          be enabled by an administrator.
+        properties:
+          google_project:
+            type: string
+            description: Google Cloud project ID
+        required:
+        - google_project
       export_prefix:
         type: string
         description: Prefix of the export within the bucket

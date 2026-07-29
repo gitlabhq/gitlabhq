@@ -326,6 +326,51 @@ RSpec.describe Import::Offline::Exports::CreateService, :aggregate_failures, fea
       end
     end
 
+    context 'when using Application Default Credentials' do
+      let(:portable_params) { [{ full_path: groups[0].full_path }] }
+      let(:storage_config) do
+        {
+          provider: :gcs_application_default,
+          bucket: 'gitlab-offline-transfer-exports',
+          credentials: { google_project: 'my-project' }
+        }
+      end
+
+      before do
+        stub_application_setting(allow_application_default_credentials_for_offline_transfer: true)
+      end
+
+      context 'when the user is not an administrator' do
+        it_behaves_like 'an error response',
+          error: 'Only administrators can use Application Default Credentials for offline transfer.'
+
+        it 'does not connect to object storage' do
+          expect(Import::Clients::ObjectStorage).not_to receive(:new)
+
+          result
+        end
+      end
+
+      context 'when the user is an administrator' do
+        before do
+          allow(current_user).to receive(:can_admin_all_resources?).and_return(true)
+
+          client_double = instance_double(Import::Clients::ObjectStorage, test_connection!: true)
+          allow(Import::Clients::ObjectStorage).to receive(:new).and_return(client_double)
+        end
+
+        it_behaves_like 'a success response'
+
+        context 'when Application Default Credentials are not enabled for offline transfer' do
+          before do
+            stub_application_setting(allow_application_default_credentials_for_offline_transfer: false)
+          end
+
+          it_behaves_like 'an error response', error: 'Provider is not included in the list'
+        end
+      end
+    end
+
     context 'when offline_transfer_exports is disabled' do
       before do
         stub_feature_flags(offline_transfer_exports: false)

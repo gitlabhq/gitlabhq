@@ -107,8 +107,7 @@ module Search
         label: -> { _('Snippets') },
         sort: 11,
         availability: {
-          global: %i[advanced basic],
-          group: %i[advanced basic]
+          global: %i[advanced basic]
         }
       }
     }.freeze
@@ -149,14 +148,15 @@ module Search
       # @param context [Symbol] :global, :group, or :project
       # @param container [Project, Group, nil] The container being searched (optional)
       # @param requested_search_type [String, Symbol] User's requested search type (optional)
+      # @param include_api_only [Boolean] Whether to include API-only backward compatibility scopes
       # @return [Array<String>] Array of scope names available for the context
-      def available_for_context(context:, container: nil, requested_search_type: nil)
+      def available_for_context(context:, container: nil, requested_search_type: nil, include_api_only: true)
         # Normalize invalid search types to nil
         # This allows scope determination to work even with invalid search_type params
         # The actual validation of search_type happens later via search_type_errors
         requested_search_type = normalize_search_type(requested_search_type)
 
-        scope_definitions.select do |scope, definition|
+        scope_definitions(include_api_only: include_api_only).select do |scope, definition|
           valid_definition?(scope, definition, context, container, requested_search_type)
         end.keys.map(&:to_s)
       end

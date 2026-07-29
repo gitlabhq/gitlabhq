@@ -33535,13 +33535,16 @@ Fields:
 | <a id="aiusermetrics-codereview"></a>`codeReview` | [`codeReviewUserMetrics`](#codereviewusermetrics) | Code Review metrics for the user. |
 | <a id="aiusermetrics-codesuggestions"></a>`codeSuggestions` | [`codeSuggestionsUserMetrics`](#codesuggestionsusermetrics) | Code Suggestions metrics for the user. |
 | <a id="aiusermetrics-codesuggestionsacceptedcount"></a>`codeSuggestionsAcceptedCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | Deprecated in GitLab 18.7. Use `codeSuggestions.codeSuggestionAcceptedInIdeEventCount` instead. |
+| <a id="aiusermetrics-composemergerequestdescription"></a>`composeMergeRequestDescription` | [`composeMergeRequestDescriptionUserMetrics`](#composemergerequestdescriptionusermetrics) | Compose Merge Request Description metrics for the user. |
 | <a id="aiusermetrics-duochatinteractionscount"></a>`duoChatInteractionsCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | Deprecated in GitLab 18.7. Use `chat.requestDuoChatResponseEventCount` instead. |
 | <a id="aiusermetrics-duomessaging"></a>`duoMessaging` | [`duoMessagingUserMetrics`](#duomessagingusermetrics) | Duo Messaging metrics for the user. |
 | <a id="aiusermetrics-duoworkflow"></a>`duoWorkflow` | [`duoWorkflowUserMetrics`](#duoworkflowusermetrics) | Duo Workflow metrics for the user. |
+| <a id="aiusermetrics-explainvulnerability"></a>`explainVulnerability` | [`explainVulnerabilityUserMetrics`](#explainvulnerabilityusermetrics) | Explain Vulnerability metrics for the user. |
 | <a id="aiusermetrics-fixpipeline"></a>`fixPipeline` | [`fixPipelineUserMetrics`](#fixpipelineusermetrics) | Fix Pipeline metrics for the user. |
 | <a id="aiusermetrics-generatemergecommitmessage"></a>`generateMergeCommitMessage` | [`generateMergeCommitMessageUserMetrics`](#generatemergecommitmessageusermetrics) | Generate Merge Commit Message metrics for the user. |
 | <a id="aiusermetrics-lastduoactivityon"></a>`lastDuoActivityOn` | [`Date`](#date) | Date of the last Duo activity across all features for the user. |
 | <a id="aiusermetrics-mcp"></a>`mcp` | [`mcpUserMetrics`](#mcpusermetrics) | Mcp metrics for the user. |
+| <a id="aiusermetrics-requestduovulnerabilityresolution"></a>`requestDuoVulnerabilityResolution` | [`requestDuoVulnerabilityResolutionUserMetrics`](#requestduovulnerabilityresolutionusermetrics) | Request Duo Vulnerability Resolution metrics for the user. |
 | <a id="aiusermetrics-summarizenewmergerequest"></a>`summarizeNewMergeRequest` | [`summarizeNewMergeRequestUserMetrics`](#summarizenewmergerequestusermetrics) | Summarize New Merge Request metrics for the user. |
 | <a id="aiusermetrics-summarizereview"></a>`summarizeReview` | [`summarizeReviewUserMetrics`](#summarizereviewusermetrics) | Summarize Review metrics for the user. |
 | <a id="aiusermetrics-totaleventcount"></a>`totalEventCount` | [`Int`](#int) | Total count of all tracked events for the user. |
@@ -35607,7 +35610,7 @@ Fields:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="cdenvironmentapplication-application"></a>`application` {{< icon name="warning-solid" >}} | [`CdApplication`](#cdapplication) | Introduced in GitLab 19.3. Status: Experiment. Application with services in the environment. |
-| <a id="cdenvironmentapplication-services"></a>`services` {{< icon name="warning-solid" >}} | [`CdServiceConnection`](#cdserviceconnection) | Introduced in GitLab 19.3. Status: Experiment. Application's services present in the environment. |
+| <a id="cdenvironmentapplication-serviceenvironmenthealths"></a>`serviceEnvironmentHealths` {{< icon name="warning-solid" >}} | [`CdServiceEnvironmentHealthConnection`](#cdserviceenvironmenthealthconnection) | Introduced in GitLab 19.3. Status: Experiment. Observed health of the application's services in the environment, each with the versions currently deployed there. |
 | <a id="cdenvironmentapplication-servicescount"></a>`servicesCount` {{< icon name="warning-solid" >}} | [`Int!`](#int) | Introduced in GitLab 19.3. Status: Experiment. Number of the application's services in the environment. |
 
 ### `CdEnvironmentDriverBinding`
@@ -63529,6 +63532,18 @@ Fields:
 | <a id="codesuggestionsusermetrics-lastduoactivityon"></a>`lastDuoActivityOn` | [`Date`](#date) | Date of the last Code Suggestions activity for the user. |
 | <a id="codesuggestionsusermetrics-totaleventcount"></a>`totalEventCount` | [`Int`](#int) | Total count of all Code Suggestions events for the user. |
 
+### `composeMergeRequestDescriptionUserMetrics`
+
+Compose Merge Request Description user metrics for a user. Requires ClickHouse. Premium and Ultimate with GitLab Duo Enterprise only.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="composemergerequestdescriptionusermetrics-composemergerequestdescriptioneventcount"></a>`composeMergeRequestDescriptionEventCount` | [`Int`](#int) | Total count of `compose_merge_request_description` event. |
+| <a id="composemergerequestdescriptionusermetrics-lastduoactivityon"></a>`lastDuoActivityOn` | [`Date`](#date) | Date of the last Compose Merge Request Description activity for the user. |
+| <a id="composemergerequestdescriptionusermetrics-totaleventcount"></a>`totalEventCount` | [`Int`](#int) | Total count of all Compose Merge Request Description events for the user. |
+
 ### `duoChatMetrics`
 
 Requires ClickHouse. Premium and Ultimate only.
@@ -63562,6 +63577,18 @@ Fields:
 | <a id="duoworkflowusermetrics-duoworkflowworkloadcompletedeventcount"></a>`duoWorkflowWorkloadCompletedEventCount` | [`Int`](#int) | Total count of `duo_workflow_workload_completed` event. |
 | <a id="duoworkflowusermetrics-lastduoactivityon"></a>`lastDuoActivityOn` | [`Date`](#date) | Date of the last Duo Workflow activity for the user. |
 | <a id="duoworkflowusermetrics-totaleventcount"></a>`totalEventCount` | [`Int`](#int) | Total count of all Duo Workflow events for the user. |
+
+### `explainVulnerabilityUserMetrics`
+
+Explain Vulnerability user metrics for a user. Requires ClickHouse. Premium and Ultimate with GitLab Duo Enterprise only.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="explainvulnerabilityusermetrics-explainvulnerabilityeventcount"></a>`explainVulnerabilityEventCount` | [`Int`](#int) | Total count of `explain_vulnerability` event. |
+| <a id="explainvulnerabilityusermetrics-lastduoactivityon"></a>`lastDuoActivityOn` | [`Date`](#date) | Date of the last Explain Vulnerability activity for the user. |
+| <a id="explainvulnerabilityusermetrics-totaleventcount"></a>`totalEventCount` | [`Int`](#int) | Total count of all Explain Vulnerability events for the user. |
 
 ### `fixPipelineUserMetrics`
 
@@ -63611,6 +63638,18 @@ Fields:
 | <a id="mcpusermetrics-lastduoactivityon"></a>`lastDuoActivityOn` | [`Date`](#date) | Date of the last MCP activity for the user. |
 | <a id="mcpusermetrics-startmcptoolcalleventcount"></a>`startMcpToolCallEventCount` | [`Int`](#int) | Total count of `start_mcp_tool_call` event. |
 | <a id="mcpusermetrics-totaleventcount"></a>`totalEventCount` | [`Int`](#int) | Total count of all MCP events for the user. |
+
+### `requestDuoVulnerabilityResolutionUserMetrics`
+
+Request Duo Vulnerability Resolution user metrics for a user. Requires ClickHouse. Premium and Ultimate with GitLab Duo Enterprise only.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="requestduovulnerabilityresolutionusermetrics-lastduoactivityon"></a>`lastDuoActivityOn` | [`Date`](#date) | Date of the last Request Duo Vulnerability Resolution activity for the user. |
+| <a id="requestduovulnerabilityresolutionusermetrics-requestduovulnerabilityresolutioneventcount"></a>`requestDuoVulnerabilityResolutionEventCount` | [`Int`](#int) | Total count of `request_duo_vulnerability_resolution` event. |
+| <a id="requestduovulnerabilityresolutionusermetrics-totaleventcount"></a>`totalEventCount` | [`Int`](#int) | Total count of all Request Duo Vulnerability Resolution events for the user. |
 
 ### `summarizeNewMergeRequestUserMetrics`
 
@@ -64093,9 +64132,11 @@ Type of AI usage event.
 | <a id="aiusageeventtype-code_suggestion_direct_access_token_refresh"></a>`CODE_SUGGESTION_DIRECT_ACCESS_TOKEN_REFRESH` | Code Suggestion token was refreshed. Old data only. |
 | <a id="aiusageeventtype-code_suggestion_rejected_in_ide"></a>`CODE_SUGGESTION_REJECTED_IN_IDE` | Code Suggestion was rejected in IDE. |
 | <a id="aiusageeventtype-code_suggestion_shown_in_ide"></a>`CODE_SUGGESTION_SHOWN_IN_IDE` | Code Suggestion was shown in IDE. |
+| <a id="aiusageeventtype-compose_merge_request_description"></a>`COMPOSE_MERGE_REQUEST_DESCRIPTION` | A merge request description was composed with GitLab Duo. |
 | <a id="aiusageeventtype-duo_workflow_workload_completed"></a>`DUO_WORKFLOW_WORKLOAD_COMPLETED` | Duo Workflow workload was completed. |
 | <a id="aiusageeventtype-encounter_duo_code_review_error_during_review"></a>`ENCOUNTER_DUO_CODE_REVIEW_ERROR_DURING_REVIEW` | Duo Code Review encountered an error. |
 | <a id="aiusageeventtype-excluded_files_from_duo_code_review"></a>`EXCLUDED_FILES_FROM_DUO_CODE_REVIEW` | Files were excluded from Duo Code Review. |
+| <a id="aiusageeventtype-explain_vulnerability"></a>`EXPLAIN_VULNERABILITY` | An AI explanation of a vulnerability was requested with GitLab Duo. |
 | <a id="aiusageeventtype-find_nothing_to_review_duo_code_review_on_mr"></a>`FIND_NOTHING_TO_REVIEW_DUO_CODE_REVIEW_ON_MR` | Duo Code Review found nothing to review on MR. |
 | <a id="aiusageeventtype-find_no_issues_duo_code_review_after_review"></a>`FIND_NO_ISSUES_DUO_CODE_REVIEW_AFTER_REVIEW` | Duo Code Review found no issues after review. |
 | <a id="aiusageeventtype-finish_mcp_tool_call"></a>`FINISH_MCP_TOOL_CALL` | MCP tool call was finished. |
@@ -64107,6 +64148,7 @@ Type of AI usage event.
 | <a id="aiusageeventtype-react_thumbs_down_on_duo_code_review_comment"></a>`REACT_THUMBS_DOWN_ON_DUO_CODE_REVIEW_COMMENT` | User gave thumbs-down reaction to Duo Code Review comment. |
 | <a id="aiusageeventtype-react_thumbs_up_on_duo_code_review_comment"></a>`REACT_THUMBS_UP_ON_DUO_CODE_REVIEW_COMMENT` | User gave thumbs-up reaction to Duo Code Review comment. |
 | <a id="aiusageeventtype-request_duo_chat_response"></a>`REQUEST_DUO_CHAT_RESPONSE` | Duo Chat response was requested. |
+| <a id="aiusageeventtype-request_duo_vulnerability_resolution"></a>`REQUEST_DUO_VULNERABILITY_RESOLUTION` | An AI vulnerability resolution was requested with GitLab Duo. |
 | <a id="aiusageeventtype-request_review_duo_code_review_on_mr_by_author"></a>`REQUEST_REVIEW_DUO_CODE_REVIEW_ON_MR_BY_AUTHOR` | MR author requested Duo Code Review. |
 | <a id="aiusageeventtype-request_review_duo_code_review_on_mr_by_non_author"></a>`REQUEST_REVIEW_DUO_CODE_REVIEW_ON_MR_BY_NON_AUTHOR` | Non-author requested Duo Code Review on MR. |
 | <a id="aiusageeventtype-restore_ai_catalog_item"></a>`RESTORE_AI_CATALOG_ITEM` | AI Catalog item version was restored as new latest version. |
@@ -64160,6 +64202,10 @@ Values for sorting AI user metrics.
 | <a id="aiusermetricssort-code_suggestion_rejected_in_ide_desc"></a>`CODE_SUGGESTION_REJECTED_IN_IDE_DESC` | Code Suggestion Rejected In Ide event count in descending order. |
 | <a id="aiusermetricssort-code_suggestion_shown_in_ide_asc"></a>`CODE_SUGGESTION_SHOWN_IN_IDE_ASC` | Code Suggestion Shown In Ide event count in ascending order. |
 | <a id="aiusermetricssort-code_suggestion_shown_in_ide_desc"></a>`CODE_SUGGESTION_SHOWN_IN_IDE_DESC` | Code Suggestion Shown In Ide event count in descending order. |
+| <a id="aiusermetricssort-compose_merge_request_description_asc"></a>`COMPOSE_MERGE_REQUEST_DESCRIPTION_ASC` | Compose Merge Request Description event count in ascending order. |
+| <a id="aiusermetricssort-compose_merge_request_description_desc"></a>`COMPOSE_MERGE_REQUEST_DESCRIPTION_DESC` | Compose Merge Request Description event count in descending order. |
+| <a id="aiusermetricssort-compose_merge_request_description_total_count_asc"></a>`COMPOSE_MERGE_REQUEST_DESCRIPTION_TOTAL_COUNT_ASC` | Compose Merge Request Description total event count in ascending order. |
+| <a id="aiusermetricssort-compose_merge_request_description_total_count_desc"></a>`COMPOSE_MERGE_REQUEST_DESCRIPTION_TOTAL_COUNT_DESC` | Compose Merge Request Description total event count in descending order. |
 | <a id="aiusermetricssort-duo_messaging_total_count_asc"></a>`DUO_MESSAGING_TOTAL_COUNT_ASC` | Duo Messaging total event count in ascending order. |
 | <a id="aiusermetricssort-duo_messaging_total_count_desc"></a>`DUO_MESSAGING_TOTAL_COUNT_DESC` | Duo Messaging total event count in descending order. |
 | <a id="aiusermetricssort-duo_workflow_total_count_asc"></a>`DUO_WORKFLOW_TOTAL_COUNT_ASC` | Duo Workflow total event count in ascending order. |
@@ -64170,6 +64216,10 @@ Values for sorting AI user metrics.
 | <a id="aiusermetricssort-encounter_duo_code_review_error_during_review_desc"></a>`ENCOUNTER_DUO_CODE_REVIEW_ERROR_DURING_REVIEW_DESC` | Encounter Duo Code Review Error During Review event count in descending order. |
 | <a id="aiusermetricssort-excluded_files_from_duo_code_review_asc"></a>`EXCLUDED_FILES_FROM_DUO_CODE_REVIEW_ASC` | Excluded Files From Duo Code Review event count in ascending order. |
 | <a id="aiusermetricssort-excluded_files_from_duo_code_review_desc"></a>`EXCLUDED_FILES_FROM_DUO_CODE_REVIEW_DESC` | Excluded Files From Duo Code Review event count in descending order. |
+| <a id="aiusermetricssort-explain_vulnerability_asc"></a>`EXPLAIN_VULNERABILITY_ASC` | Explain Vulnerability event count in ascending order. |
+| <a id="aiusermetricssort-explain_vulnerability_desc"></a>`EXPLAIN_VULNERABILITY_DESC` | Explain Vulnerability event count in descending order. |
+| <a id="aiusermetricssort-explain_vulnerability_total_count_asc"></a>`EXPLAIN_VULNERABILITY_TOTAL_COUNT_ASC` | Explain Vulnerability total event count in ascending order. |
+| <a id="aiusermetricssort-explain_vulnerability_total_count_desc"></a>`EXPLAIN_VULNERABILITY_TOTAL_COUNT_DESC` | Explain Vulnerability total event count in descending order. |
 | <a id="aiusermetricssort-find_nothing_to_review_duo_code_review_on_mr_asc"></a>`FIND_NOTHING_TO_REVIEW_DUO_CODE_REVIEW_ON_MR_ASC` | Find Nothing To Review Duo Code Review On Mr event count in ascending order. |
 | <a id="aiusermetricssort-find_nothing_to_review_duo_code_review_on_mr_desc"></a>`FIND_NOTHING_TO_REVIEW_DUO_CODE_REVIEW_ON_MR_DESC` | Find Nothing To Review Duo Code Review On Mr event count in descending order. |
 | <a id="aiusermetricssort-find_no_issues_duo_code_review_after_review_asc"></a>`FIND_NO_ISSUES_DUO_CODE_REVIEW_AFTER_REVIEW_ASC` | Find No Issues Duo Code Review After Review event count in ascending order. |
@@ -64198,6 +64248,10 @@ Values for sorting AI user metrics.
 | <a id="aiusermetricssort-react_thumbs_up_on_duo_code_review_comment_desc"></a>`REACT_THUMBS_UP_ON_DUO_CODE_REVIEW_COMMENT_DESC` | React Thumbs Up On Duo Code Review Comment event count in descending order. |
 | <a id="aiusermetricssort-request_duo_chat_response_asc"></a>`REQUEST_DUO_CHAT_RESPONSE_ASC` | Request Duo Chat Response event count in ascending order. |
 | <a id="aiusermetricssort-request_duo_chat_response_desc"></a>`REQUEST_DUO_CHAT_RESPONSE_DESC` | Request Duo Chat Response event count in descending order. |
+| <a id="aiusermetricssort-request_duo_vulnerability_resolution_asc"></a>`REQUEST_DUO_VULNERABILITY_RESOLUTION_ASC` | Request Duo Vulnerability Resolution event count in ascending order. |
+| <a id="aiusermetricssort-request_duo_vulnerability_resolution_desc"></a>`REQUEST_DUO_VULNERABILITY_RESOLUTION_DESC` | Request Duo Vulnerability Resolution event count in descending order. |
+| <a id="aiusermetricssort-request_duo_vulnerability_resolution_total_count_asc"></a>`REQUEST_DUO_VULNERABILITY_RESOLUTION_TOTAL_COUNT_ASC` | Request Duo Vulnerability Resolution total event count in ascending order. |
+| <a id="aiusermetricssort-request_duo_vulnerability_resolution_total_count_desc"></a>`REQUEST_DUO_VULNERABILITY_RESOLUTION_TOTAL_COUNT_DESC` | Request Duo Vulnerability Resolution total event count in descending order. |
 | <a id="aiusermetricssort-request_review_duo_code_review_on_mr_by_author_asc"></a>`REQUEST_REVIEW_DUO_CODE_REVIEW_ON_MR_BY_AUTHOR_ASC` | Request Review Duo Code Review On Mr By Author event count in ascending order. |
 | <a id="aiusermetricssort-request_review_duo_code_review_on_mr_by_author_desc"></a>`REQUEST_REVIEW_DUO_CODE_REVIEW_ON_MR_BY_AUTHOR_DESC` | Request Review Duo Code Review On Mr By Author event count in descending order. |
 | <a id="aiusermetricssort-request_review_duo_code_review_on_mr_by_non_author_asc"></a>`REQUEST_REVIEW_DUO_CODE_REVIEW_ON_MR_BY_NON_AUTHOR_ASC` | Request Review Duo Code Review On Mr By Non Author event count in ascending order. |

@@ -218,6 +218,13 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
       it_behaves_like 'configuring path_style', :gcs_hmac
     end
 
+    context 'when using GCS object storage with Application Default Credentials' do
+      it_behaves_like 'starting a new export', :gcs_application_default do
+        let(:configuration_key) { :gcs_adc_configuration }
+        let(:credentials) { { 'google_project' => 'gitlab-project' } }
+      end
+    end
+
     context 'when no configuration params are provided' do
       let(:params) do
         {
@@ -568,6 +575,13 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
         end
 
         let(:path_style_default) { true }
+      end
+    end
+
+    context 'when using GCS object storage with Application Default Credentials' do
+      it_behaves_like 'starting a new import', :gcs_application_default do
+        let(:configuration_key) { :gcs_adc_configuration }
+        let(:credentials) { { 'google_project' => 'gitlab-project' } }
       end
     end
 

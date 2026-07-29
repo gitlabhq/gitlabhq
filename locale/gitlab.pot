@@ -6502,6 +6502,9 @@ msgstr ""
 msgid "AdminSettings|All new projects can use instance runners by default."
 msgstr ""
 
+msgid "AdminSettings|Allow Google Cloud Application Default Credentials for offline transfer"
+msgstr ""
+
 msgid "AdminSettings|Allow S3 compatible object storage for offline transfer"
 msgstr ""
 
@@ -31630,6 +31633,9 @@ msgstr ""
 msgid "Enter the following to confirm:"
 msgstr ""
 
+msgid "Enter the following to confirm: %{phrase}"
+msgstr ""
+
 msgid "Enter the password for password-protected Elasticsearch or OpenSearch servers."
 msgstr ""
 
@@ -52723,6 +52729,9 @@ msgstr ""
 msgid "OfflineTransferImport|The offline transfer import you started on %{start_date} has completed. You can now review your import results."
 msgstr ""
 
+msgid "OfflineTransfer|Application Default Credentials can only be used with object storage buckets whose name starts with \"%{prefix}\"."
+msgstr ""
+
 msgid "OfflineTransfer|Choose top-level groups to export to an object storage location."
 msgstr ""
 
@@ -52796,6 +52805,9 @@ msgid "OfflineTransfer|Offline transfer requires a configured %{boldStart}AWS S3
 msgstr ""
 
 msgid "OfflineTransfer|One or more destination paths is invalid."
+msgstr ""
+
+msgid "OfflineTransfer|Only administrators can use Application Default Credentials for offline transfer."
 msgstr ""
 
 msgid "OfflineTransfer|Select entities"

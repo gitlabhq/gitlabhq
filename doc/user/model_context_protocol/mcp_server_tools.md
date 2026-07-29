@@ -476,13 +476,13 @@ Available scopes depend on the [search type](../search/_index.md).
 
 | Parameter      | Type             | Required | Description |
 |----------------|------------------|----------|-------------|
-| `scope`        | string           | Yes      | Search scope (for example, `issues`, `merge_requests`, or `projects`). |
+| `scope`        | string           | Yes      | Search scope (for example, `work_items`, `merge_requests`, or `projects`). |
 | `search`       | string           | Yes      | Search term. |
 | `group_id`     | string           | No       | ID or URL-encoded path of the group you want to search. |
 | `project_id`   | string           | No       | ID or URL-encoded path of the project you want to search. |
-| `state`        | string           | No       | State of search results (for `issues` and `merge_requests`). |
-| `confidential` | boolean          | No       | Filters results by confidentiality (for `issues`). Default is `false`. |
-| `fields`       | array of strings | No       | Array of fields you want to search (for `issues` and `merge_requests`). |
+| `state`        | string           | No       | State of search results (for `work_items` and `merge_requests`). |
+| `confidential` | boolean          | No       | Filters results by confidentiality (for `work_items`). Default is `false`. |
+| `fields`       | array of strings | No       | Array of fields you want to search (for `work_items` and `merge_requests`). |
 | `order_by`     | string           | No       | Attribute to order results by. Default is `created_at` for basic search and relevance for advanced search. |
 | `sort`         | string           | No       | Sort direction for results. Default is `desc`. |
 | `per_page`     | integer          | No       | Number of results per page. Default is `20`. |

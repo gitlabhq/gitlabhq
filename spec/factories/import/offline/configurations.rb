@@ -59,6 +59,16 @@ FactoryBot.define do
       end
     end
 
+    trait :gcs_adc do
+      provider { :gcs_application_default }
+      bucket { 'gitlab-offline-transfer-test' }
+      object_storage_credentials do
+        {
+          google_project: 'gitlab-project'
+        }
+      end
+    end
+
     trait :with_bulk_import do
       bulk_import { association(:bulk_import, :offline) }
     end

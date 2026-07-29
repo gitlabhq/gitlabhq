@@ -49,7 +49,7 @@ describe('Confirm Danger Modal', () => {
     });
 
     it('renders the correct confirmation phrase', () => {
-      expect(findConfirmationPhrase().text()).toBe(`Enter the following to confirm:`);
+      expect(findConfirmationPhrase().text()).toBe(`Enter the following to confirm: ${phrase}`);
     });
 
     it('preserves whitespace in the confirmation phrase', () => {

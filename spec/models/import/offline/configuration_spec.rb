@@ -20,7 +20,11 @@ RSpec.describe Import::Offline::Configuration, feature_category: :importers do
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:provider) }
-    it { is_expected.to define_enum_for(:provider).with_values(%i[aws s3_compatible gcs_hmac gcs]) }
+
+    it 'defines the supported providers' do
+      is_expected.to define_enum_for(:provider)
+        .with_values(%i[aws s3_compatible gcs_hmac gcs gcs_application_default])
+    end
 
     it { is_expected.to validate_presence_of(:export_prefix) }
     it { is_expected.to validate_presence_of(:object_storage_credentials) }
@@ -422,6 +426,93 @@ RSpec.describe Import::Offline::Configuration, feature_category: :importers do
 
             it { is_expected.to be(false) }
           end
+        end
+      end
+
+      context 'when provider is GCS with Application Default Credentials' do
+        let(:provider) { :gcs_application_default }
+        let(:bucket) { 'gitlab-offline-transfer-acme' }
+        let(:valid_credentials) do
+          {
+            google_project: 'gitlab-project'
+          }
+        end
+
+        let(:configuration) do
+          build(:offline_configuration, provider: provider, bucket: bucket,
+            object_storage_credentials: valid_credentials)
+        end
+
+        subject(:valid?) { configuration.valid? }
+
+        context 'on a GitLab Self-Managed instance' do
+          context 'when Application Default Credentials are enabled for offline transfer' do
+            before do
+              stub_application_setting(allow_application_default_credentials_for_offline_transfer: true)
+            end
+
+            context 'when the bucket name carries the required prefix' do
+              context 'and the configuration belongs to an export' do
+                it { is_expected.to be(true) }
+              end
+
+              context 'and the configuration belongs to an import' do
+                let(:configuration) do
+                  build(:offline_configuration, provider: provider, bucket: bucket,
+                    object_storage_credentials: valid_credentials, bulk_import: build(:bulk_import))
+                end
+
+                it { is_expected.to be(true) }
+              end
+            end
+
+            context 'when the bucket name does not carry the required prefix' do
+              let(:bucket) { 'company-uploads' }
+
+              it 'is invalid with a bucket prefix error', :aggregate_failures do
+                expect(valid?).to be(false)
+                expect(configuration.errors[:base]).to include(
+                  format(
+                    s_('OfflineTransfer|Application Default Credentials can only be used with object storage ' \
+                      'buckets whose name starts with "%{prefix}".'),
+                    prefix: Import::Offline::Configuration::ADC_REQUIRED_BUCKET_PREFIX
+                  )
+                )
+              end
+            end
+          end
+
+          context 'when Application Default Credentials are not enabled for offline transfer' do
+            before do
+              stub_application_setting(allow_application_default_credentials_for_offline_transfer: false)
+            end
+
+            it 'is invalid because the provider is not supported', :aggregate_failures do
+              expect(valid?).to be(false)
+              expect(configuration.errors[:provider]).to include('is not included in the list')
+            end
+          end
+        end
+
+        context 'on GitLab.com' do
+          before do
+            allow(Gitlab).to receive(:com?).and_return(true)
+            stub_application_setting(allow_application_default_credentials_for_offline_transfer: true)
+          end
+
+          it 'is invalid because the provider is not supported', :aggregate_failures do
+            expect(valid?).to be(false)
+            expect(configuration.errors[:provider]).to include('is not included in the list')
+          end
+        end
+
+        context 'when credentials contain an extra property not allowed by the schema' do
+          before do
+            stub_application_setting(allow_application_default_credentials_for_offline_transfer: true)
+            valid_credentials[:google_application_default] = false
+          end
+
+          it { is_expected.to be(false) }
         end
       end
     end

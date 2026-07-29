@@ -17523,7 +17523,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_e7d6020c5ece"
+              "$ref": "#/components/schemas/RequestBody_21e94741100a"
   "/api/v4/service_accounts":
     post:
       operationId: postApiV4ServiceAccounts
@@ -38358,7 +38358,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_be62f6c2b50e"
+              "$ref": "#/components/schemas/RequestBody_db31c1cadc09"
     get:
       operationId: getApiV4OfflineExports
       summary: List all offline transfer exports
@@ -38463,7 +38463,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_fc578ac29f9b"
+              "$ref": "#/components/schemas/RequestBody_e9df3163642f"
   "/api/v4/projects/{id}/packages/nuget/index":
     get:
       operationId: getApiV4ProjectsIdPackagesNugetIndex
@@ -84747,6 +84747,8 @@ components:
           type: string
         allow_s3_compatible_storage_for_offline_transfer:
           type: string
+        allow_application_default_credentials_for_offline_transfer:
+          type: string
         allow_runner_registration_token:
           type: string
         valid_runner_registrars:
@@ -98695,7 +98697,7 @@ components:
           description: Scopes available to the application. Separate multiple scopes
             with a space.
           nullable: true
-    RequestBody_e7d6020c5ece:
+    RequestBody_21e94741100a:
       type: object
       properties:
         admin_mode:
@@ -100593,6 +100595,9 @@ components:
           type: string
           nullable: true
         allow_s3_compatible_storage_for_offline_transfer:
+          type: string
+          nullable: true
+        allow_application_default_credentials_for_offline_transfer:
           type: string
           nullable: true
         user_defaults_to_private_profile:
@@ -108080,7 +108085,7 @@ components:
       required:
       - name
       - path
-    RequestBody_be62f6c2b50e:
+    RequestBody_db31c1cadc09:
       type: object
       properties:
         bucket:
@@ -108186,6 +108191,19 @@ components:
           - google_storage_access_key_id
           - google_storage_secret_access_key
           - region
+          nullable: true
+        gcs_adc_configuration:
+          type: object
+          description: Google Cloud Storage configuration using Application Default
+            Credentials. Available on GitLab Self-Managed or GitLab Dedicated, and
+            must be enabled by an administrator.
+          properties:
+            google_project:
+              type: string
+              description: Google Cloud project ID
+              nullable: true
+          required:
+          - google_project
           nullable: true
         entities:
           type: array
@@ -108204,7 +108222,7 @@ components:
       required:
       - bucket
       - entities
-    RequestBody_fc578ac29f9b:
+    RequestBody_e9df3163642f:
       type: object
       properties:
         bucket:
@@ -108310,6 +108328,19 @@ components:
           - google_storage_access_key_id
           - google_storage_secret_access_key
           - region
+          nullable: true
+        gcs_adc_configuration:
+          type: object
+          description: Google Cloud Storage configuration using Application Default
+            Credentials. Available on GitLab Self-Managed or GitLab Dedicated, and
+            must be enabled by an administrator.
+          properties:
+            google_project:
+              type: string
+              description: Google Cloud project ID
+              nullable: true
+          required:
+          - google_project
           nullable: true
         export_prefix:
           type: string

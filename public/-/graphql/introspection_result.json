@@ -26386,6 +26386,24 @@
               "description": "Feedback was submitted on a Duo agent response in a messaging surface.",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "REQUEST_DUO_VULNERABILITY_RESOLUTION",
+              "description": "An AI vulnerability resolution was requested with GitLab Duo.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "EXPLAIN_VULNERABILITY",
+              "description": "An AI explanation of a vulnerability was requested with GitLab Duo.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "COMPOSE_MERGE_REQUEST_DESCRIPTION",
+              "description": "A merge request description was composed with GitLab Duo.",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null
@@ -26468,6 +26486,18 @@
               "deprecationReason": "Use `codeSuggestions.codeSuggestionAcceptedInIdeEventCount` instead. Deprecated in GitLab 18.7."
             },
             {
+              "name": "composeMergeRequestDescription",
+              "description": "Compose Merge Request Description metrics for the user.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "composeMergeRequestDescriptionUserMetrics",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "duoChatInteractionsCount",
               "description": "Number of user interactions with GitLab Duo Chat. Deprecated in GitLab 18.7: Use `chat.requestDuoChatResponseEventCount` instead.",
               "args": [],
@@ -26498,6 +26528,18 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "duoWorkflowUserMetrics",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "explainVulnerability",
+              "description": "Explain Vulnerability metrics for the user.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "explainVulnerabilityUserMetrics",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -26546,6 +26588,18 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "mcpUserMetrics",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "requestDuoVulnerabilityResolution",
+              "description": "Request Duo Vulnerability Resolution metrics for the user.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "requestDuoVulnerabilityResolutionUserMetrics",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -27320,6 +27374,78 @@
             {
               "name": "AI_DUO_MESSAGING_FEEDBACK_SUBMITTED_ASC",
               "description": "Ai Duo Messaging Feedback Submitted event count in ascending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "REQUEST_DUO_VULNERABILITY_RESOLUTION_TOTAL_COUNT_DESC",
+              "description": "Request Duo Vulnerability Resolution total event count in descending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "REQUEST_DUO_VULNERABILITY_RESOLUTION_TOTAL_COUNT_ASC",
+              "description": "Request Duo Vulnerability Resolution total event count in ascending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "REQUEST_DUO_VULNERABILITY_RESOLUTION_DESC",
+              "description": "Request Duo Vulnerability Resolution event count in descending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "REQUEST_DUO_VULNERABILITY_RESOLUTION_ASC",
+              "description": "Request Duo Vulnerability Resolution event count in ascending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "EXPLAIN_VULNERABILITY_TOTAL_COUNT_DESC",
+              "description": "Explain Vulnerability total event count in descending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "EXPLAIN_VULNERABILITY_TOTAL_COUNT_ASC",
+              "description": "Explain Vulnerability total event count in ascending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "EXPLAIN_VULNERABILITY_DESC",
+              "description": "Explain Vulnerability event count in descending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "EXPLAIN_VULNERABILITY_ASC",
+              "description": "Explain Vulnerability event count in ascending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "COMPOSE_MERGE_REQUEST_DESCRIPTION_TOTAL_COUNT_DESC",
+              "description": "Compose Merge Request Description total event count in descending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "COMPOSE_MERGE_REQUEST_DESCRIPTION_TOTAL_COUNT_ASC",
+              "description": "Compose Merge Request Description total event count in ascending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "COMPOSE_MERGE_REQUEST_DESCRIPTION_DESC",
+              "description": "Compose Merge Request Description event count in descending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "COMPOSE_MERGE_REQUEST_DESCRIPTION_ASC",
+              "description": "Compose Merge Request Description event count in ascending order.",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -59064,8 +59190,8 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
             },
             {
-              "name": "services",
-              "description": "Application's services present in the environment. Introduced in GitLab 19.3: Status: Experiment.",
+              "name": "serviceEnvironmentHealths",
+              "description": "Observed health of the application's services in the environment, each with the versions currently deployed there. Introduced in GitLab 19.3: Status: Experiment.",
               "args": [
                 {
                   "name": "after",
@@ -59118,7 +59244,7 @@
               ],
               "type": {
                 "kind": "OBJECT",
-                "name": "CdServiceConnection",
+                "name": "CdServiceEnvironmentHealthConnection",
                 "ofType": null
               },
               "isDeprecated": true,
@@ -444540,6 +444666,53 @@
           "possibleTypes": null
         },
         {
+          "kind": "OBJECT",
+          "name": "composeMergeRequestDescriptionUserMetrics",
+          "description": "Compose Merge Request Description user metrics for a user. Requires ClickHouse. Premium and Ultimate with GitLab Duo Enterprise only.",
+          "fields": [
+            {
+              "name": "composeMergeRequestDescriptionEventCount",
+              "description": "Total count of `compose_merge_request_description` event.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "lastDuoActivityOn",
+              "description": "Date of the last Compose Merge Request Description activity for the user.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Date",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "totalEventCount",
+              "description": "Total count of all Compose Merge Request Description events for the user.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
           "kind": "INPUT_OBJECT",
           "name": "createContainerProtectionTagRuleInput",
           "description": "Autogenerated input type of createContainerProtectionTagRule",
@@ -444779,6 +444952,53 @@
             {
               "name": "totalEventCount",
               "description": "Total count of all Duo Workflow events for the user.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "explainVulnerabilityUserMetrics",
+          "description": "Explain Vulnerability user metrics for a user. Requires ClickHouse. Premium and Ultimate with GitLab Duo Enterprise only.",
+          "fields": [
+            {
+              "name": "explainVulnerabilityEventCount",
+              "description": "Total count of `explain_vulnerability` event.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "lastDuoActivityOn",
+              "description": "Date of the last Explain Vulnerability activity for the user.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Date",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "totalEventCount",
+              "description": "Total count of all Explain Vulnerability events for the user.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -445370,6 +445590,53 @@
                     }
                   }
                 }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "requestDuoVulnerabilityResolutionUserMetrics",
+          "description": "Request Duo Vulnerability Resolution user metrics for a user. Requires ClickHouse. Premium and Ultimate with GitLab Duo Enterprise only.",
+          "fields": [
+            {
+              "name": "lastDuoActivityOn",
+              "description": "Date of the last Request Duo Vulnerability Resolution activity for the user.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Date",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "requestDuoVulnerabilityResolutionEventCount",
+              "description": "Total count of `request_duo_vulnerability_resolution` event.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "totalEventCount",
+              "description": "Total count of all Request Duo Vulnerability Resolution events for the user.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null

@@ -2,23 +2,15 @@
 
 class QueueMarkDoneFinalizedMergeRequestTodos < Gitlab::Database::Migration[2.3]
   milestone '19.2'
-  restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
   MIGRATION = "MarkDoneFinalizedMergeRequestTodos"
-  BATCH_SIZE = 50_000
-  SUB_BATCH_SIZE = 5_000
 
-  def up
-    queue_batched_background_migration(
-      MIGRATION,
-      :todos,
-      :id,
-      batch_size: BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE
-    )
-  end
+  # No-op: the original batch sizes (BATCH_SIZE 50_000 / SUB_BATCH_SIZE 5_000)
+  # caused statement timeouts on GitLab.com, so this migration is re-queued with
+  # smaller batches in RequeueMarkDoneFinalizedMergeRequestTodos. Kept as a no-op
+  # so instances upgrading across multiple patch releases do not create, delete,
+  # then recreate the batched background migration.
+  def up; end
 
-  def down
-    delete_batched_background_migration(MIGRATION, :todos, :id, [])
-  end
+  def down; end
 end
