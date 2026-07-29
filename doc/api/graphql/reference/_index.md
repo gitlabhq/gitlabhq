@@ -25163,6 +25163,29 @@ Fields:
 | <a id="duoworkflowmergerequestlinkedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="duoworkflowmergerequestlinkedge-node"></a>`node` | [`DuoWorkflowMergeRequestLink`](#duoworkflowmergerequestlink) | The item at the end of the edge. |
 
+#### `DuoWorkflowNoteLinkConnection`
+
+The connection type for [`DuoWorkflowNoteLink`](#duoworkflownotelink).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflownotelinkconnection-edges"></a>`edges` | [`[DuoWorkflowNoteLinkEdge]`](#duoworkflownotelinkedge) | A list of edges. |
+| <a id="duoworkflownotelinkconnection-nodes"></a>`nodes` | [`[DuoWorkflowNoteLink]`](#duoworkflownotelink) | A list of nodes. |
+| <a id="duoworkflownotelinkconnection-pageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `DuoWorkflowNoteLinkEdge`
+
+The edge type for [`DuoWorkflowNoteLink`](#duoworkflownotelink).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflownotelinkedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="duoworkflownotelinkedge-node"></a>`node` | [`DuoWorkflowNoteLink`](#duoworkflownotelink) | The item at the end of the edge. |
+
 #### `DuoWorkflowSessionArtifactConnection`
 
 The connection type for [`DuoWorkflowSessionArtifact`](#duoworkflowsessionartifact).
@@ -35696,6 +35719,7 @@ Fields:
 | <a id="cdrollout-rollouttransitions"></a>`rolloutTransitions` {{< icon name="warning-solid" >}} | [`CdRolloutTransitionConnection`](#cdrollouttransitionconnection) | Introduced in GitLab 19.2. Status: Experiment. Transition journal of the rollout. |
 | <a id="cdrollout-startedat"></a>`startedAt` | [`Time`](#time) | Timestamp of when the rollout started. |
 | <a id="cdrollout-state"></a>`state` | [`CdRolloutState!`](#cdrolloutstate) | State of the rollout. |
+| <a id="cdrollout-triggeredbyuser"></a>`triggeredByUser` {{< icon name="warning-solid" >}} | [`UserCore`](#usercore) | Introduced in GitLab 19.3. Status: Experiment. User who triggered the rollout, derived from its transition journal. Null if the rollout was triggered by a non-user principal (for example, a policy or schedule). |
 | <a id="cdrollout-updatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the rollout was last updated. |
 | <a id="cdrollout-versionset"></a>`versionSet` | [`CdVersionSet`](#cdversionset) | Version set the rollout deploys. |
 | <a id="cdrollout-workflowref"></a>`workflowRef` | [`String`](#string) | Workflow reference of the rollout. |
@@ -35797,6 +35821,7 @@ Fields:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="cdversionset-application"></a>`application` | [`CdApplication`](#cdapplication) | Application the version set belongs to. |
+| <a id="cdversionset-author"></a>`author` {{< icon name="warning-solid" >}} | [`UserCore`](#usercore) | Introduced in GitLab 19.3. Status: Experiment. User who created the version set. Null if it was created before author tracking was added. |
 | <a id="cdversionset-createdat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the version set was created. |
 | <a id="cdversionset-description"></a>`description` | [`String`](#string) | Description of the version set. |
 | <a id="cdversionset-entriesdigest"></a>`entriesDigest` | [`String`](#string) | Digest of the version set entries. |
@@ -41039,6 +41064,22 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="duoworkflow-mergerequestlinks-linktype"></a>`linkType` | [`DuoWorkflowMergeRequestLinkType`](#duoworkflowmergerequestlinktype) | Filter links by their link type. |
 
+##### `DuoWorkflow.noteLinks`
+
+Notes linked to the session.
+
+Returns [`DuoWorkflowNoteLinkConnection`](#duoworkflownotelinkconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflow-notelinks-linktype"></a>`linkType` | [`DuoWorkflowNoteLinkType`](#duoworkflownotelinktype) | Filter links by their link type. |
+
 ##### `DuoWorkflow.toolCallApproved`
 
 Whether the specified tool call is approved for the session.
@@ -41128,6 +41169,19 @@ Fields:
 | <a id="duoworkflowmergerequestlink-mergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Linked merge request. |
 | <a id="duoworkflowmergerequestlink-workflow"></a>`workflow` | [`DuoWorkflow`](#duoworkflow) | Linked GitLab Duo Agent Platform session. |
 
+### `DuoWorkflowNoteLink`
+
+Link between a GitLab Duo Agent Platform session and a note.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflownotelink-createdat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the link was created. |
+| <a id="duoworkflownotelink-linktype"></a>`linkType` | [`DuoWorkflowNoteLinkType!`](#duoworkflownotelinktype) | How the note relates to the session. |
+| <a id="duoworkflownotelink-note"></a>`note` | [`Note`](#note) | Linked note. |
+| <a id="duoworkflownotelink-workflow"></a>`workflow` | [`DuoWorkflow`](#duoworkflow) | Linked GitLab Duo Agent Platform session. |
+
 ### `DuoWorkflowPermissions`
 
 Check permissions for the current user on a Duo workflow.
@@ -41154,6 +41208,7 @@ Fields:
 | <a id="duoworkflowsessionartifact-downloadpath"></a>`downloadPath` | [`String`](#string) | Path to download the session artifact as a JSON file. |
 | <a id="duoworkflowsessionartifact-id"></a>`id` | [`ID!`](#id) | Global ID of the session, as an `Ai::DuoWorkflows::Workflow`. |
 | <a id="duoworkflowsessionartifact-project"></a>`project` | [`Project`](#project) | Project the session belongs to. |
+| <a id="duoworkflowsessionartifact-user"></a>`user` | [`UserCore`](#usercore) | User who initiated the session. |
 | <a id="duoworkflowsessionartifact-webpath"></a>`webPath` | [`String`](#string) | Path of the session. |
 | <a id="duoworkflowsessionartifact-workflowcreatedat"></a>`workflowCreatedAt` | [`Time!`](#time) | Timestamp of when the session was created. |
 | <a id="duoworkflowsessionartifact-workflowdefinition"></a>`workflowDefinition` | [`String!`](#string) | Workflow definition type of the session. |
@@ -51624,6 +51679,24 @@ Fields:
 | <a id="note-updatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of the note's last activity. |
 | <a id="note-url"></a>`url` | [`String`](#string) | URL to view the note in the Web UI. |
 | <a id="note-userpermissions"></a>`userPermissions` | [`NotePermissions!`](#notepermissions) | Permissions for the current user on the resource. |
+
+#### Fields with arguments
+
+##### `Note.duoWorkflowLinks`
+
+GitLab Duo Agent Platform sessions linked to the note.
+
+Returns [`DuoWorkflowNoteLinkConnection`](#duoworkflownotelinkconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="note-duoworkflowlinks-linktype"></a>`linkType` | [`DuoWorkflowNoteLinkType`](#duoworkflownotelinktype) | Filter links by their link type. |
 
 ### `NotePermissions`
 
@@ -66019,6 +66092,14 @@ Type of link between a GitLab Duo Agent Platform session and a merge request.
 | ----- | ----------- |
 | <a id="duoworkflowmergerequestlinktype-created"></a>`CREATED` | Link of type `created` between a session and a merge request. |
 | <a id="duoworkflowmergerequestlinktype-source"></a>`SOURCE` | Link of type `source` between a session and a merge request. |
+
+### `DuoWorkflowNoteLinkType`
+
+Type of link between a GitLab Duo Agent Platform session and a note.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="duoworkflownotelinktype-created"></a>`CREATED` | Link of type `created` between a session and a note. |
 
 ### `DuoWorkflowStatus`
 

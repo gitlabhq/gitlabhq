@@ -16817,6 +16817,7 @@ CREATE TABLE cd_version_sets (
     entries_digest text,
     organization_id bigint,
     description text,
+    created_by_id bigint,
     CONSTRAINT check_093aa0099e CHECK ((char_length(entries_digest) <= 64)),
     CONSTRAINT check_141e70e0e2 CHECK ((char_length(name) <= 255)),
     CONSTRAINT check_703e061dd2 CHECK ((organization_id IS NOT NULL)),
@@ -45470,6 +45471,8 @@ CREATE UNIQUE INDEX idx_snippet_uploads_on_id ON snippet_uploads USING btree (id
 
 CREATE UNIQUE INDEX idx_software_license_policies_unique_on_custom_license_project ON software_license_policies USING btree (project_id, custom_software_license_id, scan_result_policy_id);
 
+CREATE INDEX idx_spep_test_runs_on_state_and_created_at_for_stale ON security_scheduled_pipeline_execution_policy_test_runs USING btree (state, created_at) WHERE (state = ANY (ARRAY[0, 3]));
+
 CREATE UNIQUE INDEX idx_spep_test_runs_pipeline_id_unique ON security_scheduled_pipeline_execution_policy_test_runs USING btree (pipeline_id) WHERE (pipeline_id IS NOT NULL);
 
 CREATE INDEX idx_spep_test_runs_policy_id ON security_scheduled_pipeline_execution_policy_test_runs USING btree (security_policy_id);
@@ -46573,6 +46576,8 @@ CREATE UNIQUE INDEX index_cd_version_set_entries_on_version_set_id_and_version_i
 CREATE UNIQUE INDEX index_cd_version_sets_on_application_id_and_entries_digest ON cd_version_sets USING btree (application_id, entries_digest) WHERE (entries_digest IS NOT NULL);
 
 CREATE UNIQUE INDEX index_cd_version_sets_on_application_id_and_name ON cd_version_sets USING btree (application_id, name);
+
+CREATE INDEX index_cd_version_sets_on_created_by_id ON cd_version_sets USING btree (created_by_id);
 
 CREATE INDEX index_cd_version_sets_on_group_id ON cd_version_sets USING btree (group_id);
 
@@ -57345,6 +57350,9 @@ ALTER TABLE ONLY issue_assignees
 
 ALTER TABLE ONLY csv_issue_imports
     ADD CONSTRAINT fk_5e1572387c FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY cd_version_sets
+    ADD CONSTRAINT fk_5e1f7c4094 FOREIGN KEY (created_by_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY abuse_events
     ADD CONSTRAINT fk_5e51d70fab FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;

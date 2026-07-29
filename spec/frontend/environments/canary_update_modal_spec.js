@@ -1,9 +1,22 @@
 import { GlAlert, GlModal, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import CanaryUpdateModal from '~/environments/components/canary_update_modal.vue';
 import updateCanaryIngress from '~/environments/graphql/mutations/update_canary_ingress.mutation.graphql';
+
+Vue.use(VueApollo);
+
+const canaryIngressUpdateResponse = (errors) => ({
+  data: {
+    environmentsCanaryIngressUpdate: {
+      __typename: 'EnvironmentsCanaryIngressUpdatePayload',
+      errors,
+    },
+  },
+});
 
 describe('/environments/components/canary_update_modal.vue', () => {
   let wrapper;
@@ -13,7 +26,7 @@ describe('/environments/components/canary_update_modal.vue', () => {
   const findAlert = () => wrapper.findComponent(GlAlert);
 
   const createComponent = () => {
-    mutate = jest.fn().mockResolvedValue();
+    mutate = jest.fn().mockResolvedValue(canaryIngressUpdateResponse([]));
     wrapper = shallowMount(CanaryUpdateModal, {
       propsData: {
         environment: {
@@ -23,9 +36,7 @@ describe('/environments/components/canary_update_modal.vue', () => {
         weight: 60,
         visible: true,
       },
-      mocks: {
-        $apollo: { mutate },
-      },
+      apolloProvider: createMockApollo([[updateCanaryIngress, mutate]]),
       stubs: { GlSprintf },
     });
     modal = wrapper.findComponent(GlModal);
@@ -61,12 +72,9 @@ describe('/environments/components/canary_update_modal.vue', () => {
     modal.vm.$emit('primary');
 
     expect(mutate).toHaveBeenCalledWith({
-      mutation: updateCanaryIngress,
-      variables: {
-        input: {
-          id: 'gid://environments/staging',
-          weight: 60,
-        },
+      input: {
+        id: 'gid://environments/staging',
+        weight: 60,
       },
     });
   });
@@ -77,16 +85,16 @@ describe('/environments/components/canary_update_modal.vue', () => {
   });
 
   it('should not display an error if there was not one', async () => {
-    mutate.mockResolvedValue({ data: { environmentsCanaryIngressUpdate: { errors: [] } } });
+    mutate.mockResolvedValue(canaryIngressUpdateResponse([]));
     modal.vm.$emit('primary');
 
-    await nextTick();
+    await waitForPromises();
 
     expect(findAlert().exists()).toBe(false);
   });
 
   it('should display an error if there was one', async () => {
-    mutate.mockResolvedValue({ data: { environmentsCanaryIngressUpdate: { errors: ['error'] } } });
+    mutate.mockResolvedValue(canaryIngressUpdateResponse(['error']));
     modal.vm.$emit('primary');
 
     await waitForPromises();
@@ -95,7 +103,7 @@ describe('/environments/components/canary_update_modal.vue', () => {
   });
 
   it('should display a generic error if there was a top-level one', async () => {
-    mutate.mockRejectedValue();
+    mutate.mockRejectedValue(new Error('Network error'));
     modal.vm.$emit('primary');
 
     await waitForPromises();
@@ -105,7 +113,7 @@ describe('/environments/components/canary_update_modal.vue', () => {
   });
 
   it('hides teh alert on dismiss', async () => {
-    mutate.mockResolvedValue({ data: { environmentsCanaryIngressUpdate: { errors: ['error'] } } });
+    mutate.mockResolvedValue(canaryIngressUpdateResponse(['error']));
     modal.vm.$emit('primary');
 
     await waitForPromises();

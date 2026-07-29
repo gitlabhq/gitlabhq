@@ -1,72 +1,86 @@
 import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import component from '~/packages_and_registries/container_registry/explorer/components/delete_image.vue';
 import { GRAPHQL_PAGE_SIZE } from '~/packages_and_registries/container_registry/explorer/constants/index';
 import deleteContainerRepositoryMutation from '~/packages_and_registries/container_registry/explorer/graphql/mutations/delete_container_repository.mutation.graphql';
 import getContainerRepositoryDetailsQuery from '~/packages_and_registries/container_registry/explorer/graphql/queries/get_container_repository_details.query.graphql';
+import {
+  containerRepositoryMock,
+  deletedContainerRepository,
+  graphQLImageDeleteMock,
+  graphQLImageDeleteMockError,
+} from '../mock_data';
+
+Vue.use(VueApollo);
 
 describe('Delete Image', () => {
   let wrapper;
-  const id = '1';
-  const storeMock = {
-    readQuery: jest.fn().mockReturnValue({
-      containerRepository: {
-        status: 'foo',
-      },
-    }),
-    writeQuery: jest.fn(),
-  };
+  let apolloProvider;
 
-  const updatePayload = {
-    data: {
-      destroyContainerRepository: {
-        containerRepository: {
-          status: 'baz',
-        },
-      },
-    },
-  };
+  const { id } = containerRepositoryMock;
+
+  const cacheVariables = { id, first: GRAPHQL_PAGE_SIZE };
 
   const findButton = () => wrapper.find('button');
+  const doDelete = () => findButton().trigger('click');
+
+  const readImageDetailsFromCache = () =>
+    apolloProvider.defaultClient.readQuery({
+      query: getContainerRepositoryDetailsQuery,
+      variables: cacheVariables,
+    });
 
   const mountComponent = ({
     propsData = { id },
-    mutate = jest.fn().mockResolvedValue({}),
+    handler = jest.fn().mockResolvedValue(graphQLImageDeleteMock),
+    seedCache = false,
   } = {}) => {
+    apolloProvider = createMockApollo([[deleteContainerRepositoryMutation, handler]]);
+
+    if (seedCache) {
+      apolloProvider.defaultClient.writeQuery({
+        query: getContainerRepositoryDetailsQuery,
+        variables: cacheVariables,
+        data: {
+          containerRepository: {
+            ...containerRepositoryMock,
+            __typename: 'ContainerRepositoryDetails',
+          },
+        },
+      });
+    }
+
     wrapper = shallowMount(component, {
       propsData,
-      mocks: {
-        $apollo: {
-          mutate,
-        },
-      },
+      apolloProvider,
       scopedSlots: {
         default: '<button @click="props.doDelete">test</button>',
       },
     });
+
+    return handler;
   };
 
-  it('executes apollo mutate on doDelete', () => {
-    const mutate = jest.fn().mockResolvedValue({});
-    mountComponent({ mutate });
+  afterEach(() => {
+    apolloProvider = null;
+  });
 
-    wrapper.vm.doDelete();
+  it('executes apollo mutate on doDelete', async () => {
+    const handler = mountComponent();
 
-    expect(mutate).toHaveBeenCalledWith({
-      mutation: deleteContainerRepositoryMutation,
-      variables: {
-        id,
-      },
-      update: undefined,
-    });
+    await doDelete();
+    await waitForPromises();
+
+    expect(handler).toHaveBeenCalledWith({ id });
   });
 
   it('on success emits the correct events', async () => {
-    const mutate = jest.fn().mockResolvedValue({});
-    mountComponent({ mutate });
+    mountComponent();
 
-    wrapper.vm.doDelete();
-
+    await doDelete();
     await waitForPromises();
 
     expect(wrapper.emitted('start')).toEqual([[]]);
@@ -75,73 +89,57 @@ describe('Delete Image', () => {
   });
 
   it('when a payload contains an error emits an error event', async () => {
-    const mutate = jest
-      .fn()
-      .mockResolvedValue({ data: { destroyContainerRepository: { errors: ['foo'] } } });
+    mountComponent({ handler: jest.fn().mockResolvedValue(graphQLImageDeleteMockError) });
 
-    mountComponent({ mutate });
-    wrapper.vm.doDelete();
-
+    await doDelete();
     await waitForPromises();
 
     expect(wrapper.emitted('error')).toEqual([[['foo']]]);
   });
 
   it('when the api call errors emits an error event', async () => {
-    const mutate = jest.fn().mockRejectedValue('error');
+    mountComponent({ handler: jest.fn().mockRejectedValue(new Error('error')) });
 
-    mountComponent({ mutate });
-    wrapper.vm.doDelete();
-
+    await doDelete();
     await waitForPromises();
 
-    expect(wrapper.emitted('error')).toEqual([[['error']]]);
+    expect(wrapper.emitted('error')[0][0]).toEqual([
+      expect.objectContaining({ message: expect.stringContaining('error') }),
+    ]);
   });
 
-  it('uses the update function, when the prop is set to true', () => {
-    const mutate = jest.fn().mockResolvedValue({});
+  it('leaves the cached image status untouched when `useUpdateFn` is false', async () => {
+    mountComponent({ seedCache: true });
 
-    mountComponent({ mutate, propsData: { id, useUpdateFn: true } });
-    wrapper.vm.doDelete();
+    await doDelete();
+    await waitForPromises();
 
-    expect(mutate).toHaveBeenCalledWith({
-      mutation: deleteContainerRepositoryMutation,
-      variables: {
-        id,
-      },
-      update: wrapper.vm.updateImageStatus,
-    });
+    expect(readImageDetailsFromCache().containerRepository.status).toBe(
+      containerRepositoryMock.status,
+    );
   });
 
-  it('updateImage status reads and write to the cache', () => {
-    mountComponent();
+  it('updateImageStatus reads and writes the image status to the cache', async () => {
+    mountComponent({ propsData: { id, useUpdateFn: true }, seedCache: true });
 
-    const variables = {
-      id,
-      first: GRAPHQL_PAGE_SIZE,
-    };
+    expect(readImageDetailsFromCache().containerRepository.status).toBe(
+      containerRepositoryMock.status,
+    );
 
-    wrapper.vm.updateImageStatus(storeMock, updatePayload);
+    await doDelete();
+    await waitForPromises();
 
-    expect(storeMock.readQuery).toHaveBeenCalledWith({
-      query: getContainerRepositoryDetailsQuery,
-      variables,
-    });
-    expect(storeMock.writeQuery).toHaveBeenCalledWith({
-      query: getContainerRepositoryDetailsQuery,
-      variables,
-      data: {
-        containerRepository: {
-          status: updatePayload.data.destroyContainerRepository.containerRepository.status,
-        },
-      },
-    });
+    expect(readImageDetailsFromCache().containerRepository.status).toBe(
+      deletedContainerRepository.status,
+    );
   });
 
-  it('binds the doDelete function to the default scoped slot', () => {
-    const mutate = jest.fn().mockResolvedValue({});
-    mountComponent({ mutate });
-    findButton().trigger('click');
-    expect(mutate).toHaveBeenCalled();
+  it('binds the doDelete function to the default scoped slot', async () => {
+    const handler = mountComponent();
+
+    await doDelete();
+    await waitForPromises();
+
+    expect(handler).toHaveBeenCalled();
   });
 });

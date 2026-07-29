@@ -10,10 +10,5 @@ module Routing
       project = schedule.project
       project_pipeline_schedule_path(project, schedule, *args)
     end
-
-    def play_pipeline_schedule_path(schedule, *args)
-      project = schedule.project
-      play_project_pipeline_schedule_path(project, schedule, *args)
-    end
   end
 end

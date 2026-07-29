@@ -108,7 +108,7 @@ RSpec.describe API::Deployments, feature_category: :continuous_delivery do
         end
       end
 
-      context 'with the environment filter specifed' do
+      context 'with the environment filter specified' do
         it 'returns deployments for the environment' do
           perform_request({ environment: production.name })
 

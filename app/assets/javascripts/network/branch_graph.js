@@ -382,14 +382,18 @@ export default class BranchGraph {
       'stroke-width': 2,
     });
 
-    return r
-      .text(this.offsetX + this.unitSpace * this.mspace + 40, y, commit.message.split('\n')[0])
-      .attr({
-        fill: 'currentColor',
-        class: 'gl-text-default',
-        'text-anchor': 'start',
-        font: '14px Monaco, monospace',
-      });
+    let message = commit.message.split('\n')[0];
+    if (message.length > 30) {
+      message = `${message.slice(0, 30)}…`;
+    }
+
+    return r.text(this.offsetX + this.unitSpace * this.mspace + 40, y, message).attr({
+      fill: 'currentColor',
+      class: 'gl-text-default',
+      'text-anchor': 'start',
+      font: '14px Monaco, monospace',
+      title: commit.message.split('\n')[0],
+    });
   }
 
   drawLines(x, y, commit) {

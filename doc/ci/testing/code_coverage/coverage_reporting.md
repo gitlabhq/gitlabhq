@@ -76,9 +76,9 @@ Test these carefully, as tool output formats can change over time.
 | Tool      | Command                                    | Regex pattern |
 | --------- | ------------------------------------------ | ------------- |
 | tap       | `tap --coverage-report=text-summary`       | `/^Statements\s*:\s*([^%]+)/` |
-| nyc       | `nyc npm test`                             | `/All files[^\|]*\|[^\|]*\s+([\d\.]+)/` |
-| jest      | `jest --ci --coverage`                     | `/All files[^\|]*\|[^\|]*\s+([\d\.]+)/` |
-| node:test | `node --experimental-test-coverage --test` | `/all files[^\|]*\|[^\|]*\s+([\d\.]+)/` |
+| nyc       | `nyc npm test`                             | `/All files[^\x7c]*\x7c[^\x7c]*\s+([\d\.]+)/` |
+| jest      | `jest --ci --coverage`                     | `/All files[^\x7c]*\x7c[^\x7c]*\s+([\d\.]+)/` |
+| node:test | `node --experimental-test-coverage --test` | `/all files[^\x7c]*\x7c[^\x7c]*\s+([\d\.]+)/` |
 
 {{< /tab >}}
 
@@ -105,7 +105,7 @@ Test these carefully, as tool output formats can change over time.
 | Tool        | Language   | Command       | Regex pattern |
 | ----------- | ---------- | ------------- | ------------- |
 | OpenCover   | .NET       | None          | `/(Visited Points).*\((.*)\)/` |
-| dotnet test | .NET       | `dotnet test` | `/Total\s*\|*\s(\d+(?:\.\d+)?)/` |
+| dotnet test | .NET       | `dotnet test` | `/Total\s*\x7c*\s(\d+(?:\.\d+)?)/` |
 | Pester      | PowerShell | None          | `/Covered \d{1,3}[.,]?\d{0,2}%/` |
 
 {{< /tab >}}
@@ -115,7 +115,7 @@ Test these carefully, as tool output formats can change over time.
 | Tool        | Command            | Regex pattern |
 | ----------- | ------------------ | ------------- |
 | excoveralls | None               | `/\[TOTAL\]\s+(\d+\.\d+)%/` |
-| mix         | `mix test --cover` | `/\d+.\d+\%\s+\|\s+Total/` |
+| mix         | `mix test --cover` | `/\d+.\d+\%\s+\x7c\s+Total/` |
 
 {{< /tab >}}
 

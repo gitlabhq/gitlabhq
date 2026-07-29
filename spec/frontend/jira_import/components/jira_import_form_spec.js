@@ -10,13 +10,20 @@ import {
 } from '@gitlab/ui';
 import { getByRole } from '@testing-library/dom';
 import { mount, shallowMount } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
 import AxiosMockAdapter from 'axios-mock-adapter';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import JiraImportForm from '~/jira_import/components/jira_import_form.vue';
+import getJiraImportDetailsQuery from '~/jira_import/queries/get_jira_import_details.query.graphql';
 import getJiraUserMappingMutation from '~/jira_import/queries/get_jira_user_mapping.mutation.graphql';
 import initiateJiraImportMutation from '~/jira_import/queries/initiate_jira_import.mutation.graphql';
 import searchProjectMembersQuery from '~/jira_import/queries/search_project_members.query.graphql';
+import { debounceWait, userMappingsPageSize } from '~/jira_import/utils/constants';
 import axios from '~/lib/utils/axios_utils';
 import {
+  getJiraImportDetailsQueryResponse,
   imports,
   issuesPath,
   jiraProjects,
@@ -25,10 +32,56 @@ import {
   userMappings as defaultUserMappings,
 } from '../mock_data';
 
+Vue.use(VueApollo);
+
+const jiraUserMappingResponse = ({ jiraUsers = defaultUserMappings, errors = [] } = {}) => ({
+  data: {
+    jiraImportUsers: {
+      jiraUsers,
+      errors,
+      __typename: 'JiraImportUsersPayload',
+    },
+  },
+});
+
+const projectMembersResponse = (users = []) => ({
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/1',
+      projectMembers: {
+        nodes: users.map((user, index) => ({
+          id: `gid://gitlab/ProjectMember/${index}`,
+          user,
+          __typename: 'ProjectMember',
+        })),
+        __typename: 'MemberInterfaceConnection',
+      },
+      __typename: 'Project',
+    },
+  },
+});
+
+const initiateJiraImportResponse = ({ errors = [] } = {}) => ({
+  data: {
+    jiraImportStart: {
+      jiraImport: {
+        jiraProjectKey: 'MTG',
+        scheduledAt: '2020-04-09T16:17:18+00:00',
+        scheduledBy: {
+          id: 'gid://gitlab/User/3',
+          name: 'Jane Doe',
+          __typename: 'User',
+        },
+        __typename: 'JiraImport',
+      },
+      errors,
+      __typename: 'JiraImportStartPayload',
+    },
+  },
+});
+
 describe('JiraImportForm', () => {
   let axiosMock;
-  let mutateSpy;
-  let querySpy;
   let wrapper;
 
   const currentUsername = 'mrgitlab';
@@ -52,70 +105,62 @@ describe('JiraImportForm', () => {
   const findLoadMoreUsersButton = () =>
     wrapper.findComponent('[data-testid="load-more-users-button"]');
 
-  const mountComponent = ({
-    hasMoreUsers = false,
-    isSubmitting = false,
-    loading = false,
-    mutate = mutateSpy,
-    selectedProject = 'MTG',
-    userMappings = defaultUserMappings,
+  const mountComponent = async ({
     mountFunction = shallowMount,
-  } = {}) =>
-    mountFunction(JiraImportForm, {
+    userMappingHandler = jest.fn().mockResolvedValue(jiraUserMappingResponse()),
+    searchMembersHandler = jest.fn().mockResolvedValue(projectMembersResponse()),
+    initiateImportHandler = jest.fn().mockResolvedValue(initiateJiraImportResponse()),
+  } = {}) => {
+    const apolloProvider = createMockApollo([
+      [getJiraUserMappingMutation, userMappingHandler],
+      [searchProjectMembersQuery, searchMembersHandler],
+      [initiateJiraImportMutation, initiateImportHandler],
+    ]);
+
+    // `addInProgressImportToStore` runs as the import mutation's `update` and
+    // reads the import details query back out of the cache.
+    apolloProvider.defaultClient.writeQuery({
+      query: getJiraImportDetailsQuery,
+      variables: { fullPath: projectPath },
+      ...getJiraImportDetailsQueryResponse(),
+    });
+
+    wrapper = mountFunction(JiraImportForm, {
+      apolloProvider,
       propsData: {
         issuesPath,
         jiraImports: imports,
         jiraProjects,
         projectPath,
       },
-      data: () => ({
-        hasMoreUsers,
-        isFetching: false,
-        isSubmitting,
-        searchTerm: '',
-        selectedProject,
-        selectState: null,
-        users: [],
-        userMappings,
-      }),
-      mocks: {
-        $apollo: {
-          loading,
-          mutate,
-          query: querySpy,
-        },
-      },
       currentUsername,
     });
 
+    await waitForPromises();
+  };
+
+  const selectProject = async (jiraProjectKey) => {
+    getSelectDropdown().vm.$emit('input', jiraProjectKey);
+    await nextTick();
+  };
+
   beforeEach(() => {
     axiosMock = new AxiosMockAdapter(axios);
-    mutateSpy = jest.fn().mockResolvedValue({
-      data: {
-        jiraImportStart: { errors: [] },
-        jiraImportUsers: { jiraUsers: [], errors: [] },
-      },
-    });
-    querySpy = jest.fn().mockResolvedValue({
-      data: { project: { projectMembers: { nodes: [] } } },
-    });
   });
 
   afterEach(() => {
     axiosMock.restore();
-    mutateSpy.mockRestore();
-    querySpy.mockRestore();
   });
 
   describe('select dropdown project selection', () => {
-    it('is shown', () => {
-      wrapper = mountComponent();
+    it('is shown', async () => {
+      await mountComponent();
 
       expect(getSelectDropdown().exists()).toBe(true);
     });
 
-    it('contains a list of Jira projects to select from', () => {
-      wrapper = mountComponent({ mountFunction: mount });
+    it('contains a list of Jira projects to select from', async () => {
+      await mountComponent({ mountFunction: mount });
 
       getSelectDropdown()
         .findAll('option')
@@ -125,14 +170,16 @@ describe('JiraImportForm', () => {
     });
 
     describe('when selected project has been imported before', () => {
-      it('shows jira-import::MTG-3 label since project MTG has been imported 2 time before', () => {
-        wrapper = mountComponent();
+      it('shows jira-import::MTG-3 label since project MTG has been imported 2 time before', async () => {
+        await mountComponent();
+        await selectProject('MTG');
 
         expect(getLabel().props('title')).toBe('jira-import::MTG-3');
       });
 
-      it('shows warning alert to explain project MTG has been imported 2 times before', () => {
-        wrapper = mountComponent({ mountFunction: mount });
+      it('shows warning alert to explain project MTG has been imported 2 times before', async () => {
+        await mountComponent({ mountFunction: mount });
+        await selectProject('MTG');
 
         expect(getAlert().text()).toBe(
           'You have imported from this project 2 times before. Each new import will create duplicate issues.',
@@ -141,8 +188,9 @@ describe('JiraImportForm', () => {
     });
 
     describe('when selected project has not been imported before', () => {
-      beforeEach(() => {
-        wrapper = mountComponent({ selectedProject: 'MJP' });
+      beforeEach(async () => {
+        await mountComponent();
+        await selectProject('MJP');
       });
 
       it('shows jira-import::MJP-1 label since project MJP has not been imported before', () => {
@@ -156,8 +204,8 @@ describe('JiraImportForm', () => {
   });
 
   describe('form information', () => {
-    beforeEach(() => {
-      wrapper = mountComponent();
+    beforeEach(async () => {
+      await mountComponent();
     });
 
     it('shows a heading for the user mapping section', () => {
@@ -176,8 +224,8 @@ describe('JiraImportForm', () => {
 
   describe('table', () => {
     describe('headers', () => {
-      beforeEach(() => {
-        wrapper = mountComponent({ mountFunction: mount });
+      beforeEach(async () => {
+        await mountComponent({ mountFunction: mount });
       });
 
       it('has a "Jira display name" column', () => {
@@ -194,25 +242,31 @@ describe('JiraImportForm', () => {
     });
 
     describe('body', () => {
-      it('shows all user mappings', () => {
-        wrapper = mountComponent({ mountFunction: mount });
+      it('shows all user mappings', async () => {
+        await mountComponent({ mountFunction: mount });
 
-        expect(getTable().findAll('tbody tr')).toHaveLength(2);
+        expect(getTable().findAll('tbody tr')).toHaveLength(defaultUserMappings.length);
       });
 
       describe('when there is no Jira->GitLab user mapping', () => {
-        it('shows the logged in user in the dropdown', () => {
-          wrapper = mountComponent({
+        it('shows the logged in user in the dropdown', async () => {
+          await mountComponent({
             mountFunction: mount,
-            userMappings: [
-              {
-                jiraAccountId: 'aei23f98f-q23fj98qfj',
-                jiraDisplayName: 'Jane Doe',
-                jiraEmail: 'janedoe@example.com',
-                gitlabId: undefined,
-                gitlabUsername: undefined,
-              },
-            ],
+            userMappingHandler: jest.fn().mockResolvedValue(
+              jiraUserMappingResponse({
+                jiraUsers: [
+                  {
+                    jiraAccountId: 'aei23f98f-q23fj98qfj',
+                    jiraDisplayName: 'Jane Doe',
+                    jiraEmail: 'janedoe@example.com',
+                    gitlabId: null,
+                    gitlabName: null,
+                    gitlabUsername: null,
+                    __typename: 'JiraUser',
+                  },
+                ],
+              }),
+            ),
           });
 
           expect(getUserDropdown().text()).toContain(currentUsername);
@@ -220,20 +274,26 @@ describe('JiraImportForm', () => {
       });
 
       describe('when there is a Jira->GitLab user mapping', () => {
-        it('shows the mapped user in the dropdown', () => {
+        it('shows the mapped user in the dropdown', async () => {
           const gitlabUsername = 'mai';
 
-          wrapper = mountComponent({
+          await mountComponent({
             mountFunction: mount,
-            userMappings: [
-              {
-                jiraAccountId: 'aei23f98f-q23fj98qfj',
-                jiraDisplayName: 'Jane Doe',
-                jiraEmail: 'janedoe@example.com',
-                gitlabId: 14,
-                gitlabUsername,
-              },
-            ],
+            userMappingHandler: jest.fn().mockResolvedValue(
+              jiraUserMappingResponse({
+                jiraUsers: [
+                  {
+                    jiraAccountId: 'aei23f98f-q23fj98qfj',
+                    jiraDisplayName: 'Jane Doe',
+                    jiraEmail: 'janedoe@example.com',
+                    gitlabId: 14,
+                    gitlabName: 'Mai',
+                    gitlabUsername,
+                    __typename: 'JiraUser',
+                  },
+                ],
+              }),
+            ),
           });
 
           expect(getUserDropdown().text()).toContain(gitlabUsername);
@@ -244,40 +304,36 @@ describe('JiraImportForm', () => {
 
   describe('member search', () => {
     describe('when searching for a member', () => {
-      beforeEach(() => {
-        querySpy = jest.fn().mockResolvedValue({
-          data: {
-            project: {
-              projectMembers: {
-                nodes: [
-                  {
-                    user: {
-                      id: 7,
-                      name: 'Frederic Chopin',
-                      username: 'fchopin',
-                    },
-                  },
-                ],
-              },
-            },
-          },
-        });
+      let searchMembersHandler;
 
-        wrapper = mountComponent({ mountFunction: mount });
+      beforeEach(async () => {
+        searchMembersHandler = jest
+          .fn()
+          .mockResolvedValueOnce(projectMembersResponse())
+          .mockResolvedValue(
+            projectMembersResponse([
+              {
+                id: 'gid://gitlab/User/7',
+                name: 'Frederic Chopin',
+                username: 'fchopin',
+                __typename: 'UserCore',
+              },
+            ]),
+          );
+
+        await mountComponent({ mountFunction: mount, searchMembersHandler });
 
         wrapper.findComponent(GlSearchBoxByType).vm.$emit('input', 'fred');
+
+        jest.advanceTimersByTime(debounceWait);
+        await waitForPromises();
       });
 
       it('makes a GraphQL call', () => {
-        const queryArgument = {
-          query: searchProjectMembersQuery,
-          variables: {
-            fullPath: projectPath,
-            search: 'fred',
-          },
-        };
-
-        expect(querySpy).toHaveBeenCalledWith(expect.objectContaining(queryArgument));
+        expect(searchMembersHandler).toHaveBeenLastCalledWith({
+          fullPath: projectPath,
+          search: 'fred',
+        });
       });
 
       it('updates the user list', () => {
@@ -291,22 +347,29 @@ describe('JiraImportForm', () => {
 
   describe('buttons', () => {
     describe('"Continue" button', () => {
-      it('is shown', () => {
-        wrapper = mountComponent();
+      it('is shown', async () => {
+        await mountComponent();
 
         expect(getContinueButton().text()).toBe('Continue');
       });
 
-      it('is in loading state when the form is submitting', () => {
-        wrapper = mountComponent({ isSubmitting: true });
+      it('is in loading state when the form is submitting', async () => {
+        await mountComponent({
+          // Never resolves, so the form stays in the submitting state
+          initiateImportHandler: jest.fn().mockReturnValue(new Promise(() => {})),
+        });
+        await selectProject('MTG');
+
+        wrapper.find('form').trigger('submit');
+        await nextTick();
 
         expect(getContinueButton().props('loading')).toBe(true);
       });
     });
 
     describe('"Cancel" button', () => {
-      beforeEach(() => {
-        wrapper = mountComponent();
+      beforeEach(async () => {
+        await mountComponent();
       });
 
       it('is shown', () => {
@@ -320,109 +383,101 @@ describe('JiraImportForm', () => {
   });
 
   describe('submitting the form', () => {
-    it('initiates the Jira import mutation with the expected arguments', () => {
-      wrapper = mountComponent();
+    it('initiates the Jira import mutation with the expected arguments', async () => {
+      const initiateImportHandler = jest.fn().mockResolvedValue(initiateJiraImportResponse());
 
-      const mutationArguments = {
-        mutation: initiateJiraImportMutation,
-        variables: {
-          input: {
-            jiraProjectKey: 'MTG',
-            projectPath,
-            usersMapping: [
-              {
-                jiraAccountId: 'aei23f98f-q23fj98qfj',
-                gitlabId: 15,
-              },
-              {
-                jiraAccountId: 'fu39y8t34w-rq3u289t3h4i',
-                gitlabId: undefined,
-              },
-            ],
-          },
-        },
-      };
+      await mountComponent({ initiateImportHandler });
+      await selectProject('MTG');
 
       wrapper.find('form').trigger('submit');
+      await waitForPromises();
 
-      expect(mutateSpy).toHaveBeenCalledWith(expect.objectContaining(mutationArguments));
+      expect(initiateImportHandler).toHaveBeenCalledWith({
+        input: {
+          jiraProjectKey: 'MTG',
+          projectPath,
+          usersMapping: [
+            {
+              jiraAccountId: 'aei23f98f-q23fj98qfj',
+              gitlabId: 15,
+            },
+            {
+              jiraAccountId: 'fu39y8t34w-rq3u289t3h4i',
+              gitlabId: null,
+            },
+          ],
+        },
+      });
     });
   });
 
   describe('on mount GraphQL user mapping mutation', () => {
-    it('is called with the expected arguments', () => {
-      wrapper = mountComponent();
+    it('is called with the expected arguments', async () => {
+      const userMappingHandler = jest.fn().mockResolvedValue(jiraUserMappingResponse());
 
-      const mutationArguments = {
-        mutation: getJiraUserMappingMutation,
-        variables: {
-          input: {
-            projectPath,
-            startAt: 0,
-          },
+      await mountComponent({ userMappingHandler });
+
+      expect(userMappingHandler).toHaveBeenCalledWith({
+        input: {
+          projectPath,
+          startAt: 0,
         },
-      };
-
-      expect(mutateSpy).toHaveBeenCalledWith(expect.objectContaining(mutationArguments));
+      });
     });
 
     describe('when there is an error when called', () => {
-      beforeEach(() => {
-        const mutate = jest.fn(() => Promise.reject());
-        wrapper = mountComponent({ mutate });
+      beforeEach(async () => {
+        await mountComponent({
+          userMappingHandler: jest.fn().mockRejectedValue(new Error('Network error')),
+        });
       });
 
-      it('shows error message', () => {
-        expect(getAlert().exists()).toBe(true);
+      it('emits an error', () => {
+        expect(wrapper.emitted('error')).toEqual([
+          ['There was an error retrieving the Jira users.'],
+        ]);
       });
     });
   });
 
   describe('load more users button', () => {
     describe('when all users have been loaded', () => {
-      it('is not shown', () => {
-        wrapper = mountComponent();
+      it('is not shown', async () => {
+        await mountComponent();
 
         expect(findLoadMoreUsersButton().exists()).toBe(false);
       });
     });
 
     describe('when all users have not been loaded', () => {
-      it('is shown', () => {
-        wrapper = mountComponent({ hasMoreUsers: true });
+      it('is shown', async () => {
+        await mountComponent({
+          userMappingHandler: jest
+            .fn()
+            .mockResolvedValue(jiraUserMappingResponse({ jiraUsers: jiraUsersResponse })),
+        });
 
         expect(findLoadMoreUsersButton().exists()).toBe(true);
       });
     });
 
     describe('when clicked', () => {
-      beforeEach(() => {
-        mutateSpy = jest.fn(() =>
-          Promise.resolve({
-            data: {
-              jiraImportStart: { errors: [] },
-              jiraImportUsers: { jiraUsers: jiraUsersResponse, errors: [] },
-            },
-          }),
-        );
+      it('calls the GraphQL user mapping mutation for the next page', async () => {
+        const userMappingHandler = jest
+          .fn()
+          .mockResolvedValue(jiraUserMappingResponse({ jiraUsers: jiraUsersResponse }));
 
-        wrapper = mountComponent({ hasMoreUsers: true });
-      });
-
-      it('calls the GraphQL user mapping mutation', () => {
-        const mutationArguments = {
-          mutation: getJiraUserMappingMutation,
-          variables: {
-            input: {
-              projectPath,
-              startAt: 0,
-            },
-          },
-        };
+        await mountComponent({ userMappingHandler });
 
         findLoadMoreUsersButton().vm.$emit('click');
+        await waitForPromises();
 
-        expect(mutateSpy).toHaveBeenCalledWith(expect.objectContaining(mutationArguments));
+        expect(userMappingHandler).toHaveBeenLastCalledWith({
+          input: {
+            projectPath,
+            startAt: userMappingsPageSize,
+          },
+        });
       });
     });
   });

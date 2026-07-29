@@ -76,7 +76,6 @@ export default {
     'show-comment-form',
     'set-highlighted-row',
     'toggle-line-discussions',
-    'toggle-code-quality-findings',
     'enterdragging',
     'startdragging',
     'stopdragging',
@@ -266,12 +265,6 @@ export default {
             :code-quality="line.left.codequality"
             :sast="line.left.sast"
             :file-path="filePath"
-            @showInlineFindings="
-              $emit(
-                'toggle-code-quality-findings',
-                line.left.codequality[0] ? line.left.codequality[0].line : line.left.sast[0].line,
-              )
-            "
           />
         </div>
         <div
@@ -384,14 +377,6 @@ export default {
             :sast="line.right.sast"
             :file-path="filePath"
             data-testid="inlineFindingsIcon"
-            @showInlineFindings="
-              $emit(
-                'toggle-code-quality-findings',
-                line.right.codequality[0]
-                  ? line.right.codequality[0].line
-                  : line.right.sast[0].line,
-              )
-            "
           />
         </div>
         <div

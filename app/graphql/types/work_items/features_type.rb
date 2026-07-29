@@ -6,6 +6,8 @@ module Types
     class FeaturesType < BaseObject
       graphql_name 'WorkItemFeatures'
 
+      include Types::WorkItems::WidgetVisibility
+
       def self.authorization_scopes
         super + [:ai_workflows]
       end
@@ -21,7 +23,12 @@ module Types
             "Returns `null` if the widget is not available for the work item."
 
         define_method widget_type do
-          object.get_widget(widget_type)
+          widget = object.get_widget(widget_type)
+
+          return unless widget
+          return unless widget_visible?(widget, object)
+
+          widget
         end
       end
     end

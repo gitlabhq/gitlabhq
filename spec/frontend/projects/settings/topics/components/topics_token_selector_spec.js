@@ -1,11 +1,30 @@
 import { GlAvatarLabeled, GlTokenSelector, GlToken } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import TopicsTokenSelector from '~/projects/settings/topics/components/topics_token_selector.vue';
+import searchProjectTopics from '~/graphql_shared/queries/project_topics_search.query.graphql';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
+
+Vue.use(VueApollo);
 
 const mockTopics = [
-  { id: 1, name: 'topic1', title: 'Topic 1', avatarUrl: 'avatar.com/topic1.png' },
-  { id: 2, name: 'GitLab', title: 'GitLab', avatarUrl: 'avatar.com/GitLab.png' },
+  {
+    __typename: 'Topic',
+    id: 'gid://gitlab/Projects::Topic/1',
+    name: 'topic1',
+    title: 'Topic 1',
+    avatarUrl: 'avatar.com/topic1.png',
+  },
+  {
+    __typename: 'Topic',
+    id: 'gid://gitlab/Projects::Topic/2',
+    name: 'GitLab',
+    title: 'GitLab',
+    avatarUrl: 'avatar.com/GitLab.png',
+  },
 ];
 
 const USER_DEFINED_TOKEN = 'user defined token';
@@ -15,26 +34,24 @@ describe('TopicsTokenSelector', () => {
   let div;
   let input;
 
-  const createComponent = ({ selected, topics = mockTopics } = {}) => {
+  const createComponent = async ({ selected, topics = mockTopics } = {}) => {
+    const searchTopicsHandler = jest.fn().mockResolvedValue({
+      data: { topics: { __typename: 'TopicConnection', nodes: topics } },
+    });
+
     wrapper = mount(TopicsTokenSelector, {
       attachTo: div,
+      apolloProvider: createMockApollo([[searchProjectTopics, searchTopicsHandler]]),
       propsData: {
         organizationId: '1',
         selected,
       },
-      data() {
-        return {
-          topics,
-        };
-      },
-      mocks: {
-        $apollo: {
-          queries: {
-            topics: { loading: false },
-          },
-        },
-      },
     });
+
+    // The `topics` query is debounced, so the timers need advancing before it fires.
+    jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+
+    await waitForPromises();
   };
 
   const findTokenSelector = () => wrapper.findComponent(GlTokenSelector);
@@ -73,8 +90,8 @@ describe('TopicsTokenSelector', () => {
   });
 
   describe('accessibility', () => {
-    beforeEach(() => {
-      createComponent();
+    beforeEach(async () => {
+      await createComponent();
     });
 
     it('renders a label in the form group', () => {
@@ -88,12 +105,14 @@ describe('TopicsTokenSelector', () => {
 
   describe('when component is mounted', () => {
     it('parses selected into tokens', async () => {
+      // Unlike `mockTopics`, which comes from the GraphQL query and so uses GIDs, `selected` is
+      // built from the hidden input in `topics/index.js` and uses the array index as the id.
       const selected = [
-        { id: 11, name: 'topic1' },
-        { id: 12, name: 'topic2' },
-        { id: 13, name: 'topic3' },
+        { id: 0, name: 'topic1' },
+        { id: 1, name: 'topic2' },
+        { id: 2, name: 'topic3' },
       ];
-      createComponent({ selected });
+      await createComponent({ selected });
       await nextTick();
 
       wrapper.findAllComponents(GlToken).wrappers.forEach((tokenWrapper, index) => {
@@ -101,8 +120,8 @@ describe('TopicsTokenSelector', () => {
       });
     });
 
-    it('passes topic title to the avatar', () => {
-      createComponent();
+    it('passes topic title to the avatar', async () => {
+      await createComponent();
       const avatars = findAllAvatars();
 
       mockTopics.map((topic, index) => expect(avatars[index].text()).toBe(topic.title));
@@ -111,7 +130,7 @@ describe('TopicsTokenSelector', () => {
 
   describe('when enter key is pressed', () => {
     it('does not submit the form if token selector text input has a value', async () => {
-      createComponent();
+      await createComponent();
 
       await setTokenSelectorInputValue('topic');
 
@@ -124,7 +143,7 @@ describe('TopicsTokenSelector', () => {
 
   describe('when tokens are added', () => {
     it('properly updates selectedTokens and emits `update` with existing token', async () => {
-      createComponent();
+      await createComponent();
 
       await setTokenSelectorInputValue(mockTopics[0].name);
       await tokenSelectorTriggerEnter();
@@ -134,7 +153,7 @@ describe('TopicsTokenSelector', () => {
     });
 
     it('properly updates selectedTokens and emits `update` with user defined token', async () => {
-      createComponent({ topics: [] });
+      await createComponent({ topics: [] });
 
       await setTokenSelectorInputValue(USER_DEFINED_TOKEN);
       await tokenSelectorTriggerEnter();
@@ -146,7 +165,7 @@ describe('TopicsTokenSelector', () => {
     });
 
     it('properly omits duplicate tokens, updates selectedTokens, and emits `update`', async () => {
-      createComponent({ selected: mockTopics });
+      await createComponent({ selected: mockTopics });
 
       await setTokenSelectorInputValue(USER_DEFINED_TOKEN);
       await tokenSelectorTriggerEnter();

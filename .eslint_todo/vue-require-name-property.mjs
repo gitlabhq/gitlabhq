@@ -79,8 +79,6 @@ export default {
     'ee/app/assets/javascripts/geo_shared/list/components/geo_list_item_status.vue',
     'ee/app/assets/javascripts/geo_shared/list/components/geo_list_item_time_ago.vue',
     'ee/app/assets/javascripts/geo_shared/list/components/geo_list_top_bar.vue',
-    'ee/app/assets/javascripts/geo_sites/components/details/stacked_progress_bar.vue',
-    'ee/app/assets/javascripts/geo_sites/components/header/geo_site_health_status.vue',
     'ee/app/assets/javascripts/group_links/group_link_role_selector/components/group_link_role_selector.vue',
     'ee/app/assets/javascripts/incidents/components/published_cell.vue',
     'ee/app/assets/javascripts/insights/components/insights.vue',

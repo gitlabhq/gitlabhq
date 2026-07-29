@@ -41,6 +41,10 @@ module WorkItems
         {}
       end
 
+      def self.required_user_ability
+        nil
+      end
+
       def sync_data_callback_class
         self.class.sync_data_callback_class
       end

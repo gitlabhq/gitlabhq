@@ -1,11 +1,25 @@
 import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import JiraImportApp from '~/jira_import/components/jira_import_app.vue';
 import JiraImportForm from '~/jira_import/components/jira_import_form.vue';
 import JiraImportProgress from '~/jira_import/components/jira_import_progress.vue';
 import JiraImportSetup from '~/jira_import/components/jira_import_setup.vue';
-import { imports, issuesPath, jiraIntegrationPath, jiraProjects, projectPath } from '../mock_data';
+import getJiraImportDetailsQuery from '~/jira_import/queries/get_jira_import_details.query.graphql';
+import { IMPORT_STATE } from '~/jira_import/utils/jira_import_utils';
+import {
+  getJiraImportDetailsQueryResponse,
+  imports,
+  issuesPath,
+  jiraIntegrationPath,
+  jiraProjects,
+  projectPath,
+} from '../mock_data';
+
+Vue.use(VueApollo);
 
 describe('JiraImportApp', () => {
   let wrapper;
@@ -22,14 +36,15 @@ describe('JiraImportApp', () => {
 
   const getLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 
-  const mountComponent = ({
-    isJiraConfigured = true,
-    errorMessage = '',
-    showAlert = false,
-    isInProgress = false,
-    loading = false,
-  } = {}) =>
-    shallowMount(JiraImportApp, {
+  const mountComponent = async ({ isJiraConfigured = true, isInProgress = false } = {}) => {
+    const jiraImportDetailsHandler = jest.fn().mockResolvedValue(
+      getJiraImportDetailsQueryResponse({
+        jiraImportStatus: isInProgress ? IMPORT_STATE.STARTED : IMPORT_STATE.NONE,
+      }),
+    );
+
+    wrapper = shallowMount(JiraImportApp, {
+      apolloProvider: createMockApollo([[getJiraImportDetailsQuery, jiraImportDetailsHandler]]),
       propsData: {
         isJiraConfigured,
         issuesPath,
@@ -37,28 +52,14 @@ describe('JiraImportApp', () => {
         projectPath,
         setupIllustration,
       },
-      data() {
-        return {
-          errorMessage,
-          showAlert,
-          jiraImportDetails: {
-            isInProgress,
-            imports,
-            mostRecentImport: imports[imports.length - 1],
-            projects: jiraProjects,
-          },
-        };
-      },
-      mocks: {
-        $apollo: {
-          loading,
-        },
-      },
     });
 
+    await waitForPromises();
+  };
+
   describe('when Jira integration is not configured', () => {
-    beforeEach(() => {
-      wrapper = mountComponent({ isJiraConfigured: false });
+    beforeEach(async () => {
+      await mountComponent({ isJiraConfigured: false });
     });
 
     it('shows the "Set up Jira integration" screen', () => {
@@ -80,7 +81,8 @@ describe('JiraImportApp', () => {
 
   describe('when Jira integration is configured but data is being fetched', () => {
     beforeEach(() => {
-      wrapper = mountComponent({ loading: true });
+      // Deliberately not awaited: the details query is still in flight.
+      mountComponent();
     });
 
     it('does not show the "Set up Jira integration" screen', () => {
@@ -101,8 +103,8 @@ describe('JiraImportApp', () => {
   });
 
   describe('when Jira integration is configured but import is in progress', () => {
-    beforeEach(() => {
-      wrapper = mountComponent({ isInProgress: true });
+    beforeEach(async () => {
+      await mountComponent({ isInProgress: true });
     });
 
     it('does not show the "Set up Jira integration" screen', () => {
@@ -123,8 +125,8 @@ describe('JiraImportApp', () => {
   });
 
   describe('when Jira integration is configured and there is no import in progress', () => {
-    beforeEach(() => {
-      wrapper = mountComponent();
+    beforeEach(async () => {
+      await mountComponent();
     });
 
     it('does not show the "Set up Jira integration" screen', () => {
@@ -145,8 +147,8 @@ describe('JiraImportApp', () => {
   });
 
   describe('import setup component', () => {
-    beforeEach(() => {
-      wrapper = mountComponent({ isJiraConfigured: false });
+    beforeEach(async () => {
+      await mountComponent({ isJiraConfigured: false });
     });
 
     it('receives the illustration', () => {
@@ -159,8 +161,8 @@ describe('JiraImportApp', () => {
   });
 
   describe('import in progress component', () => {
-    beforeEach(() => {
-      wrapper = mountComponent({ isInProgress: true });
+    beforeEach(async () => {
+      await mountComponent({ isInProgress: true });
     });
 
     it('receives the illustration', () => {
@@ -185,8 +187,8 @@ describe('JiraImportApp', () => {
   });
 
   describe('import form component', () => {
-    beforeEach(() => {
-      wrapper = mountComponent();
+    beforeEach(async () => {
+      await mountComponent();
     });
 
     it('receives the illustration', () => {
@@ -218,11 +220,11 @@ describe('JiraImportApp', () => {
 
   describe('alert', () => {
     it('can be dismissed', async () => {
-      wrapper = mountComponent({
-        errorMessage: 'There was an error importing the Jira project.',
-        showAlert: true,
-        selectedProject: null,
-      });
+      await mountComponent();
+
+      getFormComponent().vm.$emit('error', 'There was an error importing the Jira project.');
+
+      await nextTick();
 
       expect(getAlert().exists()).toBe(true);
 

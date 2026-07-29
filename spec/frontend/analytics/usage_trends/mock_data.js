@@ -1,7 +1,15 @@
-export const mockUsageCounts = [
-  { key: 'projects', value: 10, label: 'Projects' },
-  { key: 'groups', value: 20, label: 'Group' },
-];
+const measurement = (count) => ({
+  nodes: [{ __typename: 'UsageTrendsMeasurement', count, recordedAt: '2020-07-23' }],
+});
+
+export const mockUsageCountsQueryResponse = {
+  projects: measurement(10),
+  groups: measurement(20),
+  users: measurement(30),
+  issues: measurement(40),
+  mergeRequests: measurement(50),
+  pipelines: measurement(60),
+};
 
 export const mockCountsData1 = [
   { __typename: 'UsageTrendsMeasurement', recordedAt: '2020-07-23', count: 52 },

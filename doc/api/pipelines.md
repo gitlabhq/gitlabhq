@@ -577,6 +577,10 @@ Deleting a pipeline does not automatically delete its
 See the [related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/39503)
 for details.
 
+Prerequisites:
+
+- The Owner role for the project.
+
 ```plaintext
 DELETE /projects/:id/pipelines/:pipeline_id
 ```

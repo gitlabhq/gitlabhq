@@ -1,10 +1,20 @@
 #import "./label.fragment.graphql"
 
 # @feature_category: portfolio_management
-query searchLabels($fullPath: ID!, $search: String, $isProject: Boolean = false) {
+query searchLabels(
+  $fullPath: ID!
+  $search: String
+  $isProject: Boolean = false
+  $searchIn: [LabelSearchFieldList!]! = [TITLE, DESCRIPTION]
+) {
   group(fullPath: $fullPath) @skip(if: $isProject) @persist {
     id
-    labels(searchTerm: $search, includeAncestorGroups: true, includeDescendantGroups: true) {
+    labels(
+      searchTerm: $search
+      includeAncestorGroups: true
+      includeDescendantGroups: true
+      searchIn: $searchIn
+    ) {
       __persist
       nodes {
         __persist
@@ -14,7 +24,7 @@ query searchLabels($fullPath: ID!, $search: String, $isProject: Boolean = false)
   }
   project(fullPath: $fullPath) @include(if: $isProject) @persist {
     id
-    labels(searchTerm: $search, includeAncestorGroups: true) {
+    labels(searchTerm: $search, includeAncestorGroups: true, searchIn: $searchIn) {
       __persist
       nodes {
         __persist

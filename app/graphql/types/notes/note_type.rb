@@ -111,3 +111,5 @@ module Types
     end
   end
 end
+
+Types::Notes::NoteType.prepend_mod_with('Types::Notes::NoteType')

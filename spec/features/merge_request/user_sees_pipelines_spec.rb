@@ -85,6 +85,31 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
 
             expect(page).to have_testid('run-mr-pipeline-button', text: 'Run pipeline')
           end
+
+          it 'increments the pipelines tab badge count without a page reload', :sidekiq_inline, :aggregate_failures do
+            stub_ci_pipeline_yaml_file(
+              YAML.dump({ test: { script: 'test', rules: [{ if: '$CI_MERGE_REQUEST_ID' }] } })
+            )
+
+            # Whichever table wrapper the flag mounts registers this operation when
+            # the tab loads; clicking "Run pipeline" before then would drop the
+            # creation event in GraphQL mode. The MR widget subscribes to the same
+            # field under a different operation name, so it can't satisfy this wait.
+            wait_for_new_graphql_subscription('ciPipelineCreationRequestsUpdated') do
+              visit project_merge_request_path(project, merge_request)
+              page.within('.merge-request-tabs') { click_link('Pipelines') }
+              page.within('.ci-table') { expect(page).to have_testid('pipeline-url-link', count: 2) }
+            end
+
+            within('.merge-request-tabs') { expect(page).to have_link('Pipelines 2') }
+
+            click_button 'Run pipeline'
+
+            # The new row appears first (subscription in GraphQL mode, creation-requests
+            # refetch in legacy); the legacy badge updates on the next REST poll.
+            page.within('.ci-table') { expect(page).to have_testid('pipeline-url-link', count: 3) }
+            within('.merge-request-tabs') { expect(page).to have_link('Pipelines 3') }
+          end
         end
 
         context 'with a merged results pipeline' do
@@ -162,7 +187,7 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
             visit_pipelines_tab
 
             within_testid('failed-jobs-card') do
-              expect(page).to have_testid('crud-count', text: '2')
+              expect(page).to have_testid('crud-count', text: '2', exact_text: true)
               expect(page).to have_css('[data-testid="toggle-button"][aria-expanded="false"]')
             end
 
@@ -193,7 +218,7 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
             end
 
             within_testid('failed-jobs-card') do
-              expect(page).to have_testid('crud-count', text: '1')
+              expect(page).to have_testid('crud-count', text: '1', exact_text: true)
               expect(page).to have_testid('widget-row', count: 1)
               expect(page).to have_no_content('failed-job-1')
             end
@@ -513,9 +538,53 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
       it 'appends the newly created pipeline row in place', :aggregate_failures do
         expect(page).to have_testid('pipeline-url-link', count: 1)
 
-        find_by_testid('run-mr-pipeline-button').click
+        click_button 'Run pipeline'
 
         expect(page).to have_testid('pipeline-url-link', count: 2)
+      end
+    end
+
+    context 'when jobs progress through multiple stages', :sidekiq_inline do
+      let!(:build_stage) { create(:ci_stage, pipeline: pipeline, name: 'build', position: 1, status: 'running') }
+      let!(:test_stage) { create(:ci_stage, pipeline: pipeline, name: 'test', position: 2, status: 'created') }
+
+      let!(:build_job) { create(:ci_build, :running, name: 'compile', pipeline: pipeline, ci_stage: build_stage) }
+      let!(:test_job) { create(:ci_build, :created, name: 'rspec', pipeline: pipeline, ci_stage: test_stage) }
+
+      before do
+        visit_pipelines_tab('mrPipelineStatusUpdated')
+      end
+
+      it 'advances the stage icons in place as jobs move through the pipeline', :aggregate_failures do
+        expect_stage_icon('build', 'running')
+        expect_stage_icon('test', 'created')
+
+        # Finishing the build job re-processes the pipeline inline: the build
+        # stage succeeds and the test job is enqueued.
+        build_job.reset.success!
+
+        expect_stage_icon('build', 'success')
+        expect_stage_icon('test', 'pending')
+
+        test_job.reset.run!
+
+        expect_stage_icon('test', 'running')
+
+        test_job.reset.success!
+
+        expect_stage_icon('test', 'success')
+
+        within_testid('pipeline-table-row', match: :first) do
+          expect(page).to have_testid('ci-icon', text: 'Passed')
+        end
+      end
+
+      def expect_stage_icon(stage_name, status)
+        within_testid('pipeline-mini-graph') do
+          within("[aria-label='View Stage: #{stage_name}']") do
+            expect(page).to have_testid("status_#{status}_borderless-icon")
+          end
+        end
       end
     end
   end

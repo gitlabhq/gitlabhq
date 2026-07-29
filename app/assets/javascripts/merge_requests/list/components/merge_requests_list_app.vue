@@ -669,15 +669,15 @@ export default {
       return this.$apollo
         .query({
           query: searchLabelsQuery,
-          variables: { fullPath: this.fullPath, search, isProject: this.isProject },
+          variables: {
+            fullPath: this.fullPath,
+            search,
+            isProject: this.isProject,
+            searchIn: ['TITLE'],
+          },
           fetchPolicy,
         })
-        .then(({ data }) => (data.project || data.group).labels.nodes)
-        .then((labels) =>
-          // TODO remove once we can search by title-only on the backend
-          // https://gitlab.com/gitlab-org/gitlab/-/issues/346353
-          labels.filter((label) => label.title.toLowerCase().includes(search.toLowerCase())),
-        );
+        .then(({ data }) => (data.project || data.group).labels.nodes);
     },
     fetchLabels(search) {
       return this.fetchLabelsWithFetchPolicy(search);

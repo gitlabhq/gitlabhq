@@ -16,6 +16,8 @@ import (
 	pb "gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb/contract"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
 )
 
 func TestRoundTripper_RoundTrip(t *testing.T) {
@@ -266,6 +268,8 @@ func TestManager_SetWorkflowID(t *testing.T) {
 }
 
 func TestNewMcpManager(t *testing.T) {
+	testhelper.ConfigureSecret()
+
 	t.Run("successful initialization with single server", func(t *testing.T) {
 		mcpServer := setupMockMcpServer(t, "", []mcpTool{
 			{Name: "test_tool", Description: "A test tool"},
@@ -1034,6 +1038,8 @@ func TestManager_buildTools(t *testing.T) {
 }
 
 func TestBuildSession_orbitRouting(t *testing.T) {
+	testhelper.ConfigureSecret()
+
 	t.Run("routes orbit server to /api/v4/orbit/mcp", func(t *testing.T) {
 		mcpServer := setupMockMcpServer(t, "orbit", []mcpTool{
 			{Name: "query_graph", Description: "Query the knowledge graph"},
@@ -1082,7 +1088,36 @@ func TestBuildSession_orbitRouting(t *testing.T) {
 	})
 }
 
+func TestBuildSession_signsInternalRequestsWithWorkhorseJWT(t *testing.T) {
+	testhelper.ConfigureSecret()
+
+	for _, serverName := range []string{gitlabServerName, orbitServerName} {
+		t.Run(serverName, func(t *testing.T) {
+			var jwtHeader string
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				jwtHeader = r.Header.Get(secret.RequestHeader)
+				handleMcpRequest(t, w, r, serverName, []mcpTool{{Name: "tool1", Description: "desc"}}, nil)
+			}))
+			t.Cleanup(server.Close)
+
+			apiURL, err := url.Parse(server.URL)
+			require.NoError(t, err)
+
+			rails := api.NewAPI(apiURL, "test-version", http.DefaultTransport)
+			req := httptest.NewRequest("GET", "/test", nil)
+
+			session, err := buildSession(rails, req, serverName, api.McpServerConfig{}, &workflowState{})
+			require.NoError(t, err)
+			require.NotNil(t, session)
+
+			assert.NotEmpty(t, jwtHeader)
+		})
+	}
+}
+
 func TestNewMcpManager_orbitAndGitlabServers(t *testing.T) {
+	testhelper.ConfigureSecret()
+
 	t.Run("initializes both gitlab and orbit servers with correct routing", func(t *testing.T) {
 		gitlabServer := setupMockMcpServer(t, "gitlab", []mcpTool{
 			{Name: "search", Description: "Search code"},
