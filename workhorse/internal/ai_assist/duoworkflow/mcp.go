@@ -18,6 +18,7 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/headers"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/orbit"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/transport"
 
 	pb "gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb/contract"
@@ -221,7 +222,7 @@ func buildSession(rails *api.API, r *http.Request, serverName string, serverCfg 
 
 	if path, ok := internalPaths[serverName]; ok {
 		endpoint = rails.URL.JoinPath(path).String()
-		nextTransport = rails.Client.Transport
+		nextTransport = secret.NewRoundTripper(rails.Client.Transport, rails.Version)
 	} else {
 		endpoint = serverCfg.URL
 		nextTransport = transport.NewRestrictedTransport()
