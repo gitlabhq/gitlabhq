@@ -841,7 +841,7 @@ GEM
       danger (>= 9.3.0)
       danger-gitlab (>= 8.0.0)
       rake (~> 13.0)
-    gitlab-experiment (1.6.0)
+    gitlab-experiment (2.0.0)
       activesupport (>= 3.0)
       request_store (>= 1.0)
     gitlab-fog-azure-rm (2.5.0)
@@ -887,7 +887,7 @@ GEM
       js_regex (~> 3.8)
     gitlab-kas-grpc (19.2.0.pre.rc1)
       grpc (~> 1.0)
-    gitlab-labkit (2.7.0)
+    gitlab-labkit (3.0.0)
       actionpack (>= 5.0.0, < 8.2.0)
       activesupport (>= 5.0.0, < 8.2.0)
       google-protobuf (>= 3.25, < 5.0)
@@ -2509,7 +2509,7 @@ DEPENDENCIES
   gitlab-deploy-driver-argo-rollouts!
   gitlab-duo-workflow-service-client (~> 0.10)!
   gitlab-email_handler!
-  gitlab-experiment (~> 1.6.0)
+  gitlab-experiment (~> 2.0.0)
   gitlab-fog-azure-rm (~> 2.5.0)
   gitlab-gkg-proto (~> 0.87.0)
   gitlab-glaz (~> 0.0.3)
@@ -2519,7 +2519,7 @@ DEPENDENCIES
   gitlab-http!
   gitlab-iam-grpc!
   gitlab-kas-grpc (~> 19.2.0.pre.rc1)
-  gitlab-labkit (~> 2.7.0)
+  gitlab-labkit (~> 3.0.0)
   gitlab-license (~> 2.6)
   gitlab-lookbook (~> 2.3)
   gitlab-mail_room (~> 1.1.0)
@@ -3018,7 +3018,7 @@ CHECKSUMS
   gitlab-deploy-driver-argo-rollouts (0.0.0)
   gitlab-duo-workflow-service-client (0.10)
   gitlab-email_handler (0.1.0)
-  gitlab-experiment (1.6.0) sha256=2f2f4c96d681de8f6af03fdf8aa7ab423027406cf4e6a1cd4d9767ffcebe721c
+  gitlab-experiment (2.0.0) sha256=05183dee7ddad1ef183de43c2c330e57a1457f679744c19c61f637e1135d3c76
   gitlab-fog-azure-rm (2.5.0) sha256=f10fd3f6667925e4ce97cea2fa707b926320c7b7fa06978788e2f452ee7f4db0
   gitlab-gkg-proto (0.87.0) sha256=fd4109f1d38135447718edd3391de568b87bf6e19ad4c5eb07b198f9fa8be93c
   gitlab-glaz (0.0.3) sha256=f484a1eaf28849d7c19cccf2dabc2ee045c7c9fd870af0d4974a638593634829
@@ -3036,7 +3036,7 @@ CHECKSUMS
   gitlab-http (0.1.0)
   gitlab-iam-grpc (0.1.0)
   gitlab-kas-grpc (19.2.0.pre.rc1) sha256=cb744b3a3e071f5e3151dfd85fce2ba7c28b043e95e8826b0ed2b546180d83ea
-  gitlab-labkit (2.7.0) sha256=e84a7c1240f199141a5b2a00632ab5459dbd5c9de964bccc09e111d7419ad9c5
+  gitlab-labkit (3.0.0) sha256=8600c94bbb51a4f5e9ebd7e7b563620cb2bf6b82c7f0f3ef3515611a63e99081
   gitlab-license (2.6.0) sha256=2c1f8ae73835640ec77bf758c1d0c9730635043c01cf77902f7976e826d7d016
   gitlab-lookbook (2.3.14) sha256=146e78e7e72c3ce58b6e71400276af9ce2929c8eff4965bc2d2a70d527d2a0c7
   gitlab-mail_room (1.1.0) sha256=784847b914a6636b30264fd8a042c15e39f3473f3acd78ebd254ac0a885a5878

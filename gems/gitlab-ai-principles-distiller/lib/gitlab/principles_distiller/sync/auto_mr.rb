@@ -540,33 +540,48 @@ module Gitlab
           gitlab-bot
         ].freeze
 
+        # GraphQL `Repository.commits(ref:, path:)` is `calls_gitaly!` and costs
+        # ~12 complexity per aliased call against the API's 250-point cap.
+        # Measured empirically: 13 aliases is the last value that succeeds when
+        # each alias also selects `pageInfo`; we select only `author` here and
+        # still keep a comfortable margin below the ceiling for any future field
+        # additions (a 15-source principle like `backend-ruby` would otherwise
+        # blow past 13 in a single request).
+        AUTHOR_LOOKUP_BATCH_SIZE = 10
+
         # Builds the list of `@username` mentions for the people who changed the
         # SSOT docs backing the given principles since each was last distilled.
         # Returns [] when nothing resolves, so the caller falls back to the team
-        # ping. Best-effort: any git/API failure logs and contributes no
+        # ping. Best-effort: any GraphQL failure logs and contributes no
         # mentions rather than failing the MR.
         #
         # Only the notification changes: CODEOWNERS still routes approval to the
         # principle's owner_team, so an unavailable SSOT author cannot block the
         # MR.
-        def ssot_author_mentions(affected_entries, api_token)
-          emails = affected_entries.values.flat_map { |entry| ssot_author_emails(entry) }.uniq
-          return [] if emails.empty?
+        def ssot_author_mentions(affected_entries)
+          usernames = affected_entries.values.flat_map { |entry| ssot_author_usernames(entry) }.uniq
 
-          emails.filter_map { |email| pingable_username_for(email, api_token) }
-            .uniq
-            .map { |username| "@#{username}" }
+          usernames.map { |username| "@#{username}" }
         end
 
-        # Author emails of every commit that touched this principle's SSOT paths
-        # in the range prior_sha..origin/<default_branch>. Empty when there is no
-        # reachable prior SHA (e.g. first distillation) or the range is empty.
-        def ssot_author_emails(affected_entry)
+        # Pingable GitLab usernames of everyone who authored a commit touching
+        # this principle's SSOT paths in the range prior_sha..target_sha,
+        # resolved via GraphQL `Repository.commits(ref: "A..B", path:)`. The
+        # range walk happens server-side, so it works regardless of how much
+        # history the CI job's local clone has fetched. `Commit.author`
+        # resolves through `User.by_any_email(confirmed: true)`, which matches
+        # private and secondary emails (not just `public_email`), so authors
+        # who never published a public email still resolve.
+        #
+        # Empty when there is no reachable prior SHA (e.g. first distillation),
+        # the range has no matching commits, or the range/paths cannot be
+        # resolved (e.g. prior_sha predates the project's history - logged and
+        # treated as empty, not fatal).
+        def ssot_author_usernames(affected_entry)
           return [] unless affected_entry
 
           prior_sha = affected_entry[:prior_sha]
           return [] if prior_sha.nil? || prior_sha.empty?
-          return [] unless sha_present_locally?(prior_sha)
 
           sources = affected_entry[:changed_sources] || []
           baseline_path = affected_entry.dig(:config, 'baseline')
@@ -574,69 +589,85 @@ module Gitlab
           paths.unshift(baseline_path) if baseline_path
           return [] if paths.empty?
 
-          target_ref = "origin/#{workflow.default_branch}"
-          cmd = ['git', '-C', Workspace.path, 'log', '--format=%aE',
-            "#{prior_sha}..#{target_ref}", '--', *paths]
-          out = IO.popen(cmd, err: File::NULL, &:read)
-          return [] if out.nil?
+          commit_range = "#{prior_sha}..#{distillation_base_sha}"
 
-          out.split("\n").map(&:strip).reject(&:empty?).uniq
+          paths.each_slice(AUTHOR_LOOKUP_BATCH_SIZE).flat_map do |batch|
+            pingable_usernames_for_paths(commit_range, batch)
+          end.uniq
         end
 
-        # Resolves a commit-author email to a pingable GitLab username, or nil
-        # when it cannot be resolved (private email), the account is a bot (per
-        # the API `bot` flag), or it is on the non-pingable deny-list. Memoized
-        # per run so a fan-out does not re-query the same email.
-        # rubocop:disable Gitlab/ModuleWithInstanceVariables -- run-scoped memo on the host Sync instance
-        def pingable_username_for(email, api_token)
-          @username_by_email ||= {}
-          return @username_by_email[email] if @username_by_email.key?(email)
+        # Per-path commit page size for the author lookup. A page beyond this
+        # size is unusual (it implies 100+ commits touched a single SSOT file
+        # since the last distillation) but not impossible for a
+        # frequently-edited doc over a long-stale principle; see
+        # pingable_usernames_from_commits for the truncation warning.
+        AUTHOR_LOOKUP_PAGE_SIZE = 100
 
-          @username_by_email[email] = resolve_pingable_username(email, api_token)
+        # One GraphQL round trip for a batch of paths (see
+        # AUTHOR_LOOKUP_BATCH_SIZE), each as its own aliased `commits` field so
+        # a single request covers every source of a principle without
+        # exceeding the query complexity limit. Returns [] (logged) on any
+        # GraphQL failure, including an unreachable ref in `commit_range`.
+        def pingable_usernames_for_paths(commit_range, paths)
+          aliases = paths.each_with_index.to_h { |path, i| ["p#{i}", path] }
+          path_vars = aliases.keys.map { |alias_name| "$path_#{alias_name}: String!" }.join(', ')
+
+          query = <<~GRAPHQL
+            query($fullPath: ID!, $range: String!, #{path_vars}) {
+              project(fullPath: $fullPath) {
+                repository {
+                  #{aliases.keys.map { |alias_name| commits_alias_fragment(alias_name) }.join("\n")}
+                }
+              }
+            }
+          GRAPHQL
+
+          variables = { fullPath: workflow.catalog_project_path, range: commit_range }
+          aliases.each { |alias_name, path| variables["path_#{alias_name}"] = path }
+
+          data = workflow.query_graphql(query, variables)
+          return [] unless data
+
+          repository = data.dig('project', 'repository') || {}
+          aliases.flat_map do |alias_name, path|
+            pingable_usernames_from_commits(repository[alias_name], path)
+          end.uniq
         end
-        # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
-        def resolve_pingable_username(email, api_token)
-          user = search_user_by_email(email, api_token)
-          return unless user
-
-          return if user['bot'] == true
-
-          username = user['username'].to_s
-          return if username.empty?
-          return if NON_PINGABLE_USERNAMES.include?(username.downcase)
-
-          username
+        def commits_alias_fragment(alias_name)
+          "#{alias_name}: commits(ref: $range, path: $path_#{alias_name}, first: #{AUTHOR_LOOKUP_PAGE_SIZE}) " \
+            '{ nodes { author { username bot } } pageInfo { hasNextPage } }'
         end
 
-        # GET /users?search=<email>. Returns the user whose public_email exactly
-        # matches, or nil when the email does not resolve (private email) or the
-        # lookup fails. The exact-match guard is required because the search
-        # endpoint also matches username and name.
-        def search_user_by_email(email, api_token)
-          uri = URI("#{workflow.gitlab_host}/api/v4/users")
-          uri.query = URI.encode_www_form(search: email)
-          http = Net::HTTP.new(uri.host, uri.port)
-          http.use_ssl = uri.scheme == 'https'
-          http.read_timeout = 60
-          request = Net::HTTP::Get.new(uri)
-          request['PRIVATE-TOKEN'] = api_token
-          response = http.request(request)
-          unless response.is_a?(Net::HTTPSuccess)
-            warn Rainbow("WARNING: user lookup for #{email} failed (#{response.code}); " \
-              'skipping this SSOT author').yellow
-            return
+        # Extracts pingable usernames from one `commits` connection's nodes:
+        # drops commits with no linked GitLab account, bot accounts (per the
+        # API `bot` flag), and the non-pingable deny-list.
+        #
+        # Warns (without failing) when the connection has more pages than
+        # AUTHOR_LOOKUP_PAGE_SIZE, since pagination is not implemented here:
+        # authors of commits beyond the first page are silently missed rather
+        # than pinged.
+        def pingable_usernames_from_commits(commits_connection, path)
+          return [] unless commits_connection
+
+          if commits_connection.dig('pageInfo', 'hasNextPage')
+            warn Rainbow("WARNING: #{path} has more than #{AUTHOR_LOOKUP_PAGE_SIZE} commits in range; " \
+              'some SSOT authors may not be pinged').yellow
           end
 
-          # /users?search= matches on username, name, and email, so a result is
-          # not guaranteed to be an email match. Require an exact public_email
-          # match so we never ping the wrong person.
-          users = JSON.parse(response.body)
-          users.find { |u| u['public_email'].to_s.casecmp?(email) }
-        rescue StandardError => e
-          warn Rainbow("WARNING: user lookup for #{email} failed (#{e.message}); " \
-            'skipping this SSOT author').yellow
-          nil
+          nodes = commits_connection['nodes'] || []
+
+          nodes.filter_map do |node|
+            author = node['author']
+            next unless author
+            next if author['bot'] == true
+
+            username = author['username'].to_s
+            next if username.empty?
+            next if NON_PINGABLE_USERNAMES.include?(username.downcase)
+
+            username
+          end
         end
 
         def fetch_current_user_id(api_token)
@@ -796,7 +827,7 @@ module Gitlab
           # the whole owning team. Falls back to the team ping (or the
           # non-mention slug when fallback_ping_team: false) only when no
           # author resolves (see ssot_author_mentions and team_display).
-          mentions = ssot_author_mentions(affected.slice(*changed_principles.keys), api_token)
+          mentions = ssot_author_mentions(affected.slice(*changed_principles.keys))
           ping_line = if mentions.empty?
                         "Please review: **#{manifest.team_display(team)}**."
                       else

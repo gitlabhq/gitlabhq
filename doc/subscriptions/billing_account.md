@@ -109,7 +109,7 @@ To add another billing account manager for your account:
 The invited user receives an email with an invitation to Customers Portal.
 The invitation is valid for seven days.
 If the user does not accept the invitation before it expires, you can send them a new invitation.
-You can have maximum 15 pending invitations at a time.
+You can have a maximum of 15 pending invitations at a time.
 
 ### Remove a billing account manager
 

@@ -5,7 +5,7 @@ module API
     class Base < ::API::Base
       include ::API::Helpers::HeadersHelpers
       include APIGuard
-      include ::Mcp::Tools::VersionHelper
+      include ::Mcp::Tools::Base::VersionHelper
 
       helpers ::API::Helpers::Mcp::AuthChallenge
 

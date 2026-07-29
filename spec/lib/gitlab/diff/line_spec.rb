@@ -282,4 +282,36 @@ RSpec.describe Gitlab::Diff::Line do
       it { is_expected.to eq("line_#{file_hash}_#{line.old_pos}") }
     end
   end
+
+  describe '.parse_id' do
+    let(:file_hash) { 'a' * 40 }
+
+    it 'parses an unchanged/removed line id' do
+      expect(described_class.parse_id("line_#{file_hash}_20")).to eq(
+        file_hash: file_hash, added: false, line: 20
+      )
+    end
+
+    it 'parses an added line id' do
+      expect(described_class.parse_id("line_#{file_hash}_A25")).to eq(
+        file_hash: file_hash, added: true, line: 25
+      )
+    end
+
+    it 'round-trips with #id' do
+      line = described_class.new('<input>', nil, 1, 20, 25)
+
+      expect(described_class.parse_id(line.id(file_hash))).to eq(
+        file_hash: file_hash, added: false, line: 20
+      )
+    end
+
+    it 'returns nil for a malformed id' do
+      expect(described_class.parse_id('not-a-line-id')).to be_nil
+    end
+
+    it 'returns nil when the id is not a string' do
+      expect(described_class.parse_id(nil)).to be_nil
+    end
+  end
 end

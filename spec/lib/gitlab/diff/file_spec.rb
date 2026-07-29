@@ -273,11 +273,23 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
 
         expect(diff_file.diff_lines).to eq(unfolded_lines)
       end
+
+      it 'invalidates memoized highlighted diff lines' do
+        expect(diff_file).to receive(:highlighted_diff_lines=).with(nil)
+
+        diff_file.unfold_diff_lines(position)
+      end
     end
 
     context 'when unfold not required' do
       before do
         allow(unfolder).to receive(:unfold_required?) { false }
+      end
+
+      it 'does not invalidate highlighted diff lines' do
+        expect(diff_file).not_to receive(:highlighted_diff_lines=)
+
+        diff_file.unfold_diff_lines(position)
       end
 
       it 'keeps @unfolded false' do

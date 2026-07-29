@@ -123,7 +123,7 @@ describe('Job table app', () => {
     it('when switching tabs only the skeleton loader should show', () => {
       createComponent();
 
-      findTabs().vm.$emit('fetchJobsByStatus', null);
+      findTabs().vm.$emit('fetch-jobs-by-status', null);
 
       expect(findSkeletonLoader().exists()).toBe(true);
       expect(findLoadingSpinner().exists()).toBe(false);
@@ -143,10 +143,10 @@ describe('Job table app', () => {
       expect(findLoadingSpinner().exists()).toBe(false);
     });
 
-    it('should refetch jobs query on fetchJobsByStatus event', async () => {
+    it('should refetch jobs query on fetch-jobs-by-status event', async () => {
       expect(successHandler).toHaveBeenCalledTimes(1);
 
-      await findTabs().vm.$emit('fetchJobsByStatus');
+      await findTabs().vm.$emit('fetch-jobs-by-status');
 
       expect(successHandler).toHaveBeenCalledTimes(2);
     });
@@ -154,7 +154,7 @@ describe('Job table app', () => {
     it('avoids refetch jobs query when scope has not changed', async () => {
       expect(successHandler).toHaveBeenCalledTimes(1);
 
-      await findTabs().vm.$emit('fetchJobsByStatus', null);
+      await findTabs().vm.$emit('fetch-jobs-by-status', null);
 
       expect(successHandler).toHaveBeenCalledTimes(1);
     });
@@ -163,15 +163,15 @@ describe('Job table app', () => {
       expect(countSuccessHandler).toHaveBeenCalledTimes(1);
 
       // after applying filter a new count is fetched
-      findFilteredSearch().vm.$emit('filterJobsBySearch', [mockFailedSearchToken]);
+      findFilteredSearch().vm.$emit('filter-jobs-by-search', [mockFailedSearchToken]);
 
       expect(successHandler).toHaveBeenCalledTimes(2);
 
       // tab is switched to `finished`, no count
-      await findTabs().vm.$emit('fetchJobsByStatus', ['FAILED', 'SUCCESS', 'CANCELED']);
+      await findTabs().vm.$emit('fetch-jobs-by-status', ['FAILED', 'SUCCESS', 'CANCELED']);
 
       // tab is switched back to `all`, the old filter count has to be overwritten with new count
-      await findTabs().vm.$emit('fetchJobsByStatus', null);
+      await findTabs().vm.$emit('fetch-jobs-by-status', null);
 
       expect(successHandler).toHaveBeenCalledTimes(4);
     });
@@ -341,7 +341,7 @@ describe('Job table app', () => {
 
         await waitForPromises();
 
-        await findTabs().vm.$emit('fetchJobsByStatus', scope);
+        await findTabs().vm.$emit('fetch-jobs-by-status', scope);
 
         expect(findFilteredSearch().exists()).toBe(shouldDisplay);
       },
@@ -360,7 +360,7 @@ describe('Job table app', () => {
 
         expect(successHandler).toHaveBeenCalledTimes(1);
 
-        await findFilteredSearch().vm.$emit('filterJobsBySearch', searchTokens);
+        await findFilteredSearch().vm.$emit('filter-jobs-by-search', searchTokens);
 
         expect(successHandler).toHaveBeenCalledTimes(2);
         expect(successHandler).toHaveBeenNthCalledWith(2, { first: 50, ...expectedQueryParams });
@@ -373,7 +373,7 @@ describe('Job table app', () => {
 
         expect(countSuccessHandler).toHaveBeenCalledTimes(1);
 
-        await findFilteredSearch().vm.$emit('filterJobsBySearch', searchTokens);
+        await findFilteredSearch().vm.$emit('filter-jobs-by-search', searchTokens);
 
         expect(countSuccessHandler).toHaveBeenCalledTimes(2);
         expect(countSuccessHandler).toHaveBeenNthCalledWith(2, expectedQueryParams);
@@ -391,7 +391,7 @@ describe('Job table app', () => {
       expect(successHandler).toHaveBeenCalledTimes(1);
       expect(countSuccessHandler).toHaveBeenCalledTimes(1);
 
-      await findFilteredSearch().vm.$emit('filterJobsBySearch', ['raw text']);
+      await findFilteredSearch().vm.$emit('filter-jobs-by-search', ['raw text']);
 
       expect(createAlert).toHaveBeenCalledWith(expectedWarning);
       expect(successHandler).toHaveBeenCalledTimes(1);
@@ -403,7 +403,7 @@ describe('Job table app', () => {
 
       jest.spyOn(urlUtils, 'updateHistory');
 
-      await findFilteredSearch().vm.$emit('filterJobsBySearch', [mockFailedSearchToken]);
+      await findFilteredSearch().vm.$emit('filter-jobs-by-search', [mockFailedSearchToken]);
 
       expect(urlUtils.updateHistory).toHaveBeenCalledWith({
         url: `${TEST_HOST}/?statuses=FAILED`,
@@ -415,7 +415,7 @@ describe('Job table app', () => {
 
       jest.spyOn(urlUtils, 'updateHistory');
 
-      findFilteredSearch().vm.$emit('filterJobsBySearch', [mockFailedSearchToken]);
+      findFilteredSearch().vm.$emit('filter-jobs-by-search', [mockFailedSearchToken]);
 
       expect(successHandler).toHaveBeenCalledWith({
         first: 50,
@@ -426,7 +426,7 @@ describe('Job table app', () => {
         url: `${TEST_HOST}/?statuses=FAILED`,
       });
 
-      findFilteredSearch().vm.$emit('filterJobsBySearch', []);
+      findFilteredSearch().vm.$emit('filter-jobs-by-search', []);
 
       expect(urlUtils.updateHistory).toHaveBeenCalledWith({
         url: `${TEST_HOST}/`,
@@ -455,7 +455,7 @@ describe('Job table app', () => {
 
           expect(successHandler).toHaveBeenCalledTimes(1);
 
-          await findFilteredSearch().vm.$emit('filterJobsBySearch', searchTokens);
+          await findFilteredSearch().vm.$emit('filter-jobs-by-search', searchTokens);
 
           expect(successHandler).toHaveBeenCalledTimes(2);
           expect(successHandler).toHaveBeenNthCalledWith(2, { first: 50, ...expectedQueryParams });
@@ -468,7 +468,7 @@ describe('Job table app', () => {
 
           expect(countSuccessHandler).toHaveBeenCalledTimes(1);
 
-          await findFilteredSearch().vm.$emit('filterJobsBySearch', searchTokens);
+          await findFilteredSearch().vm.$emit('filter-jobs-by-search', searchTokens);
 
           expect(countSuccessHandler).toHaveBeenCalledTimes(2);
           expect(countSuccessHandler).toHaveBeenNthCalledWith(2, expectedQueryParams);

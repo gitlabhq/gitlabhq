@@ -33,7 +33,7 @@ module Mcp
 
         override :input_schema
         def input_schema
-          Mcp::Tools::SchemaDefaults.with_additional_properties(
+          Mcp::Tools::Base::SchemaDefaults.with_additional_properties(
             type: 'object',
             properties: properties,
             required: %w[scope search]

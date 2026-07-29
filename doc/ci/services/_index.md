@@ -32,7 +32,7 @@ case is to run a database container, for example:
 > Without this flag, services may not work properly. For more information, see
 > [feature flags](https://docs.gitlab.com/runner/configuration/feature-flags)
 
-Consider that you're developing a content management system that uses database for storage.
+Consider that you're developing a content management system that uses a database for storage.
 You need a database to test all features in the application. Running a database
 container as a service image is a good use case in this scenario.
 
@@ -40,7 +40,7 @@ Use an existing image and run it as an additional container
 instead of installing `mysql` every time you build a project.
 
 You're not limited to only database services. You can add as many
-services you need to `.gitlab-ci.yml` or manually modify the [`config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration/).
+services as you need to `.gitlab-ci.yml` or manually modify the [`config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration/).
 Any image found at [Docker Hub](https://hub.docker.com/) or your private container registry can be
 used as a service.
 
@@ -293,7 +293,7 @@ services:
 ```
 
 The runner still starts two containers using the `mysql:latest` image,
-however now each of them are also accessible with the alias configured
+however now each of them is also accessible with the alias configured
 in `.gitlab-ci.yml` file.
 
 ## Setting a command for the service
@@ -353,7 +353,7 @@ GitLab Runner names containers based on the following conditions:
 
 The following examples illustrate how aliases are used to name service containers for the Kubernetes executor.
 
-### One alias per services
+### One alias per service
 
 In the following `.gitlab-ci.yml` file:
 
@@ -369,7 +369,7 @@ job:
       alias: mysql
 ```
 
-The system creates job Pod with containers named `alpine` and `mysql` in addition to the standard `build` and `helper` containers.
+The system creates a job Pod with containers named `alpine` and `mysql` in addition to the standard `build` and `helper` containers.
 These aliases are used because they:
 
 - Are not used by another service container.
@@ -392,7 +392,7 @@ job:
 The system creates two more containers named `mysql` and `svc-0` in addition to the `build` and `helper` containers.
 The `mysql` container corresponds to the `mysql:lts` image, while the `svc-0` container corresponds to the `mysql:latest` image.
 
-### Multiple aliases per services
+### Multiple aliases per service
 
 In the following `.gitlab-ci.yml` file:
 
@@ -532,7 +532,7 @@ Accepted values are:
 
 Any other values result in an error message and effectively disable the feature.
 
-When enabled, logs for all service containers are captured and streamed into the jobs trace log concurrently with
+When enabled, logs for all service containers are captured and streamed into the job's trace log concurrently with
 other logs. Logs from each container are prefixed with the container's aliases, and displayed in a different color.
 
 > [!note]
@@ -609,7 +609,7 @@ The service instructs its API to start a container image build. The Docker Engin
 must have access to the files you're referencing in your Dockerfile. Hence, you
 need access to the `CI_PROJECT_DIR` in the service. However, Docker Engine does not try to access it until
 the `docker build` command is called in a job. At this time, the `/builds` directory
-is already populated with data. The service that tries to write the `CI_PROJECT_DIR`
+is already populated with data. The service that tries to write to the `CI_PROJECT_DIR`
 immediately after it started might fail with a `No such file or directory` error.
 
 In scenarios where services that interact with job data are not controlled by the job itself, consider the

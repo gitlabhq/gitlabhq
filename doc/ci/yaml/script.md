@@ -112,7 +112,7 @@ job2:
 [`after_script`](_index.md) commands run if a job is canceled while the `before_script`
 or `script` section of that job are running.
 
-The job's status in the UI is `canceling` while the `after_script` are executing,
+The job's status in the UI is `canceling` while the `after_script` is executing,
 and changes to `canceled` after the `after_script` commands complete. The `$CI_JOB_STATUS`
 predefined variable has a value of `canceled` while the `after_script` commands are running.
 

@@ -49,7 +49,7 @@ module Mcp
             end
           end
 
-          Mcp::Tools::SchemaDefaults.with_additional_properties(
+          Mcp::Tools::Base::SchemaDefaults.with_additional_properties(
             type: 'object',
             properties: properties,
             required: required_fields

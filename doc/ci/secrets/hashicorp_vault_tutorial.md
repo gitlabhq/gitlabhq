@@ -252,7 +252,7 @@ In this example:
   is set to match the `bound_audiences` parameter of the `role` used for the Vault JWT authentication method.
 - `@secret` - The vault name, where your Secrets Engines are enabled.
 - `myproject/staging/db` - The path location of the secret in Vault.
-- `password` The field to be fetched in the referenced secret.
+- `password` - The field to be fetched in the referenced secret.
 
 If more than one ID token is defined, use the `token` keyword to specify which token should be used. For example:
 

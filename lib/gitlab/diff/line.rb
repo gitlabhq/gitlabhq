@@ -8,6 +8,21 @@ module Gitlab
       #
       SERIALIZE_KEYS = %i[line_code rich_text text type index old_pos new_pos].freeze
 
+      ID_PATTERN = /\Aline_(?<file_hash>\h+)_(?<added>A)?(?<line>\d+)\z/
+
+      def self.parse_id(id)
+        return unless id.is_a?(String)
+
+        match = ID_PATTERN.match(id)
+        return unless match
+
+        {
+          file_hash: match[:file_hash],
+          added: !match[:added].nil?,
+          line: match[:line].to_i
+        }
+      end
+
       attr_reader :marker_ranges
       attr_writer :text, :rich_text
       attr_accessor :index, :old_pos, :new_pos, :line_code, :type, :embedded_image, :expanded

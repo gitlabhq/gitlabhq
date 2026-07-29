@@ -255,10 +255,6 @@ class PagesDomain < ApplicationRecord
 
   private
 
-  def unique_attributes
-    [:domain]
-  end
-
   def max_certificate_key_length
     return unless pkey.is_a?(OpenSSL::PKey::RSA)
     return if pkey.to_s.bytesize <= MAX_CERTIFICATE_KEY_LENGTH

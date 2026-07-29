@@ -1096,7 +1096,6 @@
 - './ee/spec/models/concerns/ee/milestoneable_spec.rb'
 - './ee/spec/models/concerns/ee/noteable_spec.rb'
 - './ee/spec/models/concerns/ee/participable_spec.rb'
-- './ee/spec/models/concerns/ee/project_security_scanners_information_spec.rb'
 - './ee/spec/models/concerns/geo/verification_state_spec.rb'
 - './ee/spec/models/dast/branch_spec.rb'
 - './ee/spec/models/dast/profile_schedule_spec.rb'

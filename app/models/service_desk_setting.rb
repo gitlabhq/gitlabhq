@@ -134,10 +134,6 @@ class ServiceDeskSetting < ApplicationRecord
 
   private
 
-  def unique_attributes
-    [:custom_email, :project_key_address_slug]
-  end
-
   def set_project_key_address_slug
     self.project_key_address_slug =
       project_key.present? ? "#{project.full_path_slug}-#{project_key}" : nil

@@ -6174,8 +6174,18 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
           allow(merge_request).to receive(:recheck_merge_status?).and_return(false)
         end
 
-        it 'sets skip_conflict_check to false' do
-          expect(subject[:skip_conflict_check]).to be_falsy
+        it 'skips the conflict check while the auto_merge_skip_conflict_check flag is enabled' do
+          expect(subject[:skip_conflict_check]).to be_truthy
+        end
+
+        context 'when the auto_merge_skip_conflict_check feature flag is disabled' do
+          before do
+            stub_feature_flags(auto_merge_skip_conflict_check: false)
+          end
+
+          it 'sets skip_conflict_check to false' do
+            expect(subject[:skip_conflict_check]).to be_falsy
+          end
         end
       end
     end
@@ -6198,8 +6208,18 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
           allow(merge_request).to receive(:recheck_merge_status?).and_return(false)
         end
 
-        it 'sets skip_conflict_check to false' do
-          expect(subject[:skip_conflict_check]).to be_falsy
+        it 'skips the conflict check while the auto_merge_skip_conflict_check flag is enabled' do
+          expect(subject[:skip_conflict_check]).to be_truthy
+        end
+
+        context 'when the auto_merge_skip_conflict_check feature flag is disabled' do
+          before do
+            stub_feature_flags(auto_merge_skip_conflict_check: false)
+          end
+
+          it 'sets skip_conflict_check to false' do
+            expect(subject[:skip_conflict_check]).to be_falsy
+          end
         end
       end
     end

@@ -62,11 +62,12 @@ The `auto_mr:` map controls how the scheduled sync opens its merge request:
 ## Merge request reviewers
 
 Each per-team merge request pings the people who changed the source documentation
-since the principle was last distilled. The sync lists the commit authors in the
-range between the previous distillation and the target branch, resolves each
-author to a GitLab user, and mentions the users in the merge request summary. The
-sync skips authors that are bot accounts or that it cannot resolve to a user, for
-example when the author has no public email address.
+since the principle was last distilled. The sync queries the GitLab GraphQL API for
+the commit authors in the range between the previous distillation and the target
+branch, and mentions the linked GitLab users in the merge request summary. This
+matches on any confirmed email associated with the account, not only a public one.
+The sync skips authors that are bot accounts, on a small deny-list of known
+service accounts, or whose commit email is not linked to any GitLab account.
 
 When no author resolves to a user, the summary falls back to the
 `fallback_ping_team` behavior for the `owner_team`. Approval always routes to

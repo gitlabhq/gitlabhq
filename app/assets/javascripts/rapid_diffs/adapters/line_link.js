@@ -25,13 +25,15 @@ function scrollToLegacyFileFragment() {
 
 function assignLinkedFileLink(lineNumber) {
   if (lineNumber.linked) return;
-  const href = withLinkedFileUrlParams(new URL(window.location), {
+  const { hash } = new URL(lineNumber.href);
+  const expanded = Boolean(lineNumber.closest('[data-expanded]'));
+  // eslint-disable-next-line no-param-reassign
+  lineNumber.href = withLinkedFileUrlParams(new URL(window.location), {
     oldPath: this.data.oldPath,
     newPath: this.data.newPath,
+    hash,
+    line: expanded ? hash.slice(1) : undefined,
   });
-  href.hash = new URL(lineNumber.href).hash;
-  // eslint-disable-next-line no-param-reassign
-  lineNumber.href = href;
   // eslint-disable-next-line no-param-reassign
   lineNumber.linked = true;
 }

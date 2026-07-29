@@ -92,4 +92,4 @@ module SessionsHelper
   end
 end
 
-SessionsHelper.prepend_mod_with('SessionsHelper')
+SessionsHelper.prepend_mod

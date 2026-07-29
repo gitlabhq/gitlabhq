@@ -2,6 +2,7 @@ export const generateMockPipeline = ({
   id = '123',
   mergeRequestEventType = 'DETACHED',
   status = 'SUCCESS',
+  downstream = { count: 0, nodes: [], __typename: 'PipelineConnection' },
 } = {}) => ({
   id: `gid://gitlab/Ci::Pipeline/${id}`,
   iid: id,
@@ -116,11 +117,7 @@ export const generateMockPipeline = ({
     fullPath: 'gitlab-org/gitlab',
     __typename: 'Project',
   },
-  downstream: {
-    count: 0,
-    nodes: [],
-    __typename: 'PipelineConnection',
-  },
+  downstream,
   user: {
     id: 'gid://gitlab/User/1',
     avatarUrl: '/uploads/-/system/user/avatar/5327378/avatar.png',
@@ -375,22 +372,25 @@ export const generateMockDownstreamPipeline = ({ id = '100', status = 'RUNNING' 
   },
   sourceJob: {
     id: `gid://gitlab/Ci::Build/${id}`,
-
+    name: `bridge-${id}`,
     retried: false,
     __typename: 'CiBuild',
   },
   __typename: 'Pipeline',
 });
 
-export const generateMockDownstreamResponse = (pipelinesWithDownstream = []) => ({
+export const generatePipelinesDownstreamResponse = (pipelines = []) => ({
   data: {
     project: {
+      __typename: 'Project',
       id: 'gid://gitlab/Project/1',
       mergeRequest: {
+        __typename: 'MergeRequest',
         id: 'gid://gitlab/MergeRequest/1',
         pipelines: {
-          nodes: pipelinesWithDownstream.map(({ pipelineId, downstreamNodes }) => ({
-            id: `gid://gitlab/Ci::Pipeline/${pipelineId}`,
+          __typename: 'PipelineConnection',
+          nodes: pipelines.map(({ id, downstreamNodes }) => ({
+            id,
             downstream: {
               count: downstreamNodes.length,
               nodes: downstreamNodes,
@@ -398,11 +398,8 @@ export const generateMockDownstreamResponse = (pipelinesWithDownstream = []) => 
             },
             __typename: 'Pipeline',
           })),
-          __typename: 'PipelineConnection',
         },
-        __typename: 'MergeRequest',
       },
-      __typename: 'Project',
     },
   },
 });

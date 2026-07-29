@@ -22,21 +22,6 @@ query getMergeRequestPipelines(
         count
         nodes {
           ...MergeRequestPipelineListItem
-          downstream(first: 3) {
-            count
-            nodes {
-              id
-              detailedStatus {
-                id
-                icon
-                name
-              }
-              sourceJob {
-                id
-                retried
-              }
-            }
-          }
         }
         pageInfo {
           ...PageInfo

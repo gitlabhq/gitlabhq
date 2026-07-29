@@ -200,21 +200,21 @@ module Mcp
         def process_result(result)
           if result['errors']
             error_messages = extract_error_messages(result['errors'])
-            return ::Mcp::Tools::Response.error(error_messages.join(', '))
+            return ::Mcp::Tools::Base::Response.error(error_messages.join(', '))
           end
 
           operation_data = result.dig('data', operation_name)
 
-          return ::Mcp::Tools::Response.error("Operation returned no data") if operation_data.nil?
+          return ::Mcp::Tools::Base::Response.error("Operation returned no data") if operation_data.nil?
 
           operation_errors = operation_data['errors']
           if operation_errors&.any?
             error_messages = extract_error_messages(operation_errors)
-            return ::Mcp::Tools::Response.error(error_messages.join(', '))
+            return ::Mcp::Tools::Base::Response.error(error_messages.join(', '))
           end
 
           formatted_content = [{ type: 'text', text: Gitlab::Json.dump(operation_data) }]
-          ::Mcp::Tools::Response.success(formatted_content, operation_data)
+          ::Mcp::Tools::Base::Response.success(formatted_content, operation_data)
         end
 
         def extract_error_messages(errors)
@@ -237,7 +237,7 @@ end
 **Key Design Decisions**:
 
 - **File-backed operations**: GraphQL operations live in `.graphql` files that are validated against the schema at build time
-- **MCP Response format**: Returns `Mcp::Tools::Response` objects (success or error)
+- **MCP Response format**: Returns `Mcp::Tools::Base::Response` objects (success or error)
 - **Flexible operation support**: Supports both mutations and queries
 - **Context isolation**: Each tool instance is independent (no shared state)
 - **Framework agnostic**: Works with any GraphQL operation type

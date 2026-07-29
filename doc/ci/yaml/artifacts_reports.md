@@ -224,7 +224,7 @@ as a list of filenames, a filename pattern, or both:
 - A filename pattern (`cyclonedx: gl-sbom-*.json`, `junit: test-results/**/*.json`).
 - An array of filenames (`cyclonedx: [gl-sbom-npm-npm.cdx.json, gl-sbom-bundler-gem.cdx.json]`).
 - A combination of both (`cyclonedx: [gl-sbom-*.json, my-cyclonedx.json]`).
-- Directories are not supported(`cyclonedx: test-results`, `cyclonedx: test-results/**`).
+- Directories are not supported (`cyclonedx: test-results`, `cyclonedx: test-results/**`).
 
 The following example shows a job that exposes CycloneDX artifacts:
 

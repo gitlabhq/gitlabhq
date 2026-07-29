@@ -5,6 +5,7 @@ export const removeLinkedFileUrlParams = (originalUrl) => {
   url.searchParams.delete('file_path');
   url.searchParams.delete('old_path');
   url.searchParams.delete('new_path');
+  url.searchParams.delete('line');
   if (
     url.hash.startsWith('#line_') ||
     url.hash.startsWith('#note_') ||
@@ -14,7 +15,7 @@ export const removeLinkedFileUrlParams = (originalUrl) => {
   return url;
 };
 
-export const withLinkedFileUrlParams = (originalUrl, { oldPath, newPath, hash }) => {
+export const withLinkedFileUrlParams = (originalUrl, { oldPath, newPath, hash, line }) => {
   const url = removeLinkedFileUrlParams(originalUrl);
   if (oldPath === newPath) {
     url.searchParams.set('file_path', oldPath);
@@ -23,5 +24,6 @@ export const withLinkedFileUrlParams = (originalUrl, { oldPath, newPath, hash })
     url.searchParams.set('new_path', newPath);
   }
   if (hash) url.hash = hash;
+  if (line) url.searchParams.set('line', line);
   return url;
 };

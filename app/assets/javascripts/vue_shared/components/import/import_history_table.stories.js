@@ -1,4 +1,4 @@
-import { basic } from 'jest/vue_shared/components/import/history_mock_data';
+import { apiItems } from 'jest/vue_shared/components/import/history_mock_data';
 import ImportHistoryTable from './import_history_table.vue';
 
 export default {
@@ -6,7 +6,10 @@ export default {
   title: 'vue_shared/import/import_history_table',
 };
 
-const defaultProps = basic;
+const defaultProps = {
+  items: apiItems,
+  detailsPath: 'http://docs.gitlab.com/ee/user/project/import/import_file.html',
+};
 
 const Template = (args, { argTypes }) => ({
   components: { ImportHistoryTable },

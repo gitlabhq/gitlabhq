@@ -49,7 +49,7 @@ Your instance includes the following security controls:
 - Data sovereignty guaranteed through AWS GovCloud infrastructure in the US-West region
 - Isolated infrastructure in a dedicated AWS account separate from all other tenants
 - Encryption standards that meet FIPS requirements for data at rest and in transit
-- Access controls that follow principle of least privilege with comprehensive audit trails
+- Access controls that follow the principle of least privilege with comprehensive audit trails
 
 For a detailed breakdown of security responsibilities, see the
 [shared responsibility model](../../security/dedicated_for_government_shared_responsibility_model.md)

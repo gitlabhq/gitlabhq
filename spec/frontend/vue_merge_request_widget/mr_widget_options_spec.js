@@ -23,7 +23,6 @@ import Preparing from '~/vue_merge_request_widget/components/states/mr_widget_pr
 import ShaMismatch from '~/vue_merge_request_widget/components/states/sha_mismatch.vue';
 import MergedState from '~/vue_merge_request_widget/components/states/mr_widget_merged.vue';
 import WidgetContainer from '~/vue_merge_request_widget/components/widget/app.vue';
-import WidgetSuggestPipeline from '~/vue_merge_request_widget/components/mr_widget_suggest_pipeline.vue';
 import MrWidgetAlertMessage from '~/vue_merge_request_widget/components/mr_widget_alert_message.vue';
 import getStateQuery from 'ee_else_ce/vue_merge_request_widget/queries/get_state.query.graphql';
 import getStateSubscription from '~/vue_merge_request_widget/queries/get_state.subscription.graphql';
@@ -190,7 +189,6 @@ describe('MrWidgetOptions', () => {
   const findPipelineContainer = () => wrapper.findComponentByTestId('pipeline-container');
   const findAlertMessage = () => wrapper.findComponent(MrWidgetAlertMessage);
   const findMergePipelineForkAlert = () => wrapper.findByTestId('merge-pipeline-fork-warning');
-  const findSuggestPipeline = () => wrapper.findComponent(WidgetSuggestPipeline);
   const findWidgetContainer = () => wrapper.findComponent(WidgetContainer);
   const findMergeError = () => wrapper.findByTestId('merge-error');
 
@@ -333,33 +331,6 @@ describe('MrWidgetOptions', () => {
 
           await nextTick();
           expect(findMergePipelineForkAlert().exists()).toBe(true);
-        });
-      });
-
-      describe('formattedHumanAccess', () => {
-        it('renders empty string when user is a tool admin but not a member of project', async () => {
-          createComponent({
-            updatedMrData: {
-              human_access: null,
-              merge_request_add_ci_config_path: 'test',
-              has_ci: false,
-            },
-          });
-          await waitForPromises();
-
-          expect(findSuggestPipeline().props('humanAccess')).toBe('');
-        });
-        it('renders human access when user is a member of the project', async () => {
-          createComponent({
-            updatedMrData: {
-              human_access: 'Owner',
-              merge_request_add_ci_config_path: 'test',
-              has_ci: false,
-            },
-          });
-          await waitForPromises();
-
-          expect(findSuggestPipeline().props('humanAccess')).toBe('owner');
         });
       });
     });
@@ -760,25 +731,6 @@ describe('MrWidgetOptions', () => {
         });
       });
     });
-  });
-
-  describe('suggestPipeline', () => {
-    it('should suggest pipelines when none exist', async () => {
-      await createComponent({ updatedMrData: { has_ci: false, commitCount: 1 } });
-      await waitForPromises();
-
-      expect(findSuggestPipeline().exists()).toBe(true);
-    });
-
-    it.each([{ merge_request_add_ci_config_path: null }, { has_ci: true }, { commitCount: 0 }])(
-      'with %s, should not suggest pipeline',
-      async (data) => {
-        await createComponent({ updatedMrData: { has_ci: false, ...data } });
-        await waitForPromises();
-
-        expect(findSuggestPipeline().exists()).toBe(false);
-      },
-    );
   });
 
   describe('merge error', () => {

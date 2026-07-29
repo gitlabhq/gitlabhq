@@ -58,6 +58,14 @@ module Gitlab
           json_request(Net::HTTP::Put, url, headers: headers, body: body)
         end
 
+        # Public entry point for GraphQL queries from outside this class
+        # (AutoMr's SSOT-author lookup). Shares the same client/token and
+        # warn-and-return-nil failure policy as the internal `graphql` used
+        # by workflow polling.
+        def query_graphql(query, variables = {})
+          graphql(query, variables)
+        end
+
         # Returns the agent's final content for one principle, or nil on
         # failure (caller handles retries).
         #

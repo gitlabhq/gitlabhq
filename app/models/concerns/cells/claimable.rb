@@ -132,6 +132,15 @@ module Cells
 
     private
 
+    # Attributes used to build the user-facing error message when a claim
+    # already exists in the Topology Service. Defaults to the claimed
+    # attributes. Override in the model when the message should reference
+    # different attributes, for example when the claimed attribute is an
+    # internal id or when associated models claim attributes on its behalf.
+    def unique_attributes
+      self.class.cells_claims_attributes.keys
+    end
+
     class_methods do
       def register_as_model_with_claims
         Claimable.models_with_claims.add(self)

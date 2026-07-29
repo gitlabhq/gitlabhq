@@ -972,14 +972,18 @@ class MergeRequest < ApplicationRecord
   end
 
   def committer_ids_to_filter_from_approvers
-    User.by_any_email(committer_emails_from_diff).select(:id)
+    committer_users_from_diff.select(:id)
   end
   strong_memoize_attr :committer_ids_to_filter_from_approvers
 
   def committers_to_filter_from_approvers
-    User.by_any_email(committer_emails_from_diff)
+    committer_users_from_diff
   end
   strong_memoize_attr :committers_to_filter_from_approvers
+
+  def committer_user_ids_from_diff
+    committer_users_from_diff.pluck(:id)
+  end
 
   # Verifies if title has changed not taking into account Draft prefix
   # for merge requests.
@@ -1576,7 +1580,8 @@ class MergeRequest < ApplicationRecord
       ::AutoMergeService::STRATEGY_ADD_TO_MERGE_TRAIN_WHEN_CHECKS_PASS
     ])
 
-    skip_conflict_check = merge_when_checks_pass_strat && recheck_merge_status?
+    skip_conflict_check = merge_when_checks_pass_strat &&
+      (recheck_merge_status? || Feature.enabled?(:auto_merge_skip_conflict_check, project))
 
     {
       skip_ci_check: merge_when_checks_pass_strat,
@@ -3032,6 +3037,10 @@ class MergeRequest < ApplicationRecord
   def publish_code_conflict_event
     cloud_event = MergeRequests::CodeConflictEvent.build(merge_request: self)
     Gitlab::EventStore.publish(cloud_event) if cloud_event
+  end
+
+  def committer_users_from_diff
+    User.by_any_email(committer_emails_from_diff)
   end
 
   def committer_emails_from_diff

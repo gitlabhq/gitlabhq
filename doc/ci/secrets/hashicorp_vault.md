@@ -79,7 +79,7 @@ attached to the resulting Vault token.
 [Bound claims](https://developer.hashicorp.com/vault/docs/auth/jwt#bound-claims) are predefined
 values that are matched to the JWT claims. With bounded claims, you can restrict access
 to specific GitLab users, specific projects, or even jobs running for specific Git
-references. You can have as many bounded claims you need, but they must all match
+references. You can have as many bounded claims as you need, but they must all match
 for authentication to be successful.
 
 Combining bounded claims with GitLab features like [user roles](../../user/permissions.md)
@@ -238,7 +238,7 @@ You have two options to solve this error:
        ```
 
 If you are running vault server in development mode locally with [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit),
-you might also get this error. You can manually ask the system to trust the self signed certificate of Vault server.
+you might also get this error. You can manually ask the system to trust the self-signed certificate of the Vault server.
 This [sample tutorial](https://iboysoft.com/tips/how-to-trust-a-certificate-on-mac.html)
 explains how to do this on macOS.
 

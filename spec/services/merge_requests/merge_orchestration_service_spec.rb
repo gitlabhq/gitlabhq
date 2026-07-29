@@ -99,7 +99,15 @@ RSpec.describe MergeRequests::MergeOrchestrationService, feature_category: :code
         merge_request.update!(merge_status: 'cannot_be_merged')
       end
 
-      it { is_expected.to be(false) }
+      it { is_expected.to be(true) }
+
+      context 'when auto_merge_skip_conflict_check is disabled' do
+        before do
+          stub_feature_flags(auto_merge_skip_conflict_check: false)
+        end
+
+        it { is_expected.to be(false) }
+      end
     end
   end
 

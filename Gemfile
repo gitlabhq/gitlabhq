@@ -426,7 +426,7 @@ gem 'gitlab-policy-store', path: 'gems/gitlab-policy-store',
   require: 'gitlab/policy_store', feature_category: :security_policy_management
 
 gem 'premailer-rails', '~> 1.12.0', feature_category: :notifications
-gem 'gitlab-labkit', '~> 2.7.0', feature_category: :error_budgets
+gem 'gitlab-labkit', '~> 3.0.0', feature_category: :error_budgets
 gem 'thrift', '~> 0.22.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
 # I18n
@@ -682,7 +682,7 @@ gem 'flipper', '~> 1.3.6', feature_category: :shared # rubocop:todo Gemfile/Miss
 gem 'flipper-active_record', '~> 1.3.6', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 gem 'flipper-active_support_cache_store', '~> 1.3.6', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 gem 'unleash', '~> 3.2.2', feature_category: :feature_flags # https://docs.gitlab.com/operations/feature_flags/
-gem 'gitlab-experiment', '~> 1.6.0', feature_category: :acquisition
+gem 'gitlab-experiment', '~> 2.0.0', feature_category: :acquisition
 
 # Structured logging
 gem 'lograge', '~> 0.5', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839

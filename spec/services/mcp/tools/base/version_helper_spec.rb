@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe Mcp::Tools::VersionHelper, feature_category: :mcp_server do
+RSpec.describe Mcp::Tools::Base::VersionHelper, feature_category: :mcp_server do
   let(:test_class) do
     Class.new do
-      include Mcp::Tools::VersionHelper
+      include Mcp::Tools::Base::VersionHelper
     end
   end
 

@@ -13794,6 +13794,32 @@ Fields:
 | <a id="mutation-organizationdeleteclusteragentmapping-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-organizationdeleteclusteragentmapping-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
+### `Mutation.organizationRestore`
+
+{{< details >}}
+
+- Introduced in GitLab 19.3.
+- Status: Experiment.
+
+{{< /details >}}
+
+Input type: `OrganizationRestoreInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-organizationrestore-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-organizationrestore-id"></a>`id` | [`OrganizationsOrganizationID!`](#organizationsorganizationid) | ID of the organization to restore. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-organizationrestore-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-organizationrestore-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-organizationrestore-organization"></a>`organization` | [`Organization`](#organization) | Restored organization. |
+
 ### `Mutation.organizationUpdate`
 
 {{< details >}}

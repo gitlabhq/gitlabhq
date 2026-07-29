@@ -521,7 +521,7 @@ Grants the ability to create, delete, read, and update todos.
 
 #### Organization
 
-Grants the ability to create, delete, read, and update organizations.
+Grants the ability to create, delete, read, restore, and update organizations.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
@@ -529,6 +529,7 @@ Grants the ability to create, delete, read, and update organizations.
 | Delete | Instance | Mutation | `OrganizationDelete` |
 | Read | Instance | Type | `Organization` |
 | Read | Instance | Type | `OrganizationUser` |
+| Restore | Instance | Mutation | `OrganizationRestore` |
 | Update | Instance | Mutation | `OrganizationConfirm` |
 | Update | Instance | Mutation | `OrganizationUpdate` |
 | Update | Instance | Mutation | `OrganizationUserUpdate` |

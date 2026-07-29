@@ -129,10 +129,6 @@ class GpgKey < ApplicationRecord
       subkeys.create!(keyid: subkey_data[:keyid], fingerprint: subkey_data[:fingerprint])
     end
   end
-
-  def unique_attributes
-    [:fingerprint]
-  end
 end
 
 GpgKey.prepend_mod_with('GpgKey')

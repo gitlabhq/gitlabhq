@@ -7,5 +7,3 @@ export const mockLabels = [
     text_color: '#FFFFFF',
   },
 ];
-
-export default mockLabels;

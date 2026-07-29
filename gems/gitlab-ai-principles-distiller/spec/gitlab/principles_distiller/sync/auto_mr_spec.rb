@@ -309,11 +309,15 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
   end
 
   describe '.ssot_author_mentions' do
-    subject(:mentions) { sync.send(:ssot_author_mentions, affected_entries, 'api-token') }
+    subject(:mentions) { sync.send(:ssot_author_mentions, affected_entries) }
 
     before do
-      Gitlab::PrinciplesDistiller::Workspace.path = '/tmp/workspace'
-      allow(sync.workflow).to receive_messages(gitlab_host: 'https://gitlab.com', default_branch: 'master')
+      allow(sync.workflow).to receive_messages(
+        gitlab_host: 'https://gitlab.com',
+        catalog_project_path: 'gitlab-org/gitlab',
+        default_branch: 'master'
+      )
+      allow(sync).to receive(:distillation_base_sha).and_return('2222222222222222222222222222222222222222')
     end
 
     let(:affected_entries) do
@@ -326,14 +330,45 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
       }
     end
 
+    # Builds the `commits(...)` GraphQL response payload for the single
+    # `p0` alias used by these single-source fixtures.
+    def commits_response(authors, has_next_page: false)
+      {
+        'project' => {
+          'repository' => {
+            'p0' => {
+              'nodes' => authors.map { |author| { 'author' => author } },
+              'pageInfo' => { 'hasNextPage' => has_next_page }
+            }
+          }
+        }
+      }
+    end
+
+    context 'when an author has no public email' do
+      # GraphQL's `Commit.author` resolves through
+      # `User.by_any_email(confirmed: true)`, which matches private and
+      # secondary emails too, so the commit author is still found even though
+      # the account has no public_email set.
+      before do
+        allow(sync.workflow).to receive(:query_graphql)
+          .and_return(commits_response([{ 'username' => 'eread', 'bot' => false }]))
+      end
+
+      it 'pings the author despite the account having no public email' do
+        expect(mentions).to eq(%w[@eread])
+      end
+    end
+
     context 'when a prior SHA is reachable and authors resolve to users' do
       before do
-        allow(sync).to receive(:sha_present_locally?).and_return(true)
-        allow(IO).to receive(:popen).and_return("ada@example.com\ngrace@example.com\nada@example.com\n")
-        allow(sync).to receive(:search_user_by_email).with('ada@example.com', 'api-token')
-          .and_return({ 'username' => 'ada', 'bot' => false })
-        allow(sync).to receive(:search_user_by_email).with('grace@example.com', 'api-token')
-          .and_return({ 'username' => 'grace', 'bot' => false })
+        allow(sync.workflow).to receive(:query_graphql).and_return(
+          commits_response([
+            { 'username' => 'ada', 'bot' => false },
+            { 'username' => 'grace', 'bot' => false },
+            { 'username' => 'ada', 'bot' => false }
+          ])
+        )
       end
 
       it 'returns deduped @username mentions in author order' do
@@ -343,15 +378,13 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
 
     context 'when an author is a bot or on the deny-list' do
       before do
-        allow(sync).to receive(:sha_present_locally?).and_return(true)
-        allow(IO).to receive(:popen)
-          .and_return("bot@example.com\nservice@example.com\nada@example.com\n")
-        allow(sync).to receive(:search_user_by_email).with('bot@example.com', 'api-token')
-          .and_return({ 'username' => 'some-bot', 'bot' => true })
-        allow(sync).to receive(:search_user_by_email).with('service@example.com', 'api-token')
-          .and_return({ 'username' => 'service-modelops-agent-principles-distiller', 'bot' => false })
-        allow(sync).to receive(:search_user_by_email).with('ada@example.com', 'api-token')
-          .and_return({ 'username' => 'ada', 'bot' => false })
+        allow(sync.workflow).to receive(:query_graphql).and_return(
+          commits_response([
+            { 'username' => 'some-bot', 'bot' => true },
+            { 'username' => 'service-modelops-agent-principles-distiller', 'bot' => false },
+            { 'username' => 'ada', 'bot' => false }
+          ])
+        )
       end
 
       it 'excludes bot accounts and deny-listed service accounts' do
@@ -359,14 +392,26 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
       end
     end
 
-    context 'when an author email does not resolve to a user' do
+    context 'when a commit has no linked GitLab account' do
       before do
-        allow(IO).to receive(:popen).and_return("private@example.com\n")
-        allow(sync).to receive_messages(sha_present_locally?: true, search_user_by_email: nil)
+        allow(sync.workflow).to receive(:query_graphql)
+          .and_return(commits_response([nil, { 'username' => 'ada', 'bot' => false }]))
       end
 
-      it 'drops the unresolvable author (falls back to team ping upstream)' do
-        expect(mentions).to eq([])
+      it 'drops the unlinked commit (falls back to team ping upstream)' do
+        expect(mentions).to eq(%w[@ada])
+      end
+    end
+
+    context 'when the commit range for a path has more pages than AUTHOR_LOOKUP_PAGE_SIZE' do
+      before do
+        allow(sync.workflow).to receive(:query_graphql)
+          .and_return(commits_response([{ 'username' => 'ada', 'bot' => false }], has_next_page: true))
+      end
+
+      it 'still returns the authors from the first page but warns about the truncation', :aggregate_failures do
+        expect { expect(mentions).to eq(%w[@ada]) }
+          .to output(%r{doc/development/qa\.md has more than \d+ commits}).to_stderr
       end
     end
 
@@ -375,72 +420,48 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
         { 'qa' => { config: {}, changed_sources: [{ 'path' => 'doc/development/qa.md' }], prior_sha: nil } }
       end
 
-      it 'returns no mentions without shelling out to git' do
-        expect(IO).not_to receive(:popen)
+      it 'returns no mentions without querying GraphQL' do
+        expect(sync.workflow).not_to receive(:query_graphql)
         expect(mentions).to eq([])
       end
     end
-  end
 
-  describe '.search_user_by_email' do
-    subject(:user) { sync.send(:search_user_by_email, 'ada@example.com', 'api-token') }
-
-    let(:fake_response) { instance_double(Net::HTTPResponse, code: '200', body: response_body) }
-    let(:http_instance) { instance_double(Net::HTTP) }
-    let(:captured_request) { [] }
-
-    before do
-      allow(sync.workflow).to receive(:gitlab_host).and_return('https://gitlab.com')
-      allow(Net::HTTP).to receive(:new).and_return(http_instance)
-      allow(http_instance).to receive(:use_ssl=)
-      allow(http_instance).to receive(:read_timeout=)
-      allow(http_instance).to receive(:request) do |request|
-        captured_request << request
-        fake_response
+    context 'when the range is unreachable (e.g. prior_sha predates the fetched history)' do
+      before do
+        # Workflow#query_graphql mirrors the existing warn-and-return-nil
+        # policy on GraphQL::Error / transport failure (see Workflow#graphql).
+        allow(sync.workflow).to receive(:query_graphql).and_return(nil)
       end
-      allow(fake_response).to receive(:is_a?).with(Net::HTTPSuccess).and_return(http_success)
-    end
 
-    context 'when a single result has a matching public_email' do
-      let(:http_success) { true }
-      let(:response_body) { '[{"username":"ada","public_email":"ada@example.com","bot":false}]' }
-
-      it 'returns that user and searches by email', :aggregate_failures do
-        expect(user).to eq({ 'username' => 'ada', 'public_email' => 'ada@example.com', 'bot' => false })
-        expect(captured_request.first.uri.query).to include('search=ada%40example.com')
-        expect(captured_request.first['PRIVATE-TOKEN']).to eq('api-token')
+      it 'returns no mentions instead of raising' do
+        expect(mentions).to eq([])
       end
     end
 
-    context 'when a single result does NOT match the searched email' do
-      let(:http_success) { true }
-      # The search endpoint matches username/name too, so a lone result can be
-      # someone whose username coincidentally contains the local-part.
-      let(:response_body) { '[{"username":"ada","public_email":"other@example.com"}]' }
-
-      it 'returns nil so the wrong person is not pinged' do
-        expect(user).to be_nil
-      end
-    end
-
-    context 'when multiple users match' do
-      let(:http_success) { true }
-      let(:response_body) do
-        '[{"username":"ada","public_email":"ada@example.com"},' \
-          '{"username":"other","public_email":"other@example.com"}]'
+    context 'when a principle has more sources than the batch size' do
+      let(:many_paths) { (1..12).map { |i| "doc/development/topic-#{i}.md" } }
+      let(:affected_entries) do
+        {
+          'backend-ruby' => {
+            config: {},
+            changed_sources: many_paths.map { |p| { 'path' => p } },
+            prior_sha: '1111111111111111111111111111111111111111'
+          }
+        }
       end
 
-      it 'returns only the exact public_email match' do
-        expect(user).to eq({ 'username' => 'ada', 'public_email' => 'ada@example.com' })
-      end
-    end
+      it 'splits the request into batches within AUTHOR_LOOKUP_BATCH_SIZE aliases each', :aggregate_failures do
+        batch_sizes = []
+        allow(sync.workflow).to receive(:query_graphql) do |query, _variables|
+          batch_sizes << query.scan(/^\s*p\d+:/).size
+          commits_response([{ 'username' => 'ada', 'bot' => false }])
+        end
 
-    context 'when the lookup fails' do
-      let(:http_success) { false }
-      let(:response_body) { 'Forbidden' }
-
-      it 'returns nil so the author is skipped' do
-        expect(user).to be_nil
+        expect(mentions).to eq(%w[@ada])
+        expect(batch_sizes).to eq([
+          Gitlab::PrinciplesDistiller::Sync::AutoMr::AUTHOR_LOOKUP_BATCH_SIZE,
+          many_paths.size - Gitlab::PrinciplesDistiller::Sync::AutoMr::AUTHOR_LOOKUP_BATCH_SIZE
+        ])
       end
     end
   end

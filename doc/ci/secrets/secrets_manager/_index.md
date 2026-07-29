@@ -91,7 +91,7 @@ Secrets defined for a group can only be accessed by pipelines in a project direc
 You can add secrets to the secrets manager so that it can be used for secure CI/CD pipelines
 and workflows.
 
-1. In the top bar, select **Search or go to** and find your project
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Secrets manager**.
 1. Select **Add secret** and fill in the details:
    - **Name**: Must be unique in the project.

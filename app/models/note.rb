@@ -186,7 +186,6 @@ class Note < ApplicationRecord
   scope :with_metadata, -> { includes(:system_note_metadata) }
   scope :with_noteable_type, ->(type) { where(noteable_type: type) }
   scope :with_noteable_ids, ->(ids) { where(noteable_id: ids) }
-  scope :with_note, ->(note) { where(note: note) }
 
   scope :without_hidden, -> {
     where_not_exists(Users::BannedUser.where('notes.author_id = banned_users.user_id'))

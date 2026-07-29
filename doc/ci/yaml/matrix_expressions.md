@@ -140,7 +140,7 @@ with 1:1 dependencies between stages.
 
 ### Use a subset of values
 
-You can combine matrix expressions with specific values to create selective subset of dependencies:
+You can combine matrix expressions with specific values to create a selective subset of dependencies:
 
 ```yaml
 stages:

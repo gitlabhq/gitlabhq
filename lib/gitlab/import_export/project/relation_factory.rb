@@ -178,6 +178,13 @@ module Gitlab
           diff = @relation_hash.delete('diff_export') || @relation_hash.delete('utf8_diff')
 
           parsed_relation_hash['diff'] = diff.delete("\x00")
+
+          # Set project_id for merge_request_diff_files. This prepares for the
+          # NOT NULL constraint on project_id that will be added when the table
+          # is swapped with its partitioned copy. The before_validation callback
+          # may not be able to derive project_id from the parent merge_request_diff
+          # during import since the parent may not have project_id set yet.
+          parsed_relation_hash['project_id'] = @importable.id if @relation_name == :merge_request_diff_files
         end
 
         def setup_pipeline

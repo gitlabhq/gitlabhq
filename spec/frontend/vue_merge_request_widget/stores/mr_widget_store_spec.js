@@ -114,24 +114,6 @@ describe('MergeRequestStore', () => {
   });
 
   describe('setPaths', () => {
-    it('should set the add ci config path', () => {
-      store.setPaths({ ...mockData });
-
-      expect(store.mergeRequestAddCiConfigPath).toBe('/root/group2/project2/-/ci/editor');
-    });
-
-    it('should set humanAccess=Maintainer when user has that role', () => {
-      store.setPaths({ ...mockData });
-
-      expect(store.humanAccess).toBe('Maintainer');
-    });
-
-    it('should set pipelinesEmptySvgPath', () => {
-      store.setPaths({ ...mockData });
-
-      expect(store.pipelinesEmptySvgPath).toBe('/path/to/svg');
-    });
-
     it('should set newPipelinePath', () => {
       store.setPaths({ ...mockData });
 

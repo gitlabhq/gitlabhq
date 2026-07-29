@@ -551,7 +551,7 @@ To give the Docker daemon in the service container permissions to initialize its
 you must mount the `/var/lib` directory as a volume mount.
 
 > [!note]
-> If you cannot to mount the `/var/lib` directory as a volume mount, you can set `--storage-driver` to `vfs` instead.
+> If you cannot mount the `/var/lib` directory as a volume mount, you can set `--storage-driver` to `vfs` instead.
 > If you opt for the `vfs` value, it might have a negative
 > impact on [performance](https://docs.docker.com/engine/storage/drivers/select-storage-driver/).
 
@@ -600,7 +600,7 @@ name = "docker:29.1.4-dind"
    ```
 
 1. Set the permissions in the [`[runners.kubernetes]` section](https://docs.gitlab.com/runner/executors/kubernetes/#other-configtoml-settings).
-1. Set the job definition stays the same as in Kubernetes case:
+1. The job definition stays the same as in the Kubernetes case:
 
    ```yaml
    include:

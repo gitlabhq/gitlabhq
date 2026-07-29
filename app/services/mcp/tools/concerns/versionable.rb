@@ -80,7 +80,7 @@ module Mcp
             raise NoMethodError, "Input schema not defined for version #{version}"
           end
 
-          Mcp::Tools::SchemaDefaults.with_additional_properties(schema)
+          Mcp::Tools::Base::SchemaDefaults.with_additional_properties(schema)
         end
 
         def annotations

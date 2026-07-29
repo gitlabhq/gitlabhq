@@ -133,7 +133,7 @@ by putting the certificate inside of the `/etc/docker/certs.d` directory.
 
 This Docker daemon is exposed to the subsequent Code Quality Docker container in the
 [GitLab Code Quality template](https://gitlab.com/gitlab-org/gitlab/-/blob/v13.8.3-ee/lib/gitlab/ci/templates/Jobs/Code-Quality.gitlab-ci.yml#L41)
-and should be to exposed any other containers in which you want to have your certificate
+and should be exposed to any other containers in which you want to have your certificate
 configuration apply.
 
 ### Docker

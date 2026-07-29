@@ -184,8 +184,3 @@ export const apiItems = [
     ],
   },
 ];
-
-export const basic = {
-  items: apiItems,
-  detailsPath: 'http://docs.gitlab.com/ee/user/project/import/import_file.html',
-};

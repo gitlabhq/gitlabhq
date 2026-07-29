@@ -3,7 +3,7 @@
 module Mcp
   module Tools
     class Manager
-      include VersionHelper
+      include Base::VersionHelper
 
       class ToolNotFoundError < StandardError
         attr_reader :tool_name, :args

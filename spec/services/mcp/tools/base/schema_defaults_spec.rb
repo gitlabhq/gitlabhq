@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Mcp::Tools::SchemaDefaults, feature_category: :mcp_server do
+RSpec.describe Mcp::Tools::Base::SchemaDefaults, feature_category: :mcp_server do
   describe '.with_additional_properties' do
     it 'injects additionalProperties: false when the key is absent' do
       schema = { type: 'object', properties: { name: { type: 'string' } } }

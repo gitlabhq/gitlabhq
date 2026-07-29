@@ -45,13 +45,16 @@ module RapidDiffs
     def linked_file
       return if linked_file_params[:old_path].nil? && linked_file_params[:new_path].nil?
 
-      @linked_file ||= resource.diffs(@diff_options.merge({
-        paths: [linked_file_params[:old_path], linked_file_params[:new_path]].compact
-      })).diff_files.first.then do |file|
-        next unless file
+      @linked_file ||= begin
+        collection = resource.diffs(@diff_options.merge({
+          paths: [linked_file_params[:old_path], linked_file_params[:new_path]].compact
+        }))
+        file = collection.diff_files.first
 
-        file.linked = true
-        transform_file(file)
+        if file
+          file.linked = true
+          transform_file_collection(collection).first
+        end
       end
     end
 
@@ -129,10 +132,17 @@ module RapidDiffs
 
     def transform_file(diff_file)
       diff_file.prevent_syntax_highlighting! unless highlight?
+      linked_line_unfolder&.unfold!(diff_file) if diff_file.linked
       diff_file
     end
 
     private
+
+    def linked_line_unfolder
+      return @linked_line_unfolder if defined?(@linked_line_unfolder)
+
+      @linked_line_unfolder = Gitlab::Diff::LinkedLineUnfolder.from_param(request_params && request_params[:line])
+    end
 
     def highlight?
       return @highlight if defined?(@highlight)

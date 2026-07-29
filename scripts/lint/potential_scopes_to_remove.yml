@@ -66,7 +66,6 @@ app/models/ml/model_version.rb:
   - order_by_model_id_id_desc
 app/models/note.rb:
   - new_diff_notes
-  - with_note
 app/models/packages/build_info.rb:
   - pluck_pipeline_ids
 app/models/packages/composer/metadatum.rb:

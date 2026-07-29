@@ -137,10 +137,6 @@ class ProjectSetting < ApplicationRecord
 
   private
 
-  def unique_attributes
-    [:pages_unique_domain]
-  end
-
   def presence_of_merge_request_title_regex_settings
     # Either both are present, or neither
     if merge_request_title_regex.present? != merge_request_title_regex_description.present?

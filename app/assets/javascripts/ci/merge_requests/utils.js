@@ -25,29 +25,3 @@ export const createSubscriptionsCollection = () => {
     },
   };
 };
-
-export const updateDownstreamPipelineInList = (
-  pipelines = [],
-  { parentGraphqlId, updatedDownstream },
-) => {
-  const pipelineIndex = pipelines.findIndex((p) => p.graphqlId === parentGraphqlId);
-  if (pipelineIndex === -1) return pipelines;
-
-  const pipeline = pipelines[pipelineIndex];
-  const downstreamNodes = pipeline.downstream?.nodes || [];
-  const downstreamIndex = downstreamNodes.findIndex((d) => d.id === updatedDownstream.id);
-  if (downstreamIndex === -1) return pipelines;
-
-  return pipelines.map((p, i) => {
-    if (i !== pipelineIndex) return p;
-    return {
-      ...p,
-      downstream: {
-        ...p.downstream,
-        nodes: downstreamNodes.map((d, j) =>
-          j === downstreamIndex ? { ...d, ...updatedDownstream } : d,
-        ),
-      },
-    };
-  });
-};

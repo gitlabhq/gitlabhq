@@ -17,7 +17,6 @@ import { setFaviconOverlay } from '~/lib/utils/favicon';
 import Loading from './components/loading.vue';
 import MrWidgetAlertMessage from './components/mr_widget_alert_message.vue';
 import MrWidgetPipelineContainer from './components/mr_widget_pipeline_container.vue';
-import WidgetSuggestPipeline from './components/mr_widget_suggest_pipeline.vue';
 import SourceBranchRemovalStatus from './components/source_branch_removal_status.vue';
 import ArchivedState from './components/states/mr_widget_archived.vue';
 import MrWidgetAutoMergeEnabled from './components/states/mr_widget_auto_merge_enabled.vue';
@@ -58,7 +57,6 @@ export default {
   components: {
     Loading,
     WidgetContainer,
-    MrWidgetSuggestPipeline: WidgetSuggestPipeline,
     MrWidgetPipelineContainer,
     MrWidgetAlertMessage,
     MrWidgetMerged: MergedState,
@@ -218,11 +216,6 @@ export default {
     shouldRenderPipelines() {
       return this.mr.hasCI || this.hasPipelineMustSucceedConflict;
     },
-    shouldSuggestPipelines() {
-      const { hasCI, mergeRequestAddCiConfigPath, commitsCount } = this.mr;
-
-      return !hasCI && Boolean(mergeRequestAddCiConfigPath) && commitsCount > 0;
-    },
     shouldRenderCollaborationStatus() {
       return this.mr.allowCollaboration && this.mr.isOpen;
     },
@@ -253,9 +246,6 @@ export default {
         },
         false,
       );
-    },
-    formattedHumanAccess() {
-      return (this.mr.humanAccess || '').toLowerCase();
     },
     hasMergeError() {
       return this.mr.mergeError && this.state !== STATUS_CLOSED;
@@ -578,10 +568,6 @@ export default {
         {{ s__('mrWidget|Members who can merge are allowed to add commits.') }}
       </mr-widget-alert-message>
     </header>
-    <mr-widget-suggest-pipeline
-      v-if="shouldSuggestPipelines"
-      :human-access="formattedHumanAccess"
-    />
     <mr-widget-pipeline-container
       v-if="shouldRenderPipelines"
       :mr="mr"

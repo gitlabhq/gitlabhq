@@ -258,7 +258,8 @@ class Projects::CompareController < Projects::ApplicationController
       :to_project_id,
       :old_path,
       :new_path,
-      :file_path
+      :file_path,
+      :line
     )
   end
 end

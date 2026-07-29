@@ -74,7 +74,12 @@ RSpec.describe ::RapidDiffs::CommitPresenter, feature_category: :source_code_man
       context 'when linked file is present and page has more diffs to stream' do
         let(:diffs_count) { 2 }
         let(:diff_file) { build(:diff_file, old_path: 'old.txt', new_path: 'new.txt') }
-        let(:diff_files) { instance_double(Gitlab::Diff::FileCollection::Base, diff_files: [diff_file]) }
+        let(:diff_files) do
+          raw = instance_double(Gitlab::Git::DiffCollection)
+          allow(raw).to receive_messages(first: diff_file, decorate!: raw)
+          instance_double(Gitlab::Diff::FileCollection::Base, diff_files: raw)
+        end
+
         let(:request_params) { { old_path: 'old.txt', new_path: 'new.txt' } }
 
         before do
@@ -87,7 +92,12 @@ RSpec.describe ::RapidDiffs::CommitPresenter, feature_category: :source_code_man
       context 'when linked file is the only file' do
         let(:diffs_count) { 1 }
         let(:diff_file) { build(:diff_file, old_path: 'old.txt', new_path: 'new.txt') }
-        let(:diff_files) { instance_double(Gitlab::Diff::FileCollection::Base, diff_files: [diff_file]) }
+        let(:diff_files) do
+          raw = instance_double(Gitlab::Git::DiffCollection)
+          allow(raw).to receive_messages(first: diff_file, decorate!: raw)
+          instance_double(Gitlab::Diff::FileCollection::Base, diff_files: raw)
+        end
+
         let(:request_params) { { old_path: 'old.txt', new_path: 'new.txt' } }
 
         before do
@@ -212,7 +222,11 @@ RSpec.describe ::RapidDiffs::CommitPresenter, feature_category: :source_code_man
 
   describe '#linked_file' do
     let(:diff_file) { build(:diff_file, old_path: 'old.txt', new_path: 'new.txt') }
-    let(:diff_files) { instance_double(Gitlab::Diff::FileCollection::Base, diff_files: [diff_file]) }
+    let(:diff_files) do
+      raw = instance_double(Gitlab::Git::DiffCollection)
+      allow(raw).to receive_messages(first: diff_file, decorate!: raw)
+      instance_double(Gitlab::Diff::FileCollection::Base, diff_files: raw)
+    end
 
     context 'when file_path is provided' do
       let(:request_params) { { file_path: 'new.txt' } }

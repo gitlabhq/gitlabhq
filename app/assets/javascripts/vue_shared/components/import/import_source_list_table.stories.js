@@ -1,5 +1,5 @@
 import { GlButton, GlFormCheckbox, GlTooltipDirective } from '@gitlab/ui';
-import { basic } from 'jest/vue_shared/components/import/source_list_mock_data';
+import { apiItems } from 'jest/vue_shared/components/import/source_list_mock_data';
 import ImportSourceListTable from './import_source_list_table.vue';
 
 export default {
@@ -7,7 +7,9 @@ export default {
   title: 'vue_shared/import/import_source_list_table',
 };
 
-const defaultProps = basic;
+const defaultProps = {
+  items: apiItems,
+};
 
 const Template = (args, { argTypes }) => ({
   components: { ImportSourceListTable, GlButton },

@@ -4285,6 +4285,38 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       it_behaves_like 'merging with auto merge strategies'
     end
 
+    context 'when the MR is still preparing and a pipeline is being created', :clean_gitlab_redis_shared_state do
+      # Reproduces the transient state right after POST /merge_requests, where the MR is
+      # preparing (diffs not computed) and a pipeline is being created.
+      # See https://gitlab.com/gitlab-org/gitlab/-/work_items/473054
+      before do
+        merge_request.mark_as_preparing!
+        Ci::PipelineCreation::Requests.start_for_merge_request(merge_request)
+      end
+
+      it 'sets auto merge instead of returning 405' do
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user),
+          params: { auto_merge: true }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(merge_request.reload.auto_merge_enabled).to be(true)
+        expect(merge_request.auto_merge_strategy).to eq(AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS)
+      end
+
+      context 'when the auto_merge_skip_conflict_check feature flag is disabled' do
+        before do
+          stub_feature_flags(auto_merge_skip_conflict_check: false)
+        end
+
+        it 'returns 405' do
+          put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user),
+            params: { auto_merge: true }
+
+          expect(response).to have_gitlab_http_status(:method_not_allowed)
+        end
+      end
+    end
+
     it 'enables auto merge if the MR is not mergeable and only_allow_merge_if_pipeline_succeeds is true' do
       allow_any_instance_of(MergeRequest)
         .to receive_messages(

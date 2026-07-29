@@ -29,10 +29,4 @@ class RedirectRoute < ApplicationRecord
 
     where(wheres, path, "#{sanitize_sql_like(path)}/%")
   end
-
-  private
-
-  def unique_attributes
-    [:path]
-  end
 end

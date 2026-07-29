@@ -164,7 +164,7 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
 
       expect(tools).not_to be_empty, 'No tools returned'
 
-      expected_icon = Mcp::Tools::IconConfig.gitlab_icons.first.stringify_keys
+      expected_icon = Mcp::Tools::Base::IconConfig.gitlab_icons.first.stringify_keys
 
       tools.each do |tool|
         expect(tool).to have_key('icons')

@@ -51,11 +51,9 @@ RSpec.describe 'Query.mergeRequest.workItemRelations', feature_category: :code_r
     graphql_query_for('mergeRequest', merge_request_params, relations_fields)
   end
 
-  before do
-    post_graphql(query, current_user: current_user)
-  end
-
   it 'returns persisted relations with their link type and origin', :aggregate_failures do
+    post_graphql(query, current_user: current_user)
+
     work_item_ids = relations_data.pluck('workItem').compact.pluck('id')
 
     expect(work_item_ids).to contain_exactly(
@@ -70,8 +68,18 @@ RSpec.describe 'Query.mergeRequest.workItemRelations', feature_category: :code_r
     expect(mentioned_node['fromMrDescription']).to be(false)
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :read_merge_request do
+    let(:user) { developer }
+    let(:boundary_object) { project }
+    let(:request) { post_graphql(query, token: { personal_access_token: pat }) }
+  end
+
   context 'when filtering by MENTIONED type' do
     let(:types_arg) { '(types: [MENTIONED])' }
+
+    before do
+      post_graphql(query, current_user: current_user)
+    end
 
     it 'returns only mentioned relations' do
       expect(relations_data.pluck('linkType')).to all(eq('MENTIONED'))
@@ -81,6 +89,10 @@ RSpec.describe 'Query.mergeRequest.workItemRelations', feature_category: :code_r
   context 'when the user cannot read confidential issues' do
     let(:current_user) { guest }
     let(:types_arg) { '(types: [CLOSES])' }
+
+    before do
+      post_graphql(query, current_user: current_user)
+    end
 
     it 'excludes relations the user cannot read' do
       work_item_ids = relations_data.pluck('workItem').compact.pluck('id')
@@ -94,6 +106,10 @@ RSpec.describe 'Query.mergeRequest.workItemRelations', feature_category: :code_r
   context 'when the user is not authenticated' do
     let(:current_user) { nil }
     let(:types_arg) { '(types: [CLOSES])' }
+
+    before do
+      post_graphql(query, current_user: current_user)
+    end
 
     it 'returns only public relations' do
       work_item_ids = relations_data.pluck('workItem').compact.pluck('id')

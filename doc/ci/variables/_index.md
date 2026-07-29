@@ -457,7 +457,7 @@ To enable variable expansion for the variable:
 
 1. For the project or group, go to **Settings** > **CI/CD**.
 1. Expand **Variables**.
-1. Next to the variable you want to do not want expanded, select **Edit**.
+1. Next to the variable you do not want expanded, select **Edit**.
 1. Select the **Expand variable reference** checkbox.
 1. Select **Update variable**.
 

@@ -72,7 +72,7 @@ You can't reserve the pool for a subset of users or isolate consumption to speci
 To limit how much individual users consume, use usage caps.
 
 You can purchase the Monthly Commitment Pool as a recurring annual or multi-year term.
-The number of credits purchased for the year is divided in 12.
+The number of credits purchased for the year is divided by 12.
 
 For example, when you purchase a monthly commitment pool of 1,000 credits,
 you will have 1,000 credits available each month for the contract term.
@@ -119,7 +119,7 @@ GitLab Credits are consumed in the following order:
 
 1. Temporary evaluation credits are used first.
 1. Included credits are consumed by each user before any shared credits.
-1. Monthly Commitment Pool of credits are used after all included credits have been consumed.
+1. Monthly Commitment Pool of credits is used after all included credits have been consumed.
 1. On-Demand credits are used after all other available credits
    (included credits and Monthly Commitment Pool, if applicable) are depleted and usage billing terms are signed.
 

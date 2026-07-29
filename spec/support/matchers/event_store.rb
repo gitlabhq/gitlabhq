@@ -44,7 +44,7 @@ module RSpec
       proc.call
 
       RSpec::PublishedGitlabEventStoreEvents.on(@matcher_execution_context).any? do |event|
-        event.instance_of?(expected_event_class) && match_data?(event.data, @expected_data)
+        event.instance_of?(expected_event_class) && match_data?(comparable_data(event), @expected_data)
       end
     end
 
@@ -70,6 +70,14 @@ module RSpec
     end
 
     private
+
+    def comparable_data(event)
+      if event.is_a?(Gitlab::EventStore::CloudEvent)
+        event.event_data.with_indifferent_access
+      else
+        event.data
+      end
+    end
 
     def match_data?(actual, expected)
       return true if expected.nil?

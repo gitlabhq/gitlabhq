@@ -16,6 +16,14 @@ describe('linked_file utilities', () => {
       expect(result.searchParams.get('other')).toBe('value');
     });
 
+    it('removes the line param', () => {
+      const url = new URL(
+        'https://example.com/project/merge_requests/1?file_path=test.txt&line=line_abc_20',
+      );
+      const result = removeLinkedFileUrlParams(url);
+      expect(result.searchParams.has('line')).toBe(false);
+    });
+
     it('removes line hash', () => {
       const url = new URL('https://example.com/project/merge_requests/1#line_123');
       const result = removeLinkedFileUrlParams(url);
@@ -119,6 +127,27 @@ describe('linked_file utilities', () => {
       });
 
       expect(result.hash).toBe('#other');
+    });
+
+    it('sets the line param when line is provided', () => {
+      const url = new URL('https://example.com/merge_requests/1');
+      const result = withLinkedFileUrlParams(url, {
+        oldPath: 'app/models/user.rb',
+        newPath: 'app/models/user.rb',
+        line: 'line_abc_20',
+      });
+
+      expect(result.searchParams.get('line')).toBe('line_abc_20');
+    });
+
+    it('does not set the line param when line is not provided', () => {
+      const url = new URL('https://example.com/merge_requests/1');
+      const result = withLinkedFileUrlParams(url, {
+        oldPath: 'app/models/user.rb',
+        newPath: 'app/models/user.rb',
+      });
+
+      expect(result.searchParams.has('line')).toBe(false);
     });
   });
 });

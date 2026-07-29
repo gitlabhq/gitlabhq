@@ -139,8 +139,4 @@ class Route < ApplicationRecord
   def project_route?
     (source_type_in_database || source_type) == 'Project'
   end
-
-  def unique_attributes
-    [:path]
-  end
 end

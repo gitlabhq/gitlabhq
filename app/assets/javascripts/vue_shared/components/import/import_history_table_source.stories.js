@@ -1,4 +1,4 @@
-import { basic } from 'jest/vue_shared/components/import/history_mock_data';
+import { apiItems } from 'jest/vue_shared/components/import/history_mock_data';
 
 import ImportHistoryTableSource from './import_history_table_source.vue';
 
@@ -8,7 +8,7 @@ export default {
 };
 
 const defaultProps = {
-  item: basic.items[0],
+  item: apiItems[0],
 };
 
 const Template = (args, { argTypes }) => ({

@@ -63,7 +63,12 @@ RSpec.describe ::RapidDiffs::ComparePresenter, feature_category: :source_code_ma
       context 'when linked file is present and page has more diffs to stream' do
         let(:diffs_count) { 2 }
         let(:diff_file) { build(:diff_file, old_path: 'test.txt', new_path: 'test.txt') }
-        let(:diff_files) { instance_double(Gitlab::Diff::FileCollection::Base, diff_files: [diff_file]) }
+        let(:diff_files) do
+          raw = instance_double(Gitlab::Git::DiffCollection)
+          allow(raw).to receive_messages(first: diff_file, decorate!: raw)
+          instance_double(Gitlab::Diff::FileCollection::Base, diff_files: raw)
+        end
+
         let(:request_params) { { from: 'a', to: 'b', file_path: 'test.txt' } }
 
         before do
@@ -81,7 +86,12 @@ RSpec.describe ::RapidDiffs::ComparePresenter, feature_category: :source_code_ma
       context 'when linked file is the only file' do
         let(:diffs_count) { 1 }
         let(:diff_file) { build(:diff_file, old_path: 'test.txt', new_path: 'test.txt') }
-        let(:diff_files) { instance_double(Gitlab::Diff::FileCollection::Base, diff_files: [diff_file]) }
+        let(:diff_files) do
+          raw = instance_double(Gitlab::Git::DiffCollection)
+          allow(raw).to receive_messages(first: diff_file, decorate!: raw)
+          instance_double(Gitlab::Diff::FileCollection::Base, diff_files: raw)
+        end
+
         let(:request_params) { { from: 'a', to: 'b', file_path: 'test.txt' } }
 
         before do
@@ -156,7 +166,12 @@ RSpec.describe ::RapidDiffs::ComparePresenter, feature_category: :source_code_ma
 
   describe '#linked_file' do
     let(:diff_file) { build(:diff_file, old_path: 'test.txt', new_path: 'test.txt') }
-    let(:diff_files) { instance_double(Gitlab::Diff::FileCollection::Base, diff_files: [diff_file]) }
+    let(:diff_files) do
+      raw = instance_double(Gitlab::Git::DiffCollection)
+      allow(raw).to receive_messages(first: diff_file, decorate!: raw)
+      instance_double(Gitlab::Diff::FileCollection::Base, diff_files: raw)
+    end
+
     let(:request_params) { { from: 'a', to: 'b', file_path: 'test.txt' } }
 
     before do

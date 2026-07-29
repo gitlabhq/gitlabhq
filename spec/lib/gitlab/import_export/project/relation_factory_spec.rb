@@ -831,6 +831,28 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
     end
   end
 
+  describe 'merge request diff files' do
+    let(:relation_sym) { :merge_request_diff_files }
+    let(:relation_hash) do
+      {
+        'diff' => 'diff',
+        'new_file' => true,
+        'renamed_file' => false,
+        'deleted_file' => false,
+        'a_mode' => '100644',
+        'b_mode' => '100644',
+        'new_path' => 'new_path',
+        'old_path' => 'old_path',
+        'diff_export' => 'diff_export'
+      }
+    end
+
+    it 'sets diff and project_id correctly', :aggregate_failures do
+      expect(created_object.diff).to eq('diff_export')
+      expect(created_object.project_id).to eq(project.id)
+    end
+  end
+
   describe 'MergeRequest::DiffCommitUser' do
     let(:relation_sym) { :'MergeRequest::DiffCommitUser' }
     let(:relation_hash) do

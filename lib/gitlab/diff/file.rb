@@ -26,6 +26,14 @@ module Gitlab
         DiffViewer::Image
       ].sort_by { |v| v.binary? ? 0 : 1 }.freeze
 
+      def self.file_hash(path)
+        Digest::SHA1.hexdigest(path)
+      end
+
+      def self.short_file_hash(path)
+        file_hash(path)[0..8]
+      end
+
       def initialize(
         diff,
         repository:,
@@ -197,6 +205,10 @@ module Gitlab
         if unfolder.unfold_required?
           @diff_lines = unfolder.unfolded_diff_lines
           @unfolded = true
+          # Highlighted lines may be memoized from the pre-unfold highlight cache
+          # (e.g. preloaded by MergeRequestDiffBase#diff_files); invalidate them so
+          # they are recomputed from the now-expanded diff lines.
+          self.highlighted_diff_lines = nil
         end
       end
 
@@ -243,12 +255,12 @@ module Gitlab
       end
 
       def file_hash
-        Digest::SHA1.hexdigest(file_path)
+        self.class.file_hash(file_path)
       end
       strong_memoize_attr :file_hash
 
       def short_file_hash
-        file_hash[0..8]
+        self.class.short_file_hash(file_path)
       end
       strong_memoize_attr :short_file_hash
 

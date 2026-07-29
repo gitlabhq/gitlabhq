@@ -173,7 +173,10 @@ class Projects::BlobController < Projects::ApplicationController
 
     render hunk_presenter.with_collection(
       diff_hunks,
-      file_hash: blob.short_file_hash
+      # Not blob.short_file_hash: Blob hashes the path with SHA256 while
+      # Gitlab::Diff::File uses SHA1, and the line IDs here must match the ones
+      # in the streamed diff or linked/expanded-line anchors won't resolve.
+      file_hash: ::Gitlab::Diff::File.short_file_hash(@path)
     ), layout: false
   end
 

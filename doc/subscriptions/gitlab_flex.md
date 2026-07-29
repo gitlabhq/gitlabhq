@@ -168,25 +168,25 @@ The following errors prevent a reservation from being saved:
 
 The seat or credits quantity is negative. 
 
-To resolve this issue enter a whole number of `0` or greater.
+To resolve this issue, enter a whole number of `0` or greater.
 
 ##### Error: `Seats cannot be zero`
 
 The seat quantity is set to `0`.
 
-To resolve this issue enter a seat count of at least `1`.
+To resolve this issue, enter a seat count of at least `1`.
 
 ##### Error: `Below minimum reservation`
 
 The total reservation value (seats plus credits) is less than the minimum required reservation shown at the top of the page.
 
-To resolve this issue increase the number of seats or credits until the total meets the minimum.
+To resolve this issue, increase the number of seats or credits until the total meets the minimum.
 
 ##### Error: `Above maximum reservation`
 
 The total reservation value (seats plus credits) is greater than the maximum reservation shown at the top of the page.
 
-To resolve this issue decrease the number of seats or credits until the total does not exceed the maximum.
+To resolve this issue, decrease the number of seats or credits until the total does not exceed the maximum.
 
 ## Renew GitLab Flex
 

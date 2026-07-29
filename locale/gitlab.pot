@@ -10250,9 +10250,6 @@ msgstr ""
 msgid "An error occurred while fetching coverage reports."
 msgstr ""
 
-msgid "An error occurred while fetching downstream pipeline details."
-msgstr ""
-
 msgid "An error occurred while fetching environments."
 msgstr ""
 
@@ -93490,9 +93487,6 @@ msgstr ""
 msgid "mrWidgetNothingToMerge|Use merge requests to propose changes to your project and discuss them with your team. To make changes, use the %{boldStart}Code%{boldEnd} dropdown list above, then test them with %{linkStart}CI/CD%{linkEnd} before merging."
 msgstr ""
 
-msgid "mrWidget|%{boldHeaderStart}Looks like there's no pipeline here.%{boldHeaderEnd}"
-msgstr ""
-
 msgid "mrWidget|%{boldStart}Merge blocked:%{boldEnd} denied licenses must be removed."
 msgstr ""
 
@@ -93644,9 +93638,6 @@ msgid "mrWidget|Did not close"
 msgstr ""
 
 msgid "mrWidget|Edit title"
-msgstr ""
-
-msgid "mrWidget|GitLab %{linkStart}CI/CD can automatically build, test, and deploy your application.%{linkEnd} It only takes a few minutes to get started, and we can help you create a pipeline configuration file."
 msgstr ""
 
 msgid "mrWidget|Go to first open thread"

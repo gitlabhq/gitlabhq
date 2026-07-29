@@ -837,6 +837,32 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
         model.handle_grpc_error(grpc_error)
         expect(model.errors[:base]).to include("path has already been taken")
       end
+
+      context "when the model does not override unique_attributes" do
+        let(:model) { test_klass.new(path: 'gitlab') }
+
+        before do
+          stub_const('TestOrganization', test_klass)
+        end
+
+        it "builds the message from the claimed attributes" do
+          model.handle_grpc_error(grpc_error)
+          expect(model.errors[:base]).to include("path has already been taken")
+        end
+
+        context "with multiple claimed attributes" do
+          before do
+            test_klass.cells_claims_attribute :name,
+              type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH,
+              feature_flag: :cells_claims_organizations
+          end
+
+          it "joins the claimed attributes in the message" do
+            model.handle_grpc_error(grpc_error)
+            expect(model.errors[:base]).to include("path or name has already been taken")
+          end
+        end
+      end
     end
 
     context "when error is DEADLINE_EXCEEDED" do

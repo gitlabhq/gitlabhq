@@ -101,7 +101,7 @@ RSpec.describe Mcp::Tools::Base::BaseService, feature_category: :mcp_server do
           },
           required: ['required_field']
         },
-        icons: [Mcp::Tools::IconConfig.gitlab_icons.first]
+        icons: [Mcp::Tools::Base::IconConfig.gitlab_icons.first]
       })
 
       expect(result).not_to have_key(:annotations)
@@ -145,7 +145,7 @@ RSpec.describe Mcp::Tools::Base::BaseService, feature_category: :mcp_server do
           name: service_name,
           description: 'Test tool with annotations',
           inputSchema: { type: 'object', properties: {} },
-          icons: [Mcp::Tools::IconConfig.gitlab_icons.first],
+          icons: [Mcp::Tools::Base::IconConfig.gitlab_icons.first],
           annotations: { readOnlyHint: true }
         })
       end

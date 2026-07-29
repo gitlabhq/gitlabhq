@@ -104,6 +104,7 @@ To find subscribers, search the subscription files under
 | `Members::DestroyedEvent` | `user_management` | CE | Published after a member record is removed from a group or project. Fires once per user per destroy operation; not published on recursive cascades (for example, when a parent group destroy removes child memberships). Deferred via run_after_commit_or_now. |
 | `Members::MembersAddedEvent` | `user_management` | CE | Published after one or more members are added to a group or project. A single event carries all successfully created user IDs; skipped entirely when every invited user fails validation. |
 | `Members::MembershipModifiedByAdminEvent` | `seat_cost_management` | EE | Published when an admin creates or promotes a member to a billable role while member-promotion-management is enabled, so pending approval workflows can be processed. |
+| `Members::UpdatedCloudEvent` | `user_management` | CE | CloudEvent published after one or more member access levels are updated. Skipped on no-op updates (empty members array). |
 | `Members::UpdatedEvent` | `user_management` | CE | Published after one or more member access levels are updated. Skipped on no-op updates (empty members array). |
 
 ## Merge Requests

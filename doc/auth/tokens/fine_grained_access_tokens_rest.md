@@ -1519,7 +1519,7 @@ Grants the ability to execute tools through the Orbit Knowledge Graph MCP server
 
 #### Organization
 
-Grants the ability to create, delete, read, and update organizations.
+Grants the ability to create, delete, read, restore, and update organizations.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |

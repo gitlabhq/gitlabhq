@@ -123,7 +123,7 @@ verify_image:
 
 **Additional details**:
 
-- The double backslash between the project path and the `.gitlab-ci.yml` path is not an error and is required for verification to succeed. A typical error when a single slash is used is `Error: none of the expected identities matched what was in the certificate, got subjects` followed by the signed URL which has two slashes between the project path and the `.gitlab-ci.yml` path.
+- The double slash between the project path and the `.gitlab-ci.yml` path is not an error and is required for verification to succeed. A typical error when a single slash is used is `Error: none of the expected identities matched what was in the certificate, got subjects` followed by the signed URL which has two slashes between the project path and the `.gitlab-ci.yml` path.
 - If the verification happens in the same pipeline as the signing, you can use
   `"${CI_PROJECT_URL}//.gitlab-ci.yml@refs/heads/${CI_COMMIT_REF_NAME}"` for `--certificate-identity`
   and `"${CI_SERVER_URL}"` for `--certificate-oidc-issuer`.
@@ -145,7 +145,7 @@ verify_artifact:
 
 **Additional details**:
 
-- The double backslash between the project path and the `.gitlab-ci.yml` path is not an error and is required for verification to succeed. A typical error when a single slash is used is `Error: none of the expected identities matched what was in the certificate, got subjects` followed by the signed URL which has two slashes between the project path and the `.gitlab-ci.yml` path.
+- The double slash between the project path and the `.gitlab-ci.yml` path is not an error and is required for verification to succeed. A typical error when a single slash is used is `Error: none of the expected identities matched what was in the certificate, got subjects` followed by the signed URL which has two slashes between the project path and the `.gitlab-ci.yml` path.
 - If the verification happens in the same pipeline as the signing, you can use
   `"${CI_PROJECT_URL}//.gitlab-ci.yml@refs/heads/${CI_COMMIT_REF_NAME}"` for `--certificate-identity`
   and `"${CI_SERVER_URL}"` for `--certificate-oidc-issuer`.
@@ -197,7 +197,7 @@ build:
     - npm publish --provenance --access public
 ```
 
-The npm GitLab template provides this functionality as well, the example is in
+The npm GitLab template provides this functionality as well. The example is in
 the [templates documentation](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/npm.gitlab-ci.yml).
 
 ## Verifying npm provenance

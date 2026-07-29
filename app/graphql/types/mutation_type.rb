@@ -136,6 +136,7 @@ module Types
     mount_mutation Mutations::Organizations::Delete, experiment: { milestone: '19.1' }
     mount_mutation Mutations::Organizations::Update, experiment: { milestone: '16.7' }
     mount_mutation Mutations::Organizations::OrganizationUsers::Update, experiment: { milestone: '17.5' }
+    mount_mutation Mutations::Organizations::Restore, experiment: { milestone: '19.3' }
     mount_mutation Mutations::Projects::BlobsRemove, calls_gitaly: true, experiment: { milestone: '17.1' }
     mount_mutation Mutations::Projects::CustomAttributes::Delete, experiment: { milestone: '18.9' }
     mount_mutation Mutations::Projects::CustomAttributes::Set, experiment: { milestone: '18.9' }

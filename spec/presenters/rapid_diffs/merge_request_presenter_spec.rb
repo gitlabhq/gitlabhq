@@ -35,7 +35,9 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
       diffable_merge_ref?: false,
       has_no_commits?: false
     )
-    allow_any_instance_of(Gitlab::Diff::CollectionUnfolder).to receive(:unfold!) # rubocop:disable RSpec/AnyInstanceOf -- simplifies global stub
+    # rubocop:disable RSpec/AnyInstanceOf -- simplifies global stub
+    allow_any_instance_of(Gitlab::Diff::CollectionUnfolder).to receive(:unfold!)
+    # rubocop:enable RSpec/AnyInstanceOf
   end
 
   it_behaves_like 'rapid diffs presenter base diffs_resource'
@@ -266,7 +268,12 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
 
       context 'when linked file is present and page has more diffs to stream' do
         let(:diff_file) { build(:diff_file, old_path: 'test.txt', new_path: 'test.txt') }
-        let(:diff_files) { instance_double(Gitlab::Diff::FileCollection::Base, diff_files: [diff_file]) }
+        let(:diff_files) do
+          raw = instance_double(Gitlab::Git::DiffCollection)
+          allow(raw).to receive_messages(first: diff_file, decorate!: raw)
+          instance_double(Gitlab::Diff::FileCollection::Base, diff_files: raw, write_cache: nil)
+        end
+
         let(:request_params) { { file_path: 'test.txt' } }
 
         before do
@@ -283,7 +290,12 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
       context 'when linked file is the only file' do
         let(:diffs_count) { 1 }
         let(:diff_file) { build(:diff_file, old_path: 'test.txt', new_path: 'test.txt') }
-        let(:diff_files) { instance_double(Gitlab::Diff::FileCollection::Base, diff_files: [diff_file]) }
+        let(:diff_files) do
+          raw = instance_double(Gitlab::Git::DiffCollection)
+          allow(raw).to receive_messages(first: diff_file, decorate!: raw)
+          instance_double(Gitlab::Diff::FileCollection::Base, diff_files: raw, write_cache: nil)
+        end
+
         let(:request_params) { { file_path: 'test.txt' } }
 
         before do
@@ -582,17 +594,30 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
 
   describe '#linked_file' do
     let(:diff_file) { build(:diff_file, old_path: 'test.txt', new_path: 'test.txt') }
-    let(:diff_files) { instance_double(Gitlab::Diff::FileCollection::Base, diff_files: [diff_file]) }
+    let(:raw_diff_files) { instance_double(Gitlab::Git::DiffCollection) }
+    let(:collection) do
+      instance_double(Gitlab::Diff::FileCollection::Base, diff_files: raw_diff_files, write_cache: nil)
+    end
+
     let(:request_params) { { file_path: 'test.txt' } }
 
     before do
-      allow(resource).to receive(:diffs).and_return(diff_files)
+      allow(resource).to receive(:diffs).and_return(collection)
+      allow(raw_diff_files).to receive_messages(first: diff_file, decorate!: raw_diff_files)
     end
 
     it 'returns the linked file' do
       result = presenter.linked_file
       expect(result).to eq(diff_file)
       expect(result.linked).to be(true)
+    end
+
+    it 'unfolds the linked file through the collection, so discussions on expanded lines stay visible' do
+      # rubocop:disable RSpec/AnyInstanceOf -- matches the global CollectionUnfolder stub
+      expect_any_instance_of(Gitlab::Diff::CollectionUnfolder).to receive(:unfold!).with(collection)
+      # rubocop:enable RSpec/AnyInstanceOf
+
+      presenter.linked_file
     end
   end
 
@@ -718,7 +743,18 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
 
     describe '#linked_file' do
       let(:linked_file) { build(:diff_file) }
-      let(:diff_files_collection) { instance_double(Gitlab::Diff::FileCollection::Base, diff_files: [linked_file]) }
+      let(:linked_files_array) { [linked_file] }
+      let(:raw_linked_files) do
+        instance_double(Gitlab::Git::DiffCollection).tap do |collection|
+          allow(collection).to receive(:decorate!) { |&block| linked_files_array.map!(&block) }
+          allow(collection).to receive(:first) { linked_files_array.first }
+        end
+      end
+
+      let(:diff_files_collection) do
+        instance_double(Gitlab::Diff::FileCollection::Base, diff_files: raw_linked_files, write_cache: nil)
+      end
+
       let(:conflicts) do
         {
           linked_file.file_path => {

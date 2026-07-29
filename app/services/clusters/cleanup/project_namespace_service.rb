@@ -8,7 +8,7 @@ module Clusters
       def execute
         delete_project_namespaces_in_batches
 
-        # Keep calling the worker untill all namespaces are deleted
+        # Keep calling the worker until all namespaces are deleted
         if cluster.kubernetes_namespaces.exists?
           return schedule_next_execution(Clusters::Cleanup::ProjectNamespaceWorker)
         end

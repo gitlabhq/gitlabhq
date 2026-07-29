@@ -198,7 +198,7 @@ And optionally:
 
 - Only [certain CI/CD variables](includes.md#use-variables-with-include) can be used
   with `include` keywords.
-- Use merging to customize and override included CI/CD configurations with local
+- Use merging to customize and override included CI/CD configurations with local configuration.
 - You can override included configuration by having the same job name or global keyword
   in the `.gitlab-ci.yml` file. The two configurations are merged together, and the
   configuration in the `.gitlab-ci.yml` file takes precedence over the included configuration.
@@ -235,7 +235,7 @@ include:
 
 **Additional details**:
 
-- If the component's source project is private, the user running the pipeline must have at least the Reporter role
+- If the component's source project is private, the user running the pipeline must have at least the Reporter role.
   For internal projects, any authenticated non-external user can access the component.
   For public projects, no membership is required.
 
@@ -1679,7 +1679,7 @@ link outside it.
 **Supported values**:
 
 - An array of file paths, relative to the project directory.
-- You can use Wildcards that use [glob](https://en.wikipedia.org/wiki/Glob_(programming)) patterns and [`doublestar.Glob`](https://pkg.go.dev/github.com/bmatcuk/doublestar@v1.2.2?tab=doc#Match) patterns.
+- You can use wildcards that use [glob](https://en.wikipedia.org/wiki/Glob_(programming)) patterns and [`doublestar.Glob`](https://pkg.go.dev/github.com/bmatcuk/doublestar@v1.2.2?tab=doc#Match) patterns.
 - For [GitLab Pages job](#pages):
   - In [GitLab 17.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/428018),
     the [`pages.publish`](#pagespublish) path is automatically appended to `artifacts:paths`,
@@ -1724,7 +1724,7 @@ Use `artifacts:exclude` to prevent files from being added to an artifacts archiv
 **Supported values**:
 
 - An array of file paths, relative to the project directory.
-- You can use Wildcards that use [glob](https://en.wikipedia.org/wiki/Glob_(programming)) or
+- You can use wildcards that use [glob](https://en.wikipedia.org/wiki/Glob_(programming)) or
   [`doublestar.PathMatch`](https://pkg.go.dev/github.com/bmatcuk/doublestar@v1.2.2?tab=doc#PathMatch) patterns.
 
 **Example of `artifacts:exclude`**:
@@ -4308,12 +4308,12 @@ uploads static content to GitLab. The content is then published as a website.
 You must:
 
 - Define `pages: true` to publish a directory named `public`
-- Alternatively, define [`pages.publish`](#pagespublish) if want to use a different content directory.
+- Alternatively, define [`pages.publish`](#pagespublish) if you want to use a different content directory.
 - Have a non-empty `index.html` file in the root of the content directory.
 
 **Keyword type**: Job keyword or Job name (deprecated). You can use it only as part of a job.
 
-**Supported Values**:
+**Supported values**:
 
 - A boolean. Uses the default configuration when set to `true`
 - A hash of configuration options, see the following sections for details.
@@ -4393,7 +4393,7 @@ create-pages:
 ```
 
 This example uses [Eleventy](https://www.11ty.dev) to generate a static website and
-output the generated HTML files into a the `dist/` directory. This directory is exported
+output the generated HTML files into the `dist/` directory. This directory is exported
 as an artifact and published with GitLab Pages.
 
 It is also possible to use variables in the `pages.publish` field. For example:

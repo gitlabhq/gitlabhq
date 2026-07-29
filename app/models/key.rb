@@ -202,10 +202,6 @@ class Key < ApplicationRecord
   def expiration
     errors.add(:key, message: 'has expired') if expired?
   end
-
-  def unique_attributes
-    [:fingerprint_sha256]
-  end
 end
 
 Key.prepend_mod_with('Key')

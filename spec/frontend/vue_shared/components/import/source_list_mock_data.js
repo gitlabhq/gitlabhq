@@ -163,7 +163,3 @@ export const apiItems = [
     },
   },
 ];
-
-export const basic = {
-  items: apiItems,
-};
