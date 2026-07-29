@@ -405,7 +405,7 @@ module Gitlab
             oauth_dynamic_registration: ::Labkit::RateLimit::Rule.new(
               name: 'limit_oauth_registrations_by_ip',
               characteristics: %i[ip],
-              limit: 5,
+              limit: 10,
               period: 1.hour,
               action: :block
             ),

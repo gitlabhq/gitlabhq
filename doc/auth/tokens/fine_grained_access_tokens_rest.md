@@ -568,7 +568,7 @@ Grants the ability to create, delete, and read secure files.
 
 #### Terraform State
 
-Grants the ability to create, delete, lock, read, and update Terraform state.
+Grants the ability to create, delete, lock, and read Terraform state.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |

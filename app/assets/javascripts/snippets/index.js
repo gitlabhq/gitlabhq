@@ -36,6 +36,7 @@ export default function appFactory(el, Component) {
 
   return new Vue({
     el,
+    name: 'SnippetsRoot',
     apolloProvider,
     provide: {
       visibilityLevels: JSON.parse(visibilityLevels),

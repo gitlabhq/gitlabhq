@@ -332,7 +332,7 @@ Grants the ability to assign, create, delete, read, and update runners.
 
 #### Terraform State
 
-Grants the ability to create, delete, lock, read, and update Terraform state.
+Grants the ability to create, delete, lock, and read Terraform state.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
@@ -342,7 +342,6 @@ Grants the ability to create, delete, lock, read, and update Terraform state.
 | Read | Project | Type | `TerraformState` |
 | Read | Project | Type | `TerraformStateProtectionRule` |
 | Read | Project | Type | `TerraformStateVersion` |
-| Update | Project | Mutation | `UpdateTerraformStateProtectionRule` |
 
 #### Terraform State Protection Rule
 
@@ -352,6 +351,7 @@ Grants the ability to create, delete, and update Terraform state protection rule
 | ------ | ------ | ---- | ---- |
 | Create | Project | Mutation | `CreateTerraformStateProtectionRule` |
 | Delete | Project | Mutation | `DeleteTerraformStateProtectionRule` |
+| Update | Project | Mutation | `UpdateTerraformStateProtectionRule` |
 
 #### Trigger
 

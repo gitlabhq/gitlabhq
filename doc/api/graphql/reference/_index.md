@@ -92,7 +92,7 @@ Arguments:
 
 {{< /details >}}
 
-List groups with their resolved GitLab Duo availability for admin overrides. Available only when the `admin_duo_availability_namespace_overrides` feature flag is enabled.
+List groups with their resolved GitLab Duo availability for admin overrides.
 
 Returns [`AdminDuoAvailabilityNamespaceConnection`](#adminduoavailabilitynamespaceconnection).
 
@@ -3308,7 +3308,7 @@ Fields:
 
 {{< /details >}}
 
-Clears an admin-locked GitLab Duo availability override from a group. Available only when the `admin_duo_availability_namespace_overrides` feature flag is enabled.
+Clears an admin-locked GitLab Duo availability override from a group.
 
 Input type: `AdminClearDuoAvailabilityInput`
 
@@ -3362,7 +3362,7 @@ Fields:
 
 {{< /details >}}
 
-Sets an admin-locked GitLab Duo availability override on a group. Available only when the `admin_duo_availability_namespace_overrides` feature flag is enabled.
+Sets an admin-locked GitLab Duo availability override on a group.
 
 Input type: `AdminSetDuoAvailabilityInput`
 

@@ -10,7 +10,6 @@ export default {
     'app/assets/javascripts/pages/shared/mount_badge_settings.js',
     'app/assets/javascripts/rapid_diffs/app/file_browser/index.js',
     'app/assets/javascripts/render_vue_component_for_legacy_js.js',
-    'app/assets/javascripts/snippets/index.js',
     'app/assets/javascripts/vue_merge_request_widget/index.js',
     'ee/app/assets/javascripts/ai/settings/index.js',
     'ee/app/assets/javascripts/gitlab_subscriptions/groups/new/index.js',

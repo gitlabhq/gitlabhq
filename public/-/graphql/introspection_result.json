@@ -246503,7 +246503,7 @@
             },
             {
               "name": "adminClearDuoAvailability",
-              "description": "Clears an admin-locked GitLab Duo availability override from a group. Available only when the `admin_duo_availability_namespace_overrides` feature flag is enabled. Introduced in GitLab 19.2: Status: Experiment.",
+              "description": "Clears an admin-locked GitLab Duo availability override from a group. Introduced in GitLab 19.2: Status: Experiment.",
               "args": [
                 {
                   "name": "input",
@@ -246561,7 +246561,7 @@
             },
             {
               "name": "adminSetDuoAvailability",
-              "description": "Sets an admin-locked GitLab Duo availability override on a group. Available only when the `admin_duo_availability_namespace_overrides` feature flag is enabled. Introduced in GitLab 19.2: Status: Experiment.",
+              "description": "Sets an admin-locked GitLab Duo availability override on a group. Introduced in GitLab 19.2: Status: Experiment.",
               "args": [
                 {
                   "name": "input",
@@ -336323,7 +336323,7 @@
             },
             {
               "name": "adminDuoAvailabilityNamespaces",
-              "description": "List groups with their resolved GitLab Duo availability for admin overrides. Available only when the `admin_duo_availability_namespace_overrides` feature flag is enabled. Introduced in GitLab 19.2: Status: Experiment.",
+              "description": "List groups with their resolved GitLab Duo availability for admin overrides. Introduced in GitLab 19.2: Status: Experiment.",
               "args": [
                 {
                   "name": "parentId",

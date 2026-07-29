@@ -426,7 +426,6 @@ class ProjectPolicy < BasePolicy
   rule { infrastructure_disabled | terraform_state_disabled }.policy do
     prevent :read_terraform_state
     prevent :create_terraform_state
-    prevent :update_terraform_state
     prevent :admin_terraform_state
     prevent :destroy_terraform_state
     prevent :create_terraform_state_protection_rule
