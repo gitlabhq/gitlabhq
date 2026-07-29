@@ -1271,6 +1271,14 @@ offenses:
   deprecated_field: gitlab_host
   standard_field: Labkit::Fields::HTTP_HOST
 - logger_class: Gitlab::Geo::Logger
+  callsite: ee/lib/gitlab/geo/log_cursor/events/event.rb
+  deprecated_field: class
+  standard_field: Labkit::Fields::CLASS_NAME
+- logger_class: Gitlab::Geo::Logger
+  callsite: ee/lib/gitlab/geo/log_cursor/events/event.rb
+  deprecated_field: gitlab_host
+  standard_field: Labkit::Fields::HTTP_HOST
+- logger_class: Gitlab::Geo::Logger
   callsite: ee/lib/gitlab/geo/log_cursor/lease.rb
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME
