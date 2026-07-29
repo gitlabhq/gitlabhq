@@ -1,14 +1,15 @@
 # frozen_string_literal: true
 
 class ValidateWebHookLogsDailyShardingKeyConstraint < Gitlab::Database::Migration[2.3]
-  CONSTRAINT_NAME = 'check_19dc80d658'
-
   milestone '19.0'
 
   def up
-    validate_multi_column_not_null_constraint :web_hook_logs_daily,
-      :organization_id, :group_id, :project_id,
-      constraint_name: CONSTRAINT_NAME
+    # no-op: validating check_19dc80d658 fails with PG::CheckViolation on orphan
+    # web_hook_logs_daily rows (all sharding keys NULL) during fast chained upgrades,
+    # before the table's 14-day partition rollover clears them. The constraint is left
+    # NOT VALID here (still enforced on new writes) and re-validated after orphan cleanup
+    # in a later migration.
+    # See https://gitlab.com/gitlab-org/gitlab/-/work_items/603303
   end
 
   def down
