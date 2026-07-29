@@ -135,10 +135,13 @@ module API
         post ':id/pipeline_schedules' do
           authorize! :create_pipeline_schedule, user_project
 
-          schedule_params = declared_params(include_missing: false).except(:inputs)
+          schedule_params = declared_params(include_missing: false)
+          inputs = schedule_params.delete(:inputs)
 
-          if params[:inputs]
-            schedule_params[:inputs_attributes] = params[:inputs]
+          if inputs
+            schedule_params[:inputs_attributes] = inputs.map do |input|
+              input.slice(:name, :value)
+            end
           end
 
           response = ::Ci::PipelineSchedules::CreateService
@@ -186,10 +189,13 @@ module API
         put ':id/pipeline_schedules/:pipeline_schedule_id' do
           authorize! :update_pipeline_schedule, pipeline_schedule
 
-          schedule_params = declared_params(include_missing: false).except(:inputs)
+          schedule_params = declared_params(include_missing: false)
+          inputs = schedule_params.delete(:inputs)
 
-          if params[:inputs]
-            schedule_params[:inputs_attributes] = params[:inputs]
+          if inputs
+            schedule_params[:inputs_attributes] = inputs.map do |input|
+              input.slice(:name, :value, :destroy)
+            end
           end
 
           response = ::Ci::PipelineSchedules::UpdateService

@@ -139,5 +139,21 @@ RSpec.describe Banzai::UploadsController, feature_category: :markdown do
         end
       end
     end
+
+    context 'without Workhorse JWT', :verify_workhorse_jwt do
+      let_it_be_with_reload(:project) { create(:project, :public) }
+
+      before do
+        allow(FileUploader).to receive(:generate_secret).and_return(secret)
+        UploadService.new(project, txt_upload, FileUploader).execute
+        sign_in(user)
+      end
+
+      it 'returns 403 forbidden' do
+        get "/-/project/#{project.id}/uploads/#{secret}/doc_sample.txt"
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
   end
 end

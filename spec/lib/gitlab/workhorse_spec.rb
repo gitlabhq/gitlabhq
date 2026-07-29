@@ -381,9 +381,9 @@ RSpec.describe Gitlab::Workhorse, feature_category: :gitaly do
     end
   end
 
-  describe '#verify_api_request!' do
+  describe '#verify_api_request!', :verify_workhorse_jwt do
     let(:header_key) { described_class::INTERNAL_API_REQUEST_HEADER }
-    let(:payload) { { 'iss' => 'gitlab-workhorse' } }
+    let(:payload) { { 'iss' => 'gitlab-workhorse', 'iat' => Time.now.to_i } }
 
     it 'accepts a correct header' do
       headers = { header_key => JWT.encode(payload, described_class.secret, 'HS256') }
@@ -406,6 +406,18 @@ RSpec.describe Gitlab::Workhorse, feature_category: :gitaly do
 
     it 'raises an error when the issuer is incorrect' do
       payload['iss'] = 'somebody else'
+      headers = { header_key => JWT.encode(payload, described_class.secret, 'HS256') }
+      expect { call_verify(headers) }.to raise_jwt_error
+    end
+
+    it 'raises an error when iat is missing' do
+      payload.delete('iat')
+      headers = { header_key => JWT.encode(payload, described_class.secret, 'HS256') }
+      expect { call_verify(headers) }.to raise_jwt_error
+    end
+
+    it 'raises an error when iat is older than API_REQUEST_JWT_VALIDITY' do
+      payload['iat'] = (described_class::API_REQUEST_JWT_VALIDITY + 1.second).ago.to_i
       headers = { header_key => JWT.encode(payload, described_class.secret, 'HS256') }
       expect { call_verify(headers) }.to raise_jwt_error
     end

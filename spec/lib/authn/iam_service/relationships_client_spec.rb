@@ -103,6 +103,16 @@ RSpec.describe Authn::IamService::RelationshipsClient, feature_category: :system
         expect { client.write_relationships([], token: user_token) }
           .to raise_error(described_class::RequestError) { |e| expect(e.reason).to eq(:unavailable) }
       end
+
+      it 'tracks the underlying configuration error' do
+        error = Authn::IamDataAccessService::ConfigurationError.new
+        allow(Authn::IamDataAccessService).to receive(:grpc_address).and_raise(error)
+
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(error)
+
+        expect { client.write_relationships([], token: user_token) }
+          .to raise_error(described_class::RequestError)
+      end
     end
 
     context 'with a real stub and interceptor chain' do

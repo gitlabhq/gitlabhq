@@ -560,6 +560,42 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
         end
       end
 
+      context 'when undeclared attributes are included in input params' do
+        let_it_be(:other_project) { create(:project, :repository) }
+        let_it_be(:other_user) { create(:user, developer_of: other_project) }
+
+        let_it_be(:other_schedule) do
+          create(:ci_pipeline_schedule, project: other_project, owner: other_user)
+        end
+
+        it 'ignores pipeline_schedule_id in input params', :aggregate_failures do
+          post api(url, developer),
+            params: attributes_for(:ci_pipeline_schedule).merge(
+              inputs: [{ name: 'INPUT', value: 'val', pipeline_schedule_id: other_schedule.id }]
+            )
+
+          expect(response).to have_gitlab_http_status(:created)
+
+          schedule = Ci::PipelineSchedule.last
+          input = schedule.inputs.find_by(name: 'INPUT')
+          expect(input.pipeline_schedule_id).to eq(schedule.id)
+          expect(other_schedule.reload.inputs).to be_empty
+        end
+
+        it 'ignores project_id in input params', :aggregate_failures do
+          post api(url, developer),
+            params: attributes_for(:ci_pipeline_schedule).merge(
+              inputs: [{ name: 'INPUT', value: 'val', project_id: other_project.id }]
+            )
+
+          expect(response).to have_gitlab_http_status(:created)
+
+          schedule = Ci::PipelineSchedule.last
+          input = schedule.inputs.find_by(name: 'INPUT')
+          expect(input.project_id).to eq(project.id)
+        end
+      end
+
       context 'when ref has validation error' do
         it 'does not create pipeline_schedule' do
           post api(url, developer),
@@ -675,6 +711,60 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
           expect(response).to have_gitlab_http_status(:ok)
           expect(pipeline_schedule.inputs.find_by(name: 'EXISTING_INPUT').value).to eq('updated_value')
           expect(pipeline_schedule.inputs.find_by(name: 'NEW_INPUT').value).to eq('brand_new')
+        end
+
+        context 'when undeclared attributes are included in input params' do
+          let_it_be(:other_project) { create(:project, :repository) }
+          let_it_be(:other_user) { create(:user, developer_of: other_project) }
+
+          let_it_be(:other_schedule) do
+            create(:ci_pipeline_schedule, project: other_project, owner: other_user)
+          end
+
+          it 'ignores pipeline_schedule_id in input params', :aggregate_failures do
+            put api(url, developer),
+              params: {
+                inputs: [{
+                  name: 'EXISTING_INPUT',
+                  value: 'updated_value',
+                  pipeline_schedule_id: other_schedule.id
+                }]
+              }
+
+            expect(response).to have_gitlab_http_status(:ok)
+
+            pipeline_schedule_input = pipeline_schedule.inputs.find_by(name: 'EXISTING_INPUT')
+            expect(pipeline_schedule_input.value).to eq('updated_value')
+            expect(pipeline_schedule_input.pipeline_schedule_id).to eq(pipeline_schedule.id)
+            expect(other_schedule.reload.inputs).to be_empty
+          end
+
+          it 'ignores id in input params', :aggregate_failures do
+            put api(url, developer),
+              params: {
+                inputs: [{ name: 'NEW_INPUT', value: 'injected', id: pipeline_schedule_input.id }]
+              }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(pipeline_schedule.inputs.find_by(name: 'EXISTING_INPUT').value).to eq('old_value')
+            expect(pipeline_schedule.inputs.find_by(name: 'NEW_INPUT').value).to eq('injected')
+          end
+
+          it 'ignores project_id in input params', :aggregate_failures do
+            put api(url, developer),
+              params: {
+                inputs: [{
+                  name: 'EXISTING_INPUT',
+                  value: 'updated_value',
+                  project_id: other_project.id
+                }]
+              }
+
+            expect(response).to have_gitlab_http_status(:ok)
+
+            pipeline_schedule_input = pipeline_schedule.inputs.find_by(name: 'EXISTING_INPUT')
+            expect(pipeline_schedule_input.project_id).to eq(project.id)
+          end
         end
       end
 

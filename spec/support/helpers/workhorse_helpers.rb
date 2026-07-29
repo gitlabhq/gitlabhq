@@ -18,6 +18,10 @@ module WorkhorseHelpers
     end
   end
 
+  def decode_workhorse_senddata(encoded_params)
+    Gitlab::Json.parse(Base64.urlsafe_decode64(encoded_params))
+  end
+
   def workhorse_internal_api_request_header
     { 'HTTP_' + Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER.upcase.tr('-', '_') => jwt_token }
   end
@@ -97,6 +101,13 @@ module WorkhorseHelpers
     process(method, url, params: workhorse_params, headers: headers, env: env)
   end
 
+  # Public so that `spec/support/workhorse_jwt_injection.rb` can mint a JWT for
+  # the global injection hook (`WorkhorseHelpers.jwt_token`). `extend self`
+  # only exposes public methods at the module level.
+  def jwt_token(data: {}, issuer: 'gitlab-workhorse', secret: Gitlab::Workhorse.secret, algorithm: 'HS256')
+    JWT.encode({ 'iss' => issuer, 'iat' => Time.now.to_i }.merge(data), secret, algorithm)
+  end
+
   private
 
   def jwt_file_upload_param(key:, params:)
@@ -108,10 +119,6 @@ module WorkhorseHelpers
     return {} if upload_params.empty?
 
     { "#{key}.gitlab-workhorse-upload" => jwt_token(data: { 'upload' => upload_params }) }
-  end
-
-  def jwt_token(data: {}, issuer: 'gitlab-workhorse', secret: Gitlab::Workhorse.secret, algorithm: 'HS256')
-    JWT.encode({ 'iss' => issuer }.merge(data), secret, algorithm)
   end
 
   def workhorse_rewritten_fields_header(fields)

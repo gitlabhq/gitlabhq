@@ -806,7 +806,6 @@ RSpec/NamedSubject:
     - 'ee/spec/workers/deployments/auto_rollback_worker_spec.rb'
     - 'ee/spec/workers/dora/daily_metrics/refresh_worker_spec.rb'
     - 'ee/spec/workers/ee/arkose/blocked_users_report_worker_spec.rb'
-    - 'ee/spec/workers/ee/issuable/related_links_create_worker_spec.rb'
     - 'ee/spec/workers/ee/issuable_export_csv_worker_spec.rb'
     - 'ee/spec/workers/elastic/namespace_update_worker_spec.rb'
     - 'ee/spec/workers/elastic_full_index_worker_spec.rb'

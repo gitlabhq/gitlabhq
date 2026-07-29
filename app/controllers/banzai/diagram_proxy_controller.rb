@@ -12,6 +12,7 @@ module Banzai
     skip_before_action :authenticate_user!
     skip_before_action :enforce_terms!
     skip_before_action :check_two_factor_requirement
+    before_action :verify_workhorse_api!, only: :proxy
 
     feature_category :markdown
 

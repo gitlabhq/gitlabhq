@@ -76,7 +76,7 @@ RSpec.shared_examples 'Debian packages upload authorize request' do |status, bod
       expect(json_response['MaximumSize']).to be_nil
     end
 
-    context 'without a valid token' do
+    context 'without a valid token', :verify_workhorse_jwt do
       let(:workhorse_token) { 'invalid' }
 
       it 'rejects request' do
@@ -86,7 +86,7 @@ RSpec.shared_examples 'Debian packages upload authorize request' do |status, bod
       end
     end
 
-    context 'bypassing gitlab-workhorse' do
+    context 'bypassing gitlab-workhorse', :verify_workhorse_jwt do
       let(:workhorse_headers) { {} }
 
       it 'rejects request' do

@@ -67,6 +67,8 @@ export default {
             selected: v.selected,
             href: v.href,
             versionName: this.targetVersionName(v),
+            isHead: v.is_head,
+            isBase: v.is_base,
           };
         }
 

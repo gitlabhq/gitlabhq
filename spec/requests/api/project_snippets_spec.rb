@@ -492,6 +492,8 @@ RSpec.describe API::ProjectSnippets, :with_current_organization, :aggregate_fail
   end
 
   describe 'GET /projects/:project_id/snippets/:id/raw' do
+    include_context 'workhorse headers'
+
     let_it_be(:snippet) { create(:project_snippet, :repository, :public, author: admin, project: project) }
     let(:path) { "/projects/#{snippet.project.id}/snippets/#{snippet.id}/raw" }
 
@@ -500,10 +502,11 @@ RSpec.describe API::ProjectSnippets, :with_current_organization, :aggregate_fail
 
       let(:snippet) { snippet_with_empty_repo }
       let(:failed_status_code) { :not_found }
+      subject { get api(path, current_user, admin_mode: admin_mode), headers: workhorse_headers }
     end
 
     it 'returns raw text' do
-      get api(path, admin)
+      get api(path, admin), headers: workhorse_headers
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response.media_type).to eq 'text/plain'
@@ -511,7 +514,7 @@ RSpec.describe API::ProjectSnippets, :with_current_organization, :aggregate_fail
     end
 
     it 'returns 404 for invalid snippet id' do
-      get api("/projects/#{snippet.project.id}/snippets/#{non_existing_record_id}/raw", admin, admin_mode: true)
+      get api("/projects/#{snippet.project.id}/snippets/#{non_existing_record_id}/raw", admin, admin_mode: true), headers: workhorse_headers
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 Snippet Not Found')
@@ -521,7 +524,7 @@ RSpec.describe API::ProjectSnippets, :with_current_organization, :aggregate_fail
 
     context 'with snippets disabled' do
       it_behaves_like '403 response' do
-        subject(:request) { get api("/projects/#{project_no_snippets.id}/snippets/#{non_existing_record_id}/raw", admin, admin_mode: true) }
+        subject(:request) { get api("/projects/#{project_no_snippets.id}/snippets/#{non_existing_record_id}/raw", admin, admin_mode: true), headers: workhorse_headers }
       end
     end
 
@@ -529,7 +532,7 @@ RSpec.describe API::ProjectSnippets, :with_current_organization, :aggregate_fail
       let_it_be(:snippet_with_empty_repo) { create(:project_snippet, :empty_repo, author: admin, project: project) }
       let_it_be(:admin_mode) { snippet.author.admin? }
 
-      subject { get api(path, snippet.author, admin_mode: admin_mode) }
+      subject { get api(path, snippet.author, admin_mode: admin_mode), headers: workhorse_headers }
     end
 
     it_behaves_like 'authorizing granular token permissions', :read_snippet do
@@ -541,12 +544,15 @@ RSpec.describe API::ProjectSnippets, :with_current_organization, :aggregate_fail
   end
 
   describe 'GET /projects/:project_id/snippets/:id/files/:ref/:file_path/raw' do
+    include_context 'workhorse headers'
+
     let_it_be(:snippet) { create(:project_snippet, :repository, author: admin, project: project) }
 
     let(:path) { "/projects/#{snippet.project.id}/snippets/#{snippet.id}/files/master/%2Egitattributes/raw" }
 
     it_behaves_like 'GET request permissions for admin mode' do
       let(:failed_status_code) { :not_found }
+      subject { get api(path, current_user, admin_mode: admin_mode), headers: workhorse_headers }
     end
 
     it_behaves_like 'raw snippet files' do

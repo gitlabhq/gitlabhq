@@ -40,6 +40,40 @@ RSpec.describe Ci::PipelineScheduleInput, feature_category: :continuous_integrat
       it { is_expected.to validate_uniqueness_of(:name).scoped_to(:pipeline_schedule_id) }
     end
 
+    context 'when pipeline_schedule_id is changed on update' do
+      it 'rejects changes to pipeline_schedule_id on update', :aggregate_failures do
+        other_schedule = create(:ci_pipeline_schedule, project: project)
+
+        persisted_input.pipeline_schedule_id = other_schedule.id
+
+        expect(persisted_input).not_to be_valid
+        expect(persisted_input.errors[:pipeline_schedule_id]).to include('is immutable')
+      end
+
+      it 'allows saving without changing pipeline_schedule_id' do
+        persisted_input.name = 'updated_name'
+
+        expect(persisted_input).to be_valid
+      end
+    end
+
+    context 'when project_id is changed on update' do
+      it 'rejects changes to project_id on update', :aggregate_failures do
+        other_project = create(:project)
+
+        persisted_input.project_id = other_project.id
+
+        expect(persisted_input).not_to be_valid
+        expect(persisted_input.errors[:project_id]).to include('is immutable')
+      end
+
+      it 'allows saving without changing project_id' do
+        persisted_input.name = 'updated_name'
+
+        expect(persisted_input).to be_valid
+      end
+    end
+
     describe 'value' do
       it 'allows falsey values' do
         input.value = false

@@ -170,7 +170,14 @@ You can define custom review instructions for a group by specifying a project to
 The template project must contain a `.gitlab/duo/mr-review-instructions.yaml` file with review
 instructions that apply to all projects in the group and its subgroups.
 
-When GitLab Duo performs a code review, it combines instructions from the top-level group with instructions defined in the individual project.
+When GitLab Duo performs a code review, it combines instructions from the top-level group with
+instructions defined in the individual project.
+
+> [!note]
+> If you already configured a project to store [automatic review exclusion rules](../../../user/duo_agent_platform/flows/foundational_flows/code_review.md#exclude-merge-requests-for-a-project) for your group, store your `mr-review-instructions.yaml`
+> in the same project.
+> You can only specify a single project to customize code review for a group, so GitLab automatically
+> checks that project for review instructions as well. You do not need to follow the steps below again.
 
 Prerequisites:
 

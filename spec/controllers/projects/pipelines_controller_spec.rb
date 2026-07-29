@@ -1147,7 +1147,7 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
         allow_any_instance_of(Ci::JobArtifact).to receive(:each_blob).and_yield(blob)
       end
 
-      it 'does not have N+1 problem with attachments' do
+      it 'does not have N+1 problem with attachments', :request_store do
         get_test_report_json
 
         create(:ci_build, name: 'rspec', pipeline: pipeline).tap do |build|

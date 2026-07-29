@@ -40,7 +40,7 @@ export default {
       required: true,
     },
   },
-  emits: ['update:isDefaultPermissionsSelected', 'update:jobTokenPolicies'],
+  emits: ['update:is-default-permissions-selected', 'update:job-token-policies'],
   computed: {
     selected() {
       // Create an object where the key is the resource key and the value is the None option.
@@ -59,12 +59,12 @@ export default {
   },
   methods: {
     emitPermissionTypeChange(value) {
-      this.$emit('update:isDefaultPermissionsSelected', value);
+      this.$emit('update:is-default-permissions-selected', value);
     },
     emitPoliciesChange(value, item) {
       const policies = { ...this.selected, [item.resource.value]: value };
       // Remove any '' values from the None policy.
-      this.$emit('update:jobTokenPolicies', Object.values(policies).filter(Boolean));
+      this.$emit('update:job-token-policies', Object.values(policies).filter(Boolean));
     },
   },
   i18n: {

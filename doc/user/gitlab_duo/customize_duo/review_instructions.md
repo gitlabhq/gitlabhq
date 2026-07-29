@@ -159,6 +159,12 @@ instructions that apply to all projects in the group and its subgroups.
 
 When GitLab Duo performs a code review, it combines instructions from the top-level group with instructions defined in the individual project.
 
+> [!note]
+> If you already configured a project to store [automatic review exclusion rules](../code_review.md#exclude-merge-requests-for-a-group)
+> for your group, store your `mr-review-instructions.yaml` in the same project.
+> You can only specify a single project to customize code review for a group, so GitLab automatically
+> checks that project for review instructions as well. You do not need to follow the steps below again.
+
 Prerequisites:
 
 - The Owner role for the top-level group.

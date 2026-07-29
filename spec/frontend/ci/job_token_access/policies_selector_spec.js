@@ -82,11 +82,11 @@ describe('Policies selector component', () => {
         ${'default'}      | ${true}
         ${'fine-grained'} | ${false}
       `(
-        'emits update:isDefaultPermissionsSelected event with $isDefaultPermissionsSelected when $name is selected',
+        'emits update:is-default-permissions-selected event with $isDefaultPermissionsSelected when $name is selected',
         ({ isDefaultPermissionsSelected }) => {
           findRadioGroup().vm.$emit('change', isDefaultPermissionsSelected);
 
-          expect(wrapper.emitted('update:isDefaultPermissionsSelected')[0][0]).toEqual(
+          expect(wrapper.emitted('update:is-default-permissions-selected')[0][0]).toEqual(
             isDefaultPermissionsSelected,
           );
         },
@@ -150,7 +150,7 @@ describe('Policies selector component', () => {
           const expected = policy.value ? [policy.value] : [];
           findPolicyDropdownAt(index).vm.$emit('select', policy.value);
 
-          expect(wrapper.emitted('update:jobTokenPolicies')[0][0]).toEqual(expected);
+          expect(wrapper.emitted('update:job-token-policies')[0][0]).toEqual(expected);
         });
       });
 
@@ -162,7 +162,7 @@ describe('Policies selector component', () => {
         it('adds the policy when there is no policy set for the resource', () => {
           findPolicyDropdownAt(6).vm.$emit('select', 'READ_RELEASES');
 
-          expect(wrapper.emitted('update:jobTokenPolicies')[0][0]).toEqual([
+          expect(wrapper.emitted('update:job-token-policies')[0][0]).toEqual([
             ...jobTokenPolicies,
             'READ_RELEASES',
           ]);
@@ -171,7 +171,7 @@ describe('Policies selector component', () => {
         it('updates the policy when there is already a policy for the resource', () => {
           findPolicyDropdownAt(3).vm.$emit('select', 'ADMIN_JOBS');
 
-          expect(wrapper.emitted('update:jobTokenPolicies')[0][0]).toEqual([
+          expect(wrapper.emitted('update:job-token-policies')[0][0]).toEqual([
             'ADMIN_JOBS',
             'ADMIN_PACKAGES',
           ]);

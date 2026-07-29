@@ -31,7 +31,7 @@ ai-principles-sync:
   stage: ai-gateway
   needs: []
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine
-  timeout: 60m
+  timeout: 2h
   variables:
     # GITLAB_TOKEN authenticates Workflow API and GraphQL polling calls.
     GITLAB_TOKEN: $AGENT_PRINCIPLES_SERVICE_ACCOUNT_TOKEN

@@ -159,6 +159,77 @@ RSpec.describe RuboCop::Cop::RSpec::BeforeAllRoleAssignment, :rubocop_rspec, fea
           end
         end
 
+        context 'with a nested `let` shadowing the `let_it_be`' do
+          it 'does not register an offense' do
+            expect_no_offenses(<<~RUBY)
+              context 'with something' do
+                #{let_it_be}(:project) { create(:project) }
+                #{let_it_be}(:guest) { create(:user) }
+
+                context 'when overridden' do
+                  let(:project) { create(:project, :repository) }
+
+                  before do
+                    project.add_guest(guest)
+                  end
+                end
+              end
+            RUBY
+          end
+        end
+
+        context 'with a nested `let!` shadowing the `let_it_be`' do
+          it 'does not register an offense' do
+            expect_no_offenses(<<~RUBY)
+              context 'with something' do
+                #{let_it_be}(:project) { create(:project) }
+                #{let_it_be}(:guest) { create(:user) }
+
+                context 'when overridden' do
+                  let!(:project) { create(:project, :repository) }
+
+                  before do
+                    project.add_guest(guest)
+                  end
+                end
+              end
+            RUBY
+          end
+        end
+
+        context 'with a same-scope `let` followed by a `let_it_be` of the same name' do
+          it 'registers an offense, since the later declaration wins' do
+            expect_offense(<<~RUBY)
+              context 'with something' do
+                let(:project) { create(:project, :public) }
+                #{let_it_be}(:project) { create(:project) }
+                #{let_it_be}(:guest) { create(:user) }
+
+                before do
+                  project.add_guest(guest)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^ Use `before_all` when used with `#{let_it_be}`.
+                end
+              end
+            RUBY
+          end
+        end
+
+        context 'with a same-scope `let_it_be` followed by a `let` of the same name' do
+          it 'does not register an offense, since the later declaration wins' do
+            expect_no_offenses(<<~RUBY)
+              context 'with something' do
+                #{let_it_be}(:project) { create(:project) }
+                let(:project) { create(:project, :public) }
+                #{let_it_be}(:guest) { create(:user) }
+
+                before do
+                  project.add_guest(guest)
+                end
+              end
+            RUBY
+          end
+        end
+
         context 'with alternative example groups' do
           it 'registers an offense' do
             expect_offense(<<~RUBY)
@@ -229,6 +300,36 @@ RSpec.describe RuboCop::Cop::RSpec::BeforeAllRoleAssignment, :rubocop_rspec, fea
 
     with_them do
       include_examples '`let_it_be` definitions', params[:let_it_be]
+    end
+  end
+
+  context 'with a nested `let_it_be` variant shadowing another `let_it_be` variant' do
+    before do
+      other_cops.tap do |config|
+        config.dig('RSpec', 'Language', 'Helpers')
+          .push('let_it_be', 'let_it_be_with_reload', 'let_it_be_with_refind')
+      end
+    end
+
+    # A nearer `let_it_be`-family declaration still executes its setup in
+    # `before(:all)`, so the role assignment in a per-example `before` is
+    # still redundant work. We keep flagging this, pointing at the nearer
+    # variant rather than the outer (shadowed) one.
+    it 'registers an offense referencing the nearer variant' do
+      expect_offense(<<~RUBY)
+        context 'with something' do
+          let_it_be(:project) { create(:project) }
+
+          context 'when overridden' do
+            let_it_be_with_reload(:project) { create(:project, :repository) }
+
+            before do
+              project.add_guest(guest)
+              ^^^^^^^^^^^^^^^^^^^^^^^^ Use `before_all` when used with `let_it_be_with_reload`.
+            end
+          end
+        end
+      RUBY
     end
   end
 

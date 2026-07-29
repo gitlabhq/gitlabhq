@@ -50,6 +50,8 @@ describe('CompareVersions', () => {
       selected: true,
       href: '/project/-/merge_requests/1/diffs?diff_head=true',
       branch: 'main',
+      is_head: true,
+      is_base: false,
     },
   ];
 
@@ -141,6 +143,8 @@ describe('CompareVersions', () => {
         selected: true,
         href: '/project/-/merge_requests/1/diffs?diff_head=true',
         versionName: 'main',
+        isHead: true,
+        isBase: false,
       });
     });
 
@@ -175,6 +179,8 @@ describe('CompareVersions', () => {
           selected: true,
           href: '/project/-/merge_requests/1/diffs?diff_id=3',
           branch: 'main',
+          is_head: false,
+          is_base: true,
           short_commit_sha: 'abc123',
           created_at: '2024-01-01T00:00:00Z',
         },
@@ -189,6 +195,8 @@ describe('CompareVersions', () => {
         selected: true,
         href: '/project/-/merge_requests/1/diffs?diff_id=3',
         versionName: 'main',
+        isHead: false,
+        isBase: true,
       });
     });
   });

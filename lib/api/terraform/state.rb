@@ -94,6 +94,8 @@ module API
           route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
           route_setting :authorization, permissions: :read_terraform_state, boundary_type: :project, job_token_policies: :read_terraform_state
           get do
+            verify_workhorse_api!
+
             remote_state_handler.find_with_lock do |state|
               no_content! unless state.latest_file && state.latest_file.exists?
 

@@ -7,6 +7,34 @@ const MarkdownTable = memoize(
 );
 
 const mountedTables = new WeakMap();
+const mountedApps = new Set();
+let removalObserver;
+
+function observeRemoval(table, app) {
+  const mountedApp = { table, app };
+  mountedApps.add(mountedApp);
+
+  if (removalObserver) return;
+
+  removalObserver = new MutationObserver((mutations) => {
+    if (!mutations.some(({ removedNodes }) => removedNodes.length > 0)) return;
+
+    mountedApps.forEach((entry) => {
+      if (entry.app.$el.isConnected) return;
+
+      entry.app.$destroy();
+      mountedTables.delete(entry.table);
+      mountedApps.delete(entry);
+    });
+
+    if (mountedApps.size === 0) {
+      removalObserver.disconnect();
+      removalObserver = null;
+    }
+  });
+
+  removalObserver.observe(document.body, { childList: true, subtree: true });
+}
 
 function cellContent(cell) {
   return {
@@ -88,5 +116,6 @@ export default function renderMarkdownTables(els) {
     });
 
     mountedTables.set(table, app);
+    observeRemoval(table, app);
   });
 }

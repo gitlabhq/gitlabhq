@@ -97,8 +97,6 @@ module Authn
         # Address + transport config is owned by the IAM data access service
         # (Authn::IamDataAccessService). It returns a tls://-prefixed address
         # outside development.
-        #
-        # TODO: add mTLS support when the IAM data access service exposes it.
         build_stub(::Gitlab::Iam::Update::V1::UpdateService::Stub, ::Authn::IamDataAccessService.grpc_address,
           timeout: TIMEOUT_SECONDS)
       end

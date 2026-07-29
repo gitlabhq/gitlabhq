@@ -174,6 +174,24 @@ module Groups
     def post_update_hooks(updated_project_ids, old_root_ancestor_id)
       refresh_project_authorizations
       refresh_descendant_groups if @new_parent_group
+      disable_unauthorized_merge_request_collaboration(updated_project_ids)
+    end
+
+    # When the transfer reduces projects' visibility to private, members of those
+    # projects could otherwise still push to the source branch of open fork merge
+    # requests through collaboration. Disable collaboration asynchronously so the
+    # stale `allow_maintainer_to_push` flag cannot silently re-grant access if a
+    # project's visibility is later raised again. Projects are only reduced to the
+    # new parent's visibility, so this only applies when that level is private.
+    def disable_unauthorized_merge_request_collaboration(project_ids)
+      return unless @new_parent_group&.visibility_level == Gitlab::VisibilityLevel::PRIVATE
+      return if project_ids.blank?
+
+      ::MergeRequests::DisableCollaborationOnUnauthorizedWorker.bulk_perform_async_with_contexts(
+        project_ids,
+        arguments_proc: ->(project_id) { project_id },
+        context_proc: ->(_) { {} }
+      )
     end
 
     # Note: There is a small window where a worker could acquire the lease between

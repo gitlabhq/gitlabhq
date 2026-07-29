@@ -129,7 +129,10 @@ module Gitlab
             .join("\n\n")
         end,
         'issue_id' => ->(_, _, _, issue) { issue&.iid&.to_s },
-        'issue_title' => ->(_, _, _, issue) { issue&.title }
+        # The MR title is persisted to a broadly-readable, non-redacted column, so
+        # it must not carry the title of a confidential issue. `try` no-ops for
+        # ExternalIssue, which has no #confidential? and a non-sensitive title.
+        'issue_title' => ->(_, _, _, issue) { issue&.title unless issue.try(:confidential?) }
       }.freeze
 
       # A new merge request that is in the process of being created and hasn't

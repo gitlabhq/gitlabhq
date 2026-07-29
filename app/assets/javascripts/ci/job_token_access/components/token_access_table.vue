@@ -46,7 +46,7 @@ export default {
       default: '',
     },
   },
-  emits: ['editItem', 'removeItem'],
+  emits: ['edit-item', 'remove-item'],
   computed: {
     fields() {
       const fullPath = {
@@ -146,7 +146,7 @@ export default {
           icon="pencil"
           :aria-label="s__('Members|Edit permissions')"
           data-testid="token-access-table-edit-button"
-          @click="$emit('editItem', item)"
+          @click="$emit('edit-item', item)"
         />
         <gl-button
           v-if="!isCurrentProject(item)"
@@ -154,7 +154,7 @@ export default {
           icon="remove"
           :aria-label="__('Remove access')"
           data-testid="token-access-table-remove-button"
-          @click="$emit('removeItem', item)"
+          @click="$emit('remove-item', item)"
         />
       </div>
     </template>

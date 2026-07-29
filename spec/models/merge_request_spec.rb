@@ -5651,7 +5651,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         end
 
         before do
-          project.add_maintainer(current_user) # rubocop:disable RSpec/BeforeAllRoleAssignment -- `project` and `current_user` are per-example `let`, not `let_it_be`, so `before_all` cannot access them
+          project.add_maintainer(current_user)
 
           ProcessCommitWorker.new.perform(
             project.id,
@@ -8360,6 +8360,79 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
+  describe '.disable_collaboration_for_target_project' do
+    let_it_be(:target_project) { create(:project, :repository, :public) }
+    let_it_be(:source_project) { fork_project(target_project, nil, repository: true) }
+
+    let_it_be_with_reload(:merge_request) do
+      create(
+        :merge_request,
+        source_project: source_project,
+        source_branch: 'fixes',
+        target_project: target_project,
+        allow_collaboration: true
+      )
+    end
+
+    it 'disables collaboration on open fork merge requests targeting the project' do
+      described_class.disable_collaboration_for_target_project(target_project)
+
+      expect(merge_request.reload.allow_maintainer_to_push).to be(false)
+    end
+
+    it 'does not affect merge requests where the project is only the source' do
+      # An MR where `source_project` is the source and `target_project` is the target.
+      mr_from_source_project = create(
+        :merge_request,
+        source_project: source_project,
+        source_branch: 'feature',
+        target_project: target_project,
+        allow_collaboration: true
+      )
+
+      described_class.disable_collaboration_for_target_project(source_project)
+
+      expect(mr_from_source_project.reload.allow_maintainer_to_push).to be(true)
+    end
+
+    it 'does not affect non-fork merge requests' do
+      non_fork = create(
+        :merge_request,
+        source_project: target_project,
+        target_project: target_project,
+        allow_collaboration: true
+      )
+
+      described_class.disable_collaboration_for_target_project(target_project)
+
+      expect(non_fork.reload.allow_maintainer_to_push).to be(true)
+    end
+
+    it 'does not affect closed merge requests' do
+      merge_request.close!
+
+      described_class.disable_collaboration_for_target_project(target_project)
+
+      expect(merge_request.reload.allow_maintainer_to_push).to be(true)
+    end
+
+    it 'processes records across multiple batches' do
+      another_source = fork_project(target_project, nil, repository: true)
+      another_mr = create(
+        :merge_request,
+        source_project: another_source,
+        source_branch: 'fixes-2',
+        target_project: target_project,
+        allow_collaboration: true
+      )
+
+      described_class.disable_collaboration_for_target_project(target_project, batch_size: 1)
+
+      expect(merge_request.reload.allow_maintainer_to_push).to be(false)
+      expect(another_mr.reload.allow_maintainer_to_push).to be(false)
+    end
+  end
+
   describe '#collaborative_push_possible?' do
     let(:merge_request) do
       build(:merge_request, source_branch: 'fixes')
@@ -8389,6 +8462,22 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       expect(ProtectedBranch).to receive(:protected?)
                                    .with(merge_request.source_project, 'fixes')
                                    .and_return(true)
+
+      expect(merge_request.collaborative_push_possible?).to be_falsy
+    end
+
+    it 'is not available when the target project merge requests access level is reduced' do
+      merge_request.target_project = build(:project, :public)
+      merge_request.source_project = build(:project, :public)
+      merge_request.target_project.project_feature.merge_requests_access_level = ProjectFeature::PRIVATE
+
+      expect(merge_request.collaborative_push_possible?).to be_falsy
+    end
+
+    it 'is not available when the target project repository access level is reduced' do
+      merge_request.target_project = build(:project, :public)
+      merge_request.source_project = build(:project, :public)
+      merge_request.target_project.project_feature.repository_access_level = ProjectFeature::PRIVATE
 
       expect(merge_request.collaborative_push_possible?).to be_falsy
     end

@@ -104,8 +104,8 @@ export default {
       :job-token-policies="jobTokenPolicies"
       :disabled="isSaving"
       class="gl-mb-6"
-      @update:isDefaultPermissionsSelected="defaultPermissions = $event"
-      @update:jobTokenPolicies="jobTokenPolicies = $event"
+      @update:is-default-permissions-selected="defaultPermissions = $event"
+      @update:job-token-policies="jobTokenPolicies = $event"
     />
 
     <gl-button

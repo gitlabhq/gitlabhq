@@ -132,7 +132,7 @@ func TestInject(t *testing.T) {
 		injector.SetUploadHandler(bodyUploader)
 
 		r := httptest.NewRequest("GET", "/target", nil)
-		sendData := base64.StdEncoding.EncodeToString([]byte(tokenJSON + originResourceServer.URL + urlJSON))
+		sendData := base64.URLEncoding.EncodeToString([]byte(tokenJSON + originResourceServer.URL + urlJSON))
 
 		// add metrics tracker
 		r = testhelper.RequestWithMetrics(t, r)
@@ -627,7 +627,7 @@ func makeCustomRequest(t *testing.T, injector *Injector, data string, r *http.Re
 	r = testhelper.RequestWithMetrics(t, r)
 
 	w := httptest.NewRecorder()
-	sendData := base64.StdEncoding.EncodeToString([]byte(data))
+	sendData := base64.URLEncoding.EncodeToString([]byte(data))
 	injector.Inject(w, r, sendData)
 
 	testhelper.AssertMetrics(t, r)

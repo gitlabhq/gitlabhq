@@ -25,7 +25,7 @@ RSpec.describe Ci::CreatePipelineService,
     end
 
     before do
-      project.add_developer(developer) # rubocop:disable RSpec/BeforeAllRoleAssignment
+      project.add_developer(developer)
       project.repository.create_file(developer, '.gitlab-ci.yml', config, branch_name: 'master', message: 'test')
     end
   end

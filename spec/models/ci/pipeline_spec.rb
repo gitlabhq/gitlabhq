@@ -6588,6 +6588,68 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         end
       end
     end
+
+    context 'when limited to a user with accessible artifacts' do
+      let_it_be(:project) { create(:project, :private) }
+      let_it_be(:pipeline) { create(:ci_pipeline, :success, project: project) }
+      let_it_be(:maintainer) { create(:user, maintainer_of: project) }
+      let_it_be(:guest) { create(:user, guest_of: project) }
+
+      let!(:public_build) { create(:ci_build, :success, name: 'rspec', pipeline: pipeline) }
+      let!(:maintainer_build) { create(:ci_build, :success, name: 'java', pipeline: pipeline) }
+
+      before do
+        create(:ci_job_artifact, :junit, job: public_build)
+        create(:ci_build_report_result, build: public_build, project: project, test_suite_name: 'rspec')
+
+        # Reports-only job: a maintainer-only JUnit report with no archive, so the
+        # report's own accessibility (not the build/archive) must gate access.
+        create(:ci_job_artifact, :junit, :maintainer_only_access, job: maintainer_build)
+        create(:ci_build_report_result, build: maintainer_build, project: project, test_suite_name: 'java')
+      end
+
+      it 'excludes report results from builds whose artifacts the user cannot access' do
+        summary = pipeline.accessible_test_report_summary(guest)
+
+        expect(summary.test_suites.keys).to contain_exactly('rspec')
+      end
+
+      it 'includes every report result for a user who can access maintainer artifacts' do
+        summary = pipeline.accessible_test_report_summary(maintainer)
+
+        expect(summary.test_suites.keys).to contain_exactly('rspec', 'java')
+      end
+
+      it 'returns all results via the unscoped test_report_summary method' do
+        expect(pipeline.test_report_summary.test_suites.keys).to contain_exactly('rspec', 'java')
+      end
+
+      it 'treats a nil user as an anonymous request and filters instead of returning everything' do
+        expect(pipeline.accessible_test_report_summary(nil).test_suites.keys).to be_empty
+      end
+    end
+
+    context 'when limited to an anonymous user on a public project' do
+      let_it_be(:project) { create(:project, :public) }
+      let_it_be(:pipeline) { create(:ci_pipeline, :success, project: project) }
+
+      let!(:public_build) { create(:ci_build, :success, name: 'rspec', pipeline: pipeline) }
+      let!(:maintainer_build) { create(:ci_build, :success, name: 'java', pipeline: pipeline) }
+
+      before do
+        create(:ci_job_artifact, :junit, job: public_build)
+        create(:ci_build_report_result, build: public_build, project: project, test_suite_name: 'rspec')
+
+        # Reports-only job: a maintainer-only JUnit report with no archive, so the
+        # report's own accessibility (not the build/archive) must gate access.
+        create(:ci_job_artifact, :junit, :maintainer_only_access, job: maintainer_build)
+        create(:ci_build_report_result, build: maintainer_build, project: project, test_suite_name: 'java')
+      end
+
+      it 'returns public suites but omits maintainer-only ones' do
+        expect(pipeline.accessible_test_report_summary(nil).test_suites.keys).to contain_exactly('rspec')
+      end
+    end
   end
 
   describe '#test_reports' do
@@ -6638,6 +6700,60 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
           expect(subject.success_count).to be(5)
           expect(subject.failed_count).to be(5)
         end
+      end
+    end
+
+    context 'when limited to a user with accessible artifacts' do
+      let_it_be(:project) { create(:project, :private) }
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+      let_it_be(:maintainer) { create(:user, maintainer_of: project) }
+      let_it_be(:guest) { create(:user, guest_of: project) }
+
+      let!(:public_build) { create(:ci_build, :success, name: 'rspec', pipeline: pipeline) }
+      let!(:maintainer_build) { create(:ci_build, :success, name: 'java', pipeline: pipeline) }
+
+      before do
+        create(:ci_job_artifact, :junit, job: public_build)
+        # Reports-only job: maintainer-only JUnit report, no archive (Finding 1).
+        create(:ci_job_artifact, :junit_with_ant, :maintainer_only_access, job: maintainer_build)
+      end
+
+      it 'excludes reports from builds whose artifacts the user cannot access' do
+        reports = pipeline.accessible_test_reports(guest)
+
+        expect(reports.test_suites.keys).to contain_exactly('rspec')
+      end
+
+      it 'includes every report for a user who can access maintainer artifacts' do
+        reports = pipeline.accessible_test_reports(maintainer)
+
+        expect(reports.test_suites.keys).to contain_exactly('rspec', 'java')
+      end
+
+      it 'returns all results via the unscoped test_reports method' do
+        expect(pipeline.test_reports.test_suites.keys).to contain_exactly('rspec', 'java')
+      end
+
+      it 'treats a nil user as an anonymous request and filters instead of returning everything' do
+        expect(pipeline.accessible_test_reports(nil).test_suites.keys).to be_empty
+      end
+    end
+
+    context 'when limited to an anonymous user on a public project' do
+      let_it_be(:project) { create(:project, :public) }
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+
+      let!(:public_build) { create(:ci_build, :success, name: 'rspec', pipeline: pipeline) }
+      let!(:maintainer_build) { create(:ci_build, :success, name: 'java', pipeline: pipeline) }
+
+      before do
+        create(:ci_job_artifact, :junit, job: public_build)
+        # Reports-only job: maintainer-only JUnit report, no archive (Finding 1).
+        create(:ci_job_artifact, :junit_with_ant, :maintainer_only_access, job: maintainer_build)
+      end
+
+      it 'returns public suites but omits maintainer-only ones' do
+        expect(pipeline.accessible_test_reports(nil).test_suites.keys).to contain_exactly('rspec')
       end
     end
 

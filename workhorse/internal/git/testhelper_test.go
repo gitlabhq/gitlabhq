@@ -67,7 +67,8 @@ func startGRPCServer(t testing.TB, registerFunc func(*grpc.Server)) string {
 	return fmt.Sprintf("%s://%s", ln.Addr().Network(), ln.Addr().String())
 }
 
-// encodeSendData encodes params as JSON and prepends the given prefix for senddata injection.
+// encodeSendData marshals params to JSON, base64-encodes it, and prepends the given prefix,
+// mirroring the plain payload produced by the Rails encode helper.
 func encodeSendData(t testing.TB, prefix string, params interface{}) string {
 	t.Helper()
 	jsonBytes, err := json.Marshal(params)

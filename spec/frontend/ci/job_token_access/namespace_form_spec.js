@@ -71,14 +71,14 @@ describe('Namespace form component', () => {
       });
 
       it('updates defaultPermissions when policies selector emits an update', async () => {
-        findPoliciesSelector().vm.$emit('update:isDefaultPermissionsSelected', false);
+        findPoliciesSelector().vm.$emit('update:is-default-permissions-selected', false);
         await nextTick();
 
         expect(findPoliciesSelector().props('isDefaultPermissionsSelected')).toBe(false);
       });
 
       it('updates jobTokenPolicies when policies selector emits an update', async () => {
-        findPoliciesSelector().vm.$emit('update:jobTokenPolicies', ['ADMIN_JOB']);
+        findPoliciesSelector().vm.$emit('update:job-token-policies', ['ADMIN_JOB']);
         await nextTick();
 
         expect(findPoliciesSelector().props('jobTokenPolicies')).toEqual(['ADMIN_JOB']);

@@ -1,6 +1,8 @@
 import renderMarkdownTables from '~/behaviors/markdown/render_markdown_tables';
 import waitForPromises from 'helpers/wait_for_promises';
 
+const mockMarkdownTableDestroyed = jest.fn();
+
 // Replace the async dynamic import of the component with a synchronous stub so
 // the Vue app mounts and renders a <table> during the synchronous test run.
 // Without this the dynamic import() never resolves in time and
@@ -13,6 +15,7 @@ jest.mock('~/behaviors/components/markdown_table.vue', () => ({
     isSortable: { type: Boolean, default: false },
     isSticky: { type: Boolean, default: false },
   },
+  destroyed: mockMarkdownTableDestroyed,
   render(h) {
     return h('div', { attrs: { 'data-sticky-header': this.isSticky || null } }, [
       h('table', [
@@ -92,13 +95,15 @@ const buildTable = () =>
 
 describe('renderMarkdownTables', () => {
   beforeEach(() => {
+    mockMarkdownTableDestroyed.mockClear();
     window.gon = {
       features: { editorStickyTableHeaders: true, markdownSortableTableColumns: true },
     };
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     document.body.innerHTML = '';
+    await waitForPromises();
     delete window.gon;
   });
 
@@ -208,6 +213,40 @@ describe('renderMarkdownTables', () => {
       const table = buildTable();
 
       expect(() => renderMarkdownTables([table])).not.toThrow();
+    });
+
+    describe('when the mounted app parent is removed', () => {
+      beforeEach(async () => {
+        const table = buildTable();
+        const container = appendTable(table);
+
+        renderMarkdownTables([table]);
+        await waitForPromises();
+        container.remove();
+        await waitForPromises();
+      });
+
+      it('destroys the Vue app', () => {
+        expect(mockMarkdownTableDestroyed).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('when the mounted app is moved within the document', () => {
+      beforeEach(async () => {
+        const table = buildTable();
+        const container = appendTable(table);
+        const destination = document.createElement('div');
+        document.body.appendChild(destination);
+
+        renderMarkdownTables([table]);
+        await waitForPromises();
+        destination.appendChild(container.firstElementChild);
+        await waitForPromises();
+      });
+
+      it('keeps the Vue app mounted', () => {
+        expect(mockMarkdownTableDestroyed).not.toHaveBeenCalled();
+      });
     });
 
     describe('sticky headers', () => {

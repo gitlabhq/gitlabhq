@@ -445,7 +445,10 @@ func TestLfsUploadRouting(t *testing.T) {
 	oid := "916f0027a575074ce72a331777c3478d6513f786a591bd892da1a577bf2335f9"
 
 	ts := testhelper.TestServerWithHandler(t, regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
-		if r.Header.Get(secret.RequestHeader) == "" {
+		// Gitlab-Workhorse-Proxy-Start is set by the proxy director for proxied user requests
+		// but not for internal preAuth calls. Return 204 for proxied requests to simulate Rails
+		// returning a normal response for non-LFS endpoints.
+		if r.Header.Get(secret.RequestHeader) == "" || r.Header.Get("Gitlab-Workhorse-Proxy-Start") != "" {
 			w.WriteHeader(204)
 		} else {
 			fmt.Fprint(w, testRspSuccessBody)

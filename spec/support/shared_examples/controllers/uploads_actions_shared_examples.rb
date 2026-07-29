@@ -367,8 +367,10 @@ RSpec.shared_examples 'handle uploads authorize' do
       end
 
       context 'and the request bypassed workhorse' do
-        it 'raises an exception' do
-          expect { post_authorize(verified: false) }.to raise_error JWT::DecodeError
+        it 'responds with forbidden', :verify_workhorse_jwt do
+          post_authorize(verified: false)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
         end
       end
 

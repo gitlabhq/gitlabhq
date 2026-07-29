@@ -615,11 +615,13 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
   end
 
   describe 'GET /api/v4/projects/:id/packages/composer/archives/*package_name?sha=:sha' do
+    include_context 'workhorse headers'
+
     let(:sha) { '123' }
     let(:url) { "/projects/#{project.id}/packages/composer/archives/#{package_name}.zip" }
     let(:params) { { sha: sha } }
 
-    subject(:request) { get api(url), headers: headers, params: params }
+    subject(:request) { get api(url), headers: headers.merge(workhorse_headers), params: params }
 
     context 'with valid project' do
       let_it_be(:package) { create(:composer_package_sti, :with_metadatum, name: package_name, project: project) }
@@ -666,7 +668,7 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
           end
 
           let(:boundary_object) { project }
-          let(:request) { get api(url, personal_access_token: pat), params: params }
+          let(:request) { get api(url, personal_access_token: pat), params: params, headers: workhorse_headers }
         end
 
         it_behaves_like 'enforcing job token policies', :read_packages,
@@ -796,7 +798,7 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
         end
 
         context 'for head request' do
-          subject(:request) { head api(url), headers: headers, params: params }
+          subject(:request) { head api(url), headers: headers.merge(workhorse_headers), params: params }
 
           before_all do
             project.add_developer(user)

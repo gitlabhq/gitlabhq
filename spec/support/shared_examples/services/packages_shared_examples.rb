@@ -236,7 +236,7 @@ RSpec.shared_examples 'filters on each package_type' do |is_project: false|
 end
 
 RSpec.shared_examples 'package workhorse uploads' do
-  context 'without a workhorse header' do
+  context 'without a workhorse header', :verify_workhorse_jwt do
     let(:workhorse_token) { JWT.encode({ 'iss' => 'invalid header' }, Gitlab::Workhorse.secret, 'HS256') }
 
     it_behaves_like 'returning response status', :forbidden

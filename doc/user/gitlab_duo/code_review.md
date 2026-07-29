@@ -117,48 +117,50 @@ code review standards in your project.
 
 For more information, see [customize review instructions for GitLab Duo](customize_duo/review_instructions.md).
 
-## Automatic reviews from GitLab Duo for a project
+## Automatic reviews
 
 {{< history >}}
 
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/506537) to a UI setting in GitLab 18.0.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/506537) automatic reviews for projects to a UI setting in GitLab 18.0.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/554070) automatic reviews for groups and instances in GitLab 18.4 as a [beta](../../policy/development_stages_support.md#beta) [with a feature flag](../../administration/feature_flags/_index.md) named `cascading_auto_duo_code_review_settings`. Disabled by default.
+- Feature flag `cascading_auto_duo_code_review_settings` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213240) in GitLab 18.7.
 
 {{< /history >}}
 
-Automatic reviews from GitLab Duo ensure that all merge requests in your project receive an initial review.
-After a merge request is created, GitLab Duo reviews it unless:
+Automatic reviews from GitLab Duo ensure that all merge requests in your project, group, or instance
+receive an initial review.
+
+When a user creates a merge request, GitLab Duo automatically reviews it unless:
 
 - It's marked as draft. For GitLab Duo to review the merge request, mark it ready.
 - It contains no changes. For GitLab Duo to review the merge request, add changes to it.
+- It matches one or more exclusion rules you set. For GitLab Duo to review the merge request,
+  manually request a review.
+
+{{< tabs >}}
+
+{{< tab title="Project" >}}
 
 Prerequisites:
 
-- You must have at least the [Maintainer role](../permissions.md) in a project.
+- The Maintainer or Owner role for the project.
 
-To enable `@GitLabDuo` to automatically review merge requests:
+To turn on automatic reviews for a project:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Settings** > **Merge requests**.
 1. In the **GitLab Duo Code Review** section, select **Enable automatic reviews by GitLab Duo**.
 1. Select **Save changes**.
 
-## Automatic reviews from GitLab Duo for groups and applications
+{{< /tab >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/554070) in GitLab 18.4 as a [beta](../../policy/development_stages_support.md#beta) [with a feature flag](../../administration/feature_flags/_index.md) named `cascading_auto_duo_code_review_settings`. Disabled by default.
-- Feature flag `cascading_auto_duo_code_review_settings` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213240) in GitLab 18.7.
-
-{{< /history >}}
-
-Use group or application settings to enable automatic reviews for multiple projects.
+{{< tab title="Group" >}}
 
 Prerequisites:
 
-- To turn on automatic reviews for groups, have the Owner role for the group.
-- To turn on automatic reviews for all projects, be an administrator.
+- The Owner role for the group.
 
-To enable automatic reviews for groups:
+To turn on automatic reviews for a group:
 
 1. In the top bar, select **Search or go to** and find your group.
 1. In the left sidebar, select **Settings** > **General**.
@@ -166,16 +168,32 @@ To enable automatic reviews for groups:
 1. In the **GitLab Duo Code Review** section, select **Enable automatic reviews by GitLab Duo**.
 1. Select **Save changes**.
 
-To enable automatic reviews for all projects:
+Settings cascade from group to project. More specific settings override broader ones.
+
+{{< /tab >}}
+
+{{< tab title="Instance" >}}
+
+Prerequisites:
+
+- Administrator access
+
+To turn on automatic reviews for an instance:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Settings** > **General**.
 1. In the **GitLab Duo Code Review** section, select **Enable automatic reviews by GitLab Duo**.
 1. Select **Save changes**.
 
-Settings cascade from application to group to project. More specific settings override broader ones.
+Settings cascade from instance to group to project. More specific settings override broader ones.
 
-## Exclude merge requests from automatic reviews
+{{< /tab >}}
+
+{{< /tabs >}}
+
+After you enable automatic reviews, you can specify rules to exclude specific merge requests.
+
+### Exclude merge requests for a project
 
 {{< history >}}
 
@@ -240,19 +258,18 @@ To define exclusion rules for all projects in a group and its subgroups, specify
 as a template.
 The template project must contain a `.gitlab/duo/mr-review-automated-rules.yaml` file.
 
-> [!note]
-> If you use
-> [custom review instructions for a group](customize_duo/review_instructions.md#configure-custom-review-instructions-for-a-group),
-> add your exclusion rules to the same template project.
-> You do not need to specify the template project in the UI again.
-> GitLab Duo automatically reads the `mr-review-automated-rules.yaml` file.
-
 GitLab Duo combines the exclusion rules from the group template project with the rules defined
 in the individual project.
 If the same category is defined at both levels, the project's rules take
 precedence.
 When a group and its subgroups each set a template project, GitLab Duo combines the rules from
 every level.
+
+> [!note]
+> If you already configured a project to store [custom review instructions](customize_duo/review_instructions.md#configure-custom-review-instructions-for-a-group) for your group, store your `mr-review-automated-rules.yaml`
+> in the same project.
+> You can only specify a single project to customize code review for a group, so GitLab automatically
+> checks that project for exclusion rules as well. You do not need to follow the steps below again.
 
 Prerequisites:
 

@@ -151,6 +151,61 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
     end
   end
 
+  context 'when disabling merge request collaboration on access reduction' do
+    let(:group) { create(:group, :public) }
+    let!(:project) { create(:project, :public, group: group) }
+
+    before do
+      group.add_owner(user)
+      new_parent_group.add_owner(user)
+    end
+
+    context 'when the new parent group is private' do
+      let_it_be(:new_parent_group, freeze: false) { create(:group, :private) }
+
+      it 'enqueues the worker for the affected projects' do
+        expect(::MergeRequests::DisableCollaborationOnUnauthorizedWorker)
+          .to receive(:bulk_perform_async).with([[project.id]])
+
+        transfer_service.execute(new_parent_group)
+      end
+
+      context 'when no project visibility is reduced' do
+        let(:group) { create(:group, :private) }
+        let!(:project) { create(:project, :private, group: group) }
+
+        it 'does not enqueue the worker' do
+          expect(::MergeRequests::DisableCollaborationOnUnauthorizedWorker)
+            .not_to receive(:bulk_perform_async)
+
+          transfer_service.execute(new_parent_group)
+        end
+      end
+    end
+
+    context 'when the new parent group is internal' do
+      let_it_be(:new_parent_group, freeze: false) { create(:group, :internal) }
+
+      it 'does not enqueue the worker' do
+        expect(::MergeRequests::DisableCollaborationOnUnauthorizedWorker)
+          .not_to receive(:bulk_perform_async)
+
+        transfer_service.execute(new_parent_group)
+      end
+    end
+
+    context 'when transferring to a root group' do
+      let(:group) { create(:group, :public, :nested) }
+
+      it 'does not enqueue the worker' do
+        expect(::MergeRequests::DisableCollaborationOnUnauthorizedWorker)
+          .not_to receive(:bulk_perform_async)
+
+        transfer_service.execute(nil)
+      end
+    end
+  end
+
   describe '#execute' do
     context 'when transforming a group into a root group' do
       let_it_be_with_reload(:group) { create(:group, :public, :nested) }

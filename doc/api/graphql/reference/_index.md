@@ -25140,6 +25140,29 @@ Fields:
 | <a id="duoworkfloweventedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="duoworkfloweventedge-node"></a>`node` | [`DuoWorkflowEvent`](#duoworkflowevent) | The item at the end of the edge. |
 
+#### `DuoWorkflowMergeRequestLinkConnection`
+
+The connection type for [`DuoWorkflowMergeRequestLink`](#duoworkflowmergerequestlink).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflowmergerequestlinkconnection-edges"></a>`edges` | [`[DuoWorkflowMergeRequestLinkEdge]`](#duoworkflowmergerequestlinkedge) | A list of edges. |
+| <a id="duoworkflowmergerequestlinkconnection-nodes"></a>`nodes` | [`[DuoWorkflowMergeRequestLink]`](#duoworkflowmergerequestlink) | A list of nodes. |
+| <a id="duoworkflowmergerequestlinkconnection-pageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `DuoWorkflowMergeRequestLinkEdge`
+
+The edge type for [`DuoWorkflowMergeRequestLink`](#duoworkflowmergerequestlink).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflowmergerequestlinkedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="duoworkflowmergerequestlinkedge-node"></a>`node` | [`DuoWorkflowMergeRequestLink`](#duoworkflowmergerequestlink) | The item at the end of the edge. |
+
 #### `DuoWorkflowSessionArtifactConnection`
 
 The connection type for [`DuoWorkflowSessionArtifact`](#duoworkflowsessionartifact).
@@ -41000,6 +41023,22 @@ Fields:
 
 #### Fields with arguments
 
+##### `DuoWorkflow.mergeRequestLinks`
+
+Merge requests linked to the session.
+
+Returns [`DuoWorkflowMergeRequestLinkConnection`](#duoworkflowmergerequestlinkconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflow-mergerequestlinks-linktype"></a>`linkType` | [`DuoWorkflowMergeRequestLinkType`](#duoworkflowmergerequestlinktype) | Filter links by their link type. |
+
 ##### `DuoWorkflow.toolCallApproved`
 
 Whether the specified tool call is approved for the session.
@@ -41075,6 +41114,19 @@ Fields:
 | <a id="duoworkflowevent-workflowdefinition"></a>`workflowDefinition` | [`String`](#string) | GitLab Duo Agent Platform flow type based on its capabilities. |
 | <a id="duoworkflowevent-workflowgoal"></a>`workflowGoal` | [`String`](#string) | Goal of the session. |
 | <a id="duoworkflowevent-workflowstatus"></a>`workflowStatus` | [`DuoWorkflowStatus`](#duoworkflowstatus) | Status of the session. |
+
+### `DuoWorkflowMergeRequestLink`
+
+Link between a GitLab Duo Agent Platform session and a merge request.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflowmergerequestlink-createdat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the link was created. |
+| <a id="duoworkflowmergerequestlink-linktype"></a>`linkType` | [`DuoWorkflowMergeRequestLinkType!`](#duoworkflowmergerequestlinktype) | How the merge request relates to the session. |
+| <a id="duoworkflowmergerequestlink-mergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Linked merge request. |
+| <a id="duoworkflowmergerequestlink-workflow"></a>`workflow` | [`DuoWorkflow`](#duoworkflow) | Linked GitLab Duo Agent Platform session. |
 
 ### `DuoWorkflowPermissions`
 
@@ -48034,6 +48086,22 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="mergerequest-discussionswithactivity-filter"></a>`filter` | [`NotesFilterType`](#notesfiltertype) | Type of notes collection: ALL_NOTES, ONLY_COMMENTS, ONLY_ACTIVITY. |
 | <a id="mergerequest-discussionswithactivity-sort"></a>`sort` | [`WorkItemDiscussionsSort`](#workitemdiscussionssort) | Sort order for the discussions. |
+
+##### `MergeRequest.duoWorkflowLinks`
+
+GitLab Duo Agent Platform sessions linked to the merge request.
+
+Returns [`DuoWorkflowMergeRequestLinkConnection`](#duoworkflowmergerequestlinkconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequest-duoworkflowlinks-linktype"></a>`linkType` | [`DuoWorkflowMergeRequestLinkType`](#duoworkflowmergerequestlinktype) | Filter links by their link type. |
 
 ##### `MergeRequest.findingReportsComparer`
 
@@ -65942,6 +66010,15 @@ List of GitLab Duo licensed features.
 | <a id="duolicensedfeature-agentic_chat"></a>`AGENTIC_CHAT` | Agentic Chat feature. |
 | <a id="duolicensedfeature-ai_catalog"></a>`AI_CATALOG` | AI Catalog feature. |
 | <a id="duolicensedfeature-ai_features"></a>`AI_FEATURES` | AI features. |
+
+### `DuoWorkflowMergeRequestLinkType`
+
+Type of link between a GitLab Duo Agent Platform session and a merge request.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="duoworkflowmergerequestlinktype-created"></a>`CREATED` | Link of type `created` between a session and a merge request. |
+| <a id="duoworkflowmergerequestlinktype-source"></a>`SOURCE` | Link of type `source` between a session and a merge request. |
 
 ### `DuoWorkflowStatus`
 

@@ -249,7 +249,7 @@ export default {
           <token-access-table
             :items="projects"
             :show-policies="false"
-            @removeItem="projectToRemove = $event"
+            @remove-item="projectToRemove = $event"
           />
           <confirm-action-modal
             v-if="projectToRemove"

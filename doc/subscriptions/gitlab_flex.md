@@ -148,9 +148,9 @@ If you set the number of **Credits** for GitLab Duo Agent Platform to `0`, no cr
 
 The following adjustment conditions apply:
 
-- Changes must fit within the remaining balance. You cannot allocate more than your remaining annual commitment.
-- Due date for changes is end of month. You must submit the changes before 11:59 PM UTC of the current month to apply to the next month.
-  Changes submitted after the due date apply to the following month after the next.
+- Changes must fit within your monthly starting commitment. This is your initial annual commitment divided by the number of months in your subscription.
+- Due date for changes is the second-to-last day of the month. You must submit changes before 11:59 PM UTC on the second-to-last day of the current month to apply them to the next month.
+  For example, you must submit changes by July 30th so that they apply to the month of August.
   After a month begins, that month's reservation is final and you can't reduce, reverse, or prorate it.
 - Seat and reservation changes only take effect at month boundaries.
   You can't change your reservation mid-month.

@@ -2,6 +2,34 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 19.2.1 (2026-07-29)
+
+### Fixed (6 changes)
+
+- [Fix self-managed admin/owner cannot enroll namespaces into Orbit](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3003847e771358a43ae556f03fc6bd0ebecec45b) **GitLab Enterprise Edition**
+- [Restore AI infrastructure settings after upgrade](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f78561c4a696a12264ef3781461df2f0524748ed) **GitLab Enterprise Edition**
+- [Remove --unlink-first and --recursive-unlink from tar extract](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b8ac96f7853f0b5f67f7bab20f3777e9f4423159)
+- [Fix keys org_id NOT NULL constraint on Self-Managed/Dedicated](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ca70368ae653a40fcfcccf26f72d7a7d577afef5)
+- [Enforce admin Duo lock on group settings update](https://gitlab.com/gitlab-org/security/gitlab/-/commit/acfd6ad416ef5f30fda3d88951631959f5b782d7) **GitLab Enterprise Edition**
+- [Use self-hosted TLS setting in DWS flow validation and metadata](https://gitlab.com/gitlab-org/security/gitlab/-/commit/06b0993fa78599879a2162ebaab56de48ad88bc4) **GitLab Enterprise Edition**
+
+### Security (14 changes)
+
+- [Enforce artifact access control on pipeline test reports](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8ce7ec879ee636fb356f45e585e5c0fcdee91ead) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6469))
+- [feat: Implement Workhorse JWT for all senddata requests](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8885576fe7968b226189c175813929b36fbd10bc) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6478))
+- [Fix virtual registry redirect handler and file request service](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8111fc80a2dfc9bb10f3b07c3eb39976f95fc11a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6488))
+- [Fix reflected XSS in oAuth apps list page](https://gitlab.com/gitlab-org/security/gitlab/-/commit/11386fa551c87b388d5f861a68f8f154436e7af9) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6473))
+- [Disable MR collaboration when project access is reduced](https://gitlab.com/gitlab-org/security/gitlab/-/commit/48d3f8bb57134d9876d16d487fec6fec5f04d55f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6483))
+- [Filter undeclared attributes from pipeline schedule input params](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c5c79ce3bc3667d90b9d2694788d0030cdf2c605) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6479))
+- [Prevent reading of diff files over limit from external storage](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d2daee9d19f2e3e09e0136d699488b744209a644) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6468))
+- [Refresh approval unapproved-key during MR creation flow](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b920a39eaa95d36e688c30deca7f5cfb4cfce5e5) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6465))
+- [Read code review custom instructions from default branch](https://gitlab.com/gitlab-org/security/gitlab/-/commit/396722411c61cca66475bfd4d79889ac2fabf9b1) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6474))
+- [Apply namespace tool governance to direct_access DWS token](https://gitlab.com/gitlab-org/security/gitlab/-/commit/acde316c07ab8caf97644709c3b6fba2414faccc) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6460))
+- [Fix confidential issue title leak via MR title template](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ea2e118e1ffcbb2130dfd8353267d70972e4d625) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6463))
+- [Strip CI_JOB_TOKEN from repo artifact before upload](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bebdb41efc256be9229e64841d5153b614636e0b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6440))
+- [Restrict GraphQL detailedImportStatus.url to read_project_import ability](https://gitlab.com/gitlab-org/security/gitlab/-/commit/23a4ed76ed114ea8237dc7d51e8a9d8fe79d8634) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6437))
+- [Prevent branch overwrite via relation-import merge requests](https://gitlab.com/gitlab-org/security/gitlab/-/commit/71cfd5471ad87e78e94b569df8d3d154e586a7f8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6438))
+
 ## 19.2.0 (2026-07-15)
 
 ### Added (263 changes)
@@ -914,6 +942,52 @@ entry.
 - [Refactor wiki page model tests to improve factory performance](https://gitlab.com/gitlab-org/gitlab/-/commit/dc699f120c26c632556b3b0b9280ec3244f2fc5a) by @gerardo-navarro ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218029))
 - [Remove unused method EE::ProjectsHelper#paid_duo_tier_for_project](https://gitlab.com/gitlab-org/gitlab/-/commit/1a0c188555670d73d5114f0421ede6b25387ccd1) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240524))
 - [Drop `push_rule_id` column from `namespaces` table](https://gitlab.com/gitlab-org/gitlab/-/commit/0cf896e7157b152614205d5979e7cfee40ce83cb) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238105))
+
+## 19.1.3 (2026-07-29)
+
+### Added (1 change)
+
+- [Allow AIGW timeout setting on GitLab Dedicated instances](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b2139fd80ed7250603f2fc7678b81327df94a389) **GitLab Enterprise Edition**
+
+### Fixed (11 changes)
+
+- [Fix self-managed admin/owner cannot enroll namespaces into Orbit](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1fb0e6a1d2d60e524167c63cf46ec455435f954b) **GitLab Enterprise Edition**
+- [Fix approval rule editing locked by non-instance settings](https://gitlab.com/gitlab-org/security/gitlab/-/commit/dabc7be64e5f1a85283e201ddfe351ff8db4a174) **GitLab Enterprise Edition**
+- [Remove --unlink-first and --recursive-unlink from tar extract](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a5b8fcd0d204af15c929b4e2d386f7797dcdee41)
+- [Fix self-hosted DWS TLS setting in flow-config validation](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1dff3eb24281f2c1f8887d2a1e1256adaa0444bf) **GitLab Enterprise Edition**
+- [Fix keys org_id NOT NULL constraint on Self-Managed/Dedicated](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cf62635e6d519d15f2c408aa1a5a068ef177799d)
+- [Handle placeholder users cell claim conflict](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bd6e2bb0e386ea1c15bd3b34cbc4906b9be7cbd1)
+- [Fix infinite retry on detected language rename](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2717edb0d2c0a6596f6eea0360aa6e591a5d80ca)
+- [Use committedDate instead of authoredDate for commit grouping](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8dae3a0a3fbff342273505baa97a3940ea1c5077)
+- [Fix blob preview diff hiding blank added lines](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d9ddfe8ec89d08462330ffe93da57cb01201a5fa)
+- [Fix virtual registry settings toggle disappearing when disabled](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9a2ec62f54ce9d092f48481b7e76d7c4398fde38) **GitLab Enterprise Edition**
+- [Fixes the `Copy commit SHA` button in commits list](https://gitlab.com/gitlab-org/security/gitlab/-/commit/40c6a51e94751f05248cb7940b119bb4506e8a19)
+
+### Changed (1 change)
+
+- [Belt and suspenders check on checkpoint initialized but sequence not set](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9f39e5f8a63a3870d81821d1ca689e4b81b5676c)
+
+### Security (15 changes)
+
+- [Enforce artifact access control on pipeline test reports](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c96be612223c4742b12d03a36b9bc4c5c52feff0) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6462))
+- [feat: Implement Workhorse JWT for all senddata requests](https://gitlab.com/gitlab-org/security/gitlab/-/commit/331404bf52f8165d6072e8b045d4aed5c18ba500) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6336))
+- [Fix virtual registry redirect handler and file request service](https://gitlab.com/gitlab-org/security/gitlab/-/commit/501120bb5a968a1286ecccedca890057d7a6ee3f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6487))
+- [Fix reflected XSS in oAuth apps list page](https://gitlab.com/gitlab-org/security/gitlab/-/commit/564fae0715414482bf7005c83106913de3840708) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6339))
+- [Disable MR collaboration when project access is reduced](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0f6dd09db7f27503c9cf6ba0bbe8a07618c9138b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6484))
+- [Filter undeclared attributes from pipeline schedule input params](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b754fec8678f7872c1adfa6f3d41affb67be5d81) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6450))
+- [Prevent reading of diff files over limit from external storage](https://gitlab.com/gitlab-org/security/gitlab/-/commit/750c0e6cc7df0ad2d0018bee05195d050c9cbee0) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6445))
+- [Refresh approval unapproved-key during MR creation flow](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ea2b79c52fef3ad00e7cb805248f165bb8374a73) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6312))
+- [Read code review custom instructions from default branch](https://gitlab.com/gitlab-org/security/gitlab/-/commit/33096b2ca9cfc305cadb4b304ffa892f3b9deb04) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6425))
+- [Apply namespace tool governance to direct_access DWS token](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d7ce194553c0b8cab56f7e2d7ff6565ac22136e4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6455))
+- [Fix confidential issue title leak via MR title template](https://gitlab.com/gitlab-org/security/gitlab/-/commit/55787115e8bc8bcdfe33049d6de5819dd7d8247d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6442))
+- [Strip CI_JOB_TOKEN from repo artifact before upload](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b6cc51964cdcb46288702a62904bf4a55527c7bb) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6418))
+- [Restrict GraphQL detailedImportStatus.url to read_project_import ability](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2f575c50311700d5f37fa679ef4a41e8e14aa3b1) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6412))
+- [Prevent branch overwrite via relation-import merge requests](https://gitlab.com/gitlab-org/security/gitlab/-/commit/58c3bb01c6b2de66e15beabdcce7928b7c216257) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6415))
+- [Update net-imap to v0.6.4.1](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ef2446aa0b166fa8195c51dcc6a691cbbcdbc45c)
+
+### Other (1 change)
+
+- [Remove loose_foreign_keys_lateral_query feature flag](https://gitlab.com/gitlab-org/security/gitlab/-/commit/af2a8dfa3f37c96ca2efdf642a9543177d10a2b1)
 
 ## 19.1.2 (2026-07-07)
 
@@ -1929,6 +2003,46 @@ entry.
 - [Remove ai_catalog_items_priority_order feature flag](https://gitlab.com/gitlab-org/gitlab/-/commit/3c719be1afd1506f038e8d715d6ef7154c2854ba) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236530)) **GitLab Enterprise Edition**
 - [Quarantine flaky expose_job_artifacts_in_mr_spec.rb](https://gitlab.com/gitlab-org/gitlab/-/commit/0131444c50a0135906c1d13ccba129c5d8c695e7) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/233934))
 - [Fix non-auto-correctable Style/NumberedParameters offenses](https://gitlab.com/gitlab-org/gitlab/-/commit/9a3ba532c9715bcdfd07fd54cf434c7fcd256229) by @JonstonChan ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227367))
+
+## 19.0.5 (2026-07-29)
+
+### Added (1 change)
+
+- [Allow AIGW timeout setting on GitLab Dedicated instances](https://gitlab.com/gitlab-org/security/gitlab/-/commit/aa95ad2ae5b90088b30a697bb3abc0630b8590c8) **GitLab Enterprise Edition**
+
+### Fixed (7 changes)
+
+- [Fix self-managed admin/owner cannot enroll namespaces into Orbit](https://gitlab.com/gitlab-org/security/gitlab/-/commit/dfd959072c8ef6ca4220252036c7fe07092e9e25) **GitLab Enterprise Edition**
+- [Fix approval rule editing locked by non-instance settings](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7697c82ce8b1fb16efc6fcb56f1572cd99665abd) **GitLab Enterprise Edition**
+- [Remove --unlink-first and --recursive-unlink from tar extract](https://gitlab.com/gitlab-org/security/gitlab/-/commit/79e043ca333921133ff1074120900b3f00f3a957)
+- [Fix keys org_id NOT NULL constraint on Self-Managed/Dedicated](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7fa488377456d0ddcaec07969358a74fdf0ba2b4)
+- [Fix infinite retry on detected language rename](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f24359dd7db6c379f00aae60d8d127fb7d5a42c4)
+- [Fix blob preview diff hiding blank added lines](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6fbacd1407e47e0ee57a552b8d203dc321b86c1c)
+- [Fix virtual registry settings toggle disappearing when disabled](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b7beb8f66f6f155871392f5b9d5cc85c8acf240e) **GitLab Enterprise Edition**
+
+### Changed (1 change)
+
+- [Belt and suspenders check on checkpoint initialized but sequence not set](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6ac2f40696e471fd5dbd9e88f62a65bc61f841f4)
+
+### Security (13 changes)
+
+- [Enforce artifact access control on pipeline test reports](https://gitlab.com/gitlab-org/security/gitlab/-/commit/872f8f66b91281ead9cd8797a33e4fb624005822) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6464))
+- [feat: Implement Workhorse JWT for all senddata requests](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e416d95d7c9263ddd77773559deb14c686345d9f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6337))
+- [Fix virtual registry redirect handler and file request service](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4ed7ff19e6b1cb3997f85306d07bba85ddea4cb3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6486))
+- [Fix reflected XSS in oAuth apps list page](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8972e2889b7ceaed2df99e418f3b4b1c7f7f9a09) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6340))
+- [Disable MR collaboration when project access is reduced](https://gitlab.com/gitlab-org/security/gitlab/-/commit/089da1edc9d13c580d15d131f027665a56efc07d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6485))
+- [Filter undeclared attributes from pipeline schedule input params](https://gitlab.com/gitlab-org/security/gitlab/-/commit/410cbfbf25e75716ca145f3fa854740fdaf01e0d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6451))
+- [Prevent reading of diff files over limit from external storage](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9a6ede0309ebd77fb192961f3693eb4a27c37a87) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6444))
+- [Refresh approval unapproved-key during MR creation flow](https://gitlab.com/gitlab-org/security/gitlab/-/commit/320d31dce0c0dd90786275b2586ec2a825e19bad) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6290))
+- [Fix confidential issue title leak via MR title template](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5443c7e5e980a978586f76a8c795beb67c4948be) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6443))
+- [Strip CI_JOB_TOKEN from repo artifact before upload](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7f5db6ed41a95951d72bfc2a4125fd5bbe4be4f2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6419))
+- [Restrict GraphQL detailedImportStatus.url to read_project_import ability](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e354eeacbf750bd2dbd7f518c663858e574d6bc6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6413))
+- [Prevent branch overwrite via relation-import merge requests](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a6e3d1f52c0da120cfc2acba118d7f154017a9d5) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6416))
+- [Update net-imap to v0.6.4.1](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1d905aa9fd5450149e35e3de8a8ee6a5d92a8d2e)
+
+### Other (1 change)
+
+- [Remove loose_foreign_keys_lateral_query feature flag](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8244dcddc88d67a3a4889f25292a342f400e21fd)
 
 ## 19.0.4 (2026-07-07)
 

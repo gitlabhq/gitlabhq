@@ -10696,6 +10696,9 @@ msgstr ""
 msgid "AnalyticsDashboards|This table doesn't include GitLab Duo Agent Platform events."
 msgstr ""
 
+msgid "AnalyticsDashboards|Untitled"
+msgstr ""
+
 msgid "AnalyticsDashboards|View analytics dashboards"
 msgstr ""
 
@@ -28235,6 +28238,9 @@ msgid "Disable inviting new members to group or project by group/project owners 
 msgstr ""
 
 msgid "Disable password and passkey authentication for users with an SSO identity"
+msgstr ""
+
+msgid "Disable profile-based scanning"
 msgstr ""
 
 msgid "Disabled"
@@ -68199,6 +68205,12 @@ msgstr ""
 msgid "SecurityConfiguration|An error occurred while creating the merge request."
 msgstr ""
 
+msgid "SecurityConfiguration|An error occurred while disabling profile-based scanning."
+msgstr ""
+
+msgid "SecurityConfiguration|An error occurred while enabling profile-based scanning."
+msgstr ""
+
 msgid "SecurityConfiguration|Apply configuration"
 msgstr ""
 
@@ -68406,6 +68418,22 @@ msgstr ""
 msgid "SecurityConfiguration|Profile-based scanner configuration"
 msgstr ""
 
+msgid "SecurityConfiguration|Profile-based scanning disabled for %d item"
+msgid_plural "SecurityConfiguration|Profile-based scanning disabled for %d items"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "SecurityConfiguration|Profile-based scanning disabled for %{name}"
+msgstr ""
+
+msgid "SecurityConfiguration|Profile-based scanning enabled for %d item"
+msgid_plural "SecurityConfiguration|Profile-based scanning enabled for %d items"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "SecurityConfiguration|Profile-based scanning enabled for %{name}"
+msgstr ""
+
 msgid "SecurityConfiguration|Project"
 msgstr ""
 
@@ -68501,6 +68529,9 @@ msgstr ""
 msgid "SecurityConfiguration|Select approach"
 msgstr ""
 
+msgid "SecurityConfiguration|Select bulk action"
+msgstr ""
+
 msgid "SecurityConfiguration|Select projects"
 msgstr ""
 
@@ -68586,6 +68617,14 @@ msgid "SecurityConfiguration|YAML"
 msgstr ""
 
 msgid "SecurityConfiguration|YAML configuration"
+msgstr ""
+
+msgid "SecurityConfiguration|You are about to disable profile-based scanning for %{count} item. Are you sure you want to proceed?"
+msgid_plural "SecurityConfiguration|You are about to disable profile-based scanning for %{count} items. Are you sure you want to proceed?"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "SecurityConfiguration|You are about to disable profile-based scanning for %{name}. Are you sure you want to proceed?"
 msgstr ""
 
 msgid "SecurityConfiguration|Your configuration has been applied and is rolling out to projects in batches. Profiles will be applied to %{strongStart}%{itemCount}%{strongEnd} as each batch completes — this may take a few minutes."

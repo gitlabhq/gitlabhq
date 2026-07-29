@@ -57,8 +57,8 @@ describe('Token access table', () => {
 
     describe.each`
       buttonName  | findButton          | icon        | tooltip               | eventName
-      ${'edit'}   | ${findEditButton}   | ${'pencil'} | ${'Edit permissions'} | ${'editItem'}
-      ${'remove'} | ${findRemoveButton} | ${'remove'} | ${'Remove access'}    | ${'removeItem'}
+      ${'edit'}   | ${findEditButton}   | ${'pencil'} | ${'Edit permissions'} | ${'edit-item'}
+      ${'remove'} | ${findRemoveButton} | ${'remove'} | ${'Remove access'}    | ${'remove-item'}
     `('$buttonName button', ({ findButton, icon, tooltip, eventName }) => {
       it('shows button', () => {
         expect(findButton().props('icon')).toBe(icon);

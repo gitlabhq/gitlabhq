@@ -877,6 +877,20 @@ module Ci
       job_artifacts.of_report_type(:test).exists?
     end
 
+    # Whether `user` may read this build's test-report (JUnit) content.
+    #
+    # Authorizes the report artifact(s) directly via Ci::JobArtifactPolicy rather
+    # than the build: each artifact carries its own `accessibility`, and a job
+    # that sets `artifacts:reports:junit:` with `artifacts:access:` but no
+    # `artifacts:paths:` has no archive, so a build/archive-level
+    # `:read_job_artifacts` check would wrongly treat a maintainer-only report as
+    # public. These are exactly the artifacts #collect_test_reports! reads.
+    def test_report_readable_by?(user)
+      artifacts = job_artifacts_for_types(::Ci::JobArtifact.file_types_for_report(:test))
+
+      artifacts.present? && artifacts.all? { |artifact| Ability.allowed?(user, :read_job_artifacts, artifact) }
+    end
+
     def ensure_trace_metadata!
       Ci::BuildTraceMetadata.find_or_upsert_for!(id, partition_id, project_id)
     end

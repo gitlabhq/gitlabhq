@@ -129,6 +129,14 @@ module Gitlab
             you cannot tie an edit to a this-run source change, keep the prior
             line verbatim.
 
+            CAPTURE obligation (system prompt rule 16a), the mirror of the
+            above: the same `git diff <distilled_at_sha>..HEAD` also shows what
+            the SSOT ADDED or CHANGED this run. Every added/changed normative
+            line MUST map to an emitted/revised item, or be excludable under a
+            named rule (rule 9, 11, 16d, or purely conceptual prose). An added
+            rule that is neither is a defect — do NOT silently drop it; when it
+            sits next to an existing bullet, fold it in.
+
             Current distilled file (the PRIOR version — reconcile it against the
             SSOT, do not assume it is still complete or correct):
             - #{distilled_path}

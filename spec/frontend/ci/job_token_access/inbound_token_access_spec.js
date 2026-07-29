@@ -356,7 +356,7 @@ describe('TokenAccess component', () => {
       beforeEach(async () => {
         await createComponent([[mutation, handler]]);
 
-        findTokenAccessTable().vm.$emit('removeItem', { fullPath: 'full/path' });
+        findTokenAccessTable().vm.$emit('remove-item', { fullPath: 'full/path' });
       });
 
       it('shows remove confirmation modal', () => {
@@ -380,7 +380,7 @@ describe('TokenAccess component', () => {
       beforeEach(async () => {
         await createComponent([[mutation, failureHandler]]);
 
-        findTokenAccessTable().vm.$emit('removeItem', { fullPath: 'full/path', __typename: type });
+        findTokenAccessTable().vm.$emit('remove-item', { fullPath: 'full/path', __typename: type });
       });
 
       it('returns an error', async () => {
@@ -468,7 +468,7 @@ describe('TokenAccess component', () => {
 
     beforeEach(async () => {
       await createComponent([], { stubs: { CrudComponent } });
-      findTokenAccessTable().vm.$emit('editItem', item);
+      findTokenAccessTable().vm.$emit('edit-item', item);
     });
 
     it('shows the form with the namespace', () => {

@@ -266,7 +266,21 @@ adds those wrappers automatically.
            is placed outside `spec/frontend/widgets/`"
        - GOOD (fold enforcement into the existing bullet):
          - "Place widget specs in `spec/frontend/widgets/` (enforced in CI
-           by the `Widgets/SpecPlacement` ESLint rule)"
+            by the `Widgets/SpecPlacement` ESLint rule)"
+
+        **This-run capture pass (mirror of the rule 18 gate).** Diff each
+        SSOT source between the prior file's `distilled_at_sha` and HEAD
+        (`git diff <distilled_at_sha>..HEAD -- <source_path>`). Every line the
+        SSOT **added or modified** this run MUST be either captured by an
+        emitted/revised item, or explicitly excludable under a named rule
+        (rule 9 universal best practice, rule 11 duplicate, rule 16d
+        delegation, or purely conceptual prose). An added normative line that
+        is neither is a **capture defect** — as serious as an unjustified drop
+        (16c). "Minor" or "the nearby item is close enough" is NOT an
+        exclusion: emit the constraint, or fold it into the adjacent item.
+        Example: a source adding "keep logical word groupings together on the
+        same line" next to a 100-character line-splitting bullet is a new
+        constraint — fold it in; do NOT drop it.
     b) **Revise changed rules — only when the item's own SSOT guidance
        changed.** If the SSOT narrowed, broadened, or redirected an existing
        rule, rewrite that item to match the current SSOT. DO NOT keep the
@@ -446,6 +460,12 @@ adds those wrappers automatically.
     full source" is necessary but NOT sufficient; the governing lines must
     have changed this run. If you cannot run the diff, or cannot tie a
     proposed edit to a this-run source change, keep the prior line exactly.
+
+    This gate is **bidirectional**: "keep the prior line exactly" applies ONLY
+    to items whose governing source lines did NOT change this run — it NEVER
+    licenses ignoring a line the SSOT added or changed this run, which must
+    still produce an add or revise (rule 16a). Silently dropping it is a
+    capture defect, not diff discipline.
 
     When in doubt whether a change is required by the SSOT or merely
     stylistic, leave the prior item untouched. A reviewer should be able to
