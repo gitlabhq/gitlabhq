@@ -33,8 +33,6 @@ module API
 
             optional :hierarchy, type: Hash, desc: 'Input for hierarchy feature.' do
               optional :parent_id, type: Integer, desc: 'ID of the parent work item. Null to remove the association.'
-              optional :children_ids, type: Array[Integer], limit: 30,
-                desc: 'IDs of child work items to set. Maximum 30.'
             end
 
             optional :start_and_due_date, type: Hash, desc: 'Input for start and due date feature.' do

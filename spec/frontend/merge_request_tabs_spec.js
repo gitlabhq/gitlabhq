@@ -712,6 +712,55 @@ describe('MergeRequestTabs', () => {
     });
   });
 
+  describe('aria-current', () => {
+    const findCurrentLinks = () =>
+      Array.from(document.querySelectorAll('a[aria-current="page"]')).map(
+        (el) => el.dataset.action,
+      );
+
+    beforeEach(() => {
+      setHTMLFixture(`
+        <div class="content-wrapper"><div class="container-fluid">
+          <div class="merge-request-tabs-container">
+            <ul class="merge-request-tabs">
+              <li class="notes-tab"><a data-action="show">Overview</a></li>
+              <li class="commits-tab"><a data-action="commits">Commits</a></li>
+              <li class="pipelines-tab"><a data-action="pipelines">Pipelines</a></li>
+            </ul>
+          </div>
+          <div id="diff-notes-app">
+            <div id="notes" class="tab-pane"></div>
+            <div id="commits" class="tab-pane"></div>
+            <div id="pipelines" class="tab-pane"></div>
+          </div>
+        </div></div>
+      `);
+
+      testContext.class = new MergeRequestTabs({ stubLocation });
+      jest.spyOn(testContext.class, 'mountPipelinesView').mockImplementation(() => {});
+    });
+
+    it('marks the shown tab as current', () => {
+      testContext.class.tabShown('pipelines', 'foobar');
+
+      expect(findCurrentLinks()).toEqual(['pipelines']);
+    });
+
+    it('moves aria-current when switching tabs', () => {
+      testContext.class.tabShown('pipelines', 'foobar');
+      testContext.class.tabShown('show', 'foobar');
+
+      expect(findCurrentLinks()).toEqual(['show']);
+    });
+
+    it('clears aria-current when the shown tab has no link rendered', () => {
+      testContext.class.tabShown('pipelines', 'foobar');
+      testContext.class.tabShown('reports', 'foobar');
+
+      expect(findCurrentLinks()).toEqual([]);
+    });
+  });
+
   describe('tabs <-> diff interactions', () => {
     beforeEach(() => {
       jest.spyOn(testContext.class, 'loadDiff').mockImplementation(() => {});

@@ -98,6 +98,12 @@ module MergeRequestsHelper
       toggle: options.fetch(:force_link, false) ? '' : 'tabvue'
     }
 
+    current_tab = params[:tab].presence || 'show'
+
+    aria_attrs = {
+      current: ('page' if current_tab == tab.to_s)
+    }
+
     url = case tab
           when :show
             data_attrs[:target] = '#notes'
@@ -114,7 +120,7 @@ module MergeRequestsHelper
             raise "Cannot create tab #{tab}."
           end
 
-    link_to(url[merge_request.project, merge_request], data: data_attrs, &block)
+    link_to(url[merge_request.project, merge_request], data: data_attrs, aria: aria_attrs, &block)
   end
 
   def allow_collaboration_unavailable_reason(merge_request)

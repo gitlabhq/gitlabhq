@@ -270,26 +270,6 @@ RSpec.describe Milestone, 'Milestoneish', factory_default: :keep do
     end
   end
 
-  describe '#elapsed_days' do
-    it 'shows 0 if no start_date set' do
-      milestone = build_stubbed(:milestone)
-
-      expect(milestone.elapsed_days).to eq(0)
-    end
-
-    it 'shows 0 if start_date is a future' do
-      milestone = build_stubbed(:milestone, start_date: Time.current + 2.days)
-
-      expect(milestone.elapsed_days).to eq(0)
-    end
-
-    it 'shows correct amount of days' do
-      milestone = build_stubbed(:milestone, start_date: Time.current - 2.days)
-
-      expect(milestone.elapsed_days).to eq(2)
-    end
-  end
-
   describe '#total_time_spent' do
     it 'calculates total time spent' do
       closed_issue_1.spend_time(duration: 300, user_id: author.id)

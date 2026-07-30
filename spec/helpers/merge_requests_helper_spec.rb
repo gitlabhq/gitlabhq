@@ -109,7 +109,8 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
   end
 
   describe '#tab_link_for' do
-    let(:merge_request) { create(:merge_request, :simple) }
+    let_it_be(:merge_request) { create(:merge_request, :simple) }
+
     let(:options) { {} }
 
     subject { tab_link_for(merge_request, :show, options) { 'Discussion' } }
@@ -119,6 +120,42 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
 
       it 'removes the data-toggle attributes' do
         is_expected.not_to match(/data-toggle="tabvue"/)
+      end
+    end
+
+    describe 'aria-current attribute' do
+      context 'when no tab param is present' do
+        it 'marks the :show tab as current' do
+          expect(tab_link_for(merge_request, :show) { 'Discussion' }).to include('aria-current="page"')
+        end
+
+        it 'does not mark other tabs as current' do
+          expect(tab_link_for(merge_request, :commits) { 'Commits' }).not_to include('aria-current')
+        end
+      end
+
+      context 'when the tab param is blank' do
+        before do
+          controller.params[:tab] = ''
+        end
+
+        it 'marks the :show tab as current' do
+          expect(tab_link_for(merge_request, :show) { 'Discussion' }).to include('aria-current="page"')
+        end
+      end
+
+      context 'when the tab param matches the tab' do
+        before do
+          controller.params[:tab] = 'commits'
+        end
+
+        it 'marks the matching tab as current' do
+          expect(tab_link_for(merge_request, :commits) { 'Commits' }).to include('aria-current="page"')
+        end
+
+        it 'does not mark other tabs as current' do
+          expect(tab_link_for(merge_request, :show) { 'Discussion' }).not_to include('aria-current')
+        end
       end
     end
   end

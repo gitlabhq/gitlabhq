@@ -1373,7 +1373,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_70df885a8506"
+              "$ref": "#/components/schemas/RequestBody_7cf2d653fe95"
     get:
       operationId: getApiV4AiDuoWorkflowsWorkflowsIdCheckpoints
       summary: List all workflow checkpoints
@@ -94222,7 +94222,7 @@ components:
           nullable: true
       required:
       - status_event
-    RequestBody_70df885a8506:
+    RequestBody_7cf2d653fe95:
       type: object
       properties:
         thread_ts:
@@ -94248,6 +94248,10 @@ components:
         model_metadata_json:
           type: string
           description: JSON string of the model metadata
+          nullable: true
+        flow_metadata_json:
+          type: string
+          description: JSON string of the flow metadata
           nullable: true
         current_thread:
           type: integer

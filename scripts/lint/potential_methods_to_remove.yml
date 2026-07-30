@@ -110,7 +110,6 @@ app/models/concerns/mentionable.rb:
   - referenced_group_users
 app/models/concerns/milestoneish.rb:
   - total_merge_requests_count
-  - elapsed_days
 app/models/concerns/namespaces/stateful/state_querying.rb:
   - effective_state
 app/models/concerns/partitioned_table.rb:

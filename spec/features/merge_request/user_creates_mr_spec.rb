@@ -121,6 +121,17 @@ RSpec.describe 'Merge request > User creates MR', feature_category: :code_review
       pipeline_text = find('a[data-action="pipelines"] .gl-tab-counter-badge').text
       expect(pipeline_text).to eq('2+')
     end
+
+    it 'moves the active and current state onto the selected tab', :js do
+      expect(page).to have_css('li.new-tab.active')
+      expect(page).to have_css('a[data-action="new"][aria-current="page"]')
+
+      find('a[data-action="pipelines"]').click
+
+      expect(page).to have_css('li.pipelines-tab.active')
+      expect(page).to have_css('a[data-action="pipelines"][aria-current="page"]')
+      expect(page).to have_no_css('a[data-action="new"][aria-current="page"]')
+    end
   end
 
   context 'from a forked project' do

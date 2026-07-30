@@ -140,6 +140,7 @@ KNOWN_STABLE_EE_IDS = %i[
   compliance
   contribution_analytics
   credentials
+  dependency_firewall
   dependency_list
   devops_adoption
   epic_list

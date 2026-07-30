@@ -38,6 +38,7 @@ RSpec.describe 'ClickHouse siphon tables', feature_category: :database do
       secrets
       id_tokens
       model_metadata_json
+      flow_metadata_json
     )
   end
 

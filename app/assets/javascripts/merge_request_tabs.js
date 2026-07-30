@@ -348,13 +348,16 @@ export default class MergeRequestTabs {
       if (this.mergeRequestTabsAll) {
         this.mergeRequestTabsAll.forEach((el) => {
           el.classList.remove('active');
+          el.querySelector('a')?.removeAttribute('aria-current');
         });
       }
 
       const tabPane = this.mergeRequestTabPanes.querySelector(`#${action}`);
       if (tabPane) tabPane.style.display = 'block';
       const tab = this.mergeRequestTabs.querySelector(`.${action}-tab`);
-      if (tab) tab.classList.add('active');
+      if (tab) {
+        this.#setActiveTab(tab);
+      }
 
       const skipPageBundle = this.isDiffAction(action) && this.createRapidDiffsApp;
       if (
@@ -434,7 +437,7 @@ export default class MergeRequestTabs {
           notesPane.style.display = 'block';
         }
         if (notesTab) {
-          notesTab.classList.add('active');
+          this.#setActiveTab(notesTab);
         }
 
         // this.showSidebar();
@@ -796,6 +799,11 @@ export default class MergeRequestTabs {
     }
     await this.tabShown('diffs', null, false);
     this.rapidDiffsApp.scrollToDiffNote(discussion);
+  }
+
+  #setActiveTab(tabEl) {
+    tabEl.classList.add('active');
+    tabEl.querySelector('a')?.setAttribute('aria-current', 'page');
   }
 
   #visitDiffNote(discussion) {

@@ -26802,10 +26802,31 @@ msgstr ""
 msgid "Dependency scanning"
 msgstr ""
 
+msgid "DependencyFirewall|%{blocking} blocking • %{warning} warning"
+msgstr ""
+
+msgid "DependencyFirewall|Active policy rules"
+msgstr ""
+
+msgid "DependencyFirewall|Activity"
+msgstr ""
+
+msgid "DependencyFirewall|All activity"
+msgstr ""
+
+msgid "DependencyFirewall|Blocked"
+msgstr ""
+
+msgid "DependencyFirewall|By %{name}"
+msgstr ""
+
 msgid "DependencyFirewall|Dependency Firewall"
 msgstr ""
 
 msgid "DependencyFirewall|Dependency Firewall settings were successfully updated."
+msgstr ""
+
+msgid "DependencyFirewall|Dependency firewall"
 msgstr ""
 
 msgid "DependencyFirewall|Enable Dependency Firewall"
@@ -26814,7 +26835,55 @@ msgstr ""
 msgid "DependencyFirewall|Enable the Dependency Firewall to protect against malicious and suspicious packages."
 msgstr ""
 
+msgid "DependencyFirewall|Enforce"
+msgstr ""
+
+msgid "DependencyFirewall|Failed to load dependency firewall activity."
+msgstr ""
+
 msgid "DependencyFirewall|Failed to update the Dependency Firewall settings."
+msgstr ""
+
+msgid "DependencyFirewall|Last modified"
+msgstr ""
+
+msgid "DependencyFirewall|License compliance rule"
+msgstr ""
+
+msgid "DependencyFirewall|Malicious package rule"
+msgstr ""
+
+msgid "DependencyFirewall|Mode"
+msgstr ""
+
+msgid "DependencyFirewall|Monitor and manage the packages entering your group's supply chain."
+msgstr ""
+
+msgid "DependencyFirewall|Monitor and manage the packages entering your project's supply chain."
+msgstr ""
+
+msgid "DependencyFirewall|No active dependency firewall rules."
+msgstr ""
+
+msgid "DependencyFirewall|Policies"
+msgstr ""
+
+msgid "DependencyFirewall|Rule"
+msgstr ""
+
+msgid "DependencyFirewall|Total triggers"
+msgstr ""
+
+msgid "DependencyFirewall|Unknown policy type"
+msgstr ""
+
+msgid "DependencyFirewall|Vulnerability severity rule"
+msgstr ""
+
+msgid "DependencyFirewall|Warn"
+msgstr ""
+
+msgid "DependencyFirewall|Warned"
 msgstr ""
 
 msgid "DependencyListExport|License Identifiers"

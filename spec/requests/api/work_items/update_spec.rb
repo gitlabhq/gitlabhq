@@ -172,58 +172,6 @@ RSpec.describe API::WorkItems::Update, feature_category: :portfolio_management d
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to include("Parent work item #{non_existing_record_id}")
       end
-
-      it 'rejects requests with more than the maximum number of children_ids' do
-        patch api(api_request_path, user), params: {
-          features: { hierarchy: { children_ids: (1..31).to_a } }
-        }
-
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['error']).to include('children_ids')
-      end
-
-      context 'with children_ids' do
-        let_it_be(:parent_issue) { create(:work_item, :issue, project: project) }
-        let_it_be(:child_a) { create(:work_item, :task, project: project) }
-        let_it_be(:child_b) { create(:work_item, :task, project: project) }
-
-        let(:parent_request_path) { "#{base_path}/#{parent_issue.iid}" }
-
-        before do
-          # Setting multiple children fans out to ParentLinks::CreateService per child, which
-          # exceeds the default threshold. GraphQL disables limiting here too. See
-          # app/graphql/mutations/work_items/hierarchy/add_children_items.rb.
-          allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(200)
-        end
-
-        it 'sets the listed child work items as children of the target' do
-          patch api(parent_request_path, user), params: {
-            features: { hierarchy: { children_ids: [child_a.id, child_b.id] } }
-          }
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(parent_issue.reload.work_item_children).to contain_exactly(child_a, child_b)
-        end
-
-        it 'silently ignores ids that do not resolve to a work item' do
-          patch api(parent_request_path, user), params: {
-            features: { hierarchy: { children_ids: [child_a.id, non_existing_record_id] } }
-          }
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(parent_issue.reload.work_item_children).to contain_exactly(child_a)
-        end
-
-        it 'fetches the children with a single bulk lookup' do
-          expect(::WorkItem).to receive(:id_in).once.and_call_original
-
-          patch api(parent_request_path, user), params: {
-            features: { hierarchy: { children_ids: [child_a.id, child_b.id] } }
-          }
-
-          expect(response).to have_gitlab_http_status(:ok)
-        end
-      end
     end
 
     context 'with notes feature' do
