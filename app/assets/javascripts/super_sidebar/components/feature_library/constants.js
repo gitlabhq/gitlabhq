@@ -2,6 +2,8 @@ import { __ } from '~/locale';
 
 export const MODAL_ID = 'feature-library-modal';
 
+export const SHIMMER_CALLOUT_FEATURE_NAME = 'feature_library_shimmer_seen';
+
 export const TIERS = Object.freeze({
   PREMIUM: 'premium',
   ULTIMATE: 'ultimate',

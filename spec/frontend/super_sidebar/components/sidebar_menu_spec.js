@@ -4,6 +4,7 @@ import { createWrapper as createRootWrapper } from '@vue/test-utils';
 // eslint-disable-next-line no-restricted-syntax -- test mocks viewport breakpoints used by the source component
 import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
 import superSidebarDataQuery from '~/super_sidebar/graphql/queries/super_sidebar.query.graphql';
+import dismissUserCalloutMutation from '~/graphql_shared/mutations/dismiss_user_callout.mutation.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -569,6 +570,10 @@ describe('Sidebar Menu', () => {
         expect(findTrigger().props('icon')).toBe('applications');
       });
 
+      it('does not apply the shimmer class when showFeatureLibraryShimmer is false', () => {
+        expect(findTrigger().classes()).not.toContain('feature-library-shimmer');
+      });
+
       it('renders the modal', () => {
         expect(findFeatureLibraryModal().exists()).toBe(true);
       });
@@ -746,6 +751,103 @@ describe('Sidebar Menu', () => {
         const spy = jest.spyOn(wrapper.vm, 'createPin').mockImplementation(() => {});
         wrapper.vm.onModalPinToggle('some_item', true);
         expect(spy).toHaveBeenCalledWith('some_item', 'some_item');
+      });
+    });
+
+    describe('shimmer', () => {
+      let dismissHandler;
+
+      const createShimmerWrapper = ({ showFeatureLibraryShimmer = true } = {}) => {
+        dismissHandler = jest.fn().mockResolvedValue({
+          data: {
+            userCalloutCreate: {
+              errors: [],
+              userCallout: {
+                dismissedAt: '2020-01-01T00:00:00Z',
+                featureName: 'feature_library_shimmer_seen',
+              },
+            },
+          },
+        });
+
+        wrapper = shallowMountExtended(SidebarMenu, {
+          apolloProvider: createMockApollo([
+            [superSidebarDataQuery, handler],
+            [dismissUserCalloutMutation, dismissHandler],
+          ]),
+          propsData: {
+            items: sidebarData.current_menu_items,
+            isLoggedIn: sidebarData.is_logged_in,
+            pinnedItemIds: sidebarData.pinned_items,
+            panelType: PANELS_WITH_PINS[0],
+            showFeatureLibraryShimmer,
+          },
+          provide: {
+            currentPath: 'group',
+            glFeatures: { featureLibraryModal: true },
+          },
+        });
+      };
+
+      it('applies the shimmer class when the shimmer should be shown', () => {
+        createShimmerWrapper({ showFeatureLibraryShimmer: true });
+
+        expect(findTrigger().classes()).toContain('feature-library-shimmer');
+      });
+
+      describe('when the trigger is clicked', () => {
+        beforeEach(async () => {
+          createShimmerWrapper({ showFeatureLibraryShimmer: true });
+          findTrigger().vm.$emit('click');
+          await waitForPromises();
+        });
+
+        it('dismisses the callout', () => {
+          expect(dismissHandler).toHaveBeenCalledWith({
+            input: { featureName: 'feature_library_shimmer_seen' },
+          });
+        });
+
+        it('removes the shimmer class', () => {
+          expect(findTrigger().classes()).not.toContain('feature-library-shimmer');
+        });
+      });
+
+      describe('when the keyboard shortcut is used', () => {
+        beforeEach(async () => {
+          createShimmerWrapper({ showFeatureLibraryShimmer: true });
+          Mousetrap.trigger('\\');
+          await waitForPromises();
+        });
+
+        it('dismisses the callout', () => {
+          expect(dismissHandler).toHaveBeenCalledWith({
+            input: { featureName: 'feature_library_shimmer_seen' },
+          });
+        });
+
+        it('removes the shimmer class', () => {
+          expect(findTrigger().classes()).not.toContain('feature-library-shimmer');
+        });
+      });
+
+      it('only dismisses the callout once across multiple clicks', async () => {
+        createShimmerWrapper({ showFeatureLibraryShimmer: true });
+
+        findTrigger().vm.$emit('click');
+        findTrigger().vm.$emit('click');
+        await waitForPromises();
+
+        expect(dismissHandler).toHaveBeenCalledTimes(1);
+      });
+
+      it('does not dismiss the callout when the shimmer is already hidden', async () => {
+        createShimmerWrapper({ showFeatureLibraryShimmer: false });
+
+        findTrigger().vm.$emit('click');
+        await waitForPromises();
+
+        expect(dismissHandler).not.toHaveBeenCalled();
       });
     });
   });

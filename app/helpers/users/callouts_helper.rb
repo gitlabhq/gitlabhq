@@ -17,6 +17,7 @@ module Users
     TRANSITION_TO_JIHU_CALLOUT = 'transition_to_jihu_callout'
     PERIOD_IN_TERRAFORM_STATE_NAME_ALERT = 'period_in_terraform_state_name_alert'
     EMAIL_OTP_ENROLLMENT_CALLOUT = 'email_otp_enrollment_callout'
+    FEATURE_LIBRARY_SHIMMER = 'feature_library_shimmer_seen'
 
     def show_gke_cluster_integration_callout?(project)
       active_nav_link?(controller: sidebar_operations_paths) &&
@@ -96,6 +97,12 @@ module Users
         !user_dismissed?(SINGLE_ORIGIN_FALLBACK_CALLOUT) &&
         SINGLE_ORIGIN_FALLBACK_CALLOUT_ALLOWED_CONTROLLER_PATHS.any? { |path| controller_path.match?(path) } &&
         WebIde::ExtensionMarketplace.single_origin_fallback_enabled?
+    end
+
+    def show_feature_library_shimmer?
+      return false unless Feature.enabled?(:feature_library_modal, current_user)
+
+      !user_dismissed?(FEATURE_LIBRARY_SHIMMER)
     end
 
     private

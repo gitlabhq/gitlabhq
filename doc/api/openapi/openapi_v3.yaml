@@ -34,6 +34,8 @@ tags:
   description: Operations related to advanced search rollout.
 - name: Agents
   description: Operations related to agents.
+- name: Ai agent identities
+  description: Operations related to ai agent identities.
 - name: Alert management
   description: Operations related to alert management.
 - name: Analytics
@@ -1117,6 +1119,48 @@ paths:
           description: Service unavailable
         '400':
           description: Bad Request
+      x-gitlab-lifecycle: experiment
+  "/api/v4/projects/{id}/ai_agent/identities":
+    post:
+      operationId: postApiV4ProjectsIdAiAgentIdentities
+      summary: Register an external agent identity.
+      description: Registers a new agent identity for the current user, project, agent
+        type, and machine fingerprint combination. Returns an existing record if one
+        already exists. Returns 403 if the identity has been revoked.
+      tags:
+      - Projects
+      - Ai agent identities
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesAiExternalAgentsIdentity"
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+      parameters:
+      - name: id
+        required: true
+        description: The ID or URL-encoded path of the project
+        schema:
+          oneOf:
+          - type: string
+          - type: integer
+        in: path
+        example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/RequestBody_80c272d831b7"
       x-gitlab-lifecycle: experiment
   "/api/v4/ai/duo_workflows/workflows/{id}/audit_events":
     post:
@@ -75998,6 +76042,20 @@ components:
           type: array
           items:
             "$ref": "#/components/schemas/APIEntitiesAiSemanticCodeGroupedResult"
+    APIEntitiesAiExternalAgentsIdentity:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        agent_type:
+          type: string
+          example: claude-code
+        revoked_at:
+          type: string
+        created_at:
+          type: string
+          example: '2026-06-17T00:00:00.000Z'
     APIEntitiesCustomAttribute:
       type: object
       properties:
@@ -93958,6 +94016,24 @@ components:
           nullable: true
       required:
       - project_path
+    RequestBody_80c272d831b7:
+      type: object
+      properties:
+        agent_type:
+          type: string
+          enum:
+          - claude-code
+          - opencode
+          description: The type of agent being registered.
+          minLength: 1
+        machine_fingerprint:
+          type: string
+          description: SHA-256 hash of the machine identifier.
+          nullable: true
+          maxLength: 64
+      required:
+      - agent_type
+      - machine_fingerprint
     RequestBody_8129788813d5:
       type: object
       properties:

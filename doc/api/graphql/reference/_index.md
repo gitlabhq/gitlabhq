@@ -69074,6 +69074,7 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenum-email_otp_enrollment_callout"></a>`EMAIL_OTP_ENROLLMENT_CALLOUT` | Callout feature name for email_otp_enrollment_callout. |
 | <a id="usercalloutfeaturenameenum-expired_trial_status_widget"></a>`EXPIRED_TRIAL_STATUS_WIDGET` | Callout feature name for expired_trial_status_widget. |
 | <a id="usercalloutfeaturenameenum-feature_flags_new_version"></a>`FEATURE_FLAGS_NEW_VERSION` | Callout feature name for feature_flags_new_version. |
+| <a id="usercalloutfeaturenameenum-feature_library_shimmer_seen"></a>`FEATURE_LIBRARY_SHIMMER_SEEN` | Callout feature name for feature_library_shimmer_seen. |
 | <a id="usercalloutfeaturenameenum-file_tree_browser_popover"></a>`FILE_TREE_BROWSER_POPOVER` | Callout feature name for file_tree_browser_popover. |
 | <a id="usercalloutfeaturenameenum-focused_vulnerability_reporting"></a>`FOCUSED_VULNERABILITY_REPORTING` | Callout feature name for focused_vulnerability_reporting. |
 | <a id="usercalloutfeaturenameenum-geo_enable_hashed_storage"></a>`GEO_ENABLE_HASHED_STORAGE` | Callout feature name for geo_enable_hashed_storage. |

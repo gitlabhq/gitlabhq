@@ -3,6 +3,9 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CommitNavigation from '~/rapid_diffs/app/compare_versions/commit_navigation.vue';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+
+jest.mock('~/behaviors/shortcuts/shortcuts_toggle');
 
 describe('CommitNavigation', () => {
   let wrapper;
@@ -27,6 +30,7 @@ describe('CommitNavigation', () => {
   const findNextDisabledTooltip = () => wrapper.findByTestId('next-commit-disabled-tooltip');
 
   beforeEach(() => {
+    shouldDisableShortcuts.mockReturnValue(false);
     setWindowLocation(`${TEST_HOST}/?commit_id=abc123full`);
   });
 
@@ -183,6 +187,38 @@ describe('CommitNavigation', () => {
 
       expect(findPrevDisabledTooltip().exists()).toBe(false);
       expect(findNextDisabledTooltip().exists()).toBe(false);
+    });
+  });
+
+  describe('aria-keyshortcuts', () => {
+    const commitWithNeighbors = {
+      ...baseCommit,
+      prev_commit_id: 'prev123',
+      next_commit_id: 'next456',
+    };
+
+    it('sets aria-keyshortcuts on both enabled buttons', () => {
+      createComponent({ commit: commitWithNeighbors });
+
+      expect(findPrevButton().attributes('aria-keyshortcuts')).toBe('x');
+      expect(findNextButton().attributes('aria-keyshortcuts')).toBe('c');
+    });
+
+    it('omits aria-keyshortcuts on a disabled button', () => {
+      createComponent({
+        commit: { ...baseCommit, prev_commit_id: null, next_commit_id: 'next456' },
+      });
+
+      expect(findPrevButton().attributes('aria-keyshortcuts')).toBeUndefined();
+      expect(findNextButton().attributes('aria-keyshortcuts')).toBe('c');
+    });
+
+    it('omits aria-keyshortcuts when shortcuts are disabled', () => {
+      shouldDisableShortcuts.mockReturnValue(true);
+      createComponent({ commit: commitWithNeighbors });
+
+      expect(findPrevButton().attributes('aria-keyshortcuts')).toBeUndefined();
+      expect(findNextButton().attributes('aria-keyshortcuts')).toBeUndefined();
     });
   });
 });

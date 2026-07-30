@@ -132,7 +132,8 @@ module Users
       duo_panel_empty_state_auto_expanded: 128, # EE-only
       inline_blame_popover: 129,
       # 130 removed in revert of https://gitlab.com/gitlab-org/gitlab/-/merge_requests/237413
-      secrets_manager_nav_badge: 131 # EE-only
+      secrets_manager_nav_badge: 131, # EE-only
+      feature_library_shimmer_seen: 132
     }
 
     validates :feature_name,

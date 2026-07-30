@@ -58134,7 +58134,16 @@ msgstr ""
 msgid "PolicyStore|Active policies"
 msgstr ""
 
+msgid "PolicyStore|Agent Tool Access Control"
+msgstr ""
+
 msgid "PolicyStore|Audit"
+msgstr ""
+
+msgid "PolicyStore|Blank Template"
+msgstr ""
+
+msgid "PolicyStore|Browse templates"
 msgstr ""
 
 msgid "PolicyStore|Build policy"
@@ -58144,6 +58153,9 @@ msgid "PolicyStore|Continue editing"
 msgstr ""
 
 msgid "PolicyStore|Create new policy"
+msgstr ""
+
+msgid "PolicyStore|Deployment Gate"
 msgstr ""
 
 msgid "PolicyStore|Describe what this policy does"
@@ -58176,6 +58188,9 @@ msgstr ""
 msgid "PolicyStore|Mode"
 msgstr ""
 
+msgid "PolicyStore|Most restrictive SLA wins when multiple policies match"
+msgstr ""
+
 msgid "PolicyStore|Policies"
 msgstr ""
 
@@ -58185,13 +58200,25 @@ msgstr ""
 msgid "PolicyStore|Policy name"
 msgstr ""
 
+msgid "PolicyStore|Restrict which tools an AI agent may call"
+msgstr ""
+
 msgid "PolicyStore|Review impact"
 msgstr ""
 
 msgid "PolicyStore|Scope"
 msgstr ""
 
+msgid "PolicyStore|Search templates..."
+msgstr ""
+
 msgid "PolicyStore|Select scope"
+msgstr ""
+
+msgid "PolicyStore|Select..."
+msgstr ""
+
+msgid "PolicyStore|Start from scratch"
 msgstr ""
 
 msgid "PolicyStore|This step is coming soon."
@@ -58200,10 +58227,16 @@ msgstr ""
 msgid "PolicyStore|Untitled policy"
 msgstr ""
 
+msgid "PolicyStore|Validate deployment prerequisites"
+msgstr ""
+
 msgid "PolicyStore|Warn"
 msgstr ""
 
 msgid "PolicyStore|Your progress will be lost if you leave without saving."
+msgstr ""
+
+msgid "PolicyStore|days"
 msgstr ""
 
 msgid "Polling interval multiplier"

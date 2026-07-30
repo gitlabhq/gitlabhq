@@ -701,3 +701,71 @@ $scroll-scrim-height: 2.25rem;
     }
   }
 }
+
+.feature-library-shimmer {
+  --super-sidebar-shimmer-base-color: hsla(from var(--super-sidebar-theme-accent-color) h s l / 32%);
+  --super-sidebar-shimmer-peak-color: hsla(from var(--super-sidebar-theme-accent-color) h s l / 8%);
+  --super-sidebar-shimmer-border-color: hsla(from var(--super-sidebar-theme-accent-color) h s l / 24%);
+
+  position: relative;
+
+  // The shimmer visuals live on a pseudo-element so the whole treatment can be
+  // faded out by animating `opacity`. Fading the gradient directly is not
+  // possible because `background-image` is a discrete property and cannot be
+  // interpolated; isolating it here also avoids fading the nav item's text.
+  @media (prefers-reduced-motion: no-preference) {
+    // Raise the nav item's icon and label above the shimmer overlay so the
+    // content stays visible while the pseudo-element animates on top of the
+    // nav item's own background.
+    .gl-nav-item-slot,
+    .gl-nav-item-label {
+      position: relative;
+      z-index: 1;
+    }
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: var(--gl-border-radius-lg);
+      pointer-events: none;
+      // Inset box-shadow renders the outline inside the element's edge so it
+      // does not add to the box and shift the nav item's layout.
+      box-shadow: inset 0 0 0 2px var(--super-sidebar-shimmer-border-color);
+      background-image: linear-gradient(
+        90deg,
+        var(--super-sidebar-shimmer-base-color),
+        var(--super-sidebar-shimmer-peak-color),
+        var(--super-sidebar-shimmer-base-color)
+      );
+      background-size: 200% 100%;
+      background-position: 50% 0;
+      // Sweep the gradient for several iterations, then fade the whole
+      // treatment out. `forwards` holds the final (transparent) frame so the
+      // nav item reverts to its default tertiary styling once complete.
+      animation:
+        super-sidebar-shimmer 2s linear 4,
+        super-sidebar-shimmer-fade-out 1s ease-out 8s forwards;
+    }
+  }
+}
+
+@keyframes super-sidebar-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes super-sidebar-shimmer-fade-out {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}

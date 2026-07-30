@@ -1,6 +1,12 @@
 <script>
 import { GlLink, GlButton, GlButtonGroup, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
+import {
+  keysFor,
+  MR_COMMITS_NEXT_COMMIT,
+  MR_COMMITS_PREVIOUS_COMMIT,
+} from '~/behaviors/shortcuts/keybindings';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { removeParams, setUrlParams } from '~/lib/utils/url_utility';
 
 export default {
@@ -38,6 +44,16 @@ export default {
       return this.commit.next_commit_id
         ? setUrlParams({ commit_id: this.commit.next_commit_id })
         : '';
+    },
+    previousCommitShortcutKey() {
+      return shouldDisableShortcuts() || !this.commit.prev_commit_id
+        ? null
+        : keysFor(MR_COMMITS_PREVIOUS_COMMIT)[0];
+    },
+    nextCommitShortcutKey() {
+      return shouldDisableShortcuts() || !this.commit.next_commit_id
+        ? null
+        : keysFor(MR_COMMITS_NEXT_COMMIT)[0];
     },
     previousCommitTitle() {
       let title = __('Previous commit');
@@ -77,6 +93,7 @@ export default {
       <gl-button
         v-gl-tooltip="previousCommitTitle"
         :aria-label="previousCommitTitle"
+        :aria-keyshortcuts="previousCommitShortcutKey"
         :href="previousCommitUrl"
         :disabled="!commit.prev_commit_id"
         size="small"
@@ -96,6 +113,7 @@ export default {
       <gl-button
         v-gl-tooltip="nextCommitTitle"
         :aria-label="nextCommitTitle"
+        :aria-keyshortcuts="nextCommitShortcutKey"
         :href="nextCommitUrl"
         :disabled="!commit.next_commit_id"
         size="small"

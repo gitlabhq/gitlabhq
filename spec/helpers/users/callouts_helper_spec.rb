@@ -374,4 +374,35 @@ RSpec.describe Users::CalloutsHelper, feature_category: :navigation do
       it { is_expected.to be expected_result }
     end
   end
+
+  describe '#show_feature_library_shimmer?' do
+    subject { helper.show_feature_library_shimmer? }
+
+    context 'when the user has not dismissed the callout' do
+      before do
+        allow(helper).to receive(:user_dismissed?).with(described_class::FEATURE_LIBRARY_SHIMMER).and_return(false)
+      end
+
+      it { is_expected.to be true }
+    end
+
+    context 'when the user has dismissed the callout' do
+      before do
+        allow(helper).to receive(:user_dismissed?).with(described_class::FEATURE_LIBRARY_SHIMMER).and_return(true)
+      end
+
+      it { is_expected.to be false }
+    end
+
+    context 'when the feature_library_modal feature flag is disabled' do
+      before do
+        stub_feature_flags(feature_library_modal: false)
+      end
+
+      it 'returns false without checking the callout' do
+        expect(helper).not_to receive(:user_dismissed?)
+        is_expected.to be false
+      end
+    end
+  end
 end

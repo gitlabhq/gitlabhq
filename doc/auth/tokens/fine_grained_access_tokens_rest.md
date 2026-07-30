@@ -663,6 +663,14 @@ Grants the ability to create, delete, read, and update external status check ser
 
 ### Duo resources
 
+#### AI Agent Session
+
+Grants the ability to create AI Agent Sessions.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Create | Project | `POST` | `/projects/:id/ai_agent/identities` |
+
 #### AI Catalog External Agent
 
 Grants the ability to create AI catalog external agents.

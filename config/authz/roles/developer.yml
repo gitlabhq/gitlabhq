@@ -28,6 +28,7 @@ project:
   - build_push_code
   - cancel_build
   - cancel_pipeline
+  - create_ai_agent_identity
   - create_build
   - create_commit_status
   - create_container_image

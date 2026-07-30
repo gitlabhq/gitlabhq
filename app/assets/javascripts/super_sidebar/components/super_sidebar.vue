@@ -207,6 +207,7 @@ export default {
             :panel-type="sidebarData.panel_type"
             :pinned-item-ids="sidebarData.pinned_items"
             :show-feedback-link="sidebarData.show_feature_library_feedback"
+            :show-feature-library-shimmer="sidebarData.show_feature_library_shimmer"
           />
           <sidebar-portal-target />
         </scroll-scrim>

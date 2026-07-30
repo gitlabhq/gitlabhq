@@ -215427,6 +215427,12 @@
               "description": "Callout feature name for secrets_manager_nav_badge.",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "FEATURE_LIBRARY_SHIMMER_SEEN",
+              "description": "Callout feature name for feature_library_shimmer_seen.",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null

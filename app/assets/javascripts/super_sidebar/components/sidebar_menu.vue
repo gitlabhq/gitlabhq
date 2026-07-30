@@ -1,6 +1,6 @@
 <script>
 import { GlBreakpointInstance, breakpoints } from '@gitlab/ui/src/utils'; // eslint-disable-line no-restricted-syntax -- GlBreakpointInstance is used intentionally here. In this case we must obtain viewport breakpoints
-import { GlNavItem, GlBadge, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
+import { GlNavItem, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
 import superSidebarDataQuery from '~/super_sidebar/graphql/queries/super_sidebar.query.graphql';
 import { __, s__, sprintf } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -12,12 +12,13 @@ import { keysFor, OPEN_FEATURE_LIBRARY } from '~/behaviors/shortcuts/keybindings
 import { userCounts } from '~/super_sidebar/user_counts_manager';
 import { formatAsyncCount } from '~/super_sidebar/utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import dismissUserCalloutMutation from '~/graphql_shared/mutations/dismiss_user_callout.mutation.graphql';
 import { PANELS_WITH_PINS, PINNED_NAV_STORAGE_KEY, MAX_OPEN_WORK_ITEMS_COUNT } from '../constants';
 import NavItem from './nav_item.vue';
 import PinnedSection from './pinned_section.vue';
 import MenuSection from './menu_section.vue';
 import FeatureLibraryModal from './feature_library/feature_library_modal.vue';
-import { MODAL_ID } from './feature_library/constants';
+import { MODAL_ID, SHIMMER_CALLOUT_FEATURE_NAME } from './feature_library/constants';
 
 export default {
   name: 'SidebarMenu',
@@ -26,7 +27,6 @@ export default {
     NavItem,
     PinnedSection,
     GlNavItem,
-    GlBadge,
     FeatureLibraryModal,
   },
   directives: {
@@ -75,11 +75,22 @@ export default {
       required: false,
       default: false,
     },
+    showFeatureLibraryShimmer: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
       showFlyoutMenus: false,
       asyncCountQuery: {},
+
+      // Tracks whether the "More features" shimmer should still play. Set to
+      // false once the user opens the modal so the animation stops immediately
+      // without waiting for a page reload; the dismissed callout keeps it off
+      // on subsequent visits.
+      shimmerActive: this.showFeatureLibraryShimmer,
 
       // This is used to detect if user came to this page by clicking a
       // nav item in the pinned section.
@@ -225,7 +236,25 @@ export default {
     }
   },
   methods: {
+    async dismissShimmerCallout() {
+      // Guard so we only send the mutation the first time the modal is opened.
+      if (!this.shimmerActive) return;
+
+      this.shimmerActive = false;
+
+      try {
+        await this.$apollo.mutate({
+          mutation: dismissUserCalloutMutation,
+          variables: {
+            input: { featureName: SHIMMER_CALLOUT_FEATURE_NAME },
+          },
+        });
+      } catch (error) {
+        Sentry.captureException(error);
+      }
+    },
     openFeatureLibrary() {
+      this.dismissShimmerCallout();
       this.$root.$emit(BV_SHOW_MODAL, MODAL_ID);
 
       return false;
@@ -345,14 +374,13 @@ export default {
       v-gl-modal="$options.modalId"
       v-gl-tooltip.right.viewport="isIconOnly ? $options.i18n.browseMoreFeatures : ''"
       :aria-label="$options.i18n.browseMoreFeatures"
+      :class="{ 'feature-library-shimmer': shimmerActive }"
       data-testid="feature-library-trigger"
       icon="applications"
       :is-icon-only="isIconOnly"
+      @click="dismissShimmerCallout"
     >
       {{ $options.i18n.browseMoreFeatures }}
-      <template v-if="glFeatures.featureLibraryModal" #end>
-        <gl-badge class="browser-more-features-badge gl-mr-4">{{ __('New') }}</gl-badge>
-      </template>
     </gl-nav-item>
     <feature-library-modal
       v-if="showFeatureLibrary"

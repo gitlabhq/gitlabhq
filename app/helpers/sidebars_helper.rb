@@ -3,6 +3,7 @@
 module SidebarsHelper
   include MergeRequestsHelper
   include Nav::NewDropdownHelper
+  include Users::CalloutsHelper
 
   def organization_sidebar_context(organization, user, **args)
     Sidebars::Context.new(container: organization, current_user: user, **args)
@@ -85,7 +86,8 @@ module SidebarsHelper
       shortcut_links: shortcut_links(user: user, project: project),
       work_items: work_items_modal_data(group, project),
       has_multiple_organizations: user.has_multiple_organizations?,
-      show_feature_library_feedback: show_feature_library_feedback?
+      show_feature_library_feedback: show_feature_library_feedback?,
+      show_feature_library_shimmer: show_feature_library_shimmer?
     })
   end
 
