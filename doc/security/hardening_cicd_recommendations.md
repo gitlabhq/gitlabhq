@@ -33,7 +33,7 @@ on behalf of the users of a project. For specific guidelines on dealing with pip
 see the information on [pipeline security](../ci/pipeline_security/_index.md).
 
 Deployment is the part of the CI/CD that deploys the results of the pipeline in
-relationship to a given environment. Default settings do not impose many
+relation to a given environment. Default settings do not impose many
 restrictions, and as different users with different roles and responsibilities can
 trigger pipelines that can interact with those environments, you should
 restrict these environments. For more information, see

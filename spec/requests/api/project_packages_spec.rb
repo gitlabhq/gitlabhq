@@ -692,12 +692,6 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
       end
 
       context 'pagination' do
-        shared_context 'setup pipeline records' do
-          let!(:pipelines) do
-            create_list(:package_build_info, 21, :with_pipeline, package: package1)
-          end
-        end
-
         shared_examples 'returns the default number of pipelines' do
           it do
             subject
@@ -716,17 +710,21 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
         end
 
         context 'without pagination params' do
-          include_context 'setup pipeline records'
+          let!(:pipelines) do
+            create_list(:package_build_info, 21, :with_pipeline, package: package1)
+          end
 
           it_behaves_like 'returns the default number of pipelines'
         end
 
         context 'with valid per_page value' do
-          let(:per_page) { 11 }
+          let(:per_page) { 5 }
+
+          let!(:pipelines) do
+            create_list(:package_build_info, 6, :with_pipeline, package: package1)
+          end
 
           subject { get api(package_pipelines_url, user), params: { per_page: per_page } }
-
-          include_context 'setup pipeline records'
 
           it 'returns the correct number of pipelines' do
             subject

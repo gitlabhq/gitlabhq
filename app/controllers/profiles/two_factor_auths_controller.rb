@@ -24,7 +24,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
 
   def create
     otp_validation_result =
-      ::Users::ValidateManualOtpService.new(current_user).execute(params[:pin_code])
+      ::Users::ValidateManualOtpService.new(current_user).execute(params.permit(:pin_code)[:pin_code])
     validated = (otp_validation_result[:status] == :success)
 
     notify_on_success(:otp) if validated
@@ -117,7 +117,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   end
 
   def destroy_webauthn
-    result = Webauthn::DestroyService.new(current_user, current_user, params[:id]).execute
+    result = Webauthn::DestroyService.new(current_user, current_user, params.permit(:id)[:id]).execute
 
     if result[:status] == :success
       redirect_to profile_two_factor_auth_path, status: :found, notice: _("Successfully deleted WebAuthn device.")
@@ -152,14 +152,14 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   end
 
   def validate_current_password
-    return if current_user.valid_password?(params[:current_password])
+    return if current_user.valid_password?(params.permit(:current_password)[:current_password])
 
     current_user.increment_failed_attempts!
 
     error_message = { message: _('You must provide a valid current password.') }
-    if params[:action] == 'create_webauthn'
+    if action_name == 'create_webauthn'
       @webauthn_error = error_message
-    elsif params[:action] == 'create'
+    elsif action_name == 'create'
       @otp_error = error_message
     else
       @error = error_message

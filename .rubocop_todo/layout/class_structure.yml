@@ -160,6 +160,7 @@ Layout/ClassStructure:
     - 'ee/app/graphql/types/ci/runner_google_cloud_provisioning_type.rb'
     - 'ee/app/models/approval_merge_request_rule.rb'
     - 'ee/app/models/boards/epic_board.rb'
+    - 'ee/app/models/cd/deployment.rb'
     - 'ee/app/models/ci/minutes/namespace_monthly_usage.rb'
     - 'ee/app/models/dast/site_profile_secret_variable.rb'
     - 'ee/app/models/dast_site_profile.rb'

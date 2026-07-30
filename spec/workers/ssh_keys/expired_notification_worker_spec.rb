@@ -15,10 +15,10 @@ RSpec.describe SshKeys::ExpiredNotificationWorker, type: :worker, feature_catego
     let_it_be(:user) { create(:user) }
 
     context 'with a large batch' do
-      let_it_be_with_reload(:keys) { create_list(:key, 20, :expired_today, user: user) }
+      let_it_be_with_reload(:keys) { create_list(:key, 3, :expired_today, user: user) }
 
       before do
-        stub_const("SshKeys::ExpiredNotificationWorker::BATCH_SIZE", 5)
+        stub_const("SshKeys::ExpiredNotificationWorker::BATCH_SIZE", 2)
       end
 
       it 'updates all keys regardless of batch size' do

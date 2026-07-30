@@ -3199,8 +3199,12 @@
       when: never
     - <<: *if-merge-request-labels-run-all-rspec
     # Same condition under which the merge_request_query_differ.rb dependency runs
+    # except narrows changes to BE-only instead of *code-backstage-patterns.
     - <<: *if-dot-com-gitlab-org-merge-request
-      changes: *code-backstage-patterns
+      changes: *backend-patterns
+    # FE GraphQL changes can modify the queries that the BE resolves in specs
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *frontend-graphql-patterns
 
 .rails:rules:default-branch-schedule-nightly--code-backstage-default-rules:
   rules:

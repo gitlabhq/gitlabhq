@@ -1117,10 +1117,10 @@ describe('diffs/components/app', () => {
     });
   });
 
-  it('sets diff file active when eventHub receives setFileActive', () => {
+  it('sets diff file active when eventHub receives set-file-active', () => {
     createComponent();
 
-    eventHub.$emit('setFileActive', '111');
+    eventHub.$emit('set-file-active', '111');
 
     expect(useLegacyDiffs().setCurrentFileHash).toHaveBeenCalledWith('111');
   });

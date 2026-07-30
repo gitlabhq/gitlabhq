@@ -13,7 +13,7 @@ class TodoService
   BATCH_SIZE = 100
 
   RESOLVE_ON_MR_FINALIZED_ACTIONS = [
-    Todo::ASSIGNED, Todo::APPROVAL_REQUIRED, Todo::REVIEW_REQUESTED, Todo::ADDED_APPROVER
+    Todo::ASSIGNED, Todo::APPROVAL_REQUIRED, Todo::REVIEW_REQUESTED, Todo::ADDED_APPROVER, Todo::BUILD_FAILED
   ].freeze
 
   # When create an issue we should:

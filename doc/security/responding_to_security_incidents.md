@@ -57,7 +57,7 @@ Security incidents related to credentials exposure can vary in severity from low
 - Review the available [audit events](../administration/compliance/audit_event_reports.md) for your group or namespace.
 - Adversaries may attempt to create tokens, SSH keys, or user accounts to maintain persistence. Look for [audit events](../user/compliance/audit_event_types.md) related to these activities.
 - Focus on CI-related [audit events](../user/compliance/audit_event_types.md#continuous-integration) to identify any modifications to CI/CD variables.
-- Review [job logs](../administration/cicd/job_logs.md) for any pipelines ran by an adversary
+- Review [job logs](../administration/cicd/job_logs.md) for any pipelines run by an adversary
 
 ### Suspected compromised user account
 
@@ -104,7 +104,7 @@ Under typical circumstances, the `CI_JOB_TOKEN` is not displayed in the job logs
 
 - Enabling verbose logging in a pipeline.
 - Running commands that echo shell environment variables to the console.
-- Failing to properly secure runner infrastructure can expose this data unintentionally.
+- Failing to properly secure runner infrastructure.
 
 In such instances, you should:
 

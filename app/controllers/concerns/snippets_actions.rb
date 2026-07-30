@@ -23,7 +23,7 @@ module SnippetsActions
   def edit; end
 
   # This endpoint is being replaced by Snippets::BlobController#raw
-  # Support for old raw links will be maintainted via this action but
+  # Support for old raw links will be maintained via this action but
   # it will only return the first blob found,
   # see: https://gitlab.com/gitlab-org/gitlab/-/issues/217775
   def raw

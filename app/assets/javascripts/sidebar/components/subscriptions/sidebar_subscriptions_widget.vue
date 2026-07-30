@@ -99,6 +99,9 @@ export default {
     isMergeRequest() {
       return this.issuableType === 'merge_request';
     },
+    subscribedStateText() {
+      return this.subscribed ? 'true' : 'false';
+    },
   },
   methods: {
     setSubscribed(subscribed) {
@@ -168,15 +171,13 @@ export default {
       data-testid="subscribe-button"
       class="hide-collapsed btn-icon !gl-align-top"
       :title="notificationTooltip"
+      :aria-pressed="subscribedStateText"
+      :selected="subscribed"
       :disabled="isLoading"
       :class="{ 'gl-ml-2': isIssuable }"
       @click="toggleSubscribed"
     >
-      <gl-animated-notification-icon
-        :is-on="!subscribed"
-        :class="{ '!gl-text-status-info': subscribed }"
-        class="gl-button-icon"
-      />
+      <gl-animated-notification-icon :is-on="!subscribed" class="gl-button-icon" />
     </gl-button>
     <gl-button
       v-if="!isMergeRequest"
@@ -185,14 +186,11 @@ export default {
       category="tertiary"
       data-testid="subscribe-button"
       :title="notificationTooltip"
+      :aria-pressed="subscribedStateText"
       class="sidebar-collapsed-icon sidebar-collapsed-container !gl-rounded-none !gl-border-0"
       @click="toggleSubscribed"
     >
-      <gl-animated-notification-icon
-        :is-on="!subscribed"
-        :class="{ '!gl-text-status-info': subscribed }"
-        class="gl-button-icon"
-      />
+      <gl-animated-notification-icon :is-on="!subscribed" class="gl-button-icon" />
     </gl-button>
   </div>
 </template>

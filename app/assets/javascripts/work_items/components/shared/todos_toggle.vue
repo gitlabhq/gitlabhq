@@ -62,6 +62,9 @@ export default {
     buttonIcon() {
       return this.pendingTodo ? TODO_DONE_ICON : TODO_ADD_ICON;
     },
+    pendingTodoStateText() {
+      return this.pendingTodo ? 'true' : 'false';
+    },
   },
   methods: {
     onToggle() {
@@ -179,15 +182,12 @@ export default {
     :disabled="isLoading"
     :title="buttonLabel"
     :category="todosButtonType"
+    :selected="pendingTodo"
     class="btn-icon"
     :aria-label="buttonLabel"
+    :aria-pressed="pendingTodoStateText"
     @click="onToggle"
   >
-    <gl-animated-todo-icon
-      :is-on="pendingTodo"
-      :class="{ '!gl-text-status-info': pendingTodo }"
-      class="gl-button-icon"
-      :name="buttonIcon"
-    />
+    <gl-animated-todo-icon :is-on="pendingTodo" class="gl-button-icon" :name="buttonIcon" />
   </gl-button>
 </template>

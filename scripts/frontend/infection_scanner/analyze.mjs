@@ -275,6 +275,26 @@ export function extractScriptContent(source) {
 export function detectAppRoot(code) {
   const stripped = code.replace(/\/\/[^\n]*/g, '').replace(/\/\*[\s\S]*?\*\//g, '');
 
+  // initVueApp bootstraps are app roots exactly like `new Vue({ el })`
+  // ones: the vue-ness is contained in mounting an app, so importers must
+  // not inherit infection. Only when the file does not also reach into
+  // `vue` itself — then the classic checks below decide.
+  if (
+    /import\s+\{[^}]*\binitVueApp\b[^}]*\}\s+from\s+['"][^'"]*vue3compat\/init_vue_app['"]/.test(
+      stripped,
+    ) &&
+    /\binitVueApp\s*\(/.test(stripped) &&
+    !/import\s+\{[^}]*\}\s+from\s+['"]vue['"]/.test(stripped)
+  ) {
+    const vueDefault = stripped.match(/import\s+([A-Za-z_$][\w$]*)\s+from\s+['"]vue['"]/);
+    if (!vueDefault) return true;
+    // Mirror the classic leniency below: a default `Vue` import used only
+    // for `Vue.use(...)` plugin installs keeps the file an app root.
+    const esc = vueDefault[1].replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const withoutUse = stripped.replace(new RegExp(`${esc}\\s*\\.\\s*use\\s*\\(`, 'g'), '');
+    if (!new RegExp(`${esc}\\s*\\.\\s*[A-Za-z_$]`).test(withoutUse)) return true;
+  }
+
   if (/import\s+\{[^}]*\}\s+from\s+['"]vue['"]/.test(stripped)) return false;
 
   const defaultImport = stripped.match(/import\s+([A-Za-z_$][\w$]*)\s+from\s+['"]vue['"]/);

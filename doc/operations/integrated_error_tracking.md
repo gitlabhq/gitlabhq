@@ -92,14 +92,14 @@ An issue is created. The issue description contains the error stack trace.
 
 To view the full timestamp of an error:
 
-- On the **Error details** page, hover over to the **Last seen** date.
+- On the **Error details** page, hover over the **Last seen** date.
 
 In the following example, the error happened at 11:41 CEST:
 
 ![A tooltip with the full timestamp shown over the Last seen date.](img/last_seen_v16_10.png)
 
 The **Last 24 hours** graph measures how many times this error occurred per hour.
-By pointing at the `11 am` bar, the dialog shows the error was seen 239 times:
+When you point at the `11 am` bar, the dialog shows the error was seen 239 times:
 
 ![A bar graph of hourly error frequency with 239 errors at 11 am.](img/error_bucket_v16_10.png)
 
@@ -142,7 +142,7 @@ Prerequisites:
 To rotate the Sentry DSN:
 
 1. [Create an access token](../user/profile/personal_access_tokens.md#create-a-personal-access-token)
-   with the `api` scope. Copy off this value, as you need it in future steps.
+   with the `api` scope. Copy this value, as you need it in future steps.
 1. Use the [error tracking API](../api/error_tracking.md) to create a new Sentry DSN,
    replacing `<your_access_token>` and `<your_project_number>` with your values:
 

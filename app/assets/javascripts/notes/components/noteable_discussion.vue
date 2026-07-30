@@ -408,7 +408,7 @@ export default {
                     :autosave-key="autosaveKey"
                     @handleFormUpdateAddToReview="addReplyToReview"
                     @handleFormUpdate="saveReply"
-                    @cancelForm="cancelReplyForm"
+                    @cancel-form="cancelReplyForm"
                   />
                   <note-signed-out-widget v-if="!isLoggedIn" />
                 </li>

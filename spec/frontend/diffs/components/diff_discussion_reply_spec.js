@@ -99,12 +99,12 @@ describe('DiffDiscussionReply', () => {
       },
     );
 
-    it('emits showNewDiscussionForm when button is clicked', () => {
+    it('emits show-new-discussion-form when button is clicked', () => {
       createComponent({ renderReplyPlaceholder: true });
 
       wrapper.findComponent(GlButton).vm.$emit('click');
 
-      expect(wrapper.emitted('showNewDiscussionForm')).toHaveLength(1);
+      expect(wrapper.emitted('show-new-discussion-form')).toHaveLength(1);
     });
   });
 });

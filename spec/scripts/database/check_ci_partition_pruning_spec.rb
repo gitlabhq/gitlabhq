@@ -331,6 +331,54 @@ RSpec.describe CheckCiPartitionPruning, feature_category: :tooling do
       expect(poster).to have_received(:create_note).with(include('...'))
     end
 
+    context 'when inlining the full queries would push the comment past the note size limit' do
+      let(:job_url) { 'https://gitlab.example.com/gitlab-org/gitlab/-/jobs/1' }
+      let(:posted) { [] }
+
+      # One offender whose query alone overflows the budget, so the fallback is the only way to post.
+      let(:huge_offender) do
+        offender.merge('normalized' => "SELECT #{'a' * poster.class::MAX_BODY_BYTESIZE}")
+      end
+
+      before do
+        allow(poster).to receive_messages(all_notes: [], job_url: job_url)
+        allow(poster).to receive(:create_note) { |body| posted << body }
+      end
+
+      it 'drops the collapsible and links the job log instead', :aggregate_failures do
+        poster.post([huge_offender])
+
+        expect(posted.last).to include("[job log](#{job_url})")
+        expect(posted.last).not_to include('<details>')
+      end
+
+      it 'posts a body that fits within the limit' do
+        poster.post([huge_offender])
+
+        expect(posted.last.bytesize).to be <= poster.class::MAX_BODY_BYTESIZE
+      end
+
+      it 'still reports the offender in the summary table and the hidden fingerprints line' do
+        poster.post([huge_offender])
+
+        expect(posted.last).to include('<!-- fingerprints:fp1 -->', '| `fp1` |')
+      end
+
+      it 'logs that it linked the job log rather than inlining the queries' do
+        poster.post([huge_offender])
+
+        expect(logger).to have_received(:info).with(/linking to the job log instead/)
+      end
+
+      it 'keeps inlining the full queries when they do fit' do
+        poster.post([offender])
+
+        expect(posted.last).to include(
+          '<details><summary>Full queries</summary>', 'SELECT * FROM p_ci_pipelines WHERE id = $1'
+        )
+      end
+    end
+
     it 'reads reported fingerprints from notes spread across paginated responses' do
       allow(poster).to receive(:request).and_return(
         http_response([marker_note([offender])], next_page: '2'),

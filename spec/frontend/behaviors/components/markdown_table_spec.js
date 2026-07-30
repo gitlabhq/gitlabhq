@@ -250,5 +250,24 @@ describe('MarkdownTable', () => {
       expect(stickyWrapper.exists()).toBe(true);
       expect(stickyWrapper.find('table').exists()).toBe(true);
     });
+
+    it('marks the wrapper as the print scale container', () => {
+      createWrapper([['Alice', '25']], { isSticky: true });
+
+      expect(wrapper.find('[data-print-scale-container]').element).toBe(wrapper.element);
+      expect(wrapper.find('table').attributes('data-print-scale-target')).toBe('');
+      expect(wrapper.find('table').attributes('data-print-scale-container')).toBeUndefined();
+    });
+  });
+
+  describe('when not sticky', () => {
+    it('marks the table as its own print scale container', () => {
+      createWrapper([['Alice', '25']]);
+
+      const table = wrapper.find('table');
+      expect(table.attributes('data-print-scale-target')).toBe('');
+      expect(table.attributes('data-print-scale-container')).toBe('');
+      expect(wrapper.attributes('data-print-scale-container')).toBeUndefined();
+    });
   });
 });

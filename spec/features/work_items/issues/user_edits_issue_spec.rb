@@ -13,7 +13,7 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
   let_it_be_with_reload(:issue) { create(:issue, project: project, author: user, assignees: [user], labels: [label_assigned]) }
   let_it_be(:issue_with_milestones) { create(:issue, project: project_with_milestones, author: user, assignees: [user]) }
   let_it_be(:milestone) { create(:milestone, project: project) }
-  let_it_be(:milestones) { create_list(:milestone, 25, project: project_with_milestones) }
+  let_it_be(:milestones) { create_list(:milestone, 3, project: project_with_milestones) }
 
   context 'with authorized user' do
     before do

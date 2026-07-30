@@ -121,7 +121,7 @@ describe('Job assistant drawer', () => {
 
     expect(findJobSetupItem().props('isNameValid')).toBe(false);
     expect(findJobSetupItem().props('isScriptValid')).toBe(true);
-    expect(wrapper.emitted('updateCiConfig')).toBeUndefined();
+    expect(wrapper.emitted('update-ci-config')).toBeUndefined();
   });
 
   it('should block submit if rules when is delayed and start in is out of range', async () => {
@@ -131,7 +131,7 @@ describe('Job assistant drawer', () => {
 
     await nextTick();
 
-    expect(wrapper.emitted('updateCiConfig')).toBeUndefined();
+    expect(wrapper.emitted('update-ci-config')).toBeUndefined();
   });
 
   describe('when enter valid input', () => {
@@ -223,7 +223,7 @@ describe('Job assistant drawer', () => {
       findRulesItem().vm.$emit('update-job', 'rules[0].start_in', dummyRulesStartIn);
       findConfirmButton().trigger('click');
 
-      expect(wrapper.emitted('updateCiConfig')).toStrictEqual([
+      expect(wrapper.emitted('update-ci-config')).toStrictEqual([
         [
           `${wrapper.props('ciFileContent')}\n${stringify({
             [dummyJobName]: {
@@ -252,7 +252,7 @@ describe('Job assistant drawer', () => {
     it('should update correct ci content when click add button', () => {
       findConfirmButton().trigger('click');
 
-      expect(wrapper.emitted('updateCiConfig')).toStrictEqual([
+      expect(wrapper.emitted('update-ci-config')).toStrictEqual([
         [
           `${wrapper.props('ciFileContent')}\n${stringify({
             [dummyJobName]: {

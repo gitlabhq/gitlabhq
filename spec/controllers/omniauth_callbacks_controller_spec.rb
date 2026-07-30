@@ -184,6 +184,10 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
             AuditEvent.where("details LIKE '%authenticated_with_oauth%'").count
           }.by(1)
         end
+
+        it 'updates the user activity' do
+          expect { post provider }.to change { user.reload.last_activity_on }.to(Time.zone.today)
+        end
       end
 
       context 'with signed-in user', :prometheus do
@@ -225,6 +229,10 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
 
       it 'activates the user' do
         expect(user.reload.active?).to be_truthy
+      end
+
+      it 'updates the user activity so the user is not immediately deactivated again' do
+        expect(user.reload.last_activity_on).to eq(Time.zone.today)
       end
 
       it 'shows reactivation flash message after logging in' do
@@ -756,7 +764,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
       context 'when sign_in' do
         it 'does not track the event' do
           post provider
-          expect_no_snowplow_event
+          expect_no_snowplow_event(category: described_class.name, action: "#{provider}_sso")
         end
       end
 

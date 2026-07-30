@@ -9146,8 +9146,12 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       let_it_be(:project) { create(:project, group: create(:group, :public)) }
       let_it_be(:owner) { create(:project_member, :owner, source: project) }
 
-      it 'returns a maximum of ten maintainers/owners of the project in recent_sign_in descending order' do
-        users = create_list(:user, 11, :with_sign_ins)
+      before do
+        stub_const('Member::ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT', 2)
+      end
+
+      it 'returns a maximum of maintainers/owners, per the limit, in recent_sign_in order' do
+        users = create_list(:user, 3, :with_sign_ins)
 
         active_maintainers_and_owners = users.map do |user|
           create(:project_member, [:maintainer, :owner].sample, user: user, project: project)
@@ -9155,7 +9159,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
         active_maintainers_and_owners_in_recent_sign_in_desc_order = project.members
                                                                             .id_in(active_maintainers_and_owners)
-                                                                            .order_recent_sign_in.limit(10)
+                                                                            .order_recent_sign_in.limit(2)
 
         expect(project.access_request_approvers_to_be_notified).to eq(active_maintainers_and_owners_in_recent_sign_in_desc_order)
       end

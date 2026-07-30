@@ -3,6 +3,7 @@ import { nextTick } from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import WikiContent from '~/wikis/components/wiki_content.vue';
+import * as printTableScale from '~/wikis/utils/print_table_scale';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
@@ -98,6 +99,114 @@ describe('wikis/components/wiki_content', () => {
     it('does not render skeleton loader or content container', () => {
       expect(findContent().exists()).toBe(false);
       expect(findGlSkeletonLoader().exists()).toBe(false);
+    });
+  });
+
+  describe('print listeners', () => {
+    let addSpy;
+    let removeSpy;
+
+    beforeEach(() => {
+      addSpy = jest.spyOn(window, 'addEventListener');
+      removeSpy = jest.spyOn(window, 'removeEventListener');
+    });
+
+    afterEach(() => {
+      addSpy.mockRestore();
+      removeSpy.mockRestore();
+    });
+
+    describe('when mounted', () => {
+      beforeEach(() => {
+        buildWrapper();
+      });
+
+      it('registers beforeprint and afterprint listeners', () => {
+        const eventNames = addSpy.mock.calls.map(([name]) => name);
+        expect(eventNames).toContain('beforeprint');
+        expect(eventNames).toContain('afterprint');
+      });
+    });
+
+    describe('when destroyed', () => {
+      beforeEach(() => {
+        buildWrapper();
+        wrapper.destroy();
+      });
+
+      it('removes the beforeprint and afterprint listeners', () => {
+        const eventNames = removeSpy.mock.calls.map(([name]) => name);
+        expect(eventNames).toContain('beforeprint');
+        expect(eventNames).toContain('afterprint');
+      });
+    });
+
+    describe('once content has loaded', () => {
+      let scaleSpy;
+      let resetScrollSpy;
+      let restoreScrollSpy;
+
+      beforeEach(() => {
+        scaleSpy = jest.spyOn(printTableScale, 'scaleTablesForPrint').mockImplementation();
+        restoreScrollSpy = jest.fn();
+        resetScrollSpy = jest
+          .spyOn(printTableScale, 'resetScrollForPrint')
+          .mockReturnValue(restoreScrollSpy);
+        mock
+          .onGet(PATH, { params: { render_html: true } })
+          .replyOnce(HTTP_STATUS_OK, { content: 'x' });
+        buildWrapper();
+        return waitForPromises();
+      });
+
+      describe('on beforeprint', () => {
+        beforeEach(() => {
+          window.dispatchEvent(new Event('beforeprint'));
+        });
+
+        it('scales the rendered content element', () => {
+          expect(scaleSpy).toHaveBeenCalledTimes(1);
+          expect(scaleSpy).toHaveBeenCalledWith(wrapper.vm.$refs.content);
+        });
+
+        it('resets the scroll positions within it', () => {
+          expect(resetScrollSpy).toHaveBeenCalledTimes(1);
+          expect(resetScrollSpy).toHaveBeenCalledWith(wrapper.vm.$refs.content);
+        });
+
+        it('does not restore the scroll positions before printing finishes', () => {
+          expect(restoreScrollSpy).not.toHaveBeenCalled();
+        });
+
+        describe('and then on afterprint', () => {
+          beforeEach(() => {
+            window.dispatchEvent(new Event('afterprint'));
+          });
+
+          it('restores the scroll positions', () => {
+            expect(restoreScrollSpy).toHaveBeenCalledTimes(1);
+          });
+        });
+      });
+    });
+
+    describe('while content is still loading', () => {
+      let scaleSpy;
+
+      beforeEach(() => {
+        scaleSpy = jest.spyOn(printTableScale, 'scaleTablesForPrint');
+        // Never resolve, so the component stays in its loading state and the
+        // content element is not rendered.
+        mock.onGet(PATH, { params: { render_html: true } }).reply(() => new Promise(() => {}));
+        buildWrapper();
+      });
+
+      describe('on beforeprint', () => {
+        it('does not scale, and does not throw', () => {
+          expect(() => window.dispatchEvent(new Event('beforeprint'))).not.toThrow();
+          expect(scaleSpy).not.toHaveBeenCalled();
+        });
+      });
     });
   });
 });

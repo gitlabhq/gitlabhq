@@ -29,7 +29,7 @@ Prerequisites:
 
 To enable the Sentry integration:
 
-1. Sign up to Sentry.io, or deploy your own [on-premise Sentry instance](https://github.com/getsentry/self-hosted).
+1. Sign up for Sentry.io, or deploy your own [on-premise Sentry instance](https://github.com/getsentry/self-hosted).
 1. [Create a new Sentry project](https://docs.sentry.io/product/sentry-basics/integrate-frontend/create-new-project/).
    For each GitLab project that you want to integrate, create a new Sentry project.
 1. Find or generate a [Sentry auth token](https://docs.sentry.io/api/auth/#auth-tokens).

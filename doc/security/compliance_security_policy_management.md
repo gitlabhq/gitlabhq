@@ -140,7 +140,7 @@ Project administrators and owners can:
 - Understand policy sources with clear indicators that show whether policies come from your project, group, or central administration.
 
 > [!note]
-> The **Policies** page displays only the policies from the compliance and security policy that are currently applied to your group.
+> The **Policies** page displays only the policies from the compliance and security policy group that are currently applied to your group.
 
 ### Developers
 
@@ -154,7 +154,7 @@ Developers can:
 
 If you already use a security policy project to enforce policies across multiple groups, you can designate one of the linked groups as your compliance and security policy group.
 However, you should unlink the security policy project from all of the groups that are not the compliance and security policy group. Otherwise, the same policies
-are enforced twice in those groups. Once from the linked security policy group and again from the compliance and security policy group.
+are enforced twice in those groups: once from the linked security policy group and again from the compliance and security policy group.
 
 To automate the process of migrating your groups to a compliance and security policy group, you can use the following `csp_designation.rb` script.
 

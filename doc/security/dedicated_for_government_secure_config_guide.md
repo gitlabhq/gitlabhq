@@ -134,7 +134,7 @@ FedRAMP requirement: Provide explanations of security-related settings that can 
 
 This section enumerates configuration settings specifically available to Dedicated for Government and point customers to the broad documentation already available for [administering GitLab](../administration/_index.md).
 
-### Infrastructure configurations by top-Level administrators
+### Infrastructure configurations by top-level administrators
 
 GitLab Dedicated for Government allows for specific infrastructure-level security and architecture configurations to be requested by top-level customer administrators, triggered through requests to the GitLab Support team.
 

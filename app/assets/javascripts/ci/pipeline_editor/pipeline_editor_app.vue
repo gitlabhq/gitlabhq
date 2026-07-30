@@ -421,10 +421,10 @@ export default {
         :has-unsaved-changes="hasUnsavedChanges"
         :is-new-ci-config-file="isNewCiConfigFile"
         @commit="updateOnCommit"
-        @resetContent="confirmReset"
-        @showError="showErrorAlert"
-        @updateCiConfig="updateCiConfig"
-        @updateCommitSha="updateCommitSha"
+        @reset-content="confirmReset"
+        @show-error="showErrorAlert"
+        @update-ci-config="updateCiConfig"
+        @update-commit-sha="updateCommitSha"
       />
       <gl-modal
         v-model="showResetConfirmationModal"

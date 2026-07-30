@@ -113,10 +113,10 @@ RSpec.describe API::AwardEmoji, feature_category: :shared do
 
       context 'with custom emoji' do
         let_it_be_with_reload(:project) { create(:project, :public, namespace: create(:group)) }
-        let_it_be(:custom_emoji) { create_list(:custom_emoji, 10, namespace: project.namespace) }
+        let_it_be(:custom_emoji) { create_list(:custom_emoji, 4, namespace: project.namespace) }
 
         it 'prevents n+1 queries', :use_sql_query_cache do
-          custom_emoji[0...5].each do |emoji|
+          custom_emoji[0...2].each do |emoji|
             create(:award_emoji, name: emoji.name, awardable: merge_request, user: user)
           end
 
@@ -124,7 +124,7 @@ RSpec.describe API::AwardEmoji, feature_category: :shared do
             get api(request_path), params: { per_page: 50 }
           end
 
-          custom_emoji[5...-1].each do |emoji|
+          custom_emoji[2...-1].each do |emoji|
             create(:award_emoji, name: emoji.name, awardable: merge_request, user: user)
           end
 

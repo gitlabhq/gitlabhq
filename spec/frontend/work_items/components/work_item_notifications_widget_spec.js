@@ -1,4 +1,4 @@
-import { GlButton, GlIcon } from '@gitlab/ui';
+import { GlButton, GlAnimatedNotificationIcon } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 
@@ -77,6 +77,9 @@ describe('WorkItemActions component', () => {
       mocks: {
         $toast,
       },
+      stubs: {
+        GlAnimatedNotificationIcon,
+      },
     });
   };
 
@@ -135,14 +138,16 @@ describe('WorkItemActions component', () => {
     );
 
     it.each`
-      scenario                   | icon                   | notificationsQueryHandler
-      ${'notifications are off'} | ${'notifications-off'} | ${notificationOffQueryHandler}
-      ${'notifications are on'}  | ${'notifications'}     | ${notificationOnQueryHandler}
-    `('uses the correct icon when $scenario', async ({ notificationsQueryHandler, icon }) => {
+      scenario                   | isOn     | notificationsQueryHandler
+      ${'notifications are off'} | ${true}  | ${notificationOffQueryHandler}
+      ${'notifications are on'}  | ${false} | ${notificationOnQueryHandler}
+    `('uses the correct icon when $scenario', async ({ notificationsQueryHandler, isOn }) => {
       createComponent({ notificationsQueryHandler });
       await waitForPromises();
 
-      expect(findNotificationsButton().findComponent(GlIcon).props('name')).toBe(icon);
+      expect(
+        findNotificationsButton().findComponent(GlAnimatedNotificationIcon).props('isOn'),
+      ).toBe(isOn);
     });
 
     it.each`

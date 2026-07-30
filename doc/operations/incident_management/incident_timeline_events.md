@@ -135,7 +135,7 @@ you can specify incident tags to capture relevant incident timestamps.
 Timeline tags are optional. You can choose more than one tag per event.
 When you create a timeline event and select the tags, the event note
 is populated with a default message.
-This allows for a quick event creation. If a note has already been set, it isn't changed.
+This allows for quick event creation. If a note has already been set, it isn't changed.
 Added tags are displayed next to the timestamp.
 
 ## Formatting rules

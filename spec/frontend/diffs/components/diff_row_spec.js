@@ -276,7 +276,7 @@ describe('DiffRow', () => {
     wrapper = createWrapper({ props: { line: testLines[0], inline: false } });
     const leftDiscussions = wrapper.findComponent(DiffGutterAvatars);
 
-    await leftDiscussions.vm.$emit('toggleLineDiscussions', {
+    await leftDiscussions.vm.$emit('toggle-line-discussions', {
       lineCode: 'abc_1_1',
       expanded: true,
     });

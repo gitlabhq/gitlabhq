@@ -40,8 +40,8 @@ RSpec.shared_examples 'group emails are disabled' do |check_delivery_jobs_queue:
   end
 end
 
-RSpec.shared_examples 'sends access request notification to a max of ten, most recently active group owners' do
-  let(:owners) { create_list(:user, 12, :with_sign_ins) }
+RSpec.shared_examples 'sends access request notification limited to the most recently active group owners' do
+  let_it_be(:owners) { create_list(:user, 3, :with_sign_ins) }
 
   before do
     owners.each do |owner|
@@ -49,23 +49,24 @@ RSpec.shared_examples 'sends access request notification to a max of ten, most r
     end
 
     reset_delivered_emails!
+    stub_const('Member::ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT', 2)
   end
 
   it 'sends limited notifications' do
-    ten_most_recently_active_group_owners = owners.sort_by(&:last_sign_in_at).last(10)
+    most_recently_active_group_owners = owners.sort_by(&:last_sign_in_at).last(2)
 
     expect do
       notification_trigger
     end.to have_only_enqueued_mail_with_args(
       Members::AccessRequestedMailer,
       :email,
-      *ten_most_recently_active_group_owners.map { |user| hash_including(params: hash_including(recipient: user)) }
+      *most_recently_active_group_owners.map { |user| hash_including(params: hash_including(recipient: user)) }
     )
   end
 end
 
-RSpec.shared_examples 'sends access request notification to a max of ten, most recently active project maintainers' do
-  let(:maintainers) { create_list(:user, 12, :with_sign_ins) }
+RSpec.shared_examples 'sends access request notification limited to the most recently active project maintainers' do
+  let_it_be(:maintainers) { create_list(:user, 3, :with_sign_ins) }
 
   before do
     maintainers.each do |maintainer|
@@ -73,17 +74,18 @@ RSpec.shared_examples 'sends access request notification to a max of ten, most r
     end
 
     reset_delivered_emails!
+    stub_const('Member::ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT', 2)
   end
 
   it 'sends limited notifications' do
-    ten_most_recently_active_project_maintainers = maintainers.sort_by(&:last_sign_in_at).last(10)
+    most_recently_active_project_maintainers = maintainers.sort_by(&:last_sign_in_at).last(2)
 
     expect do
       notification_trigger
     end.to have_only_enqueued_mail_with_args(
       Members::AccessRequestedMailer,
       :email,
-      *ten_most_recently_active_project_maintainers.map do |user|
+      *most_recently_active_project_maintainers.map do |user|
         hash_including(params: hash_including(recipient: user))
       end
     )

@@ -266,7 +266,7 @@ export default {
       :autofocus="false"
       class="diff-comment-form gl-mt-3"
       @handleFormUpdateAddToReview="addToReview"
-      @cancelForm="handleCancelCommentForm"
+      @cancel-form="handleCancelCommentForm"
       @handleFormUpdate="handleSaveNote"
       @handleSuggestDismissed="setSuggestPopoverDismissed"
     />

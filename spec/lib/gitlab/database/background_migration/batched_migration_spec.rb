@@ -749,14 +749,16 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
     end
 
     context 'with preloaded batched migration' do
-      it 'avoids N+1' do
-        create_list(:batched_background_migration_job, 11, **common_attrs.merge(started_at: end_time - 10.seconds))
+      before do
+        create_list(:batched_background_migration_job, 3, **common_attrs.merge(started_at: end_time - 10.seconds))
+      end
 
+      it 'avoids N+1' do
         control = ActiveRecord::QueryRecorder.new do
-          migration.smoothed_time_efficiency(number_of_jobs: 10)
+          migration.smoothed_time_efficiency(number_of_jobs: 2)
         end
 
-        expect { migration.smoothed_time_efficiency(number_of_jobs: 11) }.not_to exceed_query_limit(control)
+        expect { migration.smoothed_time_efficiency(number_of_jobs: 3) }.not_to exceed_query_limit(control)
       end
     end
   end

@@ -8,8 +8,8 @@ RSpec.describe SearchHelper, :with_current_organization, feature_category: :glob
 
   before do
     stub_feature_flags(work_item_legacy_url: true)
-    # create AI Setting singleton record to prevent N+1
-    Ai::Setting.instance if Gitlab.ee?
+    # create the AI settings row up front to prevent N+1
+    Ai::Setting.for_organization(current_organization) if Gitlab.ee?
   end
 
   # Override simple_sanitize for our testing purposes

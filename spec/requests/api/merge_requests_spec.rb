@@ -1263,6 +1263,26 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         expect_response_contain_exactly(merge_request2.id)
       end
 
+      it 'returns merge requests merged before a specific date' do
+        merge_request2 = create(:merge_request, :merged, source_project: project, target_project: project)
+
+        merge_request2.metrics.update!(merged_at: Date.new(2000, 1, 1))
+
+        get api('/merge_requests?merged_before=2000-01-02T00:00:00.060Z', user)
+
+        expect_response_contain_exactly(merge_request2.id)
+      end
+
+      it 'returns merge requests merged after a specific date' do
+        merge_request2 = create(:merge_request, :merged, source_project: project, target_project: project)
+
+        merge_request2.metrics.update!(merged_at: 1.week.from_now)
+
+        get api("/merge_requests?merged_after=#{merge_request2.metrics.merged_at}", user)
+
+        expect_response_contain_exactly(merge_request2.id)
+      end
+
       context 'search params' do
         let_it_be(:merge_request, freeze: false) do
           create(:merge_request, :simple, author: user, source_project: project, target_project: project, title: 'Search title', description: 'Search description')

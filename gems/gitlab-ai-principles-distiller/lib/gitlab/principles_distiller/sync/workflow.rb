@@ -172,7 +172,7 @@ module Gitlab
         # the agent never spoke, only emitted tool calls, or returned
         # unparseable content.
         def log_failure_details(workflow_id, status, human_status, messages, ever_running)
-          url = "#{gitlab_host}/#{catalog_project_path}/-/automate/agent-sessions/#{workflow_id}"
+          url = session_url(workflow_id)
 
           messages ||= []
           hint = if !ever_running && messages.empty?
@@ -311,8 +311,14 @@ module Gitlab
           workflow_id = workflow['id']
           return unless workflow_id
 
+          # Single `puts` call (not two) so the id/branch line and the session
+          # link can't be interleaved by another thread's log output: up to
+          # MAX_CONCURRENT_DISTILLATIONS workflows are created concurrently
+          # here with no shared log mutex. Session link is logged only once,
+          # at creation (never on the polling heartbeats below), since a
+          # retry creates a brand-new workflow with its own session anyway.
           puts Rainbow("    workflow id=#{workflow_id}#{principle ? " (#{principle})" : ''} " \
-            "branch=#{source_branch}").faint
+            "branch=#{source_branch}\n      session: #{session_url(workflow_id)}").faint
           workflow_id
         rescue StandardError => e
           warn Rainbow("Workflow create error#{principle ? " for #{principle}" : ''}: #{e.message}").red
@@ -382,6 +388,7 @@ module Gitlab
           end
 
           warn Rainbow("    workflow #{tag} timed out after #{POLL_TIMEOUT_SECONDS}s").yellow
+          warn Rainbow("    session: #{session_url(workflow_id)}").faint
           nil
         end
 
@@ -447,6 +454,12 @@ module Gitlab
         # "3759465 (database-migrations)" or just "3759465".
         def workflow_tag(workflow_id, principle)
           principle ? "#{workflow_id} (#{principle})" : workflow_id.to_s
+        end
+
+        # Deep link to the DAP session UI for a workflow. The job-log viewer
+        # autolinks bare URLs, so no markdown wrapping is needed here.
+        def session_url(workflow_id)
+          "#{gitlab_host}/#{catalog_project_path}/-/automate/agent-sessions/#{workflow_id}"
         end
 
         def current_git_branch

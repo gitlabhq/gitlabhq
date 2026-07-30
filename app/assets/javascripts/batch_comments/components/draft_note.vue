@@ -124,7 +124,7 @@ export default {
     anchor-prefix="draft"
     data-testid="draft-note"
     @handleEdit="handleEditing"
-    @cancelForm="handleNotEditing"
+    @cancel-form="handleNotEditing"
     @updateSuccess="handleNotEditing"
     @handleDeleteNote="deleteDraft"
     @handleUpdateNote="update"

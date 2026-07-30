@@ -27,7 +27,7 @@ Before you implement these recommendations:
 - Deploy GitLab Runner in Kubernetes using the [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/)
 - Have administrator access to your Kubernetes cluster
 - Configure [Prometheus monitoring](../../administration/monitoring/_index.md) for GitLab Runner
-- Have basic understanding of Kubernetes resource management
+- Have a basic understanding of Kubernetes resource management
 
 ## GitLab Runner manager pod responsibilities
 

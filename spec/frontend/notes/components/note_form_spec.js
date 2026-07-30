@@ -204,7 +204,7 @@ describe('issue_note_form component', () => {
 
         findCancelButton().vm.$emit('click');
 
-        expect(wrapper.emitted('cancelForm')).toHaveLength(1);
+        expect(wrapper.emitted('cancel-form')).toHaveLength(1);
       });
 
       it('will not cancel form if there is an active at-who-active class', async () => {
@@ -216,7 +216,7 @@ describe('issue_note_form component', () => {
         cancelButton.vm.$emit('click');
         await nextTick();
 
-        expect(wrapper.emitted('cancelForm')).toBeUndefined();
+        expect(wrapper.emitted('cancel-form')).toBeUndefined();
       });
 
       it('should be possible to update the note', () => {
@@ -302,7 +302,7 @@ describe('issue_note_form component', () => {
     it('should be possible to cancel', () => {
       findCancelCommentButton().vm.$emit('click');
 
-      expect(wrapper.emitted('cancelForm')).toEqual([[true, false]]);
+      expect(wrapper.emitted('cancel-form')).toEqual([[true, false]]);
     });
 
     it('hides actions for commits', () => {

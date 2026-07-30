@@ -518,6 +518,193 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
             .exactly(described_class::DISTILL_MAX_RETRIES).times
         end
       end
+
+      context 'when the output appends a trailing period to a baseline rule' do
+        # The agent routinely appends a period while rephrasing a baseline
+        # rule into a sentence; that punctuation is presentation, not the
+        # rule's identity, and must not consume a retry.
+        let(:punctuated_content) do
+          verbatim_content.sub(
+            'each one against the base branch first',
+            'each one against the base branch first.'
+          )
+        end
+
+        before do
+          allow(sync.workflow).to receive(:distill).and_return(punctuated_content)
+        end
+
+        it 'accepts the content on the first attempt' do
+          expect(distill).to include('each one against the base branch first.')
+          expect(sync.workflow).to have_received(:distill).once
+        end
+      end
+    end
+
+    context 'when the baseline has a preamble before its own ## Checklist heading' do
+      # Regression: `Workflow#build_goal` instructs the agent to "Output
+      # ONLY the checklist content. No preamble, no thinking, no trailing
+      # notes." A baseline's own title/prerequisite-note/framing-sentence
+      # preamble is document scaffolding, not a rule, so requiring its
+      # verbatim reproduction is an unsatisfiable guard (observed with
+      # testing-frontend-testing-hierarchy, job 15601793108).
+      let(:config) do
+        {
+          'sources' => [{ 'path' => 'doc/qa.md' }],
+          'baseline' => '.ai/principles/baselines/qa.md'
+        }
+      end
+
+      let(:baseline_content) do
+        <<~BASELINE
+          # QA Baseline
+
+          > **Prerequisite:** Read the other guide first.
+
+          This baseline answers only one question: which pipeline to run.
+
+          ---
+
+          ## Checklist
+
+          ### Process Reminders
+
+          - Ask: "Have you triggered the QA pipeline?"
+        BASELINE
+      end
+
+      let(:checklist_only_content) do
+        <<~CONTENT
+          # QA Principles
+
+          ## Checklist
+
+          ### Process Reminders
+
+          - Ask: "Have you triggered the QA pipeline?"
+        CONTENT
+      end
+
+      before do
+        FileUtils.mkdir_p(File.join(tmpdir, '.ai/principles/baselines'))
+        File.write(File.join(tmpdir, '.ai/principles/baselines/qa.md'), baseline_content)
+        allow(sync.workflow).to receive(:distill).and_return(checklist_only_content)
+      end
+
+      it 'accepts output that omits the preamble and the --- divider on the first attempt' do
+        expect(distill).to include('Have you triggered the QA pipeline?')
+        expect(sync.workflow).to have_received(:distill).once
+      end
+    end
+
+    context 'when a baseline path also appears in the appended Authoritative sources footer' do
+      # Regression: `Sync#assemble_distilled_body` appends an
+      # "## Authoritative sources" footer listing every SSOT path. When a
+      # baseline also lists that path in its checklist, it legitimately
+      # appears twice in the fully-assembled file; the guard must not
+      # penalize the tool's own output for that (observed with
+      # documentation-topics, job 15601793108). `baseline_drift` runs on the
+      # raw agent output before the footer is normally appended, so this
+      # covers the case where the agent emits a footer anyway.
+      let(:config) do
+        {
+          'sources' => [{ 'path' => 'doc/topic_types/concept.md' }],
+          'baseline' => '.ai/principles/baselines/documentation-topics.md'
+        }
+      end
+
+      let(:baseline_content) do
+        <<~BASELINE
+          ## Documentation Structure
+
+          - doc/topic_types/concept.md
+        BASELINE
+      end
+
+      let(:content_with_footer) do
+        <<~CONTENT
+          # Documentation Topics Principles
+
+          ## Checklist
+
+          ## Documentation Structure
+
+          - doc/topic_types/concept.md
+
+          ## Authoritative sources
+
+          For the full picture, see:
+
+          - doc/topic_types/concept.md
+        CONTENT
+      end
+
+      before do
+        FileUtils.mkdir_p(File.join(tmpdir, '.ai/principles/baselines'))
+        File.write(File.join(tmpdir, '.ai/principles/baselines/documentation-topics.md'), baseline_content)
+        allow(sync.workflow).to receive(:distill).and_return(content_with_footer)
+      end
+
+      it 'accepts the content on the first attempt (footer occurrence does not count as duplication)' do
+        expect(distill).to include('doc/topic_types/concept.md')
+        expect(sync.workflow).to have_received(:distill).once
+      end
+    end
+
+    context 'when a baseline rule is genuinely duplicated and the output also has a sources footer' do
+      # Guard-integrity check: scoping the comparison to the checklist body
+      # must not swallow real duplication that occurs before the footer.
+      let(:config) do
+        {
+          'sources' => [{ 'path' => 'doc/qa.md' }],
+          'baseline' => '.ai/principles/baselines/qa.md'
+        }
+      end
+
+      let(:baseline_content) do
+        <<~BASELINE
+          ### Process Reminders
+
+          - Ask: "Have you triggered the QA pipeline?"
+        BASELINE
+      end
+
+      let(:verbatim_content) do
+        <<~CONTENT
+          # QA Principles
+
+          ## Checklist
+
+          ### Process Reminders
+
+          - Ask: "Have you triggered the QA pipeline?"
+        CONTENT
+      end
+
+      let(:corrupted_content) do
+        <<~CONTENT
+          #{verbatim_content}
+          - Ask: "Have you triggered the QA pipeline?"
+
+          ## Authoritative sources
+
+          For the full picture, see:
+
+          - doc/qa.md
+        CONTENT
+      end
+
+      before do
+        FileUtils.mkdir_p(File.join(tmpdir, '.ai/principles/baselines'))
+        File.write(File.join(tmpdir, '.ai/principles/baselines/qa.md'), baseline_content)
+        allow(sync.workflow).to receive(:distill).and_return(corrupted_content, verbatim_content)
+      end
+
+      it 'still treats the duplication as failure and retries' do
+        expect { distill }
+          .to output(/altered, omitted, or duplicated 1 baseline rule/).to_stderr
+        expect(sync.workflow).to have_received(:distill).twice
+      end
     end
   end
 

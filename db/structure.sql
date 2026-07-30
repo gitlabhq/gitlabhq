@@ -13195,9 +13195,11 @@ CREATE TABLE ai_tool_rules (
     tool_source text,
     tool_arguments jsonb,
     project_id bigint,
+    background_access smallint,
     CONSTRAINT check_72f465d750 CHECK ((char_length(tool_source) <= 255)),
     CONSTRAINT check_d7f656466e CHECK ((char_length(tool_name) <= 255)),
-    CONSTRAINT chk_ai_tool_rules_has_permission CHECK (((web_access IS NOT NULL) OR (local_access IS NOT NULL))),
+    CONSTRAINT chk_ai_tool_rules_background_access_enum CHECK (((background_access IS NULL) OR (background_access = ANY (ARRAY[0, 2])))),
+    CONSTRAINT chk_ai_tool_rules_has_permission CHECK (((web_access IS NOT NULL) OR (local_access IS NOT NULL) OR (background_access IS NOT NULL))),
     CONSTRAINT chk_ai_tool_rules_local_access_enum CHECK (((local_access IS NULL) OR (local_access = ANY (ARRAY[0, 1, 2])))),
     CONSTRAINT chk_ai_tool_rules_web_access_enum CHECK (((web_access IS NULL) OR (web_access = ANY (ARRAY[0, 1, 2]))))
 );

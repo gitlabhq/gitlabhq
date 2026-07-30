@@ -102,7 +102,7 @@ export default {
       default: false,
     },
   },
-  emits: ['showForkMessage', 'toggleFile'],
+  emits: ['show-fork-message', 'toggle-file'],
   computed: {
     ...mapState(useLegacyDiffs, ['diffHasExpandedDiscussions', 'diffHasDiscussions']),
     ...mapState(useNotes, ['getNoteableData']),
@@ -276,16 +276,16 @@ export default {
         : sanitize(`${description} ${createHotkeyHtml(keys[0])}`);
     },
     handleToggleFile() {
-      diffsEventHub.$emit('setFileActive', this.diffFile.file_hash);
+      diffsEventHub.$emit('set-file-active', this.diffFile.file_hash);
       this.setFileForcedOpen({
         filePath: this.diffFile.file_path,
         forced: false,
       });
-      this.$emit('toggleFile');
+      this.$emit('toggle-file');
     },
     showForkMessage() {
       if (this.canCurrentUserFork && !this.diffFile.can_modify_blob) {
-        this.$emit('showForkMessage');
+        this.$emit('show-fork-message');
       }
     },
     handleFileNameClick(e) {
@@ -329,7 +329,7 @@ export default {
           filePath: this.diffFile.file_path,
           forced: false,
         });
-        this.$emit('toggleFile');
+        this.$emit('toggle-file');
       }
     },
   },

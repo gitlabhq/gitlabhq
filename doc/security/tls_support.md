@@ -37,8 +37,8 @@ and interactions with the platform.
 
 ## Supported cipher suites
 
-GitLab supports multiple cipher suites. Each of the following cipher suites are considered
-secure and have an [SSL server rating](https://github.com/ssllabs/research/wiki/SSL-Server-Rating-Guide)
+GitLab supports multiple cipher suites. Each of the following cipher suites is considered
+secure and has an [SSL server rating](https://github.com/ssllabs/research/wiki/SSL-Server-Rating-Guide)
 of `A`.
 
 | Protocol Version | Cipher Suite |
@@ -101,7 +101,7 @@ to identify and assess the compatibility of your external integrations.
 
 {{< /history >}}
 
-[Per RFC 52460](https://www.rfc-editor.org/rfc/rfc5246#section-7.2.1), a
+[Per RFC 5246](https://www.rfc-editor.org/rfc/rfc5246#section-7.2.1), an
 SSL connection should be terminated with a `close_notify` message. OpenSSL
 3 enforces this as a security measure. Some services, such as third-party S3 providers,
 may report an `unexpected eof while reading` error because of this enforcement.

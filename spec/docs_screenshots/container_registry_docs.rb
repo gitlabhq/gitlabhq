@@ -39,7 +39,7 @@ RSpec.describe 'Container Registry', :js do
     context 'with a list of repositories' do
       before do
         stub_container_registry_tags(repository: %r{my/image}, tags: %w[latest], with_manifest: true)
-        create_list(:container_repository, 12, project: project)
+        create_list(:container_repository, 8, project: project)
       end
 
       it 'user/packages/container_registry/img/project_image_repositories_list' do
@@ -66,7 +66,7 @@ RSpec.describe 'Container Registry', :js do
     context 'with a list of repositories' do
       before do
         stub_container_registry_tags(repository: %r{my/image}, tags: %w[latest], with_manifest: true)
-        create_list(:container_repository, 12, project: project)
+        create_list(:container_repository, 8, project: project)
       end
 
       it 'user/packages/container_registry/img/group_image_repositories_list' do

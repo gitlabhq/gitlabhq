@@ -469,23 +469,21 @@ module Ci
           # Metrics emission must never raise into the caller's worker.
           next unless pipeline.finished_at && pipeline.created_at
 
-          if ::Feature.enabled?(:ci_observe_pipelines_finished, ::Project.actor_from_id(pipeline.project_id))
-            labels = { source: pipeline.source, status: pipeline.status }
+          labels = { source: pipeline.source, status: pipeline.status }
 
-            ::Gitlab::Ci::Pipeline::Metrics.pipelines_finished_counter
-              .increment(labels.merge(partition_id: pipeline.partition_id))
-            ::Gitlab::Ci::Pipeline::Metrics.pipeline_time_to_finished_histogram
-              .observe(labels, (pipeline.finished_at - pipeline.created_at).to_f)
+          ::Gitlab::Ci::Pipeline::Metrics.pipelines_finished_counter
+            .increment(labels.merge(partition_id: pipeline.partition_id))
+          ::Gitlab::Ci::Pipeline::Metrics.pipeline_time_to_finished_histogram
+            .observe(labels, (pipeline.finished_at - pipeline.created_at).to_f)
 
-            Labkit::UserExperienceSli.observed(
-              :run_pipeline,
-              start_time: pipeline.created_at,
-              Labkit::Fields::GL_PIPELINE_ID.to_sym => pipeline.id,
-              Labkit::Fields::GL_PROJECT_ID.to_sym => pipeline.project_id,
-              pipeline_source: pipeline.source,
-              pipeline_status: pipeline.status
-            )
-          end
+          Labkit::UserExperienceSli.observed(
+            :run_pipeline,
+            start_time: pipeline.created_at,
+            Labkit::Fields::GL_PIPELINE_ID.to_sym => pipeline.id,
+            Labkit::Fields::GL_PROJECT_ID.to_sym => pipeline.project_id,
+            pipeline_source: pipeline.source,
+            pipeline_status: pipeline.status
+          )
         end
       end
 

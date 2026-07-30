@@ -18,7 +18,7 @@ export default {
   },
   inject: ['ciConfigPath'],
   inheritAttrs: false,
-  emits: ['updateCiConfig'],
+  emits: ['update-ci-config'],
   created() {
     eventHub.$on(SCROLL_EDITOR_TO_BOTTOM, this.scrollEditorToBottom);
   },
@@ -27,7 +27,7 @@ export default {
   },
   methods: {
     onCiConfigUpdate(content) {
-      this.$emit('updateCiConfig', content);
+      this.$emit('update-ci-config', content);
     },
     registerCiSchema({ detail: { instance } }) {
       instance.use({ definition: CiSchemaExtension });

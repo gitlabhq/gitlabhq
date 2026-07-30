@@ -116,7 +116,7 @@ export default {
     },
   },
   emits: [
-    'cancelForm',
+    'cancel-form',
     'handleFormUpdate',
     'handleFormUpdateAddToReview',
     'handleSuggestDismissed',
@@ -307,7 +307,7 @@ export default {
           .querySelector('textarea')
           ?.classList.contains('at-who-active')
       ) {
-        this.$emit('cancelForm', shouldConfirm, this.noteBody !== this.updatedNoteBody);
+        this.$emit('cancel-form', shouldConfirm, this.noteBody !== this.updatedNoteBody);
       }
     },
     updatePlaceholder() {

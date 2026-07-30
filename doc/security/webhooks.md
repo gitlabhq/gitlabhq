@@ -31,7 +31,7 @@ instead of:
 - A repository-specific token.
 
 As a result, these requests can have broader access than intended, including access to everything running on the server
-that hosts the webhook including:
+that hosts the webhook:
 
 - The GitLab server.
 - The API itself.
@@ -188,7 +188,7 @@ When you [filter requests](#filter-requests), you might get an error that states
 To work around this error:
 
 1. Revert the change so the error message `Help page documentation base url is blocked` does not appear anymore.
-1. Add `docs.gitlab.com` , or [the redirect help documentation pages URL](../administration/settings/help_page.md#redirect-help-pages) to the [allowlist](#allow-outbound-requests-to-certain-ip-addresses-and-domains).
+1. Add `docs.gitlab.com`, or [the redirect help documentation pages URL](../administration/settings/help_page.md#redirect-help-pages) to the [allowlist](#allow-outbound-requests-to-certain-ip-addresses-and-domains).
 1. Select **Save Changes**.
 
 ### GitLab Duo functionality is blocked

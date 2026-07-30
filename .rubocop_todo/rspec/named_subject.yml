@@ -785,7 +785,6 @@ RSpec/NamedSubject:
     - 'ee/spec/services/vulnerability_feedback/create_service_spec.rb'
     - 'ee/spec/support/shared_contexts/audit_event_not_licensed_shared_context.rb'
     - 'ee/spec/support/shared_examples/controllers/analytics/cycle_analytics/shared_stage_shared_examples.rb'
-    - 'ee/spec/tasks/gitlab/license_rake_spec.rb'
     - 'ee/spec/tasks/gitlab/seed/group_seed_rake_spec.rb'
     - 'ee/spec/validators/user_existence_validator_spec.rb'
     - 'ee/spec/validators/user_id_existence_validator_spec.rb'

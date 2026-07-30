@@ -83,7 +83,7 @@ You can also use the API to [rotate the token](../../api/personal_access_tokens.
 To replace the token:
 
 1. Check where this token may have been used previously, and remove it from any
-   automation might still use the token.
+   automation that might still use the token.
    - For personal access tokens, use the [API](../../api/personal_access_tokens.md#list-all-personal-access-tokens)
      to list tokens that have expired recently. For example, go to `https://gitlab.com/api/v4/personal_access_tokens`,
      and locate tokens with a specific `expires_at` date.
@@ -401,7 +401,7 @@ end
 
 ### Identify dates when many tokens expire
 
-This script identifies dates when most of tokens expire. You can use it in combination with other scripts on this page to identify and extend large batches of tokens that may be approaching their expiration date, in case your team has not yet set up token rotation.
+This script identifies dates when most tokens expire. You can use it in combination with other scripts on this page to identify and extend large batches of tokens that may be approaching their expiration date, in case your team has not yet set up token rotation.
 
 The script returns results in this format:
 

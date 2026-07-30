@@ -144,7 +144,7 @@ The job span carries the following attributes for each job or bridge:
 | `job.failure_reason` | The reason the job failed, if it failed. |
 | `job.type` | The value `bridge` for jobs that trigger downstream pipelines. |
 | `job.created_at` | The time the job was created, in Unix nanoseconds. |
-| `job.when` | The `rules` or `when` keyword value that determined the job ran, if available. |
+| `job.when` | The `rules` or `when` keyword value that determined whether the job ran, if available. |
 | `job.user.id` | The ID of the user associated with the job, if available. |
 | `job.user.username` | The username of the user associated with the job, if available. |
 | `job.artifacts.filename` | The filename of the job's artifacts archive, if the job produced one. |

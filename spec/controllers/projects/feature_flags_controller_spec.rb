@@ -28,7 +28,7 @@ RSpec.describe Projects::FeatureFlagsController, feature_category: :feature_flag
     end
 
     context 'for a list of feature flags' do
-      let!(:feature_flags) { create_list(:operations_feature_flag, 50, project: project) }
+      let_it_be(:feature_flags) { create_list(:operations_feature_flag, 2, project: project) }
 
       it 'responds with success' do
         is_expected.to have_gitlab_http_status(:ok)

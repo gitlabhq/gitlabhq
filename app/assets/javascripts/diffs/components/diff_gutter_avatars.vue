@@ -26,7 +26,7 @@ export default {
       default: false,
     },
   },
-  emits: ['toggleLineDiscussions'],
+  emits: ['toggle-line-discussions'],
   computed: {
     allDiscussions() {
       return this.discussions.reduce((acc, note) => acc.concat(note.notes), []);
@@ -73,12 +73,12 @@ export default {
       type="button"
       :aria-label="$options.i18n.HIDE_COMMENTS"
       class="diff-notes-collapse js-diff-comment-avatar js-diff-comment-button"
-      @click="$emit('toggleLineDiscussions')"
+      @click="$emit('toggle-line-discussions')"
     >
       <gl-icon :size="12" name="collapse" />
     </button>
     <template v-else>
-      <span v-for="note in notesInGutter" :key="note.id" @click="$emit('toggleLineDiscussions')">
+      <span v-for="note in notesInGutter" :key="note.id" @click="$emit('toggle-line-discussions')">
         <user-avatar-image
           :img-src="note.author.avatar_url"
           :size="24"
@@ -96,7 +96,7 @@ export default {
         data-container="body"
         data-placement="top"
         role="button"
-        @click="$emit('toggleLineDiscussions')"
+        @click="$emit('toggle-line-discussions')"
         >+{{ moreCount }}</span
       >
     </template>

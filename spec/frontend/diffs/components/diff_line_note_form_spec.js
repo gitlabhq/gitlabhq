@@ -97,8 +97,8 @@ describe('DiffLineNoteForm', () => {
           }),
       );
 
-      findNoteForm().vm.$emit('cancelForm', true, true);
-      findNoteForm().vm.$emit('cancelForm', true, true);
+      findNoteForm().vm.$emit('cancel-form', true, true);
+      findNoteForm().vm.$emit('cancel-form', true, true);
 
       expect(confirmAction).toHaveBeenCalledTimes(1);
       finalizePromise();
@@ -110,7 +110,7 @@ describe('DiffLineNoteForm', () => {
       });
 
       it('should ask form confirmation and hide form for a line', async () => {
-        findNoteForm().vm.$emit('cancelForm', true, true);
+        findNoteForm().vm.$emit('cancel-form', true, true);
         await nextTick();
         expect(confirmAction).toHaveBeenCalled();
         await waitForPromises();
@@ -122,7 +122,7 @@ describe('DiffLineNoteForm', () => {
       });
 
       it('should clear the autosaved draft', async () => {
-        findNoteForm().vm.$emit('cancelForm', true, true);
+        findNoteForm().vm.$emit('cancel-form', true, true);
         await nextTick();
         expect(confirmAction).toHaveBeenCalled();
         await waitForPromises();
@@ -139,17 +139,17 @@ describe('DiffLineNoteForm', () => {
       });
 
       it('should ask for confirmation when shouldConfirm and isDirty passed as truthy', () => {
-        findNoteForm().vm.$emit('cancelForm', true, true);
+        findNoteForm().vm.$emit('cancel-form', true, true);
 
         expect(confirmAction).toHaveBeenCalled();
       });
 
       it('should not ask for confirmation when one of the params false', () => {
-        findNoteForm().vm.$emit('cancelForm', true, false);
+        findNoteForm().vm.$emit('cancel-form', true, false);
 
         expect(confirmAction).not.toHaveBeenCalled();
 
-        findNoteForm().vm.$emit('cancelForm', false, true);
+        findNoteForm().vm.$emit('cancel-form', false, true);
 
         expect(confirmAction).not.toHaveBeenCalled();
       });

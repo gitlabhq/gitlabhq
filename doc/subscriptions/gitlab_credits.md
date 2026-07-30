@@ -559,15 +559,16 @@ Prerequisites:
 
 1. Sign in to [Customers Portal](https://customers.gitlab.com/).
 1. On the subscription card, select **GitLab Credits dashboard**.
-1. In the **On-demand Credit Cap** panel, turn on the **Monthly On-demand Credits cap** toggle.
+1. Select **Spend controls**.
+1. In the **On-demand credit cap** panel, turn on the **Set on-demand credit cap** toggle.
 1. Enter the maximum number of on-demand GitLab Credits allowed per billing period.
-1. Select **Save**.
+1. Select **Save Changes**.
 
 If the cap is set below the currently reported total on-demand usage
 for the current billing period, the cap is considered reached immediately on
 the next enforcement check.
 
-To disable the cap, turn off the **Monthly On-demand Credits cap** toggle. When disabled,
+To disable the cap, turn off the **Set on-demand credit cap** toggle. When disabled,
 no subscription-level on-demand GitLab Credits cap is enforced, and behavior falls back to
 existing billing behavior.
 

@@ -8,6 +8,7 @@ import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { __ } from '~/locale';
 import { getHeadingsFromDOM } from '~/content_editor/services/table_of_contents_utils';
+import { scaleTablesForPrint, resetScrollForPrint } from '../utils/print_table_scale';
 import TableOfContents from './table_of_contents.vue';
 
 const TableOfContentsComponent = Vue.extend(TableOfContents);
@@ -32,8 +33,26 @@ export default {
   },
   mounted() {
     this.loadWikiContent();
+    window.addEventListener('beforeprint', this.onBeforePrint);
+    window.addEventListener('afterprint', this.onAfterPrint);
+  },
+  beforeDestroy() {
+    window.removeEventListener('beforeprint', this.onBeforePrint);
+    window.removeEventListener('afterprint', this.onAfterPrint);
   },
   methods: {
+    onBeforePrint() {
+      if (!this.$refs.content) return;
+
+      scaleTablesForPrint(this.$refs.content);
+      this.restoreTableScroll = resetScrollForPrint(this.$refs.content);
+    },
+    onAfterPrint() {
+      if (!this.restoreTableScroll) return;
+
+      this.restoreTableScroll();
+      this.restoreTableScroll = null;
+    },
     async renderHeadingsInSidebar() {
       const headings = getHeadingsFromDOM(this.$refs.content);
       if (!headings.length) return;

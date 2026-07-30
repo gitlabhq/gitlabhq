@@ -24,7 +24,7 @@ export default {
       required: true,
     },
   },
-  emits: ['showNewDiscussionForm'],
+  emits: ['show-new-discussion-form'],
   computed: {
     ...mapState(useNotes, {
       currentUser: 'getUserData',
@@ -46,7 +46,7 @@ export default {
       class="!gl-mt-0 gl-grow"
     />
     <slot v-else name="form">
-      <gl-button v-if="renderReplyPlaceholder" @click="$emit('showNewDiscussionForm')">
+      <gl-button v-if="renderReplyPlaceholder" @click="$emit('show-new-discussion-form')">
         {{ $options.i18n.START_THREAD }}
       </gl-button>
     </slot>

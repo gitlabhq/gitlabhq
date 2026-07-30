@@ -40105,6 +40105,26 @@ paths:
           nullable: true
         in: query
         example: '2019-03-15T08:00:00Z'
+      - name: merged_after
+        required: false
+        description: Returns merge requests merged on or after the given time. Expected
+          in ISO 8601 format.
+        schema:
+          type: string
+          format: date-time
+          nullable: true
+        in: query
+        example: '2019-03-15T08:00:00Z'
+      - name: merged_before
+        required: false
+        description: Returns merge requests merged on or before the given time. Expected
+          in ISO 8601 format.
+        schema:
+          type: string
+          format: date-time
+          nullable: true
+        in: query
+        example: '2019-03-15T08:00:00Z'
       - name: view
         required: false
         description: If simple, returns the `iid`, URL, title, description, and basic
@@ -40600,6 +40620,26 @@ paths:
       - name: updated_before
         required: false
         description: Returns merge requests updated on or before the given time. Expected
+          in ISO 8601 format.
+        schema:
+          type: string
+          format: date-time
+          nullable: true
+        in: query
+        example: '2019-03-15T08:00:00Z'
+      - name: merged_after
+        required: false
+        description: Returns merge requests merged on or after the given time. Expected
+          in ISO 8601 format.
+        schema:
+          type: string
+          format: date-time
+          nullable: true
+        in: query
+        example: '2019-03-15T08:00:00Z'
+      - name: merged_before
+        required: false
+        description: Returns merge requests merged on or before the given time. Expected
           in ISO 8601 format.
         schema:
           type: string
@@ -41294,6 +41334,26 @@ paths:
       - name: updated_before
         required: false
         description: Returns merge requests updated on or before the given time. Expected
+          in ISO 8601 format.
+        schema:
+          type: string
+          format: date-time
+          nullable: true
+        in: query
+        example: '2019-03-15T08:00:00Z'
+      - name: merged_after
+        required: false
+        description: Returns merge requests merged on or after the given time. Expected
+          in ISO 8601 format.
+        schema:
+          type: string
+          format: date-time
+          nullable: true
+        in: query
+        example: '2019-03-15T08:00:00Z'
+      - name: merged_before
+        required: false
+        description: Returns merge requests merged on or before the given time. Expected
           in ISO 8601 format.
         schema:
           type: string
@@ -58867,6 +58927,26 @@ paths:
       - name: updated_before
         required: false
         description: Returns merge requests updated on or before the given time. Expected
+          in ISO 8601 format.
+        schema:
+          type: string
+          format: date-time
+          nullable: true
+        in: query
+        example: '2019-03-15T08:00:00Z'
+      - name: merged_after
+        required: false
+        description: Returns merge requests merged on or after the given time. Expected
+          in ISO 8601 format.
+        schema:
+          type: string
+          format: date-time
+          nullable: true
+        in: query
+        example: '2019-03-15T08:00:00Z'
+      - name: merged_before
+        required: false
+        description: Returns merge requests merged on or before the given time. Expected
           in ISO 8601 format.
         schema:
           type: string

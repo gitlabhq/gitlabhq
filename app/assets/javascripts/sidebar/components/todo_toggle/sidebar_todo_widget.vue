@@ -131,6 +131,9 @@ export default {
     tootltipTitle() {
       return todoLabel(this.hasTodo);
     },
+    hasTodoStateText() {
+      return this.hasTodo ? 'true' : 'false';
+    },
   },
   methods: {
     toggleTodo() {
@@ -209,14 +212,12 @@ export default {
       :todo-count="todoCount"
       :disabled="isLoading"
       :is-icon-button="true"
+      :aria-pressed="hasTodoStateText"
+      :selected="hasTodo"
       class="hide-collapsed !gl-align-top"
       @click.stop.prevent="toggleTodo"
     >
-      <gl-animated-todo-icon
-        :is-on="hasTodo"
-        :class="{ '!gl-text-status-info': hasTodo }"
-        class="gl-button-icon"
-      />
+      <gl-animated-todo-icon :is-on="hasTodo" class="gl-button-icon" />
     </todo-button>
     <gl-button
       v-if="isClassicSidebar && !isMergeRequest"

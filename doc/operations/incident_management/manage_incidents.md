@@ -214,7 +214,7 @@ Changing the status has the following effects:
 
 - To **Acknowledged**: limits on-call pages based on the project's [escalation policy](escalation_policies.md).
 - To **Resolved**: silences all on-call pages for the incident.
-- From **Resolved** to **Triggered**: restarts the incident escalating.
+- From **Resolved** to **Triggered**: restarts the incident's escalation.
 
 For an [incident created from an alert](#from-an-alert), the alert status is independent and does not change when the incident status changes.
 

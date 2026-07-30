@@ -88117,9 +88117,6 @@ msgstr ""
 msgid "Who will be using GitLab?"
 msgstr ""
 
-msgid "Who will be using this GitLab subscription?"
-msgstr ""
-
 msgid "Who will be using this GitLab trial?"
 msgstr ""
 

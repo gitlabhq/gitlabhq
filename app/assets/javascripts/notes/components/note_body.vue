@@ -72,7 +72,7 @@ export default {
       default: false,
     },
   },
-  emits: ['cancelForm', 'handleFormUpdate'],
+  emits: ['cancel-form', 'handleFormUpdate'],
   computed: {
     ...mapState(useLegacyDiffs, ['suggestionCommitMessage']),
     ...mapState(useMrNotes, ['failedToLoadMetadata']),
@@ -175,7 +175,7 @@ export default {
       this.$emit('handleFormUpdate', { noteText, parentElement, callback, resolveDiscussion });
     },
     formCancelHandler(shouldConfirm, isDirty) {
-      this.$emit('cancelForm', { shouldConfirm, isDirty });
+      this.$emit('cancel-form', { shouldConfirm, isDirty });
     },
     applySuggestion({ suggestionId, flashContainer, callback = () => {}, message }) {
       const { discussion_id: discussionId, id: noteId } = this.note;
@@ -252,7 +252,7 @@ export default {
       :autosave-key="autosaveKey"
       :restore-from-autosave="restoreFromAutosave"
       @handleFormUpdate="handleFormUpdate"
-      @cancelForm="formCancelHandler"
+      @cancel-form="formCancelHandler"
     />
     <!-- eslint-disable vue/no-mutating-props -->
     <textarea

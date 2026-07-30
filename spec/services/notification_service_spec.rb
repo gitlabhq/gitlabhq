@@ -3987,22 +3987,23 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
 
   describe '#new_instance_access_request' do
     let_it_be(:user) { create(:user, :blocked_pending_approval) }
-    let_it_be(:admins) { create_list(:admin, 12, :with_sign_ins) }
+    let_it_be(:admins) { create_list(:admin, 3, :with_sign_ins) }
 
     subject { notification.new_instance_access_request(user) }
 
     before do
       reset_delivered_emails!
       stub_application_setting(require_admin_approval_after_user_signup: true)
+      stub_const('User::INSTANCE_ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT', 2)
     end
 
-    it 'sends notification only to a maximum of ten most recently active instance admins' do
-      ten_most_recently_active_instance_admins = User.admins.active.sort_by(&:current_sign_in_at).last(10)
+    it 'sends notification only to a maximum of most recently active instance admins, per the limit' do
+      most_recently_active_instance_admins = User.admins.active.sort_by(&:current_sign_in_at).last(2)
 
       subject
 
-      expect_delivery_jobs_count(10)
-      ten_most_recently_active_instance_admins.each do |admin|
+      expect_delivery_jobs_count(2)
+      most_recently_active_instance_admins.each do |admin|
         expect_enqueud_email(user, admin, mail: "instance_access_request_email")
       end
     end
@@ -4071,7 +4072,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
         end
       end
 
-      it_behaves_like 'sends access request notification to a max of ten, most recently active group owners' do
+      it_behaves_like 'sends access request notification limited to the most recently active group owners' do
         let(:group) { create(:group, :public) }
         let(:notification_trigger) { group.request_access(added_user) }
       end
@@ -4114,7 +4115,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
           end
         end
 
-        it_behaves_like 'sends access request notification to a max of ten, most recently active project maintainers' do
+        it_behaves_like 'sends access request notification limited to the most recently active project maintainers' do
           let(:notification_trigger) { project.request_access(added_user) }
         end
       end
@@ -4141,7 +4142,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
               end
             end
 
-            it_behaves_like 'sends access request notification to a max of ten, most recently active group owners' do
+            it_behaves_like 'sends access request notification limited to the most recently active group owners' do
               let(:group) { create(:group, :public) }
               let(:notification_trigger) { project.request_access(added_user) }
             end
@@ -4190,7 +4191,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
             end
           end
 
-          it_behaves_like 'sends access request notification to a max of ten, most recently active project maintainers' do
+          it_behaves_like 'sends access request notification limited to the most recently active project maintainers' do
             let(:project) { create(:project, :public, namespace: group) }
             let(:notification_trigger) { project.request_access(added_user) }
           end

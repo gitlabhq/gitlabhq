@@ -116,21 +116,21 @@ describe('DiffFileHeader component', () => {
     expect(findCollapseIconIsOn()).toBeUndefined();
   });
 
-  it('when header is clicked emits toggleFile', async () => {
+  it('when header is clicked emits toggle-file', async () => {
     createComponent();
     findHeader().trigger('click');
 
     await nextTick();
-    expect(wrapper.emitted().toggleFile).toBeDefined();
+    expect(wrapper.emitted()['toggle-file']).toBeDefined();
   });
 
-  it('when header is clicked it emits setFileActive', async () => {
+  it('when header is clicked it emits set-file-active', async () => {
     createComponent();
     findHeader().trigger('click');
 
     await nextTick();
 
-    expect(diffsEventHub.$emit).toHaveBeenCalledWith('setFileActive', 'xyz');
+    expect(diffsEventHub.$emit).toHaveBeenCalledWith('set-file-active', 'xyz');
   });
 
   it('when header is clicked it triggers the action that removes the value that forces a file to be uncollapsed', () => {
@@ -143,19 +143,19 @@ describe('DiffFileHeader component', () => {
     });
   });
 
-  it('when collapseIcon is clicked emits toggleFile', async () => {
+  it('when collapseIcon is clicked emits toggle-file', async () => {
     createComponent({ props: { collapsible: true } });
     findCollapseButton().vm.$emit('click', new Event('click'));
     await nextTick();
-    expect(wrapper.emitted().toggleFile).toBeDefined();
+    expect(wrapper.emitted()['toggle-file']).toBeDefined();
   });
 
-  it('when other element in header is clicked does not emits toggleFile', async () => {
+  it('when other element in header is clicked does not emits toggle-file', async () => {
     createComponent({ props: { collapsible: true } });
     findTitleLink().trigger('click');
 
     await nextTick();
-    expect(wrapper.emitted().toggleFile).not.toBeDefined();
+    expect(wrapper.emitted()['toggle-file']).not.toBeDefined();
   });
 
   describe('copy to clipboard', () => {
@@ -647,7 +647,7 @@ describe('DiffFileHeader component', () => {
 
         findReviewFileCheckbox().vm.$emit('change', status);
 
-        expect(Boolean(wrapper.emitted().toggleFile)).toBe(fires);
+        expect(Boolean(wrapper.emitted()['toggle-file'])).toBe(fires);
       },
     );
 
@@ -723,13 +723,13 @@ describe('DiffFileHeader component', () => {
       expect(findEditButton().props('item').href).toBe(existingEditPath);
     });
 
-    it('emits showForkMessage when button action is triggered', () => {
+    it('emits show-fork-message when button action is triggered', () => {
       createComponent(createProps({ canModifyBlob: false, canFork: true }));
 
       findEditButton().props('item').action();
 
       expect(findEditButton().props('item').href).toBeUndefined();
-      expect(wrapper.emitted('showForkMessage')).toStrictEqual([[]]);
+      expect(wrapper.emitted('show-fork-message')).toStrictEqual([[]]);
     });
   });
 });

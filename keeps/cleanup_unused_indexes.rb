@@ -103,22 +103,30 @@ module Keeps
 
     def build_change_for(index)
       return unless matches_filter_identifiers?([self.class.name.demodulize, index.schema, index.name])
-      return if keep_list.exempt?(index.schema, index.name)
-      return if foreign_key_indexes.include?(index.identifier)
 
-      entry = dictionary_entry(index.tablename)
-      gitlab_schema = entry&.gitlab_schema
-      return if gitlab_schema.blank?
+      if keep_list.exempt?(index.schema, index.name)
+        return log_decision(index, 'skipped', 'exempt via index_keep_list.yml')
+      end
+
+      return log_decision(index, 'skipped', 'supports a foreign key') if foreign_key_indexes.include?(index.identifier)
+
+      gitlab_schema = dictionary_entry(index.tablename).gitlab_schema
 
       cluster_type = cluster_mapper.for_schema(gitlab_schema)
-      return unless grafana_query.unused?(
+      unused = grafana_query.unused?(
         table: index.tablename,
         type: cluster_type,
         indexrelname: index.name
-      ) == true
+      )
+
+      return if unused == false
+
+      return log_decision(index, 'skipped', 'no usage signal from Mimir; skipping conservatively') if unused.nil?
 
       columns = columns_for(index)
-      return if columns.empty?
+
+      log_decision(index, 'selected',
+        "zero scans in the last #{MIMIR_LOOKBACK_DAYS}d on #{cluster_type}; proposing removal")
 
       change = ::Gitlab::Housekeeper::Change.new
       change.identifiers = [self.class.name.demodulize, index.schema, index.name]
@@ -128,6 +136,7 @@ module Keeps
         tablename: index.tablename,
         gitlab_schema: gitlab_schema,
         cluster_type: cluster_type,
+        checked_at: Time.current.utc.iso8601,
         definition: index.definition,
         columns: columns
       }
@@ -148,6 +157,14 @@ module Keeps
       end
     end
     # rubocop:enable CodeReuse/ActiveRecord
+
+    def log_decision(index, decision, reason)
+      @logger.puts(
+        "[CleanupUnusedIndexes] #{Time.current.utc.iso8601} " \
+          "Index \"#{index.name}\" on table \"#{index.tablename}\" was #{decision} with reason: #{reason}"
+      )
+      nil
+    end
 
     # Trailing index.name keeps ordering stable across runs when multiple
     # indexes share the same table_size weight.
@@ -183,8 +200,8 @@ module Keeps
         Remove the unused index `#{ctx[:schema]}.#{ctx[:name]}` on `#{ctx[:tablename]}`
         with `remove_concurrent_index_by_name`. The index reported **zero scans**
         over a #{MIMIR_LOOKBACK_DAYS}-day pre-filter window on the
-        `#{ctx[:cluster_type]}` Patroni cluster. Verify the 180-day chart below as
-        confirmation before merging.
+        `#{ctx[:cluster_type]}` Patroni cluster (query run at #{ctx[:checked_at]}).
+        Verify the 180-day chart below as confirmation before merging.
 
         Definition:
 

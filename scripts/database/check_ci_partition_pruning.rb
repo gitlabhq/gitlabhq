@@ -143,6 +143,7 @@ class CheckCiPartitionPruning
     MAX_PAGES = 20
     MAX_RETRIES = 2
     MAX_BACKOFF = 60 # seconds
+    MAX_BODY_BYTESIZE = 900_000 # a note is rejected if size > 1 MiB
 
     attr_reader :logger
 
@@ -282,8 +283,18 @@ class CheckCiPartitionPruning
       [delay, MAX_BACKOFF].min
     end
 
-    # The hidden fingerprints line lets a later run recognize offenders we already reported.
     def comment_body(offenders)
+      body = build_body(offenders, inline_full_queries: true)
+      return body if body.bytesize <= MAX_BODY_BYTESIZE
+
+      logger.info "Inlining the full queries would make the comment #{body.bytesize} bytes " \
+        "(limit #{MAX_BODY_BYTESIZE}); linking to the job log instead"
+
+      build_body(offenders, inline_full_queries: false)
+    end
+
+    # The hidden fingerprints line lets a later run recognize offenders we already reported.
+    def build_body(offenders, inline_full_queries:)
       singular = offenders.size == 1
       fingerprints = sorted_fingerprints(offenders).join(',')
 
@@ -294,9 +305,7 @@ class CheckCiPartitionPruning
         "| #{tables} | `#{offender['fingerprint']}` | #{offender['job_name']} | `#{escape_pipes(preview)}` |"
       end.join("\n")
 
-      query_rows = offenders.map do |offender|
-        "| `#{offender['fingerprint']}` | `#{escape_pipes(CheckCiPartitionPruning.normalized_sql(offender))}` |"
-      end.join("\n")
+      full_queries = inline_full_queries ? full_queries_section(offenders) : job_link_section
 
       resolution = RESOLUTION_OPTIONS.each_with_index.map do |option, index|
         "#{index + 1}. **#{option[:title]}**: #{option[:detail]}"
@@ -315,13 +324,7 @@ class CheckCiPartitionPruning
         |-------------------------------|-------------|-------------------|-------|
         #{rows}
 
-        <details><summary>Full queries</summary>
-
-        | Fingerprint | Query |
-        |-------------|-------|
-        #{query_rows}
-
-        </details>
+        #{full_queries}
 
         ### :tools: How to resolve
 
@@ -337,6 +340,30 @@ class CheckCiPartitionPruning
 
         <small>Something doesn't look right? Share your feedback: `gitlab.com/gitlab-org/gitlab/-/work_items/607056`</small>
       BODY
+    end
+
+    def full_queries_section(offenders)
+      query_rows = offenders.map do |offender|
+        "| `#{offender['fingerprint']}` | `#{escape_pipes(CheckCiPartitionPruning.normalized_sql(offender))}` |"
+      end.join("\n")
+
+      <<~SECTION.chomp
+        <details><summary>Full queries</summary>
+
+        | Fingerprint | Query |
+        |-------------|-------|
+        #{query_rows}
+
+        </details>
+      SECTION
+    end
+
+    def job_link_section
+      "The full queries are too large to include in this comment. See the [job log](#{job_url})."
+    end
+
+    def job_url
+      ENV.fetch('CI_JOB_URL', nil)
     end
 
     # Escape pipes so query text (e.g. the `||` concat operator) doesn't break the Markdown table.

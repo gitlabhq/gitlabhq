@@ -168,7 +168,7 @@ describe('Pipeline Editor | Commit section', () => {
     });
 
     it('emits an event to refetch the commit sha', () => {
-      expect(wrapper.emitted('updateCommitSha')).toHaveLength(1);
+      expect(wrapper.emitted('update-commit-sha')).toHaveLength(1);
     });
 
     it('shows no saving state', () => {
@@ -204,7 +204,7 @@ describe('Pipeline Editor | Commit section', () => {
     });
 
     it('does not emit an event to refetch the commit sha', () => {
-      expect(wrapper.emitted('updateCommitSha')).toBeUndefined();
+      expect(wrapper.emitted('update-commit-sha')).toBeUndefined();
     });
   });
 
@@ -275,8 +275,8 @@ describe('Pipeline Editor | Commit section', () => {
 
   it('sets listeners on commit form', () => {
     const handler = jest.fn();
-    createComponent({ options: { listeners: { resetContent: handler } } });
-    findCommitForm().vm.$emit('resetContent');
+    createComponent({ options: { listeners: { 'reset-content': handler } } });
+    findCommitForm().vm.$emit('reset-content');
     expect(handler).toHaveBeenCalled();
   });
 
@@ -348,8 +348,8 @@ describe('Pipeline Editor | Commit section', () => {
       await submitCommit();
 
       // Verify error event is emitted instead of commit success
-      expect(wrapper.emitted('showError')).toHaveLength(1);
-      expect(wrapper.emitted('showError')[0]).toEqual([
+      expect(wrapper.emitted('show-error')).toHaveLength(1);
+      expect(wrapper.emitted('show-error')[0]).toEqual([
         { type: 'COMMIT_FAILURE', reasons: [errorMessage] },
       ]);
 
@@ -400,8 +400,8 @@ describe('Pipeline Editor | Commit section', () => {
       await submitCommit();
 
       // Verify error event is emitted
-      expect(wrapper.emitted('showError')).toHaveLength(1);
-      expect(wrapper.emitted('showError')[0]).toEqual([
+      expect(wrapper.emitted('show-error')).toHaveLength(1);
+      expect(wrapper.emitted('show-error')[0]).toEqual([
         { type: 'COMMIT_FAILURE', reasons: ['Network error'] },
       ]);
 

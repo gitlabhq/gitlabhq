@@ -31,6 +31,52 @@ describe('infection scanner', () => {
       expect(detectAppRoot("import MyVue from 'vue'; new MyVue({ el: '#app' });")).toBe(true);
     });
 
+    it('detects initVueApp bootstraps', () => {
+      expect(
+        detectAppRoot(
+          "import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app'; initVueApp({ el: '#app' });",
+        ),
+      ).toBe(true);
+    });
+
+    it('detects initVueApp bootstraps that also import unmountVueApp', () => {
+      expect(
+        detectAppRoot(
+          "import { initVueApp, unmountVueApp } from '~/lib/utils/vue3compat/init_vue_app'; const vm = initVueApp({ el }); unmountVueApp(vm);",
+        ),
+      ).toBe(true);
+    });
+
+    it('detects initVueApp bootstraps that import Vue only for Vue.use', () => {
+      expect(
+        detectAppRoot(
+          "import Vue from 'vue'; import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app'; Vue.use(GlToast); initVueApp({ el });",
+        ),
+      ).toBe(true);
+    });
+
+    it('rejects initVueApp bootstraps whose Vue import is used beyond Vue.use', () => {
+      expect(
+        detectAppRoot(
+          "import Vue from 'vue'; import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app'; Vue.component('x', {}); initVueApp({ el });",
+        ),
+      ).toBe(false);
+    });
+
+    it('rejects files importing initVueApp without calling it', () => {
+      expect(
+        detectAppRoot("import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';"),
+      ).toBe(false);
+    });
+
+    it('defers to the classic checks when the file also imports vue', () => {
+      expect(
+        detectAppRoot(
+          "import { nextTick } from 'vue'; import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app'; initVueApp({ el });",
+        ),
+      ).toBe(false);
+    });
+
     it('rejects named imports from vue', () => {
       expect(detectAppRoot("import { computed } from 'vue';")).toBe(false);
     });

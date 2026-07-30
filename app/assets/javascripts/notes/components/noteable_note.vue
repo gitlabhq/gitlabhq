@@ -112,7 +112,7 @@ export default {
     },
   },
   emits: [
-    'cancelForm',
+    'cancel-form',
     'handleDeleteNote',
     'handleEdit',
     'handleUpdateNote',
@@ -142,7 +142,7 @@ export default {
         if (value) {
           this.$emit('handleEdit');
         } else {
-          this.$emit('cancelForm');
+          this.$emit('cancel-form');
         }
       },
     },
@@ -551,7 +551,7 @@ export default {
             :restore-from-autosave="restoreFromAutosave"
             :help-page-path="helpPagePath"
             @handleFormUpdate="formUpdateHandler"
-            @cancelForm="formCancelHandler"
+            @cancel-form="formCancelHandler"
           />
         </slot>
         <div class="timeline-discussion-body-footer">

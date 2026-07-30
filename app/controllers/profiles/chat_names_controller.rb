@@ -40,7 +40,7 @@ class Profiles::ChatNamesController < Profiles::ApplicationController
   end
 
   def destroy
-    @chat_name = chat_names.find(params[:id])
+    @chat_name = chat_names.find(params.permit(:id)[:id])
 
     if @chat_name.destroy
       flash[:notice] = safe_format(_("Deleted account nickname: %{chat_name}!"), chat_name: @chat_name.chat_name)
@@ -66,9 +66,10 @@ class Profiles::ChatNamesController < Profiles::ApplicationController
   end
 
   def chat_name_token
-    return render_404 unless params[:token] || render_404
+    token = params.permit(:token)[:token]
+    return render_404 unless token || render_404
 
-    @chat_name_token ||= Gitlab::ChatNameToken.new(params[:token])
+    @chat_name_token ||= Gitlab::ChatNameToken.new(token)
   end
 
   def chat_names

@@ -80,8 +80,8 @@ describe('Pipeline editor branch switcher', () => {
     });
 
     it('shows an error message', () => {
-      expect(wrapper.emitted('showError')).toBeDefined();
-      expect(wrapper.emitted('showError')[0]).toEqual([
+      expect(wrapper.emitted('show-error')).toBeDefined();
+      expect(wrapper.emitted('show-error')[0]).toEqual([
         {
           reasons: ['Unable to fetch branch list for this project.'],
           type: DEFAULT_FAILURE,

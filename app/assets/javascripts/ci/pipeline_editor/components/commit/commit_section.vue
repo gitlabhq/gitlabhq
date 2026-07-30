@@ -51,7 +51,7 @@ export default {
       default: false,
     },
   },
-  emits: ['showError', 'commit', 'updateCommitSha'],
+  emits: ['show-error', 'commit', 'update-commit-sha'],
   data() {
     return {
       isSaving: false,
@@ -104,7 +104,7 @@ export default {
         }
 
         if (errors?.length) {
-          this.$emit('showError', { type: COMMIT_FAILURE, reasons: errors });
+          this.$emit('show-error', { type: COMMIT_FAILURE, reasons: errors });
         } else {
           const params = openMergeRequest
             ? {
@@ -124,14 +124,14 @@ export default {
           this.updateCurrentBranch(sourceBranch);
 
           if (this.currentBranch === sourceBranch) {
-            this.$emit('updateCommitSha');
+            this.$emit('update-commit-sha');
           }
 
           // Reset commit message after successful commit
           this.$refs.commitForm.resetCommitMessage();
         }
       } catch (error) {
-        this.$emit('showError', { type: COMMIT_FAILURE, reasons: [error?.message] });
+        this.$emit('show-error', { type: COMMIT_FAILURE, reasons: [error?.message] });
       } finally {
         this.isSaving = false;
       }

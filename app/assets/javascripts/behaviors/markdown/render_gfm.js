@@ -9,6 +9,7 @@ import { renderJSONTable, renderJSONTableHTML } from './render_json_table';
 import { addAriaLabels } from './accessibility';
 import { renderImageLightbox } from './render_image_lightbox';
 import renderMarkdownTables from './render_markdown_tables';
+import markPrintScaleTables from './mark_print_scale_tables';
 import { GFM_POPOVER_SELECTOR } from './constants';
 
 function initPopovers(elements) {
@@ -60,6 +61,7 @@ export function renderGFM(element) {
   renderJSONTable(tableEls.map((e) => e.parentNode));
   renderJSONTableHTML(tableHTMLEls);
   renderMarkdownTables(mdTableEls);
+  markPrintScaleTables(mdTableEls);
   highlightCurrentUser(userEls);
   initPopovers(popoverEls);
   addAriaLabels(taskListCheckboxEls);

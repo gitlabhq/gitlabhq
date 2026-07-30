@@ -44,7 +44,7 @@ module SidebarsHelper
       search: search_data,
       panel_type: panel_type,
       shortcut_links: shortcut_links,
-      terms: terms_link
+      has_terms: Gitlab::CurrentSettings.terms.present?
     })
   end
 
@@ -420,10 +420,6 @@ module SidebarsHelper
     else
       []
     end
-  end
-
-  def terms_link
-    Gitlab::CurrentSettings.terms ? terms_path : nil
   end
 end
 

@@ -518,7 +518,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/services/requirements_management/process_test_reports_service_spec.rb'
     - 'ee/spec/services/timebox_report_service_spec.rb'
     - 'ee/spec/support_specs/stub_saas_features_spec.rb'
-    - 'ee/spec/tasks/gitlab/license_rake_spec.rb'
     - 'ee/spec/uploaders/every_gitlab_uploader_spec.rb'
     - 'ee/spec/validators/json_schema_validator_spec.rb'
     - 'ee/spec/validators/ldap_filter_validator_spec.rb'

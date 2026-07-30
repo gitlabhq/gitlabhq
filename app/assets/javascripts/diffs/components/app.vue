@@ -502,7 +502,7 @@ export default {
       notesEventHub.$on('noteFormStartReview', this.handleReviewTracking);
       diffsEventHub.$on('diffFilesModified', this.setDiscussions);
       diffsEventHub.$on('doneLoadingBatches', this.autoScroll);
-      diffsEventHub.$on('setFileActive', this.setFileActive);
+      diffsEventHub.$on('set-file-active', this.setFileActive);
       diffsEventHub.$on(EVT_MR_PREPARED, this.fetchData);
       diffsEventHub.$on(EVT_DISCUSSIONS_ASSIGNED, this.handleHash);
     },
@@ -516,7 +516,7 @@ export default {
       notesEventHub.$off('fetchedNotesData', this.rereadNoteHash);
       notesEventHub.$off('refetchDiffData', this.refetchDiffData);
       notesEventHub.$off('fetchDiffData', this.fetchData);
-      diffsEventHub.$off('setFileActive', this.setFileActive);
+      diffsEventHub.$off('set-file-active', this.setFileActive);
     },
     autoScroll() {
       const lineCode = window.location.hash;

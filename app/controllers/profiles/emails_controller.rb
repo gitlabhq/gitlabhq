@@ -55,7 +55,7 @@ class Profiles::EmailsController < Profiles::ApplicationController
   end
 
   def find_email
-    @email = current_user.emails.find(params[:id])
+    @email = current_user.emails.find(params.permit(:id)[:id])
   end
 end
 

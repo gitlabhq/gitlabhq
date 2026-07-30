@@ -176,6 +176,81 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Workflow do
     end
   end
 
+  describe '.session_url (private)' do
+    subject(:url) { workflow.send(:session_url, 12345) }
+
+    before do
+      allow(workflow).to receive_messages(gitlab_host: 'https://gitlab.com', catalog_project_path: 'gitlab-org/gitlab')
+    end
+
+    it 'builds the DAP agent-session deep link' do
+      expect(url).to eq('https://gitlab.com/gitlab-org/gitlab/-/automate/agent-sessions/12345')
+    end
+  end
+
+  describe '.start (private)' do
+    subject(:start) { workflow.send(:start, goal: 'goal', additional_context: [], principle: 'security') }
+
+    before do
+      allow(workflow).to receive_messages(
+        gitlab_host: 'https://gitlab.com',
+        catalog_project_path: 'gitlab-org/gitlab',
+        source_branch: 'master',
+        catalog_item_consumer_id: '7368818',
+        post_json: instance_double(Net::HTTPCreated, is_a?: true, body: { id: 12345 }.to_json)
+      )
+      stub_const('ENV', { Gitlab::PrinciplesDistiller::Env::GITLAB_TOKEN => 'token' })
+    end
+
+    it 'logs the workflow id/branch and the session URL in a single log line' do
+      output = capture_stdout { start }
+
+      expect(output).to include('workflow id=12345 (security) branch=master')
+      expect(output).to include('session: https://gitlab.com/gitlab-org/gitlab/-/automate/agent-sessions/12345')
+    end
+
+    def capture_stdout
+      original = $stdout
+      $stdout = StringIO.new
+      yield
+      $stdout.string
+    ensure
+      $stdout = original
+    end
+  end
+
+  describe '.poll timeout (private)' do
+    subject(:result) { workflow.send(:poll, 12345, principle: 'security') }
+
+    before do
+      allow(workflow).to receive_messages(gitlab_host: 'https://gitlab.com', catalog_project_path: 'gitlab-org/gitlab')
+      allow(workflow).to receive(:sleep)
+      allow(workflow).to receive(:fetch_workflow_node).and_return({ 'statusName' => 'RUNNING',
+        'humanStatus' => 'running' })
+      stub_const("#{described_class}::POLL_TIMEOUT_SECONDS", 0)
+    end
+
+    it 'warns with the timed-out message and the session URL' do
+      output = capture_stderr { result }
+
+      expect(output).to include('timed out after')
+      expect(output).to include('session: https://gitlab.com/gitlab-org/gitlab/-/automate/agent-sessions/12345')
+    end
+
+    it 'returns nil' do
+      expect(result).to be_nil
+    end
+
+    def capture_stderr
+      original = $stderr
+      $stderr = StringIO.new
+      yield
+      $stderr.string
+    ensure
+      $stderr = original
+    end
+  end
+
   describe '.sleep_with_heartbeat' do
     it 'sleeps in 60s chunks and emits remaining-time heartbeats' do
       log_lines = []

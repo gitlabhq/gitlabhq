@@ -193,7 +193,7 @@ RSpec.describe 'Container Registry', :js, feature_category: :container_registry 
     context 'when there are more than 20 images' do
       before do
         project.container_repositories << container_repository
-        create_list(:container_repository, 22, project: project)
+        create_list(:container_repository, 20, project: project)
 
         visit_container_registry
       end
@@ -210,7 +210,7 @@ RSpec.describe 'Container Registry', :js, feature_category: :container_registry 
     context 'when there are more than 10 images' do
       before do
         project.container_repositories << container_repository
-        create_list(:container_repository, 12, project: project)
+        create_list(:container_repository, 10, project: project)
 
         visit_container_registry
       end

@@ -48,9 +48,9 @@ docker logs [container_name]
 
 ## Performance issues
 
-If experiencing SSH connection issues or poor performance:
+If you experience SSH connection issues or poor performance:
 
-- Verify instance type meets minimum requirements (2 vCPU, 8 GB RAM).
+- Verify that the instance type meets minimum requirements (2 vCPU, 8 GB RAM).
 - Consider resizing to a larger instance type.
 - Check disk space and increase if needed.
 

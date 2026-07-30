@@ -136,7 +136,7 @@ The rate limit defaults to 600 calls per authenticated user. You can [configure 
 
 ### AI action
 
-There is a rate limit for the GraphQL `aiAction` mutation, which is enforced to prevent from abusing this endpoint.
+There is a rate limit for the GraphQL `aiAction` mutation, which is enforced to prevent abuse of this endpoint.
 
 The rate limit is 160 calls per 8 hours per authenticated user.
 
@@ -216,7 +216,7 @@ The rate limit is 1 triggered import per minute per user.
 ### Commit diff files
 
 This is a rate limit for expanded commit diff files (`/[group]/[project]/-/commit/[:sha]/diff_files?expanded=1`),
-which is enforced to prevent from abusing this endpoint.
+which is enforced to prevent abuse of this endpoint.
 
 The rate limit is 6 requests per minute per user (authenticated) or per IP address (unauthenticated).
 

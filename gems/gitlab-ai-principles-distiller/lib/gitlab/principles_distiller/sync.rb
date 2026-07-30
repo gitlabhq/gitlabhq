@@ -57,6 +57,13 @@ module Gitlab
       # repo path, since it renders as a clickable URL in the CI log.
       DUO_INSTRUCTIONS_DOC = 'https://docs.gitlab.com/development/documentation/ai-instruction-files-documentation/'
 
+      # A thematic break (`---`, `***`, or `___` alone on a line) is Markdown
+      # document scaffolding, not a rule, so `logical_units` treats it as a
+      # unit boundary rather than comparable baseline content (observed with
+      # testing-frontend-testing-hierarchy's `---` divider, job
+      # 15601793108).
+      THEMATIC_BREAK = /\A(?:-{3,}|\*{3,}|_{3,})\z/
+
       def self.run
         new.run
       end
@@ -564,6 +571,24 @@ module Gitlab
       # the agent may adapt heading levels and placement when integrating
       # baseline rules into an existing subsection.
       #
+      # Both sides of the comparison are scoped, not raw:
+      # - `baseline_rules` drops any preamble before the baseline's own
+      #   `## Checklist` heading (title, prerequisite blockquote, framing
+      #   prose, a `---` divider). That preamble is document scaffolding, not
+      #   a rule, and `Workflow#build_goal` explicitly instructs the agent to
+      #   emit "ONLY the checklist content" - comparing the full baseline
+      #   demanded text the prompt forbids producing, an unsatisfiable
+      #   guard (observed with testing-frontend-testing-hierarchy, job
+      #   15601793108). Most baselines have no `## Checklist` heading, so
+      #   this is a no-op for them.
+      # - `checklist_body` drops the `## Authoritative sources` footer that
+      #   `assemble_distilled_body` appends after this guard normally runs.
+      #   `content` here is the raw agent output, but the guard must still
+      #   tolerate a footer if the agent emits one anyway: a baseline path
+      #   that is also `sources:`-listed legitimately appears twice
+      #   otherwise, tripping the exactly-once check on the tool's own
+      #   output (observed with documentation-topics).
+      #
       # Returns the baseline units that are altered, missing, or duplicated
       # in `content` (empty when clean, when the principle has no baseline,
       # or when the baseline file is unreadable). Duplication matters because
@@ -576,8 +601,24 @@ module Gitlab
         baseline = manifest.read_repo_file(baseline_path)
         return [] unless baseline
 
-        occurrences = logical_units(content).tally
-        logical_units(baseline).reject { |unit| occurrences[unit] == 1 }
+        occurrences = logical_units(checklist_body(content)).tally
+        logical_units(baseline_rules(baseline)).reject { |unit| occurrences[unit] == 1 }
+      end
+
+      # Returns the rule-bearing portion of a baseline file: everything from
+      # its own `## Checklist` heading onward, or the whole file when no such
+      # heading exists (most baselines have none - they are already pure
+      # rule content with no title/prerequisite preamble).
+      def baseline_rules(baseline)
+        heading = baseline.index(/^##\s+Checklist\s*$/)
+        heading ? baseline[heading..] : baseline
+      end
+
+      # Returns `content` truncated before the `## Authoritative sources`
+      # footer, so a footer-listed path cannot be counted as a duplicate of
+      # the same path appearing in the checklist body.
+      def checklist_body(content)
+        content.split(/^##\s+Authoritative sources\s*$/, 2).first
       end
 
       # Splits markdown into logical units: each list item or paragraph is
@@ -596,6 +637,13 @@ module Gitlab
       # drift on byte-identical rule text and burned every retry (observed
       # with the database-fundamentals baseline). Rewording, omission, and
       # duplication still change the text itself and remain detected.
+      #
+      # A single trailing period is likewise stripped: the agent routinely
+      # appends one while rephrasing a baseline rule into a sentence, and
+      # that punctuation is presentation, not the rule's identity (observed
+      # across several baselines whose committed distilled form differs from
+      # the baseline only by a trailing "."). A reworded or truncated rule
+      # still differs by more than punctuation and remains detected.
       def logical_units(text)
         units = []
         current = nil
@@ -603,7 +651,7 @@ module Gitlab
         text.each_line do |raw|
           line = raw.strip
 
-          if line.empty? || line.start_with?('#')
+          if line.empty? || line.start_with?('#') || line.match?(THEMATIC_BREAK)
             units << current if current
             current = nil
           elsif current.nil? || line.match?(/\A(?:[-*+]|\d+[.)])\s/)
@@ -615,7 +663,7 @@ module Gitlab
         end
 
         units << current if current
-        units.map { |unit| unit.sub(/\A(?:[-*+]|\d+[.)])\s+/, '').gsub(/\s+/, ' ') }
+        units.map { |unit| unit.sub(/\A(?:[-*+]|\d+[.)])\s+/, '').gsub(/\s+/, ' ').delete_suffix('.') }
       end
 
       def warn_baseline_drift(name, drifted, attempt, log_warn)

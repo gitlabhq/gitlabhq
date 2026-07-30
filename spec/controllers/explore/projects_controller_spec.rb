@@ -82,15 +82,17 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
           expect(response).to render_template('topic', layout: :xml)
         end
 
-        describe 'when topic contains more than 20 projects' do
+        describe 'when topic contains more than the RSS entries limit of projects' do
           before do
-            create_list(:project, 22, :public, topics: [topic])
+            stub_const('Explore::ProjectsController::RSS_ENTRIES_LIMIT', 3)
+
+            create_list(:project, 4, :public, topics: [topic])
           end
 
-          it 'does not assigns more than 20 projects' do
+          it 'does not assigns more than the limit of projects' do
             get :topic, format: :atom, params: { topic_name: 'topic1' }
 
-            expect(assigns(:projects).count).to be(20)
+            expect(assigns(:projects).count).to be(3)
           end
         end
       end

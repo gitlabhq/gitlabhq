@@ -79,6 +79,7 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
 
   let(:allowed_no_work_needed_tables) do
     %w[
+      ai_settings
       bulk_import_batch_trackers
       bulk_import_configurations
       bulk_import_entities

@@ -980,6 +980,13 @@ RSpec.describe TodoService, feature_category: :notifications do
         expect(todo.reload).to be_done
       end
 
+      it 'marks build_failed todos as done for all users' do
+        todo = create(:todo, :build_failed, user: author, project: project, target: mentioned_mr, author: john_doe)
+        service.close_merge_request(mentioned_mr, john_doe)
+
+        expect(todo.reload).to be_done
+      end
+
       it 'does not mark todos with non-qualifying actions as done for other users' do
         todo = create(:todo, :mentioned, user: author, project: project, target: mentioned_mr, author: john_doe)
         service.close_merge_request(mentioned_mr, john_doe)
@@ -1027,6 +1034,13 @@ RSpec.describe TodoService, feature_category: :notifications do
 
       it 'marks added_approver todos as done for all users' do
         todo = create(:todo, action: Todo::ADDED_APPROVER, user: john_doe, project: project, target: mentioned_mr, author: author)
+        service.merge_merge_request(mentioned_mr, john_doe)
+
+        expect(todo.reload).to be_done
+      end
+
+      it 'marks build_failed todos as done for all users' do
+        todo = create(:todo, :build_failed, user: author, project: project, target: mentioned_mr, author: john_doe)
         service.merge_merge_request(mentioned_mr, john_doe)
 
         expect(todo.reload).to be_done
@@ -1571,18 +1585,27 @@ RSpec.describe TodoService, feature_category: :notifications do
     let_it_be_with_reload(:project) { create(:project, :public, group: group) }
 
     shared_examples 'member access request is raised' do
-      context 'when the source has more than 10 owners' do
-        it 'creates todos for 10 recently active source owners' do
-          users = create_list(:user, 12, :with_sign_ins)
-          users.each do |user|
-            source.add_owner(user)
-          end
-          ten_most_recently_active_source_owners = users.sort_by(&:last_sign_in_at).last(10)
-          excluded_source_owners = users - ten_most_recently_active_source_owners
+      shared_context 'with owners exceeding the access request approvers limit' do
+        before do
+          stub_const('Member::ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT', 2)
+        end
 
+        let_it_be(:users) { create_list(:user, 3, :with_sign_ins) }
+        let(:most_recently_active_source_owners) { users.sort_by(&:last_sign_in_at).last(2) }
+        let(:excluded_source_owners) { users - most_recently_active_source_owners }
+
+        before_all do
+          users.each { |user| source.add_owner(user) }
+        end
+      end
+
+      context 'when the source has more owners than ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT' do
+        include_context 'with owners exceeding the access request approvers limit'
+
+        it 'creates todos for the most recently active source owners, up to the limit' do
           service.create_member_access_request_todos(requester1)
 
-          ten_most_recently_active_source_owners.each do |owner|
+          most_recently_active_source_owners.each do |owner|
             expect(Todo.where(user: owner, target: source, action: Todo::MEMBER_ACCESS_REQUESTED, author: requester1.user).count).to eq 1
           end
 
@@ -1608,18 +1631,13 @@ RSpec.describe TodoService, feature_category: :notifications do
       end
 
       context 'when multiple access requests are raised' do
-        it 'creates todos for 10 recently active source owners for multiple requests' do
-          users = create_list(:user, 12, :with_sign_ins)
-          users.each do |user|
-            source.add_owner(user)
-          end
-          ten_most_recently_active_source_owners = users.sort_by(&:last_sign_in_at).last(10)
-          excluded_source_owners = users - ten_most_recently_active_source_owners
+        include_context 'with owners exceeding the access request approvers limit'
 
+        it 'creates todos for the most recently active source owners, up to the limit, for multiple requests' do
           service.create_member_access_request_todos(requester1)
           service.create_member_access_request_todos(requester2)
 
-          ten_most_recently_active_source_owners.each do |owner|
+          most_recently_active_source_owners.each do |owner|
             expect(Todo.where(user: owner, target: source, action: Todo::MEMBER_ACCESS_REQUESTED, author: requester1.user).count).to eq 1
             expect(Todo.where(user: owner, target: source, action: Todo::MEMBER_ACCESS_REQUESTED, author: requester2.user).count).to eq 1
           end

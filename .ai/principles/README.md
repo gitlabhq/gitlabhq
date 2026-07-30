@@ -363,3 +363,7 @@ Since the weekly schedule fires again the following week, no manual
 intervention is required — the system is self-healing over time. Failed
 runs leave the repository in a consistent state: no partial commits, no
 orphan branches, and the existing distilled files untouched.
+
+To inspect a failed or timed-out principle's agent session directly, check
+the job log: each triggered workflow logs a `session:` link
+(`.../-/automate/agent-sessions/<id>`) once, right after it's created.

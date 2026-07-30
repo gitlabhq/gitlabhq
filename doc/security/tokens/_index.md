@@ -80,7 +80,7 @@ For example:
 - Set standardized capitalization and punctuation rules. Using consistent capitalization and separators makes
   it easier to read and search for tokens. For example, using hyphens (-) over underscores (_).
 - Use the description field. The token description field allows you to add additional details such as links
-  to related issues or names of team that uses the token.
+  to related issues or the name of the team that uses the token.
 
 ### Tokens in CI/CD
 

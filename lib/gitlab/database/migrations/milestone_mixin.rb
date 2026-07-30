@@ -21,8 +21,8 @@ module Gitlab
 
         def type_from_path(path)
           dir = File.dirname(path)
-          return :post if dir.match?(%r{db/(\w+/)?post_migrate})
-          return :regular if dir.match?(%r{db/(\w+/)?migrate})
+          return :post if dir.match?(POST_DEPLOYMENT_PATH_REGEX)
+          return :regular if dir.match?(REGULAR_PATH_REGEX)
 
           raise 'unknown migration path'
         end

@@ -76,6 +76,12 @@ module API
         optional :updated_before, type: DateTime,
           desc: 'Returns merge requests updated on or before the given time. Expected in ISO 8601 format.',
           documentation: { example: '2019-03-15T08:00:00Z' }
+        optional :merged_after, type: DateTime,
+          desc: 'Returns merge requests merged on or after the given time. Expected in ISO 8601 format.',
+          documentation: { example: '2019-03-15T08:00:00Z' }
+        optional :merged_before, type: DateTime,
+          desc: 'Returns merge requests merged on or before the given time. Expected in ISO 8601 format.',
+          documentation: { example: '2019-03-15T08:00:00Z' }
         optional :view, type: String,
           values: %w[simple],
           desc: 'If simple, returns the `iid`, URL, title, description, and basic state of merge request'

@@ -123,8 +123,8 @@ Most teams are seeing their first traces within 5-10 minutes of enabling the fea
 
 ### Compliance and audit trails
 
-The integration creates comprehensive audit trails that link code changes to system behavior,
-valuable for compliance requirements and post-incident analysis.
+The integration creates comprehensive audit trails that link code changes to system behavior.
+These trails are valuable for compliance requirements and post-incident analysis.
 
 ## Learn more
 

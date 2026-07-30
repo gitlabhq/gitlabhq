@@ -11061,6 +11061,29 @@
           "possibleTypes": null
         },
         {
+          "kind": "ENUM",
+          "name": "AiBackgroundToolPermission",
+          "description": "Permission mode for an AI tool on the background-flow surface. `ask` is not available because no human is present to approve on a background flow.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "ALLOW",
+              "description": "Tool is always allowed to run without approval.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "DENY",
+              "description": "Tool is always blocked from running.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
           "kind": "OBJECT",
           "name": "AiCatalogAgent",
           "description": "An AI catalog agent",
@@ -25691,6 +25714,18 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "backgroundAccess",
+              "description": "Permission mode for the background-flow surface. Null means no rule is set and the value falls back to the default privileged group. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "AiBackgroundToolPermission",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
             },
             {
               "name": "category",
@@ -55071,6 +55106,18 @@
               "defaultValue": null,
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "backgroundAccess",
+              "description": "Permission mode for the background-flow surface. Omitting the field sets it to null, clearing any existing value. Introduced in GitLab 19.3: Status: Experiment.",
+              "type": {
+                "kind": "ENUM",
+                "name": "AiBackgroundToolPermission",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
             }
           ],
           "interfaces": null,
@@ -388024,6 +388071,18 @@
               "defaultValue": null,
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "backgroundAccess",
+              "description": "Permission mode for the background-flow surface. Introduced in GitLab 19.3: Status: Experiment.",
+              "type": {
+                "kind": "ENUM",
+                "name": "AiBackgroundToolPermission",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
             },
             {
               "name": "fullPath",

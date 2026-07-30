@@ -3124,4 +3124,41 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
       end
     end
   end
+
+  describe '#latest_terms' do
+    it 'returns the latest terms' do
+      terms = create(:term)
+
+      expect(setting.latest_terms).to eq(terms)
+    end
+
+    it 'memoizes the terms and does not re-query on subsequent calls', :aggregate_failures do
+      create(:term)
+
+      setting.latest_terms
+
+      expect(ApplicationSetting::Term).not_to receive(:latest)
+      expect { setting.latest_terms }.not_to exceed_query_limit(0)
+    end
+
+    it 'memoizes the absence of terms and does not re-query on subsequent calls', :aggregate_failures do
+      setting.latest_terms
+
+      expect(ApplicationSetting::Term).not_to receive(:latest)
+      expect(setting.latest_terms).to be_nil
+    end
+  end
+
+  describe '#reset_memoized_terms', :aggregate_failures do
+    it 're-reads the terms after they change' do
+      first_terms = create(:term)
+      expect(setting.latest_terms).to eq(first_terms)
+
+      newer_terms = create(:term)
+
+      setting.reset_memoized_terms
+
+      expect(setting.latest_terms).to eq(newer_terms)
+    end
+  end
 end

@@ -48,7 +48,7 @@ export default {
       required: true,
     },
   },
-  emits: ['updateCiConfig', 'switch-drawer'],
+  emits: ['update-ci-config', 'switch-drawer'],
   data() {
     return {
       isNameValid: true,
@@ -115,7 +115,7 @@ export default {
       }
 
       const newJobString = this.generateYmlString();
-      this.$emit('updateCiConfig', `${this.ciFileContent}\n${newJobString}`);
+      this.$emit('update-ci-config', `${this.ciFileContent}\n${newJobString}`);
       eventHub.$emit(SCROLL_EDITOR_TO_BOTTOM);
 
       this.closeDrawer();

@@ -695,22 +695,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
           }
       end
     end
-
-    context 'when ci_observe_pipelines_finished is disabled' do
-      before do
-        stub_feature_flags(ci_observe_pipelines_finished: false)
-      end
-
-      it 'does not emit the metrics' do
-        expect(time_to_finished_histogram).not_to receive(:observe)
-        expect(Labkit::UserExperienceSli).not_to receive(:observed)
-
-        expect { pipeline.succeed }
-          .not_to change {
-            finished_counter.get(source: pipeline.source, status: 'success', partition_id: pipeline.partition_id)
-          }
-      end
-    end
   end
 
   describe '#set_status' do

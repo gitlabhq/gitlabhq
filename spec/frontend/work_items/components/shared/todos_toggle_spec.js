@@ -91,7 +91,7 @@ describe('WorkItemTodo component', () => {
     expect(findTodoWidget().exists()).toBe(true);
     expect(findAnimatedTodoIcon().attributes('name')).toEqual(TODO_ADD_ICON);
     expect(findAnimatedTodoIcon().props('isOn')).toBe(false);
-    expect(findAnimatedTodoIcon().classes('!gl-text-status-info')).toBe(false);
+    expect(findTodoWidget().props('selected')).toBe(false);
     expect(findTodoWidget().props('category')).toBe('tertiary');
   });
 
@@ -109,7 +109,7 @@ describe('WorkItemTodo component', () => {
     it('renders the mark to-do items done button', () => {
       expect(findAnimatedTodoIcon().attributes('name')).toEqual(TODO_DONE_ICON);
       expect(findAnimatedTodoIcon().props('isOn')).toBe(true);
-      expect(findAnimatedTodoIcon().classes('!gl-text-status-info')).toBe(true);
+      expect(findTodoWidget().props('selected')).toBe(true);
     });
 
     it('calls the mark all done mutation on toggle', async () => {

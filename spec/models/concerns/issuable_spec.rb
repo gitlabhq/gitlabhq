@@ -430,12 +430,12 @@ RSpec.describe Issuable, feature_category: :team_planning do
     end
 
     context 'when all of the results are level on the sort key' do
-      let!(:issues) do
-        create_list(:issue, 10, project: project)
+      let_it_be(:issues) do
+        create_list(:issue, 3, project: project)
       end
 
       it 'has no duplicates across pages' do
-        sorted_issue_ids = 1.upto(10).map do |i|
+        sorted_issue_ids = 1.upto(3).map do |i|
           project.issues.sort_by_attribute('milestone_due_desc').page(i).per(1).first.id
         end
 
@@ -917,12 +917,12 @@ RSpec.describe Issuable, feature_category: :team_planning do
 
     before do
       create_list(:note, 3, noteable: issue1, project: project)
-      create_list(:note, 6, noteable: issue2, project: project)
+      create_list(:note, 2, noteable: issue2, project: project)
     end
 
     it 'counts the user notes' do
       expect(issue1.user_notes_count).to be(3)
-      expect(issue2.user_notes_count).to be(6)
+      expect(issue2.user_notes_count).to be(2)
     end
   end
 

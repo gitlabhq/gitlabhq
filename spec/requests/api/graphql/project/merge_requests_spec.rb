@@ -64,8 +64,8 @@ RSpec.describe 'getting merge request listings nested in a project', feature_cat
     end
 
     before do
-      # create AI Setting singleton record to prevent N+1
-      Ai::Setting.instance if Gitlab.ee?
+      # create the AI settings row up front to prevent N+1
+      Ai::Setting.for_organization(project.organization) if Gitlab.ee?
 
       post_graphql(query, current_user: current_user)
     end

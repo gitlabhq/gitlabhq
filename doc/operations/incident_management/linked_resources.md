@@ -16,7 +16,7 @@ title: Linked resources in incidents
 To help your team members find the important links without having to search through many comments,
 you can add linked resources to an incident issue.
 
-Resources you might want link to:
+Resources you might want to link to:
 
 - The incident Slack channel
 - Zoom meeting

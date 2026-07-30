@@ -409,7 +409,7 @@ describe('Pipeline editor app component', () => {
         });
 
         it('polls for commit sha while pipeline data is not yet available for current branch', async () => {
-          findEditorHome().vm.$emit('updateCommitSha');
+          findEditorHome().vm.$emit('update-commit-sha');
           await waitForPromises();
 
           expect(mockLatestCommitShaQuery).toHaveBeenCalledTimes(2);
@@ -419,14 +419,14 @@ describe('Pipeline editor app component', () => {
           mockLatestCommitShaQuery.mockResolvedValue(mockCommitShaResults);
           await waitForPromises();
 
-          await findEditorHome().vm.$emit('updateCommitSha');
+          await findEditorHome().vm.$emit('update-commit-sha');
 
           expect(mockLatestCommitShaQuery).toHaveBeenCalledTimes(2);
         });
 
         it('stops polling for commit sha when pipeline data is available for current branch', async () => {
           mockLatestCommitShaQuery.mockResolvedValue(mockNewCommitShaResults);
-          findEditorHome().vm.$emit('updateCommitSha');
+          findEditorHome().vm.$emit('update-commit-sha');
           await waitForPromises();
 
           expect(mockLatestCommitShaQuery).toHaveBeenCalledTimes(2);
@@ -481,7 +481,7 @@ describe('Pipeline editor app component', () => {
         beforeEach(async () => {
           await createComponentWithApollo({ stubs: { PipelineEditorMessages } });
 
-          findEditorHome().vm.$emit('showError', {
+          findEditorHome().vm.$emit('show-error', {
             type: COMMIT_FAILURE,
             reasons: commitFailedReasons,
           });
@@ -504,7 +504,7 @@ describe('Pipeline editor app component', () => {
         beforeEach(async () => {
           await createComponentWithApollo({ stubs: { PipelineEditorMessages } });
 
-          findEditorHome().vm.$emit('showError', {
+          findEditorHome().vm.$emit('show-error', {
             type: COMMIT_FAILURE,
             reasons: unknownReasons,
           });

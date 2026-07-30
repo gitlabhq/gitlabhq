@@ -695,12 +695,13 @@ module ApplicationSettingImplementation
 
   delegate :terms, to: :latest_terms, allow_nil: true
   def latest_terms
-    @latest_terms ||= ApplicationSetting::Term.latest
+    strong_memoize(:latest_terms) do
+      ApplicationSetting::Term.latest
+    end
   end
 
   def reset_memoized_terms
-    @latest_terms = nil # rubocop:disable Gitlab/ModuleWithInstanceVariables
-    latest_terms
+    clear_memoization(:latest_terms)
   end
 
   def archive_builds_older_than

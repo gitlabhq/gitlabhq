@@ -104,8 +104,22 @@ export default {
 };
 </script>
 <template>
-  <div :data-sticky-header="isSticky || null" :class="isSticky ? $options.stickyHeaderClasses : ''">
-    <table class="!gl-my-0 gl-min-w-full gl-overflow-y-hidden">
+  <!--
+    Print scale-to-fit (wikis/utils/print_table_scale.js) measures
+    `[data-print-scale-target]` against `[data-print-scale-container]`, which
+    should be the element that scrolls on screen; when sticky headers are enabled,
+    this is the wrapper, otherwise it's the table itself.
+  -->
+  <div
+    :data-sticky-header="isSticky || null"
+    :data-print-scale-container="isSticky || null"
+    :class="isSticky ? $options.stickyHeaderClasses : ''"
+  >
+    <table
+      class="!gl-my-0 gl-min-w-full gl-overflow-y-hidden"
+      data-print-scale-target
+      :data-print-scale-container="isSticky ? null : ''"
+    >
       <thead>
         <tr>
           <th

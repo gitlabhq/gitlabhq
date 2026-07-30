@@ -48,7 +48,7 @@ to configure the `max_login_attempts` and `failed_login_attempts_unlock_period_i
 
 {{< /details >}}
 
-Prerequisites
+Prerequisites:
 
 - Administrator access on the instance.
 

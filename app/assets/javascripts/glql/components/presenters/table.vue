@@ -57,8 +57,8 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-table-shadow">
-    <table class="!gl-my-0 gl-min-w-full gl-overflow-y-hidden">
+  <div class="gl-table-shadow" data-print-scale-container>
+    <table class="!gl-my-0 gl-min-w-full gl-overflow-y-hidden" data-print-scale-target>
       <thead class="!gl-border-b gl-text-sm">
         <tr>
           <th-resizable

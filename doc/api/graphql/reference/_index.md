@@ -17288,6 +17288,7 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mutation-updateaitoolrule-backgroundaccess"></a>`backgroundAccess` {{< icon name="warning-solid" >}} | [`AiBackgroundToolPermission`](#aibackgroundtoolpermission) | Introduced in GitLab 19.3. Status: Experiment. Permission mode for the background-flow surface. |
 | <a id="mutation-updateaitoolrule-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-updateaitoolrule-fullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the root namespace to update the tool rule for. |
 | <a id="mutation-updateaitoolrule-localaccess"></a>`localAccess` | [`AiToolPermission`](#aitoolpermission) | Permission mode for local or IDE surface. |
@@ -33568,6 +33569,7 @@ Fields:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="aitoolrule-actiontype"></a>`actionType` | [`AiToolActionType!`](#aitoolactiontype) | Action type categorisation for the tool. |
+| <a id="aitoolrule-backgroundaccess"></a>`backgroundAccess` {{< icon name="warning-solid" >}} | [`AiBackgroundToolPermission`](#aibackgroundtoolpermission) | Introduced in GitLab 19.3. Status: Experiment. Permission mode for the background-flow surface. Null means no rule is set and the value falls back to the default privileged group. |
 | <a id="aitoolrule-category"></a>`category` | [`String!`](#string) | Display category for the tool. For example, GitLab Read, Files, and Commands. |
 | <a id="aitoolrule-id"></a>`id` | [`ID!`](#id) | Tool name. Used as stable identifier. Always the tool name string and never a database ID. |
 | <a id="aitoolrule-localaccess"></a>`localAccess` | [`AiToolPermission`](#aitoolpermission) | Permission mode for local or IDE surface. Null means no rule is set and the value falls back to the default privileged group. |
@@ -64062,6 +64064,15 @@ The category of the additional context.
 | <a id="aiadditionalcontextcategory-terminal"></a>`TERMINAL` | Terminal content category. |
 | <a id="aiadditionalcontextcategory-user_rule"></a>`USER_RULE` | User_rule content category. |
 
+### `AiBackgroundToolPermission`
+
+Permission mode for an AI tool on the background-flow surface. `ask` is not available because no human is present to approve on a background flow.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="aibackgroundtoolpermission-allow"></a>`ALLOW` | Tool is always allowed to run without approval. |
+| <a id="aibackgroundtoolpermission-deny"></a>`DENY` | Tool is always blocked from running. |
+
 ### `AiCatalogFlowConfigType`
 
 Possible flow configuration types for AI Catalog agents.
@@ -73861,6 +73872,7 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="bulktoolruleinput-backgroundaccess"></a>`backgroundAccess` {{< icon name="warning-solid" >}} | [`AiBackgroundToolPermission`](#aibackgroundtoolpermission) | Introduced in GitLab 19.3. Status: Experiment. Permission mode for the background-flow surface. Omitting the field sets it to null, clearing any existing value. |
 | <a id="bulktoolruleinput-localaccess"></a>`localAccess` | [`AiToolPermission`](#aitoolpermission) | Permission mode for local or IDE surface. Omitting the field sets it to null, clearing any existing value. |
 | <a id="bulktoolruleinput-toolid"></a>`toolId` | [`String!`](#string) | Tool name string identifying the tool to update. For example, "create_issue". |
 | <a id="bulktoolruleinput-webaccess"></a>`webAccess` | [`AiToolPermission`](#aitoolpermission) | Permission mode for web surface. Omitting the field sets it to null, clearing any existing value. |

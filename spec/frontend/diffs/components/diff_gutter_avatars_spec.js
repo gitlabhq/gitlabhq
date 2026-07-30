@@ -34,11 +34,11 @@ describe('DiffGutterAvatars', () => {
       expect(findCollapseButton().exists()).toBe(true);
     });
 
-    it('should emit toggleDiscussions event on button click', async () => {
+    it('should emit toggle-line-discussions event on button click', async () => {
       findCollapseButton().trigger('click');
 
       await nextTick();
-      expect(wrapper.emitted().toggleLineDiscussions).toBeDefined();
+      expect(wrapper.emitted()['toggle-line-discussions']).toBeDefined();
     });
 
     it('renders the proper title and aria-label', () => {
@@ -73,18 +73,18 @@ describe('DiffGutterAvatars', () => {
       expect(findMoreCount().text()).toBe('+2');
     });
 
-    it('should emit toggleDiscussions event on avatars click', async () => {
+    it('should emit toggle-line-discussions event on avatars click', async () => {
       findUserAvatars().at(0).element.parentElement.click();
 
       await nextTick();
-      expect(wrapper.emitted().toggleLineDiscussions).toBeDefined();
+      expect(wrapper.emitted()['toggle-line-discussions']).toBeDefined();
     });
 
-    it('should emit toggleDiscussions event on more count text click', async () => {
+    it('should emit toggle-line-discussions event on more count text click', async () => {
       findMoreCount().trigger('click');
 
       await nextTick();
-      expect(wrapper.emitted().toggleLineDiscussions).toBeDefined();
+      expect(wrapper.emitted()['toggle-line-discussions']).toBeDefined();
     });
   });
 

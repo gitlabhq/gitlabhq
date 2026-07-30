@@ -530,8 +530,8 @@ export default {
           '!gl-border-0': file.conflict_type || isCollapsed,
         },
       ]"
-      @toggleFile="handleToggle({ viaUserInteraction: true })"
-      @showForkMessage="showForkMessage"
+      @toggle-file="handleToggle({ viaUserInteraction: true })"
+      @show-fork-message="showForkMessage"
     />
 
     <div
@@ -596,7 +596,7 @@ export default {
               data-testid="file-note-form"
               @handleFormUpdate="handleSaveNote"
               @handleFormUpdateAddToReview="handleSaveDraftNote"
-              @cancelForm="handleFileCommentCancel"
+              @cancel-form="handleFileCommentCancel"
             />
           </div>
         </div>
