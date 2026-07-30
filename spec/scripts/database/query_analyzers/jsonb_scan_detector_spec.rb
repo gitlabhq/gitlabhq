@@ -26,7 +26,7 @@ RSpec.describe Database::QueryAnalyzers::JSONBScanDetector, feature_category: :d
 
   subject(:analyzer) { described_class.new(config) }
 
-  it "initalizes" do
+  it "initializes" do
     expect { analyzer }.not_to raise_error
   end
 

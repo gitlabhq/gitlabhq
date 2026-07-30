@@ -22081,6 +22081,168 @@
         },
         {
           "kind": "OBJECT",
+          "name": "AiGovernanceKpi",
+          "description": "Aggregated KPI for the AI governance dashboard.",
+          "fields": [
+            {
+              "name": "count",
+              "description": "Count in the selected timeframe.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "previousCount",
+              "description": "Count in the preceding timeframe of equal length.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "trend",
+              "description": "Bucketed counts across the selected timeframe.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "AiGovernanceKpiTrendPoint",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "AiGovernanceKpiTrendPoint",
+          "description": "Single bucket of an AI governance KPI trend series.",
+          "fields": [
+            {
+              "name": "bucketStart",
+              "description": "Timestamp of the start of the bucket.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Time",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "count",
+              "description": "Count of items in the bucket.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "AiGovernanceMetrics",
+          "description": "Aggregated AI governance dashboard metrics.",
+          "fields": [
+            {
+              "name": "agents",
+              "description": "Distinct AI agents with sessions in the timeframe.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "AiGovernanceKpi",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "sessions",
+              "description": "AI agent sessions in the timeframe.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "AiGovernanceKpi",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "AiGovernanceMetricsTimeframe",
+          "description": "Time window for AI governance dashboard metrics.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "LAST_24_HOURS",
+              "description": "Last 24 hours, bucketed hourly.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "LAST_7_DAYS",
+              "description": "Last 7 days, bucketed daily.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "LAST_30_DAYS",
+              "description": "Last 30 days, bucketed daily.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
           "name": "AiInstanceUsageData",
           "description": "Instance wide usage data for events stored in either PostgreSQL (default) or ClickHouse (when configured). Data retention: three months in PostgreSQL, indefinite in ClickHouse. Premium and Ultimate only.",
           "fields": [
@@ -164424,6 +164586,31 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.0."
             },
             {
+              "name": "aiGovernanceMetrics",
+              "description": "Aggregated AI governance dashboard metrics. Returns null when the `ai_governance_dashboard` feature flag is disabled. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [
+                {
+                  "name": "timeframe",
+                  "description": "Time window for the metrics. Defaults to LAST_7_DAYS.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "AiGovernanceMetricsTimeframe",
+                    "ofType": null
+                  },
+                  "defaultValue": "LAST_7_DAYS",
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "AiGovernanceMetrics",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
               "name": "aiMetrics",
               "description": "AI-related metrics. Introduced in GitLab 16.11: Status: Experiment.",
               "args": [
@@ -303440,6 +303627,31 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 18.3."
+            },
+            {
+              "name": "aiGovernanceMetrics",
+              "description": "Aggregated AI governance dashboard metrics. Returns null when the `ai_governance_dashboard` feature flag is disabled. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [
+                {
+                  "name": "timeframe",
+                  "description": "Time window for the metrics. Defaults to LAST_7_DAYS.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "AiGovernanceMetricsTimeframe",
+                    "ofType": null
+                  },
+                  "defaultValue": "LAST_7_DAYS",
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "AiGovernanceMetrics",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
             },
             {
               "name": "aiMetrics",

@@ -82,7 +82,7 @@ export default {
           :group-blobs-list-items="groupBlobsListItems"
           :linked-file-path="linkedFilePath"
           @click-file="clickFile"
-          @toggleFolder="toggleFolder"
+          @toggle-folder="toggleFolder"
         />
       </template>
     </gl-drawer>

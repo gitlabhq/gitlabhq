@@ -662,11 +662,11 @@ describe('diffs/components/app', () => {
         expect(store.goToFile).toHaveBeenCalledWith({ path: file.path });
       });
 
-      it('should handle toggleFolder events', () => {
+      it('should handle toggle-folder events', () => {
         const file = { path: '111.js' };
         useFileBrowser().tree = [{ type: 'blob', fileHash: '111', path: '111.js' }];
         createComponent();
-        wrapper.findComponent(DiffsFileTree).vm.$emit('toggleFolder', file);
+        wrapper.findComponent(DiffsFileTree).vm.$emit('toggle-folder', file);
         expect(useFileBrowser().toggleTreeOpen).toHaveBeenCalledWith(file);
       });
     });

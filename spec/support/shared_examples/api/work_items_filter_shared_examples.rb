@@ -98,6 +98,42 @@ RSpec.shared_examples 'work item listing filters' do
       end
     end
 
+    context 'with work_item_type_names filter' do
+      let(:params) { { work_item_type_names: 'Task' } }
+
+      before do
+        work_item_1.update!(work_item_type: task_type)
+      end
+
+      it_behaves_like 'contains only matching work items'
+    end
+
+    context 'with work_item_type_names filter (case-insensitive)' do
+      let(:params) { { work_item_type_names: 'task' } }
+
+      before do
+        work_item_1.update!(work_item_type: task_type)
+      end
+
+      it_behaves_like 'contains only matching work items'
+    end
+
+    context 'with negated work_item_type_names filter' do
+      let(:params) { { not: { work_item_type_names: 'Task' } } }
+
+      before do
+        work_item_1.update!(work_item_type: task_type)
+      end
+
+      it 'excludes work items of the given type name and keeps the rest', :aggregate_failures do
+        get api(api_request_path, user), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.pluck('id')).not_to include(work_item_1.id)
+        expect(json_response.pluck('id')).to include(work_item_2.id)
+      end
+    end
+
     context 'with author_username filter' do
       let(:params) { { author_username: user.username } }
 
@@ -447,6 +483,8 @@ RSpec.shared_examples 'work item listing filters' do
           [lazy { { milestone_title: 'v1.0', milestone_wildcard_id: 'None' } }],
           [lazy { { release_tag: 'v1.0', release_tag_wildcard_id: 'None' } }],
           [lazy { { parent_ids: '1', parent_wildcard_id: 'None' } }],
+          [lazy { { work_item_type_ids: '1', work_item_type_names: 'Task' } }],
+          [lazy { { not: { work_item_type_ids: '1', work_item_type_names: 'Task' } } }],
           [lazy { { not: { milestone_title: 'v1.0', milestone_wildcard_id: 'Started' } } }]
         ]
       end

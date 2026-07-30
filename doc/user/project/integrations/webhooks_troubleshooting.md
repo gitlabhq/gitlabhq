@@ -146,3 +146,22 @@ As a workaround, wrap fields in quotes, or upgrade to GitLab 18.11 or later. For
 Quoted fields produce string values instead of numeric values. If this is
 incompatible with your webhook and you need to make changes to it, upgrading
 is recommended.
+
+## Duplicate deployment failure alerts after a rejection
+
+When a deployment to a [protected environment](../../../ci/environments/deployment_approvals.md)
+is rejected, GitLab sends a `status: "rejected"` webhook, followed by a
+`status: "failed"` webhook for the same `deployment_id` when the deployment
+job is dropped. The `failed` event is the existing lifecycle event and does
+not include approval fields, so a receiver that alerts on `status: "failed"`
+might raise a duplicate alert for a deployment that was intentionally rejected.
+
+To avoid duplicate alerts:
+
+1. Correlate events by `deployment_id` and treat a `status: "failed"` event
+   that follows a `status: "rejected"` event for the same deployment as the
+   same event.
+1. To distinguish rejection-driven failures from genuine failures, listen for
+   the `status: "rejected"` event and store the deployment IDs that were
+   rejected. When a `status: "failed"` event arrives, suppress the alert if
+   its `deployment_id` is in that set.

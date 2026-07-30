@@ -87347,7 +87347,7 @@ msgstr ""
 msgid "WebhooksTrigger|A confidential work item is created, updated, closed, or reopened."
 msgstr ""
 
-msgid "WebhooksTrigger|A deployment starts, finishes, fails, or is canceled."
+msgid "WebhooksTrigger|A deployment starts, finishes, fails, is canceled, is awaiting approval, or is awaiting manual action. On Premium and Ultimate, also when a deployment is approved or rejected."
 msgstr ""
 
 msgid "WebhooksTrigger|A feature flag is turned on or off."

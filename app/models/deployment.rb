@@ -122,6 +122,16 @@ class Deployment < ApplicationRecord
       end
     end
 
+    after_transition any => :blocked do |deployment, transition|
+      deployment.run_after_commit do
+        perform_params = { deployment_id: id, status: transition.to, status_changed_at: Time.current }
+
+        serialize_params_for_sidekiq!(perform_params)
+
+        Deployments::HooksWorker.perform_async(perform_params)
+      end
+    end
+
     after_transition any => :success do |deployment|
       deployment.run_after_commit do
         Deployments::UpdateEnvironmentWorker.perform_async(id)
@@ -269,8 +279,8 @@ class Deployment < ApplicationRecord
     Commit.truncate_sha(sha)
   end
 
-  def execute_hooks(status, status_changed_at)
-    deployment_data = Gitlab::DataBuilder::Deployment.build(self, status, status_changed_at)
+  def execute_hooks(status, status_changed_at, **kwargs)
+    deployment_data = Gitlab::DataBuilder::Deployment.build(self, status, status_changed_at, **kwargs)
     project.execute_hooks(deployment_data, :deployment_hooks)
     project.execute_integrations(deployment_data, :deployment_hooks)
   end

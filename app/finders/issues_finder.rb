@@ -161,7 +161,8 @@ class IssuesFinder < IssuableFinder
   def filter_negated_items(items)
     issues = super
     issues = by_negated_issue_types(issues)
-    by_negated_work_item_type_ids(issues)
+    issues = by_negated_work_item_type_ids(issues)
+    by_negated_work_item_type_names(issues)
   end
 
   override :filter_by_full_text_search
@@ -257,6 +258,16 @@ class IssuesFinder < IssuableFinder
     return items if negated_type_ids.blank?
 
     items.without_work_item_type_ids(negated_type_ids)
+  end
+
+  def by_negated_work_item_type_names(items)
+    names = Array.wrap(not_params[:work_item_type_names])
+    return items if names.blank?
+
+    ids = ::WorkItems::TypesFramework::Provider.new(params.parent).persistable_ids_by_names(names)
+    return items if ids.empty?
+
+    items.without_work_item_type_ids(ids)
   end
 end
 

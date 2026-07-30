@@ -283,10 +283,15 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
         deployment.block!
       end
 
-      it 'does not execute Deployments::HooksWorker' do
-        expect(Deployments::HooksWorker).not_to receive(:perform_async)
+      it 'executes Deployments::HooksWorker asynchronously' do
+        freeze_time do
+          expect(Deployments::HooksWorker)
+            .to receive(:perform_async)
+                  .with(hash_including({ 'deployment_id' => deployment.id, 'status' => 'blocked',
+                                         'status_changed_at' => Time.current.to_s }))
 
-        deployment.block!
+          deployment.block!
+        end
       end
     end
 

@@ -286,6 +286,13 @@ RSpec.shared_examples 'work item API filter parity' do
   let(:or_filter_parity_wip) { [] }
   let(:parity_wip) { filter_parity_wip }
 
+  # REST-only filter params that intentionally have no GraphQL counterpart.
+  # `work_item_type_names` filters by (custom) work item type name in REST only;
+  # GraphQL deprecated name-based type filtering in 19.0 in favour of type ids.
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/605891
+  let(:rest_only_filter_params) { %w[work_item_type_names] }
+  let(:rest_only_not_filter_params) { %w[work_item_type_names] }
+
   let(:graphql_filter_params) do
     # instad of `iid` we have `iids`
     # `or`, `not` is just a key in GraphQL
@@ -326,11 +333,12 @@ RSpec.shared_examples 'work item API filter parity' do
     rest_params
       .reject { |key| key.starts_with?("or") || key.starts_with?("not") }
       .map { |key| key.split('[').first }
-      .uniq
+      .uniq - rest_only_filter_params
   end
 
   let(:rest_not_filter_params) do
-    rest_params.select { |key| key.starts_with?("not[") }.map { |s| s.delete_prefix('not[').delete_suffix(']') }
+    rest_params.select { |key| key.starts_with?("not[") }.map { |s| s.delete_prefix('not[').delete_suffix(']') } -
+      rest_only_not_filter_params
   end
 
   let(:rest_or_filter_params) do

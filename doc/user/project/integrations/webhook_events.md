@@ -28,7 +28,7 @@ For a list of events triggered for system webhooks, see [system webhooks](../../
 | Event type                                                                    | Trigger |
 |-------------------------------------------------------------------------------|---------|
 | [Comment event](#comment-events)                                              | A new comment is made or edited on commits, merge requests, issues, and code snippets. |
-| [Deployment event](#deployment-events)                                        | A deployment starts, succeeds, fails, or is canceled. |
+| [Deployment event](#deployment-events)                                        | A deployment starts, finishes, fails, is canceled, is awaiting approval, or is awaiting manual action. On Premium and Ultimate, also when a deployment is approved or rejected. |
 | [Emoji event](#emoji-events)                                                  | An emoji reaction is added or removed. |
 | [Feature flag event](#feature-flag-events)                                    | A feature flag is turned on or off. |
 | [Job event](#job-events)                                                      | A job status changes. |
@@ -1899,6 +1899,14 @@ Deployment events are triggered when a deployment:
 - Succeeds
 - Fails
 - Is canceled
+- Is blocked, is awaiting approval, or is awaiting manual action
+- Is approved (Premium and Ultimate only)
+- Is rejected (Premium and Ultimate only)
+
+The `status` field reflects the new state of whichever entity drove the event:
+
+- For deployment lifecycle changes (`running`, `success`, `failed`, `canceled`, `blocked`), the field matches the deployment's current state.
+- For approval actions, the field matches the approval record's terminal state (`approved` or `rejected`).
 
 The `deployable_id` and `deployable_url` in the payload represent a CI/CD job that executed the deployment.
 When the deployment event occurs by [API](../../../ci/environments/external_deployment_tools.md) or [`trigger` jobs](../../../ci/pipelines/downstream_pipelines.md), `deployable_url` is `null`.
@@ -1954,6 +1962,125 @@ Payload example:
   "commit_title": "Add new file"
 }
 ```
+
+### Deployment approval and rejection events
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/441402) in GitLab 19.3.
+
+{{< /history >}}
+
+A deployment to a [protected environment](../../../ci/environments/deployment_approvals.md)
+that requires approvals fires a Deployment webhook each time an approver
+approves or rejects the deployment. The payload keeps the same
+`object_kind` as other deployment events and adds approval-specific fields:
+
+- `status` is `approved` or `rejected` and reflects the approval action.
+- `status_changed_at` is the time the approval was recorded, in ISO 8601 format.
+- `approver` is the user who recorded the approval or rejection. The `approver.email`
+  field is `[REDACTED]` if the approver has not made their email public.
+- `approval` describes the approval, including the protected environment rule that authorized it. The
+  `approval.approval_rule.access_level_description` field is the human-readable label for the rule.
+  - For role-based rules, the field is a locale-independent label such as `"Maintainers"`.
+  - For user-scoped or group-scoped rules, it is the user's or group's display name (a user-controlled
+    string). Receivers should treat this field as untrusted display text and use `user_id`, `group_id`,
+    and `access_level` for machine-readable routing.
+
+The `approver` and `approval` fields are specific to approval and rejection events
+and are not present in other deployment lifecycle events. Receivers can identify
+approval events by the value of `status` or by the presence of these fields.
+
+Payload example:
+
+```json
+{
+  "object_kind": "deployment",
+  "status": "approved",
+  "status_changed_at": "2026-05-08T10:30:00.000Z",
+  "deployment_id": 15,
+  "deployable_id": 796,
+  "deployable_url": "http://10.126.0.2:3000/root/test-deployment-webhooks/-/jobs/796",
+  "environment": "production",
+  "environment_tier": "production",
+  "environment_slug": "production",
+  "environment_external_url": "https://production.example.com",
+  "project": {
+    "id": 30,
+    "name": "test-deployment-webhooks",
+    "web_url": "http://10.126.0.2:3000/root/test-deployment-webhooks",
+    "path_with_namespace": "root/test-deployment-webhooks"
+  },
+  "short_sha": "279484c0",
+  "user": {
+    "id": 1,
+    "name": "Administrator",
+    "username": "root",
+    "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+    "email": "admin@example.com"
+  },
+  "user_url": "http://10.126.0.2:3000/root",
+  "commit_url": "http://10.126.0.2:3000/root/test-deployment-webhooks/-/commit/279484c09fbe69ededfced8c1bb6e6d24616b468",
+  "commit_title": "Add new file",
+  "approver": {
+    "id": 5,
+    "name": "Ops Lead",
+    "username": "ops_lead",
+    "avatar_url": "https://www.gravatar.com/avatar/abcdef1234567890?s=80&d=identicon",
+    "email": "ops@example.com"
+  },
+  "approval": {
+    "id": 42,
+    "status": "approved",
+    "comment": "LGTM",
+    "created_at": "2026-05-08T10:30:00.000Z",
+    "approval_rule": {
+      "id": 7,
+      "user_id": null,
+      "group_id": null,
+      "access_level": 40,
+      "access_level_description": "Maintainers",
+      "required_approvals": 2,
+      "group_inheritance_type": 0
+    }
+  }
+}
+```
+
+For a rejection, `status` and `approval.status` are both `rejected`.
+The `approval.approval_rule` value is `null` when the protected environment
+does not use approval rules.
+
+#### Event sequence around rejection and full approval
+
+The approval and lifecycle webhooks are independent. A deployment that goes
+through the approval workflow produces multiple webhooks with the same
+`deployment_id`. When a deployment enters the awaiting-approval state, a
+`status: "blocked"` event fires first. Subsequent approval or rejection
+actions then produce their own events.
+
+The events fire in the following order:
+
+1. When the deployment first enters the awaiting-approval state, a
+   `status: "blocked"` event fires. This is the deployment lifecycle event
+   and does not include approval fields.
+1. A rejection then produces `status: "rejected"` (with `approver` and
+   `approval`), followed by `status: "failed"` for the same deployment when
+   the deployment job is dropped. The `failed` event is the existing legacy
+   lifecycle event and does not include approval fields.
+1. A final approval produces `status: "approved"`, followed later by
+   `status: "running"` when the deployment job starts, and then a terminal
+   event such as `status: "success"` or `status: "failed"`.
+
+For guidance on handling duplicate failure alerts caused by a rejection, see
+[Troubleshooting webhooks](webhooks_troubleshooting.md#duplicate-deployment-failure-alerts-after-a-rejection).
 
 ## Group member events
 

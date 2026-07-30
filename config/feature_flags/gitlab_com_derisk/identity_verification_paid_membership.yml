@@ -1,6 +1,6 @@
 ---
 name: identity_verification_paid_membership
-description: Exempt users from identity verification when they hold any non-guest membership (project or group, at any level above Guest) in a paid namespace, resolved to the root ancestor's subscription. Broader than identity_verification_paid_subgroup_membership, which is limited to Reporter+ group memberships.
+description: Exempt users from identity verification when they hold any membership (project or group, at any level, including Guest) in a paid namespace, resolved to the root ancestor's subscription.
 feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/605202
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244469
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/605414

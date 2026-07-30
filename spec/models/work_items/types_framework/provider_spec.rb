@@ -169,6 +169,52 @@ RSpec.describe WorkItems::TypesFramework::Provider, feature_category: :team_plan
     end
   end
 
+  describe '#persistable_ids_by_names' do
+    subject { provider.persistable_ids_by_names(names) }
+
+    context 'with an existing name' do
+      let(:names) { ['Issue'] }
+
+      it { is_expected.to contain_exactly(issue_type.persistable_id) }
+    end
+
+    context 'with a case-insensitive name' do
+      let(:names) { ['issue'] }
+
+      it { is_expected.to contain_exactly(issue_type.persistable_id) }
+    end
+
+    context 'with multiple names' do
+      let(:names) { %w[Issue Task] }
+
+      it { is_expected.to contain_exactly(issue_type.persistable_id, task_type.persistable_id) }
+    end
+
+    context 'with a mix of known and unknown names' do
+      let(:names) { %w[Issue NonExistent] }
+
+      it { is_expected.to contain_exactly(issue_type.persistable_id) }
+    end
+
+    context 'with an unknown name' do
+      let(:names) { ['NonExistent'] }
+
+      it { is_expected.to eq([]) }
+    end
+
+    context 'with blank and nil entries' do
+      let(:names) { ['', nil, '  '] }
+
+      it { is_expected.to eq([]) }
+    end
+
+    context 'with empty input' do
+      let(:names) { [] }
+
+      it { is_expected.to eq([]) }
+    end
+  end
+
   describe '#default_issue_type' do
     subject { provider.default_issue_type }
 

@@ -4,6 +4,7 @@ module Issues # rubocop:disable Gitlab/BoundedContexts -- existing Finders modul
   class IssueTypesFilter < Issuables::BaseFilter
     def filter(issues)
       issues = by_work_item_type_ids(issues)
+      issues = by_work_item_type_names(issues)
       by_issue_types(issues)
     end
 
@@ -17,9 +18,25 @@ module Issues # rubocop:disable Gitlab/BoundedContexts -- existing Finders modul
     end
 
     def by_work_item_type_ids(issues)
-      return issues if work_item_type_ids.blank?
+      filter_by_authorized_type_ids(issues, work_item_type_ids)
+    end
 
-      issues.with_work_item_type_ids(work_item_type_ids)
+    def by_work_item_type_names(issues)
+      return issues if work_item_type_names.blank?
+
+      ids = ::WorkItems::TypesFramework::Provider.new(parent).persistable_ids_by_names(work_item_type_names)
+      return issues.model.none if ids.empty?
+
+      filter_by_authorized_type_ids(issues, ids)
+    end
+
+    # Applies a work item type id filter. Both the id and name filters funnel through here so that
+    # EE can enforce type authorization (e.g. stripping the epic type when epics are unavailable)
+    # regardless of whether the caller supplied ids or names. See EE::Issues::IssueTypesFilter.
+    def filter_by_authorized_type_ids(issues, ids)
+      return issues if ids.blank?
+
+      issues.with_work_item_type_ids(ids)
     end
 
     def valid_param_types?
@@ -32,6 +49,10 @@ module Issues # rubocop:disable Gitlab/BoundedContexts -- existing Finders modul
 
     def work_item_type_ids
       Array.wrap(params[:work_item_type_ids]).compact
+    end
+
+    def work_item_type_names
+      Array.wrap(params[:work_item_type_names])
     end
   end
 end # rubocop:enable Gitlab/BoundedContexts

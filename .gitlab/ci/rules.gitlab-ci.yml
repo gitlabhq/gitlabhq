@@ -897,6 +897,46 @@
   - "ee/frontend_islands/apps/**/components.json"
   - "ee/frontend_islands/packages/**/index.{js,json}"
 
+# A subset of .code-backstage-spec-patterns, minus the backend-only RSpec trees Jest never reads. It must stay a subset: the jest jobs wait on fixture and schema-dump jobs, and those only run for files in that list.
+.jest-relevant-patterns: &jest-relevant-patterns
+  - ".{gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
+  - "eslint.config.mjs"
+  - ".eslint_todo/*.mjs"
+  - ".browserslistrc"
+  - ".stylelintrc"
+  - "{,ee/,jh/}{app,bin,config,db,elastic,generator_templates,gems,haml_lint,lib,locale,public,scripts,sidekiq_cluster,storybook,symbol,vendor}/**/*"
+  - "{,jh/}Gemfile{,.lock}"
+  - "{,jh/}Gemfile.next{,.lock}"
+  - "{package.json,yarn.lock}"
+  - "*_VERSION"
+  - "babel.config.js"
+  - "vite.config.js"
+  - "config.ru"
+  - "Dockerfile.assets"
+  - "jest.config.{base,integration,unit}.js"
+  - "keeps/**/*"
+  - "Rakefile"
+  - "tests.yml"
+  - "vendor/assets/**/*"
+  # Auto-generated files
+  - "doc/api/graphql/reference/*"
+  # CI changes
+  - "{,jh/}.gitlab-ci.yml"
+  - "{,jh/}.gitlab/ci/**/*"
+  # Backstage changes
+  - "{,ee/,jh/}fixtures/**/*"
+  - "scripts/**/*"
+  - "{,spec/}tooling/**/*"
+  - "{,ee/,jh/}spec/{frontend,frontend_integration,support,factories,fixtures}/**/*"
+  # spec_helper.rb and the files it requires (simplecov_env.rb, knapsack_env.rb, ...)
+  - "{,ee/,jh/}spec/*.rb"
+  # FE island changes
+  - "ee/frontend_islands/{apps,packages}/**/package.json"
+  - "ee/frontend_islands/{apps,packages}/**/tsconfig*.json"
+  - "ee/frontend_islands/apps/**/*.config.{js,ts,cjs,mjs}"
+  - "ee/frontend_islands/apps/**/components.json"
+  - "ee/frontend_islands/packages/**/index.{js,json}"
+
 # .code-patterns + .qa-patterns
 .code-qa-patterns: &code-qa-patterns
   - ".{gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
@@ -1967,6 +2007,10 @@
       changes: [".gitlab/ci/frontend.gitlab-ci.yml"]
     - <<: *if-merge-request-tier-1-or-no-tier
       when: never
+    - <<: *if-merge-request-tier-2-or-above
+      changes: *jest-relevant-patterns
+    - <<: *if-merge-request-tier-2-or-above
+      when: never
     - <<: *if-default-refs
       changes: *code-backstage-spec-patterns
 
@@ -2029,14 +2073,11 @@
         - "{,ee/,jh/}spec/frontend/msw_integration/**/*"
     - <<: *if-merge-request-tier-1-or-no-tier
       when: never
-    # Tier-2+: run on frontend, MSW integration test, GraphQL, or fixture generator changes
+    # Tier-2+: same scope as the full Jest jobs, since this suite also runs on the frontend fixtures
     - <<: *if-merge-request-tier-2-or-above
-      changes:
-        - "{,ee/,jh/}{app/assets/javascripts,spec/frontend}/**/*"
-        - "{,ee/,jh/}spec/frontend/msw_integration/**/*"
-        - "{,ee/,jh/}app/graphql/**/*"
-        - "{,ee/}spec/frontend/fixtures/**/*"
-        - "ee/frontend_islands/apps/**/*"
+      changes: *jest-relevant-patterns
+    - <<: *if-merge-request-tier-2-or-above
+      when: never
     - <<: *if-default-refs
       changes: *code-backstage-spec-patterns
 

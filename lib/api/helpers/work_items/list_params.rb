@@ -19,6 +19,10 @@ module API
           optional :work_item_type_ids, type: Array[Integer],
             desc: 'Filter by work item type IDs.',
             coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce
+          optional :work_item_type_names, type: Array[String],
+            desc: 'Filter by work item type names (case-insensitive). Supports custom types.',
+            coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce
+          mutually_exclusive :work_item_type_ids, :work_item_type_names
 
           optional :author_username, type: String,
             desc: 'Filter work items authored by one of the given usernames.'
@@ -135,6 +139,10 @@ module API
             optional :work_item_type_ids, type: Array[Integer],
               desc: 'Exclude work items with these work item type IDs.',
               coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce
+            optional :work_item_type_names, type: Array[String],
+              desc: 'Exclude work items of these type names (case-insensitive). Supports custom types.',
+              coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce
+            mutually_exclusive :work_item_type_ids, :work_item_type_names
 
             use :work_items_not_filter_params_ee
           end

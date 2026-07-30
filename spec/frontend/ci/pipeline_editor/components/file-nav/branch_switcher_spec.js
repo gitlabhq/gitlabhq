@@ -115,7 +115,6 @@ describe('Pipeline editor branch switcher', () => {
         findBranchSelector().vm.$emit('select-branch', newBranch);
 
         expect(wrapper.emitted('select-branch')).toEqual([[newBranch]]);
-        expect(wrapper.emitted('refetchContent')).toBeUndefined();
       });
     });
   });

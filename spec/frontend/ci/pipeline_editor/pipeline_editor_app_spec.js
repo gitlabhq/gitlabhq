@@ -523,39 +523,6 @@ describe('Pipeline editor app component', () => {
     });
   });
 
-  describe('when refetching content', () => {
-    beforeEach(() => {
-      mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponse);
-      mockCiLintData.mockResolvedValue(mockCiLintMutationResponse);
-      mockLatestCommitShaQuery.mockResolvedValue(mockCommitShaResults);
-    });
-
-    it('refetches blob content', async () => {
-      await createComponentWithApollo();
-
-      expect(mockBlobContentData).toHaveBeenCalledTimes(1);
-
-      findEditorHome().vm.$emit('refetchContent');
-
-      expect(mockBlobContentData).toHaveBeenCalledTimes(2);
-    });
-
-    it('hides start screen when refetch fetches CI file', async () => {
-      mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponseNoCiFile);
-      await createComponentWithApollo();
-
-      expect(findEmptyState().exists()).toBe(true);
-      expect(findEditorHome().exists()).toBe(false);
-
-      mockBlobContentData.mockResolvedValue(mockBlobContentQueryResponse);
-      findEmptyState().vm.$emit('refetchContent');
-      await waitForPromises();
-
-      expect(findEmptyState().exists()).toBe(false);
-      expect(findEditorHome().exists()).toBe(true);
-    });
-  });
-
   describe('when a template parameter is present in the URL', () => {
     const originalLocation = window.location.href;
 

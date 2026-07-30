@@ -298,10 +298,6 @@ export default {
       );
       visitUrl(url);
     },
-    async refetchContent() {
-      this.$apollo.queries.initialCiFileContent.skip = false;
-      await this.$apollo.queries.initialCiFileContent.refetch();
-    },
     reportFailure(type, reasons = []) {
       this.showFailure = true;
       this.failureType = type;
@@ -410,7 +406,6 @@ export default {
     <pipeline-editor-empty-state
       v-else-if="showEmptyState"
       @create-empty-config-file="setNewEmptyCiConfigFile"
-      @refetchContent="refetchContent"
     />
     <div v-else>
       <pipeline-editor-messages
@@ -428,7 +423,6 @@ export default {
         @commit="updateOnCommit"
         @resetContent="confirmReset"
         @showError="showErrorAlert"
-        @refetchContent="refetchContent"
         @updateCiConfig="updateCiConfig"
         @updateCommitSha="updateCommitSha"
       />

@@ -63,10 +63,10 @@ describe('FileBrowser', () => {
     expect(wrapper.emitted('click-file')).toStrictEqual([[file]]);
   });
 
-  it('handles toggleFolder', async () => {
+  it('handles toggle-folder', async () => {
     const path = 'foo';
     createComponent();
-    await wrapper.findComponent(DiffsFileTree).vm.$emit('toggleFolder', path);
+    await wrapper.findComponent(DiffsFileTree).vm.$emit('toggle-folder', path);
     expect(useFileBrowser().toggleTreeOpen).toHaveBeenCalledWith(path);
   });
 

@@ -858,7 +858,7 @@ export default {
           :current-diff-file-id="currentDiffFileId"
           :linked-file-path="linkedFile ? linkedFile.file_path : null"
           @click-file="onFileTreeClick"
-          @toggleFolder="toggleTreeOpen"
+          @toggle-folder="toggleTreeOpen"
         />
         <div class="gl-col-md-auto diff-files-holder gl-px-5">
           <commit-widget v-if="commit" :commit="commit" :collapsible="false" />

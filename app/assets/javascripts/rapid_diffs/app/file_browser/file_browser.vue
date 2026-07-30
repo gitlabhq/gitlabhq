@@ -58,6 +58,6 @@ export default {
     :current-diff-file-id="currentFileHash"
     :linked-file-path="linkedFilePath"
     @click-file="clickFile"
-    @toggleFolder="toggleFolder"
+    @toggle-folder="toggleFolder"
   />
 </template>

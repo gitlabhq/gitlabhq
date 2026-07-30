@@ -6,7 +6,7 @@ module Gitlab
       extend self
 
       # NOTE: Time-sensitive attributes should be explicitly passed as argument instead of reading from database.
-      def build(deployment, status, status_changed_at)
+      def build(deployment, status, status_changed_at, **_kwargs)
         # Deployments will not have a deployable when created using the API.
         deployable_url =
           if deployment.deployable.instance_of?(::Ci::Build)
@@ -50,3 +50,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::DataBuilder::Deployment.singleton_class.prepend_mod_with('Gitlab::DataBuilder::Deployment')

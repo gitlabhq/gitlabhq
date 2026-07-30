@@ -76,11 +76,11 @@ describe('DiffsFileTree', () => {
     expect(wrapper.emitted('click-file')).toStrictEqual([[obj]]);
   });
 
-  it('re-emits toggleFolder event', () => {
+  it('re-emits toggle-folder event', () => {
     const obj = {};
     createComponent();
-    wrapper.findComponent(TreeList).vm.$emit('toggleFolder', obj);
-    expect(wrapper.emitted('toggleFolder')).toStrictEqual([[obj]]);
+    wrapper.findComponent(TreeList).vm.$emit('toggle-folder', obj);
+    expect(wrapper.emitted('toggle-folder')).toStrictEqual([[obj]]);
   });
 
   describe('size', () => {

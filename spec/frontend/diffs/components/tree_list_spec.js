@@ -141,11 +141,11 @@ describe('Diffs tree list component', () => {
       expect(wrapper.emitted('click-file')).toMatchObject([[item]]);
     });
 
-    it('re-emits clickTree event as toggleFolder', () => {
+    it('re-emits clickTree event as toggle-folder', () => {
       const row = wrapper.findComponent(FileRow);
       const item = row.props('file');
       row.vm.$emit('clickTree', { stopPropagation: jest.fn() });
-      expect(wrapper.emitted('toggleFolder')).toMatchObject([[item.path]]);
+      expect(wrapper.emitted('toggle-folder')).toMatchObject([[item.path]]);
     });
 
     describe('when renderTreeList is false', () => {

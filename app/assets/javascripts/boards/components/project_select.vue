@@ -27,7 +27,7 @@ export default {
   inject: ['fullPath'],
   model: {
     prop: 'selectedProject',
-    event: 'selectProject',
+    event: 'select-project',
   },
   props: {
     selectedProject: {
@@ -35,7 +35,7 @@ export default {
       required: true,
     },
   },
-  emits: ['selectProject'],
+  emits: ['select-project'],
   data() {
     return {
       initialLoading: true,
@@ -98,7 +98,7 @@ export default {
     selectProject(projectId) {
       this.selectedProjectId = projectId;
       this.$emit(
-        'selectProject',
+        'select-project',
         this.projects.nodes.find((project) => project.id === projectId),
       );
     },

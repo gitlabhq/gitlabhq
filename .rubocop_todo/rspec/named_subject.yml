@@ -776,7 +776,6 @@ RSpec/NamedSubject:
     - 'ee/spec/services/system_notes/merge_train_service_spec.rb'
     - 'ee/spec/services/system_notes/vulnerabilities_service_spec.rb'
     - 'ee/spec/services/todos/destroy/confidential_epic_service_spec.rb'
-    - 'ee/spec/services/users/email_verification/send_custom_confirmation_instructions_service_spec.rb'
     - 'ee/spec/services/vulnerabilities/create_service_spec.rb'
     - 'ee/spec/services/vulnerabilities/find_or_create_from_security_finding_service_spec.rb'
     - 'ee/spec/services/vulnerabilities/findings/find_or_create_from_security_finding_service_spec.rb'

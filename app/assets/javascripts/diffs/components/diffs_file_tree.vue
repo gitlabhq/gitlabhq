@@ -50,7 +50,7 @@ export default {
       default: null,
     },
   },
-  emits: ['click-file', 'toggleFolder'],
+  emits: ['click-file', 'toggle-folder'],
   data() {
     return {
       treeWidth: INITIAL_TREE_WIDTH,
@@ -177,7 +177,7 @@ export default {
         :current-diff-file-id="currentDiffFileId"
         :linked-file-path="linkedFilePath"
         @click-file="onFileClick"
-        @toggleFolder="$emit('toggleFolder', $event)"
+        @toggle-folder="$emit('toggle-folder', $event)"
       />
     </div>
   </file-browser-height>

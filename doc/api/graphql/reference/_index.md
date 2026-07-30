@@ -33305,6 +33305,40 @@ Fields:
 | <a id="aifoundationalchatagentflowconfig-flowconfigschemaversion"></a>`flowConfigSchemaVersion` | [`String`](#string) | Flow config schema version sent to the Duo Workflow Service. |
 | <a id="aifoundationalchatagentflowconfig-flowversion"></a>`flowVersion` | [`String`](#string) | Flow version sent to the Duo Workflow Service. |
 
+### `AiGovernanceKpi`
+
+Aggregated KPI for the AI governance dashboard.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aigovernancekpi-count"></a>`count` | [`Int`](#int) | Count in the selected timeframe. |
+| <a id="aigovernancekpi-previouscount"></a>`previousCount` | [`Int`](#int) | Count in the preceding timeframe of equal length. |
+| <a id="aigovernancekpi-trend"></a>`trend` | [`[AiGovernanceKpiTrendPoint!]`](#aigovernancekpitrendpoint) | Bucketed counts across the selected timeframe. |
+
+### `AiGovernanceKpiTrendPoint`
+
+Single bucket of an AI governance KPI trend series.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aigovernancekpitrendpoint-bucketstart"></a>`bucketStart` | [`Time!`](#time) | Timestamp of the start of the bucket. |
+| <a id="aigovernancekpitrendpoint-count"></a>`count` | [`Int!`](#int) | Count of items in the bucket. |
+
+### `AiGovernanceMetrics`
+
+Aggregated AI governance dashboard metrics.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aigovernancemetrics-agents"></a>`agents` | [`AiGovernanceKpi`](#aigovernancekpi) | Distinct AI agents with sessions in the timeframe. |
+| <a id="aigovernancemetrics-sessions"></a>`sessions` | [`AiGovernanceKpi`](#aigovernancekpi) | AI agent sessions in the timeframe. |
+
 ### `AiInstanceUsageData`
 
 Instance wide usage data for events stored in either PostgreSQL (default) or ClickHouse (when configured). Data retention: three months in PostgreSQL, indefinite in ClickHouse. Premium and Ultimate only.
@@ -43906,6 +43940,25 @@ Arguments:
 | <a id="group-aidomainsettings-domainsettingtype"></a>`domainSettingType` | [`AiDomainSettingType!`](#aidomainsettingtype) | Type of domain setting to retrieve. |
 | <a id="group-aidomainsettings-search"></a>`search` | [`String`](#string) | Filter domains by substring match. |
 
+##### `Group.aiGovernanceMetrics`
+
+{{< details >}}
+
+- Introduced in GitLab 19.3.
+- Status: Experiment.
+
+{{< /details >}}
+
+Aggregated AI governance dashboard metrics. Returns null when the `ai_governance_dashboard` feature flag is disabled.
+
+Returns [`AiGovernanceMetrics`](#aigovernancemetrics).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="group-aigovernancemetrics-timeframe"></a>`timeframe` | [`AiGovernanceMetricsTimeframe`](#aigovernancemetricstimeframe) | Time window for the metrics. Defaults to LAST_7_DAYS. |
+
 ##### `Group.aiMetrics`
 
 {{< details >}}
@@ -54007,6 +54060,25 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="project-aiflowtriggers-ids"></a>`ids` | [`[AiFlowTriggerID!]`](#aiflowtriggerid) | Filter AI flow triggers by IDs. |
+
+##### `Project.aiGovernanceMetrics`
+
+{{< details >}}
+
+- Introduced in GitLab 19.3.
+- Status: Experiment.
+
+{{< /details >}}
+
+Aggregated AI governance dashboard metrics. Returns null when the `ai_governance_dashboard` feature flag is disabled.
+
+Returns [`AiGovernanceMetrics`](#aigovernancemetrics).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="project-aigovernancemetrics-timeframe"></a>`timeframe` | [`AiGovernanceMetricsTimeframe`](#aigovernancemetricstimeframe) | Time window for the metrics. Defaults to LAST_7_DAYS. |
 
 ##### `Project.aiMetrics`
 
@@ -64180,6 +64252,16 @@ Possible event types for flow triggers.
 | <a id="aiflowtriggereventtype-merge_request_ready"></a>`MERGE_REQUEST_READY` | Flow trigger merge_request_ready event. |
 | <a id="aiflowtriggereventtype-pipeline_hooks"></a>`PIPELINE_HOOKS` | Flow trigger pipeline_hooks event. |
 | <a id="aiflowtriggereventtype-work_item"></a>`WORK_ITEM` | Flow trigger work_item event. |
+
+### `AiGovernanceMetricsTimeframe`
+
+Time window for AI governance dashboard metrics.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="aigovernancemetricstimeframe-last_24_hours"></a>`LAST_24_HOURS` | Last 24 hours, bucketed hourly. |
+| <a id="aigovernancemetricstimeframe-last_30_days"></a>`LAST_30_DAYS` | Last 30 days, bucketed daily. |
+| <a id="aigovernancemetricstimeframe-last_7_days"></a>`LAST_7_DAYS` | Last 7 days, bucketed daily. |
 
 ### `AiMessageRole`
 
