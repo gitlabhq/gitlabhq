@@ -143,9 +143,10 @@ To resolve this issue, update the `docker:dind` container to version at least 20
 for example `docker:24.0.5-dind`.
 
 The opposite configuration (`docker:24.0.5-dind` service and Docker Engine on the host in version
-19.06.x or older) works without problems. For the best strategy, you should to frequently test and update
-job environment versions to the newest. This brings new features, improved security and - for this specific
-case - makes the upgrade on the underlying Docker Engine on the runner's host transparent for the job.
+19.06.x or older) works without problems. For the best strategy, you should frequently test and update
+job environment versions to the newest. This brings new features and improved security. For this
+specific case, it also makes the upgrade on the underlying Docker Engine on the runner's host
+transparent for the job.
 
 ## Error: `failed to verify certificate: x509: certificate signed by unknown authority`
 

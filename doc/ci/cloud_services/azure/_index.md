@@ -28,7 +28,7 @@ Prerequisites:
 - Access to the corresponding Microsoft Entra ID tenant with at least the `Application Developer` access level.
 - A local installation of the [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest).
   Alternatively, you can use all the following steps with the [Azure Cloud Shell](https://portal.azure.com/#cloudshell/).
-- Your GitLab instance must be publicly accessible over the internet as Azure must to connect to the GitLab OIDC endpoint.
+- Your GitLab instance must be publicly accessible over the internet as Azure must connect to the GitLab OIDC endpoint.
 - A GitLab project.
 
 To complete this tutorial:

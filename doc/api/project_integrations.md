@@ -1478,7 +1478,7 @@ Parameters:
 | `jira_issue_prefix` | string | no | Prefix to match Jira issue keys. |
 | `jira_issue_regex` | string | no | Regular expression to match Jira issue keys. |
 | `jira_issue_transition_automatic` | boolean | no | Enable [automatic issue transitions](../integration/jira/issues.md#automatic-issue-transitions). Takes precedence over `jira_issue_transition_id` if enabled. Defaults to `false`. |
-| `jira_issue_transition_id` | string | no | The ID of one or more transitions for [custom issue transitions](../integration/jira/issues.md#custom-issue-transitions).Ignored when `jira_issue_transition_automatic` is enabled. Defaults to a blank string,which disables custom transitions. |
+| `jira_issue_transition_id` | string | no | The ID of one or more transitions for [custom issue transitions](../integration/jira/issues.md#custom-issue-transitions). Ignored when `jira_issue_transition_automatic` is enabled. Defaults to a blank string, which disables custom transitions. |
 | `commit_events` | boolean | no | Enable notifications for commit events. |
 | `merge_requests_events` | boolean | no | Enable notifications for merge request events. |
 | `comment_on_event_enabled` | boolean | no | Enable comments in Jira issues on each GitLab event (commit or merge request). |

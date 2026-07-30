@@ -33899,7 +33899,7 @@ Fields:
 
 ### `Analytics`
 
-ClickHouse-based analytics endpoints. Data can be delayed by 10 minutes.
+ClickHouse-based analytics endpoints aggregating data across groups and projects. Data can be delayed by 10 minutes.
 
 #### Fields with arguments
 
@@ -33916,6 +33916,8 @@ Arguments:
 | <a id="analytics-agentplatformsessions-createdeventatfrom"></a>`createdEventAtFrom` | [`Time`](#time) | Filter by session creation timestamp. Start of the range. |
 | <a id="analytics-agentplatformsessions-createdeventatto"></a>`createdEventAtTo` | [`Time`](#time) | Filter by session creation timestamp. End of the range. |
 | <a id="analytics-agentplatformsessions-flowtype"></a>`flowType` | [`[String!]`](#string) | Filter by one or many flow types. |
+| <a id="analytics-agentplatformsessions-groupfullpaths"></a>`groupFullPaths` | [`[ID!]`](#id) | Full paths of groups to aggregate data for. All groups must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `projectFullPaths`, at most 20 sources can be requested. Not supported at project level. |
+| <a id="analytics-agentplatformsessions-projectfullpaths"></a>`projectFullPaths` | [`[ID!]`](#id) | Full paths of projects to aggregate data for. All projects must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `groupFullPaths`, at most 20 sources can be requested. Not supported at project level. |
 | <a id="analytics-agentplatformsessions-userid"></a>`userId` | [`[String!]`](#string) | Filter by one or many user Global IDs. |
 
 ##### `Analytics.contributions`
@@ -33938,6 +33940,8 @@ Arguments:
 | <a id="analytics-contributions-authorid"></a>`authorId` | [`[String!]`](#string) | Filter by one or many author Global IDs. |
 | <a id="analytics-contributions-createdatfrom"></a>`createdAtFrom` | [`Time`](#time) | Filter by contribution timestamp. Start of the range. |
 | <a id="analytics-contributions-createdatto"></a>`createdAtTo` | [`Time`](#time) | Filter by contribution timestamp. End of the range. |
+| <a id="analytics-contributions-groupfullpaths"></a>`groupFullPaths` | [`[ID!]`](#id) | Full paths of groups to aggregate data for. All groups must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `projectFullPaths`, at most 20 sources can be requested. Not supported at project level. |
+| <a id="analytics-contributions-projectfullpaths"></a>`projectFullPaths` | [`[ID!]`](#id) | Full paths of projects to aggregate data for. All projects must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `groupFullPaths`, at most 20 sources can be requested. Not supported at project level. |
 
 ##### `Analytics.deployments`
 
@@ -33961,6 +33965,8 @@ Arguments:
 | <a id="analytics-deployments-environmentid"></a>`environmentId` | [`[String!]`](#string) | Filter by one or many environment Global IDs. |
 | <a id="analytics-deployments-finishedatfrom"></a>`finishedAtFrom` | [`Time`](#time) | Filter by deployment finish timestamp. Start of the range. |
 | <a id="analytics-deployments-finishedatto"></a>`finishedAtTo` | [`Time`](#time) | Filter by deployment finish timestamp. End of the range. |
+| <a id="analytics-deployments-groupfullpaths"></a>`groupFullPaths` | [`[ID!]`](#id) | Full paths of groups to aggregate data for. All groups must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `projectFullPaths`, at most 20 sources can be requested. Not supported at project level. |
+| <a id="analytics-deployments-projectfullpaths"></a>`projectFullPaths` | [`[ID!]`](#id) | Full paths of projects to aggregate data for. All projects must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `groupFullPaths`, at most 20 sources can be requested. Not supported at project level. |
 | <a id="analytics-deployments-ref"></a>`ref` | [`[String!]`](#string) | Filter by one or many deployment refs. |
 | <a id="analytics-deployments-status"></a>`status` | [`[String!]`](#string) | Filter by one or many deployment statuses. |
 
@@ -33974,8 +33980,10 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="analytics-duocodesuggestions-groupfullpaths"></a>`groupFullPaths` | [`[ID!]`](#id) | Full paths of groups to aggregate data for. All groups must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `projectFullPaths`, at most 20 sources can be requested. Not supported at project level. |
 | <a id="analytics-duocodesuggestions-idename"></a>`ideName` | [`[String!]`](#string) | Filter by IDE name. |
 | <a id="analytics-duocodesuggestions-language"></a>`language` | [`[String!]`](#string) | Filter by suggestion language. |
+| <a id="analytics-duocodesuggestions-projectfullpaths"></a>`projectFullPaths` | [`[ID!]`](#id) | Full paths of projects to aggregate data for. All projects must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `groupFullPaths`, at most 20 sources can be requested. Not supported at project level. |
 | <a id="analytics-duocodesuggestions-timestampfrom"></a>`timestampFrom` | [`Time`](#time) | Filter by suggestion timestamp. Start of the range. |
 | <a id="analytics-duocodesuggestions-timestampto"></a>`timestampTo` | [`Time`](#time) | Filter by suggestion timestamp. End of the range. |
 | <a id="analytics-duocodesuggestions-userid"></a>`userId` | [`[String!]`](#string) | Filter by one or many user Global IDs. |
@@ -33992,6 +34000,8 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="analytics-duousageevents-event"></a>`event` | [`[String!]`](#string) | Filter by one or many events. |
 | <a id="analytics-duousageevents-feature"></a>`feature` | [`[String!]`](#string) | Filter by one or many features. |
+| <a id="analytics-duousageevents-groupfullpaths"></a>`groupFullPaths` | [`[ID!]`](#id) | Full paths of groups to aggregate data for. All groups must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `projectFullPaths`, at most 20 sources can be requested. Not supported at project level. |
+| <a id="analytics-duousageevents-projectfullpaths"></a>`projectFullPaths` | [`[ID!]`](#id) | Full paths of projects to aggregate data for. All projects must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `groupFullPaths`, at most 20 sources can be requested. Not supported at project level. |
 | <a id="analytics-duousageevents-timestampfrom"></a>`timestampFrom` | [`Time`](#time) | Filter by event timestamp. Start of the range. |
 | <a id="analytics-duousageevents-timestampto"></a>`timestampTo` | [`Time`](#time) | Filter by event timestamp. End of the range. |
 | <a id="analytics-duousageevents-userid"></a>`userId` | [`[String!]`](#string) | Filter by one or many user Global IDs. |
@@ -34015,6 +34025,8 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="analytics-finishedpipelines-finishedatfrom"></a>`finishedAtFrom` | [`Time`](#time) | Filter by pipeline finish timestamp. Start of the range. |
 | <a id="analytics-finishedpipelines-finishedatto"></a>`finishedAtTo` | [`Time`](#time) | Filter by pipeline finish timestamp. End of the range. |
+| <a id="analytics-finishedpipelines-groupfullpaths"></a>`groupFullPaths` | [`[ID!]`](#id) | Full paths of groups to aggregate data for. All groups must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `projectFullPaths`, at most 20 sources can be requested. Not supported at project level. |
+| <a id="analytics-finishedpipelines-projectfullpaths"></a>`projectFullPaths` | [`[ID!]`](#id) | Full paths of projects to aggregate data for. All projects must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `groupFullPaths`, at most 20 sources can be requested. Not supported at project level. |
 | <a id="analytics-finishedpipelines-ref"></a>`ref` | [`[String!]`](#string) | Filter by one or many pipeline refs. |
 | <a id="analytics-finishedpipelines-source"></a>`source` | [`[String!]`](#string) | Filter by one or many pipeline sources. |
 | <a id="analytics-finishedpipelines-startedatfrom"></a>`startedAtFrom` | [`Time`](#time) | Filter by pipeline start timestamp. Start of the range. |
@@ -34040,8 +34052,10 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="analytics-mergerequests-createdatfrom"></a>`createdAtFrom` | [`Time`](#time) | Filter by merge request creation timestamp. Start of the range. |
 | <a id="analytics-mergerequests-createdatto"></a>`createdAtTo` | [`Time`](#time) | Filter by merge request creation timestamp. End of the range. |
+| <a id="analytics-mergerequests-groupfullpaths"></a>`groupFullPaths` | [`[ID!]`](#id) | Full paths of groups to aggregate data for. All groups must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `projectFullPaths`, at most 20 sources can be requested. Not supported at project level. |
 | <a id="analytics-mergerequests-metricmergedatfrom"></a>`metricMergedAtFrom` | [`Time`](#time) | Filter by merge timestamp. Start of the range. |
 | <a id="analytics-mergerequests-metricmergedatto"></a>`metricMergedAtTo` | [`Time`](#time) | Filter by merge timestamp. End of the range. |
+| <a id="analytics-mergerequests-projectfullpaths"></a>`projectFullPaths` | [`[ID!]`](#id) | Full paths of projects to aggregate data for. All projects must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `groupFullPaths`, at most 20 sources can be requested. Not supported at project level. |
 | <a id="analytics-mergerequests-stateid"></a>`stateId` | [`[String!]`](#string) | Filter by one or many states (opened, closed, merged, locked). |
 | <a id="analytics-mergerequests-targetbranch"></a>`targetBranch` | [`[String!]`](#string) | Filter by one or many target branches. |
 
@@ -34064,6 +34078,8 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="analytics-pipelines-finishedatfrom"></a>`finishedAtFrom` | [`Time`](#time) | Filter by pipeline finish timestamp. Start of the range. |
 | <a id="analytics-pipelines-finishedatto"></a>`finishedAtTo` | [`Time`](#time) | Filter by pipeline finish timestamp. End of the range. |
+| <a id="analytics-pipelines-groupfullpaths"></a>`groupFullPaths` | [`[ID!]`](#id) | Full paths of groups to aggregate data for. All groups must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `projectFullPaths`, at most 20 sources can be requested. Not supported at project level. |
+| <a id="analytics-pipelines-projectfullpaths"></a>`projectFullPaths` | [`[ID!]`](#id) | Full paths of projects to aggregate data for. All projects must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `groupFullPaths`, at most 20 sources can be requested. Not supported at project level. |
 | <a id="analytics-pipelines-ref"></a>`ref` | [`[String!]`](#string) | Filter by one or many pipeline refs. |
 | <a id="analytics-pipelines-source"></a>`source` | [`[String!]`](#string) | Filter by one or many pipeline sources. |
 | <a id="analytics-pipelines-startedatfrom"></a>`startedAtFrom` | [`Time`](#time) | Filter by pipeline start timestamp. Start of the range. |
@@ -35798,6 +35814,19 @@ Fields:
 | <a id="cdrollouttransition-reason"></a>`reason` | [`String`](#string) | Reason for the transition. |
 | <a id="cdrollouttransition-tostate"></a>`toState` | [`CdRolloutTransitionState!`](#cdrollouttransitionstate) | State the rollout transitioned to. |
 | <a id="cdrollouttransition-triggeredby"></a>`triggeredBy` | [`String`](#string) | Identifier of what triggered the transition. |
+
+### `CdRolloutUpdate`
+
+Live rollout update pushed to the client: new deployment status, and a Duo session to open when one applies.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cdrolloutupdate-reason"></a>`reason` | [`CdRolloutUpdateReason`](#cdrolloutupdatereason) | Why Duo should engage for the update (failed or created); null for a plain status update. |
+| <a id="cdrolloutupdate-rollout"></a>`rollout` | [`CdRollout!`](#cdrollout) | Rollout the update is for. |
+| <a id="cdrolloutupdate-rolloutenvironment"></a>`rolloutEnvironment` | [`CdRolloutEnvironment`](#cdrolloutenvironment) | Rollout environment whose state changed. Read its state and environment.tier to color the stage dot. |
+| <a id="cdrolloutupdate-thread"></a>`thread` | [`AiConversationsThread`](#aiconversationsthread) | Duo session to open in the sidebar for the update, when one applies. |
 
 ### `CdService`
 
@@ -51860,6 +51889,7 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="organization-analytics"></a>`analytics` {{< icon name="warning-solid" >}} | [`Analytics`](#analytics) | Introduced in GitLab 19.3. Status: Experiment. Analytics aggregation endpoints scoped to groups and projects of the organization. |
 | <a id="organization-avatarurl"></a>`avatarUrl` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 16.7. Status: Experiment. Avatar URL of the organization. |
 | <a id="organization-cdavailableagents"></a>`cdAvailableAgents` {{< icon name="warning-solid" >}} | [`ClusterAgentConnection`](#clusteragentconnection) | Introduced in GitLab 19.2. Status: Experiment. GitLab agents for Kubernetes available in the organization. |
 | <a id="organization-cdavailabledeploydrivers"></a>`cdAvailableDeployDrivers` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | Introduced in GitLab 19.2. Status: Experiment. Reference of continuous deployment deploy drivers available in the organization. |
@@ -64982,6 +65012,15 @@ State recorded in a continuous deployment rollout transition.
 | <a id="cdrollouttransitionstate-in_progress"></a>`IN_PROGRESS` | Rollout transition state in progress. |
 | <a id="cdrollouttransitionstate-paused"></a>`PAUSED` | Rollout transition state paused. |
 | <a id="cdrollouttransitionstate-pending"></a>`PENDING` | Rollout transition state pending. |
+
+### `CdRolloutUpdateReason`
+
+Reason a rollout update was pushed to the client.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="cdrolloutupdatereason-deployment_created"></a>`DEPLOYMENT_CREATED` | New rollout was created and Duo opened a session for it. |
+| <a id="cdrolloutupdatereason-deployment_failed"></a>`DEPLOYMENT_FAILED` | Rollout failed and Duo opened an investigation session. |
 
 ### `CdServiceHealth`
 

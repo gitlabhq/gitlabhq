@@ -57,6 +57,11 @@ module Gitlab
       # repo path, since it renders as a clickable URL in the CI log.
       DUO_INSTRUCTIONS_DOC = 'https://docs.gitlab.com/development/documentation/ai-instruction-files-documentation/'
 
+      # Path of the per-run dotenv report consumed by the
+      # `ai-principles-sync:report-failure` Slack job, so its message can name
+      # the failed principles instead of a generic "the job failed".
+      RUN_REPORT_PATH = 'tmp/ai-principles-run.env'
+
       # A thematic break (`---`, `***`, or `___` alone on a line) is Markdown
       # document scaffolding, not a rule, so `logical_units` treats it as a
       # unit boundary rather than comparable baseline content (observed with
@@ -98,6 +103,7 @@ module Gitlab
 
         if affected.empty?
           puts "\n#{Rainbow('All principles are up to date.').green}"
+          write_run_report([], 0)
           return
         end
 
@@ -109,12 +115,15 @@ module Gitlab
         end
 
         contents, failed = distill(affected, options)
+        write_run_report(failed, contents.size)
         return if contents.empty? && failed.empty?
 
         puts "\n#{Rainbow("#{contents.size} principle(s) updated.").green}"
-        abort_on_failures(failed)
 
-        publish(contents, affected, push: options[:push])
+        # Publish before checking failures so a failed principle doesn't discard successful ones.
+        publish(contents, affected, push: options[:push], failed: failed) if contents.any?
+
+        abort_on_failures(failed)
       end
 
       # Writes go straight to the working tree. In --push mode disk writes
@@ -339,19 +348,43 @@ module Gitlab
         [contents, failed]
       end
 
+      # Runs after publish (see #run) so a distillation failure still exits
+      # non-zero without discarding principles that succeeded.
       def abort_on_failures(failed)
         return if failed.empty?
 
         abort "\n#{Rainbow("ERROR: #{failed.size} principle(s) failed after retries: #{failed.join(', ')}").red}"
       end
 
-      def publish(contents, affected, push:)
+      # Emits the dotenv report read by the `ai-principles-sync:report-failure`
+      # Slack job. Written on every run that reaches distillation, including
+      # clean ones: the artifact is declared unconditionally in CI, so skipping
+      # the write would log `no matching files` / `No files to upload` on each
+      # green weekly run. `AI_PRINCIPLES_FAILED_NAMES` is empty on a clean run,
+      # which is what the Slack job tests to pick its wording.
+      #
+      # Best-effort: a write failure must not mask a distillation failure the
+      # caller may be about to abort on.
+      def write_run_report(failed, published_count)
+        path = Workspace.safe_join(RUN_REPORT_PATH)
+        FileUtils.mkdir_p(File.dirname(path))
+        File.write(path, <<~ENV_FILE)
+          AI_PRINCIPLES_FAILED_COUNT=#{failed.size}
+          AI_PRINCIPLES_FAILED_NAMES=#{failed.join(', ')}
+          AI_PRINCIPLES_PUBLISHED_COUNT=#{published_count}
+        ENV_FILE
+      rescue StandardError => e
+        warn Rainbow("  WARNING: could not write #{RUN_REPORT_PATH} (#{e.message}); " \
+          'the Slack alert will fall back to a generic message').yellow
+      end
+
+      def publish(contents, affected, push:, failed: [])
         unless push
           puts "\n#{Rainbow('[LOCAL]').cyan} Distillation complete. Pass --push to create a branch and MR."
           return
         end
 
-        create_branch_and_mr(contents, affected, manifest.auto_mr_config)
+        create_branch_and_mr(contents, affected, manifest.auto_mr_config, failed: failed)
       end
 
       def banner(message)

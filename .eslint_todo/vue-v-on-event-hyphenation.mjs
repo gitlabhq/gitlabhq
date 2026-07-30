@@ -206,7 +206,6 @@ export default {
     'ee/app/assets/javascripts/usage_quotas/code_suggestions/components/saas_add_on_eligible_user_list.vue',
     'ee/app/assets/javascripts/usage_quotas/code_suggestions/components/search_and_sort_bar.vue',
     'ee/app/assets/javascripts/usage_quotas/code_suggestions/components/self_managed_add_on_eligible_user_list.vue',
-    'ee/app/assets/javascripts/usage_quotas/pages/components/sort_container.vue',
     'ee/app/assets/javascripts/usage_quotas/seats/components/subscription_seats.vue',
     'ee/app/assets/javascripts/usage_quotas/seats/components/subscription_user_list.vue',
     'ee/app/assets/javascripts/usage_quotas/usage_billing/components/usage_by_user_tab.vue',

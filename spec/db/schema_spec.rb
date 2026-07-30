@@ -322,7 +322,7 @@ RSpec.describe 'Database schema',
       group_type_ci_runners: 17,
       instance_type_ci_runners: 17,
       issues: 35,
-      members: 19,
+      members: 20, # Decrement by 1 after the removal of a temporary index https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235857
       merge_requests: 29,
       namespaces: 23,
       notes: 16,

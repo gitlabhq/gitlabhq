@@ -15,7 +15,7 @@ title: Protected environments API
 Use this API to interact with [protected environments](../ci/environments/protected_environments.md).
 
 > [!note]
-> The protected environments API require CI/CD to be turned on for the project.
+> The protected environments API requires CI/CD to be turned on for the project.
 > If [CI/CD is turned off](../user/project/settings/_index.md#turn-off-cicd-for-a-project)
 > for the project, requests return `403 Forbidden`, even for users who otherwise
 > have permission to manage protected environments.

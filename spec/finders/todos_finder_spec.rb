@@ -6,7 +6,7 @@ RSpec.describe TodosFinder, feature_category: :notifications do
   describe '#execute' do
     let_it_be(:user) { create(:user) }
     let_it_be(:group) { create(:group) }
-    let_it_be(:project) { create(:project, :repository, namespace: group) }
+    let_it_be(:project) { create(:project, namespace: group) }
     let_it_be(:issue) { create(:issue, project: project) }
     let_it_be(:merge_request) { create(:merge_request, source_project: project) }
     let_it_be(:banned_user) { create(:user, :banned) }

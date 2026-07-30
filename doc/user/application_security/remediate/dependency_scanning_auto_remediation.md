@@ -29,6 +29,8 @@ description: Automatically open merge requests to fix vulnerable dependencies.
   `enable_dependency_bump_breaking_changes`. Disabled by default.
 - Go modules support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/604601)
   in GitLab 19.3.
+- Feature flag `dependency_management_auto_remediation`
+  [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/595588) in GitLab 19.3.
 
 {{< /history >}}
 
@@ -50,9 +52,6 @@ For the generally available roadmap, see [epic 19244](https://gitlab.com/groups/
 
 Prerequisites:
 
-- The `dependency_management_auto_remediation`
-  [feature flag](../../../administration/feature_flags/_index.md) must be enabled for the project.
-  This flag is enabled by default in GitLab 19.2.
 - [Dependency scanning](../dependency_scanning/_index.md) must be enabled
   and producing results.
 - The project must use a

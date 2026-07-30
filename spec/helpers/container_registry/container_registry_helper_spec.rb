@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe ContainerRegistry::ContainerRegistryHelper, feature_category: :container_registry, type: :helper do
   include Devise::Test::ControllerHelpers
 
-  let_it_be(:project) { build_stubbed(:project, :repository) }
+  let_it_be(:project) { build_stubbed(:project) }
   let_it_be(:user) { build_stubbed(:user) }
   let_it_be(:admin) { build_stubbed(:admin) }
   let_it_be(:container_expiration_policy) { build_stubbed(:container_expiration_policy, project: project) }

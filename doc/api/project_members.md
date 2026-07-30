@@ -113,7 +113,7 @@ Lists all project members viewable by the authenticated user, including inherite
 invited users, and permissions through ancestor groups.
 
 If a user is a member of this project and also of one or more ancestor groups,
-only its membership with the highest `access_level` is returned.
+only their membership with the highest `access_level` is returned.
 This represents the effective permission of the user.
 
 Members from an invited group are returned if either:

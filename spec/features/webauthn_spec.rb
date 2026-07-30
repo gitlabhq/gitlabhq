@@ -47,6 +47,13 @@ RSpec.describe 'Using WebAuthn Authenticators', :js, feature_category: :system_a
         end
 
         context 'with passkeys' do
+          it 'breadcrumbs back to the password and authentication page' do
+            visit new_profile_passkey_path
+
+            expect(find_by_testid('breadcrumb-links'))
+              .to have_link(s_('ProfilesAuthentication|Password and authentication'), href: profile_two_factor_auth_path)
+          end
+
           it 'allows a user to register multiple passkeys' do
             visit profile_two_factor_auth_path
 

@@ -250,7 +250,7 @@ For each `var` or `file_var`, a key and value are required.
 
 ### Add manual interaction to your pipeline
 
-[Manual jobs](../jobs/job_control.md#create-a-job-that-must-be-run-manually),
+[Manual jobs](../jobs/job_control.md#create-a-job-that-must-be-run-manually)
 allow you to require manual interaction before moving forward in the pipeline.
 
 You can do this straight from the pipeline graph. Select **Run** ({{< icon name="play" >}}) to execute that particular job.
@@ -477,7 +477,7 @@ In this example:
   despite being in the `test` stage.
 - `test-job1` depends on `build-job1`, and `test-job2` depends on both `build-job1` and `build-job2`,
   so both test jobs display in the second column.
-- Both `deploy` jobs depend on jobs in second column (which themselves depend on other earlier jobs),
+- Both `deploy` jobs depend on jobs in the second column (which themselves depend on other earlier jobs),
   so the deploy jobs display in the third column.
 
 When you hover over a job in the **Job dependencies** view, every job that must run
@@ -491,7 +491,7 @@ Pipeline mini graphs take less space and can tell you at a quick glance if all j
 or something failed. They show all related jobs for a single commit and the net result
 of each stage of your pipeline. You can quickly see what failed and fix it.
 
-The pipeline mini graph always group jobs by stage, and display throughout GitLab
+The pipeline mini graph always groups jobs by stage, and displays throughout GitLab
 when displaying pipeline or commit details.
 
 ![Pipeline mini graph](img/pipeline_mini_graph_v16_11.png)

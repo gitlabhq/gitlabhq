@@ -97,7 +97,7 @@ POST /groups/:id/epics/:epic_iid/epics/:child_epic_id
 | --------------- | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------ |
 | `id`            | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group      |
 | `epic_iid`      | integer        | yes      | The internal ID of the epic.                                                                                       |
-| `child_epic_id` | integer        | yes      | The global ID of the child epic. Internal ID can't be used because they can conflict with epics from other groups. |
+| `child_epic_id` | integer        | yes      | The global ID of the child epic. Internal ID can't be used because it can conflict with epics from other groups. |
 
 ```shell
 curl --request POST \
@@ -189,7 +189,7 @@ PUT /groups/:id/epics/:epic_iid/epics/:child_epic_id
 | ---------------- | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------ |
 | `id`             | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group.     |
 | `epic_iid`       | integer        | yes      | The internal ID of the epic.                                                                                       |
-| `child_epic_id`  | integer        | yes      | The global ID of the child epic. Internal ID can't be used because they can conflict with epics from other groups. |
+| `child_epic_id`  | integer        | yes      | The global ID of the child epic. Internal ID can't be used because it can conflict with epics from other groups. |
 | `move_before_id` | integer        | no       | The global ID of a sibling epic that should be placed before the child epic.                                       |
 | `move_after_id`  | integer        | no       | The global ID of a sibling epic that should be placed after the child epic.                                        |
 
@@ -248,7 +248,7 @@ DELETE /groups/:id/epics/:epic_iid/epics/:child_epic_id
 | --------------- | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------ |
 | `id`            | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group.     |
 | `epic_iid`      | integer        | yes      | The internal ID of the epic.                                                                                       |
-| `child_epic_id` | integer        | yes      | The global ID of the child epic. Internal ID can't be used because they can conflict with epics from other groups. |
+| `child_epic_id` | integer        | yes      | The global ID of the child epic. Internal ID can't be used because it can conflict with epics from other groups. |
 
 ```shell
 curl --request DELETE \

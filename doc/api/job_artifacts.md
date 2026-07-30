@@ -311,7 +311,7 @@ Supported attributes:
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and sends a single artifact file.
 
-If the job or artifact file are not found, returns [`404`](rest/troubleshooting.md#status-codes).
+If the job or artifact file is not found, returns [`404`](rest/troubleshooting.md#status-codes).
 
 Example request:
 

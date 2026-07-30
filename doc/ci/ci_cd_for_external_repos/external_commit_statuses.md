@@ -36,8 +36,8 @@ External job statuses appear in an `external` stage in the pipeline, separate fr
 
 When you post commit statuses from external systems:
 
-- If a `running` or `pending` job with the same `name` `user` and `sha` already exists in the target pipeline, GitLab updates its status.
-  - If a different user updates a job with the same `name` the job is retried. This creates a new job and hides the old job from the current pipeline.
+- If a `running` or `pending` job with the same `name`, `user`, and `sha` already exists in the target pipeline, GitLab updates its status.
+  - If a different user updates a job with the same `name`, the job is retried. This creates a new job and hides the old job from the current pipeline.
 - You can retry a job that is not `running` or `pending` with the same `name` but different `status` (for example, send `success` for a job marked `failed`). This creates a new job and hides the old job from the current pipeline.
 - Different external services can add jobs to the same SHA and pipeline by using a unique job `name`.
 

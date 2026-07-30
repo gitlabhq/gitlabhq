@@ -111,7 +111,7 @@ Example response:
 Lists all members of a specified group, including inherited members, invited users, and permissions through ancestor groups.
 
 If a user is a member of this group and also of one or more ancestor groups,
-only its membership with the highest `access_level` is returned.
+only their membership with the highest `access_level` is returned.
 This represents the effective permission of the user.
 
 Members from an invited group are returned if either:
@@ -571,7 +571,7 @@ Changes the membership state for a specified user in a group.
 
 When a user is over [the free user limit](../user/free_user_limit.md), changing their membership state
 for a group or project to `awaiting` or `active` can allow them to access that group or project. The change
-is applied to applied to all subgroups and projects.
+is applied to all subgroups and projects.
 
 ```plaintext
 PUT /groups/:id/members/:user_id/state

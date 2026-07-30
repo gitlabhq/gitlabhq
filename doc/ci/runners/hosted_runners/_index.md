@@ -147,7 +147,7 @@ If you use beta images, you can provide feedback by creating an issue.
 
 ### General availability
 
-A image becomes generally available after it completes the beta phase and is considered stable.
+An image becomes generally available after it completes the beta phase and is considered stable.
 To become generally available, the image must fulfill the following requirements:
 
 - Successful completion of a beta phase by resolving all reported significant bugs

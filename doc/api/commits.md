@@ -776,7 +776,7 @@ Example response:
 Creates a comment on a commit.
 
 To post a comment in a particular line of a particular file, you must specify
-the full commit SHA, the `path`, the `line`, and `line_type` should be `new`.
+the full commit SHA, the `path`, the `line`, and set `line_type` to `new`.
 
 The comment is added at the end of the last commit if at least one of the
 following cases is valid:
@@ -1051,7 +1051,7 @@ POST /projects/:id/statuses/:sha
 | `coverage`          | float             | No       | The total code coverage. |
 | `description`       | string            | No       | The short description of the status. Must be 255 characters or fewer. |
 | `name` or `context` | string            | No       | The label to differentiate this status from the status of other systems. Default value is `default`. |
-| `pipeline_id`       | integer           | No       | The ID of the pipeline to set status. Use in case of several pipeline on same SHA. |
+| `pipeline_id`       | integer           | No       | The ID of the pipeline to set status. Use in case of several pipelines on the same SHA. |
 | `ref`               | string            | No       | The `ref` (branch or tag) to which the status refers. Must be 255 characters or fewer. |
 | `target_url`        | string            | No       | The target URL to associate with this status. Must be 255 characters or fewer. |
 

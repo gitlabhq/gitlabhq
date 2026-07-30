@@ -750,8 +750,10 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
 
   describe '.create_branch_and_mr' do
     subject(:create_branch_and_mr) do
-      sync.create_branch_and_mr(distilled_contents, affected, auto_mr_cfg)
+      sync.create_branch_and_mr(distilled_contents, affected, auto_mr_cfg, failed: failed)
     end
+
+    let(:failed) { [] }
 
     let(:distilled_contents) do
       { 'qa' => "---\nsource_checksum: abc\n---\n# QA Principles\n" }
@@ -860,6 +862,24 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
       create_branch_and_mr
 
       expect(sync.workflow).to have_received(:post_json).twice
+    end
+
+    context 'when some principles failed distillation' do
+      let(:failed) { %w[other-principle] }
+
+      it 'notes the failed principles in the MR description' do
+        body = capture_post_body
+
+        expect(body[:description]).to include('Partial run').and include('other-principle')
+      end
+    end
+
+    context 'when no principles failed distillation' do
+      it 'omits the partial-run note from the MR description' do
+        body = capture_post_body
+
+        expect(body[:description]).not_to include('Partial run')
+      end
     end
 
     it 'does not stage the Duo review-instructions file on the tooling branch' do
@@ -1604,8 +1624,13 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
   end
 
   describe '.publish_tooling_branch' do
-    subject(:publish) do
-      sync.publish_tooling_branch('master', 'gitlab-org/gitlab', 'token', '20260702', auto_mr_cfg)
+    subject(:publish) { sync.publish_tooling_branch(ctx) }
+
+    let(:ctx) do
+      described_class::PublishContext.new(
+        base_branch: 'master', project_id: 'gitlab-org/gitlab', api_token: 'token',
+        date: '20260702', auto_mr_cfg: auto_mr_cfg, failed: []
+      )
     end
 
     let(:duo_dir) { File.join(tmpdir, '.gitlab', 'duo') }

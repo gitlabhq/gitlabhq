@@ -133,7 +133,7 @@ POST /groups/:id/labels
 | `id` | integer or string | yes | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group |
 | `name`        | string  | yes      | The name of the label        |
 | `color`       | string  | yes      | The color of the label given in 6-digit hex notation with leading '#' sign (for example, #FFAABB) or one of the [CSS color names](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords) |
-| `description` | string  | no       | The description of the label, |
+| `description` | string  | no       | The description of the label. |
 | `archived`    | boolean | no       | If `true`, marks the label as archived. Default value: `false`. |
 
 ```shell

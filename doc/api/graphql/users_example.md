@@ -54,7 +54,7 @@ You can query a subset of users in a GitLab instance by using:
 > [The GraphQL API returns a GlobalID, rather than a standard ID](getting_started.md#queries-and-mutations).
 > It also expects a GlobalID as an input rather than a single integer.
 
-This query returns the specified information for the three users with the listed username.
+This query returns the specified information for the three users with the listed usernames.
 
 - Because GraphiQL uses the session token to authorize access to resources,
   the output is limited to the projects and groups accessible to the currently authenticated user.

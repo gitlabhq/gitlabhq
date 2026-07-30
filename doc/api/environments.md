@@ -83,7 +83,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/environments/1"
 ```
 
-Example of response
+Example response:
 
 ```json
 {
@@ -222,7 +222,7 @@ POST /projects/:id/environments
 | `flux_resource_path`   | string         | no       | The Flux resource path to associate with this environment. This must be the full resource path. For example, `helm.toolkit.fluxcd.io/v2/namespaces/gitlab-agent/helmreleases/gitlab-agent`. |
 | `auto_stop_setting`    | string         | no       | The auto stop setting for the environment. Allowed values are `always` or `with_action`. |
 
-If successful, returns `201`, returns `400` for wrong parameters.
+If successful, returns `201`. Returns `400` for wrong parameters.
 
 ```shell
 curl --data "name=deploy&external_url=https://deploy.gitlab.example.com" \

@@ -6,17 +6,9 @@ export const initAdminDeployKeysTable = () => {
 
   if (!el) return false;
 
-  const { editPath, deletePath, createPath, emptyStateSvgPath } = el.dataset;
-
   return new Vue({
     el,
     name: 'DeployKeysTableRoot',
-    provide: {
-      editPath,
-      deletePath,
-      createPath,
-      emptyStateSvgPath,
-    },
     render(createElement) {
       return createElement(DeployKeysTable);
     },

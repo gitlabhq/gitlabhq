@@ -14,7 +14,7 @@ title: Dashboard for Kubernetes
 {{< /details >}}
 
 Use the dashboard for Kubernetes to understand the status of your clusters with an intuitive visual interface.
-The dashboard works with every connected Kubernetes cluster, whether you deployed them
+The dashboard works with every connected Kubernetes cluster, whether you deployed it
 with CI/CD or GitOps.
 
 ![Dashboard showing the status of Kubernetes pods and services.](img/kubernetes_summary_ui_v17_2.png)

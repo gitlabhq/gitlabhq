@@ -6,24 +6,23 @@ module Gitlab
       module Graphql
         module Mounter
           def mount_aggregation_engine(engine, **options, &block)
-            opts = options
-            opts[:field_name] ||= :aggregation
-            opts[:types_prefix] ||= opts[:field_name]
+            options[:field_name] ||= :aggregation
+            options[:types_prefix] ||= options[:field_name]
 
             field_options = {
-              description: opts[:description],
+              description: options[:description],
               null: true,
               resolver_method: :object,
-              authorize: opts[:authorize],
-              resolver: Resolvers::Analytics::Aggregation::EngineResolver.build(engine, **opts, &block)
+              authorize: options[:authorize],
+              resolver: Resolvers::Analytics::Aggregation::EngineResolver.build(engine, **options, &block)
             }
-            field_options[:experiment] = opts[:experiment] if opts.key?(:experiment)
+            field_options[:experiment] = options[:experiment] if options.key?(:experiment)
 
-            if opts[:granular_authorization_opts]
-              field_options[:directives] = granular_scope_directive(**opts[:granular_authorization_opts])
+            if options[:granular_authorization_opts]
+              field_options[:directives] = granular_scope_directive(**options[:granular_authorization_opts])
             end
 
-            field opts[:field_name], **field_options
+            field options[:field_name], **field_options
           end
         end
       end

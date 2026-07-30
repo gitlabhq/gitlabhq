@@ -48,7 +48,7 @@ Parameters:
 | `search_title`              | string | no | Return only milestones with a title matching the provided string (case-insensitive). Multiple terms can be provided, separated by an escaped space, either `+` or `%20`, and will be ANDed together. Example: `17.4+17.5` will match substrings `17.4` and `17.5` (in any order). |
 | `include_parent_milestones` | boolean | no | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/433298) in GitLab 16.7. Use `include_ancestors` instead. |
 | `include_ancestors`         | boolean | no | Include milestones for all parent groups. |
-| `include_descendants`       | boolean | no | Include milestones for group and its descendants. |
+| `include_descendants`       | boolean | no | Include milestones for the group and its descendants. |
 | `updated_before`            | datetime | no | Return only milestones updated before the given datetime. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `updated_after`             | datetime | no | Return only milestones updated after the given datetime. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `containing_date`           | datetime | no | Return only milestones where `start_date <= containing_date <= due_date`. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |

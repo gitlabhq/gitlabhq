@@ -2433,7 +2433,6 @@ Layout/LineLength:
     - 'spec/graphql/types/tree/submodule_type_spec.rb'
     - 'spec/graphql/types/tree/tree_entry_type_spec.rb'
     - 'spec/graphql/types/work_item_id_type_spec.rb'
-    - 'spec/helpers/admin/deploy_key_helper_spec.rb'
     - 'spec/helpers/application_helper_spec.rb'
     - 'spec/helpers/auto_devops_helper_spec.rb'
     - 'spec/helpers/award_emoji_helper_spec.rb'

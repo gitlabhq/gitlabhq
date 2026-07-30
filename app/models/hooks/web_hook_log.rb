@@ -61,10 +61,6 @@ class WebHookLog < ApplicationRecord
     WebHookLog::MAX_RECENT_DAYS.days.ago.beginning_of_day
   end
 
-  def outside_recent_window?
-    created_at.before?(self.class.max_recent_days_ago)
-  end
-
   def success?
     response_status =~ /^2/
   end

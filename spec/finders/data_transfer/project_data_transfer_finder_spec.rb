@@ -48,7 +48,7 @@ RSpec.describe DataTransfer::ProjectDataTransferFinder, feature_category: :sourc
     end
 
     context 'when there are no results for specified project' do
-      let_it_be(:project_3) { create(:project, :repository) }
+      let_it_be(:project_3) { create(:project) }
       let(:subject) { described_class.new(project: project_3, from: from_date, to: to_date, user: user) }
 
       it 'returns nothing' do

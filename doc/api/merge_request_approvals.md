@@ -39,7 +39,7 @@ Approves the specified merge request. The currently authenticated user must be a
 
 The `sha` parameter ensures you're approving the current version of the merge request. If defined, the
 value must match the merge request's HEAD commit SHA. A mismatch returns a `409 Conflict` response.
-This matches the behavior [accepting a merge request](merge_requests.md#merge-a-merge-request).
+This matches the behavior of [accepting a merge request](merge_requests.md#merge-a-merge-request).
 
 ```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/approve
@@ -663,7 +663,7 @@ Supported attributes:
 
 | Attribute                           | Type              | Required | Description |
 |-------------------------------------|-------------------|----------|-------------|
-| `approval_rule_id`                  | integer           | Yes      | The ID of a approval rule. |
+| `approval_rule_id`                  | integer           | Yes      | The ID of an approval rule. |
 | `id`                                | integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a project. |
 | `applies_to_all_protected_branches` | boolean           | No       | If `true`, applies the rule to all protected branches and ignores the `protected_branch_ids` attribute. |
 | `approvals_required`                | integer           | No       | The number of required approvals for this rule. |
@@ -769,7 +769,7 @@ Supported attributes:
 | Attribute          | Type              | Required | Description |
 |--------------------|-------------------|----------|-------------|
 | `id`               | integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a project. |
-| `approval_rule_id` | integer           | Yes      | The ID of a approval rule. |
+| `approval_rule_id` | integer           | Yes      | The ID of an approval rule. |
 
 ## Approval rules for a merge request
 

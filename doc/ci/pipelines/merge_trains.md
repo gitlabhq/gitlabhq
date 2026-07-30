@@ -381,7 +381,7 @@ the merge train drops your merge request automatically. Common causes include:
 - A new conversation thread that is unresolved, when [all threads must be resolved](../../user/project/merge_requests/_index.md#prevent-merge-unless-all-threads-are-resolved)
   is enabled.
 
-You can find reason the merge request was dropped from the merge train in the system
+You can find the reason the merge request was dropped from the merge train in the system
 notes. Check the **Activity** section in the **Overview** tab for a message similar to:
 `User removed this merge request from the merge train because ...`
 

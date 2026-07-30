@@ -27,7 +27,7 @@ To complete this tutorial:
 
 ## Add the identity provider
 
-Create GitLab as a IAM OIDC provider in AWS following these [instructions](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_oidc.html).
+Create GitLab as an IAM OIDC provider in AWS following these [instructions](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_oidc.html).
 
 Include the following information:
 
@@ -167,7 +167,7 @@ accessible, enabling OpenID Connect configuration for the instance:
    - Host the OpenID configuration for your instance in an S3 file. The configuration is available at
      `/.well-known/openid-configuration`, like `http://gitlab.example.com/.well-known/openid-configuration`.
      Update the `issuer:` and `jwks_uri:` values in the configuration file to point to the publicly available locations.
-   - Host the public keys for your instance URL in an S3 file. The keys are available at available at
+   - Host the public keys for your instance URL in an S3 file. The keys are available at
      `/oauth/discovery/keys`, like `http://gitlab.example.com/oauth/discovery/keys`.
 
    For example:

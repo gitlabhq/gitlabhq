@@ -465,7 +465,7 @@ RSpec.describe MarkupHelper, feature_category: :markdown do
 
   describe '#first_line_in_markdown' do
     shared_examples_for 'common markdown examples' do
-      let(:project_base) { build(:project, :repository) }
+      let(:project_base) { build(:project, :small_repo) }
 
       it 'displays inline code' do
         object = create_object('Text with `inline code`')
@@ -516,7 +516,7 @@ RSpec.describe MarkupHelper, feature_category: :markdown do
       context 'custom emoji' do
         it 'includes fallback-src data attribute' do
           group = create(:group)
-          project = create(:project, :repository, group: group)
+          project = create(:project, :small_repo, group: group)
           custom_emoji = create(:custom_emoji, group: group)
 
           object = create_object(":#{custom_emoji.name}:", project: project)

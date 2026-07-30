@@ -3388,6 +3388,13 @@ arm-sql-job:
 
 - `image:docker:platform` maps to the [`docker pull --platform` option](https://docs.docker.com/reference/cli/docker/image/pull/#options).
 - `image:docker:user` maps to the [`docker run --user` option](https://docs.docker.com/reference/cli/docker/container/run/#options).
+- With the Docker executor, to run an image built for a different architecture than
+  the runner host, the host must have emulation support registered with `binfmt_misc`.
+  For example, to [install QEMU emulators](https://docs.docker.com/build/building/multi-platform/#install-qemu-manually),
+  run `docker run --privileged --rm tonistiigi/binfmt --install all` on the host.
+  Without emulation support, the job fails with an `exec format error` message.
+  In GitLab Runner 19.1 and earlier, a `platform` value that did not match the host could
+  be silently ignored, and the container ran with the host architecture instead.
 
 ---
 
@@ -6315,6 +6322,9 @@ arm-sql-job:
 
 - `services:docker:platform` maps to the [`docker pull --platform` option](https://docs.docker.com/reference/cli/docker/image/pull/#options).
 - `services:docker:user` maps to the [`docker run --user` option](https://docs.docker.com/reference/cli/docker/container/run/#options).
+- With the Docker executor, to run a service image built for a different architecture than
+  the runner host, the host must have emulation support registered with `binfmt_misc`.
+  For more information, see [`image:docker`](#imagedocker).
 
 ---
 

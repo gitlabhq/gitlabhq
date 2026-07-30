@@ -188,7 +188,7 @@ data:
 
 ### Pod name is not visible in runner details page
 
-When you use the new registration workflow to register your runners with Helm chart, the pod name doesn't appear
+When you use the new registration workflow to register your runners with the Helm chart, the pod name doesn't appear
 on the runner details page.
 For more information, see [issue 423523](https://gitlab.com/gitlab-org/gitlab/-/issues/423523).
 

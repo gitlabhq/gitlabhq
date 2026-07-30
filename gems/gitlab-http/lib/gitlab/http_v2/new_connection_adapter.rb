@@ -54,6 +54,10 @@ module Gitlab
           net_adapter.instance_variable_set(variable, http.instance_variable_get(variable))
         end
 
+        # Cap to one candidate per family so N black-holed IPs cannot force N * open_timeout.
+        net_adapter.gitlab_candidate_addresses =
+          result.ip_addresses&.group_by { |ip| ip.include?(':') }&.values&.map(&:first)
+
         net_adapter
       end
 

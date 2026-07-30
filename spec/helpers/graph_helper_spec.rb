@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe GraphHelper do
   describe '#get_refs' do
-    let(:project) { create(:project, :repository) }
+    let(:project) { create(:project, :small_repo) }
     let(:commit)  { project.commit("master") }
     let(:graph) { Network::Graph.new(project, 'master', commit, '') }
 

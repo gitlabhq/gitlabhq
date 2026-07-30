@@ -150,7 +150,7 @@ RSpec.describe NotesFinder, :with_current_organization, feature_category: :team_
     end
 
     context 'for target type' do
-      let_it_be(:project) { create(:project, :repository, maintainers: user) }
+      let_it_be(:project) { create(:project, :small_repo, maintainers: user) }
       let_it_be(:note1) { create :note_on_issue, project: project }
       let_it_be(:note2) { create :note_on_commit, project: project }
 
@@ -429,7 +429,7 @@ RSpec.describe NotesFinder, :with_current_organization, feature_category: :team_
     end
 
     context 'for a commit target' do
-      let_it_be(:project) { create(:project, :repository, maintainers: user) }
+      let_it_be(:project) { create(:project, :small_repo, maintainers: user) }
       let(:commit) { project.commit }
       let(:params) { { project: project, target_type: 'commit', target_id: commit.id } }
 

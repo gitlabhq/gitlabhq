@@ -49,7 +49,7 @@ curl --header "PRIVATE-TOKEN: <personal_access_token>" \
 
 This writes the downloaded file to `mypkg-1.0-SNAPSHOT.jar` in the current directory.
 
-## Download a package file for a group-level
+## Download a package file for a group
 
 Downloads a specified Maven package file for a group.
 

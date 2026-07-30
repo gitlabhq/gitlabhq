@@ -40,11 +40,11 @@ For example, the `X-Requested-With` header can't be used for preflight requests.
 GitLab supports the following authorization flows:
 
 - **Authorization code with [Proof Key for Code Exchange (PKCE)](https://www.rfc-editor.org/rfc/rfc7636)**:
-  Most secure. Without PKCE, you'd have to include client secrets on mobile clients,
-  and is recommended for both client and server apps.
+  Most secure. Without PKCE, you'd have to include client secrets on mobile clients.
+  This flow is recommended for both client and server apps.
 - **Authorization code**: Secure and common flow. Recommended option for secure
   server-side apps.
-- **Device Authorization Grant** (GitLab 17.1 and later) Secure flow oriented toward devices without browser access. Requires a secondary device to complete the authorization flow.
+- **Device Authorization Grant** (GitLab 17.1 and later): Secure flow oriented toward devices without browser access. Requires a secondary device to complete the authorization flow.
 
 The draft specification for [OAuth 2.1](https://oauth.net/2.1/) specifically omits both the
 Implicit grant and Resource Owner Password Credentials flows.
@@ -96,7 +96,7 @@ from the user is a technical impossibility.
 
 Before starting the flow, generate the `STATE`, the `CODE_VERIFIER` and the `CODE_CHALLENGE`.
 
-- The `STATE` a value that can't be predicted used by the client to maintain
+- The `STATE` is an unpredictable value used by the client to maintain
   state between the request and callback. It should also be used as a CSRF token.
 - The `CODE_VERIFIER` is a random string, between 43 and 128 characters in length,
   which use the characters `A-Z`, `a-z`, `0-9`, `-`, `.`, `_`, and `~`.

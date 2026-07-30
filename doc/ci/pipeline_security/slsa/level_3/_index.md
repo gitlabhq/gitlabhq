@@ -42,7 +42,7 @@ These conditions need to be met for the attestation of any container or artifact
 
 To generate an attestation for all artifacts produced by a build:
 
-- Set the `ATTEST_BUILD_ARTIFACTS` CI/CD variable is `true`.
+- Set the `ATTEST_BUILD_ARTIFACTS` CI/CD variable to `true`.
 - The artifact must not exceed 100 MB.
 
 For example, GitLab generates an attestation for the artifacts in this CI/CD job:

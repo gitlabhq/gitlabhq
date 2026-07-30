@@ -51,7 +51,7 @@ mutation {
 
 You can optionally specify your own verification token (instead of the default GitLab-generated one) using the GraphQL
 `externalAuditEventDestinationCreate`
-mutation. Verification token length must be within 16 to 24 characters and trailing whitespace are not trimmed. You
+mutation. Verification token length must be within 16 to 24 characters and trailing whitespace is not trimmed. You
 should set a cryptographically random and unique value. For example:
 
 ```graphql
@@ -73,7 +73,7 @@ mutation {
 
 You can optionally specify your own destination name (instead of the default GitLab-generated one) using the GraphQL
 `externalAuditEventDestinationCreate`
-mutation. Name length must not exceed 72 characters and trailing whitespace are not trimmed. This value should be unique scoped to a group. For example:
+mutation. Name length must not exceed 72 characters and trailing whitespace is not trimmed. This value should be unique scoped to a group. For example:
 
 ```graphql
 mutation {

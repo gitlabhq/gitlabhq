@@ -2393,12 +2393,6 @@ msgstr ""
 msgid "A new Auto DevOps pipeline has been created, go to the Pipelines page for details"
 msgstr ""
 
-msgid "A new Release %{tag} for %{name} was published. Visit the %{release_link_start}Releases page%{release_link_end} to read more about it."
-msgstr ""
-
-msgid "A new Release %{tag} for %{name} was published. Visit the Releases page to read more about it:"
-msgstr ""
-
 msgid "A new email address has been added to your GitLab account: %{email}"
 msgstr ""
 
@@ -2409,6 +2403,12 @@ msgid "A new personal access token, named %{code_start}%{token_name}%{code_end},
 msgstr ""
 
 msgid "A new personal access token, named %{token_name}, has been created."
+msgstr ""
+
+msgid "A new release for %{name} was published."
+msgstr ""
+
+msgid "A new release for %{project_link_start}%{project_name}%{project_link_end} was published."
 msgstr ""
 
 msgid "A non-confidential epic cannot be assigned to a confidential parent epic"
@@ -8128,6 +8128,9 @@ msgstr ""
 msgid "AggregationEngine|Invalid value(s) for parameter `%{param}`: %{values}"
 msgstr ""
 
+msgid "AggregationEngine|The following sources are not accessible: %{source_ids}"
+msgstr ""
+
 msgid "AggregationEngine|at least one metric is required"
 msgstr ""
 
@@ -11936,9 +11939,6 @@ msgid "Assertion consumer service URL"
 msgstr ""
 
 msgid "Assets"
-msgstr ""
-
-msgid "Assets:"
 msgstr ""
 
 msgid "Assign"
@@ -62986,9 +62986,6 @@ msgstr ""
 msgid "Release notes"
 msgstr ""
 
-msgid "Release notes:"
-msgstr ""
-
 msgid "Release title"
 msgstr ""
 
@@ -86286,6 +86283,12 @@ msgid "VisibilityLevel|This visibility level is not allowed because the parent g
 msgstr ""
 
 msgid "VisibilityLevel|Unknown"
+msgstr ""
+
+msgid "Visit the %{releases_link_start}Releases page%{releases_link_end} to read more about it."
+msgstr ""
+
+msgid "Visit the Releases page to read more about it:"
 msgstr ""
 
 msgid "Visual Studio"

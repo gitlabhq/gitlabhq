@@ -438,7 +438,7 @@ RSpec.describe SearchHelper, :with_current_organization, feature_category: :glob
       end
 
       context "with a current project" do
-        let(:project) { create(:project, :repository) }
+        let(:project) { create(:project, :small_repo) }
 
         before do
           @project = project
@@ -474,7 +474,7 @@ RSpec.describe SearchHelper, :with_current_organization, feature_category: :glob
         end
 
         context 'when user has project access' do
-          let(:project) { create(:project, :repository, namespace: user.namespace) }
+          let(:project) { create(:project, namespace: user.namespace) }
 
           before do
             @project = project
@@ -914,7 +914,7 @@ RSpec.describe SearchHelper, :with_current_organization, feature_category: :glob
   describe '#repository_ref' do
     using RSpec::Parameterized::TableSyntax
 
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project) }
     let(:default_branch) { project.default_branch }
     let(:params) { { repository_ref: ref, project_id: project_id } }
 

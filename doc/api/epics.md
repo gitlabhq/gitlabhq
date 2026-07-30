@@ -20,7 +20,7 @@ description: Review the official GitLab API documentation for Epics. Discover ho
 > Work Items API instead. For more information, see [migrate epic APIs to work items](graphql/epic_work_items_api_migration_guide.md).
 > This change is a breaking change.
 
-Every API call to epic must be authenticated.
+Every API call to epics must be authenticated.
 
 If a user is not a member of a private group, a `GET` request on that group results in a `404` status code.
 
@@ -39,7 +39,7 @@ The [epic issues API](epic_issues.md) allows you to interact with issues associa
 ## Milestone dates integration
 
 Because start date and due date can be dynamically sourced from related issue milestones,
-additional fields are shown when user has edit permission. These include two boolean
+additional fields are shown when the user has edit permission. These include two boolean
 fields `start_date_is_fixed` and `due_date_is_fixed`, and four date fields `start_date_fixed`,
 `start_date_from_inherited_source`, `due_date_fixed` and `due_date_from_inherited_source`.
 
@@ -70,7 +70,7 @@ GET /groups/:id/epics?state=opened
 | `id`                | integer or string   | yes        | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group               |
 | `author_id`         | integer          | no         | Return epics created by the given user `id`                                                                                 |
 | `author_username`   | string           | no         | Return epics created by the user with the given `username`. |
-| `labels`            | string           | no         | Return epics matching a comma-separated list of labels names. Label names from the epic group or a parent group can be used |
+| `labels`            | string           | no         | Return epics matching a comma-separated list of label names. Label names from the epic group or a parent group can be used |
 | `with_labels_details` | boolean        | no         | If `true`, response returns more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. |
 | `order_by`          | string           | no         | Return epics ordered by `created_at`, `updated_at`, or `title` fields. Default is `created_at`                              |
 | `sort`              | string           | no         | Return epics sorted in `asc` or `desc` order. Default is `desc`                                                             |

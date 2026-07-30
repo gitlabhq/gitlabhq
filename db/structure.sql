@@ -51613,6 +51613,8 @@ CREATE INDEX temp_index_on_users_where_dark_theme ON users USING btree (id) WHER
 
 CREATE UNIQUE INDEX term_agreements_unique_index ON term_agreements USING btree (user_id, term_id);
 
+CREATE INDEX tmp_idx_members_on_access_level_source_type_requested_at_id ON members USING btree (id) WHERE ((access_level = 5) AND ((source_type)::text = 'Namespace'::text) AND (requested_at IS NULL));
+
 CREATE INDEX tmp_idx_orphaned_approval_project_rules ON approval_project_rules USING btree (id) WHERE ((report_type = ANY (ARRAY[2, 4])) AND (security_orchestration_policy_configuration_id IS NULL));
 
 CREATE INDEX tmp_idx_p_sent_notifications_on_noteable_id_for_epics ON ONLY p_sent_notifications USING btree (noteable_id) WHERE (noteable_type = 'Epic'::text);

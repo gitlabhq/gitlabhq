@@ -322,7 +322,7 @@ export default {
           :dragged-item-id="draggedItemId"
           :focused="list.id === effectiveFocusedListId"
           @drag-start="handleDragStart"
-          @dragStop="handleDragStop"
+          @drag-stop="handleDragStop"
           @highlight-list="highlightList"
           @setActiveList="$emit('setActiveList', $event)"
           @set-filters="$emit('set-filters', $event)"

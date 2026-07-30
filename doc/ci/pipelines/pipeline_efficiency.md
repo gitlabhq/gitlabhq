@@ -39,7 +39,7 @@ heavily influenced by the:
 - The ["critical path"](#needs-dependency-visualization), which represents
   the minimum and maximum pipeline duration.
 
-Additional points to pay attention relate to [GitLab Runners](../runners/_index.md):
+Additional points to pay attention to relate to [GitLab Runners](../runners/_index.md):
 
 - Availability of the runners and the resources they are provisioned with.
 - Build dependencies, their installation time, and storage space requirements.
@@ -109,7 +109,7 @@ For example, the [GitLab CI Pipelines Exporter](https://github.com/mvisonneau/gi
 for Prometheus fetches metrics from the API and pipeline events. It can check branches in projects automatically
 and get the pipeline status and duration. In combination with a Grafana dashboard,
 this helps build an actionable view for your operations team. Metric graphs can also
-be embedded into incidents making problem resolving easier. Additionally, it can also export metrics about jobs and environments.
+be embedded into incidents making problem resolution easier. Additionally, it can also export metrics about jobs and environments.
 
 If you use the GitLab CI Pipelines Exporter, you should start with the [example configuration](https://github.com/mvisonneau/gitlab-ci-pipelines-exporter/blob/main/docs/configuration_syntax.md).
 
@@ -239,7 +239,7 @@ Methods to reduce Docker image size:
   to analyze and shrink images.
 
 To simplify Docker image management, you can create a dedicated group for managing
-[Docker images](../docker/_index.md) and test, build and publish them with CI/CD pipelines.
+[Docker images](../docker/_index.md), and test, build, and publish them with CI/CD pipelines.
 
 ## Test, document, and learn
 
@@ -252,11 +252,11 @@ It can help to document the pipeline design and architecture. You can do this wi
 repository.
 
 Document CI/CD pipeline problems and incidents in issues, including research done
-and solutions found. This helps onboarding new team members, and also helps
+and solutions found. This helps onboard new team members, and also helps
 identify recurring problems with CI pipeline efficiency.
 
 ### Related topics
 
 - [CI expert agent](../../user/duo_agent_platform/agents/foundational_agents/ci_expert_agent.md)
 - GitLab.com Monitoring Handbook
-- [Buildings dashboards for operational visibility](https://aws.amazon.com/builders-library/building-dashboards-for-operational-visibility/)
+- [Building dashboards for operational visibility](https://aws.amazon.com/builders-library/building-dashboards-for-operational-visibility/)

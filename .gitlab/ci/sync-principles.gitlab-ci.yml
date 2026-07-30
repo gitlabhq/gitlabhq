@@ -86,6 +86,12 @@ ai-principles-sync:
     expire_in: 7d
     paths:
       - .ai/principles/distilled/
+    reports:
+      # Lets ai-principles-sync:report-failure name the failed principles in
+      # its Slack message. Written by Sync#write_run_report on every run that
+      # reaches distillation, including clean ones, so the uploader always has
+      # a file to pick up (AI_PRINCIPLES_FAILED_NAMES is empty on a clean run).
+      dotenv: tmp/ai-principles-run.env
 
 # Daily job that reconciles the Duo Code Review instruction fences in
 # .gitlab/duo/mr-review-instructions.yaml with the committed distilled
@@ -142,16 +148,32 @@ ai-principles-reconcile-fences:
 # Reports a failure of ai-principles-sync to Slack so the team can
 # investigate before principles go stale. Uses scripts/slack which
 # gracefully no-ops when CI_SLACK_WEBHOOK_URL is unset.
+#
+# AI_PRINCIPLES_FAILED_* / AI_PRINCIPLES_PUBLISHED_COUNT come from the
+# upstream job's dotenv report (see Sync#write_run_report). The report is
+# written on every run that reaches distillation, but FAILED_NAMES is only
+# non-empty when individual principles failed after retries, so the message
+# falls back to the generic wording for any other failure mode (job timeout,
+# an early crash before the report is written, a publish/API failure).
 ai-principles-sync:report-failure:
   stage: ai-gateway
-  needs: ['ai-principles-sync']
+  # `dependencies` is deliberately NOT set to [] here: that would block the
+  # dotenv report and lose the failed-principle names.
+  needs:
+    - job: ai-principles-sync
+      artifacts: true
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine:latest
-  dependencies: []
   cache: {}
   before_script:
     - apk add --no-cache curl
   script:
-    - scripts/slack ai-harness-gitlab-monolith "☠️ Weekly AI principles distillation (\`ai-principles-sync\`) failed. Distilled principles may be stale. See ${CI_PIPELINE_URL}" ci_failing "GitLab Bot"
+    - |
+      if [ -n "${AI_PRINCIPLES_FAILED_NAMES}" ]; then
+        MSG="☠️ Weekly AI principles distillation (\`ai-principles-sync\`) partially failed: ${AI_PRINCIPLES_FAILED_COUNT} principle(s) failed after retries (${AI_PRINCIPLES_FAILED_NAMES}); ${AI_PRINCIPLES_PUBLISHED_COUNT} published. The failed principles stay stale until the next scheduled run. See ${CI_PIPELINE_URL}"
+      else
+        MSG="☠️ Weekly AI principles distillation (\`ai-principles-sync\`) failed. Distilled principles may be stale. See ${CI_PIPELINE_URL}"
+      fi
+      scripts/slack ai-harness-gitlab-monolith "${MSG}" ci_failing "GitLab Bot"
   allow_failure: true
   rules:
     - !reference ['.ai-principles-sync:rules:scheduled-on-failure', rules]

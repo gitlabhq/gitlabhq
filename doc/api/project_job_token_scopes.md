@@ -112,7 +112,7 @@ Supported attributes:
 
 This endpoint supports [offset-based pagination](rest/_index.md#offset-based-pagination).
 
-If successful, returns [`200`](rest/troubleshooting.md#status-codes) and a list of project with limited fields for each project.
+If successful, returns [`200`](rest/troubleshooting.md#status-codes) and a list of projects with limited fields for each project.
 
 Example request:
 

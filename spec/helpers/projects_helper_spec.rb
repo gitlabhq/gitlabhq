@@ -985,7 +985,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
   describe '#fork_button_data_attributes' do
     using RSpec::Parameterized::TableSyntax
 
-    let_it_be(:project) { create(:project, :repository, :public) }
+    let_it_be(:project) { create(:project, :small_repo, :public) }
 
     project_forks_path = '/project/forks'
     project_new_fork_path = '/project/new/fork'
@@ -1650,17 +1650,13 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     subject { helper.can_view_branch_rules? }
 
     context 'when user is a maintainer' do
-      before do
-        project.add_maintainer(user)
-      end
+      before_all { project.add_maintainer(user) }
 
       it { is_expected.to be_truthy }
     end
 
     context 'when user is a developer' do
-      before do
-        project.add_developer(user)
-      end
+      before_all { project.add_developer(user) }
 
       it { is_expected.to be_falsey }
     end
@@ -1676,17 +1672,13 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
 
     context 'when user is a developer on the project' do
-      before do
-        project.add_developer(user)
-      end
+      before_all { project.add_developer(user) }
 
       it { is_expected.to be_truthy }
     end
 
     context 'when user is a reporter on the project' do
-      before do
-        project.add_reporter(user)
-      end
+      before_all { project.add_reporter(user) }
 
       it { is_expected.to be_falsey }
     end

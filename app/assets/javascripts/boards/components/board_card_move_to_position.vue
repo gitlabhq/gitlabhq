@@ -32,7 +32,7 @@ export default {
       required: true,
     },
   },
-  emits: ['moveToPosition'],
+  emits: ['move-to-position'],
   computed: {
     // eslint-disable-next-line vue/no-unused-properties -- tracking() is required by Tracking mixin.
     tracking() {
@@ -78,7 +78,7 @@ export default {
       });
     },
     moveToPosition({ positionInList }) {
-      this.$emit('moveToPosition', positionInList);
+      this.$emit('move-to-position', positionInList);
     },
     selectMoveAction({ text }) {
       if (text === BOARD_CARD_MOVE_TO_POSITIONS_START_OPTION) {

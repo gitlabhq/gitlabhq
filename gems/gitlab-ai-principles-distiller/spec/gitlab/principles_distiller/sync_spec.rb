@@ -82,6 +82,47 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
         expect(updated).to be_empty
         expect(failed).to eq(['qa'])
       end
+
+      it 'writes no file (so its existing source_checksum, if any, is left untouched)' do
+        sync.distill_and_write_principles(affected)
+
+        expect(File.exist?(File.join(principles_dir, 'qa.md'))).to be false
+      end
+    end
+
+    context 'when one principle succeeds and another fails' do
+      let(:manifest) do
+        {
+          'principles' => {
+            'qa' => { 'sources' => [{ 'path' => 'doc/development/testing_guide/best_practices.md' }] },
+            'other' => { 'sources' => [{ 'path' => 'doc/development/other.md' }] }
+          }
+        }
+      end
+
+      let(:affected) do
+        {
+          'qa' => { config: manifest.dig('principles', 'qa'), changed_sources: [] },
+          'other' => { config: manifest.dig('principles', 'other'), changed_sources: [] }
+        }
+      end
+
+      before do
+        allow(sync).to receive(:parallel_distill).and_return(
+          'qa' => [existing_content, distilled_content],
+          'other' => [nil, nil]
+        )
+      end
+
+      it 'writes and reports only the successful principle, leaving the failed one untouched',
+        :aggregate_failures do
+        updated, failed = sync.distill_and_write_principles(affected)
+
+        expect(updated.keys).to eq(['qa'])
+        expect(failed).to eq(['other'])
+        expect(File.exist?(File.join(principles_dir, 'qa.md'))).to be true
+        expect(File.exist?(File.join(principles_dir, 'other.md'))).to be false
+      end
     end
 
     # Regression: a re-distillation that produces the same checklist must be
@@ -137,6 +178,108 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
 
         expect(updated.keys).to eq(['qa'])
         expect(failed).to be_empty
+      end
+    end
+  end
+
+  # Covers the partial-failure ordering: a distillation failure must not
+  # discard principles that succeeded in the same run (issue #607364).
+  describe '.run' do
+    let(:affected) { { 'qa' => { config: {} } } }
+
+    before do
+      Gitlab::PrinciplesDistiller::Workspace.path = tmpdir
+      allow(sync).to receive(:parse_options).and_return(options)
+      allow(sync.workflow).to receive(:validate_config!)
+      allow(sync.manifest).to receive_messages(load: nil, affected_principles: affected, auto_mr_config: {})
+      allow(sync).to receive(:regenerate_static_artifacts)
+    end
+
+    def run_report
+      path = File.join(tmpdir, described_class::RUN_REPORT_PATH)
+      File.exist?(path) ? File.read(path) : nil
+    end
+
+    context 'with a partial success (some contents, some failures)' do
+      let(:options) { { push: true } }
+
+      before do
+        allow(sync).to receive(:distill).and_return([{ 'qa' => 'content' }, ['other']])
+        allow(sync).to receive(:create_branch_and_mr)
+      end
+
+      # The status is asserted, not just the SystemExit: a bare
+      # raise_error(SystemExit) also passes for `exit 0`, which would silently
+      # disable the scheduled Slack alert (it fires on a non-zero exit).
+      it 'publishes the successful principles and still exits non-zero', :aggregate_failures do
+        expect { sync.run }.to raise_error(SystemExit) { |error| expect(error.status).to eq(1) }
+        expect(sync).to have_received(:create_branch_and_mr)
+          .with({ 'qa' => 'content' }, affected, anything, failed: ['other'])
+      end
+
+      # The Slack alert job reads these to name the failed principles instead
+      # of posting a generic "the job failed".
+      it 'writes the failed principles to the dotenv report', :aggregate_failures do
+        expect { sync.run }.to raise_error(SystemExit) { |error| expect(error.status).to eq(1) }
+
+        expect(run_report).to include('AI_PRINCIPLES_FAILED_COUNT=1')
+        expect(run_report).to include('AI_PRINCIPLES_FAILED_NAMES=other')
+        expect(run_report).to include('AI_PRINCIPLES_PUBLISHED_COUNT=1')
+      end
+    end
+
+    context 'with total failure (no contents, some failures)' do
+      let(:options) { { push: true } }
+
+      before do
+        allow(sync).to receive(:distill).and_return([{}, ['qa']])
+        allow(sync).to receive(:create_branch_and_mr)
+      end
+
+      it 'does not publish and still exits non-zero', :aggregate_failures do
+        expect { sync.run }.to raise_error(SystemExit) { |error| expect(error.status).to eq(1) }
+        expect(sync).not_to have_received(:create_branch_and_mr)
+      end
+    end
+
+    context 'with a clean run (contents, no failures)' do
+      let(:options) { { push: true } }
+
+      before do
+        allow(sync).to receive(:distill).and_return([{ 'qa' => 'content' }, []])
+        allow(sync).to receive(:create_branch_and_mr)
+      end
+
+      it 'publishes and exits zero', :aggregate_failures do
+        expect { sync.run }.not_to raise_error
+        expect(sync).to have_received(:create_branch_and_mr)
+          .with({ 'qa' => 'content' }, affected, anything, failed: [])
+      end
+
+      # The report is still written (so the artifact uploader always has a file
+      # to pick up), but with no failed names, which is what the Slack job
+      # tests, so it never claims a partial failure on a run that had none.
+      it 'writes the dotenv report with no failed principles', :aggregate_failures do
+        sync.run
+
+        expect(run_report).to include('AI_PRINCIPLES_FAILED_COUNT=0')
+        expect(run_report).to include("AI_PRINCIPLES_FAILED_NAMES=\n")
+        expect(run_report).to include('AI_PRINCIPLES_PUBLISHED_COUNT=1')
+      end
+    end
+
+    context 'when no principles are affected' do
+      let(:options) { { push: true } }
+      let(:affected) { {} }
+
+      # The scheduled job's normal green path returns before distillation, so
+      # the report has to be written here too or the uploader logs
+      # `no matching files` / `No files to upload` on every clean weekly run.
+      it 'writes the dotenv report and exits zero', :aggregate_failures do
+        expect { sync.run }.not_to raise_error
+
+        expect(run_report).to include('AI_PRINCIPLES_FAILED_COUNT=0')
+        expect(run_report).to include('AI_PRINCIPLES_PUBLISHED_COUNT=0')
       end
     end
   end

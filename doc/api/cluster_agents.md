@@ -599,7 +599,7 @@ Creates a new URL configuration for an agent.
 
 You must have the Maintainer or Owner role to use this endpoint.
 
-An agent can have only one URL configuration at the time.
+An agent can have only one URL configuration at a time.
 
 ```plaintext
 POST /projects/:id/cluster_agents/:agent_id/url_configurations

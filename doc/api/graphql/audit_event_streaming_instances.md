@@ -51,7 +51,7 @@ Event streaming is enabled if:
 
 You can optionally specify your own destination name (instead of the default GitLab-generated one) using the GraphQL
 `instanceExternalAuditEventDestinationCreate`
-mutation. Name length must not exceed 72 characters and trailing whitespace are not trimmed. This value should be unique. For example:
+mutation. Name length must not exceed 72 characters and trailing whitespace is not trimmed. This value should be unique. For example:
 
 ```graphql
 mutation {

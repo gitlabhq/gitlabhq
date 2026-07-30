@@ -487,7 +487,7 @@ Possible request responses:
 
 ### $metadata endpoint
 
-Authentication is not required. Returns metadata for a V2 feed available endpoints:
+Authentication is not required. Returns metadata for the available endpoints in a V2 feed:
 
 ```plaintext
 GET <route-prefix>/v2/$metadata

@@ -251,7 +251,7 @@ PUT /projects/:id/boards/:board_id
 | `assignee_id`                | integer        | no       | The assignee the board should be scoped to. Premium and Ultimate only. |
 | `milestone_id`               | integer        | no       | The milestone the board should be scoped to. Premium and Ultimate only. |
 | `labels`                     | string         | no       | Comma-separated list of label names which the board should be scoped to. Premium and Ultimate only. |
-| `weight`                     | integer        | no       | The weight range from 0 to 9, to which the board should be scoped to. Premium and Ultimate only. |
+| `weight`                     | integer        | no       | The weight range from 0 to 9, to which the board should be scoped. Premium and Ultimate only. |
 
 ```shell
 curl --request PUT \

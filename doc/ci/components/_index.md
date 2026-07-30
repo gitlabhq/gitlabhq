@@ -1010,7 +1010,7 @@ you deliver to users, follow these best practices:
   - Use [protected branches](../../user/project/repository/branches/protected.md)
     for component project releases.
   - Protect the default branch, and protect all release branches [using wildcard rules](../../user/project/repository/branches/protected.md#use-wildcard-rules).
-  - Require everyone submit merge requests for changes to protected branches. Set the
+  - Require everyone to submit merge requests for changes to protected branches. Set the
     **Allowed to push and merge** option to `No one` for protected branches.
   - Block force pushes to protected branches.
 - **Sign all commits**: [Sign all commits](../../user/project/repository/signed_commits/_index.md) to the component project.

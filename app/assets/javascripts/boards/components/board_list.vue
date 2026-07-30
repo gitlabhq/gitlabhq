@@ -99,7 +99,7 @@ export default {
   emits: [
     'cannot-find-active-item',
     'drag-start',
-    'dragStop',
+    'drag-stop',
     'focus-adjacent',
     'set-filters',
     'toggleNewForm',
@@ -450,7 +450,7 @@ export default {
       if (draggableItemType !== DraggableItemTypes.card) {
         return;
       }
-      this.$emit('dragStop');
+      this.$emit('drag-stop');
 
       // Detach listener as soon as drag ends.
       document.removeEventListener('keyup', this.handleKeyUp.bind(this));
@@ -876,14 +876,14 @@ export default {
       :list="list"
       :board-id="boardId"
       @toggleNewForm="$emit('toggleNewForm')"
-      @addNewIssue="addListItem"
+      @add-new-issue="addListItem"
     />
     <board-new-epic
       v-if="epicCreateFormVisible"
       :list="list"
       :board-id="boardId"
       @toggleNewForm="$emit('toggleNewForm')"
-      @addNewEpic="addListItem"
+      @add-new-epic="addListItem"
     />
     <component
       :is="treeRootWrapper"
@@ -924,7 +924,7 @@ export default {
           :index="index"
           :list="list"
           :list-items-length="boardListItems.length"
-          @moveToPosition="moveToPosition($event, index, item)"
+          @move-to-position="moveToPosition($event, index, item)"
         />
         <gl-intersection-observer
           v-if="isObservableItem(index)"
@@ -952,7 +952,7 @@ export default {
           :index="index"
           :list="list"
           :list-items-length="boardListItems.length"
-          @moveToPosition="moveToPosition($event, index, item)"
+          @move-to-position="moveToPosition($event, index, item)"
         />
         <gl-intersection-observer
           v-if="isObservableItem(index)"

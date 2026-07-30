@@ -2947,7 +2947,7 @@ Supported attributes:
 | Attribute   | Type              | Required | Description |
 |:------------|:------------------|:---------|:------------|
 | `id`        | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `namespace` | integer or string | Yes      | The ID or path of the namespace to transfer to project to. |
+| `namespace` | integer or string | Yes      | The ID or path of the namespace to transfer the project to. |
 
 Example request:
 
@@ -3426,5 +3426,5 @@ For example, if you:
   the response returns `restrict_user_defined_variables: false`. Setting `ci_pipeline_variables_minimum_override_role`
   to `developer` takes precedence and variables are not restricted.
 - Set `restrict_user_defined_variables` to `false` and `ci_pipeline_variables_minimum_override_role` to `maintainer`,
-  The response returns `restrict_user_defined_variables: true` because setting `ci_pipeline_variables_minimum_override_role`
+  the response returns `restrict_user_defined_variables: true` because setting `ci_pipeline_variables_minimum_override_role`
   to `maintainer` takes precedence and variables are restricted.

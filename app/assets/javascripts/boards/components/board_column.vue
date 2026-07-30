@@ -70,7 +70,7 @@ export default {
   emits: [
     'cannot-find-active-item',
     'drag-start',
-    'dragStop',
+    'drag-stop',
     'focus-adjacent',
     'highlight-list',
     'setActiveList',
@@ -153,7 +153,7 @@ export default {
           :column-index="columnIndex"
           :dragged-item-id="draggedItemId"
           :focused="focused"
-          @dragStop="$emit('dragStop')"
+          @drag-stop="$emit('drag-stop')"
           @drag-start="$emit('drag-start', $event)"
           @toggleNewForm="toggleNewForm"
           @set-filters="$emit('set-filters', $event)"

@@ -1374,7 +1374,7 @@ Parameters:
 | `lfs_enabled`                        | boolean | no       | Enable/disable Large File Storage (LFS) for the projects in this group. |
 | `mentions_disabled`                  | boolean | no       | Disable the capability of a group from getting mentioned. |
 | `organization_id`                    | integer | no       | The organization ID for the group. |
-| `parent_id`                          | integer | no       | The parent group ID for creating nested group. |
+| `parent_id`                          | integer | no       | The parent group ID for creating a nested group. |
 | `project_creation_level`             | string  | no       | Determine if developers can create projects in the group. Can be `administrator` (users with Admin Mode enabled), `noone` (No one), `maintainer` (users with the Maintainer role), or `developer` (users with the Developer or Maintainer role). |
 | `request_access_enabled`             | boolean | no       | Allow users to request member access. |
 | `require_two_factor_authentication`  | boolean | no       | Require all users in this group to set up two-factor authentication. |
@@ -1731,7 +1731,6 @@ Parameters:
 
 | Attribute  | Type    | Required | Description |
 |------------|---------|----------|-------------|
-| `id`       | integer | yes      | ID of the group to transfer. |
 | `id`       | integer | yes      | ID of the group to transfer. |
 | `group_id` | integer | no       | ID of the new parent group. If unspecified, the group is transformed into a top-level group. |
 
@@ -2224,7 +2223,7 @@ Example response:
 
 ### List all group and project access tokens for a group
 
-Lists all group and project access tokens associated with a top-level-group.
+Lists all group and project access tokens associated with a top-level group.
 
 ```plaintext
 GET /groups/:id/manage/resource_access_tokens
@@ -2275,7 +2274,7 @@ Example response:
 
 ### List all SSH keys for a group
 
-Lists all SSH public keys associated with enterprise users in a top-level-group.
+Lists all SSH public keys associated with enterprise users in a top-level group.
 
 ```plaintext
 GET /groups/:id/manage/ssh_keys

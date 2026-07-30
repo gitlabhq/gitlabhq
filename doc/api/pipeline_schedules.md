@@ -210,7 +210,7 @@ Example response:
 
 {{< /history >}}
 
-Create a new pipeline schedule of a project.
+Create a new pipeline schedule for a project.
 
 ```plaintext
 POST /projects/:id/pipeline_schedules

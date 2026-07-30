@@ -12,6 +12,13 @@ module Gitlab
         PUSH_MAX_ATTEMPTS = 3
         PUSH_RETRY_BACKOFF_SECONDS = [5, 15].freeze
 
+        # The run-invariant publish inputs: identical for every team branch
+        # and the tooling branch in a single create_branch_and_mr call.
+        PublishContext = Struct.new(
+          :base_branch, :project_id, :api_token, :date, :auto_mr_cfg, :failed,
+          keyword_init: true
+        )
+
         def distillation_base_sha
           @distillation_base_sha ||= resolve_distillation_base_sha
         end
@@ -47,10 +54,11 @@ module Gitlab
         # Teams are published independently: one team's failure is logged and
         # the run continues with the rest, then a non-zero exit is raised at
         # the end so the scheduled job surfaces the partial failure.
-        def create_branch_and_mr(distilled_contents, affected, auto_mr_cfg)
-          # UTC date as identifier; same-day re-runs reuse each branch and
-          # update the existing MR (see find_open_mr_iid).
-          date = Time.now.utc.strftime('%Y%m%d')
+        #
+        # `failed` (principles that failed distillation, distinct from the
+        # per-team publish `failures` below) travels with the rest of the
+        # run-invariant inputs via `ctx` (see PublishContext).
+        def create_branch_and_mr(distilled_contents, affected, auto_mr_cfg, failed: [])
           project_id = ENV.fetch(Env::CI_PROJECT_ID) do
             abort Rainbow("ERROR: #{Env::CI_PROJECT_ID} env var is required when --push is given").red
           end
@@ -58,7 +66,16 @@ module Gitlab
             abort Rainbow("ERROR: #{Env::GITLAB_API_TOKEN} not set, cannot create MR").red
           end
 
-          base_branch = workflow.default_branch
+          ctx = PublishContext.new(
+            base_branch: workflow.default_branch,
+            project_id: project_id,
+            api_token: api_token,
+            # UTC date as identifier; same-day re-runs reuse each branch and
+            # update the existing MR (see find_open_mr_iid).
+            date: Time.now.utc.strftime('%Y%m%d'),
+            auto_mr_cfg: auto_mr_cfg,
+            failed: failed
+          )
 
           # Fetch every prior SHA once up front so each team branch can embed
           # its SSOT diffs without re-fetching.
@@ -70,20 +87,18 @@ module Gitlab
           teams.each do |team, names|
             team_contents = distilled_contents.slice(*names)
             team_affected = affected.slice(*names)
-            publish_team_branch(
-              team, team_contents, team_affected, base_branch, project_id, api_token, date, auto_mr_cfg
-            )
+            publish_team_branch(team, team_contents, team_affected, ctx)
           rescue StandardError => e
             warn Rainbow("ERROR: team '#{team}' failed: #{e.message}").red
-            cleanup_branch(base_branch, team_branch_name(auto_mr_cfg, date, team))
+            cleanup_branch(ctx.base_branch, team_branch_name(ctx.auto_mr_cfg, ctx.date, team))
             failures << team
           end
 
           begin
-            publish_tooling_branch(base_branch, project_id, api_token, date, auto_mr_cfg)
+            publish_tooling_branch(ctx)
           rescue StandardError => e
             warn Rainbow("ERROR: tooling MR failed: #{e.message}").red
-            cleanup_branch(base_branch, tooling_branch_name(auto_mr_cfg, date))
+            cleanup_branch(ctx.base_branch, tooling_branch_name(ctx.auto_mr_cfg, ctx.date))
             failures << 'tooling'
           end
 
@@ -94,10 +109,10 @@ module Gitlab
 
         # Builds, pushes, and opens/updates a single team's MR. Raises on any
         # git/API failure so the caller can record the team and continue.
-        def publish_team_branch(team, contents, affected, base_branch, project_id, api_token, date, auto_mr_cfg)
-          branch = team_branch_name(auto_mr_cfg, date, team)
+        def publish_team_branch(team, contents, affected, ctx)
+          branch = team_branch_name(ctx.auto_mr_cfg, ctx.date, team)
 
-          checkout_fresh_branch(branch, base_branch)
+          checkout_fresh_branch(branch, ctx.base_branch)
 
           # Writes deferred to here so the publish branch is the only diff.
           paths_to_commit = contents.map do |name, content|
@@ -114,7 +129,7 @@ module Gitlab
           # team MR instead (mirrors the guard in publish_tooling_branch).
           unless git_has_staged_changes?
             puts Rainbow("  #{team}: principles already up to date; skipping team MR.").faint
-            cleanup_branch(base_branch, branch)
+            cleanup_branch(ctx.base_branch, branch)
             return
           end
 
@@ -128,7 +143,7 @@ module Gitlab
           slug = manifest.team_slug(team)
           updated_list = contents.keys.map { |name| "- #{name}" }.join("\n")
 
-          commit_and_push(branch, project_id, api_token, <<~MSG.chomp)
+          commit_and_push(branch, ctx.project_id, ctx.api_token, <<~MSG.chomp)
         Update #{slug} AI development principles from SSOT
 
         Updated:
@@ -138,8 +153,8 @@ module Gitlab
         based on recent changes to development documentation.
           MSG
 
-          title = "#{slug}: #{format(auto_mr_cfg['title_template'], date: date)}"
-          create_mr(branch, project_id, api_token, contents, affected, auto_mr_cfg, team: team, title: title)
+          title = "#{slug}: #{format(ctx.auto_mr_cfg['title_template'], date: ctx.date)}"
+          create_mr(branch, contents, affected, ctx, team: team, title: title)
         end
 
         # Builds, pushes, and opens/updates the tooling MR carrying the global
@@ -152,10 +167,10 @@ module Gitlab
         # reconcile job (see Sync#reconcile_duo_instructions), so a team's
         # distilled MR and the fence update are independently mergeable with no
         # cross-MR merge-order dependency.
-        def publish_tooling_branch(base_branch, project_id, api_token, date, auto_mr_cfg)
-          branch = tooling_branch_name(auto_mr_cfg, date)
+        def publish_tooling_branch(ctx)
+          branch = tooling_branch_name(ctx.auto_mr_cfg, ctx.date)
 
-          checkout_fresh_branch(branch, base_branch)
+          checkout_fresh_branch(branch, ctx.base_branch)
 
           # Regenerate the global artifacts now that we're on the tooling
           # branch, so the diff lands here rather than in any team branch.
@@ -168,7 +183,7 @@ module Gitlab
           # exist on disk (e.g. AGENTS.md is absent, so nothing was generated).
           if existing.empty?
             puts Rainbow('  No tooling files found on disk; skipping tooling MR.').faint
-            cleanup_branch(base_branch, branch)
+            cleanup_branch(ctx.base_branch, branch)
             return
           end
 
@@ -176,11 +191,11 @@ module Gitlab
 
           unless git_has_staged_changes?
             puts Rainbow('  Tooling files already up to date; skipping tooling MR.').faint
-            cleanup_branch(base_branch, branch)
+            cleanup_branch(ctx.base_branch, branch)
             return
           end
 
-          commit_and_push(branch, project_id, api_token, <<~MSG.chomp)
+          commit_and_push(branch, ctx.project_id, ctx.api_token, <<~MSG.chomp)
         Update AI principles routing tables (tooling)
 
         Regenerates AGENTS.md, CLAUDE.md, the gitlab-coding-principles
@@ -190,8 +205,8 @@ module Gitlab
         This commit was auto-generated by gitlab-ai-principles-distiller.
           MSG
 
-          title = "tooling: #{format(auto_mr_cfg['title_template'], date: date)}"
-          create_tooling_mr(branch, project_id, api_token, auto_mr_cfg, title)
+          title = "tooling: #{format(ctx.auto_mr_cfg['title_template'], date: ctx.date)}"
+          create_tooling_mr(branch, ctx, title)
         end
 
         # Builds, pushes, and opens/updates the dedicated reconcile MR carrying
@@ -214,7 +229,6 @@ module Gitlab
         # If nothing changed, master's fences already match its distilled files
         # and no MR is needed.
         def create_reconcile_mr_from_working_tree(auto_mr_cfg, manifest)
-          date = Time.now.utc.strftime('%Y%m%d')
           project_id = ENV.fetch(Env::CI_PROJECT_ID) do
             abort Rainbow("ERROR: #{Env::CI_PROJECT_ID} env var is required when --push is given").red
           end
@@ -222,19 +236,29 @@ module Gitlab
             abort Rainbow("ERROR: #{Env::GITLAB_API_TOKEN} not set, cannot create MR").red
           end
 
-          base_branch = workflow.default_branch
-          branch = reconcile_branch_name(auto_mr_cfg)
+          # No distillation happens on the reconcile path, so `failed` is
+          # always empty here (see PublishContext).
+          ctx = PublishContext.new(
+            base_branch: workflow.default_branch,
+            project_id: project_id,
+            api_token: api_token,
+            date: Time.now.utc.strftime('%Y%m%d'),
+            auto_mr_cfg: auto_mr_cfg,
+            failed: []
+          )
+
+          branch = reconcile_branch_name(ctx.auto_mr_cfg)
           duo_path = Manifest::DUO_REVIEW_INSTRUCTIONS_PATH
 
           # Cut the branch first so the projection below reads the distilled
           # files at the branch's base (origin/<default_branch> HEAD), not the
           # pipeline-SHA working tree.
-          checkout_fresh_branch(branch, base_branch)
+          checkout_fresh_branch(branch, ctx.base_branch)
 
           changed = manifest.generate_duo_review_instructions
           unless changed
             puts Rainbow('  Duo review fences already up to date on master; skipping reconcile MR.').faint
-            cleanup_branch(base_branch, branch)
+            cleanup_branch(ctx.base_branch, branch)
             return
           end
 
@@ -242,11 +266,11 @@ module Gitlab
 
           unless git_has_staged_changes?
             puts Rainbow('  Duo review fences already up to date on master; skipping reconcile MR.').faint
-            cleanup_branch(base_branch, branch)
+            cleanup_branch(ctx.base_branch, branch)
             return
           end
 
-          commit_and_push(branch, project_id, api_token, <<~MSG.chomp)
+          commit_and_push(branch, ctx.project_id, ctx.api_token, <<~MSG.chomp)
         Reconcile Duo review-instruction fences from master
 
         Regenerates the gem-managed fences in
@@ -256,8 +280,8 @@ module Gitlab
         This commit was auto-generated by gitlab-ai-principles-distiller.
           MSG
 
-          title = "reconcile fences: #{format(auto_mr_cfg['title_template'], date: date)}"
-          create_reconcile_mr(branch, project_id, api_token, auto_mr_cfg, title)
+          title = "reconcile fences: #{format(ctx.auto_mr_cfg['title_template'], date: ctx.date)}"
+          create_reconcile_mr(branch, ctx, title)
         end
 
         def reconcile_branch_name(auto_mr_cfg)
@@ -813,7 +837,7 @@ module Gitlab
           }
         end
 
-        def create_mr(branch, project_id, api_token, changed_principles, affected, auto_mr_cfg, team:, title:)
+        def create_mr(branch, changed_principles, affected, ctx, team:, title:)
           default_branch = workflow.default_branch
           sections = changed_principles.keys.map do |name|
             principle_diff_section(name, affected[name], default_branch)
@@ -842,6 +866,7 @@ module Gitlab
         team-scoped MRs from this run; the global routing tables (AGENTS.md,
         CLAUDE.md, SKILL.md) are updated in a separate tooling MR.
         #{review_request_section(changed_principles.keys, team)}
+        #{failed_principles_section(ctx.failed)}
         ### Updated principles and their source-doc changes
 
         #{sections}
@@ -857,12 +882,12 @@ module Gitlab
         reflect the documentation updates.
           DESC
 
-          submit_mr(branch, default_branch, project_id, api_token, auto_mr_cfg, title, description)
+          submit_mr(branch, default_branch, ctx, title, description)
         end
 
         # Opens/updates the tooling MR carrying the regenerated global routing
         # tables. Routed to the broad `/.ai/` owners (no SSOT-team content).
-        def create_tooling_mr(branch, project_id, api_token, auto_mr_cfg, title)
+        def create_tooling_mr(branch, ctx, title)
           default_branch = workflow.default_branch
           project_url = "#{workflow.gitlab_host}/#{workflow.catalog_project_path}"
           manifest_url = "#{project_url}/-/blob/#{default_branch}/.ai/principles/manifest.yml"
@@ -883,14 +908,14 @@ module Gitlab
         separately by the scheduled fence-reconcile job.
           DESC
 
-          submit_mr(branch, default_branch, project_id, api_token, auto_mr_cfg, title, description)
+          submit_mr(branch, default_branch, ctx, title, description)
         end
 
         # Opens/updates the dedicated reconcile MR carrying only the Duo
         # review-instruction fence update, projected from merged master. Routed
         # to the broad `/.gitlab/` owners (the Duo file is not assigned
         # per-principle in CODEOWNERS).
-        def create_reconcile_mr(branch, project_id, api_token, auto_mr_cfg, title)
+        def create_reconcile_mr(branch, ctx, title)
           default_branch = workflow.default_branch
           duo_path = Manifest::DUO_REVIEW_INSTRUCTIONS_PATH
 
@@ -910,7 +935,7 @@ module Gitlab
         review fences.
           DESC
 
-          submit_mr(branch, default_branch, project_id, api_token, auto_mr_cfg, title, description)
+          submit_mr(branch, default_branch, ctx, title, description)
         end
 
         def job_line
@@ -918,6 +943,18 @@ module Gitlab
           return '' if job_url.nil? || job_url.empty?
 
           "\nThis MR was generated by #{job_url}\n"
+        end
+
+        # `failed` is run-wide (distillation failures aren't grouped by team),
+        # so the same note is repeated in every team's MR description.
+        def failed_principles_section(failed)
+          return '' if failed.empty?
+
+          <<~SECTION
+
+            > ⚠️ **Partial run**: #{failed.size} principle(s) failed distillation after retries and are
+            > NOT included here: #{failed.join(', ')}. They will be re-attempted on the next scheduled run.
+          SECTION
         end
 
         # Renders the "Request a review from" section listing secondary teams
@@ -950,38 +987,38 @@ module Gitlab
 
         # Shared create-or-update with same-day idempotency: an open MR for the
         # same source branch is updated in place rather than failing on a 409.
-        def submit_mr(branch, default_branch, project_id, api_token, auto_mr_cfg, title, description)
-          encoded_project = URI.encode_www_form_component(project_id)
-          existing_mr_iid = find_open_mr_iid(encoded_project, branch, api_token)
+        def submit_mr(branch, default_branch, ctx, title, description)
+          encoded_project = URI.encode_www_form_component(ctx.project_id)
+          existing_mr_iid = find_open_mr_iid(encoded_project, branch, ctx.api_token)
           body = {
             title: title,
             # Collapse runs of blank lines so an empty `job_line` (when
             # CI_JOB_URL is unset) doesn't leave a spurious gap mid-paragraph.
             description: description.gsub(/\n{3,}/, "\n\n"),
-            labels: Array(auto_mr_cfg['labels']).join(','),
-            remove_source_branch: auto_mr_cfg.fetch('remove_source_branch', true)
+            labels: Array(ctx.auto_mr_cfg['labels']).join(','),
+            remove_source_branch: ctx.auto_mr_cfg.fetch('remove_source_branch', true)
           }
           # Assign the MR to its author (the service account) and tag the
           # current milestone so Danger's "no assignee" / "no milestone"
           # warnings don't fire on every weekly auto-MR. Both are best-effort:
           # a lookup failure logs and omits the field rather than aborting.
-          assignee_id = mr_assignee_id(api_token)
+          assignee_id = mr_assignee_id(ctx.api_token)
           body[:assignee_id] = assignee_id if assignee_id
-          milestone_id = current_milestone_id(encoded_project, api_token)
+          milestone_id = current_milestone_id(encoded_project, ctx.api_token)
           body[:milestone_id] = milestone_id if milestone_id
 
           host = workflow.gitlab_host
           if existing_mr_iid
             response = workflow.put_json(
               "#{host}/api/v4/projects/#{encoded_project}/merge_requests/#{existing_mr_iid}",
-              headers: { 'PRIVATE-TOKEN' => api_token },
+              headers: { 'PRIVATE-TOKEN' => ctx.api_token },
               body: body
             )
             action = 'updated'
           else
             response = workflow.post_json(
               "#{host}/api/v4/projects/#{encoded_project}/merge_requests",
-              headers: { 'PRIVATE-TOKEN' => api_token },
+              headers: { 'PRIVATE-TOKEN' => ctx.api_token },
               body: body.merge(source_branch: branch, target_branch: default_branch)
             )
             action = 'created'

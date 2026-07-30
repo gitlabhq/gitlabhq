@@ -260,9 +260,9 @@ To use Docker commands in your Windows-based container CI/CD jobs, you can bind-
 into the launched executor container. Docker is then available in the context of the image.
 
 The [Docker pipe binding in Windows](#use-docker-pipe-binding) is similar to
-[Docker socket binding in Linux](#use-docker-socket-binding) and have similar
-[Known issues](#known-issues-with-docker-pipe-binding) as
-[Known issues with Docker socket binding](#known-issues-with-docker-socket-binding).
+[Docker socket binding in Linux](#use-docker-socket-binding). The
+[known issues with Docker pipe binding](#known-issues-with-docker-pipe-binding) are similar to the
+[known issues with Docker socket binding](#known-issues-with-docker-socket-binding).
 
 A mandatory prerequisite for usage of Docker pipe binding is a Docker Engine installed and
 running on the host Windows Server operating system.
@@ -617,7 +617,7 @@ of the following executors:
 In this example, you use Buildah to:
 
 1. Build a Docker image.
-1. Push it to [GitLab container registry](../../user/packages/container_registry/_index.md).
+1. Push it to the [GitLab container registry](../../user/packages/container_registry/_index.md).
 
 In the last step, Buildah uses the `Dockerfile` under the
 root directory of the project to build the Docker image. Finally, it pushes the image to the
@@ -649,7 +649,7 @@ build:
 ```
 
 If you are using GitLab Runner Operator deployed to an OpenShift cluster, try the
-[tutorial for using Buildah to build images in rootless container](buildah_rootless_tutorial.md).
+[tutorial for using Buildah to build images in a rootless container](buildah_rootless_tutorial.md).
 
 To build images for multiple CPU architectures, see
 [multi-platform builds with Buildah](buildah_rootless_multi_arch.md).

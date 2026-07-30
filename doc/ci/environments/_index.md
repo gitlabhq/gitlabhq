@@ -532,7 +532,7 @@ that an environment is scheduled to stop. For more information, see
 
 #### View an environment's scheduled stop date and time
 
-When a environment has been [scheduled to stop after a specified time period](#stop-an-environment-after-a-certain-time-period),
+When an environment has been [scheduled to stop after a specified time period](#stop-an-environment-after-a-certain-time-period),
 you can view its expiration date and time.
 
 To view an environment's expiration date and time:
@@ -545,7 +545,7 @@ The expiration date and time is displayed in the upper-left corner, next to the 
 
 #### Override an environment's scheduled stop date and time
 
-When a environment has been [scheduled to stop after a specified time period](#stop-an-environment-after-a-certain-time-period),
+When an environment has been [scheduled to stop after a specified time period](#stop-an-environment-after-a-certain-time-period),
 you can override its expiration.
 
 To override an environment's expiration in the UI:
@@ -553,7 +553,7 @@ To override an environment's expiration in the UI:
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Operate** > **Environments**.
 1. Select the environment name.
-1. in the upper-right corner, select the thumbtack ({{< icon name="thumbtack" >}}).
+1. In the upper-right corner, select the thumbtack ({{< icon name="thumbtack" >}}).
 
 To override an environment's expiration in the `.gitlab-ci.yml`:
 
@@ -908,7 +908,7 @@ with the `action: stop` is not in a runnable state due to its `stages:` or `need
 For example:
 
 - The environment might start in a stage that also has a job that failed.
-  Then the jobs in later stages job don't start. If the job with the `action: stop`
+  Then the jobs in later stages don't start. If the job with the `action: stop`
   for the environment is also in a later stage, it can't start and the environment isn't deleted.
 - The job with the `action: stop` might have a dependency on a job that has not yet completed.
 

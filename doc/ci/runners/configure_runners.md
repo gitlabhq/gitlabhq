@@ -163,7 +163,7 @@ which is less than both `RUNNER_AFTER_SCRIPT_TIMEOUT` and the job's `timeout` va
 ## Protecting sensitive information
 
 The security risks are greater when using instance runners as they are available by default to all groups and projects in a GitLab instance.
-The runner executor and file system configuration affects security. Users with access to the runner host environment can view the code that runner executed and the runner authentication.
+The runner executor and file system configuration affect security. Users with access to the runner host environment can view the code that the runner executed and the runner authentication.
 For example, users with access to the runner authentication token can clone
 a runner and submit false jobs in a vector attack. For more information, see [Security Considerations](https://docs.gitlab.com/runner/security/).
 
@@ -177,7 +177,7 @@ When a project is forked, the job settings related to jobs are copied. If you ha
 configured for a project and a user forks that project, the instance runners serve jobs of this project.
 
 Due to a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/364303), if the runner settings
-of the forked project does not match the new project namespace, the following message displays:
+of the forked project do not match the new project namespace, the following message displays:
 `An error occurred while forking the project. Please try again.`.
 
 To work around this issue, ensure that the instance runner settings are consistent in the forked project and the new namespace.
@@ -1192,7 +1192,7 @@ Then use any of the following environment variables.
 |---------------------------------|-------------|
 | `FASTZIP_ARCHIVER_CONCURRENCY`  | The number of files to be concurrently compressed. Default is the number of CPUs available. |
 | `FASTZIP_ARCHIVER_BUFFER_SIZE`  | The buffer size allocated per concurrency for each file. Data exceeding this number moves to scratch space. Default is 2 MiB. |
-| `FASTZIP_EXTRACTOR_CONCURRENCY` | The number of files to be concurrency decompressed. Default is the number of CPUs available. |
+| `FASTZIP_EXTRACTOR_CONCURRENCY` | The number of files to be concurrently decompressed. Default is the number of CPUs available. |
 
 Files in a zip archive are appended sequentially. This makes concurrent compression challenging. `fastzip` works around
 this limitation by compressing files concurrently to disk first, and then copying the result back to zip archive
@@ -1203,11 +1203,11 @@ can be controlled with `FASTZIP_ARCHIVER_BUFFER_SIZE`. The default size for this
 concurrency of 16 allocates 32 MiB. Data that exceeds the buffer size is written to and read back from disk.
 Therefore, using no buffer, `FASTZIP_ARCHIVER_BUFFER_SIZE: 0`, and only scratch space is a valid option.
 
-`FASTZIP_ARCHIVER_CONCURRENCY` controls how many files are compressed concurrency. As previously mentioned, this setting
+`FASTZIP_ARCHIVER_CONCURRENCY` controls how many files are compressed concurrently. As previously mentioned, this setting
 therefore can increase how much memory is being used. It can also increase the temporary data written to the scratch space.
 The default is the number of CPUs available, but given the memory ramifications, this may not always be the best
 setting.
 
 `FASTZIP_EXTRACTOR_CONCURRENCY` controls how many files are decompressed at once. Files from a zip archive can natively
-be read from concurrency, so no additional memory is allocated in addition to what the extractor requires. This
+be read concurrently, so no additional memory is allocated in addition to what the extractor requires. This
 defaults to the number of CPUs available.

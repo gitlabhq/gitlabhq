@@ -6,3 +6,5 @@ description: SQL views to parallelize BackfillMergeRequestDiffCommitsToPartition
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224072
 milestone: '18.11'
 gitlab_schema: gitlab_main
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244616
+removed_in_milestone: '19.3'

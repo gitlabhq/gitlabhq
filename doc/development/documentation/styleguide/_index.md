@@ -469,6 +469,7 @@ follow these best practices.
 
 - Split long lines at approximately 100 characters, but do not split links.
 - Try to avoid splitting lines between logical word groupings, keep them together on the same line.
+- Start each new sentence on a new line.
 
 For example:
 

@@ -31396,12 +31396,52 @@
         {
           "kind": "OBJECT",
           "name": "Analytics",
-          "description": "ClickHouse-based analytics endpoints. Data can be delayed by 10 minutes.",
+          "description": "ClickHouse-based analytics endpoints aggregating data across groups and projects. Data can be delayed by 10 minutes.",
           "fields": [
             {
               "name": "agentPlatformSessions",
               "description": "Aggregation engine for GitLab Duo Agent Platform sessions usage",
               "args": [
+                {
+                  "name": "groupFullPaths",
+                  "description": "Full paths of groups to aggregate data for. All groups must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `projectFullPaths`, at most 20 sources can be requested. Not supported at project level.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "ID",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "projectFullPaths",
+                  "description": "Full paths of projects to aggregate data for. All projects must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `groupFullPaths`, at most 20 sources can be requested. Not supported at project level.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "ID",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
                 {
                   "name": "userId",
                   "description": "Filter by one or many user Global IDs",
@@ -31480,6 +31520,46 @@
               "description": "Aggregation engine for contribution analytics Introduced in GitLab 19.0: Status: Experiment.",
               "args": [
                 {
+                  "name": "groupFullPaths",
+                  "description": "Full paths of groups to aggregate data for. All groups must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `projectFullPaths`, at most 20 sources can be requested. Not supported at project level.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "ID",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "projectFullPaths",
+                  "description": "Full paths of projects to aggregate data for. All projects must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `groupFullPaths`, at most 20 sources can be requested. Not supported at project level.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "ID",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "authorId",
                   "description": "Filter by one or many author Global IDs",
                   "type": {
@@ -31536,6 +31616,46 @@
               "name": "deployments",
               "description": "Aggregation engine for deployment analytics Introduced in GitLab 19.0: Status: Experiment.",
               "args": [
+                {
+                  "name": "groupFullPaths",
+                  "description": "Full paths of groups to aggregate data for. All groups must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `projectFullPaths`, at most 20 sources can be requested. Not supported at project level.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "ID",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "projectFullPaths",
+                  "description": "Full paths of projects to aggregate data for. All projects must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `groupFullPaths`, at most 20 sources can be requested. Not supported at project level.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "ID",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
                 {
                   "name": "status",
                   "description": "Filter by one or many deployment statuses",
@@ -31658,6 +31778,46 @@
               "description": "Aggregation engine for GitLab Duo Code Suggestions usage",
               "args": [
                 {
+                  "name": "groupFullPaths",
+                  "description": "Full paths of groups to aggregate data for. All groups must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `projectFullPaths`, at most 20 sources can be requested. Not supported at project level.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "ID",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "projectFullPaths",
+                  "description": "Full paths of projects to aggregate data for. All projects must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `groupFullPaths`, at most 20 sources can be requested. Not supported at project level.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "ID",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "userId",
                   "description": "Filter by one or many user Global IDs",
                   "type": {
@@ -31755,6 +31915,46 @@
               "description": "Aggregation engine for GitLab Duo AI usage events",
               "args": [
                 {
+                  "name": "groupFullPaths",
+                  "description": "Full paths of groups to aggregate data for. All groups must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `projectFullPaths`, at most 20 sources can be requested. Not supported at project level.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "ID",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "projectFullPaths",
+                  "description": "Full paths of projects to aggregate data for. All projects must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `groupFullPaths`, at most 20 sources can be requested. Not supported at project level.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "ID",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "userId",
                   "description": "Filter by one or many user Global IDs",
                   "type": {
@@ -31851,6 +32051,46 @@
               "name": "finishedPipelines",
               "description": "Aggregation engine for finished pipelines analytics Introduced in GitLab 19.0: Status: Experiment.",
               "args": [
+                {
+                  "name": "groupFullPaths",
+                  "description": "Full paths of groups to aggregate data for. All groups must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `projectFullPaths`, at most 20 sources can be requested. Not supported at project level.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "ID",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "projectFullPaths",
+                  "description": "Full paths of projects to aggregate data for. All projects must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `groupFullPaths`, at most 20 sources can be requested. Not supported at project level.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "ID",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
                 {
                   "name": "status",
                   "description": "Filter by one or many pipeline statuses",
@@ -31973,6 +32213,46 @@
               "description": "Aggregation engine for merge request analytics Introduced in GitLab 19.2: Status: Experiment.",
               "args": [
                 {
+                  "name": "groupFullPaths",
+                  "description": "Full paths of groups to aggregate data for. All groups must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `projectFullPaths`, at most 20 sources can be requested. Not supported at project level.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "ID",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "projectFullPaths",
+                  "description": "Full paths of projects to aggregate data for. All projects must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `groupFullPaths`, at most 20 sources can be requested. Not supported at project level.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "ID",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "targetBranch",
                   "description": "Filter by one or many target branches",
                   "type": {
@@ -32073,6 +32353,46 @@
               "name": "pipelines",
               "description": "Aggregation engine for CI pipeline analytics Introduced in GitLab 19.2: Status: Experiment.",
               "args": [
+                {
+                  "name": "groupFullPaths",
+                  "description": "Full paths of groups to aggregate data for. All groups must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `projectFullPaths`, at most 20 sources can be requested. Not supported at project level.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "ID",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "projectFullPaths",
+                  "description": "Full paths of projects to aggregate data for. All projects must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `groupFullPaths`, at most 20 sources can be requested. Not supported at project level.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "ID",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
                 {
                   "name": "status",
                   "description": "Filter by one or many pipeline statuses",
@@ -61969,6 +62289,92 @@
             {
               "name": "CANCELLED",
               "description": "Rollout transition state cancelled.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "CdRolloutUpdate",
+          "description": "Live rollout update pushed to the client: new deployment status, and a Duo session to open when one applies.",
+          "fields": [
+            {
+              "name": "reason",
+              "description": "Why Duo should engage for the update (failed or created); null for a plain status update.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "CdRolloutUpdateReason",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "rollout",
+              "description": "Rollout the update is for.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CdRollout",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "rolloutEnvironment",
+              "description": "Rollout environment whose state changed. Read its state and environment.tier to color the stage dot.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "CdRolloutEnvironment",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "thread",
+              "description": "Duo session to open in the sidebar for the update, when one applies.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "AiConversationsThread",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "CdRolloutUpdateReason",
+          "description": "Reason a rollout update was pushed to the client.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "DEPLOYMENT_FAILED",
+              "description": "Rollout failed and Duo opened an investigation session.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "DEPLOYMENT_CREATED",
+              "description": "New rollout was created and Duo opened a session for it.",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -279004,6 +279410,18 @@
           "description": null,
           "fields": [
             {
+              "name": "analytics",
+              "description": "Analytics aggregation endpoints scoped to groups and projects of the organization. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Analytics",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
               "name": "avatarUrl",
               "description": "Avatar URL of the organization. Introduced in GitLab 16.7: Status: Experiment.",
               "args": [],
@@ -376417,6 +376835,64 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 15.11."
+            },
+            {
+              "name": "cdApplicationHealthUpdated",
+              "description": "Triggered when the health of an application in an organization changes. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [
+                {
+                  "name": "organizationId",
+                  "description": "Global ID of the organization whose application health to watch.",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "OrganizationsOrganizationID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "CdApplication",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
+              "name": "cdRolloutUpdated",
+              "description": "Triggered when a rollout status changes in an application, carrying the new deployment status and, when one applies, a Duo session to open. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [
+                {
+                  "name": "applicationId",
+                  "description": "Global ID of the application whose rollouts to watch.",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "CdApplicationID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "CdRolloutUpdate",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
             },
             {
               "name": "ciJobProcessed",

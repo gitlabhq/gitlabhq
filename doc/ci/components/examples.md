@@ -18,7 +18,7 @@ Depending on a component's functionality, [testing the component](_index.md#test
 For example, a component which lints, builds, and tests software in a specific programming language requires actual source code samples.
 You can have source code examples, configuration files, and similar in the same repository.
 
-For example, the Code Quality CI/CD component's has several [code samples for testing](https://gitlab.com/components/code-quality/-/tree/main/src).
+For example, the Code Quality CI/CD component has several [code samples for testing](https://gitlab.com/components/code-quality/-/tree/main/src).
 
 ### Example: Test a Rust language CI/CD component
 

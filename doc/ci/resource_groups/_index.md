@@ -14,7 +14,7 @@ title: Resource group
 {{< /details >}}
 
 By default, pipelines in GitLab CI/CD run concurrently. Concurrency is an important factor to improve
-the feedback loop in merge requests, however, there are some situations that
+the feedback loop in merge requests. However, there are some situations that
 you may want to limit the concurrency on deployment
 jobs to run them one by one.
 Use resource groups to strategically control
@@ -64,7 +64,7 @@ can still run `build` jobs concurrently for maximizing the pipeline efficiency.
 
 - Familiarity with [GitLab CI/CD pipelines](../pipelines/_index.md)
 - Familiarity with [GitLab environments and deployments](../environments/_index.md)
-- the Developer, Maintainer, or Owner role for the project to configure CI/CD pipelines.
+- The Developer, Maintainer, or Owner role for the project to configure CI/CD pipelines.
 
 ## Process modes
 
@@ -89,7 +89,7 @@ by specifying the `process_mode`:
 - `newest_first`
 - `newest_ready_first`
 
-### An example of difference between the process modes
+### An example of the difference between the process modes
 
 Consider the following `.gitlab-ci.yml`, which has a `build` job and a `deploy` job.
 Each job runs in its own stage, and the `deploy` job has a resource group set to

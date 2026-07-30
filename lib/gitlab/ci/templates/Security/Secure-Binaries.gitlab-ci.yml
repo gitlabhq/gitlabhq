@@ -31,7 +31,7 @@ variables:
   # - eslint
   # - license-finder
   SECURE_BINARIES_ANALYZERS: >-
-    gitlab-advanced-sast, gitlab-advanced-sast-cpp, spotbugs, secrets, sobelow, pmd-apex, kics, kubesec, semgrep, gemnasium, gemnasium-maven, gemnasium-python, dependency-scanning, dast, dast-runner-validation, api-security
+    gitlab-advanced-sast, gitlab-advanced-sast-cpp, gitlab-advanced-sast-ext, spotbugs, secrets, sobelow, pmd-apex, kics, kubesec, semgrep, gemnasium, gemnasium-maven, gemnasium-python, dependency-scanning, dast, dast-runner-validation, api-security
 
   SECURE_BINARIES_DOWNLOAD_IMAGES: "true"
   SECURE_BINARIES_PUSH_IMAGES: "true"
@@ -175,6 +175,13 @@ gitlab-advanced-sast-cpp:
     SECURE_BINARIES_IMAGE_NAME: "clangsa"
   rules:
     - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /(^|[,\s])gitlab-advanced-sast-cpp([,\s]|$)/'
+
+gitlab-advanced-sast-ext:
+  extends: .download_images
+  variables:
+    SECURE_BINARIES_ANALYZER_VERSION: "0"
+  rules:
+    - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /(^|[,\s])gitlab-advanced-sast-ext([,\s]|$)/'
 
 sobelow:
   extends: .download_images

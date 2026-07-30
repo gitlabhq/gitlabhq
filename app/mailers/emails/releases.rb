@@ -13,7 +13,7 @@ module Emails
 
       add_project_headers
 
-      mail_with_locale(
+      email_with_layout(
         to: @recipient.notification_email_for(@project.group),
         subject: subject(release_email_subject)
       )

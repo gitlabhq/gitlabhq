@@ -43,7 +43,7 @@ in a CI/CD pipeline, but variables are less secure than secrets management provi
 Variable values:
 
 - Are stored in the GitLab project, group, or instance settings. Users with access
-  to the settings have access to variables values that are not [hidden](../variables/_index.md#hide-a-cicd-variable).
+  to the settings have access to variable values that are not [hidden](../variables/_index.md#hide-a-cicd-variable).
 - Can be [overridden](../variables/_index.md#use-pipeline-variables),
   making it hard to determine which value was used.
 - Can be exposed by accidental pipeline misconfiguration.

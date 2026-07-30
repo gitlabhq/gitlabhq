@@ -5,7 +5,6 @@ export default {
   files: [
     'app/assets/javascripts/behaviors/components/diagram_performance_warning.vue',
     'app/assets/javascripts/behaviors/components/image_lightbox.vue',
-    'app/assets/javascripts/boards/components/board_card_move_to_position.vue',
     'app/assets/javascripts/boards/components/board_column.vue',
     'app/assets/javascripts/boards/components/board_content.vue',
     'app/assets/javascripts/boards/components/board_form.vue',
@@ -168,7 +167,6 @@ export default {
     'ee/app/assets/javascripts/analytics/productivity_analytics/components/mr_table.vue',
     'ee/app/assets/javascripts/boards/components/board_list_header.vue',
     'ee/app/assets/javascripts/boards/components/board_new_epic.vue',
-    'ee/app/assets/javascripts/boards/components/board_new_issue.vue',
     'ee/app/assets/javascripts/boards/components/epics_swimlanes.vue',
     'ee/app/assets/javascripts/boards/components/issues_lane_list.vue',
     'ee/app/assets/javascripts/codequality_report/codequality_report.vue',

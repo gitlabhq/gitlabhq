@@ -39,7 +39,7 @@ POST /projects/:id/invitations
 | `id`             | integer or string | yes                               | The ID or [URL-encoded path of the project or group](rest/_index.md#namespaced-paths) |
 | `email`          | string            | yes (if `user_id` isn't provided) | The email of the new member or multiple emails separated by commas. |
 | `user_id`        | integer or string | yes (if `email` isn't provided)   | The ID of the new member or multiple IDs separated by commas. |
-| `access_level`   | integer           | yes                               | A valid [access level](../user/permissions.md#default-roles) Possible values: `0` (No access), `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), or `50` (Owner). Default: `30`. |
+| `access_level`   | integer           | yes                               | A valid [access level](../user/permissions.md#default-roles). Possible values: `0` (No access), `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), or `50` (Owner). Default: `30`. |
 | `expires_at`     | string            | no                                | A date string in the format `YEAR-MONTH-DAY` |
 | `invite_source`  | string            | no                                | The source of the invitation that starts the member creation process. |
 | `member_role_id` | integer           | no                                | Assigns the new member to the provided custom role. Ultimate only. |
@@ -145,7 +145,7 @@ PUT /projects/:id/invitations/:email
 | -------------- | ----------------- | -------- | ----------- |
 | `id`           | integer or string | yes      | The ID or [URL-encoded path of the project or group](rest/_index.md#namespaced-paths). |
 | `email`        | string            | yes      | The email address the invitation was previously sent to. |
-| `access_level` | integer           | no       | A valid [access level](../user/permissions.md#default-roles) Possible values: `0` (No access), `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), or `50` (Owner). Default: `30`. |
+| `access_level` | integer           | no       | A valid [access level](../user/permissions.md#default-roles). Possible values: `0` (No access), `5` (Minimal access), `10` (Guest), `15` (Planner), `20` (Reporter), `25` (Security Manager), `30` (Developer), `40` (Maintainer), or `50` (Owner). Default: `30`. |
 | `expires_at`   | string            | no       | A date string in ISO 8601 format (`YYYY-MM-DDTHH:MM:SSZ`). |
 
 ```shell

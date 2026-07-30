@@ -327,7 +327,7 @@ runner is configured with `tls-ca-file`, you can reference the predefined
 
 ## Migrate from Kaniko to BuildKit
 
-BuildKit rootless is a secure alternative for Kaniko that offers improved performance, better
+BuildKit rootless is a secure alternative to Kaniko that offers improved performance, better
 caching, and enhanced security features without privileged containers.
 
 ### Update your configuration

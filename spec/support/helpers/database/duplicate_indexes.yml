@@ -191,3 +191,6 @@ users:
 emails:
   index_emails_on_user_id_and_confirmation_token:
     - index_emails_on_user_id
+members:
+  tmp_idx_members_on_access_level_source_type_requested_at_id:
+  - index_members_on_access_level

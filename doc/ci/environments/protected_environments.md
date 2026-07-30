@@ -57,7 +57,7 @@ To protect an environment:
    want to give deploy access to. Keep in mind that:
    - There are two roles to choose from:
      - **Maintainers**: Allows access to all of the project's users with the Maintainer role.
-     - **Developers**: Allows access to all of the project's users with the Maintainer and Developer role.
+     - **Developers**: Allows access to all of the project's users with the Maintainer and Developer roles.
    - You can also select groups that are already [invited](../../user/project/members/sharing_projects_groups.md#invite-a-group-to-a-project) to the project. Invited groups added to the project with the Reporter role appear in the dropdown list for [deployment-only access](#deployment-only-access-to-protected-environments).
    - You can also select specific users. The users must have the Developer, Maintainer, or Owner role to appear in
      the **Allowed to deploy** list.
@@ -66,7 +66,7 @@ To protect an environment:
 
    - There are two roles to choose from:
      - **Maintainers**: Allows access to all of the project's users with the Maintainer role.
-     - **Developers**: Allows access to all of the project's users with the Maintainer and Developer role.
+     - **Developers**: Allows access to all of the project's users with the Maintainer and Developer roles.
    - You can only select groups that are already [invited](../../user/project/members/sharing_projects_groups.md#invite-a-group-to-a-project) to the project.
    - Users must have the Developer, Maintainer, or Owner role to appear in
      the **Approvers** list.
@@ -169,7 +169,7 @@ to the project with [Reporter role](../../user/permissions.md#project-permission
 
 To add deployment-only access:
 
-1. Create a group with members who are granted to access to the protected environment, if it doesn't exist yet.
+1. Create a group with members who are granted access to the protected environment, if it doesn't exist yet.
 1. [Invite the group](../../user/project/members/sharing_projects_groups.md#invite-a-group-to-a-project) to the project with the Reporter role.
 1. Follow the steps in [Protecting Environments](#protecting-environments).
 

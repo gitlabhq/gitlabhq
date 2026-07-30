@@ -91,8 +91,8 @@ later.
 
 ### Create an ECS task definition
 
-[ECS Task definitions](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html)
-is a specification about how the application image is started by an [ECS service](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs_services.html).
+An [ECS task definition](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html)
+specifies how an [ECS service](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs_services.html) starts the application image.
 
 1. Go to **ECS** > **Task Definitions** on [AWS console](https://aws.amazon.com/).
 1. Select **Create new Task Definition**.
@@ -140,7 +140,7 @@ Now you can register an ECS service to the ECS cluster in the next step.
 
 Note the following:
 
-- Optionally, you can set a SSH key pair in the creation form. This allows you to SSH to the EC2
+- Optionally, you can set an SSH key pair in the creation form. This allows you to SSH to the EC2
   instance for debugging.
 - If you don't choose an existing VPC, it creates a new VPC by default. This could cause an error if
   it reaches the maximum allowed number of internet gateways on your account.
@@ -180,7 +180,7 @@ Now, the demo application is accessible from the internet.
 
    ![The demo application running in a browser.](img/view-running-app_v13_10.png)
 
-In this guide, HTTPS/SSL is not configured. You can access to the application through HTTP only
+In this guide, HTTPS/SSL is not configured. You can access the application through HTTP only
 (for example, `http://<ec2-ipv4-address>`).
 
 ## Set up Continuous Deployment from GitLab
@@ -207,7 +207,7 @@ create a deployer user on AWS:
 > [!note]
 > Do not share the secret access key in a public place. You must save it in a secure place.
 
-### Setup credentials in GitLab to let pipeline jobs access to ECS
+### Set up credentials in GitLab to let pipeline jobs access ECS
 
 You can register the access information in [GitLab CI/CD Variables](../../variables/_index.md).
 These variables are injected into the pipeline jobs and can access the ECS API.

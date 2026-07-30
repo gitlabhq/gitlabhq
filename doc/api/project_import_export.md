@@ -436,7 +436,7 @@ be populated with any occurrences of relations that failed to import due to eith
 }
 ```
 
-When importing from GitHub, the a `stats` field lists how many objects were already fetched from
+When importing from GitHub, a `stats` field lists how many objects were already fetched from
 GitHub and how many were already imported:
 
 ```json

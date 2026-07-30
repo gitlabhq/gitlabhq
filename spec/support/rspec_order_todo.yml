@@ -3470,7 +3470,6 @@
 - './spec/helpers/access_tokens_helper_spec.rb'
 - './spec/helpers/admin/application_settings/settings_helper_spec.rb'
 - './spec/helpers/admin/background_migrations_helper_spec.rb'
-- './spec/helpers/admin/deploy_key_helper_spec.rb'
 - './spec/helpers/admin/identities_helper_spec.rb'
 - './spec/helpers/admin/user_actions_helper_spec.rb'
 - './spec/helpers/appearances_helper_spec.rb'

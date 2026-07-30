@@ -341,7 +341,7 @@ This step introduces:
   to configure job behavior in the configuration file and in script commands.
   [Predefined CI/CD variables](../variables/predefined_variables.md) are variables
   that you do not need to manually define. They are automatically injected into pipelines
-  so you can use them to configure your pipeline. Variables are usually formatted as `$VARIABLE_NAME`.
+  so you can use them to configure your pipeline. Variables are usually formatted as `$VARIABLE_NAME`,
   and predefined variables are usually prefixed with `$CI_`.
 
 In this step:

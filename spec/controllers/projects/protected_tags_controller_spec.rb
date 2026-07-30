@@ -12,7 +12,7 @@ RSpec.describe Projects::ProtectedTagsController do
   end
 
   describe "DELETE #destroy" do
-    let(:project) { create(:project, :repository) }
+    let(:project) { create(:project) }
     let(:protected_tag) { create(:protected_tag, :developers_can_create, project: project) }
     let(:user) { create(:user) }
 

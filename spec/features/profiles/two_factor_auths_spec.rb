@@ -27,6 +27,8 @@ RSpec.describe 'Password and authentication', feature_category: :system_access d
         otp_authenticator_registration(user.reload.current_otp, user.password)
 
         expect(page).to have_content('Please copy, download, or print your recovery codes before proceeding.')
+        expect(find_by_testid('breadcrumb-links'))
+          .to have_link(s_('ProfilesAuthentication|Password and authentication'), href: profile_two_factor_auth_path)
 
         click_button 'Copy codes'
         click_link 'Proceed'
@@ -189,7 +191,7 @@ RSpec.describe 'Password and authentication', feature_category: :system_access d
         expect(page).to have_content('Two-factor authentication has been disabled successfully!')
       end
 
-      it 'requires the current_password to regenerate recovery codes', :js do
+      it 'requires the current_password to regenerate recovery codes', :js, :aggregate_failures do
         visit profile_two_factor_auth_path
 
         click_button _('Regenerate recovery codes')
@@ -201,6 +203,8 @@ RSpec.describe 'Password and authentication', feature_category: :system_access d
         modal_submit(user.password)
 
         expect(page).to have_content('Please copy, download, or print your recovery codes before proceeding.')
+        expect(find_by_testid('breadcrumb-links'))
+          .to have_link(s_('ProfilesAuthentication|Password and authentication'), href: profile_two_factor_auth_path)
       end
 
       context 'when user authenticates with an external service' do

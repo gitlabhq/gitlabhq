@@ -152,16 +152,11 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
   end
 
   context 'when disabling merge request collaboration on access reduction' do
-    let(:group) { create(:group, :public) }
+    let(:group) { create(:group, :public, owners: user) }
     let!(:project) { create(:project, :public, group: group) }
 
-    before do
-      group.add_owner(user)
-      new_parent_group.add_owner(user)
-    end
-
     context 'when the new parent group is private' do
-      let_it_be(:new_parent_group, freeze: false) { create(:group, :private) }
+      let_it_be(:new_parent_group, freeze: false) { create(:group, :private, owners: user) }
 
       it 'enqueues the worker for the affected projects' do
         expect(::MergeRequests::DisableCollaborationOnUnauthorizedWorker)
@@ -171,7 +166,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
       end
 
       context 'when no project visibility is reduced' do
-        let(:group) { create(:group, :private) }
+        let(:group) { create(:group, :private, owners: user) }
         let!(:project) { create(:project, :private, group: group) }
 
         it 'does not enqueue the worker' do
@@ -184,7 +179,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
     end
 
     context 'when the new parent group is internal' do
-      let_it_be(:new_parent_group, freeze: false) { create(:group, :internal) }
+      let_it_be(:new_parent_group, freeze: false) { create(:group, :internal, owners: user) }
 
       it 'does not enqueue the worker' do
         expect(::MergeRequests::DisableCollaborationOnUnauthorizedWorker)
@@ -195,7 +190,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
     end
 
     context 'when transferring to a root group' do
-      let(:group) { create(:group, :public, :nested) }
+      let(:group) { create(:group, :public, :nested, owners: user) }
 
       it 'does not enqueue the worker' do
         expect(::MergeRequests::DisableCollaborationOnUnauthorizedWorker)

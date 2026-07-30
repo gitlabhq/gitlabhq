@@ -40,7 +40,7 @@ Usage data for the previous month is kept to show a historical view of the consu
 ### Notifications
 
 An in-app banner is displayed and an email notification sent to the
-namespace owners when the remaining compute minutes is:
+namespace owners when the remaining compute minutes are:
 
 - Less than 25% of the quota.
 - Less than 5% of the quota.

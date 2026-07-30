@@ -73,7 +73,7 @@ describe('Issue boards new issue form', () => {
     ${NAMESPACE_GROUP}   | ${groupBoardQueryHandlerSuccess}   | ${projectBoardQueryHandlerSuccess} | ${groupBoardQuery}
     ${NAMESPACE_PROJECT} | ${projectBoardQueryHandlerSuccess} | ${groupBoardQueryHandlerSuccess}   | ${projectBoardQuery}
   `(
-    'fetches $boardType board and emits addNewIssue event',
+    'fetches $boardType board and emits add-new-issue event',
     async ({ boardType, queryHandler, notCalledHandler, query }) => {
       projectBoardQueryHandlerSuccess.mockClear();
       groupBoardQueryHandlerSuccess.mockClear();
@@ -94,7 +94,7 @@ describe('Issue boards new issue form', () => {
 
       expect(queryHandler).toHaveBeenCalled();
       expect(notCalledHandler).not.toHaveBeenCalled();
-      expect(wrapper.emitted('addNewIssue')[0][0]).toMatchObject({ title: 'Foo' });
+      expect(wrapper.emitted('add-new-issue')[0][0]).toMatchObject({ title: 'Foo' });
     },
   );
 

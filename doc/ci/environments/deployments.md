@@ -103,11 +103,11 @@ To maintain the efficiency of your Git operations, GitLab keeps
 only recent deployment refs (up to 50,000) and deletes the rest of the old deployment refs.
 Archived deployments are still available, in the UI or by using the API, for auditing purposes.
 Also, you can still fetch the deployed commit from the repository
-with specifying the commit SHA (for example, `git checkout <deployment-sha>`), even after archive.
+by specifying the commit SHA (for example, `git checkout <deployment-sha>`), even after they're archived.
 
 > [!note]
 > GitLab preserves all commits as [`keep-around` refs](../../user/project/repository/repository_size.md#methods-to-reduce-repository-size)
-> so that deployed commits are not garbage collected, even if it's not referenced by the deployment refs.
+> so that deployed commits are not garbage collected, even if they're not referenced by the deployment refs.
 
 ## Deployment rollback
 

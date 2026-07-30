@@ -340,3 +340,44 @@ gitlab-advanced-sast-cpp:
     - if: $CI_COMMIT_BRANCH &&
         $GITLAB_FEATURES =~ /\bsast_advanced\b/
       exists: !reference [.gitlab-advanced-sast-cpp-exist-rules, exists]
+
+.gitlab-advanced-sast-ext-exist-rules:
+  exists:
+    - '**/{*.swift,*.m,*.mm}'
+
+gitlab-advanced-sast-ext:
+  extends: .sast-analyzer
+  image:
+    name: "$SAST_ANALYZER_IMAGE"
+  variables:
+    SAST_ANALYZER_IMAGE_TAG: 0
+    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/gitlab-advanced-sast-ext:$SAST_ANALYZER_IMAGE_TAG$SAST_IMAGE_SUFFIX"
+    # iOS project layouts nest deeply; match gitlab-advanced-sast so Swift /
+    # Objective-C sources more than 4 directories deep are not skipped. sat
+    # honors SEARCH_MAX_DEPTH via --max-depth (analyzer issue #50 / MR !174).
+    SEARCH_MAX_DEPTH: 20
+  rules:
+    - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
+      when: never
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /gitlab-advanced-sast-ext/
+      when: never
+    - if: $GITLAB_ADVANCED_SAST_EXT_ENABLED != 'true' && $GITLAB_ADVANCED_SAST_EXT_ENABLED != '1'
+      when: never
+
+    # The following 3 blocks of rules define whether the job runs in a an *MR pipeline* or a *branch pipeline*
+    # when an MR exists. If the job has additional rules to observe they should be added in the blocks 1 and 3
+    # to cover both the *MR pipeline* and the *branch pipeline* workflows.
+
+    # 1. Run the job in an *MR* pipeline if MR pipelines for AST are enabled and there's an open merge request.
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+        $CI_PIPELINE_SOURCE == "merge_request_event" &&
+        $GITLAB_FEATURES =~ /\bsast_advanced\b/
+      exists: !reference [.gitlab-advanced-sast-ext-exist-rules, exists]
+    # 2. Don't run the job in a *branch pipeline* if *MR pipelines* for AST are enabled and there's an open merge request.
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+        $CI_OPEN_MERGE_REQUESTS
+      when: never
+    # 3. Finally, run the job in a *branch pipeline* (When MR pipelines are disabled for AST, or it is enabled but no open MRs exist for the branch).
+    - if: $CI_COMMIT_BRANCH &&
+        $GITLAB_FEATURES =~ /\bsast_advanced\b/
+      exists: !reference [.gitlab-advanced-sast-ext-exist-rules, exists]

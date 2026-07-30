@@ -9,6 +9,7 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 
+import EMPTY_STATE_SVG_URL from '@gitlab/svgs/dist/illustrations/empty-state/empty-access-token-md.svg?url';
 import { VIEW_ADMIN_DEPLOY_KEYS_PAGELOAD } from '~/admin/deploy_keys/constants';
 import { __ } from '~/locale';
 import Api, { DEFAULT_PER_PAGE } from '~/api';
@@ -16,6 +17,11 @@ import { InternalEvents } from '~/tracking';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
+import {
+  newAdminDeployKeyPath,
+  editAdminDeployKeyPath,
+  adminDeployKeyPath,
+} from '~/lib/utils/path_helpers/admin';
 import { createAlert } from '~/alert';
 import csrf from '~/lib/utils/csrf';
 
@@ -83,6 +89,7 @@ export default {
   },
   csrf,
   DEFAULT_PER_PAGE,
+  EMPTY_STATE_SVG_URL,
   components: {
     CrudComponent,
     GlTable,
@@ -97,7 +104,6 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [InternalEvents.mixin()],
-  inject: ['editPath', 'deletePath', 'createPath', 'emptyStateSvgPath'],
   data() {
     return {
       page: 1,
@@ -115,9 +121,7 @@ export default {
       return this.deployKeyToDelete !== null;
     },
     deleteAction() {
-      return this.deployKeyToDelete === null
-        ? null
-        : this.deletePath.replace(':id', this.deployKeyToDelete);
+      return this.deployKeyToDelete === null ? null : adminDeployKeyPath(this.deployKeyToDelete);
     },
   },
   watch: {
@@ -130,8 +134,9 @@ export default {
     this.fetchDeployKeys();
   },
   methods: {
+    newAdminDeployKeyPath,
     editHref(id) {
-      return this.editPath.replace(':id', id);
+      return editAdminDeployKeyPath(id);
     },
     projectHref(project) {
       return `/${cleanLeadingSeparator(project.path_with_namespace)}`;
@@ -199,7 +204,7 @@ export default {
     class="gl-mt-5"
   >
     <template #actions>
-      <gl-button size="small" :href="createPath" data-testid="new-deploy-key-button">{{
+      <gl-button size="small" :href="newAdminDeployKeyPath()" data-testid="new-deploy-key-button">{{
         $options.i18n.newDeployKeyButtonText
       }}</gl-button>
     </template>
@@ -273,7 +278,7 @@ export default {
     </gl-table>
     <gl-empty-state
       v-else
-      :svg-path="emptyStateSvgPath"
+      :svg-path="$options.EMPTY_STATE_SVG_URL"
       :svg-height="150"
       :title="$options.i18n.emptyStateTitle"
       :description="$options.i18n.emptyStateDescription"

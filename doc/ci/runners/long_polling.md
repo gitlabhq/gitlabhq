@@ -190,7 +190,7 @@ Workhorse long poll queue, and the request gets sent to Rails (step
 job (steps 13 and 14).
 
 With long polling, the runner gets notified immediately after a new job
-is available. This not only helps improve reduce job queueing time, but
+is available. This not only helps reduce job queueing time, but
 it also reduces server overhead because the job requests reach
 Rails only when there is new work.
 
@@ -206,7 +206,7 @@ See [issue 27709](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27709).
 
 This can happen if the `concurrent` setting in the runner `config.toml`
 is set to a value lower than the number of runners defined. To resolve
-this issue, ensure the value of `concurrent` is at equal or greater than the
+this issue, ensure the value of `concurrent` is equal to or greater than the
 number of runners.
 
 For example, if you have three `[[runners]]` entries in `config.toml`, make

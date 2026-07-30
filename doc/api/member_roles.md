@@ -289,7 +289,7 @@ Parameters:
 
 | Attribute | Type                | Required | Description |
 |:----------|:--------|:---------|:-------------------------------------|
-| `id`      | integer or string      | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group of the group. |
+| `id`      | integer or string      | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `admin_cicd_variables` | boolean | no       | Permission to create, read, update, and delete CI/CD variables. |
 | `admin_compliance_framework` | boolean | no       | Permission to administer compliance frameworks. |
 | `admin_group_member` | boolean | no       | Permission to add, remove, and assign members in a group. |
@@ -369,7 +369,7 @@ DELETE /groups/:id/member_roles/:member_role_id
 
 | Attribute | Type | Required | Description |
 |:----------|:--------|:---------|:-------------------------------------|
-| `id`      | integer or string | yes | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group of the group. |
+| `id`      | integer or string | yes | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `member_role_id` | integer | yes   | The ID of the member role. |
 
 If successful, returns [`204`](rest/troubleshooting.md#status-codes) and an empty response.

@@ -126,16 +126,16 @@ describe('Board Column Component', () => {
     expect(wrapper.emitted('cannot-find-active-item')).toHaveLength(1);
   });
 
-  it('emits `drag-start` and `dragStop` event when the board list emits the same', () => {
+  it('emits `drag-start` and `drag-stop` event when the board list emits the same', () => {
     createComponent();
 
     findList().vm.$emit('drag-start');
 
     expect(wrapper.emitted('drag-start')).toHaveLength(1);
 
-    findList().vm.$emit('dragStop');
+    findList().vm.$emit('drag-stop');
 
-    expect(wrapper.emitted('dragStop')).toHaveLength(1);
+    expect(wrapper.emitted('drag-stop')).toHaveLength(1);
   });
 
   it('passes focused prop to BoardList', () => {

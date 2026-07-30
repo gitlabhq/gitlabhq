@@ -44,10 +44,6 @@ class GroupsController < Groups::ApplicationController
 
   before_action :set_group_markdown_flags
 
-  before_action only: [:issues] do
-    push_frontend_feature_flag(:vue3_migrate_work_items, current_user)
-  end
-
   before_action :group_projects, only: [:activity, :merge_requests] # rubocop:disable Rails/LexicallyScopedActionFilter -- merge_requests defined in IssuableCollectionsAction concern
   before_action :event_filter, only: [:activity]
 

@@ -2,6 +2,8 @@
 
 import $ from 'jquery';
 import Sortable from 'sortablejs';
+import { DRAG_CLASS } from '~/sortable/constants';
+import { sortableStart, sortableEnd } from '~/sortable/utils';
 import { dispose } from '~/tooltips';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
@@ -19,8 +21,10 @@ export default class LabelManager {
       Sortable.create(this.prioritizedLabels.get(0), {
         filter: '.empty-message',
         forceFallback: true,
-        fallbackClass: 'is-dragging',
+        fallbackClass: DRAG_CLASS,
         dataIdAttr: 'data-id',
+        onStart: sortableStart,
+        onEnd: sortableEnd,
         onUpdate: this.onPrioritySortUpdate.bind(this),
       });
     }

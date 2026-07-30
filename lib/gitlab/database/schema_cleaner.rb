@@ -45,6 +45,15 @@ module Gitlab
           ''
         )
 
+        # Publications are replication configuration, not schema. They are created by rake tasks
+        # (gitlab:siphon:setup, gitlab:geo:logical_replication:publication:create) against a live
+        # database, so a developer who has run one of those would otherwise dump them in here.
+        structure.gsub!(/^(?:CREATE|ALTER) PUBLICATION .*;$\n/, '')
+
+        # Likewise the helper function installed by gitlab:siphon:setup. Note the `public.` prefix
+        # has already been stripped above.
+        structure.gsub!(/^CREATE FUNCTION siphon_alter_publication\(.*?^\$_\$;$\n/m, '')
+
         structure.gsub!(/\n{3,}/, "\n\n")
 
         io << structure.strip

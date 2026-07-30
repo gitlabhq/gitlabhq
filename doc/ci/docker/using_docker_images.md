@@ -410,7 +410,7 @@ To configure a Credentials Store:
 
 `credsStore` is used to access **all** the registries.
 If you use both images from a private registry and public images from Docker Hub,
-pulling from Docker Hub fails. Docker daemon tries to use the same credentials for **all** the registries.
+pulling from Docker Hub fails. The Docker daemon tries to use the same credentials for **all** the registries.
 
 ### Use Credential Helpers
 

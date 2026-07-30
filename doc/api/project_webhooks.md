@@ -521,9 +521,8 @@ Supported attributes:
 | `hook_id` | integer           | Yes      | ID of the project webhook. |
 | `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
-Note the JSON response differs if the project webhook is available or not. If the project
-hook is available before it's returned in the JSON response or an empty response
-is returned.
+If the project webhook is available, it's returned in the JSON response.
+Otherwise, an empty response is returned.
 
 ## Trigger a test project webhook
 

@@ -62,7 +62,7 @@ For more information and example configurations, see the [SLSA Component documen
 ### Level 3, Hardened build platform
 
 SLSA Level 3 implements all the requirements of levels 1 and 2, and also prevents tampering
-with the provenance. For example, by preventing tampering by an attacker that has compromised the build process itself.
+with the provenance, for example, by preventing tampering by an attacker that has compromised the build process itself.
 
 This increased tamper resistance comes from:
 

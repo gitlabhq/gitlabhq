@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Projects::Pipelines::TestsController, feature_category: :continuous_integration do
   let(:user) { create(:user) }
-  let(:project) { create(:project, :public, :repository) }
+  let_it_be(:project) { create(:project, :public, :small_repo) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
 
   before do

@@ -837,13 +837,13 @@ Example response:
 A release with a `released_at` attribute set to a future date is labeled
 as an **Upcoming Release** [in the UI](../../user/project/releases/_index.md#upcoming-releases).
 
-Additionally, if a [release is requested from the API](#list-releases), for each release with a `release_at` attribute set to a future date, an additional attribute `upcoming_release` (set to true) is returned as part of the response.
+Additionally, if a [release is requested from the API](#list-releases), for each release with a `released_at` attribute set to a future date, an additional attribute `upcoming_release` (set to true) is returned as part of the response.
 
 ## Historical releases
 
 A release with a `released_at` attribute set to a past date is labeled
-as an **Historical release** [in the UI](../../user/project/releases/_index.md#historical-releases).
+as a **Historical release** [in the UI](../../user/project/releases/_index.md#historical-releases).
 
 Additionally, if a [release is requested from the API](#list-releases), for each
-release with a `release_at` attribute set to a past date, an additional
+release with a `released_at` attribute set to a past date, an additional
 attribute `historical_release` (set to true) is returned as part of the response.

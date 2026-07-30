@@ -331,10 +331,10 @@ describe('Board list component', () => {
           expect(document.removeEventListener).toHaveBeenCalledWith('keyup', expect.any(Function));
         });
 
-        it('emits the `dragStop` event with the item type to the parent', () => {
+        it('emits the `drag-stop` event with the item type to the parent', () => {
           endDrag(getDragEndParam(DraggableItemTypes.card));
 
-          expect(wrapper.emitted('dragStop')).toEqual([[]]);
+          expect(wrapper.emitted('drag-stop')).toEqual([[]]);
         });
       });
 
@@ -532,7 +532,7 @@ describe('Board list component', () => {
     }));
 
     expect(wrapper.findComponent(BoardNewIssue).exists()).toBe(true);
-    wrapper.findComponent(BoardNewIssue).vm.$emit('addNewIssue', { title: 'Foo' });
+    wrapper.findComponent(BoardNewIssue).vm.$emit('add-new-issue', { title: 'Foo' });
 
     await resolveMutation(issueCreateMutation);
 

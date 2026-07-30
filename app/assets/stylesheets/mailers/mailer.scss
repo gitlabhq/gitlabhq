@@ -197,3 +197,28 @@ tr.footer td {
     width: 90px;
   }
 }
+
+// Cap user-generated heading sizes in release notes so they never
+// outrank the email's own 20px title or 15px section headers.
+.release-notes h1,
+.release-notes h2,
+.release-notes h3,
+.release-notes h4,
+.release-notes h5,
+.release-notes h6 {
+  margin: 16px 0 8px;
+  color: $mailer-text-color;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+// Match user-generated body text to the email chrome's 15px #333 text;
+// unstyled markdown falls back to the client default of 16px black.
+.release-notes p,
+.release-notes ul,
+.release-notes ol,
+.release-notes li {
+  color: $mailer-text-color;
+  font-size: 15px;
+  line-height: 1.4;
+}

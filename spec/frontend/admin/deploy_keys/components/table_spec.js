@@ -1,6 +1,6 @@
-import { merge } from 'lodash-es';
 import { GlLoadingIcon, GlEmptyState, GlPagination, GlModal } from '@gitlab/ui';
 import { nextTick } from 'vue';
+import EMPTY_STATE_SVG_URL from '@gitlab/svgs/dist/illustrations/empty-state/empty-access-token-md.svg?url';
 import responseBody from 'test_fixtures/api/deploy_keys/index.json';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
@@ -18,20 +18,12 @@ jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
 describe('DeployKeysTable', () => {
   let wrapper;
 
-  const defaultProvide = {
-    createPath: '/admin/deploy_keys/new',
-    deletePath: '/admin/deploy_keys/:id',
-    editPath: '/admin/deploy_keys/:id/edit',
-    emptyStateSvgPath: '/assets/illustrations/empty-state/empty-deploy-keys.svg',
-  };
-
   const deployKey = responseBody[0];
   const deployKey2 = responseBody[1];
   const deployKeyWithoutMd5Fingerprint = responseBody[2];
 
-  const createComponent = (provide = {}) => {
+  const createComponent = () => {
     wrapper = mountExtended(DeployKeysTable, {
-      provide: merge({}, defaultProvide, provide),
       stubs: {
         GlModal: stubComponent(GlModal, {
           template: `
@@ -84,7 +76,7 @@ describe('DeployKeysTable', () => {
 
       expect(emptyState.exists()).toBe(true);
       expect(emptyState.props()).toMatchObject({
-        svgPath: defaultProvide.emptyStateSvgPath,
+        svgPath: EMPTY_STATE_SVG_URL,
         title: DeployKeysTable.i18n.emptyStateTitle,
         description: DeployKeysTable.i18n.emptyStateDescription,
       });
@@ -103,7 +95,7 @@ describe('DeployKeysTable', () => {
     const newDeployKeyButton = wrapper.findByTestId('new-deploy-key-button');
 
     expect(newDeployKeyButton.exists()).toBe(true);
-    expect(newDeployKeyButton.attributes('href')).toBe(defaultProvide.createPath);
+    expect(newDeployKeyButton.attributes('href')).toBe('/admin/deploy_keys/new');
   });
 
   describe('when `/deploy_keys` API request is pending', () => {

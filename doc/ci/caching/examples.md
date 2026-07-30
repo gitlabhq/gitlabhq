@@ -161,7 +161,7 @@ job:
 
 If your project uses [Composer](https://getcomposer.org/) to install
 PHP dependencies, the following example defines a default `cache` so that
-all jobs inherit it. PHP libraries modules are installed in `vendor/` and
+all jobs inherit it. PHP libraries are installed in `vendor/` and
 are cached per-branch:
 
 ```yaml

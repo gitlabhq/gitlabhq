@@ -600,7 +600,7 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
     end
 
     context 'when @project is set' do
-      let_it_be(:project) { create(:project, :repository) }
+      let_it_be(:project) { create(:project) }
       let_it_be(:user) { create(:user) }
 
       before do
@@ -624,7 +624,7 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
       end
 
       context 'when @project is owned by a group' do
-        let_it_be(:project) { create(:project, :repository, group: create(:group)) }
+        let_it_be(:project) { create(:project, group: create(:group)) }
 
         it 'includes all possible body data elements and associates the project elements with project' do
           expect(helper.body_data).to eq(

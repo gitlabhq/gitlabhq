@@ -10,7 +10,7 @@ RSpec.describe Projects::WebIdeTerminalsController, feature_category: :web_ide d
   let_it_be(:reporter) { create(:user) }
   let_it_be(:guest) { create(:user) }
   let_it_be(:project) do
-    create(:project, :private, :repository, namespace: owner.namespace).tap do |project|
+    create(:project, :private, :small_repo, namespace: owner.namespace).tap do |project|
       project.add_maintainer(maintainer)
       project.add_developer(developer)
       project.add_reporter(reporter)

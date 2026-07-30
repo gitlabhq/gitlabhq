@@ -85,7 +85,7 @@ Supported attributes:
 | `updated_after`                 | datetime      | No         | Return issues updated on or after the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`).                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | `updated_before`                | datetime      | No         | Return issues updated on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`).                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | `weight`                        | integer       | No         | Return issues with the specified `weight`. `None` returns issues with no weight assigned. `Any` returns issues with a weight assigned. Premium and Ultimate only.                                                                                                                                                                                                                                                                                                                                                                                                      |
-| `with_labels_details`           | boolean       | No         | If `true`, the response returns more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`.                                                                                                                                                                                                                                                                                                                                                                                                |
+| `with_labels_details`           | boolean       | No         | If `true`, the response returns more details for each label in the labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`.                                                                                                                                                                                                                                                                                                                                                                                                |
 
 Example request:
 
@@ -266,7 +266,7 @@ Issues created by users on GitLab Ultimate include the `health_status` property:
 Lists all issues for a specified group.
 
 If the group is private, you must provide credentials to authorize.
-The preferred way to do this, is by using [personal access tokens](../user/profile/personal_access_tokens.md).
+The preferred way to do this is by using [personal access tokens](../user/profile/personal_access_tokens.md).
 
 ```plaintext
 GET /groups/:id/issues
@@ -316,7 +316,7 @@ Supported attributes:
 | `updated_after`     | datetime         | No         | Return issues updated on or after the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `updated_before`    | datetime         | No         | Return issues updated on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `weight` | integer       | No         | Return issues with the specified `weight`. `None` returns issues with no weight assigned. `Any` returns issues with a weight assigned. Premium and Ultimate only. |
-| `with_labels_details` | boolean        | No         | If `true`, the response returns more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. |
+| `with_labels_details` | boolean        | No         | If `true`, the response returns more details for each label in the labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. |
 
 Example request:
 
@@ -478,7 +478,7 @@ Issues created by users on GitLab Ultimate include the `health_status` property:
 Lists all issues for a specified project.
 
 If the project is private, you need to provide credentials to authorize.
-The preferred way to do this, is by using [personal access tokens](../user/profile/personal_access_tokens.md).
+The preferred way to do this is by using [personal access tokens](../user/profile/personal_access_tokens.md).
 
 ```plaintext
 GET /projects/:id/issues
@@ -527,7 +527,7 @@ Supported attributes:
 | `updated_after`       | datetime       | No       | Return issues updated on or after the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `updated_before`      | datetime       | No       | Return issues updated on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `weight`              | integer        | No       | Return issues with the specified `weight`. `None` returns issues with no weight assigned. `Any` returns issues with a weight assigned. Premium and Ultimate only. |
-| `with_labels_details` | boolean        | No       | If `true`, the response returns more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. |
+| `with_labels_details` | boolean        | No       | If `true`, the response returns more details for each label in the labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. |
 | `cursor`              | string         | No       | Parameter used in keyset pagination. |
 
 This endpoint supports both offset-based and [keyset-based](rest/_index.md#keyset-based-pagination) pagination. You should use keyset-based
@@ -867,7 +867,7 @@ property:
 Retrieves a specified issue for a project.
 
 If the project is private or the issue is confidential, you need to provide credentials to authorize.
-The preferred way to do this, is by using [personal access tokens](../user/profile/personal_access_tokens.md).
+The preferred way to do this is by using [personal access tokens](../user/profile/personal_access_tokens.md).
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid
@@ -1044,14 +1044,14 @@ Supported attributes:
 | `confidential`                            | boolean        | No       | Set an issue to be confidential. Default is `false`.  |
 | `created_at`                              | string         | No       | When the issue was created. Date time string, ISO 8601 formatted, for example `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
 | `description`                             | string         | No       | The description of an issue. Limited to 1,048,576 characters. |
-| `discussion_to_resolve`                   | string         | No       | The ID of a discussion to resolve. This fills out the issue with a default description and mark the discussion as resolved. Use in combination with `merge_request_to_resolve_discussions_of`. |
+| `discussion_to_resolve`                   | string         | No       | The ID of a discussion to resolve. This fills out the issue with a default description and marks the discussion as resolved. Use in combination with `merge_request_to_resolve_discussions_of`. |
 | `due_date`                                | string         | No       | The due date. Date time string in the format `YYYY-MM-DD`, for example `2016-03-11`. |
 | `epic_id`                                 | integer | No | ID of the epic to add the issue to. Valid values are greater than or equal to 0. Premium and Ultimate only. |
 | `epic_iid`                                | integer | No | IID of the epic to add the issue to. Valid values are greater than or equal to 0. (deprecated, [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/35157) in API version 5). Premium and Ultimate only. |
 | `iid`                                     | integer or string | No       | The internal ID of the project's issue (requires administrator or project owner rights). |
 | `issue_type`                              | string         | No       | The type of issue. One of `issue`, `incident`, `test_case` or `task`. Default is `issue`. |
 | `labels`                                  | string         | No       | Comma-separated label names to assign to the new issue. If a label does not already exist, this creates a new project label and assigns it to the issue.  |
-| `merge_request_to_resolve_discussions_of` | integer        | No       | The IID of a merge request in which to resolve all issues. This fills out the issue with a default description and mark all discussions as resolved. When passing a description or title, these values take precedence over the default values.|
+| `merge_request_to_resolve_discussions_of` | integer        | No       | The IID of a merge request in which to resolve all issues. This fills out the issue with a default description and marks all discussions as resolved. When passing a description or title, these values take precedence over the default values.|
 | `milestone_id`                            | integer        | No       | The global ID of a milestone to assign issue. To find the `milestone_id` associated with a milestone, view an issue with the milestone assigned and [use the API](#retrieve-a-project-issue) to retrieve the issue's details. Mutually exclusive with `milestone`. |
 | `milestone`                               | string         | No       | The title of a project or ancestor-group milestone to assign the issue to. Matched exactly (case-sensitive). Mutually exclusive with `milestone_id`. |
 | `severity`                                | string         | No       | The severity of the issue. Applies only to incidents. One of `unknown`, `low`, `medium`, `high`, or `critical`. |
@@ -2261,7 +2261,7 @@ Example response:
 Retrieves time tracking stats for a specified issue in human-readable format (for example, `1h30m`) and in number of seconds.
 
 If the project is private or the issue is confidential, you must provide credentials to authorize.
-The preferred way to do this, is by using [personal access tokens](../user/profile/personal_access_tokens.md).
+The preferred way to do this is by using [personal access tokens](../user/profile/personal_access_tokens.md).
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/time_stats
@@ -2301,7 +2301,7 @@ The following requests are related to relationships between issues and merge req
 Lists all merge requests that are related to a specified issue.
 
 If the project is private or the issue is confidential, you need to provide credentials to authorize.
-The preferred way to do this, is by using [personal access tokens](../user/profile/personal_access_tokens.md).
+The preferred way to do this is by using [personal access tokens](../user/profile/personal_access_tokens.md).
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/related_merge_requests
@@ -2467,7 +2467,7 @@ Example response:
 Lists all merge requests that close a specified issue when merged.
 
 If the project is private or the issue is confidential, you need to provide credentials to authorize.
-The preferred way to do this, is by using [personal access tokens](../user/profile/personal_access_tokens.md).
+The preferred way to do this is by using [personal access tokens](../user/profile/personal_access_tokens.md).
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/closed_by
@@ -2551,7 +2551,7 @@ Example response:
 Lists all users that are participants in a specified issue.
 
 If the project is private or the issue is confidential, you need to provide credentials to authorize.
-The preferred way to do this, is by using [personal access tokens](../user/profile/personal_access_tokens.md).
+The preferred way to do this is by using [personal access tokens](../user/profile/personal_access_tokens.md).
 
 ```plaintext
 GET /projects/:id/issues/:issue_iid/participants

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe WebHooks::WebHookLogsFinder, :freeze_time, feature_category: :webhooks do
   let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:group) { create(:group) }
-  let_it_be_with_reload(:project) { create(:project, :repository, namespace: group) }
+  let_it_be_with_reload(:project) { create(:project, namespace: group) }
   let_it_be_with_reload(:web_hook) { create(:project_hook, project: project) }
 
   let_it_be(:log_200) { create(:web_hook_log, web_hook: web_hook, created_at: 10.minutes.ago) }

@@ -151,7 +151,7 @@ GET projects/:id/packages/pypi/files/:sha256/:file_identifier
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id`              | string | yes | The ID or full path of the project. |
-| `sha256`          | string | yes | PyPI package file sha256 check sum. |
+| `sha256`          | string | yes | PyPI package file sha256 checksum. |
 | `file_identifier` | string | yes | The PyPI package filename. |
 
 ```shell

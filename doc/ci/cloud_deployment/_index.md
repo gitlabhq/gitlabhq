@@ -127,7 +127,7 @@ If your image is located in a private registry, make sure your task definition i
 [configured with a `repositoryCredentials` attribute](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/private-auth.html).
 
 The targeted task definition is updated with the location of the new
-Docker image, and a new revision is created in ECS as result.
+Docker image, and a new revision is created in ECS as a result.
 
 Finally, your AWS ECS service is updated with the new revision of the
 task definition, making the cluster pull the newest version of your
@@ -219,7 +219,7 @@ To deploy to EC2, complete the following steps.
      `CI_AWS_CF_CREATE_STACK_FILE` variable.
      If your stack already exists, this step is skipped, but the `provision`
      job it belongs to still runs.
-   - Your built application is pushed to your S3 bucket then and deployed to your EC2 instance, based
+   - Your built application is pushed to your S3 bucket and then deployed to your EC2 instance, based
      on the related JSON object's content. The deployment job finishes when the deployment to EC2
      is done or has failed.
 

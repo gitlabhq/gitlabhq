@@ -6,7 +6,7 @@ RSpec.describe Projects::Settings::IntegrationsController, feature_category: :in
   include JiraIntegrationHelpers
   include AfterNextHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user, maintainer_of: project) }
   let_it_be(:jira_integration) { create(:jira_integration, project: project) }
 

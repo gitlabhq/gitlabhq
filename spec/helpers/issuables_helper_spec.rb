@@ -490,7 +490,7 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
   end
 
   describe '#issuable_label_selector_data' do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project) }
 
     context 'with a new issuable' do
       let_it_be(:issuable) { build(:issue, project: project) }

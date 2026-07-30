@@ -176,6 +176,17 @@ class NotifyPreview < ActionMailer::Preview
     Notify.new_gpg_key_email(gpg_key.id).message
   end
 
+  def new_release_email
+    cleanup do
+      release = project.releases.first || project.releases.create!(
+        tag: 'v1.0', name: 'v1.0', author: user, released_at: Time.zone.now,
+        description: 'Release notes are rendered here, with full **markdown** support.'
+      )
+
+      Notify.new_release_email(user.id, release).message
+    end
+  end
+
   def closed_merge_request_email
     Notify.closed_merge_request_email(user.id, merge_request.id, user.id).message
   end

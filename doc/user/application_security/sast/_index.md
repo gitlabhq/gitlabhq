@@ -1274,6 +1274,7 @@ images from `registry.gitlab.com` into your
 
 ```plaintext
 registry.gitlab.com/security-products/gitlab-advanced-sast:2
+registry.gitlab.com/security-products/gitlab-advanced-sast-ext:0
 registry.gitlab.com/security-products/kubesec:6
 registry.gitlab.com/security-products/pmd-apex:6
 registry.gitlab.com/security-products/semgrep:6

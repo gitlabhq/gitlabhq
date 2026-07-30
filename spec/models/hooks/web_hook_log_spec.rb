@@ -73,22 +73,6 @@ RSpec.describe WebHookLog, :freeze_time, feature_category: :webhooks do
     end
   end
 
-  describe '#outside_recent_window?' do
-    subject { build(:web_hook_log, created_at: created_at).outside_recent_window? }
-
-    context 'when created within the last 7 days' do
-      let(:created_at) { described_class.max_recent_days_ago }
-
-      it { is_expected.to be(false) }
-    end
-
-    context 'when created more than 7 days ago' do
-      let(:created_at) { described_class.max_recent_days_ago - 1.second }
-
-      it { is_expected.to be(true) }
-    end
-  end
-
   describe '#save' do
     let(:hook) { build(:project_hook) }
 

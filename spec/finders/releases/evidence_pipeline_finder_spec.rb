@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Releases::EvidencePipelineFinder, '#execute' do
   let(:params) { {} }
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository) }
   let(:tag_name) { project.repository.tag_names.first }
   let(:sha) { project.repository.find_tag(tag_name).dereferenced_target.sha }
   let!(:pipeline) { create(:ci_empty_pipeline, sha: sha, project: project) }
