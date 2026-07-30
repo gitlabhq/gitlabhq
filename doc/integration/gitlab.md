@@ -12,7 +12,7 @@ title: Integrate your server with GitLab.com
 
 {{< /details >}}
 
-Import projects from GitLab.com and login to your GitLab instance with your GitLab.com account.
+Import projects from GitLab.com and sign in to your GitLab instance with your GitLab.com account.
 
 To enable the GitLab.com OmniAuth provider you must register your application with GitLab.com.
 GitLab.com generates an application ID and secret key for you to use.
@@ -31,7 +31,7 @@ GitLab.com generates an application ID and secret key for you to use.
      https://your-gitlab.example.com/users/auth/gitlab/callback
      ```
 
-   The first link is required for the importer and second for authentication.
+   The first link is required for the importer and the second for authentication.
 
    If you:
 

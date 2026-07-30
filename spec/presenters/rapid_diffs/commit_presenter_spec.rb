@@ -9,7 +9,6 @@ RSpec.describe ::RapidDiffs::CommitPresenter, feature_category: :source_code_man
   let_it_be(:current_user) { build_stubbed(:user) }
   let(:diff_view) { :inline }
   let(:diff_options) { { ignore_whitespace_changes: true } }
-  let(:diffs_count) { 20 }
   let(:base_path) { "/#{namespace.to_param}/#{project.to_param}/-/commit/#{commit.sha}" }
   let(:request_params) { {} }
   let(:resource) { commit }
@@ -20,18 +19,25 @@ RSpec.describe ::RapidDiffs::CommitPresenter, feature_category: :source_code_man
   end
 
   before do
-    allow(commit).to receive_message_chain(:diffs_for_streaming, :diff_files, :count).and_return(diffs_count)
     allow(commit).to receive(:diff_stats).and_return(nil)
+  end
+
+  def stub_first_diffs_slice(count:, overflow: false)
+    slice = instance_double(Gitlab::Git::DiffCollection)
+    allow(slice).to receive_messages(decorate!: slice, first: [])
+    instance_double(Gitlab::Diff::FileCollection::Base, count: count, overflow?: overflow, diff_files: slice)
   end
 
   describe '#diffs_slice' do
     let(:offset) { presenter.send(:offset) }
     let(:diff_files) { instance_double(Gitlab::Git::DiffCollection) }
     let(:diff_collection) { instance_double(Gitlab::Diff::FileCollection::Base, diff_files: diff_files) }
+    let(:expected_diff_options) { diff_options.merge(include_stats: false) }
 
     it 'calls first_diffs_slice on the commit with the correct arguments' do
       allow(diff_files).to receive(:decorate!).and_return(diff_files)
-      expect(commit).to receive(:first_diffs_slice).with(offset, diff_options).and_return(diff_collection)
+      allow(diff_files).to receive(:first).with(offset).and_return([])
+      expect(commit).to receive(:first_diffs_slice).with(offset, expected_diff_options).and_return(diff_collection)
 
       presenter.diffs_slice
     end
@@ -40,6 +46,7 @@ RSpec.describe ::RapidDiffs::CommitPresenter, feature_category: :source_code_man
   it_behaves_like 'rapid diffs presenter base diffs_resource'
   it_behaves_like 'rapid diffs presenter diffs methods', sorted: false
   it_behaves_like 'rapid diffs presenter syntax highlighting'
+  it_behaves_like 'rapid diffs presenter overflow detection'
 
   describe '#diffs_stats_endpoint' do
     subject(:url) { presenter.diffs_stats_endpoint }
@@ -63,16 +70,31 @@ RSpec.describe ::RapidDiffs::CommitPresenter, feature_category: :source_code_man
     describe '#diffs_stream_url' do
       subject(:url) { presenter.diffs_stream_url }
 
+      before do
+        allow(commit).to receive(:first_diffs_slice).and_return(stub_first_diffs_slice(count: 5, overflow: true))
+      end
+
       it { is_expected.to eq("#{base_path}/diffs_stream?offset=5&view=inline") }
 
-      context 'when diffs count is the same as streaming offset' do
-        let(:diffs_count) { 5 }
+      context 'when there is no overflow' do
+        before do
+          allow(commit).to receive(:first_diffs_slice).and_return(stub_first_diffs_slice(count: 5))
+        end
 
         it { is_expected.to be_nil }
       end
 
+      context 'when the slice overflowed before reaching the offset' do
+        before do
+          allow(commit).to receive(:first_diffs_slice).and_return(stub_first_diffs_slice(count: 2, overflow: true))
+        end
+
+        it 'streams from the number of files that were actually loaded' do
+          is_expected.to eq("#{base_path}/diffs_stream?offset=2&view=inline")
+        end
+      end
+
       context 'when linked file is present and page has more diffs to stream' do
-        let(:diffs_count) { 2 }
         let(:diff_file) { build(:diff_file, old_path: 'old.txt', new_path: 'new.txt') }
         let(:diff_files) do
           raw = instance_double(Gitlab::Git::DiffCollection)
@@ -83,14 +105,16 @@ RSpec.describe ::RapidDiffs::CommitPresenter, feature_category: :source_code_man
         let(:request_params) { { old_path: 'old.txt', new_path: 'new.txt' } }
 
         before do
-          allow(commit).to receive(:diffs).and_return(diff_files)
+          allow(commit).to receive_messages(
+            diffs: diff_files,
+            first_diffs_slice: stub_first_diffs_slice(count: 2, overflow: true)
+          )
         end
 
         it { is_expected.to eq("#{base_path}/diffs_stream?skip_new_path=new.txt&skip_old_path=old.txt&view=inline") }
       end
 
       context 'when linked file is the only file' do
-        let(:diffs_count) { 1 }
         let(:diff_file) { build(:diff_file, old_path: 'old.txt', new_path: 'new.txt') }
         let(:diff_files) do
           raw = instance_double(Gitlab::Git::DiffCollection)
@@ -101,37 +125,13 @@ RSpec.describe ::RapidDiffs::CommitPresenter, feature_category: :source_code_man
         let(:request_params) { { old_path: 'old.txt', new_path: 'new.txt' } }
 
         before do
-          allow(commit).to receive(:diffs).and_return(diff_files)
+          allow(commit).to receive_messages(
+            diffs: diff_files,
+            first_diffs_slice: stub_first_diffs_slice(count: 1)
+          )
         end
 
         it { is_expected.to be_nil }
-      end
-
-      context 'when diff_stats is available' do
-        let(:stats) { instance_double(Gitlab::Git::DiffStatsCollection, count: 42) }
-
-        before do
-          allow(commit).to receive(:diff_stats).and_return(stats)
-        end
-
-        it 'uses stats count without calling diffs_for_streaming' do
-          expect(commit).not_to receive(:diffs_for_streaming)
-
-          expect(url).to eq("#{base_path}/diffs_stream?offset=5&view=inline")
-        end
-      end
-
-      context 'when diff_stats returns nil' do
-        before do
-          allow(commit).to receive(:diff_stats).and_return(nil)
-          allow(commit).to receive_message_chain(:diffs_for_streaming, :diff_files, :count).and_return(diffs_count)
-        end
-
-        it 'falls back to diffs_for_streaming' do
-          expect(commit).to receive(:diffs_for_streaming)
-
-          expect(url).to eq("#{base_path}/diffs_stream?offset=5&view=inline")
-        end
       end
     end
 
@@ -164,6 +164,32 @@ RSpec.describe ::RapidDiffs::CommitPresenter, feature_category: :source_code_man
     subject(:method) { presenter.lazy? }
 
     it { is_expected.to be(false) }
+  end
+
+  describe '#empty_state_type' do
+    subject(:type) { presenter.empty_state_type }
+
+    context 'when the loaded slice is empty' do
+      before do
+        allow(commit).to receive(:first_diffs_slice).and_return(stub_first_diffs_slice(count: 0))
+      end
+
+      it { is_expected.to eq(:no_changes) }
+
+      it 'does not request the diffs for streaming' do
+        expect(commit).not_to receive(:diffs_for_streaming)
+
+        expect(type).to eq(:no_changes)
+      end
+    end
+
+    context 'when the loaded slice has files' do
+      before do
+        allow(commit).to receive(:first_diffs_slice).and_return(stub_first_diffs_slice(count: 3))
+      end
+
+      it { is_expected.to be_nil }
+    end
   end
 
   describe '#sorted?' do

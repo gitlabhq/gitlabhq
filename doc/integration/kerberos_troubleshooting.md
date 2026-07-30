@@ -105,7 +105,7 @@ to IP address `10.0.2.2`, then `2.2.0.10.in-addr.arpa` must be a `PTR` record fo
 
 ### Missing Kerberos libraries on browser or client machine
 
-Finally, it's possible that the browser or client machine lack Kerberos support
+Finally, it's possible that the browser or client machine lacks Kerberos support
 completely. Ensure that the Kerberos libraries are installed and that you can
 authenticate to other Kerberos services.
 

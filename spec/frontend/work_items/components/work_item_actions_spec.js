@@ -965,7 +965,7 @@ describe('WorkItemActions component', () => {
       });
     });
 
-    it('closes modal when hideModal event is emitted', async () => {
+    it('closes modal when hide-modal event is emitted', async () => {
       createComponent({
         provide: {
           getWorkItemTypeConfiguration: jest.fn().mockReturnValue(moveActionConfig),
@@ -977,7 +977,7 @@ describe('WorkItemActions component', () => {
       findMoveButton().vm.$emit('action');
       await nextTick();
 
-      findMoveModal().vm.$emit('hideModal');
+      findMoveModal().vm.$emit('hide-modal');
       await nextTick();
 
       expect(findMoveModal().props('visible')).toBe(false);

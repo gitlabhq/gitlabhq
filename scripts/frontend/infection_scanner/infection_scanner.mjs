@@ -88,6 +88,40 @@ const INFECTION_SPECIFIERS = (() => {
   return Object.keys(CONTEXT_ALIASES);
 })();
 
+// --- vue3_migration.yml promotion ---
+
+// Files declared as Vue 3 migration entrypoints in `vue3_migration.yml`
+// must be considered infected, even if `analyze()`'s structural
+// propagation didn't reach them via the import graph.
+//
+// Why: pages opted into migration via YAML may be thin wrappers whose
+// only imports are app roots. `computeInfected` treats app roots as
+// propagation barriers (because app roots are self-contained Vue
+// boundaries), which leaves wrappers structurally uninfected.
+function collectYamlDeclaredPages() {
+  const glob = cjsRequire('glob');
+  const pattern = '{,ee/,jh/}app/assets/javascripts/pages/**/vue3_migration.yml';
+  const yamls = glob.sync(pattern, { cwd: ROOT_PATH, absolute: true });
+  return yamls.map((yamlPath) => path.join(path.dirname(yamlPath), 'index.js'));
+}
+
+function promoteYamlDeclaredPages(graph) {
+  const promoted = new Set();
+  for (const indexPath of collectYamlDeclaredPages()) {
+    const entry = graph[indexPath];
+    if (!entry || entry.infected) continue;
+    entry.infected = true;
+    entry.infectionPromotedByYaml = true;
+    promoted.add(indexPath);
+  }
+  if (promoted.size > 0) {
+    console.log(
+      `[vue3-infection-scanner] Promoted ${promoted.size} vue3_migration.yml page(s) to infected.`,
+    );
+  }
+  return promoted;
+}
+
 // --- JSON output ---
 
 function writeOutput(result) {
@@ -386,6 +420,10 @@ async function runAnalysis() {
       );
     },
   });
+
+  // Promote pages declared in `vue3_migration.yml` to infected. See the
+  // commentary on `promoteYamlDeclaredPages` for the rationale.
+  promoteYamlDeclaredPages(result.graph);
 
   // analyze() produces the annotated graph; surface aggregate counts.
   let appRoots = 0;

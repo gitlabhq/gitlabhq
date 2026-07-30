@@ -53,7 +53,10 @@ RSpec.describe 'Merge request > User sees merge request file tree sidebar', :js,
         sleep(1)
       end
 
-      it_behaves_like 'last entry clickable'
+      context 'with quarantine',
+        quarantine: 'https://gitlab.com/gitlab-org/quality/analytics/ci-health-incidents/-/work_items/1077' do
+        it_behaves_like 'last entry clickable'
+      end
     end
   end
 end

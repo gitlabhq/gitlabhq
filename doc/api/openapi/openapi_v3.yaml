@@ -17567,7 +17567,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_5a061b2b66c4"
+              "$ref": "#/components/schemas/RequestBody_e431b88ea4c1"
   "/api/v4/service_accounts":
     post:
       operationId: postApiV4ServiceAccounts
@@ -85337,6 +85337,8 @@ components:
           type: string
         pypi_package_requests_forwarding:
           type: string
+        rubygems_package_requests_forwarding:
+          type: string
         group_owners_can_manage_default_branch_protection:
           type: string
         maintenance_mode:
@@ -98775,7 +98777,7 @@ components:
           description: Scopes available to the application. Separate multiple scopes
             with a space.
           nullable: true
-    RequestBody_5a061b2b66c4:
+    RequestBody_e431b88ea4c1:
       type: object
       properties:
         admin_mode:
@@ -99918,6 +99920,11 @@ components:
           type: boolean
           description: PyPI package requests are forwarded to pypi.org if not found
             on GitLab.
+          nullable: true
+        rubygems_package_requests_forwarding:
+          type: boolean
+          description: RubyGems package requests are forwarded to rubygems.org if
+            not found on GitLab.
           nullable: true
         virtual_registries_endpoints_api_limit:
           type: integer

@@ -134,6 +134,7 @@ Example response:
   "maven_package_requests_forwarding": true,
   "npm_package_requests_forwarding": true,
   "pypi_package_requests_forwarding": true,
+  "rubygems_package_requests_forwarding": false,
   "snippet_size_limit": 52428800,
   "issues_create_limit": 300,
   "raw_blob_request_limit": 300,
@@ -353,6 +354,7 @@ Example response:
   "maven_package_requests_forwarding": true,
   "npm_package_requests_forwarding": true,
   "pypi_package_requests_forwarding": true,
+  "rubygems_package_requests_forwarding": false,
   "snippet_size_limit": 52428800,
   "issues_create_limit": 300,
   "raw_blob_request_limit": 300,
@@ -705,6 +707,7 @@ to configure other related settings. These requirements are in the `Required` co
 | `maven_package_requests_forwarding`      | boolean          | no                                   | Use repo.maven.apache.org as a default remote repository when the package is not found in the GitLab package registry for Maven. Premium and Ultimate only. |
 | `npm_package_requests_forwarding`        | boolean          | no                                   | Use npmjs.org as a default remote repository when the package is not found in the GitLab package registry for npm. Premium and Ultimate only. |
 | `pypi_package_requests_forwarding`       | boolean          | no                                   | Use pypi.org as a default remote repository when the package is not found in the GitLab package registry for PyPI. Premium and Ultimate only. |
+| `rubygems_package_requests_forwarding`   | boolean          | no                                   | Use rubygems.org as a default remote repository when the package is not found in the GitLab package registry for RubyGems. Premium and Ultimate only. |
 | `oauth_access_token_expires_in`          | integer          | no                                   | Maximum lifetime in seconds of all new OAuth access tokens issued by the instance. Minimum value: `300` (5 minutes). Default value: `7200` (2 hours). If blank or `null`, uses default value. Does not affect existing OAuth access tokens. |
 | `outbound_local_requests_whitelist`      | array of strings | no                                   | Define a list of trusted domains or IP addresses to which local requests are allowed when local requests for webhooks and integrations are disabled. Currently, this attribute can not be updated. For details, see [issue 569729](https://gitlab.com/gitlab-org/gitlab/-/issues/569729). |
 | `package_registry_allow_anyone_to_pull_option` | boolean    | no                                   | Enable to [allow anyone to pull from package registry](../user/packages/package_registry/_index.md#allow-anyone-to-pull-from-package-registry) visible and changeable. |

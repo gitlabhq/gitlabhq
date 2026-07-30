@@ -185,6 +185,7 @@ class Namespace < ApplicationRecord
   delegate :maven_package_requests_forwarding,
     :pypi_package_requests_forwarding,
     :npm_package_requests_forwarding,
+    :rubygems_package_requests_forwarding,
     to: :package_settings
 
   delegate :creator,

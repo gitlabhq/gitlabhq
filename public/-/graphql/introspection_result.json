@@ -286396,6 +286396,22 @@
               "deprecationReason": null
             },
             {
+              "name": "lockRubygemsPackageRequestsForwarding",
+              "description": "Indicates whether RubyGems package forwarding is locked for all descendent namespaces.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "mavenDuplicateExceptionRegex",
               "description": "When maven_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect.",
               "args": [],
@@ -286538,6 +286554,34 @@
             {
               "name": "pypiPackageRequestsForwardingLocked",
               "description": "Indicates whether PyPI package forwarding settings are locked by a parent namespace.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "rubygemsPackageRequestsForwarding",
+              "description": "Indicates whether RubyGems package forwarding is allowed for the namespace.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "rubygemsPackageRequestsForwardingLocked",
+              "description": "Indicates whether RubyGems package forwarding settings are locked by a parent namespace.",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -391641,6 +391685,18 @@
               "deprecationReason": null
             },
             {
+              "name": "rubygemsPackageRequestsForwarding",
+              "description": "Indicates whether RubyGems package forwarding is allowed for the namespace.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "lockMavenPackageRequestsForwarding",
               "description": "Indicates whether Maven package forwarding is locked for all descendent namespaces.",
               "type": {
@@ -391667,6 +391723,18 @@
             {
               "name": "lockPypiPackageRequestsForwarding",
               "description": "Indicates whether PyPI package forwarding is locked for all descendent namespaces.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "lockRubygemsPackageRequestsForwarding",
+              "description": "Indicates whether RubyGems package forwarding is locked for all descendent namespaces.",
               "type": {
                 "kind": "SCALAR",
                 "name": "Boolean",

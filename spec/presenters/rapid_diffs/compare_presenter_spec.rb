@@ -19,6 +19,12 @@ RSpec.describe ::RapidDiffs::ComparePresenter, feature_category: :source_code_ma
       current_user: current_user)
   end
 
+  def stub_first_diffs_slice(count:, overflow: false)
+    slice = instance_double(Gitlab::Git::DiffCollection)
+    allow(slice).to receive_messages(decorate!: slice, first: [])
+    instance_double(Gitlab::Diff::FileCollection::Base, count: count, overflow?: overflow, diff_files: slice)
+  end
+
   describe '#diffs_slice' do
     subject(:diffs_slice) { presenter.diffs_slice }
 
@@ -48,20 +54,12 @@ RSpec.describe ::RapidDiffs::ComparePresenter, feature_category: :source_code_ma
   end
 
   describe 'stream urls' do
-    let(:diffs_count) { 20 }
-
-    before do
-      allow(compare).to receive_message_chain(:diffs_for_streaming, :diff_files, :count).and_return(diffs_count)
-      allow(compare).to receive(:diff_stats).and_return(nil)
-    end
-
     describe '#diffs_stream_url' do
       subject(:url) { presenter.diffs_stream_url }
 
       it { is_expected.to eq("#{base_path}/diffs_stream#{url_params}&view=#{diff_view}") }
 
       context 'when linked file is present and page has more diffs to stream' do
-        let(:diffs_count) { 2 }
         let(:diff_file) { build(:diff_file, old_path: 'test.txt', new_path: 'test.txt') }
         let(:diff_files) do
           raw = instance_double(Gitlab::Git::DiffCollection)
@@ -72,7 +70,10 @@ RSpec.describe ::RapidDiffs::ComparePresenter, feature_category: :source_code_ma
         let(:request_params) { { from: 'a', to: 'b', file_path: 'test.txt' } }
 
         before do
-          allow(compare).to receive(:diffs).and_return(diff_files)
+          allow(compare).to receive_messages(
+            diffs: diff_files,
+            first_diffs_slice: stub_first_diffs_slice(count: 2, overflow: true)
+          )
         end
 
         it 'includes skip parameters' do
@@ -84,7 +85,6 @@ RSpec.describe ::RapidDiffs::ComparePresenter, feature_category: :source_code_ma
       end
 
       context 'when linked file is the only file' do
-        let(:diffs_count) { 1 }
         let(:diff_file) { build(:diff_file, old_path: 'test.txt', new_path: 'test.txt') }
         let(:diff_files) do
           raw = instance_double(Gitlab::Git::DiffCollection)
@@ -95,35 +95,13 @@ RSpec.describe ::RapidDiffs::ComparePresenter, feature_category: :source_code_ma
         let(:request_params) { { from: 'a', to: 'b', file_path: 'test.txt' } }
 
         before do
-          allow(compare).to receive(:diffs).and_return(diff_files)
+          allow(compare).to receive_messages(
+            diffs: diff_files,
+            first_diffs_slice: stub_first_diffs_slice(count: 1)
+          )
         end
 
         it { is_expected.to be_nil }
-      end
-
-      context 'when diff_stats is available' do
-        let(:stats) { instance_double(Gitlab::Git::DiffStatsCollection, count: 42) }
-
-        before do
-          allow(compare).to receive(:diff_stats).and_return(stats)
-        end
-
-        it 'uses stats count without calling diffs_for_streaming' do
-          expect(compare).not_to receive(:diffs_for_streaming)
-
-          expect(url).to eq("#{base_path}/diffs_stream#{url_params}&view=#{diff_view}")
-        end
-      end
-
-      context 'when diff_stats returns nil' do
-        it 'falls back to diffs_for_streaming' do
-          allow(compare).to receive(:diff_stats).and_return(nil)
-          allow(compare).to receive_message_chain(:diffs_for_streaming, :diff_files,
-            :count).and_return(diffs_count)
-
-          expect(presenter.diffs_stream_url)
-            .to eq("#{base_path}/diffs_stream#{url_params}&view=#{diff_view}")
-        end
       end
     end
 

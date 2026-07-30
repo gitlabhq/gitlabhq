@@ -220,7 +220,7 @@ The Auto dependency scanning stage is skipped on licenses other than
 [Ultimate](https://about.gitlab.com/pricing/).
 
 After creating the report, it's uploaded as an artifact which you can later download and
-check out. The merge request widget displays any security warnings detected,
+check out. The merge request widget displays any security warnings detected.
 
 For more information, see
 [dependency scanning](../../user/application_security/dependency_scanning/_index.md).
@@ -542,7 +542,7 @@ For example, to start a Rails console from the application root directory, run:
 ## Auto Code Intelligence
 
 [GitLab code intelligence](../../user/project/code_intelligence.md) adds
-code navigation features common to interactive development environments (IDE),
+code navigation features common to integrated development environments (IDEs),
 including type signatures, symbol documentation, and go-to definition. It's powered by
 [LSIF](https://lsif.dev/) and available for Auto DevOps projects using Go language only.
 GitLab plans to add support for more languages as more LSIF indexers become available.

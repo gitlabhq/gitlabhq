@@ -38,6 +38,9 @@ module Types
     field :pypi_package_requests_forwarding, GraphQL::Types::Boolean,
       null: true,
       description: 'Indicates whether PyPI package forwarding is allowed for the namespace.'
+    field :rubygems_package_requests_forwarding, GraphQL::Types::Boolean,
+      null: true,
+      description: 'Indicates whether RubyGems package forwarding is allowed for the namespace.'
     field :terraform_module_duplicate_exception_regex, Types::UntrustedRegexp,
       null: true,
       description: 'When terraform_module_duplicates_allowed is false, you can publish duplicate packages with ' \
@@ -55,6 +58,9 @@ module Types
     field :lock_pypi_package_requests_forwarding, GraphQL::Types::Boolean,
       null: false,
       description: 'Indicates whether PyPI package forwarding is locked for all descendent namespaces.'
+    field :lock_rubygems_package_requests_forwarding, GraphQL::Types::Boolean,
+      null: false,
+      description: 'Indicates whether RubyGems package forwarding is locked for all descendent namespaces.'
 
     field :maven_package_requests_forwarding_locked, GraphQL::Types::Boolean,
       null: false,
@@ -68,6 +74,10 @@ module Types
       null: false,
       method: :pypi_package_requests_forwarding_locked?,
       description: 'Indicates whether PyPI package forwarding settings are locked by a parent namespace.'
+    field :rubygems_package_requests_forwarding_locked, GraphQL::Types::Boolean,
+      null: false,
+      method: :rubygems_package_requests_forwarding_locked?,
+      description: 'Indicates whether RubyGems package forwarding settings are locked by a parent namespace.'
 
     field :nuget_symbol_server_enabled, GraphQL::Types::Boolean,
       null: false,

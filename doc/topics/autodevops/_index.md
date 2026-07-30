@@ -88,7 +88,7 @@ If you don't, Auto DevOps can build and test your app, but cannot deploy it.
 
 #### Per project
 
-To use Auto DevOps for individual projects, you can enable it in a
+To use Auto DevOps for individual projects, you can enable it on a
 project-by-project basis. If you intend to use it for more projects,
 you can enable it for a [group](#per-group) or an
 [instance](../../administration/settings/continuous_integration.md#configure-auto-devops-for-all-projects).

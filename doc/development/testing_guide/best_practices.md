@@ -1197,6 +1197,14 @@ the test.
 We use the `capybara-screenshot` gem to automatically take a screenshot on
 failure. In CI you can download these files as job artifacts.
 
+When you triage a failing `:js` spec, check the screenshot before chasing the
+exception message and backtrace. The page state at failure time (an unexpected
+empty state, a blocking modal, a stale page from a previous example) is often
+the actual cause, while the exception text alone can point you toward an
+unrelated detail. To help with this, the screenshot path is printed directly
+under the failure's own `Failure/Error:` message, rather than as a separate
+step you might miss.
+
 Also, you can manually take screenshots at any point in a test by adding the
 methods below. Be sure to remove them when they are no longer needed! See
 <https://github.com/mattheworiordan/capybara-screenshot#manual-screenshots> for

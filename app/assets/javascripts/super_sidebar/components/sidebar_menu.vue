@@ -163,7 +163,8 @@ export default {
     // Returns the list of items that we want to have static at the top.
     // Only sidebars that support pins also support a static section.
     staticItems() {
-      if (!this.supportsPins) return [];
+      if (!this.isPinnablePanel) return [];
+
       return this.items.filter((item) => !item.items || item.items.length === 0);
     },
 
@@ -171,7 +172,7 @@ export default {
     // section shows as active (and expanded) when a pinned nav item was used.
 
     nonStaticItems() {
-      if (!this.supportsPins) return this.items;
+      if (!this.isPinnablePanel) return this.items;
 
       return this.items
         .filter((item) => item.items && item.items.length > 0)
@@ -193,22 +194,24 @@ export default {
         .map((id) => this.flatPinnableItems.find((item) => item.id === id))
         .filter(Boolean);
     },
+    isPinnablePanel() {
+      return PANELS_WITH_PINS.includes(this.panelType);
+    },
     supportsPins() {
-      return this.isLoggedIn && PANELS_WITH_PINS.includes(this.panelType);
+      return this.isLoggedIn && this.isPinnablePanel;
     },
     hasStaticItems() {
       return this.staticItems.length > 0;
     },
     showUnpinnedItems() {
       return (
-        !this.isLoggedIn ||
         !this.glFeatures.hideUnpinnedSidebarItems ||
         !PANELS_WITH_PINS.filter((p) => p !== 'organization').includes(this.panelType)
       );
     },
     showFeatureLibrary() {
       return (
-        this.supportsPins &&
+        this.isPinnablePanel &&
         this.panelType !== 'organization' &&
         (this.glFeatures.featureLibraryModal || !this.showUnpinnedItems)
       );
@@ -358,9 +361,10 @@ export default {
       />
     </ul>
     <pinned-section
-      v-if="supportsPins"
+      v-if="isPinnablePanel"
       id="super-sidebar-pinned-section"
       ref="pinnedSectionButton"
+      :supports-pins="supportsPins"
       :items="pinnedItems"
       :has-flyout="showFlyoutMenus"
       :was-pinned-nav="wasPinnedNav"
@@ -384,13 +388,14 @@ export default {
     </gl-nav-item>
     <feature-library-modal
       v-if="showFeatureLibrary"
+      :supports-pins="supportsPins"
       :sections="nonStaticItems"
       :current-pinned-ids="changedPinnedItemIds.ids"
       :show-feedback-link="showFeedbackLink"
       @pin-toggle="onModalPinToggle"
     />
     <hr
-      v-if="supportsPins && showUnpinnedItems"
+      v-if="isPinnablePanel && showUnpinnedItems"
       aria-hidden="true"
       class="gl-mx-3 gl-my-4"
       data-testid="main-menu-separator"

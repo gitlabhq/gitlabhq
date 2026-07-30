@@ -17893,6 +17893,7 @@ Arguments:
 | <a id="mutation-updatenamespacepackagesettings-lockmavenpackagerequestsforwarding"></a>`lockMavenPackageRequestsForwarding` | [`Boolean`](#boolean) | Indicates whether Maven package forwarding is locked for all descendent namespaces. |
 | <a id="mutation-updatenamespacepackagesettings-locknpmpackagerequestsforwarding"></a>`lockNpmPackageRequestsForwarding` | [`Boolean`](#boolean) | Indicates whether npm package forwarding is locked for all descendent namespaces. |
 | <a id="mutation-updatenamespacepackagesettings-lockpypipackagerequestsforwarding"></a>`lockPypiPackageRequestsForwarding` | [`Boolean`](#boolean) | Indicates whether PyPI package forwarding is locked for all descendent namespaces. |
+| <a id="mutation-updatenamespacepackagesettings-lockrubygemspackagerequestsforwarding"></a>`lockRubygemsPackageRequestsForwarding` | [`Boolean`](#boolean) | Indicates whether RubyGems package forwarding is locked for all descendent namespaces. |
 | <a id="mutation-updatenamespacepackagesettings-mavenduplicateexceptionregex"></a>`mavenDuplicateExceptionRegex` | [`UntrustedRegexp`](#untrustedregexp) | When maven_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect. |
 | <a id="mutation-updatenamespacepackagesettings-mavenduplicatesallowed"></a>`mavenDuplicatesAllowed` | [`Boolean`](#boolean) | Indicates whether duplicate Maven packages are allowed for the namespace. |
 | <a id="mutation-updatenamespacepackagesettings-mavenpackagerequestsforwarding"></a>`mavenPackageRequestsForwarding` | [`Boolean`](#boolean) | Indicates whether Maven package forwarding is allowed for the namespace. |
@@ -17902,6 +17903,7 @@ Arguments:
 | <a id="mutation-updatenamespacepackagesettings-nugetduplicatesallowed"></a>`nugetDuplicatesAllowed` | [`Boolean`](#boolean) | Indicates whether duplicate NuGet packages are allowed for the namespace. |
 | <a id="mutation-updatenamespacepackagesettings-nugetsymbolserverenabled"></a>`nugetSymbolServerEnabled` | [`Boolean`](#boolean) | Indicates whether the NuGet symbol server is enabled for the namespace. |
 | <a id="mutation-updatenamespacepackagesettings-pypipackagerequestsforwarding"></a>`pypiPackageRequestsForwarding` | [`Boolean`](#boolean) | Indicates whether PyPI package forwarding is allowed for the namespace. |
+| <a id="mutation-updatenamespacepackagesettings-rubygemspackagerequestsforwarding"></a>`rubygemsPackageRequestsForwarding` | [`Boolean`](#boolean) | Indicates whether RubyGems package forwarding is allowed for the namespace. |
 | <a id="mutation-updatenamespacepackagesettings-terraformmoduleduplicateexceptionregex"></a>`terraformModuleDuplicateExceptionRegex` | [`UntrustedRegexp`](#untrustedregexp) | When terraform_module_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect. |
 | <a id="mutation-updatenamespacepackagesettings-terraformmoduleduplicatesallowed"></a>`terraformModuleDuplicatesAllowed` | [`Boolean`](#boolean) | Indicates whether duplicate Terraform packages are allowed for the namespace. |
 
@@ -52547,6 +52549,7 @@ Fields:
 | <a id="packagesettings-lockmavenpackagerequestsforwarding"></a>`lockMavenPackageRequestsForwarding` | [`Boolean!`](#boolean) | Indicates whether Maven package forwarding is locked for all descendent namespaces. |
 | <a id="packagesettings-locknpmpackagerequestsforwarding"></a>`lockNpmPackageRequestsForwarding` | [`Boolean!`](#boolean) | Indicates whether npm package forwarding is locked for all descendent namespaces. |
 | <a id="packagesettings-lockpypipackagerequestsforwarding"></a>`lockPypiPackageRequestsForwarding` | [`Boolean!`](#boolean) | Indicates whether PyPI package forwarding is locked for all descendent namespaces. |
+| <a id="packagesettings-lockrubygemspackagerequestsforwarding"></a>`lockRubygemsPackageRequestsForwarding` | [`Boolean!`](#boolean) | Indicates whether RubyGems package forwarding is locked for all descendent namespaces. |
 | <a id="packagesettings-mavenduplicateexceptionregex"></a>`mavenDuplicateExceptionRegex` | [`UntrustedRegexp`](#untrustedregexp) | When maven_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect. |
 | <a id="packagesettings-mavenduplicatesallowed"></a>`mavenDuplicatesAllowed` | [`Boolean!`](#boolean) | Indicates whether duplicate Maven packages are allowed for the namespace. |
 | <a id="packagesettings-mavenpackagerequestsforwarding"></a>`mavenPackageRequestsForwarding` | [`Boolean`](#boolean) | Indicates whether Maven package forwarding is allowed for the namespace. |
@@ -52558,6 +52561,8 @@ Fields:
 | <a id="packagesettings-nugetsymbolserverenabled"></a>`nugetSymbolServerEnabled` | [`Boolean!`](#boolean) | Indicates whether the NuGet symbol server is enabled for the namespace. |
 | <a id="packagesettings-pypipackagerequestsforwarding"></a>`pypiPackageRequestsForwarding` | [`Boolean`](#boolean) | Indicates whether PyPI package forwarding is allowed for the namespace. |
 | <a id="packagesettings-pypipackagerequestsforwardinglocked"></a>`pypiPackageRequestsForwardingLocked` | [`Boolean!`](#boolean) | Indicates whether PyPI package forwarding settings are locked by a parent namespace. |
+| <a id="packagesettings-rubygemspackagerequestsforwarding"></a>`rubygemsPackageRequestsForwarding` | [`Boolean`](#boolean) | Indicates whether RubyGems package forwarding is allowed for the namespace. |
+| <a id="packagesettings-rubygemspackagerequestsforwardinglocked"></a>`rubygemsPackageRequestsForwardingLocked` | [`Boolean!`](#boolean) | Indicates whether RubyGems package forwarding settings are locked by a parent namespace. |
 | <a id="packagesettings-terraformmoduleduplicateexceptionregex"></a>`terraformModuleDuplicateExceptionRegex` | [`UntrustedRegexp`](#untrustedregexp) | When terraform_module_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect. |
 | <a id="packagesettings-terraformmoduleduplicatesallowed"></a>`terraformModuleDuplicatesAllowed` | [`Boolean!`](#boolean) | Indicates whether duplicate Terraform packages are allowed for the namespace. |
 

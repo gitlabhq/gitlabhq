@@ -32,7 +32,7 @@ you to use.
 1. Go to your individual user settings (**Bitbucket settings**) or a team's
    settings (**Manage team**), depending on how you want to register the application.
    It does not matter if the application is registered as an individual or a
-   team, that is entirely up to you.
+   team.
 1. In the left menu under **Access Management**, select **OAuth**.
 1. Select **Add consumer**.
 1. Provide the required details:

@@ -36,7 +36,7 @@ using Git LFS, GitLab:
    LFS object storage. Your LFS object storage is the sum of the size of all LFS
    objects associated with your repository.
 
-Files managed with Git LFS show a **LFS** badge next to the filename:
+Files managed with Git LFS show an **LFS** badge next to the filename:
 
 ![Git LFS tracking status](img/lfs_badge_v16_0.png)
 
@@ -113,7 +113,7 @@ For more information, see [LFS configuration warning message](troubleshooting.md
 ## Clone a repository that uses Git LFS
 
 When you clone a repository that uses Git LFS, Git detects the LFS-tracked files
-and clones them over HTTPS. If you run `git clone` with a SSH URL, like
+and clones them over HTTPS. If you run `git clone` with an SSH URL, like
 `user@hostname.com:group/project.git`, you must enter your GitLab credentials again for HTTPS
 authentication.
 

@@ -14,6 +14,11 @@ export default {
     unpinTooltip: s__('FeatureLibrary|Unpin'),
   },
   props: {
+    supportsPins: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     item: {
       type: Object,
       required: true,
@@ -107,6 +112,7 @@ export default {
       </div>
     </div>
     <gl-button
+      v-if="supportsPins"
       v-gl-tooltip.hover="pinTooltipText"
       category="tertiary"
       class="-gl-m-2"

@@ -392,7 +392,10 @@ Example response:
 
 ## Delete job artifacts
 
-Delete all artifacts associated with a specific job. Artifacts cannot be recovered after they are deleted.
+Delete a job's artifacts. This includes archived files, metadata, and [report artifacts](../ci/yaml/artifacts_reports.md)
+such as JUnit reports. This endpoint does not delete the job log. You cannot recover artifacts after deletion.
+
+To delete the job log along with its artifacts, use the [erase a job](jobs.md#erase-a-job) API endpoint.
 
 Prerequisites:
 

@@ -49,7 +49,6 @@ This extension provides several sets of commands that you can trigger in the
 ### AI-assisted features
 
 - `GitLab: Restart GitLab Language Server`
-- `GitLab: Show Duo Workflow`
 - `GitLab: Toggle Code Suggestions`
 - `GitLab: Toggle Code Suggestions for current language`
 
@@ -64,7 +63,6 @@ This extension provides several sets of commands that you can trigger in the
 - `GitLab: Publish Workspace to GitLab`
 - `GitLab: Refresh Sidebar`
 - `GitLab: Show Extension Logs`
-- `GitLab: View Security Finding Details`
 - `GitLab: Focus on For current branch View`
 - `GitLab: Focus on Issues and Merge Requests View`
 - `GitLab: Diagnostics`: Open a detailed settings page for the GitLab for VS Code extension.

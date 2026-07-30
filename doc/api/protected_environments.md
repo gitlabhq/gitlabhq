@@ -361,7 +361,9 @@ Example response:
 ```json
 {
    "name": "production",
-   "approval_rules": []
+   "approval_rules": [],
+   "deploy_access_levels": [],
+   "required_approval_count": 0
 }
 ```
 

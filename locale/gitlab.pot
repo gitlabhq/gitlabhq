@@ -3510,6 +3510,9 @@ msgstr ""
 msgid "AICatalog|Triage Issue, Generate Release Notes, Update Docs"
 msgstr ""
 
+msgid "AICatalog|Trigger %{itemType} on a recurring schedule."
+msgstr ""
+
 msgid "AICatalog|Trigger %{itemType} when a merge request is ready, approved, or has conflicts."
 msgstr ""
 
@@ -29353,6 +29356,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Configuration source"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Configure the schedule."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Contact a project Maintainer or group Owner"
 msgstr ""
 
@@ -29425,6 +29431,12 @@ msgstr ""
 msgid "DuoAgentsPlatform|Events"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Every 15 minutes"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Every 30 minutes"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Failed to cancel session. Please try again."
 msgstr ""
 
@@ -29464,6 +29476,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Flows can't run yet"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Frequency"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Full view"
 msgstr ""
 
@@ -29489,6 +29504,12 @@ msgid "DuoAgentsPlatform|GitLab Duo Agent Platform"
 msgstr ""
 
 msgid "DuoAgentsPlatform|GitLab Duo can autonomously change code. Responses and changes can be inaccurate. Review carefully."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Hour (24-hour)"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Hourly"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Identify code improvements"
@@ -29566,7 +29587,13 @@ msgstr ""
 msgid "DuoAgentsPlatform|Review a merge request"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Run at"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Run command"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Run on"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Save changes"
@@ -29605,7 +29632,19 @@ msgstr ""
 msgid "DuoAgentsPlatform|Select at least one work item action."
 msgstr ""
 
+msgid "DuoAgentsPlatform|Select day of the month"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Select day of the week"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Select frequency"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Select merge request actions"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Select minute"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Select one or multiple event types"
@@ -29689,6 +29728,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Triggers"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Triggers might run a few minutes after the scheduled time to distribute load across the system."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Try GitLab Duo Agent Platform"
 msgstr ""
 
@@ -29711,6 +29753,9 @@ msgid "DuoAgentsPlatform|We need to verify your account"
 msgstr ""
 
 msgid "DuoAgentsPlatform|We won't ask you for this information again. It will never be used for marketing purposes."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Weekdays"
 msgstr ""
 
 msgid "DuoAgentsPlatform|What this trigger runs."
@@ -29738,6 +29783,15 @@ msgid "DuoAgentsPlatform|You don't have permission to use GitLab Duo Agent Platf
 msgstr ""
 
 msgid "DuoAgentsPlatform|Your project environment is healthy"
+msgstr ""
+
+msgid "DuoAgentsPlatform|minutes past the hour"
+msgstr ""
+
+msgid "DuoAgentsPlatform|of each month"
+msgstr ""
+
+msgid "DuoAgentsPlatform|of each week"
 msgstr ""
 
 msgid "DuoChat|%{count} character over limit."
@@ -48400,6 +48454,9 @@ msgid "Minimum required approvals"
 msgstr ""
 
 msgid "Minimum role required to cancel a pipeline or job"
+msgstr ""
+
+msgid "Minute"
 msgstr ""
 
 msgid "Minutes"
@@ -75254,7 +75311,13 @@ msgstr ""
 msgid "SlackIntegration|Access request canceled"
 msgstr ""
 
+msgid "SlackIntegration|Acknowledge and continue"
+msgstr ""
+
 msgid "SlackIntegration|Are you sure you want to unlink this Slack Workspace from this integration? All projects inheriting these settings will also be unlinked. Groups and projects using custom settings will not be affected."
+msgstr ""
+
+msgid "SlackIntegration|Cancel"
 msgstr ""
 
 msgid "SlackIntegration|Client ID"
@@ -75299,10 +75362,16 @@ msgstr ""
 msgid "SlackIntegration|GitLab slash commands"
 msgstr ""
 
+msgid "SlackIntegration|Heads up: your prompt and this thread's context get recorded in a GitLab Duo session, visible to anyone with access to the project it's saved in, not just people here. Learn more: %{docs_url}"
+msgstr ""
+
 msgid "SlackIntegration|Install GitLab for Slack app…"
 msgstr ""
 
 msgid "SlackIntegration|Interact with GitLab without leaving your Slack workspace!"
+msgstr ""
+
+msgid "SlackIntegration|Okay, GitLab Duo will not process this mention. Mention GitLab Duo again if you change your mind."
 msgstr ""
 
 msgid "SlackIntegration|Perform deployments."
@@ -75336,6 +75405,9 @@ msgid "SlackIntegration|Step 1: Create your GitLab for Slack app"
 msgstr ""
 
 msgid "SlackIntegration|Step 2: Configure the app settings"
+msgstr ""
+
+msgid "SlackIntegration|Thanks! Your acknowledgement was saved and GitLab Duo is processing your request. You will not be asked again in this workspace."
 msgstr ""
 
 msgid "SlackIntegration|This integration allows users to perform common operations on their projects by entering slash commands in Slack."

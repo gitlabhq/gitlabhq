@@ -650,12 +650,12 @@ IdPs, contact your provider's support.
    - `"Audience URI"`: Use the issuer.
    - [`NameID`](../user/group/saml_sso/_index.md#manage-user-saml-identity).
    - [Assertions](#configure-assertions).
-1. In the feedback section, enter that you're a customer and creating an
+1. In the feedback section, enter that you're a customer and that you're creating an
    app for internal use.
 1. At the top of your new app's profile, select **SAML 2.0 configuration instructions**.
 1. Note the **Identity Provider Single Sign-On URL**. Use this URL for the
    `idp_sso_target_url` on your GitLab configuration file.
-1. Before you sign out of Okta, make sure you add your user and groups if any.
+1. Before you sign out of Okta, make sure you add your users and groups, if any.
 
 ### Set up Google Workspace
 
@@ -699,7 +699,7 @@ When configuring the Google Workspace SAML application, record the following inf
 | Certificate        | Downloadable | Google SAML certificate. |
 | SHA256 fingerprint | Depends      | Available when you download the certificate. To generate the SHA256 fingerprint from the certificate, see [calculate the fingerprint](../user/group/saml_sso/troubleshooting.md#calculate-the-fingerprint). |
 
-Google Workspace Administrator also provides the IdP metadata, Entity ID, and SHA-256
+The Google Workspace administrator also provides the IdP metadata, Entity ID, and SHA-256
 fingerprint. However, GitLab does not need this information to connect to the
 Google Workspace SAML application.
 
@@ -1054,7 +1054,7 @@ setting.
 
 > [!note]
 > If the attribute specified in `groups_attribute` is incorrect or missing then the user will
-> access as a standard user.
+> have access as a standard user.
 
 Example configuration:
 
@@ -2850,7 +2850,7 @@ The value given is added to the current time at which the response is validated.
 
 ### Designate a unique attribute for the `uid` (optional)
 
-By default, the users `uid` is set as the `NameID` attribute in the SAML response. To designate
+By default, the user's `uid` is set as the `NameID` attribute in the SAML response. To designate
 a different attribute for the `uid`, you can set the `uid_attribute`.
 
 Before setting the `uid` to a unique attribute, make sure that you have configured

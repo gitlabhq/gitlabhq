@@ -29,6 +29,11 @@ export default {
     NavItem,
   },
   props: {
+    supportsPins: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     items: {
       type: Array,
       required: false,
@@ -63,6 +68,28 @@ export default {
     };
   },
   computed: {
+    wrapperComponent() {
+      return this.supportsPins ? Draggable : 'ul';
+    },
+    wrapperOptions() {
+      if (!this.supportsPins) return {};
+
+      return {
+        value: this.draggableItems,
+        itemKey: 'id',
+        tag: 'ul',
+        handle: '.js-draggable-icon',
+        draggable: '.js-draggable-item',
+      };
+    },
+    wrapperListeners() {
+      if (!this.supportsPins) return {};
+
+      return {
+        input: this.updateDraggableItems,
+        end: this.handleDrag,
+      };
+    },
     sectionItem() {
       return {
         title: this.$options.i18n.pinned,
@@ -83,6 +110,9 @@ export default {
     },
   },
   methods: {
+    updateDraggableItems(items) {
+      this.draggableItems = items;
+    },
     handleDrag(event) {
       if (event.oldIndex === event.newIndex) return;
       this.$emit(
@@ -118,29 +148,26 @@ export default {
     @pin-remove="onPinRemove"
     @nav-link-click="writePinnedClick"
   >
-    <draggable
+    <component
+      :is="wrapperComponent"
       v-if="items.length > 0"
-      v-model="draggableItems"
+      v-bind="wrapperOptions"
       class="gl-m-0 gl-list-none gl-p-0 gl-leading-0"
       :aria-label="$options.i18n.pinned"
       data-testid="pinned-nav-items"
-      handle=".js-draggable-icon"
-      tag="ul"
-      item-key="id"
-      draggable=".js-draggable-item"
-      @end="handleDrag"
+      v-on="wrapperListeners"
     >
       <nav-item
         v-for="item of draggableItems"
         :key="item.id"
         :item="item"
         :async-count="asyncCount"
-        is-in-pinned-section
+        :is-in-pinned-section="supportsPins"
         class="js-draggable-item"
         @pin-remove="onPinRemove(item.id, item.title)"
         @nav-link-click="writePinnedClick"
       />
-    </draggable>
+    </component>
     <div
       v-else
       class="gl-py-3 gl-text-sm gl-text-subtle"

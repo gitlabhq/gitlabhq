@@ -44,7 +44,7 @@ are valid:
 
 For complete cron documentation, refer to the
 [crontab(5) Linux manual page](https://man7.org/linux/man-pages/man5/crontab.5.html).
-This documentation is accessible offline by entering `man 5 crontab` in a Linux or MacOS
+This documentation is accessible offline by entering `man 5 crontab` in a Linux or macOS
 terminal.
 
 Additionally, GitLab uses [`fugit`](#how-gitlab-parses-cron-syntax-strings), which

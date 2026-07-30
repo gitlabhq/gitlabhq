@@ -429,7 +429,7 @@ export default {
       :title="childTitle"
       :visible="visible"
       :preselected-work-item-type="childItemType"
-      @hideModal="visible = false"
+      @hide-modal="visible = false"
       @work-item-created="handleWorkItemCreated"
     />
   </div>

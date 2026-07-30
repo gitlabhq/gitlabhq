@@ -122,9 +122,10 @@ describe('FeatureLibraryModal', () => {
     panelType = 'project',
     showFeedbackLink = false,
     sections = defaultSections,
+    supportsPins,
   } = {}) => {
     wrapper = shallowMountExtended(FeatureLibraryModal, {
-      propsData: { sections, currentPinnedIds, showFeedbackLink },
+      propsData: { sections, currentPinnedIds, showFeedbackLink, supportsPins },
       provide: { panelType },
       // Stub GlModal (declared props stay props, everything else surfaces as
       // attrs) and render all its slots so footer/body content is inspectable.
@@ -841,6 +842,29 @@ describe('FeatureLibraryModal', () => {
     it('passes pinned=true to items whose id is in currentPinnedIds', () => {
       const matchingItem = findItems().wrappers.find((w) => w.props('item').id === 'repository');
       expect(matchingItem.props('pinned')).toBe(true);
+    });
+  });
+
+  describe('supportsPins', () => {
+    it('defaults to not supporting pins', () => {
+      createWrapper();
+      expect(findItems().at(0).props('supportsPins')).toBe(false);
+    });
+
+    describe('when pins are supported', () => {
+      beforeEach(() => createWrapper({ supportsPins: true }));
+
+      it('forwards supportsPins to every grid item', () => {
+        expect(findItems().wrappers.every((w) => w.props('supportsPins') === true)).toBe(true);
+      });
+    });
+
+    describe('when pins are not supported', () => {
+      beforeEach(() => createWrapper({ supportsPins: false }));
+
+      it('forwards supportsPins to every grid item', () => {
+        expect(findItems().wrappers.every((w) => w.props('supportsPins') === false)).toBe(true);
+      });
     });
   });
 

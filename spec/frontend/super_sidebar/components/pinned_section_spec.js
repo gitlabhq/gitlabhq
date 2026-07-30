@@ -1,7 +1,9 @@
 import { nextTick } from 'vue';
 import Cookies from '~/lib/utils/cookies';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { stubComponent } from 'helpers/stub_component';
 import PinnedSection from '~/super_sidebar/components/pinned_section.vue';
+import Draggable from '~/lib/utils/vue3compat/draggable_compat.vue';
 import MenuSection from '~/super_sidebar/components/menu_section.vue';
 import NavItem from '~/super_sidebar/components/nav_item.vue';
 import {
@@ -22,17 +24,17 @@ describe('PinnedSection component', () => {
 
   const findToggle = () => wrapper.find('button');
 
-  const createWrapper = (props = {}) => {
+  const createWrapper = ({ stubs = { Draggable: true }, ...props } = {}) => {
     wrapper = mountExtended(PinnedSection, {
       propsData: {
         items: [{ id: 'pin1', title: 'Pin 1', href: '/page1' }],
         ...props,
       },
-      stubs: {
-        Draggable: true,
-      },
+      stubs,
     });
   };
+
+  const findList = () => wrapper.findByTestId('pinned-nav-items');
 
   describe('expanded', () => {
     describe('when cookie is not set', () => {
@@ -132,6 +134,84 @@ describe('PinnedSection component', () => {
         'Repository',
         'Something else',
       ]);
+    });
+  });
+
+  describe('supportsPins', () => {
+    describe('when pins are supported', () => {
+      beforeEach(() => {
+        createWrapper({ supportsPins: true, stubs: { Draggable: stubComponent(Draggable) } });
+      });
+
+      it('wraps the pinned items in a draggable list', () => {
+        expect(wrapper.findComponent(Draggable).exists()).toBe(true);
+      });
+
+      it('marks nav items as being in the pinned section', () => {
+        expect(wrapper.findComponent(NavItem).props('isInPinnedSection')).toBe(true);
+      });
+
+      it('passes the items and drag configuration to the draggable list', () => {
+        const draggable = wrapper.findComponent(Draggable);
+
+        expect(draggable.props('value')).toEqual([{ id: 'pin1', title: 'Pin 1', href: '/page1' }]);
+        expect(draggable.props('itemKey')).toBe('id');
+        expect(draggable.attributes()).toMatchObject({
+          handle: '.js-draggable-icon',
+          tag: 'ul',
+        });
+      });
+    });
+
+    describe('when the draggable list emits a reordered list', () => {
+      const pins = [
+        { id: 'pin1', title: 'Pin 1', href: '/page1' },
+        { id: 'pin2', title: 'Pin 2', href: '/page2' },
+      ];
+
+      beforeEach(() => {
+        createWrapper({
+          items: pins,
+          supportsPins: true,
+          stubs: { Draggable: stubComponent(Draggable) },
+        });
+        wrapper.findComponent(Draggable).vm.$emit('input', [pins[1], pins[0]]);
+      });
+
+      it('updates the rendered order', () => {
+        const renderedIds = wrapper
+          .findAllComponents(NavItem)
+          .wrappers.map((w) => w.props('item').id);
+
+        expect(renderedIds).toEqual(['pin2', 'pin1']);
+      });
+    });
+
+    describe('when pins are not supported (default)', () => {
+      beforeEach(() => {
+        createWrapper();
+      });
+
+      it('does not wrap the pinned items in a draggable list', () => {
+        expect(wrapper.findComponent(Draggable).exists()).toBe(false);
+      });
+
+      it('renders the pinned items in a plain list element', () => {
+        expect(findList().element.tagName).toBe('UL');
+      });
+
+      it('does not leak draggable configuration onto the list element', () => {
+        const attributes = findList().attributes();
+
+        expect(attributes.handle).toBeUndefined();
+        expect(attributes.tag).toBeUndefined();
+        expect(attributes['item-key']).toBeUndefined();
+        expect(attributes.draggable).toBeUndefined();
+      });
+
+      it('does not mark nav items as being in the pinned section', () => {
+        expect(wrapper.findComponent(NavItem).props('isInPinnedSection')).toBe(false);
+      });
     });
   });
 

@@ -1,0 +1,10 @@
+---
+name: delete_audit_event_streaming_destination
+description: Grants the ability to delete audit event streaming destinations
+boundaries:
+  - group
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - delete_audit_event_streaming_destination

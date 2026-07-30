@@ -241,8 +241,8 @@ describe('RelatedWorkItemsAddForm', () => {
       await findCreateButton().vm.$emit('click');
       expect(findCreateModal().props('visible')).toBe(true);
 
-      // The create modal emits `hideModal` when the user cancels/discards.
-      findCreateModal().vm.$emit('hideModal');
+      // The create modal emits `hide-modal` when the user cancels/discards.
+      findCreateModal().vm.$emit('hide-modal');
       await waitForPromises();
       expect(findCreateModal().props('visible')).toBe(false);
 

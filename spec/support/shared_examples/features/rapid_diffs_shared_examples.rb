@@ -24,6 +24,18 @@ RSpec.shared_examples 'Rapid Diffs application' do
       end
     end
 
+    it 'renders every diff file exactly once' do
+      expected_titles = diffs.diff_files.map(&:file_path)
+
+      expect(page).to have_css('diff-file', count: expected_titles.size)
+
+      rendered_titles = all('diff-file header h2').map do |element|
+        element.text.delete("\n").sub(/ @ .*/, '').strip
+      end
+
+      expect(rendered_titles).to match_array(expected_titles)
+    end
+
     it 'shows view file at <sha> on every file' do
       all('diff-file').each do |diff_file|
         diff_file.find('button[aria-label="Show options"]').click

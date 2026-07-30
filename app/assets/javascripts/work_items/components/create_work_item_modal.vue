@@ -142,7 +142,7 @@ export default {
       default: null,
     },
   },
-  emits: ['hideModal', 'work-item-created'],
+  emits: ['hide-modal', 'work-item-created'],
   data() {
     const draftWorkItemType = getDraftWorkItemType({
       fullPath: this.fullPath,
@@ -224,7 +224,7 @@ export default {
   },
   methods: {
     hideCreateModal() {
-      this.$emit('hideModal');
+      this.$emit('hide-modal');
       this.isCreateModalVisible = false;
     },
     showCreateModal(event) {

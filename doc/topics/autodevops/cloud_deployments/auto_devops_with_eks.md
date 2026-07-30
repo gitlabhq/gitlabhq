@@ -137,7 +137,7 @@ these steps to enable Auto DevOps if it's disabled:
 1. In **Deployment strategy**, select your desired [continuous deployment strategy](../requirements.md#auto-devops-deployment-strategy)
    to deploy the application to production after the pipeline successfully runs on the default branch.
 1. Select **Save changes**.
-1. Edit `.gitlab-ci.yml` file to include the Auto DevOps template and commit the change to the default branch:
+1. Edit the `.gitlab-ci.yml` file to include the Auto DevOps template and commit the change to the default branch:
 
    ```yaml
    include:

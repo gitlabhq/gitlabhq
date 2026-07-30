@@ -114,6 +114,24 @@ describe('Sidebar Menu', () => {
       createWrapper({ panelType: 'your_work' });
       expect(findPinnedSection().exists()).toBe(false);
     });
+
+    describe('interactivity (supportsPins prop)', () => {
+      it('is interactive when logged in on a pin-supporting panel', () => {
+        createWrapper({ panelType: 'project', isLoggedIn: true });
+        expect(findPinnedSection().props('supportsPins')).toBe(true);
+      });
+
+      it('renders but is read-only for logged-out users', () => {
+        createWrapper({ panelType: 'project', isLoggedIn: false });
+        expect(findPinnedSection().exists()).toBe(true);
+        expect(findPinnedSection().props('supportsPins')).toBe(false);
+      });
+
+      it('is not rendered on non-pin panels even for logged-out users', () => {
+        createWrapper({ panelType: 'your_work', isLoggedIn: false });
+        expect(findPinnedSection().exists()).toBe(false);
+      });
+    });
   });
 
   describe('Non static items section', () => {
@@ -578,6 +596,10 @@ describe('Sidebar Menu', () => {
         expect(findFeatureLibraryModal().exists()).toBe(true);
       });
 
+      it('passes supportsPins=true so pin actions are interactive', () => {
+        expect(findFeatureLibraryModal().props('supportsPins')).toBe(true);
+      });
+
       it('passes the section nav items (those with subitems) to the modal', () => {
         createWrapper({
           items: menuItems,
@@ -602,6 +624,24 @@ describe('Sidebar Menu', () => {
 
       it('hides the trigger label so only the icon remains', () => {
         expect(findTrigger().props('isIconOnly')).toBe(true);
+      });
+    });
+
+    describe('when logged out on a pin-supporting panel', () => {
+      beforeEach(() => {
+        createWrapper({
+          panelType: PANELS_WITH_PINS[0],
+          isLoggedIn: false,
+          provide: { glFeatures: { featureLibraryModal: true } },
+        });
+      });
+
+      it('renders the modal', () => {
+        expect(findFeatureLibraryModal().exists()).toBe(true);
+      });
+
+      it('passes supportsPins=false so pin actions are hidden', () => {
+        expect(findFeatureLibraryModal().props('supportsPins')).toBe(false);
       });
     });
 
@@ -899,7 +939,7 @@ describe('Sidebar Menu', () => {
       });
     });
 
-    it('does not hide unpinned items for logged-out users', () => {
+    it('hides unpinned items for logged-out users too', () => {
       createWrapper({
         items: menuItems,
         panelType: 'project',
@@ -907,7 +947,9 @@ describe('Sidebar Menu', () => {
         provide: { glFeatures: { hideUnpinnedSidebarItems: true } },
       });
 
-      expect(findNonStaticSectionItems().length).toBeGreaterThan(1);
+      const sections = findNonStaticSectionItems();
+      expect(sections).toHaveLength(1);
+      expect(sections.at(0).props('item').id).toBe('settings_menu');
     });
 
     it('hides the main menu separator', () => {

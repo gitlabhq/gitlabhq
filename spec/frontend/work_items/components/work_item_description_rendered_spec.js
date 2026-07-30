@@ -359,7 +359,7 @@ and even more`,
 
         expect(wrapper.emitted('descriptionUpdated')).toEqual([[newDescription]]);
 
-        findCreateWorkItemModal().vm.$emit('hideModal');
+        findCreateWorkItemModal().vm.$emit('hide-modal');
         await nextTick();
 
         expect(findCreateWorkItemModal().props('visible')).toBe(false);

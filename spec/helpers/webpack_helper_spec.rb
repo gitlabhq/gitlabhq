@@ -55,4 +55,57 @@ RSpec.describe WebpackHelper, feature_category: :tooling do
       end
     end
   end
+
+  describe '#webpack_controller_bundle_tags with vue3 migration' do
+    let(:user) { build_stubbed(:user) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+      allow(helper.controller).to receive_messages(
+        controller_path: 'projects/jobs',
+        action_name: 'show'
+      )
+      allow(Gitlab::Webpack::Manifest).to receive(:entrypoint_paths) do |entry|
+        raise Gitlab::Webpack::Manifest::AssetMissingError unless served_entries.include?(entry)
+
+        ["/assets/webpack/#{entry}.js"]
+      end
+    end
+
+    context 'when the page is committed to Vue 3' do
+      let(:served_entries) { ['pages.projects.jobs.show.vue3'] }
+
+      before do
+        # Default to the real implementation, then override only the specific
+        # entry name we care about. The broader stub must be declared first;
+        # otherwise the narrower stub would be overwritten by it.
+        allow(Gitlab::Vue3Migration).to receive(:entrypoint_for).and_call_original
+        allow(Gitlab::Vue3Migration).to receive(:entrypoint_for)
+          .with('pages.projects.jobs.show', current_user: user)
+          .and_return('pages.projects.jobs.show.vue3')
+      end
+
+      it 'renders the .vue3 entry' do
+        expect(helper.webpack_controller_bundle_tags).to include('pages.projects.jobs.show.vue3.js')
+      end
+    end
+
+    context 'when the .vue3 entry is missing from the manifest' do
+      let(:served_entries) { ['pages.projects.jobs.show'] }
+
+      before do
+        allow(Gitlab::Vue3Migration).to receive(:entrypoint_for).and_call_original
+        allow(Gitlab::Vue3Migration).to receive(:entrypoint_for)
+          .with('pages.projects.jobs.show', current_user: user)
+          .and_return('pages.projects.jobs.show.vue3')
+      end
+
+      it 'falls back to the original entry' do
+        output = helper.webpack_controller_bundle_tags
+
+        expect(output).to include('pages.projects.jobs.show.js')
+        expect(output).not_to include('.vue3.js')
+      end
+    end
+  end
 end

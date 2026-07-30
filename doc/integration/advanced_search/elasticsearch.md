@@ -550,7 +550,7 @@ The following Elasticsearch settings are available:
 
 | Parameter                                                   | Description |
 |-------------------------------------------------------------|-------------|
-| **Turn on indexing for advanced search**                    | Turns on or turns off indexing and creates an empty index if one does not already exist. You may want to turn on indexing but turn off search to give the index time to be fully completed, for example. Also, keep in mind that this option doesn't have any impact on existing data, this only enables/disables the background indexer which tracks data changes and ensures new data is indexed. |
+| **Turn on indexing for advanced search**                    | Turns on or turns off indexing and creates an empty index if one does not already exist. You may want to turn on indexing but turn off search to give the index time to be fully completed, for example. Also, keep in mind that this option doesn't have any impact on existing data. This only enables/disables the background indexer which tracks data changes and ensures new data is indexed. |
 | **Pause indexing for advanced search**                      | Pauses advanced search indexing. This is useful for cluster migration/reindexing. All changes are still tracked, but they are not committed to the index until resumed. |
 | **Search with advanced search**                             | Turns on or turns off the advanced search capabilities in search and [advanced vulnerability management](../../user/application_security/vulnerability_report/_index.md#advanced-vulnerability-management). |
 | **Code search with advanced search**                        | Turns on or turns off code search with advanced search. When this setting is turned off, all code is deleted from your Elasticsearch instance. To turn this setting back on, fully reindex your code. If exact code search is enabled, you should turn off this setting to save resources. |
@@ -651,7 +651,7 @@ and [`kuromoji`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/a
 
 To enable custom language analyzers:
 
-1. Install the desired plugins, refer to [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/plugins/7.9/installation.html) for plugins installation instructions. The plugins must be installed on every node in the cluster, and each node must be restarted after installation. For a list of plugins, see the table later in this section.
+1. Install the desired plugins. Refer to [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/plugins/7.9/installation.html) for plugin installation instructions. The plugins must be installed on every node in the cluster, and each node must be restarted after installation. For a list of plugins, see the table later in this section.
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Settings** > **Search**.
 1. Locate **Custom analyzers: language support**.
@@ -1317,7 +1317,7 @@ For the following steps, consider the entry of `sidekiq['routing_rules']`:
 - `["feature_category=global_search", "global_search"]` as all indexing jobs are routed to the `global_search` queue.
 - `["*", "default"]` as all other non-indexing jobs are routed to the `default` queue.
 
-At least one process in `sidekiq['queue_groups']` has to include the `mailers` queue, otherwise mailers jobs are not processed at all.
+At least one process in `sidekiq['queue_groups']` has to include the `mailers` queue. Otherwise, mailers jobs are not processed at all.
 
 > [!warning]
 > When starting multiple processes, the number of processes cannot exceed the number of CPU
@@ -1411,7 +1411,7 @@ To handle these queue groups on two nodes:
 
 ### Deleted documents
 
-Whenever a change or deletion is made to an indexed GitLab object (a merge request description is changed, a file is deleted from the default branch in a repository, a project is deleted, etc), a document in the index is deleted. However, because these are "soft" deletes, the overall number of "deleted documents", and therefore wasted space, increases.
+Whenever a change or deletion is made to an indexed GitLab object, like when a merge request description is changed, a file is deleted from the default branch in a repository, or a project is deleted, a document in the index is deleted. However, because these are "soft" deletes, the overall number of "deleted documents", and therefore wasted space, increases.
 
 Elasticsearch does intelligent merging of segments to remove these deleted documents. However, depending on the amount and type of activity in your GitLab installation, it's possible to see as much as 50% of wasted space in the index.
 

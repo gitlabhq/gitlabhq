@@ -16,9 +16,14 @@ const baseItem = {
 describe('FeatureLibraryItem', () => {
   let wrapper;
 
-  const createWrapper = ({ item = baseItem, pinned = false, solidBackground = false } = {}) => {
+  const createWrapper = ({
+    item = baseItem,
+    pinned = false,
+    solidBackground = false,
+    supportsPins = true,
+  } = {}) => {
     wrapper = mountExtended(FeatureLibraryItem, {
-      propsData: { item, pinned, solidBackground },
+      propsData: { item, pinned, solidBackground, supportsPins },
       directives: { GlTooltip: createMockDirective('gl-tooltip') },
     });
   };
@@ -132,6 +137,16 @@ describe('FeatureLibraryItem', () => {
   });
 
   describe('pin button', () => {
+    it('is not rendered when pins are not supported', () => {
+      createWrapper({ supportsPins: false });
+      expect(findPinButton().exists()).toBe(false);
+    });
+
+    it('is rendered when pins are supported', () => {
+      createWrapper({ supportsPins: true });
+      expect(findPinButton().exists()).toBe(true);
+    });
+
     it('emits pin-toggle with nextState=true and the title when not pinned', async () => {
       createWrapper({ pinned: false });
       await findPinButton().trigger('click');

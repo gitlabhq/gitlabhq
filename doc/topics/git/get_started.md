@@ -118,7 +118,7 @@ To use Git commands and contribute to GitLab projects, you should download and i
 the Git client on your computer.
 
 The installation process varies depending on your operating system.
-For example, Windows, MacOS, or Linux.
+For example, Windows, macOS, or Linux.
 For information on how to install Git, see [install Git](how_to_install_git/_index.md).
 
 ## Git commands
@@ -134,7 +134,7 @@ To interact with Git from the command line, you can use Git commands:
 - `git pull`: Fetch changes from the remote repository and merge them into your local branch.
 
 For more comprehensive information and detailed explanations,
-see [common Git commands](commands.md) guide.
+see the [common Git commands](commands.md) guide.
 
 ### Use SSH with Git
 

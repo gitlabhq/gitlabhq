@@ -152,7 +152,7 @@ custom application protocols, such as `vscode://` or `jetbrains://`.
 ### Firefox
 
 Firefox handles custom protocols automatically if the required application is installed on your system.
-When you first select a custom protocol link, a dialog opens and requests if you want
+When you first select a custom protocol link, a dialog opens and asks if you want
 to open the application. Select **Open link** to allow Firefox to open the application.
 
 If you don't want to be prompted again, select the checkbox to remember your choice.
@@ -170,7 +170,7 @@ If your preferred IDE is not listed, you are prompted to choose an application t
 ### Chrome
 
 Chrome handles custom protocols automatically if the required application is installed on your system.
-When you first select a custom protocol link in Chrome, a dialog opens and requests if you want
+When you first select a custom protocol link in Chrome, a dialog opens and asks if you want
 to open the application. Select **Open** to allow Chrome to open the application.
 
 If you don't want to be prompted again, select the checkbox to remember your choice.
@@ -185,7 +185,7 @@ because of:
 
 [Partial clone](https://git-scm.com/docs/partial-clone)
 is a performance optimization that allows Git to function without having a
-complete copy of the repository. The goal of this work is to allow Git better
+complete copy of the repository. The goal of this work is to allow Git to better
 handle extremely large repositories.
 
 Git 2.22.0 or later is required.

@@ -78,6 +78,14 @@ module Mutations
           required: false,
           description: copy_field_description(Types::Namespace::PackageSettingsType, :pypi_package_requests_forwarding)
 
+        argument :rubygems_package_requests_forwarding,
+          GraphQL::Types::Boolean,
+          required: false,
+          description: copy_field_description(
+            Types::Namespace::PackageSettingsType,
+            :rubygems_package_requests_forwarding
+          )
+
         argument :lock_maven_package_requests_forwarding,
           GraphQL::Types::Boolean,
           required: false,
@@ -100,6 +108,14 @@ module Mutations
           description: copy_field_description(
             Types::Namespace::PackageSettingsType,
             :lock_pypi_package_requests_forwarding
+          )
+
+        argument :lock_rubygems_package_requests_forwarding,
+          GraphQL::Types::Boolean,
+          required: false,
+          description: copy_field_description(
+            Types::Namespace::PackageSettingsType,
+            :lock_rubygems_package_requests_forwarding
           )
 
         argument :nuget_symbol_server_enabled,

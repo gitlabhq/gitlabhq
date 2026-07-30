@@ -114,7 +114,7 @@ To add a large file into your Git repository and track it with Git LFS:
    ```
 
    The `.gitattributes` file must be included in your commit.
-   It if isn't included, Git does not track the ISO file with Git LFS.
+   If it isn't included, Git does not track the ISO file with Git LFS.
 
    > [!note]
    > Ensure the files you're changing are not listed in a `.gitignore` file.

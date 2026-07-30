@@ -381,6 +381,56 @@ RSpec.describe MergeRequests::VersionedMergeRequest, feature_category: :code_rev
     end
   end
 
+  describe '#files_count' do
+    context 'when compare is present' do
+      let(:compare) { instance_double(Compare) }
+
+      before do
+        allow(merge_request).to receive(:compare).and_return(compare)
+      end
+
+      it 'returns nil' do
+        expect(versioned.files_count).to be_nil
+      end
+    end
+
+    context 'when show_context_commits_diff? is true' do
+      before do
+        allow(merge_request).to receive(:show_context_commits_diff?).and_return(true)
+      end
+
+      it 'returns nil' do
+        expect(versioned.files_count).to be_nil
+      end
+    end
+
+    context 'when compare is not present' do
+      let(:diff_version) { instance_double(Gitlab::MergeRequests::DiffResolver) }
+      let(:resolved_diff) { merge_request_diff }
+
+      before do
+        allow(Gitlab::MergeRequests::DiffResolver).to receive(:new)
+          .with(merge_request, {})
+          .and_return(diff_version)
+        allow(diff_version).to receive(:resolve).and_return(resolved_diff)
+      end
+
+      it 'returns the resolved version files_count' do
+        allow(resolved_diff).to receive(:files_count).and_return(7)
+
+        expect(versioned.files_count).to eq(7)
+      end
+
+      context 'when the resolved version has no files_count' do
+        let(:resolved_diff) { instance_double(Compare) }
+
+        it 'returns nil' do
+          expect(versioned.files_count).to be_nil
+        end
+      end
+    end
+  end
+
   it 'delegates other methods to the merge request', :aggregate_failures do
     expect(versioned.id).to eq(merge_request.id)
     expect(versioned.project).to eq(merge_request.project)

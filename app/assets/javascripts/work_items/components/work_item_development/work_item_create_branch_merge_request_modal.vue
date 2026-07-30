@@ -80,7 +80,7 @@ export default {
       default: false,
     },
   },
-  emits: ['error', 'fetchedPermissions', 'hideModal'],
+  emits: ['error', 'fetchedPermissions', 'hide-modal'],
   data() {
     return {
       isLoading: false,
@@ -242,7 +242,7 @@ export default {
           },
         });
 
-        this.$emit('hideModal');
+        this.$emit('hide-modal');
       } catch {
         createAlert({
           message: sprintf(
@@ -319,7 +319,7 @@ export default {
       return this.fetchRefs(refValue);
     }, 250),
     hideModal() {
-      this.$emit('hideModal');
+      this.$emit('hide-modal');
       this.$nextTick(() => {
         this.invalidBranch = false;
       });

@@ -79,6 +79,17 @@ namespace :gitlab do
 
         puts log_path_message unless log_path_message.empty?
 
+        # `Gitlab::Vue3Migration` reads this manifest at runtime in production,
+        # where the source `vue3_migration.yml` files are stripped by packaging
+        # (see `config/plugins/vue3_migration_manifest_plugin.js`). Failing the
+        # asset build here also fails Omnibus/CNG package builds, so a package
+        # can never ship without it.
+        vue3_migration_manifest = File.join(AssetsSha::PUBLIC_ASSETS_DIR, 'webpack', 'vue3_migration.json')
+
+        unless File.exist?(vue3_migration_manifest)
+          abort Rainbow("Error: Webpack did not emit #{vue3_migration_manifest}.").red
+        end
+
         Gitlab::TaskHelpers.invoke_and_time_task('gitlab:assets:fix_urls')
         Gitlab::TaskHelpers.invoke_and_time_task('gitlab:assets:check_page_bundle_mixins_css_for_sideeffects')
       end

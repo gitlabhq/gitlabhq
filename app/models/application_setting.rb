@@ -941,7 +941,9 @@ class ApplicationSetting < ApplicationRecord
     maven_package_requests_forwarding: [:boolean, { default: true }],
     lock_maven_package_requests_forwarding: [:boolean, { default: false }],
     pypi_package_requests_forwarding: [:boolean, { default: true }],
-    lock_pypi_package_requests_forwarding: [:boolean, { default: false }]
+    lock_pypi_package_requests_forwarding: [:boolean, { default: false }],
+    rubygems_package_requests_forwarding: [:boolean, { default: false }],
+    lock_rubygems_package_requests_forwarding: [:boolean, { default: false }]
 
   validates :helm_max_packages_count,
     presence: true,
@@ -1038,6 +1040,8 @@ class ApplicationSetting < ApplicationRecord
       :lock_pypi_package_requests_forwarding,
       :maven_package_requests_forwarding,
       :lock_maven_package_requests_forwarding,
+      :rubygems_package_requests_forwarding,
+      :lock_rubygems_package_requests_forwarding,
       :pages_unique_domain_default_enabled
     )
   end

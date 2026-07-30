@@ -50,7 +50,8 @@ module SidebarsHelper
 
   def super_sidebar_logged_out_context(panel:, panel_type:)
     super_sidebar_shared_context(panel: panel, panel_type: panel_type).merge({
-      allow_signup: allow_signup?.to_s
+      allow_signup: allow_signup?.to_s,
+      pinned_items: super_sidebar_default_pins(panel_type, nil)
     })
   end
 

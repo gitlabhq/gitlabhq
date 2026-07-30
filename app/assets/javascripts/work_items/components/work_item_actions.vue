@@ -882,7 +882,7 @@ export default {
       :is-group="isGroup"
       hide-button
       @work-item-created="$emit('work-item-created')"
-      @hideModal="isCreateWorkItemModalVisible = false"
+      @hide-modal="isCreateWorkItemModalVisible = false"
     />
     <work-item-change-type-modal
       v-if="showChangeType"
@@ -907,7 +907,7 @@ export default {
       :work-item-type-id="currentWorkItemTypeId"
       :full-path="fullPath"
       :project-id="projectId"
-      @hideModal="isMoveWorkItemModalVisible = false"
+      @hide-modal="isMoveWorkItemModalVisible = false"
     />
   </div>
 </template>

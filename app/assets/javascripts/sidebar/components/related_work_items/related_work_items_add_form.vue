@@ -239,7 +239,6 @@ export default {
       </div>
     </gl-modal>
 
-    <!-- eslint-disable vue/v-on-event-hyphenation -- CreateWorkItemModal emits the camelCase `hideModal` event -->
     <create-work-item-modal
       :full-path="fullPath"
       :visible="isCreateModalVisible"
@@ -249,9 +248,8 @@ export default {
       :merge-request-reference="mergeRequestReference"
       :merge-request-link-type="selectedRelationship"
       hide-button
-      @hideModal="isCreateModalVisible = false"
+      @hide-modal="isCreateModalVisible = false"
       @work-item-created="handleWorkItemCreated"
     />
-    <!-- eslint-enable vue/v-on-event-hyphenation -->
   </div>
 </template>

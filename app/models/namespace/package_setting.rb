@@ -9,6 +9,7 @@ class Namespace::PackageSetting < ApplicationRecord
   cascading_attr :maven_package_requests_forwarding
   cascading_attr :npm_package_requests_forwarding
   cascading_attr :pypi_package_requests_forwarding
+  cascading_attr :rubygems_package_requests_forwarding
 
   PackageSettingNotImplemented = Class.new(StandardError)
 

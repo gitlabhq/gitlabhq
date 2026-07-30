@@ -19,18 +19,20 @@ module ViteHelper
     parts = (controller.controller_path.split('/') << action)
 
     parts.map
-         .with_index { |part, idx| "pages.#{(parts[0, idx] << part).join('.')}.js" }
-          .filter do |name|
-            # always truthy in dev mode for non-existing entrypoints
-            # we return /* doesn't exist */ on the dev server for such false positives
-            ViteRuby.instance.manifest.path_for(name)
-          rescue ViteRuby::MissingEntrypointError
-            # we don't know if an entrypoint exists for each of the controller action part
-            # for example: it might be present for the last part but not for the first part
-            #   - pages.merge_requests.js -> empty, error thrown
-            #   - pages.merge_requests.edit.js -> found
-            false
-          end
+         .with_index { |part, idx| "pages.#{(parts[0, idx] << part).join('.')}" }
+         .map { |base| ::Gitlab::Vue3Migration.entrypoint_for(base, current_user: current_user) }
+         .map { |name| "#{name}.js" }
+         .filter do |name|
+           # always truthy in dev mode for non-existing entrypoints
+           # we return /* doesn't exist */ on the dev server for such false positives
+           ViteRuby.instance.manifest.path_for(name)
+         rescue ViteRuby::MissingEntrypointError
+           # we don't know if an entrypoint exists for each of the controller action part
+           # for example: it might be present for the last part but not for the first part
+           #   - pages.merge_requests.js -> empty, error thrown
+           #   - pages.merge_requests.edit.js -> found
+           false
+         end
   end
 
   def universal_stylesheet_link_tag(path, **options)

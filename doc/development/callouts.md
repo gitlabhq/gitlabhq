@@ -173,6 +173,24 @@ ignore_dismissal_earlier_than: '2023-01-01 12:00:00'
 Without this parameter, dismissals are permanent. With it, the alert reappears if it was dismissed before the specified
 time.
 
+##### `defer_links` (optional)
+
+Add `defer_links: true` to dismiss the callout before a link in the alert body is followed. When a user selects a link
+that has the `deferred-link` class, the callout is dismissed first, then the user is redirected to the link target:
+
+```haml
+= render Users::DismissibleAlertComponent.new(
+    title: _('Alert with deferred links'),
+    dismiss_options: {
+      user: current_user,
+      feature_id: 'my_user_callout',
+      defer_links: true
+    }
+  ) do |c|
+  - c.with_body do
+    = link_to _('Upgrade now'), upgrade_path, class: 'deferred-link'
+```
+
 ##### `wrapper_options` (optional)
 
 Use `wrapper_options` to wrap the alert in a custom container:
@@ -230,6 +248,18 @@ When migrating from manual `Pajamas::AlertComponent` usage:
   ) do |c|
   - c.with_body do
     = _('Alert content')
+```
+
+#### Testing
+
+Use the `have_dismissible_callout` matcher to verify the callout configuration in component or view specs. The matcher
+checks the feature ID, dismiss endpoint, context scoping, and `defer_links` without coupling your spec to the internal
+CSS classes and data attributes of the dismissible components:
+
+```ruby
+expect(page).to have_dismissible_callout(feature_id: 'my_user_callout')
+expect(page).to have_dismissible_callout(feature_id: 'my_group_callout', group: group)
+expect(page).to have_dismissible_callout(feature_id: 'my_project_callout', project: project, defer_links: true)
 ```
 
 ## Dismissible banner components

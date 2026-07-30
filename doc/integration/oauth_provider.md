@@ -82,19 +82,19 @@ To create an application for your GitLab instance:
 1. In the left sidebar, select **Applications**.
 1. Select **New application**.
 
-When creating application in the **Admin** area, mark it as **trusted**.
+When creating an application in the **Admin** area, mark it as **trusted**.
 The user authorization step is automatically skipped for this application.
 
 ## View all authorized applications
 
-To see all the application you've authorized with your GitLab credentials:
+To see all the applications you've authorized with your GitLab credentials:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
 1. In the left sidebar, select **Access** > **Applications**.
 1. See the **Authorized applications** section.
 
-The GitLab OAuth 2 applications support scopes, which allow application to perform
+The GitLab OAuth 2 applications support scopes, which allow applications to perform
 different actions. See the following table for all available scopes.
 
 | Scope                    | Description |

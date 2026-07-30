@@ -267,14 +267,14 @@ module Gitlab
       def added_lines
         strong_memoize(:added_lines) do
           stats_additions = @stats&.additions unless renamed_file?
-          stats_additions || diff_lines.count(&:added_content?)
+          stats_additions || diff_lines.count(&:added_content?).nonzero? || diff.lines_added.to_i
         end
       end
 
       def removed_lines
         strong_memoize(:removed_lines) do
           stats_deletions = @stats&.deletions unless renamed_file?
-          stats_deletions || diff_lines.count(&:removed_content?)
+          stats_deletions || diff_lines.count(&:removed_content?).nonzero? || diff.lines_removed.to_i
         end
       end
 

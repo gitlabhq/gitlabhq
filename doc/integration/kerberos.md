@@ -251,7 +251,7 @@ offers only `basic` authentication.
 
 > [!note]
 > [Git 2.4 and later](https://github.com/git/git/blob/master/Documentation/RelNotes/2.4.0.adoc?plain=1#L225-L228) supports falling back to `basic` authentication if the
-> username and password is passed interactively or through a credentials manager. It fails to fall back when the username and password is passed as part of the URL instead. For example,
+> username and password are passed interactively or through a credentials manager. It fails to fall back when the username and password are passed as part of the URL instead. For example,
 > this can happen in GitLab CI/CD jobs that [authenticate with the CI/CD job token](../ci/jobs/ci_job_token.md).
 
 {{< tabs >}}

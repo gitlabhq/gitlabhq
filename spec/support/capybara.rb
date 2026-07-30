@@ -117,6 +117,10 @@ Capybara.default_normalize_ws = true
 Capybara.enable_aria_label = true
 Capybara.default_set_options = { clear: :backspace }
 
+# Screenshot paths are inlined into each failure's own message instead (see
+# `config.append_after` below)
+Capybara::Screenshot::RSpec.add_link_to_screenshot_for_failed_examples = false
+
 Capybara::Screenshot.append_timestamp = false
 
 Capybara::Screenshot.register_filename_prefix_formatter(:rspec) do |example|
@@ -217,10 +221,19 @@ RSpec.configure do |config|
   end
 
   config.append_after do |example|
-    if example.metadata[:screenshot]
-      screenshot = example.metadata[:screenshot][:image] || example.metadata[:screenshot][:html]
-      screenshot&.delete_prefix!(ENV.fetch('CI_PROJECT_DIR', ''))
-      example.metadata[:stdout] = %([[ATTACHMENT|#{screenshot}]])
+    screenshot = example.metadata[:screenshot]
+
+    if screenshot
+      screenshot[:image]&.delete_prefix!(ENV.fetch('CI_PROJECT_DIR', ''))
+      screenshot[:html]&.delete_prefix!(ENV.fetch('CI_PROJECT_DIR', ''))
+      example.metadata[:stdout] = %([[ATTACHMENT|#{screenshot[:image] || screenshot[:html]}]])
+
+      if example.exception
+        extra_failure_lines = []
+        extra_failure_lines << "  Screenshot: #{screenshot[:image]}" if screenshot[:image]
+        extra_failure_lines << "  HTML: #{screenshot[:html]}" if screenshot[:html]
+        example.metadata[:extra_failure_lines] = extra_failure_lines
+      end
     end
   end
 

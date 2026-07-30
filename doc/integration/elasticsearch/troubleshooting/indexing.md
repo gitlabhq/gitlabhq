@@ -113,7 +113,7 @@ To reindex the database, repositories, and wikis, [index the instance](../../adv
 
 ## Indexing fails with `error: elastic: Error 429 (Too Many Requests)`
 
-If `Search::Elastic::CommitIndexerWorker` Sidekiq workers are failing with this error during indexing, it usually means that Elasticsearch is unable to keep up with the concurrency of indexing request. To address change the following settings:
+If `Search::Elastic::CommitIndexerWorker` Sidekiq workers are failing with this error during indexing, it usually means that Elasticsearch is unable to keep up with the concurrency of indexing requests. To address this, change the following settings:
 
 - To decrease the indexing throughput you can decrease `Bulk request concurrency` (see [Advanced search settings](../../advanced_search/elasticsearch.md#advanced-search-configuration)). This is set to `10` by default, but you change it to as low as 1 to reduce the number of concurrent indexing operations.
 - If changing `Bulk request concurrency` didn't help, you can use the [routing rules](../../../administration/sidekiq/processing_specific_job_classes.md#routing-rules) option to [limit indexing jobs only to specific Sidekiq nodes](../../advanced_search/elasticsearch.md#index-large-instances-with-dedicated-sidekiq-nodes-or-processes), which should reduce the number of indexing requests.
@@ -345,7 +345,7 @@ If you need help with dead queue items, share the following information with Git
 To improve performance, ensure:
 
 - The Elasticsearch server **is not** running on the same node as GitLab.
-- The Elasticsearch server have enough RAM and CPU cores.
+- The Elasticsearch server has enough RAM and CPU cores.
 - That sharding **is** being used.
 
 Going into some more detail here, if Elasticsearch is running on the same server as GitLab, resource contention is **very** likely to occur. Ideally, Elasticsearch, which requires ample resources, should be running on its own server (maybe coupled with Logstash and Kibana).

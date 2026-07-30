@@ -170,7 +170,7 @@ Prerequisites:
    google.subject=assertion.sub"
    ```
 
-   The `attribute-mapping` parameter must include the mapping between OIDC custom
+   The `attribute-mapping` parameter must include the mapping from OIDC custom
    claims included in the JWT ID token to the corresponding identity attributes
    that are used in Identity and Access Management (IAM) policies to grant access.
    For more information, see the [supported OIDC custom claims](google_cloud_iam.md#oidc-custom-claims) that you can use
@@ -187,7 +187,7 @@ After you create the workload identity pool and provider, to complete the setup 
 1. Select **Manual setup**
 1. Complete the fields.
    - **[Project ID](https://cloud.google.com/resource-manager/docs/creating-managing-projects#identifying_projects)**
-     for the Google Cloud project in which you created the workload identity.
+     for the Google Cloud project in which you created the workload identity
      pool and provider. Example: `my-sample-project-191923`.
    - **[Project number](https://cloud.google.com/resource-manager/docs/creating-managing-projects#identifying_projects)**
      for the same Google Cloud project. Example: `314053285323`.
@@ -206,9 +206,9 @@ The ID token includes the following custom claims:
 | `project_path`          | On project events         | Path of the project.                                                                                     |
 | `root_namespace_id`     | On group events           | ID of the top-level group or user level namespace.                                                            |
 | `root_namespace_path`   | On group events           | Path of the top-level group or user level namespace.                                                          |
-| `user_id`               | On user-trigged events    | ID of the user.                                                                                          |
-| `user_login`            | On user-trigged events    | Username of the user.                                                                                    |
-| `user_email`            | On user-trigged events    | Email of the user.                                                                                       |
+| `user_id`               | On user-triggered events    | ID of the user.                                                                                          |
+| `user_login`            | On user-triggered events    | Username of the user.                                                                                    |
+| `user_email`            | On user-triggered events    | Email of the user.                                                                                       |
 | `ci_config_ref_uri`     | During CI/CD pipeline run | The ref path to the top-level CI pipeline definition.                                                    |
 | `ci_config_sha`         | During CI/CD pipeline run | Git commit SHA for the `ci_config_ref_uri`.                                                              |
 | `job_id`                | During CI/CD pipeline run | ID of the CI job.                                                                                        |
@@ -226,12 +226,12 @@ The ID token includes the following custom claims:
 | `environment_protected` | During CI/CD pipeline run | If deployed environment is protected.                                                                    |
 | `environment_action`    | During CI/CD pipeline run | Environment action specified in the CI job.                                                              |
 | `deployment_tier`       | During CI/CD pipeline run | Deployment tier of the environment the CI job specifies.                                                 |
-| `user_access_level`     | On user-trigged events    | Role of the user with values of `guest`, `reporter`, `developer`, `maintainer`, `owner`.                 |
-| `guest_access`          | On user-trigged events    | Indicates whether the user has at least `guest` role, with values of "true" or "false" as a string.      |
-| `reporter_access`       | On user-trigged events    | Indicates whether the user has at least `reporter` role, with values of "true" or "false" as a string.   |
-| `developer_access`      | On user-trigged events    | Indicates whether the user has at least `developer` role, with values of "true" or "false" as a string.  |
-| `maintainer_access`     | On user-trigged events    | Indicates whether the user has at least `maintainer` role, with values of "true" or "false" as a string. |
-| `owner_access`          | On user-trigged events    | Indicates whether the user has at least `owner` role, with values of "true" or "false" as a string.      |
+| `user_access_level`     | On user-triggered events    | Role of the user with values of `guest`, `reporter`, `developer`, `maintainer`, `owner`.                 |
+| `guest_access`          | On user-triggered events    | Indicates whether the user has at least `guest` role, with values of "true" or "false" as a string.      |
+| `reporter_access`       | On user-triggered events    | Indicates whether the user has at least `reporter` role, with values of "true" or "false" as a string.   |
+| `developer_access`      | On user-triggered events    | Indicates whether the user has at least `developer` role, with values of "true" or "false" as a string.  |
+| `maintainer_access`     | On user-triggered events    | Indicates whether the user has at least `maintainer` role, with values of "true" or "false" as a string. |
+| `owner_access`          | On user-triggered events    | Indicates whether the user has at least `owner` role, with values of "true" or "false" as a string.      |
 
 These claims are a superset of the
 [ID token claims](../ci/secrets/id_token_authentication.md#token-payload).
@@ -251,7 +251,7 @@ to set principals based on the [OIDC custom attributes](#oidc-custom-claims) for
 For example, to allow users with the `maintainer` role in GitLab to push
 artifacts to the Google Artifact Registry from the GitLab project `gitlab-org/my-project`:
 
-1. Sign into the Google Cloud Console and go to the
+1. Sign in to the Google Cloud Console and go to the
    [**Workload Identity Federation** page](https://console.cloud.google.com/iam-admin/workload-identity-pools?supportedpurview=project).
 1. In the **Display name** column, select your workload identity pool.
 1. In the **Providers** section, next to the workload identity provider you want to edit,
@@ -301,7 +301,7 @@ remove or edit roles as required.
 
 ## View your IAM policies
 
-Sign into the Google Cloud Console and go to the
+Sign in to the Google Cloud Console and go to the
 [**IAM** page](https://console.cloud.google.com/iam-admin/iam?supportedpurview=project)
 
 You can select either **View by principals** or **View by roles**.

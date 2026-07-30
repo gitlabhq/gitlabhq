@@ -29,9 +29,12 @@ RSpec.describe GitlabSchema.types['PackageSettings'], feature_category: :package
       lock_npm_package_requests_forwarding
       pypi_package_requests_forwarding
       lock_pypi_package_requests_forwarding
+      rubygems_package_requests_forwarding
+      lock_rubygems_package_requests_forwarding
       maven_package_requests_forwarding_locked
       npm_package_requests_forwarding_locked
       pypi_package_requests_forwarding_locked
+      rubygems_package_requests_forwarding_locked
       nuget_symbol_server_enabled
       terraform_module_duplicates_allowed
       terraform_module_duplicate_exception_regex

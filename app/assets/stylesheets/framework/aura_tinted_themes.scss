@@ -138,6 +138,14 @@
   }
 
   /**
+   * Panel shadow override
+   */
+  .paneled-view,
+  .paneled-view-portal {
+    @apply gl-shadow-sm;
+  }
+
+  /**
    * Content panel override
    * app/assets/stylesheets/page_bundles/boards.scss
    */
@@ -212,6 +220,10 @@
   }
 
   .ai-navigation-rail {
+    .gl-nav-item {
+      @apply gl-text-strong;
+    }
+
     .gl-nav-item.selected::before {
       @apply gl-absolute;
       @apply -gl-right-[6px];

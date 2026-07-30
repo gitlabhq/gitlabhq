@@ -2381,7 +2381,9 @@ end
 ```
 
 Update the `BROWSER_CONSOLE_ERROR_FILTER` constant in `spec/support/helpers/browser_console_helpers.rb` to change
-the list of console errors that should be globally ignored.
+the list of console errors that should be globally ignored. This filter is shared with the automatic check that
+runs after any failed `:js` example, so updating it changes both what `expect_page_to_have_no_console_errors`
+allows and what can raise a `BrowserConsoleError` alongside an unrelated failure.
 
 ### Debugging
 

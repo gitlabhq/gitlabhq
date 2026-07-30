@@ -52,11 +52,21 @@ module WebpackHelper
     route = [*controller.controller_path.split('/'), action].compact
 
     until chunks.any? || route.empty?
-      entrypoint = "pages.#{route.join('.')}"
+      base_entrypoint = "pages.#{route.join('.')}"
+      entrypoint = ::Gitlab::Vue3Migration.entrypoint_for(base_entrypoint, current_user: current_user)
       begin
         chunks = webpack_entrypoint_paths(entrypoint, extension: 'js')
       rescue Gitlab::Webpack::Manifest::AssetMissingError
-        # no bundle exists for this path
+        # The Vue 3 variant may be missing from the manifest (e.g. an
+        # incremental build skipped it). Fall back to the regular entry
+        # before giving up on this route segment.
+        if entrypoint != base_entrypoint
+          begin
+            chunks = webpack_entrypoint_paths(base_entrypoint, extension: 'js')
+          rescue Gitlab::Webpack::Manifest::AssetMissingError
+            # no bundle exists for this path
+          end
+        end
       end
       route.pop
     end

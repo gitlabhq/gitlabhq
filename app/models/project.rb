@@ -592,7 +592,8 @@ class Project < ApplicationRecord
 
   with_options to: :namespace do
     delegate :actual_limits, :actual_plan_name, :actual_plan, :root_ancestor, allow_nil: true
-    delegate :maven_package_requests_forwarding, :pypi_package_requests_forwarding, :npm_package_requests_forwarding
+    delegate :maven_package_requests_forwarding, :pypi_package_requests_forwarding, :npm_package_requests_forwarding,
+      :rubygems_package_requests_forwarding
   end
 
   with_options to: :ci_cd_settings, allow_nil: true do

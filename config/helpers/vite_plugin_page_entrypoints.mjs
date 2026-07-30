@@ -1,5 +1,9 @@
 import path from 'node:path';
+import { createRequire } from 'node:module';
 import { generateEntries } from '../webpack.helpers';
+
+const require = createRequire(import.meta.url);
+const { appendVue3Query } = require('./vue3_migration_loader');
 
 const entrypointsDir = '/javascripts/entrypoints/';
 const actualDirRoot = path.resolve(__dirname, '../../app/assets/javascripts/');
@@ -18,18 +22,32 @@ const actualDirRoot = path.resolve(__dirname, '../../app/assets/javascripts/');
  * if the JH/EE files exist, they take precendence over the CE file.
  *
  * If the file doesn't exist, it loads an empty JS file.
+ *
+ * Entries whose name ends with `.vue3` are sibling variants emitted by
+ * `generateEntries` for pages with `status: rollout` in their
+ * `vue3_migration.yml`. The leaf import gets `?vue3` appended so the
+ * Vue 3 infection plugin's resolveId hook picks it up at the entry
+ * boundary and propagates infection through the dependency graph.
+ * Pages with `status: migrated` keep their original entry name but their
+ * paths arrive from `generateEntries` already carrying the `?vue3`
+ * marker (`appendVue3Query` is a no-op on them).
  */
 export function PageEntrypointsPlugin() {
   const comment = '/* this is a virtual module used by Vite, it exists only in dev mode */\n';
-  const entrypoints = Object.entries(generateEntries().entries).reduce((acc, [entryName, imports]) => {
-    const modulePath = imports[imports.length - 1];
-    const importPath = modulePath.startsWith('./') ? `~/${modulePath.substring(2)}` : modulePath;
-    acc[`${entryName}.js`] = {
-      virtual: `${comment}/* ${modulePath} */ import '${importPath}';\n`,
-      actual: `${importPath.replace('~/', `${actualDirRoot}/`)}`,
-    };
-    return acc;
-  }, {});
+  const entrypoints = Object.entries(generateEntries().entries).reduce(
+    (acc, [entryName, imports]) => {
+      const modulePath = imports[imports.length - 1];
+      const importPath = modulePath.startsWith('./') ? `~/${modulePath.substring(2)}` : modulePath;
+      const isVue3Variant = entryName.endsWith('.vue3');
+      const entryImport = isVue3Variant ? appendVue3Query(importPath) : importPath;
+      acc[`${entryName}.js`] = {
+        virtual: `${comment}/* ${modulePath} */ import '${entryImport}';\n`,
+        actual: `${entryImport.replace('~/', `${actualDirRoot}/`)}`,
+      };
+      return acc;
+    },
+    {},
+  );
 
   const inputOptions = Object.keys(entrypoints).reduce((acc, key) => {
     acc[key.replace('.js', '')] = entrypoints[key].actual;

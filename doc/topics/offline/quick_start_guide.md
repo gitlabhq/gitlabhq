@@ -411,7 +411,7 @@ You can check if GitLab recognizes the file path in the [Rails console](../../ad
 - For licenses: `sudo gitlab-rails runner "puts File.exist?(PackageMetadata::SyncConfiguration::Location::LICENSES_PATH)"`
 - For advisories: `sudo gitlab-rails runner "puts File.exist?(PackageMetadata::SyncConfiguration::Location::ADVISORIES_PATH)"`
 
-If the above commands returns `false`, GitLab is not able to find the expected package path. All folders and files in the path must have `755` permissions. To update the permissions:
+If the above commands return `false`, GitLab is not able to find the expected package path. All folders and files in the path must have `755` permissions. To update the permissions:
 
 `sudo chmod -R 755 $GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/`
 

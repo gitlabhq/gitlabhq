@@ -52,6 +52,7 @@ const createIncrementalWebpackCompiler = require('./helpers/incremental_webpack_
 const vendorDllHash = require('./helpers/vendor_dll_hash');
 
 const GraphqlKnownOperationsPlugin = require('./plugins/graphql_known_operations_plugin');
+const Vue3MigrationManifestPlugin = require('./plugins/vue3_migration_manifest_plugin');
 const WebpackVue3InfectionPlugin = require('./plugins/webpack_vue3_infection_plugin');
 const { supportedBrowsersHash } = require('./helpers/supported_browsers');
 const { aliases } = require('./helpers/aliases');
@@ -628,6 +629,8 @@ module.exports = {
     }),
 
     new GraphqlKnownOperationsPlugin({ filename: 'graphql_known_operations.yml' }),
+
+    new Vue3MigrationManifestPlugin({ filename: 'vue3_migration.json' }),
 
     // fix legacy jQuery plugins which depend on globals
     new webpack.ProvidePlugin({

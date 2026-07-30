@@ -62,7 +62,7 @@ To create a project with `git push`:
 
      Replace the following values:
 
-     - `gitlab.example.com` with the machine domain name hosts your Git repository.
+     - `gitlab.example.com` with the machine domain name that hosts your Git repository.
      - `namespace` with your [namespace](../../user/namespace/_index.md) name.
      - `myproject` with your project name.
      - If specifying a port, change `00` to your project's required port number.

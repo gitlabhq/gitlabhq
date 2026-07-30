@@ -75,7 +75,7 @@ Prerequisites:
 
 - Have a ClickHouse Cloud account.
 - Enable network connectivity from your GitLab instance to ClickHouse Cloud.
-- Be an administrator your GitLab instance.
+- Be an administrator of your GitLab instance.
 
 To set up ClickHouse Cloud:
 
@@ -476,7 +476,7 @@ If a ClickHouse migration fails:
    ```
 
 > [!note]
-> Migrations are designed to be idempotent and safe to retry. If a migration fails partway through, running it again resumes from where it left off or skip already-completed steps.
+> Migrations are designed to be idempotent and safe to retry. If a migration fails partway through, running it again resumes from where it left off or skips already-completed steps.
 
 ## ClickHouse Rake tasks
 
@@ -570,7 +570,7 @@ Backup and restore strategy depends on the choice of deployment.
 ClickHouse Cloud automatically:
 
 - Manages the backups and restores.
-- Create and retains daily backups.
+- Creates and retains daily backups.
 
 You do not have to do any additional configuration.
 
@@ -580,7 +580,7 @@ For more information, see [ClickHouse Cloud backups](https://clickhouse.com/docs
 
 If you manage your own ClickHouse instance, you should take regular backups to ensure data safety:
 
-- Take initial full backups of tables (excluding system tables like `metrics` or `logs`) to a [object storage bucket, for example AWS S3](https://clickhouse.com/docs/en/operations/backup#configuring-backuprestore-to-use-an-s3-endpoint).
+- Take initial full backups of tables (excluding system tables like `metrics` or `logs`) to an [object storage bucket, for example AWS S3](https://clickhouse.com/docs/en/operations/backup#configuring-backuprestore-to-use-an-s3-endpoint).
 - Take [incremental backups](https://clickhouse.com/docs/en/operations/backup#take-an-incremental-backup) after this initial full backup.
 
 This duplicates data for every full backup, but is the [easiest approach to restore data](https://clickhouse.com/docs/en/operations/backup#restore-from-the-incremental-backup).
@@ -646,7 +646,7 @@ To ensure the security of your data and ensure audit ability, use the following 
 
 ### Audit logging
 
-GitLab application does not maintain a separate audit log for individual ClickHouse queries.
+The GitLab application does not maintain a separate audit log for individual ClickHouse queries.
 In order to satisfy specific requirements regarding data access (who queried what and when), you can enable logging on the ClickHouse side.
 
 #### ClickHouse Cloud

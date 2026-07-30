@@ -364,6 +364,61 @@ Grants the ability to create, delete, read, and update triggers.
 | Read | Project | Type | `PipelineTrigger` |
 | Update | Project | Mutation | `PipelineTriggerUpdate` |
 
+### Compliance resources
+
+#### Audit Event Streaming Destination
+
+Grants the ability to create, delete, and update audit event streaming destinations.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Group | Mutation | `AuditEventsAmazonS3ConfigurationCreate` |
+| Create | Group | Mutation | `ExternalAuditEventDestinationCreate` |
+| Create | Group | Mutation | `GoogleCloudLoggingConfigurationCreate` |
+| Create | Group | Mutation | `GroupAuditEventStreamingDestinationsCreate` |
+| Create | Instance | Mutation | `AuditEventsInstanceAmazonS3ConfigurationCreate` |
+| Create | Instance | Mutation | `InstanceAuditEventStreamingDestinationsCreate` |
+| Create | Instance | Mutation | `InstanceExternalAuditEventDestinationCreate` |
+| Create | Instance | Mutation | `InstanceGoogleCloudLoggingConfigurationCreate` |
+| Delete | Group | Mutation | `AuditEventsAmazonS3ConfigurationDelete` |
+| Delete | Group | Mutation | `ExternalAuditEventDestinationDestroy` |
+| Delete | Group | Mutation | `GoogleCloudLoggingConfigurationDestroy` |
+| Delete | Group | Mutation | `GroupAuditEventStreamingDestinationsDelete` |
+| Delete | Instance | Mutation | `AuditEventsInstanceAmazonS3ConfigurationDelete` |
+| Delete | Instance | Mutation | `InstanceAuditEventStreamingDestinationsDelete` |
+| Delete | Instance | Mutation | `InstanceExternalAuditEventDestinationDestroy` |
+| Delete | Instance | Mutation | `InstanceGoogleCloudLoggingConfigurationDestroy` |
+| Update | Group | Mutation | `AuditEventsAmazonS3ConfigurationUpdate` |
+| Update | Group | Mutation | `AuditEventsGroupDestinationDenylistEventsAdd` |
+| Update | Group | Mutation | `AuditEventsGroupDestinationDenylistEventsDelete` |
+| Update | Group | Mutation | `AuditEventsGroupDestinationEventsAdd` |
+| Update | Group | Mutation | `AuditEventsGroupDestinationEventsDelete` |
+| Update | Group | Mutation | `AuditEventsGroupDestinationNamespaceFilterCreate` |
+| Update | Group | Mutation | `AuditEventsGroupDestinationNamespaceFilterDelete` |
+| Update | Group | Mutation | `AuditEventsStreamingDestinationEventsAdd` |
+| Update | Group | Mutation | `AuditEventsStreamingDestinationEventsRemove` |
+| Update | Group | Mutation | `AuditEventsStreamingHTTPNamespaceFiltersAdd` |
+| Update | Group | Mutation | `AuditEventsStreamingHTTPNamespaceFiltersDelete` |
+| Update | Group | Mutation | `AuditEventsStreamingHeadersCreate` |
+| Update | Group | Mutation | `AuditEventsStreamingHeadersDestroy` |
+| Update | Group | Mutation | `AuditEventsStreamingHeadersUpdate` |
+| Update | Group | Mutation | `ExternalAuditEventDestinationUpdate` |
+| Update | Group | Mutation | `GoogleCloudLoggingConfigurationUpdate` |
+| Update | Group | Mutation | `GroupAuditEventStreamingDestinationsUpdate` |
+| Update | Instance | Mutation | `AuditEventsInstanceAmazonS3ConfigurationUpdate` |
+| Update | Instance | Mutation | `AuditEventsInstanceDestinationEventsAdd` |
+| Update | Instance | Mutation | `AuditEventsInstanceDestinationEventsDelete` |
+| Update | Instance | Mutation | `AuditEventsInstanceDestinationNamespaceFilterCreate` |
+| Update | Instance | Mutation | `AuditEventsInstanceDestinationNamespaceFilterDelete` |
+| Update | Instance | Mutation | `AuditEventsStreamingDestinationInstanceEventsAdd` |
+| Update | Instance | Mutation | `AuditEventsStreamingDestinationInstanceEventsRemove` |
+| Update | Instance | Mutation | `AuditEventsStreamingInstanceHeadersCreate` |
+| Update | Instance | Mutation | `AuditEventsStreamingInstanceHeadersDestroy` |
+| Update | Instance | Mutation | `AuditEventsStreamingInstanceHeadersUpdate` |
+| Update | Instance | Mutation | `InstanceAuditEventStreamingDestinationsUpdate` |
+| Update | Instance | Mutation | `InstanceExternalAuditEventDestinationUpdate` |
+| Update | Instance | Mutation | `InstanceGoogleCloudLoggingConfigurationUpdate` |
+
 ### Duo resources
 
 #### AI catalog item

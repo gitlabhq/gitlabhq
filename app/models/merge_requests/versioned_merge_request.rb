@@ -66,6 +66,13 @@ module MergeRequests
       __getobj__.has_sast_reports_for?(latest_diff_head_pipeline)
     end
 
+    def files_count
+      return if compare
+      return if __getobj__.show_context_commits_diff?(@version_params)
+
+      resolved_version.try(:files_count)
+    end
+
     private
 
     # Reports map onto the right lines only when the latest version is the diff target;

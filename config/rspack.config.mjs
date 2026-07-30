@@ -18,6 +18,7 @@ import { cacheGroups } from './rspack/cache_groups.js';
 import { define } from './rspack/define.js';
 import { entries } from './rspack/entries.js';
 import GraphqlKnownOperationsPlugin from './plugins/graphql_known_operations_plugin.js';
+import Vue3MigrationManifestPlugin from './plugins/vue3_migration_manifest_plugin.js';
 import { buildLoaderRules } from './rspack/loader_rules.js';
 import { slimManifest } from './rspack/manifest_plugin.js';
 import {
@@ -73,6 +74,7 @@ const plugins = [
   slimManifest(),
   new rspack.CopyRspackPlugin({ patterns: copyFilesPatterns }),
   new GraphqlKnownOperationsPlugin({ filename: 'graphql_known_operations.yml' }),
+  new Vue3MigrationManifestPlugin({ filename: 'vue3_migration.json' }),
   new rspack.ProvidePlugin({
     $: 'jquery',
     jQuery: 'jquery',

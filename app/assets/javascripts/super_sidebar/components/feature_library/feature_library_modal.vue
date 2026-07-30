@@ -60,6 +60,11 @@ export default {
     panelType: { default: '' },
   },
   props: {
+    supportsPins: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     sections: {
       type: Array,
       required: false,
@@ -336,6 +341,7 @@ export default {
         <feature-library-item
           v-for="item in visibleItems"
           :key="item.id"
+          :supports-pins="supportsPins"
           :item="item"
           :pinned="isPinned(item.id)"
           @pin-toggle="onPinToggle"

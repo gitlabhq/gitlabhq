@@ -59,7 +59,7 @@ instead.
 You can pass arguments to `docker build` with the
 `AUTO_DEVOPS_BUILD_IMAGE_EXTRA_ARGS` project CI/CD variable.
 
-For example, to build a Docker image based on based on the
+For example, to build a Docker image based on the
 `ruby:alpine` instead of the default `ruby:latest`:
 
 1. Set `AUTO_DEVOPS_BUILD_IMAGE_EXTRA_ARGS` to `--build-arg=RUBY_VERSION=alpine`.

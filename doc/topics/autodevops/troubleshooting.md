@@ -45,11 +45,11 @@ The following are possible reasons:
 
 Because of this [Heroku update](https://github.com/heroku/cnb-builder-images/pull/478), legacy shimmed `heroku/buildpacks:20` and `heroku/builder-classic:22` images now generate errors instead of warnings.
 
-To resolve this issue, you should to migrate to the `heroku/builder:*` builder images. As a temporary workaround, you can also set an environment variable to skip errors.
+To resolve this issue, you should migrate to the `heroku/builder:*` builder images. As a temporary workaround, you can also set an environment variable to skip errors.
 
 ### Migrating to `heroku/builder:*`
 
-Before you migrate, you should read the release notes for the each [spec release](https://github.com/buildpacks/spec/releases) to determine potential breaking changes.
+Before you migrate, you should read the release notes for each [spec release](https://github.com/buildpacks/spec/releases) to determine potential breaking changes.
 In this case, the relevant buildpack API versions are 0.6 and 0.7.
 These breaking changes are especially relevant to buildpack maintainers.
 

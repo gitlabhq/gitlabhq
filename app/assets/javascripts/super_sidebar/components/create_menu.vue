@@ -127,7 +127,7 @@ export default {
       from-global-menu
       data-testid="new-work-item-modal"
       :create-source="$options.WORK_ITEM_CREATE_SOURCES.GLOBAL_NAV"
-      @hideModal="isCreateWorkItemModalVisible = false"
+      @hide-modal="isCreateWorkItemModalVisible = false"
     />
   </gl-disclosure-dropdown>
 </template>

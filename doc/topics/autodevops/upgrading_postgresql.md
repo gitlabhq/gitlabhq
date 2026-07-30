@@ -110,7 +110,7 @@ being modified after the database dump is created.
    kubectl exec -it production-postgres-5db86568d7-qxlxv --namespace "$APP_NAMESPACE" -- bash
    ```
 
-1. Once, connected, create a dump file with the following command.
+1. Once connected, create a dump file with the following command.
 
    - `SERVICE_NAME` is the service name obtained in a previous step.
    - `USERNAME` is the username you have configured for PostgreSQL. The default is `user`.
@@ -135,8 +135,8 @@ being modified after the database dump is created.
 ## Retain persistent volumes
 
 By default the [persistent volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
-used to store the underlying data for PostgreSQL is marked as `Delete`
-when the pods and pod claims that use the volume is deleted.
+used to store the underlying data for PostgreSQL are marked as `Delete`
+when the pods and pod claims that use the volume are deleted.
 
 This is significant as, when you opt into the newer 8.2.1 PostgreSQL, the older 0.7.1 PostgreSQL is
 deleted causing the persistent volumes to be deleted as well.

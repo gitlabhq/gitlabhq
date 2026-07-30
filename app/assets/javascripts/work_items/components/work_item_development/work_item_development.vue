@@ -328,7 +328,7 @@ export default {
       :work-item-full-path="workItemFullPath"
       :is-confidential-work-item="isConfidentialWorkItem"
       :project-id="projectId"
-      @hideModal="toggleCreateModal(false)"
+      @hide-modal="toggleCreateModal(false)"
       @fetchedPermissions="updatePermissions"
     />
   </div>

@@ -3,6 +3,7 @@
 
 require 'fileutils'
 require_relative '../../lib/gitlab_edition'
+require_relative '../../lib/gitlab/vue3_migration'
 
 ADDITIONAL_EDITIONS = %w[ee jh].freeze
 
@@ -48,6 +49,24 @@ def mark_replicator_flags_as_used(edition)
   end
 end
 
+def mark_vue3_migration_flags_as_used
+  # Feature flags referenced from `vue3_migration.yml` files are consumed
+  # dynamically by `Gitlab::Vue3Migration#entrypoint_for`, which cannot be
+  # resolved statically by Rubocop. Mark each flag declared in a YAML file
+  # as used so it doesn't get reported as orphan.
+  require 'yaml'
+
+  Dir.glob(Gitlab::Vue3Migration::VUE3_MIGRATION_GLOB).each do |path|
+    doc = YAML.safe_load_file(path)
+    next unless doc.is_a?(Hash)
+
+    feature_flag_name = doc['feature_flag']
+    next unless feature_flag_name.is_a?(String) && !feature_flag_name.empty?
+
+    FileUtils.touch(File.join('tmp', 'feature_flags', "#{feature_flag_name}.used"))
+  end
+end
+
 flag_definition_paths = [
   'config/feature_flags/**/*.yml'
 ]
@@ -56,6 +75,8 @@ ADDITIONAL_EDITIONS.each do |edition|
   add_definition_path!(edition, flag_definition_paths)
   mark_replicator_flags_as_used(edition)
 end
+
+mark_vue3_migration_flags_as_used
 
 all_flags = {}
 additional_flags = Set.new

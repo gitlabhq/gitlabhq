@@ -110,7 +110,7 @@ describe('CreateMenu component', () => {
         });
       });
 
-      it('hides modal when hideModal event is emitted', async () => {
+      it('hides modal when hide-modal event is emitted', async () => {
         createWrapper({ props: { groups: createNewMenuProjects } });
 
         findCreateWorkItemModalTrigger().vm.$emit('action');
@@ -118,7 +118,7 @@ describe('CreateMenu component', () => {
 
         expect(findCreateWorkItemModal().props('visible')).toBe(true);
 
-        findCreateWorkItemModal().vm.$emit('hideModal');
+        findCreateWorkItemModal().vm.$emit('hide-modal');
         await nextTick();
 
         expect(findCreateWorkItemModal().props('visible')).toBe(false);
@@ -134,7 +134,7 @@ describe('CreateMenu component', () => {
 
         expect(findCreateWorkItemModal().exists()).toBe(true);
 
-        findCreateWorkItemModal().vm.$emit('hideModal');
+        findCreateWorkItemModal().vm.$emit('hide-modal');
         await nextTick();
 
         expect(findCreateWorkItemModal().exists()).toBe(true);

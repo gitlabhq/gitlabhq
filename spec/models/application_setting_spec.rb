@@ -172,6 +172,7 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         lock_maven_package_requests_forwarding: false,
         lock_npm_package_requests_forwarding: false,
         lock_pypi_package_requests_forwarding: false,
+        lock_rubygems_package_requests_forwarding: false,
         lock_require_sha_for_merge: false,
         lock_resource_access_token_notify_inherited: false,
         login_recaptcha_protection_enabled: false,
@@ -230,6 +231,7 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         push_event_activities_limit: 3,
         push_event_hooks_limit: 3,
         pypi_package_requests_forwarding: true,
+        rubygems_package_requests_forwarding: false,
         raw_blob_request_limit: 300,
         raw_blob_request_limit_unauthenticated: ApplicationSetting::DEFAULT_RAW_BLOB_UNAUTHENTICATED_REQUEST_LIMIT,
         rate_limiting_response_text: nil,
@@ -543,6 +545,11 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
     it { is_expected.to allow_values([true, false]).for(:lock_pypi_package_requests_forwarding) }
     it { is_expected.not_to allow_value(nil).for(:pypi_package_requests_forwarding) }
     it { is_expected.not_to allow_value(nil).for(:lock_pypi_package_requests_forwarding) }
+
+    it { is_expected.to allow_values([true, false]).for(:rubygems_package_requests_forwarding) }
+    it { is_expected.to allow_values([true, false]).for(:lock_rubygems_package_requests_forwarding) }
+    it { is_expected.not_to allow_value(nil).for(:rubygems_package_requests_forwarding) }
+    it { is_expected.not_to allow_value(nil).for(:lock_rubygems_package_requests_forwarding) }
 
     it { is_expected.to allow_values([true, false]).for(:pages_unique_domain_default_enabled) }
     it { is_expected.not_to allow_value(nil).for(:pages_unique_domain_default_enabled) }

@@ -122,7 +122,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       return redirect_to(diffs_project_merge_request_path(project, @merge_request))
     end
 
-    rapid_diffs_presenter.offset = 5
+    rapid_diffs_presenter.baseline_offset = 5
     show_merge_request
   rescue StandardError => exception
     log_exception(exception)

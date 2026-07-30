@@ -16,9 +16,11 @@ module Namespaces
         terraform_module_duplicate_exception_regex
         npm_package_requests_forwarding
         pypi_package_requests_forwarding
+        rubygems_package_requests_forwarding
         lock_maven_package_requests_forwarding
         lock_npm_package_requests_forwarding
         lock_pypi_package_requests_forwarding
+        lock_rubygems_package_requests_forwarding
         nuget_symbol_server_enabled].freeze
 
       def execute

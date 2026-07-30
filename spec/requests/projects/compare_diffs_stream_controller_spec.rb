@@ -54,6 +54,16 @@ RSpec.describe 'Compare diffs stream', feature_category: :source_code_management
 
     include_examples 'with diffs_blobs param'
 
+    context 'when there are no diffs and no offset' do
+      let(:target_ref) { start_ref }
+
+      it 'renders the empty state' do
+        go
+
+        expect(response.body).to include('rd-app-empty-state')
+      end
+    end
+
     context 'with environment' do
       let(:environment) { create(:environment, project: project, external_url: 'https://example.com') }
 

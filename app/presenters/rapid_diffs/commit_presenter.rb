@@ -70,7 +70,7 @@ module RapidDiffs
 
     protected
 
-    def offset
+    def baseline_offset
       5
     end
   end
