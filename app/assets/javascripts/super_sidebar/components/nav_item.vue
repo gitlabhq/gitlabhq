@@ -239,7 +239,6 @@ export default {
           :class="{
             'gl-self-start': hasAvatar,
             'gl-rounded-base gl-bg-default': hasAvatar && avatarShape === 'rect',
-            '-gl-mr-2': hasAvatar && isIconOnly,
           }"
         >
           <slot name="icon">

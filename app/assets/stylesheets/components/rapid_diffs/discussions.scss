@@ -140,7 +140,7 @@ diff-file[data-line-range-dragging] .rd-discussion-row {
   z-index: constants.$diff-file-new-discussion-toggle-z-index;
 
   &:hover,
-  &:focus {
+  &:focus-visible {
     background: var(--gl-feedback-info-icon-color);
     color: var(--gl-background-color-default);
   }

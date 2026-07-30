@@ -49,7 +49,7 @@ export default {
       data-testid="signature-badge"
       role="button"
       variant="link"
-      class="gl-flex gl-items-center gl-rounded-pill gl-border-0 gl-bg-transparent gl-p-0 focus:gl-focus"
+      class="gl-flex gl-items-center gl-rounded-pill gl-border-0 gl-bg-transparent gl-p-0 focus-visible:gl-focus"
       :aria-label="statusConfig.label"
     >
       <gl-badge :icon="statusConfig.icon" :variant="statusConfig.variant" class="gl-h-6">

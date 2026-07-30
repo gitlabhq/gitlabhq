@@ -4,9 +4,13 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import GlqlFacade from '~/glql/components/common/facade.vue';
 import GlqlActions from '~/glql/components/common/actions.vue';
 import GlqlResolver from '~/glql/components/common/resolver.vue';
+import GlqlViewSourceModal from '~/glql/components/common/view_source_modal.vue';
 import Counter from '~/glql/utils/counter';
+import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { MOCK_ISSUES, MOCK_FIELDS } from '../../mock_data';
+
+jest.mock('~/lib/utils/copy_to_clipboard');
 
 const MOCK_PARSE_OUTPUT = {
   query: 'query {}',
@@ -198,9 +202,44 @@ describe('GlqlFacade', () => {
 
     it('renders actions', () => {
       expect(wrapper.findComponent(GlqlActions).props()).toEqual({
-        modalTitle: 'Some title',
         showCopyContents: true,
       });
+    });
+
+    describe('view source modal', () => {
+      const findViewSourceModal = () => wrapper.findComponent(GlqlViewSourceModal);
+
+      it('passes the query and view title to the modal', () => {
+        expect(findViewSourceModal().props()).toMatchObject({
+          query: 'assignee = "foo"',
+          title: 'Some title',
+        });
+      });
+
+      it('is hidden until the view source action is triggered', async () => {
+        expect(findViewSourceModal().props('visible')).toBe(false);
+
+        wrapper.findComponent(GlqlActions).vm.$emit('view-source');
+        await nextTick();
+
+        expect(findViewSourceModal().props('visible')).toBe(true);
+      });
+
+      it('closes when the modal reports it has been dismissed', async () => {
+        wrapper.findComponent(GlqlActions).vm.$emit('view-source');
+        await nextTick();
+
+        findViewSourceModal().vm.$emit('change', false);
+        await nextTick();
+
+        expect(findViewSourceModal().props('visible')).toBe(false);
+      });
+    });
+
+    it('copies the query wrapped in a glql block on copy source event', () => {
+      wrapper.findComponent(GlqlActions).vm.$emit('copy-source');
+
+      expect(copyToClipboard).toHaveBeenCalledWith('```glql\nassignee = "foo"\n```', document.body);
     });
 
     it('renders a footer text', () => {

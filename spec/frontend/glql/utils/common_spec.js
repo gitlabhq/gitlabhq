@@ -1,5 +1,14 @@
-import { extractGroupOrProject, toSentenceCase, relativeNamespace } from '~/glql/utils/common';
+import {
+  extractGroupOrProject,
+  toSentenceCase,
+  relativeNamespace,
+  wrapQueryInGlqlBlock,
+  copyQuerySource,
+} from '~/glql/utils/common';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
+import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
+
+jest.mock('~/lib/utils/copy_to_clipboard');
 
 describe('extractGroupOrProject', () => {
   useMockLocationHelper();
@@ -56,5 +65,32 @@ describe('relativeNamespace', () => {
     ${''}                        | ${'group/subgroup/project'}  | ${'group/subgroup/project'}
   `('returns $expected for $source and $target', ({ source, target, expected }) => {
     expect(relativeNamespace(source, target)).toBe(expected);
+  });
+});
+
+describe('GLQL query source', () => {
+  const query = 'type = Issue AND state = opened';
+  const wrappedQuery = `\`\`\`glql\n${query}\n\`\`\``;
+
+  describe('wrapQueryInGlqlBlock', () => {
+    it('wraps the query in a fenced glql block', () => {
+      expect(wrapQueryInGlqlBlock(query)).toBe(wrappedQuery);
+    });
+  });
+
+  describe('copyQuerySource', () => {
+    it('copies the wrapped query to the clipboard', () => {
+      copyQuerySource(query);
+
+      expect(copyToClipboard).toHaveBeenCalledWith(wrappedQuery, document.body);
+    });
+
+    it('copies from the given container', () => {
+      const container = document.createElement('div');
+
+      copyQuerySource(query, container);
+
+      expect(copyToClipboard).toHaveBeenCalledWith(wrappedQuery, container);
+    });
   });
 });

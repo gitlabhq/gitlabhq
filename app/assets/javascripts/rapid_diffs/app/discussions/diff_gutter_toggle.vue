@@ -82,7 +82,7 @@ export default {
       type="button"
       :aria-label="$options.i18n.hideComments"
       data-testid="collapse-toggle"
-      class="focus-visible:gl-outline-blue-500 gl-flex gl-h-[var(--rd-row-intrinsic-height)] gl-w-[var(--rd-row-intrinsic-height)] gl-cursor-pointer gl-items-center gl-justify-center gl-rounded-full gl-border-0 gl-bg-gray-400 gl-p-0 gl-text-white gl-transition-transform focus:gl-outline-none focus-visible:gl-outline focus-visible:gl-outline-2 focus-visible:gl-outline-offset-2"
+      class="focus-visible:gl-outline-blue-500 gl-flex gl-h-[var(--rd-row-intrinsic-height)] gl-w-[var(--rd-row-intrinsic-height)] gl-cursor-pointer gl-items-center gl-justify-center gl-rounded-full gl-border-0 gl-bg-gray-400 gl-p-0 gl-text-white gl-transition-transform focus-visible:gl-outline-none focus-visible:gl-outline focus-visible:gl-outline-2 focus-visible:gl-outline-offset-2"
       @click="toggle"
     >
       <gl-icon :size="12" name="collapse" class="gl-fill-white" />
@@ -91,7 +91,7 @@ export default {
       v-else
       ref="toggle"
       type="button"
-      class="focus-visible:gl-outline-blue-500 gl-group gl-relative -gl-left-1 -gl-top-1 gl-h-6 gl-w-6 gl-cursor-pointer gl-select-none gl-rounded-full gl-border-0 gl-bg-transparent gl-p-0 gl-align-top focus:gl-outline-none focus-visible:gl-outline focus-visible:gl-outline-2 focus-visible:gl-outline-offset-2"
+      class="focus-visible:gl-outline-blue-500 gl-group gl-relative -gl-left-1 -gl-top-1 gl-h-6 gl-w-6 gl-cursor-pointer gl-select-none gl-rounded-full gl-border-0 gl-bg-transparent gl-p-0 gl-align-top focus-visible:gl-outline-none focus-visible:gl-outline focus-visible:gl-outline-2 focus-visible:gl-outline-offset-2"
       @click="toggle"
     >
       <span

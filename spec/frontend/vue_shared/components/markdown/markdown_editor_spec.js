@@ -791,7 +791,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     });
 
     it('removes the focus outline on the textarea', () => {
-      expect(findTextarea().classes()).toContain('focus:gl-outline-none');
+      expect(findTextarea().classes()).toContain('focus-visible:gl-outline-none');
     });
   });
 });

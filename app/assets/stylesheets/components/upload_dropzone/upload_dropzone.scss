@@ -29,7 +29,7 @@
   @apply gl-rounded-base;
 
   &:hover,
-  &:focus,
+  &:focus-visible,
   &:focus-within,
   &:active {
     outline: none;
@@ -37,7 +37,7 @@
     @apply gl-text-default;
   }
 
-  &:focus,
+  &:focus-visible,
   &:focus-within,
   &:active {
     @apply gl-focus;

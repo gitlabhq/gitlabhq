@@ -134,6 +134,12 @@ describe('content_editor/extensions/table', () => {
         expect(tiptapEditor.getHTML()).toContain('data-sticky-header');
       });
 
+      it('wraps table in div with shadow overlay wrapper class', () => {
+        tiptapEditor.commands.setContent(initialDoc.toJSON());
+
+        expect(tiptapEditor.getHTML()).toContain('gl-table-shadow-overlay');
+      });
+
       it('includes table element', () => {
         tiptapEditor.commands.setContent(initialDoc.toJSON());
 
@@ -156,6 +162,12 @@ describe('content_editor/extensions/table', () => {
         tiptapEditor.commands.setContent(initialDoc.toJSON());
 
         expect(tiptapEditor.getHTML()).not.toContain('data-sticky-header');
+      });
+
+      it('wraps table in div without shadow overlay wrapper class', () => {
+        tiptapEditor.commands.setContent(initialDoc.toJSON());
+
+        expect(tiptapEditor.getHTML()).not.toContain('gl-table-shadow-overlay');
       });
     });
   });

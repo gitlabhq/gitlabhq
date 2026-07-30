@@ -166,7 +166,7 @@ export default {
       >
         <a
           ref="authorUsernameLink"
-          class="author-username-link focus:gl-focus"
+          class="author-username-link focus-visible:gl-focus"
           :href="authorHref"
           @mouseenter="handleUsernameMouseEnter"
           @mouseleave="handleUsernameMouseLeave"

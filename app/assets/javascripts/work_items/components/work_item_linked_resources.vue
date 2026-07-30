@@ -33,7 +33,7 @@ export default {
         class="gl-border gl-inline-flex gl-rounded-base gl-bg-default gl-px-3 gl-py-2"
       >
         <gl-link
-          class="gl-inline-flex gl-items-center gl-gap-3 gl-font-semibold gl-text-default hover:gl-text-default focus:gl-text-default"
+          class="gl-inline-flex gl-items-center gl-gap-3 gl-font-semibold gl-text-default hover:gl-text-default focus-visible:gl-text-default"
           :href="resource.url"
         >
           <gl-icon name="brand-zoom" />

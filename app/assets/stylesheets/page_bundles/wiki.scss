@@ -166,7 +166,7 @@
       color: var(--gl-text-color-default);
     }
 
-    &:hover, &:focus, &:focus-within {
+    &:hover, &:focus-visible, &:focus-within {
       .wiki-list-create-child-button {
         display: inline-flex;
       }

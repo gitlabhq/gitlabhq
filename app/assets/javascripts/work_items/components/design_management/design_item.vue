@@ -174,7 +174,7 @@ export default {
     :is="linkComponent"
     :to="routerLinkProps"
     :href="nonRouterHref"
-    class="gl-block gl-text-default hover:gl-text-default focus:gl-focus"
+    class="gl-block gl-text-default hover:gl-text-default focus-visible:gl-focus"
   >
     <gl-card
       class="js-design-list-item design-list-item gl-mb-0 gl-rounded-lg gl-border-section hover:gl-border-strong"

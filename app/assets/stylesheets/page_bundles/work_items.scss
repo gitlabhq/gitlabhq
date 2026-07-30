@@ -266,8 +266,8 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
     }
 
     &:active,
-    &:focus,
-    &:focus:active {
+    &:focus-visible,
+    &:focus-visible:active {
       // Custom focus
       box-shadow: 1px 1px 0 1px var(--gl-focus-ring-outer-color), 2px -1px 0 1px var(--gl-focus-ring-outer-color), -1px 1px 0 1px var(--gl-focus-ring-outer-color), -1px -1px 0 1px var(--gl-focus-ring-outer-color) !important;
     }
@@ -301,8 +301,8 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   }
 
   &:active,
-  &:focus,
-  &:focus:active {
+  &:focus-visible,
+  &:focus-visible:active {
     // Custom focus
     box-shadow: 1px 1px 0 1px var(--gl-focus-ring-outer-color), 2px -1px 0 1px var(--gl-focus-ring-outer-color) !important;
     outline: none;

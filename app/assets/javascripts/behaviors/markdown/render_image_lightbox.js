@@ -87,7 +87,7 @@ function buildImages(imgs) {
 function createTransparencyToggle(img) {
   const button = renderVueComponentForLegacyJS(GlButton, {
     class:
-      'has-tooltip gl-absolute gl-top-2 gl-right-2 gl-z-1 gl-opacity-0 gl-transition-opacity group-hover:gl-opacity-5 hover:!gl-opacity-10 focus:!gl-opacity-10',
+      'has-tooltip gl-absolute gl-top-2 gl-right-2 gl-z-1 gl-opacity-0 gl-transition-opacity group-hover:gl-opacity-5 hover:!gl-opacity-10 focus-visible:!gl-opacity-10',
     props: {
       icon: 'dot-grid',
       size: 'small',

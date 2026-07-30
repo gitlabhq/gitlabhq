@@ -246,7 +246,7 @@ describe('AccessiblePanelResizer', () => {
       createComponent({ customClass: 'consumer-class' });
       const passed = findPanelResizer().props('customClass');
       expect(passed).toContain('gl-z-1');
-      expect(passed).toContain('focus:gl-focus');
+      expect(passed).toContain('focus-visible:gl-focus');
       expect(passed).toContain('consumer-class');
     });
   });

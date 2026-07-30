@@ -250,7 +250,7 @@ export default {
         :id="boardItemUniqueId"
         :class="[
           {
-            'focus:gl-bg-subtle dark:focus:gl-bg-gray-200': showFocusBackground,
+            'focus-visible:gl-bg-subtle dark:focus-visible:gl-bg-gray-200': showFocusBackground,
             'gl-border-l-4 gl-pl-4 gl-border-l-solid': itemColor,
           },
         ]"
@@ -260,7 +260,7 @@ export default {
         :data-row-index="rowIndex"
         :style="cardStyle"
         data-testid="board-card-button"
-        class="board-card-button gl-absolute gl-inset-0 gl-block gl-rounded-lg gl-border-0 gl-bg-transparent gl-p-0 gl-outline-none focus:gl-focus"
+        class="board-card-button gl-absolute gl-inset-0 gl-block gl-rounded-lg gl-border-0 gl-bg-transparent gl-p-0 gl-outline-none focus-visible:gl-focus"
         @keydown.left.exact.prevent="focusLeft"
         @keydown.right.exact.prevent="focusRight"
         @keydown.down.exact.prevent="focusNext"

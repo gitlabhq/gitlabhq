@@ -19,10 +19,6 @@ module Routing
         leave_group_group_members_path(group)
       end
 
-      def approve_access_request_group_member_path(group_member, *args)
-        approve_access_request_group_group_member_path(group_member.source, group_member)
-      end
-
       def resend_invite_group_member_path(group_member, *args)
         resend_invite_group_group_member_path(group_member.source, group_member)
       end

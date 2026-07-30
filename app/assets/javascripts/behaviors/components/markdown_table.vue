@@ -1,5 +1,8 @@
 <script>
-import { STICKY_HEADER_CLASSES } from '~/lib/utils/table_sticky_header';
+import {
+  STICKY_HEADER_CLASSES,
+  STICKY_TABLE_WRAPPER_CLASSES,
+} from '~/lib/utils/table_sticky_header';
 import { s__ } from '~/locale';
 
 const ASCENDING = 'ascending';
@@ -17,6 +20,7 @@ function isEmpty(value) {
 export default {
   name: 'MarkdownTable',
   stickyHeaderClasses: STICKY_HEADER_CLASSES,
+  stickyTableWrapperClasses: STICKY_TABLE_WRAPPER_CLASSES,
   props: {
     // Parsed header cells. Each field is `{ key, label }` where `label` is the
     // rendered markdown HTML for the header cell.
@@ -104,55 +108,63 @@ export default {
 };
 </script>
 <template>
-  <!--
+  <div
+    :data-testid="isSticky ? 'table-shadow-overlay' : null"
+    :class="isSticky ? $options.stickyTableWrapperClasses : ''"
+  >
+    <!--
     Print scale-to-fit (wikis/utils/print_table_scale.js) measures
     `[data-print-scale-target]` against `[data-print-scale-container]`, which
     should be the element that scrolls on screen; when sticky headers are enabled,
     this is the wrapper, otherwise it's the table itself.
   -->
-  <div
-    :data-sticky-header="isSticky || null"
-    :data-print-scale-container="isSticky || null"
-    :class="isSticky ? $options.stickyHeaderClasses : ''"
-  >
-    <table
-      class="!gl-my-0 gl-min-w-full gl-overflow-y-hidden"
-      data-print-scale-target
-      :data-print-scale-container="isSticky ? null : ''"
+    <div
+      :class="isSticky ? $options.stickyHeaderClasses : ''"
+      :data-sticky-header="isSticky || null"
+      :data-print-scale-container="isSticky || null"
     >
-      <thead>
-        <tr>
-          <th
-            v-for="field in fields"
-            :key="field.key"
-            :aria-sort="ariaSort(field.key)"
-            :tabindex="canSort ? '0' : null"
-            :class="{ 'gl-cursor-pointer': canSort }"
-            @click="handleSort(field.key)"
-            @keydown.enter.prevent="handleSort(field.key)"
-            @keydown.space.prevent="handleSort(field.key)"
-          >
-            <div class="gl-flex">
+      <table
+        :data-print-scale-container="isSticky ? null : ''"
+        data-print-scale-target
+        :class="{ 'gl-my-5': !isSticky }"
+        class="gl-min-w-full gl-overflow-y-hidden"
+      >
+        <thead>
+          <tr>
+            <th
+              v-for="field in fields"
+              :key="field.key"
+              :aria-sort="ariaSort(field.key)"
+              :tabindex="canSort ? '0' : null"
+              :class="{ 'gl-cursor-pointer': canSort }"
+              @click="handleSort(field.key)"
+              @keydown.enter.prevent="handleSort(field.key)"
+              @keydown.space.prevent="handleSort(field.key)"
+            >
+              <div class="gl-flex">
+                <!-- eslint-disable-next-line vue/no-v-html -->
+                <span v-html="field.label"></span>
+                <template v-if="canSort">
+                  <div
+                    class="gl-table-th-sort-icon-wrapper gl-ml-2 gl-flex gl-w-5 gl-justify-center"
+                  >
+                    <span data-sort-icon>{{ sortIcon(field.key) }}</span>
+                  </div>
+                  <span class="gl-sr-only">{{ srOnlyText(field.key) }}</span>
+                </template>
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in sortedItems" :key="item.rowIndex">
+            <td v-for="field in fields" :key="field.key">
               <!-- eslint-disable-next-line vue/no-v-html -->
-              <span v-html="field.label"></span>
-              <template v-if="canSort">
-                <div class="gl-table-th-sort-icon-wrapper gl-ml-2 gl-flex gl-w-5 gl-justify-center">
-                  <span data-sort-icon>{{ sortIcon(field.key) }}</span>
-                </div>
-                <span class="gl-sr-only">{{ srOnlyText(field.key) }}</span>
-              </template>
-            </div>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in sortedItems" :key="item.rowIndex">
-          <td v-for="field in fields" :key="field.key">
-            <!-- eslint-disable-next-line vue/no-v-html -->
-            <span v-html="item[field.key] && item[field.key].html"></span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+              <span v-html="item[field.key] && item[field.key].html"></span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>

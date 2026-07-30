@@ -386,7 +386,7 @@ export default {
       <button
         ref="defaultButton"
         category="tertiary"
-        class="default-selector gl-h-8 !gl-whitespace-nowrap gl-border-none gl-bg-transparent gl-px-4 hover:gl-bg-gray-50 focus:gl-bg-gray-50"
+        class="default-selector gl-h-8 !gl-whitespace-nowrap gl-border-none gl-bg-transparent gl-px-4 hover:gl-bg-gray-50 focus-visible:gl-bg-gray-50"
         :class="{ 'default-selector-active gl-font-bold': isDefaultButtonActive }"
         data-testid="saved-views-default-view-selector"
         @click="$emit('navigate-to-all-items')"

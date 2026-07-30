@@ -109,7 +109,7 @@ export default {
     class="commit-list-item commit-card gl-border gl-overflow-hidden gl-rounded-lg @md/panel:gl-ml-7"
   >
     <div
-      class="gl-flex gl-w-full gl-items-center gl-px-4 gl-py-3 focus:-gl-outline-offset-2"
+      class="gl-flex gl-w-full gl-items-center gl-px-4 gl-py-3 focus-visible:-gl-outline-offset-2"
       :class="{ 'gl-cursor-pointer': commit.description }"
       :tabindex="commit.description ? 0 : -1"
       :aria-expanded="commit.description ? String(!isCollapsed) : undefined"

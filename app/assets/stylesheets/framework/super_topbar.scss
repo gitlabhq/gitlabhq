@@ -28,7 +28,7 @@
     }
   }
 
-  .topbar-search-button:not(:hover):not(:focus):not(:active) {
+  .topbar-search-button:not(:hover):not(:focus-visible):not(:active) {
     @apply dark:gl-bg-alpha-light-8 #{!important};
     @apply dark:gl-border-alpha-light-16 #{!important};
   }

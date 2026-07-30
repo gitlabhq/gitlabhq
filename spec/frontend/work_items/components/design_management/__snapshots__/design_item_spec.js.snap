@@ -10,7 +10,7 @@ exports[`Design item component when item appears in view after image is loaded r
 
 exports[`Design item component with notes renders item with multiple comments 1`] = `
 <a
-  class="focus:gl-focus gl-block gl-text-default hover:gl-text-default"
+  class="focus-visible:gl-focus gl-block gl-text-default hover:gl-text-default"
   href="/gitlab-org/gitlab-test/-/work_items/1/designs/test"
 >
   <gl-card-stub
@@ -78,7 +78,7 @@ exports[`Design item component with notes renders item with multiple comments 1`
 
 exports[`Design item component with notes renders item with single comment 1`] = `
 <a
-  class="focus:gl-focus gl-block gl-text-default hover:gl-text-default"
+  class="focus-visible:gl-focus gl-block gl-text-default hover:gl-text-default"
   href="/gitlab-org/gitlab-test/-/work_items/1/designs/test"
 >
   <gl-card-stub

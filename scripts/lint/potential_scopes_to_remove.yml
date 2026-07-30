@@ -98,8 +98,6 @@ app/models/user.rb:
   - with_provisioning_project
 app/models/user_detail.rb:
   - project_provisioned
-app/models/zoom_meeting.rb:
-  - removed_from_issue
 ee/app/models/ai/duo_workflows/event.rb:
   - with_correlation_id
 ee/app/models/ai/tool_rule.rb:

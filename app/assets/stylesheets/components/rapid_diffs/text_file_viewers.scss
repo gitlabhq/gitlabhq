@@ -340,7 +340,7 @@ diff-file:where([data-with-discussion-toggle], [data-line-range-dragging]) .rd-l
     color: var(--rd-line-link-color);
   }
 
-  &:focus {
+  &:focus-visible {
     outline: none;
   }
 

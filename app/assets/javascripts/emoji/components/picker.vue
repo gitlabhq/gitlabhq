@@ -217,7 +217,7 @@ export default {
           :key="category.name"
           category="tertiary"
           :class="{ 'emoji-picker-category-active': index === currentCategory }"
-          class="emoji-picker-category-tab gl-grow !gl-rounded-none !gl-border-b-2 !gl-px-3 !gl-border-b-solid focus:!gl-shadow-none focus:!gl-outline focus:!gl-outline-2 focus:-gl-outline-offset-2 focus:!gl-outline-focus"
+          class="emoji-picker-category-tab gl-grow !gl-rounded-none !gl-border-b-2 !gl-px-3 !gl-border-b-solid focus-visible:!gl-shadow-none focus-visible:!gl-outline focus-visible:!gl-outline-2 focus-visible:-gl-outline-offset-2 focus-visible:!gl-outline-focus"
           :icon="category.icon"
           :aria-label="category.name"
           @click="scrollToCategory(category.name)"

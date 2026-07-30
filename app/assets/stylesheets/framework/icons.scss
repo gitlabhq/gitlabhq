@@ -45,7 +45,7 @@
   @include icon-styles($gray-500);
 }
 
-a.ci-icon:focus {
+a.ci-icon:focus-visible {
   @apply gl-focus;
 }
 

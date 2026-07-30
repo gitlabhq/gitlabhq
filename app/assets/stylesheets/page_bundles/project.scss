@@ -119,7 +119,7 @@
       @apply gl-text-default;
 
       &:hover,
-      &:focus {
+      &:focus-visible {
         text-decoration: underline;
       }
     }

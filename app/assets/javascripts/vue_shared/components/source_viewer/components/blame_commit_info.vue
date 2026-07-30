@@ -131,7 +131,7 @@ export default {
         :id="popoverTargetId"
         :href="commitUrl"
         :class="{ 'gl-italic': !hasMessage }"
-        class="gl-text-sm gl-text-default hover:gl-text-default focus:gl-focus-inset"
+        class="gl-text-sm gl-text-default hover:gl-text-default focus-visible:gl-focus-inset"
         data-testid="commit-message-link"
       >
         <gl-truncate :text="commitTitle" class="gl-pb-2" />

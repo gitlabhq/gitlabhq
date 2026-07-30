@@ -55,7 +55,7 @@ export default {
 <template>
   <div
     :id="linkId"
-    class="gl-flex gl-cursor-pointer gl-items-center gl-gap-2 hover:gl-underline focus:gl-no-underline active:gl-no-underline"
+    class="gl-flex gl-cursor-pointer gl-items-center gl-gap-2 hover:gl-underline focus-visible:gl-no-underline active:gl-no-underline"
   >
     <gl-icon name="work-item-parent" :size="iconSize" class="gl-shrink-0" variant="subtle" />
     <gl-link

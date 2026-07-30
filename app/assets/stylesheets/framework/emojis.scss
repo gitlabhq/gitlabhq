@@ -81,7 +81,7 @@ gl-emoji {
     }
   }
 
-  &:focus {
+  &:focus-visible {
     z-index: 2;
   }
 }

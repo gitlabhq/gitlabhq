@@ -1,6 +1,5 @@
 <script>
-import { GlAlert, GlButton, GlModal, GlIntersectionObserver, GlSkeletonLoader } from '@gitlab/ui';
-import { uniqueId } from 'lodash-es';
+import { GlAlert, GlButton, GlIntersectionObserver, GlSkeletonLoader } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { renderMarkdown } from '~/notes/utils';
@@ -8,11 +7,13 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import { InternalEvents } from '~/tracking';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { MODE_ANALYTICS, FULL_BLEED_DISPLAY_TYPES } from '../../constants';
+import { copyQuerySource } from '../../utils/common';
 import { copyGLQLNodeAsGFM } from '../../utils/copy_as_gfm';
 import Counter from '../../utils/counter';
 import GlqlResolver from './resolver.vue';
 import GlqlActions from './actions.vue';
 import GlqlFootnote from './footnote.vue';
+import ViewSourceModal from './view_source_modal.vue';
 
 const MAX_GLQL_BLOCKS = 20;
 
@@ -21,13 +22,13 @@ export default {
   components: {
     GlAlert,
     GlButton,
-    GlModal,
     GlIntersectionObserver,
     GlSkeletonLoader,
     CrudComponent,
     GlqlResolver,
     GlqlFootnote,
     GlqlActions,
+    ViewSourceModal,
   },
   directives: {
     SafeHtml,
@@ -46,13 +47,7 @@ export default {
   },
   data() {
     return {
-      queryModalSettings: {
-        id: uniqueId('glql-modal-'),
-        show: false,
-        title: '',
-        primaryAction: { text: __('Copy source') },
-        cancelAction: { text: __('Close') },
-      },
+      showSourceModal: false,
 
       error: {
         variant: 'warning',
@@ -111,10 +106,6 @@ export default {
     hasError() {
       return this.error.title || this.error.message;
     },
-    wrappedQuery() {
-      // eslint-disable-next-line @gitlab/require-i18n-strings
-      return `\`\`\`glql\n${this.queryYaml}\n\`\`\``;
-    },
     loadOnClick() {
       return this.glFeatures.glqlLoadOnClick;
     },
@@ -128,13 +119,12 @@ export default {
     },
   },
   methods: {
-    viewSource({ title }) {
-      Object.assign(this.queryModalSettings, { title, show: true });
+    viewSource() {
+      this.showSourceModal = true;
     },
 
     copySource() {
-      // eslint-disable-next-line no-restricted-properties
-      navigator.clipboard.writeText(this.wrappedQuery);
+      copyQuerySource(this.queryYaml);
     },
 
     reload() {
@@ -269,7 +259,6 @@ export default {
         <template #actions>
           <glql-actions
             :show-copy-contents="showCopyContentsAction"
-            :modal-title="title"
             @view-source="viewSource"
             @copy-source="copySource"
             @copy-as-gfm="copyAsGFM"
@@ -294,19 +283,6 @@ export default {
       </crud-component>
       <glql-footnote v-if="!isCollapsed" />
     </gl-intersection-observer>
-    <gl-modal
-      v-model="queryModalSettings.show"
-      :title="queryModalSettings.title"
-      :modal-id="queryModalSettings.id"
-      :action-primary="queryModalSettings.primaryAction"
-      :action-cancel="queryModalSettings.cancelAction"
-      @primary="copySource"
-    >
-      <div class="md">
-        <div class="markdown-code-block gl-relative">
-          <pre :class="preClasses"><code>{{ wrappedQuery }}</code></pre>
-        </div>
-      </div>
-    </gl-modal>
+    <view-source-modal v-model="showSourceModal" :query="queryYaml" :title="title" />
   </div>
 </template>

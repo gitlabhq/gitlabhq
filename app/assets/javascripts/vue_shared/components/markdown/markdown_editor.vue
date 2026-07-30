@@ -480,7 +480,7 @@ export default {
             :class="[
               {
                 'gl-relative gl-z-3': canUseComposer,
-                'focus:gl-outline-none': immersive,
+                'focus-visible:gl-outline-none': immersive,
               },
               formFieldProps.class || '',
             ]"

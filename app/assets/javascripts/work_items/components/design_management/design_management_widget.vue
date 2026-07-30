@@ -505,7 +505,7 @@ export default {
 
 <template>
   <div
-    class="work-item-design-widget-container gl-rounded-base focus:gl-focus"
+    class="work-item-design-widget-container gl-rounded-base focus-visible:gl-focus"
     :class="{ 'gl-mt-3': hasDesignsAndVersions }"
     :tabindex="0"
     @mouseenter="toggleOnPasteListener"

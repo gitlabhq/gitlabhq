@@ -64,6 +64,6 @@
 }
 
 // Pipeline failed status
-.ci-job-component.ci-job-item-failed:not(:hover):not(:focus) > a {
+.ci-job-component.ci-job-item-failed:not(:hover):not(:focus-visible) > a {
   @include ci-job-item-failed-status-bg;
 }

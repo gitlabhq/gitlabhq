@@ -113,7 +113,7 @@ export default {
     autofocus
   >
     <gl-button
-      class="gl-t-0 gl-sr-only !gl-fixed gl-left-0 gl-z-9999 !gl-m-3 !gl-px-4 focus:gl-not-sr-only"
+      class="gl-t-0 gl-sr-only !gl-fixed gl-left-0 gl-z-9999 !gl-m-3 !gl-px-4 focus:gl-not-sr-only focus-visible:gl-not-sr-only"
       data-testid="super-topbar-skip-to"
       href="#content-body"
       variant="confirm"

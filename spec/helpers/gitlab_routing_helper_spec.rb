@@ -53,12 +53,6 @@ RSpec.describe GitlabRoutingHelper do
       it { expect(leave_group_members_path(group)).to eq leave_group_group_members_path(group) }
     end
 
-    describe '#approve_access_request_group_member_path' do
-      let(:group_member) { create(:group_member) }
-
-      it { expect(approve_access_request_group_member_path(group_member)).to eq approve_access_request_group_group_member_path(group_member.source, group_member) }
-    end
-
     describe '#resend_invite_group_member_path' do
       let(:group_member) { create(:group_member) }
 

@@ -185,6 +185,28 @@ $command-palette-spacing: px-to-rem(14px);
   @apply xl:gl-w-auto;
   @apply xl:gl-ml-0;
   @apply gl-min-h-0;
+
+  // Prevent the active nav item's background from breaking out past the rail
+  // while the sidebar collapses. Applied as a one-shot animation rather than a
+  // plain `clip-path`, because the clip also applies to the fixed-position
+  // flyout menus, and `.super-sidebar-toggled-manually` sticks around whenever
+  // `transitionend` doesn't fire (for example when transitions are disabled).
+  // Tying it to the animation means the clip can never outlive the collapse.
+  // stylelint-disable-next-line gitlab/no-has -- scoped to the animating sidebar
+  &:has(.super-sidebar-toggled-manually) {
+    // Duration matches the sidebar width transition in layout.scss.
+    animation: super-sidebar-collapse-clip 0.25s;
+  }
+}
+
+@keyframes super-sidebar-collapse-clip {
+  // The left stays open because the sidebar's negative margin puts the active
+  // item's left edge outside the wrapper, and clipping it there makes the accent
+  // flicker mid-collapse.
+  from,
+  to {
+    clip-path: inset(0 0 0 -#{$gl-spacing-scale-3});
+  }
 }
 
 /**
@@ -408,7 +430,7 @@ $command-palette-spacing: px-to-rem(14px);
 
 
   .show-focus-layover {
-    &:focus,
+    &:focus-visible,
     &:focus-within {
       .show-focus-layover-hint {
         @apply gl-opacity-10;
@@ -523,7 +545,7 @@ $command-palette-spacing: px-to-rem(14px);
     opacity: 0;
 
     &:hover,
-    &:focus {
+    &:focus-visible {
       opacity: 1;
     }
   }
@@ -537,7 +559,7 @@ $command-palette-spacing: px-to-rem(14px);
 
   .show-on-focus-or-hover--control {
     &:hover,
-    &:focus {
+    &:focus-visible {
       + .show-on-focus-or-hover--target {
         opacity: 1;
       }
@@ -559,7 +581,7 @@ $command-palette-spacing: px-to-rem(14px);
 
   .hide-on-focus-or-hover--control {
     &:hover,
-    &:focus {
+    &:focus-visible {
       .hide-on-focus-or-hover--target {
         opacity: 0;
       }

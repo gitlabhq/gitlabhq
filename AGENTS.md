@@ -37,3 +37,21 @@ When opening a merge request as part of the Fix Pipeline flow (the title contain
 - **`merge_request`**: apply `pipeline::tier-1`. This runs the cheaper tier-1 pipeline instead of the full default pipeline.
 - **`default_branch`**: apply both `pipeline::expedited` and `master:broken`. The expedited label fast-tracks the fix through CI by skipping non-essential jobs; the master:broken label marks the MR as a broken-master fix. Do not apply `pipeline::tier-1` in this case.
 - **`branch`**: apply `pipeline::tier-1`. Same treatment as the `merge_request` case — a fix MR for a non-default branch pipeline failure with no originating MR.
+
+### Known failures and CI health context
+
+Before diagnosing a failure, check whether it matches a known active incident. Three sources:
+
+- [ci-health-incidents](https://gitlab.com/gitlab-org/quality/analytics/ci-health-incidents/-/issues?state=opened&label_name[]=ci-health%3A%3Aactive) — test file failures, failure categories, uncategorized job failures
+- [ci-health-systemic](https://gitlab.com/gitlab-org/quality/analytics/ci-health-systemic/-/issues?state=opened&label_name[]=ci-health%3A%3Aactive) — recurring systemic failures affecting many pipelines
+- [top flaky test files](https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues?state=opened&label_name[]=automation%3Atop-flaky-test-file&label_name[]=automation%3Abot-authored) — known flaky test files
+
+Each ci-health incident title names the affected test file, failure category, or job. The flaky test issues title the affected spec file.
+
+If the failing job or test matches an open issue in any of these:
+
+1. Link to the issue in your response or fix MR description.
+2. Use it to guide your approach:
+   - **Infra failure** (`failed_to_pull_image`, `runner_system_failure`, etc.): no code fix is possible. Post a comment with the incident link. Do not open a fix MR.
+   - **Known flaky test**: the failure may be unrelated to the MR. Note this and link the issue, but still check whether the MR changes could have contributed.
+   - **Known failure category** (`docs_outdated`, `rake_outdated_translated_strings`, etc.): likely unrelated to the MR. Post a comment with the incident link rather than attempting a code fix.

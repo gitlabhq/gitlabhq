@@ -235,6 +235,74 @@
     }
   }
 
+  @keyframes gl-table-shadow-overlay-x {
+    0%,
+    95% {
+      opacity: 1;
+    }
+
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes gl-table-shadow-overlay-y {
+    0%,
+    95% {
+      opacity: 1;
+    }
+
+    100% {
+      opacity: 0;
+    }
+  }
+
+  // Overlays scroll shadows on the right and bottom edges of scrollable
+  // tables while there is more content to scroll to in that direction.
+  // The shadows are pseudo-elements on this non-scrolling wrapper so they
+  // paint on top of the sticky table header. Their opacity is driven by
+  // named scroll timelines on the inner scroll container. Browsers without
+  // scroll timeline support (Firefox) never show the shadows.
+  .gl-table-shadow-overlay {
+    position: relative;
+    width: fit-content;
+    max-width: 100%;
+    timeline-scope: --gl-table-scroll-x, --gl-table-scroll-y;
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      pointer-events: none;
+      z-index: 2;
+      opacity: 0;
+    }
+
+    // The shadows are inset by --scrollbar-width so they don't paint over
+    // always-visible scrollbars. With overlay scrollbars it computes to 0px.
+    &::before {
+      inset-block: 0 var(--scrollbar-width, 0);
+      inset-inline-end: var(--scrollbar-width, 0);
+      width: 16px;
+      background: linear-gradient(to left, var(--gl-shadow-color-default), transparent);
+      animation: gl-table-shadow-overlay-x $gl-easing-out-cubic;
+      animation-timeline: --gl-table-scroll-x;
+    }
+
+    &::after {
+      inset-inline: 0 var(--scrollbar-width, 0);
+      inset-block-end: var(--scrollbar-width, 0);
+      height: 16px;
+      background: linear-gradient(to top, var(--gl-shadow-color-default), transparent);
+      animation: gl-table-shadow-overlay-y $gl-easing-out-cubic;
+      animation-timeline: --gl-table-scroll-y;
+    }
+
+    > [data-sticky-header] {
+      scroll-timeline: --gl-table-scroll-x inline, --gl-table-scroll-y block;
+    }
+  }
+
   // Fix border bleed.
   // stylelint-disable-next-line gitlab/no-has -- scoped to gl-table-shadow element
   .gl-table-shadow:not(:has(+ .glql-load-more)) {
@@ -263,13 +331,13 @@
   }
 
   table:not(.code) {
-    margin: 16px 0;
     @apply gl-text-default;
     border: 0;
     width: auto;
 
     &:not(.gl-table-shadow > *, [data-sticky-header] > *) {
       display: block;
+      margin: 16px 0;
       overflow-x: auto;
     }
 
@@ -582,7 +650,7 @@
       border-color: var(--gl-control-border-color-hover);
     }
 
-    &:not(:disabled):focus {
+    &:not(:disabled):focus-visible {
       @apply gl-focus;
       border-color: var(--gl-control-border-color-focus);
     }
@@ -615,7 +683,7 @@
       border-color: var(--gl-control-border-color-selected-hover);
     }
 
-    &:not(:disabled):checked:focus {
+    &:not(:disabled):checked:focus-visible {
       background-color: var(--gl-control-background-color-selected-focus);
       border-color: var(--gl-control-border-color-selected-focus);
     }
@@ -753,7 +821,7 @@
       visibility: visible;
     }
 
-    > a.anchor:focus::after {
+    > a.anchor:focus-visible::after {
       visibility: visible;
       outline: auto;
     }

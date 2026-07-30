@@ -70,7 +70,7 @@
       border: 1px solid var(--gl-control-border-color-hover);
     }
 
-    &:not(.selected-icon):focus {
+    &:not(.selected-icon):focus-visible {
       border: 1px solid var(--gl-control-border-color-focus);
     }
   }

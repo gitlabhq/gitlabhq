@@ -240,7 +240,7 @@ export default {
         :placeholder="$options.i18n.searchLabel"
         :aria-label="$options.i18n.searchLabel"
         :aria-keyshortcuts="filterSearchShortcutKey"
-        class="gl-border gl-w-full gl-rounded-lg gl-border-section gl-bg-section gl-py-2 gl-pl-3 gl-pr-7 gl-text-secondary focus:gl-outline-none focus:gl-focus"
+        class="gl-border gl-w-full gl-rounded-lg gl-border-section gl-bg-section gl-py-2 gl-pl-3 gl-pr-7 gl-text-secondary focus-visible:gl-outline-none focus-visible:gl-focus"
         @input="onSearchInput(searchQuery)"
         @focus="onSearchFocus"
         @keydown.escape="clearSearch"
@@ -255,7 +255,7 @@ export default {
       </kbd>
       <button
         v-if="searchQuery"
-        class="gl-absolute gl-right-3 gl-border-0 gl-bg-section gl-p-1 gl-pl-2 gl-text-subtle hover:gl-text-strong focus:gl-outline-none"
+        class="gl-absolute gl-right-3 gl-border-0 gl-bg-section gl-p-1 gl-pl-2 gl-text-subtle hover:gl-text-strong focus-visible:gl-outline-none"
         :aria-label="__('Clear search')"
         @click="clearSearch"
       >

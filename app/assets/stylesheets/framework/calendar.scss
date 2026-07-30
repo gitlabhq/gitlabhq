@@ -5,7 +5,7 @@
 
 .user-contrib-cell {
   &:hover,
-  &:focus,
+  &:focus-visible,
   &.is-active {
     cursor: pointer;
     outline: none;

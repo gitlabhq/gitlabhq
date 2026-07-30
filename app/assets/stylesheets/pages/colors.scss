@@ -12,8 +12,8 @@
     margin-bottom: 10px;
     text-decoration: none;
 
-    &:focus,
-    &:focus:active {
+    &:focus-visible,
+    &:focus-visible:active {
       position: relative;
       z-index: 1;
       @apply gl-focus;

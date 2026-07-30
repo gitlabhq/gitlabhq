@@ -723,7 +723,7 @@ export default {
       size="small"
       category="primary"
       variant="confirm"
-      class="gl-sr-only !gl-absolute gl-left-3 gl-top-3 focus:gl-not-sr-only"
+      class="gl-sr-only !gl-absolute gl-left-3 gl-top-3 focus:gl-not-sr-only focus-visible:gl-not-sr-only"
       @click="skipToInput"
       >{{ __('Skip to input') }}</gl-button
     >

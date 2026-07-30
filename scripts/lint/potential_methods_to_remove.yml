@@ -69,7 +69,6 @@ ee/app/models/security/orchestration_policy_configuration.rb:
   - compliance_framework_ids_with_policy_index
   - experiment_configuration
 app/helpers/routing/groups/members_helper.rb:
-  - approve_access_request_group_member_path
   - resend_invite_group_member_path
 app/helpers/routing/projects/members_helper.rb:
   - request_access_project_members_path

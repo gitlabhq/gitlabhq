@@ -28,7 +28,7 @@
         box-shadow: inset 0 -2px 0 0 var(--gl-tab-selected-indicator-color-default);
       }
 
-      &:focus {
+      &:focus-visible {
         text-decoration: none;
         color: var(--gl-text-default);
         outline: 2px solid var(--gl-focus-ring-color, var(--gl-tab-selected-indicator-color-default));

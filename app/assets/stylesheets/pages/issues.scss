@@ -4,7 +4,7 @@
   }
 
   &:hover,
-  &:focus {
+  &:focus-visible {
     outline: none;
     text-decoration: none;
   }
@@ -16,7 +16,7 @@
   transition: background $general-hover-transition-duration $general-hover-transition-curve, color $general-hover-transition-duration $general-hover-transition-curve;
 
   .issue-token:hover &,
-  .issue-token-link:focus > & {
+  .issue-token-link:focus-visible > & {
     @apply gl-bg-strong;
     color: $blue-800;
     text-decoration: none;
@@ -28,7 +28,7 @@
   transition: background $general-hover-transition-duration $general-hover-transition-curve;
 
   .issue-token:hover &,
-  .issue-token-link:focus > & {
+  .issue-token-link:focus-visible > & {
     background-color: $gray-100;
   }
 }
@@ -38,9 +38,9 @@
   transition: background $general-hover-transition-duration $general-hover-transition-curve;
 
   &:hover,
-  &:focus,
+  &:focus-visible,
   .issue-token:hover &,
-  .issue-token-link:focus + & {
+  .issue-token-link:focus-visible + & {
     background-color: $gray-100;
     outline: none;
   }

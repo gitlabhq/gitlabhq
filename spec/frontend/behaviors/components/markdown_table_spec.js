@@ -31,6 +31,8 @@ describe('MarkdownTable', () => {
   };
 
   const findHeaders = () => wrapper.findAll('thead th');
+  const findShadowOverlayWrapper = () => wrapper.findByTestId('table-shadow-overlay');
+  const findStickyHeaderWrapper = () => wrapper.find('[data-sticky-header]');
   const getRowTexts = (columnIndex) =>
     wrapper.findAll('tbody tr').wrappers.map((row) => row.findAll('td').at(columnIndex).text());
   const clickHeader = (columnIndex) => findHeaders().at(columnIndex).trigger('click');
@@ -243,31 +245,46 @@ describe('MarkdownTable', () => {
   });
 
   describe('when sticky', () => {
-    it('wraps the table in a sticky-header container', () => {
+    beforeEach(() => {
       createWrapper([['Alice', '25']], { isSticky: true });
+    });
 
-      const stickyWrapper = wrapper.find('[data-sticky-header]');
+    it('wraps the table in a sticky-header container', () => {
+      const stickyWrapper = findStickyHeaderWrapper();
       expect(stickyWrapper.exists()).toBe(true);
       expect(stickyWrapper.find('table').exists()).toBe(true);
     });
 
-    it('marks the wrapper as the print scale container', () => {
-      createWrapper([['Alice', '25']], { isSticky: true });
+    it('wraps the sticky-header container in a shadow overlay wrapper', () => {
+      const overlayWrapper = findShadowOverlayWrapper();
+      expect(overlayWrapper.exists()).toBe(true);
+      expect(overlayWrapper.classes()).toContain('gl-table-shadow-overlay');
+      expect(overlayWrapper.find('[data-sticky-header]').exists()).toBe(true);
+    });
 
-      expect(wrapper.find('[data-print-scale-container]').element).toBe(wrapper.element);
+    it('marks the sticky-header wrapper as the print scale container', () => {
+      expect(wrapper.find('[data-print-scale-container]').element).toBe(
+        findStickyHeaderWrapper().element,
+      );
       expect(wrapper.find('table').attributes('data-print-scale-target')).toBe('');
       expect(wrapper.find('table').attributes('data-print-scale-container')).toBeUndefined();
     });
   });
 
   describe('when not sticky', () => {
-    it('marks the table as its own print scale container', () => {
-      createWrapper([['Alice', '25']]);
+    beforeEach(() => {
+      createWrapper([['Alice', '25']], { isSticky: false });
+    });
 
+    it('marks the table as its own print scale container', () => {
       const table = wrapper.find('table');
+      expect(wrapper.find('[data-print-scale-container]').element).toBe(table.element);
       expect(table.attributes('data-print-scale-target')).toBe('');
       expect(table.attributes('data-print-scale-container')).toBe('');
-      expect(wrapper.attributes('data-print-scale-container')).toBeUndefined();
+    });
+
+    it('does not add the shadow overlay wrapper when not sticky', () => {
+      expect(findShadowOverlayWrapper().exists()).toBe(false);
     });
   });
 });

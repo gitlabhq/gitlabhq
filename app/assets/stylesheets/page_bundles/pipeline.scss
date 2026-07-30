@@ -115,7 +115,7 @@
     background-color: var(--gl-action-neutral-background-color-hover);
   }
 
-  &:focus {
+  &:focus-visible {
     background-color: var(--gl-action-neutral-background-color-focus);
   }
 
@@ -236,7 +236,7 @@
 
 // Pipeline failed status
 .ci-job-component > .ci-job-item-failed,
-.ci-job-component.ci-job-item-failed:not(:hover):not(:focus) > a {
+.ci-job-component.ci-job-item-failed:not(:hover):not(:focus-visible) > a {
   @include ci-job-item-failed-status-bg;
 }
 
@@ -308,8 +308,8 @@
   // Set artificial focus on the menu-item to keep
   // it consistent with the original dropdown items
   // stylelint-disable-next-line gitlab/no-gl-class
-  .gl-new-dropdown-item:focus,
-  .gl-new-dropdown-item-content:focus {
+  .gl-new-dropdown-item:focus-visible,
+  .gl-new-dropdown-item-content:focus-visible {
     outline: none;
 
     .menu-item {

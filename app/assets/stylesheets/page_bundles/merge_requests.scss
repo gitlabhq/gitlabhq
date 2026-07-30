@@ -212,7 +212,7 @@
 
 .diff-line-expand-button {
   &:hover,
-  &:focus {
+  &:focus-visible {
     background-color: var(--gray-200, $gray-200);
   }
 }
@@ -863,7 +863,7 @@ $diff-file-header-top: 11px;
   text-decoration: underline;
 
   &:hover,
-  &:focus {
+  &:focus-visible {
     text-decoration: none;
   }
 }

@@ -37,7 +37,7 @@
   font-family: $regular-font;
   border: 0;
 
-  &:focus {
+  &:focus-visible {
     outline: 0;
   }
 }
@@ -108,7 +108,7 @@
         }
       }
 
-      &:focus {
+      &:focus-visible {
         @apply gl-focus;
       }
     }
@@ -411,7 +411,7 @@ table {
   line-height: 16px;
 
   &:hover,
-  &:focus {
+  &:focus-visible {
     @apply gl-text-link;
     outline: 0;
   }
@@ -502,7 +502,7 @@ table {
 }
 
 .immersive {
-  .gfm-form .note-textarea:focus {
+  .gfm-form .note-textarea:focus-visible {
     outline: none !important;
     box-shadow: none !important;
   }

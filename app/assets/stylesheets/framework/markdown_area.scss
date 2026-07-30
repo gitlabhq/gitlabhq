@@ -196,9 +196,9 @@
     box-shadow: none !important;
   }
 
-  .md-write-holder textarea:focus,
-  .zen-backdrop:not(.fullscreen) textarea:focus,
-  .md .ProseMirror:focus {
+  .md-write-holder textarea:focus-visible,
+  .zen-backdrop:not(.fullscreen) textarea:focus-visible,
+  .md .ProseMirror:focus-visible {
     outline: none !important;
     box-shadow: none !important;
   }

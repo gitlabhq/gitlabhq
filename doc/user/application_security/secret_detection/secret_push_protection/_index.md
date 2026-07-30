@@ -155,6 +155,7 @@ If a secret is already present in a file and not part of the changes, it is not 
 
 - Secret push protection skips scanning because the push contains [too many changed paths](#push-size-threshold).
 - Secret push protection scan timeout occurs and GitLab accepts the push.
+- Secret push protection encounters a ruleset parse or compile error.
 
 ## Push size threshold
 

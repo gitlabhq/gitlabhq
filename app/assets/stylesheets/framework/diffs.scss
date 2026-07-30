@@ -668,7 +668,7 @@ table.code {
     fill: $white;
   }
 
-  &:focus {
+  &:focus-visible {
     outline: 0;
   }
 }

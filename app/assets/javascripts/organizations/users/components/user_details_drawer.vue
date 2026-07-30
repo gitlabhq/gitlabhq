@@ -160,7 +160,7 @@ export default {
         <h5>{{ $options.i18n.roleListboxLabel }}</h5>
         <div
           v-gl-tooltip="{ disabled: !roleListboxTooltip, title: roleListboxTooltip }"
-          class="gl-rounded-base focus:gl-focus"
+          class="gl-rounded-base focus-visible:gl-focus"
           :tabindex="roleListboxDisabled && 0"
         >
           <gl-collapsible-listbox

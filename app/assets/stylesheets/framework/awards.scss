@@ -107,7 +107,7 @@
     transform: scale(1.3);
   }
 
-  &:focus,
+  &:focus-visible,
   &:active {
     outline: 0;
   }
@@ -166,7 +166,7 @@
   }
 
   &.btn {
-    &:focus {
+    &:focus-visible {
       outline: 0;
     }
   }
@@ -279,7 +279,7 @@
     cursor: default;
 
     &:hover,
-    &:focus,
+    &:focus-visible,
     &:active {
       .reaction-control-icon .gl-icon {
         color: inherit;

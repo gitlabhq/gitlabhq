@@ -1,16 +1,15 @@
 <script>
-import { GlModal } from '@gitlab/ui';
-import { uniqueId } from 'lodash-es';
 import { __, s__ } from '~/locale';
-import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
 import GlqlResolver from '~/glql/components/common/resolver.vue';
+import ViewSourceModal from '~/glql/components/common/view_source_modal.vue';
+import { copyQuerySource } from '~/glql/utils/common';
 import { copyGLQLNodeAsGFM } from '~/glql/utils/copy_as_gfm';
 
 export default {
   name: 'GlqlVisualization',
   components: {
-    GlModal,
     GlqlResolver,
+    ViewSourceModal,
   },
   props: {
     data: {
@@ -27,15 +26,8 @@ export default {
     };
   },
   computed: {
-    modalId() {
-      return uniqueId('glql-panel-modal-');
-    },
     showEmptyState() {
       return this.resolverData?.nodes?.length === 0;
-    },
-    wrappedQuery() {
-      // eslint-disable-next-line @gitlab/require-i18n-strings
-      return `\`\`\`glql\n${this.data}\n\`\`\``;
     },
   },
   watch: {
@@ -74,14 +66,12 @@ export default {
       this.modalVisible = true;
     },
     copySource() {
-      copyToClipboard(this.wrappedQuery);
+      copyQuerySource(this.data);
     },
     async copyAsGFM() {
       await copyGLQLNodeAsGFM(this.$refs.resolver.$el);
     },
   },
-  modalPrimaryAction: { text: __('Copy source') },
-  modalSecondaryAction: { text: __('Close') },
 };
 </script>
 
@@ -99,21 +89,10 @@ export default {
       @change="handleResolverChange"
     />
 
-    <gl-modal
+    <view-source-modal
       v-model="modalVisible"
+      :query="data"
       :title="s__('AnalyticsDashboards|Panel query')"
-      :modal-id="modalId"
-      :action-primary="$options.modalPrimaryAction"
-      :action-cancel="$options.modalSecondaryAction"
-      @primary="copySource"
-    >
-      <div class="md">
-        <div class="markdown-code-block gl-relative">
-          <pre
-            class="code highlight code-syntax-highlight-theme"
-          ><code>{{ wrappedQuery }}</code></pre>
-        </div>
-      </div>
-    </gl-modal>
+    />
   </div>
 </template>

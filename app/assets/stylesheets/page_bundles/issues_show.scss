@@ -23,7 +23,7 @@
     }
 
     .task-list-item-actions[aria-expanded="true"],
-    .task-list-item-actions:is(:focus, :hover) {
+    .task-list-item-actions:is(:focus-visible, :hover) {
       opacity: 1;
     }
   }

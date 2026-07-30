@@ -24,7 +24,7 @@ export default {
     data-testid="board-add-new-column-between-button"
     :title="__('New list')"
     :aria-label="__('New list')"
-    class="gl-h-full gl-w-5 gl-border-none gl-bg-transparent gl-p-0 gl-opacity-0 hover:gl-opacity-10 focus:gl-opacity-10 focus:gl-outline-none"
+    class="gl-h-full gl-w-5 gl-border-none gl-bg-transparent gl-p-0 gl-opacity-0 hover:gl-opacity-10 focus-visible:gl-opacity-10 focus-visible:gl-outline-none"
     @click="handleClick"
   >
     <div class="gl-flex gl-h-full gl-w-full gl-justify-center">

@@ -29,15 +29,6 @@ RSpec.describe ZoomMeeting do
         expect(meetings_added).not_to include(removed_meeting.id)
       end
     end
-
-    describe '.removed_from_issue' do
-      it 'gets only removed meetings' do
-        meetings_removed = described_class.removed_from_issue.pluck(:id)
-
-        expect(meetings_removed).to include(removed_meeting.id)
-        expect(meetings_removed).not_to include(added_meeting.id)
-      end
-    end
   end
 
   describe 'Validations' do

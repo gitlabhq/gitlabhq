@@ -238,7 +238,7 @@ li.note {
 }
 
 .gl-accessibility {
-  &:focus {
+  &:focus-visible {
     display: flex;
     align-items: center;
     top: 1px;

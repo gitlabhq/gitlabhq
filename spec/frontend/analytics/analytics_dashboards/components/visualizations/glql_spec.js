@@ -1,8 +1,8 @@
-import { GlModal } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import GlqlVisualization from '~/analytics/analytics_dashboards/components/visualizations/glql.vue';
 import GlqlResolver from '~/glql/components/common/resolver.vue';
+import GlqlViewSourceModal from '~/glql/components/common/view_source_modal.vue';
 import { copyGLQLNodeAsGFM } from '~/glql/utils/copy_as_gfm';
 import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
 
@@ -21,7 +21,7 @@ describe('GlqlVisualization', () => {
   };
 
   const findResolver = () => wrapper.findComponent(GlqlResolver);
-  const findModal = () => wrapper.findComponent(GlModal);
+  const findModal = () => wrapper.findComponent(GlqlViewSourceModal);
   const findEmptyState = () => wrapper.findByText('No results match your query or filter.');
   const lastActions = () => wrapper.emitted('set-actions').at(-1)[0];
   const findAction = (text) => lastActions().find((action) => action.text === text);
@@ -157,7 +157,7 @@ describe('GlqlVisualization', () => {
     it('copies the wrapped query when "Copy source" is triggered', () => {
       findAction('Copy source').action();
 
-      expect(copyToClipboard).toHaveBeenCalledWith(wrappedQuery);
+      expect(copyToClipboard).toHaveBeenCalledWith(wrappedQuery, document.body);
     });
 
     it('copies the rendered contents when "Copy contents" is triggered', async () => {
@@ -178,7 +178,6 @@ describe('GlqlVisualization', () => {
 
   describe('source modal', () => {
     const glqlQuery = 'type = Issue AND state = opened';
-    const wrappedQuery = `\`\`\`glql\n${glqlQuery}\n\`\`\``;
 
     beforeEach(async () => {
       createWrapper({ data: glqlQuery });
@@ -193,13 +192,11 @@ describe('GlqlVisualization', () => {
       expect(findModal().props('visible')).toBe(false);
     });
 
-    it('gives each instance a unique modal id', () => {
-      const firstModalId = findModal().props('modalId');
-      expect(firstModalId).toEqual(expect.stringContaining('glql-panel-modal-'));
-
-      createWrapper({ data: glqlQuery });
-
-      expect(findModal().props('modalId')).not.toBe(firstModalId);
+    it('passes the query and title to the modal', () => {
+      expect(findModal().props()).toMatchObject({
+        query: glqlQuery,
+        title: 'Panel query',
+      });
     });
 
     it('opens when the "View source" action is triggered', async () => {
@@ -209,19 +206,14 @@ describe('GlqlVisualization', () => {
       expect(findModal().props('visible')).toBe(true);
     });
 
-    it('renders the wrapped query', () => {
-      expect(findModal().text()).toContain(wrappedQuery);
-    });
+    it('closes when the modal reports it has been dismissed', async () => {
+      findAction('View source').action();
+      await nextTick();
 
-    it('configures the primary and cancel actions', () => {
-      expect(findModal().props('actionPrimary')).toEqual({ text: 'Copy source' });
-      expect(findModal().props('actionCancel')).toEqual({ text: 'Close' });
-    });
+      findModal().vm.$emit('change', false);
+      await nextTick();
 
-    it('copies the wrapped query when the primary action is triggered', () => {
-      findModal().vm.$emit('primary');
-
-      expect(copyToClipboard).toHaveBeenCalledWith(wrappedQuery);
+      expect(findModal().props('visible')).toBe(false);
     });
   });
 });
