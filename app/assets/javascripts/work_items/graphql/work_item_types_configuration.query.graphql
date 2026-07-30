@@ -1,12 +1,19 @@
 #import "ee_else_ce/work_items/graphql/work_item_types_configuration.fragment.graphql"
 # @feature_category: team_planning
 
-query workItemTypesConfiguration($fullPath: ID!) {
+# `isFilterable*` depend on the namespace they are requested for: Epic is filterable in a
+# group but not in a project. `WorkItemType` is cached by its global ID, so a project-scoped
+# request would otherwise overwrite the values the page's namespace read. Only page-scoped
+# callers may request these fields; item-scoped callers must pass `includeFilterableFlags: false`.
+# See issue https://gitlab.com/gitlab-org/gitlab/-/issues/606810
+query workItemTypesConfiguration($fullPath: ID!, $includeFilterableFlags: Boolean = true) {
   namespace(fullPath: $fullPath) {
     id
     workItemTypes {
       nodes {
         ...WorkItemTypesConfiguration
+        isFilterableBoardView @include(if: $includeFilterableFlags)
+        isFilterableListView @include(if: $includeFilterableFlags)
       }
     }
   }

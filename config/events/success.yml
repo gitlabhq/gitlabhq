@@ -1,7 +1,9 @@
 ---
 description: Tracks creation of a new design
 action: success
-product_group: subscription_management
+product_group: acquisition
+product_categories:
+- acquisition
 milestone: '17.0'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149817
 tiers:

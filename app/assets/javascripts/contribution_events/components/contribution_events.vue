@@ -32,6 +32,7 @@ import ContributionEventUpdated from './contribution_event/contribution_event_up
 import ContributionEventDestroyed from './contribution_event/contribution_event_destroyed.vue';
 
 export default {
+  name: 'ContributionEvents',
   props: {
     /**
      * Expected format

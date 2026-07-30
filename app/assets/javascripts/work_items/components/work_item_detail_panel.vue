@@ -301,7 +301,10 @@ export default {
           />
         </div>
       </div>
-      <work-item-metadata-provider :full-path="activeItemFullPath">
+      <work-item-metadata-provider
+        :full-path="activeItemFullPath"
+        :include-filterable-flags="false"
+      >
         <!-- eslint-disable vue/custom-event-name-casing, vue/v-on-event-hyphenation-->
         <work-item-detail
           :key="activeItem.iid"

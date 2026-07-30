@@ -989,7 +989,7 @@ export default {
 </script>
 
 <template>
-  <work-item-metadata-provider :full-path="workItemFullPath">
+  <work-item-metadata-provider :full-path="workItemFullPath" :include-filterable-flags="false">
     <div
       ref="workItemDetail"
       class="work-item-detail"

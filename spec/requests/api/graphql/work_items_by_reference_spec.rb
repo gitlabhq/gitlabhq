@@ -124,9 +124,12 @@ RSpec.describe 'find work items by reference', feature_category: :portfolio_mana
   end
 
   def query(namespace_path: path, refs: references)
+    # availableQuickActions evaluates each command's availability condition
+    # against the individual work item, so it is inherently one query set per
+    # item and cannot satisfy the N+1 guard above.
     fields = <<~GRAPHQL
       nodes {
-        #{all_graphql_fields_for('WorkItem', max_depth: 2)}
+        #{all_graphql_fields_for('WorkItem', max_depth: 2, excluded: %w[availableQuickActions])}
       }
     GRAPHQL
 

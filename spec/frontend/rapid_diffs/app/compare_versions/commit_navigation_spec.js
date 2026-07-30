@@ -4,6 +4,7 @@ import { TEST_HOST } from 'helpers/test_constants';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CommitNavigation from '~/rapid_diffs/app/compare_versions/commit_navigation.vue';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
 jest.mock('~/behaviors/shortcuts/shortcuts_toggle');
 
@@ -20,6 +21,9 @@ describe('CommitNavigation', () => {
   const createComponent = ({ commit = baseCommit } = {}) => {
     wrapper = shallowMountExtended(CommitNavigation, {
       propsData: { commit },
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
+      },
     });
   };
 
@@ -219,6 +223,43 @@ describe('CommitNavigation', () => {
 
       expect(findPrevButton().attributes('aria-keyshortcuts')).toBeUndefined();
       expect(findNextButton().attributes('aria-keyshortcuts')).toBeUndefined();
+    });
+  });
+
+  describe('tooltip shortcut hint', () => {
+    const tooltipValue = (buttonWrapper) => getBinding(buttonWrapper.element, 'gl-tooltip').value;
+
+    const commitWithNeighbors = {
+      ...baseCommit,
+      prev_commit_id: 'prev123',
+      next_commit_id: 'next456',
+    };
+
+    it('renders a kbd shortcut hint in enabled button tooltips', () => {
+      createComponent({ commit: commitWithNeighbors });
+
+      expect(tooltipValue(findPrevButton())).toBe(
+        'Previous commit <kbd class="flat gl-ml-1" aria-hidden="true">x</kbd>',
+      );
+      expect(tooltipValue(findNextButton())).toBe(
+        'Next commit <kbd class="flat gl-ml-1" aria-hidden="true">c</kbd>',
+      );
+    });
+
+    it('renders plain-text tooltip on a disabled button', () => {
+      createComponent({
+        commit: { ...baseCommit, prev_commit_id: null, next_commit_id: 'next456' },
+      });
+
+      expect(tooltipValue(findPrevButton())).toBe("You're at the first commit");
+    });
+
+    it('renders plain-text tooltips when shortcuts are disabled', () => {
+      shouldDisableShortcuts.mockReturnValue(true);
+      createComponent({ commit: commitWithNeighbors });
+
+      expect(tooltipValue(findPrevButton())).toBe('Previous commit');
+      expect(tooltipValue(findNextButton())).toBe('Next commit');
     });
   });
 });

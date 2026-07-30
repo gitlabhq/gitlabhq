@@ -6,12 +6,15 @@ import {
   MR_COMMITS_NEXT_COMMIT,
   MR_COMMITS_PREVIOUS_COMMIT,
   MR_TOGGLE_REVIEW,
+  MR_TOGGLE_DIFF_VIEW_TYPE,
 } from '~/behaviors/shortcuts/keybindings';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
 import { pinia } from '~/pinia/instance';
 import { useMergeRequestVersions } from '~/merge_request/stores/merge_request_versions';
 import { useCodeReview } from '~/diffs/stores/code_review';
+import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
+import { INLINE_DIFF_VIEW_TYPE, PARALLEL_DIFF_VIEW_TYPE } from '~/diffs/constants';
 import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
 import { COLLAPSE_FILE_BY_USER, EXPAND_FILE } from '~/rapid_diffs/adapter_events';
 
@@ -82,6 +85,14 @@ export function toggleFileReview(file) {
   }
 }
 
+export function toggleDiffViewType() {
+  const store = useDiffsView(pinia);
+  const nextViewType =
+    store.viewType === INLINE_DIFF_VIEW_TYPE ? PARALLEL_DIFF_VIEW_TYPE : INLINE_DIFF_VIEW_TYPE;
+
+  store.updateViewType(nextViewType);
+}
+
 export function initHotkeys() {
   if (shouldDisableShortcuts()) return () => {};
 
@@ -93,6 +104,7 @@ export function initHotkeys() {
     [keysFor(MR_COMMITS_NEXT_COMMIT), () => navigateCommit('next')],
     [keysFor(MR_COMMITS_PREVIOUS_COMMIT), () => navigateCommit('previous')],
     [keysFor(MR_TOGGLE_REVIEW), () => toggleFileReview(nav.getCurrentFile())],
+    [keysFor(MR_TOGGLE_DIFF_VIEW_TYPE), () => toggleDiffViewType()],
   ];
 
   bindings.forEach(([keys, handler]) => Mousetrap.bind(keys, handler));

@@ -7,6 +7,7 @@ import {
   MR_COMMITS_PREVIOUS_COMMIT,
 } from '~/behaviors/shortcuts/keybindings';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { sanitize } from '~/lib/dompurify';
 import { removeParams, setUrlParams } from '~/lib/utils/url_utility';
 
 export default {
@@ -73,6 +74,25 @@ export default {
 
       return title;
     },
+    previousCommitTooltip() {
+      return this.tooltipWithShortcut(this.previousCommitTitle, this.previousCommitShortcutKey);
+    },
+    nextCommitTooltip() {
+      return this.tooltipWithShortcut(this.nextCommitTitle, this.nextCommitShortcutKey);
+    },
+  },
+  methods: {
+    tooltipWithShortcut(description, key) {
+      let tooltip = description;
+
+      if (key) {
+        tooltip = sanitize(
+          `${description} <kbd class="flat gl-ml-1" aria-hidden=true>${key}</kbd>`,
+        );
+      }
+
+      return tooltip;
+    },
   },
   i18n: {
     viewingCommit: __('Viewing commit'),
@@ -91,7 +111,7 @@ export default {
     </div>
     <gl-button-group v-if="hasNeighborCommits" data-testid="commit-nav-buttons">
       <gl-button
-        v-gl-tooltip="previousCommitTitle"
+        v-gl-tooltip.html="previousCommitTooltip"
         :aria-label="previousCommitTitle"
         :aria-keyshortcuts="previousCommitShortcutKey"
         :href="previousCommitUrl"
@@ -111,7 +131,7 @@ export default {
         {{ $options.i18n.previous }}
       </gl-button>
       <gl-button
-        v-gl-tooltip="nextCommitTitle"
+        v-gl-tooltip.html="nextCommitTooltip"
         :aria-label="nextCommitTitle"
         :aria-keyshortcuts="nextCommitShortcutKey"
         :href="nextCommitUrl"

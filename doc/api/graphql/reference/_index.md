@@ -33650,6 +33650,7 @@ Fields:
 | <a id="aiusermetrics-duomessaging"></a>`duoMessaging` | [`duoMessagingUserMetrics`](#duomessagingusermetrics) | Duo Messaging metrics for the user. |
 | <a id="aiusermetrics-duoworkflow"></a>`duoWorkflow` | [`duoWorkflowUserMetrics`](#duoworkflowusermetrics) | Duo Workflow metrics for the user. |
 | <a id="aiusermetrics-explainvulnerability"></a>`explainVulnerability` | [`explainVulnerabilityUserMetrics`](#explainvulnerabilityusermetrics) | Explain Vulnerability metrics for the user. |
+| <a id="aiusermetrics-featurediscovery"></a>`featureDiscovery` | [`featureDiscoveryUserMetrics`](#featurediscoveryusermetrics) | Feature Discovery metrics for the user. |
 | <a id="aiusermetrics-fixpipeline"></a>`fixPipeline` | [`fixPipelineUserMetrics`](#fixpipelineusermetrics) | Fix Pipeline metrics for the user. |
 | <a id="aiusermetrics-generatemergecommitmessage"></a>`generateMergeCommitMessage` | [`generateMergeCommitMessageUserMetrics`](#generatemergecommitmessageusermetrics) | Generate Merge Commit Message metrics for the user. |
 | <a id="aiusermetrics-lastduoactivityon"></a>`lastDuoActivityOn` | [`Date`](#date) | Date of the last Duo activity across all features for the user. |
@@ -41709,6 +41710,7 @@ Fields:
 | <a id="epicissue-alertmanagementalert"></a>`alertManagementAlert` {{< icon name="warning-solid" >}} | [`AlertManagementAlert`](#alertmanagementalert) | Deprecated in GitLab 15.6. Use `alert_management_alerts`. |
 | <a id="epicissue-assignees"></a>`assignees` | [`UserCoreConnection`](#usercoreconnection) | Assignees of the issue. (see [Connections](#connections)) |
 | <a id="epicissue-author"></a>`author` | [`UserCore!`](#usercore) | User that created the issue. |
+| <a id="epicissue-availablequickactions"></a>`availableQuickActions` | [`[QuickActionCommand!]`](#quickactioncommand) | Quick actions available to the current user on the issue. |
 | <a id="epicissue-blocked"></a>`blocked` | [`Boolean!`](#boolean) | Indicates the issue is blocked. |
 | <a id="epicissue-blockedbycount"></a>`blockedByCount` | [`Int`](#int) | Count of issues blocking the issue. |
 | <a id="epicissue-blockedbyissues"></a>`blockedByIssues` | [`IssueConnection`](#issueconnection) | Issues blocking the issue. (see [Connections](#connections)) |
@@ -47229,6 +47231,7 @@ Fields:
 | <a id="issue-alertmanagementalert"></a>`alertManagementAlert` {{< icon name="warning-solid" >}} | [`AlertManagementAlert`](#alertmanagementalert) | Deprecated in GitLab 15.6. Use `alert_management_alerts`. |
 | <a id="issue-assignees"></a>`assignees` | [`UserCoreConnection`](#usercoreconnection) | Assignees of the issue. (see [Connections](#connections)) |
 | <a id="issue-author"></a>`author` | [`UserCore!`](#usercore) | User that created the issue. |
+| <a id="issue-availablequickactions"></a>`availableQuickActions` | [`[QuickActionCommand!]`](#quickactioncommand) | Quick actions available to the current user on the issue. |
 | <a id="issue-blocked"></a>`blocked` | [`Boolean!`](#boolean) | Indicates the issue is blocked. |
 | <a id="issue-blockedbycount"></a>`blockedByCount` | [`Int`](#int) | Count of issues blocking the issue. |
 | <a id="issue-blockedbyissues"></a>`blockedByIssues` | [`IssueConnection`](#issueconnection) | Issues blocking the issue. (see [Connections](#connections)) |
@@ -62438,6 +62441,7 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="workitem-archived"></a>`archived` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 16.5. Status: Experiment. Whether the work item belongs to an archived project or group. |
 | <a id="workitem-author"></a>`author` {{< icon name="warning-solid" >}} | [`UserCore`](#usercore) | Introduced in GitLab 15.9. Status: Experiment. User that created the work item. |
+| <a id="workitem-availablequickactions"></a>`availableQuickActions` | [`[QuickActionCommand!]`](#quickactioncommand) | Quick actions available to the current user on the work item. |
 | <a id="workitem-closedat"></a>`closedAt` | [`Time`](#time) | Timestamp of when the work item was closed. |
 | <a id="workitem-commenttemplatespaths"></a>`commentTemplatesPaths` | [`[CommentTemplatePathType!]!`](#commenttemplatepathtype) | Paths of the comment templates. |
 | <a id="workitem-confidential"></a>`confidential` | [`Boolean!`](#boolean) | Indicates the work item is confidential. |
@@ -63866,6 +63870,18 @@ Fields:
 | <a id="explainvulnerabilityusermetrics-lastduoactivityon"></a>`lastDuoActivityOn` | [`Date`](#date) | Date of the last Explain Vulnerability activity for the user. |
 | <a id="explainvulnerabilityusermetrics-totaleventcount"></a>`totalEventCount` | [`Int`](#int) | Total count of all Explain Vulnerability events for the user. |
 
+### `featureDiscoveryUserMetrics`
+
+Feature Discovery user metrics for a user. Requires ClickHouse. Premium and Ultimate with GitLab Duo Enterprise only.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="featurediscoveryusermetrics-lastduoactivityon"></a>`lastDuoActivityOn` | [`Date`](#date) | Date of the last Feature Discovery activity for the user. |
+| <a id="featurediscoveryusermetrics-resolvefeaturediscoverysearcheventcount"></a>`resolveFeatureDiscoverySearchEventCount` | [`Int`](#int) | Total count of `resolve_feature_discovery_search` event. |
+| <a id="featurediscoveryusermetrics-totaleventcount"></a>`totalEventCount` | [`Int`](#int) | Total count of all Feature Discovery events for the user. |
+
 ### `fixPipelineUserMetrics`
 
 Fix Pipeline user metrics for a user. Requires ClickHouse. Premium and Ultimate with GitLab Duo Enterprise only.
@@ -64446,6 +64462,7 @@ Type of AI usage event.
 | <a id="aiusageeventtype-request_duo_vulnerability_resolution"></a>`REQUEST_DUO_VULNERABILITY_RESOLUTION` | An AI vulnerability resolution was requested with GitLab Duo. |
 | <a id="aiusageeventtype-request_review_duo_code_review_on_mr_by_author"></a>`REQUEST_REVIEW_DUO_CODE_REVIEW_ON_MR_BY_AUTHOR` | MR author requested Duo Code Review. |
 | <a id="aiusageeventtype-request_review_duo_code_review_on_mr_by_non_author"></a>`REQUEST_REVIEW_DUO_CODE_REVIEW_ON_MR_BY_NON_AUTHOR` | Non-author requested Duo Code Review on MR. |
+| <a id="aiusageeventtype-resolve_feature_discovery_search"></a>`RESOLVE_FEATURE_DISCOVERY_SEARCH` | Feature discovery search was resolved. |
 | <a id="aiusageeventtype-restore_ai_catalog_item"></a>`RESTORE_AI_CATALOG_ITEM` | AI Catalog item version was restored as new latest version. |
 | <a id="aiusageeventtype-start_mcp_tool_call"></a>`START_MCP_TOOL_CALL` | MCP tool call was started. |
 | <a id="aiusageeventtype-summarize_new_merge_request"></a>`SUMMARIZE_NEW_MERGE_REQUEST` | Merge request summary was generated. |
@@ -64515,6 +64532,8 @@ Values for sorting AI user metrics.
 | <a id="aiusermetricssort-explain_vulnerability_desc"></a>`EXPLAIN_VULNERABILITY_DESC` | Explain Vulnerability event count in descending order. |
 | <a id="aiusermetricssort-explain_vulnerability_total_count_asc"></a>`EXPLAIN_VULNERABILITY_TOTAL_COUNT_ASC` | Explain Vulnerability total event count in ascending order. |
 | <a id="aiusermetricssort-explain_vulnerability_total_count_desc"></a>`EXPLAIN_VULNERABILITY_TOTAL_COUNT_DESC` | Explain Vulnerability total event count in descending order. |
+| <a id="aiusermetricssort-feature_discovery_total_count_asc"></a>`FEATURE_DISCOVERY_TOTAL_COUNT_ASC` | Feature Discovery total event count in ascending order. |
+| <a id="aiusermetricssort-feature_discovery_total_count_desc"></a>`FEATURE_DISCOVERY_TOTAL_COUNT_DESC` | Feature Discovery total event count in descending order. |
 | <a id="aiusermetricssort-find_nothing_to_review_duo_code_review_on_mr_asc"></a>`FIND_NOTHING_TO_REVIEW_DUO_CODE_REVIEW_ON_MR_ASC` | Find Nothing To Review Duo Code Review On Mr event count in ascending order. |
 | <a id="aiusermetricssort-find_nothing_to_review_duo_code_review_on_mr_desc"></a>`FIND_NOTHING_TO_REVIEW_DUO_CODE_REVIEW_ON_MR_DESC` | Find Nothing To Review Duo Code Review On Mr event count in descending order. |
 | <a id="aiusermetricssort-find_no_issues_duo_code_review_after_review_asc"></a>`FIND_NO_ISSUES_DUO_CODE_REVIEW_AFTER_REVIEW_ASC` | Find No Issues Duo Code Review After Review event count in ascending order. |
@@ -64551,6 +64570,8 @@ Values for sorting AI user metrics.
 | <a id="aiusermetricssort-request_review_duo_code_review_on_mr_by_author_desc"></a>`REQUEST_REVIEW_DUO_CODE_REVIEW_ON_MR_BY_AUTHOR_DESC` | Request Review Duo Code Review On Mr By Author event count in descending order. |
 | <a id="aiusermetricssort-request_review_duo_code_review_on_mr_by_non_author_asc"></a>`REQUEST_REVIEW_DUO_CODE_REVIEW_ON_MR_BY_NON_AUTHOR_ASC` | Request Review Duo Code Review On Mr By Non Author event count in ascending order. |
 | <a id="aiusermetricssort-request_review_duo_code_review_on_mr_by_non_author_desc"></a>`REQUEST_REVIEW_DUO_CODE_REVIEW_ON_MR_BY_NON_AUTHOR_DESC` | Request Review Duo Code Review On Mr By Non Author event count in descending order. |
+| <a id="aiusermetricssort-resolve_feature_discovery_search_asc"></a>`RESOLVE_FEATURE_DISCOVERY_SEARCH_ASC` | Resolve Feature Discovery Search event count in ascending order. |
+| <a id="aiusermetricssort-resolve_feature_discovery_search_desc"></a>`RESOLVE_FEATURE_DISCOVERY_SEARCH_DESC` | Resolve Feature Discovery Search event count in descending order. |
 | <a id="aiusermetricssort-restore_ai_catalog_item_asc"></a>`RESTORE_AI_CATALOG_ITEM_ASC` | Restore Ai Catalog Item event count in ascending order. |
 | <a id="aiusermetricssort-restore_ai_catalog_item_desc"></a>`RESTORE_AI_CATALOG_ITEM_DESC` | Restore Ai Catalog Item event count in descending order. |
 | <a id="aiusermetricssort-start_mcp_tool_call_asc"></a>`START_MCP_TOOL_CALL_ASC` | Start Mcp Tool Call event count in ascending order. |

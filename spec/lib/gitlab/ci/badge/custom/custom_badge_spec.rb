@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Badge::Custom::CustomBadge, feature_category: :groups_and_projects do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
 
   let(:badge) { described_class.new(project) }
 

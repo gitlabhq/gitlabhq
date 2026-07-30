@@ -418,8 +418,8 @@ In this tutorial, you learned how to set up your server to be more secure, how
 to install GitLab, and how to configure GitLab to meet some security standards.
 Some [other steps](../../security/hardening_application_recommendations.md) you can take to secure GitLab include:
 
-- Disabling sign ups. By default, a new GitLab instance has sign up enabled by default. If you don't
-  plan to make your GitLab instance public, you should to disable sign ups.
+- Disabling sign ups. By default, a new GitLab instance has sign up enabled. If you don't
+  plan to make your GitLab instance public, you should disable sign ups.
 - Allowing or denying sign ups using specific email domains.
 - Setting a minimum password length limit for new users.
 - Enforcing two-factor authentication for all users.

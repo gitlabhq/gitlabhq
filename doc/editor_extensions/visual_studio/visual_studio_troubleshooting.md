@@ -90,7 +90,7 @@ Gather this information from affected users, and provide it in your bug report:
    1. For **OS type and version**: Copy the `OS Name` and `Version`.
    1. For **Machine specifications (CPU, RAM)**: copy the `Processor` and `Installed Physical Memory (RAM)` sections.
 1. Describe the scope of impact. How many users are affected?
-1. Describe how to reproduce the error Include a screen recording, if possible.
+1. Describe how to reproduce the error. Include a screen recording, if possible.
 1. Describe how other GitLab Duo features are affected:
    - Is Code Suggestions working?
    - Does GitLab Duo Chat in the Web IDE return responses?

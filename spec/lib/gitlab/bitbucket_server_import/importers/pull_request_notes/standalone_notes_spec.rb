@@ -7,7 +7,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Stand
 
   let_it_be_with_reload(:project) do
     create(
-      :project, :repository, :bitbucket_server_import, :in_group,
+      :project, :small_repo, :bitbucket_server_import, :in_group,
       :import_user_mapping_enabled
     )
   end

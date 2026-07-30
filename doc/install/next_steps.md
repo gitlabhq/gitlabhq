@@ -22,7 +22,7 @@ After you install GitLab, you can visit the URL you set up during installation
 and sign in as the user `root`.
 
 If you haven't set up your own password during installation, a random one is assigned. You can
-find it in the server you installed GitLab, under `/etc/gitlab/initial_root_password`.
+find it on the server where you installed GitLab, under `/etc/gitlab/initial_root_password`.
 
 ## Email and notifications
 
@@ -56,7 +56,7 @@ find it in the server you installed GitLab, under `/etc/gitlab/initial_root_pass
 
 - [Secure GitLab](../security/_index.md):
   Recommended practices to secure your GitLab instance.
-- Sign up for the GitLab [Security Newsletter](https://about.gitlab.com/company/preference-center/) to get notified for security updates upon release.
+- Sign up for the GitLab [Security Newsletter](https://about.gitlab.com/company/preference-center/) to get notified of security updates upon release.
 
 ## Authentication
 

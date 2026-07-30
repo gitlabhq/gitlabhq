@@ -408,7 +408,7 @@ describe('Details Page', () => {
     it('on delete event it deletes the image', async () => {
       await mountComponentAndDeleteImage();
 
-      findDeleteModal().vm.$emit('confirmDelete');
+      findDeleteModal().vm.$emit('confirm-delete');
 
       expect(findDeleteImage().emitted('start')).toEqual([[]]);
     });

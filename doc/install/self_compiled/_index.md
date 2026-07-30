@@ -35,7 +35,7 @@ Because a self-compiled installation is a lot of work and error prone, we strong
 
 One reason the Linux package is more reliable is its use of runit to restart any of the GitLab processes in case one crashes.
 On heavily used GitLab instances the memory usage of the Sidekiq background worker grows over time.
-The Linux packages solve this by [letting the Sidekiq terminate gracefully](../../administration/sidekiq/sidekiq_memory_killer.md) if it uses too much memory.
+The Linux packages solve this by [letting Sidekiq terminate gracefully](../../administration/sidekiq/sidekiq_memory_killer.md) if it uses too much memory.
 After this termination runit detects Sidekiq is not running and starts it.
 Because self-compiled installations don't use runit for process supervision, Sidekiq
 can't be terminated and its memory usage grows over time.
@@ -45,7 +45,7 @@ can't be terminated and its memory usage grows over time.
 Make sure you view [this installation guide](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/install/self_compiled/_index.md) from the branch (version) of GitLab you would like to install (for example, `16-0-stable`).
 You can select the branch in the version dropdown list in the upper-left corner of GitLab (below the menu bar).
 
-If the highest number stable branch is unclear, check the [GitLab blog](https://about.gitlab.com/blog/) for installation guide links by version.
+If the highest-numbered stable branch is unclear, check the [GitLab blog](https://about.gitlab.com/blog/) for installation guide links by version.
 
 ## Software requirements
 
@@ -217,7 +217,7 @@ The Ruby interpreter is required to run GitLab.
 See the [requirements section](#software-requirements) for the minimum
 Ruby requirements.
 
-Ruby version managers such as RVM, rbenv, or chruby can cause hard to diagnose problems with GitLab.
+Ruby version managers such as RVM, rbenv, or chruby can cause hard-to-diagnose problems with GitLab.
 You should instead [install Ruby](https://www.ruby-lang.org/en/documentation/installation/)
 from the official source code.
 
@@ -638,7 +638,7 @@ sudo -u git -H editor config/database.yml
 sudo -u git -H chmod o-rwx config/database.yml
 ```
 
-You should have two sections in your `database.yml`: `main:` and `ci:`. The `ci`:
+You should have two sections in your `database.yml`: `main:` and `ci:`. The `ci:`
 connection [must be to the same database](../../administration/postgresql/_index.md).
 
 ### Install Gems
@@ -663,7 +663,7 @@ sudo -u git -H bundle install
 
 ### Install GitLab Shell
 
-GitLab Shell is an SSH access and repository management software developed specially for GitLab.
+GitLab Shell is SSH access and repository management software developed specially for GitLab.
 
 ```shell
 # Run the installation task for gitlab-shell:
@@ -676,7 +676,7 @@ sudo -u git -H editor /home/git/gitlab-shell/config.yml
 
 If you want to use HTTPS, see [Using HTTPS](#using-https) for the additional steps.
 
-Make sure your hostname can be resolved on the machine itself by either a proper DNS record or an additional line in `/etc/hosts` ("127.0.0.1 hostname"). This might be necessary, for example, if you set up GitLab behind a reverse proxy. If the hostname cannot be resolved, the final installation check fails with `Check GitLab API access: FAILED. code: 401` and pushing commits are rejected with `[remote rejected] master -> master (hook declined)`.
+Make sure your hostname can be resolved on the machine itself by either a proper DNS record or an additional line in `/etc/hosts` ("127.0.0.1 hostname"). This might be necessary, for example, if you set up GitLab behind a reverse proxy. If the hostname cannot be resolved, the final installation check fails with `Check GitLab API access: FAILED. code: 401` and pushing commits is rejected with `[remote rejected] master -> master (hook declined)`.
 
 ### Install GitLab Workhorse
 
@@ -781,7 +781,7 @@ sudo cp lib/support/systemd/* /usr/local/lib/systemd/system/
 sudo systemctl daemon-reload
 ```
 
-The units provided by GitLab make very little assumptions about where you are running Redis and PostgreSQL.
+The units provided by GitLab make very few assumptions about where you are running Redis and PostgreSQL.
 
 If you installed GitLab in another directory or as a user other than the default, you must change these values in the units as well.
 
@@ -896,7 +896,7 @@ sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production force=yes
 # When done, you see 'Administrator account created:'
 ```
 
-You can set the Administrator/root password and email by supplying them in environmental variables, `GITLAB_ROOT_PASSWORD` and `GITLAB_ROOT_EMAIL`, as seen in the following command. If you don't set the password (and it is set to the default one), wait to expose GitLab to the public internet until the installation is done and you've logged into the server the first time. During the first login, you are forced to change the default password. An Enterprise Edition subscription may also be activated at this time by supplying the activation code in the `GITLAB_ACTIVATION_CODE` environment variable.
+You can set the Administrator/root password and email by supplying them in environment variables, `GITLAB_ROOT_PASSWORD` and `GITLAB_ROOT_EMAIL`, as seen in the following command. If you don't set the password (and it is set to the default one), wait to expose GitLab to the public internet until the installation is done and you've logged into the server the first time. During the first login, you are forced to change the default password. An Enterprise Edition subscription may also be activated at this time by supplying the activation code in the `GITLAB_ACTIVATION_CODE` environment variable.
 
 ```shell
 sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production GITLAB_ROOT_PASSWORD=yourpassword GITLAB_ROOT_EMAIL=youremail GITLAB_ACTIVATION_CODE=yourcode
@@ -905,7 +905,7 @@ sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production GITLAB_ROOT_PA
 ### Secure `secrets.yml`
 
 The `secrets.yml` file stores encryption keys for sessions and secure variables.
-Backup `secrets.yml` someplace safe, but don't store it in the same place as your database backups.
+Back up `secrets.yml` someplace safe, but don't store it in the same place as your database backups.
 Otherwise, your secrets are exposed if one of your backups is compromised.
 
 ### Check Application Status
@@ -923,7 +923,7 @@ sudo -u git -H yarn install --production --pure-lockfile
 sudo -u git -H bundle exec rake gitlab:assets:compile RAILS_ENV=production NODE_ENV=production
 ```
 
-If `rake` fails with `JavaScript heap out of memory` error, try to run it with `NODE_OPTIONS` set as follows.
+If `rake` fails with a `JavaScript heap out of memory` error, try to run it with `NODE_OPTIONS` set as follows.
 
 ```shell
 sudo -u git -H bundle exec rake gitlab:assets:compile RAILS_ENV=production NODE_ENV=production NODE_OPTIONS="--max_old_space_size=4096"
@@ -979,7 +979,7 @@ to use. Read all about the needed configuration at the
 
 If you want to use HTTPS, replace the `gitlab` NGINX configuration with `gitlab-ssl`. See [Using HTTPS](#using-https) for HTTPS configuration details.
 
-For the NGINX to be able to read the GitLab-Workhorse socket, you must make sure, that the `www-data` user can read the socket, which is owned by the GitLab user. This is achieved, if it is world-readable, for example that it has permissions `0755`, which is the default. `www-data` also must be able to list the parent directories.
+For NGINX to be able to read the GitLab-Workhorse socket, you must make sure, that the `www-data` user can read the socket, which is owned by the GitLab user. This is achieved if it is world-readable, for example, if it has permissions `0755`, which is the default. `www-data` also must be able to list the parent directories.
 
 ### Test Configuration
 
@@ -1041,7 +1041,7 @@ initial administrator account. Enter your desired password and you are
 redirected back to the login screen.
 
 The default account's username is **root**. Provide the password you created
-earlier and login. After login, you can change the username if you wish.
+earlier and log in. After login, you can change the username if you wish.
 
 **Enjoy!**
 
@@ -1128,7 +1128,7 @@ production:
   url: redis://redis.example.tld:6379
 ```
 
-If you want to connect the Redis server via socket, use the `unix:` URL scheme and the path to the Redis socket file in the `config/resque.yml` file.
+If you want to connect to the Redis server via a socket, use the `unix:` URL scheme and the path to the Redis socket file in the `config/resque.yml` file.
 
 ```yaml
 # example

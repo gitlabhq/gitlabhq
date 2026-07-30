@@ -672,7 +672,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
 
   describe '#command_palette_data' do
     it 'returns data for project files search' do
-      project = create(:project, :repository) # rubocop:disable RSpec/FactoryBot/AvoidCreate
+      project = create(:project, :small_repo) # rubocop:disable RSpec/FactoryBot/AvoidCreate
 
       expect(helper.command_palette_data(project: project)).to eq(
         project_files_url: project_files_path(

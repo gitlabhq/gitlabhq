@@ -71618,6 +71618,26 @@
               "deprecationReason": null
             },
             {
+              "name": "availableQuickActions",
+              "description": "Quick actions available to the current user on the issue.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "QuickActionCommand",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "blocked",
               "description": "Indicates the issue is blocked.",
               "args": [],
@@ -94039,6 +94059,26 @@
                   "kind": "OBJECT",
                   "name": "UserCore",
                   "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "availableQuickActions",
+              "description": "Quick actions available to the current user on the issue.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "QuickActionCommand",
+                    "ofType": null
+                  }
                 }
               },
               "isDeprecated": false,
@@ -230042,6 +230082,26 @@
           "name": "WorkItem",
           "description": null,
           "fields": [
+            {
+              "name": "availableQuickActions",
+              "description": "Quick actions available to the current user on the work item.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "QuickActionCommand",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
             {
               "name": "closedAt",
               "description": "Timestamp of when the work item was closed.",

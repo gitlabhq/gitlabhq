@@ -259,7 +259,7 @@ describe('List Page', () => {
       mountComponent({ sortUpdate: true });
       await waitForApolloRequestRender();
       findImageList().vm.$emit('delete', deletedContainerRepository);
-      findDeleteModal().vm.$emit('confirmDelete');
+      findDeleteModal().vm.$emit('confirm-delete');
       findDeleteImage().vm.$emit('start');
     });
 
@@ -421,7 +421,7 @@ describe('List Page', () => {
 
           await selectImageForDeletion();
 
-          findDeleteModal().vm.$emit('confirmDelete');
+          findDeleteModal().vm.$emit('confirm-delete');
 
           expect(mutationResolver).toHaveBeenCalledWith({ id: deletedContainerRepository.id });
         });

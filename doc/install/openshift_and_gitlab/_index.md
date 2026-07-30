@@ -6,7 +6,7 @@ description: Run GitLab Self-Managed and GitLab Runner fleets on OpenShift and i
 title: OpenShift support
 ---
 
-OpenShift - GitLab compatibility can be addressed in three different aspects. This page helps navigate between these aspects and provides introductory information for getting started with OpenShift and GitLab.
+OpenShift-GitLab compatibility can be considered from three different aspects. This page helps navigate between these aspects and provides introductory information for getting started with OpenShift and GitLab.
 
 ## What is OpenShift
 

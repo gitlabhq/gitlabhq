@@ -25,6 +25,10 @@ module Types
       scopes: [:api, :read_api, :ai_workflows],
       description: 'User that created the work item.',
       experiment: { milestone: '15.9' }
+    field :available_quick_actions,
+      resolver: Resolvers::Notes::AvailableQuickActionsResolver,
+      null: true,
+      description: 'Quick actions available to the current user on the work item.'
     field :closed_at, Types::TimeType, null: true,
       scopes: [:api, :read_api, :ai_workflows],
       description: 'Timestamp of when the work item was closed.'

@@ -319,7 +319,7 @@ To resolve these errors:
    "gitlab.featureFlags.languageServerWebviews": false
    ```
 
-1. Save your changes and reload the window:.
+1. Save your changes and reload the window:
    1. Open the Command Palette:
       - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
       - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.

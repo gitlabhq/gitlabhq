@@ -26601,6 +26601,12 @@
               "description": "A merge request description was composed with GitLab Duo.",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "RESOLVE_FEATURE_DISCOVERY_SEARCH",
+              "description": "Feature discovery search was resolved.",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null
@@ -26737,6 +26743,18 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "explainVulnerabilityUserMetrics",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "featureDiscovery",
+              "description": "Feature Discovery metrics for the user.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "featureDiscoveryUserMetrics",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -27643,6 +27661,30 @@
             {
               "name": "COMPOSE_MERGE_REQUEST_DESCRIPTION_ASC",
               "description": "Compose Merge Request Description event count in ascending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "FEATURE_DISCOVERY_TOTAL_COUNT_DESC",
+              "description": "Feature Discovery total event count in descending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "FEATURE_DISCOVERY_TOTAL_COUNT_ASC",
+              "description": "Feature Discovery total event count in ascending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "RESOLVE_FEATURE_DISCOVERY_SEARCH_DESC",
+              "description": "Resolve Feature Discovery Search event count in descending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "RESOLVE_FEATURE_DISCOVERY_SEARCH_ASC",
+              "description": "Resolve Feature Discovery Search event count in ascending order.",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -146266,6 +146308,26 @@
               "deprecationReason": null
             },
             {
+              "name": "availableQuickActions",
+              "description": "Quick actions available to the current user on the issue.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "QuickActionCommand",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "blocked",
               "description": "Indicates the issue is blocked.",
               "args": [],
@@ -197055,6 +197117,26 @@
                   "kind": "OBJECT",
                   "name": "UserCore",
                   "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "availableQuickActions",
+              "description": "Quick actions available to the current user on the issue.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "QuickActionCommand",
+                    "ofType": null
+                  }
                 }
               },
               "isDeprecated": false,
@@ -425256,6 +425338,26 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 15.9."
             },
             {
+              "name": "availableQuickActions",
+              "description": "Quick actions available to the current user on the work item.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "QuickActionCommand",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "closedAt",
               "description": "Timestamp of when the work item was closed.",
               "args": [],
@@ -446639,6 +446741,53 @@
             {
               "name": "totalEventCount",
               "description": "Total count of all Explain Vulnerability events for the user.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "featureDiscoveryUserMetrics",
+          "description": "Feature Discovery user metrics for a user. Requires ClickHouse. Premium and Ultimate with GitLab Duo Enterprise only.",
+          "fields": [
+            {
+              "name": "lastDuoActivityOn",
+              "description": "Date of the last Feature Discovery activity for the user.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Date",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "resolveFeatureDiscoverySearchEventCount",
+              "description": "Total count of `resolve_feature_discovery_search` event.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "totalEventCount",
+              "description": "Total count of all Feature Discovery events for the user.",
               "args": [],
               "type": {
                 "kind": "SCALAR",

@@ -19,7 +19,13 @@ module Onboarding
         normalized = normalize(query)
 
         entries = ranked_entries(normalized) # Tier 1: whole-query match
-        entries = keyword_entries(normalized) unless entries.any? # Tier 2: tokenized match, only on Tier 1 miss
+
+        if entries.any?
+          self.tracking_label = 'exact_map'
+        else
+          entries = keyword_entries(normalized) # Tier 2: tokenized match, only on Tier 1 miss
+          self.tracking_label = entries.any? ? 'keyword_extract' : 'no_match'
+        end
 
         entries.map { |e| e['feature_key'] } # rubocop:disable Rails/Pluck -- entries is a plain Array, not an ActiveRecord relation
                .uniq
@@ -44,6 +50,7 @@ module Onboarding
       private
 
       attr_reader :query, :panel, :user, :resource
+      attr_accessor :tracking_label
 
       # Overridden in EE
       def ai_gateway_ids(_normalized_query)

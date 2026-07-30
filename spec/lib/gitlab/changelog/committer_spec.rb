@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Changelog::Committer, feature_category: :source_code_management do
-  let(:project) { create(:project, :repository) }
+  let(:project) { create(:project, :small_repo) }
   let(:user) { project.creator }
   let(:committer) { described_class.new(project, user) }
   let(:config) { Gitlab::Changelog::Config.new(project) }

@@ -90783,6 +90783,23 @@ components:
             be different if one type of field has multiple possible keys. Example
             `created` and `createdAt`
           example: title
+        field:
+          type: string
+          description: Base field name. For aliased parameterised fields this is the
+            underlying field (for example, `durationQuantile`), while `key` is the
+            alias (for example, `p50`). For standard fields, same as `key`
+          example: title
+        type:
+          type: string
+          description: Field classification. Either `dimension` or `metric` for analytics
+            mode fields, absent for standard fields
+          example: dimension
+        parameters:
+          type: object
+          description: Resolved parameter metadata for parameterised fields, absent
+            when the field has no parameters
+          example:
+            granularity: weekly
     APIEntitiesGlqlResult:
       type: object
       properties:

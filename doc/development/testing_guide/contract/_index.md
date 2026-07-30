@@ -11,19 +11,46 @@ Consumer tests are similar to unit tests, with each spec defining a request and 
 
 You can check out the existing contract tests at:
 
-- [`spec/contracts/consumer/specs`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/spec/contracts/consumer/specs) for the consumer tests.
+- [`spec/contracts/consumer/internal/specs`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/spec/contracts/consumer/internal/specs) for the JavaScript/Jest consumer tests.
+- [`spec/contracts/consumer/external/specs`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/spec/contracts/consumer/external/specs) for the Ruby/Pact consumer tests.
 - [`spec/contracts/provider/pact_helpers`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/spec/contracts/provider/pact_helpers) for the provider tests.
 
 The contracts themselves are stored in [`/spec/contracts/contracts`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/spec/contracts/contracts) at the moment. The plan is to use [PactBroker](https://docs.pact.io/pact_broker/docker_images) hosted in AWS or another similar service.
 
 ## Write the tests
 
-- [Writing consumer tests](consumer_tests.md)
+- [Writing Jest/Pact consumer tests](consumer_tests.md) (JavaScript, frontend → Rails API)
+- [Writing Ruby consumer tests](ruby_consumer_tests.md) (Ruby, Rails → external services)
 - [Writing provider tests](provider_tests.md)
+
+## Directory structure
+
+The contract test suite lives under `spec/contracts/` and is split by consumer type:
+
+```plaintext
+spec/contracts/
+├── consumer/
+│   ├── external/          # Ruby/Pact tests (Rails monolith → external services)
+│   │   ├── fixtures/      # Pact interaction constants (provider state, request, response)
+│   │   ├── helpers/       # Shared setup (for example, PactHelper, ContractNameGenerator)
+│   │   ├── resources/     # HTTP client calls
+│   │   └── specs/         # Thin orchestration specs; one CI job per service subdirectory
+│   ├── internal/          # Jest/Pact tests (frontend → Rails API)
+│   └── scripts/           # Shared tooling (for example, GCS uploader)
+├── contracts/
+│   ├── external/          # Generated contracts from Ruby consumer tests (gitignored)
+│   │                      # Subdirectory names use underscores (e.g. artifact_registry/)
+│   └── internal/          # Generated contracts from Jest consumer tests
+└── provider/              # Rails provider verification tests
+```
+
+External contracts are published to GCS and not committed. Internal contracts are committed to the repository because the provider tests read them from there.
+
+See the individual guides linked above for the detailed layout within each sub-directory.
 
 ### Run the consumer tests
 
-Before running the consumer tests, go to `spec/contracts/consumer` and run `npm install`. To run all the consumer tests, you just need to run `npm run jest:contract -- /specs`. Otherwise, to run a specific spec file, replace `/specs` with the specific spec filename. Running the consumer test will create the contract that the provider test uses to verify the actual API behavior.
+Before running the consumer tests, go to `spec/contracts/consumer/internal` and run `npm install`. To run all the consumer tests, you just need to run `npm run jest:contract -- /specs`. Otherwise, to run a specific spec file, replace `/specs` with the specific spec filename. Running the consumer test will create the contract that the provider test uses to verify the actual API behavior.
 
 You can also run tests from the root directory of the project, using the command `yarn jest:contract`.
 

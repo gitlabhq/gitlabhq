@@ -24,7 +24,7 @@ RSpec.describe GitlabSchema.types['Issue'], feature_category: :team_planning do
       emails_disabled emails_enabled subscribed time_estimate total_time_spent human_time_estimate human_total_time_spent closed_at created_at updated_at task_completion_status
       design_collection alert_management_alert alert_management_alerts severity current_user_todos moved moved_to
       closed_as_duplicate_of create_note_email timelogs project_id customer_relations_contacts escalation_status external_author linked_work_items
-      name work_item_type]
+      name work_item_type available_quick_actions]
 
     fields.each do |field_name|
       expect(described_class).to have_graphql_field(field_name)

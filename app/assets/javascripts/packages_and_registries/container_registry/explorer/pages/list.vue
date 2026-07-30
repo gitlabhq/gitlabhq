@@ -408,7 +408,7 @@ export default {
             ref="deleteModal"
             :items-to-be-deleted="itemsToBeDeleted"
             delete-image
-            @confirmDelete="doDelete"
+            @confirm-delete="doDelete"
             @cancel-delete="track('cancel_delete')"
           />
         </template>

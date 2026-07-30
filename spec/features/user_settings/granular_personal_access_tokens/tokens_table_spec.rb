@@ -103,8 +103,8 @@ RSpec.describe 'User Settings > Granular personal access tokens > tokens table',
   end
 
   it 'renders the empty state when no tokens match the current filter' do
-    find_by_testid('filtered-search-term-input').set('no-such-token-xyz')
-    find_by_testid('filtered-search-term-input').send_keys(:enter)
+    find_by_testid('filtered-search-term-input').click
+    send_keys('no-such-token-xyz', :enter, :enter)
 
     expect(page).to have_text('No access tokens')
   end
@@ -168,8 +168,8 @@ RSpec.describe 'User Settings > Granular personal access tokens > tokens table',
     end
 
     it 'shows results when a free-text search term is added' do
-      find_by_testid('filtered-search-term-input').set(expiring_token.name)
-      find_by_testid('filtered-search-term-input').send_keys(:enter)
+      find_by_testid('filtered-search-term-input').click
+      send_keys(expiring_token.name, :enter, :enter)
 
       expect(page).to have_text(expiring_token.name)
       expect(page).not_to have_text(active_token.name)

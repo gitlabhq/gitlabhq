@@ -2,14 +2,14 @@
 
 Gem::Specification.new do |spec|
   spec.name        = "gitlab-deploy-driver-argo-rollouts"
-  spec.version     = "0.0.0" # stub release; payload vendored from upstream argo-rollout v0.1.0
+  spec.version     = "0.3.0"
   spec.authors     = ["GitLab Engineers"]
   spec.email       = ["engineering@gitlab.com"]
 
   spec.summary     = "Vendored Argo Rollouts deploy driver assets (deploy.star + JSON schemas)"
   spec.description = "Packages the bundled deploy.star program and JSON schemas from " \
-    "gitlab-org/ci-cd/runner-tools/argo-rollout v0.1.0 for use by GitLab."
-  spec.homepage    = "https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-deploy-driver-argo-rollouts"
+    "gitlab-org/ci-cd/runner-tools/argo-rollout for use by GitLab."
+  spec.homepage    = "https://gitlab.com/gitlab-org/ci-cd/runner-tools/argo-rollout"
   spec.license     = "MIT"
   spec.required_ruby_version = ">= 3.0"
   spec.metadata["rubygems_mfa_required"] = "true"

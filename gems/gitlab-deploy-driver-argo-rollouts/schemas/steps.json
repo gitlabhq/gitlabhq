@@ -34,8 +34,9 @@
         "max_surge": {
           "type": "string",
           "pattern": "^[0-9]+%?$",
+          "default": "25%",
           "examples": ["1", "25%"],
-          "description": "Maximum pods that may run above the desired replica count during the rollout. Defaults to \"1\".",
+          "description": "Maximum pods that may run above the desired replica count during the rollout.",
           "gitlab": {
             "type": "com.gitlab.cd.number_or_percentage"
           }
@@ -43,8 +44,9 @@
         "max_unavailable": {
           "type": "string",
           "pattern": "^[0-9]+%?$",
+          "default": "0",
           "examples": ["0", "25%"],
-          "description": "Maximum pods that may be unavailable during the rollout. Defaults to \"0\", so new pods surge up before old ones are retired (zero-downtime).",
+          "description": "Maximum pods that may be unavailable during the rollout. Setting to \"0\" means new pods surge up before old ones are retired (zero-downtime).",
           "gitlab": {
             "type": "com.gitlab.cd.number_or_percentage"
           }

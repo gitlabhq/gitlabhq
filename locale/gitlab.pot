@@ -437,6 +437,11 @@ msgid_plural "%d projects"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d project affected"
+msgid_plural "%d projects affected"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d project has access"
 msgid_plural "%d projects have access"
 msgstr[0] ""
@@ -22533,6 +22538,9 @@ msgstr ""
 msgid "ContinuousDeployment|A short name and the tier it represents."
 msgstr ""
 
+msgid "ContinuousDeployment|Active"
+msgstr ""
+
 msgid "ContinuousDeployment|Add Environment"
 msgstr ""
 
@@ -22719,6 +22727,9 @@ msgstr ""
 msgid "ContinuousDeployment|Filter applications..."
 msgstr ""
 
+msgid "ContinuousDeployment|Filter deployments…"
+msgstr ""
+
 msgid "ContinuousDeployment|Filter environments..."
 msgstr ""
 
@@ -22786,6 +22797,12 @@ msgid "ContinuousDeployment|No applications yet"
 msgstr ""
 
 msgid "ContinuousDeployment|No artifact sources configured."
+msgstr ""
+
+msgid "ContinuousDeployment|No deployments available."
+msgstr ""
+
+msgid "ContinuousDeployment|No deployments match your filter."
 msgstr ""
 
 msgid "ContinuousDeployment|No services in this release."
@@ -22879,6 +22896,9 @@ msgid "ContinuousDeployment|Staging"
 msgstr ""
 
 msgid "ContinuousDeployment|Status"
+msgstr ""
+
+msgid "ContinuousDeployment|Succeeded"
 msgstr ""
 
 msgid "ContinuousDeployment|Sync"
@@ -58260,7 +58280,16 @@ msgstr ""
 msgid "PolicyStore|Active policies"
 msgstr ""
 
+msgid "PolicyStore|Add exclusion"
+msgstr ""
+
+msgid "PolicyStore|Affected projects"
+msgstr ""
+
 msgid "PolicyStore|Agent Tool Access Control"
+msgstr ""
+
+msgid "PolicyStore|All projects"
 msgstr ""
 
 msgid "PolicyStore|Audit"
@@ -58273,6 +58302,9 @@ msgid "PolicyStore|Browse templates"
 msgstr ""
 
 msgid "PolicyStore|Build policy"
+msgstr ""
+
+msgid "PolicyStore|Choose individual projects to govern"
 msgstr ""
 
 msgid "PolicyStore|Continue editing"
@@ -58308,6 +58340,12 @@ msgstr ""
 msgid "PolicyStore|Evaluations this week"
 msgstr ""
 
+msgid "PolicyStore|Every project in this group, including newly created ones"
+msgstr ""
+
+msgid "PolicyStore|Exclusions"
+msgstr ""
+
 msgid "PolicyStore|Last updated"
 msgstr ""
 
@@ -58326,6 +58364,12 @@ msgstr ""
 msgid "PolicyStore|Policy name"
 msgstr ""
 
+msgid "PolicyStore|Projects"
+msgstr ""
+
+msgid "PolicyStore|Projects to exempt from this policy"
+msgstr ""
+
 msgid "PolicyStore|Restrict which tools an AI agent may call"
 msgstr ""
 
@@ -58335,13 +58379,25 @@ msgstr ""
 msgid "PolicyStore|Scope"
 msgstr ""
 
+msgid "PolicyStore|Scope sets the target projects. This can be adjusted at any time."
+msgstr ""
+
 msgid "PolicyStore|Search templates..."
+msgstr ""
+
+msgid "PolicyStore|Select projects"
 msgstr ""
 
 msgid "PolicyStore|Select scope"
 msgstr ""
 
 msgid "PolicyStore|Select..."
+msgstr ""
+
+msgid "PolicyStore|Showing the first %{shown} of %{total} projects."
+msgstr ""
+
+msgid "PolicyStore|Specific projects"
 msgstr ""
 
 msgid "PolicyStore|Start from scratch"
@@ -58356,7 +58412,13 @@ msgstr ""
 msgid "PolicyStore|Validate deployment prerequisites"
 msgstr ""
 
+msgid "PolicyStore|View projects"
+msgstr ""
+
 msgid "PolicyStore|Warn"
+msgstr ""
+
+msgid "PolicyStore|Which projects should this policy govern?"
 msgstr ""
 
 msgid "PolicyStore|Your progress will be lost if you leave without saving."

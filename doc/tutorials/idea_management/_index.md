@@ -155,7 +155,7 @@ To invite your stakeholders:
 
 1. In the left sidebar, select **Manage** > **Members**
 1. Select **Invite members**
-1. Type your stakeholders email addresses.
+1. Type your stakeholders' email addresses.
 1. Select **Reporter** role.
 
 Your stakeholders can now access your project to create new ideas:

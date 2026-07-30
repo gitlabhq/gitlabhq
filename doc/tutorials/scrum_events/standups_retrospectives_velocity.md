@@ -148,7 +148,7 @@ ultimately empowering teams to set better expectations with stakeholders.
 
 ### Create a velocity and volatility tracker spreadsheet
 
-Until velocity and volatility is integrated natively into GitLab (see
+Until velocity and volatility are integrated natively into GitLab (see
 [epic 435](https://gitlab.com/groups/gitlab-org/-/epics/435)), you can track your team's velocity
 and volatility in a spreadsheet like the following:
 
@@ -276,7 +276,7 @@ If you're experiencing high volatility, you can explore the following:
 
    Suppose team members split their time across many work streams and are not consistently allocated
    to the same team and workstream from one sprint to the next.
-   In such case, it can lead to fluctuations in velocity.
+   In such a case, it can lead to fluctuations in velocity.
 1. Break stories down into smaller vertical slices.
 
    Look at your recently completed stories and evaluate the ranges in story points.

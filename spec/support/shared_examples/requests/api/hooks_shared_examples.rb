@@ -1113,8 +1113,7 @@ RSpec.shared_examples 'get web-hook event endpoint' do
     let(:recent_logs) { [log_200, log_400, log_404, log_500, log_502, log_internal_error] }
 
     describe "authorize user" do
-      it 'returns an array of web hook logs for the past 7 days' do
-        create(:web_hook_log, web_hook: hook, created_at: 8.days.ago)
+      it 'returns an array of recent web hook logs' do
         get api(path, user)
 
         expect(response).to have_gitlab_http_status(:ok)

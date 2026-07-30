@@ -30,6 +30,7 @@ RSpec.shared_examples 'work item API field parity' do
     let(:graphql_field_exceptions) do
       Set.new(%w[
         archived
+        available_quick_actions
         comment_templates_paths
         description
         description_html

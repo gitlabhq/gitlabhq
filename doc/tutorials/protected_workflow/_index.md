@@ -279,7 +279,7 @@ Your rules are now in place, even though no `1.*` branches exist yet:
 
 ## Create the release branches
 
-Now that all branch protections in place, you're ready to create your 1.0.0 release branch:
+Now that all branch protections are in place, you're ready to create your 1.0.0 release branch:
 
 1. In the top bar, select **Search or go to** and search for `Excelsior`.
 1. Select the project named `Excelsior`.
@@ -290,7 +290,7 @@ Now that all branch protections in place, you're ready to create your 1.0.0 rele
 The branch protections are now visible in the UI:
 
 - In the left sidebar, select **Code** > **Branches**. In the list of branches,
-  branch `1.0.0` should be show that it is protected:
+  branch `1.0.0` should show that it is protected:
 
   ![List of branches, showing 1.0.0 is protected](img/branch_is_protected_v16_2.png)
 - In the left sidebar, select **Settings** > **Repository**, then expand **Branch rules**

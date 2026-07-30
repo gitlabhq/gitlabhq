@@ -245,6 +245,20 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
           expect(new_topic).to be_present
           expect(project_topic.reload.topic_id).to eq(new_topic.id)
         end
+
+        context 'when topic has an avatar' do
+          let!(:old_topic) do
+            create(:topic, :with_avatar, organization: old_organization, slug: 'avatar-topic')
+          end
+
+          let!(:project_topic) do
+            create(:project_topic, project: project, topic: old_topic)
+          end
+
+          it 'enqueues Organizations::TransferTopicAvatarWorker' do
+            expect { service.execute }.to change { Organizations::TransferTopicAvatarWorker.jobs.size }.by(1)
+          end
+        end
       end
     end
 

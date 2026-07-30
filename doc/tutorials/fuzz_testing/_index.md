@@ -26,7 +26,7 @@ your application for unstable behaviors and crashes.
 This helps you discover bugs and potential security issues that other QA processes may miss.
 
 You should use fuzz testing in addition to other security scanners and your own test processes.
-If you're using GitLab CI/CD, you can run fuzz tests as part your CI/CD workflow.
+If you're using GitLab CI/CD, you can run fuzz tests as part of your CI/CD workflow.
 
 To set up, configure, and perform coverage-guided fuzz testing
 using JavaScript in this tutorial, you:
@@ -64,7 +64,7 @@ the fuzz targets.
 
 ## Create the fuzz targets
 
-Now you have a project for fuzz testing, you create the fuzz targets. A fuzz target
+Now that you have a project for fuzz testing, you can create the fuzz targets. A fuzz target
 is a function or program that, given an input, makes a call to the application
 being tested.
 

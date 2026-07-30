@@ -2,6 +2,7 @@
 import { GlLink } from '@gitlab/ui';
 
 export default {
+  name: 'TargetLink',
   components: { GlLink },
   props: {
     event: {

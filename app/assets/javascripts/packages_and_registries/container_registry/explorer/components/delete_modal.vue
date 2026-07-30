@@ -28,7 +28,7 @@ export default {
       required: false,
     },
   },
-  emits: ['cancel-delete', 'confirmDelete'],
+  emits: ['cancel-delete', 'confirm-delete'],
   data() {
     return {
       inputImageName: '',
@@ -101,7 +101,7 @@ export default {
     size="sm"
     :action-primary="primaryActionProps"
     :action-cancel="$options.modal.cancelAction"
-    @primary="$emit('confirmDelete')"
+    @primary="$emit('confirm-delete')"
     @cancel="$emit('cancel-delete')"
     @change="inputImageName = ''"
   >

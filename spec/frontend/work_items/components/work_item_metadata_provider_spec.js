@@ -113,6 +113,7 @@ describe('WorkItemMetadataProvider', () => {
         it('fetched the work item type config', () => {
           expect(workItemTypesConfigurationHandler).toHaveBeenCalledWith({
             fullPath: 'my-group',
+            includeFilterableFlags: true,
           });
         });
 
@@ -148,6 +149,90 @@ describe('WorkItemMetadataProvider', () => {
           expect(workItemTypesConfigurationHandler).toHaveBeenCalledTimes(2);
           expect(findWorkItemConfigSlot().html()).toContain('"isServiceDesk": true');
         });
+      });
+    });
+  });
+
+  // `isFilterable*` are namespace-dependent (Epic is filterable in a group but not in a
+  // project) while `WorkItemType` is cached by its global ID, so an item-scoped provider that
+  // requests them overwrites what the page's namespace read.
+  // See https://gitlab.com/gitlab-org/gitlab/-/issues/606810
+  describe('when an item-scoped provider is nested inside a page-scoped provider', () => {
+    const groupPath = 'my-group';
+    const projectPath = `${groupPath}/my-project`;
+    const epicTypeId = 'gid://gitlab/WorkItems::Type/8';
+    const { namespace } = mockWorkItemTypesConfigurationResponse.data;
+
+    const epicResponse = (fullPath) => ({
+      data: {
+        namespace: {
+          ...namespace,
+          workItemTypes: {
+            ...namespace.workItemTypes,
+            nodes: [
+              {
+                ...namespace.workItemTypes.nodes[0],
+                id: epicTypeId,
+                name: 'Epic',
+                isFilterableListView: fullPath === groupPath,
+                isFilterableBoardView: fullPath === groupPath,
+              },
+            ],
+          },
+        },
+      },
+    });
+
+    let typesHandler;
+    let apolloProvider;
+
+    // Both providers share this one entity, since it is keyed by the type's global ID.
+    const findCachedEpic = () =>
+      apolloProvider.clients.defaultClient.cache.extract()[`WorkItemType:${epicTypeId}`];
+
+    beforeEach(async () => {
+      typesHandler = jest.fn(({ fullPath }) => Promise.resolve(epicResponse(fullPath)));
+      apolloProvider = createMockApollo([
+        [workItemMetadataQuery, defaultMetadataQueryHandler],
+        [workItemTypesConfigurationQuery, typesHandler],
+      ]);
+
+      // Mirrors the group list with the detail panel open on a project's item.
+      // We're using `mount` as `shallowMount` stubs both providers, so neither query runs and
+      // nothing reaches the cache. The defect only exists when two real providers share one
+      // Apollo client, so the nested provider has to actually execute its query.
+      wrapper = mount(
+        {
+          components: { WorkItemMetadataProvider },
+          template: `
+            <work-item-metadata-provider full-path="${groupPath}">
+              <work-item-metadata-provider full-path="${projectPath}" :include-filterable-flags="false">
+                <span />
+              </work-item-metadata-provider>
+            </work-item-metadata-provider>
+          `,
+        },
+        { apolloProvider },
+      );
+
+      await waitForPromises();
+    });
+
+    it('requests the filterable flags for the page namespace only', () => {
+      expect(typesHandler).toHaveBeenCalledWith({
+        fullPath: groupPath,
+        includeFilterableFlags: true,
+      });
+      expect(typesHandler).toHaveBeenCalledWith({
+        fullPath: projectPath,
+        includeFilterableFlags: false,
+      });
+    });
+
+    it('leaves the page namespace flags untouched on the shared cache entity', () => {
+      expect(findCachedEpic()).toMatchObject({
+        isFilterableListView: true,
+        isFilterableBoardView: true,
       });
     });
   });

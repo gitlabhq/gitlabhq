@@ -27,6 +27,8 @@ class PipelineTestReportBuilder
     pipeline_index: :previous
   }.freeze
 
+  MAX_RETRIES = 3
+
   def initialize(options)
     @target_project = options.delete(:target_project)
     @current_pipeline_id = options.delete(:current_pipeline_id)
@@ -135,7 +137,7 @@ class PipelineTestReportBuilder
     pipeline_url.sub(%r{/pipelines/.+}, "/jobs/#{build_id}")
   end
 
-  def fetch(uri_str)
+  def fetch(uri_str, retries: 0)
     uri = URI(uri_str)
 
     puts "[PipelineTestReportBuilder] URL: #{uri}"
@@ -143,19 +145,40 @@ class PipelineTestReportBuilder
     request = Net::HTTP::Get.new(uri)
 
     body = ''
+    rate_limited = false
+    retry_after = nil
 
     Net::HTTP.start(uri.host, uri.port, use_ssl: true) do |http|
       http.request(request) do |response|
         case response
         when Net::HTTPSuccess
           body = response.read_body
+        when Net::HTTPTooManyRequests
+          rate_limited = true
+          # Retry-After can be delay-seconds (e.g., "120") or HTTP-date format.
+          # We only parse delay-seconds; HTTP-date returns 0 and falls back to
+          # exponential backoff. GitLab's API uses delay-seconds.
+          retry_after = response['Retry-After']&.to_i
         else
           raise "[PipelineTestReportBuilder] Unexpected response: #{response.value}"
         end
       end
     end
 
+    return handle_rate_limit(uri_str, retries, retry_after) if rate_limited
+
     JSON.parse(body)
+  end
+
+  def handle_rate_limit(uri_str, retries, retry_after = nil)
+    raise "[PipelineTestReportBuilder] Rate limited (429) after #{MAX_RETRIES} retries" if retries >= MAX_RETRIES
+
+    backoff_time = 2**(retries + 1)
+    wait_time = [backoff_time, retry_after.to_i].max
+    puts "[PipelineTestReportBuilder] Rate limited (429). " \
+      "Retrying in #{wait_time}s... (attempt #{retries + 1}/#{MAX_RETRIES})"
+    sleep(wait_time)
+    fetch(uri_str, retries: retries + 1)
   end
 end
 

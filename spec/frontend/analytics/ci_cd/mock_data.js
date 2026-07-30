@@ -9,20 +9,10 @@ export const counts = {
   totalDuration: 116158,
 };
 
-export const timesChartData = {
-  labels: ['as1234', 'kh423hy', 'ji56bvg', 'th23po'],
-  values: [5, 3, 7, 4],
-};
-
 export const areaChartData = {
   labels: ['01 Jan', '02 Jan', '03 Jan', '04 Jan', '05 Jan'],
   totals: [4, 6, 3, 6, 7],
   success: [3, 5, 3, 3, 5],
-};
-
-export const lastYearChartData = {
-  ...areaChartData,
-  labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
 };
 
 export const transformedAreaChartData = [

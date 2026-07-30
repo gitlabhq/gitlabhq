@@ -786,7 +786,7 @@ gem "gitlab-cloud-connector", "~> 1.52", require: 'gitlab/cloud_connector', feat
 
 gem "gvltools", "~> 0.4.0", feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
-gem 'gitlab_query_language', '~> 0.30.0', feature_category: :integrations
+gem 'gitlab_query_language', '~> 0.31.0', feature_category: :integrations
 
 # standard Gem, version increase to resolve vulnerabilities
 gem "zlib", "~> 3.2", ">= 3.2.3", feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/work_items/596593

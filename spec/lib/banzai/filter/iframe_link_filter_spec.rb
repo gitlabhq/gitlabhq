@@ -21,7 +21,7 @@ RSpec.describe Banzai::Filter::IframeLinkFilter, feature_category: :markdown do
 
   let_it_be(:group) { create(:group) }
   let_it_be(:subgroup) { create(:group, parent: group) }
-  let_it_be(:project) { create(:project, :repository, group: subgroup) }
+  let_it_be(:project) { create(:project, group: subgroup) }
 
   let(:width) { nil }
   let(:height) { nil }

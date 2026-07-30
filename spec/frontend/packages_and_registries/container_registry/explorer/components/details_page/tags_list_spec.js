@@ -423,8 +423,8 @@ describe('Tags List', () => {
           });
         });
 
-        it('confirmDelete event calls apollo mutation with the right parameters and refetches the tags list query', async () => {
-          findDeleteModal().vm.$emit('confirmDelete');
+        it('confirm-delete event calls apollo mutation with the right parameters and refetches the tags list query', async () => {
+          findDeleteModal().vm.$emit('confirm-delete');
 
           expect(mutationResolver).toHaveBeenCalledWith(
             expect.objectContaining({ tagNames: [tags[0].name] }),
@@ -545,7 +545,7 @@ describe('Tags List', () => {
       });
     });
 
-    describe('confirmDelete event', () => {
+    describe('confirm-delete event', () => {
       let mutationResolver;
 
       describe('when mutation', () => {
@@ -555,7 +555,7 @@ describe('Tags List', () => {
 
           findRegistryList().vm.$emit('delete', [tags[0]]);
 
-          findDeleteModal().vm.$emit('confirmDelete');
+          findDeleteModal().vm.$emit('confirm-delete');
         });
 
         describe('starts', () => {
@@ -615,7 +615,7 @@ describe('Tags List', () => {
 
           resolver.mockClear();
 
-          findDeleteModal().vm.$emit('confirmDelete');
+          findDeleteModal().vm.$emit('confirm-delete');
 
           expect(mutationResolver).toHaveBeenCalledWith(
             expect.objectContaining({ tagNames: [tags[0].name] }),
@@ -633,7 +633,7 @@ describe('Tags List', () => {
           findRegistryList().vm.$emit('delete', tagsMock);
           resolver.mockClear();
 
-          findDeleteModal().vm.$emit('confirmDelete');
+          findDeleteModal().vm.$emit('confirm-delete');
 
           expect(mutationResolver).toHaveBeenCalledWith(
             expect.objectContaining({ tagNames: tagsMock.map((t) => t.name) }),
@@ -657,7 +657,7 @@ describe('Tags List', () => {
         it('and one item is selected to be deleted calls apollo mutation with the right parameters and refetches the tags list query', async () => {
           findRegistryList().vm.$emit('delete', [tags[0]]);
 
-          findDeleteModal().vm.$emit('confirmDelete');
+          findDeleteModal().vm.$emit('confirm-delete');
 
           expect(mutationResolver).toHaveBeenCalledWith(
             expect.objectContaining({ tagNames: [tags[0].name] }),
@@ -674,7 +674,7 @@ describe('Tags List', () => {
         it('and more than one item is selected to be deleted calls apollo mutation with the right parameters and refetches the tags list query', async () => {
           findRegistryList().vm.$emit('delete', tagsMock);
 
-          findDeleteModal().vm.$emit('confirmDelete');
+          findDeleteModal().vm.$emit('confirm-delete');
 
           expect(mutationResolver).toHaveBeenCalledWith(
             expect.objectContaining({ tagNames: tagsMock.map((t) => t.name) }),

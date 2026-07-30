@@ -1,13 +1,5 @@
 import { DORA_METRICS, VALUE_STREAM_METRIC_TILE_METADATA } from '~/analytics/shared/constants';
 
-export const mockLastVulnerabilityCountData = {
-  date: '2020-05-20',
-  critical: 7,
-  high: 6,
-  medium: 5,
-  low: 4,
-};
-
 const deploymentFrequency = {
   ...VALUE_STREAM_METRIC_TILE_METADATA[DORA_METRICS.DEPLOYMENT_FREQUENCY],
   label: 'Deployment frequency',

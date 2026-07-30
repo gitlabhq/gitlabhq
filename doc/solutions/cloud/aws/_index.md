@@ -20,7 +20,7 @@ Testing-backed architectural qualification is a fundamental concept behind Cloud
 - Cloud solution implementations maintain GitLab Reference Architecture compliance and provide [GitLab Performance Tool](https://gitlab.com/gitlab-org/quality/performance) (GPT) reports to demonstrate adherence to them.
 - Cloud solution implementations may be qualified by and/or contributed to by the technology vendor. For instance, an implementation pattern for AWS may be officially reviewed by AWS.
 - Cloud solution implementations may specify and test Cloud Platform PaaS services for suitability for GitLab. This testing can be coordinated and help qualify these technologies for Reference Architectures. For instance, qualifying compatibility with and availability of runtime versions of top level PaaS such as those for PostgreSQL and Redis.
-- Cloud solution implementations can provided qualified testing for platform limitations, for example, ensuring Gitaly Cluster (Praefect) can work correctly on specific Cloud Platform availability zone latency and throughput characteristics or qualifying what levels of available platform partner local disk performance is workable for Gitaly server to operate with integrity.
+- Cloud solution implementations can provide qualified testing for platform limitations, for example, ensuring Gitaly Cluster (Praefect) can work correctly on specific Cloud Platform availability zone latency and throughput characteristics or qualifying what levels of available platform partner local disk performance is workable for Gitaly server to operate with integrity.
 
 ## AWS known issues list
 
@@ -46,7 +46,7 @@ Cloud solution implementations enable platform-specific terminology, best practi
 Platform as a Service options are a huge portion of the value provided by Cloud Platforms as they simplify operational complexity and reduce the SRE and security skilling required to operate advanced, highly available technology services. Cloud solution implementations can be pre-qualified against the partner PaaS options.
 
 - Cloud solution implementations help implementers understand what PaaS options are known to work and how to choose between PaaS solutions when a single platform has more than one PaaS option for the same GitLab role.
-- For instance, where reference architectures do not have a specific recommendation on what technology is leveraged for GitLab outbound email services or what the sizing should be - a Reference Implementation may advise using a cloud providers Email as a Service (PaaS) and possibly even with specific settings.
+- For instance, where reference architectures do not have a specific recommendation on what technology is leveraged for GitLab outbound email services or what the sizing should be - a Reference Implementation may advise using a cloud provider's Email as a Service (PaaS) and possibly even with specific settings.
 
 You can read more at [AWS services are usable to deploy GitLab infrastructure](gitlab_instance_on_aws.md).
 
@@ -67,7 +67,7 @@ Cloud solution implementations are one step closer to specifics that can be used
 
 ## Intended audiences and contributors
 
-The primary audiences for and contributors to this information is the GitLab **Implementation Eco System** which consists of at least:
+The primary audiences for and contributors to this information are the GitLab **Implementation Eco System** which consists of at least:
 
 GitLab Implementation Community:
 

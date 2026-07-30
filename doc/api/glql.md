@@ -97,9 +97,12 @@ response attributes:
 | `data.pageInfo.startCursor`     | string  | Cursor for fetching the previous page of results. |
 | `error`                         | string  | Error message if the query failed. |
 | `fields`                        | array   | Array of field definitions. |
+| `fields[].field`                | string  | The base field name. For aliased parameterised fields, this is the underlying field name (for example, `durationQuantile`), while `key` is the alias (for example, `p50`). For standard fields, same as `key`. |
 | `fields[].key`                  | string  | The unique field identifier. |
 | `fields[].label`                | string  | The human-readable field name. |
-| `fields[].name`                 | string  | The common field name that unifies similar fields. For example, `created` and `createdAt` keys have the name `createdAt`. |
+| `fields[].name`                 | string  | The common field name that unifies similar fields. For example, `created` and `createdAt` keys have the name `createdAt`. For aliased parameterised fields, this is the generated response key (for example, `durationQuantile_quantile_0_d5`), not a common name. |
+| `fields[].parameters`           | object  | Resolved parameter metadata for parameterised fields. Absent when the field has no parameters. For example, `{"granularity": "weekly"}` or `{"quantile": "0.5"}`. |
+| `fields[].type`                 | string  | Field classification: `dimension` or `metric` for analytics mode fields. Absent for standard fields. |
 | `success`                       | boolean | Indicates if the query was successful. |
 
 ### Example: Basic query
@@ -143,6 +146,7 @@ Example response:
   "error": null,
   "fields": [
     {
+      "field": "title",
       "key": "title",
       "label": "Title",
       "name": "title"
@@ -216,21 +220,25 @@ Example response:
   "error": null,
   "fields": [
     {
+      "field": "id",
       "key": "id",
       "label": "ID",
       "name": "id"
     },
     {
+      "field": "title",
       "key": "title",
       "label": "Title",
       "name": "title"
     },
     {
+      "field": "author",
       "key": "author",
       "label": "Author",
       "name": "author"
     },
     {
+      "field": "state",
       "key": "state",
       "label": "State",
       "name": "state"
@@ -306,16 +314,19 @@ Example response:
   "error": null,
   "fields": [
     {
+      "field": "id",
       "key": "id",
       "label": "ID",
       "name": "id"
     },
     {
+      "field": "title",
       "key": "title",
       "label": "Title",
       "name": "title"
     },
     {
+      "field": "assignees",
       "key": "assignees",
       "label": "Assignees",
       "name": "assignees"
@@ -375,6 +386,7 @@ Example response:
   "error": null,
   "fields": [
     {
+      "field": "title",
       "key": "title",
       "label": "Title",
       "name": "title"
@@ -395,6 +407,71 @@ curl --request POST \
     "after": "eyJpZCI6IjIifQ=="
   }' \
   --url "https://gitlab.example.com/api/v4/glql"
+```
+
+### Example: Analytics mode query
+
+Aggregate pipeline metrics grouped by a dimension.
+In analytics mode, the `fields` array includes the `type` attribute for each field,
+and the `parameters` attribute for parameterised fields:
+
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "glql_yaml": "mode: analytics\ndimensions: ref\nmetrics: durationQuantile(0.5) as \"p50\"\nquery: type = Pipeline AND project = \"my-group/my-project\" AND finished >= -30d"
+  }' \
+  --url "https://gitlab.example.com/api/v4/glql"
+```
+
+Example response:
+
+```json
+{
+  "data": {
+    "count": 2,
+    "nodes": [
+      {
+        "durationQuantile_quantile_0_d5": 245.5,
+        "p50": 245.5,
+        "ref": "main"
+      },
+      {
+        "durationQuantile_quantile_0_d5": 312.0,
+        "p50": 312.0,
+        "ref": "feature-branch"
+      }
+    ],
+    "pageInfo": {
+      "endCursor": "eyJpZCI6IjIifQ==",
+      "hasNextPage": false,
+      "hasPreviousPage": false,
+      "startCursor": "eyJpZCI6IjEifQ=="
+    }
+  },
+  "error": null,
+  "fields": [
+    {
+      "field": "ref",
+      "key": "ref",
+      "label": "Ref",
+      "name": "ref",
+      "type": "dimension"
+    },
+    {
+      "field": "durationQuantile",
+      "key": "p50",
+      "label": "p50",
+      "name": "durationQuantile_quantile_0_d5",
+      "parameters": {
+        "quantile": "0.5"
+      },
+      "type": "metric"
+    }
+  ],
+  "success": true
+}
 ```
 
 ## Rate limiting

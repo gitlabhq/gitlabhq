@@ -18,7 +18,7 @@ Learn how to view all the open issues in your project, and create a new one to r
 
 ## Open the issues list
 
-First, browse through the open issues the project.
+First, browse through the open issues in the project.
 This way, you can see if there is an existing issue for the problem you noticed.
 
 In your project, in the left sidebar, select **Plan** > **Work items**.

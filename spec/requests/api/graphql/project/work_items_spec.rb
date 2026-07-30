@@ -77,6 +77,17 @@ RSpec.describe 'getting a work item list for a project', feature_category: :port
 
   describe 'N + 1 queries' do
     context 'when querying root fields' do
+      # availableQuickActions evaluates each command's availability condition
+      # against the individual work item, so it is inherently one query set per
+      # item and cannot satisfy this guard.
+      let(:fields) do
+        <<~QUERY
+          nodes {
+            #{all_graphql_fields_for('WorkItem', max_depth: 2, excluded: %w[availableQuickActions])}
+          }
+        QUERY
+      end
+
       # Issue to fix N+1 - https://gitlab.com/gitlab-org/gitlab/-/issues/548924
       it_behaves_like 'work items resolver without N + 1 queries', threshold: 3
     end

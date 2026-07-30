@@ -13,11 +13,11 @@ title: Install GitLab using the Linux package
 
 {{< /details >}}
 
-The Linux packages are mature, scalable, and are used on GitLab.com. If you need additional
+The Linux packages are mature and scalable, and are used on GitLab.com. If you need additional
 flexibility and resilience, we recommend deploying GitLab as described in the
 [reference architecture documentation](../../administration/reference_architectures/_index.md).
 
-The Linux package is quicker to install, easier to upgrade, and contains
+The Linux package is quicker to install and easier to upgrade, and it contains
 features to enhance reliability not found in other installation methods. Install through a
 single package (also known as Omnibus GitLab) that bundles all the different services
 and tools required to run GitLab. See the [installation requirements](../requirements.md)
@@ -37,7 +37,7 @@ distribute packages for these platforms. The table shows which GitLab versions
 are available for each operating system.
 
 We provide Linux packages for operating systems based on vendor support lifecycles.
-Where long term support (LTS) versions exist, we target those, though not all operating systems
+Where long-term support (LTS) versions exist, we target those, though not all operating systems
 follow an LTS model.
 
 Package builds typically continue until an operating system reaches vendor end-of-life (EOL).
@@ -137,7 +137,7 @@ You can find the list of deprecated operating systems and the final GitLab relea
 
 ### Raspberry Pi OS (32-bit - Raspbian)
 
-GitLab dropped support for Raspberry Pi OS (32 bit - Raspbian) with GitLab
+GitLab dropped support for Raspberry Pi OS (32-bit - Raspbian) with GitLab
 17.11 being the last version available for the 32-bit platform. Starting with
 GitLab 18.0, you should move to Raspberry Pi OS (64 bit) and use the
 [Debian arm64 package](debian.md).
@@ -237,7 +237,7 @@ Before you upgrade:
    Any users who haven't completed this hash migration will be unable to sign in to
    Ubuntu 22 FIPS installations and will need to perform a password reset.
 
-   To find for users who have not migrated, use [this Rake task](../../administration/raketasks/password.md#check-password-hashes)
+   To find users who have not migrated, use [this Rake task](../../administration/raketasks/password.md#check-password-hashes)
    before upgrading to Ubuntu 22.04.
 
 1. Check the GitLab secrets JSON: Rails now requires stronger active dispatch salts to

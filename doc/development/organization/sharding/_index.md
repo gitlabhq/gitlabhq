@@ -663,10 +663,10 @@ strategy, where partitions are detached and dropped once all their rows are cons
 
 **Example 1: fixed retention with `retain_for`**
 
-`web_hook_logs_daily` is partitioned daily and drops partitions older than 14 days:
+`web_hook_logs_daily` is partitioned daily and drops partitions older than 7 days:
 
 ```ruby
-partitioned_by :created_at, strategy: :daily, retain_for: 14.days
+partitioned_by :created_at, strategy: :daily, retain_for: 7.days
 ```
 
 Because old partitions are dropped automatically, a foreign key on `web_hook_logs_daily.project_id`
@@ -692,7 +692,7 @@ When you omit a foreign key for this reason, add the column to `allowed_to_be_mi
 `spec/lib/gitlab/organizations/sharding_key_spec.rb` with a comment explaining the retention behavior:
 
 ```ruby
-# No LFK needed: daily partitions are dropped after 14 days via retain_for
+# No LFK needed: daily partitions are dropped after 7 days via retain_for
 'web_hook_logs_daily.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/524820
 
 # No LFK needed: sliding_list partitions are detached once findings are stale and purged

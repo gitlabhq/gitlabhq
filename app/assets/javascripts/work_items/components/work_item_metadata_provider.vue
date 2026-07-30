@@ -84,6 +84,11 @@ export default normalizeRender({
       type: String,
       required: true,
     },
+    includeFilterableFlags: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
@@ -117,6 +122,7 @@ export default normalizeRender({
       variables() {
         return {
           fullPath: this.fullPath,
+          includeFilterableFlags: this.includeFilterableFlags,
         };
       },
       update(data) {

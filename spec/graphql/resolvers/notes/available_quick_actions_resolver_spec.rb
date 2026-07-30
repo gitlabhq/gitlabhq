@@ -59,4 +59,38 @@ RSpec.describe Resolvers::Notes::AvailableQuickActionsResolver, feature_category
       expect(resolved).to eq([])
     end
   end
+
+  context 'when the noteable is an issue' do
+    let_it_be(:issue) { create(:issue, project: project) }
+
+    let(:current_user) { user }
+
+    subject(:resolved) { resolve(described_class, obj: issue, ctx: { current_user: current_user }) }
+
+    it 'returns issue commands and excludes merge-request-only ones' do
+      names = resolved.map { |command| command[:name] }
+
+      expect(names).to include(:assign, :close, :title, :todo)
+      expect(names).not_to include(:merge)
+    end
+
+    it 'shapes each command with the expected keys' do
+      expect(resolved).to all(include(:name, :aliases, :description, :params, :warning, :icon))
+    end
+  end
+
+  context 'when the noteable is a project-level work item' do
+    let_it_be(:work_item) { create(:work_item, :task, project: project) }
+
+    let(:current_user) { user }
+
+    subject(:resolved) { resolve(described_class, obj: work_item, ctx: { current_user: current_user }) }
+
+    it 'returns work item commands and excludes merge-request-only ones' do
+      names = resolved.map { |command| command[:name] }
+
+      expect(names).to include(:close, :title, :todo)
+      expect(names).not_to include(:merge)
+    end
+  end
 end

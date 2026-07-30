@@ -47,7 +47,7 @@ select **Create**.
 > Be aware that Azure incurs compute charges whenever your VM is
 > active (known as "allocated"), even if you're using free trial
 > credits.
-> [how to properly shutdown an Azure VM to save money](https://build5nines.com/properly-shutdown-azure-vm-to-save-money/).
+> See [how to properly shutdown an Azure VM to save money](https://build5nines.com/properly-shutdown-azure-vm-to-save-money/).
 > See the [Azure pricing calculator](https://azure.microsoft.com/en-us/pricing/calculator/)
 > to learn how much resources can cost.
 
@@ -67,7 +67,7 @@ The first items you need to configure are the basic settings of the underlying v
 1. Ensure the selected image is set to **GitLab - Gen1**.
 1. Select the VM size based on the [hardware requirements](../requirements.md).
    Because the minimum system requirements to run a GitLab environment for up to 500 users
-   is covered by the `D4s_v3` size, select that option.
+   are covered by the `D4s_v3` size, select that option.
 1. Set the authentication type to **SSH public key**.
 1. Enter a user name or leave the one that is automatically created. This is
    the user Azure uses to connect to the VM through SSH. By default, the user
@@ -193,8 +193,8 @@ To set up the GitLab external URL:
 1. Find `external_url` and replace it with your own domain name. For the sake
    of this example, use the default domain name Azure sets up.
    Using `https` in the URL
-   [automatically enables](https://docs.gitlab.com/omnibus/settings/ssl/#lets-encrypt-integration),
-   Let's Encrypt, and sets HTTPS by default:
+   [automatically enables](https://docs.gitlab.com/omnibus/settings/ssl/#lets-encrypt-integration)
+   Let's Encrypt and sets HTTPS by default:
 
    ```ruby
    external_url 'https://gitlab-prod.eastus.cloudapp.azure.com'

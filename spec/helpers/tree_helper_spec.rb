@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe TreeHelper, feature_category: :source_code_management do
   include Devise::Test::ControllerHelpers
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
   let(:repository) { project.repository }
   let(:sha) { 'c1c67abbaf91f624347bb3ae96eabe3a1b742478' }
 

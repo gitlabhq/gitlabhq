@@ -6,7 +6,7 @@ RSpec.describe Atlassian::JiraConnect::Serializers::RepositoryEntity, feature_ca
   let(:update_sequence_id) { nil }
 
   subject do
-    project = create(:project, :repository)
+    project = create(:project, :small_repo)
     commits = [project.commit]
     branches = [project.repository.find_branch('master')]
     merge_requests = [create(:merge_request, source_project: project, target_project: project)]

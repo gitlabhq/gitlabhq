@@ -25,8 +25,6 @@ export const deepCamelCase = (obj) => convertObjectPropsToCamelCase(obj, { deep:
 export const getStageByTitle = (stages, title) =>
   stages.find((stage) => stage.title && stage.title.toLowerCase().trim() === title) || {};
 
-export const defaultStages = ['issue', 'plan', 'review', 'code', 'test', 'staging'];
-
 const stageFixtures = {
   issue: issueStageFixtures,
   plan: planStageFixtures,
@@ -70,15 +68,6 @@ export const codeStage = {
   value: 172800,
 };
 
-export const testStage = {
-  id: 'test',
-  title: 'Test',
-  name: 'test',
-  legend: '',
-  description: 'Total test time for all commits/merges',
-  value: 17550,
-};
-
 export const reviewStage = {
   id: 'review',
   title: 'Review',
@@ -86,15 +75,6 @@ export const reviewStage = {
   legend: '',
   description: 'Time between merge request creation and merge/close',
   value: null,
-};
-
-export const stagingStage = {
-  id: 'staging',
-  title: 'Staging',
-  name: 'staging',
-  legend: '',
-  description: 'From merge request merge until deploy to production',
-  value: 172800,
 };
 
 export const selectedStage = {
@@ -105,15 +85,6 @@ export const selectedStage = {
     'The issue stage shows the time it takes from creating an issue to assigning the issue to a milestone, or add the issue to a list on your Issue Board. Begin creating issues to see data for this stage.',
 
   slug: 'issue',
-};
-
-export const convertedData = {
-  summary: [
-    { value: '20', title: 'New issues' },
-    { value: '-', title: 'Commits' },
-    { value: '-', title: 'Deploys' },
-    { value: '-', title: 'Deployment frequency', unit: '/day' },
-  ],
 };
 
 export const rawIssueEvents = stageFixtures.issue;

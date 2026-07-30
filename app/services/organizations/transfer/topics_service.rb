@@ -12,16 +12,19 @@ module Organizations
       end
 
       def execute
+        avatar_transfer_pairs = []
         counter_deltas = Hash.new { |h, k| h[k] = { total: 0, non_private: 0 } }
 
         old_topics.find_each do |old_topic|
           new_topic = find_or_create_in_new_organization(old_topic)
           next if new_topic.id == old_topic.id
 
+          avatar_transfer_pairs << [old_topic.id, new_topic.id] if old_topic.avatar.present?
           repoint_and_accumulate_deltas(old_topic, new_topic, counter_deltas)
         end
 
         flush_counter_deltas(counter_deltas)
+        schedule_avatar_transfers(avatar_transfer_pairs) if avatar_transfer_pairs.any?
       end
 
       private
@@ -97,6 +100,14 @@ module Organizations
             total_projects_count: deltas[:total],
             non_private_projects_count: deltas[:non_private]
           )
+        end
+      end
+
+      def schedule_avatar_transfers(pairs)
+        group.run_after_commit_or_now do
+          pairs.each do |source_topic_id, target_topic_id|
+            Organizations::TransferTopicAvatarWorker.perform_async(source_topic_id, target_topic_id)
+          end
         end
       end
       # rubocop:enable CodeReuse/ActiveRecord

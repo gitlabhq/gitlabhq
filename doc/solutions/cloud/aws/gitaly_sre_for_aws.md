@@ -23,7 +23,7 @@ If you would like to understand the underlying rationale on why GitLab had to in
 
 - [Git characteristics that make horizontal scaling difficult](https://gitlab.com/gitlab-org/gitaly/-/blob/master/doc/DESIGN.md#git-characteristics-that-make-horizontal-scaling-difficult)
 - [Git architectural characteristics and assumptions](https://gitlab.com/gitlab-org/gitaly/-/blob/master/doc/DESIGN.md#git-architectural-characteristics-and-assumptions)
-- [Affects on horizontal compute architecture](https://gitlab.com/gitlab-org/gitaly/-/blob/master/doc/DESIGN.md#affects-on-horizontal-compute-architecture)
+- [Effects on horizontal compute architecture](https://gitlab.com/gitlab-org/gitaly/-/blob/master/doc/DESIGN.md#effects-on-horizontal-compute-architecture)
 - [Evidence to back building a new horizontal layer to scale Git](https://gitlab.com/gitlab-org/gitaly/-/blob/master/doc/DESIGN.md#evidence-to-back-building-a-new-horizontal-layer-to-scale-git)
 
 ### Gitaly and Praefect elections
@@ -59,7 +59,7 @@ Gitaly functions as the primary Git Repository Storage in GitLab. However, it's 
 
 #### Disk I/O recommendations
 
-- Use only SSD storage and the [class of Elastic Block Store (EBS) storage](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-volume-types.html) that suites your durability and speed requirements.
+- Use only SSD storage and the [class of Elastic Block Store (EBS) storage](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-volume-types.html) that suits your durability and speed requirements.
 - When not using provisioned EBS IO, EBS volume size determines the I/O level, so provisioning volumes that are much larger than needed can be the least expensive way to improve EBS IO.
 - If Gitaly performance monitoring shows signs of disk stress then one of the provisioned IOPS levels can be chosen. EBS IOPS levels also have enhanced durability which may be appealing for some implementations aside from performance considerations.
 
@@ -90,7 +90,7 @@ Due to the nature of how Praefect tracks the replication metadata of Gitaly disk
 
 ### AWS Gitaly recovery
 
-Gitaly Cluster (Praefect) does not support snapshot backups as these can cause issues where the Praefect database becomes out of syn with the disk storage. Due to the nature of how Praefect rebuilds the replication metadata of Gitaly disk information during a restore, the best recovery method is [the official backup and restore Rake tasks](../../../administration/backup_restore/_index.md).
+Gitaly Cluster (Praefect) does not support snapshot backups as these can cause issues where the Praefect database becomes out of sync with the disk storage. Due to the nature of how Praefect rebuilds the replication metadata of Gitaly disk information during a restore, the best recovery method is [the official backup and restore Rake tasks](../../../administration/backup_restore/_index.md).
 
 ### Gitaly long term management
 

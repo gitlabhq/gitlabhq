@@ -22,7 +22,7 @@ For other information, see [advanced tips and tricks](#advanced-tips-and-tricks)
 
 ## Set up groups and projects
 
-Follow the corresponding steps to [create your groups](../../user/group/_index.md#create-a-group) and [projects](../../user/project/_index.md)
+Follow the corresponding steps to [create your groups](../../user/group/_index.md#create-a-group) and [projects](../../user/project/_index.md).
 
 If your team is working across multiple repositories, create a project for each repository in your group.
 
@@ -61,7 +61,7 @@ To do so:
 
 1. Select the **Edit list settings** gear icon in the upper right of a label list.
 1. Select **Work in progress limit** > **Edit**.
-1. Enter the maximum number of issues allowed in the corresponding list, the press the **Enter** key.
+1. Enter the maximum number of issues allowed in the corresponding list, then press the **Enter** key.
 
 Your list background will now automatically turn red when the limit is reached.
 A "work in progress limit" cut line will also be visible in the list to visually display all issues that are over the limit below the line.

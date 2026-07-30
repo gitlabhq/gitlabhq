@@ -488,6 +488,81 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
     end
   end
 
+  describe '#ensure_diff_files_project_id' do
+    let_it_be(:merge_request) { create(:merge_request, :without_diffs) }
+
+    let(:diff) { build(:merge_request_diff, merge_request: merge_request) }
+
+    context 'when diff files are built in memory' do
+      before do
+        diff.merge_request_diff_files.build(
+          relative_order: 0,
+          new_file: true,
+          renamed_file: false,
+          deleted_file: false,
+          too_large: false,
+          new_path: 'test.rb',
+          old_path: 'test.rb',
+          diff: '',
+          a_mode: '0',
+          b_mode: '100644'
+        )
+      end
+
+      it 'sets project_id on diff files from the parent diff', :aggregate_failures do
+        expect(diff.merge_request_diff_files.first.project_id).to be_nil
+
+        diff.save!
+
+        expect(diff.merge_request_diff_files.first.project_id).to eq(diff.project_id)
+      end
+    end
+
+    context 'when diff files association is not loaded' do
+      it 'does not load the association from the database' do
+        diff.save!
+
+        # Reset the association to simulate a persisted record with unloaded association
+        diff.association(:merge_request_diff_files).reset
+
+        # Directly call the method to verify it doesn't load the association
+        diff.send(:ensure_diff_files_project_id)
+
+        expect(diff.association(:merge_request_diff_files).loaded?).to be false
+      end
+    end
+
+    context 'when project_id is nil on the diff' do
+      let(:diff) { build(:merge_request_diff, merge_request: merge_request, project_id: nil) }
+
+      before do
+        diff.merge_request_diff_files.build(
+          relative_order: 0,
+          new_file: true,
+          renamed_file: false,
+          deleted_file: false,
+          too_large: false,
+          new_path: 'test.rb',
+          old_path: 'test.rb',
+          diff: '',
+          a_mode: '0',
+          b_mode: '100644'
+        )
+      end
+
+      it 'sets project_id on diff files after ensure_project_id runs' do
+        # project_id starts as nil but gets set by ensure_project_id callback
+        expect(diff.project_id).to be_nil
+
+        diff.save!
+
+        # Both the diff and its files should have project_id set
+        expect(diff.project_id).to eq(merge_request.target_project_id)
+        expect(diff.merge_request_diff_files.first.project_id).to eq(merge_request.target_project_id)
+      end
+    end
+  end
+
   describe '#update_external_diff_store' do
     let_it_be_with_refind(:merge_request) { create(:merge_request) }
 

@@ -62,18 +62,6 @@ export default {
       required: false,
       default: false,
     },
-    /**
-     * Use `v-show` instead of `v-if` to show/hide collapsed content.
-     * This will prevent the content from being removed from the page entirely, which
-     * can cause loss of internal state for collapsed components.
-     * This behaviour defaults to true as of 18.9:
-     * https://gitlab.com/gitlab-org/gitlab/-/issues/581227
-     */
-    keepAliveCollapsedContent: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
     containerTag: {
       type: String,
       required: false,
@@ -331,38 +319,36 @@ export default {
       <slot name="form" :hide-form="hideForm"></slot>
     </div>
 
-    <template v-if="isContentVisible || keepAliveCollapsedContent">
+    <div
+      v-show="isContentVisible"
+      class="crud-body gl-grow gl-rounded-lg gl-bg-default gl-p-3 contrast-more:gl-border forced-colors:gl-border"
+      :class="[bodyClass, { 'gl-px-3 gl-pt-3': isLoading }]"
+      data-testid="crud-body"
+    >
+      <gl-skeleton-loader v-if="isLoading" :width="400" :lines="3" data-testid="crud-loading" />
+
+      <span v-else-if="$scopedSlots.empty" class="gl-text-subtle" data-testid="crud-empty">
+        <slot name="empty"></slot>
+      </span>
+      <slot v-else :show-form="showForm"></slot>
+
       <div
-        v-show="isContentVisible"
-        class="crud-body gl-grow gl-rounded-lg gl-bg-default gl-p-3 contrast-more:gl-border forced-colors:gl-border"
-        :class="[bodyClass, { 'gl-px-3 gl-pt-3': isLoading }]"
-        data-testid="crud-body"
+        v-if="$scopedSlots.pagination"
+        class="crud-pagination gl-border-t gl-flex gl-justify-center gl-border-t-section gl-p-5"
+        data-testid="crud-pagination"
       >
-        <gl-skeleton-loader v-if="isLoading" :width="400" :lines="3" data-testid="crud-loading" />
-
-        <span v-else-if="$scopedSlots.empty" class="gl-text-subtle" data-testid="crud-empty">
-          <slot name="empty"></slot>
-        </span>
-        <slot v-else :show-form="showForm"></slot>
-
-        <div
-          v-if="$scopedSlots.pagination"
-          class="crud-pagination gl-border-t gl-flex gl-justify-center gl-border-t-section gl-p-5"
-          data-testid="crud-pagination"
-        >
-          <slot name="pagination"></slot>
-        </div>
+        <slot name="pagination"></slot>
       </div>
+    </div>
 
-      <footer
-        v-show="isContentVisible"
-        v-if="$scopedSlots.footer"
-        class="gl-rounded-b-lg gl-px-3 gl-pb-2 gl-pt-3"
-        :class="footerClass"
-        data-testid="crud-footer"
-      >
-        <slot name="footer"></slot>
-      </footer>
-    </template>
+    <footer
+      v-show="isContentVisible"
+      v-if="$scopedSlots.footer"
+      class="gl-rounded-b-lg gl-px-3 gl-pb-2 gl-pt-3"
+      :class="footerClass"
+      data-testid="crud-footer"
+    >
+      <slot name="footer"></slot>
+    </footer>
   </component>
 </template>

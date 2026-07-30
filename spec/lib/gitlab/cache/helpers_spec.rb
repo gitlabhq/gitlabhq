@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Cache::Helpers, :use_clean_rails_redis_caching do
   subject(:instance) { Class.new.include(described_class).new }
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
   let_it_be(:user) { create(:user) }
 
   let(:presenter) { MergeRequestSerializer.new(current_user: user, project: project) }

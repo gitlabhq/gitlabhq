@@ -13,13 +13,13 @@ title: Installing GitLab on Google Cloud Platform
 
 {{< /details >}}
 
-You can install GitLab on a [Google Cloud Platform (GCP)](https://cloud.google.com/) using the official Linux package. You should customize it to accommodate your needs.
+You can install GitLab on [Google Cloud Platform (GCP)](https://cloud.google.com/) using the official Linux package. You should customize it to accommodate your needs.
 
 > [!note]
 > To deploy production-ready GitLab on
 > Google Kubernetes Engine,
 > you can follow Google Cloud Platform's
-> [`Click to Deploy` steps](https://github.com/GoogleCloudPlatform/click-to-deploy/blob/master/k8s/gitlab/README.md)
+> [`Click to Deploy` steps](https://github.com/GoogleCloudPlatform/click-to-deploy/blob/master/k8s/gitlab/README.md).
 > It's an alternative to using a GCP VM, and uses
 > the [Cloud native GitLab Helm chart](https://docs.gitlab.com/charts/).
 
@@ -49,7 +49,7 @@ To deploy GitLab on GCP you must create a virtual machine:
    ![Configure your instance.](img/vm_details_v13_1.png)
 
 1. To select the size, type, and desired [operating system](../package/_index.md),
-   select **Change** under `Boot disk`. select **Select** when finished.
+   select **Change** under `Boot disk`. Select **Select** when finished.
 
 1. Required for paid licenses. Under **Labels**, add resource labels based on how you procured your GitLab license:
    - For Google Cloud Marketplace procurement, add:
@@ -123,7 +123,7 @@ here's how you configure GitLab to be aware of the change:
    external_url 'http://gitlab.example.com'
    ```
 
-   We will set up HTTPS in the next step, no need to do this now. <!-- using future tense is okay here -->
+   We will set up HTTPS in the next step. No need to do this now. <!-- using future tense is okay here -->
 
 1. Reconfigure GitLab for the changes to take effect:
 
@@ -140,8 +140,8 @@ Although not needed, it's strongly recommended to secure GitLab with a
 
 ### Configuring the email SMTP settings
 
-You must configure the email SMTP settings correctly otherwise GitLab cannot send notification emails, like comments, and password changes.
-Check the [Linux package documentation](https://docs.gitlab.com/omnibus/settings/smtp/#smtp-settings) how to do so.
+You must configure the email SMTP settings correctly. Otherwise, GitLab cannot send notification emails, like comments and password changes.
+Check the [Linux package documentation](https://docs.gitlab.com/omnibus/settings/smtp/#smtp-settings) for how to do so.
 
 ## Further reading
 

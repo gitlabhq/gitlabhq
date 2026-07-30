@@ -348,6 +348,10 @@ export default {
       variables() {
         return {
           fullPath: this.inputNamespacePath,
+          // Scoped to the selected namespace, not the page's, so it must not overwrite the
+          // page namespace's filterable flags.
+          // See issue https://gitlab.com/gitlab-org/gitlab/-/work_items/606810
+          includeFilterableFlags: false,
         };
       },
       update(data) {
@@ -1212,7 +1216,7 @@ export default {
 </script>
 
 <template>
-  <work-item-metadata-provider :full-path="fullPath">
+  <work-item-metadata-provider :full-path="fullPath" :include-filterable-flags="false">
     <form @submit.prevent="createWorkItem">
       <work-item-loading v-if="isLoading" class="gl-mt-5" />
       <template v-else>

@@ -36,7 +36,7 @@ If no issues match your problem, [create a new issue](https://gitlab.com/gitlab-
 
 ## Locate the Eclipse workspace log file
 
-The Eclipse workspace log file, named `.log` is located in the directory `<your-eclipse-workspace>/.metadata`.
+The Eclipse workspace log file, named `.log`, is located in the directory `<your-eclipse-workspace>/.metadata`.
 
 ## Enable GitLab Language Server debug logs
 

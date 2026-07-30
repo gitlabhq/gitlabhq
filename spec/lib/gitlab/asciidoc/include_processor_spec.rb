@@ -4,7 +4,7 @@ require 'spec_helper'
 require 'nokogiri'
 
 RSpec.describe Gitlab::Asciidoc::IncludeProcessor do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
 
   let(:processor_context) do
     {

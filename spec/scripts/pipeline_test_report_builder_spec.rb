@@ -190,6 +190,158 @@ RSpec.describe PipelineTestReportBuilder, feature_category: :tooling do
       end
     end
 
+    context 'when rate limited (429)' do
+      let(:uri_str) { 'https://gitlab.example.com/api/v4/test' }
+      let(:parsed_response) { { 'data' => 'test' } }
+
+      before do
+        allow(subject).to receive(:sleep) # Don't actually sleep in tests
+      end
+
+      context 'when HTTP response is 429 Too Many Requests' do
+        let(:http) { instance_double(Net::HTTP) }
+        let(:success_response) do
+          Net::HTTPSuccess.new('1.1', '200', 'OK').tap do |response|
+            allow(response).to receive(:read_body).and_return(parsed_response.to_json)
+          end
+        end
+
+        let(:rate_limit_response) do
+          Net::HTTPTooManyRequests.new('1.1', '429', 'Too Many Requests').tap do |response|
+            allow(response).to receive(:[]).and_return(nil)
+          end
+        end
+
+        before do
+          allow(Net::HTTP).to receive(:start).and_yield(http)
+        end
+
+        it 'detects 429 response and triggers retry logic', :aggregate_failures do
+          call_count = 0
+
+          allow(http).to receive(:request) do |_request, &block|
+            call_count += 1
+            if call_count == 1
+              block.call(rate_limit_response)
+            else
+              block.call(success_response)
+            end
+          end
+
+          result = subject.send(:fetch, uri_str)
+
+          expect(result).to eq(parsed_response)
+          expect(subject).to have_received(:sleep).once
+        end
+
+        it 'extracts Retry-After header from 429 response', :aggregate_failures do
+          call_count = 0
+
+          allow(rate_limit_response).to receive(:[]).with('Retry-After').and_return('30')
+          allow(http).to receive(:request) do |_request, &block|
+            call_count += 1
+            if call_count == 1
+              block.call(rate_limit_response)
+            else
+              block.call(success_response)
+            end
+          end
+
+          subject.send(:fetch, uri_str)
+
+          expect(subject).to have_received(:sleep).with(30)
+        end
+      end
+
+      context 'when retry succeeds' do
+        it 'retries with exponential backoff and returns the result', :aggregate_failures do
+          call_count = 0
+
+          allow(subject).to receive(:fetch).and_wrap_original do |_method, *args|
+            call_count += 1
+            if call_count == 1
+              # First call - simulate the original fetch behavior that hits 429
+              # We need to trigger handle_rate_limit which will call fetch again
+              subject.send(:handle_rate_limit, args[0], 0)
+            else
+              # Subsequent calls succeed
+              parsed_response
+            end
+          end
+
+          result = subject.send(:fetch, uri_str)
+
+          expect(result).to eq(parsed_response)
+          expect(subject).to have_received(:sleep).with(2) # 2^(0+1) = 2
+        end
+      end
+
+      context 'when all retries are exhausted' do
+        let(:max_retries) { described_class::MAX_RETRIES }
+        let(:error_pattern) { /Rate limited \(429\) after #{max_retries} retries/ }
+
+        it 'raises an error after MAX_RETRIES attempts' do
+          # Simulate handle_rate_limit being called at max retries
+          expect do
+            subject.send(:handle_rate_limit, uri_str, max_retries)
+          end.to raise_error(RuntimeError, error_pattern)
+        end
+      end
+
+      context 'when retrying multiple times before success' do
+        it 'uses exponential backoff timing', :aggregate_failures do
+          call_count = 0
+
+          allow(subject).to receive(:fetch).and_wrap_original do |_method, uri, **kwargs|
+            retries = kwargs[:retries] || 0
+            call_count += 1
+
+            if retries < 2
+              # First two attempts fail with rate limit
+              subject.send(:handle_rate_limit, uri, retries)
+            else
+              # Third attempt succeeds
+              parsed_response
+            end
+          end
+
+          result = subject.send(:fetch, uri_str)
+
+          expect(result).to eq(parsed_response)
+          expect(subject).to have_received(:sleep).with(2).ordered # 2^1 = 2
+          expect(subject).to have_received(:sleep).with(4).ordered # 2^2 = 4
+        end
+      end
+
+      context 'when Retry-After header is present' do
+        before do
+          allow(subject).to receive(:fetch).and_return(parsed_response)
+        end
+
+        it 'uses Retry-After value when greater than exponential backoff', :aggregate_failures do
+          retry_after_seconds = 10
+
+          subject.send(:handle_rate_limit, uri_str, 0, retry_after_seconds)
+
+          expect(subject).to have_received(:sleep).with(retry_after_seconds)
+        end
+
+        it 'uses exponential backoff when greater than Retry-After', :aggregate_failures do
+          retry_after_seconds = 1
+
+          subject.send(:handle_rate_limit, uri_str, 0, retry_after_seconds)
+
+          expect(subject).to have_received(:sleep).with(2) # 2^(0+1) = 2 > 1
+        end
+
+        it 'handles nil Retry-After gracefully' do
+          subject.send(:handle_rate_limit, uri_str, 0, nil)
+
+          expect(subject).to have_received(:sleep).with(2)
+        end
+      end
+    end
+
     context 'for latest pipeline' do
       let(:failed_build_uri) { "#{latest_pipeline_url}/tests/suite.json?build_ids[]=#{failed_build_id}" }
       let(:current_pipeline_uri) do

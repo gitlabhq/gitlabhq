@@ -7,7 +7,7 @@ RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations d
 
   subject(:client) { described_class.new('https://gitlab-test.atlassian.net', 'sample_secret') }
 
-  let_it_be(:project, freeze: false) { create_default(:project, :repository) }
+  let_it_be(:project, freeze: false) { create_default(:project, :small_repo) }
   let_it_be(:mrs_by_title) { create_list(:merge_request, 4, :unique_branches, :jira_title) }
   let_it_be(:mrs_by_branch) { create_list(:merge_request, 2, :jira_branch) }
   let_it_be(:red_herrings) { create_list(:merge_request, 1, :unique_branches) }

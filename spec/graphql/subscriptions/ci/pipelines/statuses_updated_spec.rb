@@ -22,7 +22,7 @@ RSpec.describe Subscriptions::Ci::Pipelines::StatusesUpdated, feature_category: 
       expect(described_class.arguments['projectId'].type.non_null?).to be(false)
     end
 
-    it 'exposes project_id as an optional (nullable) argument' do
+    it 'exposes project_full_path as an optional (nullable) argument' do
       expect(described_class.arguments['projectFullPath'].type.non_null?).to be(false)
     end
 
