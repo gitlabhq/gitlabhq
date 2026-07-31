@@ -59,10 +59,14 @@ export const initCopyCodeButton = (selector = '#content-body') => {
     customElements.define('copy-code', CopyCodeButton);
   }
 
-  const exclude = document.querySelector('.file-content.code'); // this behavior is not needed when viewing raw file content, so excluding it as the unnecessary dom lookups can become expensive
+  // This behavior is not needed when viewing raw file content, so we skip it
+  // there as the unnecessary DOM lookups can become expensive.
+  // Inline blob embeds reuse `.file-content.code` but appear on pages that *do*
+  // want copy-code buttons, so exclude those from this check.
+  const onRawFileView = Boolean(document.querySelector('.file-content.code:not(.blob-embed *)'));
   const el = document.querySelector(selector);
 
-  if (!el || exclude) return () => {};
+  if (!el || onRawFileView) return () => {};
 
   const observer = new MutationObserver(debounce(() => addCodeButton(), 100));
 

@@ -136,9 +136,9 @@ CI/CD job tokens can access the following REST API endpoints:
 | Download the maven package file at a group level | `GET /groups/:id/-/packages/maven/*path/:file_name` | `READ_PACKAGES` | Read |
 | Download the maven package file at a project level | `GET /projects/:id/packages/maven/*path/:file_name` | `READ_PACKAGES` | Read |
 | Download the maven package file at instance level | `GET /packages/maven/*path/:file_name` | `READ_PACKAGES` | Read |
-| Get all tags for a given an NPM package | `GET /groups/:id/-/packages/npm/-/package/*package_name/dist-tags` | `READ_PACKAGES` | Read |
-| Get all tags for a given an NPM package | `GET /packages/npm/-/package/*package_name/dist-tags` | `READ_PACKAGES` | Read |
-| Get all tags for a given an NPM package | `GET /projects/:id/packages/npm/-/package/*package_name/dist-tags` | `READ_PACKAGES` | Read |
+| Get all tags for a given NPM package | `GET /groups/:id/-/packages/npm/-/package/*package_name/dist-tags` | `READ_PACKAGES` | Read |
+| Get all tags for a given NPM package | `GET /packages/npm/-/package/*package_name/dist-tags` | `READ_PACKAGES` | Read |
+| Get all tags for a given NPM package | `GET /projects/:id/packages/npm/-/package/*package_name/dist-tags` | `READ_PACKAGES` | Read |
 | List | `GET /projects/:id/packages/go/*module_name/@v/list` | `READ_PACKAGES` | Read |
 | List all package download URLs | `GET /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference/download_urls` | `READ_PACKAGES` | Read |
 | List all package download URLs | `GET /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference/download_urls` | `READ_PACKAGES` | Read |
@@ -325,5 +325,5 @@ CI/CD job tokens cannot access the following endpoints:
 | List all registry repositories for a project | `GET /projects/:id/registry/repositories` |
 | List all registry repository tags for a project | `GET /projects/:id/registry/repositories/:repository_id/tags` |
 | Retrieve details of a registry repository tag | `GET /projects/:id/registry/repositories/:repository_id/tags/:tag_name` |
-| Transitions a DAST site validation to a new state. | `POST /internal/dast/site_validations/:id/transition` |
+| Transition a DAST site validation to a new state | `POST /internal/dast/site_validations/:id/transition` |
 | Issue a short-lived JWT for a single modular-service audience | `POST /token_exchange` |

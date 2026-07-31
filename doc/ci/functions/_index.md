@@ -214,7 +214,7 @@ Configure a GitLab CI/CD job to use functions with the `run` keyword. You cannot
 The `run` keyword accepts a list of steps to run. Steps are run one at a time in the order they are defined in the list.
 Each step has a `name`, either `func` or `script`, and optionally, `inputs` and `env`.
 
-Name must consist only of alphanumeric characters and underscores, and cannot start with a number.
+The name must consist only of alphanumeric characters and underscores, and cannot start with a number.
 
 #### Invoke a function
 

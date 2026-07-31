@@ -64,7 +64,7 @@ module API
             requires :package_name, type: String, desc: 'Package name'
           end
           namespace '-/package/*package_name' do
-            desc 'Get all tags for a given an NPM package' do
+            desc 'Get all tags for a given NPM package' do
               detail 'This feature was introduced in GitLab 12.7'
               success [
                 { code: 200, model: ::API::Entities::NpmPackageTag }

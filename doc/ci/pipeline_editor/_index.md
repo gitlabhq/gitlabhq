@@ -44,7 +44,7 @@ this section displays a tip to help you fix the problem.
 {{< /history >}}
 
 To test the validity of your GitLab CI/CD configuration before committing the changes,
-use the pipeline editor validation tool. This tool simulates the creation of pipeline
+use the pipeline editor validation tool. This tool simulates the creation of a pipeline
 due to a Git push event, and can help troubleshoot logic issues, including incorrect
 `rules` and `needs` job dependencies:
 

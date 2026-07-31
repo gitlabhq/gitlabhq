@@ -37,9 +37,9 @@ Inputs:
   when a pipeline is triggered, allowing consumers to customize reusable CI configurations.
 - **Modification**: Once passed at pipeline initialization, input values are interpolated in the CI/CD
   configuration and remain fixed for the entire pipeline run.
-- **Scope**: Available only in the file they are defined, whether in the `.gitlab-ci.yml` or a file
-  being `include`d. You can pass them explicitly to other files - using `include:inputs` - or pipeline
-  using `trigger:inputs`.
+- **Scope**: Available only in the file where they are defined, whether in the `.gitlab-ci.yml` or a file
+  being `include`d. You can pass them explicitly to other files by using `include:inputs`,
+  or to a pipeline by using `trigger:inputs`.
 - **Validation**: Provide robust validation capabilities including type checking, regex patterns,
   predefined option lists, and helpful descriptions for users.
 
@@ -462,7 +462,7 @@ deploy:
 ```
 
 In this example, the `requires_approval` input is set to `true` when `deployment_type` is either
-`canary` or `blue-green`. In all other cases, the default is `false` and both `true` or `false` are allowed options.
+`canary` or `blue-green`. In all other cases, the default is `false` and both `true` and `false` are allowed options.
 
 ### Allow user-entered values with `default: null`
 
@@ -702,7 +702,7 @@ If the file is stored outside your project, you can use:
 
 - `project` for files in another GitLab project. Use the full project path and define the filename with `file`.
   You can optionally also define the `ref` to fetch the file from.
-- `remote` for file on another server. Use the full URL to the file.
+- `remote` for a file on another server. Use the full URL to the file.
 
 You can also include multiple input files at the same time, for example:
 

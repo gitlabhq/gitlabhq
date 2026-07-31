@@ -45495,6 +45495,9 @@ msgid_plural "Lines"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Line %{line}"
+msgstr ""
+
 msgid "Line changes"
 msgstr ""
 
@@ -45514,6 +45517,9 @@ msgid "LinearIntegration|Workspace URL"
 msgstr ""
 
 msgid "LinearIntegration|https://linear.app/example"
+msgstr ""
+
+msgid "Lines %{from} to %{to}"
 msgstr ""
 
 msgid "Link"

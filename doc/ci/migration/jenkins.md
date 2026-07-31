@@ -108,7 +108,7 @@ This section goes over commonly used CI/CD configurations, showing how they can 
 from Jenkins to GitLab CI/CD.
 
 [Jenkins pipelines](https://www.jenkins.io/doc/book/pipeline/) generate automated CI/CD jobs
-that are triggered when certain event take place, such as a new commit being pushed.
+that are triggered when certain events take place, such as a new commit being pushed.
 A Jenkins pipeline is defined in a `Jenkinsfile`. The GitLab equivalent is the [`.gitlab-ci.yml` configuration file](../yaml/_index.md).
 
 Jenkins does not provide a place to store source code, so the `Jenkinsfile` must be stored

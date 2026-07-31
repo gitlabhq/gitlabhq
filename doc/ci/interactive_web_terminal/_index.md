@@ -37,10 +37,10 @@ Two things need to be configured for the interactive web terminal to work:
 
 ### Partial support for Helm chart
 
-Interactive web terminals are partially supported in `gitlab-runner` Helm chart.
+Interactive web terminals are partially supported in the `gitlab-runner` Helm chart.
 They are enabled when:
 
-- The number of replica is one
+- The number of replicas is one
 - You use the `loadBalancer` service
 
 Support for fixing these limitations is tracked in the following issues:

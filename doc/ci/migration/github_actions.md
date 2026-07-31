@@ -93,7 +93,7 @@ This section goes over commonly used CI/CD configurations, showing how they can 
 from GitHub Actions to GitLab CI/CD.
 
 [GitHub Action workflows](https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions#workflows)
-generate automated CI/CD jobs that are triggered when certain event take place, for example
+generate automated CI/CD jobs that are triggered when certain events take place, for example
 pushing a new commit. A GitHub Action workflow is a YAML file defined in the `.github/workflows`
 directory located in the root of the repository. The GitLab equivalent is the
 `.gitlab-ci.yml` configuration file, which also resides
@@ -105,7 +105,7 @@ Jobs are a set of commands that run in a set sequence to achieve a particular re
 for example building a container or deploying to production.
 
 For example, this GitHub Actions `workflow` builds a container then deploys it to production.
-The jobs runs sequentially, because the `deploy` job depends on the `build` job:
+The jobs run sequentially, because the `deploy` job depends on the `build` job:
 
 ```yaml
 on: [push]
@@ -602,7 +602,7 @@ cache-job:
 
 In GitHub an Action is a set of complex tasks that need to be frequently repeated and is saved
 to enable reuse without redefining a CI/CD pipeline. In GitLab the equivalent to an action would
-be a the [`include` keyword](../yaml/includes.md), which allows you to [add CI/CD pipelines from other files](../yaml/includes.md),
+be the [`include` keyword](../yaml/includes.md), which allows you to [add CI/CD pipelines from other files](../yaml/includes.md),
 including template files built into GitLab.
 
 Sample GitHub Actions configuration:
@@ -624,10 +624,10 @@ are not exact matches. These two examples are just to show how complex configura
 ### Security Scanning features
 
 GitLab provides a variety of [security scanners](../../user/application_security/_index.md)
-out-of-the-box to detect vulnerabilities in all parts of the SLDC. You can add these features
+by default to detect vulnerabilities in all parts of the SDLC. You can add these features
 to your GitLab CI/CD pipeline by using templates.
 
-for example to add SAST scanning to your pipeline, add the following to your `.gitlab-ci.yml`:
+For example, to add SAST scanning to your pipeline, add the following to your `.gitlab-ci.yml`:
 
 ```yaml
 include:

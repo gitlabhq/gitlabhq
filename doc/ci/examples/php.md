@@ -30,8 +30,8 @@ As with every job, you need to create a valid `.gitlab-ci.yml` describing the
 build environment.
 
 First, specify the PHP image that is used for the job process.
-(You can read more about what an image means in the runner's lingo reading
-about [Using Docker images](../docker/using_docker_images.md#what-is-an-image).)
+For more information about what an image is, see
+[Using Docker images](../docker/using_docker_images.md#what-is-an-image).
 
 Start by adding the image to your `.gitlab-ci.yml`:
 

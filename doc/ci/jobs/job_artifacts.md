@@ -315,7 +315,7 @@ of a project on GitLab.com:
 https://gitlab.com/<full-project-path>/-/jobs/artifacts/main/browse?job=build
 ```
 
-Replace `<full-project-path>` with a valid project path, you can find it in the URL for your project.
+Replace `<full-project-path>` with a valid project path. You can find it in the URL for your project.
 
 ## Set the maximum artifacts size
 

@@ -436,7 +436,7 @@ While troubleshooting CI/CD job token authentication issues, be aware that:
   demonstrates how to use GraphQL with Bash and cURL to:
   - Enable the inbound token access scope.
   - Give access to project B from project A, or add B to A's allowlist.
-  - To remove project access.
+  - Remove project access.
 - The CI job token becomes invalid if the job is no longer running, has been erased,
   or if the project is in the process of being deleted.
 

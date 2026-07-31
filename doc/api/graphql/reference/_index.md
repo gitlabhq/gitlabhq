@@ -10562,6 +10562,33 @@ Fields:
 | <a id="mutation-groupsecretspermissionupdate-reason"></a>`reason` {{< icon name="warning-solid" >}} | [`SecretsManagerWriteDenialReason`](#secretsmanagerwritedenialreason) | Introduced in GitLab 19.2. Status: Experiment. Reason the write was denied due to entitlement; null when not denied for that reason. |
 | <a id="mutation-groupsecretspermissionupdate-secretspermission"></a>`secretsPermission` | [`GroupSecretsPermission`](#groupsecretspermission) | Secrets Permission that was created. |
 
+### `Mutation.groupTransfer`
+
+{{< details >}}
+
+- Introduced in GitLab 19.3.
+- Status: Experiment.
+
+{{< /details >}}
+
+Input type: `GroupTransferInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-grouptransfer-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-grouptransfer-id"></a>`id` | [`GroupID!`](#groupid) | Global ID of the group to transfer. |
+| <a id="mutation-grouptransfer-targetid"></a>`targetId` | [`GroupID`](#groupid) | Global ID of the target parent group. Omit to make group top-level. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-grouptransfer-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-grouptransfer-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-grouptransfer-group"></a>`group` | [`Group`](#group) | Group after mutation. |
+
 ### `Mutation.groupUpdate`
 
 Input type: `GroupUpdateInput`
@@ -14973,6 +15000,33 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="mutation-projecttextreplace-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-projecttextreplace-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+
+### `Mutation.projectTransfer`
+
+{{< details >}}
+
+- Introduced in GitLab 19.3.
+- Status: Experiment.
+
+{{< /details >}}
+
+Input type: `ProjectTransferInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-projecttransfer-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-projecttransfer-id"></a>`id` | [`ProjectID!`](#projectid) | Global ID of the project to transfer. |
+| <a id="mutation-projecttransfer-namespaceid"></a>`namespaceId` | [`NamespaceID!`](#namespaceid) | Global ID of the target namespace. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-projecttransfer-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-projecttransfer-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-projecttransfer-project"></a>`project` | [`Project`](#project) | Project after mutation. |
 
 ### `Mutation.projectUpdateComplianceFrameworks`
 
@@ -43882,6 +43936,7 @@ Fields:
 | <a id="group-toolapprovalforsessionenabled"></a>`toolApprovalForSessionEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 18.11. Status: Experiment. Indicates whether tool approval for session is enabled for the group. |
 | <a id="group-totalrepositorysize"></a>`totalRepositorySize` | [`Float`](#float) | Total repository size of all projects in the root namespace in bytes. |
 | <a id="group-totalrepositorysizeexcess"></a>`totalRepositorySizeExcess` | [`Float`](#float) | Total excess repository size of all projects in the root namespace in bytes. This only applies to namespaces under Project limit enforcement. |
+| <a id="group-transferinprogress"></a>`transferInProgress` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.3. Status: Experiment. Indicates if the group is currently being transferred. |
 | <a id="group-twofactorgraceperiod"></a>`twoFactorGracePeriod` | [`Int`](#int) | Time before two-factor authentication is enforced. |
 | <a id="group-updatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of when the group was last updated. |
 | <a id="group-userpermissions"></a>`userPermissions` | [`GroupPermissions!`](#grouppermissions) | Permissions for the current user on the resource. |
@@ -53995,6 +54050,7 @@ Fields:
 | <a id="project-timelogcategories"></a>`timelogCategories` {{< icon name="warning-solid" >}} | [`TimeTrackingTimelogCategoryConnection`](#timetrackingtimelogcategoryconnection) | Introduced in GitLab 15.3. Status: Experiment. Timelog categories for the project. |
 | <a id="project-topics"></a>`topics` | [`[String!]`](#string) | List of project topics. |
 | <a id="project-trackingkey"></a>`trackingKey` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 16.0. Status: Experiment. Tracking key assigned to the project. |
+| <a id="project-transferinprogress"></a>`transferInProgress` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.3. Status: Experiment. Indicates if the project is currently being transferred. |
 | <a id="project-updatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of when the project was last updated. |
 | <a id="project-useraccessauthorizedagents"></a>`userAccessAuthorizedAgents` | [`ClusterAgentAuthorizationUserAccessConnection`](#clusteragentauthorizationuseraccessconnection) | Authorized cluster agents for the project through user_access keyword. (see [Connections](#connections)) |
 | <a id="project-userpermissions"></a>`userPermissions` | [`ProjectPermissions!`](#projectpermissions) | Permissions for the current user on the resource. |

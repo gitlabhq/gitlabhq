@@ -142,6 +142,7 @@ module Types
     mount_mutation Mutations::Projects::CustomAttributes::Set, experiment: { milestone: '18.9' }
     mount_mutation Mutations::Projects::SyncFork, calls_gitaly: true, experiment: { milestone: '15.9' }
     mount_mutation Mutations::Projects::TextReplace, calls_gitaly: true, experiment: { milestone: '17.1' }
+    mount_mutation Mutations::Projects::Transfer, experiment: { milestone: '19.3' }
     mount_mutation Mutations::Projects::Star, experiment: { milestone: '16.7' }
     mount_mutation Mutations::Projects::BranchRules::SquashOptions::Update, experiment: { milestone: '17.9' }
     mount_mutation Mutations::BranchRules::Update, experiment: { milestone: '16.7' }
@@ -237,6 +238,7 @@ module Types
     mount_mutation Mutations::Namespaces::RegenerateNewWorkItemEmailAddress, experiment: { milestone: '18.2' }
     mount_mutation Mutations::Groups::CustomAttributes::Delete, experiment: { milestone: '18.9' }
     mount_mutation Mutations::Groups::CustomAttributes::Set, experiment: { milestone: '18.9' }
+    mount_mutation Mutations::Groups::Transfer, experiment: { milestone: '19.3' }
     mount_mutation Mutations::Groups::Update
     mount_mutation Mutations::UserCallouts::Create
     mount_mutation Mutations::Users::GroupCallouts::Create

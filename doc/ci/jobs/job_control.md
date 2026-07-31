@@ -105,7 +105,7 @@ To retry a manual job with previously-specified variables:
 - With the same variables:
   - From the job details page, select **Retry** ({{< icon name="retry" >}}).
 - With updated variables:
-  - From the job details page, select **Retry job with modified values** in dropdown.
+  - From the job details page, select **Retry job with modified values** in the dropdown.
   - The variables that were specified in the previous run are prefilled in the form.
     You can add, modify, or delete CI/CD variables from this form.
   - Select **Run job again**.
@@ -152,9 +152,8 @@ To protect a manual job:
 
 1. In the [protected environments settings](../environments/protected_environments.md#protecting-environments),
    select the environment (`production` in this example) and add the users, roles or groups
-   that are authorized to run the manual job to the **Allowed to Deploy** list. Only those in
-   this list can run this manual job, and GitLab administrators
-   who are always able to use protected environments.
+   that are authorized to run the manual job to the **Allowed to Deploy** list. Only users in
+   this list or GitLab administrators can run this manual job.
 
 You can use protected environments with blocking manual jobs to have a list of users
 allowed to approve later pipeline stages. Add `allow_failure: false` to the protected

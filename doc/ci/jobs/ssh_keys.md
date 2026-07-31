@@ -119,7 +119,7 @@ When your CI/CD jobs run in Docker containers, the environment is isolated. To d
 
 1. Make sure the private server's [SSH host keys are verified](#verifying-the-ssh-host-keys).
 1. As a final step, add the public key from the one you created in the first
-   step to the services that you want to have an access to from inside the build
+   step to the services that you want to have access to from inside the build
    environment. If you are accessing a private GitLab repository you must add
    it as a [deploy key](../../user/project/deploy_keys/_index.md).
 
@@ -145,7 +145,7 @@ on, and use that key for all projects that are run on this machine.
    Do not add a passphrase to the SSH key, or the `before_script` will
    prompt for it.
 1. As a final step, add the public key from the one you created earlier to the
-   services that you want to have an access to from inside the build environment.
+   services that you want to have access to from inside the build environment.
    If you are accessing a private GitLab repository you must add it as a
    [deploy key](../../user/project/deploy_keys/_index.md).
 

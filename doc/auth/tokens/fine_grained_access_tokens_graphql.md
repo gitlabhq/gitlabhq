@@ -502,6 +502,7 @@ Grants the ability to archive, create, delete, read, share, transfer, and update
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
 | Read | Group | Type | `Group` |
+| Transfer | Group | Mutation | `GroupTransfer` |
 | Update | Group | Mutation | `GroupUpdate` |
 
 #### LDAP Admin Role Link
@@ -834,6 +835,7 @@ Grants the ability to archive, create, delete, fork, read, share, transfer, and 
 | ------ | ------ | ---- | ---- |
 | Read | Project | Type | `Project` |
 | Read | Project | Type | `RepositoryLanguage` |
+| Transfer | Project | Mutation | `ProjectTransfer` |
 | Update | Project | Mutation | `ProjectSettingsUpdate` |
 | Update | Project | Mutation | `StarProject` |
 

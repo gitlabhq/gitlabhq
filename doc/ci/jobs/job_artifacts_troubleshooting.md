@@ -33,7 +33,7 @@ If job artifacts are using too much disk space, see the
 
 ## Error message `No files to upload`
 
-This message appears in job logs when a the runner can't find the file to upload. Either
+This message appears in job logs when the runner can't find the file to upload. Either
 the path to the file is incorrect, or the file was not created. You can check the job
 log for other errors or warnings that specify the filename and why it wasn't
 generated.
