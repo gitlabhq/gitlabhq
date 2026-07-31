@@ -29,7 +29,7 @@ export default {
       type: String,
     },
   },
-  emits: ['expandSidebar', 'subscribedUpdated'],
+  emits: ['expand-sidebar', 'subscribedUpdated'],
   data() {
     return {
       subscribed: false,
@@ -152,7 +152,7 @@ export default {
       }
     },
     expandSidebar() {
-      this.$emit('expandSidebar');
+      this.$emit('expand-sidebar');
     },
   },
   i18n: {

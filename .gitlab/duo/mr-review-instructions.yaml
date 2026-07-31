@@ -1291,6 +1291,13 @@ instructions:
     instructions: |
       1. Flag any msgid entry that starts with a lowercase letter - this indicates a split sentence that will be hard to translate
 
+  - name: Translated documentation (doc-locale)
+    fileFilters:
+      - "doc-locale/**/*.md"
+    instructions: |
+      1. Write all review comments in English, even when the files under review are in another language.
+      2. Flag sentences in the target language that are grammatically incomplete or missing an expected word. A dangling particle or a missing noun usually means a word or phrase was dropped during translation. Check this against the translated file alone; the English source is not required. Point out that a word or phrase is missing; do not guess the specific missing word, since the source is not consulted here.
+
   - name: Experiments
     fileFilters:
       - "**/*.rb"

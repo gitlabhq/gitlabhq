@@ -457,7 +457,7 @@ POST /projects/:id/boards/:board_id/lists
 | `iteration_id` | integer | no | The ID of an iteration. Premium and Ultimate only. |
 
 > [!note]
-> Label, assignee and milestone arguments are mutually exclusive,
+> Label, assignee, and milestone arguments are mutually exclusive,
 > that is, only one of them is accepted in a request.
 > Check the [issue board documentation](../user/project/issue_board.md)
 > for more information regarding the required license for each list type.

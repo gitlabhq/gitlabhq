@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Sidebars::Projects::Menus::RepositoryMenu, feature_category: :source_code_management do
-  let_it_be_with_reload(:project) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :small_repo) }
 
   let(:user) { project.first_owner }
   let(:is_super_sidebar) { false }

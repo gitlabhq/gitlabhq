@@ -35,6 +35,7 @@ RSpec.shared_context 'with FOSS query type fields' do
       :project,
       :projects,
       :query_complexity,
+      :restricted_visibility_levels,
       :runner,
       :runner_platforms,
       :runner_setup,

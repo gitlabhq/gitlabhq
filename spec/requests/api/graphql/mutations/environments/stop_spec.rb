@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Stop Environment', feature_category: :environment_management do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user, maintainer_of: project) }
   let_it_be(:environment) { create(:environment, project: project) }
 

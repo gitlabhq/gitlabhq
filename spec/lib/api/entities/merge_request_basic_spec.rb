@@ -10,8 +10,12 @@ RSpec.describe ::API::Entities::MergeRequestBasic, feature_category: :code_revie
   # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
   # (see gitlab-org/gitlab#602925).
   let_it_be(:merge_request, freeze: false) { create(:merge_request) }
-  let_it_be(:labels) { create_list(:label, 3) }
-  let_it_be(:merge_requests) { create_list(:labeled_merge_request, 10, :unique_branches, labels: labels) }
+  let_it_be(:labels) { create_list(:label, 3, project: merge_request.target_project) }
+  let_it_be(:merge_requests) do
+    create_list(:labeled_merge_request, 10, :unique_branches,
+      labels: labels, source_project: merge_request.target_project)
+  end
+
   let_it_be(:entity) { described_class.new(merge_request) }
 
   # This mimics the behavior of the `Grape::Entity` serializer
@@ -37,7 +41,7 @@ RSpec.describe ::API::Entities::MergeRequestBasic, feature_category: :code_revie
   context "with :with_api_entity_associations scope" do
     let(:scope) { MergeRequest.with_api_entity_associations }
 
-    it "avoids N+1 queries" do
+    it "avoids N+1 queries", :clean_gitlab_redis_cache do
       query = scope.find(merge_request.id)
 
       control = ActiveRecord::QueryRecorder.new do

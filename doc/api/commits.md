@@ -785,7 +785,7 @@ following cases is valid:
 - the `line` number is invalid (does not exist)
 - the `path` is invalid (does not exist)
 
-In any of the previous cases, the response of `line`, `line_type` and `path` is
+In any of the previous cases, the response of `line`, `line_type`, and `path` is
 set to `null`.
 
 For other approaches to commenting on a merge request, see

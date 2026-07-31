@@ -6,7 +6,7 @@ RSpec.describe 'Namespace.sidebar', feature_category: :navigation do
   include GraphqlHelpers
 
   let_it_be(:group) { create(:group, :private) }
-  let_it_be(:project) { create(:project, :repository, namespace: group) }
+  let_it_be(:project) { create(:project, namespace: group) }
 
   let_it_be(:reporter) { create(:user, reporter_of: group) }
 

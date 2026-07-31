@@ -3,13 +3,17 @@ import {
   STICKY_HEADER_CLASSES,
   STICKY_TABLE_WRAPPER_CLASSES,
 } from '~/lib/utils/table_sticky_header';
+import initPopovers from '~/behaviors/markdown/init_popovers';
+import { GFM_POPOVER_SELECTOR, GFM_LIGHTBOX_IMAGE_SELECTOR } from '~/behaviors/markdown/constants';
+import {
+  renderImageLightbox,
+  destroyImageLightbox,
+} from '~/behaviors/markdown/render_image_lightbox';
 import { s__ } from '~/locale';
 
 const ASCENDING = 'ascending';
 const DESCENDING = 'descending';
-
 const SORT_ARROWS = { [ASCENDING]: '↑', [DESCENDING]: '↓' };
-
 // Performance limit: disable sorting for tables with more than 1000 rows.
 const MAX_SORTABLE_ROWS = 1000;
 
@@ -77,6 +81,24 @@ export default {
         return ascending ? comparison : -comparison;
       });
     },
+  },
+  mounted() {
+    // Cell content is re-rendered from the parsed markdown via `v-html`, which
+    // creates new DOM nodes. Popover listeners added by `renderGFM` were attached
+    // to the original (replaced) table, so reference popovers (issues, work items,
+    // MRs, ...) must be re-initialized on the new nodes.
+    initPopovers(Array.from(this.$el.querySelectorAll(GFM_POPOVER_SELECTOR)));
+
+    // creates new DOM nodes. Lightbox click listeners added by `renderGFM` were
+    // attached to the original (replaced) table, so the image lightbox must be
+    // re-initialized on the new nodes.
+    renderImageLightbox(
+      Array.from(this.$el.querySelectorAll(GFM_LIGHTBOX_IMAGE_SELECTOR)),
+      this.$el,
+    );
+  },
+  beforeDestroy() {
+    destroyImageLightbox(this.$el);
   },
   methods: {
     ariaSort(key) {

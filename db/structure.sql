@@ -20361,6 +20361,7 @@ CREATE TABLE duo_workflows_workflows (
     sync_type smallint,
     agent_identity_id bigint,
     flow_metadata_json text,
+    web_search_enabled boolean DEFAULT false NOT NULL,
     CONSTRAINT check_1033e7a455 CHECK ((char_length(title) <= 40)),
     CONSTRAINT check_13bb5688db CHECK ((char_length(summary) <= 1024)),
     CONSTRAINT check_30ca07a4ef CHECK ((char_length(goal) <= 16384)),

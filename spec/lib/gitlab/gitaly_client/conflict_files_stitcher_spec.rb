@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GitalyClient::ConflictFilesStitcher do
-  let_it_be(:target_project) { create(:project, :repository) }
+  let_it_be(:target_project) { create(:project, :small_repo) }
   let_it_be(:target_repository) { target_project.repository.raw }
   let_it_be(:target_gitaly_repository) { target_repository.gitaly_repository }
 

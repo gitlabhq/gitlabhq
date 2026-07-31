@@ -167,6 +167,10 @@ module Types
     field :query_complexity, Types::QueryComplexityType,
       null: true,
       description: 'Information about the complexity of the GraphQL query.'
+    field :restricted_visibility_levels, [Types::VisibilityLevelsEnum],
+      null: true,
+      description: 'Visibility levels that are restricted on the instance. ' \
+        'Non-administrators cannot use restricted visibility levels for groups, projects, or snippets.'
     field :runner, Types::Ci::RunnerType,
       null: true,
       resolver: Resolvers::Ci::RunnerResolver,
@@ -338,6 +342,10 @@ module Types
 
     def gitpod_enabled
       application_settings.gitpod_enabled
+    end
+
+    def restricted_visibility_levels
+      application_settings.restricted_visibility_levels || []
     end
 
     def query_complexity

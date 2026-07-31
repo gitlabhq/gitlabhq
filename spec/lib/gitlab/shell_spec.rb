@@ -4,7 +4,7 @@ require 'spec_helper'
 require 'stringio'
 
 RSpec.describe Gitlab::Shell, feature_category: :source_code_management do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
 
   let(:repository) { project.repository }
   let(:gitlab_shell) { described_class.new }
@@ -131,7 +131,7 @@ RSpec.describe Gitlab::Shell, feature_category: :source_code_management do
 
       context 'when the repository exists' do
         it 'returns true' do
-          project = create(:project, :repository, :legacy_storage)
+          project = create(:project, :small_repo, :legacy_storage)
 
           expect(subject.repository_exists?(storage, project.repository.disk_path + ".git")).to be(true)
         end

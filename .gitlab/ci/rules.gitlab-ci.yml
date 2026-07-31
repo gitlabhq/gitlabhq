@@ -3938,15 +3938,6 @@
       when: never
     - <<: *if-default-branch-schedule-ai-principles
 
-.ai-principles-sync:rules:scheduled-on-failure:
-  rules:
-    - if: '$CI_PROJECT_PATH != "gitlab-org/gitlab"'
-      when: never
-    - if: '$AGENT_PRINCIPLES_SERVICE_ACCOUNT_TOKEN == null || $AGENT_PRINCIPLES_SERVICE_ACCOUNT_TOKEN == ""'
-      when: never
-    - <<: *if-default-branch-schedule-ai-principles
-      when: on_failure
-
 .ai-principles-reconcile:rules:scheduled:
   rules:
     - if: '$CI_PROJECT_PATH != "gitlab-org/gitlab"'

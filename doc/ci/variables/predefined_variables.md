@@ -32,7 +32,7 @@ Predefined variables become available at three different phases of pipeline exec
   up the job and runs it, and:
   - Can be used in job scripts.
   - Cannot be used with [trigger jobs](../pipelines/downstream_pipelines.md#trigger-a-downstream-pipeline-from-a-job-in-the-gitlab-ciyml-file).
-  - Cannot be used with [`workflow`](../yaml/_index.md#workflow), [`include`](../yaml/_index.md#include)
+  - Cannot be used with [`workflow`](../yaml/_index.md#workflow), [`include`](../yaml/_index.md#include),
     or [`rules`](../yaml/_index.md#rules).
 
 ## Predefined variables

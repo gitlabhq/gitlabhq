@@ -70,7 +70,7 @@ RSpec.describe Gitlab::Diff::PositionTracer do
   end
 
   describe 'diffs methods' do
-    let(:project) { create(:project, :repository) }
+    let(:project) { create(:project, :small_repo) }
     let(:current_user) { project.first_owner }
 
     let(:old_diff_refs) do

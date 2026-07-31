@@ -41,7 +41,7 @@ The [epic issues API](epic_issues.md) allows you to interact with issues associa
 Because start date and due date can be dynamically sourced from related issue milestones,
 additional fields are shown when the user has edit permission. These include two boolean
 fields `start_date_is_fixed` and `due_date_is_fixed`, and four date fields `start_date_fixed`,
-`start_date_from_inherited_source`, `due_date_fixed` and `due_date_from_inherited_source`.
+`start_date_from_inherited_source`, `due_date_fixed`, and `due_date_from_inherited_source`.
 
 - `end_date` has been deprecated in favor of `due_date`.
 - `start_date_from_milestones` has been deprecated in favor of `start_date_from_inherited_source`

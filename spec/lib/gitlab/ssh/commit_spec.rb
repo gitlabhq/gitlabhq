@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ssh::Commit, feature_category: :source_code_management do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
   let_it_be(:signed_by_key) { create(:key) }
   let_it_be(:fingerprint) { signed_by_key.fingerprint_sha256 }
 
@@ -160,8 +160,8 @@ RSpec.describe Gitlab::Ssh::Commit, feature_category: :source_code_management do
   end
 
   describe '#lazy_signature' do
-    let_it_be(:project1) { create(:project, :repository) }
-    let_it_be(:project2) { create(:project, :repository) }
+    let_it_be(:project1) { create(:project, :small_repo) }
+    let_it_be(:project2) { create(:project, :small_repo) }
     let_it_be(:commit1) { create(:commit, project: project1, sha: '1234567890abcdef1234567890abcdef12345678') }
     let_it_be(:commit2) { create(:commit, project: project1, sha: 'abcdef1234567890abcdef1234567890abcdef12') }
     let_it_be(:commit3) { create(:commit, project: project2, sha: 'fedcba0987654321fedcba0987654321fedcba09') }

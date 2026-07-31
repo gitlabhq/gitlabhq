@@ -21,6 +21,8 @@ require_relative 'sync/workflow'
 require_relative 'sync/auto_mr'
 require_relative 'sync/manifest'
 require_relative 'sync/validator'
+require_relative 'sync/artifacts'
+require_relative 'sync/child_pipeline'
 
 module Gitlab
   module PrinciplesDistiller
@@ -57,10 +59,27 @@ module Gitlab
       # repo path, since it renders as a clickable URL in the CI log.
       DUO_INSTRUCTIONS_DOC = 'https://docs.gitlab.com/development/documentation/ai-instruction-files-documentation/'
 
+      # The non-default entry points, in precedence order. These are the flags
+      # that select WHICH mode runs, as opposed to modifiers like --push,
+      # --force, --only and --warn-stale that tune a mode.
+      MODE_OPTIONS = %i[
+        check_duo_instructions
+        reconcile_duo_instructions
+        generate_child_pipeline
+        distill_one
+        collect
+      ].freeze
+
       # Path of the per-run dotenv report consumed by the
-      # `ai-principles-sync:report-failure` Slack job, so its message can name
+      # `ai-principles-report-failure` Slack job, so its message can name
       # the failed principles instead of a generic "the job failed".
       RUN_REPORT_PATH = 'tmp/ai-principles-run.env'
+
+      # Where the generator writes the child-pipeline YAML, and where each
+      # distill job writes its per-principle artifacts for the collect job to
+      # fan back in. Both are under tmp/ so they never pollute a publish diff.
+      CHILD_PIPELINE_PATH = 'tmp/ai-principles-child-pipeline.yml'
+      ARTIFACTS_DIR = 'tmp/ai-principles-distilled'
 
       # A thematic break (`---`, `***`, or `___` alone on a line) is Markdown
       # document scaffolding, not a rule, so `logical_units` treats it as a
@@ -84,9 +103,54 @@ module Gitlab
       def run
         options = parse_options
 
-        return check_duo_instructions(warn_stale: options[:warn_stale]) if options[:check_duo_instructions]
-        return reconcile_duo_instructions(push: options[:push]) if options[:reconcile_duo_instructions]
+        return if run_alternate_mode(options)
 
+        distill_and_publish(options)
+      end
+
+      # The mutually-exclusive non-default entry points. Returns true when one
+      # of them handled the run, so `run` can fall through to the default
+      # distill-and-publish path otherwise.
+      #
+      # Modes are mutually exclusive but OptionParser cannot express that: it
+      # happily accepts `--distill-one x --collect y,z` and this method would
+      # silently run whichever comes first in the chain below, ignoring the
+      # other. That is a plausible copy-paste error in the CI YAML, and the
+      # failure would be near-invisible: a `--collect` that was meant to also
+      # distill just publishes an empty run. Fail fast instead.
+      def run_alternate_mode(options)
+        assert_single_mode!(options)
+
+        if options[:check_duo_instructions]
+          check_duo_instructions(warn_stale: options[:warn_stale])
+        elsif options[:reconcile_duo_instructions]
+          reconcile_duo_instructions(push: options[:push])
+        elsif options[:generate_child_pipeline]
+          generate_child_pipeline(options)
+        elsif options[:distill_one]
+          distill_one(options[:distill_one])
+        elsif options[:collect]
+          collect(options[:collect])
+        else
+          return false
+        end
+
+        true
+      end
+
+      def assert_single_mode!(options)
+        given = MODE_OPTIONS.select { |mode| options[mode] }
+        return if given.size <= 1
+
+        flags = given.map { |mode| "--#{mode.to_s.tr('_', '-')}" }
+        abort Rainbow("ERROR: #{flags.join(' and ')} are mutually exclusive; pass only one").red
+      end
+
+      # The default, single-job path: scan, distill everything affected in
+      # this process, and publish. Still used for local runs and as the
+      # in-process fallback; scheduled CI now splits these stages across jobs
+      # (see generate_child_pipeline / distill_one / collect).
+      def distill_and_publish(options)
         workflow.validate_config! unless options[:dry_run]
 
         banner("Loading manifest from #{Manifest::MANIFEST_PATH}...")
@@ -181,6 +245,22 @@ module Gitlab
             'Used on refs where fence staleness is expected transient state reconciled by the ' \
             'daily fence-reconcile job') do
             options[:warn_stale] = true
+          end
+
+          opts.on('--generate-child-pipeline', 'Scan for drift and write the dynamic child-pipeline ' \
+            "YAML (one distill job per affected principle) to #{CHILD_PIPELINE_PATH}, then exit. " \
+            'Triggers no distillation') do
+            options[:generate_child_pipeline] = true
+          end
+
+          opts.on('--distill-one NAME', 'Distill exactly one principle and write its result to the ' \
+            "artifact directory (#{ARTIFACTS_DIR}) for a later --collect run. Publishes nothing") do |name|
+            options[:distill_one] = name
+          end
+
+          opts.on('--collect NAMES', 'Comma-separated list of principles expected from the distill ' \
+            'jobs. Fans their artifacts in and publishes, without distilling anything itself') do |names|
+            options[:collect] = names.split(',').map(&:strip).reject(&:empty?)
           end
 
           opts.on('--reconcile-duo-instructions', 'Regenerate the Duo Code Review fences from the ' \
@@ -321,6 +401,94 @@ module Gitlab
         create_reconcile_mr_from_working_tree(manifest.auto_mr_config, manifest)
       end
 
+      # Stage 1 of the split pipeline: scan for drift and emit the child
+      # pipeline that will distill each affected principle in its own job.
+      #
+      # This job triggers no distillation, so it is fast and cheap; the
+      # expensive, timeout-prone work all happens in the generated jobs, each
+      # with its own timeout. That is the whole point of the split: a single
+      # slow or retrying principle can no longer consume a budget shared with
+      # every other principle (see gitlab-org/gitlab#607365).
+      #
+      # `validate_config!` runs here rather than only in the distill jobs so a
+      # misconfigured Workflow API fails once, immediately, instead of N times
+      # in parallel after the runners have already spun up.
+      def generate_child_pipeline(options)
+        workflow.validate_config!
+
+        banner("Loading manifest from #{Manifest::MANIFEST_PATH}...")
+        manifest.load
+
+        banner("\nScanning principles for stale SSOT sources...")
+        affected = manifest.affected_principles(force: options[:force], only: options[:only])
+
+        if affected.empty?
+          puts "\n#{Rainbow('All principles are up to date.').green}"
+        else
+          puts "\n#{Rainbow("Affected principles: #{affected.keys.join(', ')}").yellow}"
+        end
+
+        write_child_pipeline(affected.keys)
+      end
+
+      # Stage 2, one CI job per principle: distill exactly this principle and
+      # record the outcome as an artifact. Publishes nothing: the fan-in in
+      # `collect` owns publishing, because building the per-team MRs shares a
+      # single working tree and cannot be parallelized the same way.
+      #
+      # A principle absent from the manifest is a hard error: it means the
+      # generated pipeline and the manifest have diverged, and silently
+      # succeeding would let the collect job report the principle as "never
+      # ran" and quietly skip it every week.
+      def distill_one(name)
+        banner("Loading manifest from #{Manifest::MANIFEST_PATH}...")
+        manifest.load
+
+        config = manifest.principle_config(name)
+        abort Rainbow("ERROR: unknown principle '#{name}' (not in #{Manifest::MANIFEST_PATH})").red unless config
+
+        workflow.validate_config!
+
+        banner("\nDistilling #{name}...")
+        affected = { name => { config: config } }
+        contents, failed = build_distilled_contents(affected)
+
+        record_distill_artifact(name, contents[name], failed)
+      end
+
+      # Stage 3, the fan-in: reconstruct the run from the distill jobs'
+      # artifacts and publish. This is the only stage that touches git, so the
+      # `git checkout -B` per team in `create_branch_and_mr` still operates on
+      # one working tree, unchanged.
+      def collect(expected)
+        banner("Loading manifest from #{Manifest::MANIFEST_PATH}...")
+        manifest.load
+
+        banner("\nCollecting distilled principles from #{expected.size} distill job(s)...")
+        result = artifacts.collect(expected)
+
+        report_collected(result)
+        write_run_report(result.failed, result.contents.size, not_run: result.not_run)
+
+        # `affected` is rebuilt here (rather than carried through artifacts)
+        # because the MR description needs each principle's prior_sha and
+        # changed_sources, and those come from the same manifest scan the
+        # generator already ran against the same commit.
+        affected = manifest.affected_principles(only: expected)
+
+        if result.contents.any?
+          puts "\n#{Rainbow("#{result.contents.size} principle(s) updated.").green}"
+          create_branch_and_mr(result.contents, affected, manifest.auto_mr_config,
+            failed: result.failed, not_run: result.not_run)
+        end
+
+        # `not_run` is deliberately NOT fatal: a principle whose job never
+        # completed has not been shown to be undistillable, and its checksum is
+        # untouched, so the next scheduled run simply re-attempts it. Only a
+        # genuine post-retry failure exits non-zero.
+        abort_on_failures(result.failed)
+      end
+
       # Informational only; the Duo agent reads the file itself via the
       # Workflow API.
       def announce_distillation_start(name, mutex)
@@ -334,6 +502,56 @@ module Gitlab
       end
 
       private
+
+      def artifacts
+        @artifacts ||= Artifacts.new(Workspace.safe_join(ARTIFACTS_DIR))
+      end
+
+      def write_child_pipeline(names)
+        path = Workspace.safe_join(CHILD_PIPELINE_PATH)
+        FileUtils.mkdir_p(File.dirname(path))
+        File.write(path, ChildPipeline.new(names).to_yaml)
+
+        puts "\n#{Rainbow("Wrote a child pipeline with #{names.size} distill job(s) to " \
+          "#{CHILD_PIPELINE_PATH}.").green}"
+      end
+
+      # Maps the three outcomes of a single-principle distillation onto the
+      # artifact contract. `unchanged` is distinct from `failed`: the workflow
+      # ran cleanly and produced no meaningful diff, which is a normal, healthy
+      # result and must not reach the Slack alert.
+      def record_distill_artifact(name, content, failed)
+        if failed.include?(name)
+          artifacts.write(name, Artifacts::STATUS_FAILED)
+          abort "\n#{Rainbow("ERROR: #{name} failed distillation after retries").red}"
+        end
+
+        if content.nil?
+          artifacts.write(name, Artifacts::STATUS_UNCHANGED)
+          puts "\n#{Rainbow("#{name}: no meaningful changes.").faint}"
+          return
+        end
+
+        artifacts.write(name, Artifacts::STATUS_UPDATED, content: content)
+        puts "\n#{Rainbow("#{name}: distilled.").green}"
+      end
+
+      # Surfaces the two abnormal outcomes with distinct wording, so an
+      # operator reading the collect job's log can tell a principle that Duo
+      # could not distill from one whose job never got to run.
+      def report_collected(result)
+        if result.failed.any?
+          warn Rainbow("  #{result.failed.size} principle(s) failed distillation after retries: " \
+            "#{result.failed.join(', ')}").red
+        end
+
+        return if result.not_run.empty?
+
+        warn Rainbow("  #{result.not_run.size} principle(s) produced no result because their distill " \
+          "job did not complete: #{result.not_run.join(', ')}").yellow
+        warn '  This is not a distillation failure - their checksums are untouched, so the next'
+        warn '  scheduled run re-attempts them.'
+      end
 
       def distill(affected, options)
         contents, failed =
@@ -356,22 +574,29 @@ module Gitlab
         abort "\n#{Rainbow("ERROR: #{failed.size} principle(s) failed after retries: #{failed.join(', ')}").red}"
       end
 
-      # Emits the dotenv report read by the `ai-principles-sync:report-failure`
+      # Emits the dotenv report read by the `ai-principles-report-failure`
       # Slack job. Written on every run that reaches distillation, including
       # clean ones: the artifact is declared unconditionally in CI, so skipping
       # the write would log `no matching files` / `No files to upload` on each
       # green weekly run. `AI_PRINCIPLES_FAILED_NAMES` is empty on a clean run,
       # which is what the Slack job tests to pick its wording.
       #
+      # `not_run` gets its own vars rather than overloading the failure ones,
+      # so the Slack job can word "Duo could not distill these" and "these
+      # jobs never ran" differently. It is empty in the single-job path, where
+      # there are no per-principle jobs that could go missing.
+      #
       # Best-effort: a write failure must not mask a distillation failure the
       # caller may be about to abort on.
-      def write_run_report(failed, published_count)
+      def write_run_report(failed, published_count, not_run: [])
         path = Workspace.safe_join(RUN_REPORT_PATH)
         FileUtils.mkdir_p(File.dirname(path))
         File.write(path, <<~ENV_FILE)
           AI_PRINCIPLES_FAILED_COUNT=#{failed.size}
           AI_PRINCIPLES_FAILED_NAMES=#{failed.join(', ')}
           AI_PRINCIPLES_PUBLISHED_COUNT=#{published_count}
+          AI_PRINCIPLES_NOT_RUN_COUNT=#{not_run.size}
+          AI_PRINCIPLES_NOT_RUN_NAMES=#{not_run.join(', ')}
         ENV_FILE
       rescue StandardError => e
         warn Rainbow("  WARNING: could not write #{RUN_REPORT_PATH} (#{e.message}); " \

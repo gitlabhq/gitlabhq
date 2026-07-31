@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GitalyClient::PraefectInfoService do
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
   let(:repository) { project.repository }
   let(:gitaly_repository) { repository.gitaly_repository }
   let(:client) { described_class.new(repository) }

@@ -151,7 +151,7 @@ To protect a manual job:
    ```
 
 1. In the [protected environments settings](../environments/protected_environments.md#protecting-environments),
-   select the environment (`production` in this example) and add the users, roles or groups
+   select the environment (`production` in this example) and add the users, roles, or groups
    that are authorized to run the manual job to the **Allowed to Deploy** list. Only users in
    this list or GitLab administrators can run this manual job.
 

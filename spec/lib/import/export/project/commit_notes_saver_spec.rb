@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Import::Export::Project::CommitNotesSaver, feature_category: :importers do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
   let_it_be(:commit_sha) { project.repository.commit.id }
   let_it_be(:commit_note) { create(:note_on_commit, project: project, commit_id: commit_sha, note: 'Looks good!') }
 
@@ -54,7 +54,7 @@ RSpec.describe Import::Export::Project::CommitNotesSaver, feature_category: :imp
     end
 
     context 'when the project has no commit notes' do
-      let_it_be(:project) { create(:project, :repository) }
+      let_it_be(:project) { create(:project, :small_repo) }
       let_it_be(:commit_note) { nil }
 
       it 'returns true without walking the repository' do

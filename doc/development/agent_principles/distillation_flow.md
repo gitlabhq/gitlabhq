@@ -16,6 +16,10 @@ For the step-by-step description, see
 
 Each sync run starts with drift detection and ends with a merge request that updates the distilled files.
 
+The run spans two pipelines. A generate job scans for drift and emits a child
+pipeline with one distill job per affected principle. Those jobs run in
+parallel, then fan back in to a single collect job that publishes.
+
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
 flowchart TD
@@ -29,32 +33,64 @@ flowchart TD
     Drift -->|Yes| UpToDate[Principle is up to date]
     Drift -->|No| Affected[Principle needs an update]
 
-    UpToDate --> AnyAffected
-    Affected --> AnyAffected
+    UpToDate --> Generate
+    Affected --> Generate
 
-    AnyAffected{Any principles<br/>need an update?}
-    AnyAffected -->|No| Done([Exit: nothing to do])
-    AnyAffected -->|Yes| Validate
+    Generate[Generate child pipeline:<br/>one distill job per affected principle]
+    Generate --> Validate
 
-    Validate{Source and baseline<br/>files exist?}
-    Validate -->|No| Fail([Fail: missing source path])
-    Validate -->|Yes| Distill
+    subgraph child [Child pipeline: one job per principle]
+        Validate{Source and baseline<br/>files exist?}
+        Validate -->|No| Fail([Fail: missing source path])
+        Validate -->|Yes| Distill
 
-    Distill[Call GitLab Duo Agent Platform<br/>Workflow API per principle] --> Assemble
+        Distill[Call GitLab Duo Agent Platform<br/>Workflow API] --> Assemble
 
-    Assemble[Assemble distilled file<br/>and absolutize links] --> Meaningful
+        Assemble[Assemble distilled file<br/>and absolutize links] --> Meaningful
 
-    Meaningful{Content changed?}
-    Meaningful -->|No| NoChange[Skip principle]
-    Meaningful -->|Yes| Write[Write file with<br/>new checksum front matter]
+        Meaningful{Content changed?}
+        Meaningful -->|No| Unchanged[Record 'unchanged']
+        Meaningful -->|Yes| Updated[Record 'updated'<br/>with new checksum front matter]
+    end
 
-    NoChange --> Collected
-    Write --> Collected
+    Fail --> Collect
+    Unchanged --> Collect
+    Updated --> Collect
 
-    Collected[Collect updated files] --> MR
+    Collect[Collect job: fan in every<br/>principle's artifact]
+    Collect --> AnyUpdated
+
+    AnyUpdated{Any updated principles?}
+    AnyUpdated -->|No| Done([Exit: nothing to publish])
+    AnyUpdated -->|Yes| MR
 
     MR[Open merge request<br/>targeting the default branch] --> Review([Human approval and merge])
 ```
+
+### Why the run is split
+
+Every principle used to distill inside one CI job under a shared two-hour
+budget. A principle that fails with invalid content burns roughly 20 minutes of
+retry backoff, and that time was charged to every other principle. On
+2026-07-30 the job timed out and discarded 19 successfully distilled principles,
+because the publish step was never reached.
+
+Giving each principle its own job gives it its own timeout, so one slow
+principle can no longer threaten the rest of the run. Concurrency stays capped
+at four through CI resource groups, so this adds no load to the shared
+GitLab Duo Agent Platform scheduler.
+
+Publishing remains a single job. It groups principles by owning team and builds
+each team's branch against one shared working tree, so it cannot be split the
+same way.
+
+### Incomplete runs
+
+The collect job distinguishes a principle that failed distillation from one
+whose job never completed, such as after a runner outage or a job timeout. Only
+the first fails the pipeline: a principle whose job never ran has not been shown
+to be undistillable. Either way the principle keeps its committed checksum, so
+the next scheduled run re-attempts it.
 
 ## Related
 

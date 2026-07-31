@@ -28,7 +28,7 @@ export const secondExperiment = {
   },
 };
 
-export const thirdExperiment = {
+const thirdExperiment = {
   id: 'gid://gitlab/Ml::Experiment/3',
   name: 'experiment-3',
   updatedAt: '2025-10-14T09:33:54Z',

@@ -34,13 +34,6 @@ const stageFixtures = {
   staging: stagingStageFixtures,
 };
 
-export const summary = [
-  { value: '20', title: 'New issues' },
-  { value: null, title: 'Commits' },
-  { value: null, title: 'Deploys' },
-  { value: null, title: 'Deployment frequency', unit: '/day' },
-];
-
 export const issueStage = {
   id: 'issue',
   title: 'Issue',
@@ -50,7 +43,7 @@ export const issueStage = {
   value: null,
 };
 
-export const planStage = {
+const planStage = {
   id: 'plan',
   title: 'Plan',
   name: 'plan',
@@ -59,7 +52,7 @@ export const planStage = {
   value: 75600,
 };
 
-export const codeStage = {
+const codeStage = {
   id: 'code',
   title: 'Code',
   name: 'code',

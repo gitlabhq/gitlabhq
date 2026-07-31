@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe ::Gitlab::GitPostReceive do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
   let_it_be(:identifier) { "key-#{project.id}" }
 
   subject { described_class.new(project, identifier, changes.dup, {}) }

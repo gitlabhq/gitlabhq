@@ -8,8 +8,8 @@ RSpec.describe Gitlab::ImportExport::Shared, feature_category: :importers do
 
   subject { project.import_export_shared }
 
-  context 'with a repository on disk' do
-    let(:project) { create(:project, :repository) }
+  context 'with a persisted project' do
+    let_it_be(:project) { create(:project) }
     let(:base_path) { %(/tmp/gitlab_exports/#{project.disk_path}/) }
 
     describe '#archive_path' do

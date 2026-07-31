@@ -121,6 +121,45 @@ RSpec.describe Import::Offline::Export, feature_category: :importers do
     end
   end
 
+  describe 'internal events tracking', :clean_gitlab_redis_shared_state do
+    let_it_be_with_reload(:export) { create(:offline_export, :started) }
+
+    describe 'after transitioning to finished' do
+      context 'when the export finished without failures' do
+        it 'tracks a complete event with the without_failures label' do
+          expect { export.finish }
+            .to trigger_internal_events('complete_offline_transfer_export')
+            .with(user: export.user, additional_properties: { label: 'without_failures' })
+            .and increment_usage_metrics(
+              'counts.count_total_complete_offline_transfer_export',
+              'counts.count_total_complete_offline_transfer_export_monthly'
+            ).and not_increment_usage_metrics(
+              'counts.count_total_complete_offline_transfer_export_with_failures',
+              'counts.count_total_complete_offline_transfer_export_with_failures_monthly'
+            )
+        end
+      end
+
+      context 'when the export finished with failures' do
+        before do
+          export.update!(has_failures: true)
+        end
+
+        it 'tracks a complete event with the with_failures label' do
+          expect { export.finish }
+            .to trigger_internal_events('complete_offline_transfer_export')
+            .with(user: export.user, additional_properties: { label: 'with_failures' })
+            .and increment_usage_metrics(
+              'counts.count_total_complete_offline_transfer_export',
+              'counts.count_total_complete_offline_transfer_export_monthly',
+              'counts.count_total_complete_offline_transfer_export_with_failures',
+              'counts.count_total_complete_offline_transfer_export_with_failures_monthly'
+            )
+        end
+      end
+    end
+  end
+
   describe '#completed?' do
     where(:status_trait, :expected_result) do
       :created  | false

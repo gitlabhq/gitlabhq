@@ -6,7 +6,7 @@ RSpec.describe 'getting merge_requests information', feature_category: :code_rev
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:common_attrs) { { author: user, source_project: project, target_project: project } }
 
   let(:node_path) { %w[project mergeRequests nodes] }

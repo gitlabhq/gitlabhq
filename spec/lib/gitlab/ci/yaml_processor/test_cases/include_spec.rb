@@ -11,7 +11,7 @@ module Gitlab
         described_class.new(config, project: project, user: project.first_owner, logger: logger)
       end
 
-      let_it_be(:project) { create(:project, :repository) }
+      let_it_be(:project) { create(:project, :small_repo) }
 
       let(:logger) { Gitlab::Ci::Pipeline::Logger.new(project: project) }
       let(:result) { processor.execute }

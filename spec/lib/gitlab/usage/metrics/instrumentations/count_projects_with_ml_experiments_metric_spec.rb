@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountProjectsWithMlExperimentsMetric,
   feature_category: :mlops do
-  let_it_be(:project_without_experiment) { create(:project, :repository) }
+  let_it_be(:project_without_experiment) { create(:project) }
   let_it_be(:experiment) { create(:ml_experiments) }
   let_it_be(:another_experiment) { create(:ml_experiments, project: experiment.project) }
 

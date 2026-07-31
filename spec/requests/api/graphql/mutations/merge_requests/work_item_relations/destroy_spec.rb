@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Destroying merge request work item relations', feature_category: :code_review_workflow do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:project) { create(:project, :public) }
   let_it_be(:current_user) { create(:user, developer_of: project) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
 

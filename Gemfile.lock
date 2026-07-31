@@ -2332,10 +2332,10 @@ GEM
       activesupport (>= 3.0)
     version_gem (1.1.13)
     version_sorter (2.3.0)
-    view_component (3.23.2)
-      activesupport (>= 5.2.0, < 8.1)
+    view_component (4.12.0)
+      actionview (>= 7.1.0)
+      activesupport (>= 7.1.0)
       concurrent-ruby (~> 1)
-      method_source (~> 1.0)
     vite_rails (3.10.0)
       railties (>= 5.1, < 9)
       vite_ruby (~> 3.0, >= 3.2.2)
@@ -2778,7 +2778,7 @@ DEPENDENCIES
   valid_email (~> 0.1)
   validates_hostname (~> 1.0.13)
   version_sorter (~> 2.3)
-  view_component (~> 3.23.2)
+  view_component (~> 4.12.0)
   vite_rails (~> 3.10.0)
   vite_ruby (~> 3.10.1)
   vmstat (~> 2.3.0)
@@ -3584,7 +3584,7 @@ CHECKSUMS
   validates_hostname (1.0.13) sha256=eac40178cc0b4f727df9cc6a5cb5bc2550718ad8d9bb3728df9aba6354bdda19
   version_gem (1.1.13) sha256=77f3035ac45877cd14610648fec2d23bd8c10fa13dfcf63a588825aa98587260
   version_sorter (2.3.0) sha256=2147f2a1a3804fbb8f60d268b7d7c1ec717e6dd727ffe2c165b4e05e82efe1da
-  view_component (3.23.2) sha256=3c2fed4b9e38bf074fa3d42ca55eedbb2cc070e0f3c31d7c13a50b0db530892b
+  view_component (4.12.0) sha256=b9a5979d1c43eba2aa21a06a86f661aab3990104855f2909ef7c3779acdcdcb4
   vite_rails (3.10.0) sha256=8c4471554870c043e8d9ff7d379302a01d147ade2cd61476ddf020fed32a107a
   vite_ruby (3.10.2) sha256=db465451eb180abbdc81f596ba63671d2b2552e2bb7bf3c1f7b79f9d58ca9a86
   vmstat (2.3.1) sha256=5587cb430a54dbfc4a5c29dd01bd6a4031b2ff4c1d387504d74ff246f3b39104

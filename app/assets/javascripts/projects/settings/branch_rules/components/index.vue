@@ -1,7 +1,16 @@
 <script>
 // eslint-disable-next-line no-restricted-imports
 import { mapActions } from 'vuex';
-import { GlSprintf, GlLink, GlLoadingIcon, GlButton, GlModal, GlModalDirective } from '@gitlab/ui';
+import {
+  GlSprintf,
+  GlLink,
+  GlLoadingIcon,
+  GlButton,
+  GlEmptyState,
+  GlModal,
+  GlModalDirective,
+} from '@gitlab/ui';
+import emptyGroupsSvgPath from '@gitlab/svgs/dist/illustrations/empty-state/empty-groups-md.svg?url';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { sprintf, n__, s__ } from '~/locale';
 import {
@@ -54,6 +63,7 @@ export default {
   name: 'RuleView',
   i18n: I18N,
   deleteModalId: DELETE_RULE_MODAL_ID,
+  emptyGroupsSvgPath,
   protectedBranchesHelpDocLink,
   pushRulesHelpDocLink,
   squashSettingsHelpDocLink,
@@ -67,6 +77,7 @@ export default {
     GlSprintf,
     GlLink,
     GlLoadingIcon,
+    GlEmptyState,
     GlModal,
     GlButton,
     BranchRuleModal,
@@ -80,7 +91,9 @@ export default {
   inject: {
     branchRulesPath: { default: '' },
     branchesPath: { default: '' },
+    canAdminGroupProtectedBranches: { default: false },
     canAdminProtectedBranches: { default: false },
+    groupSettingsRepositoryPath: { default: '' },
     canReadSquashOption: { default: false },
     canUpdateSquashOption: { default: false },
     projectId: { default: null },
@@ -101,10 +114,17 @@ export default {
         };
       },
       update({ project: { branchRules, group } }) {
+        // `isGroupLevel` on the rule is readable regardless of group permissions,
+        // unlike `branchProtection`, which resolves to null without them.
+        const isGroupLevelRule = (rule) =>
+          Boolean(rule.isGroupLevel ?? rule.branchProtection?.isGroupLevel);
         const projectBranchRule = branchRules.nodes.find(
-          (rule) => rule.name === this.branch && !rule.branchProtection?.isGroupLevel,
+          (rule) => rule.name === this.branch && !isGroupLevelRule(rule),
         );
 
+        this.hasGroupLevelRule = branchRules.nodes.some(
+          (rule) => rule.name === this.branch && isGroupLevelRule(rule),
+        );
         this.branchRule = projectBranchRule;
         this.branchProtection = projectBranchRule?.branchProtection;
         this.matchingBranchesCount = projectBranchRule?.matchingBranchesCount;
@@ -147,6 +167,7 @@ export default {
       branch: getParameterByName(BRANCH_PARAM_NAME),
       branchProtection: {},
       branchRule: {},
+      hasGroupLevelRule: false,
       groupId: null,
       matchingBranchesCount: null,
       isAllowedToMergeDrawerOpen: false,
@@ -255,6 +276,19 @@ export default {
     },
     isGroupLevelProtection() {
       return Boolean(this.branchProtection?.isGroupLevel);
+    },
+    showGroupLevelEmptyState() {
+      return !this.branchRule && !this.isPredefinedRule && this.hasGroupLevelRule;
+    },
+    groupLevelEmptyStateDescription() {
+      return this.canAdminGroupProtectedBranches
+        ? this.$options.i18n.groupLevelEmptyStateDescription
+        : this.$options.i18n.groupLevelEmptyStateNoPermissionsDescription;
+    },
+    groupLevelEmptyStateButtonText() {
+      return this.canAdminGroupProtectedBranches
+        ? this.$options.i18n.viewGroupSettingsButtonText
+        : null;
     },
     warnProtectedFromPushBySecurityPolicy() {
       return this.branchProtection?.warnProtectedFromPushBySecurityPolicy ?? false;
@@ -532,6 +566,15 @@ export default {
     </page-heading>
 
     <gl-loading-icon v-if="$apollo.loading" size="lg" />
+    <gl-empty-state
+      v-else-if="showGroupLevelEmptyState"
+      :title="$options.i18n.groupLevelEmptyStateTitle"
+      :svg-path="$options.emptyGroupsSvgPath"
+      :description="groupLevelEmptyStateDescription"
+      :primary-button-text="groupLevelEmptyStateButtonText"
+      :primary-button-link="groupSettingsRepositoryPath"
+      data-testid="group-level-rule-empty-state"
+    />
     <div v-else-if="!branchRule && !isPredefinedRule">
       {{ $options.i18n.noData }}
     </div>

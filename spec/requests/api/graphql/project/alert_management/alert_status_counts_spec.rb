@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'getting Alert Management Alert counts by status', feature_category: :incident_management do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:current_user) { create(:user) }
   let_it_be(:alert_resolved) { create(:alert_management_alert, :resolved, project: project) }
   let_it_be(:alert_triggered) { create(:alert_management_alert, project: project) }

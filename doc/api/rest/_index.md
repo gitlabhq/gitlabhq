@@ -165,7 +165,7 @@ found in the project's URL or in the project's settings, under
 
 #### File path, branches, and tags name
 
-If a file path, branch or tag contains a `/`, make sure it is URL-encoded.
+If a file path, branch, or tag contains a `/`, make sure it is URL-encoded.
 
 For example, `/` is represented by `%2F`:
 

@@ -1,5 +1,3 @@
-export const fullPath = 'gitlab-org/gitlab';
-
 // We should update our tests to use fixtures instead of hardcoded mock data.
 // https://gitlab.com/gitlab-org/gitlab/-/issues/270544
 export const throughputChartData = {

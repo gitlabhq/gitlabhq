@@ -85,7 +85,7 @@ EOF
 az rest --method POST --uri "https://graph.microsoft.com/beta/applications/$objectId/federatedIdentityCredentials" --body @body.json
 ```
 
-For issues related to the values of `issuer`, `subject` or `audiences`, see the
+For issues related to the values of `issuer`, `subject`, or `audiences`, see the
 [troubleshooting](#troubleshooting) details.
 
 Optionally, you can now verify the Entra ID application and the Entra ID federated

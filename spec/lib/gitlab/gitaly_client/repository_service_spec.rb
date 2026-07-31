@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gitaly do
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
   let(:storage_name) { project.repository_storage }
   let(:relative_path) { project.disk_path + '.git' }
   let(:client) { described_class.new(project.repository) }
@@ -513,7 +513,7 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
   end
 
   describe '#get_file_attributes' do
-    let(:rev) { 'master' }
+    let(:rev) { project.repository.root_ref }
     let(:paths) { ['file.txt'] }
     let(:attrs) { ['text'] }
 

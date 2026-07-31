@@ -498,7 +498,7 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
     end
 
     context 'with development widget input' do
-      let_it_be(:mr_project) { create(:project, :repository, group: group) }
+      let_it_be(:mr_project) { create(:project, group: group) }
       let_it_be(:merge_request) { create(:merge_request, source_project: mr_project) }
 
       let(:fields) do
@@ -551,7 +551,7 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
       end
 
       context 'when the user cannot manage relations on the merge request' do
-        let_it_be(:unmanageable_mr) { create(:merge_request, source_project: create(:project, :repository, :private)) }
+        let_it_be(:unmanageable_mr) { create(:merge_request, source_project: create(:project, :private)) }
 
         let(:input) do
           {

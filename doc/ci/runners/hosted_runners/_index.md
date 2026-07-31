@@ -73,7 +73,7 @@ In the following example, three jobs are executed in a project's pipeline. Each 
 
 ![CI/CD pipeline stages running on separate isolated VMs: build, test, deploy.](img/build_isolation_v17_9.png)
 
-The build job ran on `runner-ns46nmmj-project-43717858`, test job on `f131a6a2runner-new2m-od-project-43717858` and deploy job on `runner-tmand5m-project-43717858`.
+The build job ran on `runner-ns46nmmj-project-43717858`, test job on `f131a6a2runner-new2m-od-project-43717858`, and deploy job on `runner-tmand5m-project-43717858`.
 
 GitLab sends the command to remove the ephemeral runner VM to the Google Compute API immediately after the CI job completes. The [Google Compute Engine hypervisor](https://cloud.google.com/blog/products/gcp/7-ways-we-harden-our-kvm-hypervisor-at-google-cloud-security-in-plaintext)
 takes over the task of securely deleting the virtual machine and associated data.

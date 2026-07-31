@@ -3612,7 +3612,6 @@
 - './spec/lib/api/entities/design_management/design_spec.rb'
 - './spec/lib/api/entities/group_detail_spec.rb'
 - './spec/lib/api/entities/merge_request_approvals_spec.rb'
-- './spec/lib/api/entities/merge_request_basic_spec.rb'
 - './spec/lib/api/entities/merge_request_changes_spec.rb'
 - './spec/lib/api/entities/nuget/dependency_group_spec.rb'
 - './spec/lib/api/entities/nuget/dependency_spec.rb'

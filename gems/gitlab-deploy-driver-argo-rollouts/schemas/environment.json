@@ -3,7 +3,9 @@
   "type": "object",
   "title": "Argo Rollouts: Environment configuration",
   "description": "Configuration the Argo Rollouts driver needs to reach one Environment's cluster, where Argo CD Core and the Argo Rollouts controller run.",
-  "required": ["cluster_agent_id"],
+  "required": [
+    "cluster_agent_id"
+  ],
   "additionalProperties": false,
   "properties": {
     "cluster_agent_id": {
@@ -13,6 +15,11 @@
       "gitlab": {
         "type": "com.gitlab.cd.agent_id"
       }
+    },
+    "cluster_agent_name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Display name of the GitLab agent for Kubernetes (agentk), captured at configuration time for display purposes."
     }
   }
 }

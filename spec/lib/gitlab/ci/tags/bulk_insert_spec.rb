@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Tags::BulkInsert, feature_category: :continuous_integration do
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be_with_refind(:runner) { create(:ci_runner) }
   let_it_be_with_refind(:other_runner) { create(:ci_runner, :project_type, projects: [project]) }
 

@@ -5,7 +5,7 @@ require 'spec_helper'
 module Gitlab
   module Ci
     RSpec.describe YamlProcessor, feature_category: :pipeline_composition do
-      let_it_be(:project) { create(:project, :repository) }
+      let_it_be(:project) { create(:project, :small_repo) }
 
       let(:result) { processor.execute }
       let(:builds) { result.builds }

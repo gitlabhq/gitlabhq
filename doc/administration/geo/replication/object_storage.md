@@ -15,7 +15,7 @@ title: Geo with Object storage
 
 {{< history >}}
 
-- Object storage verification [introduced](https://gitlab.com/groups/gitlab-org/-/epics/8056) in GitLab 16.4 [with a feature flag](../../feature_flags/_index.md) named `geo_object_storage_verification`. Enabled by default.
+- Object storage verification [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/8056) in GitLab 16.4 [with a feature flag](../../feature_flags/_index.md) named `geo_object_storage_verification`. Enabled by default.
 
 {{< /history >}}
 

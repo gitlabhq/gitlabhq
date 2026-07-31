@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GitalyClient::BlobService do
-  let(:project) { create(:project, :small_repo) }
+  let_it_be(:project) { create(:project, :small_repo) }
   let(:storage_name) { project.repository_storage }
   let(:relative_path) { project.disk_path + '.git' }
   let(:repository) { project.repository }

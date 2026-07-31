@@ -14734,6 +14734,9 @@ msgstr ""
 msgid "BranchRules|Setting blocked by security policy"
 msgstr ""
 
+msgid "BranchRules|Setting inherited"
+msgstr ""
+
 msgid "BranchRules|Setting may be blocked by security policy"
 msgstr ""
 
@@ -14770,6 +14773,12 @@ msgstr ""
 msgid "BranchRules|Target branch"
 msgstr ""
 
+msgid "BranchRules|This branch rule is configured for the group. To make changes, go to group repository settings."
+msgstr ""
+
+msgid "BranchRules|This branch rule is configured for the group. You do not have the required permissions."
+msgstr ""
+
 msgid "BranchRules|This branch rule is inherited from the group Protected branches settings."
 msgstr ""
 
@@ -14801,6 +14810,9 @@ msgid "BranchRules|Users & groups"
 msgstr ""
 
 msgid "BranchRules|View details"
+msgstr ""
+
+msgid "BranchRules|View group repository settings"
 msgstr ""
 
 msgid "BranchRules|You are about to delete the %{name} status check."
@@ -22564,9 +22576,6 @@ msgstr ""
 msgid "ContinuousDeployment|%{environmentsCount} of %{totalEnvironmentsCount} environments"
 msgstr ""
 
-msgid "ContinuousDeployment|%{pods} pods"
-msgstr ""
-
 msgid "ContinuousDeployment|%{timeAgo}"
 msgstr ""
 
@@ -22603,9 +22612,6 @@ msgstr ""
 msgid "ContinuousDeployment|Add service"
 msgstr ""
 
-msgid "ContinuousDeployment|Alert"
-msgstr ""
-
 msgid "ContinuousDeployment|All"
 msgstr ""
 
@@ -22640,9 +22646,6 @@ msgid "ContinuousDeployment|Available"
 msgstr ""
 
 msgid "ContinuousDeployment|Awaiting approval"
-msgstr ""
-
-msgid "ContinuousDeployment|Back to services"
 msgstr ""
 
 msgid "ContinuousDeployment|Brief description"
@@ -22717,9 +22720,6 @@ msgstr ""
 msgid "ContinuousDeployment|Description"
 msgstr ""
 
-msgid "ContinuousDeployment|Dev"
-msgstr ""
-
 msgid "ContinuousDeployment|Development"
 msgstr ""
 
@@ -22787,6 +22787,9 @@ msgid "ContinuousDeployment|Filter deployments…"
 msgstr ""
 
 msgid "ContinuousDeployment|Filter environments..."
+msgstr ""
+
+msgid "ContinuousDeployment|Filter releases…"
 msgstr ""
 
 msgid "ContinuousDeployment|Flow"
@@ -22861,6 +22864,13 @@ msgstr ""
 msgid "ContinuousDeployment|No deployments match your filter."
 msgstr ""
 
+msgid "ContinuousDeployment|No releases available."
+msgstr ""
+
+msgid "ContinuousDeployment|No releases match your filter."
+msgstr ""
+
+
 msgid "ContinuousDeployment|No services in this release."
 msgstr ""
 
@@ -22877,9 +22887,6 @@ msgid "ContinuousDeployment|Paused"
 msgstr ""
 
 msgid "ContinuousDeployment|Pending"
-msgstr ""
-
-msgid "ContinuousDeployment|Pre-production"
 msgstr ""
 
 msgid "ContinuousDeployment|Production"
@@ -22913,6 +22920,9 @@ msgid "ContinuousDeployment|Releases"
 msgstr ""
 
 msgid "ContinuousDeployment|Remove"
+msgstr ""
+
+msgid "ContinuousDeployment|Rolled back"
 msgstr ""
 
 msgid "ContinuousDeployment|Running"
@@ -22956,6 +22966,10 @@ msgstr ""
 
 msgid "ContinuousDeployment|Succeeded"
 msgstr ""
+
+msgid "ContinuousDeployment|Superseded"
+msgstr ""
+
 
 msgid "ContinuousDeployment|Sync"
 msgstr ""
@@ -77529,6 +77543,9 @@ msgid "SuperSonics|Subscription details"
 msgstr ""
 
 msgid "SuperSonics|Subscription details did not synchronize due to a possible connectivity issue with GitLab servers. %{connectivityHelpLinkStart}How do I check connectivity%{connectivityHelpLinkEnd}?"
+msgstr ""
+
+msgid "SuperSonics|Subscription name"
 msgstr ""
 
 msgid "SuperSonics|Subscription unavailable"

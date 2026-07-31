@@ -6,7 +6,7 @@ RSpec.describe ::Gitlab::Security::ScanConfiguration do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
 
   let(:scan) { described_class.new(user: user, project: project, type: type, configured: configured) }
 

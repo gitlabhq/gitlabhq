@@ -18,7 +18,7 @@ To connect clusters to GitLab, use the [GitLab agent for Kubernetes](../../clust
 
 > [!warning]
 > In GitLab 14.5, the certificate-based method to connect Kubernetes clusters
-> to GitLab was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8),
+> to GitLab was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/work_items/8),
 > as well as its related [features](#deprecated-features). In GitLab Self-Managed 17.0 and later,
 > this feature is disabled by default. For GitLab.com users, this feature is available until
 > GitLab 15.9 for users who have at least one certificate-based cluster enabled in their namespace hierarchy.
@@ -44,7 +44,7 @@ Certificate-based features continue to:
 
 The removal of these features from GitLab is not scheduled yet.
 
-Follow this [epic](https://gitlab.com/groups/gitlab-org/configure/-/epics/8)
+Follow this [epic](https://gitlab.com/groups/gitlab-org/configure/-/work_items/8)
 for updates.
 
 If you need more time to migrate to the GitLab agent for Kubernetes, you can

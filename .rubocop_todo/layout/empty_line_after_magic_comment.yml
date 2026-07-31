@@ -25,7 +25,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'app/policies/packages/tag_policy.rb'
     - 'app/services/ci/pipeline_artifacts/coverage_report_service.rb'
     - 'app/services/ci/pipeline_artifacts/create_code_quality_mr_diff_report_service.rb'
-    - 'danger/ce_ee_vue_templates/Dangerfile'
     - 'ee/app/controllers/groups/two_factor_auths_controller.rb'
     - 'ee/app/finders/status_page/incidents_finder.rb'
     - 'ee/app/models/geo/ci_secure_file_state.rb'

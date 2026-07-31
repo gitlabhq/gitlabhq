@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'getting a package list for a project', feature_category: :package_registry do
   include GraphqlHelpers
 
-  let_it_be(:resource) { create(:project, :repository) }
+  let_it_be(:resource) { create(:project) }
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project1) { resource }
   let_it_be(:project2) { resource }
@@ -43,7 +43,7 @@ RSpec.describe 'getting a package list for a project', feature_category: :packag
     end
 
     describe "efficient database queries" do
-      let_it_be(:project2) { create(:project, :repository) }
+      let_it_be(:project2) { create(:project) }
       let_it_be(:project2_npm_package) { create(:npm_package, project: project2, name: '@project2/npm-package') }
       let_it_be(:project2_npm_packages_no_match) do
         create_list(:npm_package, 4, project: project2) do |npm_package, i|

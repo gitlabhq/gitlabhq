@@ -124,7 +124,7 @@ Depending on the process mode of the resource group:
   - `deploy-1` runs first, `deploy-2` runs second, and `deploy-3` runs last.
 - If the process mode is `newest_first`:
   - `deploy-1`, `deploy-2`, and `deploy-3` do not run concurrently.
-  - `deploy-3` runs first, `deploy-2` runs second and `deploy-1` runs last.
+  - `deploy-3` runs first, `deploy-2` runs second, and `deploy-1` runs last.
 
 ## Pipeline-level concurrency control with cross-project/parent-child pipelines
 

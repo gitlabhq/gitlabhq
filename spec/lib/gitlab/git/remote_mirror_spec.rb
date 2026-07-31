@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Git::RemoteMirror do
   describe '#update' do
-    let(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :small_repo) }
     let(:repository) { project.repository }
     let(:url) { 'https://example.com' }
     let(:options) { { only_branches_matching: ['master'], ssh_key: 'KEY', known_hosts: 'KNOWN HOSTS', keep_divergent_refs: true } }

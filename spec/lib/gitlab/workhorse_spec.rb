@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Workhorse, feature_category: :gitaly do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
   let(:retry_policy) { Gitlab::GitalyClient.retry_policy }
   let(:server_feature_flags) { { 'gitaly-feature-enforce-requests-limits' => 'true' } }
   let(:features) do
@@ -25,7 +25,7 @@ RSpec.describe Gitlab::Workhorse, feature_category: :gitaly do
   end
 
   describe ".send_git_archive" do
-    let(:ref) { 'master' }
+    let(:ref) { project.repository.root_ref }
     let(:format) { 'zip' }
     let(:storage_path) { Gitlab.config.gitlab.repository_downloads_path }
     let(:path) { 'some/path' }

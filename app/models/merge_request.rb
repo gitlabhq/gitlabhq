@@ -434,6 +434,7 @@ class MergeRequest < ApplicationRecord
   scope :merged, -> { with_state(:merged) }
   scope :non_closed, -> { where.not(state_id: available_states[:closed]) }
   scope :open_and_closed, -> { with_state(:opened, :closed) }
+  scope :opened_or_locked, -> { with_state(:opened, :locked) }
   scope :drafts, -> { where(draft: true) }
   scope :from_source_branches, ->(branches) { where(source_branch: branches) }
   scope :by_sorted_source_branches, ->(branches) do
@@ -3062,10 +3063,6 @@ class MergeRequest < ApplicationRecord
 
   def committer_emails_from_diff
     return [] unless merge_request_diff&.persisted?
-
-    unless Feature.enabled?(:cache_committer_emails_from_diff, target_project)
-      return uncached_committer_emails_from_diff
-    end
 
     # The committer set of a diff is immutable once the diff is created, so the
     # result is cached keyed by the merge_request_diff id. A new push creates a

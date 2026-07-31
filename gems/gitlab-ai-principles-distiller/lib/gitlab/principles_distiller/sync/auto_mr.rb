@@ -4,18 +4,18 @@ module Gitlab
   module PrinciplesDistiller
     class Sync
       module AutoMr
-        # MR description has a 1 MB hard limit; multiple per-principle patches
-        # may be embedded, so each must stay well under that.
+        # MR description has a 1 MB hard limit; multiple per-principle patches may be embedded, so each must stay well
+        # under that.
         DIFF_MAX_LINES = 200
         DIFF_MAX_BYTES = 8_192
 
         PUSH_MAX_ATTEMPTS = 3
         PUSH_RETRY_BACKOFF_SECONDS = [5, 15].freeze
 
-        # The run-invariant publish inputs: identical for every team branch
-        # and the tooling branch in a single create_branch_and_mr call.
+        # The run-invariant publish inputs: identical for every team branch and the tooling branch in a single
+        # create_branch_and_mr call.
         PublishContext = Struct.new(
-          :base_branch, :project_id, :api_token, :date, :auto_mr_cfg, :failed,
+          :base_branch, :project_id, :api_token, :date, :auto_mr_cfg, :failed, :not_run,
           keyword_init: true
         )
 
@@ -23,8 +23,7 @@ module Gitlab
           @distillation_base_sha ||= resolve_distillation_base_sha
         end
 
-        # Returns [text, truncated?]. Caps at DIFF_MAX_LINES or DIFF_MAX_BYTES,
-        # whichever hits first.
+        # Returns [text, truncated?]. Caps at DIFF_MAX_LINES or DIFF_MAX_BYTES, whichever hits first.
         def truncate_diff(text)
           lines = text.lines
           truncated = false
@@ -45,20 +44,18 @@ module Gitlab
           [result, truncated]
         end
 
-        # Fans out the distilled changes into one MR per team group plus
-        # a separate "tooling" MR for the global routing-table files. Each
-        # team's MR touches only that team's distilled files, so CODEOWNERS
-        # routes the approval to the right reviewers (the global tooling files
-        # would otherwise pull every MR back to the broad `/.ai/` owners).
+        # Fans out the distilled changes into one MR per team group plus a separate "tooling" MR for the global
+        # routing-table files. Each team's MR touches only that team's distilled files, so CODEOWNERS routes the
+        # approval to the right reviewers (the global tooling files would otherwise pull every MR back to the broad
+        # `/.ai/` owners).
         #
-        # Teams are published independently: one team's failure is logged and
-        # the run continues with the rest, then a non-zero exit is raised at
-        # the end so the scheduled job surfaces the partial failure.
+        # Teams are published independently: one team's failure is logged and the run continues with the rest, then a
+        # non-zero exit is raised at the end so the scheduled job surfaces the partial failure.
         #
-        # `failed` (principles that failed distillation, distinct from the
-        # per-team publish `failures` below) travels with the rest of the
-        # run-invariant inputs via `ctx` (see PublishContext).
-        def create_branch_and_mr(distilled_contents, affected, auto_mr_cfg, failed: [])
+        # `failed` (principles that failed distillation, distinct from the per-team publish `failures` below) and
+        # `not_run` (principles whose distill job never completed) travel with the rest of the run-invariant inputs via
+        # `ctx` (see PublishContext).
+        def create_branch_and_mr(distilled_contents, affected, auto_mr_cfg, failed: [], not_run: [])
           project_id = ENV.fetch(Env::CI_PROJECT_ID) do
             abort Rainbow("ERROR: #{Env::CI_PROJECT_ID} env var is required when --push is given").red
           end
@@ -74,11 +71,11 @@ module Gitlab
             # update the existing MR (see find_open_mr_iid).
             date: Time.now.utc.strftime('%Y%m%d'),
             auto_mr_cfg: auto_mr_cfg,
-            failed: failed
+            failed: failed,
+            not_run: not_run
           )
 
-          # Fetch every prior SHA once up front so each team branch can embed
-          # its SSOT diffs without re-fetching.
+          # Fetch every prior SHA once up front so each team branch can embed its SSOT diffs without re-fetching.
           prefetch_prior_shas!(affected)
 
           teams = manifest.group_principles_by_team(distilled_contents.keys)
@@ -123,21 +120,20 @@ module Gitlab
 
           system('git', '-C', Workspace.path, 'add', '-f', *paths_to_commit, exception: true)
 
-          # A same-day re-run can reset the branch to identical content; in
-          # that case `git commit` would exit non-zero ("nothing to commit")
-          # and the per-team rescue would record a spurious failure. Skip the
-          # team MR instead (mirrors the guard in publish_tooling_branch).
+          # A same-day re-run can reset the branch to identical content; in that case `git commit` would exit non-zero
+          # ("nothing to commit") and the per-team rescue would record a spurious failure.
+          # Skip the team MR instead (mirrors the guard in publish_tooling_branch).
           unless git_has_staged_changes?
             puts Rainbow("  #{team}: principles already up to date; skipping team MR.").faint
             cleanup_branch(ctx.base_branch, branch)
             return
           end
 
-          # The commit subject and body use the short team_slug, never the
-          # owner_team handle: handles can be long (and would blow past the
-          # 72-char commit-line limit Danger enforces) and would @-mention the
-          # team from git history. The owner ping lives in the MR description
-          # (team_display) instead; CODEOWNERS still routes via the real handle.
+          # The commit subject and body use the short team_slug, never the owner_team handle: handles can be long (and
+          # would blow past the 72-char commit-line limit Danger enforces) and would @-mention the team from git
+          # history.
+          # The owner ping lives in the MR description (team_display) instead; CODEOWNERS still routes via the real
+          # handle.
           # The principle list is a bullet per line so it never overflows 72
           # chars regardless of how many principles a team owns.
           slug = manifest.team_slug(team)
@@ -157,16 +153,13 @@ module Gitlab
           create_mr(branch, contents, affected, ctx, team: team, title: title)
         end
 
-        # Builds, pushes, and opens/updates the tooling MR carrying the global
-        # routing-table files (AGENTS.md, CLAUDE.md, both SKILL.md, CODEOWNERS).
-        # These are regenerated in-branch so they never leak into the per-team
-        # branches.
+        # Builds, pushes, and opens/updates the tooling MR carrying the global routing-table files (AGENTS.md,
+        # CLAUDE.md, both SKILL.md, CODEOWNERS).
+        # These are regenerated in-branch so they never leak into the per-team branches.
         #
-        # The Duo review-instructions fences are NOT part of this MR: they are
-        # reconciled from merged-master content by the separate scheduled
-        # reconcile job (see Sync#reconcile_duo_instructions), so a team's
-        # distilled MR and the fence update are independently mergeable with no
-        # cross-MR merge-order dependency.
+        # The Duo review-instructions fences are NOT part of this MR: they are reconciled from merged-master content by
+        # the separate scheduled reconcile job (see Sync#reconcile_duo_instructions), so a team's distilled MR and the
+        # fence update are independently mergeable with no cross-MR merge-order dependency.
         def publish_tooling_branch(ctx)
           branch = tooling_branch_name(ctx.auto_mr_cfg, ctx.date)
 
@@ -209,25 +202,21 @@ module Gitlab
           create_tooling_mr(branch, ctx, title)
         end
 
-        # Builds, pushes, and opens/updates the dedicated reconcile MR carrying
-        # ONLY the Duo review-instructions fence update. Called from
-        # Sync#reconcile_duo_instructions.
+        # Builds, pushes, and opens/updates the dedicated reconcile MR carrying ONLY the Duo review-instructions fence
+        # update.
+        # Called from Sync#reconcile_duo_instructions.
         #
-        # The fences are projected AFTER cutting the fresh branch off
-        # origin/<default_branch>, so the projection reads exactly the ref the
-        # MR targets. This closes a race: if a team's distilled MR merges
-        # between the job starting and this branch being cut, projecting first
-        # would derive the fences from the pre-merge working tree and the
-        # resulting MR could fail its own (strict) guard against the newer base.
-        # Regenerating on the freshly checked-out branch keeps the reconcile a
-        # pure projection of the branch's base. The reconcile branch is
-        # date-free, so every re-run reuses the one open reconcile MR
-        # (see reconcile_branch_name and submit_mr) rather than opening a new
-        # one each time.
+        # The fences are projected AFTER cutting the fresh branch off origin/<default_branch>, so the projection reads
+        # exactly the ref the MR targets.
+        # This closes a race: if a team's distilled MR merges between the job starting and this branch being cut,
+        # projecting first would derive the fences from the pre-merge working tree and the resulting MR could fail its
+        # own (strict) guard against the newer base.
+        # Regenerating on the freshly checked-out branch keeps the reconcile a pure projection of the branch's base. The
+        # reconcile branch is date-free, so every re-run reuses the one open reconcile MR (see reconcile_branch_name and
+        # submit_mr) rather than opening a new one each time.
         #
         # `regenerate` yields true when the projection changed the file on disk.
-        # If nothing changed, master's fences already match its distilled files
-        # and no MR is needed.
+        # If nothing changed, master's fences already match its distilled files and no MR is needed.
         def create_reconcile_mr_from_working_tree(auto_mr_cfg, manifest)
           project_id = ENV.fetch(Env::CI_PROJECT_ID) do
             abort Rainbow("ERROR: #{Env::CI_PROJECT_ID} env var is required when --push is given").red
@@ -236,23 +225,22 @@ module Gitlab
             abort Rainbow("ERROR: #{Env::GITLAB_API_TOKEN} not set, cannot create MR").red
           end
 
-          # No distillation happens on the reconcile path, so `failed` is
-          # always empty here (see PublishContext).
+          # No distillation happens on the reconcile path, so `failed` is always empty here (see PublishContext).
           ctx = PublishContext.new(
             base_branch: workflow.default_branch,
             project_id: project_id,
             api_token: api_token,
             date: Time.now.utc.strftime('%Y%m%d'),
             auto_mr_cfg: auto_mr_cfg,
-            failed: []
+            failed: [],
+            not_run: []
           )
 
           branch = reconcile_branch_name(ctx.auto_mr_cfg)
           duo_path = Manifest::DUO_REVIEW_INSTRUCTIONS_PATH
 
-          # Cut the branch first so the projection below reads the distilled
-          # files at the branch's base (origin/<default_branch> HEAD), not the
-          # pipeline-SHA working tree.
+          # Cut the branch first so the projection below reads the distilled files at the branch's base
+          # (origin/<default_branch> HEAD), not the pipeline-SHA working tree.
           checkout_fresh_branch(branch, ctx.base_branch)
 
           changed = manifest.generate_duo_review_instructions
@@ -296,21 +284,18 @@ module Gitlab
           "#{auto_mr_cfg['branch_prefix']}-#{date}-tooling"
         end
 
-        # Branch off origin/<default_branch> (not the current HEAD) so the MR
-        # diff contains only our files. The CI before_script fetches
-        # origin/<default_branch> for us. `-B` resets the branch if a prior
-        # team iteration left it around.
+        # Branch off origin/<default_branch> (not the current HEAD) so the MR diff contains only our files.
+        # The CI before_script fetches origin/<default_branch> for us.
+        # `-B` resets the branch if a prior team iteration left it around.
         def checkout_fresh_branch(branch, base_branch)
           base_ref = "origin/#{base_branch}"
           system('git', '-C', Workspace.path, 'checkout', '--no-track', '-B', branch, base_ref, exception: true)
         end
 
-        # Danger's commit-message linter (gitlab-dangerfiles) rejects any
-        # commit subject or body line longer than 72 chars (URLs exempt), which
-        # fails the danger-review job. Auto-generated messages are built from
-        # team slugs and principle names, so guard here to fail fast at
-        # generation time rather than discovering it only when the MR's
-        # pipeline runs.
+        # Danger's commit-message linter (gitlab-dangerfiles) rejects any commit subject or body line longer than 72
+        # chars (URLs exempt), which fails the danger-review job.
+        # Auto-generated messages are built from team slugs and principle names, so guard here to fail fast at
+        # generation time rather than discovering it only when the MR's pipeline runs.
         COMMIT_MAX_LINE_LENGTH = 72
 
         def assert_commit_lines_within_limit!(commit_msg)
@@ -326,9 +311,8 @@ module Gitlab
         def commit_and_push(branch, project_id, api_token, commit_msg)
           assert_commit_lines_within_limit!(commit_msg)
           system('git', '-C', Workspace.path, 'commit', '-m', commit_msg, exception: true)
-          # --force is safe here: the branch is auto-generated and always
-          # rebuilt from origin/<default_branch>, so only our own prior
-          # commit can be lost. (--force-with-lease would require a prefetch.)
+          # --force is safe here: the branch is auto-generated and always rebuilt from origin/<default_branch>, so only
+          # our own prior commit can be lost. (--force-with-lease would require a prefetch.)
           push_url = push_remote_url(project_id)
           env = git_push_env(api_token, push_url)
           push_with_retries(env, push_url, branch)
@@ -338,18 +322,15 @@ module Gitlab
           !system('git', '-C', Workspace.path, 'diff', '--cached', '--quiet')
         end
 
-        # A tooling path is stageable only if it exists AND no directory
-        # *within the workspace* on the way to it is a symlink. `git add`
-        # refuses paths "beyond a symbolic link", which happens here because
-        # some repos symlink `.agents/skills` -> `.claude/skills`: the file is
-        # real but its canonical location is staged via the `.claude/...`
-        # entry, so skipping the symlinked alias avoids the `exit 128` without
-        # losing content.
+        # A tooling path is stageable only if it exists AND no directory *within the workspace* on the way to it is a
+        # symlink.
+        # `git add` refuses paths "beyond a symbolic link", which happens here because some repos symlink
+        # `.agents/skills` -> `.claude/skills`: the file is real but its canonical location is staged via the
+        # `.claude/...` entry, so skipping the symlinked alias avoids the `exit 128` without losing content.
         #
-        # The comparison is anchored at the resolved workspace root so a
-        # symlink *in the workspace path itself* (e.g. macOS `/tmp` ->
-        # `/private/tmp`, or a CI runner mounting the workspace through a
-        # symlink) does not cause every tooling path to be filtered out.
+        # The comparison is anchored at the resolved workspace root so a symlink *in the workspace path itself* (e.g.
+        # macOS `/tmp` -> `/private/tmp`, or a CI runner mounting the workspace through a symlink) does not cause every
+        # tooling path to be filtered out.
         def stageable_tooling_path?(relative_path)
           full = Workspace.safe_join(relative_path)
           return false unless File.exist?(full)
@@ -364,8 +345,8 @@ module Gitlab
           false
         end
 
-        # Returns to the base branch, warning (rather than failing silently) if
-        # the checkout does not succeed so a stuck working tree is visible.
+        # Returns to the base branch, warning (rather than failing silently) if the checkout does not succeed so a stuck
+        # working tree is visible.
         def checkout_base_or_warn(base_branch)
           return if system('git', '-C', Workspace.path, 'checkout', base_branch)
 
@@ -384,9 +365,8 @@ module Gitlab
             'remove it manually if unwanted').yellow
         end
 
-        # Renders the per-principle section embedded in the auto-MR
-        # description: principle heading, source-file commit-history links,
-        # and a fenced `git diff prior_sha..origin/<default_branch>`.
+        # Renders the per-principle section embedded in the auto-MR description: principle heading, source-file
+        # commit-history links, and a fenced `git diff prior_sha..origin/<default_branch>`.
         def principle_diff_section(name, affected_entry, default_branch)
           sources = affected_entry&.dig(:changed_sources) || []
           prior_sha = affected_entry&.dig(:prior_sha)
@@ -413,10 +393,8 @@ module Gitlab
           diff_text, truncated = compute_principle_diff(prior_sha, default_branch, paths)
 
           if diff_text
-            # 4-backtick fence: ```diff/```ruby blocks inside SSOT files
-            # would otherwise close the outer fence early.
-            # Resolved SHA (not branch name): range stays meaningful as
-            # master moves on.
+            # 4-backtick fence: ```diff/```ruby blocks inside SSOT files would otherwise close the outer fence early.
+            # Resolved SHA (not branch name): range stays meaningful as master moves on.
             target_sha = distillation_base_sha
             lines << ''
             lines << "<details><summary>SSOT diff since previous distillation " \
@@ -441,13 +419,12 @@ module Gitlab
 
         private
 
-        # Force-pushes the branch, retrying on transient failures (e.g. HTTP
-        # 502, "the remote end hung up unexpectedly") with short exponential
-        # backoff. The push targets our own auto-generated branch, always
-        # rebuilt from origin/<default_branch>, so a force-push is idempotent
-        # and retrying is safe. `system(..., exception: true)` raises on a
-        # non-zero git exit or a spawn failure; we re-raise the last error once
-        # attempts are exhausted so the caller's per-team rescue records it.
+        # Force-pushes the branch, retrying on transient failures (e.g. HTTP 502, "the remote end hung up unexpectedly")
+        # with short exponential backoff.
+        # The push targets our own auto-generated branch, always rebuilt from origin/<default_branch>, so a force-push
+        # is idempotent and retrying is safe.
+        # `system(..., exception: true)` raises on a non-zero git exit or a spawn failure; we re-raise the last error
+        # once attempts are exhausted so the caller's per-team rescue records it.
         def push_with_retries(env, push_url, branch)
           attempt = 0
           begin
@@ -481,9 +458,8 @@ module Gitlab
         end
 
         # CI's shallow clone doesn't include prior SHAs from weeks ago.
-        # Fetch each unique prior_sha so `git diff <prior_sha>..origin/master`
-        # resolves later. Relies on GitLab.com's
-        # `uploadpack.allowReachableSHA1InWant=true` for direct-SHA fetches.
+        # Fetch each unique prior_sha so `git diff <prior_sha>..origin/master` resolves later.
+        # Relies on GitLab.com's `uploadpack.allowReachableSHA1InWant=true` for direct-SHA fetches.
         def prefetch_prior_shas!(affected)
           shas = affected.values.filter_map { |entry| entry[:prior_sha] }.uniq
           return if shas.empty?
@@ -505,8 +481,7 @@ module Gitlab
           system('git', '-C', Workspace.path, 'cat-file', '-e', "#{sha}^{commit}", out: File::NULL, err: File::NULL)
         end
 
-        # Returns [diff_text, truncated?]. diff_text is nil when prior_sha
-        # is unreachable or the diff is empty.
+        # Returns [diff_text, truncated?]. diff_text is nil when prior_sha is unreachable or the diff is empty.
         def compute_principle_diff(prior_sha, default_branch, paths)
           return [nil, false] if prior_sha.nil? || prior_sha.empty? || paths.empty?
           return [nil, false] unless sha_present_locally?(prior_sha)
@@ -520,8 +495,7 @@ module Gitlab
         end
 
         # Returns the iid of an open MR for the given source branch, or nil.
-        # `order_by=created_at&sort=desc` is explicit because the API default
-        # is implementation-defined.
+        # `order_by=created_at&sort=desc` is explicit because the API default is implementation-defined.
         def find_open_mr_iid(encoded_project, source_branch, api_token)
           uri = URI("#{workflow.gitlab_host}/api/v4/projects/#{encoded_project}/merge_requests")
           uri.query = URI.encode_www_form(state: 'opened', source_branch: source_branch,
@@ -540,14 +514,12 @@ module Gitlab
           mrs.first&.fetch('iid', nil)
         end
 
-        # The MR author's user ID (the service account whose token we use),
-        # memoized for the run. Used as the assignee so Danger's "no assignee"
-        # warning doesn't fire. Returns nil on any failure (best-effort).
+        # The MR author's user ID (the service account whose token we use), memoized for the run.
+        # Used as the assignee so Danger's "no assignee" warning doesn't fire. Returns nil on any failure (best-effort).
         #
-        # Memoize with `defined?` (not `||=`) so a nil result (any failure
-        # path) is cached too; otherwise every team in a fan-out run would
-        # re-issue the failed lookup. The ivar lives on the Sync instance this
-        # module is mixed into, matching the existing run-scoped memos here.
+        # Memoize with `defined?` (not `||=`) so a nil result (any failure path) is cached too; otherwise every team in
+        # a fan-out run would re-issue the failed lookup.
+        # The ivar lives on the Sync instance this module is mixed into, matching the existing run-scoped memos here.
         # rubocop:disable Gitlab/ModuleWithInstanceVariables -- run-scoped memo on the host Sync instance
         def mr_assignee_id(api_token)
           return @mr_assignee_id if defined?(@mr_assignee_id)
@@ -564,43 +536,34 @@ module Gitlab
           gitlab-bot
         ].freeze
 
-        # GraphQL `Repository.commits(ref:, path:)` is `calls_gitaly!` and costs
-        # ~12 complexity per aliased call against the API's 250-point cap.
-        # Measured empirically: 13 aliases is the last value that succeeds when
-        # each alias also selects `pageInfo`; we select only `author` here and
-        # still keep a comfortable margin below the ceiling for any future field
-        # additions (a 15-source principle like `backend-ruby` would otherwise
-        # blow past 13 in a single request).
+        # GraphQL `Repository.commits(ref:, path:)` is `calls_gitaly!` and costs ~12 complexity per aliased call against
+        # the API's 250-point cap.
+        # Measured empirically: 13 aliases is the last value that succeeds when each alias also selects `pageInfo`; we
+        # select only `author` here and still keep a comfortable margin below the ceiling for any future field additions
+        # (a 15-source principle like `backend-ruby` would otherwise blow past 13 in a single request).
         AUTHOR_LOOKUP_BATCH_SIZE = 10
 
-        # Builds the list of `@username` mentions for the people who changed the
-        # SSOT docs backing the given principles since each was last distilled.
-        # Returns [] when nothing resolves, so the caller falls back to the team
-        # ping. Best-effort: any GraphQL failure logs and contributes no
-        # mentions rather than failing the MR.
+        # Builds the list of `@username` mentions for the people who changed the SSOT docs backing the given principles
+        # since each was last distilled. Returns [] when nothing resolves, so the caller falls back to the team ping.
+        # Best-effort: any GraphQL failure logs and contributes no mentions rather than failing the MR.
         #
-        # Only the notification changes: CODEOWNERS still routes approval to the
-        # principle's owner_team, so an unavailable SSOT author cannot block the
-        # MR.
+        # Only the notification changes: CODEOWNERS still routes approval to the principle's owner_team, so an
+        # unavailable SSOT author cannot block the MR.
         def ssot_author_mentions(affected_entries)
           usernames = affected_entries.values.flat_map { |entry| ssot_author_usernames(entry) }.uniq
 
           usernames.map { |username| "@#{username}" }
         end
 
-        # Pingable GitLab usernames of everyone who authored a commit touching
-        # this principle's SSOT paths in the range prior_sha..target_sha,
-        # resolved via GraphQL `Repository.commits(ref: "A..B", path:)`. The
-        # range walk happens server-side, so it works regardless of how much
-        # history the CI job's local clone has fetched. `Commit.author`
-        # resolves through `User.by_any_email(confirmed: true)`, which matches
-        # private and secondary emails (not just `public_email`), so authors
-        # who never published a public email still resolve.
+        # Pingable GitLab usernames of everyone who authored a commit touching this principle's SSOT paths in the range
+        # prior_sha..target_sha, resolved via GraphQL `Repository.commits(ref: "A..B", path:)`.
+        # The range walk happens server-side, so it works regardless of how much history the CI job's local clone has
+        # fetched. `Commit.author` resolves through `User.by_any_email(confirmed: true)`, which matches private and
+        # secondary emails (not just `public_email`), so authors who never published a public email still resolve.
         #
-        # Empty when there is no reachable prior SHA (e.g. first distillation),
-        # the range has no matching commits, or the range/paths cannot be
-        # resolved (e.g. prior_sha predates the project's history - logged and
-        # treated as empty, not fatal).
+        # Empty when there is no reachable prior SHA (e.g. first distillation), the range has no matching commits, or
+        # the range/paths cannot be resolved (e.g. prior_sha predates the project's history - logged and treated as
+        # empty, not fatal).
         def ssot_author_usernames(affected_entry)
           return [] unless affected_entry
 
@@ -620,18 +583,14 @@ module Gitlab
           end.uniq
         end
 
-        # Per-path commit page size for the author lookup. A page beyond this
-        # size is unusual (it implies 100+ commits touched a single SSOT file
-        # since the last distillation) but not impossible for a
-        # frequently-edited doc over a long-stale principle; see
-        # pingable_usernames_from_commits for the truncation warning.
+        # Per-path commit page size for the author lookup. A page beyond this size is unusual (it implies 100+ commits
+        # touched a single SSOT file since the last distillation) but not impossible for a frequently-edited doc over a
+        # long-stale principle; see pingable_usernames_from_commits for the truncation warning.
         AUTHOR_LOOKUP_PAGE_SIZE = 100
 
-        # One GraphQL round trip for a batch of paths (see
-        # AUTHOR_LOOKUP_BATCH_SIZE), each as its own aliased `commits` field so
-        # a single request covers every source of a principle without
-        # exceeding the query complexity limit. Returns [] (logged) on any
-        # GraphQL failure, including an unreachable ref in `commit_range`.
+        # One GraphQL round trip for a batch of paths (see AUTHOR_LOOKUP_BATCH_SIZE), each as its own aliased `commits`
+        # field so a single request covers every source of a principle without exceeding the query complexity limit.
+        # Returns [] (logged) on any GraphQL failure, including an unreachable ref in `commit_range`.
         def pingable_usernames_for_paths(commit_range, paths)
           aliases = paths.each_with_index.to_h { |path, i| ["p#{i}", path] }
           path_vars = aliases.keys.map { |alias_name| "$path_#{alias_name}: String!" }.join(', ')
@@ -663,14 +622,11 @@ module Gitlab
             '{ nodes { author { username bot } } pageInfo { hasNextPage } }'
         end
 
-        # Extracts pingable usernames from one `commits` connection's nodes:
-        # drops commits with no linked GitLab account, bot accounts (per the
-        # API `bot` flag), and the non-pingable deny-list.
+        # Extracts pingable usernames from one `commits` connection's nodes: drops commits with no linked GitLab
+        # account, bot accounts (per the API `bot` flag), and the non-pingable deny-list.
         #
-        # Warns (without failing) when the connection has more pages than
-        # AUTHOR_LOOKUP_PAGE_SIZE, since pagination is not implemented here:
-        # authors of commits beyond the first page are silently missed rather
-        # than pinged.
+        # Warns (without failing) when the connection has more pages than AUTHOR_LOOKUP_PAGE_SIZE, since pagination is
+        # not implemented here: authors of commits beyond the first page are silently missed rather than pinged.
         def pingable_usernames_from_commits(commits_connection, path)
           return [] unless commits_connection
 
@@ -715,12 +671,11 @@ module Gitlab
           nil
         end
 
-        # The numeric ID of the milestone matching the repo's in-development
-        # version (read from the root `VERSION` file, e.g. `19.1.0-pre` ->
-        # `19.1`), looked up among the project's milestones (including
-        # ancestor-group milestones). Memoized for the run. Returns nil when
-        # VERSION is unreadable or no milestone matches (best-effort: the MR
-        # is created without a milestone).
+        # The numeric ID of the milestone matching the repo's in-development version (read from the root `VERSION` file,
+        # e.g. `19.1.0-pre` -> `19.1`), looked up among the project's milestones (including ancestor-group milestones).
+        # Memoized for the run.
+        # Returns nil when VERSION is unreadable or no milestone matches (best-effort: the MR is created without a
+        # milestone).
         # rubocop:disable Gitlab/ModuleWithInstanceVariables -- run-scoped memo on the host Sync instance
         def current_milestone_id(encoded_project, api_token)
           return @current_milestone_id if defined?(@current_milestone_id)
@@ -730,8 +685,8 @@ module Gitlab
         end
         # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
-        # Reads the root VERSION file and returns its MAJOR.MINOR (e.g.
-        # `19.1.0-pre` -> `19.1`), or nil if it cannot be read or parsed.
+        # Reads the root VERSION file and returns its MAJOR.MINOR (e.g. `19.1.0-pre` -> `19.1`), or nil if it cannot be
+        # read or parsed.
         def version_milestone_title
           raw = File.read(Workspace.safe_join('VERSION')).strip
           major_minor = raw.split('.').first(2).join('.')
@@ -742,10 +697,9 @@ module Gitlab
           nil
         end
 
-        # Resolves a milestone title to its ID. Checks project milestones
-        # first (includes ancestor-group milestones via include_ancestors),
-        # so it works whether the milestone is defined on the project or its
-        # group. Returns nil when no active milestone matches the title.
+        # Resolves a milestone title to its ID. Checks project milestones first (includes ancestor-group milestones via
+        # include_ancestors), so it works whether the milestone is defined on the project or its group.
+        # Returns nil when no active milestone matches the title.
         def lookup_milestone_id(encoded_project, api_token, title)
           uri = URI("#{workflow.gitlab_host}/api/v4/projects/#{encoded_project}/milestones")
           uri.query = URI.encode_www_form(title: title, include_ancestors: true)
@@ -769,18 +723,16 @@ module Gitlab
 
           milestone['id']
         rescue StandardError => e
-          # A 2xx-but-non-JSON body (e.g. an HTML proxy/error page) would raise
-          # JSON::ParserError here; keep milestone lookup best-effort so it
-          # never fails the whole team's MR.
+          # A 2xx-but-non-JSON body (e.g. an HTML proxy/error page) would raise JSON::ParserError here; keep milestone
+          # lookup best-effort so it never fails the whole team's MR.
           warn Rainbow("WARNING: milestone lookup for #{title} failed (#{e.message}); " \
             'leaving MR without a milestone').yellow
           nil
         end
 
-        # Returns the plain HTTPS push URL with no embedded credentials.
-        # Authentication is supplied separately via `git_push_env`, which
-        # injects an `Authorization: Bearer` header through `GIT_CONFIG_*`
-        # env vars so the token never lands in argv, the URL, or git's reflog.
+        # Returns the plain HTTPS push URL with no embedded credentials. Authentication is supplied separately via
+        # `git_push_env`, which injects an `Authorization: Bearer` header through `GIT_CONFIG_*` env vars so the token
+        # never lands in argv, the URL, or git's reflog.
         def push_remote_url(project_path_or_id)
           host = URI(workflow.gitlab_host).host || 'gitlab.com'
           # CI_PROJECT_ID is numeric, not usable as a URL path.
@@ -805,23 +757,20 @@ module Gitlab
         # - the remote URL and git's reflog.
         # Returns the env hash to pass to the push `system` call.
         #
-        # The header is scoped to the host (`http.https://<host>.extraHeader`),
-        # not the full repo URL. git matches `http.<url>.*` by URL prefix on
-        # whole path segments, so a key scoped to `.../gitlab` does NOT match a
-        # request to `.../gitlab.git`. That mismatch left the header unapplied
-        # and the push fell back to anonymous, yielding a 403. A host-scoped
-        # key applies to every request to that host, which is what we want for
-        # a single-remote push.
+        # The header is scoped to the host (`http.https://<host>.extraHeader`), not the full repo URL. git matches
+        # `http.<url>.*` by URL prefix on whole path segments, so a key scoped to `.../gitlab` does NOT match a request
+        # to `.../gitlab.git`.
+        # That mismatch left the header unapplied and the push fell back to anonymous, yielding a 403.
+        # A host-scoped key applies to every request to that host, which is what we want for a single-remote push.
         #
-        # The scheme must be HTTP Basic (`oauth2:<token>`, base64-encoded), not
-        # `Bearer`: GitLab's smart-HTTP git endpoint authenticates PATs via
-        # Basic auth. A `Bearer` header is silently ignored, so the request
-        # falls through to git's Basic challenge with no credentials and the
-        # remote returns `HTTP Basic: Access denied`. (`PRIVATE-TOKEN` is
-        # REST-only and also rejected on git push.)
+        # The scheme must be HTTP Basic (`oauth2:<token>`, base64-encoded), not `Bearer`: GitLab's smart-HTTP git
+        # endpoint authenticates PATs via Basic auth.
+        # A `Bearer` header is silently ignored, so the request falls through to git's Basic challenge with no
+        # credentials and the remote returns `HTTP Basic: Access denied`. (`PRIVATE-TOKEN` is REST-only and also
+        # rejected on git push.)
         #
-        # Appends to any existing `GIT_CONFIG_*` entries injected by the parent
-        # environment (e.g. GitLab Runner) rather than overwriting them.
+        # Appends to any existing `GIT_CONFIG_*` entries injected by the parent environment (e.g. GitLab Runner) rather
+        # than overwriting them.
         def git_push_env(api_token, push_url)
           abort Rainbow("ERROR: #{Env::GITLAB_API_TOKEN} is empty, cannot push").red if api_token.to_s.empty?
 
@@ -847,10 +796,9 @@ module Gitlab
           manifest_url = "#{project_url}/-/blob/#{default_branch}/.ai/principles/manifest.yml"
           ci_yml_url = "#{project_url}/-/blob/#{default_branch}/.gitlab/ci/sync-principles.gitlab-ci.yml"
 
-          # Ping the individuals who actually changed the SSOT docs rather than
-          # the whole owning team. Falls back to the team ping (or the
-          # non-mention slug when fallback_ping_team: false) only when no
-          # author resolves (see ssot_author_mentions and team_display).
+          # Ping the individuals who actually changed the SSOT docs rather than the whole owning team.
+          # Falls back to the team ping (or the non-mention slug when fallback_ping_team: false) only when no author
+          # resolves (see ssot_author_mentions and team_display).
           mentions = ssot_author_mentions(affected.slice(*changed_principles.keys))
           ping_line = if mentions.empty?
                         "Please review: **#{manifest.team_display(team)}**."
@@ -867,6 +815,7 @@ module Gitlab
         CLAUDE.md, SKILL.md) are updated in a separate tooling MR.
         #{review_request_section(changed_principles.keys, team)}
         #{failed_principles_section(ctx.failed)}
+        #{not_run_principles_section(ctx.not_run)}
         ### Updated principles and their source-doc changes
 
         #{sections}
@@ -885,8 +834,8 @@ module Gitlab
           submit_mr(branch, default_branch, ctx, title, description)
         end
 
-        # Opens/updates the tooling MR carrying the regenerated global routing
-        # tables. Routed to the broad `/.ai/` owners (no SSOT-team content).
+        # Opens/updates the tooling MR carrying the regenerated global routing tables. Routed to the broad `/.ai/`
+        # owners (no SSOT-team content).
         def create_tooling_mr(branch, ctx, title)
           default_branch = workflow.default_branch
           project_url = "#{workflow.gitlab_host}/#{workflow.catalog_project_path}"
@@ -911,10 +860,9 @@ module Gitlab
           submit_mr(branch, default_branch, ctx, title, description)
         end
 
-        # Opens/updates the dedicated reconcile MR carrying only the Duo
-        # review-instruction fence update, projected from merged master. Routed
-        # to the broad `/.gitlab/` owners (the Duo file is not assigned
-        # per-principle in CODEOWNERS).
+        # Opens/updates the dedicated reconcile MR carrying only the Duo review-instruction fence update, projected from
+        # merged master.
+        # Routed to the broad `/.gitlab/` owners (the Duo file is not assigned per-principle in CODEOWNERS).
         def create_reconcile_mr(branch, ctx, title)
           default_branch = workflow.default_branch
           duo_path = Manifest::DUO_REVIEW_INSTRUCTIONS_PATH
@@ -945,8 +893,8 @@ module Gitlab
           "\nThis MR was generated by #{job_url}\n"
         end
 
-        # `failed` is run-wide (distillation failures aren't grouped by team),
-        # so the same note is repeated in every team's MR description.
+        # `failed` is run-wide (distillation failures aren't grouped by team), so the same note is repeated in every
+        # team's MR description.
         def failed_principles_section(failed)
           return '' if failed.empty?
 
@@ -957,15 +905,31 @@ module Gitlab
           SECTION
         end
 
-        # Renders the "Request a review from" section listing secondary teams
-        # for the principles in this MR whose SSOT docs span more than one
-        # owner. Returns '' when there are no secondary teams, so single-owner
-        # MRs stay terse (the owner already approves via CODEOWNERS).
+        # Worded deliberately differently from failed_principles_section: these principles were never shown to be
+        # undistillable, their distill job simply did not complete (runner outage, job timeout, or the pipeline
+        # being canceled).
+        # Conflating the two would send an operator looking for a distillation defect that does not exist.
         #
-        # Secondary handles are rendered as inline code (`@team`) rather than
-        # bare mentions, so listing them does not notify the whole secondary
-        # group; only the primary team is pinged (via CODEOWNERS and the
-        # summary). Secondary teams are deduped and exclude the primary.
+        # Like `failed`, this is run-wide rather than per-team, so the same note appears in every team's MR description.
+        def not_run_principles_section(not_run)
+          return '' if not_run.to_a.empty?
+
+          <<~SECTION
+
+            > ℹ️ **Incomplete run**: #{not_run.size} principle(s) produced no result because their
+            > distill job did not complete: #{not_run.join(', ')}. This is not a distillation
+            > failure: they will be re-attempted on the next scheduled run.
+          SECTION
+        end
+
+        # Renders the "Request a review from" section listing secondary teams for the principles in this MR whose SSOT
+        # docs span more than one owner.
+        # Returns '' when there are no secondary teams, so single-owner MRs stay terse (the owner already approves via
+        # CODEOWNERS).
+        #
+        # Secondary handles are rendered as inline code (`@team`) rather than bare mentions, so listing them does not
+        # notify the whole secondary group; only the primary team is pinged (via CODEOWNERS and the summary).
+        # Secondary teams are deduped and exclude the primary.
         def review_request_section(principle_names, team)
           secondary = principle_names
             .flat_map { |name| manifest.principle_secondary_teams(name) }
@@ -985,23 +949,22 @@ module Gitlab
           SECTION
         end
 
-        # Shared create-or-update with same-day idempotency: an open MR for the
-        # same source branch is updated in place rather than failing on a 409.
+        # Shared create-or-update with same-day idempotency: an open MR for the same source branch is updated in place
+        # rather than failing on a 409.
         def submit_mr(branch, default_branch, ctx, title, description)
           encoded_project = URI.encode_www_form_component(ctx.project_id)
           existing_mr_iid = find_open_mr_iid(encoded_project, branch, ctx.api_token)
           body = {
             title: title,
-            # Collapse runs of blank lines so an empty `job_line` (when
-            # CI_JOB_URL is unset) doesn't leave a spurious gap mid-paragraph.
+            # Collapse runs of blank lines so an empty `job_line` (when CI_JOB_URL is unset) doesn't leave a spurious
+            # gap mid-paragraph.
             description: description.gsub(/\n{3,}/, "\n\n"),
             labels: Array(ctx.auto_mr_cfg['labels']).join(','),
             remove_source_branch: ctx.auto_mr_cfg.fetch('remove_source_branch', true)
           }
-          # Assign the MR to its author (the service account) and tag the
-          # current milestone so Danger's "no assignee" / "no milestone"
-          # warnings don't fire on every weekly auto-MR. Both are best-effort:
-          # a lookup failure logs and omits the field rather than aborting.
+          # Assign the MR to its author (the service account) and tag the current milestone so Danger's "no assignee" /
+          # "no milestone" warnings don't fire on every weekly auto-MR. Both are best-effort: a lookup failure logs and
+          # omits the field rather than aborting.
           assignee_id = mr_assignee_id(ctx.api_token)
           body[:assignee_id] = assignee_id if assignee_id
           milestone_id = current_milestone_id(encoded_project, ctx.api_token)
@@ -1025,8 +988,8 @@ module Gitlab
           end
 
           unless response.is_a?(Net::HTTPSuccess)
-            # Raise (not abort) so the per-team rescue in create_branch_and_mr
-            # can record this team and continue with the others.
+            # Raise (not abort) so the per-team rescue in create_branch_and_mr can record this team and continue with
+            # the others.
             raise "Failed to #{action.delete_suffix('ed')} MR: #{response.code} #{response.body.slice(0, 200)}"
           end
 

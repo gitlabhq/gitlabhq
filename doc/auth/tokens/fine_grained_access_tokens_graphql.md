@@ -468,6 +468,7 @@ Grants the ability to create, read, resume, and update duo workflows.
 | Read | User | Type | `DuoWorkflowNoteLink` |
 | Read | User | Type | `DuoWorkflowWorkItemLink` |
 | Update | User | Mutation | `UpdateDuoWorkflowAgentPrivileges` |
+| Update | User | Mutation | `UpdateDuoWorkflowWebSearch` |
 
 #### Flows Metadata
 

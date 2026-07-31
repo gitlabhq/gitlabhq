@@ -71,6 +71,7 @@ RSpec.describe RapidDiffs::MergeRequestAppComponent, feature_category: :code_rev
 
   before do
     allow(RapidDiffs::AppComponent).to receive(:new).and_return(app_component)
+    allow(app_component).to receive(:set_original_view_context)
     allow(app_component).to receive(:render_in).and_yield(app_component)
     allow(app_component).to receive(:with_before_diffs_list).and_yield
     allow(app_component).to receive(:with_diffs_list).and_yield

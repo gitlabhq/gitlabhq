@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GitalyClient::ConflictsService do
-  let(:project) { create(:project, :repository) }
-  let(:target_project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:target_project) { create(:project, :repository) }
   let(:source_repository) { project.repository.raw }
   let(:target_repository) { target_project.repository.raw }
   let(:target_gitaly_repository) { target_repository.gitaly_repository }

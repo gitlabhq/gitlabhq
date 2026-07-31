@@ -26,7 +26,7 @@ Rails.application.configure do
   # and recreated between test runs. Don't rely on the data there!
   config.cache_classes = Gitlab::Utils.to_boolean(ENV['CACHE_CLASSES'], default: false)
 
-  config.view_component.preview_route = "/-/view_component/previews"
+  config.view_component.previews.route = "/-/view_component/previews"
 
   # Configure static asset server for tests with Cache-Control for performance
   config.assets.compile = false if ENV['CI']

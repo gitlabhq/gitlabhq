@@ -333,7 +333,7 @@ The CI/CD template migration involves the following steps:
    based on one template for each job.
 
    - The name of the template should follow the `go` command, for example `format.yml`, `build.yml`, and `test.yml`.
-   - Create a new project, initialize a Git repository, add/commit all changes, set a remote origin and push.
+   - Create a new project, initialize a Git repository, add/commit all changes, set a remote origin, and push.
      Modify the URL for your CI/CD component project path.
    - Create additional files as outlined in the guidance to [write a component](_index.md#write-a-component):
      `README.md`, `LICENSE.md`, `.gitlab-ci.yml`, `.gitignore`. The following shell commands
@@ -356,7 +356,7 @@ The CI/CD template migration involves the following steps:
    ```
 
 1. Create the CI/CD jobs as template. Start with the `build` job.
-   - Define the following inputs in the `spec` section: `stage`, `golang_version` and `binary_directory`.
+   - Define the following inputs in the `spec` section: `stage`, `golang_version`, and `binary_directory`.
    - Add a dynamic job name definition, accessing `inputs.golang_version`.
    - Use the similar pattern for dynamic Go image versions, accessing `inputs.golang_version`.
    - Assign the stage to the `inputs.stage` value.

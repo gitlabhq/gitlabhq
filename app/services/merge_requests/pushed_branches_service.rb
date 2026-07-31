@@ -21,7 +21,7 @@ module MergeRequests
       return [] if branch_names.blank?
 
       project.source_of_merge_requests
-        .opened
+        .opened_or_locked
         .from_source_branches(branch_names)
         .pluck(:source_branch)
         .to_set

@@ -4,6 +4,9 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::DataBuilder::Deployment, feature_category: :continuous_delivery do
   describe '.build' do
+    let_it_be(:project) { create(:project, :small_repo, name: 'myproj') }
+    let(:commit) { project.commit(project.default_branch) }
+
     it 'returns the object kind for a deployment' do
       deployment = build(:deployment, deployable: nil, environment: create(:environment))
 
@@ -14,8 +17,6 @@ RSpec.describe Gitlab::DataBuilder::Deployment, feature_category: :continuous_de
 
     it 'returns data for the given build', :aggregate_failures do
       environment = create(:environment, name: 'somewhere/1', external_url: 'https://test.com')
-      project = create(:project, :repository, name: 'myproj')
-      commit = project.commit('HEAD')
       deployment = create(:deployment, status: :failed, environment: environment, sha: commit.sha, project: project)
       deployable = deployment.deployable
       expected_deployable_url = Gitlab::Routing.url_helpers.project_job_url(deployable.project, deployable)
@@ -51,22 +52,19 @@ RSpec.describe Gitlab::DataBuilder::Deployment, feature_category: :continuous_de
     end
 
     it 'does not include the deployable URL when deployable is bridge' do
-      project = create(:project, :repository)
       bridge = create(:ci_bridge, project: project)
-      deployment = create(:deployment, status: :failed, project: project, deployable: bridge)
+      deployment = create(:deployment, status: :failed, project: project, deployable: bridge,
+        sha: commit.sha)
       data = described_class.build(deployment, 'failed', Time.current)
 
       expect(data[:deployable_url]).to be_nil
     end
 
     context 'when commit does not exist in the repository' do
-      let_it_be(:project) { create(:project, :repository) }
-      # `freeze: false` is required in this spec: one or more `let_it_be` subjects
-      # cannot be frozen by default (deep_freeze traversal failure, a non-AR
-      # subject, or an in-memory mutation that survives reload/refind). Do not
-      # drop these opt-outs or convert them to `let_it_be_with_reload`/`refind`
-      # (see gitlab-org/gitlab#602925).
-      let_it_be(:deployment, freeze: false) { create(:deployment, project: project) }
+      let_it_be(:project) { create(:project, :small_repo) }
+      let_it_be_with_reload(:deployment) do
+        create(:deployment, project: project, sha: project.commit(project.default_branch).sha)
+      end
 
       subject(:data) { described_class.build(deployment, 'created', Time.current) }
 

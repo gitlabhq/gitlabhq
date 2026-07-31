@@ -6,7 +6,7 @@ RSpec.describe 'Pages/Zola.gitlab-ci.yml', feature_category: :pages do
   subject(:template) { Gitlab::Template::GitlabCiYmlTemplate.find('Pages/Zola') }
 
   describe 'the created pipeline' do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :small_repo) }
 
     let(:user) { project.first_owner }
     let(:service) { Ci::CreatePipelineService.new(project, user, ref: project.default_branch) }

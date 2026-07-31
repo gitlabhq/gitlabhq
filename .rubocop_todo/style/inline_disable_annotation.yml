@@ -923,7 +923,6 @@ Style/InlineDisableAnnotation:
     - 'config/initializers/wikicloth_ruby_3_patch.rb'
     - 'config/routes/group.rb'
     - 'config/routes/project.rb'
-    - 'danger/ce_ee_vue_templates/Dangerfile'
     - 'danger/roulette/Dangerfile'
     - 'ee/app/controllers/admin/application_settings/scim_oauth_controller.rb'
     - 'ee/app/controllers/admin/emails_controller.rb'

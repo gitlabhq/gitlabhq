@@ -169,6 +169,7 @@ describe('View branch rules', () => {
   const findBranchRuleModal = () => wrapper.findComponent(BranchRuleModal);
   const findBranchRuleListbox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findNoDataTitle = () => wrapper.findByText(I18N.noData);
+  const findGroupLevelEmptyState = () => wrapper.findByTestId('group-level-rule-empty-state');
   const findAccessLevelsDrawer = () => wrapper.findComponent(AccessLevelsDrawer);
   const findSquashSettingSection = () => wrapper.findComponentByTestId('squash-setting-content');
   const findSquashSettingsDrawer = () => wrapper.findComponent(SquashSettingsDrawer);
@@ -848,6 +849,7 @@ describe('View branch rules', () => {
 
     it('shows empty state', () => {
       expect(findNoDataTitle().text()).toBe('No data to display');
+      expect(findGroupLevelEmptyState().exists()).toBe(false);
     });
   });
 

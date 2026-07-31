@@ -1,5 +1,13 @@
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import MarkdownTable from '~/behaviors/components/markdown_table.vue';
+import initPopovers from '~/behaviors/markdown/init_popovers';
+import {
+  renderImageLightbox,
+  destroyImageLightbox,
+} from '~/behaviors/markdown/render_image_lightbox';
+
+jest.mock('~/behaviors/markdown/init_popovers');
+jest.mock('~/behaviors/markdown/render_image_lightbox');
 
 describe('MarkdownTable', () => {
   let wrapper;
@@ -53,6 +61,43 @@ describe('MarkdownTable', () => {
       createWrapper([['<a href="/foo">Alice</a>', '25']]);
 
       expect(wrapper.find('tbody tr a').attributes('href')).toBe('/foo');
+    });
+
+    it('initializes reference popovers on the re-rendered cell and header content', () => {
+      createWrapper([['<a class="gfm-work_item" href="/foo/-/work_items/1">#1</a>', '25']], {
+        headers: ['<a class="gfm-issue" href="/foo/-/issues/2">#2</a>', 'Age'],
+      });
+
+      expect(initPopovers).toHaveBeenCalledTimes(1);
+
+      const elements = initPopovers.mock.calls[0][0];
+      expect(elements.map((el) => el.className)).toEqual(['gfm-issue', 'gfm-work_item']);
+      expect(elements.every((el) => wrapper.element.contains(el))).toBe(true);
+    });
+
+    it('initializes the image lightbox on the re-rendered cell content', () => {
+      createWrapper([['<a href="/uploads/foo.png"><img src="/uploads/foo.png" alt="foo"></a>']], {
+        headers: ['Image'],
+      });
+
+      expect(renderImageLightbox).toHaveBeenCalledTimes(1);
+
+      const [images, container] = renderImageLightbox.mock.calls[0];
+      expect(images).toHaveLength(1);
+      expect(images[0].tagName).toBe('IMG');
+      expect(wrapper.element.contains(images[0])).toBe(true);
+      expect(container).toBe(wrapper.element);
+    });
+
+    it('destroys the image lightbox instance when the component is destroyed', () => {
+      createWrapper([['<a href="/uploads/foo.png"><img src="/uploads/foo.png" alt="foo"></a>']], {
+        headers: ['Image'],
+      });
+      const { element } = wrapper;
+
+      wrapper.destroy();
+
+      expect(destroyImageLightbox).toHaveBeenCalledWith(element);
     });
   });
 

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::CodeNavigationPath, feature_category: :source_code_management do
   context 'when there is an artifact with code navigation data' do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :small_repo) }
     let_it_be(:sha) { project.repository.commits('master', limit: Gitlab::CodeNavigationPath::LATEST_COMMITS_LIMIT).last.id }
     let_it_be(:pipeline) { create(:ci_pipeline, project: project, sha: sha) }
     let_it_be(:job) { create(:ci_build, pipeline: pipeline) }

@@ -80,11 +80,13 @@ on demand without starting an unrelated pipeline:
 1. Find the "AI principles distillation" schedule.
 1. Select **Run** (the play icon).
 
-The run fires only the `ai-principles-sync` job. When it detects drift,
-it opens one merge request per affected principle rather than committing
-to your branch. The merge request URLs are printed at the end of the job
-log. This is the supported path for filling in a newly seeded principle
-or fence without a personal Duo Agent Platform seat.
+The run fires the `ai-principles-pipeline-generate` job, which scans for drift and
+triggers a child pipeline with one `distill:<principle>` job per affected
+principle. Those fan back in to `ai-principles-collect`, which opens one
+merge request per affected team rather than committing to your branch. The
+merge request URLs are printed at the end of the collect job's log. This is
+the supported path for filling in a newly seeded principle or fence without
+a personal Duo Agent Platform seat.
 
 ### Required CI variables
 

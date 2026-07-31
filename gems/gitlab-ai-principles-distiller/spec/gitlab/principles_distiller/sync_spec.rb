@@ -125,14 +125,12 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
       end
     end
 
-    # Regression: a re-distillation that produces the same checklist must be
-    # skipped, not emitted as a frontmatter-only MR (new source_checksum /
-    # distilled_at_sha but an identical body). In production `current` is read
-    # from disk WITH the auto-generated header and authoritative sources footer
-    # intact (strip_frontmatter removes only the YAML block), while `updated`
-    # is the raw LLM checklist WITHOUT that footer. The meaningful? gate must
-    # therefore compare the fully-assembled body against `current`; hence
-    # `existing_on_disk` includes the footer to mirror real on-disk content.
+    # Regression: a re-distillation that produces the same checklist must be skipped, not emitted as a frontmatter-only
+    # MR (new source_checksum / distilled_at_sha but an identical body).
+    # In production `current` is read from disk WITH the auto-generated header and authoritative sources footer intact
+    # (strip_frontmatter removes only the YAML block), while `updated` is the raw LLM checklist WITHOUT that footer.
+    # The meaningful? gate must therefore compare the fully-assembled body against `current`; hence `existing_on_disk`
+    # includes the footer to mirror real on-disk content.
     context 'when content has no meaningful diff from existing file' do
       let(:header) do
         "<!-- Auto-generated from docs.gitlab.com by " \
@@ -182,8 +180,8 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
     end
   end
 
-  # Covers the partial-failure ordering: a distillation failure must not
-  # discard principles that succeeded in the same run (issue #607364).
+  # Covers the partial-failure ordering: a distillation failure must not discard principles that succeeded in the same
+  # run.
   describe '.run' do
     let(:affected) { { 'qa' => { config: {} } } }
 
@@ -208,17 +206,15 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
         allow(sync).to receive(:create_branch_and_mr)
       end
 
-      # The status is asserted, not just the SystemExit: a bare
-      # raise_error(SystemExit) also passes for `exit 0`, which would silently
-      # disable the scheduled Slack alert (it fires on a non-zero exit).
+      # The status is asserted, not just the SystemExit: a bare raise_error(SystemExit) also passes for `exit 0`, which
+      # would silently disable the scheduled Slack alert (it fires on a non-zero exit).
       it 'publishes the successful principles and still exits non-zero', :aggregate_failures do
         expect { sync.run }.to raise_error(SystemExit) { |error| expect(error.status).to eq(1) }
         expect(sync).to have_received(:create_branch_and_mr)
           .with({ 'qa' => 'content' }, affected, anything, failed: ['other'])
       end
 
-      # The Slack alert job reads these to name the failed principles instead
-      # of posting a generic "the job failed".
+      # The Slack alert job reads these to name the failed principles instead of posting a generic "the job failed".
       it 'writes the failed principles to the dotenv report', :aggregate_failures do
         expect { sync.run }.to raise_error(SystemExit) { |error| expect(error.status).to eq(1) }
 
@@ -256,9 +252,8 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
           .with({ 'qa' => 'content' }, affected, anything, failed: [])
       end
 
-      # The report is still written (so the artifact uploader always has a file
-      # to pick up), but with no failed names, which is what the Slack job
-      # tests, so it never claims a partial failure on a run that had none.
+      # The report is still written (so the artifact uploader always has a file to pick up), but with no failed names,
+      # which is what the Slack job tests, so it never claims a partial failure on a run that had none.
       it 'writes the dotenv report with no failed principles', :aggregate_failures do
         sync.run
 
@@ -272,14 +267,283 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
       let(:options) { { push: true } }
       let(:affected) { {} }
 
-      # The scheduled job's normal green path returns before distillation, so
-      # the report has to be written here too or the uploader logs
-      # `no matching files` / `No files to upload` on every clean weekly run.
+      # The scheduled job's normal green path returns before distillation, so the report has to be written here too or
+      # the uploader logs `no matching files` / `No files to upload` on every clean weekly run.
       it 'writes the dotenv report and exits zero', :aggregate_failures do
         expect { sync.run }.not_to raise_error
 
         expect(run_report).to include('AI_PRINCIPLES_FAILED_COUNT=0')
         expect(run_report).to include('AI_PRINCIPLES_PUBLISHED_COUNT=0')
+      end
+    end
+  end
+
+  # OptionParser cannot express mutual exclusion, so without this guard `--distill-one x --collect y` silently runs
+  # whichever the dispatch chain reaches first.
+  # That is a plausible copy-paste error in the CI YAML, and the failure is near-invisible: a `--collect` meant to also
+  # distill just publishes an empty run.
+  describe 'mutually exclusive modes' do
+    before do
+      allow(sync).to receive(:parse_options).and_return(options)
+    end
+
+    context 'when two mode flags are given' do
+      let(:options) { { distill_one: 'qa', collect: %w[qa] } }
+
+      it 'aborts naming both flags' do
+        expect { sync.run }
+          .to raise_error(SystemExit)
+          .and output(/--distill-one and --collect are mutually exclusive/).to_stderr
+      end
+    end
+
+    # Modifiers are not modes: --push, --force, --only and --warn-stale each tune a mode rather than selecting one, so
+    # combining them must stay legal.
+    context 'when one mode flag is combined with modifiers' do
+      let(:options) { { generate_child_pipeline: true, force: true, only: ['qa'] } }
+
+      it 'does not abort' do
+        allow(sync).to receive(:generate_child_pipeline)
+
+        expect { sync.run }.not_to raise_error
+        expect(sync).to have_received(:generate_child_pipeline)
+      end
+    end
+  end
+
+  # The three stages of the split CI pipeline (see gitlab-org/gitlab#607365): generate emits one distill job per
+  # affected principle, each distill job records its own outcome as an artifact, and collect fans them back in and
+  # publishes.
+  # Splitting this way gives every principle its own job timeout, so one slow principle can no longer time out a shared
+  # budget and discard every other principle's completed work.
+  describe 'split pipeline stages' do
+    let(:artifacts_dir) { File.join(tmpdir, described_class::ARTIFACTS_DIR) }
+
+    before do
+      Gitlab::PrinciplesDistiller::Workspace.path = tmpdir
+      allow(sync.workflow).to receive(:validate_config!)
+    end
+
+    describe '.generate_child_pipeline' do
+      subject(:generate) { sync.generate_child_pipeline(options) }
+
+      let(:options) { {} }
+      let(:affected) { { 'alpha' => { config: {} }, 'beta' => { config: {} } } }
+
+      before do
+        allow(sync.manifest).to receive_messages(load: nil, affected_principles: affected)
+      end
+
+      def child_pipeline
+        YAML.safe_load(File.read(File.join(tmpdir, described_class::CHILD_PIPELINE_PATH)))
+      end
+
+      it 'writes a child pipeline with one distill job per affected principle' do
+        generate
+
+        expect(child_pipeline.keys).to include('distill:alpha', 'distill:beta')
+      end
+
+      # The whole point of the generate job is that it is cheap: all the expensive, timeout-prone work moves into the
+      # per-principle jobs.
+      it 'triggers no distillation' do
+        # Stubbed in the example, not a `before`: it is the subject of this assertion rather than shared setup.
+        allow(sync).to receive(:build_distilled_contents)
+
+        generate
+
+        expect(sync).not_to have_received(:build_distilled_contents)
+      end
+
+      context 'when --force and --only are passed' do
+        let(:options) { { force: true, only: ['alpha'] } }
+
+        it 'passes them through to the drift scan' do
+          generate
+
+          expect(sync.manifest).to have_received(:affected_principles).with(force: true, only: ['alpha'])
+        end
+      end
+
+      # A child pipeline with no jobs is invalid, and the collect job comes from the included template, so the clean
+      # path stays the ordinary path rather than a special case in the parent pipeline.
+      context 'when no principles are affected' do
+        let(:affected) { {} }
+
+        it 'still writes a pipeline, with no distill jobs', :aggregate_failures do
+          expect { generate }.to output(/All principles are up to date/).to_stdout
+
+          expect(child_pipeline.keys.grep(/\Adistill:/)).to be_empty
+        end
+      end
+    end
+
+    describe '.distill_one' do
+      let(:config) { { 'sources' => [{ 'path' => 'doc/qa.md' }] } }
+      # [contents, failed] as build_distilled_contents returns it.
+      # Each context below overrides this to pick the outcome it exercises.
+      let(:distilled) { [{ 'qa' => 'body' }, []] }
+
+      before do
+        allow(sync.manifest).to receive_messages(load: nil, principle_config: config)
+        allow(sync).to receive(:build_distilled_contents).and_return(distilled)
+      end
+
+      def status_of(name)
+        File.read(File.join(artifacts_dir, "#{name}.status"))
+      end
+
+      context 'when the principle distills to new content' do
+        it 'records an updated status with the assembled content', :aggregate_failures do
+          sync.distill_one('qa')
+
+          expect(status_of('qa')).to eq(described_class::Artifacts::STATUS_UPDATED)
+          expect(File.read(File.join(artifacts_dir, 'qa.md'))).to eq('body')
+        end
+
+        # Publishing is the fan-in's job: building the per-team MRs shares a single working tree and cannot be
+        # parallelized the way distillation can.
+        it 'publishes nothing' do
+          allow(sync).to receive(:create_branch_and_mr)
+
+          sync.distill_one('qa')
+
+          expect(sync).not_to have_received(:create_branch_and_mr)
+        end
+      end
+
+      # A clean run that produced no meaningful diff is a healthy outcome and must stay distinct from a failure, or it
+      # would reach the Slack alert.
+      context 'when the principle has no meaningful changes' do
+        let(:distilled) { [{}, []] }
+
+        it 'records an unchanged status and exits zero', :aggregate_failures do
+          expect { sync.distill_one('qa') }.not_to raise_error
+
+          expect(status_of('qa')).to eq(described_class::Artifacts::STATUS_UNCHANGED)
+        end
+      end
+
+      context 'when the principle fails after retries' do
+        let(:distilled) { [{}, ['qa']] }
+
+        # The status artifact is written BEFORE the non-zero exit, and the CI
+        # job declares `artifacts: when: always`.
+        # Without both, the collect job would see no artifact and silently downgrade a genuine failure to "job never
+        # ran".
+        it 'records a failed status and then exits non-zero', :aggregate_failures do
+          expect { sync.distill_one('qa') }.to raise_error(SystemExit) { |e| expect(e.status).to eq(1) }
+
+          expect(status_of('qa')).to eq(described_class::Artifacts::STATUS_FAILED)
+        end
+      end
+
+      # A generated pipeline naming a principle the manifest does not have means the two have diverged.
+      # Succeeding quietly would let collect report it as "never ran" and skip it every single week.
+      context 'when the principle is not in the manifest' do
+        let(:config) { nil }
+
+        it 'aborts' do
+          expect { sync.distill_one('nope') }
+            .to raise_error(SystemExit)
+            .and output(/unknown principle 'nope'/).to_stderr
+        end
+      end
+    end
+
+    describe '.collect' do
+      let(:expected) { %w[alpha beta gamma] }
+      let(:affected) { { 'alpha' => { config: {} } } }
+
+      before do
+        FileUtils.mkdir_p(artifacts_dir)
+        allow(sync.manifest).to receive_messages(load: nil, affected_principles: affected, auto_mr_config: {})
+        allow(sync).to receive(:create_branch_and_mr)
+      end
+
+      def write_artifact(name, status, content: nil)
+        File.write(File.join(artifacts_dir, "#{name}.status"), status)
+        File.write(File.join(artifacts_dir, "#{name}.md"), content) if content
+      end
+
+      def run_report
+        File.read(File.join(tmpdir, described_class::RUN_REPORT_PATH))
+      end
+
+      context 'when one principle succeeded, one failed, and one never ran' do
+        before do
+          write_artifact('alpha', described_class::Artifacts::STATUS_UPDATED, content: 'alpha body')
+          write_artifact('beta', described_class::Artifacts::STATUS_FAILED)
+          # gamma writes nothing: its job never completed.
+        end
+
+        # This is the loss the split exists to prevent: alpha publishes even though beta failed and gamma's job never
+        # finished.
+        it 'publishes what succeeded and exits non-zero', :aggregate_failures do
+          expect { sync.collect(expected) }.to raise_error(SystemExit) { |e| expect(e.status).to eq(1) }
+
+          expect(sync).to have_received(:create_branch_and_mr)
+            .with({ 'alpha' => 'alpha body' }, affected, anything, failed: ['beta'], not_run: ['gamma'])
+        end
+
+        # Distinct dotenv vars, not overloaded failure ones, so the Slack job can word "Duo could not distill these" and
+        # "these jobs never ran" differently.
+        it 'reports the two abnormal states separately' do
+          expect { sync.collect(expected) }.to raise_error(SystemExit)
+
+          expect(run_report).to include(
+            'AI_PRINCIPLES_FAILED_NAMES=beta',
+            'AI_PRINCIPLES_NOT_RUN_NAMES=gamma',
+            'AI_PRINCIPLES_PUBLISHED_COUNT=1'
+          )
+        end
+      end
+
+      # A principle whose job never ran has not been shown to be undistillable, and its checksum is untouched, so the
+      # next scheduled run simply re-attempts it.
+      # Failing the run would alert on normal operation.
+      context 'when a principle never ran but nothing actually failed' do
+        before do
+          write_artifact('alpha', described_class::Artifacts::STATUS_UPDATED, content: 'alpha body')
+          write_artifact('beta', described_class::Artifacts::STATUS_UNCHANGED)
+        end
+
+        it 'publishes and exits zero', :aggregate_failures do
+          expect { sync.collect(expected) }.not_to raise_error
+
+          expect(sync).to have_received(:create_branch_and_mr)
+            .with({ 'alpha' => 'alpha body' }, affected, anything, failed: [], not_run: ['gamma'])
+        end
+      end
+
+      # Collect owns publishing precisely so distillation can be parallel; it must never trigger a workflow itself.
+      context 'with a principle to publish' do
+        before do
+          write_artifact('alpha', described_class::Artifacts::STATUS_UPDATED, content: 'alpha body')
+        end
+
+        it 'distills nothing' do
+          # Stubbed in the example, not a `before`: it is the subject of this assertion rather than shared setup.
+          allow(sync).to receive(:build_distilled_contents)
+
+          expect { sync.collect(expected) }.not_to raise_error
+          expect(sync).not_to have_received(:build_distilled_contents)
+        end
+      end
+
+      context 'when every distill job reported no meaningful change' do
+        let(:expected) { ['alpha'] }
+
+        before do
+          write_artifact('alpha', described_class::Artifacts::STATUS_UNCHANGED)
+        end
+
+        it 'opens no MR and exits zero', :aggregate_failures do
+          expect { sync.collect(expected) }.not_to raise_error
+
+          expect(sync).not_to have_received(:create_branch_and_mr)
+          expect(run_report).to include('AI_PRINCIPLES_PUBLISHED_COUNT=0')
+        end
       end
     end
   end
@@ -312,11 +576,9 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
   end
 
   describe '.distill_principle (retry loop)' do
-    # `distill_principle` is private (it's an internal step of
-    # parallel_distill), so specs reach it via `send`. The retry loop is
-    # the most failure-prone control flow in the gem: any of the three
-    # Duo invocations can return nil, return content missing the
-    # required heading, or succeed.
+    # `distill_principle` is private (it's an internal step of parallel_distill), so specs reach it via `send`.
+    # The retry loop is the most failure-prone control flow in the gem: any of the three Duo invocations can return nil,
+    # return content missing the required heading, or succeed.
     subject(:distill) { sync.send(:distill_principle, 'qa', config) }
 
     let(:config) { { 'sources' => [{ 'path' => 'doc/qa.md' }] } }
@@ -327,8 +589,8 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
       FileUtils.mkdir_p(File.join(tmpdir, 'doc'))
       File.write(File.join(tmpdir, 'doc/qa.md'), 'source content')
 
-      # Bypass real waits between retries. We assert the call site
-      # separately rather than letting the test stall for 5+ minutes.
+      # Bypass real waits between retries.
+      # We assert the call site separately rather than letting the test stall for 5+ minutes.
       allow(sync.workflow).to receive(:sleep_with_heartbeat)
       allow(sync.workflow).to receive(:validate_sources!)
     end
@@ -409,15 +671,13 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
       end
     end
 
-    # Mechanical guard for prompt rule 15: baseline rules must appear
-    # verbatim, exactly once. A re-distillation once relocated AND corrupted
-    # a baseline section (duplicated sentence fragment, broken sub-bullet)
-    # despite the verbatim instruction; prompt-only enforcement is not
-    # enough, so baseline drift must consume a retry instead of publishing.
-    # The check compares normalized logical units (bullets/paragraphs with
-    # wrapping and whitespace collapsed), not physical lines: the agent
-    # routinely re-flows hard-wrapped lines, and identical text with
-    # different wrapping is not corruption.
+    # Mechanical guard for prompt rule 15: baseline rules must appear verbatim, exactly once.
+    # A re-distillation once relocated AND corrupted a baseline section (duplicated sentence fragment, broken
+    # sub-bullet) despite the verbatim instruction; prompt-only enforcement is not enough, so baseline drift must
+    # consume a retry instead of publishing.
+    # The check compares normalized logical units (bullets/paragraphs with wrapping and whitespace collapsed), not
+    # physical lines: the agent routinely re-flows hard-wrapped lines, and identical text with different wrapping is not
+    # corruption.
     context 'when the principle has a baseline' do
       let(:config) do
         {
@@ -478,8 +738,8 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
       end
 
       context 'when the output integrates baseline rules under a different heading' do
-        # Rule 15 allows adapting placement/headings when integrating into
-        # an existing same-topic subsection; only the rule lines are locked.
+        # Rule 15 allows adapting placement/headings when integrating into an existing same-topic subsection; only the
+        # rule lines are locked.
         let(:relocated_content) do
           verbatim_content.sub('### Process Reminders', '### Review Process')
         end
@@ -536,10 +796,9 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
       end
 
       context 'when the output re-wraps a multi-line baseline rule' do
-        # Identical text with different wrapping is not corruption. A
-        # line-level check rejected this deterministically, burning every
-        # retry on byte-identical text (observed with the hard-wrapped
-        # database-fundamentals baseline).
+        # Identical text with different wrapping is not corruption.
+        # A line-level check rejected this deterministically, burning every retry on byte-identical text (observed with
+        # the hard-wrapped database-fundamentals baseline).
         let(:rewrapped_content) do
           verbatim_content.sub(
             "- Flag all modified fixtures as needing a reviewer, checking\n  " \
@@ -579,13 +838,12 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
       end
 
       context 'when the output renders a baseline paragraph as a bullet' do
-        # Regression: the database-fundamentals baseline stores the
-        # "When a diff modifies..." rule as a bare paragraph that precedes
-        # nested sub-bullets, but every reasonable distillation renders it
-        # as a bullet so the sub-bullets attach. Keeping the leading list
-        # marker in the normalized unit made the two forms compare unequal,
-        # so the guard flagged drift on byte-identical rule text and burned
-        # every retry (which timed out the weekly ai-principles-sync job).
+        # Regression: the database-fundamentals baseline stores the "When a diff modifies..." rule as a bare paragraph
+        # that precedes nested sub-bullets, but every reasonable distillation renders it as a bullet so the sub-bullets
+        # attach.
+        # Keeping the leading list marker in the normalized unit made the two forms compare unequal, so the guard
+        # flagged drift on byte-identical rule text and burned every retry (which timed out the weekly
+        # ai-principles-sync job).
         # The marker is presentation, not content, so this must be accepted.
         let(:bulletized_content) do
           verbatim_content.sub(
@@ -605,9 +863,8 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
       end
 
       context 'when the output duplicates a baseline sentence fragment' do
-        # The observed corruption emitted a baseline sentence fragment twice
-        # right after its own bullet; the fragment joins the bullet's logical
-        # unit and corrupts it, so the unit no longer matches the baseline.
+        # The observed corruption emitted a baseline sentence fragment twice right after its own bullet; the fragment
+        # joins the bullet's logical unit and corrupts it, so the unit no longer matches the baseline.
         let(:corrupted_content) do
           verbatim_content.sub(
             "  each one against the base branch first\n",
@@ -628,8 +885,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
       end
 
       context 'when the output duplicates an entire baseline rule' do
-        # Presence alone is not enough: each baseline rule must appear
-        # exactly once.
+        # Presence alone is not enough: each baseline rule must appear exactly once.
         let(:corrupted_content) do
           "#{verbatim_content}\n- Ask: \"Have you triggered the QA pipeline?\"\n"
         end
@@ -663,9 +919,8 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
       end
 
       context 'when the output appends a trailing period to a baseline rule' do
-        # The agent routinely appends a period while rephrasing a baseline
-        # rule into a sentence; that punctuation is presentation, not the
-        # rule's identity, and must not consume a retry.
+        # The agent routinely appends a period while rephrasing a baseline rule into a sentence; that punctuation is
+        # presentation, not the rule's identity, and must not consume a retry.
         let(:punctuated_content) do
           verbatim_content.sub(
             'each one against the base branch first',
@@ -685,12 +940,10 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
     end
 
     context 'when the baseline has a preamble before its own ## Checklist heading' do
-      # Regression: `Workflow#build_goal` instructs the agent to "Output
-      # ONLY the checklist content. No preamble, no thinking, no trailing
-      # notes." A baseline's own title/prerequisite-note/framing-sentence
-      # preamble is document scaffolding, not a rule, so requiring its
-      # verbatim reproduction is an unsatisfiable guard (observed with
-      # testing-frontend-testing-hierarchy, job 15601793108).
+      # Regression: `Workflow#build_goal` instructs the agent to "Output ONLY the checklist content. No preamble, no
+      # thinking, no trailing notes."
+      # A baseline's own title/prerequisite-note/framing-sentence preamble is document scaffolding, not a rule, so
+      # requiring its verbatim reproduction is an unsatisfiable guard.
       let(:config) do
         {
           'sources' => [{ 'path' => 'doc/qa.md' }],
@@ -741,14 +994,12 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
     end
 
     context 'when a baseline path also appears in the appended Authoritative sources footer' do
-      # Regression: `Sync#assemble_distilled_body` appends an
-      # "## Authoritative sources" footer listing every SSOT path. When a
-      # baseline also lists that path in its checklist, it legitimately
-      # appears twice in the fully-assembled file; the guard must not
-      # penalize the tool's own output for that (observed with
-      # documentation-topics, job 15601793108). `baseline_drift` runs on the
-      # raw agent output before the footer is normally appended, so this
-      # covers the case where the agent emits a footer anyway.
+      # Regression: `Sync#assemble_distilled_body` appends an "## Authoritative sources" footer listing every SSOT path.
+      # When a baseline also lists that path in its checklist, it legitimately appears twice in the fully-assembled
+      # file; the guard must not penalize the tool's own output for that (observed with documentation-topics, job
+      # 15601793108).
+      # `baseline_drift` runs on the raw agent output before the footer is normally appended, so this covers the case
+      # where the agent emits a footer anyway.
       let(:config) do
         {
           'sources' => [{ 'path' => 'doc/topic_types/concept.md' }],
@@ -795,8 +1046,8 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
     end
 
     context 'when a baseline rule is genuinely duplicated and the output also has a sources footer' do
-      # Guard-integrity check: scoping the comparison to the checklist body
-      # must not swallow real duplication that occurs before the footer.
+      # Guard-integrity check: scoping the comparison to the checklist body must not swallow real duplication that
+      # occurs before the footer.
       let(:config) do
         {
           'sources' => [{ 'path' => 'doc/qa.md' }],
@@ -983,10 +1234,9 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
           .and_return({ 'branch_prefix' => 'docs-sync/principles' })
       end
 
-      # The projection is deferred to the freshly cut branch inside
-      # create_reconcile_mr_from_working_tree (which receives the manifest to
-      # regenerate against the branch's base), so reconcile_duo_instructions
-      # must NOT regenerate on the pipeline-SHA working tree first.
+      # The projection is deferred to the freshly cut branch inside create_reconcile_mr_from_working_tree (which
+      # receives the manifest to regenerate against the branch's base), so reconcile_duo_instructions must NOT
+      # regenerate on the pipeline-SHA working tree first.
       it 'defers regeneration to the fresh branch and opens the MR', :aggregate_failures do
         expect(sync.manifest).not_to receive(:generate_duo_review_instructions)
         expect(sync).to receive(:create_reconcile_mr_from_working_tree)

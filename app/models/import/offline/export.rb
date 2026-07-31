@@ -4,6 +4,7 @@ module Import
   module Offline
     class Export < ApplicationRecord
       include AfterCommitQueue
+      include Gitlab::InternalEventsTracking
 
       self.table_name = 'import_offline_exports'
 
@@ -48,6 +49,12 @@ module Import
         after_transition any => :finished do |export|
           export.run_after_commit do
             Notify.offline_export_complete(export.user_id, export.id).deliver_later
+
+            export.track_internal_event(
+              'complete_offline_transfer_export',
+              user: export.user,
+              additional_properties: { label: export.has_failures? ? 'with_failures' : 'without_failures' }
+            )
           end
         end
 

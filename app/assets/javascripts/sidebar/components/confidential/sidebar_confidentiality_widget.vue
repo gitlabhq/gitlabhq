@@ -48,7 +48,7 @@ export default {
       type: String,
     },
   },
-  emits: ['closeForm', 'confidentialityUpdated', 'expandSidebar'],
+  emits: ['closeForm', 'confidentialityUpdated', 'expand-sidebar'],
   data() {
     return {
       confidential: false,
@@ -127,7 +127,7 @@ export default {
     },
     expandSidebar() {
       this.$refs.editable.expand();
-      this.$emit('expandSidebar');
+      this.$emit('expand-sidebar');
     },
   },
 };
@@ -148,7 +148,7 @@ export default {
           v-if="!isLoading"
           :confidential="confidential"
           :class="{ 'gl-mt-3': !isClassicSidebar }"
-          @expandSidebar="expandSidebar"
+          @expand-sidebar="expandSidebar"
         />
       </div>
     </template>

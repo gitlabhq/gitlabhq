@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GitalyClient::DiffService, feature_category: :gitaly do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
 
   let(:repository) { project.repository }
   let(:repository_message) { repository.gitaly_repository }

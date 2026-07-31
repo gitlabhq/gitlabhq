@@ -147,11 +147,11 @@ describe('Sidebar Confidentiality Widget', () => {
     expect(wrapper.emitted('closeForm')).toEqual([[]]);
   });
 
-  it('emits `expandSidebar` event when it is emitted from child component', async () => {
+  it('emits `expand-sidebar` event when it is emitted from child component', async () => {
     createComponent();
     await waitForPromises();
-    findConfidentialityContent().vm.$emit('expandSidebar');
+    findConfidentialityContent().vm.$emit('expand-sidebar');
 
-    expect(wrapper.emitted('expandSidebar')).toHaveLength(1);
+    expect(wrapper.emitted('expand-sidebar')).toHaveLength(1);
   });
 });

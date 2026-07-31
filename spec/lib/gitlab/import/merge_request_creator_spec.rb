@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Import::MergeRequestCreator, feature_category: :importers do
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:reviewer_user) { create(:user) }
 
   subject { described_class.new(project) }

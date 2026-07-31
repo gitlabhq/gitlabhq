@@ -251,7 +251,7 @@ See [Multiple Kubernetes clusters for Auto DevOps](multiple_clusters_auto_devops
 
 You could previously use `environment:kubernetes:namespace`
 to specify a namespace for the environment.
-However, this feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8),
+However, this feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/work_items/8),
 along with certificate-based integration.
 
 You should now use the `KUBE_NAMESPACE` environment variable and

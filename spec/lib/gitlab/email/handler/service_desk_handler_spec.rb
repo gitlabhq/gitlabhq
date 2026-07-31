@@ -26,7 +26,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
 
   context 'when service desk is enabled for the project' do
     let_it_be_with_reload(:project) do
-      create(:project, :repository, :private, group: group, path: 'test', service_desk_enabled: true)
+      create(:project, :small_repo, :private, group: group, path: 'test', service_desk_enabled: true)
     end
 
     let_it_be(:support_bot) { create(:support_bot) }

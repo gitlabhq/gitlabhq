@@ -9,12 +9,6 @@ export const counts = {
   totalDuration: 116158,
 };
 
-export const areaChartData = {
-  labels: ['01 Jan', '02 Jan', '03 Jan', '04 Jan', '05 Jan'],
-  totals: [4, 6, 3, 6, 7],
-  success: [3, 5, 3, 3, 5],
-};
-
 export const transformedAreaChartData = [
   {
     name: 'all',

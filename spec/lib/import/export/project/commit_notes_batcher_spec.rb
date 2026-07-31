@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Import::Export::Project::CommitNotesBatcher, feature_category: :importers do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
 
   subject(:batcher) { described_class.new(project) }
 
@@ -117,7 +117,7 @@ RSpec.describe Import::Export::Project::CommitNotesBatcher, feature_category: :i
 
     it 'excludes notes on the same SHA that belong to another project' do
       own_note = create(:note_on_commit, project: project, commit_id: commit_sha)
-      other_project = create(:project, :repository)
+      other_project = create(:project, :small_repo)
       create(:note_on_commit, project: other_project, commit_id: commit_sha)
 
       yielded = []

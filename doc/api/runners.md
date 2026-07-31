@@ -55,7 +55,7 @@ Lists all runners available to the user.
 Prerequisites:
 
 - For group runners, you must have the Owner role in the owner namespace.
-- For project runners, you must have the Security Manager, Maintainer or Owner role in a project assigned to the runner.
+- For project runners, you must have the Security Manager, Maintainer, or Owner role in a project assigned to the runner.
 
 ```plaintext
 GET /runners
@@ -256,7 +256,7 @@ Prerequisites:
 
 - User access: You must have one of the following:
   - For group runners: The Maintainer or Owner role in the owner namespace.
-  - For project runners: The Security Manager, Maintainer or Owner role in the project that owns the runner.
+  - For project runners: The Security Manager, Maintainer, or Owner role in the project that owns the runner.
   - A custom role with the `admin_runners` permission in the relevant group or project.
 - An access token with the `manage_runner` scope and the appropriate role.
 

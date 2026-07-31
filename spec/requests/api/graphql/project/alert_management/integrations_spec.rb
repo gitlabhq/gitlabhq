@@ -6,7 +6,7 @@ RSpec.describe 'getting Alert Management Integrations', feature_category: :incid
   include ::Gitlab::Routing
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:current_user) { create(:user) }
   let_it_be(:old_prometheus_integration) { create(:prometheus_integration, project: project) }
   let_it_be(:prometheus_integration) { create(:alert_management_prometheus_integration, :legacy, project: project) }

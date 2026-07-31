@@ -172,7 +172,6 @@ export default {
     'ee/app/assets/javascripts/metrics/details/metrics_heatmap.vue',
     'ee/app/assets/javascripts/metrics/details/metrics_line_chart.vue',
     'ee/app/assets/javascripts/metrics/list/metrics_list.vue',
-    'ee/app/assets/javascripts/oncall_schedules/components/oncall_schedules_wrapper.vue',
     'ee/app/assets/javascripts/operations/components/dashboard/dashboard.vue',
     'ee/app/assets/javascripts/requirements/components/requirements_root.vue',
     'ee/app/assets/javascripts/roadmap/components/epic_item.vue',

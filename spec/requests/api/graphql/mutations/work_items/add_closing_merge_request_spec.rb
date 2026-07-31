@@ -6,11 +6,11 @@ RSpec.describe 'Add a closing merge request to a work item', feature_category: :
   include GraphqlHelpers
 
   let_it_be(:group) { create(:group, :private) }
-  let_it_be(:project) { create(:project, :repository, :private, group: group) }
+  let_it_be(:project) { create(:project, :private, group: group) }
   let_it_be(:developer) { create(:user, developer_of: group) }
   let_it_be(:unauthorized_user) { create(:user) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
-  let_it_be(:private_merge_request) { create(:merge_request, source_project: create(:project, :repository, :private)) }
+  let_it_be(:private_merge_request) { create(:merge_request, source_project: create(:project, :private)) }
 
   let(:fields) do
     <<~GRAPHQL

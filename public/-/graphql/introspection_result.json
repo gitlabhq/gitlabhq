@@ -20151,6 +20151,18 @@
               "defaultValue": null,
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "webSearchEnabled",
+              "description": "Enable web search for the session.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "interfaces": null,
@@ -62567,6 +62579,18 @@
               "deprecationReason": null
             },
             {
+              "name": "principalUser",
+              "description": "User that triggered the transition, when the principal identifies a user that still exists; null for other principal kinds or a deleted user. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "UserCore",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
               "name": "reason",
               "description": "Reason for the transition.",
               "args": [],
@@ -104704,6 +104728,18 @@
               "deprecationReason": null
             },
             {
+              "name": "subscriptionName",
+              "description": "Name of the subscription in the Customers Portal.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "trial",
               "description": "Indicates if the license is a trial.",
               "args": [],
@@ -138377,6 +138413,18 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "webSearchEnabled",
+              "description": "Whether web search is enabled for the session. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
             },
             {
               "name": "webUrl",
@@ -265160,6 +265208,35 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 18.9."
             },
             {
+              "name": "updateDuoWorkflowWebSearch",
+              "description": null,
+              "args": [
+                {
+                  "name": "input",
+                  "description": "Parameters for UpdateDuoWorkflowWebSearch",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "UpdateDuoWorkflowWebSearchInput",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "UpdateDuoWorkflowWebSearchPayload",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
               "name": "updateEpic",
               "description": null,
               "args": [
@@ -347633,6 +347710,26 @@
               "deprecationReason": null
             },
             {
+              "name": "restrictedVisibilityLevels",
+              "description": "Visibility levels that are restricted on the instance. Non-administrators cannot use restricted visibility levels for groups, projects, or snippets.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "ENUM",
+                    "name": "VisibilityLevelsEnum",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "runner",
               "description": "Find a runner.",
               "args": [
@@ -377992,6 +378089,35 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
             },
             {
+              "name": "cdDeploymentUpdated",
+              "description": "Triggered when the state of a deployment in an application changes. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [
+                {
+                  "name": "applicationId",
+                  "description": "Global ID of the application whose deployments to watch.",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "CdApplicationID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "CdDeployment",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
               "name": "cdRolloutUpdated",
               "description": "Triggered when a rollout status changes in an application, carrying the new deployment status and, when one applies, a Duo session to open. Introduced in GitLab 19.3: Status: Experiment.",
               "args": [
@@ -392155,6 +392281,120 @@
             {
               "name": "workflow",
               "description": "Updated workflow with new tool approvals.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "DuoWorkflow",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "UpdateDuoWorkflowWebSearchInput",
+          "description": "Autogenerated input type of UpdateDuoWorkflowWebSearch",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "workflowId",
+              "description": "Global ID of the workflow to update.",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "AiDuoWorkflowsWorkflowID",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "webSearchEnabled",
+              "description": "Whether web search should be enabled for the session.",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "UpdateDuoWorkflowWebSearchPayload",
+          "description": "Autogenerated return type of UpdateDuoWorkflowWebSearch.",
+          "fields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "errors",
+              "description": "Errors encountered during update.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "workflow",
+              "description": "Updated workflow.",
               "args": [],
               "type": {
                 "kind": "OBJECT",

@@ -13,7 +13,7 @@ title: Connect GKE clusters through cluster certificates (deprecated)
 {{< /details >}}
 
 > [!warning]
-> This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+> This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/work_items/8) in GitLab 14.5.
 > Use [Infrastructure as Code with OpenTofu and GitLab](../../infrastructure/iac/_index.md).
 > You can also implement your own IaC solution using your preferred tool.
 

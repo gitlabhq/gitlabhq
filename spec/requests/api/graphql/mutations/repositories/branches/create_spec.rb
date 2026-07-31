@@ -28,7 +28,7 @@ RSpec.describe 'Creation of a new branch', feature_category: :source_code_manage
   end
 
   context 'when project is public' do
-    let_it_be(:project) { create(:project, :public, :repository) }
+    let_it_be(:project) { create(:project, :public, :small_repo) }
 
     context 'when user is not allowed to create a branch' do
       it_behaves_like 'a mutation that returns a top-level access error'
@@ -62,7 +62,7 @@ RSpec.describe 'Creation of a new branch', feature_category: :source_code_manage
 
     context 'when user is an inherited member from the group' do
       context 'when project has a private repository' do
-        let_it_be(:project) { create(:project, :public, :repository, :repository_private, group: group) }
+        let_it_be(:project) { create(:project, :public, :small_repo, :repository_private, group: group) }
 
         context 'and user is a guest' do
           before_all do
@@ -84,7 +84,7 @@ RSpec.describe 'Creation of a new branch', feature_category: :source_code_manage
   end
 
   context 'when project is private' do
-    let_it_be(:project) { create(:project, :private, :repository, group: group) }
+    let_it_be(:project) { create(:project, :private, :small_repo, group: group) }
 
     context 'when user is an inherited member from the group' do
       context 'and user is a guest' do

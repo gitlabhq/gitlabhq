@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GitalyClient::CommitCollectionWithNextCursor, feature_category: :gitaly do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
 
   let(:message) { Struct.new(:pagination_cursor, :commits) }
   let(:pagination_cursor) { Struct.new(:next_cursor) }

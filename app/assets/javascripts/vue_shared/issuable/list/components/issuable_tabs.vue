@@ -58,7 +58,7 @@ export default {
   <div class="top-area">
     <gl-tabs
       v-if="tabs.length > 0"
-      class="mobile-separator issuable-state-filters gl-m-0 gl-flex gl-grow gl-p-0"
+      class="mobile-separator issuable-state-filters gl-m-0 gl-flex gl-grow gl-p-0 [&_.gl-tabs-wrapper]:gl-border-0"
       nav-class="gl-border-b-0"
     >
       <gl-tab

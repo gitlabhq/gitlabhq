@@ -67,7 +67,7 @@ gem 'responders', '~> 3.0', feature_category: :rails_platform
 gem 'sprockets', '~> 3.7.0', feature_category: :rails_platform
 gem 'sprockets-rails', '~>  3.5.1', feature_category: :rails_platform
 
-gem 'view_component', '~> 3.23.2', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+gem 'view_component', '~> 4.12.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
 # Supported DBs
 gem 'pg', '~> 1.6.1', feature_category: :database

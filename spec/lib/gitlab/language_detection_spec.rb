@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::LanguageDetection, feature_category: :source_code_management do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
   let_it_be(:ruby) { create(:programming_language, name: 'Ruby') }
   let_it_be(:haskell) { create(:programming_language, name: 'Haskell') }
 

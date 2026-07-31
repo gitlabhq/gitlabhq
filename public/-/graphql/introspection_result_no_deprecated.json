@@ -44726,6 +44726,18 @@
               "deprecationReason": null
             },
             {
+              "name": "subscriptionName",
+              "description": "Name of the subscription in the Customers Portal.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "trial",
               "description": "Indicates if the license is a trial.",
               "args": [],
@@ -178281,6 +178293,26 @@
                 "kind": "OBJECT",
                 "name": "QueryComplexity",
                 "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "restrictedVisibilityLevels",
+              "description": "Visibility levels that are restricted on the instance. Non-administrators cannot use restricted visibility levels for groups, projects, or snippets.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "ENUM",
+                    "name": "VisibilityLevelsEnum",
+                    "ofType": null
+                  }
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null

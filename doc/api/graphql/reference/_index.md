@@ -2368,6 +2368,12 @@ Information about the complexity of the GraphQL query.
 
 Returns [`QueryComplexity`](#querycomplexity).
 
+### `Query.restrictedVisibilityLevels`
+
+Visibility levels that are restricted on the instance. Non-administrators cannot use restricted visibility levels for groups, projects, or snippets.
+
+Returns [`[VisibilityLevelsEnum!]`](#visibilitylevelsenum).
+
 ### `Query.runner`
 
 Find a runner.
@@ -4112,6 +4118,7 @@ Arguments:
 | <a id="mutation-aiduoworkflowcreate-namespaceid"></a>`namespaceId` | [`NamespaceID`](#namespaceid) | Global ID of the namespace the user is acting on. |
 | <a id="mutation-aiduoworkflowcreate-preapprovedagentprivileges"></a>`preApprovedAgentPrivileges` | [`[Int!]`](#int) | Actions the agent can perform without asking for approval. |
 | <a id="mutation-aiduoworkflowcreate-projectid"></a>`projectId` | [`ProjectID`](#projectid) | Global ID of the project the user is acting on. |
+| <a id="mutation-aiduoworkflowcreate-websearchenabled"></a>`webSearchEnabled` | [`Boolean`](#boolean) | Enable web search for the session. |
 | <a id="mutation-aiduoworkflowcreate-workflowdefinition"></a>`workflowDefinition` | [`String`](#string) | Workflow type based on its capability. |
 
 Fields:
@@ -17838,6 +17845,33 @@ Fields:
 | <a id="mutation-updateduoworkflowtoolcallapprovals-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-updateduoworkflowtoolcallapprovals-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during update. |
 | <a id="mutation-updateduoworkflowtoolcallapprovals-workflow"></a>`workflow` | [`DuoWorkflow`](#duoworkflow) | Updated workflow with new tool approvals. |
+
+### `Mutation.updateDuoWorkflowWebSearch`
+
+{{< details >}}
+
+- Introduced in GitLab 19.3.
+- Status: Experiment.
+
+{{< /details >}}
+
+Input type: `UpdateDuoWorkflowWebSearchInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-updateduoworkflowwebsearch-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-updateduoworkflowwebsearch-websearchenabled"></a>`webSearchEnabled` | [`Boolean!`](#boolean) | Whether web search should be enabled for the session. |
+| <a id="mutation-updateduoworkflowwebsearch-workflowid"></a>`workflowId` | [`AiDuoWorkflowsWorkflowID!`](#aiduoworkflowsworkflowid) | Global ID of the workflow to update. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-updateduoworkflowwebsearch-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-updateduoworkflowwebsearch-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during update. |
+| <a id="mutation-updateduoworkflowwebsearch-workflow"></a>`workflow` | [`DuoWorkflow`](#duoworkflow) | Updated workflow. |
 
 ### `Mutation.updateEpic`
 
@@ -35928,6 +35962,7 @@ Fields:
 | <a id="cdrollouttransition-id"></a>`id` | [`CdRolloutTransitionID!`](#cdrollouttransitionid) | Global ID of the rollout transition. |
 | <a id="cdrollouttransition-onbehalfof"></a>`onBehalfOf` | [`String`](#string) | Originating principal a composite-identity action was performed on behalf of. |
 | <a id="cdrollouttransition-principal"></a>`principal` | [`String!`](#string) | Identity reference of the principal that triggered the transition, for example `user:1234`. |
+| <a id="cdrollouttransition-principaluser"></a>`principalUser` {{< icon name="warning-solid" >}} | [`UserCore`](#usercore) | Introduced in GitLab 19.3. Status: Experiment. User that triggered the transition, when the principal identifies a user that still exists; null for other principal kinds or a deleted user. |
 | <a id="cdrollouttransition-reason"></a>`reason` | [`String`](#string) | Reason for the transition. |
 | <a id="cdrollouttransition-tostate"></a>`toState` | [`CdRolloutTransitionState!`](#cdrollouttransitionstate) | State the rollout transitioned to. |
 | <a id="cdrollouttransition-triggeredby"></a>`triggeredBy` | [`String`](#string) | Identifier of what triggered the transition. |
@@ -38709,6 +38744,7 @@ Fields:
 | <a id="currentlicense-name"></a>`name` | [`String`](#string) | Name of the licensee. |
 | <a id="currentlicense-plan"></a>`plan` | [`String!`](#string) | Name of the subscription plan. |
 | <a id="currentlicense-startsat"></a>`startsAt` | [`Date`](#date) | Date when the license started. |
+| <a id="currentlicense-subscriptionname"></a>`subscriptionName` | [`String`](#string) | Name of the subscription in the Customers Portal. |
 | <a id="currentlicense-trial"></a>`trial` | [`Boolean`](#boolean) | Indicates if the license is a trial. |
 | <a id="currentlicense-type"></a>`type` | [`String!`](#string) | Type of the license. |
 | <a id="currentlicense-usersinlicensecount"></a>`usersInLicenseCount` | [`Int`](#int) | Number of paid users in the license. |
@@ -41226,6 +41262,7 @@ Fields:
 | <a id="duoworkflow-user"></a>`user` | [`UserCore`](#usercore) | User who created the session. |
 | <a id="duoworkflow-userid"></a>`userId` | [`UserID!`](#userid) | ID of the user. |
 | <a id="duoworkflow-userpermissions"></a>`userPermissions` | [`DuoWorkflowPermissions`](#duoworkflowpermissions) | Permissions of the current user for the workflow. |
+| <a id="duoworkflow-websearchenabled"></a>`webSearchEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.3. Status: Experiment. Whether web search is enabled for the session. |
 | <a id="duoworkflow-weburl"></a>`webUrl` | [`String`](#string) | URL of the object. |
 | <a id="duoworkflow-workitem"></a>`workItem` | [`WorkItem`](#workitem) | Associated work item (issue or epic), if any. |
 | <a id="duoworkflow-workflowdefinition"></a>`workflowDefinition` | [`String`](#string) | GitLab Duo Agent Platform flow type based on its capabilities. |

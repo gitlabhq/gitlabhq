@@ -10,16 +10,8 @@ import { addAriaLabels } from './accessibility';
 import { renderImageLightbox } from './render_image_lightbox';
 import renderMarkdownTables from './render_markdown_tables';
 import markPrintScaleTables from './mark_print_scale_tables';
-import { GFM_POPOVER_SELECTOR } from './constants';
-
-function initPopovers(elements) {
-  if (!elements.length) return;
-  import(/* webpackChunkName: 'IssuablePopoverBundle' */ '~/issuable/popover')
-    .then(({ default: initIssuablePopovers }) => {
-      initIssuablePopovers(elements);
-    })
-    .catch(() => {});
-}
+import initPopovers from './init_popovers';
+import { GFM_POPOVER_SELECTOR, GFM_LIGHTBOX_IMAGE_SELECTOR } from './constants';
 
 // Render GitLab Flavored Markdown.
 //
@@ -50,8 +42,7 @@ export function renderGFM(element) {
   const userEls = arrayFromAll('.gfm-project_member');
   const popoverEls = arrayFromAll(GFM_POPOVER_SELECTOR);
   const taskListCheckboxEls = arrayFromAll('.task-list-item-checkbox');
-  // eslint-disable-next-line @gitlab/require-i18n-strings
-  const imageEls = arrayFromAll('a>img');
+  const imageEls = arrayFromAll(GFM_LIGHTBOX_IMAGE_SELECTOR);
 
   syntaxHighlight(highlightEls);
   renderKroki(krokiEls);
