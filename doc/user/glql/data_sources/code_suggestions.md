@@ -14,7 +14,7 @@ title: Code suggestions
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/21212) in GitLab 19.1.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/21212) in GitLab 19.1.
 
 {{< /history >}}
 

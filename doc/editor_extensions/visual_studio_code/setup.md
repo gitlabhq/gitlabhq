@@ -75,9 +75,7 @@ Prerequisites:
 
 To authenticate with GitLab:
 
-1. Open the Command Palette:
-   - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+1. In VS Code, select **View** > **Command Palette**.
 1. Type `GitLab: Authenticate` and press <kbd>Enter</kbd>.
 1. Select your GitLab instance URL from the options or enter one manually.
    - If you enter one manually, in **URL to GitLab instance**, paste the full URL,
@@ -97,9 +95,7 @@ Prerequisites:
 
 To use OAuth, first configure the OAuth application login:
 
-1. Open the Command Palette:
-   - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+1. In VS Code, select **View** > **Command Palette**.
 1. Type `Preferences: Open User Settings` and press <kbd>Enter</kbd>.
 1. Select **Settings** > **Extensions** > **GitLab** > **Authentication**.
 1. Under **OAuth Client IDs**, select **Add Item**.
@@ -108,9 +104,7 @@ To use OAuth, first configure the OAuth application login:
 
 To authenticate with GitLab:
 
-1. Open the Command Palette:
-   - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+1. In VS Code, select **View** > **Command Palette**.
 1. Type `GitLab: Authenticate` and press <kbd>Enter</kbd>.
 1. Select your GitLab instance URL from the options or enter one manually.
    - If you enter one manually, in **URL to GitLab instance**, paste the full URL,
@@ -203,9 +197,7 @@ account, select the status bar item and follow the prompts.
 
 Alternatively, you can use the Command Palette:
 
-1. Open the Command Palette:
-   - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+1. In VS Code, select **View** > **Command Palette**.
 1. Run the command `GitLab: Select Account for this Workspace`.
 1. Select an account from the list.
 
@@ -258,8 +250,8 @@ GitLab Duo features are enabled by default in VS Code when you meet the prerequi
   - You use a [supported language and IDE](../../user/project/repository/code_suggestions/supported_extensions.md).
   - Optional. To use outside of a GitLab project:
     1. In VS Code, open the Settings editor:
-       - For macOS, press <kbd>Command</kbd>+<kbd>,</kbd>.
-       - For Windows or Linux, press <kbd>Control</kbd>+<kbd>,</kbd>.
+       - For macOS, select **Code** > **Preferences** > **Settings**.
+       - For Windows or Linux, select **File** > **Preferences** > **Settings**.
     1. Select **Extensions** > **GitLab** > **GitLab Duo** > **GitLab › Duo: Enabled Without GitLab Project**.
 
 To approve Agentic Chat tools once per session instead of individually,
@@ -270,8 +262,8 @@ see [tool approvals](../../user/gitlab_duo_chat/agentic_chat.md#tool-approvals).
 To turn off GitLab Duo features in VS Code:
 
 1. In VS Code, open the Settings editor:
-   - For macOS, press <kbd>Command</kbd>+<kbd>,</kbd>.
-   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>,</kbd>.
+   - For macOS, select **Code** > **Preferences** > **Settings**.
+   - For Windows or Linux, select **File** > **Preferences** > **Settings**.
 1. Select **Extensions** > **GitLab** > **GitLab Duo**.
 1. Find the feature you want to turn off and clear the checkbox.
 
@@ -281,8 +273,8 @@ GitLab for VS Code uses the telemetry settings in Visual Studio Code to send usa
 information to GitLab. To turn on or customize telemetry in Visual Studio Code:
 
 1. In VS Code, open the Settings editor:
-   - For macOS, press <kbd>Command</kbd>+<kbd>,</kbd>.
-   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>,</kbd>.
+   - For macOS, select **Code** > **Preferences** > **Settings**.
+   - For Windows or Linux, select **File** > **Preferences** > **Settings**.
 1. Select **Application** > **Telemetry**.
 1. For **Telemetry Level**, select the data you want to share:
    - `all`: Sends usage data, general error telemetry, and crash reports.

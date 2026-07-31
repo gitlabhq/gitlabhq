@@ -1,0 +1,9 @@
+---
+name: read_duo_flow_callback_hook
+description: Grants the ability to view registered Duo flow callback hooks
+available_for:
+  - granular_access_token
+permissions:
+  - read_duo_flow_callback_hook
+boundaries:
+  - instance

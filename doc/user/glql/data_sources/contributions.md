@@ -14,7 +14,7 @@ title: Contributions
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/21212) in GitLab 19.2.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/21212) in GitLab 19.2.
 
 {{< /history >}}
 

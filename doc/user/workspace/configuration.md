@@ -116,7 +116,7 @@ To choose a method that fits your platform requirements, see [configure sudo acc
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13983) in GitLab 17.4.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/13983) in GitLab 17.4.
 
 {{< /history >}}
 
@@ -143,7 +143,7 @@ For more information, see [`image_pull_secrets`](settings.md#image_pull_secrets)
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13983) in GitLab 17.4.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/13983) in GitLab 17.4.
 
 {{< /history >}}
 

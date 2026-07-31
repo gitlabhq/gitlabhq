@@ -77,8 +77,8 @@ For all other GitLab for VS Code troubleshooting, see [troubleshooting the GitLa
 If you are on GitLab Self-Managed, ensure that Code Suggestions for the [GitLab Web IDE](../../web_ide/_index.md) is enabled. The same settings apply to VS Code as local IDE.
 
 1. In your IDE, open the Settings editor:
-   - For macOS, press <kbd>Command</kbd>+<kbd>,</kbd>.
-   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>,</kbd>.
+   - For macOS, select **Code** > **Preferences** > **Settings**.
+   - For Windows or Linux, select **File** > **Preferences** > **Settings**.
 1. Go to the **GitLab Duo** settings:
    - In VS Code, select **Extensions** > **GitLab** > **GitLab Duo**.
    - In GitLab Web IDE, select **Extensions** > **GitLab Workflow** > **GitLab Duo**.
@@ -89,8 +89,8 @@ If you are on GitLab Self-Managed, ensure that Code Suggestions for the [GitLab 
 If Code Suggestions is enabled for the IDE, but suggestions are still not displayed:
 
 1. In your IDE, open the Settings editor:
-   - For macOS, press <kbd>Command</kbd>+<kbd>,</kbd>.
-   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>,</kbd>.
+   - For macOS, select **Code** > **Preferences** > **Settings**.
+   - For Windows or Linux, select **File** > **Preferences** > **Settings**.
 1. Go to the **Other** settings:
    - In VS Code, select **Extensions** > **GitLab** > **Other**.
    - In GitLab Web IDE, select **Extensions** > **GitLab Workflow** > **Other**.
@@ -113,8 +113,8 @@ Disabling streaming means that code generation requests might be perceived
 as taking longer to resolve. To disable streaming:
 
 1. In VS Code, open the Settings editor:
-   - For macOS, press <kbd>Command</kbd>+<kbd>,</kbd>.
-   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>,</kbd>.
+   - For macOS, select **Code** > **Preferences** > **Settings**.
+   - For Windows or Linux, select **File** > **Preferences** > **Settings**.
 1. In the upper-right corner, select **Open Settings (JSON)** to edit your `settings.json` file:
 
    ![The icons in the upper-right corner of VS Code, including 'Open Settings.'](img/open_settings_v17_5.png)

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pipeline_composition do
   include StubRequests
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
   let_it_be(:user) { project.owner }
 
   let(:variables) { Gitlab::Ci::Variables::Collection.new([{ key: 'GITLAB_TOKEN', value: 'secret_file', masked: true }]) }

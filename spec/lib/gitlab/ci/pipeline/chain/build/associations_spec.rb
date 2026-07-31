@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Pipeline::Chain::Build::Associations, feature_category: :continuous_integration do
-  let_it_be_with_reload(:project) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :small_repo) }
   let_it_be(:user) { create(:user, developer_of: project) }
 
   # Assigning partition_id here to validate it is being propagated correctly
@@ -293,9 +293,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build::Associations, feature_categor
   end
 
   context 'when user is maintainer' do
-    before do
-      project.add_maintainer(user)
-    end
+    before_all { project.add_maintainer(user) }
 
     it_behaves_like 'does not break the chain'
 

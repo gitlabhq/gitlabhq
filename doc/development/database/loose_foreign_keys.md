@@ -12,7 +12,7 @@ two database tables together, and ensure data-consistency between them. In GitLa
 [foreign keys](foreign_keys.md) are vital part of the database design process.
 Most of our database tables have foreign keys.
 
-With the ongoing database [decomposition work](https://gitlab.com/groups/gitlab-org/-/epics/6168),
+With the ongoing database [decomposition work](https://gitlab.com/groups/gitlab-org/-/work_items/6168),
 linked records might be present on two different database servers. Ensuring data consistency
 between two databases is not possible with standard PostgreSQL foreign keys. PostgreSQL
 does not support foreign keys operating across multiple database servers.
@@ -703,7 +703,7 @@ The inserted record stores the following information about the deleted record:
 #### Database decomposition
 
 The `loose_foreign_keys_deleted_records` table exists on both database servers (`ci` and `main`)
-after the [database decomposition](https://gitlab.com/groups/gitlab-org/-/epics/6168). The worker
+after the [database decomposition](https://gitlab.com/groups/gitlab-org/-/work_items/6168). The worker
 ill determine which parent tables belong to which database by reading the
 `lib/gitlab/database/gitlab_schemas.yml` YAML file.
 

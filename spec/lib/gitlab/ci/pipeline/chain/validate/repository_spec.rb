@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::Repository, feature_category: :pipeline_composition do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
   let_it_be(:user) { create(:user) }
 
   let(:pipeline) { build_stubbed(:ci_pipeline) }
@@ -86,7 +86,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::Repository, feature_catego
 
   context 'when ref is ambiguous' do
     let(:project) do
-      create(:project, :repository).tap do |proj|
+      create(:project, :small_repo).tap do |proj|
         proj.repository.add_tag(user, 'master', 'master')
       end
     end

@@ -45,14 +45,20 @@ module Ci
       url_helpers.cached_widget_project_json_merge_request_path(merge_request.project, merge_request, format: :json)
     end
 
+    def ci_environments_status_path(merge_request)
+      url_helpers.ci_environments_status_project_merge_request_path(merge_request.project, merge_request)
+    end
+
     def each_pipelines_merge_request_path(pipeline)
       pipeline.all_merge_requests.each do |merge_request|
         yield(pipelines_project_merge_request_path(merge_request))
         yield(merge_request_widget_path(merge_request))
+        yield(ci_environments_status_path(merge_request))
       end
 
       pipeline.project.merge_requests.by_merged_or_merge_or_squash_commit_sha(pipeline.sha).each do |merge_request|
         yield(merge_request_widget_path(merge_request))
+        yield(ci_environments_status_path(merge_request))
       end
     end
 

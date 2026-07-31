@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::SetBuildSources, feature_category: :
   include RepoHelpers
 
   let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project, :repository, group: group) }
+  let_it_be(:project) { create(:project, :small_repo, group: group) }
   let_it_be_with_reload(:compliance_project) { create(:project, :empty_repo, group: group) }
   let_it_be(:user) { create(:user, developer_of: [project, compliance_project]) }
 

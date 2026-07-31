@@ -14851,7 +14851,7 @@
             },
             {
               "name": "triggerTypes",
-              "description": "List of event types to create flow triggers for.",
+              "description": "List of event types to create AI Catalog triggers for.",
               "type": {
                 "kind": "LIST",
                 "name": null,
@@ -14871,7 +14871,7 @@
             },
             {
               "name": "triggerFilter",
-              "description": "Filter conditions for the auto-created flow triggers, keyed by event type. Introduced in GitLab 19.1: Status: Experiment.",
+              "description": "Filter conditions for the auto-created AI Catalog triggers, keyed by event type. Deprecated in GitLab 19.3: Use `triggerConditions`.",
               "type": {
                 "kind": "SCALAR",
                 "name": "JSON",
@@ -14879,7 +14879,19 @@
               },
               "defaultValue": null,
               "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.1."
+              "deprecationReason": "Use `triggerConditions`. Deprecated in GitLab 19.3."
+            },
+            {
+              "name": "triggerConditions",
+              "description": "Filter conditions for the auto-created AI Catalog triggers, keyed by event type. Introduced in GitLab 19.3: Status: Experiment.",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "AiCatalogTriggerConditionsInput",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
             }
           ],
           "interfaces": null,
@@ -15073,7 +15085,7 @@
             },
             {
               "name": "triggerTypes",
-              "description": "List of event types to create flow triggers for (values can be mention, assign or assign_reviewer).",
+              "description": "List of event types to create AI Catalog triggers for (values can be mention, assign or assign_reviewer).",
               "type": {
                 "kind": "LIST",
                 "name": null,
@@ -15093,7 +15105,7 @@
             },
             {
               "name": "triggerFilter",
-              "description": "Filter conditions for the auto-created flow triggers, keyed by event type. Introduced in GitLab 19.1: Status: Experiment.",
+              "description": "Filter conditions for the auto-created AI Catalog triggers, keyed by event type. Deprecated in GitLab 19.3: Use `triggerConditions`.",
               "type": {
                 "kind": "SCALAR",
                 "name": "JSON",
@@ -15101,7 +15113,19 @@
               },
               "defaultValue": null,
               "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.1."
+              "deprecationReason": "Use `triggerConditions`. Deprecated in GitLab 19.3."
+            },
+            {
+              "name": "triggerConditions",
+              "description": "Filter conditions for the auto-created AI Catalog triggers, keyed by event type. Introduced in GitLab 19.3: Status: Experiment.",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "AiCatalogTriggerConditionsInput",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
             },
             {
               "name": "parentItemConsumerId",
@@ -18689,6 +18713,333 @@
               "ofType": null
             }
           ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "AiCatalogTriggerConditionsGroupInput",
+          "description": "Group of rules for a set of trigger conditions.",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "match",
+              "description": "Strategy used to match the rules in the group.",
+              "type": {
+                "kind": "ENUM",
+                "name": "AiCatalogTriggerConditionsMatch",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "rules",
+              "description": "Rules in the group.",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "AiCatalogTriggerConditionsRuleItemInput",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "AiCatalogTriggerConditionsInput",
+          "description": "Conditions for AI Catalog triggers.",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "mention",
+              "description": "Trigger condition rules for the mention event.",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "AiCatalogTriggerConditionsGroupInput",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "assign",
+              "description": "Trigger condition rules for the assign event.",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "AiCatalogTriggerConditionsGroupInput",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "assignReviewer",
+              "description": "Trigger condition rules for the assign_reviewer event.",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "AiCatalogTriggerConditionsGroupInput",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "pipelineHooks",
+              "description": "Trigger condition rules for the pipeline_hooks event.",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "AiCatalogTriggerConditionsGroupInput",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "mergeRequestReady",
+              "description": "Trigger condition rules for the merge_request_ready event.",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "AiCatalogTriggerConditionsGroupInput",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "mergeRequestCodeConflict",
+              "description": "Trigger condition rules for the merge_request_code_conflict event.",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "AiCatalogTriggerConditionsGroupInput",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "mergeRequest",
+              "description": "Trigger condition rules for the merge_request event.",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "AiCatalogTriggerConditionsGroupInput",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "workItem",
+              "description": "Trigger condition rules for the work_item event.",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "AiCatalogTriggerConditionsGroupInput",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "commitToDefaultBranch",
+              "description": "Trigger condition rules for the commit_to_default_branch event.",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "AiCatalogTriggerConditionsGroupInput",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "AiCatalogTriggerConditionsMatch",
+          "description": "Match strategy for a trigger conditions group.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "ALL",
+              "description": "All rules in the group must match.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "ANY",
+              "description": "Any rule in the group must match.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "AiCatalogTriggerConditionsOperator",
+          "description": "Operators for a trigger condition rule.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "EQ",
+              "description": "Equal to the value.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "NE",
+              "description": "Not equal to the value.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "GT",
+              "description": "Greater than the value.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "LT",
+              "description": "Less than the value.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CONTAINS",
+              "description": "Contains the value.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "NOT_CONTAINS",
+              "description": "Does not contain the value.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "IN",
+              "description": "Included in the value.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "NOT_IN",
+              "description": "Not included in the value.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "AiCatalogTriggerConditionsRuleItemInput",
+          "description": "Item within a trigger conditions group. Provide either the rule fields (`field`, `operator`, `value`) or `rules` for a nested group, but not both. `match` can only be provided with `rules`.",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "field",
+              "description": "Field the rule applies to.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "operator",
+              "description": "Operator used to compare the field to the value.",
+              "type": {
+                "kind": "ENUM",
+                "name": "AiCatalogTriggerConditionsOperator",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "value",
+              "description": "Value to compare the field against.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "JSON",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "match",
+              "description": "Strategy used to match the rules in the nested group.",
+              "type": {
+                "kind": "ENUM",
+                "name": "AiCatalogTriggerConditionsMatch",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "rules",
+              "description": "Rules in the nested group.",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "AiCatalogTriggerConditionsRuleItemInput",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "interfaces": null,
           "enumValues": null,
           "possibleTypes": null
         },

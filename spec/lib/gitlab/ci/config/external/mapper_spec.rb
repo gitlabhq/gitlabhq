@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper, feature_category: :pipeline
   include StubRequests
   include RepoHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
   let_it_be(:user) { project.owner }
 
   let(:local_file) { '/lib/gitlab/ci/templates/non-existent-file.yml' }
@@ -276,7 +276,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper, feature_category: :pipeline
     end
 
     context 'when local file path has wildcard' do
-      let_it_be(:project) { create(:project, :repository) }
+      let_it_be(:project) { create(:project, :small_repo) }
 
       let(:values) do
         { include: 'myfolder/*.yml' }

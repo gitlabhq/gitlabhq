@@ -293,7 +293,7 @@ remote_development:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13983) in GitLab 17.4.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/13983) in GitLab 17.4.
 
 {{< /history >}}
 
@@ -320,7 +320,7 @@ For more information about `use_kubernetes_user_namespaces`, see
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13983) in GitLab 17.4.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/13983) in GitLab 17.4.
 
 {{< /history >}}
 
@@ -351,7 +351,7 @@ For more information about `default_runtime_class`, see
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13983) in GitLab 17.4.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/13983) in GitLab 17.4.
 
 {{< /history >}}
 
@@ -417,7 +417,7 @@ in all the namespaces of the workspaces where the secret is referenced.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13983) in GitLab 17.4.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/13983) in GitLab 17.4.
 
 {{< /history >}}
 
@@ -452,7 +452,7 @@ For more information about `annotations`, see
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13983) in GitLab 17.4.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/13983) in GitLab 17.4.
 
 {{< /history >}}
 

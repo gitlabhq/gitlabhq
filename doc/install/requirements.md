@@ -102,7 +102,7 @@ HA deployments have specific network requirements:
 
 - As a [bundled instance](https://docs.gitlab.com/omnibus/settings/database/) with the Linux package.
 - As an external service, such as:
-  - A [managed cloud provider service](cloud_services.md#use-managed-cloud-postgresql).
+  - A [managed cloud provider service](cloud-services.md#use-managed-cloud-postgresql).
   - The [CloudNativePG operator](https://cloudnative-pg.io/).
   - A [self-managed instance](https://docs.gitlab.com/omnibus/settings/database/#using-a-non-packaged-postgresql-database-management-server).
 
@@ -162,7 +162,7 @@ A non-HA PostgreSQL instance using the Linux package is sufficient for environme
 
 [Redis](https://redis.io/) or [Valkey](https://valkey.io/) stores all user sessions and background tasks.
 You can self-manage Redis or Valkey, or use a
-[managed cloud provider service](cloud_services.md#use-managed-cloud-redis-and-valkey).
+[managed cloud provider service](cloud-services.md#use-managed-cloud-redis-and-valkey).
 
 The supported versions of Redis or Valkey are:
 

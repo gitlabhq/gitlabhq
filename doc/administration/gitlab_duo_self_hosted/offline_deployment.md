@@ -15,7 +15,7 @@ description: Transfer container images and LLM model weights to your internal in
 
 {{< history >}}
 
-- Self-hosted model support [generally available](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.9.
+- Self-hosted model support [generally available](https://gitlab.com/groups/gitlab-org/-/work_items/12972) in GitLab 17.9.
 - Offline flow execution support [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219672) in GitLab 18.9.
 
 {{< /history >}}

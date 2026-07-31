@@ -53,6 +53,7 @@ Supported attributes:
 | `source_branch` | string | No | Source branch for the CI pipeline. Defaults to the project's default branch. |
 | `start_workflow` | boolean | No | When `true`, starts the flow immediately after creation. |
 | `workflow_definition` | string | No | Flow type identifier. Example: `developer/v1`. Cannot be used with `ai_catalog_item_consumer_id`; if both are provided, `ai_catalog_item_consumer_id` takes precedence. |
+| `source`                        | string | No | Where the session was triggered from in the UI. |
 
 If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the following response
 attributes:
@@ -160,6 +161,153 @@ Example response:
   "mcp_enabled": false,
   "gitlab_url": "https://gitlab.example.com"
 }
+```
+
+## Register a flow callback endpoint
+
+Registers an HTTPS endpoint that receives flow lifecycle events (`flow.started`, `flow.completed`,
+and `flow.failed`). Reference the returned `id` as the `callback_hook_id` attribute when you
+[create a flow](#create-a-flow) to receive lifecycle notifications instead of polling for status.
+
+The URL and secrets are encrypted at rest and are never returned by the API after registration.
+
+Prerequisites:
+
+- You must have the Owner role for the organization.
+
+```plaintext
+POST /ai/duo_workflows/flow_callbacks
+```
+
+Supported attributes:
+
+| Attribute        | Type   | Required | Description |
+|------------------|--------|----------|-------------|
+| `url`            | string | Yes      | HTTPS URL that receives callbacks. |
+| `name`           | string | No       | A label for this endpoint. |
+| `signing_token`  | string | No       | `HMAC` signing secret in `whsec_<base64-of-32-bytes>` format, used to compute the `webhook-signature` header so you can verify payloads. Not returned. |
+| `token`          | string | No       | Shared secret sent verbatim as the `X-Gitlab-Token` header. Not returned. |
+
+If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the following response
+attributes:
+
+| Attribute            | Type    | Description |
+|----------------------|---------|-------------|
+| `created_at`         | string  | Date and time the endpoint was registered. |
+| `id`                 | integer | ID of the flow callback endpoint. |
+| `name`               | string  | Label for this endpoint. |
+| `signing_token_set`  | boolean | Whether a `signing_token` is set. |
+| `token_set`          | boolean | Whether a `token` is set. |
+| `url`                | string  | HTTPS URL that receives callbacks. |
+
+Example request:
+
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "url": "https://autoflow.example.com/duo/callbacks",
+    "name": "AutoFlow",
+    "signing_token": "whsec_<base64_encoded_32_byte_secret>"
+  }' \
+  --url "https://gitlab.example.com/api/v4/ai/duo_workflows/flow_callbacks"
+```
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "url": "https://autoflow.example.com/duo/callbacks",
+  "name": "AutoFlow",
+  "signing_token_set": true,
+  "token_set": false,
+  "created_at": "2026-07-22T11:37:00.000Z"
+}
+```
+
+## List flow callback endpoints
+
+Lists the flow callback endpoints registered for your organization. Secrets are not returned.
+
+Prerequisites:
+
+- You must have the Owner role for the organization.
+
+```plaintext
+GET /ai/duo_workflows/flow_callbacks
+```
+
+Use the `page` and `per_page` [pagination](rest/_index.md#offset-based-pagination) parameters to
+control the pagination of results.
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and an array of
+[flow callback endpoint](#register-a-flow-callback-endpoint) objects.
+
+Example request:
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/ai/duo_workflows/flow_callbacks"
+```
+
+## Get a flow callback endpoint
+
+Returns a single registered flow callback endpoint. Secrets are not returned.
+
+Prerequisites:
+
+- You must have the Owner role for the organization.
+
+```plaintext
+GET /ai/duo_workflows/flow_callbacks/:id
+```
+
+Supported attributes:
+
+| Attribute | Type    | Required | Description |
+|-----------|---------|----------|-------------|
+| `id`      | integer | Yes      | ID of the flow callback endpoint. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and a
+[flow callback endpoint](#register-a-flow-callback-endpoint) object.
+
+Example request:
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/ai/duo_workflows/flow_callbacks/1"
+```
+
+## Delete a flow callback endpoint
+
+Deletes a registered flow callback endpoint so it no longer receives deliveries.
+
+Prerequisites:
+
+- You must have the Owner role for the organization.
+
+```plaintext
+DELETE /ai/duo_workflows/flow_callbacks/:id
+```
+
+Supported attributes:
+
+| Attribute | Type    | Required | Description |
+|-----------|---------|----------|-------------|
+| `id`      | integer | Yes      | ID of the flow callback endpoint. |
+
+If successful, returns [`204 No Content`](rest/troubleshooting.md#status-codes).
+
+Example request:
+
+```shell
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/ai/duo_workflows/flow_callbacks/1"
 ```
 
 ## Get workflow trace as JSONL

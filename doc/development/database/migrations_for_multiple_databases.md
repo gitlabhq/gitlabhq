@@ -6,7 +6,7 @@ title: Migrations for Multiple databases
 ---
 
 This document describes how to properly write database migrations
-for [the decomposed GitLab application using multiple databases](https://gitlab.com/groups/gitlab-org/-/epics/6168).
+for [the decomposed GitLab application using multiple databases](https://gitlab.com/groups/gitlab-org/-/work_items/6168).
 For more information, see [Multiple databases](multiple_databases.md).
 
 The design for multiple databases (except for the Geo database) assumes

@@ -3684,8 +3684,9 @@ Arguments:
 | <a id="mutation-aicatalogitemconsumerbulkcreate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-aicatalogitemconsumerbulkcreate-itemid"></a>`itemId` | [`AiCatalogItemID!`](#aicatalogitemid) | Global ID of the catalog item to enable. |
 | <a id="mutation-aicatalogitemconsumerbulkcreate-projectids"></a>`projectIds` | [`[ProjectID!]!`](#projectid) | Global IDs of the projects to enable the catalog item in (maximum 100). |
-| <a id="mutation-aicatalogitemconsumerbulkcreate-triggerfilter"></a>`triggerFilter` {{< icon name="warning-solid" >}} | [`JSON`](#json) | Introduced in GitLab 19.1. Status: Experiment. Filter conditions for the auto-created flow triggers, keyed by event type. |
-| <a id="mutation-aicatalogitemconsumerbulkcreate-triggertypes"></a>`triggerTypes` | [`[String!]`](#string) | List of event types to create flow triggers for. |
+| <a id="mutation-aicatalogitemconsumerbulkcreate-triggerconditions"></a>`triggerConditions` {{< icon name="warning-solid" >}} | [`AiCatalogTriggerConditionsInput`](#aicatalogtriggerconditionsinput) | Introduced in GitLab 19.3. Status: Experiment. Filter conditions for the auto-created AI Catalog triggers, keyed by event type. |
+| <a id="mutation-aicatalogitemconsumerbulkcreate-triggerfilter"></a>`triggerFilter` {{< icon name="warning-solid" >}} | [`JSON`](#json) | Deprecated in GitLab 19.3. Use `triggerConditions`. |
+| <a id="mutation-aicatalogitemconsumerbulkcreate-triggertypes"></a>`triggerTypes` | [`[String!]`](#string) | List of event types to create AI Catalog triggers for. |
 
 Fields:
 
@@ -3714,8 +3715,9 @@ Arguments:
 | <a id="mutation-aicatalogitemconsumercreate-parentitemconsumerid"></a>`parentItemConsumerId` | [`AiCatalogItemConsumerID`](#aicatalogitemconsumerid) | Parent item consumer belonging to the top-level group. |
 | <a id="mutation-aicatalogitemconsumercreate-pinnedversion"></a>`pinnedVersion` | [`AiCatalogPinnedVersion`](#aicatalogpinnedversion) | Version to pin the item to, in the format `n.n.n`. Must be a released version. Defaults to the latest released version. Ignored when enabling within the item's managing project, which always tracks the latest released version. |
 | <a id="mutation-aicatalogitemconsumercreate-target"></a>`target` | [`ItemConsumerTargetInput!`](#itemconsumertargetinput) | Target project or top-level group in which the catalog item is configured. |
-| <a id="mutation-aicatalogitemconsumercreate-triggerfilter"></a>`triggerFilter` {{< icon name="warning-solid" >}} | [`JSON`](#json) | Introduced in GitLab 19.1. Status: Experiment. Filter conditions for the auto-created flow triggers, keyed by event type. |
-| <a id="mutation-aicatalogitemconsumercreate-triggertypes"></a>`triggerTypes` | [`[String!]`](#string) | List of event types to create flow triggers for (values can be mention, assign or assign_reviewer). |
+| <a id="mutation-aicatalogitemconsumercreate-triggerconditions"></a>`triggerConditions` {{< icon name="warning-solid" >}} | [`AiCatalogTriggerConditionsInput`](#aicatalogtriggerconditionsinput) | Introduced in GitLab 19.3. Status: Experiment. Filter conditions for the auto-created AI Catalog triggers, keyed by event type. |
+| <a id="mutation-aicatalogitemconsumercreate-triggerfilter"></a>`triggerFilter` {{< icon name="warning-solid" >}} | [`JSON`](#json) | Deprecated in GitLab 19.3. Use `triggerConditions`. |
+| <a id="mutation-aicatalogitemconsumercreate-triggertypes"></a>`triggerTypes` | [`[String!]`](#string) | List of event types to create AI Catalog triggers for (values can be mention, assign or assign_reviewer). |
 
 Fields:
 
@@ -64265,6 +64267,30 @@ Transport types for MCP servers.
 | ----- | ----------- |
 | <a id="aicatalogmcpservertransport-http"></a>`HTTP` | HTTP transport. |
 
+### `AiCatalogTriggerConditionsMatch`
+
+Match strategy for a trigger conditions group.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="aicatalogtriggerconditionsmatch-all"></a>`ALL` | All rules in the group must match. |
+| <a id="aicatalogtriggerconditionsmatch-any"></a>`ANY` | Any rule in the group must match. |
+
+### `AiCatalogTriggerConditionsOperator`
+
+Operators for a trigger condition rule.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="aicatalogtriggerconditionsoperator-contains"></a>`CONTAINS` | Contains the value. |
+| <a id="aicatalogtriggerconditionsoperator-eq"></a>`EQ` | Equal to the value. |
+| <a id="aicatalogtriggerconditionsoperator-gt"></a>`GT` | Greater than the value. |
+| <a id="aicatalogtriggerconditionsoperator-in"></a>`IN` | Included in the value. |
+| <a id="aicatalogtriggerconditionsoperator-lt"></a>`LT` | Less than the value. |
+| <a id="aicatalogtriggerconditionsoperator-ne"></a>`NE` | Not equal to the value. |
+| <a id="aicatalogtriggerconditionsoperator-not_contains"></a>`NOT_CONTAINS` | Does not contain the value. |
+| <a id="aicatalogtriggerconditionsoperator-not_in"></a>`NOT_IN` | Not included in the value. |
+
 ### `AiCatalogVersionBump`
 
 Possible version bumps for AI catalog items.
@@ -73757,6 +73783,49 @@ Arguments:
 | <a id="aiagenticchatinput-currentfile"></a>`currentFile` | [`AiCurrentFileInput`](#aicurrentfileinput) | Information about currently selected text which can be passed for additional context. |
 | <a id="aiagenticchatinput-namespaceid"></a>`namespaceId` | [`NamespaceID`](#namespaceid) | Global ID of the namespace the user is acting on. |
 | <a id="aiagenticchatinput-resourceid"></a>`resourceId` | [`AiModelID!`](#aimodelid) | Global ID of the resource to mutate. |
+
+### `AiCatalogTriggerConditionsGroupInput`
+
+Group of rules for a set of trigger conditions.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogtriggerconditionsgroupinput-match"></a>`match` | [`AiCatalogTriggerConditionsMatch`](#aicatalogtriggerconditionsmatch) | Strategy used to match the rules in the group. |
+| <a id="aicatalogtriggerconditionsgroupinput-rules"></a>`rules` | [`[AiCatalogTriggerConditionsRuleItemInput!]!`](#aicatalogtriggerconditionsruleiteminput) | Rules in the group. |
+
+### `AiCatalogTriggerConditionsInput`
+
+Conditions for AI Catalog triggers.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogtriggerconditionsinput-assign"></a>`assign` | [`AiCatalogTriggerConditionsGroupInput`](#aicatalogtriggerconditionsgroupinput) | Trigger condition rules for the assign event. |
+| <a id="aicatalogtriggerconditionsinput-assignreviewer"></a>`assignReviewer` | [`AiCatalogTriggerConditionsGroupInput`](#aicatalogtriggerconditionsgroupinput) | Trigger condition rules for the assign_reviewer event. |
+| <a id="aicatalogtriggerconditionsinput-committodefaultbranch"></a>`commitToDefaultBranch` | [`AiCatalogTriggerConditionsGroupInput`](#aicatalogtriggerconditionsgroupinput) | Trigger condition rules for the commit_to_default_branch event. |
+| <a id="aicatalogtriggerconditionsinput-mention"></a>`mention` | [`AiCatalogTriggerConditionsGroupInput`](#aicatalogtriggerconditionsgroupinput) | Trigger condition rules for the mention event. |
+| <a id="aicatalogtriggerconditionsinput-mergerequest"></a>`mergeRequest` | [`AiCatalogTriggerConditionsGroupInput`](#aicatalogtriggerconditionsgroupinput) | Trigger condition rules for the merge_request event. |
+| <a id="aicatalogtriggerconditionsinput-mergerequestcodeconflict"></a>`mergeRequestCodeConflict` | [`AiCatalogTriggerConditionsGroupInput`](#aicatalogtriggerconditionsgroupinput) | Trigger condition rules for the merge_request_code_conflict event. |
+| <a id="aicatalogtriggerconditionsinput-mergerequestready"></a>`mergeRequestReady` | [`AiCatalogTriggerConditionsGroupInput`](#aicatalogtriggerconditionsgroupinput) | Trigger condition rules for the merge_request_ready event. |
+| <a id="aicatalogtriggerconditionsinput-pipelinehooks"></a>`pipelineHooks` | [`AiCatalogTriggerConditionsGroupInput`](#aicatalogtriggerconditionsgroupinput) | Trigger condition rules for the pipeline_hooks event. |
+| <a id="aicatalogtriggerconditionsinput-workitem"></a>`workItem` | [`AiCatalogTriggerConditionsGroupInput`](#aicatalogtriggerconditionsgroupinput) | Trigger condition rules for the work_item event. |
+
+### `AiCatalogTriggerConditionsRuleItemInput`
+
+Item within a trigger conditions group. Provide either the rule fields (`field`, `operator`, `value`) or `rules` for a nested group, but not both. `match` can only be provided with `rules`.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogtriggerconditionsruleiteminput-field"></a>`field` | [`String`](#string) | Field the rule applies to. |
+| <a id="aicatalogtriggerconditionsruleiteminput-match"></a>`match` | [`AiCatalogTriggerConditionsMatch`](#aicatalogtriggerconditionsmatch) | Strategy used to match the rules in the nested group. |
+| <a id="aicatalogtriggerconditionsruleiteminput-operator"></a>`operator` | [`AiCatalogTriggerConditionsOperator`](#aicatalogtriggerconditionsoperator) | Operator used to compare the field to the value. |
+| <a id="aicatalogtriggerconditionsruleiteminput-rules"></a>`rules` | [`[AiCatalogTriggerConditionsRuleItemInput!]`](#aicatalogtriggerconditionsruleiteminput) | Rules in the nested group. |
+| <a id="aicatalogtriggerconditionsruleiteminput-value"></a>`value` | [`JSON`](#json) | Value to compare the field against. |
 
 ### `AiChatInput`
 

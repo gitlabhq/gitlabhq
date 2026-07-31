@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Pipeline::Seed::Pipeline do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
 
   let(:root_variables) { [] }

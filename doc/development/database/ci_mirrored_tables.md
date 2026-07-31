@@ -7,7 +7,7 @@ title: CI mirrored tables
 
 ## Problem statement
 
-As part of the database [decomposition work](https://gitlab.com/groups/gitlab-org/-/epics/6168),
+As part of the database [decomposition work](https://gitlab.com/groups/gitlab-org/-/work_items/6168),
 which had the goal of splitting the single database GitLab is using, into two databases: `main` and
 `ci`, came the big challenge of
 [removing all joins between the `main` and the `ci` tables](multiple_databases.md#removing-joins-between-main-and-non-main-tables).

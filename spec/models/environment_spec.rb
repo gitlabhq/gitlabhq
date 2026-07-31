@@ -658,6 +658,27 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
 
       expect(store.get(environment.etag_cache_key)).not_to eq(old_value)
     end
+
+    context 'when a merge request displays the environment' do
+      let(:merge_request) { create(:merge_request, :merged, source_project: project) }
+      let(:sha) { project.commit(merge_request.target_branch).id }
+      let(:ci_environments_status_path) do
+        Gitlab::Routing.url_helpers.ci_environments_status_project_merge_request_path(project, merge_request)
+      end
+
+      before do
+        merge_request.update!(merge_commit_sha: sha)
+        create(:deployment, environment: environment, project: project, sha: sha)
+      end
+
+      it 'also expires the merge request ci_environments_status ETag' do
+        expect_next_instance_of(Gitlab::EtagCaching::Store) do |instance|
+          expect(instance).to receive(:touch).with(environment.etag_cache_key, ci_environments_status_path)
+        end
+
+        environment.stop
+      end
+    end
   end
 
   describe '.with_deployment' do

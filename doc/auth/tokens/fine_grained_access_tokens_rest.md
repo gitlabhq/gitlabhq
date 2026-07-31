@@ -719,6 +719,17 @@ Grants the ability to read code suggestion enabled status.
 | ------ | ------ | ------ | ---- |
 | Read | Project | `POST` | `/code_suggestions/enabled` |
 
+#### Duo Flow Callback Hook
+
+Grants the ability to create, delete, and read duo flow callback hooks.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Create | Instance | `POST` | `/ai/duo_workflows/flow_callbacks` |
+| Delete | Instance | `DELETE` | `/ai/duo_workflows/flow_callbacks/:id` |
+| Read | Instance | `GET` | `/ai/duo_workflows/flow_callbacks` |
+| Read | Instance | `GET` | `/ai/duo_workflows/flow_callbacks/:id` |
+
 #### Duo Workflow
 
 Grants the ability to create, read, resume, and update duo workflows.

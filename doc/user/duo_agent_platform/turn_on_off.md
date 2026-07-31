@@ -64,6 +64,9 @@ When Agent Platform is turned off, the following features are hidden:
 Prerequisites:
 
 - Administrator access.
+- An instance with one of the following:
+  - An active GitLab Duo Pro, Enterprise, or Self-Hosted add-on with a paid license.
+  - Active GitLab Credits.
 
 To turn Agent Platform on or off for an instance:
 
@@ -121,6 +124,9 @@ Users with the Owner role for a subgroup or project cannot turn GitLab Duo off.
 Prerequisites:
 
 - Administrator access.
+- An instance with one of the following:
+  - An active GitLab Duo Pro, Enterprise, or Self-Hosted add-on with a paid license.
+  - Active GitLab Credits.
 
 To lock GitLab Duo on for an instance:
 
@@ -212,6 +218,9 @@ To change GitLab Duo availability for a project:
 Prerequisites:
 
 - Administrator access.
+- An instance with one of the following:
+  - An active GitLab Duo Pro, Enterprise, or Self-Hosted add-on with a paid license.
+  - Active GitLab Credits.
 
 To change GitLab Duo availability for an instance:
 
@@ -297,6 +306,9 @@ It might take up to 10 minutes for the change to take effect.
 Prerequisites:
 
 - Administrator access.
+- An instance with one of the following:
+  - An active GitLab Duo Pro, Enterprise, or Self-Hosted add-on with a paid license.
+  - Active GitLab Credits.
 
 To change GitLab Duo Core availability for an instance:
 
@@ -355,6 +367,9 @@ experiment and beta features for your GitLab Self-Managed instance.
 Prerequisites:
 
 - Administrator access.
+- An instance with one of the following:
+  - An active GitLab Duo Pro, Enterprise, or Self-Hosted add-on with a paid license.
+  - Active GitLab Credits.
 
 To turn on GitLab Duo experiment and beta features for an instance:
 
@@ -371,6 +386,9 @@ To turn on GitLab Duo experiment and beta features for an instance:
 Prerequisites:
 
 - Administrator access.
+- An instance with one of the following:
+  - An active GitLab Duo Pro, Enterprise, or Self-Hosted add-on with a paid license.
+  - Active GitLab Credits.
 - [Network connectivity](../../administration/gitlab_duo/configure/_index.md) enabled.
 - [Silent Mode](../../administration/silent_mode/_index.md) turned off.
 
@@ -390,49 +408,3 @@ To turn on GitLab Duo experiment and beta features for an instance:
 {{< /tab >}}
 
 {{< /tabs >}}
-
-## Troubleshooting
-
-When you turn Agent Platform on or off, you might encounter the following issues.
-
-### **Change configuration** missing on GitLab Self-Managed
-
-{{< details >}}
-
-- Offering: GitLab Self-Managed
-
-{{< /details >}}
-
-On GitLab Self-Managed, **Change configuration** might not display.
-**Change configuration** appears only when your instance has one of the following:
-
-- An active GitLab Duo Pro, Enterprise, or Self-Hosted add-on with a paid license
-- Active GitLab Credits
-
-Without these requirements, you cannot control the availability of GitLab Duo through the UI.
-To turn GitLab Duo off, use the Rails console or the API instead.
-
-In a Rails console session, run the following command:
-
-```ruby
-ApplicationSetting.current.update!(duo_features_enabled: false, lock_duo_features_enabled: true)
-```
-
-To verify the change, run the following command:
-
-```ruby
-Gitlab::CurrentSettings.duo_features_enabled    # => false
-Gitlab::CurrentSettings.duo_never_on?           # => true
-```
-
-Alternatively, send a `PUT` request to the application settings API with an
-administrator token that has the `api` scope:
-
-```shell
-curl --request PUT \
-  --header "PRIVATE-TOKEN: <admin_token>" \
-  --data "duo_availability=never_on" \
-  "https://<your-gitlab-host>/api/v4/application/settings"
-```
-
-You might have to refresh your browser before the GitLab Duo panel disappears.

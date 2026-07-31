@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::ProcessableObjectHierarchy do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:user) { project.owner }
 
   let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project, ref: 'master') }

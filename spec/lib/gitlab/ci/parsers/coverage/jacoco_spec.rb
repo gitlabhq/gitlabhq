@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Parsers::Coverage::Jacoco, feature_category: :code_testing do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let(:xml_data) { double }
   let(:coverage_report) { double }
   let(:paths) { double }

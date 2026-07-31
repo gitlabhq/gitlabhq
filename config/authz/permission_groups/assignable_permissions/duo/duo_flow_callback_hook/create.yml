@@ -1,0 +1,9 @@
+---
+name: create_duo_flow_callback_hook
+description: Grants the ability to register a Duo flow callback hook
+available_for:
+  - granular_access_token
+permissions:
+  - create_duo_flow_callback_hook
+boundaries:
+  - instance

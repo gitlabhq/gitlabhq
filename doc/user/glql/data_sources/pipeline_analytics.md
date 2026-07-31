@@ -14,7 +14,7 @@ title: Pipeline analytics
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/21212) in GitLab 19.1.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/21212) in GitLab 19.1.
 - [Changed](https://gitlab.com/gitlab-org/glql/-/merge_requests/416) to cover pipelines in all states, including in-progress pipelines, in GitLab 19.2.
 
 {{< /history >}}

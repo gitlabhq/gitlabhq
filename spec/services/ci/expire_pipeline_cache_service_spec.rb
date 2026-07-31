@@ -50,10 +50,12 @@ RSpec.describe Ci::ExpirePipelineCacheService, feature_category: :continuous_int
 
       merge_request_pipelines_path = "/#{project.full_path}/-/merge_requests/#{merge_request.iid}/pipelines.json"
       merge_request_widget_path = "/#{project.full_path}/-/merge_requests/#{merge_request.iid}/cached_widget.json"
+      merge_request_ci_environments_status_path = "/#{project.full_path}/-/merge_requests/#{merge_request.iid}/ci_environments_status"
 
       expect_touched_etag_caching_paths(
         merge_request_pipelines_path,
-        merge_request_widget_path
+        merge_request_widget_path,
+        merge_request_ci_environments_status_path
       )
 
       subject.execute(merge_request.all_pipelines.last)
@@ -64,8 +66,12 @@ RSpec.describe Ci::ExpirePipelineCacheService, feature_category: :continuous_int
       project = merge_request.target_project
 
       merge_request_widget_path = "/#{project.full_path}/-/merge_requests/#{merge_request.iid}/cached_widget.json"
+      merge_request_ci_environments_status_path = "/#{project.full_path}/-/merge_requests/#{merge_request.iid}/ci_environments_status"
 
-      expect_touched_etag_caching_paths(merge_request_widget_path)
+      expect_touched_etag_caching_paths(
+        merge_request_widget_path,
+        merge_request_ci_environments_status_path
+      )
 
       subject.execute(pipeline)
     end

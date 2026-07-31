@@ -79,6 +79,13 @@ RSpec.describe Gitlab::EtagCaching::Router::Rails do
     expect(result.name).to eq 'environments'
   end
 
+  it 'matches the merge request ci_environments_status endpoint' do
+    result = match_route('/my-group/my-project/-/merge_requests/234/ci_environments_status')
+
+    expect(result).to be_present
+    expect(result.name).to eq 'merge_request_ci_environments_status'
+  end
+
   it 'does not match the operations environments list path' do
     result = match_route('/-/operations/environments.json')
 

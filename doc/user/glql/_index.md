@@ -14,7 +14,7 @@ title: GitLab Query Language (GLQL)
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14767) in GitLab 17.4 [with a feature flag](../../administration/feature_flags/_index.md) named `glql_integration`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/14767) in GitLab 17.4 [with a feature flag](../../administration/feature_flags/_index.md) named `glql_integration`. Disabled by default.
 - Enabled on GitLab.com in GitLab 17.4 for a subset of groups and projects.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/476990) from experiment to beta in GitLab 17.10.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/work_items/476990) in GitLab 17.10.
@@ -240,7 +240,7 @@ Supported actions:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/21212) in GitLab 19.1.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/21212) in GitLab 19.1.
 
 {{< /history >}}
 

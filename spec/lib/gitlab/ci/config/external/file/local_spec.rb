@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Config::External::File::Local, feature_category: :pipeline_composition do
   include RepoHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
   let_it_be(:user) { create(:user) }
 
   let(:sha) { project.commit.sha }

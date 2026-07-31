@@ -114,6 +114,8 @@ tags:
   description: Operations related to discussions.
 - name: Draft notes
   description: Operations related to draft notes.
+- name: Duo workflow flow callback hooks
+  description: Operations related to duo workflow flow callback hooks.
 - name: Enterprise users
   description: Operations related to enterprise users.
 - name: Environments
@@ -1120,6 +1122,126 @@ paths:
         '400':
           description: Bad Request
       x-gitlab-lifecycle: experiment
+  "/api/v4/ai/duo_workflows/flow_callbacks":
+    get:
+      operationId: getApiV4AiDuoWorkflowsFlowCallbacks
+      summary: List registered flow callback endpoints
+      description: Lists the flow callback endpoints registered for your organization.
+        Secrets are not returned.
+      tags:
+      - Duo workflow flow callback hooks
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesAiDuoWorkflowsFlowCallbackHook"
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      parameters:
+      - name: page
+        required: false
+        description: Current page number
+        schema:
+          type: integer
+          default: 1
+          nullable: true
+        in: query
+        example: 1
+      - name: per_page
+        required: false
+        description: Number of items per page
+        schema:
+          type: integer
+          default: 20
+          nullable: true
+        in: query
+        example: 20
+    post:
+      operationId: postApiV4AiDuoWorkflowsFlowCallbacks
+      summary: Register a flow callback endpoint
+      description: Registers an HTTPS endpoint for Duo flow lifecycle callbacks. Reference
+        the returned id via callback_hook_id when creating a flow. Secrets are never
+        returned.
+      tags:
+      - Duo workflow flow callback hooks
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesAiDuoWorkflowsFlowCallbackHook"
+        '400':
+          description: Validation failed
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/RequestBody_3bf1a359c145"
+  "/api/v4/ai/duo_workflows/flow_callbacks/{id}":
+    get:
+      operationId: getApiV4AiDuoWorkflowsFlowCallbacksId
+      summary: Get a registered flow callback endpoint
+      description: Returns a single registered flow callback endpoint. Secrets are
+        not returned.
+      tags:
+      - Duo workflow flow callback hooks
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesAiDuoWorkflowsFlowCallbackHook"
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+      parameters:
+      - name: id
+        required: true
+        schema:
+          type: integer
+        in: path
+    delete:
+      operationId: deleteApiV4AiDuoWorkflowsFlowCallbacksId
+      summary: Delete a registered flow callback endpoint
+      description: Deletes a registered flow callback endpoint so it no longer receives
+        deliveries.
+      tags:
+      - Duo workflow flow callback hooks
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+      parameters:
+      - name: id
+        required: true
+        schema:
+          type: integer
+        in: path
   "/api/v4/projects/{id}/ai_agent/identities":
     post:
       operationId: postApiV4ProjectsIdAiAgentIdentities
@@ -1686,7 +1808,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_39c987677cfb"
+              "$ref": "#/components/schemas/RequestBody_6bc874fddbf3"
       x-gitlab-lifecycle: experiment
   "/api/v4/ai/duo_workflows/workflows/agent_privileges":
     get:
@@ -76122,6 +76244,28 @@ components:
           type: array
           items:
             "$ref": "#/components/schemas/APIEntitiesAiSemanticCodeGroupedResult"
+    APIEntitiesAiDuoWorkflowsFlowCallbackHook:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        url:
+          type: string
+          example: https://autoflow.example.com/duo/callbacks
+        name:
+          type: string
+          example: AutoFlow
+        signing_token_set:
+          type: boolean
+          example: true
+        token_set:
+          type: boolean
+          example: false
+        created_at:
+          type: string
+          format: date-time
+          example: '2026-07-22T11:37:00Z'
     APIEntitiesAiExternalAgentsIdentity:
       type: object
       properties:
@@ -94115,6 +94259,35 @@ components:
           nullable: true
       required:
       - project_path
+    RequestBody_3bf1a359c145:
+      type: object
+      properties:
+        url:
+          type: string
+          description: HTTPS URL that receives callbacks
+          example: https://autoflow.example.com/duo/callbacks
+          nullable: true
+          maxLength: 8192
+        name:
+          type: string
+          description: A label for this endpoint
+          nullable: true
+          maxLength: 255
+        signing_token:
+          type: string
+          description: HMAC signing secret in whsec_<base64-of-32-bytes> format, used
+            to compute the webhook-signature header so you can verify payloads. Not
+            returned.
+          nullable: true
+          maxLength: 51
+        token:
+          type: string
+          description: Optional shared secret sent verbatim as the X-Gitlab-Token
+            header. Not returned.
+          nullable: true
+          maxLength: 8192
+      required:
+      - url
     RequestBody_80c272d831b7:
       type: object
       properties:
@@ -94499,7 +94672,7 @@ components:
           description: The ID or path of the project
           example: '1'
           nullable: true
-    RequestBody_39c987677cfb:
+    RequestBody_6bc874fddbf3:
       type: object
       properties:
         project_id:
@@ -94618,6 +94791,18 @@ components:
           description: IID of the MergeRequest noteable that the workflow is associated
             with.
           example: 123
+          nullable: true
+        source:
+          type: string
+          enum:
+          - merge_request_code_conflict
+          - merge_request_dependency_bump
+          - merge_request_fix_pipeline
+          - merge_request_resolve_discussion
+          - work_item_to_mr
+          - fix_pipeline
+          - convert_plateform_ci_pipeline
+          description: Where the session was triggered from
           nullable: true
     RequestBody_7139042d9372:
       type: object

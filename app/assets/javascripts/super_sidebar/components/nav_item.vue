@@ -268,13 +268,14 @@ export default {
               :entity-name="item.title"
               :entity-id="item.entity_id"
               :src="item.avatar"
+              :alt="item.title"
             />
           </slot>
         </span>
       </template>
       <span
         v-show="!isIconOnly"
-        class="gl-grow gl-break-anywhere"
+        class="gl-inline-block gl-grow gl-py-2 gl-leading-16 gl-break-anywhere"
         :class="{ 'nav-item-link-label': !isFlyout }"
         data-testid="nav-item-link-label"
       >

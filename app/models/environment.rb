@@ -11,6 +11,12 @@ class Environment < ApplicationRecord
 
   LONG_STOP = 1.week
 
+  # Number of recent deployments inspected when expiring the merge request
+  # `ci_environments_status` ETag caches on a state change. An environment only
+  # has a handful of merge requests actively displaying it, so a small bound
+  # keeps this cheap while still covering the active ones.
+  RECENT_DEPLOYMENTS_FOR_ETAG_CACHE = 10
+
   self.reactive_cache_refresh_interval = 1.minute
   self.reactive_cache_lifetime = 55.seconds
   self.reactive_cache_hard_limit = 10.megabytes
@@ -500,7 +506,7 @@ class Environment < ApplicationRecord
 
   def expire_etag_cache
     Gitlab::EtagCaching::Store.new.tap do |store|
-      store.touch(etag_cache_key)
+      store.touch(*etag_cache_keys)
     end
   end
 
@@ -508,6 +514,15 @@ class Environment < ApplicationRecord
     Gitlab::Routing.url_helpers.project_environments_path(
       project,
       format: :json)
+  end
+
+  # The environments list ETag plus the `ci_environments_status` ETag of every
+  # merge request currently displaying this environment. Deployment and
+  # environment state transitions (stop/rollback/redeploy) do not run
+  # `Ci::ExpirePipelineCacheService`, so without this those merge request
+  # widgets would keep serving 304s until the ETag TTL elapsed.
+  def etag_cache_keys
+    [etag_cache_key, *merge_request_ci_environments_status_cache_keys]
   end
 
   def folder_name
@@ -597,6 +612,41 @@ class Environment < ApplicationRecord
   end
 
   private
+
+  def merge_request_ci_environments_status_cache_keys
+    merge_requests_displaying_environment.map do |merge_request|
+      Gitlab::Routing.url_helpers.ci_environments_status_project_merge_request_path(project, merge_request)
+    end
+  end
+
+  # Merge requests whose `ci_environments_status` widget may render this
+  # environment. `EnvironmentStatus` uses deployment links created by
+  # `Deployments::LinkMergeRequestsService` for merge requests whose commits
+  # were included in a deployment. This reverse lookup uses recent deployment
+  # SHAs as a bounded approximation and adds the merge request that created the
+  # environment.
+  def merge_requests_displaying_environment
+    return MergeRequest.none unless project.merge_requests_enabled?
+
+    relations = []
+
+    deployment_shas = recent_deployment_shas
+    if deployment_shas.any?
+      relations << project.merge_requests.by_merged_or_merge_or_squash_commit_sha(deployment_shas)
+    end
+
+    # An environment created by a merge request pipeline is linked directly to
+    # the single merge request that created it.
+    relations << project.merge_requests.id_in(merge_request_id) if merge_request_id
+
+    return MergeRequest.none if relations.empty?
+
+    MergeRequest.from_union(relations)
+  end
+
+  def recent_deployment_shas
+    all_deployments.ordered_as_upcoming.limit(RECENT_DEPLOYMENTS_FOR_ETAG_CACHE).pluck(:sha).uniq
+  end
 
   def run_stop_action!(job, link_identity:)
     ::Gitlab::Auth::Identity.link_from_job(job) if link_identity
