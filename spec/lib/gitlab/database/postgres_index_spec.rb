@@ -107,33 +107,35 @@ RSpec.describe Gitlab::Database::PostgresIndex, feature_category: :database do
   end
 
   describe '#bloat_size' do
-    subject { build(:postgres_index, bloat_estimate: bloat_estimate) }
+    subject(:index) { find('public.schema_migrations_pkey') }
 
-    let(:bloat_estimate) { build(:postgres_index_bloat_estimate) }
-    let(:bloat_size) { double }
-
-    it 'returns the bloat size from the estimate' do
-      expect(bloat_estimate).to receive(:bloat_size).and_return(bloat_size)
-
-      expect(subject.bloat_size).to eq(bloat_size)
+    it 'returns the bloat size in bytes from the SQL function' do
+      expect(index.bloat_size).to be_a(Integer)
+      expect(index.bloat_size).to be >= 0
     end
 
-    context 'without a bloat estimate available' do
-      let(:bloat_estimate) { nil }
+    it 'returns 0 when the function finds no matching index' do
+      allow(described_class.connection).to receive(:select_value).and_return(nil)
 
-      it 'returns 0' do
-        expect(subject.bloat_size).to eq(0)
-      end
+      expect(index.bloat_size).to eq(0)
+    end
+
+    it 'memoizes the result' do
+      expect(described_class.connection).to receive(:select_value).once.and_call_original
+
+      2.times { index.bloat_size }
     end
   end
 
   describe '#relative_bloat_level' do
-    subject { build(:postgres_index, bloat_estimate: bloat_estimate, ondisk_size_bytes: 1024) }
+    subject(:index) { build(:postgres_index, ondisk_size_bytes: 1024) }
 
-    let(:bloat_estimate) { build(:postgres_index_bloat_estimate, bloat_size: 256) }
+    before do
+      allow(index).to receive(:bloat_size).and_return(256)
+    end
 
     it 'calculates the relative bloat level' do
-      expect(subject.relative_bloat_level).to eq(0.25)
+      expect(index.relative_bloat_level).to eq(0.25)
     end
   end
 

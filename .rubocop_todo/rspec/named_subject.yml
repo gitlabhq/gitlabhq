@@ -1696,7 +1696,6 @@ RSpec/NamedSubject:
     - 'spec/lib/gitlab/database/pg_class_spec.rb'
     - 'spec/lib/gitlab/database/pg_depend_spec.rb'
     - 'spec/lib/gitlab/database/postgres_autovacuum_activity_spec.rb'
-    - 'spec/lib/gitlab/database/postgres_index_bloat_estimate_spec.rb'
     - 'spec/lib/gitlab/database/postgres_index_spec.rb'
     - 'spec/lib/gitlab/database/query_analyzers/prevent_set_operator_mismatch/columns_spec.rb'
     - 'spec/lib/gitlab/database/query_analyzers/prevent_set_operator_mismatch/common_table_expressions_spec.rb'
