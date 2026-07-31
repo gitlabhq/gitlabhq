@@ -1752,7 +1752,6 @@ RSpec/FeatureCategory:
     - 'spec/lib/gitlab/database/postgres_constraint_spec.rb'
     - 'spec/lib/gitlab/database/postgres_hll/batch_distinct_counter_spec.rb'
     - 'spec/lib/gitlab/database/postgres_hll/buckets_spec.rb'
-    - 'spec/lib/gitlab/database/postgres_index_bloat_estimate_spec.rb'
     - 'spec/lib/gitlab/database/postgres_partitioned_table_spec.rb'
     - 'spec/lib/gitlab/database/postgresql_adapter/dump_schema_versions_mixin_spec.rb'
     - 'spec/lib/gitlab/database/postgresql_adapter/force_disconnectable_mixin_spec.rb'

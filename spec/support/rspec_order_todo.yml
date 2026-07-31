@@ -4462,7 +4462,6 @@
 - './spec/lib/gitlab/database/postgres_foreign_key_spec.rb'
 - './spec/lib/gitlab/database/postgres_hll/batch_distinct_counter_spec.rb'
 - './spec/lib/gitlab/database/postgres_hll/buckets_spec.rb'
-- './spec/lib/gitlab/database/postgres_index_bloat_estimate_spec.rb'
 - './spec/lib/gitlab/database/postgres_index_spec.rb'
 - './spec/lib/gitlab/database/postgres_partitioned_table_spec.rb'
 - './spec/lib/gitlab/database/postgres_partition_spec.rb'
