@@ -31,7 +31,7 @@ RSpec.describe WebIde::Settings::ExtensionMarketplaceViewModelGenerator, feature
       .and_return('http://gdk.test/profile_preferences_url#integrations')
 
     allow(::Gitlab::Routing).to receive_message_chain(:url_helpers, :help_page_url)
-      .with('user/project/web_ide/_index.md', anchor: 'extension-marketplace')
+      .with('user/project/web_ide/_index.md', anchor: 'manage-extensions')
       .and_return('http://gdk.test/help_url')
   end
 

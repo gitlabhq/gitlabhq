@@ -3,7 +3,6 @@
  */
 export default {
   files: [
-    'app/assets/javascripts/contribution_events/components/contribution_event/contribution_event_base.vue',
     'app/assets/javascripts/contributors/components/contributors.vue',
     'app/assets/javascripts/contributors/components/individual_chart.vue',
     'ee/app/assets/javascripts/ci/job_details/components/root_cause_analysis_button.vue',

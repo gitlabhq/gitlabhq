@@ -36,6 +36,11 @@ export default {
       required: false,
       default: false,
     },
+    emailEnabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   emits: ['switch-method'],
   data() {
@@ -98,14 +103,24 @@ export default {
       >
     </gl-form>
 
-    <template v-if="webauthnEnabled">
+    <template v-if="webauthnEnabled || emailEnabled">
       <verification-divider />
-      <gl-button
-        block
-        data-testid="security-device-button"
-        @click="$emit('switch-method', 'webauthn')"
-        >{{ s__('TwoFactorAuth|Security device') }}</gl-button
-      >
+      <div class="gl-flex gl-flex-col gl-gap-3">
+        <gl-button
+          v-if="webauthnEnabled"
+          block
+          data-testid="security-device-button"
+          @click="$emit('switch-method', 'webauthn')"
+          >{{ s__('TwoFactorAuth|Security device') }}</gl-button
+        >
+        <gl-button
+          v-if="emailEnabled"
+          block
+          data-testid="email-code-button"
+          @click="$emit('switch-method', 'email')"
+          >{{ s__('TwoFactorAuth|Email code') }}</gl-button
+        >
+      </div>
     </template>
 
     <verification-recover-account @recover="$emit('switch-method', 'recovery')" />

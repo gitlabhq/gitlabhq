@@ -873,3 +873,89 @@ principles:
         url: https://docs.gitlab.com/development/internal_analytics/internal_event_instrumentation/quick_start/
       - path: doc/development/internal_analytics/metrics/metrics_instrumentation.md
         url: https://docs.gitlab.com/development/internal_analytics/metrics/metrics_instrumentation/
+
+  # ── Import/Export ─────────────────────────────────────────────────────────
+
+  import-fundamentals:
+    description: Import/Export framework internals and general importer-design points that are NOT specific to particular import source
+    group: Import
+    owner_team: '@gitlab-com/create-team/import'
+    prerequisite: true
+    file_filters:
+      - 'lib/import/**/*.rb'
+      - 'ee/lib/import/**/*.rb'
+      - 'app/controllers/import/**/*.rb'
+      - 'spec/lib/import/**/*.rb'
+      - 'spec/controllers/import/**/*.rb'
+      - 'ee/spec/lib/import/**/*.rb'
+    sources:
+      - path: doc/development/import/principles_of_importer_design.md
+        url: https://docs.gitlab.com/development/import/principles_of_importer_design/
+      - path: doc/development/import_export.md
+        url: https://docs.gitlab.com/development/import_export/
+
+  import-direct-and-offline:
+    description: Bulk Import/Offline Transfer specific import/export documentation
+    group: Import
+    owner_team: '@gitlab-com/create-team/import'
+    file_filters:
+      # Direct transfer (bulk imports) — implementation
+      - 'app/controllers/import/bulk_imports_controller.rb'
+      - 'app/finders/bulk_imports/**/*.rb'
+      - 'app/models/bulk_import.rb'
+      - 'app/models/bulk_imports/**/*.rb'
+      - 'app/serializers/import/bulk_import_entity.rb'
+      - 'app/services/bulk_imports/**/*.rb'
+      - 'app/services/concerns/import/bulk_imports/**/*.rb'
+      - 'app/services/import/bulk_imports/**/*.rb'
+      - 'app/uploaders/bulk_imports/**/*.rb'
+      - 'app/workers/bulk_import_worker.rb'
+      - 'app/workers/bulk_imports/**/*.rb'
+      - 'app/workers/import/bulk_imports/**/*.rb'
+      - 'lib/api/bulk_imports.rb'
+      - 'lib/api/entities/bulk_import.rb'
+      - 'lib/api/entities/bulk_imports/**/*.rb'
+      - 'lib/api/helpers/bulk_imports/**/*.rb'
+      - 'lib/api/validations/validators/bulk_imports.rb'
+      - 'lib/bulk_imports/**/*.rb'
+      - 'lib/import/bulk_imports/**/*.rb'
+      - 'ee/app/services/ee/bulk_imports/**/*.rb'
+      - 'ee/lib/bulk_imports/**/*.rb'
+      - 'ee/lib/ee/bulk_imports/**/*.rb'
+      # Direct transfer (bulk imports) — specs
+      - 'spec/controllers/import/bulk_imports_controller_spec.rb'
+      - 'spec/finders/bulk_imports/**/*_spec.rb'
+      - 'spec/models/bulk_import_spec.rb'
+      - 'spec/models/bulk_imports/**/*_spec.rb'
+      - 'spec/serializers/import/bulk_import_entity_spec.rb'
+      - 'spec/services/bulk_imports/**/*_spec.rb'
+      - 'spec/services/import/bulk_imports/**/*_spec.rb'
+      - 'spec/uploaders/bulk_imports/**/*_spec.rb'
+      - 'spec/workers/bulk_import_worker_spec.rb'
+      - 'spec/workers/bulk_imports/**/*_spec.rb'
+      - 'spec/workers/import/bulk_imports/**/*_spec.rb'
+      - 'spec/requests/api/bulk_imports_spec.rb'
+      - 'spec/lib/bulk_imports/**/*_spec.rb'
+      - 'spec/lib/import/bulk_imports/**/*_spec.rb'
+      - 'ee/spec/services/ee/bulk_imports/**/*_spec.rb'
+      - 'ee/spec/lib/bulk_imports/**/*_spec.rb'
+      - 'ee/spec/lib/ee/bulk_imports/**/*_spec.rb'
+      # Offline transfer — implementation
+      - 'app/controllers/import/offline_controller.rb'
+      - 'app/controllers/import/offline/**/*.rb'
+      - 'app/finders/import/offline/**/*.rb'
+      - 'app/models/import/offline/**/*.rb'
+      - 'app/services/concerns/import/offline/**/*.rb'
+      - 'app/services/import/offline/**/*.rb'
+      - 'app/workers/import/offline/**/*.rb'
+      - 'lib/api/entities/import/offline/**/*.rb'
+      - 'lib/import/offline/**/*.rb'
+      - 'ee/lib/ee/import/offline/**/*.rb'
+      # Offline transfer — specs
+      - 'spec/lib/import/offline/**/*_spec.rb'
+      - 'ee/spec/lib/ee/import/offline/**/*_spec.rb'
+    sources:
+      - path: doc/development/bulk_import.md
+        url: https://docs.gitlab.com/development/bulk_import/
+      - path: doc/development/bulk_imports/contributing.md
+        url: https://docs.gitlab.com/development/bulk_imports/contributing/

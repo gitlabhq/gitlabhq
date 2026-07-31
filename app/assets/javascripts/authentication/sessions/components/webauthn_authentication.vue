@@ -40,6 +40,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    emailEnabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   emits: ['switch-method', 'webauthn-not-supported'],
   data() {
@@ -141,14 +146,24 @@ export default {
       >{{ __('Try again') }}</gl-button
     >
 
-    <template v-if="totpEnabled">
+    <template v-if="totpEnabled || emailEnabled">
       <verification-divider />
-      <gl-button
-        block
-        data-testid="authenticator-app-button"
-        @click="$emit('switch-method', 'totp')"
-        >{{ s__('TwoFactorAuth|Authenticator app') }}</gl-button
-      >
+      <div class="gl-flex gl-flex-col gl-gap-3">
+        <gl-button
+          v-if="totpEnabled"
+          block
+          data-testid="authenticator-app-button"
+          @click="$emit('switch-method', 'totp')"
+          >{{ s__('TwoFactorAuth|Authenticator app') }}</gl-button
+        >
+        <gl-button
+          v-if="emailEnabled"
+          block
+          data-testid="email-code-button"
+          @click="$emit('switch-method', 'email')"
+          >{{ s__('TwoFactorAuth|Email code') }}</gl-button
+        >
+      </div>
     </template>
 
     <verification-recover-account @recover="$emit('switch-method', 'recovery')" />

@@ -7,6 +7,7 @@ import TargetLink from '../target_link.vue';
 import ResourceParentLink from '../resource_parent_link.vue';
 
 export default {
+  name: 'ContributionEventBase',
   components: {
     GlAvatarLabeled,
     GlAvatarLink,

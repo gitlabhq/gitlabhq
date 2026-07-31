@@ -136,7 +136,11 @@ module VerifiesWithEmail
       session[:verifies_with_email_user_id] = user.id
       resend_verification_code
     else
-      render json: { success: false, message: _('Not permitted.') }, status: :bad_request
+      render json: {
+        success: false,
+        message: s_('IdentityVerification|Email verification is no longer available for this ' \
+          'sign-in attempt. Log in again.')
+      }, status: :bad_request
     end
   end
 

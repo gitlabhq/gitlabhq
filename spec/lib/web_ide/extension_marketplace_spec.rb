@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe WebIde::ExtensionMarketplace, feature_category: :web_ide do
   using RSpec::Parameterized::TableSyntax
 
-  let(:help_url) { "/help/user/project/web_ide/_index.md#extension-marketplace" }
+  let(:help_url) { "/help/user/project/web_ide/_index.md#manage-extensions" }
   let(:user_preferences_url) { "/-/profile/preferences#integrations" }
   let(:custom_home_url) { 'https://example.com:8444' }
   let(:custom_app_setting) do

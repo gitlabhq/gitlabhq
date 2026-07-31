@@ -467,15 +467,11 @@ Tasks with >10 review attempts - may indicate persistent issues.
 
 {{< tab title="GitLab 18.9 이전" >}}
 
-### GitLab 컨테이너 레지스트리 메타데이터 데이터베이스에 연결 {#connect-to-the-gitlab-container-registry-metadata-database}
-
 다음 명령을 사용하여 레지스트리 메타데이터 데이터베이스에 연결하세요:
 
 ```shell
 gitlab-psql -d registry
 ```
-
-### 온라인 가비지 컬렉션 작업 상태를 확인하기 위한 쿼리 {#queries-to-determine-status-of-online-garbage-collection-tasks}
 
 다음 쿼리는 10회 이상 재시도되었거나 24시간 이상 검토할 수 있는 작업을 반환합니다. 온라인 가비지 수집기는 24시간 이내에 검토할 항목을 선택해야 하며 실패한 시도는 거의 없어야 합니다. 행이 반환되면 온라인 가비지 수집기의 상태를 조사하세요.
 
@@ -525,8 +521,6 @@ WHERE
 LIMIT
   20;
 ```
-
-#### 온라인 가비지 컬렉션 관련 정보성 쿼리 {#informational-queries-related-to-online-garbage-collection}
 
 다음 쿼리를 실행하여 검토할 수 있는 작업 수를 확인하세요:
 

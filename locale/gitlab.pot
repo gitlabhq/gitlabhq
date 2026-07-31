@@ -2567,12 +2567,6 @@ msgstr ""
 msgid "AICatalog|A public %{itemType}:"
 msgstr ""
 
-msgid "AICatalog|A service account is automatically created. This account is used in combination with the user to run the agent."
-msgstr ""
-
-msgid "AICatalog|A service account is automatically created. This account is used in combination with the user to run the flow."
-msgstr ""
-
 msgid "AICatalog|AI Catalog"
 msgstr ""
 
@@ -2643,9 +2637,6 @@ msgid "AICatalog|Agents already in AI Catalog."
 msgstr ""
 
 msgid "AICatalog|Agents successfully added to AI Catalog."
-msgstr ""
-
-msgid "AICatalog|All project members will be able to use it."
 msgstr ""
 
 msgid "AICatalog|All projects must belong to the same organization as the agent or flow."
@@ -2942,6 +2933,12 @@ msgstr ""
 msgid "AICatalog|Enabling external agents is turned off. Contact an administrator to change this."
 msgstr ""
 
+msgid "AICatalog|Enabling this agent creates a service account, which combines with a user role into a composite identity. The agent can access all projects that either the service account or the user role can access."
+msgstr ""
+
+msgid "AICatalog|Enabling this flow creates a service account, which combines with a user role into a composite identity. The flow can access all projects that either the service account or the user role can access."
+msgstr ""
+
 msgid "AICatalog|Excessive resource usage"
 msgstr ""
 
@@ -3125,7 +3122,7 @@ msgstr ""
 msgid "AICatalog|Item must have a current latest released version to restore."
 msgstr ""
 
-msgid "AICatalog|Learn more about composite identity"
+msgid "AICatalog|Learn more about composite identity."
 msgstr ""
 
 msgid "AICatalog|Learn more about foundational agents"
@@ -3404,22 +3401,10 @@ msgstr ""
 msgid "AICatalog|System prompt is required."
 msgstr ""
 
-msgid "AICatalog|That it's been enabled for. These are the projects the service account was added to."
-msgstr ""
-
-msgid "AICatalog|That the user who runs it has access to."
-msgstr ""
-
 msgid "AICatalog|The number of projects that have used this item in the last 30 days."
 msgstr ""
 
 msgid "AICatalog|The service account does not belong to the configuration for the agent or flow associated with this project"
-msgstr ""
-
-msgid "AICatalog|The service account is part of a composite identity that runs the agent. This identity combines the user's role with the service account's role and uses the more restrictive of the two."
-msgstr ""
-
-msgid "AICatalog|The service account is part of a composite identity that runs the flow. This identity combines the user's role with the service account's role and uses the more restrictive of the two."
 msgstr ""
 
 msgid "AICatalog|There was a problem fetching agents."
@@ -3581,9 +3566,6 @@ msgstr ""
 msgid "AICatalog|Use agents with GitLab Duo Chat to complete tasks and answer complex questions."
 msgstr ""
 
-msgid "AICatalog|Use caution when enabling."
-msgstr ""
-
 msgid "AICatalog|Use flows in your %{namespaceType}."
 msgstr ""
 
@@ -3620,19 +3602,7 @@ msgstr ""
 msgid "AICatalog|When this agent runs, it will have access to the projects the user who runs it has access to."
 msgstr ""
 
-msgid "AICatalog|When this agent runs, it will have access to the projects:"
-msgstr ""
-
-msgid "AICatalog|When this flow runs, it will have access to the projects:"
-msgstr ""
-
 msgid "AICatalog|When you enable this agent, all project members will be able to use it."
-msgstr ""
-
-msgid "AICatalog|When you enable this agent:"
-msgstr ""
-
-msgid "AICatalog|When you enable this flow:"
 msgstr ""
 
 msgid "AICatalog|Why are you reporting this %{itemType}?"
@@ -11782,7 +11752,7 @@ msgstr ""
 msgid "ArtifactRegistry|Activation"
 msgstr ""
 
-msgid "ArtifactRegistry|Ancestor ID must be a valid UUID."
+msgid "ArtifactRegistry|Ancestor ID must be a valid UUIDv7."
 msgstr ""
 
 msgid "ArtifactRegistry|Artifact registry"
@@ -11815,7 +11785,7 @@ msgstr ""
 msgid "ArtifactRegistry|Repositories"
 msgstr ""
 
-msgid "ArtifactRegistry|Resource ID must be a valid UUID."
+msgid "ArtifactRegistry|Resource ID must be a valid UUIDv7."
 msgstr ""
 
 msgid "ArtifactRegistry|The Artifact Registry service did not respond in time."
@@ -40169,6 +40139,9 @@ msgstr ""
 msgid "IdentityVerification|Email Verification has been disabled and resending a code is not required. Log in again."
 msgstr ""
 
+msgid "IdentityVerification|Email verification is no longer available for this sign-in attempt. Log in again."
+msgstr ""
+
 msgid "IdentityVerification|Enter a code."
 msgstr ""
 
@@ -50948,9 +50921,6 @@ msgid "Not permitted to update requirement"
 msgstr ""
 
 msgid "Not permitted to update requirement control"
-msgstr ""
-
-msgid "Not permitted."
 msgstr ""
 
 msgid "Not ready yet. Try again later."
@@ -82344,10 +82314,19 @@ msgstr ""
 msgid "TwoFactorAuth|6-digit code"
 msgstr ""
 
+msgid "TwoFactorAuth|Authenticate with your email"
+msgstr ""
+
 msgid "TwoFactorAuth|Authenticator app"
 msgstr ""
 
 msgid "TwoFactorAuth|Back to sign-in"
+msgstr ""
+
+msgid "TwoFactorAuth|Email code"
+msgstr ""
+
+msgid "TwoFactorAuth|Enter 6 digit code"
 msgstr ""
 
 msgid "TwoFactorAuth|Enter account recovery code"
@@ -82386,10 +82365,16 @@ msgstr ""
 msgid "TwoFactorAuth|Trying to communicate with your device. Plug it in (if you haven't already) and follow the instructions."
 msgstr ""
 
+msgid "TwoFactorAuth|Use another email"
+msgstr ""
+
 msgid "TwoFactorAuth|Verify code"
 msgstr ""
 
 msgid "TwoFactorAuth|Verify with security device"
+msgstr ""
+
+msgid "TwoFactorAuth|We sent a code to %{email} to verify your identity. Keep this window open while checking your code."
 msgstr ""
 
 msgid "TwoFactorAuth|or verify with"

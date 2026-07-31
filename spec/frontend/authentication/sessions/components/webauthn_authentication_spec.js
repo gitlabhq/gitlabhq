@@ -53,6 +53,7 @@ describe('WebAuthnAuthentication', () => {
   const findAuthenticatorAppButton = () =>
     wrapper.findComponentByTestId('authenticator-app-button');
   const findRecoveryButton = () => wrapper.findComponentByTestId('recovery-button');
+  const findEmailCodeButton = () => wrapper.findComponentByTestId('email-code-button');
   const findDeviceResponseInput = () => wrapper.find('input[name="user[device_response]"]');
   const findRememberMeInput = () => wrapper.find('input[name="user[remember_me]"]');
   const findCsrfInput = () => wrapper.find('input[name="authenticity_token"]');
@@ -181,6 +182,24 @@ describe('WebAuthnAuthentication', () => {
       findRecoveryButton().vm.$emit('click');
 
       expect(wrapper.emitted('switch-method')).toEqual([['recovery']]);
+    });
+  });
+
+  describe('email a code button', () => {
+    it('is absent when emailEnabled is false', () => {
+      createComponent();
+
+      expect(findEmailCodeButton().exists()).toBe(false);
+    });
+
+    it('is present and emits switch-method "email" when emailEnabled is true', () => {
+      createComponent({ emailEnabled: true });
+
+      expect(findEmailCodeButton().exists()).toBe(true);
+
+      findEmailCodeButton().vm.$emit('click');
+
+      expect(wrapper.emitted('switch-method')).toEqual([['email']]);
     });
   });
 

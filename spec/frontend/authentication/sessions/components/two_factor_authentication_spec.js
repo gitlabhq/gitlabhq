@@ -3,9 +3,15 @@ import TwoFactorAuthentication from '~/authentication/sessions/components/two_fa
 import TotpCode from '~/authentication/sessions/components/totp_code.vue';
 import RecoveryCode from '~/authentication/sessions/components/recovery_code.vue';
 import WebauthnAuthentication from '~/authentication/sessions/components/webauthn_authentication.vue';
+import EmailCode from '~/authentication/sessions/components/email_code.vue';
 import { useMockNavigatorCredentials } from '../../webauthn/util';
 
 jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
+// EmailCode auto-sends a code on mount; stub the request so it resolves quietly.
+jest.mock('~/lib/utils/axios_utils', () => ({
+  __esModule: true,
+  default: { post: jest.fn().mockResolvedValue({ data: {} }) },
+}));
 
 describe('TwoFactorAuthentication', () => {
   useMockNavigatorCredentials();
@@ -28,6 +34,15 @@ describe('TwoFactorAuthentication', () => {
     webauthnEnabled: false,
     totpEnabled: true,
     webauthnParams,
+    emailEnabled: false,
+  };
+
+  const emailVerificationData = {
+    obfuscatedEmail: 't***@example.com',
+    verifyPath: '/users/sign_in',
+    resendPath: '/users/resend_verification_code',
+    skipPath: null,
+    showResendAfter: null,
   };
 
   const createComponent = (props = {}) => {
@@ -39,6 +54,7 @@ describe('TwoFactorAuthentication', () => {
   const findTotpCode = () => wrapper.findComponent(TotpCode);
   const findRecoveryCode = () => wrapper.findComponent(RecoveryCode);
   const findWebauthnAuthentication = () => wrapper.findComponent(WebauthnAuthentication);
+  const findEmailCode = () => wrapper.findComponent(EmailCode);
 
   beforeEach(() => {
     createComponent();
@@ -123,13 +139,52 @@ describe('TwoFactorAuthentication', () => {
       expect(findWebauthnAuthentication().exists()).toBe(false);
     });
 
-    it('falls back to RecoveryCode when totp is disabled', async () => {
-      createComponent({ webauthnEnabled: true, totpEnabled: false });
+    it('falls back to EmailCode when totp is disabled but email is enabled', async () => {
+      createComponent({
+        webauthnEnabled: true,
+        totpEnabled: false,
+        emailEnabled: true,
+        emailVerificationData,
+        sendEmailOtpPath: '/users/fallback_to_email_otp',
+      });
+
+      await findWebauthnAuthentication().vm.$emit('webauthn-not-supported');
+
+      expect(findEmailCode().exists()).toBe(true);
+      expect(findWebauthnAuthentication().exists()).toBe(false);
+    });
+
+    it('falls back to RecoveryCode when totp and email are disabled', async () => {
+      createComponent({ webauthnEnabled: true, totpEnabled: false, emailEnabled: false });
 
       await findWebauthnAuthentication().vm.$emit('webauthn-not-supported');
 
       expect(findRecoveryCode().exists()).toBe(true);
       expect(findWebauthnAuthentication().exists()).toBe(false);
+    });
+  });
+
+  describe('when only email OTP is available', () => {
+    beforeEach(() => {
+      createComponent({
+        webauthnEnabled: false,
+        totpEnabled: false,
+        emailEnabled: true,
+        emailVerificationData,
+        sendEmailOtpPath: '/users/fallback_to_email_otp',
+      });
+    });
+
+    it('defaults to rendering EmailCode', () => {
+      expect(findEmailCode().exists()).toBe(true);
+      expect(findTotpCode().exists()).toBe(false);
+    });
+
+    it('forwards props to EmailCode', () => {
+      expect(findEmailCode().props()).toMatchObject({
+        sendEmailOtpPath: '/users/fallback_to_email_otp',
+        emailVerificationData,
+      });
     });
   });
 });
