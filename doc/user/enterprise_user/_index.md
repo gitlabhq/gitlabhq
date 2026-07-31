@@ -313,6 +313,36 @@ To hide email addresses for enterprise users:
 1. Under **Enterprise users**, select the **Hide email address from public profile** checkbox.
 1. Select **Save changes**.
 
+### Prevent enterprise users from deleting their own account
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241926) in GitLab 19.2 [with a flag](../../administration/feature_flags/_index.md) named `deleting_account_disabled_for_enterprise_users`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+Group Owners can prevent enterprise users in their group from deleting their own accounts.
+When this setting is disabled, enterprise users cannot delete their account from their user settings.
+The account deletion section shows a message that account deletion is not allowed. Group Owners can still
+[delete an enterprise user](#delete-an-enterprise-user).
+
+Prerequisites:
+
+- The Owner role for a top-level group.
+- The group must have [domain verification](#manage-group-domains) configured.
+
+To prevent enterprise users from deleting their own account:
+
+1. In the top bar, select **Search or go to** and find your group.
+1. In the left sidebar, select **Settings** > **General**.
+1. Expand **Permissions and group features**.
+1. Under **Enterprise users**, clear the **Allow enterprise users to delete their own accounts** checkbox.
+1. Select **Save changes**.
+
 ### Enable the Extension Marketplace for enterprise users
 
 {{< history >}}

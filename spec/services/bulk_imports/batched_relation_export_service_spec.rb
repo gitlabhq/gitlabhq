@@ -47,7 +47,7 @@ RSpec.describe BulkImports::BatchedRelationExportService, feature_category: :imp
       context 'when there are multiple batches' do
         before do
           stub_application_setting(relation_export_batch_size: 1)
-          create_list(:group_label, 10, group: portable)
+          create_list(:group_label, 2, group: portable)
         end
 
         it 'creates a batch record for each batch of records' do
@@ -55,7 +55,7 @@ RSpec.describe BulkImports::BatchedRelationExportService, feature_category: :imp
 
           export = portable.bulk_import_exports.first
 
-          expect(export.batches.count).to eq(11)
+          expect(export.batches.count).to eq(3)
         end
 
         it 'caches the batch size for the export' do
@@ -68,7 +68,7 @@ RSpec.describe BulkImports::BatchedRelationExportService, feature_category: :imp
           described_class.new(user, portable, relation, jid).execute
           export = portable.bulk_import_exports.first
 
-          expect(export.batches.count).to eq(11)
+          expect(export.batches.count).to eq(3)
         end
       end
 

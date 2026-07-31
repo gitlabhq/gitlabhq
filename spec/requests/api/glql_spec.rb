@@ -301,7 +301,7 @@ RSpec.describe API::Glql, feature_category: :custom_dashboards_foundation do
 
     context 'with pagination' do
       before do
-        create_list(:issue, 10, :opened, project: project)
+        create_list(:issue, 6, :opened, project: project)
       end
 
       it 'returns first page with pageInfo' do

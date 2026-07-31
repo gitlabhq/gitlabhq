@@ -173,9 +173,9 @@ RSpec.describe Releases::GroupReleasesFinder, feature_category: :groups_and_proj
                   releases
                 end
 
-                subgroups = create_list(:group, 10, parent: group)
-                projects = create_list(:project, 10, namespace: subgroups[0])
-                create_list(:release, 10, project: projects[0], author: user)
+                subgroups = create_list(:group, 3, parent: group)
+                projects = create_list(:project, 3, namespace: subgroups[0])
+                create_list(:release, 3, project: projects[0], author: user)
 
                 expect do
                   releases

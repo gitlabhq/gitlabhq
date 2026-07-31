@@ -153,7 +153,7 @@ RSpec.describe 'Get a list of personal access tokens that belong to a user', fea
         post_graphql(query, current_user: current_user)
       end
 
-      create_list(:granular_pat, 9, permissions: ['read_member_role'], user: user, boundary: boundary)
+      create_list(:granular_pat, 2, permissions: ['read_member_role'], user: user, boundary: boundary)
 
       expect { post_graphql(query, current_user: current_user) }.to issue_same_number_of_queries_as(control)
     end

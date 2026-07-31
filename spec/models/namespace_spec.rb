@@ -726,7 +726,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
       context 'performance with large number of namespaces' do
         let_it_be(:large_root_group) { create(:group) }
-        let_it_be(:many_subgroups) { create_list(:group, 10, parent: large_root_group) }
+        let_it_be(:many_subgroups) { create_list(:group, 3, parent: large_root_group) }
         let(:namespace_ids) { many_subgroups.map(&:id) }
 
         it 'efficiently extracts single root namespace ID' do

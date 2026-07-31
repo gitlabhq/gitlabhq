@@ -7,7 +7,7 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:user) { create(:user) }
-  let_it_be_with_reload(:project) { create(:project, :public, :repository, developers: user) }
+  let_it_be_with_reload(:project) { create(:project, :public, :small_repo, developers: user) }
   let_it_be_with_reload(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }
 
   before do
@@ -135,8 +135,9 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
   end
 
   describe 'GET #new' do
+    before_all { project.add_developer(user) }
+
     before do
-      project.add_developer(user)
       sign_in(user)
     end
 
@@ -150,8 +151,9 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
 
   describe 'POST #create' do
     describe 'functionality' do
+      before_all { project.add_developer(user) }
+
       before do
-        project.add_developer(user)
         sign_in(user)
       end
 
@@ -248,8 +250,9 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
     describe 'functionality' do
       let!(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: user) }
 
+      before_all { project.add_developer(user) }
+
       before do
-        project.add_developer(user)
         sign_in(user)
       end
 
@@ -399,12 +402,10 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
       it_behaves_like 'access update schedule'
 
       context 'when a developer created a pipeline schedule' do
-        let(:developer_1) { create(:user) }
+        let_it_be(:developer_1) { create(:user) }
         let!(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: developer_1) }
 
-        before do
-          project.add_developer(developer_1)
-        end
+        before_all { project.add_developer(developer_1) }
 
         it { expect { go }.to be_allowed_for(developer_1) }
 
@@ -414,12 +415,10 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
       end
 
       context 'when a maintainer created a pipeline schedule' do
-        let(:maintainer_1) { create(:user) }
+        let_it_be(:maintainer_1) { create(:user) }
         let!(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: maintainer_1) }
 
-        before do
-          project.add_maintainer(maintainer_1)
-        end
+        before_all { project.add_maintainer(maintainer_1) }
 
         it { expect { go }.to be_allowed_for(maintainer_1) }
 
@@ -443,11 +442,14 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
 
   describe 'GET #edit' do
     describe 'functionality' do
-      let(:user) { create(:user) }
+      let_it_be(:user) { create(:user) }
 
-      before do
+      before_all do
         project.add_maintainer(user)
         pipeline_schedule.update!(owner: user)
+      end
+
+      before do
         sign_in(user)
       end
 
@@ -505,9 +507,9 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
   describe 'POST #play', :clean_gitlab_redis_rate_limiting do
     let(:ref_name) { 'master' }
 
-    before do
-      project.add_developer(user)
+    before_all { project.add_developer(user) }
 
+    before do
       sign_in(user)
     end
 
@@ -560,8 +562,9 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
 
   describe 'DELETE #destroy' do
     context 'when a developer makes the request' do
+      before_all { project.add_developer(user) }
+
       before do
-        project.add_developer(user)
         sign_in(user)
 
         delete :destroy, params: { namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id }
@@ -573,8 +576,9 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
     end
 
     context 'when a maintainer makes the request' do
+      before_all { project.add_maintainer(user) }
+
       before do
-        project.add_maintainer(user)
         sign_in(user)
       end
 

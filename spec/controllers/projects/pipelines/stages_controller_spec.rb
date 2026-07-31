@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Projects::Pipelines::StagesController, feature_category: :continuous_integration do
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository) }
   let(:downstream_project) { create(:project, :repository) }
 
   before do
@@ -32,8 +32,11 @@ RSpec.describe Projects::Pipelines::StagesController, feature_category: :continu
     end
 
     context 'when user has access' do
-      before do
+      before_all do
         project.add_maintainer(user)
+      end
+
+      before do
         downstream_project.add_maintainer(user)
       end
 

@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Projects::BadgesController do
-  let_it_be_with_reload(:project) { create(:project, :repository) }
-  let_it_be_with_reload(:pipeline) { create(:ci_empty_pipeline, project: project) }
   let_it_be(:user) { create(:user) }
+  let_it_be_with_reload(:project) { create(:project, :small_repo, maintainers: user) }
+  let_it_be_with_reload(:pipeline) { create(:ci_empty_pipeline, project: project) }
 
   shared_context 'renders badge irrespective of project access levels' do |badge_type|
     context 'when project is public' do
@@ -21,9 +21,10 @@ RSpec.describe Projects::BadgesController do
     end
 
     context 'when project is restricted' do
+      before_all { project.add_guest(user) }
+
       before do
         project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
-        project.add_guest(user)
         sign_in(user)
       end
 
@@ -61,9 +62,10 @@ RSpec.describe Projects::BadgesController do
     end
 
     context 'when project is restricted to the user' do
+      before_all { project.add_guest(user) }
+
       before do
         project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
-        project.add_guest(user)
         sign_in(user)
       end
 

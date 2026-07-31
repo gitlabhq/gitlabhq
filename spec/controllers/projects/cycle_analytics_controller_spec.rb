@@ -3,12 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Projects::CycleAnalyticsController do
-  let(:project) { create(:project, :repository) }
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, maintainers: user) }
 
   before do
     sign_in(user)
-    project.add_maintainer(user)
   end
 
   context "counting page views for 'show'" do

@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe ActivityPub::Projects::ReleasesController, feature_category: :groups_and_projects do
   include AccessMatchersForController
 
-  let_it_be_with_reload(:project) { create(:project, :repository, :public) }
-  let_it_be(:private_project) { create(:project, :repository, :private) }
+  let_it_be_with_reload(:project) { create(:project, :public) }
+  let_it_be(:private_project) { create(:project, :private) }
   let_it_be(:developer) { create(:user, developer_of: project) }
   let_it_be_with_reload(:release_1) do
     create(:release, project: project, released_at: Time.zone.parse('2018-10-18'))

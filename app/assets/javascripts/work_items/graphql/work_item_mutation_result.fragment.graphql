@@ -1,0 +1,17 @@
+#import "ee_else_ce/work_items/graphql/work_item_base.fragment.graphql"
+#import "ee_else_ce/work_items/graphql/work_item_widgets.fragment.graphql"
+#import "ee_else_ce/work_items/graphql/work_item_features.fragment.graphql"
+
+# Work item payload returned by mutations. Unlike the `WorkItem` fragment used by the
+# detail queries, `widgets` is skipped when `work_item_features_field` is enabled: the
+# mutation only needs to return the tree the client actually reads, and returning both
+# pushes these mutations past the authenticated query complexity limit.
+fragment WorkItemMutationResult on WorkItem {
+  ...WorkItemBase
+  widgets @skip(if: $useWorkItemFeatures) {
+    ...WorkItemWidgets
+  }
+  features @include(if: $useWorkItemFeatures) {
+    ...WorkItemFeatures
+  }
+}

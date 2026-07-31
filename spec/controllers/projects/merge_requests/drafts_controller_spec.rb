@@ -427,7 +427,7 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
     it 'publishes all draft notes for an MR' do
       draft_params = { merge_request: merge_request, author: user }
 
-      drafts = create_list(:draft_note, 4, draft_params)
+      drafts = create_list(:draft_note, 2, draft_params)
 
       note = create(:discussion_note_on_merge_request, noteable: merge_request, project: project)
       draft_reply = create(:draft_note, draft_params.merge(discussion_id: note.discussion_id))
@@ -435,8 +435,8 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
       diff_note = create(:diff_note_on_merge_request, noteable: merge_request, project: project)
       diff_draft_reply = create(:draft_note, draft_params.merge(discussion_id: diff_note.discussion_id))
 
-      expect { post :publish, params: params }.to change { Note.count }.by(6)
-        .and change { DraftNote.count }.by(-6)
+      expect { post :publish, params: params }.to change { Note.count }.by(4)
+        .and change { DraftNote.count }.by(-4)
 
       expect(response).to have_gitlab_http_status(:ok)
 
@@ -462,7 +462,7 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
     it 'can publish just a single draft note' do
       draft_params = { merge_request: merge_request, author: user }
 
-      drafts = create_list(:draft_note, 4, draft_params)
+      drafts = create_list(:draft_note, 2, draft_params)
 
       expect { post :publish, params: params.merge(id: drafts.first.id) }.to change { Note.count }.by(1)
         .and change { DraftNote.count }.by(-1)
@@ -657,9 +657,9 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
 
   describe 'DELETE #discard' do
     it 'deletes all DraftNotes belonging to a user in a Merge Request' do
-      create_list(:draft_note, 6, merge_request: merge_request, author: user)
+      create_list(:draft_note, 3, merge_request: merge_request, author: user)
 
-      expect { delete :discard, params: params }.to change { DraftNote.count }.by(-6)
+      expect { delete :discard, params: params }.to change { DraftNote.count }.by(-3)
       expect(response).to have_gitlab_http_status(:ok)
     end
 

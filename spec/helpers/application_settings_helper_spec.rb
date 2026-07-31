@@ -443,6 +443,45 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
     it { is_expected.to eq([%w[Track track], %w[Compress compress]]) }
   end
 
+  describe '#sidekiq_timezone_dropdown_view_model' do
+    let(:application_setting) { build(:application_setting, sidekiq_timezone_override: 'Europe/London') }
+
+    subject(:view_model) { helper.sidekiq_timezone_dropdown_view_model }
+
+    before do
+      helper.instance_variable_set(:@application_setting, application_setting)
+    end
+
+    it 'returns the timezone dropdown view model' do
+      expect(view_model).to match(
+        inputId: 'application_setting_sidekiq_timezone_override',
+        value: 'Europe/London',
+        timezoneData: helper.timezone_data_with_unique_identifiers,
+        name: 'application_setting[sidekiq_timezone_override]',
+        defaultText: _('System default'),
+        additionalClass: ['gl-md-form-input-lg']
+      )
+    end
+
+    context 'when no timezone override is set' do
+      let(:application_setting) { build(:application_setting, sidekiq_timezone_override: nil) }
+
+      it 'returns a blank value' do
+        expect(view_model[:value]).to eq('')
+      end
+    end
+
+    context 'when the form is re-rendered after a failed save' do
+      before do
+        application_setting.sidekiq_timezone_override = 'America/New_York'
+      end
+
+      it 'reflects the submitted value rather than the persisted one' do
+        expect(view_model[:value]).to eq('America/New_York')
+      end
+    end
+  end
+
   describe '#instance_clusters_enabled?', :request_store do
     subject { helper.instance_clusters_enabled? }
 

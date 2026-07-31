@@ -57,7 +57,7 @@ RSpec.describe 'Users (JavaScript fixtures)', feature_category: :user_profile do
       let_it_be(:group, freeze: false) { create(:group, :public) }
       let_it_be(:private_group, freeze: false) { create(:group, :private) }
       let_it_be(:multiple_achievement, freeze: false) { create(:achievement, namespace: group, name: 'Multiple') }
-      let_it_be(:achievements, freeze: false) { create_list(:achievement, 6, namespace: group) }
+      let_it_be(:achievements, freeze: false) { create_list(:achievement, 3, namespace: group) }
       let_it_be(:achievement_from_private_group, freeze: false) { create(:achievement, namespace: private_group) }
       let_it_be(:achievement_with_avatar_and_description, freeze: false) do
         create(:achievement,

@@ -398,16 +398,16 @@ RSpec.shared_examples 'work items milestone' do
   it 'adds and removes milestone', :aggregate_failures do
     within_testid 'work-item-milestone' do
       click_button 'Edit'
-      send_keys "\"#{milestones[8].title}\""
-      select_listbox_item(milestones[8].title)
+      send_keys "\"#{milestones[2].title}\""
+      select_listbox_item(milestones[2].title)
 
-      expect(page).to have_link(milestones[8].title)
+      expect(page).to have_link(milestones[2].title)
 
       click_button 'Edit'
       click_button 'Clear'
 
       expect(page).to have_text('None')
-      expect(page).not_to have_link(milestones[8].title)
+      expect(page).not_to have_link(milestones[2].title)
     end
   end
 end

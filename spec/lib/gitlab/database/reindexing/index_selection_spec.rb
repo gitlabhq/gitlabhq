@@ -17,7 +17,7 @@ RSpec.describe Gitlab::Database::Reindexing::IndexSelection, feature_category: :
       bloat_sizes[index.identifier] || 0
     end
 
-    create_list(:postgres_index, 10, ondisk_size_bytes: 10.gigabytes).each_with_index do |index, i|
+    create_list(:postgres_index, 3, ondisk_size_bytes: 10.gigabytes).each_with_index do |index, i|
       bloat_sizes[index.identifier] = 2.gigabytes * (i + 1)
     end
   end
@@ -75,7 +75,7 @@ RSpec.describe Gitlab::Database::Reindexing::IndexSelection, feature_category: :
         create(:reindex_action, index: index, action_end: Time.zone.now - 10.days - 1.minute)
       end
 
-      create_list(:postgres_index, 10, ondisk_size_bytes: 10.gigabytes).each_with_index do |index, i|
+      create_list(:postgres_index, 3, ondisk_size_bytes: 10.gigabytes).each_with_index do |index, i|
         bloat_sizes[index.identifier] = 2.gigabytes * (i + 1)
         create(:reindex_action, index: index, action_end: Time.zone.now)
       end

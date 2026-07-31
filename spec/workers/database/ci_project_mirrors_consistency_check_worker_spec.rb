@@ -19,7 +19,7 @@ RSpec.describe Database::CiProjectMirrorsConsistencyCheckWorker, feature_categor
 
       before do
         redis_shared_state_cleanup!
-        create_list(:project, 10) # This will also create Ci::ProjectMirror objects
+        create_list(:project, 3) # This will also create Ci::ProjectMirror objects
         missing_project.delete
 
         allow_next_instance_of(Database::ConsistencyCheckService) do |instance|
@@ -30,7 +30,7 @@ RSpec.describe Database::CiProjectMirrorsConsistencyCheckWorker, feature_categor
       it 'reports the differences to the logs' do
         expected_result = {
           batches: 1,
-          matches: 9,
+          matches: 2,
           mismatches: 1,
           mismatches_details: [{
             id: missing_project.id,

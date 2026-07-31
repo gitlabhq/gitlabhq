@@ -62,7 +62,7 @@ RSpec.describe Projects::MirrorsController, feature_category: :source_code_manag
   end
 
   describe 'Access control' do
-    let(:project) { create(:project, :repository) }
+    let(:project) { create(:project, :small_repo) }
 
     describe '#update' do
       include_examples 'only admin is allowed when mirroring is disabled' do
@@ -84,7 +84,7 @@ RSpec.describe Projects::MirrorsController, feature_category: :source_code_manag
   end
 
   describe 'setting up a remote mirror' do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :small_repo) }
 
     context 'when the current project is not a mirror' do
       it 'allows to create a remote mirror' do
@@ -123,7 +123,7 @@ RSpec.describe Projects::MirrorsController, feature_category: :source_code_manag
   end
 
   describe '#update' do
-    let(:project) { create(:project, :repository, :remote_mirror) }
+    let(:project) { create(:project, :small_repo, :remote_mirror) }
 
     before do
       sign_in(project.first_owner)

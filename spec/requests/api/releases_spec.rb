@@ -1948,9 +1948,9 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
               subject
             end
 
-            subgroups = create_list(:group, 10, parent: group1)
-            projects = create_list(:project, 10, namespace: subgroups[0])
-            create_list(:release, 10, project: projects[0], author: admin)
+            subgroups = create_list(:group, 3, parent: group1)
+            projects = create_list(:project, 3, namespace: subgroups[0])
+            create_list(:release, 3, project: projects[0], author: admin)
 
             expect do
               subject

@@ -1,18 +1,10 @@
-#import "~/work_items/graphql/work_item_base.fragment.graphql"
-#import "ee_else_ce/work_items/graphql/work_item_widgets.fragment.graphql"
-#import "ee_else_ce/work_items/list/graphql/work_item_features.fragment.graphql"
+#import "ee_else_ce/work_items/graphql/work_item_mutation_result.fragment.graphql"
 
 # @feature_category: team_planning
 mutation createWorkItem($input: WorkItemCreateInput!, $useWorkItemFeatures: Boolean = false) {
   workItemCreate(input: $input) {
     workItem {
-      ...WorkItemBase
-      widgets @skip(if: $useWorkItemFeatures) {
-        ...WorkItemWidgets
-      }
-      features @include(if: $useWorkItemFeatures) {
-        ...WorkItemFeatures
-      }
+      ...WorkItemMutationResult
     }
     errors
   }

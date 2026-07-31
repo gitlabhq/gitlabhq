@@ -208106,6 +208106,12 @@
               "deprecationReason": null
             },
             {
+              "name": "PREVENT_ENTERPRISE_USER_ACCOUNT_DELETION",
+              "description": "Prevent enterprise user account deletion feature.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "BLOCKING_MERGE_REQUESTS",
               "description": "Blocking merge requests feature.",
               "isDeprecated": false,

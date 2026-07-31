@@ -757,9 +757,9 @@ RSpec.describe 'GraphQL', feature_category: :shared do
 
   describe 'keyset pagination' do
     let_it_be(:project) { create(:project, :public) }
-    let_it_be(:issues) { create_list(:issue, 10, project: project, created_at: Time.now.change(usec: 200)) }
+    let_it_be(:issues) { create_list(:issue, 5, project: project, created_at: Time.now.change(usec: 200)) }
 
-    let(:page_size) { 6 }
+    let(:page_size) { 3 }
     let(:issues_edges) { %w[project issues edges] }
     let(:end_cursor) { %w[project issues pageInfo endCursor] }
     let(:query) do
@@ -793,14 +793,14 @@ RSpec.describe 'GraphQL', feature_category: :shared do
       edges = first_page.dig(*issues_edges)
       cursor = first_page.dig(*end_cursor)
 
-      expect(edges.count).to eq(6)
-      expect(edges.last['node']['iid']).to eq(issues[4].iid.to_s)
+      expect(edges.count).to eq(3)
+      expect(edges.last['node']['iid']).to eq(issues[2].iid.to_s)
 
       execute_query(after: cursor)
       second_page = graphql_data
       edges = second_page.dig(*issues_edges)
 
-      expect(edges.count).to eq(4)
+      expect(edges.count).to eq(2)
       expect(edges.last['node']['iid']).to eq(issues[0].iid.to_s)
     end
   end

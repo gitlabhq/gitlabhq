@@ -126,15 +126,10 @@ export default {
         this.addGroup(group);
       }
     },
-    onSteppedForward({ previousTabIndex }) {
-      // Clear just completed step's validation error
+    onStepChanged({ previousTabIndex }) {
+      // clear the validation error of the step being left
       this.resetStepError(previousTabIndex);
     },
-    onSteppedBack({ previousTabIndex }) {
-      // Stepping back resets validation if exists
-      this.resetStepError(previousTabIndex);
-    },
-
     onSelectAllCurrentPage() {
       const newSelections = this.pageGroups.filter((group) => !this.isGroupSelected(group));
       this.selectedGroups = [...this.selectedGroups, ...newSelections];
@@ -225,8 +220,8 @@ export default {
       :steps="$options.STEPS"
       :validate-step="validateStep"
       :completion-button-text="s__('OfflineTransferExport|Start export')"
-      @stepped-back="onSteppedBack"
-      @stepped-forward="onSteppedForward"
+      @stepped-back="onStepChanged"
+      @stepped-forward="onStepChanged"
       @validation-failed="onValidationFailed"
       @complete="onComplete"
     >

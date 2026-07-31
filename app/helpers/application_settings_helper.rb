@@ -798,6 +798,20 @@ module ApplicationSettingsHelper
     }
   end
 
+  # Builds the view model for the Sidekiq cron jobs timezone dropdown.
+  #
+  # @return [Hash] the timezone dropdown view model
+  def sidekiq_timezone_dropdown_view_model
+    {
+      inputId: 'application_setting_sidekiq_timezone_override',
+      value: @application_setting.sidekiq_timezone_override.to_s,
+      timezoneData: timezone_data_with_unique_identifiers,
+      name: 'application_setting[sidekiq_timezone_override]',
+      defaultText: _('System default'),
+      additionalClass: ['gl-md-form-input-lg']
+    }
+  end
+
   def vscode_extension_marketplace_settings_view
     presets = ::WebIde::ExtensionMarketplacePreset.all.map do |preset|
       preset.to_h.deep_transform_keys { |key| key.to_s.camelize(:lower) }

@@ -108,7 +108,7 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
         # Because we enable the request store for this spec, Gitaly may report too many invocations.
         # Allow N+1s here and when creating additional objects below because we're just creating test objects.
         Gitlab::GitalyClient.allow_n_plus_1_calls do
-          projects = create_list(:project, 3, :repository, :public)
+          projects = create_list(:project, 3, :small_repo, :public)
 
           projects.each do |project|
             pipeline = create(:ci_pipeline, :success, project: project, sha: project.commit.id)
@@ -119,7 +119,7 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
         control = ActiveRecord::QueryRecorder.new { get :index }
 
         Gitlab::GitalyClient.allow_n_plus_1_calls do
-          new_projects = create_list(:project, 2, :repository, :public)
+          new_projects = create_list(:project, 2, :small_repo, :public)
           new_projects.each do |project|
             pipeline = create(:ci_pipeline, :success, project: project, sha: project.commit.id)
             create(:commit_status, :success, pipeline: pipeline, ref: pipeline.ref)
@@ -137,10 +137,13 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
     let_it_be(:project) { create(:project, name: 'Project 1', namespace: namespace) }
     let_it_be(:project2) { create(:project, name: 'Project 2', namespace: namespace) }
 
-    before do
-      sign_in(user)
+    before_all do
       project.add_developer(user)
       project2.add_developer(user)
+    end
+
+    before do
+      sign_in(user)
       user.toggle_star(project2)
     end
 

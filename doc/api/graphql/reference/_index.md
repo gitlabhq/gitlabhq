@@ -67180,6 +67180,7 @@ Licensed features that can be checked for availability on a namespace or project
 | <a id="licensedfeature-package_forwarding"></a>`PACKAGE_FORWARDING` | Package forwarding feature. |
 | <a id="licensedfeature-pages_multiple_versions"></a>`PAGES_MULTIPLE_VERSIONS` | Pages multiple versions feature. |
 | <a id="licensedfeature-personal_access_token_expiration_policy"></a>`PERSONAL_ACCESS_TOKEN_EXPIRATION_POLICY` | Personal access token expiration policy feature. |
+| <a id="licensedfeature-prevent_enterprise_user_account_deletion"></a>`PREVENT_ENTERPRISE_USER_ACCOUNT_DELETION` | Prevent enterprise user account deletion feature. |
 | <a id="licensedfeature-productivity_analytics"></a>`PRODUCTIVITY_ANALYTICS` | Productivity analytics feature. |
 | <a id="licensedfeature-product_analytics"></a>`PRODUCT_ANALYTICS` | Product analytics feature. |
 | <a id="licensedfeature-project_level_analytics_dashboard"></a>`PROJECT_LEVEL_ANALYTICS_DASHBOARD` | Project level analytics dashboard feature. |

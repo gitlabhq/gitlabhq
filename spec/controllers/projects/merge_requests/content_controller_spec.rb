@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Projects::MergeRequests::ContentController, feature_category: :code_review_workflow do
-  let(:project) { create(:project, :repository) }
-  let(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user) }
   let(:merge_request) { create(:merge_request, target_project: project, source_project: project) }
 
   before do
@@ -21,10 +21,12 @@ RSpec.describe Projects::MergeRequests::ContentController, feature_category: :co
   end
 
   context 'user has access to the project' do
+    before_all do
+      project.add_maintainer(user)
+    end
+
     before do
       expect(::Gitlab::GitalyClient).to receive(:allow_ref_name_caching).and_call_original
-
-      project.add_maintainer(user)
     end
 
     describe 'GET cached_widget' do

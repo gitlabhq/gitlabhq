@@ -233,7 +233,7 @@ RSpec.describe Ci::JobToken::Authorization, feature_category: :secrets_managemen
 
   describe '.preload_origin_project' do
     before do
-      create_list(:ci_job_token_authorization, 5)
+      create_list(:ci_job_token_authorization, 3)
     end
 
     it 'does not perform N+1 queries' do
@@ -287,10 +287,10 @@ RSpec.describe Ci::JobToken::Authorization, feature_category: :secrets_managemen
 
     context 'when AUTHORIZATION_ROW_LIMIT is reached' do
       before do
-        stub_const("#{described_class}::AUTHORIZATION_ROW_LIMIT", 5)
+        stub_const("#{described_class}::AUTHORIZATION_ROW_LIMIT", 2)
 
         # Create more projects and authorizations to exceed the limit
-        create_list(:ci_job_token_authorization, 10) do |auth|
+        create_list(:ci_job_token_authorization, 3) do |auth|
           auth.update!(origin_project: create(:project))
         end
       end
@@ -298,7 +298,7 @@ RSpec.describe Ci::JobToken::Authorization, feature_category: :secrets_managemen
       it 'respects the stubbed AUTHORIZATION_ROW_LIMIT value' do
         result = described_class.with_existing_origin_projects
 
-        expect(result.count).to eq(5)
+        expect(result.count).to eq(2)
       end
     end
   end

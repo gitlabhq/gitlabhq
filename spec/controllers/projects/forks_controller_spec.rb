@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Projects::ForksController, feature_category: :source_code_management do
   let(:user) { create(:user) }
-  let(:project) { create(:project, :public, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :public, :repository) }
   let(:forked_project) { Projects::ForkService.new(project, user, name: 'Some name').execute[:project] }
   let(:group) { create(:group) }
 
@@ -13,10 +13,9 @@ RSpec.describe Projects::ForksController, feature_category: :source_code_managem
   end
 
   shared_examples 'forking disabled' do
-    let(:project) { create(:project, :private, :repository, :forking_disabled) }
+    let(:project) { create(:project, :private, :repository, :forking_disabled, developers: user) }
 
     before do
-      project.add_developer(user)
       sign_in(user)
     end
 

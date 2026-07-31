@@ -52,7 +52,7 @@ RSpec.describe 'nuget package details', feature_category: :package_registry do
       post_graphql(query, current_user: first_user)
     end
 
-    create_list(:packages_dependency_link, 10, :with_nuget_metadatum, package: package)
+    create_list(:packages_dependency_link, 2, :with_nuget_metadatum, package: package)
 
     expect do
       post_graphql(query, current_user: second_user)

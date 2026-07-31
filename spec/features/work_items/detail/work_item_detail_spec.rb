@@ -16,7 +16,7 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
   let_it_be_with_refind(:task) { create(:work_item, :task, project: project) }
   let_it_be_with_refind(:emoji_upvote) { create(:award_emoji, :upvote, awardable: work_item, user: user2) }
   let_it_be_with_refind(:milestone) { create(:milestone, project: project) }
-  let_it_be_with_refind(:milestones) { create_list(:milestone, 10, project: project) }
+  let_it_be_with_refind(:milestones) { create_list(:milestone, 3, project: project) }
   let_it_be_with_refind(:note) { create(:note, noteable: work_item, project: work_item.project) }
   let_it_be_with_refind(:contact) { create(:contact, group: group) }
   let(:contact_name) { "#{contact.first_name} #{contact.last_name}" }

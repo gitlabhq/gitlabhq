@@ -31,7 +31,7 @@ RSpec.describe HomepageData, feature_category: :notifications do
     subject(:homepage_data) { controller.send(:homepage_app_data, user) }
 
     context 'when user has a recent push event' do
-      let(:project) { build(:project, :repository) }
+      let(:project) { build(:project) }
       let(:push_event) do
         create(:push_event, project: project, author: user).tap do |event|
           # Create a push event payload with the ref information

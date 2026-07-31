@@ -38,10 +38,6 @@ fragment BaseWorkItemFeatures on WorkItemFeatures {
       }
     }
   }
-  awardEmoji {
-    upvotes
-    downvotes
-  }
   milestone {
     milestone {
       ...MilestoneFragment
@@ -79,9 +75,6 @@ fragment BaseWorkItemFeatures on WorkItemFeatures {
   }
   errorTracking {
     identifier
-  }
-  notifications {
-    subscribed
   }
   crmContacts {
     contactsAvailable

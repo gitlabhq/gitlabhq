@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Projects::Ci::LintsController, feature_category: :pipeline_composition do
   include StubRequests
 
-  let_it_be_with_reload(:project) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :small_repo) }
   let_it_be(:user) { create(:user) }
 
   before do
@@ -14,9 +14,9 @@ RSpec.describe Projects::Ci::LintsController, feature_category: :pipeline_compos
 
   describe 'GET #show' do
     context 'with enough privileges' do
-      before do
-        project.add_developer(user)
+      before_all { project.add_developer(user) }
 
+      before do
         get :show, params: { namespace_id: project.namespace, project_id: project }
       end
 
@@ -34,9 +34,9 @@ RSpec.describe Projects::Ci::LintsController, feature_category: :pipeline_compos
     end
 
     context 'without enough privileges' do
-      before do
-        project.add_guest(user)
+      before_all { project.add_guest(user) }
 
+      before do
         get :show, params: { namespace_id: project.namespace, project_id: project }
       end
 
@@ -97,9 +97,10 @@ RSpec.describe Projects::Ci::LintsController, feature_category: :pipeline_compos
     end
 
     context 'with a valid gitlab-ci.yml' do
+      before_all { project.add_developer(user) }
+
       before do
         stub_full_request(remote_file_path).to_return(body: remote_file_content)
-        project.add_developer(user)
       end
 
       it_behaves_like 'returns a successful validation'
@@ -139,8 +140,9 @@ RSpec.describe Projects::Ci::LintsController, feature_category: :pipeline_compos
         HEREDOC
       end
 
+      before_all { project.add_developer(user) }
+
       before do
-        project.add_developer(user)
         subject
       end
 
@@ -168,9 +170,7 @@ RSpec.describe Projects::Ci::LintsController, feature_category: :pipeline_compos
     end
 
     context 'when the current user cannot run pipelines at all' do
-      before do
-        project.add_guest(user)
-      end
+      before_all { project.add_guest(user) }
 
       it 'responds with a 404' do
         post :create, params: { namespace_id: project.namespace, project_id: project, content: content }
@@ -198,7 +198,7 @@ RSpec.describe Projects::Ci::LintsController, feature_category: :pipeline_compos
 
       let(:remote_file_path) { 'https://test.example.com/${SECRET_TOKEN}.yml' }
 
-      before do
+      before_all do
         project.add_developer(user)
 
         sha = project.repository.commit.sha # this is always the sha used by this endpoint for linting
@@ -226,8 +226,9 @@ RSpec.describe Projects::Ci::LintsController, feature_category: :pipeline_compos
         HEREDOC
       end
 
+      before_all { project.add_developer(user) }
+
       before do
-        project.add_developer(user)
         stub_application_setting(ci_lint_limit_per_user: 1)
       end
 

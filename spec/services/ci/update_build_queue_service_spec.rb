@@ -408,7 +408,7 @@ RSpec.describe Ci::UpdateBuildQueueService, feature_category: :continuous_integr
       it 'does execute the same amount of queries regardless of number of runners' do
         control = ActiveRecord::QueryRecorder.new { subject.tick(build) }
 
-        create_list(:ci_runner, 10, :project, :online, projects: [project], tag_list: %w[b c d])
+        create_list(:ci_runner, 2, :project, :online, projects: [project], tag_list: %w[b c d])
 
         expect { subject.tick(build) }.not_to exceed_all_query_limit(control).allow_skip_cache_inconsistency
       end

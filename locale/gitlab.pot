@@ -5889,7 +5889,7 @@ msgid_plural "AdminAIPoweredFeatures|All available models (%d models)"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "AdminAIPoweredFeatures|Allow list disabled"
+msgid "AdminAIPoweredFeatures|All models allowed"
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|An AI assistant that helps users accelerate software development using real-time conversational AI. This setting is for regular Duo Chat only. %{linkStart}Learn more.%{linkEnd}"
@@ -21580,6 +21580,9 @@ msgstr ""
 msgid "Configure Sentry integration for error tracking"
 msgstr ""
 
+msgid "Configure Sidekiq and Sidekiq cron related preferences."
+msgstr ""
+
 msgid "Configure Users for Slack Notifications"
 msgstr ""
 
@@ -24332,6 +24335,9 @@ msgid "Crm|Select contacts"
 msgstr ""
 
 msgid "Crm|View contact details"
+msgstr ""
+
+msgid "Cron jobs time zone"
 msgstr ""
 
 msgid "Cron time zone"
@@ -38381,6 +38387,9 @@ msgstr ""
 msgid "GroupSettings|Allow connection to GitLab"
 msgstr ""
 
+msgid "GroupSettings|Allow enterprise users to delete their own accounts"
+msgstr ""
+
 msgid "GroupSettings|Allow members of projects and groups to create runners with runner registration tokens"
 msgstr ""
 
@@ -38730,6 +38739,9 @@ msgid "GroupSettings|What is Insights?"
 msgstr ""
 
 msgid "GroupSettings|What is step-up authentication?"
+msgstr ""
+
+msgid "GroupSettings|When disabled, enterprise users in this group cannot delete their own accounts."
 msgstr ""
 
 msgid "GroupSettings|When disabled, members cannot use runner registration tokens to register runners. Members can use runner authentication tokens instead as the more secure registration method."
@@ -45470,9 +45482,6 @@ msgid "Limit the number of pipeline creation requests per minute. This limit inc
 msgstr ""
 
 msgid "Limit the number of project or group members a user can delete per minute through API requests."
-msgstr ""
-
-msgid "Limit the size of Sidekiq jobs stored in Redis."
 msgstr ""
 
 msgid "Limiting mode"
@@ -75228,13 +75237,13 @@ msgstr ""
 msgid "Sidebar|Select health status"
 msgstr ""
 
+msgid "Sidekiq Background Jobs"
+msgstr ""
+
 msgid "Sidekiq job compression threshold (bytes)"
 msgstr ""
 
 msgid "Sidekiq job size limit (bytes)"
-msgstr ""
-
-msgid "Sidekiq job size limits"
 msgstr ""
 
 msgid "Sign in"
@@ -77601,6 +77610,9 @@ msgid "SynthaxHighlightingTheme|Solarized Dark"
 msgstr ""
 
 msgid "SynthaxHighlightingTheme|Solarized Light"
+msgstr ""
+
+msgid "System default"
 msgstr ""
 
 msgid "System default (%{default})"
@@ -80451,6 +80463,9 @@ msgid "Time until first merge request"
 msgstr ""
 
 msgid "Time zone"
+msgstr ""
+
+msgid "Time zone used to evaluate cron schedules for Sidekiq jobs. Select \"System default\" to use the instance time zone."
 msgstr ""
 
 msgid "TimeDisplay|12-hour: 2:34 PM"

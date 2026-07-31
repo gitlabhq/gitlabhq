@@ -43,6 +43,11 @@ export default {
       required: false,
       default: false,
     },
+    defaultText: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   emits: ['input'],
   data() {
@@ -62,47 +67,65 @@ export default {
       }));
     },
     filteredListboxItems() {
-      return this.timezones
+      const items = this.timezones
         .filter((timezone) => timezone.formattedTimezone.toLowerCase().includes(this.searchTerm))
         .map(({ formattedTimezone }) => ({ value: formattedTimezone, text: formattedTimezone }));
+
+      // Only offer the default option when not searching, so a search with no
+      // real matches still surfaces the "No matching results" message.
+      if (this.defaultText && !this.searchTerm) {
+        items.unshift({ value: this.defaultText, text: this.defaultText });
+      }
+
+      return items;
     },
     selectedTimezoneLabel() {
       return this.tzValue || __('Select timezone');
     },
     timezoneIdentifier() {
-      return this.tzValue
-        ? this.timezones.find((timezone) => timezone.formattedTimezone === this.tzValue).identifier
-        : undefined;
+      if (!this.tzValue) {
+        return undefined;
+      }
+
+      const selectedTimezone = this.timezones.find(
+        (timezone) => timezone.formattedTimezone === this.tzValue,
+      );
+
+      // No match means the default option is selected, which submits a blank value.
+      return selectedTimezone ? selectedTimezone.identifier : '';
+    },
+    submitValue() {
+      // Fall back to the initial value until the user makes a selection.
+      return this.tzValue ? this.timezoneIdentifier : this.value;
     },
   },
   watch: {
     value(newVal) {
-      if (newVal) {
-        this.tzValue = this.initialTimezone(this.timezoneData, newVal);
-      }
+      this.tzValue = this.initialTimezone(this.timezoneData, newVal);
     },
   },
   methods: {
     selectTimezone(formattedTimezone) {
+      // The default option has no matching timezone, so emit a blank sentinel
+      // instead of undefined to keep the payload shape stable for consumers.
       const selectedTimezone = this.timezones.find(
         (timezone) => timezone.formattedTimezone === formattedTimezone,
-      );
+      ) || { formattedTimezone: '', identifier: '' };
       this.tzValue = formattedTimezone;
       this.$emit('input', selectedTimezone);
       this.searchTerm = '';
     },
     initialTimezone(timezones, value) {
-      if (!value) {
-        return undefined;
-      }
-
-      const initialTimezone = timezones.find((timezone) => timezone.identifier === value);
+      const initialTimezone = value && timezones.find((timezone) => timezone.identifier === value);
 
       if (initialTimezone) {
         return formatTimezone(initialTimezone);
       }
 
-      return undefined;
+      // Fall back to the default option label only for a blank/null value, so it shows as
+      // selected instead of an empty toggle. An unrecognized non-blank value is left
+      // unselected so `submitValue` preserves it instead of clearing it.
+      return value ? undefined : this.defaultText || undefined;
     },
     setSearchTerm(value) {
       this.searchTerm = value?.toLowerCase();
@@ -116,7 +139,7 @@ export default {
       v-if="name"
       :id="inputId"
       :name="name"
-      :value="timezoneIdentifier || value"
+      :value="submitValue"
       :required="required"
       tabindex="-1"
       class="gl-sr-only gl-absolute -gl-z-1 gl-h-full gl-w-full"

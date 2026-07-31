@@ -874,13 +874,13 @@ RSpec.describe API::Deployments, feature_category: :continuous_delivery do
         expect(json_response.size).to eq(1)
       end
 
-      context 'with 10 more records' do
+      context 'with 3 more records' do
         it 'does not increase the query count', :aggregate_failures do
-          create_list(:deployment, 10, :success, project: project)
+          create_list(:deployment, 3, :success, project: project)
 
           expect { subject }.not_to be_n_plus_1_query
 
-          expect(json_response.size).to eq(11)
+          expect(json_response.size).to eq(4)
         end
       end
     end

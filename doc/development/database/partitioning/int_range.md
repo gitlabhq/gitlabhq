@@ -5,6 +5,16 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Int range partitioning
 ---
 
+> [!warning]
+> Do not introduce new usages of int range partitioning. It is deprecated due to incompatibility with cells.
+>
+> When migrating data between cells, the partition for a given key range must already exist on
+> the target cell.
+> More fundamentally, partition topology is a cell-local implementation detail, not part of the
+> cross-cell migration contract, so migrating data between cells must be possible without the
+> destination cell knowing the source cell's partitioning scheme.
+> For more information, see [work item 604729](https://gitlab.com/gitlab-org/gitlab/-/work_items/604729).
+
 ## Description
 
 Int range partitioning is a technique for dividing a large table into smaller,

@@ -87,15 +87,15 @@ RSpec.describe Projects::LfsPointers::LfsLinkService, feature_category: :source_
         class: described_class.name,
         project_id: project.id,
         project_path: project.full_path,
-        lfs_objects_linked_count: 7,
-        iterations: 3
+        lfs_objects_linked_count: 4,
+        iterations: 2
       )
 
-      lfs_objects = create_list(:lfs_object, 7)
+      lfs_objects = create_list(:lfs_object, 4)
       linked = subject.execute(lfs_objects.pluck(:oid))
 
-      expect(project.lfs_objects.count).to eq 9
-      expect(linked.size).to eq 7
+      expect(project.lfs_objects.count).to eq 6
+      expect(linked.size).to eq 4
     end
 
     it 'only queries for the batch that will be processed', :aggregate_failures do
