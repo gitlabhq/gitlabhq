@@ -35,7 +35,7 @@ export default {
       default: false,
     },
   },
-  emits: ['closeDropdown', 'input', 'searchEnter', 'toggleDropdownContentsCreateView'],
+  emits: ['closeDropdown', 'input', 'search-enter', 'toggleDropdownContentsCreateView'],
   computed: {
     dropdownTitle() {
       return this.showDropdownContentsCreateView ? this.labelsCreateTitle : this.labelsListTitle;
@@ -86,7 +86,7 @@ export default {
       :disabled="labelsFetchInProgress"
       data-testid="dropdown-input-field"
       @input="$emit('input', $event)"
-      @keydown.enter="$emit('searchEnter', $event)"
+      @keydown.enter="$emit('search-enter', $event)"
     />
   </div>
 </template>

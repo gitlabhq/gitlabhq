@@ -224,7 +224,7 @@ export default {
         @toggleDropdownContentsCreateView="toggleDropdownContent"
         @closeDropdown="hideDropdown"
         @input="debouncedSearchKeyUpdate"
-        @searchEnter.prevent="selectFirstItem"
+        @search-enter.prevent="selectFirstItem"
       />
     </template>
     <template #default>

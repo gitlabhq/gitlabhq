@@ -50,7 +50,7 @@ module QA
 
         job = create_jenkins_job
 
-        create(:commit, project: project, api_client: user.api_client, actions: [
+        commit = create(:commit, project: project, api_client: user.api_client, actions: [
           { action: 'create', file_path: 'test_file.txt', content: 'content' }
         ])
 
@@ -59,6 +59,30 @@ module QA
         end
 
         expect(job.status).to eql(:success), "Build failed or is not found: #{job.log}"
+
+        statuses_url = Runtime::API::Request.new(
+          user.api_client,
+          "/projects/#{project.id}/repository/commits/#{commit.api_response[:id]}/statuses"
+        ).url
+
+        jenkins_status_received = Support::Waiter.wait_until(
+          max_duration: 60,
+          sleep_interval: 2,
+          reload_page: false,
+          raise_on_failure: false,
+          retry_on_exception: true,
+          message: 'Waiting for Jenkins commit status to reach GitLab'
+        ) do
+          response = Support::API.get(statuses_url)
+
+          next false unless response.code == Support::API::HTTP_STATUS_OK
+
+          statuses = Support::API.parse_body(response)
+          statuses.is_a?(Array) && statuses.any? { |status| status[:name] == 'jenkins' && status[:status] == 'success' }
+        end
+
+        expect(jenkins_status_received).to be_truthy,
+          "Jenkins reported build success but no 'success' commit status reached GitLab within 60s"
 
         project.visit!
 

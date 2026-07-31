@@ -122,7 +122,7 @@ for your token. If you have multiple accounts or projects, you can choose the on
 > [!note]
 > If your GitLab instance or network uses a custom SSL setup,
 > you can configure the extension to support self-signed certificates. For more information, see
-> [using the extension with self-signed certificates](ssl.md).
+> [using the extension with self-signed certificates](ssl.md#use-a-self-signed-ssl-certificate).
 
 ### Connect to your repository
 

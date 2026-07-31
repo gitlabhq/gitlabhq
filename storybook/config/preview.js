@@ -45,6 +45,18 @@ stylesheetsRequireCtx('./application.scss');
 import('../../app/assets/builds/tailwind.css');
 stylesheetsRequireCtx('./highlight/themes/white.scss');
 
+// Recreate the named containers from app/views/layouts/_page.html.haml so container
+// query utilities such as `@md/panel:gl-grid-cols-2` also apply in stories.
+export const decorators = [
+  () => ({
+    template: `
+      <div class="gl-@container/content-panels">
+        <div class="gl-@container/panel"><story /></div>
+      </div>
+    `,
+  }),
+];
+
 export const theme = {
   brandTitle: 'GitLab (Product)',
   brandUrl: 'https://gitlab.com/gitlab-org/gitlab',

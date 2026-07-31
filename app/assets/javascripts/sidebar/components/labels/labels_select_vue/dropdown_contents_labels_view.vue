@@ -201,7 +201,7 @@ export default {
             :is-label-set="label.set"
             :is-label-indeterminate="label.indeterminate"
             :highlight="index === currentHighlightItem"
-            @clickLabel="handleLabelClick(label)"
+            @click-label="handleLabelClick(label)"
           />
           <li
             v-show="showNoMatchingResultsMessage"

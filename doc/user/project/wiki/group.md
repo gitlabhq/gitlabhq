@@ -31,10 +31,7 @@ can edit group wikis. Group wiki repositories can be moved using the
 To access a group wiki:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. To display the wiki, either:
-   - In the left sidebar, select **Plan** > **Wiki**.
-   - On any page in the group, use the <kbd>g</kbd>+<kbd>w</kbd>
-     [wiki keyboard shortcut](../../shortcuts.md).
+1. In the left sidebar, select **Plan** > **Wiki**.
 
 ## Export a group wiki
 

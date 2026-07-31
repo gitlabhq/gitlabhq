@@ -34,7 +34,7 @@ export default {
       default: false,
     },
   },
-  emits: ['moveStart', 'moveSuccess', 'moveFinish'],
+  emits: ['move-start', 'move-success', 'move-finish'],
   data() {
     return {
       moveToggleId: uniqueId('wi-move-toggle-'),
@@ -154,7 +154,7 @@ export default {
     },
     async handleMove() {
       this.isMoving = true;
-      this.$emit('moveStart');
+      this.$emit('move-start');
       const totalCount = this.checkedItems.length;
       try {
         const { data } = await this.$apollo.mutate({
@@ -178,7 +178,7 @@ export default {
             totalCount,
           },
         );
-        this.$emit('moveSuccess', { toastMessage });
+        this.$emit('move-success', { toastMessage });
       } catch (error) {
         createAlert({
           message: s__('WorkItem|Something went wrong while bulk editing.'),
@@ -187,7 +187,7 @@ export default {
         });
       } finally {
         this.isMoving = false;
-        this.$emit('moveFinish');
+        this.$emit('move-finish');
       }
     },
     updateDestinationNamespacesCache(namespaces) {

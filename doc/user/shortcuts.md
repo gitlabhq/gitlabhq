@@ -150,6 +150,8 @@ These shortcuts are available when browsing the files in a project (go to
 | <kbd>Escape</kbd> | Go back to the **Find File** screen (only while searching for files, **Code** > **Repository**, then select **Find File**). |
 | <kbd>y</kbd>      | Go to file permalink (only while viewing a file). |
 | <kbd>.</kbd>      | Open the Web IDE. |
+| <kbd>Shift</kbd>+<kbd>f</kbd> | Show or hide the [file tree browser](project/repository/files/file_tree_browser.md). |
+| <kbd>f</kbd>      | Open the search panel (only while the file tree browser is open). |
 
 ### Repository graph
 

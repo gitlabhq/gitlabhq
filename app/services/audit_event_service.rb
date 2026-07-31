@@ -19,7 +19,7 @@ class AuditEventService
   # @param [Hash] details extra data of audit event
   # @param [Symbol] save_type the type to save the event
   #   Can be selected from the following, :database, :stream, :database_and_stream .
-  # @params [DateTime] created_at the time the action occured
+  # @params [DateTime] created_at the time the action occurred
   #
   # @return [AuditEventService]
   def initialize(author, entity, details = {}, save_type = :database_and_stream, created_at = DateTime.current)

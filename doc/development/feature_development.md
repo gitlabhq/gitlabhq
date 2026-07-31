@@ -104,6 +104,7 @@ Consult these topics for information on contributing to specific GitLab features
 ### Import and Export
 
 - [Add new relations to the direct transfer importer](bulk_imports/contributing.md)
+- [Offline transfer](offline_transfer.md)
 - [Principles of importer design](import/principles_of_importer_design.md)
 - [Working with the GitHub importer](github_importer.md)
 - [Import/Export development documentation](import_export.md)

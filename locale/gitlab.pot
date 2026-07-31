@@ -1015,9 +1015,6 @@ msgstr ""
 msgid "%{failures} of %{total} failed"
 msgstr ""
 
-msgid "%{feedbackStart}Leave feedback%{feedbackEnd} | %{docStart}Documentation%{docEnd}"
-msgstr ""
-
 msgid "%{filePath} deleted"
 msgstr ""
 
@@ -8130,6 +8127,9 @@ msgstr ""
 msgid "AiCommitMessage|An unexpected error has occurred. Please try again."
 msgstr ""
 
+msgid "AiFlowTriggers|Mention-triggered flows are not supported on group-level resources. They require a project-level item such as an issue or merge request."
+msgstr ""
+
 msgid "AiFlowTriggers|✅ %{flow_name} has started. You can view progress %{link_start}here%{link_end}."
 msgstr ""
 
@@ -9335,7 +9335,7 @@ msgstr ""
 msgid "AlertMappingBuilder|Select key"
 msgstr ""
 
-msgid "AlertMappingBuilder|Title is a required field for alerts in GitLab. Should the payload field you specified not be available, specifiy which field we should use instead. "
+msgid "AlertMappingBuilder|Title is a required field for alerts in GitLab. Should the payload field you specified not be available, specify which field we should use instead. "
 msgstr ""
 
 msgid "AlertSettings|A webhook URL and authorization key is generated for the integration. After you save the integration, both are visible under the “View credentials” tab."
@@ -11773,16 +11773,61 @@ msgstr ""
 msgid "ArtifactRegistry|Could not authenticate with the Artifact Registry service."
 msgstr ""
 
+msgid "ArtifactRegistry|Create repository"
+msgstr ""
+
+msgid "ArtifactRegistry|Description (optional)"
+msgstr ""
+
+msgid "ArtifactRegistry|Description cannot be longer than %{maxLength} characters."
+msgstr ""
+
+msgid "ArtifactRegistry|Docker"
+msgstr ""
+
 msgid "ArtifactRegistry|Enable Artifact Registry for this organization. All projects and groups will have access to a unified registry once enabled."
 msgstr ""
 
+msgid "ArtifactRegistry|Format"
+msgstr ""
+
+msgid "ArtifactRegistry|Maven"
+msgstr ""
+
+msgid "ArtifactRegistry|Name"
+msgstr ""
+
+msgid "ArtifactRegistry|Name cannot be longer than %{maxLength} characters."
+msgstr ""
+
+msgid "ArtifactRegistry|Name has already been taken."
+msgstr ""
+
+msgid "ArtifactRegistry|Name is required."
+msgstr ""
+
+msgid "ArtifactRegistry|Name must use lowercase letters, digits, periods, underscores, and hyphens, and start and end with a letter or digit."
+msgstr ""
+
+msgid "ArtifactRegistry|New repository"
+msgstr ""
+
 msgid "ArtifactRegistry|No repositories"
+msgstr ""
+
+msgid "ArtifactRegistry|OCI"
+msgstr ""
+
+msgid "ArtifactRegistry|Only members of the organization can access this repository."
 msgstr ""
 
 msgid "ArtifactRegistry|Organization could not be determined."
 msgstr ""
 
 msgid "ArtifactRegistry|Repositories"
+msgstr ""
+
+msgid "ArtifactRegistry|Repository was successfully created."
 msgstr ""
 
 msgid "ArtifactRegistry|Resource ID must be a valid UUIDv7."
@@ -11818,6 +11863,12 @@ msgstr ""
 msgid "ArtifactRegistry|Unknown Artifact Registry roles: %{roles}."
 msgstr ""
 
+msgid "ArtifactRegistry|Use lowercase letters, digits, periods, underscores, and hyphens. Must start and end with a letter or digit. Cannot be changed after creation."
+msgstr ""
+
+msgid "ArtifactRegistry|Visibility"
+msgstr ""
+
 msgid "ArtifactRegistry|You are not authorized to grant this role on this resource."
 msgstr ""
 
@@ -11831,6 +11882,9 @@ msgid "ArtifactRegistry|You must be signed in to grant a role."
 msgstr ""
 
 msgid "ArtifactRegistry|You must be signed in to read role assignments."
+msgstr ""
+
+msgid "ArtifactRegistry|npm"
 msgstr ""
 
 msgid "Artifacts"
@@ -22592,6 +22646,9 @@ msgid "ContinuousDeployment|Back to services"
 msgstr ""
 
 msgid "ContinuousDeployment|Brief description"
+msgstr ""
+
+msgid "ContinuousDeployment|Bundled by"
 msgstr ""
 
 msgid "ContinuousDeployment|By"
@@ -70021,6 +70078,9 @@ msgid "SecurityOrchestration|Create security policy"
 msgstr ""
 
 msgid "SecurityOrchestration|Create your first policy to get started."
+msgstr ""
+
+msgid "SecurityOrchestration|Creating pipeline"
 msgstr ""
 
 msgid "SecurityOrchestration|Criteria were not saved in correct format."

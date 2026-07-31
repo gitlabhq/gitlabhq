@@ -260,7 +260,6 @@ Gitlab/JsonSafeParse:
     - 'lib/gitlab/sidekiq_migrate_jobs.rb'
     - 'lib/gitlab/sidekiq_sharding/router.rb'
     - 'lib/gitlab/tracking/destinations/snowplow_context_validator.rb'
-    - 'lib/gitlab/webpack/manifest.rb'
     - 'lib/kramdown/parser/atlassian_document_format.rb'
     - 'lib/tasks/ci/validate_id_token_configuration_task.rb'
     - 'lib/tasks/gitlab/background_migrations.rake'

@@ -83,6 +83,16 @@ Grants the ability to create, read, and update vulnerabilities.
 | Update | Project | Mutation | `VulnerabilityResolve` |
 | Update | Project | Mutation | `VulnerabilityRevertToDetected` |
 
+#### Vulnerability Duo Workflow
+
+Grants the ability to execute vulnerability duo workflows.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Execute | Project | Mutation | `CancelVulnerabilityWorkflow` |
+| Execute | Project | Mutation | `StartVulnerabilityWorkflow` |
+| Execute | Project | Field | `Project.vulnerabilityWorkflowExecution` |
+
 ### CI/CD resources
 
 #### Catalog Resource

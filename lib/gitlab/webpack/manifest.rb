@@ -77,7 +77,9 @@ module Gitlab
         def load_manifest
           data = Gitlab::Webpack::FileLoader.load(Gitlab.config.webpack.manifest_filename)
 
-          Gitlab::Json.parse(data)
+          # We intentionally use Gitlab::Json.parse here (not SafeParser) because
+          # the webpack manifest can exceed the memory limits enforced by SafeParser.
+          Gitlab::Json.parse(data) # rubocop:disable Gitlab/JsonSafeParse -- Manifest can exceed SafeParser memory limits
         rescue Gitlab::Webpack::FileLoader::StaticLoadError => e
           raise ManifestLoadError.new("Could not load compiled manifest from #{e.uri}.\n\nHave you run `rake gitlab:assets:compile`?", e.original_error)
         rescue Gitlab::Webpack::FileLoader::DevServerSSLError => e

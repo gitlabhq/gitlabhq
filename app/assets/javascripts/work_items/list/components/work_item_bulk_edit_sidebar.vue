@@ -372,9 +372,9 @@ export default {
         :checked-items="checkedItems"
         :full-path="fullPath"
         :disabled="shouldDisableMove"
-        @moveStart="$emit('start')"
-        @moveSuccess="handleMoveSuccess"
-        @moveFinish="$emit('finish')"
+        @move-start="$emit('start')"
+        @move-success="handleMoveSuccess"
+        @move-finish="$emit('finish')"
       />
     </template>
   </gl-form>

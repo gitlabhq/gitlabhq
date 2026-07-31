@@ -39,8 +39,6 @@ To show or hide the file tree browser:
 1. Go to your repository files at `/<project>/-/tree/<branch>`.
 1. In the upper-left corner, select the file tree browser icon ({{< icon name="file-tree" >}}).
 
-You can also press <kbd>Shift</kbd>+<kbd>F</kbd> to toggle the file tree browser.
-
 ## Navigate files and directories
 
 The file tree browser displays your repository's structure with files and directories you can
@@ -48,11 +46,7 @@ expand and collapse.
 
 To navigate in the file tree browser:
 
-1. Open the file tree browser. Either:
-
-   - In the upper-left corner, select the file tree browser icon ({{< icon name="file-tree" >}}).
-   - Press <kbd>Shift</kbd>+<kbd>F</kbd>.
-
+1. In the upper-left corner, select the file tree browser icon ({{< icon name="file-tree" >}}).
 1. To expand a directory, select {{< icon name="chevron-right" >}} next to the directory name.
 1. To view a file, select the filename.
 
@@ -65,15 +59,11 @@ Use the search panel to find files by name in your repository.
 
 To search files:
 
-1. Open the file tree browser. Either:
-
-   - In the upper-left corner, select the file tree browser icon ({{< icon name="file-tree" >}}).
-   - Press <kbd>Shift</kbd>+<kbd>F</kbd>.
-
-1. To open the search panel, select **Search files** or press <kbd>F</kbd>.
+1. In the upper-left corner, select the file tree browser icon ({{< icon name="file-tree" >}}).
+1. To open the search panel, select **Search files**.
 1. Enter part of the filename you want to find.
    The results list shows matching files and their parent directories.
-1. Select or use the arrow keys and press <kbd>Enter</kbd> to go to a file.
+1. Select the file you want to go to.
 
 If no files match your search, the search displays **No results found**.
 

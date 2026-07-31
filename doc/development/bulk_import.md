@@ -16,6 +16,9 @@ including projects, from one GitLab instance to another.
 To add a new relation or pipeline to direct transfer, see
 [Add new relations to the direct transfer importer](bulk_imports/contributing.md).
 
+[Offline transfer](offline_transfer.md) is a variant of direct transfer for when the source and
+destination instances can't reach each other over the network.
+
 ## Terminology
 
 The following terms recur throughout this page:

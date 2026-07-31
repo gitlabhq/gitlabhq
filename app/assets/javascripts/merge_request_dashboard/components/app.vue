@@ -1,9 +1,8 @@
 <script>
-import { GlButton, GlAlert, GlTabs, GlTab, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlButton, GlAlert, GlTabs, GlTab, GlLink } from '@gitlab/ui';
 import Visibility from 'visibilityjs';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { helpPagePath } from '~/helpers/help_page_helper';
 import IndexLayout from '~/vue_shared/components/index_layout.vue';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import { RESOURCE_TYPE_MERGE_REQUEST } from '~/vue_shared/components/new_resource_dropdown/constants';
@@ -55,7 +54,6 @@ export default {
     GlTabs,
     GlTab,
     GlLink,
-    GlSprintf,
     TabTitle,
     MergeRequestsQuery,
     CollapsibleSection,
@@ -113,7 +111,6 @@ export default {
       return { href: this.$router.resolve({ path: tab.key }).href };
     },
   },
-  docsPath: helpPagePath('/user/project/merge_requests/homepage.html'),
 };
 </script>
 
@@ -277,23 +274,5 @@ export default {
         </li>
       </template>
     </gl-tabs>
-    <div class="gl-mt-6 gl-flex gl-justify-center gl-gap-3">
-      <gl-sprintf
-        :message="
-          __('%{feedbackStart}Leave feedback%{feedbackEnd} | %{docStart}Documentation%{docEnd}')
-        "
-      >
-        <template #feedback="{ content }">
-          <gl-link href="https://gitlab.com/gitlab-org/gitlab/-/issues/542823">
-            {{ content }}
-          </gl-link>
-        </template>
-        <template #doc="{ content }">
-          <gl-link :href="$options.docsPath">
-            {{ content }}
-          </gl-link>
-        </template>
-      </gl-sprintf>
-    </div>
   </index-layout>
 </template>

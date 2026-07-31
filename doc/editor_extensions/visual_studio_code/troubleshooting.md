@@ -227,7 +227,7 @@ These errors can occur if your certificates use the following settings:
 
 | Setting name                     | Information |
 |----------------------------------|-------------|
-| `gitlab.ca`                      | Deprecated. See [the SSL setup guide](ssl.md) for more information on how to set up your self-signed CA.|
+| `gitlab.ca`                      | Supported. See [the SSL setup guide](ssl.md#use-a-self-signed-ssl-certificate) for more information on how to set up your self-signed CA.|
 | `gitlab.cert`                    | Unsupported. See [epic 6244](https://gitlab.com/groups/gitlab-org/-/epics/6244). |
 | `gitlab.certKey`                 | Unsupported. See [epic 6244](https://gitlab.com/groups/gitlab-org/-/epics/6244). |
 | `gitlab.ignoreCertificateErrors` | Unsupported. See [epic 6244](https://gitlab.com/groups/gitlab-org/-/epics/6244). |

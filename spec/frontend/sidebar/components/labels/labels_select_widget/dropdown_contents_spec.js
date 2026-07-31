@@ -149,14 +149,14 @@ describe('DropdownContent', () => {
     expect(focusInput).toHaveBeenCalled();
   });
 
-  it('handles searchEnter', () => {
+  it('handles search-enter', () => {
     createComponent({
       stubs: { DropdownContentsLabelsView: stubComponent(DropdownContentsLabelsView) },
     });
 
     const dropdownHeader = findDropdownHeader();
     expect(() =>
-      dropdownHeader.vm.$emit('searchEnter', { preventDefault: jest.fn() }),
+      dropdownHeader.vm.$emit('search-enter', { preventDefault: jest.fn() }),
     ).not.toThrow();
   });
 

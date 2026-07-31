@@ -52,7 +52,7 @@ module MergeRequests
         branch_name = Gitlab::Git.branch_name(changes[:ref])
 
         # Skip default branch only if no target branch is specified
-        next if branch_name == target_project.default_branch && !push_options[:target]
+        next if branch_name == target_project.default_branch && !valid_target_option?
 
         result[branch_name] = changes
       end
@@ -81,9 +81,25 @@ module MergeRequests
         errors << "Too many branches pushed (#{branches.size} were pushed, limit is #{LIMIT})"
       end
 
-      if push_options[:target] && !target_project.repository.branch_exists?(push_options[:target])
-        errors << "Target branch #{target_project.full_path}:#{push_options[:target]} does not exist"
+      if target_option_given? && !valid_target_option?
+        errors << 'A merge_request.target push option value must be a branch name'
       end
+
+      if valid_target_option? && !target_project.repository.branch_exists?(target_branch_name)
+        errors << "Target branch #{target_project.full_path}:#{target_branch_name} does not exist"
+      end
+    end
+
+    def target_branch_name
+      push_options[:target] if push_options[:target].is_a?(String)
+    end
+
+    def target_option_given?
+      push_options.key?(:target)
+    end
+
+    def valid_target_option?
+      target_branch_name.present?
     end
 
     # Returns a Hash of branch => MergeRequest

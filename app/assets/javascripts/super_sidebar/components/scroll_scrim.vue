@@ -57,7 +57,7 @@ export default {
 
 <template>
   <div
-    class="gl-scroll-scrim gl-overflow-y-auto gl-overflow-x-hidden"
+    class="gl-scroll-scrim gl-overflow-y-auto gl-overflow-x-hidden gl-outline-none"
     :class="scrimClasses"
     tabindex="-1"
   >

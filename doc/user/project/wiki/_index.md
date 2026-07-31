@@ -37,10 +37,7 @@ Wiki pages display a [sidebar](#sidebar), which you can customize.
 To access a project wiki:
 
 1. In the top bar, select **Search or go to** and find your project.
-1. To display the wiki, either:
-   - In the left sidebar, select **Plan** > **Wiki**.
-   - On any page in the project, use the <kbd>g</kbd>+<kbd>w</kbd>
-     [wiki keyboard shortcut](../../shortcuts.md).
+1. In the left sidebar, select **Plan** > **Wiki**.
 
 If **Plan** > **Wiki** is not listed in the left sidebar of your project, a project administrator
 has [disabled it](#enable-or-disable-a-project-wiki).
@@ -276,9 +273,7 @@ To edit a wiki page:
 
 1. In the top bar, select **Search or go to** and find your project or group.
 1. In the left sidebar, select **Plan** > **Wiki**.
-1. Go to the page you want to edit, and either:
-   - Use the <kbd>e</kbd> wiki [keyboard shortcut](../../shortcuts.md#wiki-pages).
-   - Select **Edit**.
+1. Go to the page you want to edit, and select **Edit**.
 1. Edit the content.
 1. Select **Save changes**. To add a commit message before saving, select the arrow next to
    **Save changes** and select **Save changes with message**.

@@ -17,7 +17,7 @@ import { trackNamespaceVisitsPath } from '~/lib/utils/path_helpers/routes';
  */
 const sortItemsByFrequencyAndLastAccess = (items) =>
   items.sort((itemA, itemB) => {
-    // Sort all frequent items in decending order of frequency
+    // Sort all frequent items in descending order of frequency
     // and then by lastAccessedOn with recent most first
     if (itemA.frequency !== itemB.frequency) {
       return itemB.frequency - itemA.frequency;

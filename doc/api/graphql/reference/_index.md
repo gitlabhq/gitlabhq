@@ -6120,6 +6120,35 @@ Fields:
 | <a id="mutation-bulkupdatesecurityattributes-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-bulkupdatesecurityattributes-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered while initiating the bulk update operation. |
 
+### `Mutation.cancelVulnerabilityWorkflow`
+
+{{< details >}}
+
+- Introduced in GitLab 19.3.
+- Status: Experiment.
+
+{{< /details >}}
+
+Cancels a vulnerability workflow execution.
+
+Input type: `CancelVulnerabilityWorkflowInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-cancelvulnerabilityworkflow-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-cancelvulnerabilityworkflow-projectid"></a>`projectId` | [`ProjectID!`](#projectid) | Global ID of the project. |
+| <a id="mutation-cancelvulnerabilityworkflow-workflow"></a>`workflow` | [`VulnerabilityDuoWorkflow!`](#vulnerabilityduoworkflow) | Workflow to cancel. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-cancelvulnerabilityworkflow-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-cancelvulnerabilityworkflow-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-cancelvulnerabilityworkflow-execution"></a>`execution` | [`VulnerabilityWorkflowExecution`](#vulnerabilityworkflowexecution) | Workflow execution. |
+
 ### `Mutation.catalogResourcesCreate`
 
 {{< details >}}
@@ -16770,6 +16799,37 @@ Fields:
 | <a id="mutation-starproject-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-starproject-count"></a>`count` | [`String!`](#string) | Number of stars for the project. |
 | <a id="mutation-starproject-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+
+### `Mutation.startVulnerabilityWorkflow`
+
+{{< details >}}
+
+- Introduced in GitLab 19.3.
+- Status: Experiment.
+
+{{< /details >}}
+
+Creates and starts a vulnerability workflow execution.
+
+Input type: `StartVulnerabilityWorkflowInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-startvulnerabilityworkflow-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-startvulnerabilityworkflow-findinguuids"></a>`findingUuids` | [`[String!]`](#string) | Finding UUIDs to process, up to 1000. If omitted, all project findings are processed. |
+| <a id="mutation-startvulnerabilityworkflow-projectid"></a>`projectId` | [`ProjectID!`](#projectid) | Global ID of the project. |
+| <a id="mutation-startvulnerabilityworkflow-severities"></a>`severities` | [`[VulnerabilitySeverity!]`](#vulnerabilityseverity) | Severities to process. If omitted, all severities are processed. |
+| <a id="mutation-startvulnerabilityworkflow-workflow"></a>`workflow` | [`VulnerabilityDuoWorkflow!`](#vulnerabilityduoworkflow) | Workflow to execute. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-startvulnerabilityworkflow-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-startvulnerabilityworkflow-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-startvulnerabilityworkflow-execution"></a>`execution` | [`VulnerabilityWorkflowExecution`](#vulnerabilityworkflowexecution) | Workflow execution. |
 
 ### `Mutation.tagCreate`
 
@@ -56710,6 +56770,26 @@ Arguments:
 | <a id="project-vulnerabilityseveritiescount-trackedrefsscope"></a>`trackedRefsScope` {{< icon name="warning-solid" >}} | [`SecurityTrackedRefScope`](#securitytrackedrefscope) | Introduced in GitLab 18.11. Status: Experiment. Filter by tracked ref scope. To use this argument, you must have advanced search configured, advanced vulnerability management set up and `vulnerabilities_across_contexts` feature flag enabled. |
 | <a id="project-vulnerabilityseveritiescount-validitycheck"></a>`validityCheck` {{< icon name="warning-solid" >}} | [`[VulnerabilityFindingTokenStatusState!]`](#vulnerabilityfindingtokenstatusstate) | Introduced in GitLab 18.5. Status: Experiment. Filter vulnerabilities by token status. |
 
+##### `Project.vulnerabilityWorkflowExecution`
+
+{{< details >}}
+
+- Introduced in GitLab 19.3.
+- Status: Experiment.
+
+{{< /details >}}
+
+Returns a vulnerability workflow execution.
+
+Returns [`VulnerabilityWorkflowExecution`](#vulnerabilityworkflowexecution).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="project-vulnerabilityworkflowexecution-executionid"></a>`executionId` | [`String`](#string) | Execution identifier. When omitted, returns the active execution. |
+| <a id="project-vulnerabilityworkflowexecution-workflow"></a>`workflow` | [`VulnerabilityDuoWorkflow!`](#vulnerabilityduoworkflow) | Duo workflow associated with the execution. |
+
 ##### `Project.webhook`
 
 {{< details >}}
@@ -62349,6 +62429,65 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="vulnerabilitytriggeredworkflow-workflow"></a>`workflow` | [`DuoWorkflow`](#duoworkflow) | Associated workflow details. |
 | <a id="vulnerabilitytriggeredworkflow-workflowname"></a>`workflowName` | [`VulnerabilityWorkflowName!`](#vulnerabilityworkflowname) | Name of the workflow. |
+
+### `VulnerabilityWorkflowExecution`
+
+Represents a bulk Duo workflow execution.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilityworkflowexecution-batchsize"></a>`batchSize` | [`Int!`](#int) | Maximum number of vulnerabilities processed per batch. |
+| <a id="vulnerabilityworkflowexecution-cancelrequested"></a>`cancelRequested` | [`Boolean!`](#boolean) | Whether cancellation has been requested. |
+| <a id="vulnerabilityworkflowexecution-createdat"></a>`createdAt` | [`Time!`](#time) | Time the execution was created. |
+| <a id="vulnerabilityworkflowexecution-currentstage"></a>`currentStage` | [`VulnerabilityWorkflowStage`](#vulnerabilityworkflowstage) | Current workflow stage. |
+| <a id="vulnerabilityworkflowexecution-endedat"></a>`endedAt` | [`Time`](#time) | Time the execution completed. |
+| <a id="vulnerabilityworkflowexecution-executionid"></a>`executionId` | [`ID!`](#id) | Execution identifier. |
+| <a id="vulnerabilityworkflowexecution-itemstates"></a>`itemStates` | [`[VulnerabilityWorkflowItem!]!`](#vulnerabilityworkflowitem) | Current workflow state for vulnerabilities in the execution. |
+| <a id="vulnerabilityworkflowexecution-progress"></a>`progress` | [`VulnerabilityWorkflowProgress!`](#vulnerabilityworkflowprogress) | Current execution progress. |
+| <a id="vulnerabilityworkflowexecution-stages"></a>`stages` | [`[VulnerabilityWorkflowStage!]!`](#vulnerabilityworkflowstage) | Workflow stages in execution order. |
+| <a id="vulnerabilityworkflowexecution-startedat"></a>`startedAt` | [`Time`](#time) | Time the execution started. |
+| <a id="vulnerabilityworkflowexecution-status"></a>`status` | [`VulnerabilityWorkflowStatus!`](#vulnerabilityworkflowstatus) | Current execution status. |
+| <a id="vulnerabilityworkflowexecution-workflow"></a>`workflow` | [`VulnerabilityDuoWorkflow!`](#vulnerabilityduoworkflow) | Duo workflow being executed. |
+
+### `VulnerabilityWorkflowItem`
+
+Workflow state of a vulnerability.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilityworkflowitem-state"></a>`state` | [`VulnerabilityWorkflowItemState!`](#vulnerabilityworkflowitemstate) | Current workflow state. |
+| <a id="vulnerabilityworkflowitem-vulnerability"></a>`vulnerability` | [`Vulnerability`](#vulnerability) | Vulnerability. |
+
+### `VulnerabilityWorkflowProgress`
+
+Progress information for a bulk Duo workflow execution.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilityworkflowprogress-cancelled"></a>`cancelled` | [`Int!`](#int) | Number of cancelled vulnerabilities. |
+| <a id="vulnerabilityworkflowprogress-completed"></a>`completed` | [`Int!`](#int) | Number of completed vulnerabilities. |
+| <a id="vulnerabilityworkflowprogress-failed"></a>`failed` | [`Int!`](#int) | Number of failed vulnerabilities. |
+| <a id="vulnerabilityworkflowprogress-pending"></a>`pending` | [`Int!`](#int) | Number of pending vulnerabilities. |
+| <a id="vulnerabilityworkflowprogress-percentage"></a>`percentage` | [`Float!`](#float) | Execution completion percentage. |
+| <a id="vulnerabilityworkflowprogress-processing"></a>`processing` | [`Int!`](#int) | Number of vulnerabilities currently being processed. |
+| <a id="vulnerabilityworkflowprogress-total"></a>`total` | [`Int!`](#int) | Total number of vulnerabilities. |
+
+### `VulnerabilityWorkflowStage`
+
+A stage within a bulk Duo workflow.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilityworkflowstage-name"></a>`name` | [`String!`](#string) | Stage name. |
+| <a id="vulnerabilityworkflowstage-order"></a>`order` | [`Int!`](#int) | Execution order. |
 
 ### `VulnerableDependency`
 
@@ -68281,6 +68420,7 @@ State of a policy schedule test run.
 | Value | Description |
 | ----- | ----------- |
 | <a id="policyscheduletestrunstate-complete"></a>`COMPLETE` | Test run completed successfully. |
+| <a id="policyscheduletestrunstate-creating"></a>`CREATING` | Test run is creating the pipeline. |
 | <a id="policyscheduletestrunstate-failed"></a>`FAILED` | Test run failed. |
 | <a id="policyscheduletestrunstate-pending"></a>`PENDING` | Test run is pending and waiting for pipeline creation. |
 | <a id="policyscheduletestrunstate-running"></a>`RUNNING` | Test run is in progress. |
@@ -69526,6 +69666,16 @@ The dismissal reason of the Vulnerability.
 | <a id="vulnerabilitydismissalreason-not_applicable"></a>`NOT_APPLICABLE` | The vulnerability is known, and has not been remediated or mitigated, but is considered to be in a part of the application that will not be updated. |
 | <a id="vulnerabilitydismissalreason-used_in_tests"></a>`USED_IN_TESTS` | The finding is not a vulnerability because it is part of a test or is test data. |
 
+### `VulnerabilityDuoWorkflow`
+
+Bulk Duo workflows.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="vulnerabilityduoworkflow-resolve_sast_vulnerability_v1"></a>`RESOLVE_SAST_VULNERABILITY_V1` | Generate AI-assisted vulnerability resolutions. |
+| <a id="vulnerabilityduoworkflow-sast_fp_detection_v1"></a>`SAST_FP_DETECTION_V1` | Detect false positive SAST vulnerabilities. |
+| <a id="vulnerabilityduoworkflow-secrets_fp_detection_v1"></a>`SECRETS_FP_DETECTION_V1` | Detect false positive secret detection vulnerabilities. |
+
 ### `VulnerabilityExternalIssueLinkExternalTracker`
 
 The external tracker of the external issue link related to a vulnerability.
@@ -69712,6 +69862,18 @@ The state of the vulnerability.
 | <a id="vulnerabilitystate-dismissed"></a>`DISMISSED` | For details, see [vulnerability status values](https://docs.gitlab.com/user/application_security/vulnerabilities/#vulnerability-status-values). |
 | <a id="vulnerabilitystate-resolved"></a>`RESOLVED` | For details, see [vulnerability status values](https://docs.gitlab.com/user/application_security/vulnerabilities/#vulnerability-status-values). |
 
+### `VulnerabilityWorkflowItemState`
+
+Processing state of a vulnerability within a bulk Duo workflow.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="vulnerabilityworkflowitemstate-cancelled"></a>`CANCELLED` | Processing was cancelled. |
+| <a id="vulnerabilityworkflowitemstate-completed"></a>`COMPLETED` | Processed successfully. |
+| <a id="vulnerabilityworkflowitemstate-failed"></a>`FAILED` | Processing failed. |
+| <a id="vulnerabilityworkflowitemstate-pending"></a>`PENDING` | Waiting to be processed. |
+| <a id="vulnerabilityworkflowitemstate-processing"></a>`PROCESSING` | Currently being processed. |
+
 ### `VulnerabilityWorkflowName`
 
 Workflow name for vulnerability triggered workflows.
@@ -69721,6 +69883,18 @@ Workflow name for vulnerability triggered workflows.
 | <a id="vulnerabilityworkflowname-resolve_sast_vulnerability"></a>`RESOLVE_SAST_VULNERABILITY` | Workflow name is resolve sast vulnerability. |
 | <a id="vulnerabilityworkflowname-sast_fp_detection"></a>`SAST_FP_DETECTION` | Workflow name is sast fp detection. |
 | <a id="vulnerabilityworkflowname-secrets_fp_detection"></a>`SECRETS_FP_DETECTION` | Workflow name is secrets fp detection. |
+
+### `VulnerabilityWorkflowStatus`
+
+Execution status of a bulk Duo workflow.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="vulnerabilityworkflowstatus-cancelled"></a>`CANCELLED` | Execution was cancelled. |
+| <a id="vulnerabilityworkflowstatus-completed"></a>`COMPLETED` | Execution completed successfully. |
+| <a id="vulnerabilityworkflowstatus-created"></a>`CREATED` | Execution has been created. |
+| <a id="vulnerabilityworkflowstatus-failed"></a>`FAILED` | Execution failed. |
+| <a id="vulnerabilityworkflowstatus-running"></a>`RUNNING` | Execution is running. |
 
 ### `WebhookAlertStatus`
 
