@@ -3,7 +3,7 @@
 require 'sidekiq/web'
 require 'sidekiq/cron/web'
 
-InitializerConnections.raise_if_new_database_connection do
+InitializerConnections.warn_if_database_connection do
   Rails.application.routes.draw do
     # rubocop:disable Metrics/AbcSize -- listing routes is typical
     def draw_all_routes
