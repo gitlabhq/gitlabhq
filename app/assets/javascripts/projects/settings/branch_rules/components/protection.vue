@@ -4,6 +4,7 @@ import { s__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import GroupInheritancePopover from '~/vue_shared/components/settings/group_inheritance_popover.vue';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import ProtectionRow from './protection_row.vue';
 import DisabledByPolicyPopover from './disabled_by_policy_popover.vue';
 
@@ -25,7 +26,7 @@ export default {
     DisabledByPolicyPopover,
     GroupInheritancePopover,
   },
-  mixins: [glFeatureFlagsMixin()],
+  mixins: [glFeatureFlagsMixin(), glSlotsMixin],
   inject: {
     canAdminGroupProtectedBranches: { default: false },
     groupSettingsRepositoryPath: { default: '' },
@@ -147,7 +148,7 @@ export default {
       );
     },
     showDescriptionSlot() {
-      return this.helpText || this.$scopedSlots.description;
+      return this.helpText || this.glSlots().description;
     },
   },
 };
@@ -184,7 +185,7 @@ export default {
       }}</gl-link>
     </template>
     <span
-      v-if="showEmptyState && emptyStateCopy && !$scopedSlots.content"
+      v-if="showEmptyState && emptyStateCopy && !glSlots().content"
       class="gl-text-subtle"
       data-testid="protection-empty-state"
     >

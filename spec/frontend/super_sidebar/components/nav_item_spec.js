@@ -1,8 +1,9 @@
-import { nextTick } from 'vue';
+import { h, nextTick } from 'vue';
 import { GlButton, GlAvatar, GlNavItem } from '@gitlab/ui';
 import { RouterLinkStub } from '@vue/test-utils';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import { getSlotFunction } from '~/lib/utils/vue3compat/normalize_render';
 import NavItem from '~/super_sidebar/components/nav_item.vue';
 import {
   CLICK_MENU_ITEM_ACTION,
@@ -37,8 +38,12 @@ describe('NavItem component', () => {
       stubs: {
         RouterLink: {
           ...RouterLinkStub,
-          render(h) {
-            const children = this.$scopedSlots.default({
+          // Vue 3-style zero-arg render (h comes from the vue import); opt
+          // out of @vue/compat's legacy render-function emulation, which
+          // misclassifies it.
+          compatConfig: { RENDER_FUNCTION: false },
+          render() {
+            const children = getSlotFunction(this)({
               href: '/foo',
               isActive: false,
               navigate: jest.fn(),

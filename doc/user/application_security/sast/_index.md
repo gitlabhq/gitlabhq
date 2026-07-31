@@ -403,9 +403,11 @@ These languages are supported by both GitLab Advanced SAST (Ultimate) and standa
 | Java<sup>3</sup>       | {{< yes >}}                      | {{< yes >}}                   |
 | Java Properties        | {{< yes >}}                      | {{< yes >}}                   |
 | JavaScript<sup>4</sup> | {{< yes >}}                      | {{< yes >}}                   |
+| Objective-C (iOS)<sup>7</sup> | {{< yes >}}               | {{< yes >}}                   |
 | PHP                    | {{< yes >}}                      | {{< yes >}}                   |
 | Python                 | {{< yes >}}                      | {{< yes >}}                   |
 | Ruby<sup>5</sup>       | {{< yes >}}                      | {{< yes >}}                   |
+| Swift (iOS)<sup>7</sup> | {{< yes >}}                     | {{< yes >}}                   |
 | TypeScript             | {{< yes >}}                      | {{< yes >}}                   |
 | YAML<sup>6</sup>       | {{< yes >}}                      | {{< yes >}}                   |
 
@@ -424,6 +426,11 @@ These languages are supported by both GitLab Advanced SAST (Ultimate) and standa
    - `application*.yaml`
    - `bootstrap*.yml`
    - `bootstrap*.yaml`
+7. GitLab Advanced SAST support for Swift and Objective-C is in
+   [beta](../../../policy/development_stages_support.md#beta). Analysis runs as a separate
+   `gitlab-advanced-sast-ext` job, which is enabled together with GitLab Advanced SAST by the
+   shared `GITLAB_ADVANCED_SAST_ENABLED` variable. For more information, see
+   [Swift and Objective-C configuration](advanced_sast_swift_objc.md).
 
 <!-- markdownlint-enable MD029 -->
 
@@ -437,9 +444,7 @@ These languages are supported by standard analyzers (all tiers) but not by GitLa
 | Elixir (Phoenix)   | {{< yes >}} [Sobelow](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow)                | None                         |
 | Groovy             | {{< yes >}} [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs)<sup>3</sup>  | None                         |
 | Kotlin<sup>4</sup> | {{< yes >}}                                                                                             | [Epic 15173](https://gitlab.com/groups/gitlab-org/-/epics/15173) |
-| Objective-C (iOS)  | {{< yes >}}                                                                                             | [Epic 16318](https://gitlab.com/groups/gitlab-org/-/epics/16318) |
 | Scala              | {{< yes >}}                                                                                             | [Epic 15174](https://gitlab.com/groups/gitlab-org/-/epics/15174) |
-| Swift (iOS)        | {{< yes >}}                                                                                             | [Epic 16318](https://gitlab.com/groups/gitlab-org/-/epics/16318) |
 
 **Footnotes**:
 

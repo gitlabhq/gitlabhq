@@ -126,6 +126,32 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
         expect(process_pipeline).to be_falsey
         expect(builds.pending.count).to eq(2)
       end
+
+      describe 'job loading' do
+        let(:service) { described_class.new(pipeline) }
+
+        it 'shares the in-memory project and namespace with the loaded jobs', :aggregate_failures do
+          jobs = service.send(:load_jobs, pipeline.all_jobs.ids)
+
+          expect(jobs).not_to be_empty
+          expect(jobs.map { |job| job.association(:project).target }).to all(be(pipeline.project))
+          expect(jobs.map { |job| job.project.association(:namespace).target }).to all(be(pipeline.project.namespace))
+        end
+
+        context 'when ci_atomic_processing_preload_available_records is disabled' do
+          before do
+            stub_feature_flags(ci_atomic_processing_preload_available_records: false)
+          end
+
+          it 'preloads project and namespace without sharing in-memory records', :aggregate_failures do
+            jobs = service.send(:load_jobs, pipeline.all_jobs.ids)
+
+            expect(jobs).not_to be_empty
+            expect(jobs.map { |job| job.association(:project) }).to all(be_loaded)
+            expect(jobs.map { |job| job.project.association(:namespace) }).to all(be_loaded)
+          end
+        end
+      end
     end
 
     context 'custom stage with first job allowed to fail' do

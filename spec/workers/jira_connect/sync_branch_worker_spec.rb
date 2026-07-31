@@ -9,7 +9,7 @@ RSpec.describe JiraConnect::SyncBranchWorker, feature_category: :integrations do
 
   describe '#perform' do
     let_it_be(:group) { create(:group) }
-    let_it_be(:project) { create(:project, :repository, group: group) }
+    let_it_be(:project) { create(:project, :small_repo, group: group) }
     let_it_be(:subscription) { create(:jira_connect_subscription, installation: create(:jira_connect_installation), namespace: group) }
 
     let(:project_id) { project.id }

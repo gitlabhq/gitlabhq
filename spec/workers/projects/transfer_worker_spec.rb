@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Projects::TransferWorker, feature_category: :groups_and_projects do
   let_it_be(:user) { create(:user) }
-  let_it_be_with_reload(:project) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project) }
   let_it_be(:new_namespace) { create(:group) }
 
   let(:worker) { described_class.new }

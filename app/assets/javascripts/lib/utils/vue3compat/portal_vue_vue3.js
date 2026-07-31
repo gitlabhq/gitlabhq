@@ -57,8 +57,13 @@ export const MountingPortal = {
       }
     },
   },
+  // This shim only ever runs on Vue 3, so slots are read from the native
+  // function-shaped $slots. Opting out of @vue/compat's legacy
+  // render-function emulation keeps $slots native inside the zero-arg
+  // render (and stops the $scopedSlots INSTANCE_SCOPED_SLOTS deprecation).
+  compatConfig: { RENDER_FUNCTION: false },
   render() {
-    const rawResult = this.$scopedSlots.default();
+    const rawResult = this.$slots.default();
     const result = Array.isArray(rawResult) && rawResult.length === 1 ? rawResult[0] : rawResult;
     return h(Teleport, { to: this.teleportTarget, defer: true }, result);
   },
@@ -160,9 +165,12 @@ export const Portal = {
       return portalTargetAttrs[this.to];
     },
   },
+  // See MountingPortal: Vue-3-only file, keep $slots native in the
+  // zero-arg render below (updateWormhole runs during render).
+  compatConfig: { RENDER_FUNCTION: false },
   methods: {
     updateWormhole() {
-      const rawResult = this.$scopedSlots.default?.() ?? [];
+      const rawResult = this.$slots.default?.() ?? [];
       let result = Array.isArray(rawResult) && rawResult.length === 1 ? rawResult[0] : rawResult;
 
       if (this.targetAttrs && result) {

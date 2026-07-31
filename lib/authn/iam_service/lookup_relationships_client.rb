@@ -5,40 +5,9 @@ module Authn
     # gRPC client for the IAM Relationships API read path
     # (lookup.v1.LookupService#LookupRelationships).
     #
-    # Callers present an AR-scoped bearer token minted by the Rails token exchange
-    # (Authn::TokenExchange::TokenIssuer). IAM validates the token and authorizes
-    # the caller server-side -- this client does not perform authorization.
-    class LookupRelationshipsClient < BaseClient
-      # Carries a machine-readable reason so callers can map the failure to a
-      # user-facing message without parsing the message text. The message itself
-      # stays diagnostic (it includes the raw gRPC status) for logs and Sentry.
-      class RequestError < StandardError
-        attr_reader :reason
-
-        def initialize(message, reason: :unknown)
-          @reason = reason
-          super(message)
-        end
-      end
-
-      # A read returns one keyset page bounded by page_size, so a single call
-      # stays small; this mirrors the write client's headroom.
-      TIMEOUT_SECONDS = 15
-
-      # Maps the gRPC statuses the IAM Relationships API returns on a failed
-      # lookup to a machine-readable reason for the caller to translate. Keyed by
-      # the integer gRPC status code (GRPC::BadStatus#code); unlisted statuses
-      # fall back to :unknown. NOT_FOUND covers an unresolvable subject or a
-      # scope the caller cannot see.
-      LOOKUP_ERROR_REASONS = {
-        GRPC::Core::StatusCodes::NOT_FOUND => :not_found,
-        GRPC::Core::StatusCodes::PERMISSION_DENIED => :permission_denied,
-        GRPC::Core::StatusCodes::UNAUTHENTICATED => :unauthenticated,
-        GRPC::Core::StatusCodes::INVALID_ARGUMENT => :invalid_request,
-        GRPC::Core::StatusCodes::UNAVAILABLE => :unavailable,
-        GRPC::Core::StatusCodes::DEADLINE_EXCEEDED => :timeout
-      }.freeze
-
+    # Shares its error contract, token metadata, and timeout with the write
+    # path through DataAccessClient.
+    class LookupRelationshipsClient < DataAccessClient
       # Reads relationships for the given objects, optionally filtered by kind
       # and role, one keyset page at a time.
       #
@@ -68,15 +37,8 @@ module Authn
         )
 
         client.lookup_relationships(request, metadata: bearer_metadata(token))
-      rescue ::Authn::IamDataAccessService::ConfigurationError => e
-        Gitlab::ErrorTracking.track_exception(e)
-        raise RequestError.new('IAM data access service is not configured', reason: :unavailable)
-      rescue GRPC::BadStatus => e
-        Gitlab::ErrorTracking.track_exception(e)
-        raise RequestError.new(
-          "IAM Relationships API lookup failed: #{e.code}",
-          reason: LOOKUP_ERROR_REASONS.fetch(e.code, :unknown)
-        )
+      rescue ::Authn::IamDataAccessService::ConfigurationError, GRPC::BadStatus => e
+        raise request_error(e, operation: 'lookup')
       end
 
       private
@@ -96,17 +58,6 @@ module Authn
         # outside development.
         build_stub(::Gitlab::Iam::Lookup::V1::LookupService::Stub, ::Authn::IamDataAccessService.grpc_address,
           timeout: TIMEOUT_SECONDS)
-      end
-
-      def bearer_metadata(token)
-        { 'authorization' => "Bearer #{token}" }
-      end
-
-      def service_token_credentials
-        {
-          header: ::Authn::IamDataAccessService::SERVICE_TOKEN_HEADER,
-          token: ::Authn::IamDataAccessService.secret
-        }
       end
     end
   end

@@ -2,8 +2,10 @@
 import { GlColumnChart, GlStackedColumnChart } from '@gitlab/ui/src/charts';
 import { stackedPresentationOptions } from '@gitlab/ui/src/utils/constants';
 import {
+  baseFieldKeyOf,
   buildSeries,
   buildStackedByMetric,
+  labelWithParameter,
   tooltipContentFromParams,
 } from '../../../utils/chart_data';
 import {
@@ -58,14 +60,17 @@ export default {
     sharedAxisFormatter() {
       return buildSharedAxisFormatter(this.metrics);
     },
+    dimensionLabel() {
+      return labelWithParameter(this.dimension);
+    },
     chartOptions() {
       // Dual-axis: per-metric formatter on each axis. ECharts deep-merges yAxis
       // by index when given an array.
       if (this.metrics.length === 2 && !this.useSingleAxisChart) {
         return {
           yAxis: [
-            { axisLabel: { formatter: axisFormatterFor(this.metrics[0]?.key) } },
-            { axisLabel: { formatter: axisFormatterFor(this.metrics[1]?.key) } },
+            { axisLabel: { formatter: axisFormatterFor(baseFieldKeyOf(this.metrics[0])) } },
+            { axisLabel: { formatter: axisFormatterFor(baseFieldKeyOf(this.metrics[1])) } },
           ],
         };
       }
@@ -77,14 +82,19 @@ export default {
           ? { yAxis: [{ axisLabel: { formatter: this.sharedAxisFormatter } }] }
           : {};
       }
-      return { yAxis: { axisLabel: { formatter: axisFormatterFor(this.metrics[0]?.key) } } };
+      return {
+        yAxis: { axisLabel: { formatter: axisFormatterFor(baseFieldKeyOf(this.metrics[0])) } },
+      };
     },
     presentation() {
       return this.stacked ? stackedPresentationOptions.stacked : stackedPresentationOptions.tiled;
     },
     yAxisTitle() {
       if (this.useSingleAxisChart) return yAxisTitleFor(this.metrics);
-      return this.metrics[0]?.label ?? '';
+      return labelWithParameter(this.metrics[0]) ?? '';
+    },
+    secondaryDataTitle() {
+      return labelWithParameter(this.metrics[1]);
     },
   },
   methods: {
@@ -100,7 +110,7 @@ export default {
   <gl-stacked-column-chart
     v-if="useSingleAxisChart"
     x-axis-type="category"
-    :x-axis-title="dimension.label"
+    :x-axis-title="dimensionLabel"
     :y-axis-title="yAxisTitle"
     :group-by="multiMetricData.groups"
     :bars="multiMetricData.bars"
@@ -120,10 +130,10 @@ export default {
     :bars="primaryBars"
     :option="chartOptions"
     x-axis-type="category"
-    :x-axis-title="dimension.label"
+    :x-axis-title="dimensionLabel"
     :y-axis-title="yAxisTitle"
     :secondary-data="secondaryBars"
-    :secondary-data-title="metrics[1]?.label"
+    :secondary-data-title="secondaryDataTitle"
   >
     <template #tooltip-content="{ params }">
       <formatted-tooltip-content

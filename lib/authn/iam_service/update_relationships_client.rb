@@ -4,38 +4,10 @@ module Authn
   module IamService
     # gRPC client for the IAM Relationships API write path (update.v1.UpdateService).
     #
-    # Callers present an AR-scoped bearer token minted by the Rails token exchange
-    # (Authn::TokenExchange::TokenIssuer). IAM validates the token and authorizes
-    # the caller server-side -- this client does not perform authorization.
-    class RelationshipsClient < BaseClient
-      # Carries a machine-readable reason so callers can map the failure to a
-      # user-facing message without parsing the message text. The message itself
-      # stays diagnostic (it includes the raw gRPC status) for logs and Sentry.
-      class RequestError < StandardError
-        attr_reader :reason
-
-        def initialize(message, reason: :unknown)
-          @reason = reason
-          super(message)
-        end
-      end
-
-      # Allows headroom for bulk writes, which send up to the array argument
-      # limit of tuples in a single all-or-nothing transaction.
-      TIMEOUT_SECONDS = 15
-
-      # Maps the gRPC statuses the IAM Relationships API returns on a failed
-      # write to a machine-readable reason for the caller to translate. Keyed by
-      # the integer gRPC status code (GRPC::BadStatus#code); unlisted statuses
-      # fall back to :unknown.
-      WRITE_ERROR_REASONS = {
-        GRPC::Core::StatusCodes::PERMISSION_DENIED => :permission_denied,
-        GRPC::Core::StatusCodes::UNAUTHENTICATED => :unauthenticated,
-        GRPC::Core::StatusCodes::INVALID_ARGUMENT => :invalid_request,
-        GRPC::Core::StatusCodes::UNAVAILABLE => :unavailable,
-        GRPC::Core::StatusCodes::DEADLINE_EXCEEDED => :timeout
-      }.freeze
-
+    # Named after the IAM service it wraps, next to LookupRelationshipsClient
+    # for the read path. Shares its error contract, token metadata, and timeout
+    # with the read path through DataAccessClient.
+    class UpdateRelationshipsClient < DataAccessClient
       # Assigns roles by writing one ASSIGNMENT tuple per entry in a single
       # all-or-nothing write. Each assignment is a hash of the per-subject
       # pieces: assignee_id, resource_id, role_id.
@@ -65,15 +37,8 @@ module Authn
         )
 
         client.write_relationships(request, metadata: bearer_metadata(token))
-      rescue ::Authn::IamDataAccessService::ConfigurationError => e
-        Gitlab::ErrorTracking.track_exception(e)
-        raise RequestError.new('IAM data access service is not configured', reason: :unavailable)
-      rescue GRPC::BadStatus => e
-        Gitlab::ErrorTracking.track_exception(e)
-        raise RequestError.new(
-          "IAM Relationships API write failed: #{e.code}",
-          reason: WRITE_ERROR_REASONS.fetch(e.code, :unknown)
-        )
+      rescue ::Authn::IamDataAccessService::ConfigurationError, GRPC::BadStatus => e
+        raise request_error(e, operation: 'write')
       end
 
       private
@@ -99,17 +64,6 @@ module Authn
         # outside development.
         build_stub(::Gitlab::Iam::Update::V1::UpdateService::Stub, ::Authn::IamDataAccessService.grpc_address,
           timeout: TIMEOUT_SECONDS)
-      end
-
-      def bearer_metadata(token)
-        { 'authorization' => "Bearer #{token}" }
-      end
-
-      def service_token_credentials
-        {
-          header: ::Authn::IamDataAccessService::SERVICE_TOKEN_HEADER,
-          token: ::Authn::IamDataAccessService.secret
-        }
       end
     end
   end

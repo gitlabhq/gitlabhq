@@ -90,6 +90,62 @@ describe('TwoDimensionsAreaChart', () => {
     });
   });
 
+  describe('with an unaliased parameterised metric', () => {
+    it('uses the parameterised label as the y-axis title', () => {
+      createComponent({
+        metric: {
+          key: 'durationQuantile',
+          field: 'durationQuantile',
+          label: 'Duration quantile',
+          type: 'metric',
+          parameters: { quantile: 0.5 },
+        },
+      });
+
+      expect(findChart().props('option').yAxis.name).toBe('Duration quantile (0.5)');
+    });
+  });
+
+  describe('with an aliased parameterised metric', () => {
+    const ALIASED_METRIC = {
+      key: 'p50',
+      field: 'durationQuantile',
+      label: 'Duration P50',
+      type: 'metric',
+      parameters: { quantile: 0.5 },
+    };
+
+    it('uses the alias label as-is for the y-axis title', () => {
+      createComponent({ metric: ALIASED_METRIC });
+
+      expect(findChart().props('option').yAxis.name).toBe('Duration P50');
+    });
+
+    it('resolves the y-axis formatter from the base field name, not the alias', () => {
+      createComponent({ metric: ALIASED_METRIC });
+
+      expect(findChart().props('option').yAxis.axisLabel.formatter(10000)).toBe('2.8h');
+    });
+
+    it('formats tooltip values with the base field formatter', () => {
+      const w = mountExtended(TwoDimensionsAreaChart, {
+        propsData: {
+          data: { nodes: [{ week: '2026-W23', language: 'ruby', p50: 3661 }] },
+          primaryDimension: PRIMARY_DIM,
+          secondaryDimension: SECONDARY_DIM,
+          metric: ALIASED_METRIC,
+        },
+        stubs: {
+          GlAreaChart: chartTooltipStub({
+            seriesData: [{ seriesName: 'ruby', value: ['2026-W23', 3661], color: '#aaa' }],
+          }),
+        },
+      });
+
+      expect(w.text()).toContain('1h 1m 1s');
+    });
+  });
+
   describe('rendered tooltip', () => {
     it('formats tooltip values with the metric unit, regardless of series label', () => {
       const w = mountExtended(TwoDimensionsAreaChart, {

@@ -460,7 +460,6 @@ RSpec/ReceiveMessages:
     - 'spec/tooling/danger/config_files_spec.rb'
     - 'spec/tooling/danger/customer_success_spec.rb'
     - 'spec/tooling/danger/database_spec.rb'
-    - 'spec/tooling/danger/datateam_spec.rb'
     - 'spec/tooling/danger/model_validations_spec.rb'
     - 'spec/tooling/danger/multiversion_spec.rb'
     - 'spec/tooling/danger/rubocop_helper_spec.rb'

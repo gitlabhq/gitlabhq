@@ -21,9 +21,27 @@ default:
 
 workflow:
   rules:
+    # A child pipeline does not inherit the parent's `auto_cancel`, so the default branch setting has to be restated
+    # here.
+    # Without it, the next push to master cancels distillation mid-flight and discards completed work.
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      auto_cancel:
+        on_new_commit: none
     # Catch-all: this file is only ever used as a child pipeline, triggered by the already-rules-gated
     # `ai-principles-distill` job in the parent.
     - when: always
+
+# Backstop for the workflow rule above.
+# A pipeline is only auto-cancelable when every running job is interruptible, so this protects non-default branch
+# triggers too.
+dont-interrupt-me:
+  stage: .pre
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine:latest
+  interruptible: false
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - echo "This job makes sure this pipeline won't be interrupted! See https://docs.gitlab.com/ci/yaml/#interruptible."
 
 # A child pipeline does not inherit the parent's YAML, so the version pins and the shared before_script both have to
 # be included explicitly.

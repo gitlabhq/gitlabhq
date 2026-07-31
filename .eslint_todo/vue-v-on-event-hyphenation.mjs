@@ -220,10 +220,6 @@ export default {
     'ee/app/assets/javascripts/work_items/components/work_item_progress.vue',
     'ee/app/assets/javascripts/work_items/components/work_item_status.vue',
     'ee/app/assets/javascripts/work_items/components/work_item_weight.vue',
-    'ee/app/assets/javascripts/workspaces/common/components/workspace_tab.vue',
-    'ee/app/assets/javascripts/workspaces/common/components/workspaces_list/workspaces_list.vue',
-    'ee/app/assets/javascripts/workspaces/common/components/workspaces_list/workspaces_table.vue',
-    'ee/app/assets/javascripts/workspaces/dropdown_group/components/workspaces_dropdown_group.vue',
   ],
   rules: {
     'vue/v-on-event-hyphenation': 'off',

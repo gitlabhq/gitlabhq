@@ -16,6 +16,7 @@ import {
   FILTERED_SEARCH_TERM,
   TOKEN_EMPTY_SEARCH_TERM,
 } from '~/vue_shared/components/filtered_search_bar/constants';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'FilteredSearchAndSort',
@@ -23,6 +24,7 @@ export default {
     FilteredSearchBar,
     GlSorting,
   },
+  mixins: [glSlotsMixin],
   props: {
     filteredSearchTokens: {
       type: Array,
@@ -129,7 +131,7 @@ export default {
           @onFilter="onFilter"
         />
       </div>
-      <div v-if="$scopedSlots.default">
+      <div v-if="glSlots().default">
         <slot></slot>
       </div>
       <div v-if="shouldShowSort" data-testid="groups-projects-sort">

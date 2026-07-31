@@ -1,6 +1,7 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import { v4 as uuidv4 } from 'uuid';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import { BASE_IMPORT_TABLE_ROW_GRID_CLASSES } from './constants';
 
 /**
@@ -15,6 +16,7 @@ export default {
   components: {
     GlButton,
   },
+  mixins: [glSlotsMixin],
   props: {
     /** Specifies if the table row is nested under another table row (e.g. a nested row of a folder). */
     isNested: {
@@ -114,7 +116,7 @@ export default {
         <!-- @slot Optionally provide a nested row -->
         <slot name="nested-row"></slot>
         <div
-          v-if="$scopedSlots['expanded-content'] && !$scopedSlots['nested-row']"
+          v-if="glSlots()['expanded-content'] && !glSlots()['nested-row']"
           data-testid="import-history-table-row-expanded-content"
           class="gl-border-t gl-bg-subtle gl-p-5 gl-pl-9 gl-transition-all"
           :class="isNested && 'gl-pl-12'"

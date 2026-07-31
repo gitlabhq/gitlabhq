@@ -58,6 +58,11 @@ if (global.document) {
       ...actualVTU,
       RouterLinkStub: {
         ...actualVTU.RouterLinkStub,
+        // The zero-arg render below is compat-wrapped (legacy), so
+        // $scopedSlots is the only function-shaped slot map inside it. Keep
+        // the feature enabled per-component (wins over the global key in
+        // compat_config.js).
+        compatConfig: { INSTANCE_SCOPED_SLOTS: 'suppress-warning' },
         render() {
           const { default: defaultSlot } = this.$scopedSlots ?? {};
           const defaultSlotFn =
@@ -110,6 +115,20 @@ if (global.document) {
 
     const stub = Vue.defineComponent({
       name: getComponentName(component),
+      // The render below is already Vue 3 style (zero-arg, uses Vue.h), but
+      // @vue/compat flags any render with fewer than 2 parameters as legacy,
+      // making every stub warn RENDER_FUNCTION once per (anonymous) instance.
+      // 'suppress-warning' rather than `false`: the feature must stay enabled
+      // because compat only exposes the legacy $slots shape (vnode arrays
+      // instead of functions) on instances with a compat-wrapped render, and
+      // some specs inspect stub.vm.$slots. INSTANCE_SCOPED_SLOTS stays
+      // enabled the same way: with the render compat-wrapped, $scopedSlots
+      // is the only function-shaped slot map (and carries the `_ns` marker
+      // read below).
+      compatConfig: {
+        RENDER_FUNCTION: 'suppress-warning',
+        INSTANCE_SCOPED_SLOTS: 'suppress-warning',
+      },
       props: getStubProps(component),
       model: component.model ?? component.mixins?.find((m) => m.model),
       methods: Object.fromEntries(

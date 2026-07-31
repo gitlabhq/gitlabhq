@@ -1,5 +1,6 @@
 <script>
 import { GlIntersperse, GlSkeletonLoader } from '@gitlab/ui';
+import { baseFieldKeyOf } from '../../utils/chart_data';
 import { titleFieldFor } from './presenter_registry';
 import FieldPresenter from './field.vue';
 
@@ -57,6 +58,9 @@ export default {
       return typeof this.loading === 'number' ? this.loading : DEFAULT_PAGE_SIZE;
     },
   },
+  methods: {
+    baseFieldKeyOf,
+  },
 };
 </script>
 <template>
@@ -77,7 +81,12 @@ export default {
         <div>
           <gl-intersperse separator=" · ">
             <span v-for="field in visibleFields" :key="field.key">
-              <field-presenter :item="item" :field-key="field.key" variant="compact" />
+              <field-presenter
+                :item="item"
+                :field-key="field.key"
+                :presenter-key="baseFieldKeyOf(field)"
+                variant="compact"
+              />
             </span>
           </gl-intersperse>
         </div>

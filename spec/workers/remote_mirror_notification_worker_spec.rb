@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe RemoteMirrorNotificationWorker, :mailer, feature_category: :source_code_management do
-  let_it_be(:project, freeze: false) { create(:project, :repository, :remote_mirror) }
+  let_it_be_with_reload(:project) { create(:project, :remote_mirror) }
   let_it_be(:mirror, freeze: false) { project.remote_mirrors.first }
 
   describe '#perform' do

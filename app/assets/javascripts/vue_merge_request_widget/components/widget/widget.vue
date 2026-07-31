@@ -15,6 +15,7 @@ import { __ } from '~/locale';
 import Poll from '~/lib/utils/poll';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import { DynamicScroller, DynamicScrollerItem } from 'vendor/vue-virtual-scroller';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import { EXTENSION_ICONS } from '../../constants';
 import { generateText } from './utils';
 import { createTelemetryHub } from './telemetry';
@@ -55,6 +56,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     SafeHtml,
   },
+  mixins: [glSlotsMixin],
 
   props: {
     loadingText: {
@@ -224,7 +226,7 @@ export default {
       return this.summaryError ? this.$options.failedStatusIcon : this.statusIconName;
     },
     hasActionButtons() {
-      return this.actionButtons.length > 0 || Boolean(this.$scopedSlots['action-buttons']);
+      return this.actionButtons.length > 0 || Boolean(this.glSlots()['action-buttons']);
     },
     contentWithKeyField() {
       return this.content?.map((item, index) => ({ ...item, id: item.id || index }));
@@ -428,7 +430,7 @@ export default {
       <div v-if="isLoadingExpandedContent" class="report-block-container gl-text-center">
         <gl-loading-icon size="sm" inline /> {{ loadingText }}
       </div>
-      <div v-else class="gl-flex gl-pl-5" :class="{ 'gl-pr-5': $scopedSlots.content }">
+      <div v-else class="gl-flex gl-pl-5" :class="{ 'gl-pr-5': glSlots().content }">
         <content-row
           v-if="contentError"
           :level="2"

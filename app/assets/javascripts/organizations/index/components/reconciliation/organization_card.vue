@@ -6,6 +6,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { DEFAULT_ORGANIZATION_NAME } from '~/organizations/shared/constants';
 import { VISIBILITY_TYPE_ICON, ORGANIZATION_VISIBILITY_TYPE } from '~/visibility_level/constants';
 import { isDefaultOrganization } from '~/organizations/shared/utils';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'OrganizationCard',
@@ -18,6 +19,7 @@ export default {
     GlCard,
     GlIcon,
   },
+  mixins: [glSlotsMixin],
   props: {
     organization: {
       type: Object,
@@ -42,7 +44,7 @@ export default {
     bodyClass() {
       const baseClasses = ['gl-bg-transparent'];
 
-      if (this.$scopedSlots.default) {
+      if (this.glSlots().default) {
         return baseClasses;
       }
 
@@ -50,7 +52,7 @@ export default {
     },
     headerClass() {
       return {
-        'gl-pb-2': !this.$scopedSlots.default,
+        'gl-pb-2': !this.glSlots().default,
       };
     },
     visibility() {

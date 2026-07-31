@@ -1,7 +1,7 @@
 <script>
 import { captureException } from '~/sentry/sentry_browser_wrapper';
 import { I18N_ROLE_SAVE_SUCCESS, I18N_ROLE_SAVE_ERROR } from '~/members/constants';
-import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
+import { getSlotFunction, normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 import { callRoleUpdateApi, setMemberRole } from './utils';
 
 export default normalizeRender({
@@ -44,7 +44,7 @@ export default normalizeRender({
     },
   },
   render() {
-    return this.$scopedSlots.default({
+    return getSlotFunction(this)({
       saveRole: this.saveRole,
     });
   },

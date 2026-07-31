@@ -10,6 +10,7 @@ import { isCurrentUser } from '~/lib/utils/common_utils';
 import { UPDATE_COMMENT_FORM } from '~/notes/i18n';
 import { updateNoteErrorMessage } from '~/notes/utils';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import NoteActions from './note_actions.vue';
 import NoteBody from './note_body.vue';
 import NoteHeader from './note_header.vue';
@@ -29,6 +30,7 @@ export default {
     TimelineEntryItem,
     TimeAgoTooltip,
   },
+  mixins: [glSlotsMixin],
   inject: {
     store: {
       type: Object,
@@ -256,7 +258,7 @@ export default {
         }"
       >
         <div
-          v-if="$scopedSlots.headline"
+          v-if="glSlots().headline"
           class="gl-border-b gl-border-section gl-px-4 gl-py-3 gl-text-subtle"
         >
           <slot name="headline"></slot>

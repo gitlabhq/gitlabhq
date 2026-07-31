@@ -29,6 +29,7 @@ RSpec.describe Tooling::Danger::Multiversion, feature_category: :shared do
 
       it 'does not add the warning markdown section' do
         expect(multiversion).not_to receive(:markdown)
+        expect(multiversion).not_to receive(:warn)
 
         multiversion.check!
       end
@@ -50,6 +51,7 @@ RSpec.describe Tooling::Danger::Multiversion, feature_category: :shared do
       with_them do
         it 'does not add the warning markdown section' do
           expect(multiversion).not_to receive(:markdown)
+          expect(multiversion).not_to receive(:warn)
 
           multiversion.check!
         end
@@ -70,6 +72,7 @@ RSpec.describe Tooling::Danger::Multiversion, feature_category: :shared do
       with_them do
         it 'adds the warning markdown section' do
           expect(multiversion).to receive(:markdown)
+          expect(multiversion).to receive(:warn).with(described_class::WARNING)
 
           multiversion.check!
         end

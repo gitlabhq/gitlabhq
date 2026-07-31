@@ -1,6 +1,7 @@
 <script>
 import { GlAvatarLabeled, GlAvatarLink, GlIcon, GlSprintf } from '@gitlab/ui';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import { VARIANT_DEFAULT, VARIANT_AVATAR } from '../../constants';
 import { isValidVariant } from '../../utils';
 import TargetLink from '../target_link.vue';
@@ -17,6 +18,7 @@ export default {
     TargetLink,
     ResourceParentLink,
   },
+  mixins: [glSlotsMixin],
   props: {
     event: {
       type: Object,
@@ -122,7 +124,7 @@ export default {
       :time="event.created_at"
     />
 
-    <div v-if="$scopedSlots['additional-info']" class="contribution-event-description">
+    <div v-if="glSlots()['additional-info']" class="contribution-event-description">
       <slot name="additional-info"></slot>
     </div>
   </li>

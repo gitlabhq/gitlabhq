@@ -1,6 +1,9 @@
 <script>
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
+
 export default {
   name: 'VerificationLayout',
+  mixins: [glSlotsMixin],
   props: {
     svgPath: {
       type: String,
@@ -19,7 +22,7 @@ export default {
     <!-- eslint-disable-next-line @gitlab/vue-require-i18n-attribute-strings -->
     <img :src="svgPath" alt="" class="gl-mx-auto gl-mb-5 gl-block" />
     <h2 class="gl-heading-2 gl-text-center">{{ title }}</h2>
-    <p v-if="$scopedSlots.description" class="gl-text-subtle">
+    <p v-if="glSlots().description" class="gl-text-subtle">
       <slot name="description"></slot>
     </p>
     <slot></slot>

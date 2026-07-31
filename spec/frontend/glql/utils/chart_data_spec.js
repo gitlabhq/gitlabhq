@@ -1,4 +1,6 @@
 import {
+  baseFieldKeyOf,
+  labelWithParameter,
   dimensionValue,
   dimensionsOf,
   metricsOf,
@@ -20,6 +22,13 @@ const ACCEPTANCE_RATE = {
   name: 'acceptanceRate',
   type: 'metric',
 };
+const DURATION_QUANTILE_P50 = {
+  key: 'durationQuantile',
+  field: 'durationQuantile',
+  label: 'Duration quantile',
+  type: 'metric',
+  parameters: { quantile: 0.5 },
+};
 
 describe('dimensionsOf / metricsOf', () => {
   const ATTR = { key: 'state', label: 'State', name: 'state', type: 'attribute' };
@@ -36,6 +45,141 @@ describe('dimensionsOf / metricsOf', () => {
   it('returns empty arrays when no fields match', () => {
     expect(dimensionsOf([ATTR])).toEqual([]);
     expect(metricsOf([ATTR])).toEqual([]);
+  });
+});
+
+describe('baseFieldKeyOf', () => {
+  it('returns the field property when present (aliased field)', () => {
+    expect(baseFieldKeyOf({ key: 'p50', field: 'durationQuantile' })).toBe('durationQuantile');
+  });
+
+  it('falls back to key when the field property is absent', () => {
+    expect(baseFieldKeyOf({ key: 'totalCount' })).toBe('totalCount');
+  });
+
+  it('returns undefined for null input', () => {
+    expect(baseFieldKeyOf(null)).toBeUndefined();
+  });
+
+  it('returns undefined for undefined input', () => {
+    expect(baseFieldKeyOf(undefined)).toBeUndefined();
+  });
+
+  it('works with a full aliased field fixture', () => {
+    const field = {
+      key: 'p50',
+      field: 'durationQuantile',
+      label: 'Duration P50',
+      type: 'metric',
+      parameters: { quantile: 0.5 },
+    };
+    expect(baseFieldKeyOf(field)).toBe('durationQuantile');
+  });
+});
+
+describe('labelWithParameter', () => {
+  it('appends granularity in parentheses for a time dimension field', () => {
+    const field = {
+      key: 'finished',
+      field: 'finished',
+      label: 'Finished',
+      name: 'finishedAt',
+      type: 'dimension',
+      parameters: { granularity: 'weekly' },
+    };
+    expect(labelWithParameter(field)).toBe('Finished (weekly)');
+  });
+
+  it('returns the plain label for a field without parameters', () => {
+    expect(labelWithParameter(LANGUAGE)).toBe('Language');
+  });
+
+  it('returns the plain label for a field with empty parameters', () => {
+    const field = { ...LANGUAGE, parameters: {} };
+    expect(labelWithParameter(field)).toBe('Language');
+  });
+
+  it('handles monthly granularity', () => {
+    const field = {
+      key: 'created',
+      field: 'created',
+      label: 'Created',
+      name: 'createdAt',
+      type: 'dimension',
+      parameters: { granularity: 'monthly' },
+    };
+    expect(labelWithParameter(field)).toBe('Created (monthly)');
+  });
+
+  it('appends non-granularity parameters for an unaliased field', () => {
+    expect(labelWithParameter(DURATION_QUANTILE_P50)).toBe('Duration quantile (0.5)');
+  });
+
+  it('appends all parameter values when a field has multiple parameters', () => {
+    const field = {
+      key: 'durationQuantile',
+      field: 'durationQuantile',
+      label: 'Duration quantile',
+      parameters: { quantile: 0.5, granularity: 'weekly' },
+    };
+    expect(labelWithParameter(field)).toBe('Duration quantile (0.5, weekly)');
+  });
+
+  it('ignores nullish parameter values', () => {
+    const field = { ...LANGUAGE, parameters: { granularity: null } };
+    expect(labelWithParameter(field)).toBe('Language');
+  });
+
+  it('returns the alias label as-is for an aliased time dimension field', () => {
+    const field = {
+      key: 'foo',
+      field: 'created',
+      label: 'foo',
+      name: 'createdAt',
+      type: 'dimension',
+      parameters: { granularity: 'weekly' },
+    };
+    expect(labelWithParameter(field)).toBe('foo');
+  });
+
+  it('returns the alias label as-is for an aliased parameterised metric', () => {
+    const field = {
+      key: 'p50',
+      field: 'durationQuantile',
+      label: 'Duration P50',
+      type: 'metric',
+      parameters: { quantile: 0.5 },
+    };
+    expect(labelWithParameter(field)).toBe('Duration P50');
+  });
+
+  it('returns the plain label for a field with an identical name to the granularity', () => {
+    const field = {
+      key: 'finished',
+      label: 'Weekly',
+      name: 'finishedAt',
+      type: 'dimension',
+      parameters: { granularity: 'weekly' },
+    };
+    expect(labelWithParameter(field)).toBe('Weekly');
+  });
+
+  it('returns undefined for a field without a label even if a granularity exists', () => {
+    const field = {
+      key: 'finished',
+      name: 'finishedAt',
+      type: 'dimension',
+      parameters: { granularity: 'weekly' },
+    };
+    expect(labelWithParameter(field)).toBeUndefined();
+  });
+
+  it('returns undefined for null input', () => {
+    expect(labelWithParameter(null)).toBeUndefined();
+  });
+
+  it('returns undefined for undefined input', () => {
+    expect(labelWithParameter(undefined)).toBeUndefined();
   });
 });
 
@@ -141,6 +285,29 @@ describe('buildSeries', () => {
     expect(buildSeries(nodes, LANGUAGE, TOTAL_COUNT)[0].data).toEqual([['ruby', 0]]);
   });
 
+  it('names the series with the parameterised label for an unaliased parameterised metric', () => {
+    const nodes = [{ language: 'ruby', durationQuantile: 3661 }];
+
+    expect(buildSeries(nodes, LANGUAGE, DURATION_QUANTILE_P50)).toEqual([
+      { name: 'Duration quantile (0.5)', data: [['ruby', 3661]] },
+    ]);
+  });
+
+  it('names the series with the alias label for an aliased parameterised metric', () => {
+    const aliased = {
+      key: 'p50',
+      field: 'durationQuantile',
+      label: 'Duration P50',
+      type: 'metric',
+      parameters: { quantile: 0.5 },
+    };
+    const nodes = [{ language: 'ruby', p50: 3661 }];
+
+    expect(buildSeries(nodes, LANGUAGE, aliased)).toEqual([
+      { name: 'Duration P50', data: [['ruby', 3661]] },
+    ]);
+  });
+
   it.each([
     { scenario: 'empty nodes', nodes: [], dim: LANGUAGE, metric: TOTAL_COUNT },
     {
@@ -188,6 +355,14 @@ describe('buildBarSeriesData', () => {
     const nodes = [{ language: 'ruby' }];
     expect(buildBarSeriesData(nodes, LANGUAGE, [TOTAL_COUNT])).toEqual({
       'Total count': [[0, 'ruby']],
+    });
+  });
+
+  it('keys an unaliased parameterised metric by its parameterised label', () => {
+    const nodes = [{ language: 'ruby', durationQuantile: 3661 }];
+
+    expect(buildBarSeriesData(nodes, LANGUAGE, [DURATION_QUANTILE_P50])).toEqual({
+      'Duration quantile (0.5)': [[3661, 'ruby']],
     });
   });
 
@@ -324,6 +499,15 @@ describe('buildStackedByMetric', () => {
         { name: 'Total count', data: [21, 14] },
         { name: 'Acceptance rate', data: [0.625, 0.333] },
       ],
+    });
+  });
+
+  it('names the bar series with the parameterised label for an unaliased parameterised metric', () => {
+    const nodes = [{ language: 'ruby', durationQuantile: 3661 }];
+
+    expect(buildStackedByMetric(nodes, LANGUAGE, [DURATION_QUANTILE_P50])).toEqual({
+      groups: ['ruby'],
+      bars: [{ name: 'Duration quantile (0.5)', data: [3661] }],
     });
   });
 

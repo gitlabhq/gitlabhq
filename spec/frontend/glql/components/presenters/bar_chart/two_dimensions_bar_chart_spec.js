@@ -19,13 +19,14 @@ const DATA = {
 describe('TwoDimensionsBarChart', () => {
   let wrapper;
 
-  const createComponent = () => {
+  const createComponent = (props = {}) => {
     wrapper = shallowMountExtended(TwoDimensionsBarChart, {
       propsData: {
         data: DATA,
         primaryDimension: PRIMARY_DIM,
         secondaryDimension: SECONDARY_DIM,
         metric: METRIC,
+        ...props,
       },
     });
   };
@@ -67,17 +68,12 @@ describe('TwoDimensionsBarChart', () => {
     });
 
     it('formats the x-axis as a compact duration when the metric is a quantile', () => {
-      wrapper = shallowMountExtended(TwoDimensionsBarChart, {
-        propsData: {
-          data: DATA,
-          primaryDimension: PRIMARY_DIM,
-          secondaryDimension: SECONDARY_DIM,
-          metric: {
-            key: 'durationQuantile',
-            label: 'p95',
-            name: 'durationQuantile',
-            type: 'metric',
-          },
+      createComponent({
+        metric: {
+          key: 'durationQuantile',
+          label: 'p95',
+          name: 'durationQuantile',
+          type: 'metric',
         },
       });
 
@@ -112,6 +108,60 @@ describe('TwoDimensionsBarChart', () => {
       expect(option.grid).toEqual(grid);
       // the x-axis formatter in the same option object still applies
       expect(option.xAxis.axisLabel.formatter(2500000)).toBe('2.5M');
+    });
+  });
+
+  describe('with a time dimension', () => {
+    it('includes granularity in the y-axis title', () => {
+      const timeDim = {
+        key: 'finished',
+        label: 'Finished',
+        name: 'finishedAt',
+        type: 'dimension',
+        parameters: { granularity: 'monthly' },
+      };
+
+      createComponent({ primaryDimension: timeDim });
+
+      expect(findChart().props('yAxisTitle')).toBe('Finished (monthly) by Language');
+    });
+  });
+
+  describe('with an unaliased parameterised metric', () => {
+    const PARAMETERISED_METRIC = {
+      key: 'durationQuantile',
+      field: 'durationQuantile',
+      label: 'Duration quantile',
+      type: 'metric',
+      parameters: { quantile: 0.5 },
+    };
+
+    it('uses the parameterised label as the x-axis title', () => {
+      createComponent({ metric: PARAMETERISED_METRIC });
+
+      expect(findChart().props('xAxisTitle')).toBe('Duration quantile (0.5)');
+    });
+  });
+
+  describe('with an aliased parameterised metric', () => {
+    const ALIASED_METRIC = {
+      key: 'p50',
+      field: 'durationQuantile',
+      label: 'Duration P50',
+      type: 'metric',
+      parameters: { quantile: 0.5 },
+    };
+
+    it('resolves the formatter from the base field name, not the alias', () => {
+      createComponent({ metric: ALIASED_METRIC });
+
+      expect(findChart().props('option').xAxis.axisLabel.formatter(10000)).toBe('2.8h');
+    });
+
+    it('uses the alias label as-is for the x-axis title', () => {
+      createComponent({ metric: ALIASED_METRIC });
+
+      expect(findChart().props('xAxisTitle')).toBe('Duration P50');
     });
   });
 

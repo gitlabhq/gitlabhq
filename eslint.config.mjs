@@ -681,6 +681,23 @@ export default [
       'local-rules/vue-no-unused-injects': 'error',
     },
   },
+  // $scopedSlots is Vue-2-only (Vue 3 removed it); components must use the
+  // dual-runtime glSlots() mixin method — or getSlotFunction from
+  // ~/lib/utils/vue3compat/normalize_render in hand-written render
+  // functions — so the same code serves both runtimes. Scoped to app code
+  // (the `local-rules` plugin must be co-located with the non-`off` rule in
+  // flat config; spec fixtures may exercise $scopedSlots deliberately).
+  // Batch-fix with `scripts/frontend/codemods/vue3_gl_slots.mjs`.
+  {
+    files: ['{,ee/,jh/}app/assets/javascripts/**/*.vue'],
+    plugins: {
+      'local-rules': eslintLocalRules,
+    },
+    rules: {
+      'local-rules/vue3-gl-slots': 'error',
+      'local-rules/vue3-gl-slots-mixin-pairing': 'error',
+    },
+  },
   // Storybook stories
   {
     files: ['**/*.stories.js'],

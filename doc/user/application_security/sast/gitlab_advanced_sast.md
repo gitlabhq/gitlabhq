@@ -23,6 +23,7 @@ title: GitLab Advanced SAST
 - Support for Java Server Pages (JSP) added in GitLab 17.4.
 - Support for PHP [added](https://gitlab.com/groups/gitlab-org/-/epics/14273) in GitLab 18.1.
 - Support for C/C++ [added](https://gitlab.com/groups/gitlab-org/-/epics/14271) in GitLab 18.6.
+- Support for Swift and Objective-C [added](https://gitlab.com/groups/gitlab-org/-/epics/16318) in GitLab 19.3 as a [beta](../../../policy/development_stages_support.md#beta).
 
 {{< /history >}}
 
@@ -179,13 +180,21 @@ GitLab Advanced SAST supports the following languages:
 - Go
 - Java, including Java Server Pages (JSP)
 - JavaScript, TypeScript
+- Objective-C (beta)
 - PHP
 - Python
 - Ruby
+- Swift (beta)
 
 GitLab Advanced SAST CPP requires additional configuration, including a compilation database. For
 details, see [C/C++ configuration](advanced_sast_cpp.md). GitLab Advanced SAST CPP and Semgrep both
 run for C/C++ projects, each with different rule sets.
+
+Swift and Objective-C support is in [beta](../../../policy/development_stages_support.md#beta).
+Analysis runs as a separate CI/CD job, `gitlab-advanced-sast-ext`, when GitLab Advanced SAST is
+enabled and the repository contains Swift or Objective-C files. No additional variable is required.
+For more information, see
+[Swift and Objective-C configuration](advanced_sast_swift_objc.md).
 
 ### PHP known issues
 
@@ -649,7 +658,7 @@ You can adjust GitLab Advanced SAST behavior using the following variables:
 
 | CI/CD variable                              | Default                | Description                                                                                                                                                                                     |
 |---------------------------------------------|------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `GITLAB_ADVANCED_SAST_ENABLED`              | `false`                | Enable GitLab Advanced SAST scanning for all supported languages except C and C++.                                                                                                              |
+| `GITLAB_ADVANCED_SAST_ENABLED`              | `false`                | Enable GitLab Advanced SAST scanning for all supported languages except C and C++. Swift and Objective-C analysis runs as a separate `gitlab-advanced-sast-ext` job. |
 | `GITLAB_ADVANCED_SAST_CPP_ENABLED`          | `false`                | Enable GitLab Advanced SAST scanning specifically for C and C++ projects.                                                                                                                       |
 | `ADVANCED_SAST_PARTIAL_SCAN`                | `false`                | Enable GitLab Advanced SAST diff-scanning mode by setting to `differential`.                                                                                                                    |
 | `GITLAB_ADVANCED_SAST_RULE_TIMEOUT`         | `30`                   | Timeout in seconds per rule per file. When exceeded, that analysis is skipped.                                                                                                                  |

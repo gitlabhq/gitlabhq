@@ -106,30 +106,14 @@ module Gitlab
 
         commits_limited = commits.last(20)
 
-        use_batched_paths = with_changed_files &&
-          Feature.enabled?(:batch_push_webhook_changed_paths, project)
+        changed_paths_by_commit_id = changed_paths_by_commit(project.repository, commits_limited) if with_changed_files
 
-        changed_paths_by_commit_id = changed_paths_by_commit(project.repository, commits_limited) if use_batched_paths
-
-        commit_attrs =
-          if changed_paths_by_commit_id
-            commits_limited.map do |commit|
-              commit.hook_attrs(
-                with_changed_files: with_changed_files,
-                changed_paths: changed_paths_by_commit_id.fetch(commit.id, [])
-              )
-            end
-          else
-            # Legacy per-commit raw_deltas (CommitDelta) path - reachable while
-            # batch_push_webhook_changed_paths is disabled. Guard against Gitaly's
-            # request-limit enforcement (n+1). Remove with the FF.
-            # n+1: https://gitlab.com/gitlab-org/gitlab-foss/issues/38259
-            Gitlab::GitalyClient.allow_n_plus_1_calls do
-              commits_limited.map do |commit|
-                commit.hook_attrs(with_changed_files: with_changed_files)
-              end
-            end
-          end
+        commit_attrs = commits_limited.map do |commit|
+          commit.hook_attrs(
+            with_changed_files: with_changed_files,
+            changed_paths: changed_paths_by_commit_id&.fetch(commit.id, [])
+          )
+        end
 
         type = Gitlab::Git.tag_ref?(ref) ? 'tag_push' : 'push'
 

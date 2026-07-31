@@ -1,5 +1,0 @@
-# frozen_string_literal: true
-
-return if stable_branch.valid_stable_branch?
-
-markdown(datateam.build_message) if datateam.impacted?

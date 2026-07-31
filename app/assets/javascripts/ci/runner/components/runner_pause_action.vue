@@ -2,7 +2,7 @@
 import runnerTogglePausedMutation from '~/ci/runner/graphql/shared/runner_toggle_paused.mutation.graphql';
 import { createAlert } from '~/alert';
 import { captureException } from '~/sentry/sentry_browser_wrapper';
-import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
+import { getSlotFunction, normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 
 /**
  * Renderless component that wraps a GraphQL pause mutation for the
@@ -76,7 +76,7 @@ export default normalizeRender({
     },
   },
   render() {
-    return this.$scopedSlots.default({
+    return getSlotFunction(this)({
       onClick: this.onClick,
       loading: this.loading,
     });

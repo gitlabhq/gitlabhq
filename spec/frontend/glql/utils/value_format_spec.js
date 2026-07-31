@@ -203,6 +203,46 @@ describe('buildFormatterByLabel', () => {
     expect(map['Acceptance rate'](0.75)).toBe('75%');
   });
 
+  it('resolves an aliased field to the canonical formatter', () => {
+    const aliased = { key: 'p50', field: 'durationQuantile', label: 'Duration P50' };
+    const map = buildFormatterByLabel([aliased]);
+
+    expect(map['Duration P50'](3661)).toBe('1h 1m 1s');
+  });
+
+  it('keys an unaliased parameterised metric by its parameterised label', () => {
+    const quantile = {
+      key: 'durationQuantile',
+      field: 'durationQuantile',
+      label: 'Duration quantile',
+      parameters: { quantile: 0.5 },
+    };
+    const map = buildFormatterByLabel([quantile]);
+
+    expect(Object.keys(map)).toEqual(['Duration quantile (0.5)']);
+    expect(map['Duration quantile (0.5)'](3661)).toBe('1h 1m 1s');
+  });
+
+  it('keeps two unaliased quantiles of the same base field on distinct keys', () => {
+    const p50 = {
+      key: 'durationQuantile',
+      field: 'durationQuantile',
+      label: 'Duration quantile',
+      parameters: { quantile: 0.5 },
+    };
+    const p95 = {
+      key: 'durationQuantile',
+      field: 'durationQuantile',
+      label: 'Duration quantile',
+      parameters: { quantile: 0.95 },
+    };
+    const map = buildFormatterByLabel([p50, p95]);
+
+    expect(Object.keys(map)).toEqual(['Duration quantile (0.5)', 'Duration quantile (0.95)']);
+    expect(map['Duration quantile (0.5)'](3661)).toBe('1h 1m 1s');
+    expect(map['Duration quantile (0.95)'](90)).toBe('1m 30s');
+  });
+
   it('returns an empty object for an empty metrics list', () => {
     expect(buildFormatterByLabel([])).toEqual({});
   });
@@ -258,6 +298,17 @@ describe('buildSharedAxisFormatter', () => {
     expect(buildSharedAxisFormatter(metrics)).toBeNull();
   });
 
+  it('returns a formatter for aliased fields that share the same unit', () => {
+    const metrics = [
+      { key: 'p50', field: 'durationQuantile', label: 'Duration P50' },
+      { key: 'p95', field: 'durationQuantile', label: 'Duration P95' },
+    ];
+    const formatter = buildSharedAxisFormatter(metrics);
+
+    expect(formatter).not.toBeNull();
+    expect(formatter(10000)).toBe('2.8h');
+  });
+
   it('returns null for an empty metrics list', () => {
     expect(buildSharedAxisFormatter([])).toBeNull();
   });
@@ -268,6 +319,32 @@ describe('yAxisTitleFor', () => {
     const metrics = [{ key: 'totalCount', label: 'Total count' }];
 
     expect(yAxisTitleFor(metrics)).toBe('Total count');
+  });
+
+  it('returns the parameterised label for a single unaliased parameterised metric', () => {
+    const metrics = [
+      {
+        key: 'durationQuantile',
+        field: 'durationQuantile',
+        label: 'Duration quantile',
+        parameters: { quantile: 0.5 },
+      },
+    ];
+
+    expect(yAxisTitleFor(metrics)).toBe('Duration quantile (0.5)');
+  });
+
+  it('returns the alias label as-is for a single aliased parameterised metric', () => {
+    const metrics = [
+      {
+        key: 'p50',
+        field: 'durationQuantile',
+        label: 'Duration P50',
+        parameters: { quantile: 0.5 },
+      },
+    ];
+
+    expect(yAxisTitleFor(metrics)).toBe('Duration P50');
   });
 
   it('returns the unit label when multiple metrics share the same unit', () => {
@@ -311,6 +388,15 @@ describe('yAxisTitleFor', () => {
     const metrics = [{ key: 'unknownField', label: 'Unknown thing' }];
 
     expect(yAxisTitleFor(metrics)).toBe('Unknown thing');
+  });
+
+  it('returns the unit label for aliased metrics that share the same unit', () => {
+    const metrics = [
+      { key: 'p50', field: 'durationQuantile', label: 'Duration P50' },
+      { key: 'p95', field: 'durationQuantile', label: 'Duration P95' },
+    ];
+
+    expect(yAxisTitleFor(metrics)).toBe('Duration');
   });
 
   it('returns an empty string for an empty metrics list', () => {

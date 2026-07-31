@@ -27,6 +27,7 @@ import { sanitize } from '~/lib/dompurify';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { keysFor, ISSUABLE_EDIT_DESCRIPTION } from '~/behaviors/shortcuts/keybindings';
 import ShortcutsWorkItems from '~/behaviors/shortcuts/shortcuts_work_items';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import {
   i18n,
   WIDGET_TYPE_DESCRIPTION,
@@ -153,7 +154,7 @@ export default {
     WorkItemMetadataProvider,
     DuoWorkItemToMrAction,
   },
-  mixins: [glFeatureFlagsMixin(), trackingMixin],
+  mixins: [glFeatureFlagsMixin(), trackingMixin, glSlotsMixin],
   inject: {
     groupPath: {
       from: 'groupPath',
@@ -620,7 +621,7 @@ export default {
         this.showWorkItemTree ||
         this.workItemLinkedItems ||
         this.workItemDevelopment ||
-        this.$scopedSlots.widgets
+        this.glSlots().widgets
       );
     },
   },

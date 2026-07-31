@@ -3,7 +3,7 @@ import { isEmpty } from 'lodash-es';
 import { createAlert, VARIANT_DANGER } from '~/alert';
 import destroyModelMutation from '~/ml/model_registry/graphql/mutations/destroy_model.mutation.graphql';
 import { s__, sprintf } from '~/locale';
-import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
+import { getSlotFunction, normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 
 const makeDeleteModelErrorMessage = (message) => {
   if (!message) return '';
@@ -54,7 +54,7 @@ export default normalizeRender({
     },
   },
   render() {
-    return this.$scopedSlots.default({ deleteModel: this.deleteModel });
+    return getSlotFunction(this)({ deleteModel: this.deleteModel });
   },
 });
 </script>

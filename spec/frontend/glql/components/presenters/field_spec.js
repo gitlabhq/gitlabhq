@@ -28,7 +28,21 @@ describe('FieldPresenter', () => {
     mount({ item, fieldKey: 'author', variant: 'compact' });
 
     expect(dataForField).toHaveBeenCalledWith(item, 'author');
-    expect(presenterFor).toHaveBeenCalledWith(item, 'author', 'compact');
+    expect(presenterFor).toHaveBeenCalledWith(item, 'author', {
+      variant: 'compact',
+      presenterKey: '',
+    });
+  });
+
+  it('passes presenterKey for presenter dispatch when provided', () => {
+    const item = { p50: 3661 };
+    mount({ item, fieldKey: 'p50', presenterKey: 'durationQuantile', variant: 'default' });
+
+    expect(dataForField).toHaveBeenCalledWith(item, 'p50');
+    expect(presenterFor).toHaveBeenCalledWith(item, 'p50', {
+      variant: 'default',
+      presenterKey: 'durationQuantile',
+    });
   });
 
   it('mounts the resolved presenter with item and data', () => {

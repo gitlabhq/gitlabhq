@@ -9,6 +9,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import allReleasesQuery from '~/releases/graphql/queries/all_releases.query.graphql';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
+import { getSlotFunction } from '~/lib/utils/vue3compat/normalize_render';
 import { historyPushState } from '~/lib/utils/common_utils';
 import CiCdCatalogWrapper from '~/releases/components/ci_cd_catalog_wrapper.vue';
 import ReleasesIndexApp from '~/releases/components/app_index.vue';
@@ -78,8 +79,11 @@ describe('app_index.vue', () => {
       stubs: {
         CiCdCatalogWrapper: {
           ...stubComponent(CiCdCatalogWrapper),
+          // Vue 3-style zero-arg render; opt out of @vue/compat's legacy
+          // render-function emulation, which misclassifies it.
+          compatConfig: { RENDER_FUNCTION: false },
           render() {
-            return this.$scopedSlots.default({ isCiCdCatalogProject });
+            return getSlotFunction(this)({ isCiCdCatalogProject });
           },
         },
       },

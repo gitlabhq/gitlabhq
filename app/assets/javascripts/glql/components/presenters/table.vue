@@ -1,6 +1,7 @@
 <script>
 import { GlIcon, GlSkeletonLoader } from '@gitlab/ui';
 import { sortBy } from '../../core/sorter';
+import { baseFieldKeyOf, labelWithParameter } from '../../utils/chart_data';
 import ThResizable from '../common/th_resizable.vue';
 import FieldPresenter from './field.vue';
 
@@ -48,6 +49,8 @@ export default {
     },
   },
   methods: {
+    baseFieldKeyOf,
+    labelWithParameter,
     sortBy(fieldName) {
       const { options, items } = sortBy(this.items, fieldName, this.sortOptions);
       this.items = items;
@@ -71,7 +74,7 @@ export default {
               class="gl-l-0 gl-r-0 gl-absolute gl-w-full gl-cursor-pointer gl-truncate gl-bg-default gl-px-5 gl-py-3 hover:gl-bg-subtle"
               @click="sortBy(field.key)"
             >
-              {{ field.label }}
+              {{ labelWithParameter(field) }}
               <gl-icon
                 v-if="sortOptions.fieldName === field.key"
                 :name="sortOptions.ascending ? 'arrow-up' : 'arrow-down'"
@@ -92,7 +95,11 @@ export default {
             :key="field.key"
             class="!gl-border-l-0 !gl-border-r-0 gl-bg-default !gl-px-5 !gl-py-3"
           >
-            <field-presenter :item="item" :field-key="field.key" />
+            <field-presenter
+              :item="item"
+              :field-key="field.key"
+              :presenter-key="baseFieldKeyOf(field)"
+            />
           </td>
         </tr>
         <template v-if="loading">

@@ -2,7 +2,11 @@
 import { GlBarChart } from '@gitlab/ui/src/charts';
 import { stackedPresentationOptions } from '@gitlab/ui/src/utils/constants';
 import { DISPLAY_TYPES } from '../../../constants';
-import { buildBarSeriesData, tooltipContentFromParams } from '../../../utils/chart_data';
+import {
+  buildBarSeriesData,
+  labelWithParameter,
+  tooltipContentFromParams,
+} from '../../../utils/chart_data';
 import {
   buildFormatterByLabel,
   buildSharedAxisFormatter,
@@ -47,6 +51,9 @@ export default {
     sharedAxisFormatter() {
       return buildSharedAxisFormatter(this.metrics);
     },
+    dimensionLabel() {
+      return labelWithParameter(this.dimension);
+    },
     // GlBarChart flips the axes: the metric/value axis is x, and the
     // dimension/category axis is y. yAxisTitleFor derives a title from the
     // metrics regardless of which axis it ends up on.
@@ -85,7 +92,7 @@ export default {
     :option="chartOptions"
     :presentation="presentation"
     :x-axis-title="xAxisTitle"
-    :y-axis-title="dimension.label"
+    :y-axis-title="dimensionLabel"
   >
     <template #tooltip-content="{ params }">
       <formatted-tooltip-content

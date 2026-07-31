@@ -1,7 +1,7 @@
 <script>
 import { s__ } from '~/locale';
 import { createAlert } from '~/alert';
-import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
+import { getSlotFunction, normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 import { exploreCatalogPath } from '~/lib/utils/path_helpers/explore';
 import getCiCatalogSettingsQuery from '~/ci/catalog/graphql/queries/get_ci_catalog_settings.query.graphql';
 import catalogReleasesQuery from '../graphql/queries/catalog_releases.query.graphql';
@@ -91,7 +91,7 @@ export default normalizeRender({
     },
   },
   render() {
-    return this.$scopedSlots.default({
+    return getSlotFunction(this)({
       isCatalogRelease: this.isCatalogRelease,
       isCiCdCatalogProject: this.isCiCdCatalogProject,
       detailsPagePath: this.detailsPagePath,

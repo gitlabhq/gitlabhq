@@ -1,7 +1,12 @@
 <script>
 import { GlBarChart } from '@gitlab/ui/src/charts';
 import { DISPLAY_TYPES } from '../../../constants';
-import { buildStackedByDimension, tooltipContentFromParams } from '../../../utils/chart_data';
+import {
+  buildStackedByDimension,
+  tooltipContentFromParams,
+  baseFieldKeyOf,
+  labelWithParameter,
+} from '../../../utils/chart_data';
 import { formatterFor, axisFormatterFor, dimensionAxisTitleFor } from '../../../utils/value_format';
 import FormattedTooltipContent from '../chart/formatted_tooltip_content.vue';
 import { barCategoryAxisOptions } from './bar_chart_options';
@@ -52,13 +57,16 @@ export default {
       );
     },
     metricFormatter() {
-      return formatterFor(this.metric?.key);
+      return formatterFor(baseFieldKeyOf(this.metric));
     },
     metricAxisFormatter() {
-      return axisFormatterFor(this.metric?.key);
+      return axisFormatterFor(baseFieldKeyOf(this.metric));
     },
     yAxisTitle() {
       return dimensionAxisTitleFor(this.primaryDimension, this.secondaryDimension);
+    },
+    xAxisTitle() {
+      return labelWithParameter(this.metric);
     },
     chartOptions() {
       return {
@@ -83,7 +91,7 @@ export default {
     :data="chartData"
     :option="chartOptions"
     presentation="stacked"
-    :x-axis-title="metric.label"
+    :x-axis-title="xAxisTitle"
     :y-axis-title="yAxisTitle"
   >
     <template #tooltip-content="{ params }">

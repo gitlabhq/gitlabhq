@@ -1,5 +1,5 @@
 <script>
-import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
+import { getSlotFunction, normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 
 export default normalizeRender({
   name: 'ContentEditorProvider',
@@ -19,7 +19,7 @@ export default normalizeRender({
     },
   },
   render() {
-    return this.$scopedSlots.default?.();
+    return getSlotFunction(this)?.();
   },
 });
 </script>

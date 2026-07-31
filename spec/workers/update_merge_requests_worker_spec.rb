@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe UpdateMergeRequestsWorker, feature_category: :code_review_workflow do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:user)    { create(:user) }
   let_it_be(:oldrev)  { "123456" }
   let_it_be(:newrev)  { "789012" }

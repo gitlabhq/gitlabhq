@@ -263,7 +263,7 @@ RSpec.describe Projects::MilestonesController, feature_category: :team_planning 
     it "removes milestone" do
       expect(issue.milestone_id).to eq(milestone.id)
 
-      delete :destroy, params: { namespace_id: project.namespace.id, project_id: project.id, id: milestone.iid }, format: :js
+      delete :destroy, params: { namespace_id: project.namespace.id, project_id: project.id, id: milestone.iid }, format: :json
       expect(response).to be_successful
 
       expect(Event.recent.first).to be_destroyed_action
@@ -274,6 +274,22 @@ RSpec.describe Projects::MilestonesController, feature_category: :team_planning 
 
       merge_request.reload
       expect(merge_request.milestone_id).to be_nil
+    end
+
+    it "sets a deletion toast and redirects for html requests", :aggregate_failures do
+      delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: milestone.iid }
+
+      expect(response).to have_gitlab_http_status(:see_other)
+      expect(response).to redirect_to(project_milestones_path(project))
+      expect(flash[:toast]).to eq(_('Milestone deleted.'))
+    end
+
+    it "sets a deletion toast and returns the redirect URL for json requests", :aggregate_failures do
+      delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: milestone.iid }, format: :json
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['redirect_url']).to eq(project_milestones_path(project))
+      expect(flash[:toast]).to eq(_('Milestone deleted.'))
     end
   end
 

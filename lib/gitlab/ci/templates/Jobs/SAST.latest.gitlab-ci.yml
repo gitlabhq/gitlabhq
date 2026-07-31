@@ -361,7 +361,7 @@ gitlab-advanced-sast-ext:
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /gitlab-advanced-sast-ext/
       when: never
-    - if: $GITLAB_ADVANCED_SAST_EXT_ENABLED != 'true' && $GITLAB_ADVANCED_SAST_EXT_ENABLED != '1'
+    - if: $GITLAB_ADVANCED_SAST_ENABLED != 'true' && $GITLAB_ADVANCED_SAST_ENABLED != '1'
       when: never
 
     # The following 3 blocks of rules define whether the job runs in a an *MR pipeline* or a *branch pipeline*

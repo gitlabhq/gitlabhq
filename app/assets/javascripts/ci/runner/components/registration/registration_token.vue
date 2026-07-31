@@ -1,12 +1,14 @@
 <script>
 import { s__ } from '~/locale';
 import InputCopyToggleVisibility from '~/vue_shared/components/input_copy_toggle_visibility/input_copy_toggle_visibility.vue';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'RegistrationToken',
   components: {
     InputCopyToggleVisibility,
   },
+  mixins: [glSlotsMixin],
   i18n: {
     registrationToken: s__('Runners|Registration token'),
   },
@@ -41,7 +43,7 @@ export default {
     :form-input-group-props="formInputGroupProps"
     readonly
   >
-    <template v-for="slot in Object.keys($scopedSlots)" #[slot]>
+    <template v-for="slot in Object.keys(glSlots())" #[slot]>
       <slot :name="slot"></slot>
     </template>
   </input-copy-toggle-visibility>

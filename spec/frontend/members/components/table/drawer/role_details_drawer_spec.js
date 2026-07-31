@@ -6,6 +6,7 @@ import MembersTableCell from 'ee_else_ce/members/components/table/members_table_
 import MemberAvatar from '~/members/components/table/member_avatar.vue';
 import RoleSelector from '~/members/components/role_selector.vue';
 import { roleDropdownItems } from '~/members/utils';
+import { getSlotFunction } from '~/lib/utils/vue3compat/normalize_render';
 import RoleUpdater from 'ee_else_ce/members/components/table/drawer/role_updater.vue';
 import { RENDER_ALL_SLOTS_TEMPLATE, stubComponent } from 'helpers/stub_component';
 import { member as memberData, updateableMember } from '../../../mock_data';
@@ -33,8 +34,11 @@ describe('Role details drawer', () => {
           methods: { saveRole: saveRoleStub },
         }),
         MembersTableCell: stubComponent(MembersTableCell, {
+          // Vue 3-style zero-arg render; opt out of @vue/compat's legacy
+          // render-function emulation, which misclassifies it.
+          compatConfig: { RENDER_FUNCTION: false },
           render() {
-            return this.$scopedSlots.default({
+            return getSlotFunction(this)({
               memberType: 'user',
               isCurrentUser: false,
               permissions: { canUpdate: member.canUpdate },

@@ -1,4 +1,5 @@
 <script>
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import { BASE_IMPORT_TABLE_ROW_GRID_CLASSES } from './constants';
 /**
  * Basic formatting component for import history table header.
@@ -9,6 +10,7 @@ import { BASE_IMPORT_TABLE_ROW_GRID_CLASSES } from './constants';
  */
 export default {
   name: 'ImportHistoryTableHeader',
+  mixins: [glSlotsMixin],
   props: {
     /** Custom grid column layout (useful for overriding layout for different content). */
     gridClasses: {
@@ -30,7 +32,7 @@ export default {
   <div class="gl-border-t gl-grid gl-gap-5 gl-py-5 gl-pl-5" :class="appliedGridClasses">
     <div :class="$options.defaultClasses">
       <div
-        v-if="$scopedSlots.checkbox"
+        v-if="glSlots().checkbox"
         class="gl-flex gl-h-6 gl-w-6 gl-flex-shrink-0 gl-items-center gl-justify-center"
       >
         <!-- @slot Optionally pass in a checkbox for select-all controls -->

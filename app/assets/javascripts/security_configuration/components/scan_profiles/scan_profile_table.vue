@@ -18,6 +18,7 @@ import {
   EVENT_CLICK_SCAN_PROFILE_LEARN_MORE_LINK,
 } from '~/security_configuration/constants';
 import ScanTypeCell from '~/security_configuration/components/scan_profiles/scan_type_cell.vue';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'ScanProfileTable',
@@ -32,7 +33,7 @@ export default {
     GlSprintf,
     ScanTypeCell,
   },
-  mixins: [InternalEvents.mixin()],
+  mixins: [InternalEvents.mixin(), glSlotsMixin],
   props: {
     tableItems: {
       type: Array,
@@ -124,7 +125,7 @@ export default {
     </template>
 
     <template #cell(name)="{ item }">
-      <slot v-if="$scopedSlots['cell(name)']" name="cell(name)" v-bind="{ item }"></slot>
+      <slot v-if="glSlots()['cell(name)']" name="cell(name)" v-bind="{ item }"></slot>
       <div v-else class="gl-flex gl-items-center">
         <span class="gl-text-subtle">
           {{ $options.SCAN_PROFILE_I18N.noProfile }}
@@ -133,19 +134,19 @@ export default {
     </template>
 
     <template #cell(status)="{ item }">
-      <slot v-if="$scopedSlots['cell(status)']" name="cell(status)" v-bind="{ item }"></slot>
+      <slot v-if="glSlots()['cell(status)']" name="cell(status)" v-bind="{ item }"></slot>
       <div v-else class="gl-flex gl-flex-col">
         {{ __('—') }}
       </div>
     </template>
 
     <template #cell(lastScan)="{ item }">
-      <slot v-if="$scopedSlots['cell(last-scan)']" name="cell(last-scan)" v-bind="{ item }"></slot>
+      <slot v-if="glSlots()['cell(last-scan)']" name="cell(last-scan)" v-bind="{ item }"></slot>
       <span v-else>{{ item.lastScan || __('—') }}</span>
     </template>
 
     <template #cell(actions)="{ item }">
-      <slot v-if="$scopedSlots['cell(actions)']" name="cell(actions)" v-bind="{ item }"></slot>
+      <slot v-if="glSlots()['cell(actions)']" name="cell(actions)" v-bind="{ item }"></slot>
       <div v-else>
         <gl-button-group>
           <!-- Apply button -->

@@ -1,5 +1,5 @@
 <script>
-import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
+import { getSlotFunction, normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 
 /**
  * A utility component that attaches event listeners to DOM elements matching a CSS selector.
@@ -95,7 +95,7 @@ export default normalizeRender({
     });
   },
   render() {
-    return this.$scopedSlots.default?.();
+    return getSlotFunction(this)?.();
   },
 });
 </script>

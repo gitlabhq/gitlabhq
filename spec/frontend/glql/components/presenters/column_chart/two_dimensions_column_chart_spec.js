@@ -18,13 +18,14 @@ const DATA = {
 describe('TwoDimensionsColumnChart', () => {
   let wrapper;
 
-  const createComponent = () => {
+  const createComponent = (props = {}) => {
     wrapper = shallowMountExtended(TwoDimensionsColumnChart, {
       propsData: {
         data: DATA,
         primaryDimension: PRIMARY_DIM,
         secondaryDimension: SECONDARY_DIM,
         metric: METRIC,
+        ...props,
       },
     });
   };
@@ -53,6 +54,22 @@ describe('TwoDimensionsColumnChart', () => {
     expect(findChart().props('yAxisTitle')).toBe('Total count');
   });
 
+  describe('with a time dimension', () => {
+    it('includes granularity in the x-axis title', () => {
+      const timeDim = {
+        key: 'finished',
+        label: 'Finished',
+        name: 'finishedAt',
+        type: 'dimension',
+        parameters: { granularity: 'monthly' },
+      };
+
+      createComponent({ primaryDimension: timeDim });
+
+      expect(findChart().props('xAxisTitle')).toBe('Finished (monthly) by Language');
+    });
+  });
+
   describe('y-axis and tooltip formatting', () => {
     const yAxisOption = () => findChart().props('option').yAxis;
 
@@ -77,6 +94,45 @@ describe('TwoDimensionsColumnChart', () => {
       });
 
       expect(yAxisOption()[0].axisLabel.formatter(10000)).toBe('2.8h');
+    });
+  });
+
+  describe('with an unaliased parameterised metric', () => {
+    const PARAMETERISED_METRIC = {
+      key: 'durationQuantile',
+      field: 'durationQuantile',
+      label: 'Duration quantile',
+      type: 'metric',
+      parameters: { quantile: 0.5 },
+    };
+
+    it('uses the parameterised label as the y-axis title', () => {
+      createComponent({ metric: PARAMETERISED_METRIC });
+
+      expect(findChart().props('yAxisTitle')).toBe('Duration quantile (0.5)');
+    });
+  });
+
+  describe('with an aliased parameterised metric', () => {
+    const ALIASED_METRIC = {
+      key: 'p50',
+      field: 'durationQuantile',
+      label: 'Duration P50',
+      type: 'metric',
+      parameters: { quantile: 0.5 },
+    };
+
+    it('resolves the formatter from the base field name, not the alias', () => {
+      createComponent({ metric: ALIASED_METRIC });
+
+      const { yAxis } = findChart().props('option');
+      expect(yAxis[0].axisLabel.formatter(10000)).toBe('2.8h');
+    });
+
+    it('uses the alias label as-is for the y-axis title', () => {
+      createComponent({ metric: ALIASED_METRIC });
+
+      expect(findChart().props('yAxisTitle')).toBe('Duration P50');
     });
   });
 

@@ -885,7 +885,6 @@ RSpec/NamedSubject:
     - 'spec/constraints/namespaces/group_url_constraint_spec.rb'
     - 'spec/constraints/projects/project_url_constraint_spec.rb'
     - 'spec/constraints/users/user_url_constraint_spec.rb'
-    - 'spec/controllers/admin/application_settings_controller_spec.rb'
     - 'spec/controllers/admin/applications_controller_spec.rb'
     - 'spec/controllers/admin/ci/variables_controller_spec.rb'
     - 'spec/controllers/admin/instance_review_controller_spec.rb'

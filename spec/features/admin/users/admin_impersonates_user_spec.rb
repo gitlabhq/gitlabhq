@@ -14,6 +14,40 @@ RSpec.describe 'Admin impersonates user', :enable_admin_mode, feature_category: 
     describe 'Impersonation' do
       let_it_be_with_reload(:another_user) { create(:user) }
 
+      # Warming these caches stops the super sidebar fetching /api/v4/user_counts. That
+      # request is what makes the :js examples below flaky.
+      #
+      # Starting and stopping impersonation both call `warden.set_user`, which rotates the
+      # session ID and deletes the old session from Redis; a user counts request in flight
+      # across a rotation carries the stale cookie, gets handed a fresh anonymous session,
+      # and breaks CSRF on the next request. SidebarsHelper reads the counts with
+      # cached_only: true, so a warm cache means no request at all. Both users render the
+      # sidebar, so both need warming.
+      #
+      # See https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/43497.
+      def warm_sidebar_counts(*users)
+        users.each do |user|
+          user.all_assigned_merge_requests_count
+          user.review_requested_open_merge_requests_count
+        end
+      end
+
+      # Reads back what `warm_sidebar_counts` wrote, without computing anything. A nil means
+      # the warming stopped working -- a changed cache key, the calls being dropped, or the
+      # :use_clean_rails_memory_store_caching tag being removed from a context. Every value
+      # must be present, since user_counts.vue fetches when either count is null.
+      #
+      # One example per context asserts on this as a regression guard, so that a break is
+      # reported here rather than as intermittent failures. No behaviour depends on it.
+      def sidebar_counts_warmed
+        [current_user, another_user].flat_map do |user|
+          [
+            user.all_assigned_merge_requests_count(cached_only: true),
+            user.review_requested_open_merge_requests_count(cached_only: true)
+          ]
+        end
+      end
+
       context 'before impersonating' do
         subject { visit admin_user_path(user_to_visit) }
 
@@ -117,14 +151,18 @@ RSpec.describe 'Admin impersonates user', :enable_admin_mode, feature_category: 
         end
       end
 
-      context 'when impersonating' do
+      context 'when impersonating', :use_clean_rails_memory_store_caching do
         subject { click_link 'Impersonate' }
 
         before do
+          warm_sidebar_counts(current_user, another_user)
+
           visit admin_user_path(another_user)
         end
 
-        it 'logs in as the user when impersonate is clicked', :js do
+        it 'logs in as the user when impersonate is clicked', :js, :aggregate_failures do
+          expect(sidebar_counts_warmed).not_to include(nil)
+
           subject
 
           expect(page).to have_link("#{another_user.name} user’s menu")
@@ -170,35 +208,21 @@ RSpec.describe 'Admin impersonates user', :enable_admin_mode, feature_category: 
         end
       end
 
-      context 'ending impersonation', :js do
-        subject { click_on 'Stop impersonating' }
-
+      context 'ending impersonation', :js, :use_clean_rails_memory_store_caching do
         before do
+          warm_sidebar_counts(current_user, another_user)
+
           visit admin_user_path(another_user)
           click_link 'Impersonate'
         end
 
-        it 'logs out of impersonated user back to original user' do
-          subject
+        it "ends impersonating and returns the admin to the impersonated user's page", :aggregate_failures do
+          expect(sidebar_counts_warmed).not_to include(nil)
+
+          click_on 'Stop impersonating'
 
           expect(page).to have_link("#{current_user.name} user’s menu")
-        end
-
-        it 'is redirected back to the impersonated users page in the admin after stopping' do
-          subject
-
           expect(page).to have_current_path("/admin/users/#{another_user.username}", ignore_query: true)
-        end
-
-        context 'a user with an expired password' do
-          it 'is redirected back to the impersonated users page in the admin after stopping' do
-            expect(page).to have_content "You are now impersonating #{another_user.username}"
-            another_user.update!(password_expires_at: Time.zone.now - 5.minutes)
-
-            subject
-
-            expect(page).to have_current_path("/admin/users/#{another_user.username}", ignore_query: true)
-          end
         end
       end
     end

@@ -22,6 +22,20 @@ const DURATION_QUANTILE = {
   name: 'durationQuantile',
   type: 'metric',
 };
+const ALIASED_METRIC = {
+  key: 'p50',
+  field: 'durationQuantile',
+  label: 'Duration P50',
+  type: 'metric',
+  parameters: { quantile: 0.5 },
+};
+const PARAMETERISED_METRIC = {
+  key: 'durationQuantile',
+  field: 'durationQuantile',
+  label: 'Duration quantile',
+  type: 'metric',
+  parameters: { quantile: 0.5 },
+};
 const SHOWN = { key: 'shownCount', label: 'Shown', name: 'shownCount', type: 'metric' };
 const ACCEPTED = { key: 'acceptedCount', label: 'Accepted', name: 'acceptedCount', type: 'metric' };
 const REJECTED = { key: 'rejectedCount', label: 'Rejected', name: 'rejectedCount', type: 'metric' };
@@ -124,6 +138,114 @@ describe('SingleDimensionSeriesChart', () => {
 
     it('disables legend avg/max', () => {
       expect(findLineChart().props('includeLegendAvgMax')).toBe(false);
+    });
+  });
+
+  describe('with a time dimension', () => {
+    const TIME_DIMENSION = {
+      key: 'finished',
+      field: 'finished',
+      label: 'Finished',
+      name: 'finishedAt',
+      type: 'dimension',
+      parameters: { granularity: 'weekly' },
+    };
+
+    it('includes granularity in the x-axis title', () => {
+      createComponent({ dimension: TIME_DIMENSION });
+
+      expect(findLineChart().props('option').xAxis.name).toBe('Finished (weekly)');
+    });
+
+    it('includes granularity in the x-axis title for the area variant', () => {
+      createComponent({ variant: 'area', dimension: TIME_DIMENSION });
+
+      expect(findAreaChart().props('option').xAxis.name).toBe('Finished (weekly)');
+    });
+
+    it('renders the alias label without the granularity suffix for an aliased time dimension', () => {
+      const aliasedTimeDimension = {
+        ...TIME_DIMENSION,
+        key: 'foo',
+        field: 'created',
+        label: 'foo',
+      };
+
+      createComponent({ dimension: aliasedTimeDimension });
+
+      expect(findLineChart().props('option').xAxis.name).toBe('foo');
+    });
+  });
+
+  describe('with an aliased parameterised metric', () => {
+    const ALIASED_DATA = {
+      nodes: [
+        { language: 'ruby', p50: 3661 },
+        { language: 'python', p50: 90 },
+      ],
+    };
+
+    beforeEach(() => {
+      createComponent({ metrics: [ALIASED_METRIC], data: ALIASED_DATA });
+    });
+
+    it('builds the series from the alias key and labels it with the alias label', () => {
+      expect(findLineChart().props('data')).toEqual([
+        {
+          name: 'Duration P50',
+          data: [
+            ['ruby', 3661],
+            ['python', 90],
+          ],
+        },
+      ]);
+    });
+
+    it('resolves the y-axis formatter from the base field name, not the alias', () => {
+      expect(findLineChart().props('option').yAxis.axisLabel.formatter(10000)).toBe('2.8h');
+    });
+
+    it('builds the same alias-keyed series for the area variant', () => {
+      createComponent({ variant: 'area', metrics: [ALIASED_METRIC], data: ALIASED_DATA });
+
+      expect(findAreaChart().props('data')).toEqual([
+        {
+          name: 'Duration P50',
+          data: [
+            ['ruby', 3661],
+            ['python', 90],
+          ],
+        },
+      ]);
+    });
+  });
+
+  describe('with an unaliased parameterised metric', () => {
+    const PARAM_DATA = {
+      nodes: [
+        { language: 'ruby', durationQuantile: 3661 },
+        { language: 'python', durationQuantile: 90 },
+      ],
+    };
+
+    beforeEach(() => {
+      createComponent({ metrics: [PARAMETERISED_METRIC], data: PARAM_DATA });
+    });
+
+    it('names the series with the parameterised label', () => {
+      expect(findLineChart().props('data')).toEqual([
+        {
+          name: 'Duration quantile (0.5)',
+          data: [
+            ['ruby', 3661],
+            ['python', 90],
+          ],
+        },
+      ]);
+    });
+
+    it('uses the parameterised label as the y-axis title', () => {
+      expect(findLineChart().props('option').yAxis.name).toBe('Duration quantile (0.5)');
     });
   });
 
@@ -305,6 +427,32 @@ describe('SingleDimensionSeriesChart', () => {
 
       expect(w.text()).toContain('3661');
       expect(w.text()).not.toContain('1h 1m 1s');
+    });
+
+    it.each(['line', 'area'])(
+      'formats an aliased duration metric with the base field formatter (%s variant)',
+      (variant) => {
+        const w = mountWithTooltip({
+          variant,
+          metrics: [ALIASED_METRIC],
+          data: { nodes: [{ language: 'ruby', p50: 3661 }] },
+          seriesData: [{ seriesName: 'Duration P50', value: ['ruby', 3661], color: '#aaa' }],
+        });
+
+        expect(w.text()).toContain('1h 1m 1s');
+      },
+    );
+
+    it('resolves the tooltip formatter by the parameterised series name for an unaliased parameterised metric', () => {
+      const w = mountWithTooltip({
+        metrics: [PARAMETERISED_METRIC],
+        data: { nodes: [{ language: 'ruby', durationQuantile: 3661 }] },
+        seriesData: [
+          { seriesName: 'Duration quantile (0.5)', value: ['ruby', 3661], color: '#aaa' },
+        ],
+      });
+
+      expect(w.text()).toContain('1h 1m 1s');
     });
 
     it('formats tooltip values per-series with scalar params', () => {

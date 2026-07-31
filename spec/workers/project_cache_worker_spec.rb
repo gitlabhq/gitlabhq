@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe ProjectCacheWorker, feature_category: :source_code_management do
   include ExclusiveLeaseHelpers
 
-  let_it_be_with_reload(:project) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :small_repo) }
 
   let(:worker) { described_class.new }
   let(:lease_key) { ["project_cache_worker", project.id, *statistics.sort].join(":") }

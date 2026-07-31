@@ -11,7 +11,7 @@ RSpec.describe RepositoryCheck::SingleRepositoryWorker, feature_category: :sourc
   end
 
   it 'skips when the project has no push events' do
-    project = create(:project, :repository, :wiki_disabled)
+    project = create(:project, :small_repo, :wiki_disabled)
     project.events.destroy_all # rubocop: disable Cop/DestroyAll
 
     repository = instance_double(::Gitlab::Git::Repository)
@@ -25,7 +25,7 @@ RSpec.describe RepositoryCheck::SingleRepositoryWorker, feature_category: :sourc
   end
 
   it 'fails when the project has push events and a broken repository' do
-    project = create(:project, :repository)
+    project = create(:project, :small_repo)
     create_push_event(project)
 
     repository = project.repository.raw
@@ -40,7 +40,7 @@ RSpec.describe RepositoryCheck::SingleRepositoryWorker, feature_category: :sourc
   end
 
   it 'fails when the project has push events and fsck times out', :aggregate_failures do
-    project = create(:project, :repository)
+    project = create(:project, :small_repo)
     create_push_event(project)
 
     repository = project.repository.raw
@@ -57,7 +57,7 @@ RSpec.describe RepositoryCheck::SingleRepositoryWorker, feature_category: :sourc
   end
 
   it 'succeeds when the project repo is valid' do
-    project = create(:project, :repository, :wiki_disabled)
+    project = create(:project, :small_repo, :wiki_disabled)
     create_push_event(project)
 
     repository = project.repository.raw
@@ -74,7 +74,7 @@ RSpec.describe RepositoryCheck::SingleRepositoryWorker, feature_category: :sourc
   end
 
   it 'fails if the wiki repository is broken' do
-    project = create(:project, :repository, :wiki_enabled)
+    project = create(:project, :small_repo, :wiki_enabled)
     project.create_wiki
     create_push_event(project)
 

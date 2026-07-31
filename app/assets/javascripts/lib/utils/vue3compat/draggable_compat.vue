@@ -1,9 +1,11 @@
 <script>
 import Draggable from 'vuedraggable';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'DraggableCompat',
   components: { Draggable },
+  mixins: [glSlotsMixin],
   props: {
     modelValue: {
       type: Array,
@@ -45,7 +47,7 @@ export default {
     itemSlot(element) {
       if (!this.isVue3) return null;
 
-      const slotContent = this.$scopedSlots.default?.();
+      const slotContent = this.glSlots().default?.();
       if (!slotContent?.length) return null;
 
       const firstNode = slotContent[0];

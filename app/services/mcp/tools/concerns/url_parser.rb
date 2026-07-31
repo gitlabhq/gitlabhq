@@ -6,6 +6,20 @@ module Mcp
       module UrlParser
         extend ActiveSupport::Concern
 
+        class_methods do
+          include Gitlab::Utils::StrongMemoize
+
+          # Anchored and bounded by a path separator, so a project like
+          # `/gitlab-org/project` is not mangled by a `/gitlab` root.
+          def relative_url_root_regex
+            root = Gitlab.config.gitlab.relative_url_root
+            return if root.blank?
+
+            %r{\A/?#{Regexp.escape(root)}(?=/|\z)}
+          end
+          strong_memoize_attr :relative_url_root_regex
+        end
+
         WORK_ITEM_URL_PATTERN = %r{\A/?(?:groups/)?(?<path>\S*)/-/work_items/(?<id>\d+)\z}
 
         private
@@ -58,16 +72,28 @@ module Mcp
         end
 
         def extract_path_from_url(url)
-          raise ArgumentError, "Invalid URL format: #{url}" unless valid_url?(url)
+          path = parse_url!(url).path
 
-          URI.parse(url).path.delete_prefix('/')
+          strip_relative_url_root(path).delete_prefix('/')
         end
 
-        def valid_url?(url)
+        def parse_url!(url)
           uri = URI.parse(url)
-          %w[http https].include?(uri.scheme)
+          raise ArgumentError, "Invalid URL format: #{url}" unless %w[http https].include?(uri.scheme)
+
+          uri
         rescue URI::BadURIError, URI::InvalidURIError => e
           raise ArgumentError, "Invalid URL format: #{e.message}"
+        end
+
+        # Instances served under a relative URL root (e.g. `/gitlab` or a GDK's
+        # `/gdk-instance`) include that prefix in work item URLs. Strip it so the
+        # remaining path resolves to the actual group/project full path.
+        def strip_relative_url_root(path)
+          regex = self.class.relative_url_root_regex
+          return path unless regex
+
+          path.sub(regex, '')
         end
       end
     end

@@ -3,7 +3,7 @@ import { clamp } from 'lodash-es';
 import { fetchPolicies } from '~/lib/graphql';
 import { HTTP_STATUS_SERVICE_UNAVAILABLE } from '~/lib/utils/http_status';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
+import { getSlotFunction, normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 import { QUERIES } from '../constants';
 import eventHub from '../event_hub';
 
@@ -248,7 +248,7 @@ export default normalizeRender({
     },
   },
   render() {
-    return this.$scopedSlots.default({
+    return getSlotFunction(this)({
       mergeRequests: this.mergeRequests?.nodes || [],
       newMergeRequestIds: this.newMergeRequestIds || [],
       count: this.loadedCount ? this.count : null,

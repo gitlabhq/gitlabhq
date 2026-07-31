@@ -44,6 +44,7 @@ import {
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import getPackageFilesQuery from '~/packages_and_registries/package_registry/graphql/queries/get_package_files.query.graphql';
 import destroyPackageFilesMutation from '~/packages_and_registries/package_registry/graphql/mutations/destroy_package_files.mutation.graphql';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'PackageFiles',
@@ -64,7 +65,7 @@ export default {
     FileSha,
     CrudComponent,
   },
-  mixins: [Tracking.mixin()],
+  mixins: [Tracking.mixin(), glSlotsMixin],
   trackingActions: {
     DELETE_PACKAGE_FILE_TRACKING_ACTION,
     REQUEST_DELETE_PACKAGE_FILE_TRACKING_ACTION,
@@ -515,7 +516,7 @@ export default {
       />
     </template>
 
-    <template v-if="$scopedSlots.upload" #footer>
+    <template v-if="glSlots().upload" #footer>
       <slot name="upload" :refetch="refetchPackageFiles"></slot>
     </template>
 

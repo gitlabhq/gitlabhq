@@ -56,28 +56,46 @@ RSpec.describe Mcp::Tools::Concerns::UrlParser, feature_category: :mcp_server do
       expect { service.send(:extract_path_from_url, 'not a valid url') }
         .to raise_error(ArgumentError, /Invalid URL format/)
     end
-  end
 
-  describe '#valid_url?' do
-    it 'returns true for HTTPS URL' do
-      expect(service.send(:valid_url?, 'https://gitlab.com/namespace/project')).to be true
+    it 'extracts path from an HTTP URL' do
+      url = 'http://gitlab.com/namespace/project'
+      expect(service.send(:extract_path_from_url, url)).to eq('namespace/project')
     end
 
-    it 'returns true for HTTP URL' do
-      expect(service.send(:valid_url?, 'http://gitlab.com/namespace/project')).to be true
+    it 'raises ArgumentError for URL without scheme' do
+      expect { service.send(:extract_path_from_url, 'gitlab.com/namespace/project') }
+        .to raise_error(ArgumentError, /Invalid URL format/)
     end
 
-    it 'returns false for URL without scheme' do
-      expect(service.send(:valid_url?, 'gitlab.com/namespace/project')).to be false
-    end
-
-    it 'returns false for invalid scheme' do
-      expect(service.send(:valid_url?, 'ftp://gitlab.com/file')).to be false
+    it 'raises ArgumentError for invalid scheme' do
+      expect { service.send(:extract_path_from_url, 'ftp://gitlab.com/file') }
+        .to raise_error(ArgumentError, /Invalid URL format/)
     end
 
     it 'raises ArgumentError for malformed URL' do
-      expect { service.send(:valid_url?, 'https://gitlab.com:invalid/path') }
+      expect { service.send(:extract_path_from_url, 'https://gitlab.com:invalid/path') }
         .to raise_error(ArgumentError, /Invalid URL format/)
+    end
+
+    context 'when the instance is served under a relative URL root' do
+      before do
+        stub_config_setting(relative_url_root: '/gitlab')
+      end
+
+      it 'strips the relative URL root from the path' do
+        url = 'https://gitlab.example.com/gitlab/namespace/project/-/work_items/42'
+        expect(service.send(:extract_path_from_url, url)).to eq('namespace/project/-/work_items/42')
+      end
+
+      it 'does not strip a path segment that merely matches the root name' do
+        url = 'https://gitlab.example.com/gitlab-org/project'
+        expect(service.send(:extract_path_from_url, url)).to eq('gitlab-org/project')
+      end
+
+      it 'strips the relative URL root from a group work item path' do
+        url = 'https://gitlab.example.com/gitlab/groups/namespace/group/-/work_items/42'
+        expect(service.send(:extract_path_from_url, url)).to eq('groups/namespace/group/-/work_items/42')
+      end
     end
   end
 

@@ -24,6 +24,13 @@ const DURATION_QUANTILE = {
   name: 'durationQuantile',
   type: 'metric',
 };
+const ALIASED_METRIC = {
+  key: 'p50',
+  field: 'durationQuantile',
+  label: 'Duration P50',
+  type: 'metric',
+  parameters: { quantile: 0.5 },
+};
 const SHOWN = { key: 'shownCount', label: 'Shown', name: 'shownCount', type: 'metric' };
 const ACCEPTED = { key: 'acceptedCount', label: 'Accepted', name: 'acceptedCount', type: 'metric' };
 const DATA = {
@@ -69,6 +76,77 @@ describe('SingleDimensionBarChart', () => {
         'Total count': [
           [21, 'ruby'],
           [14, 'python'],
+        ],
+      });
+    });
+  });
+
+  describe('with a time dimension', () => {
+    const TIME_DIMENSION = {
+      key: 'finished',
+      label: 'Finished',
+      name: 'finishedAt',
+      type: 'dimension',
+      parameters: { granularity: 'weekly' },
+    };
+
+    it('includes granularity in the y-axis title', () => {
+      createComponent({ dimension: TIME_DIMENSION });
+
+      expect(findChart().props('yAxisTitle')).toBe('Finished (weekly)');
+    });
+  });
+
+  describe('with an unaliased parameterised metric', () => {
+    const PARAMETERISED_METRIC = {
+      key: 'durationQuantile',
+      field: 'durationQuantile',
+      label: 'Duration quantile',
+      type: 'metric',
+      parameters: { quantile: 0.5 },
+    };
+    const PARAM_DATA = { nodes: [{ language: 'ruby', durationQuantile: 3661 }] };
+
+    it('uses the parameterised label as the x-axis title', () => {
+      createComponent({ metrics: [PARAMETERISED_METRIC], data: PARAM_DATA });
+
+      expect(findChart().props('xAxisTitle')).toBe('Duration quantile (0.5)');
+    });
+
+    it('keys the series data by the parameterised label', () => {
+      createComponent({ metrics: [PARAMETERISED_METRIC], data: PARAM_DATA });
+
+      expect(findChart().props('data')).toEqual({
+        'Duration quantile (0.5)': [[3661, 'ruby']],
+      });
+    });
+  });
+
+  describe('with an aliased parameterised metric', () => {
+    it('resolves the formatter from the base field name, not the alias', () => {
+      createComponent({
+        metrics: [ALIASED_METRIC],
+        data: { nodes: [{ language: 'ruby', p50: 3661 }] },
+      });
+
+      expect(findChart().props('option').xAxis.axisLabel.formatter(10000)).toBe('2.8h');
+    });
+
+    it('builds the series from the alias key and labels it with the alias label', () => {
+      createComponent({
+        metrics: [ALIASED_METRIC],
+        data: {
+          nodes: [
+            { language: 'ruby', p50: 3661 },
+            { language: 'python', p50: 90 },
+          ],
+        },
+      });
+
+      expect(findChart().props('data')).toEqual({
+        'Duration P50': [
+          [3661, 'ruby'],
+          [90, 'python'],
         ],
       });
     });
@@ -219,6 +297,16 @@ describe('SingleDimensionBarChart', () => {
 
       expect(w.text()).toContain('3661');
       expect(w.text()).not.toContain('1h 1m 1s');
+    });
+
+    it('formats an aliased duration metric with the base field formatter', () => {
+      const w = mountWithTooltip({
+        metrics: [ALIASED_METRIC],
+        data: { nodes: [{ language: 'ruby', p50: 3661 }] },
+        seriesData: [{ seriesName: 'Duration P50', value: [3661, 'ruby'], color: '#aaa' }],
+      });
+
+      expect(w.text()).toContain('1h 1m 1s');
     });
   });
 });

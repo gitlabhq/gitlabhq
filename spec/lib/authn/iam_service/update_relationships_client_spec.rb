@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Authn::IamService::RelationshipsClient, feature_category: :system_access do
+RSpec.describe Authn::IamService::UpdateRelationshipsClient, feature_category: :system_access do
   subject(:client) { described_class.new }
 
   describe '#assign_roles' do

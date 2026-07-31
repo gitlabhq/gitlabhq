@@ -1,7 +1,7 @@
 <script>
 import { historyPushState, historyReplaceState } from '~/lib/utils/common_utils';
 import { mergeUrlParams, setUrlParams } from '~/lib/utils/url_utility';
-import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
+import { getSlotFunction, normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 
 export const HISTORY_PUSH_UPDATE_METHOD = 'push';
 export const HISTORY_REPLACE_UPDATE_METHOD = 'replace';
@@ -144,7 +144,7 @@ export default normalizeRender({
     },
   },
   render() {
-    return this.$scopedSlots.default?.({ updateQuery: this.updateQuery });
+    return getSlotFunction(this)?.({ updateQuery: this.updateQuery });
   },
 });
 </script>

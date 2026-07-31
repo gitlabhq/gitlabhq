@@ -1,6 +1,6 @@
 <script>
 import { produce } from 'immer';
-import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
+import { getSlotFunction, normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 import { GRAPHQL_PAGE_SIZE } from '../constants/index';
 import deleteContainerRepositoryMutation from '../graphql/mutations/delete_container_repository.mutation.graphql';
 import getContainerRepositoryDetailsQuery from '../graphql/queries/get_container_repository_details.query.graphql';
@@ -67,8 +67,9 @@ export default normalizeRender({
     },
   },
   render() {
-    if (this.$scopedSlots?.default) {
-      return this.$scopedSlots.default({ doDelete: this.doDelete });
+    const slot = getSlotFunction(this);
+    if (slot) {
+      return slot({ doDelete: this.doDelete });
     }
     return null;
   },

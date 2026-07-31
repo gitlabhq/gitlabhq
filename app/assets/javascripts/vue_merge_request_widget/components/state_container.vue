@@ -3,6 +3,7 @@ import { GlButton, GlTooltipDirective, GlAnimatedChevronLgDownUpIcon } from '@gi
 import { __ } from '~/locale';
 import { STATUS_CLOSED, STATUS_MERGED } from '~/issues/constants';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import StatusIcon from './mr_widget_status_icon.vue';
 import Actions from './action_buttons.vue';
 
@@ -17,6 +18,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glSlotsMixin],
   props: {
     isCollapsible: {
       type: Boolean,
@@ -67,7 +69,7 @@ export default {
       return null;
     },
     hasActionsSlot() {
-      return this.$scopedSlots.actions?.()?.length;
+      return this.glSlots().actions?.()?.length;
     },
   },
   methods: {

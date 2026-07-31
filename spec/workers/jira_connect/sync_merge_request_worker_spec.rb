@@ -9,7 +9,7 @@ RSpec.describe JiraConnect::SyncMergeRequestWorker, feature_category: :integrati
 
   describe '#perform' do
     let_it_be(:group) { create(:group) }
-    let_it_be(:project) { create(:project, :repository, group: group) }
+    let_it_be(:project) { create(:project, :small_repo, group: group) }
     let_it_be(:subscription) { create(:jira_connect_subscription, installation: create(:jira_connect_installation), namespace: group) }
     let_it_be_with_reload(:merge_request) { create(:merge_request, source_project: project) }
 

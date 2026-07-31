@@ -171,7 +171,7 @@ describe('presenter_registry', () => {
     });
 
     describe('variant dispatch', () => {
-      const compact = 'compact';
+      const compact = { variant: 'compact' };
 
       it('resolves user field key with compact variant to UserPresenter', () => {
         expect(presenterFor({ user: MOCK_USER }, 'user', compact)).toBe(UserPresenter);
@@ -195,6 +195,29 @@ describe('presenter_registry', () => {
 
       it('resolves a Project with default variant to ProjectPresenter', () => {
         expect(presenterFor({ key: MOCK_PROJECT }, 'key')).toBe(ProjectPresenter);
+      });
+    });
+
+    describe('decoupled data and presenter keys', () => {
+      it('resolves data by the data key while dispatching by the presenter key', () => {
+        const presenter = presenterFor({ p50: 3661 }, 'p50', {
+          presenterKey: 'durationQuantile',
+        });
+
+        expect(presenter).not.toBe(NullPresenter);
+        expect(presenter).toBe(DurationPresenter);
+      });
+
+      it('routes aliased fields without a registered presenter by primitive type of the data', () => {
+        expect(
+          presenterFor({ Monthly: '2026-06-01' }, 'Monthly', { presenterKey: 'timestamp' }),
+        ).toBe(TimePresenter);
+      });
+
+      it('returns NullPresenter when the value under the data key is null', () => {
+        expect(presenterFor({ p50: null }, 'p50', { presenterKey: 'durationQuantile' })).toBe(
+          NullPresenter,
+        );
       });
     });
 

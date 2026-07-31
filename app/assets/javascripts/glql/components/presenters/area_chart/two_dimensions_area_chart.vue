@@ -1,6 +1,11 @@
 <script>
 import { GlAreaChart } from '@gitlab/ui/src/charts';
-import { buildStackedByDimension, tooltipContentFromParams } from '../../../utils/chart_data';
+import {
+  baseFieldKeyOf,
+  buildStackedByDimension,
+  labelWithParameter,
+  tooltipContentFromParams,
+} from '../../../utils/chart_data';
 import { formatterFor, axisFormatterFor, dimensionAxisTitleFor } from '../../../utils/value_format';
 import FormattedTooltipContent from '../chart/formatted_tooltip_content.vue';
 
@@ -45,10 +50,13 @@ export default {
       }));
     },
     metricFormatter() {
-      return formatterFor(this.metric.key);
+      return formatterFor(baseFieldKeyOf(this.metric));
     },
     metricAxisFormatter() {
-      return axisFormatterFor(this.metric.key);
+      return axisFormatterFor(baseFieldKeyOf(this.metric));
+    },
+    yAxisTitle() {
+      return labelWithParameter(this.metric);
     },
     chartOptions() {
       return {
@@ -57,7 +65,7 @@ export default {
           type: 'category',
         },
         yAxis: {
-          name: this.metric.label,
+          name: this.yAxisTitle,
           axisLabel: { formatter: this.metricAxisFormatter },
         },
       };

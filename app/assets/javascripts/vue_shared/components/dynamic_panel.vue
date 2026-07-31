@@ -1,4 +1,5 @@
 <script>
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import PanelActions from './panel_actions.vue';
 
 export default {
@@ -6,6 +7,7 @@ export default {
   components: {
     PanelActions,
   },
+  mixins: [glSlotsMixin],
   provide() {
     return {
       panelHeadingTag: 'h2',
@@ -72,7 +74,7 @@ export default {
         </div>
       </div>
 
-      <div v-if="$scopedSlots.footer" class="panel-footer" data-testid="panel-footer">
+      <div v-if="glSlots().footer" class="panel-footer" data-testid="panel-footer">
         <slot name="footer"></slot>
       </div>
     </div>

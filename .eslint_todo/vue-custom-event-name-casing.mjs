@@ -213,9 +213,6 @@ export default {
     'ee/app/assets/javascripts/work_items/components/work_item_change_type_modal.vue',
     'ee/app/assets/javascripts/work_items/components/work_item_iteration.vue',
     'ee/app/assets/javascripts/work_items/components/work_item_status.vue',
-    'ee/app/assets/javascripts/workspaces/common/components/update_workspace_mutation.vue',
-    'ee/app/assets/javascripts/workspaces/common/components/workspaces_list/workspaces_table.vue',
-    'ee/app/assets/javascripts/workspaces/dropdown_group/components/workspace_dropdown_item.vue',
   ],
   rules: {
     'vue/custom-event-name-casing': 'off',

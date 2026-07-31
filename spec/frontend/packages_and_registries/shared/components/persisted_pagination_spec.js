@@ -1,6 +1,7 @@
 import { GlKeysetPagination } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import PersistedPagination from '~/packages_and_registries/shared/components/persisted_pagination.vue';
+import { getSlotFunction } from '~/lib/utils/vue3compat/normalize_render';
 import UrlSync from '~/vue_shared/components/url_sync.vue';
 
 describe('Persisted Search', () => {
@@ -50,8 +51,11 @@ describe('Persisted Search', () => {
       methods: {
         updateQuery: updateQueryMock,
       },
+      // Vue 3-style zero-arg render; opt out of @vue/compat's legacy
+      // render-function emulation, which misclassifies it.
+      compatConfig: { RENDER_FUNCTION: false },
       render() {
-        return this.$scopedSlots.default?.({ updateQuery: this.updateQuery });
+        return getSlotFunction(this)?.({ updateQuery: this.updateQuery });
       },
     };
 

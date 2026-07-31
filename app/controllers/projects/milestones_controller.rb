@@ -142,9 +142,11 @@ class Projects::MilestonesController < Projects::ApplicationController
 
     Milestones::DestroyService.new(project, current_user).execute(milestone)
 
+    flash[:toast] = _('Milestone deleted.')
+
     respond_to do |format|
       format.html { redirect_to namespace_project_milestones_path, status: :see_other }
-      format.js { head :ok }
+      format.json { render json: { redirect_url: namespace_project_milestones_path } }
     end
   end
 

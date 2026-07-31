@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe ProjectDestroyWorker, feature_category: :source_code_management do
-  let!(:project) { create(:project, :repository, pending_delete: true) }
+  let!(:project) { create(:project, :small_repo, pending_delete: true) }
   let!(:repository) { project.repository.raw }
 
   let(:user) { project.first_owner }

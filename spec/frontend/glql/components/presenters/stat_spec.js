@@ -91,6 +91,19 @@ describe('StatPresenter', () => {
       expect(findSingleStat().props('value')).toBe(expectedValue);
     });
 
+    it('formats an aliased metric using the canonical field formatter', () => {
+      const aliasedMetric = {
+        key: 'p50',
+        field: 'durationQuantile',
+        label: 'Duration P50',
+        type: 'metric',
+        parameters: { quantile: 0.5 },
+      };
+      createComponent({ fields: [aliasedMetric], data: { nodes: [{ p50: 3661 }] } });
+
+      expect(findSingleStat().props('value')).toBe('1h 1m 1s');
+    });
+
     it('renders the raw value for a metric with no registered unit', () => {
       const custom = {
         key: 'somethingCustom',

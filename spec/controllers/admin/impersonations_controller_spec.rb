@@ -113,6 +113,14 @@ RSpec.describe Admin::ImpersonationsController do
 
               it_behaves_like "successfully stops impersonating"
             end
+
+            context "and the impersonated user's password has expired" do
+              before do
+                user.update!(password_expires_at: 5.minutes.ago)
+              end
+
+              it_behaves_like "successfully stops impersonating"
+            end
           end
         end
       end

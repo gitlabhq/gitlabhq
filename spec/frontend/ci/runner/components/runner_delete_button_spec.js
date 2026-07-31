@@ -3,6 +3,7 @@ import { stubComponent } from 'helpers/stub_component';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { I18N_DELETE_RUNNER } from '~/ci/runner/constants';
+import { getSlotFunction } from '~/lib/utils/vue3compat/normalize_render';
 
 import RunnerDeleteButton from '~/ci/runner/components/runner_delete_button.vue';
 import RunnerDeleteAction from '~/ci/runner/components/runner_delete_action.vue';
@@ -30,8 +31,11 @@ describe('RunnerDeleteButton', () => {
       },
       stubs: {
         RunnerDeleteAction: stubComponent(RunnerDeleteAction, {
+          // Vue 3-style zero-arg render; opt out of @vue/compat's legacy
+          // render-function emulation, which misclassifies it.
+          compatConfig: { RENDER_FUNCTION: false },
           render() {
-            return this.$scopedSlots.default({
+            return getSlotFunction(this)({
               loading,
               onClick,
             });

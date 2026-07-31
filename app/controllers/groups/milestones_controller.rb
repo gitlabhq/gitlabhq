@@ -83,9 +83,11 @@ class Groups::MilestonesController < Groups::ApplicationController
   def destroy
     Milestones::DestroyService.new(group, current_user).execute(@milestone)
 
+    flash[:toast] = _('Milestone deleted.')
+
     respond_to do |format|
       format.html { redirect_to group_milestones_path(group), status: :see_other }
-      format.js { head :ok }
+      format.json { render json: { redirect_url: group_milestones_path(group) } }
     end
   end
 

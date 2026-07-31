@@ -106,6 +106,31 @@ describe('SingleDimensionColumnChart', () => {
     });
   });
 
+  describe('with a time dimension', () => {
+    const TIME_DIMENSION = {
+      key: 'finished',
+      label: 'Finished',
+      name: 'finishedAt',
+      type: 'dimension',
+      parameters: { granularity: 'weekly' },
+    };
+
+    it('includes granularity in the x-axis title for GlColumnChart', () => {
+      createComponent({ dimension: TIME_DIMENSION });
+
+      expect(findColumnChart().props('xAxisTitle')).toBe('Finished (weekly)');
+    });
+
+    it('includes granularity in the x-axis title for GlStackedColumnChart', () => {
+      createComponent({
+        dimension: TIME_DIMENSION,
+        metrics: [SHOWN, ACCEPTED, REJECTED],
+      });
+
+      expect(findStackedChart().props('xAxisTitle')).toBe('Finished (weekly)');
+    });
+  });
+
   describe('with 2 metrics (default — dual-axis)', () => {
     beforeEach(() => {
       createComponent({ metrics: [TOTAL_COUNT, ACCEPTANCE_RATE] });
@@ -248,6 +273,79 @@ describe('SingleDimensionColumnChart', () => {
       createComponent({ metrics: [TOTAL_COUNT, ACCEPTANCE_RATE], stacked: true });
 
       expect(findStackedChart().props('option').yAxis).toBeUndefined();
+    });
+  });
+
+  describe('with an unaliased parameterised metric', () => {
+    const PARAMETERISED_METRIC = {
+      key: 'durationQuantile',
+      field: 'durationQuantile',
+      label: 'Duration quantile',
+      type: 'metric',
+      parameters: { quantile: 0.5 },
+    };
+
+    it('uses the parameterised label as the y-axis title', () => {
+      createComponent({
+        metrics: [PARAMETERISED_METRIC],
+        data: { nodes: [{ language: 'ruby', durationQuantile: 3661 }] },
+      });
+
+      expect(findColumnChart().props('yAxisTitle')).toBe('Duration quantile (0.5)');
+    });
+
+    it('names the bar series with the parameterised label', () => {
+      createComponent({
+        metrics: [PARAMETERISED_METRIC],
+        data: { nodes: [{ language: 'ruby', durationQuantile: 3661 }] },
+      });
+
+      expect(findColumnChart().props('bars')).toEqual([
+        { name: 'Duration quantile (0.5)', data: [['ruby', 3661]] },
+      ]);
+    });
+
+    it('uses the parameterised label as the secondary data title in dual-axis mode', () => {
+      createComponent({ metrics: [TOTAL_COUNT, PARAMETERISED_METRIC] });
+
+      expect(findColumnChart().props('secondaryDataTitle')).toBe('Duration quantile (0.5)');
+    });
+  });
+
+  describe('with an aliased parameterised metric', () => {
+    const ALIASED_METRIC = {
+      key: 'p50',
+      field: 'durationQuantile',
+      label: 'Duration P50',
+      type: 'metric',
+      parameters: { quantile: 0.5 },
+    };
+
+    it('uses the alias label as-is for the y-axis title', () => {
+      createComponent({
+        metrics: [ALIASED_METRIC],
+        data: { nodes: [{ language: 'ruby', p50: 3661 }] },
+      });
+
+      expect(findColumnChart().props('yAxisTitle')).toBe('Duration P50');
+    });
+
+    it('resolves the formatter from the base field name, not the alias', () => {
+      createComponent({
+        metrics: [ALIASED_METRIC],
+        data: { nodes: [{ language: 'ruby', p50: 3661 }] },
+      });
+
+      const { yAxis } = findColumnChart().props('option');
+      expect(yAxis.axisLabel.formatter(10000)).toBe('2.8h');
+    });
+
+    it('uses per-axis formatters in dual-axis mode with an aliased metric', () => {
+      createComponent({ metrics: [ALIASED_METRIC, ACCEPTANCE_RATE] });
+
+      const [primaryAxis, secondaryAxis] = findColumnChart().props('option').yAxis;
+      expect(primaryAxis.axisLabel.formatter(10000)).toBe('2.8h');
+      expect(secondaryAxis.axisLabel.formatter(0.5)).toBe('50%');
     });
   });
 

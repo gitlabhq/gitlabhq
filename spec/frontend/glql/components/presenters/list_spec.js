@@ -131,6 +131,61 @@ describe('ListPresenter', () => {
     });
   });
 
+  it('passes field key for data access and presenter key for dispatch on aliased fields', () => {
+    const aliasedField = {
+      key: 'p50',
+      field: 'durationQuantile',
+      label: 'Duration P50',
+      type: 'metric',
+      parameters: { quantile: 0.5 },
+    };
+
+    createWrapper({
+      data: {
+        nodes: [
+          {
+            __typename: 'FinishedPipelinesAggregationResponseDimensions',
+            id: '1',
+            p50: 3661,
+          },
+        ],
+      },
+      fields: [aliasedField],
+    });
+
+    const fieldPresenter = wrapper.findComponent(FieldPresenter);
+    expect(fieldPresenter.props('fieldKey')).toBe('p50');
+    expect(fieldPresenter.props('presenterKey')).toBe('durationQuantile');
+  });
+
+  it('renders formatted values, not "None", for aliased parameterised fields', () => {
+    const fields = [
+      {
+        key: 'Monthly',
+        field: 'timestamp',
+        label: 'Monthly',
+        name: 'timestamp',
+        type: 'dimension',
+        parameters: { granularity: 'monthly' },
+      },
+      {
+        key: 'p50',
+        field: 'durationQuantile',
+        label: 'Duration P50',
+        name: 'durationQuantile',
+        type: 'metric',
+        parameters: { quantile: 0.5 },
+      },
+    ];
+
+    createWrapper(
+      { data: { nodes: [{ id: '1', Monthly: '2026-06-01', p50: 3661 }] }, fields },
+      mountExtended,
+    );
+
+    expect(wrapper.findByTestId('list-item-0').text()).toBe('Jun 1, 2026 · 1h 1m 1s');
+  });
+
   it('passes compact variant to field presenters', () => {
     createWrapper({ data: MOCK_ISSUES, fields: MOCK_FIELDS }, mountExtended);
 

@@ -3,6 +3,7 @@ import {
   timeIntervalInWords,
   humanizeTimeInterval,
 } from '~/lib/utils/datetime/date_format_utility';
+import { baseFieldKeyOf, labelWithParameter } from './chart_data';
 
 export const formatCount = (value) => formatNumber(value);
 
@@ -72,9 +73,11 @@ export const labelForUnit = (unit) => UNIT_LABELS[unit]?.() ?? '';
 /**
  * Builds a map of { [metricLabel]: cellFormatter } for tooltip formatting.
  * Shared across all chart types that display multiple metrics.
+ * Keys use the parameterised label so they match the series names produced
+ * by the chart_data builders; formatValueForLabel resolves by series name.
  */
 export const buildFormatterByLabel = (metrics) =>
-  Object.fromEntries(metrics.map((m) => [m.label, formatterFor(m.key)]));
+  Object.fromEntries(metrics.map((m) => [labelWithParameter(m), formatterFor(baseFieldKeyOf(m))]));
 
 /**
  * Looks up the cell formatter for a series label and applies it to a value.
@@ -90,21 +93,22 @@ export const formatValueForLabel = (formatterByLabel, label, value) =>
  */
 export const buildSharedAxisFormatter = (metrics) => {
   if (metrics.length === 0) return null;
-  const units = metrics.map((m) => unitFor(m.key));
+  const units = metrics.map((m) => unitFor(baseFieldKeyOf(m)));
   if (units[0] == null || !units.every((u) => u === units[0])) return null;
-  return axisFormatterFor(metrics[0]?.key);
+  return axisFormatterFor(baseFieldKeyOf(metrics[0]));
 };
 
 /**
  * Derives a Y-axis title from the metrics list:
- * - Single metric: the metric's own label (e.g. "Total count")
+ * - Single metric: the metric's own parameterised label (e.g. "Total count",
+ *   "Duration quantile (0.5)")
  * - Multiple metrics, same unit: the unit label (e.g. "Count")
  * - Multiple metrics, mixed units: empty string
  */
 export const yAxisTitleFor = (metrics) => {
   if (metrics.length === 0) return '';
-  if (metrics.length === 1) return metrics[0].label;
-  const units = metrics.map((m) => unitFor(m.key));
+  if (metrics.length === 1) return labelWithParameter(metrics[0]);
+  const units = metrics.map((m) => unitFor(baseFieldKeyOf(m)));
   if (units[0] != null && units.every((u) => u === units[0])) {
     return labelForUnit(units[0]);
   }
@@ -118,6 +122,6 @@ export const yAxisTitleFor = (metrics) => {
  */
 export const dimensionAxisTitleFor = (primaryDimension, secondaryDimension) =>
   sprintf(__('%{primary} by %{secondary}'), {
-    primary: primaryDimension.label,
-    secondary: secondaryDimension.label,
+    primary: labelWithParameter(primaryDimension),
+    secondary: labelWithParameter(secondaryDimension),
   });

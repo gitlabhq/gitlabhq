@@ -1,6 +1,6 @@
 <script>
 import { MEMBERS_TAB_TYPES } from 'ee_else_ce/members/constants';
-import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
+import { getSlotFunction, normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 import {
   isGroup,
   isCurrentUser,
@@ -59,7 +59,7 @@ export default normalizeRender({
     },
   },
   render() {
-    return this.$scopedSlots.default({
+    return getSlotFunction(this)({
       memberType: this.memberType,
       isCurrentUser: this.isCurrentUser,
       permissions: {

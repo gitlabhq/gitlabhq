@@ -157,13 +157,15 @@ const presenterByPrimitiveType = (field) => {
   return TextPresenter;
 };
 
-// Resolves a presenter for the given (item, fieldKey, variant) by walking the
-// dispatch chain: null → field-key → typename → primitive.
-export const presenterFor = (item, fieldKey, variant) => {
+// Resolves a presenter for (item, fieldKey) via: null → field-key → typename → primitive.
+// `fieldKey` is the data key for value lookup; `presenterKey` (falls back to `fieldKey`)
+// is used for `presentersByFieldKey` — needed because aliased fields store data under
+// the alias, not the base field key.
+export const presenterFor = (item, fieldKey, { variant = 'default', presenterKey = '' } = {}) => {
   const field = dataForField(item, fieldKey);
   if (field == null) return NullPresenter;
   return (
-    presenterByFieldKey(fieldKey, item, variant) ||
+    presenterByFieldKey(presenterKey || fieldKey, item, variant) ||
     presenterByObjectType(field, variant) ||
     presenterByPrimitiveType(field)
   );

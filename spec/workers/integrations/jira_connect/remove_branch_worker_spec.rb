@@ -9,7 +9,7 @@ RSpec.describe Integrations::JiraConnect::RemoveBranchWorker, feature_category: 
 
   describe '#perform' do
     let_it_be(:group) { create(:group) }
-    let_it_be(:project) { create(:project, :repository, group: group) }
+    let_it_be(:project) { create(:project, group: group) }
     let_it_be(:subscription) do
       create(:jira_connect_subscription, installation: create(:jira_connect_installation), namespace: group)
     end

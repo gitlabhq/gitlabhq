@@ -37,6 +37,7 @@ For each scanner, an analyzer:
 SAST supports the following official analyzers:
 
 - [`gitlab-advanced-sast`](gitlab_advanced_sast.md), providing cross-file and cross-function taint analysis and improved detection accuracy. Ultimate only.
+- [`gitlab-advanced-sast-ext`](advanced_sast_swift_objc.md), providing cross-file and cross-function taint analysis for Swift and Objective-C. Ultimate only. Beta.
 - [`kubesec`](https://gitlab.com/gitlab-org/security-products/analyzers/kubesec), based on Kubesec. Off by default; see [Enabling KubeSec analyzer](_index.md#enabling-kubesec-analyzer).
 - [`pmd-apex`](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex), based on PMD with rules for the Apex language.
 - [`semgrep`](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep), based on the Semgrep OSS engine [with GitLab-managed rules](rules.md#semgrep-based-analyzer).

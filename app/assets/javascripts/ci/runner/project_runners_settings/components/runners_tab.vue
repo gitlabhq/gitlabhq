@@ -11,6 +11,7 @@ import RunnerName from '~/ci/runner/components/runner_name.vue';
 import RunnerActionsCell from '~/ci/runner/components/cells/runner_actions_cell.vue';
 import RunnerPagination from '~/ci/runner/components/runner_pagination.vue';
 
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import { getPaginationVariables } from '../../utils';
 
 export default {
@@ -26,6 +27,7 @@ export default {
     RunnerActionsCell,
     RunnerPagination,
   },
+  mixins: [glSlotsMixin],
   props: {
     projectFullPath: {
       type: String,
@@ -126,10 +128,10 @@ export default {
       </div>
     </template>
 
-    <div v-if="$scopedSlots.settings" class="gl-mx-5 gl-mb-5 gl-mt-3">
+    <div v-if="glSlots().settings" class="gl-mx-5 gl-mb-5 gl-mt-3">
       <slot name="settings"></slot>
     </div>
-    <div v-if="$scopedSlots.description" class="gl-mx-5 gl-mb-5">
+    <div v-if="glSlots().description" class="gl-mx-5 gl-mb-5">
       <gl-alert variant="tip" :dismissible="false">
         <slot name="description"></slot>
       </gl-alert>

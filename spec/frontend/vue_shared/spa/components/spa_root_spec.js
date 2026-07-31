@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { getSlotFunction } from '~/lib/utils/vue3compat/normalize_render';
 import SpaRoot from '~/vue_shared/spa/components/spa_root.vue';
 
 describe('SpaRoot', () => {
@@ -11,8 +12,11 @@ describe('SpaRoot', () => {
 
   const DummyRouterView = {
     name: 'DummyRouterView',
+    // Vue 3-style zero-arg render; opt out of @vue/compat's legacy
+    // render-function emulation, which misclassifies it.
+    compatConfig: { RENDER_FUNCTION: false },
     render() {
-      return this.$scopedSlots.default({ Component: DummyRouteComponent });
+      return getSlotFunction(this)({ Component: DummyRouteComponent });
     },
   };
 

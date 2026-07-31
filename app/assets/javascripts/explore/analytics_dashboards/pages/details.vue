@@ -1,6 +1,7 @@
 <script>
 import { computed } from 'vue';
 import { GlDashboardLayout, GlTabs, GlTab } from '@gitlab/ui';
+import { getParameterByName } from '~/lib/utils/url_utility';
 import AnalyticsDashboardPanel from '~/analytics/shared/components/analytics_dashboard_panel.vue';
 import DashboardFilters from '../components/dashboard_filters.vue';
 import DashboardLoader from '../components/dashboard_loader.vue';
@@ -43,6 +44,14 @@ export default {
     };
   },
   methods: {
+    // Set the active tab from the `view` query param on load. Default to the
+    // first view if the query param wasn't included, or has an invalid index.
+    onDashboardLoaded({ config }) {
+      const viewParam = getParameterByName('view');
+      const viewIndex = (config.views ?? []).findIndex((_, index) => `${index}` === viewParam);
+
+      this.activeViewIndex = viewIndex === -1 ? 0 : viewIndex;
+    },
     hasViews(config) {
       return Boolean(config.views?.length);
     },
@@ -89,7 +98,7 @@ export default {
 };
 </script>
 <template>
-  <dashboard-loader>
+  <dashboard-loader @loaded="onDashboardLoaded">
     <template #dashboard="{ config, cellHeight, minCellHeight, isSystemDashboard }">
       <!--
         Keying the layout by the active view forces a clean remount of the grid on
@@ -114,6 +123,8 @@ export default {
             v-model="activeViewIndex"
             class="gl-basis-full"
             content-class="gl-hidden"
+            sync-active-tab-with-query-params
+            query-param-name="view"
             data-testid="dashboard-views"
           >
             <gl-tab v-for="(view, index) in config.views" :key="index" :title="view.title" />

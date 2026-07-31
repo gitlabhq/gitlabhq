@@ -1,6 +1,6 @@
 <script>
 import { debounce } from 'lodash-es';
-import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
+import { getSlotFunction, normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 import { ALERT_EVENT, KEYDOWN_EVENT } from '../constants';
 
 export const tiptapToComponentMap = {
@@ -57,7 +57,7 @@ export default normalizeRender({
     },
   },
   render() {
-    return this.$scopedSlots.default?.();
+    return getSlotFunction(this)?.();
   },
 });
 </script>

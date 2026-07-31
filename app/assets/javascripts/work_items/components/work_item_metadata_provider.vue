@@ -1,7 +1,7 @@
 <script>
 import { computed } from 'vue';
 import { TYPENAME_GROUP } from '~/graphql_shared/constants';
-import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
+import { getSlotFunction, normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 import workItemMetadataQuery from 'ee_else_ce/work_items/graphql/work_item_metadata.query.graphql';
 import workItemTypesConfigurationQuery from '~/work_items/graphql/work_item_types_configuration.query.graphql';
 
@@ -135,7 +135,7 @@ export default normalizeRender({
     },
   },
   render() {
-    return this.$scopedSlots.default?.();
+    return getSlotFunction(this)?.();
   },
 });
 </script>

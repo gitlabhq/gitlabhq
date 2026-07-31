@@ -10568,6 +10568,9 @@ msgstr ""
 msgid "AnalyticsDashboards|Add panel"
 msgstr ""
 
+msgid "AnalyticsDashboards|Add panel with unverified changes?"
+msgstr ""
+
 msgid "AnalyticsDashboards|Add panels to this dashboard to visualize your analytics data."
 msgstr ""
 
@@ -10637,7 +10640,7 @@ msgstr ""
 msgid "AnalyticsDashboards|Enter a title"
 msgstr ""
 
-msgid "AnalyticsDashboards|Enter and run a query to add it to the dashboard."
+msgid "AnalyticsDashboards|Enter and run a query to see results before adding the panel to the dashboard."
 msgstr ""
 
 msgid "AnalyticsDashboards|Failed to create dashboard. Please try again."
@@ -10676,6 +10679,9 @@ msgstr ""
 msgid "AnalyticsDashboards|Projects"
 msgstr ""
 
+msgid "AnalyticsDashboards|Query required"
+msgstr ""
+
 msgid "AnalyticsDashboards|Root Cause Analysis"
 msgstr ""
 
@@ -10697,7 +10703,7 @@ msgstr ""
 msgid "AnalyticsDashboards|View analytics dashboards"
 msgstr ""
 
-msgid "AnalyticsDashboards|You have pending changes. Run the query to add the latest version to the dashboard."
+msgid "AnalyticsDashboards|You haven't run the updated query. The panel will use the current query text, which may differ from the preview."
 msgstr ""
 
 msgid "Analytics|%{linkStart}Learn more%{linkEnd} about managing and interacting with analytics dashboards."
@@ -20411,6 +20417,9 @@ msgstr ""
 msgid "ComplianceReport|Status"
 msgstr ""
 
+msgid "ComplianceReport|The compliance status report requires GitLab Ultimate"
+msgstr ""
+
 msgid "ComplianceReport|There are no compliance frameworks."
 msgstr ""
 
@@ -20429,6 +20438,9 @@ msgstr ""
 msgid "ComplianceReport|This compliance framework's compliance pipeline has been migrated to a pipeline execution policy."
 msgstr ""
 
+msgid "ComplianceReport|Track requirement status across your projects with the compliance status report, available with GitLab Ultimate."
+msgstr ""
+
 msgid "ComplianceReport|Unable to load the compliance framework projects report. Refresh the page and try again."
 msgstr ""
 
@@ -20445,6 +20457,9 @@ msgid "ComplianceReport|Update filtered results?"
 msgstr ""
 
 msgid "ComplianceReport|Update result"
+msgstr ""
+
+msgid "ComplianceReport|Upgrade your plan"
 msgstr ""
 
 msgid "ComplianceReport|View the framework details"
@@ -48293,6 +48308,9 @@ msgid "Milestone"
 msgid_plural "Milestones"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Milestone deleted."
+msgstr ""
 
 msgid "Milestone due date"
 msgstr ""

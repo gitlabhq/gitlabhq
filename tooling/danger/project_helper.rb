@@ -6,7 +6,6 @@ module Tooling
       CI_ONLY_RULES = %w[
         ce_ee_vue_templates
         data_deletion
-        datateam
         master_pipeline_status
         roulette
         sidekiq_queues

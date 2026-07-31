@@ -12,8 +12,8 @@ RSpec.describe RepositoryForkWorker, feature_category: :source_code_management d
   end
 
   describe "#perform" do
-    let(:project) { create(:project, :public, :repository) }
-    let(:forked_project) { create(:project, :repository, :import_scheduled) }
+    let(:project) { create(:project, :public, :small_repo) }
+    let(:forked_project) { create(:project, :small_repo, :import_scheduled) }
 
     before do
       fork_project(project, forked_project.creator, target_project: forked_project, repository: true)

@@ -88,13 +88,24 @@ module Ci
       end
 
       def load_jobs(ids)
-        pipeline
+        jobs = pipeline
           .current_processable_jobs
           .id_in(ids)
-          .with_project_preload
           .created
           .ordered_by_stage
           .select_with_aggregated_needs(project)
+
+        unless Feature.enabled?(:ci_atomic_processing_preload_available_records, project)
+          return jobs.with_project_preload
+        end
+
+        ActiveRecord::Associations::Preloader.new(
+          records: jobs,
+          associations: { project: :namespace },
+          available_records: [project, project.namespace]
+        ).call
+
+        jobs
       end
 
       def sort_jobs(jobs)

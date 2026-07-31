@@ -41,6 +41,22 @@ export function stubComponent(Component, options = {}) {
     template: '<div><slot></slot></div>',
     // allows wrapper.findComponent(Component) to work for stub
     $_vueTestUtils_original: Component,
+    // @vue/compat misclassifies any render with fewer than 2 parameters as a
+    // legacy Vue 2 render, so callers overriding `render` below (commonly
+    // zero-arg renders reading this.$scopedSlots) warn RENDER_FUNCTION once
+    // per (anonymous) stub instance. 'suppress-warning' rather than `false`:
+    // the compat feature must stay enabled so legacy reads like $scopedSlots
+    // and the vnode-array $slots shape keep working inside those renders.
+    // INSTANCE_SCOPED_SLOTS stays enabled the same way: the
+    // RENDER_ALL_SLOTS_TEMPLATE above iterates $scopedSlots, which is the
+    // only version-agnostic function-shaped slot map available to a stub
+    // template on both runtimes. Inert under Vue 2; per-component
+    // compatConfig wins over the global key configuration in
+    // compat_config.js.
+    compatConfig: {
+      RENDER_FUNCTION: 'suppress-warning',
+      INSTANCE_SCOPED_SLOTS: 'suppress-warning',
+    },
     ...options,
   };
 }

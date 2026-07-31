@@ -1,11 +1,13 @@
 <script>
 import { GlSprintf } from '@gitlab/ui';
 import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import AccessSummary from './access_summary.vue';
 
 export default {
   name: 'RegularAccessSummary',
   components: { AccessSummary, GlSprintf, HelpPageLink },
+  mixins: [glSlotsMixin],
 };
 </script>
 
@@ -14,7 +16,7 @@ export default {
     <template #admin-content>
       <slot></slot>
     </template>
-    <template v-if="!$scopedSlots.default" #admin-list>
+    <template v-if="!glSlots().default" #admin-list>
       <li>{{ s__('AdminUsers|No access.') }}</li>
     </template>
 

@@ -1,6 +1,10 @@
 <script>
 import { GlAreaChart, GlLineChart } from '@gitlab/ui/src/charts';
-import { buildSeries, tooltipContentFromParams } from '../../../utils/chart_data';
+import {
+  buildSeries,
+  labelWithParameter,
+  tooltipContentFromParams,
+} from '../../../utils/chart_data';
 import {
   buildFormatterByLabel,
   buildSharedAxisFormatter,
@@ -68,7 +72,7 @@ export default {
     },
     chartOptions() {
       const options = {
-        xAxis: { name: this.dimension.label, type: 'category' },
+        xAxis: { name: labelWithParameter(this.dimension) ?? '', type: 'category' },
       };
       const yAxis = {};
       if (this.yAxisTitle) {
