@@ -2,14 +2,15 @@
 import {
   GlModal,
   GlSearchBoxByType,
-  GlScrollableTabs,
-  GlTab,
+  GlButton,
+  GlIcon,
+  GlCollapse,
   GlEmptyState,
   GlLink,
   GlLoadingIcon,
 } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { s__, sprintf } from '~/locale';
+import { s__ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { HTTP_STATUS_TOO_MANY_REQUESTS } from '~/lib/utils/http_status';
@@ -19,18 +20,13 @@ import { InternalEvents } from '~/tracking';
 import {
   EVENT_OPEN_FEATURE_LIBRARY_MODAL,
   EVENT_SEARCH_FEATURES_IN_FEATURE_LIBRARY_MODAL,
-  EVENT_CLICK_CATEGORY_TAB_IN_FEATURE_LIBRARY_MODAL,
   EVENT_PIN_ITEM_IN_FEATURE_LIBRARY_MODAL,
   EVENT_UNPIN_ITEM_IN_FEATURE_LIBRARY_MODAL,
   EVENT_NAVIGATE_TO_FEATURE_FROM_FEATURE_LIBRARY_MODAL,
 } from '../../tracking_constants';
-import {
-  ALL_CATEGORY,
-  ALL_CATEGORY_ID,
-  FEEDBACK_ISSUE_URL,
-  MODAL_ID,
-  ITEMS_PER_RENDER_FRAME,
-} from './constants';
+import { PANEL_TYPES } from '../../constants';
+import ScrollScrim from '../scroll_scrim.vue';
+import { FEEDBACK_ISSUE_URL, MODAL_ID, ITEMS_PER_RENDER_FRAME } from './constants';
 import FeatureLibraryItem from './feature_library_item.vue';
 
 const SETTINGS_MENU_ID = 'settings_menu';
@@ -45,11 +41,13 @@ export default {
   components: {
     GlModal,
     GlSearchBoxByType,
-    GlScrollableTabs,
-    GlTab,
+    GlButton,
+    GlIcon,
+    GlCollapse,
     GlEmptyState,
     GlLink,
     GlLoadingIcon,
+    ScrollScrim,
     FeatureLibraryItem,
   },
   mixins: [trackingMixin],
@@ -85,7 +83,7 @@ export default {
   data() {
     return {
       searchQuery: '',
-      activeCategoryId: ALL_CATEGORY_ID,
+      collapsedSectionIds: [],
       searchResultIds: [],
       isSearching: false,
       latestQuery: null,
@@ -97,8 +95,15 @@ export default {
     trimmedQuery() {
       return this.searchQuery.trim();
     },
-    libraryCategories() {
-      return [ALL_CATEGORY, ...this.catalogSections.map(({ id, title }) => ({ id, label: title }))];
+    searchPlaceholder() {
+      switch (this.panelType) {
+        case PANEL_TYPES.PROJECT:
+          return s__('FeatureLibrary|Search features in this project');
+        case PANEL_TYPES.GROUP:
+          return s__('FeatureLibrary|Search features in this group');
+        default:
+          return s__('FeatureLibrary|Search GitLab features');
+      }
     },
     catalogSections() {
       return this.sections
@@ -136,28 +141,43 @@ export default {
     filteredItems() {
       const q = this.trimmedQuery.toLowerCase();
 
-      const inCategory = (item) =>
-        this.activeCategoryId === ALL_CATEGORY_ID || item.category === this.activeCategoryId;
-
-      if (!q) return this.catalog.filter(inCategory);
+      if (!q) return this.catalog;
 
       const textMatches = (text = '') => text.toLowerCase().includes(q);
 
       // Synonym matches from endpoint come first: backend-ranked (exact -> prefix -> contains).
       const synonymMatches = this.searchResultIds
         .map((id) => this.catalogById[id])
-        .filter((item) => item && inCategory(item));
+        .filter((item) => item);
 
       // Direct title/description matches follow, excluding any already surfaced as synonyms.
       const synonymIds = new Set(synonymMatches.map((item) => item.id));
       const directMatches = this.catalog.filter(
         (item) =>
-          inCategory(item) &&
-          !synonymIds.has(item.id) &&
-          (textMatches(item.title) || textMatches(item.description)),
+          !synonymIds.has(item.id) && (textMatches(item.title) || textMatches(item.description)),
       );
 
       return [...synonymMatches, ...directMatches];
+    },
+    // Sections with their items, honoring the progressive reveal limit.
+    // Used when not searching, so each category renders under its own heading.
+    //
+    // Every section heading is always included so the section list is stable
+    // regardless of the reveal budget; only the items within each section are
+    // limited, and the budget is distributed across sections in order.
+    groupedSections() {
+      let remaining = this.renderLimit;
+
+      return this.catalogSections.map((section) => {
+        const items = section.items
+          .slice(0, Math.max(remaining, 0))
+          .map((item) => this.catalogById[item.id])
+          .filter(Boolean);
+
+        remaining -= items.length;
+
+        return { id: section.id, title: section.title, items };
+      });
     },
     showEmptyState() {
       return (
@@ -167,23 +187,7 @@ export default {
       );
     },
     emptyStateTitle() {
-      if (this.activeCategoryId !== ALL_CATEGORY_ID) {
-        const activeCategory = this.libraryCategories.find(
-          (category) => category.id === this.activeCategoryId,
-        );
-
-        if (activeCategory) {
-          return sprintf(s__('FeatureLibrary|No matches in %{category}'), {
-            category: activeCategory.label,
-          });
-        }
-      }
-
       return s__('FeatureLibrary|No features match your search');
-    },
-    visibleItems() {
-      if (this.trimmedQuery) return this.filteredItems;
-      return this.filteredItems.slice(0, this.renderLimit);
     },
   },
   beforeUnmount() {
@@ -192,6 +196,16 @@ export default {
   methods: {
     isPinned(itemId) {
       return this.currentPinnedIds.includes(itemId);
+    },
+    isSectionExpanded(sectionId) {
+      return !this.collapsedSectionIds.includes(sectionId);
+    },
+    toggleSection(sectionId) {
+      if (this.isSectionExpanded(sectionId)) {
+        this.collapsedSectionIds.push(sectionId);
+      } else {
+        this.collapsedSectionIds = this.collapsedSectionIds.filter((id) => id !== sectionId);
+      }
     },
     onShown() {
       this.$refs.searchBox?.focusInput();
@@ -221,12 +235,6 @@ export default {
         this.revealFrameId = null;
       }
     },
-    onTabClick(categoryId) {
-      this.activeCategoryId = categoryId;
-      this.trackEvent(EVENT_CLICK_CATEGORY_TAB_IN_FEATURE_LIBRARY_MODAL, {
-        label: categoryId,
-      });
-    },
     resetSearchState() {
       this.isSearching = false;
       this.latestQuery = null;
@@ -235,7 +243,6 @@ export default {
     onSearchInput(value) {
       this.searchQuery = value;
       const query = value.trim();
-      this.activeCategoryId = ALL_CATEGORY_ID;
 
       if (query) {
         this.fetchResults(query);
@@ -260,7 +267,7 @@ export default {
       this.resetSearchState();
       this.cancelReveal();
       this.searchQuery = '';
-      this.activeCategoryId = ALL_CATEGORY_ID;
+      this.collapsedSectionIds = [];
       this.renderLimit = ITEMS_PER_RENDER_FRAME;
     },
     fetchResults(query) {
@@ -303,7 +310,7 @@ export default {
     :modal-id="$options.modalId"
     :aria-label="s__('FeatureLibrary|GitLab features')"
     :hide-footer="!showFeedbackLink"
-    modal-class="feature-library-modal gl-backdrop-blur-sm gl-px-2 sm:gl-px-5"
+    modal-class="feature-library-modal"
     body-class="gl-flex gl-flex-col"
     size="lg"
     scrollable
@@ -314,51 +321,94 @@ export default {
     <gl-search-box-by-type
       ref="searchBox"
       :value="searchQuery"
-      :placeholder="s__('FeatureLibrary|Search GitLab features')"
+      :placeholder="searchPlaceholder"
       :debounce="$options.DEFAULT_DEBOUNCE_AND_THROTTLE_MS"
       class="gl-mb-4 gl-mt-3"
       @input="onSearchInput"
       @keydown.enter="onSearchEnter"
     />
-    <gl-scrollable-tabs>
-      <gl-tab
-        v-for="cat in libraryCategories"
-        :key="cat.id"
-        :title="cat.label"
-        :active="cat.id === activeCategoryId"
-        @click="onTabClick(cat.id)"
-      />
-    </gl-scrollable-tabs>
-    <div
+    <scroll-scrim
       data-testid="feature-library-scroll-area"
-      class="feature-library-scroll-area gl-min-h-0 gl-grow gl-overflow-y-auto"
+      class="feature-library-scroll-area feature-library-scroll-bleed gl-min-h-0 gl-grow"
     >
-      <ul
-        v-if="!isSearching && filteredItems.length > 0"
-        data-testid="feature-library-grid"
-        class="gl-grid gl-list-none gl-grid-cols-1 gl-gap-3 gl-p-0 sm:gl-grid-cols-2 md:gl-grid-cols-3"
-      >
-        <feature-library-item
-          v-for="item in visibleItems"
-          :key="item.id"
-          :supports-pins="supportsPins"
-          :item="item"
-          :pinned="isPinned(item.id)"
-          @pin-toggle="onPinToggle"
-          @navigate="onNavigate"
+      <div class="feature-library-scroll-inset">
+        <!-- Search results: a single flat, ranked grid. -->
+        <ul
+          v-if="trimmedQuery && !isSearching && filteredItems.length > 0"
+          data-testid="feature-library-grid"
+          class="gl-grid gl-list-none gl-grid-cols-1 gl-gap-3 gl-p-0 sm:gl-grid-cols-2 md:gl-grid-cols-3"
+        >
+          <feature-library-item
+            v-for="item in filteredItems"
+            :key="item.id"
+            :supports-pins="supportsPins"
+            :item="item"
+            :pinned="isPinned(item.id)"
+            @pin-toggle="onPinToggle"
+            @navigate="onNavigate"
+          />
+        </ul>
+        <!-- Browsing: features grouped by category, each in a collapsible section. -->
+        <template v-else-if="!trimmedQuery">
+          <section
+            v-for="section in groupedSections"
+            :key="section.id"
+            data-testid="feature-library-section"
+            class="gl-mb-3"
+          >
+            <h3 class="gl-m-0">
+              <gl-button
+                category="tertiary"
+                size="small"
+                block
+                button-text-classes="gl-flex gl-w-full gl-items-center gl-gap-2 gl-text-base gl-font-semibold gl-text-subtle"
+                :aria-expanded="isSectionExpanded(section.id) ? 'true' : 'false'"
+                :aria-controls="`feature-library-section-${section.id}`"
+                data-testid="feature-library-section-toggle"
+                @click="toggleSection(section.id)"
+              >
+                <span class="gl-grow gl-text-left">{{ section.title }}</span>
+                <gl-icon :name="isSectionExpanded(section.id) ? 'chevron-down' : 'chevron-right'" />
+              </gl-button>
+            </h3>
+            <gl-collapse
+              :id="`feature-library-section-${section.id}`"
+              :visible="isSectionExpanded(section.id)"
+            >
+              <ul
+                data-testid="feature-library-section-grid"
+                class="gl-mt-2 gl-grid gl-list-none gl-grid-cols-1 gl-gap-3 gl-p-0 sm:gl-grid-cols-2 md:gl-grid-cols-3"
+              >
+                <feature-library-item
+                  v-for="item in section.items"
+                  :key="item.id"
+                  :supports-pins="supportsPins"
+                  :item="item"
+                  :pinned="isPinned(item.id)"
+                  @pin-toggle="onPinToggle"
+                  @navigate="onNavigate"
+                />
+              </ul>
+            </gl-collapse>
+          </section>
+        </template>
+        <gl-loading-icon
+          v-if="isSearching"
+          size="sm"
+          class="gl-mt-3"
+          data-testid="search-loading"
         />
-      </ul>
-      <gl-loading-icon v-if="isSearching" size="sm" class="gl-mt-3" data-testid="search-loading" />
-      <gl-empty-state
-        v-if="showEmptyState"
-        :title="emptyStateTitle"
-        :description="s__('FeatureLibrary|Try a different search term or category.')"
-      />
-    </div>
+        <gl-empty-state
+          v-if="showEmptyState"
+          :title="emptyStateTitle"
+          :description="s__('FeatureLibrary|Try a different search term.')"
+        />
+      </div>
+    </scroll-scrim>
     <template v-if="showFeedbackLink" #modal-footer>
       <div class="gl-w-full gl-text-center gl-text-sm">
         <gl-link :href="$options.FEEDBACK_ISSUE_URL" target="_blank" rel="noopener noreferrer">{{
-          s__('FeatureLibrary|Share feedback about this feature')
+          s__('FeatureLibrary|Share feedback about this feature library')
         }}</gl-link>
       </div>
     </template>

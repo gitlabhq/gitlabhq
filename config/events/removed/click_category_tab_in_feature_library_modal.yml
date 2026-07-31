@@ -18,3 +18,6 @@ additional_properties:
   label:
     description: The id of the category tab that was clicked
       (e.g. "all", "plan", "create").
+status: removed
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/246751
+milestone_removed: '19.3'

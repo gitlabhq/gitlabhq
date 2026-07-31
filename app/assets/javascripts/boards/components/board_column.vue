@@ -141,7 +141,7 @@ export default {
           :list="list"
           :filter-params="filters"
           :board-id="boardId"
-          @toggleNewForm="toggleNewForm"
+          @toggle-new-form="toggleNewForm"
           @setActiveList="$emit('setActiveList', $event)"
         />
         <board-list
@@ -155,7 +155,7 @@ export default {
           :focused="focused"
           @drag-stop="$emit('drag-stop')"
           @drag-start="$emit('drag-start', $event)"
-          @toggleNewForm="toggleNewForm"
+          @toggle-new-form="toggleNewForm"
           @set-filters="$emit('set-filters', $event)"
           @cannot-find-active-item="$emit('cannot-find-active-item')"
           @focus-adjacent="$emit('focus-adjacent', $event)"

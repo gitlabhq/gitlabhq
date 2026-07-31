@@ -12,7 +12,14 @@ import {
 } from '~/lib/utils/url_utility';
 import { logError } from '~/lib/logger';
 import { __ } from '~/locale';
-import { SCOPE_BLOB, SEARCH_TYPE_ZOEKT, LABEL_FILTER_PARAM } from '~/search/sidebar/constants';
+import {
+  SCOPE_BLOB,
+  SEARCH_TYPE_ZOEKT,
+  LABEL_FILTER_PARAM,
+  LANGUAGE_FILTER_PARAM,
+  INCLUDE_ARCHIVED_FILTER_PARAM,
+  EXCLUDE_FORKS_FILTER_PARAM,
+} from '~/search/sidebar/constants';
 import {
   GROUPS_LOCAL_STORAGE_KEY,
   PROJECTS_LOCAL_STORAGE_KEY,
@@ -151,6 +158,28 @@ export const fetchSidebarCount = ({ commit, state }, skipBlobs) => {
   return Promise.all(promises);
 };
 
+const syncZoektUrl = async ({ state, commit, dispatch }, { refetchAggregations = false } = {}) => {
+  const shouldResetPage = state.query?.page > 1 || state.urlQuery?.page > 1;
+  const query = shouldResetPage ? { ...state.query, page: 1 } : { ...state.query };
+  const newUrl = setUrlParams(query, {
+    url: window.location.href,
+    clearParams: true,
+    railsArraySyntax: true,
+  });
+
+  updateHistory({ state: query, title: state.query.search, url: newUrl, replace: true });
+
+  if (shouldResetPage) {
+    commit(types.SET_QUERY, { key: 'page', value: 1 });
+  }
+
+  await nextTick();
+  dispatch('fetchSidebarCount');
+  if (refetchAggregations) {
+    dispatch('fetchAllAggregation');
+  }
+};
+
 export const setQuery = async ({ state, commit, getters, dispatch }, { key, value }) => {
   commit(types.SET_QUERY, { key, value });
 
@@ -166,23 +195,34 @@ export const setQuery = async ({ state, commit, getters, dispatch }, { key, valu
     state.searchType === SEARCH_TYPE_ZOEKT && getters.currentScope === SCOPE_BLOB;
 
   if (isZoektSearch && key === 'search') {
-    const shouldResetPage = state.query?.page > 1 || state.urlQuery?.page > 1;
-    const query = shouldResetPage ? { ...state.query, page: 1 } : { ...state.query };
-    const newUrl = setUrlParams(query, {
-      url: window.location.href,
-      clearParams: true,
-      railsArraySyntax: true,
-    });
     document.title = buildDocumentTitle(state.query.search);
 
-    updateHistory({ state: query, title: state.query.search, url: newUrl, replace: true });
+    // A new search term shifts the underlying result set, so the language
+    // buckets must be recomputed. Skipping this leaves stale counts pinned
+    // to the previous term until the user reloads the page.
+    await syncZoektUrl(
+      { state, commit, dispatch },
+      { refetchAggregations: state.zoektLanguageAggregationsEnabled },
+    );
+  }
 
-    if (shouldResetPage) {
-      commit(types.SET_QUERY, { key: 'page', value: 1 });
-    }
+  // Language filter is applied live (without requiring an "Apply" click) for
+  // Zoekt code search: keep the URL in sync so refreshes preserve the filter,
+  // and refresh the sidebar counts. Aggregation buckets are intentionally NOT
+  // refetched here — they are faceted (computed against the language-stripped
+  // result set) so they remain stable across language ticks.
+  if (isZoektSearch && key === LANGUAGE_FILTER_PARAM && state.zoektLanguageAggregationsEnabled) {
+    await syncZoektUrl({ state, commit, dispatch });
+  }
 
-    await nextTick();
-    dispatch('fetchSidebarCount');
+  // Archived / Forks filters are applied live for Zoekt too. Sync the URL so
+  // the aggregation endpoint (which reads window.location.search) sees the
+  // same filter values Apollo uses, then refetch counts and buckets — these
+  // filters DO shift bucket counts (unlike language ticks), so we re-fetch.
+  const isArchivedOrForksFilter =
+    key === INCLUDE_ARCHIVED_FILTER_PARAM || key === EXCLUDE_FORKS_FILTER_PARAM;
+  if (isZoektSearch && isArchivedOrForksFilter && state.zoektLanguageAggregationsEnabled) {
+    await syncZoektUrl({ state, commit, dispatch }, { refetchAggregations: true });
   }
 
   if (isZoektSearch && key === 'page') {
@@ -237,7 +277,15 @@ export const setLabelFilterSearch = ({ commit }, { value }) => {
 };
 
 export const fetchAllAggregation = ({ commit, state }) => {
-  commit(types.REQUEST_AGGREGATIONS);
+  // On Zoekt, avoid the REQUEST_AGGREGATIONS mutation which wipes `data` to
+  // an empty array — we want the previous buckets to remain visible during
+  // the fetch so the sidebar can render a "refreshing" state (dimmed +
+  // spinner) over the last-known buckets. Non-Zoekt paths (Elasticsearch)
+  // keep the original loading behavior.
+  const preserveBuckets =
+    state.searchType === SEARCH_TYPE_ZOEKT && state.zoektLanguageAggregationsEnabled;
+  commit(preserveBuckets ? types.REQUEST_AGGREGATIONS_LOADING : types.REQUEST_AGGREGATIONS);
+
   return axios
     .get(searchAggregationsPath(queryToObject(window.location.search, { gatherArrays: true })))
     .then(({ data }) => {

@@ -39,6 +39,12 @@ export default {
   [types.REQUEST_AGGREGATIONS](state) {
     state.aggregations = { fetching: true, error: false, data: [] };
   },
+  [types.REQUEST_AGGREGATIONS_LOADING](state) {
+    // Preserve existing buckets while a refresh is in flight. Zoekt uses this
+    // so users see a subtle "refreshing" state (dimmed + spinner) over their
+    // last-known language buckets, rather than the buckets vanishing entirely.
+    state.aggregations = { ...state.aggregations, fetching: true, error: false };
+  },
   [types.RECEIVE_AGGREGATIONS_SUCCESS](state, data) {
     state.aggregations = { fetching: false, error: false, data: [...data] };
   },

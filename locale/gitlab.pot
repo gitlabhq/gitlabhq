@@ -34158,9 +34158,6 @@ msgstr ""
 msgid "FeatureLibrary|No features match your search"
 msgstr ""
 
-msgid "FeatureLibrary|No matches in %{category}"
-msgstr ""
-
 msgid "FeatureLibrary|Pin"
 msgstr ""
 
@@ -34173,10 +34170,16 @@ msgstr ""
 msgid "FeatureLibrary|Search GitLab features"
 msgstr ""
 
-msgid "FeatureLibrary|Share feedback about this feature"
+msgid "FeatureLibrary|Search features in this group"
 msgstr ""
 
-msgid "FeatureLibrary|Try a different search term or category."
+msgid "FeatureLibrary|Search features in this project"
+msgstr ""
+
+msgid "FeatureLibrary|Share feedback about this feature library"
+msgstr ""
+
+msgid "FeatureLibrary|Try a different search term."
 msgstr ""
 
 msgid "FeatureLibrary|Unpin"
@@ -37159,6 +37162,9 @@ msgstr ""
 msgid "GlobalSearch|Recent work items"
 msgstr ""
 
+msgid "GlobalSearch|Refreshing language filters"
+msgstr ""
+
 msgid "GlobalSearch|Reset"
 msgstr ""
 
@@ -37251,6 +37257,9 @@ msgid "GlobalSearch|The search term must be at least 3 characters long."
 msgstr ""
 
 msgid "GlobalSearch|There was an error fetching search autocomplete suggestions."
+msgstr ""
+
+msgid "GlobalSearch|These results cannot be filtered by language because their language could not be detected."
 msgstr ""
 
 msgid "GlobalSearch|Tip:"

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe ReleasePolicy, :request_store do
   let_it_be(:developer) { create(:user) }
   let_it_be(:maintainer) { create(:user) }
-  let_it_be(:project, freeze: false) { create(:project, :repository, developers: developer, maintainers: maintainer) }
+  let_it_be_with_reload(:project) { create(:project, developers: developer, maintainers: maintainer) }
   let_it_be_with_reload(:release) { create(:release, project: project) }
 
   let(:user) { developer }

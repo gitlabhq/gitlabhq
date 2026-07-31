@@ -13,7 +13,12 @@ import { userCounts } from '~/super_sidebar/user_counts_manager';
 import { formatAsyncCount } from '~/super_sidebar/utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import dismissUserCalloutMutation from '~/graphql_shared/mutations/dismiss_user_callout.mutation.graphql';
-import { PANELS_WITH_PINS, PINNED_NAV_STORAGE_KEY, MAX_OPEN_WORK_ITEMS_COUNT } from '../constants';
+import {
+  PANEL_TYPES,
+  PANELS_WITH_PINS,
+  PINNED_NAV_STORAGE_KEY,
+  MAX_OPEN_WORK_ITEMS_COUNT,
+} from '../constants';
 import NavItem from './nav_item.vue';
 import PinnedSection from './pinned_section.vue';
 import MenuSection from './menu_section.vue';
@@ -151,7 +156,7 @@ export default {
      * via a Service Worker or some GraphQL API calls, shouldn't matter too much.
      */
     asyncCount() {
-      if (this.panelType === 'your_work') {
+      if (this.panelType === PANEL_TYPES.YOUR_WORK) {
         const result = {};
         for (const [key, value] of Object.entries(userCounts)) {
           result[key] = value > 0 ? value : null;

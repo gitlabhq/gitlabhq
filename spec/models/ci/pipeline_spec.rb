@@ -6611,6 +6611,20 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       it 'treats a nil user as an anonymous request and filters instead of returning everything' do
         expect(pipeline.accessible_test_report_summary(nil).test_suites.keys).to be_empty
       end
+
+      it 'authorizes no builds when the report-artifact lookup is empty (over-grant guard)' do
+        # Force `representatives` empty while builds exist (as if the artifacts were
+        # removed between the build and artifact queries). `of_report_type(:test)`
+        # is called first for the build EXISTS filter, then for the artifact lookup;
+        # the second call returns nothing here.
+        call_count = 0
+        allow(Ci::JobArtifact).to receive(:of_report_type).and_wrap_original do |original, *args|
+          call_count += 1
+          call_count == 1 ? original.call(*args) : Ci::JobArtifact.none
+        end
+
+        expect(pipeline.send(:accessible_test_report_build_ids, maintainer)).to eq([])
+      end
     end
 
     context 'when limited to an anonymous user on a public project' do

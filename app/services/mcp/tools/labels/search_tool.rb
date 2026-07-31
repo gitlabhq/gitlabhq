@@ -46,10 +46,6 @@ module Mcp
           structured_content&.dig('labels', 'nodes')
         end
 
-        def resource_not_found?(result)
-          result['errors'].blank? && result.dig('data', operation_name).nil?
-        end
-
         def resource_not_found_error
           resource_type = params[:is_project] ? 'Project' : 'Group'
           message = "#{resource_type} not found: the provided #{resource_type.downcase} path " \

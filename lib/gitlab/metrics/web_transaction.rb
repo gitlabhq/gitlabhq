@@ -115,7 +115,9 @@ module Gitlab
           # so we're rescuing exceptions and bailing out
         end
 
-        if route
+        # Grape assigns a GreedyRoute to route_info for 405 and OPTIONS
+        # responses. It responds to #path but returns nil, so skip labelling.
+        if route && route.path.is_a?(String)
           path = endpoint_paths_cache[route.request_method][route.path]
 
           {

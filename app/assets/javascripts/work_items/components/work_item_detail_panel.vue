@@ -74,7 +74,7 @@ export default {
       required: true,
     },
   },
-  emits: ['work-item-deleted', 'close', 'work-item-updated', 'workItemTypeChanged'],
+  emits: ['work-item-deleted', 'close', 'work-item-updated', 'work-item-type-changed'],
   data() {
     return {
       copyTooltipText: this.$options.i18n.copyTooltipText,
@@ -315,7 +315,7 @@ export default {
           class="js-dynamic-panel-inner work-item-detail-panel-content !gl-pt-0"
           @deleteWorkItem="deleteWorkItem"
           @work-item-updated="handleWorkItemUpdated"
-          @workItemTypeChanged="$emit('workItemTypeChanged', $event)"
+          @work-item-type-changed="$emit('work-item-type-changed', $event)"
           v-on="$listeners"
         />
         <!-- eslint-enable vue/custom-event-name-casing, vue/v-on-event-hyphenation -->

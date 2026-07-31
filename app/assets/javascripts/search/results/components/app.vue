@@ -1,6 +1,6 @@
 <script>
 // eslint-disable-next-line no-restricted-imports
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import { __, s__ } from '~/locale';
 import getBlobSearchQuery from '~/search/graphql/blob_search_zoekt.query.graphql';
 import { ERROR_POLICY_NONE } from '~/lib/graphql';
@@ -61,6 +61,10 @@ export default {
           variables.projectId = `gid://gitlab/Project/${this.query.project_id}`;
         }
 
+        if (this.queryLanguageFilters.length) {
+          variables.language = this.queryLanguageFilters;
+        }
+
         return variables;
       },
       result({ data }) {
@@ -83,6 +87,7 @@ export default {
   },
   computed: {
     ...mapState(['query']),
+    ...mapGetters(['queryLanguageFilters']),
     currentPage() {
       return this.query?.page ? parseInt(this.query?.page, 10) : 1;
     },

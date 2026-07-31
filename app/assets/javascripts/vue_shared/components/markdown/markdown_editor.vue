@@ -174,7 +174,7 @@ export default {
     'blur',
     'contentEditor',
     'focus',
-    'handleSuggestDismissed',
+    'handle-suggest-dismissed',
     'input',
     'keydown',
     'markdownField',
@@ -457,7 +457,7 @@ export default {
       :immersive="immersive"
       :restricted-tool-bar-items="markdownFieldRestrictedToolBarItems"
       @enableContentEditor="onEditingModeChange('contentEditor')"
-      @handleSuggestDismissed="() => $emit('handleSuggestDismissed')"
+      @handle-suggest-dismissed="() => $emit('handle-suggest-dismissed')"
     >
       <template #header><slot name="header"></slot></template>
       <template #header-buttons>

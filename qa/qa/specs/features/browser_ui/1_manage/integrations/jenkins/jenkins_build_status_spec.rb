@@ -84,6 +84,8 @@ module QA
         expect(jenkins_status_received).to be_truthy,
           "Jenkins reported build success but no 'success' commit status reached GitLab within 60s"
 
+        Flow::Login.sign_in(as: user)
+
         project.visit!
 
         Flow::Pipeline.visit_latest_pipeline
@@ -96,22 +98,45 @@ module QA
       private
 
       def setup_project_integration
-        Flow::Login.sign_in(as: user)
+        patched_jenkins_url = patch_host_name(jenkins_server.host_address, 'jenkins-server')
 
-        project.visit!
+        integration_url = Runtime::API::Request.new(
+          user.api_client,
+          "/projects/#{project.id}/integrations/jenkins"
+        ).url
 
-        Page::Project::Menu.perform(&:click_project)
-        Page::Project::Menu.perform(&:go_to_integrations_settings)
-        Page::Project::Settings::Integrations.perform(&:click_jenkins_ci_link)
+        put_response = Support::API.put(integration_url, {
+          jenkins_url: patched_jenkins_url,
+          project_name: jenkins_project_name,
+          username: jenkins_server.username,
+          password: jenkins_server.password,
+          push_events: true,
+          merge_requests_events: true
+        })
 
-        QA::Page::Project::Settings::Services::Jenkins.perform do |jenkins|
-          jenkins.setup_service_with(
-            jenkins_url: patch_host_name(jenkins_server.host_address, 'jenkins-server'),
-            project_name: jenkins_project_name,
-            username: jenkins_server.username,
-            password: jenkins_server.password
-          )
+        unless put_response.code == Support::API::HTTP_STATUS_OK
+          raise "Failed to configure Jenkins integration via API (#{put_response.code}): #{put_response.body}"
         end
+
+        # Re-fetch the integration to confirm it was actually saved and active,
+        # not just that the PUT returned 200 (a wrong key silently misconfigures).
+        get_response = Support::API.get(integration_url)
+
+        unless get_response.code == Support::API::HTTP_STATUS_OK
+          raise "Failed to fetch Jenkins integration after configuration (#{get_response.code}): #{get_response.body}"
+        end
+
+        integration = Support::API.parse_body(get_response)
+
+        raise "Jenkins integration is not active after configuration" unless integration[:active]
+
+        properties = integration[:properties] || {}
+
+        raise "jenkins_url mismatch: expected #{patched_jenkins_url}, got #{properties[:jenkins_url]}" \
+          if properties[:jenkins_url] != patched_jenkins_url
+
+        raise "project_name mismatch: expected #{jenkins_project_name}, got #{properties[:project_name]}" \
+          if properties[:project_name] != jenkins_project_name
       end
 
       def create_jenkins_job

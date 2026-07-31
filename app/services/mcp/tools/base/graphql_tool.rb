@@ -61,6 +61,10 @@ module Mcp
           }
         end
 
+        def resource_not_found?(result)
+          result['errors'].blank? && result.dig('data', operation_name).nil?
+        end
+
         def process_result(result)
           if result['errors']
             error_messages = extract_error_messages(result['errors'])

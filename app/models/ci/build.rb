@@ -885,10 +885,21 @@ module Ci
     # `artifacts:paths:` has no archive, so a build/archive-level
     # `:read_job_artifacts` check would wrongly treat a maintainer-only report as
     # public. These are exactly the artifacts #collect_test_reports! reads.
-    def test_report_readable_by?(user)
+    def test_report_readable_by?(user, authz_cache = {})
       artifacts = job_artifacts_for_types(::Ci::JobArtifact.file_types_for_report(:test))
+      return false if artifacts.blank?
 
-      artifacts.present? && artifacts.all? { |artifact| Ability.allowed?(user, :read_job_artifacts, artifact) }
+      artifacts.all? do |artifact|
+        # Memoize the authorization on every attribute Ci::JobArtifactPolicy's
+        # `read_job_artifacts` rules read - the user, the project, the artifact
+        # accessibility, and the file type (the security-report branch keys off
+        # file_type) - so the policy is evaluated once per distinct combination
+        # instead of once per artifact across a large pipeline. Extend the key if
+        # a new policy condition reads another subject attribute.
+        authz_cache.fetch([user&.id, artifact.project_id, artifact.accessibility, artifact.file_type]) do |key|
+          authz_cache[key] = Ability.allowed?(user, :read_job_artifacts, artifact)
+        end
+      end
     end
 
     def ensure_trace_metadata!

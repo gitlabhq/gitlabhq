@@ -214,7 +214,7 @@ export default {
     'work-item-emoji-updated',
     'work-item-updated',
     'workItemStateUpdated',
-    'workItemTypeChanged',
+    'work-item-type-changed',
     'workItemUpdated',
   ],
   data() {
@@ -903,7 +903,7 @@ export default {
     },
     workItemTypeChanged() {
       this.$apollo.queries.workItem.refetch();
-      this.$emit('workItemTypeChanged', this.workItem);
+      this.$emit('work-item-type-changed', this.workItem);
     },
     isValidDragDataType({ dataTransfer }) {
       this.isDragDataValid = Array.from(dataTransfer.items).some((item) =>
@@ -1026,7 +1026,6 @@ export default {
             @toggleWorkItemConfidentiality="toggleConfidentiality"
             @error="updateError = $event"
             @promotedToObjective="$emit('promotedToObjective', iid)"
-            @workItemTypeChanged="workItemTypeChanged"
             @toggleEditMode="enableEditMode"
             @workItemStateUpdated="$emit('workItemStateUpdated')"
             @toggleReportAbuseModal="toggleReportAbuseModal"
@@ -1042,7 +1041,7 @@ export default {
                 @error="updateError = $event"
                 @promotedToObjective="$emit('promotedToObjective', iid)"
                 @workItemStateUpdated="$emit('workItemStateUpdated')"
-                @workItemTypeChanged="workItemTypeChanged"
+                @work-item-type-changed="workItemTypeChanged"
                 @toggleReportAbuseModal="toggleReportAbuseModal"
                 @work-item-created="handleWorkItemCreated"
                 @toggle-sidebar="handleToggleSidebar"
@@ -1145,7 +1144,7 @@ export default {
               @error="updateError = $event"
               @promotedToObjective="$emit('promotedToObjective', iid)"
               @workItemStateUpdated="$emit('workItemStateUpdated')"
-              @workItemTypeChanged="workItemTypeChanged"
+              @work-item-type-changed="workItemTypeChanged"
               @toggleReportAbuseModal="toggleReportAbuseModal"
               @work-item-created="handleWorkItemCreated"
               @toggle-sidebar="handleToggleSidebar"

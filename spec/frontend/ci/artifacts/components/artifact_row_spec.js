@@ -80,12 +80,12 @@ describe('ArtifactRow component', () => {
   });
 
   describe('bulk delete checkbox', () => {
-    it('emits selectArtifact when toggled', () => {
+    it('emits select-artifact when toggled', () => {
       createComponent();
 
       findCheckbox().vm.$emit('input', true);
 
-      expect(wrapper.emitted('selectArtifact')).toStrictEqual([[artifact, true]]);
+      expect(wrapper.emitted('select-artifact')).toStrictEqual([[artifact, true]]);
     });
 
     describe('when the selected artifacts limit is reached', () => {

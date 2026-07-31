@@ -191,10 +191,10 @@ gaining cursor stability, and misleads the caller about the guarantees the endpo
 - **REST-backed tools** use offset pagination with `page` (1-based, default `1`) and `per_page`
   (default `20`, capped at `100`), and return a `metadata` object with `page`, `per_page`, and
   `has_more`. Applies to tools such as `list_repository_tree`, `list_branches`, `list_commits`,
-  `list_merge_requests`, `list_pipelines`, and `search`.
+  `list_pipelines`, and `search`.
 - **GraphQL-backed tools** use native cursor pagination with `first` (default `20`, capped at `100`)
   and `after` (an opaque cursor), and return a `pageInfo` object with `endCursor` and `hasNextPage`.
-  Applies to tools such as `list_work_items`.
+  Applies to tools such as `list_work_items` and `list_merge_requests`.
 - **Content readers** use a range window suited to their payload instead of item pagination: file
   content uses line pagination (`offset`/`limit`) and job logs use byte pagination
   (`byte_offset`/`byte_limit`). Return a `system_instruction` telling the caller how to fetch the

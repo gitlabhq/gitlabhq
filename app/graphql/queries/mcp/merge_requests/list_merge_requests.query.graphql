@@ -1,0 +1,46 @@
+# @feature_category: mcp_server
+query listMergeRequests(
+  $fullPath: ID!
+  $authorUsername: String
+  $assigneeUsername: String
+  $reviewerUsername: String
+  $state: MergeRequestState
+  $milestoneTitle: String
+  $labelName: [String]
+  $search: String
+  $first: Int
+  $after: String
+) {
+  project(fullPath: $fullPath) {
+    id
+    mergeRequests(
+      authorUsername: $authorUsername
+      assigneeUsername: $assigneeUsername
+      reviewerUsername: $reviewerUsername
+      state: $state
+      milestoneTitle: $milestoneTitle
+      labelName: $labelName
+      search: $search
+      first: $first
+      after: $after
+    ) {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      nodes {
+        id
+        iid
+        title
+        state
+        webUrl
+        sourceBranch
+        targetBranch
+        author {
+          id
+          username
+        }
+      }
+    }
+  }
+}

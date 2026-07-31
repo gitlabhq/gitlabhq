@@ -123,12 +123,31 @@ If you have configured SAML on the primary site correctly, then it should work o
 
 ## OpenID Connect
 
+{{< history >}}
+
+- OIDC with separate URL with proxying enabled [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396745) in GitLab 19.3
+  [with a feature flag](../../feature_flags/_index.md) named `geo_oidc_proxied_redirect_uri`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of OIDC with separate URL with proxying enabled is controlled by a feature flag.
+> For more information, see the history.
+
 If you use an [OpenID Connect (OIDC)](../../auth/oidc.md) OmniAuth provider,
 in most cases, it should work without an issue:
 
 - **OIDC with Unified URL**: If you have configured OIDC on the primary site correctly, then it should work on the secondary site without additional configuration.
 - **OIDC with separate URL with proxying disabled**: If you have configured OIDC on the primary site correctly, then it should work on the secondary site without additional configuration.
-- **OIDC with separate URL with proxying enabled**: Geo with separate URL with proxying enabled does not support [OpenID Connect](../../auth/oidc.md). For more information, see [issue 396745](https://gitlab.com/gitlab-org/gitlab/-/issues/396745).
+- **OIDC with separate URL with proxying enabled**: Users can sign in on a secondary site's URL.
+  When the request arrives through a Geo secondary site, GitLab sends the redirect URI of the site the sign-in was initiated on, instead of the configured
+  `redirect_uri`. To use it:
+
+  1. Register every site's callback URL
+     (`https://<site-external-url>/users/auth/openid_connect/callback`) as a valid redirect URI
+     on the OIDC client in your identity provider.
+  1. [Enable the feature flag](../../feature_flags/_index.md) `geo_oidc_proxied_redirect_uri`
+     on the primary site.
 
 ## LDAP
 

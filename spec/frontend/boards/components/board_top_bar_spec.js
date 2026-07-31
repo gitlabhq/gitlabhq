@@ -103,9 +103,9 @@ describe('BoardTopBar', () => {
       expect(wrapper.emitted('set-filters')).toHaveLength(1);
     });
 
-    it('emits updateBoard when updateBoard is emitted by boards selector', () => {
-      findBoardsSelector().vm.$emit('updateBoard');
-      expect(wrapper.emitted('updateBoard')).toHaveLength(1);
+    it('emits update-board when update-board is emitted by boards selector', () => {
+      findBoardsSelector().vm.$emit('update-board');
+      expect(wrapper.emitted('update-board')).toHaveLength(1);
     });
 
     it('passes current form to BoardsSelector when show-board-modal is emitted by config toggle', async () => {

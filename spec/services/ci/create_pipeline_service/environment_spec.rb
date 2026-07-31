@@ -4,14 +4,14 @@ require 'spec_helper'
 
 RSpec.describe Ci::CreatePipelineService,
   feature_category: :pipeline_composition do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
   let_it_be(:developer) { create(:user, developer_of: project) }
 
   let(:service) { described_class.new(project, user, ref: 'master') }
   let(:user) { developer }
 
   it_behaves_like 'creating a pipeline with environment keyword' do
-    let!(:project) { create(:project, :repository) }
+    let!(:project) { create(:project, :small_repo) }
     let(:execute_service) { service.execute(:push) }
     let(:expected_deployable_class) { Ci::Build }
     let(:expected_deployment_status) { 'created' }

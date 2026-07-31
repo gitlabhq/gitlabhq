@@ -228,7 +228,7 @@ export default {
       @switchBoard="switchBoard"
       @set-filters="setFilters"
       @toggleSwimlanes="setIsShowingEpicSwimlanes"
-      @updateBoard="refetchLists"
+      @update-board="refetchLists"
     />
     <board-content
       class="board-content"

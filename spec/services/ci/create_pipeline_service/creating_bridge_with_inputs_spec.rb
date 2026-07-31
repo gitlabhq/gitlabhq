@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Creating bridge with inputs', feature_category: :pipeline_composition do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
   let_it_be(:user) { create(:user) }
 
   let_it_be(:spec_inputs_config) do

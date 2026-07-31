@@ -408,7 +408,7 @@ export default {
           @work-item-deleted="onIssuableDeleted(activeIssuable)"
           @attributesUpdated="onAttributeUpdated"
           @workItemStateUpdated="onStateUpdated"
-          @workItemTypeChanged="updateBoardCard($event, activeIssuable)"
+          @work-item-type-changed="updateBoardCard($event, activeIssuable)"
           @opened="$emit('drawer-opened')"
           @clicked-outside="$emit('drawer-closed')"
         />

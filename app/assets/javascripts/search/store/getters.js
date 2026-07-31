@@ -32,7 +32,13 @@ const unappliedNewLabelKeys = (state) => {
   );
 };
 
-export const queryLanguageFilters = (state) => state.query[LANGUAGE_FILTER_PARAM] || [];
+export const queryLanguageFilters = (state) => {
+  const language = state.query[LANGUAGE_FILTER_PARAM];
+
+  if (!language) return [];
+
+  return Array.isArray(language) ? language : [language];
+};
 
 export const queryWorkItemTypeFilters = ({ query: { type } }) => {
   if (!type) return [];

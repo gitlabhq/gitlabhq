@@ -38,7 +38,7 @@ export default {
       required: true,
     },
   },
-  emits: ['refetch', 'selectArtifact'],
+  emits: ['refetch', 'select-artifact'],
   data() {
     return {
       isModalVisible: false,

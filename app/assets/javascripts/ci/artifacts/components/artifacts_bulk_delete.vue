@@ -24,7 +24,7 @@ export default {
       required: true,
     },
   },
-  emits: ['clearSelectedArtifacts', 'showBulkDeleteModal'],
+  emits: ['clear-selected-artifacts', 'show-bulk-delete-modal'],
   computed: {
     checkedCount() {
       return this.selectedArtifacts.length || 0;
@@ -61,14 +61,14 @@ export default {
           <gl-button
             variant="default"
             data-testid="bulk-delete-clear-button"
-            @click="$emit('clearSelectedArtifacts')"
+            @click="$emit('clear-selected-artifacts')"
           >
             {{ $options.i18n.clearSelection }}
           </gl-button>
           <gl-button
             variant="danger"
             data-testid="bulk-delete-delete-button"
-            @click="$emit('showBulkDeleteModal')"
+            @click="$emit('show-bulk-delete-modal')"
           >
             {{ $options.i18n.deleteSelected }}
           </gl-button>

@@ -653,7 +653,7 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
 
     context 'upstream project has disabled merge requests' do
       let(:upstream_project) { create(:project, :merge_requests_disabled) }
-      let(:project) { create(:project, :repository, forked_from_project: upstream_project) }
+      let(:project) { create(:project, :small_repo, forked_from_project: upstream_project) }
       let(:commits) { Commit.decorate([commit_2], project) }
 
       it 'sets target project correctly' do
@@ -969,7 +969,7 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
   end
 
   describe '#branch_name_to_title' do
-    let_it_be(:test_project) { create(:project, :repository) }
+    let_it_be(:test_project) { create(:project, :small_repo) }
     let_it_be(:test_user) { create(:user) }
     let(:test_service) { described_class.new(project: test_project, current_user: test_user, params: {}) }
 

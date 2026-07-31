@@ -403,6 +403,24 @@ $command-palette-spacing: px-to-rem(14px);
   .feature-library-scroll-area {
     min-height: 20rem;
   }
+
+  // Let the scroll area (and its top/bottom scrim gradients) bleed to the
+  // modal body edges by cancelling the body's horizontal padding, then
+  // re-inset the actual content so it stays aligned with the search box.
+  .feature-library-scroll-bleed {
+    margin-left: -$gl-padding;
+    margin-right: -$gl-padding;
+  }
+
+  .feature-library-scroll-inset {
+    padding-left: $gl-padding;
+    padding-right: $gl-padding;
+  }
+
+  &.gl-modal .modal-footer {
+    padding-top: 0;
+    padding-bottom: $gl-spacing-scale-3;
+  }
 }
 
 /**

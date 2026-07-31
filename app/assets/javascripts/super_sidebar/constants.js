@@ -16,7 +16,14 @@ export const TRACKING_UNKNOWN_PANEL = 'nav_panel_unknown';
 export const CLICK_MENU_ITEM_ACTION = 'click_menu_item';
 export const CLICK_PINNED_MENU_ITEM_ACTION = 'click_pinned_menu_item';
 
-export const PANELS_WITH_PINS = ['group', 'project', 'organization'];
+export const PANEL_TYPES = {
+  GROUP: 'group',
+  PROJECT: 'project',
+  ORGANIZATION: 'organization',
+  YOUR_WORK: 'your_work',
+};
+
+export const PANELS_WITH_PINS = [PANEL_TYPES.GROUP, PANEL_TYPES.PROJECT, PANEL_TYPES.ORGANIZATION];
 
 export const USER_MENU_TRACKING_DEFAULTS = {
   'data-track-property': 'nav_user_menu',

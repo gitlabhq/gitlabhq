@@ -251,7 +251,7 @@ export default {
     'toggleWorkItemConfidentiality',
     'work-item-created',
     'workItemStateUpdated',
-    'workItemTypeChanged',
+    'work-item-type-changed',
   ],
   data() {
     return {
@@ -896,7 +896,7 @@ export default {
       :widgets="widgets"
       :allowed-child-types="allowedChildTypes"
       :namespace-full-name="namespaceFullName"
-      @workItemTypeChanged="$emit('workItemTypeChanged')"
+      @work-item-type-changed="$emit('work-item-type-changed')"
       @error="$emit('error', $event)"
     />
     <move-work-item-modal

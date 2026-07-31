@@ -138,7 +138,7 @@ export default {
       default: false,
     },
   },
-  emits: ['handleSuggestDismissed', 'hidePreview', 'showPreview'],
+  emits: ['handle-suggest-dismissed', 'hidePreview', 'showPreview'],
   data() {
     const modifierKey = getModifierKey();
 
@@ -323,7 +323,7 @@ export default {
       this.$emit('hidePreview');
     },
     handleSuggestDismissed() {
-      this.$emit('handleSuggestDismissed');
+      this.$emit('handle-suggest-dismissed');
     },
     handleQuote() {
       const documentFragment = getSelectedFragment();

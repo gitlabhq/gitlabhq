@@ -354,12 +354,14 @@ Dangerfile
 /spec/rubocop*
 
 ^[Unused code linting scripts] @kerrizor @dstull
+/.keela/
 /scripts/lint/unused_methods.rb
 /scripts/lint/unused_code.rb
 /scripts/lint/excluded_methods.yml
 /scripts/lint/excluded_scopes.yml
 /scripts/lint/potential_methods_to_remove.yml
 /scripts/lint/potential_scopes_to_remove.yml
+/scripts/lint/keela_baseline.yml
 
 ^[LDAP] @dblessing @mkozono
 /ee/lib/ee/gitlab/auth/ldap/

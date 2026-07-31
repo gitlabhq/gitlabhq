@@ -137,6 +137,41 @@ Example:
 Get details for merge request 15 in project gitlab-org/gitlab
 ```
 
+## `list_merge_requests`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/246413) in GitLab 19.3.
+
+{{< /history >}}
+
+Lists or searches merge requests in a GitLab project, returning compact merge request metadata.
+
+| Parameter           | Type    | Required | Description |
+|---------------------|---------|----------|-------------|
+| `url`               | string  | No       | URL of the project. Provide exactly one of `url` or `project_id`. |
+| `project_id`        | string  | No       | ID or full path of the project. Provide exactly one of `url` or `project_id`. |
+| `author_username`   | string  | No       | Filter by the username of the merge request author. |
+| `assignee_username` | string  | No       | Filter by the username of an assignee. |
+| `reviewer_username` | string  | No       | Filter by the username of a reviewer. |
+| `state`             | string  | No       | Filter by state. One of `opened`, `closed`, `merged`, `locked`, or `all`. Omit to include any state. |
+| `scope`             | string  | No       | Filter relative to the authenticated user. One of `created_by_me`, `assigned_to_me`, or `review_requested`. An explicit username wins for that field. |
+| `milestone`         | string  | No       | Filter by the title of the milestone. |
+| `labels`            | string  | No       | Comma-separated list of label names. Only merge requests with all of these labels are returned. |
+| `search`            | string  | No       | Search query matched against merge request title and description. |
+| `after`             | string  | No       | Cursor for forward pagination. |
+| `first`             | integer | No       | Number of merge requests to return for forward pagination. Default is 20, maximum is 100. |
+
+To retrieve a single merge request in full detail, use `get_merge_request`. Its diffs, commits, and
+notes are available from `get_merge_request_diffs`, `get_merge_request_commits`, and
+`get_merge_request_notes`. For full-text search across resource types, use `search`.
+
+Example:
+
+```plaintext
+List my open merge requests in gitlab-org/gitlab
+```
+
 ## `get_merge_request_commits`
 
 {{< history >}}

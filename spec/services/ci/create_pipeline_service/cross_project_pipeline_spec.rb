@@ -6,8 +6,8 @@ RSpec.describe Ci::CreatePipelineService, '#execute',
   feature_category: :continuous_integration do
   let_it_be(:group) { create(:group) }
 
-  let(:upstream_project) { create(:project, :repository, group: group) }
-  let(:downstream_project) { create(:project, :repository, group: group) }
+  let(:upstream_project) { create(:project, :small_repo, group: group) }
+  let(:downstream_project) { create(:project, :small_repo, group: group) }
   let(:user) { create(:user) }
 
   let(:service) do

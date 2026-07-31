@@ -17,7 +17,6 @@ export default {
     'app/assets/javascripts/boards/components/board_list.vue',
     'app/assets/javascripts/boards/components/board_top_bar.vue',
     'app/assets/javascripts/boards/components/boards_selector.vue',
-    'app/assets/javascripts/ci/artifacts/components/job_artifacts_table.vue',
     'app/assets/javascripts/ci/catalog/components/list/catalog_search.vue',
     'app/assets/javascripts/ci/job_token_access/components/inbound_token_access.vue',
     'app/assets/javascripts/ci/job_token_access/components/namespace_form.vue',

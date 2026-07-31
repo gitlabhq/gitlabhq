@@ -28,7 +28,7 @@ export default {
       required: true,
     },
   },
-  emits: ['selectArtifact'],
+  emits: ['select-artifact'],
   computed: {
     disabled() {
       return (
@@ -51,9 +51,9 @@ export default {
   methods: {
     handleChange(checked) {
       if (checked) {
-        this.unselectedArtifacts.forEach((node) => this.$emit('selectArtifact', node, true));
+        this.unselectedArtifacts.forEach((node) => this.$emit('select-artifact', node, true));
       } else {
-        this.selectedArtifacts.forEach((node) => this.$emit('selectArtifact', node, false));
+        this.selectedArtifacts.forEach((node) => this.$emit('select-artifact', node, false));
       }
     },
   },

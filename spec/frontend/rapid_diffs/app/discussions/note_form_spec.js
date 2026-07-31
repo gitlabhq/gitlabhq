@@ -174,10 +174,10 @@ describe('NoteForm', () => {
       expect(wrapper.emitted('cancel')).toStrictEqual([[false]]);
     });
 
-    it('propagates handleSuggestDismissed event', () => {
+    it('propagates handle-suggest-dismissed event', () => {
       createComponent();
-      findEditor().vm.$emit('handleSuggestDismissed');
-      expect(wrapper.emitted('handleSuggestDismissed')).toStrictEqual([[]]);
+      findEditor().vm.$emit('handle-suggest-dismissed');
+      expect(wrapper.emitted('handle-suggest-dismissed')).toStrictEqual([[]]);
     });
 
     it('propagates input event', () => {

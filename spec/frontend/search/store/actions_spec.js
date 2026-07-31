@@ -662,4 +662,114 @@ describe('Global Search Store Actions', () => {
       return testAction(actions.setLabelFilterSearch, { value: 'test' }, state, expectedResult, []);
     });
   });
+
+  describe('fetchAllAggregation on Zoekt', () => {
+    beforeEach(() => {
+      state = createState({
+        query: MOCK_QUERY,
+        searchType: 'zoekt',
+        zoektLanguageAggregationsEnabled: true,
+      });
+    });
+
+    it('commits REQUEST_AGGREGATIONS_LOADING (not REQUEST_AGGREGATIONS) so previous buckets stay visible', async () => {
+      mock.onGet(/\/search\/aggregations/).reply(HTTP_STATUS_OK, MOCK_AGGREGATIONS);
+      const commit = jest.fn();
+
+      await actions.fetchAllAggregation({ commit, state });
+
+      // The data-wiping REQUEST_AGGREGATIONS must not fire on Zoekt; instead
+      // the fetching flag is flipped via REQUEST_AGGREGATIONS_LOADING so the
+      // sidebar can render a "refreshing" state over the previous buckets.
+      expect(commit).not.toHaveBeenCalledWith(types.REQUEST_AGGREGATIONS);
+      expect(commit).toHaveBeenCalledWith(types.REQUEST_AGGREGATIONS_LOADING);
+      expect(commit).toHaveBeenCalledWith(types.RECEIVE_AGGREGATIONS_SUCCESS, expect.any(Array));
+    });
+
+    it('fires exactly one request (backend returns real data in one shot)', async () => {
+      mock.onGet(/\/search\/aggregations/).reply(HTTP_STATUS_OK, MOCK_AGGREGATIONS);
+      const commit = jest.fn();
+
+      await actions.fetchAllAggregation({ commit, state });
+
+      // The dedicated aggregation-mode Zoekt call always returns the tally;
+      // there is no cache-warm race to retry around.
+      expect(mock.history.get).toHaveLength(1);
+    });
+  });
+
+  describe('fetchAllAggregation on Elasticsearch', () => {
+    beforeEach(() => {
+      state = createState({
+        query: MOCK_QUERY,
+        searchType: 'advanced',
+        zoektLanguageAggregationsEnabled: false,
+      });
+    });
+
+    it('commits REQUEST_AGGREGATIONS and fires exactly one request', async () => {
+      mock.onGet(/\/search\/aggregations/).reply(HTTP_STATUS_OK, MOCK_AGGREGATIONS);
+      const commit = jest.fn();
+
+      await actions.fetchAllAggregation({ commit, state });
+
+      expect(commit).toHaveBeenCalledWith(types.REQUEST_AGGREGATIONS);
+      expect(commit).toHaveBeenCalledWith(types.RECEIVE_AGGREGATIONS_SUCCESS, expect.any(Array));
+      expect(mock.history.get).toHaveLength(1);
+    });
+  });
+
+  describe('setQuery URL sync on Zoekt', () => {
+    beforeEach(() => {
+      state = createState({
+        query: { ...MOCK_QUERY, search: 'foo' },
+        searchType: 'zoekt',
+        zoektLanguageAggregationsEnabled: true,
+      });
+      setWindowLocation('https://gdk.test/search?scope=blobs&search=foo');
+      urlUtils.updateHistory.mockClear();
+    });
+
+    it.each(['include_archived', 'exclude_forks'])(
+      'updates the URL when %s is toggled',
+      async (key) => {
+        const commit = jest.fn();
+        const getters = { currentScope: 'blobs' };
+        const dispatch = jest.fn();
+
+        await actions.setQuery({ state, commit, getters, dispatch }, { key, value: 'true' });
+
+        expect(urlUtils.updateHistory).toHaveBeenCalled();
+        expect(dispatch).toHaveBeenCalledWith('fetchSidebarCount');
+        expect(dispatch).toHaveBeenCalledWith('fetchAllAggregation');
+      },
+    );
+
+    it('does not refetch aggregations when only the language filter changes', async () => {
+      const commit = jest.fn();
+      const getters = { currentScope: 'blobs' };
+      const dispatch = jest.fn();
+
+      await actions.setQuery(
+        { state, commit, getters, dispatch },
+        { key: 'language', value: ['Ruby'] },
+      );
+
+      // Buckets are faceted (stable across language ticks), so no fetch.
+      expect(dispatch).not.toHaveBeenCalledWith('fetchAllAggregation');
+    });
+
+    it('dispatches fetchAllAggregation when the search term changes', async () => {
+      const commit = jest.fn();
+      const getters = { currentScope: 'blobs' };
+      const dispatch = jest.fn();
+
+      await actions.setQuery(
+        { state, commit, getters, dispatch },
+        { key: 'search', value: 'new-term' },
+      );
+
+      expect(dispatch).toHaveBeenCalledWith('fetchAllAggregation');
+    });
+  });
 });

@@ -49,6 +49,7 @@ module Mcp
         'get_workitem_notes' => ::Mcp::Tools::WorkItems::GetWorkItemNotesService,
         'get_work_item_types' => ::Mcp::Tools::WorkItems::GetWorkItemTypesService,
         'link_work_items' => ::Mcp::Tools::WorkItems::LinkWorkItemsService,
+        'list_merge_requests' => ::Mcp::Tools::MergeRequests::ListMergeRequestsService,
         'list_wiki_pages' => ::Mcp::Tools::Wikis::ListWikiPagesService,
         'search_labels' => ::Mcp::Tools::Labels::SearchService
       }.freeze

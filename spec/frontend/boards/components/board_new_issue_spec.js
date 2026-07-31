@@ -108,11 +108,11 @@ describe('Issue boards new issue form', () => {
     });
   });
 
-  it('emits event `toggleNewForm` when `board-new-item` emits form-cancel event', async () => {
+  it('emits event `toggle-new-form` when `board-new-item` emits form-cancel event', async () => {
     findBoardNewItem().vm.$emit('form-cancel');
 
     await nextTick();
-    expect(wrapper.emitted('toggleNewForm')).toHaveLength(1);
+    expect(wrapper.emitted('toggle-new-form')).toHaveLength(1);
   });
 
   describe('when in group issue board', () => {

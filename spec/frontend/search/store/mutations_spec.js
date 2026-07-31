@@ -123,6 +123,29 @@ describe('Global Search Store Mutations', () => {
     });
   });
 
+  describe('REQUEST_AGGREGATIONS_LOADING', () => {
+    it('sets fetching to true while preserving existing buckets', () => {
+      state.aggregations = { fetching: false, error: false, data: MOCK_AGGREGATIONS };
+
+      mutations[types.REQUEST_AGGREGATIONS_LOADING](state);
+
+      expect(state.aggregations).toStrictEqual({
+        fetching: true,
+        error: false,
+        data: MOCK_AGGREGATIONS,
+      });
+    });
+
+    it('clears a previous error flag', () => {
+      state.aggregations = { fetching: false, error: true, data: MOCK_AGGREGATIONS };
+
+      mutations[types.REQUEST_AGGREGATIONS_LOADING](state);
+
+      expect(state.aggregations.error).toBe(false);
+      expect(state.aggregations.data).toStrictEqual(MOCK_AGGREGATIONS);
+    });
+  });
+
   describe('SET_LABEL_SEARCH_STRING', () => {
     it('sets the search string to the given data', () => {
       mutations[types.SET_LABEL_SEARCH_STRING](state, 'test');

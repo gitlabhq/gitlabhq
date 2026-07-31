@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Markup::RenderingService, feature_category: :groups_and_projects do
   describe '#execute' do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project) }
     let_it_be(:user) do
       user = create(:user, username: 'gfm')
       project.add_maintainer(user)

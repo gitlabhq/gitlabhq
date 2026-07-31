@@ -1,5 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
-import { GlModal, GlSearchBoxByType, GlTab, GlEmptyState, GlLink } from '@gitlab/ui';
+import { GlModal, GlSearchBoxByType, GlCollapse, GlEmptyState, GlLink } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
@@ -14,12 +14,12 @@ import {
   HTTP_STATUS_INTERNAL_SERVER_ERROR,
   HTTP_STATUS_TOO_MANY_REQUESTS,
 } from '~/lib/utils/http_status';
+import ScrollScrim from '~/super_sidebar/components/scroll_scrim.vue';
 import FeatureLibraryModal from '~/super_sidebar/components/feature_library/feature_library_modal.vue';
 import FeatureLibraryItem from '~/super_sidebar/components/feature_library/feature_library_item.vue';
 import {
   EVENT_OPEN_FEATURE_LIBRARY_MODAL,
   EVENT_SEARCH_FEATURES_IN_FEATURE_LIBRARY_MODAL,
-  EVENT_CLICK_CATEGORY_TAB_IN_FEATURE_LIBRARY_MODAL,
   EVENT_PIN_ITEM_IN_FEATURE_LIBRARY_MODAL,
   EVENT_UNPIN_ITEM_IN_FEATURE_LIBRARY_MODAL,
   EVENT_NAVIGATE_TO_FEATURE_FROM_FEATURE_LIBRARY_MODAL,
@@ -135,20 +135,28 @@ describe('FeatureLibraryModal', () => {
           methods: { hide: hideModal },
         }),
         GlSearchBoxByType: stubComponent(GlSearchBoxByType, { methods: { focusInput } }),
+        // Render collapse slot content so grouped items are inspectable.
+        GlCollapse: stubComponent(GlCollapse, {
+          template: '<div v-if="visible"><slot></slot></div>',
+          props: ['visible'],
+        }),
       },
     });
   };
 
   const findModal = () => wrapper.findComponent(GlModal);
   const findSearch = () => wrapper.findComponent(GlSearchBoxByType);
-  const findAllTabs = () => wrapper.findAllComponents(GlTab);
-  const findTabLabels = () => findAllTabs().wrappers.map((w) => w.attributes('title'));
+  const findSectionToggles = () =>
+    wrapper.findAllComponentsByTestId('feature-library-section-toggle');
+  const findSectionTitles = () => findSectionToggles().wrappers.map((w) => w.text());
+  const findCollapses = () => wrapper.findAllComponents(GlCollapse);
   const findItems = () => wrapper.findAllComponents(FeatureLibraryItem);
   const findItemIds = () => findItems().wrappers.map((w) => w.props('item').id);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findLoadingIcon = () => wrapper.findByTestId('search-loading');
   const findScrollArea = () => wrapper.findByTestId('feature-library-scroll-area');
   const findGrid = () => wrapper.findByTestId('feature-library-grid');
+  const findSectionGrid = () => wrapper.findByTestId('feature-library-section-grid');
   const findFeedbackLink = () => wrapper.findComponent(GlLink);
 
   const emitSearch = async (query) => {
@@ -158,43 +166,34 @@ describe('FeatureLibraryModal', () => {
   describe('rendering', () => {
     beforeEach(() => createWrapper());
 
-    it('renders an "All" tab plus one tab per section that has enriched items', () => {
-      expect(findTabLabels()).toEqual(['All', 'Plan', 'Code', 'Manage']);
+    it('renders one section heading per section that has enriched items', () => {
+      expect(findSectionTitles()).toEqual(['Plan', 'Code', 'Manage']);
     });
 
     it('excludes settings menus', () => {
-      expect(findTabLabels()).not.toContain('Settings');
+      expect(findSectionTitles()).not.toContain('Settings');
     });
 
-    it('wraps content in a flexible scroll area that fills available height and scrolls overflow', () => {
-      const scrollArea = findScrollArea();
-      expect(scrollArea.exists()).toBe(true);
-      expect(scrollArea.classes()).toEqual(
-        expect.arrayContaining([
-          'feature-library-scroll-area',
-          'gl-grow',
-          'gl-min-h-0',
-          'gl-overflow-y-auto',
-        ]),
-      );
+    it('wraps content in a scroll-scrim area so overflow fades at the edges', () => {
+      expect(findScrollArea().exists()).toBe(true);
+      expect(wrapper.findComponent(ScrollScrim).exists()).toBe(true);
     });
 
     it('renders a search input', () => {
       expect(findSearch().exists()).toBe(true);
     });
 
+    it.each([
+      ['project', 'Search features in this project'],
+      ['group', 'Search features in this group'],
+      ['your_work', 'Search GitLab features'],
+    ])('uses a %s-specific search placeholder', (panelType, expected) => {
+      createWrapper({ panelType });
+      expect(findSearch().attributes('placeholder')).toBe(expected);
+    });
+
     it('debounces search input using the shared default interval', () => {
       expect(Number(findSearch().attributes('debounce'))).toBe(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
-    });
-
-    it('lays the feature grid out responsively (one column on small viewports, scaling up)', () => {
-      expect(findGrid().classes()).toEqual(
-        expect.arrayContaining(['gl-grid-cols-1', 'sm:gl-grid-cols-2', 'md:gl-grid-cols-3']),
-      );
-    });
-
-    it('adds a top margin above the search input', () => {
-      expect(findSearch().classes()).toContain('gl-mt-3');
     });
 
     it('does not show a loading indicator by default', () => {
@@ -239,10 +238,6 @@ describe('FeatureLibraryModal', () => {
     describe('with default props', () => {
       beforeEach(() => createWrapper());
 
-      it('blurs the page behind the modal', () => {
-        expect(findModal().props('modalClass')).toContain('gl-backdrop-blur-sm');
-      });
-
       it('does not use centered so the top edge stays anchored during search', () => {
         expect(findModal().attributes('centered')).toBeUndefined();
       });
@@ -253,12 +248,6 @@ describe('FeatureLibraryModal', () => {
 
       it('applies the feature-library-modal class for top-anchored positioning', () => {
         expect(findModal().props('modalClass')).toContain('feature-library-modal');
-      });
-
-      it('reserves a dismissable gutter around the dialog', () => {
-        const modalClass = findModal().props('modalClass');
-        expect(modalClass).toContain('gl-px-2');
-        expect(modalClass).toContain('sm:gl-px-5');
       });
 
       describe('footer visibility', () => {
@@ -313,14 +302,55 @@ describe('FeatureLibraryModal', () => {
     });
   });
 
-  describe('filtering', () => {
+  describe('grouping when browsing', () => {
     beforeEach(() => createWrapper());
 
-    it('filters by active category (section)', async () => {
-      await findAllTabs().at(1).vm.$emit('click');
-      await nextTick();
-      const categories = findItems().wrappers.map((w) => w.props('item').category);
-      expect(categories.every((c) => c === 'plan_menu')).toBe(true);
+    it('groups items into a section per category, each under its own heading', () => {
+      expect(findSectionTitles()).toEqual(['Plan', 'Code', 'Manage']);
+    });
+
+    it('renders each group as a collapsible section, expanded by default', () => {
+      const collapses = findCollapses();
+      expect(collapses).toHaveLength(3);
+      collapses.wrappers.forEach((collapse) => {
+        expect(collapse.props('visible')).toBe(true);
+      });
+    });
+
+    it('collapses a section when its toggle is clicked', async () => {
+      await findSectionToggles().at(0).vm.$emit('click');
+
+      expect(findCollapses().at(0).props('visible')).toBe(false);
+      // Other sections stay expanded.
+      expect(findCollapses().at(1).props('visible')).toBe(true);
+    });
+
+    it('re-expands a collapsed section when its toggle is clicked again', async () => {
+      await findSectionToggles().at(0).vm.$emit('click');
+      await findSectionToggles().at(0).vm.$emit('click');
+
+      expect(findCollapses().at(0).props('visible')).toBe(true);
+    });
+
+    it('renders each section’s items in order, grouped under its heading', () => {
+      // Sections render in catalog order (Plan, then Code), so the flattened
+      // item order reflects the per-section grouping.
+      expect(findItemIds()).toEqual([
+        'project_issue_list',
+        'boards',
+        'milestones',
+        'repository',
+        'members',
+      ]);
+    });
+
+    it('wires each toggle to its collapse via aria-controls and a matching id', () => {
+      const toggle = findSectionToggles().at(0);
+      const collapse = findCollapses().at(0);
+      const controls = toggle.attributes('aria-controls');
+
+      expect(controls).toBe('feature-library-section-plan_menu');
+      expect(collapse.attributes('id')).toBe(controls);
     });
   });
 
@@ -344,6 +374,19 @@ describe('FeatureLibraryModal', () => {
         expect(findGrid().exists()).toBe(true);
         expect(findItemIds()).toContain('repository');
         expect(findItemIds()).toContain('boards');
+      });
+
+      it('renders results as one flat, ungrouped list rather than collapsible sections', async () => {
+        // Search deliberately drops the category grouping: matches are ranked
+        // across the whole catalog, so section headings would be noise.
+        mockAxios.onGet(SEARCH_URL).reply(HTTP_STATUS_OK, { ids: ['boards'] });
+        await emitSearch('repo');
+        await waitForPromises();
+
+        expect(findGrid().exists()).toBe(true);
+        expect(findSectionGrid().exists()).toBe(false);
+        expect(findSectionToggles()).toHaveLength(0);
+        expect(findCollapses()).toHaveLength(0);
       });
 
       it('hides the loading indicator once the endpoint resolves', async () => {
@@ -370,17 +413,6 @@ describe('FeatureLibraryModal', () => {
         await waitForPromises();
 
         expect(findItemIds().filter((id) => id === 'repository')).toHaveLength(1);
-      });
-
-      it('applies the active category filter to title matches', async () => {
-        mockAxios.onGet(SEARCH_URL).reply(HTTP_STATUS_OK, { ids: [] });
-        await emitSearch('items');
-        await waitForPromises();
-
-        await findAllTabs().at(2).vm.$emit('click');
-        await nextTick();
-
-        expect(findItems()).toHaveLength(0);
       });
 
       it('works on non-endpoint panels (e.g. organization) via title/description only', async () => {
@@ -428,17 +460,6 @@ describe('FeatureLibraryModal', () => {
         await waitForPromises();
 
         expect(findItemIds()).toEqual(['boards', 'project_issue_list']);
-      });
-
-      it('excludes endpoint synonym results outside the active category', async () => {
-        mockAxios.onGet(SEARCH_URL).reply(HTTP_STATUS_OK, { ids: ['repository'] });
-        await emitSearch('sprint');
-        await waitForPromises();
-
-        await findAllTabs().at(1).vm.$emit('click');
-        await nextTick();
-
-        expect(findItemIds()).not.toContain('repository');
       });
 
       it('silently drops endpoint ids that have no catalog entry', async () => {
@@ -524,24 +545,6 @@ describe('FeatureLibraryModal', () => {
       });
     });
 
-    describe('active tab', () => {
-      beforeEach(() => createWrapper());
-
-      it('sets the active tab to "All" when a search is entered', async () => {
-        mockAxios.onGet(SEARCH_URL).reply(HTTP_STATUS_OK, { ids: [] });
-
-        await findAllTabs().at(1).vm.$emit('click');
-        await nextTick();
-        expect(findAllTabs().at(1).attributes('active')).toBe('true');
-
-        await emitSearch('repo');
-        await nextTick();
-
-        expect(findAllTabs().at(0).attributes('active')).toBe('true');
-        expect(findAllTabs().at(1).attributes('active')).toBeUndefined();
-      });
-    });
-
     describe('empty state', () => {
       beforeEach(() => createWrapper());
 
@@ -566,24 +569,12 @@ describe('FeatureLibraryModal', () => {
         expect(findEmptyState().exists()).toBe(false);
       });
 
-      it('uses the generic title when the "All" tab is active', async () => {
+      it('uses the generic no-results title', async () => {
         mockAxios.onGet(SEARCH_URL).reply(HTTP_STATUS_OK, { ids: [] });
         await emitSearch('zzznomatch');
         await waitForPromises();
 
         expect(findEmptyState().props('title')).toBe('No features match your search');
-      });
-
-      it('uses a category-specific title when a category tab is active', async () => {
-        mockAxios.onGet(SEARCH_URL).reply(HTTP_STATUS_OK, { ids: [] });
-        await emitSearch('items');
-        await waitForPromises();
-
-        // "items" matches "Work items" (Plan); the Code tab has no matches.
-        await findAllTabs().at(2).vm.$emit('click');
-        await nextTick();
-
-        expect(findEmptyState().props('title')).toBe('No matches in Code');
       });
     });
 
@@ -620,12 +611,10 @@ describe('FeatureLibraryModal', () => {
     describe('on modal hide', () => {
       beforeEach(() => createWrapper());
 
-      it('resets search, category, and endpoint state so reopening shows the full catalog', async () => {
+      it('resets search and endpoint state so reopening shows the full catalog', async () => {
         mockAxios.onGet(SEARCH_URL).reply(HTTP_STATUS_OK, { ids: ['boards'] });
         await emitSearch('sprint');
         await waitForPromises();
-        await findAllTabs().at(1).vm.$emit('click');
-        await nextTick();
 
         findModal().vm.$emit('hidden');
         await nextTick();
@@ -639,6 +628,18 @@ describe('FeatureLibraryModal', () => {
           'project_issue_list',
           'repository',
         ]);
+      });
+
+      it('re-expands any collapsed sections so reopening shows them expanded', async () => {
+        await findSectionToggles().at(0).vm.$emit('click');
+        expect(findCollapses().at(0).props('visible')).toBe(false);
+
+        findModal().vm.$emit('hidden');
+        await nextTick();
+
+        findCollapses().wrappers.forEach((collapse) => {
+          expect(collapse.props('visible')).toBe(true);
+        });
       });
     });
   });
@@ -698,6 +699,13 @@ describe('FeatureLibraryModal', () => {
       await emitSearch('Plan item');
       await waitForPromises();
       expect(findItems()).toHaveLength(25);
+    });
+
+    it('renders every section heading even when the first section exceeds the reveal budget', () => {
+      // The first section (25 items) alone exceeds the initial 18-item budget,
+      // but both section headings must still be present so collapsing the
+      // first section immediately surfaces the second.
+      expect(findSectionTitles()).toEqual(['Plan', 'Code']);
     });
   });
 
@@ -882,16 +890,6 @@ describe('FeatureLibraryModal', () => {
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
       findModal().vm.$emit('shown');
       expect(trackEventSpy).toHaveBeenCalledWith(EVENT_OPEN_FEATURE_LIBRARY_MODAL, {}, CATEGORY);
-    });
-
-    it('tracks clicking a category tab, labelled with the category id', async () => {
-      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
-      await findAllTabs().at(1).vm.$emit('click');
-      expect(trackEventSpy).toHaveBeenCalledWith(
-        EVENT_CLICK_CATEGORY_TAB_IN_FEATURE_LIBRARY_MODAL,
-        { label: 'plan_menu' },
-        CATEGORY,
-      );
     });
 
     it('tracks pinning an item, labelled with the item id', () => {

@@ -1016,7 +1016,7 @@ describe('WorkItemDetail component', () => {
     });
 
     it('should call work item query on type change', async () => {
-      findWorkItemActions().vm.$emit('workItemTypeChanged');
+      findWorkItemActions().vm.$emit('work-item-type-changed');
       await nextTick();
 
       expect(successHandler).toHaveBeenCalled();

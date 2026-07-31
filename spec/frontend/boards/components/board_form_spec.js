@@ -292,8 +292,8 @@ describe('BoardForm', () => {
 
       await mockApollo.resolveMutation(updateBoardMutation);
       expect(global.window.location.href).not.toContain('?group_by=epic');
-      expect(wrapper.emitted('updateBoard')).toHaveLength(1);
-      expect(wrapper.emitted('updateBoard')).toEqual([
+      expect(wrapper.emitted('update-board')).toHaveLength(1);
+      expect(wrapper.emitted('update-board')).toEqual([
         [
           {
             id: 'gid://gitlab/Board/321',

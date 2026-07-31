@@ -13,6 +13,10 @@ export const LOAD_FREQUENT_ITEMS = 'LOAD_FREQUENT_ITEMS';
 export const RECEIVE_NAVIGATION_COUNT = 'RECEIVE_NAVIGATION_COUNT';
 
 export const REQUEST_AGGREGATIONS = 'REQUEST_AGGREGATIONS';
+// Zoekt variant: flips `fetching` on without wiping existing buckets, so the
+// sidebar can display a "refreshing" state over the previous results instead
+// of flashing empty while a new tally is fetched.
+export const REQUEST_AGGREGATIONS_LOADING = 'REQUEST_AGGREGATIONS_LOADING';
 export const RECEIVE_AGGREGATIONS_SUCCESS = 'RECEIVE_AGGREGATIONS_SUCCESS';
 export const RECEIVE_AGGREGATIONS_ERROR = 'RECEIVE_AGGREGATIONS_ERROR';
 

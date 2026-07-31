@@ -16,10 +16,12 @@ export default {
     ForksFilter,
   },
   computed: {
-    ...mapState(['searchType']),
+    ...mapState(['searchType', 'zoektLanguageAggregationsEnabled']),
     ...mapGetters(['hasMissingProjectContext']),
     showLanguageFilter() {
-      return this.searchType === SEARCH_TYPE_ADVANCED;
+      if (this.searchType === SEARCH_TYPE_ADVANCED) return true;
+
+      return this.searchType === SEARCH_TYPE_ZOEKT && this.zoektLanguageAggregationsEnabled;
     },
     shouldShowZoektForksFilter() {
       return this.searchType === SEARCH_TYPE_ZOEKT && this.hasMissingProjectContext;

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::CreatePipelineService, '#execute',
   feature_category: :continuous_integration do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
   let_it_be(:user) { create(:user, developer_of: project) }
 
   let(:ref_name) { 'master' }
@@ -19,7 +19,7 @@ RSpec.describe Ci::CreatePipelineService, '#execute',
   end
 
   it_behaves_like 'creating a pipeline with environment keyword' do
-    let!(:project) { create(:project, :repository, developers: user) }
+    let!(:project) { create(:project, :small_repo, developers: user) }
     let(:execute_service) { service.execute(:push) }
     let(:expected_deployable_class) { Ci::Bridge }
     let(:expected_deployment_status) { 'running' }

@@ -100,7 +100,7 @@ export default {
       required: true,
     },
   },
-  emits: ['openUnassignedLane', 'setActiveList', 'toggleNewForm'],
+  emits: ['openUnassignedLane', 'setActiveList', 'toggle-new-form'],
   data() {
     return {
       showMilestonePopover: false,
@@ -261,10 +261,10 @@ export default {
       if (this.isSwimlanesHeader) {
         this.$emit('openUnassignedLane');
         this.$nextTick(() => {
-          this.$emit('toggleNewForm');
+          this.$emit('toggle-new-form');
         });
       } else {
-        this.$emit('toggleNewForm');
+        this.$emit('toggle-new-form');
       }
     },
     toggleExpanded() {

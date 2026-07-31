@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::PipelinePolicy, :models, :request_store, :use_clean_rails_redis_caching, feature_category: :continuous_integration do
   let_it_be(:user) { create(:user) }
-  let_it_be_with_reload(:project) { create(:project, :repository, developers: user) }
+  let_it_be_with_reload(:project) { create(:project, :small_repo, developers: user) }
   let_it_be_with_reload(:pipeline) { create(:ci_empty_pipeline, project: project, created_at: 1.day.ago) }
 
   subject(:policy) do

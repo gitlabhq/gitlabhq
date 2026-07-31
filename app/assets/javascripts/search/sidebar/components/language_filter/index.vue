@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlAlert } from '@gitlab/ui';
+import { GlButton, GlAlert, GlLoadingIcon } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { s__, sprintf } from '~/locale';
@@ -18,6 +18,7 @@ export default {
     CheckboxFilter,
     GlButton,
     GlAlert,
+    GlLoadingIcon,
   },
   data() {
     return {
@@ -31,6 +32,7 @@ export default {
     }),
     loadError: s__('GlobalSearch|Aggregations load error.'),
     headerLabel: s__('GlobalSearch|Language'),
+    refreshing: s__('GlobalSearch|Refreshing language filters'),
   },
   computed: {
     ...mapState(['aggregations']),
@@ -81,13 +83,25 @@ export default {
 
 <template>
   <div v-if="hasBuckets" class="language-filter-checkbox">
-    <div class="gl-mb-2 gl-text-sm gl-font-bold">
-      {{ $options.i18n.headerLabel }}
+    <div class="gl-mb-2 gl-flex gl-items-center gl-gap-2 gl-text-sm gl-font-bold">
+      <span>{{ $options.i18n.headerLabel }}</span>
+      <gl-loading-icon
+        v-if="aggregations.fetching"
+        size="sm"
+        inline
+        :aria-label="$options.i18n.refreshing"
+        data-testid="language-filter-refreshing-icon"
+      />
     </div>
     <div
       v-if="!aggregations.error"
-      class="gl-overflow-y-auto gl-overflow-x-hidden"
-      :class="{ 'language-filter-max-height': showAll }"
+      data-testid="language-filter-list-container"
+      class="gl-overflow-y-auto gl-overflow-x-hidden gl-transition-opacity"
+      :class="[
+        { 'language-filter-max-height': showAll },
+        { 'gl-pointer-events-none gl-opacity-6': aggregations.fetching },
+      ]"
+      :aria-busy="aggregations.fetching || null"
     >
       <checkbox-filter
         :filters-data="filtersData"

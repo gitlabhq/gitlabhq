@@ -6,10 +6,10 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
   include AfterNextHelpers
 
   let_it_be(:group) { create(:group) }
-  let_it_be(:public_project, freeze: false) { create(:project, :public, group: group) }
+  let_it_be_with_reload(:public_project) { create(:project, :public, group: group) }
   let_it_be(:repository_project) { create(:project, :repository) }
   let_it_be(:project, freeze: false) { public_project }
-  let_it_be(:developer, freeze: false) { create(:user, developer_of: [public_project, repository_project]) }
+  let_it_be_with_reload(:developer) { create(:user, developer_of: [public_project, repository_project]) }
   let_it_be(:developer2) { create(:user) }
   let_it_be(:developer3) { create(:user) }
   let_it_be_with_reload(:issue) { create(:issue, project: project) }
@@ -1411,7 +1411,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
     context 'only group milestones available' do
       let_it_be(:ancestor_group) { create(:group) }
       let_it_be(:group) { create(:group, parent: ancestor_group) }
-      let_it_be(:project, freeze: false) { create(:project, :public, namespace: group, developers: developer) }
+      let_it_be_with_reload(:project) { create(:project, :public, namespace: group, developers: developer) }
       let_it_be(:milestone) { create(:milestone, group: ancestor_group, title: '10.0') }
 
       it_behaves_like 'milestone command' do
@@ -1824,7 +1824,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
       end
 
       it_behaves_like 'confidential command' do
-        let_it_be(:work_item, freeze: false) { create(:work_item, :task, project: project) }
+        let_it_be_with_reload(:work_item) { create(:work_item, :task, project: project) }
         let(:content) { '/confidential' }
         let(:issuable) { work_item }
       end
@@ -3357,7 +3357,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
     end
 
     describe 'run_pipeline command' do
-      let_it_be(:merge_request, freeze: false) { create(:merge_request, source_project: project) }
+      let_it_be_with_reload(:merge_request) { create(:merge_request, source_project: project) }
 
       let(:content) { '/run_pipeline' }
       let(:create_pipeline_service) do
@@ -3649,7 +3649,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
             stub_licensed_features(epics: false)
           end
 
-          let_it_be(:issue, freeze: false) { create(:issue, project: project) }
+          let_it_be_with_reload(:issue) { create(:issue, project: project) }
 
           it 'does not contain command' do
             expect(service.available_commands(issue)).not_to include(a_hash_including(name: :set_parent))
@@ -4224,7 +4224,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
     end
 
     describe 'type command' do
-      let_it_be(:project, freeze: false) { create(:project, :private) }
+      let_it_be_with_reload(:project) { create(:project, :private) }
       let_it_be(:work_item) { create(:work_item, :task, project: project) }
 
       let(:command) { '/type issue' }
@@ -4477,7 +4477,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
   describe '#available_commands' do
     context 'when Guest is creating a new issue' do
       let_it_be(:guest) { create(:user, guest_of: public_project) }
-      let_it_be(:developer, freeze: false) { create(:user) }
+      let_it_be_with_reload(:developer) { create(:user) }
 
       let(:current_user) { guest }
 

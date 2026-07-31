@@ -316,9 +316,9 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   context 'with self or ancestor archived' do
     let_it_be_with_reload(:group) { create(:group) }
     let_it_be_with_reload(:subgroup) { create(:group, parent: group) }
-    let_it_be_with_reload(:group_project) { create(:project, :repository, group: group, developers: developer, maintainers: maintainer) }
-    let_it_be_with_reload(:subgroup_project) { create(:project, :repository, group: subgroup, developers: developer, maintainers: maintainer) }
-    let_it_be_with_reload(:user_namespace_project) { create(:project, :repository, developers: developer, maintainers: maintainer) }
+    let_it_be_with_reload(:group_project) { create(:project, group: group, developers: developer, maintainers: maintainer) }
+    let_it_be_with_reload(:subgroup_project) { create(:project, group: subgroup, developers: developer, maintainers: maintainer) }
+    let_it_be_with_reload(:user_namespace_project) { create(:project, developers: developer, maintainers: maintainer) }
 
     let(:current_user) { maintainer }
 
@@ -437,7 +437,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     let_it_be_with_reload(:group) { create(:group) }
     let_it_be(:project_owner) { create(:user) }
     let_it_be_with_reload(:group_project) do
-      create(:project, :repository, group: group, developers: developer, maintainers: maintainer, owners: project_owner)
+      create(:project, group: group, developers: developer, maintainers: maintainer, owners: project_owner)
     end
 
     let(:current_user) { maintainer }
@@ -784,7 +784,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   end
 
   it_behaves_like 'clusterable policies' do
-    let_it_be(:clusterable) { create(:project, :repository) }
+    let_it_be(:clusterable) { create(:project) }
     let_it_be(:cluster) do
       create(:cluster, :provided_by_gcp, :project, projects: [clusterable])
     end
@@ -2998,7 +2998,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     context "when the project is public or internal and not on the allowlist" do
       let_it_be(:current_user) { create(:user) }
       let_it_be(:project) { public_project }
-      let_it_be(:scope_project, freeze: false) { create(:project, :private) }
+      let_it_be_with_reload(:scope_project) { create(:project, :private) }
       let(:job) { build_stubbed(:ci_build, project: scope_project, user: current_user) }
 
       context 'with all features enabled' do
@@ -4382,7 +4382,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   describe 'link_forked_project' do
     using RSpec::Parameterized::TableSyntax
 
-    let_it_be(:user, freeze: false) { create(:user) }
+    let_it_be_with_reload(:user) { create(:user) }
     let_it_be(:top_level_group) { create(:group) }
     let_it_be(:subgroup) { create(:group, parent: top_level_group) }
     let_it_be(:personal_project) { create(:project, namespace: user.namespace) }

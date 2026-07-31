@@ -88,7 +88,7 @@ export default {
       default: () => {},
     },
   },
-  emits: ['error', 'promoteToEpic', 'workItemTypeChanged'],
+  emits: ['error', 'promoteToEpic', 'work-item-type-changed'],
   data() {
     return {
       selectedWorkItemType: null,
@@ -362,7 +362,7 @@ export default {
           return;
         }
 
-        this.$emit('workItemTypeChanged');
+        this.$emit('work-item-type-changed');
         this.hide();
       } catch (error) {
         this.throwError(error.message);

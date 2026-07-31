@@ -27,7 +27,7 @@ export default {
       required: true,
     },
   },
-  emits: ['add-new-issue', 'toggleNewForm'],
+  emits: ['add-new-issue', 'toggle-new-form'],
   data() {
     return {
       selectedProject: {},
@@ -101,7 +101,7 @@ export default {
       this.$emit('add-new-issue', input);
     },
     cancel() {
-      this.$emit('toggleNewForm');
+      this.$emit('toggle-new-form');
     },
   },
 };

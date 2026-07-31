@@ -67,7 +67,7 @@ export default {
       default: '',
     },
   },
-  emits: ['show-board-modal', 'switchBoard', 'updateBoard'],
+  emits: ['show-board-modal', 'switchBoard', 'update-board'],
   data() {
     return {
       boards: [],
@@ -313,7 +313,7 @@ export default {
         :is-last-board="isLastBoard"
         :parent-type="parentType"
         @addBoard="addBoard"
-        @updateBoard="$emit('updateBoard', $event)"
+        @update-board="$emit('update-board', $event)"
         @show-board-modal="$emit('show-board-modal', $event)"
         @shown="loadBoards"
         @cancel="cancel"

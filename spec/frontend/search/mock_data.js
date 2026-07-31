@@ -458,16 +458,16 @@ export const TEST_RAW_BUCKETS = [
 
 export const TEST_FILTER_DATA = {
   filters: {
-    GO: { label: 'Go', value: 'Go', count: 350 },
-    C: { label: 'C', value: 'C', count: 298 },
-    JAVASCRIPT: { label: 'JavaScript', value: 'JavaScript', count: 128 },
-    YAML: { label: 'YAML', value: 'YAML', count: 58 },
-    TEXT: { label: 'Text', value: 'Text', count: 46 },
-    MARKDOWN: { label: 'Markdown', value: 'Markdown', count: 37 },
-    HTML: { label: 'HTML', value: 'HTML', count: 34 },
-    SHELL: { label: 'Shell', value: 'Shell', count: 34 },
-    MAKEFILE: { label: 'Makefile', value: 'Makefile', count: 21 },
-    JSON: { label: 'JSON', value: 'JSON', count: 15 },
+    GO: { label: 'Go', value: 'Go', count: 350, filterable: true },
+    C: { label: 'C', value: 'C', count: 298, filterable: true },
+    JAVASCRIPT: { label: 'JavaScript', value: 'JavaScript', count: 128, filterable: true },
+    YAML: { label: 'YAML', value: 'YAML', count: 58, filterable: true },
+    TEXT: { label: 'Text', value: 'Text', count: 46, filterable: true },
+    MARKDOWN: { label: 'Markdown', value: 'Markdown', count: 37, filterable: true },
+    HTML: { label: 'HTML', value: 'HTML', count: 34, filterable: true },
+    SHELL: { label: 'Shell', value: 'Shell', count: 34, filterable: true },
+    MAKEFILE: { label: 'Makefile', value: 'Makefile', count: 21, filterable: true },
+    JSON: { label: 'JSON', value: 'JSON', count: 15, filterable: true },
   },
 };
 

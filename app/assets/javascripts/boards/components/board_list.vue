@@ -102,7 +102,7 @@ export default {
     'drag-stop',
     'focus-adjacent',
     'set-filters',
-    'toggleNewForm',
+    'toggle-new-form',
   ],
   data() {
     return {
@@ -743,7 +743,7 @@ export default {
       }
     },
     async addListItem(input) {
-      this.$emit('toggleNewForm');
+      this.$emit('toggle-new-form');
       this.addItemToListInProgress = true;
       let issuable;
       try {
@@ -875,14 +875,14 @@ export default {
       v-if="issueCreateFormVisible"
       :list="list"
       :board-id="boardId"
-      @toggleNewForm="$emit('toggleNewForm')"
+      @toggle-new-form="$emit('toggle-new-form')"
       @add-new-issue="addListItem"
     />
     <board-new-epic
       v-if="epicCreateFormVisible"
       :list="list"
       :board-id="boardId"
-      @toggleNewForm="$emit('toggleNewForm')"
+      @toggle-new-form="$emit('toggle-new-form')"
       @add-new-epic="addListItem"
     />
     <component

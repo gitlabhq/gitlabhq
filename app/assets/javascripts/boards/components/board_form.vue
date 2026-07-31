@@ -105,7 +105,7 @@ export default {
       default: null,
     },
   },
-  emits: ['addBoard', 'cancel', 'show-board-modal', 'shown', 'updateBoard'],
+  emits: ['addBoard', 'cancel', 'show-board-modal', 'shown', 'update-board'],
   data() {
     return {
       board: { ...boardDefaults, ...this.currentBoard },
@@ -271,7 +271,7 @@ export default {
         try {
           const board = await this.createOrUpdateBoard();
           if (this.board.id) {
-            this.$emit('updateBoard', board);
+            this.$emit('update-board', board);
           } else {
             this.$emit('addBoard', board);
           }

@@ -119,7 +119,7 @@ export default {
     'cancel-form',
     'handleFormUpdate',
     'handleFormUpdateAddToReview',
-    'handleSuggestDismissed',
+    'handle-suggest-dismissed',
   ],
   data() {
     return {
@@ -437,7 +437,7 @@ export default {
           @keydown.exact.up="editMyLastNote()"
           @keydown.exact.esc="cancelHandler(true)"
           @input="onInput"
-          @handleSuggestDismissed="() => $emit('handleSuggestDismissed')"
+          @handle-suggest-dismissed="() => $emit('handle-suggest-dismissed')"
         />
       </comment-field-layout>
       <comment-temperature

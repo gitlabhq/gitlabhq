@@ -134,7 +134,7 @@ export default {
       default: false,
     },
   },
-  emits: ['enableContentEditor', 'handleSuggestDismissed'],
+  emits: ['enableContentEditor', 'handle-suggest-dismissed'],
   data() {
     return {
       glForm: null,
@@ -359,7 +359,7 @@ export default {
         :immersive="immersive"
         @showPreview="showPreview"
         @hidePreview="hidePreview"
-        @handleSuggestDismissed="() => $emit('handleSuggestDismissed')"
+        @handle-suggest-dismissed="() => $emit('handle-suggest-dismissed')"
       >
         <template #header-buttons>
           <slot name="header-buttons"></slot>

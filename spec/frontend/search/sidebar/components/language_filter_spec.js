@@ -53,6 +53,8 @@ describe('GlobalSearchSidebarLanguageFilter', () => {
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findAllCheckboxes = () => wrapper.findAllComponents(GlFormCheckbox);
   const findHasOverMax = () => wrapper.findByTestId('has-over-max-text');
+  const findRefreshingIcon = () => wrapper.findByTestId('language-filter-refreshing-icon');
+  const findListContainer = () => wrapper.findByTestId('language-filter-list-container');
 
   describe('Renders correctly', () => {
     beforeEach(() => {
@@ -145,6 +147,43 @@ describe('GlobalSearchSidebarLanguageFilter', () => {
 
     it('uses action fetchAllAggregation', () => {
       expect(actionSpies.fetchAllAggregation).toHaveBeenCalled();
+    });
+  });
+
+  // A background refresh (e.g. after the user changes the search term) keeps
+  // the previous buckets on screen so the sidebar doesn't flash empty. During
+  // that window we dim the list and show an inline spinner so it is obvious
+  // the counts are being refreshed.
+  describe('refreshing state', () => {
+    it('does not render the spinner when aggregations are not fetching', () => {
+      createComponent({ aggregations: { fetching: false, error: false, data: [] } });
+
+      expect(findRefreshingIcon().exists()).toBe(false);
+    });
+
+    it('renders an inline spinner while aggregations are fetching', () => {
+      createComponent({ aggregations: { fetching: true, error: false, data: [] } });
+
+      expect(findRefreshingIcon().exists()).toBe(true);
+    });
+
+    it('dims the list and marks it aria-busy while fetching', () => {
+      createComponent({ aggregations: { fetching: true, error: false, data: [] } });
+      const container = findListContainer().element;
+
+      expect(container.classList).toContain('gl-opacity-6');
+      expect(container.classList).toContain('gl-pointer-events-none');
+      expect(container.getAttribute('aria-busy')).toBe('true');
+    });
+
+    it('does not dim the list when fetching is false', () => {
+      createComponent({ aggregations: { fetching: false, error: false, data: [] } });
+      const container = findListContainer().element;
+
+      expect(container.classList).not.toContain('gl-opacity-6');
+      // Vue omits the attribute entirely when the bound value is falsy, so we
+      // assert its absence rather than a literal "false" string.
+      expect(container.hasAttribute('aria-busy')).toBe(false);
     });
   });
 });

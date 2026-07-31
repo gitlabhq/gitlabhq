@@ -41,7 +41,7 @@ export default {
       required: true,
     },
   },
-  emits: ['set-filters', 'switchBoard', 'toggleSwimlanes', 'updateBoard'],
+  emits: ['set-filters', 'switchBoard', 'toggleSwimlanes', 'update-board'],
   data() {
     return {
       board: {},
@@ -102,7 +102,7 @@ export default {
             :board-modal-form="currentForm"
             class="gl-flex-grow"
             @switchBoard="$emit('switchBoard', $event)"
-            @updateBoard="$emit('updateBoard', $event)"
+            @update-board="$emit('update-board', $event)"
             @show-board-modal="setCurrentForm"
           />
           <div class="gl-flex gl-items-center gl-gap-2 @md/panel:!gl-hidden">

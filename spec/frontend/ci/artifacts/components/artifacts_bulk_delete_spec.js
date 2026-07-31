@@ -37,16 +37,16 @@ describe('ArtifactsBulkDelete component', () => {
       expect(findText()).toContain(String(selectedArtifacts.length));
     });
 
-    it('emits showBulkDeleteModal event when the delete button is clicked', () => {
+    it('emits show-bulk-delete-modal event when the delete button is clicked', () => {
       findDeleteButton().vm.$emit('click');
 
-      expect(wrapper.emitted('showBulkDeleteModal')).toBeDefined();
+      expect(wrapper.emitted('show-bulk-delete-modal')).toBeDefined();
     });
 
-    it('emits clearSelectedArtifacts event when the clear button is clicked', () => {
+    it('emits clear-selected-artifacts event when the clear button is clicked', () => {
       findClearButton().vm.$emit('click');
 
-      expect(wrapper.emitted('clearSelectedArtifacts')).toBeDefined();
+      expect(wrapper.emitted('clear-selected-artifacts')).toBeDefined();
     });
   });
 

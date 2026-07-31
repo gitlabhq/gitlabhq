@@ -46,7 +46,7 @@ export default {
       required: true,
     },
   },
-  emits: ['delete', 'selectArtifact'],
+  emits: ['delete', 'select-artifact'],
   computed: {
     isExpired() {
       if (!this.artifact.expireAt) {
@@ -71,7 +71,7 @@ export default {
     handleInput(checked) {
       if (checked === this.isSelected) return;
 
-      this.$emit('selectArtifact', this.artifact, checked);
+      this.$emit('select-artifact', this.artifact, checked);
     },
   },
   i18n: {

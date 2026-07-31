@@ -29,6 +29,8 @@ description: Automatically open merge requests to fix vulnerable dependencies.
   `enable_dependency_bump_breaking_changes`. Disabled by default.
 - Go modules support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/604601)
   in GitLab 19.3.
+- Cargo (Rust) support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/604602)
+  in GitLab 19.3.
 - Feature flag `dependency_management_auto_remediation`
   [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/595588) in GitLab 19.3.
 
@@ -125,6 +127,7 @@ Dependency scanning auto-remediation supports the following package managers:
 | Python                  | pip, pipenv, poetry, setuptools, uv | `requirements.txt`, `Pipfile`, `pyproject.toml`, `setup.py`, `uv.lock`         |
 | JavaScript / TypeScript | npm, yarn, pnpm, bun                | `package.json`, `package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`, `bun.lock` |
 | Go                      | Go modules                          | `go.mod`, `go.sum`                                                             |
+| Rust                    | Cargo                               | `Cargo.toml`, `Cargo.lock`                                                     |
 
 Support for additional ecosystems is proposed in
 [epic 19244](https://gitlab.com/groups/gitlab-org/-/work_items/19244).

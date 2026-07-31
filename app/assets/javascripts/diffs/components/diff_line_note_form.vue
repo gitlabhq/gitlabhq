@@ -268,7 +268,7 @@ export default {
       @handleFormUpdateAddToReview="addToReview"
       @cancel-form="handleCancelCommentForm"
       @handleFormUpdate="handleSaveNote"
-      @handleSuggestDismissed="setSuggestPopoverDismissed"
+      @handle-suggest-dismissed="setSuggestPopoverDismissed"
     />
   </div>
 </template>

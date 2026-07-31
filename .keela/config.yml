@@ -1,0 +1,17 @@
+# Keela configuration for GitLab
+# https://github.com/kerrizor/keela
+#
+# Note: When using custom directory_patterns, exclude_patterns cannot be used.
+#
+baseline_path: scripts/lint/keela_baseline.yml
+
+directory_patterns:
+  - "{ee/,}app/**/*.%<ext>s"
+  - "config/**/*.%<ext>s"
+  - "{ee/,}lib/**/*.%<ext>s"
+
+extensions:
+  - rb
+  - haml
+  - erb
+  - builder
