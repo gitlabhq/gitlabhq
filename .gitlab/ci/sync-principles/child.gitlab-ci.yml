@@ -105,7 +105,7 @@ variables:
 ai-principles-collect:
   stage: collect
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine
-  timeout: 30m
+  timeout: 90m
   variables:
     # Both the Workflow API/GraphQL token (for the SSOT-author lookup) and the REST token (for MR creation) come from
     # the same service-account PAT.
