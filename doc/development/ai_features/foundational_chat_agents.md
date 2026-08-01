@@ -40,7 +40,7 @@ more flexibility for complex cases.
    {
      id: 3,
      reference: '<agent-reference>',
-     version: 'experimental',
+     version: 'v1',
      name: 'Test Agent',
      description: "An agent for testing"
    }
@@ -127,8 +127,8 @@ Tips:
    Create a new private agent in the AI Catalog with the same prompt and same tools, and enable it on your test project.
    Once results reach desired levels, add to GitLab Duo Workflow Service.
 1. Add prompts to the GitLab Duo Workflow Service to enable testing the agent in your local GDK.
-1. When using AI catalog, the version field of an agent in `FoundationalChatAgentsDefinitions.rb` should be `experimental`.
-   When creating the definition in GitLab Duo Workflow Service, the version should be `v1`.
+1. The version field of an agent in `FoundationalChatAgentsDefinitions.rb` should be `v1`, regardless of whether
+   the agent is defined in AI Catalog or GitLab Duo Workflow Service.
 
 ## Secret-safety requirements for agent prompts
 
