@@ -7,6 +7,44 @@ title: Troubleshooting GitLab tokens
 
 When working with GitLab tokens, you might encounter the following issues.
 
+## Token appears active but requests fail
+
+A token that is listed as active can still return `401 Unauthorized`, `403 Forbidden`, or
+`404 Not Found` responses. The active status indicates only that the token exists and has not expired or been
+revoked. This status does not mean the token can make a given request.
+
+A token's permissions depend on its scopes and its role. A request can also fail for reasons outside
+the token: where the request comes from, the resource the request targets, and whether an administrator has
+turned off access tokens. None of these factors are apparent from the token itself. Personal, project, and
+group access tokens all use the same `glpat-` prefix. Two tokens that look identical can therefore
+behave differently.
+
+An active token can fail for any of the following reasons:
+
+| Cause | Resolution |
+|-------|------------|
+| The token is missing a scope that the request requires. | Create a token with the necessary [access token scopes](access_token_scopes.md). Rotation keeps the original scopes and cannot add missing scopes.  |
+| A group or project access token doesn't have the required role. | Create a token with a higher role. A token's permissions are limited by both its role and its scopes. |
+| The token expired. | Access tokens [expire at midnight UTC](#expired-access-tokens) on their expiration date. Create a token, then update every place that used the old token. |
+| The token was revoked, or was rotated and the original value is still in use. | Rotation makes the original token inactive immediately. Use the token that the rotation created, or create a token. On GitLab Self-Managed and GitLab Dedicated, an administrator can [restore a personal access token](#restore-a-personal-access-token) that was revoked by accident. |
+| The token type cannot access the resource. | Use a token type that can access the resource. A personal access token accesses the groups and projects available to its user. A group access token accesses the subgroups and projects in its group. A project access token accesses only its own project. |
+| [IP address restrictions](../../user/group/access_and_permissions.md#restrict-group-access-by-ip-address) block the request. | These restrictions apply to group and project access tokens, and blocked requests return `404 Not Found`. Send the request from an allowed address, or ask a user with the Owner role for the top-level group to add the address to the allowed ranges. |
+| [External authorization](../../administration/settings/external_authorization.md) is turned on. | Personal and project access tokens cannot access the container registry or the package registry. To restore access to the registries, turn off external authorization. |
+| An administrator [turned off access tokens](../../user/profile/personal_access_tokens.md#disable-access-tokens) for the instance. | Ask an administrator or a user with the Owner role to turn access tokens back on. |
+
+To identify which cause applies, compare the details of the failing token with a token that works:
+
+- [Personal access tokens](../../user/profile/personal_access_tokens.md#view-token-usage-information)
+- [Group access tokens](../../user/group/settings/group_access_tokens.md#view-your-access-tokens)
+- [Project access tokens](../../user/project/settings/project_access_tokens.md#view-your-access-tokens)
+
+The details include each token's scopes, expiration date, and usage information. Group and project
+access tokens also show the assigned role.
+
+If the token's usage information does not update after you make a request, the request might not be
+reaching GitLab. GitLab updates usage times every 10 minutes and usage IP addresses every minute.
+If GitLab isn't recording the usage after those intervals elapse, your request did not reach GitLab.
+
 ## Expired access tokens
 
 If an existing access token is in use and reaches the `expires_at` value, the token
