@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import {
   GlDisclosureDropdown,
   GlDisclosureDropdownGroup,
@@ -26,7 +27,9 @@ export default {
     GlDisclosureDropdownGroup,
     GlDisclosureDropdownItem,
     InviteMembersTrigger,
-    CreateWorkItemModal: () => import('~/work_items/components/create_work_item_modal.vue'),
+    CreateWorkItemModal: defineAsyncComponent(
+      () => import('~/work_items/components/create_work_item_modal.vue'),
+    ),
   },
   directives: {
     GlTooltip: GlTooltipDirective,

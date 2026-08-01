@@ -57,9 +57,6 @@ describe('RelatedIssuesBlock', () => {
         headerText,
         addButtonText,
       },
-      provide: {
-        reportAbusePath: '/report/abuse/path',
-      },
       stubs: {
         CrudComponent,
       },

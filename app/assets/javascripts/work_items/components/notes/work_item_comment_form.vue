@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlButton, GlFormCheckbox, GlTooltipDirective } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__, __ } from '~/locale';
@@ -48,10 +49,12 @@ export default {
     HelpIcon,
     WorkItemCloseConfirmModal,
     WorkItemStateToggle,
-    CommentTemperature: () =>
-      import(
-        /* webpackChunkName: 'comment_temperature' */ 'ee_component/ai/components/comment_temperature.vue'
-      ),
+    CommentTemperature: defineAsyncComponent(
+      () =>
+        import(
+          /* webpackChunkName: 'comment_temperature' */ 'ee_component/ai/components/comment_temperature.vue'
+        ),
+    ),
   },
   directives: {
     GlTooltip: GlTooltipDirective,

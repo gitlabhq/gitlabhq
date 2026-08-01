@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { mapState } from 'pinia';
 import { INTEGRATION_FORM_TYPE_JIRA, jiraIntegrationAuthFields } from '~/integrations/constants';
 
@@ -11,10 +12,12 @@ export default {
   components: {
     ActiveCheckbox,
     DynamicField,
-    JiraAuthFields: () =>
-      import(
-        /* webpackChunkName: 'integrationJiraAuthFields' */ '~/integrations/edit/components/jira_auth_fields.vue'
-      ),
+    JiraAuthFields: defineAsyncComponent(
+      () =>
+        import(
+          /* webpackChunkName: 'integrationJiraAuthFields' */ '~/integrations/edit/components/jira_auth_fields.vue'
+        ),
+    ),
   },
   props: {
     fields: {

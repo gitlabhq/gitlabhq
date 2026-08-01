@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlLoadingIcon } from '@gitlab/ui';
 import MRWidgetService from 'ee_else_ce/vue_merge_request_widget/services/mr_widget_service';
 import MRWidgetStore from 'ee_else_ce/vue_merge_request_widget/stores/mr_widget_store';
@@ -26,18 +27,27 @@ export default {
   components: {
     GlLoadingIcon,
     StatusIcon,
-    SecurityScansProvider: () =>
-      import('ee_component/merge_requests/reports/security_scans/security_scans_provider.vue'),
-    SecurityNavItem: () =>
-      import('ee_component/merge_requests/reports/security_scans/security_nav_item.vue'),
-    LicenseComplianceProvider: () =>
-      import('ee_component/merge_requests/reports/license_compliance/license_compliance_provider.vue'),
-    LicenseComplianceNavItem: () =>
-      import('ee_component/merge_requests/reports/license_compliance/license_compliance_nav_item.vue'),
-    CodeQualityProvider: () =>
-      import('~/merge_requests/reports/code_quality/code_quality_provider.vue'),
-    CodeQualityNavItem: () =>
-      import('~/merge_requests/reports/code_quality/code_quality_nav_item.vue'),
+    SecurityScansProvider: defineAsyncComponent(
+      () =>
+        import('ee_component/merge_requests/reports/security_scans/security_scans_provider.vue'),
+    ),
+    SecurityNavItem: defineAsyncComponent(
+      () => import('ee_component/merge_requests/reports/security_scans/security_nav_item.vue'),
+    ),
+    LicenseComplianceProvider: defineAsyncComponent(
+      () =>
+        import('ee_component/merge_requests/reports/license_compliance/license_compliance_provider.vue'),
+    ),
+    LicenseComplianceNavItem: defineAsyncComponent(
+      () =>
+        import('ee_component/merge_requests/reports/license_compliance/license_compliance_nav_item.vue'),
+    ),
+    CodeQualityProvider: defineAsyncComponent(
+      () => import('~/merge_requests/reports/code_quality/code_quality_provider.vue'),
+    ),
+    CodeQualityNavItem: defineAsyncComponent(
+      () => import('~/merge_requests/reports/code_quality/code_quality_nav_item.vue'),
+    ),
   },
   data() {
     return {

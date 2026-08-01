@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { s__ } from '~/locale';
 import BoardsSelector from 'ee_else_ce/boards/components/boards_selector.vue';
 import IssueBoardFilteredSearch from 'ee_else_ce/boards/components/issue_board_filtered_search.vue';
@@ -16,8 +17,9 @@ export default {
     IssueBoardFilteredSearch,
     ConfigToggle,
     ToggleFocus,
-    EpicBoardFilteredSearch: () =>
-      import('ee_component/boards/components/epic_filtered_search.vue'),
+    EpicBoardFilteredSearch: defineAsyncComponent(
+      () => import('ee_component/boards/components/epic_filtered_search.vue'),
+    ),
   },
   inject: [
     'swimlanesFeatureAvailable',

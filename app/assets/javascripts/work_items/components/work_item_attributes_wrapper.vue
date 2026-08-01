@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import Participants from '~/sidebar/components/participants/participants.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { ListType } from '~/boards/constants';
@@ -46,15 +47,27 @@ export default {
     WorkItemTimeTracking,
     WorkItemCrmContacts,
     WorkItemDates,
-    WorkItemWeight: () => import('ee_component/work_items/components/work_item_weight.vue'),
-    WorkItemProgress: () => import('ee_component/work_items/components/work_item_progress.vue'),
-    WorkItemIteration: () => import('ee_component/work_items/components/work_item_iteration.vue'),
-    WorkItemHealthStatus: () =>
-      import('ee_component/work_items/components/work_item_health_status.vue'),
-    WorkItemColor: () => import('ee_component/work_items/components/work_item_color.vue'),
-    WorkItemCustomFields: () =>
-      import('ee_component/work_items/components/work_item_custom_fields.vue'),
-    WorkItemStatus: () => import('ee_component/work_items/components/work_item_status.vue'),
+    WorkItemWeight: defineAsyncComponent(
+      () => import('ee_component/work_items/components/work_item_weight.vue'),
+    ),
+    WorkItemProgress: defineAsyncComponent(
+      () => import('ee_component/work_items/components/work_item_progress.vue'),
+    ),
+    WorkItemIteration: defineAsyncComponent(
+      () => import('ee_component/work_items/components/work_item_iteration.vue'),
+    ),
+    WorkItemHealthStatus: defineAsyncComponent(
+      () => import('ee_component/work_items/components/work_item_health_status.vue'),
+    ),
+    WorkItemColor: defineAsyncComponent(
+      () => import('ee_component/work_items/components/work_item_color.vue'),
+    ),
+    WorkItemCustomFields: defineAsyncComponent(
+      () => import('ee_component/work_items/components/work_item_custom_fields.vue'),
+    ),
+    WorkItemStatus: defineAsyncComponent(
+      () => import('ee_component/work_items/components/work_item_status.vue'),
+    ),
   },
   mixins: [glFeatureFlagMixin()],
   inject: {

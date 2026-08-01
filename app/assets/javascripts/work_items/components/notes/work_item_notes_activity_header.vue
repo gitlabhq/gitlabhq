@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { DUO_CHAT_AGENT_PLANNER, DUO_CHAT_QUICK_ACTION_SUMMARIZE } from '~/ai/constants';
 import { s__ } from '~/locale';
 import WorkItemActivitySortFilter from '~/work_items/components/notes/work_item_activity_sort_filter.vue';
@@ -14,7 +15,9 @@ import {
 export default {
   name: 'WorkItemNotesActivityHeader',
   components: {
-    DuoChatQuickAction: () => import('ee_component/ai/shared/widgets/duo_chat_quick_action.vue'),
+    DuoChatQuickAction: defineAsyncComponent(
+      () => import('ee_component/ai/shared/widgets/duo_chat_quick_action.vue'),
+    ),
     WorkItemActivitySortFilter,
   },
   props: {

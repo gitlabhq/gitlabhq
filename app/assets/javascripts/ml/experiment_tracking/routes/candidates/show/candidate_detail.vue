@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import {
   GlAvatarLabeled,
   GlButton,
@@ -22,8 +23,10 @@ export default {
     GlTab,
     GlTabs,
     GlTableLite,
-    PackageFiles: () =>
-      import('~/packages_and_registries/package_registry/components/details/package_files.vue'),
+    PackageFiles: defineAsyncComponent(
+      () =>
+        import('~/packages_and_registries/package_registry/components/details/package_files.vue'),
+    ),
   },
   directives: {
     GlTooltip: GlTooltipDirective,

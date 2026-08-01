@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlPopover, GlButton, GlTooltipDirective, GlFormInput } from '@gitlab/ui';
 import $ from 'jquery';
 import { escapeRegExp } from 'lodash-es';
@@ -47,10 +48,13 @@ export default {
     GlFormInput,
     DrawioToolbarButton,
     CommentTemplatesModal,
-    AiActionsDropdown: () => import('ee_component/ai/components/ai_actions_dropdown.vue'),
+    AiActionsDropdown: defineAsyncComponent(
+      () => import('ee_component/ai/components/ai_actions_dropdown.vue'),
+    ),
     HeaderDivider,
-    SummarizeCodeChanges: () =>
-      import('ee_component/merge_requests/components/summarize_code_changes.vue'),
+    SummarizeCodeChanges: defineAsyncComponent(
+      () => import('ee_component/merge_requests/components/summarize_code_changes.vue'),
+    ),
     ToolbarMoreDropdown,
   },
   directives: {

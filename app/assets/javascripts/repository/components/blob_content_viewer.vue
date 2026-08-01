@@ -2,7 +2,7 @@
 import { GlLoadingIcon, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { uniqueId } from 'lodash-es';
 import { mapActions } from 'pinia';
-import { computed } from 'vue';
+import { computed, defineAsyncComponent } from 'vue';
 import { logError } from '~/lib/logger';
 import { captureException } from '~/sentry/sentry_browser_wrapper';
 import BlobContent from '~/blob/components/blob_content.vue';
@@ -45,8 +45,10 @@ export default {
     GlLoadingIcon,
     GlButton,
     CodeIntelligence,
-    AiGenie: () => import('ee_component/ai/components/ai_genie.vue'),
-    OrbitCodePanel: () => import('ee_component/orbit/components/orbit_code_panel.vue'),
+    AiGenie: defineAsyncComponent(() => import('ee_component/ai/components/ai_genie.vue')),
+    OrbitCodePanel: defineAsyncComponent(
+      () => import('ee_component/orbit/components/orbit_code_panel.vue'),
+    ),
   },
   directives: {
     GlTooltip: GlTooltipDirective,

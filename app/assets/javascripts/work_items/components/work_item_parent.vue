@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlIcon, GlLink, GlPopover } from '@gitlab/ui';
 import { uniqueId } from 'lodash-es';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -34,7 +35,9 @@ export default {
     GlLink,
     GlIcon,
     GlPopover,
-    WorkItemPopover: () => import('~/issuable/popover/components/work_item_popover.vue'),
+    WorkItemPopover: defineAsyncComponent(
+      () => import('~/issuable/popover/components/work_item_popover.vue'),
+    ),
     WorkItemSidebarDropdownWidget,
   },
   directives: {

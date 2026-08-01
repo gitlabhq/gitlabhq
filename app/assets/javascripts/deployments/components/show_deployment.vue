@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlAlert, GlSprintf } from '@gitlab/ui';
 import { captureException } from '~/sentry/sentry_browser_wrapper';
 import { setupQueryPollingByVisibility, etagQueryHeaders } from '~/graphql_shared/utils';
@@ -20,9 +21,12 @@ export default {
     DeploymentHeader,
     DeploymentAside,
     DeploymentDeployBlock,
-    DeploymentApprovals: () =>
-      import('ee_component/deployments/components/deployment_approvals.vue'),
-    DeploymentTimeline: () => import('ee_component/deployments/components/deployment_timeline.vue'),
+    DeploymentApprovals: defineAsyncComponent(
+      () => import('ee_component/deployments/components/deployment_approvals.vue'),
+    ),
+    DeploymentTimeline: defineAsyncComponent(
+      () => import('ee_component/deployments/components/deployment_timeline.vue'),
+    ),
   },
   inject: ['projectPath', 'deploymentIid', 'environmentName', 'graphqlEtagKey'],
   apollo: {

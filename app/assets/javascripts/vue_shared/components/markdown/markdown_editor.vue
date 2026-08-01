@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlAlert, GlOutsideDirective as Outside } from '@gitlab/ui';
 import Autosize from 'autosize';
 import MarkdownComposer from 'ee_component/vue_shared/components/markdown/composer.vue';
@@ -39,10 +40,12 @@ export default {
     MarkdownField,
     LocalStorageSync,
     MarkdownComposer,
-    ContentEditor: () =>
-      import(
-        /* webpackChunkName: 'content_editor' */ '~/content_editor/components/content_editor.vue'
-      ),
+    ContentEditor: defineAsyncComponent(
+      () =>
+        import(
+          /* webpackChunkName: 'content_editor' */ '~/content_editor/components/content_editor.vue'
+        ),
+    ),
   },
   directives: { Outside },
   inject: { canUseComposer: { default: false } },

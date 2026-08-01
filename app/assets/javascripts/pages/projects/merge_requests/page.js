@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { defineAsyncComponent } from 'vue';
 import VueApollo from 'vue-apollo';
 import initMrNotes from 'ee_else_ce/mr_notes';
 import { start as startCodeReviewMessaging } from '~/code_review/signals';
@@ -60,7 +60,9 @@ const initMrStickyHeader = (store) => {
       pinia,
       apolloProvider,
       components: {
-        StickyHeader: () => import('~/merge_requests/components/sticky_header.vue'),
+        StickyHeader: defineAsyncComponent(
+          () => import('~/merge_requests/components/sticky_header.vue'),
+        ),
       },
       provide: {
         query: getStateQuery,
@@ -124,7 +126,9 @@ const initStackedDropdown = () => {
     pinia,
     apolloProvider,
     components: {
-      StackDropdown: () => import('~/merge_requests/components/stack_dropdown.vue'),
+      StackDropdown: defineAsyncComponent(
+        () => import('~/merge_requests/components/stack_dropdown.vue'),
+      ),
     },
     provide: {
       defaultBranch,

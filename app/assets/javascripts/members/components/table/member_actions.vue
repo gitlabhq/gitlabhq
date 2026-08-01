@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { MEMBERS_TAB_TYPES, ACTION_BUTTONS } from 'ee_else_ce/members/constants';
 import AccessRequestActionButtons from '../action_buttons/access_request_action_buttons.vue';
 import GroupActionButtons from '../action_buttons/group_action_buttons.vue';
@@ -12,8 +13,9 @@ export default {
     GroupActionButtons,
     InviteActionButtons,
     AccessRequestActionButtons,
-    BannedActionButtons: () =>
-      import('ee_component/members/components/action_buttons/banned_action_buttons.vue'),
+    BannedActionButtons: defineAsyncComponent(
+      () => import('ee_component/members/components/action_buttons/banned_action_buttons.vue'),
+    ),
   },
   props: {
     member: {

@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlButton, GlLink, GlTooltipDirective } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { updateHistory } from '~/lib/utils/url_utility';
@@ -62,8 +63,9 @@ export default {
     RunnerPagination,
     RunnerTypeTabs,
     RunnerActionsCell,
-    RunnerDashboardLink: () =>
-      import('ee_component/ci/runner/components/runner_dashboard_link.vue'),
+    RunnerDashboardLink: defineAsyncComponent(
+      () => import('ee_component/ci/runner/components/runner_dashboard_link.vue'),
+    ),
   },
   mixins: [glFeatureFlagsMixin()],
   props: {

@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import {
   GlButton,
   GlEmptyState,
@@ -46,22 +47,30 @@ export default {
   components: {
     GlButton,
     GlEmptyState,
-    ProjectEmptyState: () =>
-      import(
-        /* webpackChunkName: 'container_registry_components' */ '../components/list_page/project_empty_state.vue'
-      ),
-    GroupEmptyState: () =>
-      import(
-        /* webpackChunkName: 'container_registry_components' */ '../components/list_page/group_empty_state.vue'
-      ),
-    ImageList: () =>
-      import(
-        /* webpackChunkName: 'container_registry_components' */ '../components/list_page/image_list.vue'
-      ),
-    CliCommands: () =>
-      import(
-        /* webpackChunkName: 'container_registry_components' */ '~/packages_and_registries/shared/components/cli_commands.vue'
-      ),
+    ProjectEmptyState: defineAsyncComponent(
+      () =>
+        import(
+          /* webpackChunkName: 'container_registry_components' */ '../components/list_page/project_empty_state.vue'
+        ),
+    ),
+    GroupEmptyState: defineAsyncComponent(
+      () =>
+        import(
+          /* webpackChunkName: 'container_registry_components' */ '../components/list_page/group_empty_state.vue'
+        ),
+    ),
+    ImageList: defineAsyncComponent(
+      () =>
+        import(
+          /* webpackChunkName: 'container_registry_components' */ '../components/list_page/image_list.vue'
+        ),
+    ),
+    CliCommands: defineAsyncComponent(
+      () =>
+        import(
+          /* webpackChunkName: 'container_registry_components' */ '~/packages_and_registries/shared/components/cli_commands.vue'
+        ),
+    ),
     DeleteModal,
     GlSprintf,
     GlLink,

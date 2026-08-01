@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlIntersperse, GlTableLite } from '@gitlab/ui';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import { s__ } from '~/locale';
@@ -17,8 +18,9 @@ export default {
     GlIntersperse,
     RunnerStatusBadge,
     RunnerJobStatusBadge,
-    RunnerUpgradeStatusIcon: () =>
-      import('ee_component/ci/runner/components/runner_upgrade_status_icon.vue'),
+    RunnerUpgradeStatusIcon: defineAsyncComponent(
+      () => import('ee_component/ci/runner/components/runner_upgrade_status_icon.vue'),
+    ),
   },
   props: {
     items: {

@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlLoadingIcon, GlIntersectionObserver, GlIcon } from '@gitlab/ui';
 import Draggable from '~/lib/utils/vue3compat/draggable_compat.vue';
 import { STATUS_CLOSED } from '~/issues/constants';
@@ -47,7 +48,9 @@ export default {
     BoardCard,
     BoardNewIssue,
     BoardCutLine,
-    BoardNewEpic: () => import('ee_component/boards/components/board_new_epic.vue'),
+    BoardNewEpic: defineAsyncComponent(
+      () => import('ee_component/boards/components/board_new_epic.vue'),
+    ),
     GlLoadingIcon,
     GlIntersectionObserver,
     BoardCardMoveToPosition,

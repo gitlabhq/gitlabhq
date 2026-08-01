@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { mapActions, mapState } from 'pinia';
 import { __ } from '~/locale';
@@ -43,14 +44,19 @@ export default {
     Breadcrumbs,
     RepositoryOverflowMenu,
     BlobControls,
-    CompactCodeDropdown: () =>
-      import('ee_else_ce/repository/components/code_dropdown/compact_code_dropdown.vue'),
+    CompactCodeDropdown: defineAsyncComponent(
+      () => import('ee_else_ce/repository/components/code_dropdown/compact_code_dropdown.vue'),
+    ),
     AddToTree,
-    WebIdeLink: () => import('ee_else_ce/vue_shared/components/web_ide_link.vue'),
-    LockDirectoryButton: () =>
-      import('ee_component/repository/components/lock_directory_button.vue'),
-    HeaderLockIcon: () =>
-      import('ee_component/repository/components/header_area/header_lock_icon.vue'),
+    WebIdeLink: defineAsyncComponent(
+      () => import('ee_else_ce/vue_shared/components/web_ide_link.vue'),
+    ),
+    LockDirectoryButton: defineAsyncComponent(
+      () => import('ee_component/repository/components/lock_directory_button.vue'),
+    ),
+    HeaderLockIcon: defineAsyncComponent(
+      () => import('ee_component/repository/components/header_area/header_lock_icon.vue'),
+    ),
     FileTreeBrowserToggle,
   },
   directives: {

@@ -365,7 +365,11 @@ export default {
     addDiscussionToCache(cache, newNote) {
       const queryArgs = {
         query: workItemNotesByIidQuery,
-        variables: { fullPath: this.fullPath, iid: this.workItemIid },
+        variables: {
+          fullPath: this.fullPath,
+          iid: this.workItemIid,
+          useWorkItemFeatures: Boolean(this.glFeatures.workItemFeaturesField),
+        },
       };
       const sourceData = cache.readQuery(queryArgs);
       if (!sourceData) {

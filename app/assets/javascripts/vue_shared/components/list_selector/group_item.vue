@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlAvatarLabeled, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { sprintf, __ } from '~/locale';
 
@@ -7,7 +8,9 @@ export default {
   components: {
     GlAvatarLabeled,
     GlButton,
-    HiddenGroupsItem: () => import('ee_component/approvals/components/hidden_groups_item.vue'),
+    HiddenGroupsItem: defineAsyncComponent(
+      () => import('ee_component/approvals/components/hidden_groups_item.vue'),
+    ),
   },
   directives: {
     GlTooltip: GlTooltipDirective,

@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import {
   GlDisclosureDropdown,
   GlDisclosureDropdownItem,
@@ -24,7 +25,9 @@ export default {
     GlDisclosureDropdownItem,
     GlToggle,
     LocalStorageSync,
-    ToggleEpicsSwimlanes: () => import('ee_component/boards/components/toggle_epics_swimlanes.vue'),
+    ToggleEpicsSwimlanes: defineAsyncComponent(
+      () => import('ee_component/boards/components/toggle_epics_swimlanes.vue'),
+    ),
   },
   directives: {
     GlTooltipDirective,

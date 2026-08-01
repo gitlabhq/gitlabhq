@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlDisclosureDropdown, GlTooltipDirective } from '@gitlab/ui';
 import { sprintf } from '~/locale';
 import { parseUserDeletionObstacles } from '~/vue_shared/components/user_deletion_obstacles/utils';
@@ -16,14 +17,19 @@ export default {
   i18n: I18N,
   components: {
     GlDisclosureDropdown,
-    DisableTwoFactorDropdownItem: () =>
-      import('ee_component/members/components/action_dropdowns/disable_two_factor_dropdown_item.vue'),
-    LdapOverrideDropdownItem: () =>
-      import('ee_component/members/components/action_dropdowns/ldap_override_dropdown_item.vue'),
+    DisableTwoFactorDropdownItem: defineAsyncComponent(
+      () =>
+        import('ee_component/members/components/action_dropdowns/disable_two_factor_dropdown_item.vue'),
+    ),
+    LdapOverrideDropdownItem: defineAsyncComponent(
+      () =>
+        import('ee_component/members/components/action_dropdowns/ldap_override_dropdown_item.vue'),
+    ),
     LeaveDropdownItem,
     RemoveMemberDropdownItem,
-    BanMemberDropdownItem: () =>
-      import('ee_component/members/components/action_dropdowns/ban_member_dropdown_item.vue'),
+    BanMemberDropdownItem: defineAsyncComponent(
+      () => import('ee_component/members/components/action_dropdowns/ban_member_dropdown_item.vue'),
+    ),
   },
   directives: {
     GlTooltip: GlTooltipDirective,

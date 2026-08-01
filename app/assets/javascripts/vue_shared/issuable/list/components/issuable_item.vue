@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import {
   GlBadge,
   GlLink,
@@ -50,8 +51,9 @@ export default {
     IssuableAssignees,
     WorkItemTypeIcon,
     WorkItemPrefetch,
-    WorkItemRelationshipIcons: () =>
-      import('~/work_items/components/shared/work_item_relationship_icons.vue'),
+    WorkItemRelationshipIcons: defineAsyncComponent(
+      () => import('~/work_items/components/shared/work_item_relationship_icons.vue'),
+    ),
   },
   directives: {
     GlTooltip: GlTooltipDirective,

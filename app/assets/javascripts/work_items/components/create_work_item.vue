@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import {
   GlButton,
   GlAlert,
@@ -124,14 +125,24 @@ export default {
     TitleSuggestions,
     WorkItemParent,
     WorkItemDates,
-    WorkItemWeight: () => import('ee_component/work_items/components/work_item_weight.vue'),
-    WorkItemHealthStatus: () =>
-      import('ee_component/work_items/components/work_item_health_status.vue'),
-    WorkItemColor: () => import('ee_component/work_items/components/work_item_color.vue'),
-    WorkItemIteration: () => import('ee_component/work_items/components/work_item_iteration.vue'),
-    WorkItemCustomFields: () =>
-      import('ee_component/work_items/components/work_item_custom_fields.vue'),
-    WorkItemStatus: () => import('ee_component/work_items/components/work_item_status.vue'),
+    WorkItemWeight: defineAsyncComponent(
+      () => import('ee_component/work_items/components/work_item_weight.vue'),
+    ),
+    WorkItemHealthStatus: defineAsyncComponent(
+      () => import('ee_component/work_items/components/work_item_health_status.vue'),
+    ),
+    WorkItemColor: defineAsyncComponent(
+      () => import('ee_component/work_items/components/work_item_color.vue'),
+    ),
+    WorkItemIteration: defineAsyncComponent(
+      () => import('ee_component/work_items/components/work_item_iteration.vue'),
+    ),
+    WorkItemCustomFields: defineAsyncComponent(
+      () => import('ee_component/work_items/components/work_item_custom_fields.vue'),
+    ),
+    WorkItemStatus: defineAsyncComponent(
+      () => import('ee_component/work_items/components/work_item_status.vue'),
+    ),
     PageHeading,
     WorkItemMetadataProvider,
   },

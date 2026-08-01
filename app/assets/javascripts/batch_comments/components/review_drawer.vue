@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { mapActions, mapState } from 'pinia';
 import {
   GlDrawer,
@@ -66,9 +67,12 @@ export default {
     PreviewItem,
     MarkdownEditor,
     MarkdownHeaderDivider,
-    ApprovalPassword: () => import('ee_component/batch_comments/components/approval_password.vue'),
-    SummarizeMyReview: () =>
-      import('ee_component/batch_comments/components/summarize_my_review.vue'),
+    ApprovalPassword: defineAsyncComponent(
+      () => import('ee_component/batch_comments/components/approval_password.vue'),
+    ),
+    SummarizeMyReview: defineAsyncComponent(
+      () => import('ee_component/batch_comments/components/summarize_my_review.vue'),
+    ),
   },
   inject: {
     canSummarize: { default: false },

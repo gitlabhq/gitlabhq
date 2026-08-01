@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlForm, GlModal, GlAlert, GlButton } from '@gitlab/ui';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
@@ -50,7 +51,9 @@ export default {
     titleFieldPlaceholder: s__('Boards|Enter board name'),
   },
   components: {
-    BoardScope: () => import('ee_component/boards/components/board_scope.vue'),
+    BoardScope: defineAsyncComponent(
+      () => import('ee_component/boards/components/board_scope.vue'),
+    ),
     GlModal,
     GlButton,
     BoardConfigurationOptions,

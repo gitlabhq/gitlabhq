@@ -182,6 +182,9 @@ RSpec.shared_examples 'clone quick action' do
         # missspelled quick action
         fill_in('Add a reply', with: "test note.\n/cloe #{target_project.full_path}")
         click_button 'Comment'
+        # Barrier before the negative assertion, which would otherwise pass
+        # vacuously while the comment mutation is still in flight.
+        expect(page).to have_field('Add a reply', with: '')
 
         expect(page).not_to have_content 'Commands applied'
 

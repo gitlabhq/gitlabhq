@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import {
   GlButton,
   GlTooltipDirective,
@@ -26,7 +27,7 @@ export default {
     resolveThreadTitle: __('Resolve thread'),
   },
   components: {
-    EmojiPicker: () => import('~/emoji/components/picker.vue'),
+    EmojiPicker: defineAsyncComponent(() => import('~/emoji/components/picker.vue')),
     GlButton,
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,

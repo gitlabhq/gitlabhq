@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import {
   GlButton,
   GlButtonGroup,
@@ -155,17 +156,24 @@ export default {
     GlSkeletonLoader,
     MergeFailedPipelineConfirmationDialog,
     RebaseConfirmationDialog,
-    MergeImmediatelyConfirmationDialog: () =>
-      import('ee_component/vue_merge_request_widget/components/merge_immediately_confirmation_dialog.vue'),
-    MergeTrainFailedPipelineConfirmationDialog: () =>
-      import('ee_component/vue_merge_request_widget/components/merge_train_failed_pipeline_confirmation_dialog.vue'),
-    MergeTrainRestartTrainConfirmationDialog: () =>
-      import('ee_component/vue_merge_request_widget/components/merge_train_restart_train_confirmation_dialog.vue'),
+    MergeImmediatelyConfirmationDialog: defineAsyncComponent(
+      () =>
+        import('ee_component/vue_merge_request_widget/components/merge_immediately_confirmation_dialog.vue'),
+    ),
+    MergeTrainFailedPipelineConfirmationDialog: defineAsyncComponent(
+      () =>
+        import('ee_component/vue_merge_request_widget/components/merge_train_failed_pipeline_confirmation_dialog.vue'),
+    ),
+    MergeTrainRestartTrainConfirmationDialog: defineAsyncComponent(
+      () =>
+        import('ee_component/vue_merge_request_widget/components/merge_train_restart_train_confirmation_dialog.vue'),
+    ),
     AddedCommitMessage,
     RelatedLinks,
     HelpPopover,
-    AiCommitMessage: () =>
-      import('ee_component/vue_merge_request_widget/components/ai_commit_message.vue'),
+    AiCommitMessage: defineAsyncComponent(
+      () => import('ee_component/vue_merge_request_widget/components/ai_commit_message.vue'),
+    ),
   },
   directives: {
     GlTooltip: GlTooltipDirective,

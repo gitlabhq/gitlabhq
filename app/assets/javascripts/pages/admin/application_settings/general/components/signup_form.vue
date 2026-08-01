@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import {
   GlButton,
   GlFormGroup,
@@ -33,10 +34,14 @@ export default {
     GlSprintf,
     GlLink,
     SignupCheckbox,
-    SeatControlSection: () =>
-      import('ee_component/pages/admin/application_settings/general/components/seat_control_section.vue'),
-    PasswordComplexityCheckboxGroup: () =>
-      import('ee_component/pages/admin/application_settings/general/components/password_complexity_checkbox_group.vue'),
+    SeatControlSection: defineAsyncComponent(
+      () =>
+        import('ee_component/pages/admin/application_settings/general/components/seat_control_section.vue'),
+    ),
+    PasswordComplexityCheckboxGroup: defineAsyncComponent(
+      () =>
+        import('ee_component/pages/admin/application_settings/general/components/password_complexity_checkbox_group.vue'),
+    ),
   },
   mixins: [glFeatureFlagMixin(), glLicensedFeaturesMixin()],
   provide() {

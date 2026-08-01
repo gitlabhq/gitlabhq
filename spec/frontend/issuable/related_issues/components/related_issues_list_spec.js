@@ -31,9 +31,6 @@ describe('RelatedIssuesList', () => {
         isFetching,
         relatedIssues,
       },
-      provide: {
-        reportAbusePath: '/report/abuse/path',
-      },
     });
   };
 

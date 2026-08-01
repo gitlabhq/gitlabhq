@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import { s__, sprintf } from '~/locale';
@@ -15,8 +16,9 @@ export default {
     RunnerCreatedAt,
     RunnerTypeBadge,
     RunnerStatusBadge,
-    RunnerUpgradeStatusBadge: () =>
-      import('ee_component/ci/runner/components/runner_upgrade_status_badge.vue'),
+    RunnerUpgradeStatusBadge: defineAsyncComponent(
+      () => import('ee_component/ci/runner/components/runner_upgrade_status_badge.vue'),
+    ),
     PageHeading,
   },
   directives: {

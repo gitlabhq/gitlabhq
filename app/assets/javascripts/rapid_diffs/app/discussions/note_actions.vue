@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import {
   GlTooltipDirective,
   GlButton,
@@ -33,7 +34,9 @@ export default {
     GlDisclosureDropdownGroup,
     ReplyButton,
     UserAccessRoleBadge,
-    DuoChatFeedbackModal: () => import('ee_component/ai/components/duo_chat_feedback_modal.vue'),
+    DuoChatFeedbackModal: defineAsyncComponent(
+      () => import('ee_component/ai/components/duo_chat_feedback_modal.vue'),
+    ),
   },
   directives: {
     GlTooltip: GlTooltipDirective,

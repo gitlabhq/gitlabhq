@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import {
   GlDisclosureDropdown,
   GlEmptyState,
@@ -86,8 +87,9 @@ export default {
     IssueCardTimeInfo,
     IndexLayout,
     NewResourceDropdown,
-    WorkItemStatusBadge: () =>
-      import('ee_component/work_items/components/shared/work_item_status_badge.vue'),
+    WorkItemStatusBadge: defineAsyncComponent(
+      () => import('ee_component/work_items/components/shared/work_item_status_badge.vue'),
+    ),
   },
   directives: {
     GlTooltip: GlTooltipDirective,

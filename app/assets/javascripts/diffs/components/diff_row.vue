@@ -4,6 +4,7 @@
 NOTE: This file uses v-html over v-safe-html for performance reasons, see:
 https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57842
 * */
+import { defineAsyncComponent } from 'vue';
 import {
   PARALLEL_DIFF_VIEW_TYPE,
   CONFLICT_MARKER_THEIR,
@@ -23,8 +24,9 @@ export default {
   name: 'DiffRow',
   components: {
     DiffGutterAvatars,
-    InlineFindingsGutterIconDropdown: () =>
-      import('ee_component/diffs/components/inline_findings_gutter_icon_dropdown.vue'),
+    InlineFindingsGutterIconDropdown: defineAsyncComponent(
+      () => import('ee_component/diffs/components/inline_findings_gutter_icon_dropdown.vue'),
+    ),
   },
   props: {
     filePath: {

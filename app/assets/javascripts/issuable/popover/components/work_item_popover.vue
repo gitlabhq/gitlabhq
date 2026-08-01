@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import {
   GlIcon,
   GlPopover,
@@ -37,9 +38,12 @@ export default {
     GlAvatarsInline,
     IssueDueDate,
     IssueMilestone,
-    IssueWeight: () => import('ee_component/issues/components/issue_weight.vue'),
-    IssueStatus: () =>
-      import('ee_component/work_items/components/shared/work_item_status_badge.vue'),
+    IssueWeight: defineAsyncComponent(
+      () => import('ee_component/issues/components/issue_weight.vue'),
+    ),
+    IssueStatus: defineAsyncComponent(
+      () => import('ee_component/work_items/components/shared/work_item_status_badge.vue'),
+    ),
     StatusBadge,
     WorkItemTypeIcon,
   },

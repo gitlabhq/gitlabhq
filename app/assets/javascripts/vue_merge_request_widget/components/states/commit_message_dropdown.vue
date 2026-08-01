@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlDisclosureDropdown, GlButtonGroup } from '@gitlab/ui';
 
 export default {
@@ -6,8 +7,9 @@ export default {
   components: {
     GlButtonGroup,
     GlDisclosureDropdown,
-    AiCommitMessage: () =>
-      import('ee_component/vue_merge_request_widget/components/ai_commit_message.vue'),
+    AiCommitMessage: defineAsyncComponent(
+      () => import('ee_component/vue_merge_request_widget/components/ai_commit_message.vue'),
+    ),
   },
   props: {
     commits: {

@@ -40,9 +40,6 @@ describe('RelatedIssuesRoot', () => {
         ...defaultProps,
         ...props,
       },
-      provide: {
-        reportAbusePath: '/report/abuse/path',
-      },
       data() {
         return data;
       },
@@ -78,17 +75,6 @@ describe('RelatedIssuesRoot', () => {
           expect(findRelatedIssuesBlock().props('relatedIssues')).toEqual([
             expect.objectContaining({ id: issuable1.id }),
           ]);
-        });
-      });
-
-      describe('when emitted value is a work item id', () => {
-        it('removes related issue', async () => {
-          const workItem = `gid://gitlab/WorkItem/${issuable1.id}`;
-          createComponent({ data: { state: { relatedIssues: [issuable1] } } });
-
-          await findRelatedIssuesBlock().vm.$emit('related-issue-remove-request', workItem);
-
-          expect(findRelatedIssuesBlock().props('relatedIssues')).toEqual([]);
         });
       });
     });

@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlButtonGroup, GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
 import { getAutoSaveKeyFromDiscussion } from '~/lib/utils/autosave';
 import { isLoggedIn } from '~/lib/utils/common_utils';
@@ -28,8 +29,9 @@ export default {
     ResolveWithIssueButton,
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
-    ResolveWithDuoDropdownItem: () =>
-      import('ee_component/notes/components/resolve_with_duo_dropdown_item.vue'),
+    ResolveWithDuoDropdownItem: defineAsyncComponent(
+      () => import('ee_component/notes/components/resolve_with_duo_dropdown_item.vue'),
+    ),
   },
   inject: {
     store: {

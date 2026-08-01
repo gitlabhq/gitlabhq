@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlDrawer } from '@gitlab/ui';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
@@ -23,10 +24,12 @@ export default {
   },
   components: {
     GlDrawer,
-    ApprovalSummary: () =>
-      import('ee_component/merge_requests/components/reviewers/approval_summary.vue'),
-    ApprovalRulesWrapper: () =>
-      import('ee_component/merge_requests/components/reviewers/approval_rules_wrapper.vue'),
+    ApprovalSummary: defineAsyncComponent(
+      () => import('ee_component/merge_requests/components/reviewers/approval_summary.vue'),
+    ),
+    ApprovalRulesWrapper: defineAsyncComponent(
+      () => import('ee_component/merge_requests/components/reviewers/approval_rules_wrapper.vue'),
+    ),
   },
   inject: ['projectPath', 'issuableIid'],
   props: {

@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlBreadcrumb, GlButton, GlIcon, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -30,12 +31,15 @@ export default {
     UserCounts,
     UserMenu,
     PromoMenu,
-    OrganizationSwitcher: () =>
-      import(/* webpackChunkName: 'organization_switcher' */ './organization_switcher.vue'),
-    SearchModal: () =>
-      import(
-        /* webpackChunkName: 'global_search_modal' */ './global_search/components/global_search.vue'
-      ),
+    OrganizationSwitcher: defineAsyncComponent(
+      () => import(/* webpackChunkName: 'organization_switcher' */ './organization_switcher.vue'),
+    ),
+    SearchModal: defineAsyncComponent(
+      () =>
+        import(
+          /* webpackChunkName: 'global_search_modal' */ './global_search/components/global_search.vue'
+        ),
+    ),
   },
   directives: {
     GlModal: GlModalDirective,

@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlAlert, GlLoadingIcon, GlToggle } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions } from 'vuex';
@@ -11,7 +12,9 @@ export default {
     GlAlert,
     GlLoadingIcon,
     GlToggle,
-    FeatureFlagActions: () => import('ee_component/feature_flags/components/actions.vue'),
+    FeatureFlagActions: defineAsyncComponent(
+      () => import('ee_component/feature_flags/components/actions.vue'),
+    ),
     FeatureFlagForm,
   },
   computed: {

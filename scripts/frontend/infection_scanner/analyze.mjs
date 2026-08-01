@@ -273,7 +273,29 @@ export function extractScriptContent(source) {
  * @returns {boolean}
  */
 export function detectAppRoot(code) {
-  const stripped = code.replace(/\/\/[^\n]*/g, '').replace(/\/\*[\s\S]*?\*\//g, '');
+  const stripped = code
+    .replace(/\/\/[^\n]*/g, '')
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    // `defineAsyncComponent` in a vue import clause is bootstrap plumbing —
+    // it wraps the lazily loaded components handed to the mount call — not a
+    // reach into vue's reactivity APIs, so it must not cost a bootstrap its
+    // app-root firewall. Drop it from vue import clauses before the named-
+    // import veto below; any other named import still disqualifies the file.
+    .replace(
+      /import\s+(?:([A-Za-z_$][\w$]*)\s*,\s*)?\{([^}]*)\}\s+from\s+(['"]vue['"])/g,
+      (...m) => {
+        const [, defaultName, named, quotedVue] = m;
+        const rest = named
+          .split(',')
+          .map((entry) => entry.trim())
+          .filter((entry) => entry && entry !== 'defineAsyncComponent');
+        if (rest.length) {
+          const defaultPart = defaultName ? `${defaultName}, ` : '';
+          return `import ${defaultPart}{ ${rest.join(', ')} } from ${quotedVue}`;
+        }
+        return defaultName ? `import ${defaultName} from ${quotedVue}` : '';
+      },
+    );
 
   // initVueApp bootstraps are app roots exactly like `new Vue({ el })`
   // ones: the vue-ness is contained in mounting an app, so importers must

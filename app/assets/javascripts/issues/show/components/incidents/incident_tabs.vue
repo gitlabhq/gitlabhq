@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlTab, GlTabs } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { trackIncidentDetailsViewsOptions } from '~/incidents/constants';
@@ -36,8 +37,9 @@ export default {
       : {
           AlertDetailsTable,
           TimelineTab,
-          IncidentMetricTab: () =>
-            import('ee_component/issues/show/components/incidents/incident_metric_tab.vue'),
+          IncidentMetricTab: defineAsyncComponent(
+            () => import('ee_component/issues/show/components/incidents/incident_metric_tab.vue'),
+          ),
         }),
   },
   inject: ['fullPath', 'iid', 'hasLinkedAlerts', 'uploadMetricsFeatureAvailable'],

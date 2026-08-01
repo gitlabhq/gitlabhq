@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlLink } from '@gitlab/ui';
 import { approximateDuration, calculateRemainingMilliseconds } from '~/lib/utils/datetime_utility';
 import { n__, sprintf } from '~/locale';
@@ -18,10 +19,14 @@ export default {
     TitleArea,
     MetadataItem,
     GlLink,
-    MetadataContainerScanning: () =>
-      import('ee_component/packages_and_registries/container_registry/explorer/components/list_page/metadata_container_scanning.vue'),
-    ContainerScanningCounts: () =>
-      import('ee_component/packages_and_registries/container_registry/explorer/components/list_page/container_scanning_counts.vue'),
+    MetadataContainerScanning: defineAsyncComponent(
+      () =>
+        import('ee_component/packages_and_registries/container_registry/explorer/components/list_page/metadata_container_scanning.vue'),
+    ),
+    ContainerScanningCounts: defineAsyncComponent(
+      () =>
+        import('ee_component/packages_and_registries/container_registry/explorer/components/list_page/container_scanning_counts.vue'),
+    ),
   },
   inject: ['config'],
   props: {

@@ -14,16 +14,6 @@ export function initRelatedIssues() {
     el,
     name: 'RelatedIssuesAppRoot',
     apolloProvider,
-    provide: {
-      fullPath: el.dataset.fullPath,
-      isGroup: parseBoolean(el.dataset.isGroup),
-      // for work item modal
-      canAdminLabel: el.dataset.wiCanAdminLabel,
-      groupPath: el.dataset.wiGroupPath,
-      issuesListPath: el.dataset.wiIssuesListPath,
-      labelsManagePath: el.dataset.wiLabelsManagePath,
-      reportAbusePath: el.dataset.wiReportAbusePath,
-    },
     render: (createElement) =>
       createElement(RelatedIssuesRoot, {
         props: {

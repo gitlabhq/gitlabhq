@@ -1,5 +1,5 @@
 <script>
-import { computed } from 'vue';
+import { computed, defineAsyncComponent } from 'vue';
 import { GlBreakpointInstance, breakpoints } from '@gitlab/ui/src/utils'; // eslint-disable-line no-restricted-syntax -- GlBreakpointInstance is used intentionally here. In this case we must obtain viewport breakpoints
 import { Mousetrap } from '~/lib/mousetrap';
 import { TAB_KEY_CODE } from '~/lib/utils/keycodes';
@@ -29,7 +29,9 @@ export default {
     SidebarMenu,
     SidebarPortalTarget,
     ScrollScrim,
-    TrialWidget: () => import('jh_else_ee/contextual_sidebar/components/trial_widget.vue'),
+    TrialWidget: defineAsyncComponent(
+      () => import('jh_else_ee/contextual_sidebar/components/trial_widget.vue'),
+    ),
   },
   mixins: [Tracking.mixin(), glFeatureFlagsMixin()],
   i18n: {

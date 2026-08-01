@@ -1,17 +1,11 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import '~/commons/bootstrap';
 import { GlIcon, GlLink, GlTooltip, GlTooltipDirective, GlButton } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import IssueDueDate from '~/boards/components/issue_due_date.vue';
-import { TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
-import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { isModifierKey } from '~/lib/utils/common_utils';
-import { setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import { sprintf } from '~/locale';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
-import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
-import { DETAIL_VIEW_QUERY_PARAM_NAME } from '~/work_items/constants';
-import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import relatedIssuableMixin from '../mixins/related_issuable_mixin';
 import IssueAssignees from './issue_assignees.vue';
 import IssueMilestone from './issue_milestone.vue';
@@ -25,22 +19,17 @@ export default {
     GlIcon,
     GlLink,
     GlTooltip,
-    IssueWeight: () => import('ee_component/issues/components/issue_weight.vue'),
+    IssueWeight: defineAsyncComponent(
+      () => import('ee_component/issues/components/issue_weight.vue'),
+    ),
     IssueDueDate,
     GlButton,
-    WorkItemDetailModal,
-    AbuseCategorySelector,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
     SafeHtml,
   },
   mixins: [relatedIssuableMixin],
-  inject: {
-    reportAbusePath: {
-      default: '',
-    },
-  },
   props: {
     canReorder: {
       type: Boolean,
@@ -57,20 +46,8 @@ export default {
       required: false,
       default: '',
     },
-    workItemType: {
-      type: String,
-      required: false,
-      default: '',
-    },
   },
   emits: ['related-issue-remove-request'],
-  data() {
-    return {
-      isReportDrawerOpen: false,
-      reportedUserId: 0,
-      reportedUrl: '',
-    };
-  },
   computed: {
     stateTitle() {
       return sprintf(
@@ -81,41 +58,6 @@ export default {
           timestamp: this.stateTimestamp,
         },
       );
-    },
-    workItemId() {
-      return convertToGraphQLId(TYPENAME_WORK_ITEM, this.idKey);
-    },
-    workItemIid() {
-      return String(this.iid);
-    },
-  },
-  methods: {
-    handleTitleClick(event) {
-      if (this.workItemType === 'TASK') {
-        if (isModifierKey(event)) {
-          return;
-        }
-        event.preventDefault();
-        this.$refs.modal.show();
-        this.updateQueryParam(this.idKey);
-      }
-    },
-    handleWorkItemDeleted(workItemId) {
-      this.$emit('related-issue-remove-request', workItemId);
-    },
-    updateQueryParam(id) {
-      updateHistory({
-        url: setUrlParams({ [DETAIL_VIEW_QUERY_PARAM_NAME]: id }),
-        replace: true,
-      });
-    },
-    toggleReportAbuseDrawer(isOpen, reply = {}) {
-      this.isReportDrawerOpen = isOpen;
-      this.reportedUrl = reply.url;
-      this.reportedUserId = reply.author ? getIdFromGraphQLId(reply.author.id) : 0;
-    },
-    openReportAbuseDrawer(reply) {
-      this.toggleReportAbuseDrawer(true, reply);
     },
   },
 };
@@ -156,7 +98,7 @@ export default {
           :aria-label="__('Confidential')"
           variant="warning"
         />
-        <gl-link :href="computedPath" class="sortable-link" @click="handleTitleClick">
+        <gl-link :href="computedPath" class="sortable-link">
           {{ title }}
         </gl-link>
       </div>
@@ -240,21 +182,6 @@ export default {
       :title="__('Remove')"
       :aria-label="__('Remove')"
       @click="onRemoveRequest"
-    />
-    <work-item-detail-modal
-      ref="modal"
-      :work-item-id="workItemId"
-      :work-item-iid="workItemIid"
-      @close="updateQueryParam"
-      @work-item-deleted="handleWorkItemDeleted"
-      @openReportAbuse="openReportAbuseDrawer"
-    />
-    <abuse-category-selector
-      v-if="isReportDrawerOpen && reportAbusePath"
-      :reported-user-id="reportedUserId"
-      :reported-from-url="reportedUrl"
-      :show-drawer="isReportDrawerOpen"
-      @close-drawer="toggleReportAbuseDrawer(false)"
     />
   </div>
 </template>

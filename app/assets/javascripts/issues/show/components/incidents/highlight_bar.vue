@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlLink, GlTooltipDirective } from '@gitlab/ui';
 import { formatDate } from '~/lib/utils/datetime_utility';
 
@@ -6,7 +7,9 @@ export default {
   name: 'HighlightBar',
   components: {
     GlLink,
-    IncidentSla: () => import('ee_component/issues/show/components/incidents/incident_sla.vue'),
+    IncidentSla: defineAsyncComponent(
+      () => import('ee_component/issues/show/components/incidents/incident_sla.vue'),
+    ),
   },
   directives: {
     GlTooltip: GlTooltipDirective,

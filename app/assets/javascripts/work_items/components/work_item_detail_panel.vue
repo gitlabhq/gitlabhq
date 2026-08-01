@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlLink, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { MountingPortal } from 'portal-vue';
 import { __ } from '~/locale';
@@ -32,7 +33,9 @@ export default {
     GlLink,
     GlButton,
     MountingPortal,
-    WorkItemDetail: () => import('ee_else_ce/work_items/components/work_item_detail.vue'),
+    WorkItemDetail: defineAsyncComponent(
+      () => import('ee_else_ce/work_items/components/work_item_detail.vue'),
+    ),
     WorkItemMetadataProvider,
   },
   mixins: [glFeatureFlagMixin()],

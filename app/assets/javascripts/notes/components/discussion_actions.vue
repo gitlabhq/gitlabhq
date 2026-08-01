@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
 import { __ } from '~/locale';
 import DiscussionReplyPlaceholder from './discussion_reply_placeholder.vue';
@@ -13,8 +14,9 @@ export default {
     ResolveWithIssueButton,
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
-    ResolveWithDuoDropdownItem: () =>
-      import('ee_component/notes/components/resolve_with_duo_dropdown_item.vue'),
+    ResolveWithDuoDropdownItem: defineAsyncComponent(
+      () => import('ee_component/notes/components/resolve_with_duo_dropdown_item.vue'),
+    ),
   },
   props: {
     discussion: {

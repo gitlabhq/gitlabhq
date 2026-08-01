@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import {
   GlTooltipDirective,
   GlButton,
@@ -37,7 +38,7 @@ export default {
   name: 'NoteActions',
   components: {
     AbuseCategorySelector,
-    EmojiPicker: () => import('~/emoji/components/picker.vue'),
+    EmojiPicker: defineAsyncComponent(() => import('~/emoji/components/picker.vue')),
     GlButton,
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,

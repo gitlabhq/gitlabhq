@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { mapState, mapActions } from 'pinia';
 import { v4 as uuidv4 } from 'uuid';
 import { GlEmptyState } from '@gitlab/ui';
@@ -54,7 +55,7 @@ export default {
     SidebarSubscription,
     DraftNote,
     TimelineEntryItem,
-    AiSummary: () => import('ee_component/notes/components/ai_summary.vue'),
+    AiSummary: defineAsyncComponent(() => import('ee_component/notes/components/ai_summary.vue')),
     DuoCodeReviewSystemNote,
   },
   mixins: [InternalEvents.mixin()],

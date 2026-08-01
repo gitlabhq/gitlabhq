@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import {
   GlAvatar,
   GlIcon,
@@ -74,10 +75,12 @@ export default {
     UserMenuProfileItem,
     UserMenuUpgradeSubscription,
     WhatsNewForYouMenuItem,
-    SetStatusModal: () =>
-      import(
-        /* webpackChunkName: 'statusModalBundle' */ '~/set_status_modal/set_status_modal_wrapper.vue'
-      ),
+    SetStatusModal: defineAsyncComponent(
+      () =>
+        import(
+          /* webpackChunkName: 'statusModalBundle' */ '~/set_status_modal/set_status_modal_wrapper.vue'
+        ),
+    ),
   },
   directives: {
     SafeHtml,

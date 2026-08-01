@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { escape } from 'lodash-es';
 import { mapState, mapActions } from 'pinia';
 import SafeHtml from '~/vue_shared/directives/safe_html';
@@ -21,8 +22,9 @@ export default {
     NoteAttachment,
     NoteForm,
     Suggestions,
-    DuoCodeReviewFeedback: () =>
-      import('ee_component/notes/components/duo_code_review_feedback.vue'),
+    DuoCodeReviewFeedback: defineAsyncComponent(
+      () => import('ee_component/notes/components/duo_code_review_feedback.vue'),
+    ),
   },
   directives: {
     SafeHtml,

@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlFormGroup, GlFormCheckbox, GlFormInput } from '@gitlab/ui';
 import { mapState } from 'pinia';
 import { useIntegrationForm } from '../store';
@@ -9,8 +10,10 @@ export default {
     GlFormGroup,
     GlFormCheckbox,
     GlFormInput,
-    JiraIssueCreationVulnerabilities: () =>
-      import('ee_component/integrations/edit/components/jira_issue_creation_vulnerabilities.vue'),
+    JiraIssueCreationVulnerabilities: defineAsyncComponent(
+      () =>
+        import('ee_component/integrations/edit/components/jira_issue_creation_vulnerabilities.vue'),
+    ),
   },
   props: {
     showJiraIssuesIntegration: {

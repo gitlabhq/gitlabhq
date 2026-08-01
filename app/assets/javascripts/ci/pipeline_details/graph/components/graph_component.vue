@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlResizeObserverDirective } from '@gitlab/ui';
 import { generateColumnsFromLayersListMemoized } from '~/ci/pipeline_details/utils/parsing_utils';
 import LinksLayer from '../../../common/private/job_links_layer.vue';
@@ -12,8 +13,10 @@ export default {
   components: {
     LinksLayer,
     LinkedGraphWrapper,
-    LinkedPipelinesColumn: () =>
-      import(/* webpackChunkName: 'linked_pipelines_column' */ './linked_pipelines_column.vue'),
+    LinkedPipelinesColumn: defineAsyncComponent(
+      () =>
+        import(/* webpackChunkName: 'linked_pipelines_column' */ './linked_pipelines_column.vue'),
+    ),
     StageColumnComponent,
   },
   directives: {

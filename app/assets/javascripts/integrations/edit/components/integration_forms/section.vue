@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlBadge } from '@gitlab/ui';
 import { mapState } from 'pinia';
 import SafeHtml from '~/vue_shared/directives/safe_html';
@@ -14,54 +15,78 @@ export default {
   components: {
     GlBadge,
     SettingsSection,
-    IntegrationSectionConfiguration: () =>
-      import(
-        /* webpackChunkName: 'integrationSectionConfiguration' */ '~/integrations/edit/components/sections/configuration.vue'
-      ),
-    IntegrationSectionConnection: () =>
-      import(
-        /* webpackChunkName: 'integrationSectionConnection' */ '~/integrations/edit/components/sections/connection.vue'
-      ),
-    IntegrationSectionJiraIssues: () =>
-      import(
-        /* webpackChunkName: 'integrationSectionJiraIssues' */ '~/integrations/edit/components/sections/jira_issues.vue'
-      ),
-    IntegrationSectionJiraIssueCreation: () =>
-      import(
-        /* webpackChunkName: 'integrationSectionJiraIssues' */ '~/integrations/edit/components/sections/jira_issue_creation.vue'
-      ),
-    IntegrationSectionJiraTrigger: () =>
-      import(
-        /* webpackChunkName: 'integrationSectionJiraTrigger' */ '~/integrations/edit/components/sections/jira_trigger.vue'
-      ),
-    IntegrationSectionJiraVerification: () =>
-      import(
-        /* webpackChunkName: 'integrationSectionJiraVerification' */ 'ee_component/integrations/edit/components/sections/jira_verification.vue'
-      ),
-    IntegrationSectionTrigger: () =>
-      import(
-        /* webpackChunkName: 'integrationSectionTrigger' */ '~/integrations/edit/components/sections/trigger.vue'
-      ),
-    IntegrationSectionAppleAppStore: () =>
-      import(
-        /* webpackChunkName: 'IntegrationSectionAppleAppStore' */ '~/integrations/edit/components/sections/apple_app_store.vue'
-      ),
-    IntegrationSectionGooglePlay: () =>
-      import(
-        /* webpackChunkName: 'IntegrationSectionGooglePlay' */ '~/integrations/edit/components/sections/google_play.vue'
-      ),
-    IntegrationSectionGoogleArtifactManagement: () =>
-      import(
-        /* webpackChunkName: 'IntegrationSectionGoogleArtifactManagement' */ 'ee_component/integrations/edit/components/sections/google_artifact_management.vue'
-      ),
-    IntegrationSectionGoogleCloudIAM: () =>
-      import(
-        /* webpackChunkName: 'IntegrationSectionGoogleCloudIAM' */ 'ee_component/integrations/edit/components/sections/google_cloud_iam.vue'
-      ),
-    IntegrationSectionAmazonQ: () =>
-      import(
-        /* webpackChunkName: 'IntegrationSectionAmazonQ' */ 'ee_component/integrations/edit/components/sections/amazon_q.vue'
-      ),
+    IntegrationSectionConfiguration: defineAsyncComponent(
+      () =>
+        import(
+          /* webpackChunkName: 'integrationSectionConfiguration' */ '~/integrations/edit/components/sections/configuration.vue'
+        ),
+    ),
+    IntegrationSectionConnection: defineAsyncComponent(
+      () =>
+        import(
+          /* webpackChunkName: 'integrationSectionConnection' */ '~/integrations/edit/components/sections/connection.vue'
+        ),
+    ),
+    IntegrationSectionJiraIssues: defineAsyncComponent(
+      () =>
+        import(
+          /* webpackChunkName: 'integrationSectionJiraIssues' */ '~/integrations/edit/components/sections/jira_issues.vue'
+        ),
+    ),
+    IntegrationSectionJiraIssueCreation: defineAsyncComponent(
+      () =>
+        import(
+          /* webpackChunkName: 'integrationSectionJiraIssues' */ '~/integrations/edit/components/sections/jira_issue_creation.vue'
+        ),
+    ),
+    IntegrationSectionJiraTrigger: defineAsyncComponent(
+      () =>
+        import(
+          /* webpackChunkName: 'integrationSectionJiraTrigger' */ '~/integrations/edit/components/sections/jira_trigger.vue'
+        ),
+    ),
+    IntegrationSectionJiraVerification: defineAsyncComponent(
+      () =>
+        import(
+          /* webpackChunkName: 'integrationSectionJiraVerification' */ 'ee_component/integrations/edit/components/sections/jira_verification.vue'
+        ),
+    ),
+    IntegrationSectionTrigger: defineAsyncComponent(
+      () =>
+        import(
+          /* webpackChunkName: 'integrationSectionTrigger' */ '~/integrations/edit/components/sections/trigger.vue'
+        ),
+    ),
+    IntegrationSectionAppleAppStore: defineAsyncComponent(
+      () =>
+        import(
+          /* webpackChunkName: 'IntegrationSectionAppleAppStore' */ '~/integrations/edit/components/sections/apple_app_store.vue'
+        ),
+    ),
+    IntegrationSectionGooglePlay: defineAsyncComponent(
+      () =>
+        import(
+          /* webpackChunkName: 'IntegrationSectionGooglePlay' */ '~/integrations/edit/components/sections/google_play.vue'
+        ),
+    ),
+    IntegrationSectionGoogleArtifactManagement: defineAsyncComponent(
+      () =>
+        import(
+          /* webpackChunkName: 'IntegrationSectionGoogleArtifactManagement' */ 'ee_component/integrations/edit/components/sections/google_artifact_management.vue'
+        ),
+    ),
+    IntegrationSectionGoogleCloudIAM: defineAsyncComponent(
+      () =>
+        import(
+          /* webpackChunkName: 'IntegrationSectionGoogleCloudIAM' */ 'ee_component/integrations/edit/components/sections/google_cloud_iam.vue'
+        ),
+    ),
+    IntegrationSectionAmazonQ: defineAsyncComponent(
+      () =>
+        import(
+          /* webpackChunkName: 'IntegrationSectionAmazonQ' */ 'ee_component/integrations/edit/components/sections/amazon_q.vue'
+        ),
+    ),
   },
   directives: {
     SafeHtml,

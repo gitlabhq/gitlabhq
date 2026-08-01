@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import {
   GlButton,
   GlKeysetPagination,
@@ -70,8 +71,9 @@ export default {
     ResourceListsLoadingStateList,
     IssueCardStatistics,
     IssueCardTimeInfo,
-    WorkItemBulkEditSidebar: () =>
-      import('~/work_items/list/components/work_item_bulk_edit_sidebar.vue'),
+    WorkItemBulkEditSidebar: defineAsyncComponent(
+      () => import('~/work_items/list/components/work_item_bulk_edit_sidebar.vue'),
+    ),
     HealthStatus,
     GlIcon,
     GlSkeletonLoader,

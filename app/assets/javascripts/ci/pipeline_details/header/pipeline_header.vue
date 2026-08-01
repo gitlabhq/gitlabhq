@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlAlert, GlIcon, GlLink, GlLoadingIcon, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
 import DuoWorkflowAction from 'ee_component/ai/shared/widgets/duo_workflow_action.vue';
 import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
@@ -50,10 +51,13 @@ export default {
     HeaderBadges,
     TimeAgoTooltip,
     DuoWorkflowAction,
-    PipelineAccountVerificationAlert: () =>
-      import('ee_component/vue_shared/components/pipeline_account_verification_alert.vue'),
-    HeaderMergeTrainsLink: () =>
-      import('ee_component/ci/pipeline_details/header/components/header_merge_trains_link.vue'),
+    PipelineAccountVerificationAlert: defineAsyncComponent(
+      () => import('ee_component/vue_shared/components/pipeline_account_verification_alert.vue'),
+    ),
+    HeaderMergeTrainsLink: defineAsyncComponent(
+      () =>
+        import('ee_component/ci/pipeline_details/header/components/header_merge_trains_link.vue'),
+    ),
   },
   directives: {
     GlTooltip: GlTooltipDirective,

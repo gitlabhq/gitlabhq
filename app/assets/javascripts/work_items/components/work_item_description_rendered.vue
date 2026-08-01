@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
-import Vue from 'vue';
+import Vue, { defineAsyncComponent } from 'vue';
 import Sortable from 'sortablejs';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { destroyImageLightbox } from '~/behaviors/markdown/render_image_lightbox';
@@ -43,7 +43,9 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   components: {
-    CreateWorkItemModal: () => import('~/work_items/components/create_work_item_modal.vue'),
+    CreateWorkItemModal: defineAsyncComponent(
+      () => import('~/work_items/components/create_work_item_modal.vue'),
+    ),
     GlButton,
   },
   mixins: [trackingMixin, glFeatureFlagsMixin()],

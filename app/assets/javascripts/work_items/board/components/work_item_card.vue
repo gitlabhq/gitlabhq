@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { uniqueId } from 'lodash-es';
 import { GlLabel, GlTruncate } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -34,11 +35,18 @@ export default {
     IssueDueDate,
     WorkItemRelationshipIcons,
     WorkItemParentMetadata,
-    IssueWeight: () => import('ee_component/issues/components/issue_weight.vue'),
-    IssueIteration: () => import('ee_component/boards/components/issue_iteration.vue'),
-    IssueHealthStatus: () => import('ee_component/issues/components/issue_health_status.vue'),
-    WorkItemStatusBadge: () =>
-      import('ee_component/work_items/components/shared/work_item_status_badge.vue'),
+    IssueWeight: defineAsyncComponent(
+      () => import('ee_component/issues/components/issue_weight.vue'),
+    ),
+    IssueIteration: defineAsyncComponent(
+      () => import('ee_component/boards/components/issue_iteration.vue'),
+    ),
+    IssueHealthStatus: defineAsyncComponent(
+      () => import('ee_component/issues/components/issue_health_status.vue'),
+    ),
+    WorkItemStatusBadge: defineAsyncComponent(
+      () => import('ee_component/work_items/components/shared/work_item_status_badge.vue'),
+    ),
   },
   props: {
     item: {

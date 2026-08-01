@@ -4,6 +4,8 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mockTracking } from 'helpers/tracking_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { typePolicies } from '~/lib/graphql';
+import { config as issuableClientConfig } from '~/graphql_shared/issuable_client';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { clearDraft } from '~/lib/utils/autosave';
 import WorkItemAddNote from '~/work_items/components/notes/work_item_add_note.vue';
@@ -11,11 +13,14 @@ import WorkItemCommentLocked from '~/work_items/components/notes/work_item_comme
 import WorkItemCommentForm from '~/work_items/components/notes/work_item_comment_form.vue';
 import createNoteMutation from '~/work_items/graphql/notes/create_work_item_note.mutation.graphql';
 import { TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
+import { findNotesWidget } from '~/work_items/utils';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
+import workItemNotesByIidQuery from '~/work_items/graphql/notes/work_item_notes_by_iid.query.graphql';
 import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import ResolveDiscussionButton from '~/notes/components/resolve_discussion_button.vue';
 import {
   createWorkItemNoteResponse,
+  mockWorkItemNotesByIidResponse,
   workItemByIidResponseFactory,
   workItemQueryResponse,
 } from 'ee_else_ce_jest/work_items/mock_data';
@@ -41,6 +46,7 @@ describe('Work item add note', () => {
 
   const mutationSuccessHandler = jest.fn().mockResolvedValue(createWorkItemNoteResponse());
   let workItemResponseHandler;
+  let apolloProvider;
 
   const findCommentForm = () => wrapper.findComponent(WorkItemCommentForm);
   const findErrorAlert = () => wrapper.findComponentByTestId('error-alert');
@@ -65,11 +71,13 @@ describe('Work item add note', () => {
     parentId = null,
     hideFullscreenMarkdownButton = false,
     archived = false,
+    workItemFeaturesField = false,
   } = {}) => {
     const workItemResponse = workItemByIidResponseFactory({
       canCreateNote,
       emailParticipantsWidgetPresent,
       archived,
+      ...(workItemFeaturesField && { features: {} }),
     });
     workItemResponseHandler = jest.fn().mockResolvedValue(workItemResponse);
 
@@ -78,11 +86,26 @@ describe('Work item add note', () => {
       window.gon.current_user_avatar_url = 'avatar.png';
     }
 
-    wrapper = shallowMountExtended(WorkItemAddNote, {
-      apolloProvider: createMockApollo([
+    apolloProvider = createMockApollo(
+      [
         [workItemByIidQuery, workItemResponseHandler],
         [createNoteMutation, mutationHandler],
-      ]),
+      ],
+      {},
+      {
+        // The work items app runs on the `issuable_client` cache config. Its
+        // `WorkItem.features` merge is what keeps `notes.discussions` alive across
+        // writes from different queries, so the cache must be configured the same
+        // way here for cache-update assertions to be meaningful.
+        typePolicies: { ...typePolicies, ...issuableClientConfig.cacheConfig.typePolicies },
+      },
+    );
+
+    wrapper = shallowMountExtended(WorkItemAddNote, {
+      apolloProvider,
+      provide: {
+        glFeatures: { workItemFeaturesField },
+      },
       propsData: {
         fullPath: 'test-project-path',
         workItemId: workItemResponse.data.namespace.workItem.id,
@@ -374,6 +397,73 @@ describe('Work item add note', () => {
     await createComponent({ isInternalThread: true });
 
     expect(wrapper.attributes('class')).toContain('internal-note');
+  });
+
+  describe.each`
+    description                    | workItemFeaturesField
+    ${'when using `widgets` key'}  | ${false}
+    ${'when using `features` key'} | ${true}
+  `('when the notes query is cached in the $description', ({ workItemFeaturesField }) => {
+    // The cache read in `addDiscussionToCache` must resolve the same branch of
+    // `workItemNotesByIidQuery` that `work_item_notes.vue` wrote, otherwise the
+    // read misses, the update is silently skipped, and the new note only ever
+    // reaches the list via the (racy) `workItemNoteCreated` subscription.
+    // See https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/43757
+    const notesQueryVariables = {
+      fullPath: 'test-project-path',
+      iid: '1',
+      useWorkItemFeatures: workItemFeaturesField,
+    };
+
+    const readCachedDiscussionIds = () => {
+      const cached = apolloProvider.clients.defaultClient.cache.readQuery({
+        query: workItemNotesByIidQuery,
+        variables: notesQueryVariables,
+      });
+      const notesWidget = findNotesWidget(cached.namespace.workItem);
+
+      return notesWidget.discussions.nodes.map(({ id }) => id);
+    };
+
+    const seedNotesCache = (id) => {
+      const mockWorkItem = mockWorkItemNotesByIidResponse.data.namespace.workItem;
+      const notesWidget = findNotesWidget(mockWorkItem);
+      const { widgets, ...workItem } = mockWorkItem;
+
+      apolloProvider.clients.defaultClient.cache.writeQuery({
+        query: workItemNotesByIidQuery,
+        variables: notesQueryVariables,
+        data: {
+          namespace: {
+            __typename: 'Project',
+            id: 'gid://gitlab/Project/1',
+            workItem: {
+              ...workItem,
+              id,
+              iid: '1',
+              ...(workItemFeaturesField
+                ? { features: { __typename: 'WorkItemFeatures', notes: notesWidget } }
+                : { widgets: [notesWidget] }),
+            },
+          },
+        },
+      });
+    };
+
+    it('adds the newly created note to the cached discussions', async () => {
+      await createComponent({ workItemFeaturesField });
+      seedNotesCache(wrapper.props('workItemId'));
+
+      const discussionIdsBefore = readCachedDiscussionIds();
+
+      findCommentForm().vm.$emit('submit-form', { commentText: 'Main comment' });
+      await waitForPromises();
+
+      expect(readCachedDiscussionIds()).toEqual([
+        ...discussionIdsBefore,
+        'gid://gitlab/Discussion/c872ba2d7d3eb780d2255138d67ca8b04f65b122',
+      ]);
+    });
   });
 
   describe('when work item `createNote` permission is false', () => {

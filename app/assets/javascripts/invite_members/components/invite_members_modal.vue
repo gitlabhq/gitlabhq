@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import {
   GlAlert,
   GlButton,
@@ -60,8 +61,9 @@ export default {
     InviteModalBase,
     MembersTokenSelect,
     UserLimitNotification,
-    ActiveTrialNotification: () =>
-      import('ee_component/invite_members/components/active_trial_notification.vue'),
+    ActiveTrialNotification: defineAsyncComponent(
+      () => import('ee_component/invite_members/components/active_trial_notification.vue'),
+    ),
   },
   directives: {
     SafeHtml,

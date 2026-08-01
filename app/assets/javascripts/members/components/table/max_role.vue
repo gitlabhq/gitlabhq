@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlBadge, GlCollapsibleListbox, GlTooltipDirective } from '@gitlab/ui';
 // This component is deprecated and will be removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207098,
 // so it is not worth migrating to `PanelBreakpointInstance`.
@@ -20,10 +21,13 @@ export default {
   components: {
     GlCollapsibleListbox,
     GlBadge,
-    LdapDropdownFooter: () =>
-      import('ee_component/members/components/action_dropdowns/ldap_dropdown_footer.vue'),
-    ManageRolesDropdownFooter: () =>
-      import('ee_component/members/components/action_dropdowns/manage_roles_dropdown_footer.vue'),
+    LdapDropdownFooter: defineAsyncComponent(
+      () => import('ee_component/members/components/action_dropdowns/ldap_dropdown_footer.vue'),
+    ),
+    ManageRolesDropdownFooter: defineAsyncComponent(
+      () =>
+        import('ee_component/members/components/action_dropdowns/manage_roles_dropdown_footer.vue'),
+    ),
   },
   directives: {
     GlTooltip: GlTooltipDirective,

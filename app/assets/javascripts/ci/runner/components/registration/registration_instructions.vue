@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlIcon, GlLink, GlSprintf, GlSkeletonLoader } from '@gitlab/ui';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import { createAlert } from '~/alert';
@@ -38,8 +39,9 @@ export default {
     GkeRegistrationInstructions,
     PlatformsDrawer,
     RunnerPlatformsRadioGroup,
-    RunnerGoogleCloudOptions: () =>
-      import('ee_component/ci/runner/components/runner_google_cloud_options.vue'),
+    RunnerGoogleCloudOptions: defineAsyncComponent(
+      () => import('ee_component/ci/runner/components/runner_google_cloud_options.vue'),
+    ),
   },
   props: {
     runnerId: {

@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import {
   GlButton,
   GlTooltipDirective,
@@ -34,7 +35,7 @@ export default {
     GlFormInputGroup,
     GlCollapsibleListbox,
     GlFormGroup,
-    EmojiPicker: () => import('~/emoji/components/picker.vue'),
+    EmojiPicker: defineAsyncComponent(() => import('~/emoji/components/picker.vue')),
   },
   directives: {
     GlTooltip: GlTooltipDirective,

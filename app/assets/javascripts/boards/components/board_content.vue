@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlAlert } from '@gitlab/ui';
 import { sortBy } from 'lodash-es';
 import produce from 'immer';
@@ -35,7 +36,9 @@ export default {
     BoardAddNewColumnTrigger,
     BoardColumn,
     BoardDrawerWrapper,
-    EpicsSwimlanes: () => import('ee_component/boards/components/epics_swimlanes.vue'),
+    EpicsSwimlanes: defineAsyncComponent(
+      () => import('ee_component/boards/components/epics_swimlanes.vue'),
+    ),
     GlAlert,
     WorkItemDetailPanel,
   },

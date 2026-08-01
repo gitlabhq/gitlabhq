@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlTable, GlBadge, GlButton } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
@@ -55,13 +56,18 @@ export default {
     MemberActivity,
     MembersPagination,
     RoleDetailsDrawer,
-    DisableTwoFactorModal: () =>
-      import('ee_component/members/components/modals/disable_two_factor_modal.vue'),
-    LdapOverrideConfirmationModal: () =>
-      import('ee_component/members/components/modals/ldap_override_confirmation_modal.vue'),
-    UserLimitReachedAlert: () =>
-      import('ee_component/members/components/table/user_limit_reached_alert.vue'),
-    RoleBadges: () => import('ee_component/members/components/table/role_badges.vue'),
+    DisableTwoFactorModal: defineAsyncComponent(
+      () => import('ee_component/members/components/modals/disable_two_factor_modal.vue'),
+    ),
+    LdapOverrideConfirmationModal: defineAsyncComponent(
+      () => import('ee_component/members/components/modals/ldap_override_confirmation_modal.vue'),
+    ),
+    UserLimitReachedAlert: defineAsyncComponent(
+      () => import('ee_component/members/components/table/user_limit_reached_alert.vue'),
+    ),
+    RoleBadges: defineAsyncComponent(
+      () => import('ee_component/members/components/table/role_badges.vue'),
+    ),
   },
   mixins: [glFeatureFlagsMixin()],
   inject: ['namespace', 'currentUserId', 'canManageMembers'],

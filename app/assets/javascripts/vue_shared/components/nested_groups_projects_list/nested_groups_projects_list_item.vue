@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlButton, GlLink } from '@gitlab/ui';
 import { n__, s__, sprintf } from '~/locale';
 import {
@@ -14,7 +15,9 @@ export default {
   components: {
     GlButton,
     GlLink,
-    NestedGroupsProjectsList: () => import('./nested_groups_projects_list.vue'),
+    NestedGroupsProjectsList: defineAsyncComponent(
+      () => import('./nested_groups_projects_list.vue'),
+    ),
   },
   props: {
     item: {

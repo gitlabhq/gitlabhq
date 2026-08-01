@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlLabel, GlTooltipDirective, GlIcon, GlLoadingIcon } from '@gitlab/ui';
 import { sortBy, uniqueId } from 'lodash-es';
 import SafeHtml from '~/vue_shared/directives/safe_html';
@@ -27,17 +28,26 @@ export default {
     IssueDueDate,
     IssueTimeEstimate,
     WorkItemRelationshipIcons,
-    IssueWeight: () => import('ee_component/issues/components/issue_weight.vue'),
-    IssueIteration: () => import('ee_component/boards/components/issue_iteration.vue'),
+    IssueWeight: defineAsyncComponent(
+      () => import('ee_component/issues/components/issue_weight.vue'),
+    ),
+    IssueIteration: defineAsyncComponent(
+      () => import('ee_component/boards/components/issue_iteration.vue'),
+    ),
     WorkItemTypeIcon,
     IssueMilestone,
-    IssueHealthStatus: () => import('ee_component/issues/components/issue_health_status.vue'),
-    EpicCountables: () =>
-      import('ee_else_ce/vue_shared/components/epic_countables/epic_countables.vue'),
-    WorkItemStatusBadge: () =>
-      import('ee_component/work_items/components/shared/work_item_status_badge.vue'),
-    BoardCardSessionBadge: () =>
-      import('ee_component/boards/components/board_card_session_badge.vue'),
+    IssueHealthStatus: defineAsyncComponent(
+      () => import('ee_component/issues/components/issue_health_status.vue'),
+    ),
+    EpicCountables: defineAsyncComponent(
+      () => import('ee_else_ce/vue_shared/components/epic_countables/epic_countables.vue'),
+    ),
+    WorkItemStatusBadge: defineAsyncComponent(
+      () => import('ee_component/work_items/components/shared/work_item_status_badge.vue'),
+    ),
+    BoardCardSessionBadge: defineAsyncComponent(
+      () => import('ee_component/boards/components/board_card_session_badge.vue'),
+    ),
   },
   directives: {
     GlTooltip: GlTooltipDirective,

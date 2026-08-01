@@ -112,9 +112,16 @@ if (global.document) {
     const component = unwrapLegacyVueExtendComponent(rawComponent);
     const hyphenatedName = name.replace(/\B([A-Z])/g, '-$1').toLowerCase();
     const stubTag = stubs?.[name] ? name : hyphenatedName;
+    // eslint-disable-next-line no-underscore-dangle
+    const isAsyncWrapper = rawComponent && typeof rawComponent.__asyncLoader === 'function';
 
     const stub = Vue.defineComponent({
-      name: getComponentName(component),
+      // defineAsyncComponent wrappers are all named AsyncComponentWrapper;
+      // the registration key is the meaningful name and lets specs'
+      // findComponent(TheImportedDefinition) name-match the stub before the
+      // loader resolves (legacy `Key: () => import()` factories used to get
+      // the key as their inferred fn.name, giving the same behavior).
+      name: isAsyncWrapper ? name : getComponentName(component),
       // The render below is already Vue 3 style (zero-arg, uses Vue.h), but
       // @vue/compat flags any render with fewer than 2 parameters as legacy,
       // making every stub warn RENDER_FUNCTION once per (anonymous) instance.
@@ -173,6 +180,18 @@ if (global.document) {
     if (typeof component === 'function') {
       component()?.then?.((resolvedComponent) => {
         registerStub({ source: resolvedComponent.default, stub });
+      });
+    }
+
+    // defineAsyncComponent wrappers expose their loader as __asyncLoader.
+    // Register the stub for the resolved component too so specs'
+    // findComponent(TheImportedDefinition) matches the stub, exactly like
+    // the legacy factory branch above (the loader already unwraps the
+    // es-module default and dedupes concurrent calls).
+    if (isAsyncWrapper) {
+      // eslint-disable-next-line no-underscore-dangle, promise/catch-or-return
+      rawComponent.__asyncLoader().then((resolvedComponent) => {
+        registerStub({ source: resolvedComponent?.default ?? resolvedComponent, stub });
       });
     }
 

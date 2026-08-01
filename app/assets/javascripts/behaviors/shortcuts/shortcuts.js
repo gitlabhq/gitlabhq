@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import { flatten } from 'lodash-es';
-import Vue from 'vue';
+import Vue, { defineAsyncComponent } from 'vue';
 import { MARKDOWN_EVENT_TOGGLE } from '~/behaviors/preview_markdown';
 import { InternalEvents } from '~/tracking';
 import { FIND_FILE_SHORTCUT_CLICK } from '~/tracking/constants';
@@ -241,7 +241,7 @@ export default class Shortcuts {
         el: this.helpModalElement,
         name: 'ShortcutsHelpRoot',
         components: {
-          ShortcutsHelp: () => import('./shortcuts_help.vue'),
+          ShortcutsHelp: defineAsyncComponent(() => import('./shortcuts_help.vue')),
         },
         render: (createElement) => {
           return createElement('shortcuts-help', {

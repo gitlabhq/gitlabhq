@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
@@ -21,8 +22,10 @@ export default {
     PipelinesStats,
     PipelineDurationChart,
     PipelineStatusChart,
-    JobAnalyticsTable: () =>
-      import('ee_component/ci/analytics/project_ci_cd_analytics/components/job_analytics_table.vue'),
+    JobAnalyticsTable: defineAsyncComponent(
+      () =>
+        import('ee_component/ci/analytics/project_ci_cd_analytics/components/job_analytics_table.vue'),
+    ),
   },
   inject: {
     defaultBranch: {

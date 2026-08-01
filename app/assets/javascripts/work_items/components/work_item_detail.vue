@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { isEmpty } from 'lodash-es';
 import {
   GlAlert,
@@ -139,8 +140,12 @@ export default {
     WorkItemTree,
     WorkItemNotes,
     WorkItemRelationships,
-    WorkItemErrorTracking: () => import('~/work_items/components/work_item_error_tracking.vue'),
-    WorkItemLinkedResources: () => import('~/work_items/components/work_item_linked_resources.vue'),
+    WorkItemErrorTracking: defineAsyncComponent(
+      () => import('~/work_items/components/work_item_error_tracking.vue'),
+    ),
+    WorkItemLinkedResources: defineAsyncComponent(
+      () => import('~/work_items/components/work_item_linked_resources.vue'),
+    ),
     WorkItemStickyHeader,
     WorkItemAncestors,
     WorkItemTitle,
@@ -149,8 +154,9 @@ export default {
     WorkItemDetailPanel,
     WorkItemDevelopment,
     WorkItemCreateBranchMergeRequestSplitButton,
-    WorkItemVulnerabilities: () =>
-      import('ee_component/work_items/components/work_item_vulnerabilities.vue'),
+    WorkItemVulnerabilities: defineAsyncComponent(
+      () => import('ee_component/work_items/components/work_item_vulnerabilities.vue'),
+    ),
     WorkItemMetadataProvider,
     DuoWorkItemToMrAction,
   },

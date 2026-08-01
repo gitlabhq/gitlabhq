@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlAlert, GlModal } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { removeHierarchyChild } from '../graphql/cache_utils';
@@ -14,7 +15,9 @@ export default {
   components: {
     GlAlert,
     GlModal,
-    WorkItemDetail: () => import('ee_else_ce/work_items/components/work_item_detail.vue'),
+    WorkItemDetail: defineAsyncComponent(
+      () => import('ee_else_ce/work_items/components/work_item_detail.vue'),
+    ),
   },
   provide: {
     preventRouterNav: true,

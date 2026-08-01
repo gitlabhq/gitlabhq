@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlFilteredSearchToken, GlButton, GlLink, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { isEmpty } from 'lodash-es';
 import ApprovalCount from 'ee_else_ce/merge_requests/components/approval_count.vue';
@@ -128,8 +129,9 @@ export default {
     EmptyState,
     IssuableMilestone,
     DiscussionsBadge,
-    NewResourceDropdown: () =>
-      import('~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue'),
+    NewResourceDropdown: defineAsyncComponent(
+      () => import('~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue'),
+    ),
   },
   directives: {
     GlTooltip: GlTooltipDirective,

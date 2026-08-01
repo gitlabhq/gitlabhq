@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlIntersperse, GlLink } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__ } from '~/locale';
@@ -26,8 +27,9 @@ export default {
     GlLink,
     HelpPopover,
     RunnerDetail,
-    RunnerMaintenanceNoteDetail: () =>
-      import('ee_component/ci/runner/components/runner_maintenance_note_detail.vue'),
+    RunnerMaintenanceNoteDetail: defineAsyncComponent(
+      () => import('ee_component/ci/runner/components/runner_maintenance_note_detail.vue'),
+    ),
     RunnerGroups,
     RunnerProjects,
     RunnerTags,

@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlButton, GlForm } from '@gitlab/ui';
 import RunnerFormFields from '~/ci/runner/components/runner_form_fields.vue';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
@@ -20,8 +21,9 @@ export default {
     GlButton,
     GlForm,
     RunnerFormFields,
-    RunnerUpdateCostFactorFields: () =>
-      import('ee_component/ci/runner/components/runner_update_cost_factor_fields.vue'),
+    RunnerUpdateCostFactorFields: defineAsyncComponent(
+      () => import('ee_component/ci/runner/components/runner_update_cost_factor_fields.vue'),
+    ),
   },
   props: {
     runner: {

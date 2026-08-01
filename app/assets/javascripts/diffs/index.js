@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { defineAsyncComponent } from 'vue';
 import VueApollo from 'vue-apollo';
 import { mapActions, mapState } from 'pinia';
 import { GlToast } from '@gitlab/ui';
@@ -103,7 +103,9 @@ export default function initDiffsApp() {
       name: 'FindFileRoot',
       pinia,
       components: {
-        FindFile: () => import('~/vue_shared/components/file_finder/index.vue'),
+        FindFile: defineAsyncComponent(
+          () => import('~/vue_shared/components/file_finder/index.vue'),
+        ),
       },
       computed: {
         ...mapState(useLegacyDiffs, ['fileFinderVisible', 'isLoading']),

@@ -26,11 +26,11 @@ RSpec.describe 'projects/issues/_related_issues.html.haml', feature_category: :t
       assign(:issue, issue)
     end
 
-    it 'adds the report abuse path as a data attribute' do
+    it 'renders the related issues root node with the issue links endpoint' do
       render
 
       expect(rendered).to have_selector(
-        ".js-related-issues-root[data-wi-report-abuse-path=\"#{add_category_abuse_reports_path}\"]"
+        ".js-related-issues-root[data-endpoint=\"#{project_issue_links_path(project, issue)}\"]"
       )
     end
   end

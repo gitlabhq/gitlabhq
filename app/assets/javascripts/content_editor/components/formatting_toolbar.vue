@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlButton } from '@gitlab/ui';
 import CommentTemplatesModal from '~/vue_shared/components/markdown/comment_templates_modal.vue';
 import { __, sprintf } from '~/locale';
@@ -22,8 +23,9 @@ export default {
     ToolbarMoreDropdown,
     CommentTemplatesModal,
     HeaderDivider,
-    SummarizeCodeChanges: () =>
-      import('ee_component/merge_requests/components/summarize_code_changes.vue'),
+    SummarizeCodeChanges: defineAsyncComponent(
+      () => import('ee_component/merge_requests/components/summarize_code_changes.vue'),
+    ),
   },
   inject: {
     newCommentTemplatePaths: { default: () => [] },

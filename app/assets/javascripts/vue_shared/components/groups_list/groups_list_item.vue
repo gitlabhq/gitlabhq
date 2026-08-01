@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlIcon, GlBadge, GlTooltip } from '@gitlab/ui';
 
 import { VISIBILITY_TYPE_ICON, GROUP_VISIBILITY_TYPE } from '~/visibility_level/constants';
@@ -29,8 +30,10 @@ export default {
     GlTooltip,
     GroupListItemActions,
     ListItemInactiveBadge,
-    GroupsListItemPlanBadge: () =>
-      import('ee_component/vue_shared/components/groups_list/groups_list_item_plan_badge.vue'),
+    GroupsListItemPlanBadge: defineAsyncComponent(
+      () =>
+        import('ee_component/vue_shared/components/groups_list/groups_list_item_plan_badge.vue'),
+    ),
   },
   provide() {
     return {

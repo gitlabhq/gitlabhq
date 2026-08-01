@@ -85,6 +85,18 @@ describe('infection scanner', () => {
       expect(detectAppRoot("import Vue, { computed } from 'vue'; new Vue({});")).toBe(false);
     });
 
+    it('accepts defineAsyncComponent alongside the default import', () => {
+      expect(
+        detectAppRoot("import Vue, { defineAsyncComponent } from 'vue'; new Vue({});"),
+      ).toBe(true);
+    });
+
+    it('rejects other named imports next to defineAsyncComponent', () => {
+      expect(
+        detectAppRoot("import Vue, { defineAsyncComponent, nextTick } from 'vue'; new Vue({});"),
+      ).toBe(false);
+    });
+
     it('rejects Vue.component()', () => {
       expect(detectAppRoot("import Vue from 'vue'; Vue.component('x', {}); new Vue({});")).toBe(
         false,

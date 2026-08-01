@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { isEqual } from 'lodash-es';
 import {
   GlFormGroup,
@@ -30,8 +31,9 @@ export default {
     GlSprintf,
     GlSkeletonLoader,
     SettingsSection,
-    RunnerMaintenanceNoteField: () =>
-      import('ee_component/ci/runner/components/runner_maintenance_note_field.vue'),
+    RunnerMaintenanceNoteField: defineAsyncComponent(
+      () => import('ee_component/ci/runner/components/runner_maintenance_note_field.vue'),
+    ),
   },
   props: {
     runnerType: {

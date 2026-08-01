@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui';
-import { computed } from 'vue';
+import { computed, defineAsyncComponent } from 'vue';
 import { __ } from '~/locale';
 import { logError } from '~/lib/logger';
 import { visitUrl } from '~/lib/utils/url_utility';
@@ -49,7 +49,9 @@ export default {
     GlLoadingIcon,
     BlobOverflowMenu,
     ForkSuggestionModal,
-    WebIdeLink: () => import('ee_else_ce/vue_shared/components/web_ide_link.vue'),
+    WebIdeLink: defineAsyncComponent(
+      () => import('ee_else_ce/vue_shared/components/web_ide_link.vue'),
+    ),
   },
   directives: {
     GlTooltip: GlTooltipDirective,

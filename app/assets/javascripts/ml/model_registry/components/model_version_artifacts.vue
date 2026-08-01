@@ -1,11 +1,14 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import ImportArtifactZone from './import_artifact_zone.vue';
 
 export default {
   name: 'ModelVersionArtifacts',
   components: {
-    PackageFiles: () =>
-      import('~/packages_and_registries/package_registry/components/details/package_files.vue'),
+    PackageFiles: defineAsyncComponent(
+      () =>
+        import('~/packages_and_registries/package_registry/components/details/package_files.vue'),
+    ),
     ImportArtifactZone,
   },
   inject: ['projectPath', 'canWriteModelRegistry', 'importPath'],

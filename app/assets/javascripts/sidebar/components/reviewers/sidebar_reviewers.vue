@@ -1,6 +1,7 @@
 <script>
 // NOTE! For the first iteration, we are simply copying the implementation of Assignees
 // It will soon be overhauled in Issue https://gitlab.com/gitlab-org/gitlab/-/issues/233736
+import { defineAsyncComponent } from 'vue';
 import { MountingPortal } from 'portal-vue';
 import { GlButton } from '@gitlab/ui';
 import { createAlert } from '~/alert';
@@ -31,8 +32,9 @@ export default {
     ReviewerTitle,
     Reviewers,
     ReviewerDrawer,
-    ApprovalSummary: () =>
-      import('ee_component/merge_requests/components/reviewers/approval_summary.vue'),
+    ApprovalSummary: defineAsyncComponent(
+      () => import('ee_component/merge_requests/components/reviewers/approval_summary.vue'),
+    ),
   },
   mixins: [InternalEvents.mixin()],
   props: {

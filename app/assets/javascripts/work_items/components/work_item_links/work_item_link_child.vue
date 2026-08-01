@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import WorkItemLinkChildContents from 'ee_else_ce/work_items/components/shared/work_item_link_child_contents.vue';
 import { __, s__ } from '~/locale';
@@ -14,7 +15,7 @@ export default {
   name: 'WorkItemLinkChild',
   components: {
     GlButton,
-    WorkItemChildrenWrapper: () => import('./work_item_children_wrapper.vue'),
+    WorkItemChildrenWrapper: defineAsyncComponent(() => import('./work_item_children_wrapper.vue')),
     WorkItemLinkChildContents,
     WorkItemChildrenLoadMore,
   },

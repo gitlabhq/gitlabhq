@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { defineAsyncComponent } from 'vue';
 import { InternalEvents } from '~/tracking';
 
 /**
@@ -46,7 +46,7 @@ export function createConfirmAction({ mountFn, destroyFn }) {
       const ConfirmAction = {
         name: 'ConfirmActionRoot',
         components: {
-          ConfirmModal: () => import('./confirm_modal.vue'),
+          ConfirmModal: defineAsyncComponent(() => import('./confirm_modal.vue')),
         },
         render(h) {
           return h(
