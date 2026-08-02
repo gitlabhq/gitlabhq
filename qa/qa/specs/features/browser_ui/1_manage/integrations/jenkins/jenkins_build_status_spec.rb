@@ -37,6 +37,8 @@ module QA
       end
 
       it 'integrates and displays build status for MR pipeline in GitLab',
+        quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/43780',
+                      type: 'flaky' },
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347788' do
         setup_project_integration
 
