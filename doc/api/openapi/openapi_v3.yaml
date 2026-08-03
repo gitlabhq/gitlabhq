@@ -6940,7 +6940,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_ea91039ecafb"
+              "$ref": "#/components/schemas/RequestBody_1c9e643f3fda"
   "/api/v4/groups/{id}/member_roles/{member_role_id}":
     delete:
       operationId: deleteApiV4GroupsIdMemberRolesMemberRoleId
@@ -7010,7 +7010,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_ea91039ecafb"
+              "$ref": "#/components/schemas/RequestBody_1c9e643f3fda"
   "/api/v4/member_roles/{member_role_id}":
     delete:
       operationId: deleteApiV4MemberRolesMemberRoleId
@@ -78355,6 +78355,9 @@ components:
         admin_ai_catalog_item_consumer:
           type: boolean
           default: false
+        create_security_scan_profiles:
+          type: boolean
+          default: false
         destroy_package:
           type: boolean
           default: false
@@ -96328,7 +96331,7 @@ components:
           nullable: true
       required:
       - extern_uid
-    RequestBody_ea91039ecafb:
+    RequestBody_1c9e643f3fda:
       type: object
       properties:
         base_access_level:
@@ -96366,6 +96369,10 @@ components:
           type: boolean
           description: Enable, disable, and configure custom agents and flows from
             the AI catalog for a project.
+          nullable: true
+        create_security_scan_profiles:
+          type: boolean
+          description: Create security scan profiles.
           nullable: true
         destroy_package:
           type: boolean

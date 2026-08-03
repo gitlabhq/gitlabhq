@@ -171,6 +171,7 @@ export default {
         const treePath = normalizePath(tree.path || tree.name);
         const routerPath = buildURLwithRefType({
           path: joinPaths(
+            // eslint-disable-next-line @gitlab/no-hardcoded-urls -- This is a Vue router route defined in app/assets/javascripts/repository/router.js, acceptable in this case
             '/-/tree',
             this.escapedRef,
             treePath.split('/').map(encodeURIComponent).join('/'),
@@ -212,6 +213,7 @@ export default {
         const blobPath = normalizePath(blob.path);
         const routerPath = buildURLwithRefType({
           path: joinPaths(
+            // eslint-disable-next-line @gitlab/no-hardcoded-urls -- This is a Vue router route defined in app/assets/javascripts/repository/router.js, acceptable in this case
             '/-/blob',
             this.escapedRef,
             blobPath.split('/').map(encodeURIComponent).join('/'),

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Delete Environment', feature_category: :deployment_management do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be(:environment) { create(:environment, project: project, state: :stopped) }
   let_it_be(:maintainer) { create(:user, maintainer_of: project) }
   let_it_be(:developer) { create(:user, maintainer_of: project) }

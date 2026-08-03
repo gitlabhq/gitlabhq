@@ -27,7 +27,7 @@ RSpec.describe 'Query.runners', feature_category: :fleet_visibility do
       unfreeze_time
     end
 
-    let_it_be(:project) { create(:project, :repository, :public) }
+    let_it_be(:project) { create(:project, :public) }
     let_it_be(:instance_runner) { create(:ci_runner, :instance, :almost_offline, description: 'Instance runner') }
     let_it_be(:instance_runner_manager) do
       create(:ci_runner_machine, runner: instance_runner, version: 'abc', revision: '123', ip_address: '127.0.0.1')

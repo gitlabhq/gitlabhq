@@ -891,6 +891,7 @@ class ProjectPolicy < BasePolicy
     prevent :manage_project_security_exclusions
     prevent :read_security_scan_profiles
     prevent :apply_security_scan_profiles
+    prevent :create_security_scan_profiles
     prevent :read_secret_push_protection_info
     prevent :enable_secret_push_protection
     prevent :enable_container_scanning_for_registry

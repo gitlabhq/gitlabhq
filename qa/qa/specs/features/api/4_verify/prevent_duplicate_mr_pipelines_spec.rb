@@ -81,7 +81,7 @@ module QA
               mr = create_mr_and_wait(project, source_branch, expected_new: 2)
               mr.wait_for_preparation
 
-              expect(mr.reload!.detailed_merge_status).to eq('ci_still_running')
+              expect_merge_request_pipeline_gating(mr)
             end
           end
         end
@@ -150,7 +150,7 @@ module QA
               mr = create_mr_and_wait(project, source_branch, expected_new: 1)
               mr.wait_for_preparation
 
-              expect(mr.reload!.detailed_merge_status).to eq('ci_still_running')
+              expect_merge_request_pipeline_gating(mr)
             end
           end
         end
@@ -200,7 +200,8 @@ module QA
               mr = create_mr_and_wait(project, source_branch, expected_new: 1)
               mr.wait_for_preparation
 
-              expect(mr.reload!.detailed_merge_status).to eq('ci_must_pass')
+              expect { mr.reload!.detailed_merge_status }
+                .to eventually_eq('ci_must_pass').within(max_duration: 60, sleep_interval: 2)
             end
           end
         end
@@ -227,6 +228,22 @@ module QA
       end
 
       private
+
+      # When a merge request pipeline is the head pipeline and "pipelines must succeed" is on,
+      # the MR is either still running that pipeline or already mergeable once it finishes.
+      # Both are valid depending on runner timing, so accept either state to avoid racing on
+      # the transient 'ci_still_running' status.
+      def expect_merge_request_pipeline_gating(mr)
+        valid_statuses = %w[ci_still_running mergeable]
+
+        return if Support::Waiter.wait_until(max_duration: 60, sleep_interval: 2, raise_on_failure: false) do
+          valid_statuses.include?(mr.reload!.detailed_merge_status)
+        end
+
+        raise Support::Repeater::WaitExceededError,
+          "Expected merge request detailed_merge_status to be one of #{valid_statuses}, " \
+            "but was '#{mr.detailed_merge_status}'"
+      end
 
       def commit_ci_config(project, content)
         create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [

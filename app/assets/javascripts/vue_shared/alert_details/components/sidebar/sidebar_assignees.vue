@@ -12,6 +12,7 @@ import {
 import { debounce } from 'lodash-es';
 import axios from '~/lib/utils/axios_utils';
 import { s__, __ } from '~/locale';
+import { autocompleteUsersPath } from '~/lib/utils/path_helpers/autocomplete';
 import alertSetAssignees from '../../graphql/mutations/alert_set_assignees.mutation.graphql';
 import SidebarAssignee from './sidebar_assignee.vue';
 
@@ -123,17 +124,10 @@ export default {
     isActive(name) {
       return this.alert.assignees.nodes.some(({ username }) => username === name);
     },
-    buildUrl(urlRoot, url) {
-      let newUrl;
-      if (urlRoot != null) {
-        newUrl = urlRoot.replace(/\/$/, '') + url;
-      }
-      return newUrl;
-    },
     updateAssigneesDropdown() {
       this.isDropdownSearching = true;
       return axios
-        .get(this.buildUrl(gon.relative_url_root, '/-/autocomplete/users.json'), {
+        .get(autocompleteUsersPath({ format: 'json' }), {
           params: {
             search: this.search,
             per_page: 20,

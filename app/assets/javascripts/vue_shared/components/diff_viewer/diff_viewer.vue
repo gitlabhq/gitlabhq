@@ -1,5 +1,6 @@
 <script>
 import { diffViewerModes, diffModes } from '~/ide/constants';
+import { projectRawPath } from '~/lib/utils/path_helpers/repository';
 import DownloadDiffViewer from './viewers/download_diff_viewer.vue';
 import ImageDiffViewer from './viewers/image_diff_viewer.vue';
 import ModeChanged from './viewers/mode_changed.vue';
@@ -80,15 +81,18 @@ export default {
           return DownloadDiffViewer;
       }
     },
-    basePath() {
-      // We might get the project path from rails with the relative url already set up
-      return this.projectPath.indexOf('/') === 0 ? '' : `${gon.relative_url_root}/`;
-    },
     fullOldPath() {
-      return `${this.basePath}${this.projectPath}/-/raw/${this.oldSha}/${this.oldPath}`;
+      return this.buildRawPath(this.oldSha, this.oldPath);
     },
     fullNewPath() {
-      return `${this.basePath}${this.projectPath}/-/raw/${this.newSha}/${this.newPath}`;
+      return this.buildRawPath(this.newSha, this.newPath);
+    },
+  },
+  methods: {
+    buildRawPath(sha, path) {
+      if (!this.projectPath) return '';
+
+      return projectRawPath(this.projectPath, `${sha}/${path}`);
     },
   },
 };

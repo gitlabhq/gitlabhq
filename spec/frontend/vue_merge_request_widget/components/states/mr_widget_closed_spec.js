@@ -187,6 +187,21 @@ describe('MRWidgetClosed', () => {
         expect(showGlobalToast).toHaveBeenCalledTimes(1);
         expect(showGlobalToast).toHaveBeenCalledWith(MR_WIDGET_CLOSED_REOPEN_FAILURE);
       });
+
+      it('surfaces the server error message when the reopen request fails with one', async () => {
+        const reopenButton = findReopenActionButton(wrapper);
+        const serverMessage =
+          'Cannot reopen this merge request because the source branch no longer exists.';
+
+        api.updateMergeRequest.mockRejectedValue({
+          response: { data: { message: [serverMessage] } },
+        });
+
+        reopenButton.trigger('click');
+        await waitForPromises();
+
+        expect(showGlobalToast).toHaveBeenCalledWith(serverMessage);
+      });
     });
 
     describe('delete source branch', () => {

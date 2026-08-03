@@ -216005,6 +216005,12 @@
               "deprecationReason": null
             },
             {
+              "name": "CREATE_SECURITY_SCAN_PROFILES",
+              "description": "Create security scan profiles.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "DESTROY_PACKAGE",
               "description": "Delete packages and package files in the package registry.",
               "isDeprecated": false,
@@ -216264,6 +216270,12 @@
             {
               "name": "ADMIN_AI_CATALOG_ITEM_CONSUMER",
               "description": "Enable, disable, and configure custom agents and flows from the AI catalog for a project.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CREATE_SECURITY_SCAN_PROFILES",
+              "description": "Create security scan profiles.",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -263370,6 +263382,35 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 18.9."
+            },
+            {
+              "name": "securityScanProfileCreate",
+              "description": null,
+              "args": [
+                {
+                  "name": "input",
+                  "description": "Parameters for SecurityScanProfileCreate",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "SecurityScanProfileCreateInput",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "SecurityScanProfileCreatePayload",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
             },
             {
               "name": "securityScanProfileDetach",
@@ -370240,6 +370281,293 @@
         },
         {
           "kind": "INPUT_OBJECT",
+          "name": "SecurityScanProfileAutoRemediationInput",
+          "description": "Auto-remediation configuration for a dependency scanning post-processing scan profile.",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "enabled",
+              "description": "Whether auto-remediation is enabled. Introduced in GitLab 19.3: Status: Experiment.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
+              "name": "cooldown",
+              "description": "Minimum number of days after a package is released before it can be used. Introduced in GitLab 19.3: Status: Experiment.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
+              "name": "severityLevel",
+              "description": "Minimum vulnerability severity that triggers an automated upgrade. Findings below this threshold are skipped. Introduced in GitLab 19.3: Status: Experiment.",
+              "type": {
+                "kind": "ENUM",
+                "name": "VulnerabilitySeverity",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
+              "name": "upgradePolicy",
+              "description": "Highest version bump allowed when remediating. Introduced in GitLab 19.3: Status: Experiment.",
+              "type": {
+                "kind": "ENUM",
+                "name": "SecurityScanProfileUpgradePolicy",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
+              "name": "openMergeRequestsLimit",
+              "description": "Maximum number of open auto-remediation merge requests at once. Introduced in GitLab 19.3: Status: Experiment.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "SecurityScanProfileConfigurationInput",
+          "description": "Typed configuration for a scan profile trigger. Exactly one member may be set, and it must match the scan profile type.",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "dependencyScanningPostProcessing",
+              "description": "Configuration for a dependency scanning post-processing scan profile. Introduced in GitLab 19.3: Status: Experiment.",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "SecurityScanProfileDependencyScanningPostProcessingConfigurationInput",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "SecurityScanProfileCreateInput",
+          "description": "Autogenerated input type of SecurityScanProfileCreate",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "namespaceId",
+              "description": "Global ID of the top level namespace to create the scan profile for.",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "NamespaceID",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "scanType",
+              "description": "Type of the scan profile.",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "SecurityScanProfileType",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name",
+              "description": "Name of the scan profile.",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "description",
+              "description": "Description of the scan profile.",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "triggers",
+              "description": "Triggers with optional configuration for the scan profile. At least one is required.",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "SecurityScanProfileTriggerInput",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "SecurityScanProfileCreatePayload",
+          "description": "Autogenerated return type of SecurityScanProfileCreate.",
+          "fields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "errors",
+              "description": "Errors encountered during the mutation.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "scanProfile",
+              "description": "Created scan profile.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "ScanProfileType",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "SecurityScanProfileDependencyScanningPostProcessingConfigurationInput",
+          "description": "Configuration for a dependency scanning post-processing scan profile.",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "autoRemediation",
+              "description": "Auto-remediation configuration. Introduced in GitLab 19.3: Status: Experiment.",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "SecurityScanProfileAutoRemediationInput",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
           "name": "SecurityScanProfileDetachInput",
           "description": "Autogenerated input type of SecurityScanProfileDetach",
           "fields": null,
@@ -370375,6 +370703,45 @@
           "possibleTypes": null
         },
         {
+          "kind": "INPUT_OBJECT",
+          "name": "SecurityScanProfileTriggerInput",
+          "description": "A trigger, with optional configuration, for a scan profile.",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "triggerType",
+              "description": "Type of the trigger.",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "ScanProfileTriggerType",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "configuration",
+              "description": "Configuration attached to the trigger. When set, exactly one member must be present and it must match the scan profile type. Introduced in GitLab 19.3: Status: Experiment.",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "SecurityScanProfileConfigurationInput",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
           "kind": "ENUM",
           "name": "SecurityScanProfileType",
           "description": "Scan profile type",
@@ -370411,6 +370778,35 @@
               "description": "Dependency scanning post processing. Introduced in GitLab 19.2: Status: Experiment.",
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.2."
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "SecurityScanProfileUpgradePolicy",
+          "description": "Highest version bump allowed when remediating a dependency.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "PATCH",
+              "description": "Allow patch upgrades only. Introduced in GitLab 19.3: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
+              "name": "MINOR",
+              "description": "Allow patch and minor upgrades. Introduced in GitLab 19.3: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
+              "name": "MAJOR",
+              "description": "Allow any upgrade. Introduced in GitLab 19.3: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
             }
           ],
           "possibleTypes": null

@@ -1260,6 +1260,75 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         end
       end
     end
+
+    describe '#validate_required_branch_existence' do
+      let_it_be(:project) { create(:project, :repository) }
+
+      let(:merge_request) do
+        build(:merge_request, :closed, source_project: project, target_project: project,
+          source_branch: 'master', target_branch: 'feature', require_existing_branches: true)
+      end
+
+      let(:branch_error) do
+        _('Cannot reopen this merge request because the source or target branch no longer exists.')
+      end
+
+      context 'when reopening and a branch no longer exists' do
+        before do
+          allow(merge_request).to receive(:source_branch_exists?).and_return(false)
+        end
+
+        it 'is invalid with a :base error' do
+          expect(merge_request).not_to be_valid
+          expect(merge_request.errors[:base]).to include(branch_error)
+        end
+      end
+
+      context 'when reopening and the source project (fork) no longer exists' do
+        before do
+          allow(merge_request).to receive(:source_project).and_return(nil)
+        end
+
+        it 'is still invalid' do
+          expect(merge_request).not_to be_valid
+          expect(merge_request.errors[:base]).to include(branch_error)
+        end
+      end
+
+      context 'when both branches exist' do
+        it 'does not add a branch error' do
+          merge_request.valid?
+
+          expect(merge_request.errors[:base]).not_to include(branch_error)
+        end
+      end
+
+      context 'when not reopening' do
+        before do
+          merge_request.require_existing_branches = false
+          allow(merge_request).to receive(:source_branch_exists?).and_return(false)
+        end
+
+        it 'skips the validation' do
+          merge_request.valid?
+
+          expect(merge_request.errors[:base]).not_to include(branch_error)
+        end
+      end
+
+      context 'when the prevent_reopen_merge_request_without_branch feature flag is disabled' do
+        before do
+          stub_feature_flags(prevent_reopen_merge_request_without_branch: false)
+          allow(merge_request).to receive(:source_branch_exists?).and_return(false)
+        end
+
+        it 'skips the validation' do
+          merge_request.valid?
+
+          expect(merge_request.errors[:base]).not_to include(branch_error)
+        end
+      end
+    end
   end
 
   describe 'callbacks' do

@@ -260,7 +260,7 @@ After you turn on restricted access, it governs whether a pending invitation can
     until an administrator makes a seat available, either by purchasing more seats or removing
     billable members.
   - On the Premium tier, restricted access enforces the seat limit when the account is created,
-    rather than when the invitation is accepted. GitLab notifies the user when they register
+    rather than when the invitation is accepted. GitLab notifies the user when they create an account
     that their account could not be created and they should contact a GitLab administrator.
 
 ### Changing from user cap to restricted access

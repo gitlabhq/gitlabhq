@@ -89,7 +89,7 @@ To trigger a manual update of the daily and historical billable users in your Gi
 
 ## Users pending approval
 
-A user in a pending approval state requires action by an administrator. A user sign up can be in a
+A user in a pending approval state requires action by an administrator. A new user account can be in a
 pending approval state because an administrator has enabled any of the following options:
 
 - [Require administrator approval for new user account creation](settings/sign_up_restrictions.md#require-administrator-approval-for-new-user-accounts) setting.
@@ -111,10 +111,10 @@ A user pending approval:
 - Does not receive any notifications from GitLab.
 - Does not consume a [seat](../subscriptions/manage_seats.md#billable-users).
 
-An administrator must [approve their sign up](#approve-or-reject-a-new-user-account) to allow them to
+An administrator must [approve the new user account](#approve-or-reject-a-new-user-account) to allow them to
 sign in.
 
-### View user sign ups pending approval
+### View new user accounts pending approval
 
 {{< history >}}
 
@@ -122,7 +122,7 @@ sign in.
 
 {{< /history >}}
 
-To view user sign ups pending approval:
+To view new user accounts pending approval:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Overview** > **Users**.
@@ -136,14 +136,14 @@ To view user sign ups pending approval:
 
 {{< /history >}}
 
-A user sign up pending approval can be approved or rejected from the **Admin** area.
+A new user account pending approval can be approved or rejected from the **Admin** area.
 
-To approve or reject a user sign up:
+To approve or reject a new user account:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Overview** > **Users**.
 1. In the search box, filter by **State=Pending approval** and press <kbd>Enter</kbd>.
-1. For the user sign up you want to approve or reject, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}), then **Approve** or **Reject**.
+1. For the new user account you want to approve or reject, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}), then **Approve** or **Reject**.
 
 Approving a user:
 

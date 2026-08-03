@@ -49,7 +49,7 @@ export default {
       query: userCanApproveQuery,
       variables() {
         return {
-          projectPath: this.projectPath.replace(/^\//, ''),
+          projectPath: this.projectPath,
           iid: `${this.getNoteableData.iid}`,
         };
       },

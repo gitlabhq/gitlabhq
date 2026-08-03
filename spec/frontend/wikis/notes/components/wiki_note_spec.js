@@ -1,12 +1,16 @@
 import { GlAvatarLink, GlAvatar } from '@gitlab/ui';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import WikiNote from '~/wikis/wiki_notes/components/wiki_note.vue';
 import NoteHeader from '~/wikis/wiki_notes/components/note_header.vue';
 import NoteActions from '~/wikis/wiki_notes/components/note_actions.vue';
 import NoteBody from '~/wikis/wiki_notes/components/note_body.vue';
 import deleteNoteMutation from '~/wikis/wiki_notes/graphql/delete_wiki_page_note.mutation.graphql';
 import wikiNoteToggleAwardEmojiMutation from '~/wikis/wiki_notes/graphql/wiki_note_toggle_award_emoji.mutation.graphql';
+import wikiPageQuery from '~/wikis/graphql/wiki_page.query.graphql';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import AwardsList from '~/vue_shared/components/awards_list.vue';
@@ -23,12 +27,57 @@ import {
   awardEmoji,
 } from '../mock_data';
 
+Vue.use(VueApollo);
+
+// `handleAwardEmoji` updates the wikiPage query in the cache, so the cache has to hold a
+// wikiPage whose discussion contains the note under test.
+const wikiPageQueryData = (noteNode) => ({
+  wikiPage: {
+    __typename: 'WikiPage',
+    id: 'gid://gitlab/WikiPage/1',
+    title: 'home',
+    subscribed: false,
+    awardEmoji: { __typename: 'AwardEmojiConnection', nodes: [] },
+    userPermissions: {
+      __typename: 'WikiPagePermissions',
+      markNoteAsInternal: true,
+      awardEmoji: true,
+    },
+    discussions: {
+      __typename: 'DiscussionConnection',
+      nodes: [
+        {
+          __typename: 'Discussion',
+          id: noteNode.discussion.id,
+          replyId: noteNode.discussion.id,
+          resolvable: true,
+          resolved: false,
+          resolvedAt: null,
+          resolvedBy: null,
+          userPermissions: { __typename: 'DiscussionPermissions', resolveNote: true },
+          notes: {
+            __typename: 'NoteConnection',
+            nodes: [
+              {
+                ...noteNode,
+                author: {
+                  ...noteNode.author,
+                  emails: { __typename: 'EmailConnection', nodes: [] },
+                },
+                lastEditedBy: null,
+              },
+            ],
+          },
+        },
+      ],
+    },
+  },
+});
+
 describe('WikiNote', () => {
   let wrapper;
-
-  const $apollo = {
-    mutate: jest.fn(),
-  };
+  let deleteNoteHandler;
+  let toggleAwardEmojiHandler;
 
   const noteWithEmojiAward = {
     ...note,
@@ -37,7 +86,39 @@ describe('WikiNote', () => {
     },
   };
 
+  beforeEach(() => {
+    deleteNoteHandler = jest.fn().mockResolvedValue({
+      data: {
+        destroyNote: {
+          __typename: 'DestroyNotePayload',
+          errors: [],
+          note: { __typename: 'Note', id: note.id },
+        },
+      },
+    });
+    toggleAwardEmojiHandler = jest.fn().mockResolvedValue({
+      data: {
+        awardEmojiToggle: {
+          __typename: 'AwardEmojiTogglePayload',
+          errors: [],
+          toggledOn: true,
+        },
+      },
+    });
+  });
+
   const createWrapper = (props) => {
+    const apolloProvider = createMockApollo([
+      [deleteNoteMutation, deleteNoteHandler],
+      [wikiNoteToggleAwardEmojiMutation, toggleAwardEmojiHandler],
+    ]);
+
+    apolloProvider.defaultClient.cache.writeQuery({
+      query: wikiPageQuery,
+      variables: queryVariables,
+      data: wikiPageQueryData(props?.note ?? note),
+    });
+
     return shallowMountExtended(WikiNote, {
       propsData: {
         noteableId,
@@ -47,9 +128,7 @@ describe('WikiNote', () => {
         resolvedBy: { name: 'user1', id: '1' },
         ...props,
       },
-      mocks: {
-        $apollo,
-      },
+      apolloProvider,
       provide: {
         noteableType,
         currentUserData,
@@ -376,10 +455,6 @@ describe('WikiNote', () => {
         });
 
         describe('deleteNote', () => {
-          beforeEach(() => {
-            $apollo.mutate.mockClear();
-          });
-
           afterEach(() => {
             jest.restoreAllMocks();
           });
@@ -401,19 +476,16 @@ describe('WikiNote', () => {
             jest.spyOn(confirmViaGLModal, 'confirmAction').mockImplementation(() => false);
 
             wrapper.vm.deleteNote();
-            expect($apollo.mutate).not.toHaveBeenCalled();
+            expect(deleteNoteHandler).not.toHaveBeenCalled();
           });
 
           it('should attempt to delete note if user confirms delete note action', async () => {
             jest.spyOn(confirmViaGLModal, 'confirmAction').mockImplementation(() => true);
 
             await wrapper.vm.deleteNote();
-            expect($apollo.mutate).toHaveBeenCalledWith({
-              mutation: deleteNoteMutation,
-              variables: {
-                input: {
-                  id: note.id,
-                },
+            expect(deleteNoteHandler).toHaveBeenCalledWith({
+              input: {
+                id: note.id,
               },
             });
           });
@@ -423,7 +495,7 @@ describe('WikiNote', () => {
 
             const createAlertSpy = jest.spyOn(alert, 'createAlert');
 
-            $apollo.mutate.mockRejectedValue();
+            deleteNoteHandler.mockRejectedValue(new Error('failed to delete'));
 
             await wrapper.vm.deleteNote();
 
@@ -438,7 +510,6 @@ describe('WikiNote', () => {
 
           it('should emit "note-deleted" when delete note is successful', async () => {
             jest.spyOn(confirmViaGLModal, 'confirmAction').mockImplementation(() => true);
-            $apollo.mutate.mockResolvedValue();
 
             await wrapper.vm.deleteNote();
             expect(Boolean(wrapper.emitted('note-deleted'))).toBe(true);
@@ -472,12 +543,22 @@ describe('WikiNote', () => {
         `(
           'should return true only when userId and emoji name match with their corresponding values in the emojiAward and false when any of they dont',
           ({ userId, emojiName, returnValue }) => {
-            noteWithEmojiAward.awardEmoji.nodes[0].user.id = userId;
+            const localNote = {
+              ...noteWithEmojiAward,
+              awardEmoji: {
+                ...noteWithEmojiAward.awardEmoji,
+                nodes: [
+                  {
+                    ...noteWithEmojiAward.awardEmoji.nodes[0],
+                    user: { ...noteWithEmojiAward.awardEmoji.nodes[0].user, id: userId },
+                  },
+                ],
+              },
+            };
 
             wrapper = createWrapper({
-              note: noteWithEmojiAward,
+              note: localNote,
             });
-            $apollo.mutate.mockResolvedValue({});
 
             const spy = jest.spyOn(wrapper.vm, 'isEmojiPresentForCurrentUser');
             const awardsList = wrapper.findComponent(AwardsList);
@@ -501,38 +582,30 @@ describe('WikiNote', () => {
           jest.restoreAllMocks();
         });
 
-        it('should call the apollo mutation with the correct data when handleAwardEmoji is called with an emoji name', () => {
-          $apollo.mutate.mockResolvedValue({});
+        it('should call the toggle award emoji mutation with the correct data when handleAwardEmoji is called with an emoji name', async () => {
           jest.spyOn(wrapper.vm, 'isEmojiPresentForCurrentUser').mockReturnValue(false);
 
           const awardsList = wrapper.findComponent(AwardsList);
           awardsList.vm.$emit('award', 'star');
+          await waitForPromises();
 
-          expect($apollo.mutate).toHaveBeenCalledWith({
-            mutation: wikiNoteToggleAwardEmojiMutation,
-            variables: {
-              name: 'star',
-              awardableId: note.id,
-            },
-            optimisticResponse: {
-              awardEmojiToggle: {
-                errors: [],
-                toggledOn: true,
-              },
-            },
-            update: expect.any(Function),
+          expect(toggleAwardEmojiHandler).toHaveBeenCalledWith({
+            name: 'star',
+            awardableId: note.id,
           });
         });
 
         it('should call the sentry capture exception function with the correct data if mutation fails', async () => {
           jest.spyOn(Sentry, 'captureException');
-          $apollo.mutate.mockRejectedValue('error');
+          toggleAwardEmojiHandler.mockRejectedValue(new Error('error'));
 
           const awardsList = wrapper.findComponent(AwardsList);
           awardsList.vm.$emit('award', 'star');
 
-          await nextTick();
-          expect(Sentry.captureException).toHaveBeenCalledWith('error');
+          await waitForPromises();
+          expect(Sentry.captureException).toHaveBeenCalledWith(
+            expect.objectContaining({ message: 'error' }),
+          );
         });
       });
     });

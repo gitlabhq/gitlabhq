@@ -14,7 +14,7 @@ title: Identity verification
 
 Identity verification provides multiple layers of GitLab account security.
 Depending on your [risk score](../integration/arkose.md), you might be required to perform up to
-three stages of verification to register an account:
+three stages of verification to create a user account:
 
 - **All users** - Email verification.
 - **Medium-risk users** - Phone number verification.

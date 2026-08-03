@@ -14,8 +14,8 @@ import { isEmpty } from 'lodash-es';
 import CanCreateProjectSnippet from 'shared_queries/snippet/project_permissions.query.graphql';
 import CanCreatePersonalSnippet from 'shared_queries/snippet/user_permissions.query.graphql';
 import { fetchPolicies } from '~/lib/graphql';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import axios from '~/lib/utils/axios_utils';
-import { joinPaths } from '~/lib/utils/url_utility';
 import { __, s__, sprintf } from '~/locale';
 import CloneCodeDropdown from '~/vue_shared/components/code_dropdown/clone_code_dropdown.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -23,6 +23,13 @@ import { createAlert, VARIANT_DANGER, VARIANT_SUCCESS } from '~/alert';
 import { VISIBILITY_LEVEL_PUBLIC_STRING } from '~/visibility_level/constants';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import {
+  newProjectSnippetPath,
+  editProjectSnippetPath,
+  projectSnippetsPath,
+} from '~/lib/utils/path_helpers/project';
+import { newSnippetPath, editSnippetPath } from '~/lib/utils/path_helpers/snippets';
+import { dashboardSnippetsPath } from '~/lib/utils/path_helpers/dashboard';
 import DeleteSnippetMutation from '../mutations/delete_snippet.mutation.graphql';
 
 export const i18n = {
@@ -132,8 +139,8 @@ export default {
       return {
         text: __('New snippet'),
         href: this.snippet.project
-          ? joinPaths(this.snippet.project.webUrl, '-/snippets/new')
-          : joinPaths('/', gon.relative_url_root, '/-/snippets/new'),
+          ? newProjectSnippetPath(this.snippet.project.fullPath)
+          : newSnippetPath(),
       };
     },
     hasAdminSnippetPermission() {
@@ -154,7 +161,11 @@ export default {
       return this.showActionDropdown || this.canBeCloned;
     },
     editLink() {
-      return `${this.snippet.webUrl}/edit`;
+      const id = getIdFromGraphQLId(this.snippet.id);
+
+      return this.snippet.project
+        ? editProjectSnippetPath(this.snippet.project.fullPath, id)
+        : editSnippetPath(id);
     },
     visibility() {
       return this.snippet.visibilityLevel;
@@ -202,8 +213,8 @@ export default {
   methods: {
     redirectToSnippets() {
       window.location.pathname = this.snippet.project
-        ? `${this.snippet.project.fullPath}/-/snippets`
-        : `${gon.relative_url_root}dashboard/snippets`;
+        ? projectSnippetsPath(this.snippet.project.fullPath)
+        : dashboardSnippetsPath();
     },
     closeDeleteModal() {
       this.isDeleteModalVisible = false;

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Deleting a container registry protection rule', :aggregate_failures, feature_category: :container_registry do
   include GraphqlHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
   let_it_be_with_refind(:container_protection_rule) do
     create(:container_registry_protection_rule, project: project)
   end

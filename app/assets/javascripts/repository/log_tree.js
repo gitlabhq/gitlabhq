@@ -2,6 +2,7 @@ import produce from 'immer';
 import { normalizeData } from 'ee_else_ce/repository/utils/commit';
 import axios from '~/lib/utils/axios_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
+import { logsFileProjectRefPath } from '~/lib/utils/path_helpers/repository';
 import commitsQuery from './queries/commits.query.graphql';
 import projectPathQuery from './queries/project_path.query.graphql';
 import refQuery from './queries/ref.query.graphql';
@@ -58,14 +59,9 @@ export function fetchLogsTree(client, path, offset, resolver = null, _maxOffset 
   const { escapedRef } = client.readQuery({ query: refQuery });
 
   fetchpromises[path] = axios
-    .get(
-      `${gon.relative_url_root}/${projectPath}/-/refs/${escapedRef}/logs_tree/${encodeURIComponent(
-        path.replace(/^\//, ''),
-      )}`,
-      {
-        params: { format: 'json', offset: nextOffset || offset },
-      },
-    )
+    .get(logsFileProjectRefPath(projectPath, escapedRef, path.replace(/^\//, '')), {
+      params: { format: 'json', offset: nextOffset || offset },
+    })
     .then(({ data: newData, headers }) => {
       const headerLogsOffset = headers['more-logs-offset'];
       const sourceData = client.readQuery({ query: commitsQuery });

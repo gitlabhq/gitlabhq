@@ -59,6 +59,7 @@ export default {
     'app/assets/javascripts/work_items/components/work_item_change_type_modal.vue',
     'app/assets/javascripts/work_items/components/work_item_detail.vue',
     'app/assets/javascripts/work_items/components/work_item_drawer.vue',
+    'app/assets/javascripts/work_items/components/work_item_links/work_item_links.vue',
     'app/assets/javascripts/work_items/components/work_item_links/work_item_projects_listbox.vue',
     'app/assets/javascripts/work_items/components/work_item_milestone.vue',
     'app/assets/javascripts/work_items/components/work_item_parent.vue',

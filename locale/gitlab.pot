@@ -7932,9 +7932,6 @@ msgstr ""
 msgid "AgentArtifacts|Author name"
 msgstr ""
 
-msgid "AgentArtifacts|Close"
-msgstr ""
-
 msgid "AgentArtifacts|Content"
 msgstr ""
 
@@ -7977,6 +7974,9 @@ msgstr ""
 msgid "AgentArtifacts|IP address"
 msgstr ""
 
+msgid "AgentArtifacts|Next event"
+msgstr ""
+
 msgid "AgentArtifacts|No agent artifacts found."
 msgstr ""
 
@@ -7987,6 +7987,9 @@ msgid "AgentArtifacts|No details available for this event."
 msgstr ""
 
 msgid "AgentArtifacts|Previous error"
+msgstr ""
+
+msgid "AgentArtifacts|Previous event"
 msgstr ""
 
 msgid "AgentArtifacts|Project"
@@ -16243,6 +16246,9 @@ msgid "Cannot refer to a group milestone by an internal id!"
 msgstr ""
 
 msgid "Cannot register client: %{error}"
+msgstr ""
+
+msgid "Cannot reopen this merge request because the source or target branch no longer exists."
 msgstr ""
 
 msgid "Cannot show preview. For previews on sketch files, they must have the file format introduced by Sketch version 43 and above."
@@ -46557,9 +46563,6 @@ msgstr ""
 msgid "Max size of this project's repository. %{repository_size_limit_link}."
 msgstr ""
 
-msgid "Maximize"
-msgstr ""
-
 msgid "Maximize panel"
 msgstr ""
 
@@ -58438,6 +58441,9 @@ msgstr ""
 msgid "PolicyStore|Add exclusion"
 msgstr ""
 
+msgid "PolicyStore|Advanced"
+msgstr ""
+
 msgid "PolicyStore|Affected projects"
 msgstr ""
 
@@ -58456,10 +58462,25 @@ msgstr ""
 msgid "PolicyStore|Blank Template"
 msgstr ""
 
+msgid "PolicyStore|Block"
+msgstr ""
+
+msgid "PolicyStore|Block deployments during configured freeze periods"
+msgstr ""
+
+msgid "PolicyStore|Block message"
+msgstr ""
+
+msgid "PolicyStore|Block the action from proceeding"
+msgstr ""
+
 msgid "PolicyStore|Browse templates"
 msgstr ""
 
 msgid "PolicyStore|Build policy"
+msgstr ""
+
+msgid "PolicyStore|CI/CD"
 msgstr ""
 
 msgid "PolicyStore|Choose individual projects to govern"
@@ -58471,7 +58492,13 @@ msgstr ""
 msgid "PolicyStore|Create new policy"
 msgstr ""
 
+msgid "PolicyStore|Custom Rule (Rego)"
+msgstr ""
+
 msgid "PolicyStore|Default (all projects)"
+msgstr ""
+
+msgid "PolicyStore|Deployment"
 msgstr ""
 
 msgid "PolicyStore|Deployment Gate"
@@ -58484,6 +58511,9 @@ msgid "PolicyStore|Description"
 msgstr ""
 
 msgid "PolicyStore|Details"
+msgstr ""
+
+msgid "PolicyStore|Developer"
 msgstr ""
 
 msgid "PolicyStore|Disabled"
@@ -58501,7 +58531,25 @@ msgstr ""
 msgid "PolicyStore|Enforce"
 msgstr ""
 
+msgid "PolicyStore|Enforcement"
+msgstr ""
+
+msgid "PolicyStore|Environment"
+msgstr ""
+
+msgid "PolicyStore|Environment Promotion"
+msgstr ""
+
+msgid "PolicyStore|Environment State"
+msgstr ""
+
+msgid "PolicyStore|Environment name or pattern this rule applies to."
+msgstr ""
+
 msgid "PolicyStore|Esc or click outside to save"
+msgstr ""
+
+msgid "PolicyStore|Evaluate the event against custom OPA/Rego policy code"
 msgstr ""
 
 msgid "PolicyStore|Evaluations this week"
@@ -58513,7 +58561,19 @@ msgstr ""
 msgid "PolicyStore|Exclusions"
 msgstr ""
 
+msgid "PolicyStore|Freeze Window"
+msgstr ""
+
 msgid "PolicyStore|Last updated"
+msgstr ""
+
+msgid "PolicyStore|Maintainer"
+msgstr ""
+
+msgid "PolicyStore|Message shown when the action is blocked"
+msgstr ""
+
+msgid "PolicyStore|Min hours"
 msgstr ""
 
 msgid "PolicyStore|Mode"
@@ -58526,6 +58586,12 @@ msgid "PolicyStore|Name"
 msgstr ""
 
 msgid "PolicyStore|None added"
+msgstr ""
+
+msgid "PolicyStore|OPA/Rego policy evaluated server-side when the event is received. Maximum 32 KB."
+msgstr ""
+
+msgid "PolicyStore|Override groups"
 msgstr ""
 
 msgid "PolicyStore|Owner"
@@ -58552,6 +58618,27 @@ msgstr ""
 msgid "PolicyStore|Projects to exempt from this policy"
 msgstr ""
 
+msgid "PolicyStore|Recurring"
+msgstr ""
+
+msgid "PolicyStore|Rego policy definition"
+msgstr ""
+
+msgid "PolicyStore|Require additional approvals before proceeding"
+msgstr ""
+
+msgid "PolicyStore|Require approval"
+msgstr ""
+
+msgid "PolicyStore|Require minimum time in preceding environment before promotion"
+msgstr ""
+
+msgid "PolicyStore|Require successful deployment to preceding environment before promotion"
+msgstr ""
+
+msgid "PolicyStore|Required environment"
+msgstr ""
+
 msgid "PolicyStore|Restrict which tools an AI agent may call"
 msgstr ""
 
@@ -58561,7 +58648,13 @@ msgstr ""
 msgid "PolicyStore|Review your settings before enabling. Use Edit to go back and make changes."
 msgstr ""
 
+msgid "PolicyStore|Role approvers"
+msgstr ""
+
 msgid "PolicyStore|Rules"
+msgstr ""
+
+msgid "PolicyStore|Same version/ref"
 msgstr ""
 
 msgid "PolicyStore|Scope"
@@ -58585,6 +58678,9 @@ msgstr ""
 msgid "PolicyStore|Showing the first %{shown} of %{total} projects."
 msgstr ""
 
+msgid "PolicyStore|Soak Time"
+msgstr ""
+
 msgid "PolicyStore|Specific projects"
 msgstr ""
 
@@ -58606,6 +58702,9 @@ msgstr ""
 msgid "PolicyStore|This step is coming soon."
 msgstr ""
 
+msgid "PolicyStore|Timezone"
+msgstr ""
+
 msgid "PolicyStore|Triggers"
 msgstr ""
 
@@ -58621,7 +58720,19 @@ msgstr ""
 msgid "PolicyStore|Warn"
 msgstr ""
 
+msgid "PolicyStore|When a deployment environment is not in the required operational state"
+msgstr ""
+
+msgid "PolicyStore|When a deployment to a gated environment is requested"
+msgstr ""
+
 msgid "PolicyStore|Which projects should this policy govern?"
+msgstr ""
+
+msgid "PolicyStore|Window end"
+msgstr ""
+
+msgid "PolicyStore|Window start"
 msgstr ""
 
 msgid "PolicyStore|You"
@@ -58634,6 +58745,24 @@ msgid "PolicyStore|all projects in the group"
 msgstr ""
 
 msgid "PolicyStore|days"
+msgstr ""
+
+msgid "PolicyStore|e.g. 2026-12-20T00:00:00Z"
+msgstr ""
+
+msgid "PolicyStore|e.g. 2027-01-02T00:00:00Z"
+msgstr ""
+
+msgid "PolicyStore|e.g. 24"
+msgstr ""
+
+msgid "PolicyStore|e.g. America/New_York"
+msgstr ""
+
+msgid "PolicyStore|e.g. production, prod-*"
+msgstr ""
+
+msgid "PolicyStore|e.g. security-leads, engineering-leads"
 msgstr ""
 
 msgid "Polling interval multiplier"
@@ -73573,6 +73702,12 @@ msgstr ""
 msgid "SecurityReports|security scanning prerequisites"
 msgstr ""
 
+msgid "SecurityScanProfile|cannot have more than %{count} scan profiles."
+msgstr ""
+
+msgid "SecurityScanProfile|is not allowed for %{scan_type} scan profiles"
+msgstr ""
+
 msgid "SecurityTrackedRefs|%{selectedRefsCount} refs selected of %{availableSpots} spots available"
 msgstr ""
 
@@ -81778,6 +81913,9 @@ msgid "Total time spent cannot be negative."
 msgstr ""
 
 msgid "Total time spent cannot exceed 4 years."
+msgstr ""
+
+msgid "Total time to run"
 msgstr ""
 
 msgid "Total users"
@@ -90201,9 +90339,6 @@ msgstr ""
 msgid "WorkItem|Something went wrong when deleting the %{workItemType}. Please try again."
 msgstr ""
 
-msgid "WorkItem|Something went wrong when deleting the task. Please try again."
-msgstr ""
-
 msgid "WorkItem|Something went wrong when fetching CRM contacts. Please try again."
 msgstr ""
 
@@ -90325,9 +90460,6 @@ msgid "WorkItem|Statuses"
 msgstr ""
 
 msgid "WorkItem|Statuses are used to manage workflow of planning items, helping you and your team understand how far an item has progressed."
-msgstr ""
-
-msgid "WorkItem|Task deleted"
 msgstr ""
 
 msgid "WorkItem|Task reverted"

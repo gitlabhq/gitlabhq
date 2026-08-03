@@ -19,7 +19,7 @@ security across your instance.
 
 You can create user accounts in GitLab in different ways:
 
-- Self-registration for teams who value autonomy
+- Manually create user accounts for teams who value autonomy
 - Admin-driven creation for controlled onboarding
 - Authentication integration for enterprise environments
 - Console access for automation and bulk operations
@@ -30,7 +30,7 @@ Choose the right method based on your organization's size, security requirements
 
 ## Create a user on the sign-in page
 
-By default, any user visiting your GitLab instance can register for an account.
+By default, any user visiting your GitLab instance can create an account.
 If you have previously [disabled this setting](../../../administration/settings/sign_up_restrictions.md#disable-new-user-account-creation), you must turn it back on.
 
 Users can create their own accounts by either:

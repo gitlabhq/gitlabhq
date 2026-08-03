@@ -8,7 +8,7 @@ title: Manage subscription
 
 ## Buy a subscription
 
-After you [sign up](https://gitlab.com/users/sign_up) for GitLab,
+After you [create a user account](https://gitlab.com/users/sign_up) for GitLab,
 you can buy a subscription for GitLab.com or GitLab Self-Managed.
 The subscription determines which features are available for your private projects.
 
@@ -27,8 +27,8 @@ Organizations with public open source projects can apply to the [GitLab for Open
 {{< /details >}}
 
 GitLab.com is the GitLab multi-tenant software-as-a-service (SaaS) offering.
-You don't need to install anything to use GitLab.com, you only need to [sign up](https://gitlab.com/users/sign_up).
-When you sign up, you choose:
+You don't need to install anything to use GitLab.com, you only need to [create a user account](https://gitlab.com/users/sign_up).
+When you create your account, you choose:
 
 - [A subscription](https://about.gitlab.com/pricing/).
   View the [GitLab.com feature comparison](https://about.gitlab.com/pricing/feature-comparison/) and decide which tier you want.

@@ -7,7 +7,7 @@ RSpec.describe 'ciLint', feature_category: :pipeline_composition do
   include StubRequests
   include RepoHelpers
 
-  let_it_be(:project) { create(:project, :repository, create_tag: '1.0.0') }
+  let_it_be(:project) { create(:project, :small_repo, create_tag: '1.0.0') }
   let_it_be(:user) { project.creator }
 
   let_it_be(:content) do
@@ -349,7 +349,7 @@ RSpec.describe 'ciLint', feature_category: :pipeline_composition do
   end
 
   context 'when the config file has multiple includes' do
-    let_it_be(:other_project) { create(:project, :repository, creator: user, namespace: user.namespace) }
+    let_it_be(:other_project) { create(:project, :small_repo, creator: user, namespace: user.namespace) }
 
     let_it_be(:content) do
       YAML.dump(

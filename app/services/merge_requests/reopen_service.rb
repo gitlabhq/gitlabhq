@@ -5,6 +5,12 @@ module MergeRequests
     def execute(merge_request)
       return merge_request unless can?(current_user, :reopen_merge_request, merge_request)
 
+      # Intentionally not cleared: the flag must persist for the rest of the request so
+      # `validate_required_branch_existence` re-runs on the later save in
+      # `IssuableBaseService#update` and on the REST API's revalidation, keeping the
+      # rejection error durable. The instance is request-scoped, so it is not reused.
+      merge_request.require_existing_branches = true
+
       if merge_request.reopen
         create_event(merge_request)
         create_note(merge_request, 'reopened')

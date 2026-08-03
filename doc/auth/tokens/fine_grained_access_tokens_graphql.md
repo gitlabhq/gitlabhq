@@ -66,6 +66,14 @@ Grants the ability to read secrets managers.
 | Read | Group | Type | `SecretsManagerEntitlement` |
 | Read | Group | Mutation | `SecretsManagerStartTrial` |
 
+#### Security Scan Profiles
+
+Grants the ability to create security scan profiles.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Group | Mutation | `SecurityScanProfileCreate` |
+
 #### Vulnerability
 
 Grants the ability to create, read, and update vulnerabilities.

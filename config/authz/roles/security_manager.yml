@@ -19,6 +19,7 @@ project:
   - cancel_build
   - create_build
   - create_on_demand_dast_scan
+  - create_security_scan_profiles
   - create_vulnerability_archive_export
   - create_vulnerability_export
   - edit_on_demand_dast_scan
@@ -64,6 +65,7 @@ group:
   - admin_security_attributes
   - admin_vulnerability
   - apply_security_scan_profiles
+  - create_security_scan_profiles
   - create_vulnerability_export
   - enable_secret_push_protection
   - read_agent_artifacts

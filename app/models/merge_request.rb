@@ -177,6 +177,10 @@ class MergeRequest < ApplicationRecord
   # It allows us to close or modify broken merge requests
   attr_accessor :allow_broken, :skip_branch_existence_check
 
+  # Set by MergeRequests::ReopenService so that branch existence is validated as
+  # part of the reopen save (and only then). Kept set for the rest of the request.
+  attr_accessor :require_existing_branches
+
   # Temporary flag to skip merge_request_diff creation on create.
   # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/100390
   attr_accessor :skip_ensure_merge_request_diff
@@ -416,6 +420,7 @@ class MergeRequest < ApplicationRecord
     :importing_or_transitioning?,
     :closed_or_merged_without_fork?
   ]
+  validate :validate_required_branch_existence
   validate :validate_target_project, on: :create, unless: :importing_or_transitioning?
   validate :validate_reviewer_size_length, unless: :importing_or_transitioning?
 
@@ -1417,13 +1422,19 @@ class MergeRequest < ApplicationRecord
   def validate_branch_existence
     return unless source_project && target_project
 
-    if source_branch.present? && !source_branch_exists?
-      errors.add(:source_branch, _('does not exist'))
-    end
+    nonexistent_branches.each { |branch| errors.add(branch, _('does not exist')) }
+  end
 
-    if target_branch.present? && !target_branch_exists?
-      errors.add(:target_branch, _('does not exist'))
-    end
+  # Enabled by MergeRequests::ReopenService (via require_existing_branches). Unlike
+  # `validate_branch_existence` (create-only), this has no source_project guard so it
+  # also covers a deleted fork, and reports a single `:base` sentence so the API and
+  # UI surface a clear reopen error.
+  def validate_required_branch_existence
+    return unless require_existing_branches
+    return unless Feature.enabled?(:prevent_reopen_merge_request_without_branch, project)
+    return if nonexistent_branches.empty?
+
+    errors.add(:base, _('Cannot reopen this merge request because the source or target branch no longer exists.'))
   end
 
   def validate_target_project
@@ -3019,6 +3030,13 @@ class MergeRequest < ApplicationRecord
   end
 
   private
+
+  def nonexistent_branches
+    [].tap do |branches|
+      branches << :source_branch if source_branch.present? && !source_branch_exists?
+      branches << :target_branch if target_branch.present? && !target_branch_exists?
+    end
+  end
 
   def always_regenerate_cached_html?
     strong_memoize(:always_regenerate_cached_html) do

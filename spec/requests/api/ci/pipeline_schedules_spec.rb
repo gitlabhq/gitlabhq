@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integration do
-  let_it_be_with_reload(:project) { create(:project, :repository, public_builds: false) }
+  let_it_be_with_reload(:project) { create(:project, :small_repo, public_builds: false) }
 
   let_it_be(:maintainer) { create(:user, maintainer_of: project) }
   let_it_be(:project_owner) { create(:user, owner_of: project) }
@@ -234,7 +234,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
     end
 
     context 'with public project' do
-      let_it_be(:project) { create(:project, :repository, :public, public_builds: true) }
+      let_it_be(:project) { create(:project, :public, public_builds: true) }
 
       it_behaves_like 'request with schedule ownership'
       it_behaves_like 'request with project permissions'
@@ -333,7 +333,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
       end
 
       context 'when public pipelines are disabled' do
-        let_it_be(:project) { create(:project, :repository, :public, public_builds: false) }
+        let_it_be(:project) { create(:project, :public, public_builds: false) }
 
         context 'authenticated user with no project permissions' do
           it 'does not return pipeline_schedule' do
@@ -461,7 +461,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
     end
 
     context 'with public project' do
-      let_it_be(:project) { create(:project, :repository, :public, public_builds: true) }
+      let_it_be(:project) { create(:project, :public, public_builds: true) }
 
       it_behaves_like 'request with schedule ownership'
       it_behaves_like 'request with project permissions'
@@ -477,7 +477,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
       end
 
       context 'when public pipelines are disabled' do
-        let_it_be(:project) { create(:project, :repository, :public, public_builds: false) }
+        let_it_be(:project) { create(:project, :public, public_builds: false) }
 
         context 'authenticated user with no project permissions' do
           it 'does not return the details of pipelines triggered from the pipeline schedule' do
@@ -1243,7 +1243,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
     end
 
     context 'with public project' do
-      let_it_be(:project) { create(:project, :repository, :public, public_builds: true) }
+      let_it_be(:project) { create(:project, :public, public_builds: true) }
 
       it_behaves_like 'request with schedule ownership'
       it_behaves_like 'request with project permissions'
@@ -1271,7 +1271,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
       end
 
       context 'when public pipelines are disabled' do
-        let_it_be(:project) { create(:project, :repository, :public, public_builds: false) }
+        let_it_be(:project) { create(:project, :public, public_builds: false) }
 
         context 'authenticated user with no project permissions' do
           it 'does not return pipeline_schedule_variable' do

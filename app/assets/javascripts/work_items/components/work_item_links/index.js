@@ -14,21 +14,8 @@ export default function initWorkItemLinks() {
     return null;
   }
 
-  const {
-    fullPath,
-    registerPath,
-    signInPath,
-    wiCanAdminLabel,
-    wiGroupPath,
-    wiHasIssueWeightsFeature,
-    wiHasIterationsFeature,
-    wiHasIssuableHealthStatusFeature,
-    wiIssuesListPath,
-    wiLabelsManagePath,
-    wiReportAbusePath,
-    wiNewTrialPath,
-    hasLinkedItemsEpicsFeature,
-  } = workItemLinksRoot.dataset;
+  const { fullPath, registerPath, signInPath, hasLinkedItemsEpicsFeature } =
+    workItemLinksRoot.dataset;
 
   return initVueApp({
     el: workItemLinksRoot,
@@ -38,16 +25,6 @@ export default function initWorkItemLinks() {
       fullPath,
       registerPath,
       signInPath,
-      // for work item modal
-      canAdminLabel: wiCanAdminLabel,
-      groupPath: wiGroupPath,
-      hasIssueWeightsFeature: wiHasIssueWeightsFeature,
-      hasIterationsFeature: wiHasIterationsFeature,
-      hasIssuableHealthStatusFeature: wiHasIssuableHealthStatusFeature,
-      issuesListPath: wiIssuesListPath,
-      labelsManagePath: wiLabelsManagePath,
-      reportAbusePath: wiReportAbusePath,
-      planTrialPath: wiNewTrialPath,
       hasLinkedItemsEpicsFeature: parseBoolean(hasLinkedItemsEpicsFeature),
     },
     component: WorkItemLinks,

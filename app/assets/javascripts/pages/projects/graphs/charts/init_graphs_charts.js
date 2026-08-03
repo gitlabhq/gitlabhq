@@ -4,6 +4,7 @@ import { visitUrl } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/ref/constants';
+import { chartsProjectGraphPath } from '~/lib/utils/path_helpers/repository';
 import CodeCoverage from '../components/code_coverage.vue';
 import SeriesDataMixin from './series_data_mixin';
 
@@ -204,7 +205,7 @@ export function initRefSwitcher() {
     return null;
   }
 
-  const { projectId, projectBranch, graphPath } = el.dataset;
+  const { projectId, projectFullPath, projectBranch, graphPath } = el.dataset;
 
   const graphsPathPrefix = graphPath.match(GRAPHS_PATH_REGEX)?.[0];
   if (!graphsPathPrefix) {
@@ -229,7 +230,7 @@ export function initRefSwitcher() {
         class: 'gl-w-20',
         on: {
           input(selected) {
-            visitUrl(`${graphsPathPrefix}/${encodeURIComponent(selected)}/charts`);
+            visitUrl(chartsProjectGraphPath(projectFullPath, selected));
           },
         },
       });

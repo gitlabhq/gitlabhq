@@ -4636,6 +4636,62 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       end
     end
 
+    context "to reopen a MR" do
+      let(:merge_request) do
+        create(:merge_request, :closed, author: user, assignees: [user], source_project: project,
+          target_project: project, source_branch: 'markdown')
+      end
+
+      it "reopens the merge request" do
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), params: { state_event: "reopen" }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['state']).to eq('opened')
+      end
+
+      context "when the source branch no longer exists" do
+        let(:merge_request) do
+          create(:merge_request, :closed, author: user, assignees: [user], source_project: project,
+            target_project: project, source_branch: 'this-source-branch-does-not-exist')
+        end
+
+        let(:branch_error) do
+          'Cannot reopen this merge request because the source or target branch no longer exists.'
+        end
+
+        it "does not reopen the merge request and returns an error" do
+          put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user),
+            params: { state_event: "reopen" }
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(json_response['message']).to include(branch_error)
+        end
+
+        it "does not apply other changes in the same request" do
+          put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user),
+            params: { state_event: "reopen", title: "A brand new title" }
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(merge_request.reload).to be_closed
+          expect(merge_request.title).not_to eq("A brand new title")
+        end
+
+        context "when the prevent_reopen_merge_request_without_branch feature flag is disabled" do
+          before do
+            stub_feature_flags(prevent_reopen_merge_request_without_branch: false)
+          end
+
+          it "reopens the merge request" do
+            put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user),
+              params: { state_event: "reopen" }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['state']).to eq('opened')
+          end
+        end
+      end
+    end
+
     it "updates title and returns merge_request" do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), params: { title: "New title" }
       expect(response).to have_gitlab_http_status(:ok)

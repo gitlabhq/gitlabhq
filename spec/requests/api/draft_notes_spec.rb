@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
   let_it_be(:user) { create(:user) }
   let_it_be(:user_2) { create(:user) }
-  let_it_be(:project) { create(:project, :public, :repository, developers: user) }
+  let_it_be(:project) { create(:project, :public, developers: user) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project, author: user) }
 
   let_it_be(:private_project) { create(:project, :private) }

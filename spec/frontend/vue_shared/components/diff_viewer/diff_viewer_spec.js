@@ -23,15 +23,20 @@ describe('DiffViewer', () => {
       relative_url_root: '',
     };
 
-    createComponent({ ...requiredProps, projectPath: '' });
+    createComponent({ ...requiredProps, projectPath: 'group/project' });
 
-    expect(wrapper.find('.deleted img').element.src).toBe(`//-/raw/DEF/${RED_BOX_IMAGE_URL}`);
-    expect(wrapper.find('.added img').element.src).toBe(`//-/raw/ABC/${GREEN_BOX_IMAGE_URL}`);
+    expect(wrapper.find('.deleted img').element.src).toBe(
+      `/group/project/-/raw/DEF/${RED_BOX_IMAGE_URL}`,
+    );
+    expect(wrapper.find('.added img').element.src).toBe(
+      `/group/project/-/raw/ABC/${GREEN_BOX_IMAGE_URL}`,
+    );
   });
 
   it('renders fallback download diff display', () => {
     createComponent({
       ...requiredProps,
+      projectPath: 'group/project',
       diffViewerMode: 'added',
       newPath: 'test.abc',
       oldPath: 'testold.abc',

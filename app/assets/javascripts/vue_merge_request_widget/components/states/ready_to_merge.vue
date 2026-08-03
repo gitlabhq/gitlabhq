@@ -21,7 +21,6 @@ import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { STATUS_CLOSED, STATUS_MERGED } from '~/issues/constants';
 import { secondsToMilliseconds } from '~/lib/utils/datetime_utility';
 import simplePoll from '~/lib/utils/simple_poll';
-import { joinPaths } from '~/lib/utils/url_utility';
 import { __, s__, n__, sprintf } from '~/locale';
 import SmartInterval from '~/smart_interval';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -29,6 +28,7 @@ import { convertToGraphQLId } from '~/graphql_shared/utils';
 import readyToMergeSubscription from '~/vue_merge_request_widget/queries/states/ready_to_merge.subscription.graphql';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { rebaseProjectMergeRequestPath } from '~/lib/utils/path_helpers/merge_requests';
 import {
   AUTO_MERGE_STRATEGIES,
   MT_MERGE_STRATEGY,
@@ -555,14 +555,11 @@ export default {
       try {
         this.isRebaseInProgress = true;
 
-        const rebasePath = joinPaths(
-          gon.relative_url_root || '/',
+        const rebasePath = rebaseProjectMergeRequestPath(
           this.mr.targetProjectFullPath,
-          '-',
-          'merge_requests',
-          `${this.mr.iid}`,
-          'rebase',
+          this.mr.iid,
         );
+
         await axios.post(rebasePath);
 
         createAlert({

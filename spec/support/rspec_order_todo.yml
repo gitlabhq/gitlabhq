@@ -5982,7 +5982,6 @@
 - './spec/requests/api/graphql/boards/board_list_issues_query_spec.rb'
 - './spec/requests/api/graphql/boards/board_list_query_spec.rb'
 - './spec/requests/api/graphql/boards/board_lists_query_spec.rb'
-- './spec/requests/api/graphql/boards/boards_query_spec.rb'
 - './spec/requests/api/graphql/ci/application_setting_spec.rb'
 - './spec/requests/api/graphql/ci/ci_cd_setting_spec.rb'
 - './spec/requests/api/graphql/ci/config_spec.rb'

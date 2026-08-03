@@ -142,7 +142,7 @@ To set up a basic Postfix mail server with IMAP access on Ubuntu, follow the
 For example, suppose your top-level company domain is `hooli.com`.
 All employees in your company have an email address at that domain through Google
 Workspace, and your company's private Slack instance requires a valid `@hooli.com`
-email address to sign up.
+email address to create a user account.
 
 If you also host a public-facing GitLab instance at `hooli.com` and set your
 incoming email domain to `hooli.com`, an attacker could abuse the Create new

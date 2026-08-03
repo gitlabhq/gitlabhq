@@ -13,15 +13,6 @@ describe('toolbar', () => {
     wrapper = mount(Toolbar, {
       attachTo,
       propsData: { markdownDocsPath: '', ...props },
-      mocks: {
-        $apollo: {
-          queries: {
-            currentUser: {
-              loading: false,
-            },
-          },
-        },
-      },
     });
   };
 

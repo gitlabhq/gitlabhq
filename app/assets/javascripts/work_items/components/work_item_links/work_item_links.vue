@@ -5,20 +5,18 @@ import {
   GlDisclosureDropdownItem,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import { isEmpty } from 'lodash-es';
 import { s__ } from '~/locale';
 import { createAlert } from '~/alert';
-import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_ISSUE, TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
 import getIssueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_details.query.graphql';
-import { getParameterByName, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
+import { visitUrl } from '~/lib/utils/url_utility';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import {
   FORM_TYPES,
   TASKS_ANCHOR,
   DEFAULT_PAGE_SIZE_CHILD_ITEMS,
-  DETAIL_VIEW_QUERY_PARAM_NAME,
   WORKITEM_LINKS_METADATA_LOCALSTORAGEKEY,
   WORKITEM_TREE_SHOWCLOSED_LOCALSTORAGEKEY,
 } from '../../constants';
@@ -29,12 +27,9 @@ import {
   getHiddenMetadataKeysFromLocalStorage,
   getItems,
 } from '../../utils';
-import { removeHierarchyChild } from '../../graphql/cache_utils';
 import getWorkItemTreeQuery from '../../graphql/work_item_tree.query.graphql';
 import WorkItemChildrenLoadMore from '../shared/work_item_children_load_more.vue';
 import WorkItemMoreActions from '../shared/work_item_more_actions.vue';
-import WorkItemDetailModal from '../work_item_detail_modal.vue';
-import WorkItemAbuseModal from '../work_item_abuse_modal.vue';
 import WorkItemLinksForm from './work_item_links_form.vue';
 import WorkItemChildrenWrapper from './work_item_children_wrapper.vue';
 
@@ -50,8 +45,6 @@ export default {
     GlDisclosureDropdownItem,
     CrudComponent,
     WorkItemLinksForm,
-    WorkItemDetailModal,
-    WorkItemAbuseModal,
     WorkItemChildrenWrapper,
     WorkItemChildrenLoadMore,
     WorkItemMoreActions,
@@ -60,7 +53,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [glFeatureFlagsMixin()],
-  inject: ['fullPath', 'reportAbusePath'],
+  inject: ['fullPath'],
   props: {
     issuableId: {
       type: Number,
@@ -96,19 +89,7 @@ export default {
       error(e) {
         this.error = e.message || this.$options.i18n.fetchError;
       },
-      async result() {
-        const iid = getParameterByName('work_item_iid');
-        const id = getParameterByName(DETAIL_VIEW_QUERY_PARAM_NAME);
-        this.activeChild =
-          this.children.find(
-            (child) => getIdFromGraphQLId(child.id) === getIdFromGraphQLId(id) || child.iid === iid,
-          ) ?? {};
-        await this.$nextTick();
-        if (!isEmpty(this.activeChild)) {
-          this.$refs.modal.show();
-          return;
-        }
-        this.updateQueryParam();
+      result() {
         if (this.hasNextPage && this.children.length === 0) {
           this.fetchNextPage();
         }
@@ -126,14 +107,10 @@ export default {
   },
   data() {
     return {
-      activeChild: {},
       error: undefined,
       parentIssue: null,
       formType: null,
       workItem: null,
-      isReportModalOpen: false,
-      reportedUserId: 0,
-      reportedUrl: '',
       widgetName: TASKS_ANCHOR,
       hiddenMetadataKeys: [],
       showClosed: true,
@@ -182,9 +159,6 @@ export default {
     childrenCountLabel() {
       return this.isLoading && this.children.length === 0 ? '...' : this.children.length;
     },
-    activeChildNamespaceFullPath() {
-      return this.activeChild.namespace?.fullPath;
-    },
     pageInfo() {
       return this.hierarchyWidget?.children?.pageInfo;
     },
@@ -221,38 +195,9 @@ export default {
       this.$refs.workItemsLinks.hideForm();
       this.formType = null;
     },
-    openChild({ event, child }) {
+    navigateToChild({ event, child }) {
       event.preventDefault();
-      this.activeChild = child;
-      this.$refs.modal.show();
-      this.updateQueryParam(child.id);
-    },
-    async closeModal() {
-      this.updateQueryParam();
-    },
-    handleWorkItemDeleted(child) {
-      const { defaultClient: cache } = this.$apollo.provider.clients;
-      removeHierarchyChild({
-        cache,
-        fullPath: this.fullPath,
-        iid: this.iid,
-        workItem: child,
-      });
-      this.$toast.show(s__('WorkItem|Task deleted'));
-    },
-    updateQueryParam(id) {
-      updateHistory({
-        url: setUrlParams({ [DETAIL_VIEW_QUERY_PARAM_NAME]: getIdFromGraphQLId(id) }),
-        replace: true,
-      });
-    },
-    toggleReportAbuseModal(isOpen, reply = {}) {
-      this.isReportModalOpen = isOpen;
-      this.reportedUrl = reply.url;
-      this.reportedUserId = reply.author ? getIdFromGraphQLId(reply.author.id) : 0;
-    },
-    openReportAbuseModal(reply) {
-      this.toggleReportAbuseModal(true, reply);
+      visitUrl(child.webUrl);
     },
     handleUpdateHiddenMetadataKeys(hiddenKeys) {
       this.hiddenMetadataKeys = [...hiddenKeys];
@@ -392,7 +337,7 @@ export default {
           :disable-content="disableContent"
           :has-indirect-children="false"
           @error="error = $event"
-          @show-modal="openChild"
+          @show-modal="navigateToChild"
         />
         <work-item-children-load-more
           v-if="hasNextPage"
@@ -401,22 +346,6 @@ export default {
           @fetch-next-page="fetchNextPage"
         />
       </div>
-      <work-item-detail-modal
-        ref="modal"
-        :work-item-id="activeChild.id"
-        :work-item-iid="activeChild.iid"
-        :work-item-full-path="activeChildNamespaceFullPath"
-        @close="closeModal"
-        @work-item-deleted="handleWorkItemDeleted(activeChild)"
-        @openReportAbuse="openReportAbuseModal"
-      />
-      <work-item-abuse-modal
-        v-if="isReportModalOpen && reportAbusePath"
-        :show-modal="isReportModalOpen"
-        :reported-user-id="reportedUserId"
-        :reported-from-url="reportedUrl"
-        @close-modal="toggleReportAbuseModal(false)"
-      />
 
       <div
         v-if="hasAllChildItemsHidden"

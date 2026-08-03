@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe API::FreezePeriods, :aggregate_failures, :with_current_organization, feature_category: :continuous_delivery do
-  let_it_be(:project) { create(:project, :repository, :private) }
+  let_it_be(:project) { create(:project, :private) }
   let_it_be(:user) { create(:user) }
   let_it_be(:admin) { create(:admin) }
 

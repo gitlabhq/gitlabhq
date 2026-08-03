@@ -75,5 +75,23 @@ RSpec.describe 'User closes/reopens a merge request', :js, feature_category: :co
         expect(page).to have_css('.gl-badge', text: 'Open')
       end
     end
+
+    context 'when the source branch no longer exists' do
+      let(:closed_merge_request) do
+        create(:merge_request, source_project: project, target_project: project,
+          state: 'closed', source_branch: 'this-source-branch-does-not-exist')
+      end
+
+      it 'does not reopen the merge request and shows the reason' do
+        expect(page).to have_css('.gl-badge', text: 'Closed')
+
+        find_by_testid('extension-actions-reopen-button').click
+
+        expect(page).to have_content(
+          'Cannot reopen this merge request because the source or target branch no longer exists.'
+        )
+        expect(page).to have_css('.gl-badge', text: 'Closed')
+      end
+    end
   end
 end

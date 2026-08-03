@@ -109,12 +109,14 @@ export default {
     routerLinkTo() {
       if (this.isBlob) {
         return buildURLwithRefType({
+          // eslint-disable-next-line @gitlab/no-hardcoded-urls -- This is a Vue router route defined in app/assets/javascripts/repository/router.js, acceptable in this case
           path: joinPaths('/-/blob', this.escapedRef, encodeURI(this.path)),
           refType: this.refType,
         });
       }
       if (this.isFolder) {
         return buildURLwithRefType({
+          // eslint-disable-next-line @gitlab/no-hardcoded-urls -- This is a Vue router route defined in app/assets/javascripts/repository/router.js, acceptable in this case
           path: joinPaths('/-/tree', this.escapedRef, encodeURI(this.path)),
           refType: this.refType,
         });

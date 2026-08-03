@@ -1,5 +1,5 @@
 <script>
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { formatTime } from '~/lib/utils/datetime_utility';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -12,6 +12,9 @@ export default {
   iconSize: 12,
   i18n: {
     statusDescription: (id) => sprintf(s__('Jobs|Status for job %{id}'), { id }),
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   components: {
     CiIcon,
@@ -55,7 +58,14 @@ export default {
       :aria-describedby="statusDescriptionId"
     />
     <div class="gl-ml-1 gl-mt-2 gl-text-sm gl-text-subtle">
-      <div v-if="duration" data-testid="job-duration">
+      <div
+        v-if="duration"
+        v-gl-tooltip
+        :title="__('Total time to run')"
+        data-testid="job-duration"
+        data-placement="top"
+        data-container="body"
+      >
         <gl-icon
           name="timer"
           :size="$options.iconSize"

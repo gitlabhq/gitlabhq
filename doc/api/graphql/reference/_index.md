@@ -16424,6 +16424,36 @@ Fields:
 | <a id="mutation-securityscanprofileattach-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-securityscanprofileattach-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
+### `Mutation.securityScanProfileCreate`
+
+{{< details >}}
+
+- Introduced in GitLab 19.3.
+- Status: Experiment.
+
+{{< /details >}}
+
+Input type: `SecurityScanProfileCreateInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-securityscanprofilecreate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-securityscanprofilecreate-description"></a>`description` | [`String!`](#string) | Description of the scan profile. |
+| <a id="mutation-securityscanprofilecreate-name"></a>`name` | [`String!`](#string) | Name of the scan profile. |
+| <a id="mutation-securityscanprofilecreate-namespaceid"></a>`namespaceId` | [`NamespaceID!`](#namespaceid) | Global ID of the top level namespace to create the scan profile for. |
+| <a id="mutation-securityscanprofilecreate-scantype"></a>`scanType` | [`SecurityScanProfileType!`](#securityscanprofiletype) | Type of the scan profile. |
+| <a id="mutation-securityscanprofilecreate-triggers"></a>`triggers` | [`[SecurityScanProfileTriggerInput!]!`](#securityscanprofiletriggerinput) | Triggers with optional configuration for the scan profile. At least one is required. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-securityscanprofilecreate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-securityscanprofilecreate-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-securityscanprofilecreate-scanprofile"></a>`scanProfile` | [`ScanProfileType`](#scanprofiletype) | Created scan profile. |
+
 ### `Mutation.securityScanProfileDetach`
 
 {{< details >}}
@@ -67631,6 +67661,7 @@ Member role permission.
 | <a id="memberrolepermission-admin_web_hook"></a>`ADMIN_WEB_HOOK` | Manage webhooks. |
 | <a id="memberrolepermission-apply_security_scan_profiles"></a>`APPLY_SECURITY_SCAN_PROFILES` | Apply security scan profiles. |
 | <a id="memberrolepermission-archive_project"></a>`ARCHIVE_PROJECT` | Allows archiving of projects. |
+| <a id="memberrolepermission-create_security_scan_profiles"></a>`CREATE_SECURITY_SCAN_PROFILES` | Create security scan profiles. |
 | <a id="memberrolepermission-destroy_package"></a>`DESTROY_PACKAGE` | Delete packages and package files in the package registry. |
 | <a id="memberrolepermission-manage_deploy_tokens"></a>`MANAGE_DEPLOY_TOKENS` | Manage deploy tokens at the group or project level. |
 | <a id="memberrolepermission-manage_group_access_tokens"></a>`MANAGE_GROUP_ACCESS_TOKENS` | Create, read, update, and delete group access tokens. When creating a token, users with this custom permission must select a role for that token that has the same or fewer permissions as the default role used as the base for the custom role. |
@@ -67680,6 +67711,7 @@ Member role standard permission.
 | <a id="memberrolestandardpermission-admin_web_hook"></a>`ADMIN_WEB_HOOK` | Manage webhooks. |
 | <a id="memberrolestandardpermission-apply_security_scan_profiles"></a>`APPLY_SECURITY_SCAN_PROFILES` | Apply security scan profiles. |
 | <a id="memberrolestandardpermission-archive_project"></a>`ARCHIVE_PROJECT` | Allows archiving of projects. |
+| <a id="memberrolestandardpermission-create_security_scan_profiles"></a>`CREATE_SECURITY_SCAN_PROFILES` | Create security scan profiles. |
 | <a id="memberrolestandardpermission-destroy_package"></a>`DESTROY_PACKAGE` | Delete packages and package files in the package registry. |
 | <a id="memberrolestandardpermission-manage_deploy_tokens"></a>`MANAGE_DEPLOY_TOKENS` | Manage deploy tokens at the group or project level. |
 | <a id="memberrolestandardpermission-manage_group_access_tokens"></a>`MANAGE_GROUP_ACCESS_TOKENS` | Create, read, update, and delete group access tokens. When creating a token, users with this custom permission must select a role for that token that has the same or fewer permissions as the default role used as the base for the custom role. |
@@ -69004,6 +69036,16 @@ Scan profile type.
 | <a id="securityscanprofiletype-dependency_scanning_post_processing"></a>`DEPENDENCY_SCANNING_POST_PROCESSING` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.2. Status: Experiment. Dependency scanning post processing. |
 | <a id="securityscanprofiletype-sast"></a>`SAST` | Sast. |
 | <a id="securityscanprofiletype-secret_detection"></a>`SECRET_DETECTION` | Secret detection. |
+
+### `SecurityScanProfileUpgradePolicy`
+
+Highest version bump allowed when remediating a dependency.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="securityscanprofileupgradepolicy-major"></a>`MAJOR` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.3. Status: Experiment. Allow any upgrade. |
+| <a id="securityscanprofileupgradepolicy-minor"></a>`MINOR` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.3. Status: Experiment. Allow patch and minor upgrades. |
+| <a id="securityscanprofileupgradepolicy-patch"></a>`PATCH` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.3. Status: Experiment. Allow patch upgrades only. |
 
 ### `SecurityScannerType`
 
@@ -75236,6 +75278,51 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="securityrefinput-name"></a>`name` | [`String!`](#string) | Name of the ref. |
 | <a id="securityrefinput-reftype"></a>`refType` | [`SecurityTrackedRefType!`](#securitytrackedreftype) | Type of ref (branch or tag). |
+
+### `SecurityScanProfileAutoRemediationInput`
+
+Auto-remediation configuration for a dependency scanning post-processing scan profile.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="securityscanprofileautoremediationinput-cooldown"></a>`cooldown` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.3. Status: Experiment. Minimum number of days after a package is released before it can be used. |
+| <a id="securityscanprofileautoremediationinput-enabled"></a>`enabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.3. Status: Experiment. Whether auto-remediation is enabled. |
+| <a id="securityscanprofileautoremediationinput-openmergerequestslimit"></a>`openMergeRequestsLimit` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.3. Status: Experiment. Maximum number of open auto-remediation merge requests at once. |
+| <a id="securityscanprofileautoremediationinput-severitylevel"></a>`severityLevel` {{< icon name="warning-solid" >}} | [`VulnerabilitySeverity`](#vulnerabilityseverity) | Introduced in GitLab 19.3. Status: Experiment. Minimum vulnerability severity that triggers an automated upgrade. Findings below this threshold are skipped. |
+| <a id="securityscanprofileautoremediationinput-upgradepolicy"></a>`upgradePolicy` {{< icon name="warning-solid" >}} | [`SecurityScanProfileUpgradePolicy`](#securityscanprofileupgradepolicy) | Introduced in GitLab 19.3. Status: Experiment. Highest version bump allowed when remediating. |
+
+### `SecurityScanProfileConfigurationInput`
+
+Typed configuration for a scan profile trigger. Exactly one member may be set, and it must match the scan profile type.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="securityscanprofileconfigurationinput-dependencyscanningpostprocessing"></a>`dependencyScanningPostProcessing` {{< icon name="warning-solid" >}} | [`SecurityScanProfileDependencyScanningPostProcessingConfigurationInput`](#securityscanprofiledependencyscanningpostprocessingconfigurationinput) | Introduced in GitLab 19.3. Status: Experiment. Configuration for a dependency scanning post-processing scan profile. |
+
+### `SecurityScanProfileDependencyScanningPostProcessingConfigurationInput`
+
+Configuration for a dependency scanning post-processing scan profile.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="securityscanprofiledependencyscanningpostprocessingconfigurationinput-autoremediation"></a>`autoRemediation` {{< icon name="warning-solid" >}} | [`SecurityScanProfileAutoRemediationInput`](#securityscanprofileautoremediationinput) | Introduced in GitLab 19.3. Status: Experiment. Auto-remediation configuration. |
+
+### `SecurityScanProfileTriggerInput`
+
+A trigger, with optional configuration, for a scan profile.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="securityscanprofiletriggerinput-configuration"></a>`configuration` {{< icon name="warning-solid" >}} | [`SecurityScanProfileConfigurationInput`](#securityscanprofileconfigurationinput) | Introduced in GitLab 19.3. Status: Experiment. Configuration attached to the trigger. When set, exactly one member must be present and it must match the scan profile type. |
+| <a id="securityscanprofiletriggerinput-triggertype"></a>`triggerType` | [`ScanProfileTriggerType!`](#scanprofiletriggertype) | Type of the trigger. |
 
 ### `SnippetBlobActionInputType`
 

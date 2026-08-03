@@ -28,7 +28,7 @@
 
       .tree-ref-container.gl-mt-5
         .tree-ref-holder
-          #js-project-graph-ref-switcher{ data: { project_id: @project.id, graph_path: project_graph_path(@project, @ref), project_branch: current_ref } }
+          #js-project-graph-ref-switcher{ data: { project_id: @project.id, project_full_path: @project.full_path, graph_path: project_graph_path(@project, @ref), project_branch: current_ref } }
         %ul.breadcrumb.repo-breadcrumb.gl-mt-3.gl-bg-default.gl-border
           = commits_breadcrumbs
 

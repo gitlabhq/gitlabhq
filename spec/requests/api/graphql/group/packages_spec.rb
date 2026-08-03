@@ -7,8 +7,8 @@ RSpec.describe 'getting a package list for a group', feature_category: :package_
 
   let_it_be(:resource) { create(:group, :private) }
   let_it_be(:group_two) { create(:group, :private) }
-  let_it_be(:project1) { create(:project, :repository, group: resource) }
-  let_it_be(:project2) { create(:project, :repository, group: resource) }
+  let_it_be(:project1) { create(:project, group: resource) }
+  let_it_be(:project2) { create(:project, group: resource) }
   let_it_be(:current_user) { create(:user) }
 
   let(:resource_type) { :group }
@@ -49,7 +49,7 @@ RSpec.describe 'getting a package list for a group', feature_category: :package_
   end
 
   context 'with a batched query' do
-    let_it_be(:group_two_project) { create(:project, :repository, group: group_two) }
+    let_it_be(:group_two_project) { create(:project, group: group_two) }
     let_it_be(:group_one_package) { create(:npm_package, project: project1) }
     let_it_be(:group_two_package) { create(:npm_package, project: group_two_project) }
 

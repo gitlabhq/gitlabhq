@@ -104659,6 +104659,12 @@
               "deprecationReason": null
             },
             {
+              "name": "CREATE_SECURITY_SCAN_PROFILES",
+              "description": "Create security scan profiles.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "DESTROY_PACKAGE",
               "description": "Delete packages and package files in the package registry.",
               "isDeprecated": false,

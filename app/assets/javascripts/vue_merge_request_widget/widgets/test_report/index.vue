@@ -6,6 +6,7 @@ import { HTTP_STATUS_NO_CONTENT } from '~/lib/utils/http_status';
 import TestCaseDetails from '~/ci/pipeline_details/test_reports/test_case_details.vue';
 import MrWidget from '~/vue_merge_request_widget/components/widget/widget.vue';
 import MrWidgetRow from '~/vue_merge_request_widget/components/widget/widget_content_row.vue';
+import { testReportProjectPipelinePath } from '~/lib/utils/path_helpers/pipelines';
 import { DynamicScroller, DynamicScrollerItem } from 'vendor/vue-virtual-scroller';
 import { EXTENSION_ICONS } from '../../constants';
 import {
@@ -113,7 +114,10 @@ export default {
         text: this.shouldShowLoading
           ? this.$options.i18n.partialReport
           : this.$options.i18n.fullReport,
-        href: `${this.mr.pipeline.path}/test_report`,
+        href:
+          this.mr.pipeline?.project_full_path && this.mr.pipeline?.id
+            ? testReportProjectPipelinePath(this.mr.pipeline.project_full_path, this.mr.pipeline.id)
+            : undefined,
         target: '_blank',
         trackFullReportClicked: true,
         testId: 'full-report-link',

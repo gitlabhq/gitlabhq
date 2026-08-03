@@ -14,7 +14,7 @@ Choose which GitLab offering suits your needs:
 
 - GitLab.com: The GitLab software-as-a-service offering.
   You don't need to install anything to use GitLab.com, you only need to
-  [sign up](https://gitlab.com/users/sign_up) and start using GitLab straight away.
+  [create a user account](https://gitlab.com/users/sign_up) and start using GitLab straight away.
   The subscription applies to a top-level group namespace.
   You cannot apply a subscription to a personal namespace.
 - [GitLab Dedicated](gitlab_dedicated/_index.md): A single-tenant SaaS service for highly regulated and large enterprises.

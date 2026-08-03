@@ -69,15 +69,6 @@ describe('Markdown field component', () => {
           supportsQuickActions: true,
           ...props,
         },
-        mocks: {
-          $apollo: {
-            queries: {
-              currentUser: {
-                loading: false,
-              },
-            },
-          },
-        },
       },
     );
   }

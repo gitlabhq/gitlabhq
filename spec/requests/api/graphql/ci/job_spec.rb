@@ -10,7 +10,7 @@ RSpec.describe 'Query.project(fullPath).pipelines.job(id)', feature_category: :c
   end
 
   let_it_be(:user) { create_default(:user) }
-  let_it_be(:project) { create(:project, :repository, :public) }
+  let_it_be(:project) { create(:project, :public) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
 
   let_it_be(:prepare_stage) { create(:ci_stage, pipeline: pipeline, project: project, name: 'prepare') }

@@ -333,6 +333,7 @@ ul.wiki-pages-list.content-list {
       field-sizing: content;
       overflow-wrap: break-word;
       max-width: 100%;
+      @apply gl-overflow-auto;
     }
 
     .flexible-input-container {

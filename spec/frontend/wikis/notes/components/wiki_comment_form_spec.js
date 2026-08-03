@@ -1,29 +1,86 @@
 import { GlAlert, GlButton } from '@gitlab/ui';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import { clearDraft } from '~/lib/utils/autosave';
 import WikiCommentForm from '~/wikis/wiki_notes/components/wiki_comment_form.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import WikiDiscussionsSignedOut from '~/wikis/wiki_notes/components/wiki_discussions_signed_out.vue';
+import createWikiPageNoteMutation from '~/wikis/wiki_notes/graphql/create_wiki_page_note.mutation.graphql';
+import updateWikiPageNoteMutation from '~/wikis/wiki_notes/graphql/update_wiki_page_note.mutation.graphql';
 import * as secretsDetection from '~/lib/utils/secret_detection';
 import * as confirmViaGLModal from '~/lib/utils/confirm_via_gl_modal/confirm_action';
-import { wikiCommentFormProvideData, noteableId } from '../mock_data';
+import { wikiCommentFormProvideData, noteableId, note } from '../mock_data';
 
 jest.mock('~/lib/utils/autosave');
 
+Vue.use(VueApollo);
+
+// The WikiPageNote fragment selects a few fields the shared `note` mock does not carry.
+const wikiPageNote = {
+  ...note,
+  author: {
+    ...note.author,
+    emails: { __typename: 'EmailConnection', nodes: [] },
+  },
+  lastEditedBy: null,
+  awardEmoji: { __typename: 'AwardEmojiConnection', nodes: [] },
+};
+
+const createNoteResponse = {
+  data: {
+    createNote: {
+      __typename: 'CreateNotePayload',
+      errors: [],
+      note: {
+        __typename: 'Note',
+        id: 'gid://gitlab/DiscussionNote/1524',
+        discussion: {
+          __typename: 'Discussion',
+          id: '2',
+          resolvable: true,
+          notes: { __typename: 'NoteConnection', nodes: [wikiPageNote] },
+        },
+      },
+    },
+    discussionToggleResolve: {
+      __typename: 'DiscussionToggleResolvePayload',
+      errors: [],
+      discussion: { __typename: 'Discussion', id: '2', resolved: true },
+    },
+  },
+};
+
+const updateNoteResponse = {
+  data: {
+    updateNote: {
+      __typename: 'UpdateNotePayload',
+      errors: [],
+      note: { ...wikiPageNote, id: '1' },
+    },
+  },
+};
+
 describe('WikiCommentForm', () => {
   let wrapper;
+  let createNoteHandler;
+  let updateNoteHandler;
 
-  const $apollo = {
-    mutate: jest.fn(),
-  };
+  beforeEach(() => {
+    createNoteHandler = jest.fn().mockResolvedValue(createNoteResponse);
+    updateNoteHandler = jest.fn().mockResolvedValue(updateNoteResponse);
+  });
 
   const createComponent = ({ props, provideData } = {}) => {
+    const apolloProvider = createMockApollo([
+      [createWikiPageNoteMutation, createNoteHandler],
+      [updateWikiPageNoteMutation, updateNoteHandler],
+    ]);
+
     wrapper = shallowMountExtended(WikiCommentForm, {
       propsData: { noteableId, noteId: '12', discussionId: '1', ...props },
       provide: { ...wikiCommentFormProvideData, ...provideData },
-      mocks: {
-        $apollo,
-      },
+      apolloProvider,
       stubs: {
         GlButton,
         MarkdownEditor: {
@@ -237,26 +294,24 @@ describe('WikiCommentForm', () => {
         });
 
         describe('submitting a note', () => {
-          it('should call apollo mutate with the correct data when isEdit is true', async () => {
+          it('should call the update note mutation with the correct data when isEdit is true', async () => {
             createWrapperWithNote({ isEdit: true });
             await wrapper.vm.handleSave();
-            expect($apollo.mutate).toHaveBeenCalledWith({
-              mutation: expect.any(Object),
-              variables: expect.objectContaining({
-                input: {
-                  body: 'Test comment',
-                  id: 'gid://gitlab/Note/12',
-                },
-              }),
+
+            expect(updateNoteHandler).toHaveBeenCalledWith({
+              input: {
+                body: 'Test comment',
+                id: 'gid://gitlab/Note/12',
+              },
             });
           });
 
-          it('should call apollo mutate with the correct data when isReply is true', async () => {
+          it('should call the create note mutation with the correct data when isReply is true', async () => {
             createWrapperWithNote({ isReply: true });
             await wrapper.vm.handleSave();
-            expect($apollo.mutate).toHaveBeenCalledWith({
-              mutation: expect.any(Object),
-              variables: expect.objectContaining({
+
+            expect(createNoteHandler).toHaveBeenCalledWith(
+              expect.objectContaining({
                 createNoteInput: {
                   body: 'Test comment',
                   noteableId: '1',
@@ -264,15 +319,14 @@ describe('WikiCommentForm', () => {
                   internal: false,
                 },
               }),
-            });
+            );
           });
 
-          it('should call apollo mutate with the correct data when isReply and isEdit are false', async () => {
+          it('should call the create note mutation with the correct data when isReply and isEdit are false', async () => {
             await wrapper.vm.handleSave();
 
-            expect($apollo.mutate).toHaveBeenCalledWith({
-              mutation: expect.any(Object),
-              variables: expect.objectContaining({
+            expect(createNoteHandler).toHaveBeenCalledWith(
+              expect.objectContaining({
                 createNoteInput: {
                   body: 'Test comment',
                   noteableId: '1',
@@ -280,29 +334,26 @@ describe('WikiCommentForm', () => {
                   internal: false,
                 },
               }),
-            });
+            );
           });
 
-          it('should call apollo mutate with the correct data when resolve is selected', async () => {
+          it('should call the create note mutation with the correct data when resolve is selected', async () => {
             createWrapperWithNote({ canResolve: true, isReply: true, discussionId: '1' });
             await findResolveCheckbox().vm.$emit('input', true);
             await wrapper.vm.handleSave();
 
-            expect($apollo.mutate).toHaveBeenCalledWith({
-              mutation: expect.any(Object),
-              variables: {
-                shouldChangeResolvedState: true,
-                shouldCreateNote: true,
-                createNoteInput: {
-                  body: 'Test comment',
-                  noteableId: '1',
-                  discussionId: '1',
-                  internal: false,
-                },
-                discussionToggleResolveInput: {
-                  id: '1',
-                  resolve: true,
-                },
+            expect(createNoteHandler).toHaveBeenCalledWith({
+              shouldChangeResolvedState: true,
+              shouldCreateNote: true,
+              createNoteInput: {
+                body: 'Test comment',
+                noteableId: '1',
+                discussionId: '1',
+                internal: false,
+              },
+              discussionToggleResolveInput: {
+                id: '1',
+                resolve: true,
               },
             });
           });
@@ -330,26 +381,20 @@ describe('WikiCommentForm', () => {
         describe('when there is no error while submitting', () => {
           beforeEach(() => {
             wrapper.vm.onInput('comment');
-            $apollo.mutate.mockResolvedValue({
-              data: {
-                updateNote: { note: { id: '1' } },
-                createNote: { note: { discussion: { id: '2' } } },
-              },
-            });
           });
 
           it('should emit the creating-note-success event with the correct data when isEdit is true', async () => {
             createWrapperWithNote({ isEdit: true });
             await wrapper.vm.handleSave();
 
-            expect(wrapper.emitted('creating-note-success')).toStrictEqual([[{ id: '1' }]]);
+            expect(wrapper.emitted('creating-note-success')).toMatchObject([[{ id: '1' }]]);
           });
 
           it('should emit the creating-note-success event with the correct data when isEdit is false', async () => {
             createWrapperWithNote({ isEdit: false });
             await wrapper.vm.handleSave();
 
-            expect(wrapper.emitted('creating-note-success')).toStrictEqual([[{ id: '2' }]]);
+            expect(wrapper.emitted('creating-note-success')).toMatchObject([[{ id: '2' }]]);
           });
 
           it('should set note to empty string', async () => {
@@ -367,13 +412,14 @@ describe('WikiCommentForm', () => {
 
         describe('when there is an error while submitting', () => {
           beforeEach(() => {
-            $apollo.mutate.mockRejectedValue('random error');
+            createNoteHandler.mockRejectedValue(new Error('random error'));
           });
 
           it('should emit the creating-note-failed event with the correct value', async () => {
             await wrapper.vm.handleSave();
 
-            expect(wrapper.emitted('creating-note-failed')).toStrictEqual([['random error']]);
+            expect(wrapper.emitted('creating-note-failed')).toHaveLength(1);
+            expect(wrapper.emitted('creating-note-failed')[0][0].message).toBe('random error');
           });
 
           it('should set the note to the previous value', async () => {
@@ -386,7 +432,7 @@ describe('WikiCommentForm', () => {
             const glAlert = wrapper.findComponent(GlAlert);
 
             expect(await glAlert.text()).toBe(
-              'Your comment could not be submitted! Please check your network connection and try again.',
+              'Comment could not be submitted: An unexpected error occurred trying to submit your comment. Please try again..',
             );
           });
         });

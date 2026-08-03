@@ -10,13 +10,13 @@ RSpec.describe 'Query.group.mergeRequests', feature_category: :code_review_workf
   let_it_be(:group)     { create(:group) }
   let_it_be(:sub_group) { create(:group, parent: group) }
 
-  let_it_be(:project_a) { create(:project, :repository, group: group) }
-  let_it_be(:project_b) { create(:project, :repository, group: group) }
-  let_it_be(:project_c) { create(:project, :repository, group: sub_group) }
-  let_it_be(:project_x) { create(:project, :repository) }
+  let_it_be(:project_a) { create(:project, group: group) }
+  let_it_be(:project_b) { create(:project, group: group) }
+  let_it_be(:project_c) { create(:project, group: sub_group) }
+  let_it_be(:project_x) { create(:project) }
   let_it_be(:user)      { create(:user, developer_of: [project_x, group]) }
 
-  let_it_be(:archived_project) { create(:project, :archived, :repository, group: group) }
+  let_it_be(:archived_project) { create(:project, :archived, group: group) }
   let_it_be(:archived_mr) { create(:merge_request, source_project: archived_project) }
 
   let_it_be(:mr_attrs) do

@@ -38,7 +38,7 @@ For more information on:
 1. Configure the [common settings](omniauth.md#configure-common-settings)
    to add `saml` as a single sign-on provider. This enables Just-In-Time
    account provisioning for users who do not have an existing GitLab account.
-1. To allow your users to use SAML to sign up without having to manually create
+1. To allow your users to use SAML to create accounts without having to manually create
    an account first, edit `/etc/gitlab/gitlab.rb`:
 
    ```ruby
@@ -112,7 +112,7 @@ For more information on:
    helm get values gitlab > gitlab_values.yaml
    ```
 
-1. To allow your users to use SAML to sign up without having to manually create
+1. To allow your users to use SAML to create accounts without having to manually create
    an account first, edit `gitlab_values.yaml`:
 
    ```yaml
@@ -197,7 +197,7 @@ For more information on:
 1. Configure the [common settings](omniauth.md#configure-common-settings)
    to add `saml` as a single sign-on provider. This enables Just-In-Time
    account provisioning for users who do not have an existing GitLab account.
-1. To allow your users to use SAML to sign up without having to manually create
+1. To allow your users to use SAML to create accounts without having to manually create
    an account first, edit `docker-compose.yml`:
 
    ```yaml
@@ -278,7 +278,7 @@ For more information on:
 1. Configure the [common settings](omniauth.md#configure-common-settings)
    to add `saml` as a single sign-on provider. This enables Just-In-Time
    account provisioning for users who do not have an existing GitLab account.
-1. To allow your users to use SAML to sign up without having to manually create
+1. To allow your users to use SAML to create accounts without having to manually create
    an account first, edit `/home/git/gitlab/config/gitlab.yml`:
 
    ```yaml
@@ -430,7 +430,7 @@ To set up multiple SAML IdPs:
    ]
    ```
 
-   To allow your users to use SAML to sign up without having to manually create an
+   To allow your users to use SAML to create accounts without having to manually create an
    account from either of the providers, add the following values to your configuration:
 
    ```ruby
@@ -503,7 +503,7 @@ To set up multiple SAML IdPs:
              key: saml_2
    ```
 
-   To allow your users to use SAML to sign up without having to manually create an
+   To allow your users to use SAML to create accounts without having to manually create an
    account from either of the providers, add the following values to your configuration:
 
    ```yaml
@@ -556,7 +556,7 @@ To set up multiple SAML IdPs:
            ]
    ```
 
-   To allow your users to use SAML to sign up without having to manually create an
+   To allow your users to use SAML to create accounts without having to manually create an
    account from either of the providers, add the following values to your configuration:
 
    ```yaml
@@ -606,7 +606,7 @@ To set up multiple SAML IdPs:
          }
    ```
 
-   To allow your users to use SAML to sign up without having to manually create an
+   To allow your users to use SAML to create accounts without having to manually create an
    account from either of the providers, add the following values to your configuration:
 
    ```yaml

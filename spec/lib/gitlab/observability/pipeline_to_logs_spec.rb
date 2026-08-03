@@ -3,82 +3,12 @@
 require 'fast_spec_helper'
 
 require_relative '../../../../lib/gitlab/ci/trace_context'
+require_relative '../../../support/shared_contexts/lib/gitlab/observability/pipeline_converter_shared_context'
 
 RSpec.describe Gitlab::Observability::PipelineToLogs, feature_category: :observability do
-  let(:integration) do
-    Struct.new(:otel_endpoint_url, :otel_headers, :service_name, :environment).new(
-      'https://example.com/otel',
-      {},
-      'gitlab-ci',
-      'production'
-    )
-  end
+  include_context 'with pipeline converter data'
 
-  let(:pipeline_data) do
-    {
-      object_attributes: {
-        id: 123,
-        iid: 456,
-        name: 'test-pipeline',
-        ref: 'main',
-        sha: 'abc123',
-        source: 'push',
-        status: 'success',
-        detailed_status: 'passed',
-        created_at: Time.zone.parse('2023-01-01T10:00:00Z'),
-        finished_at: Time.zone.parse('2023-01-01T10:05:00Z'),
-        duration: 300000,
-        queued_duration: 30000,
-        protected_ref: true,
-        url: 'https://gitlab.com/project/-/pipelines/123',
-        stages: %w[test build deploy]
-      },
-      project: {
-        id: 789,
-        name: 'test-project'
-      },
-      builds: [
-        {
-          id: 1,
-          name: 'test-job',
-          stage: 'test',
-          status: 'success',
-          started_at: Time.zone.parse('2023-01-01T10:01:00Z'),
-          finished_at: Time.zone.parse('2023-01-01T10:03:00Z'),
-          duration: 120000,
-          queued_duration: 5000,
-          manual: false,
-          allow_failure: false,
-          runner: {
-            id: 1,
-            description: 'test-runner',
-            active: true,
-            url: 'https://gitlab.com/runners/1',
-            tags: %w[docker linux],
-            runner_type: 'instance_type'
-          },
-          artifacts_file: {
-            filename: 'test-results.xml',
-            size: 1024
-          }
-        },
-        {
-          id: 2,
-          name: 'failed-job',
-          stage: 'build',
-          status: 'failed',
-          started_at: Time.zone.parse('2023-01-01T10:03:00Z'),
-          finished_at: Time.zone.parse('2023-01-01T10:04:00Z'),
-          duration: 60000,
-          queued_duration: 2000,
-          manual: true,
-          allow_failure: true,
-          failure_reason: 'script_failure'
-        }
-      ]
-    }
-  end
-
+  let(:pipeline_data) { base_pipeline_data }
   let(:converter) { described_class.new(integration, pipeline_data) }
 
   describe '#convert' do
@@ -92,105 +22,25 @@ RSpec.describe Gitlab::Observability::PipelineToLogs, feature_category: :observa
       end
     end
 
-    context 'with trace context correlation' do
-      let(:root_pipeline_id) { 123 }
-      let(:expected_trace_id) { Gitlab::Ci::TraceContext.trace_id_for(root_pipeline_id) }
-
-      it 'includes traceId on pipeline log record' do
-        result = converter.convert
-        log_records = result[:resourceLogs].first[:scopeLogs].first[:logRecords]
-
-        pipeline_log = log_records.find do |log|
-          log[:attributes].any? { |attr| attr[:key] == 'log.source' && attr[:value][:stringValue] == 'pipeline' }
-        end
-
-        expect(pipeline_log[:traceId]).to eq(expected_trace_id)
-      end
-
-      it 'includes spanId on pipeline log record matching TraceContext derivation' do
-        result = converter.convert
-        log_records = result[:resourceLogs].first[:scopeLogs].first[:logRecords]
-
-        pipeline_log = log_records.find do |log|
-          log[:attributes].any? { |attr| attr[:key] == 'log.source' && attr[:value][:stringValue] == 'pipeline' }
-        end
-
-        expected_span_id = Gitlab::Ci::TraceContext.span_id_for_pipeline(root_pipeline_id, 123)
-        expect(pipeline_log[:spanId]).to eq(expected_span_id)
-      end
-
-      it 'includes traceId on job log records' do
-        result = converter.convert
-        log_records = result[:resourceLogs].first[:scopeLogs].first[:logRecords]
-
-        job_logs = log_records.select do |log|
-          log[:attributes].any? { |attr| attr[:key] == 'log.source' && attr[:value][:stringValue] == 'job' }
-        end
-
-        aggregate_failures do
-          job_logs.each do |job_log|
-            expect(job_log[:traceId]).to eq(expected_trace_id)
-          end
-        end
-      end
-
-      it 'includes distinct spanId per job log record' do
-        result = converter.convert
-        log_records = result[:resourceLogs].first[:scopeLogs].first[:logRecords]
-
-        job_logs = log_records.select do |log|
-          log[:attributes].any? { |attr| attr[:key] == 'log.source' && attr[:value][:stringValue] == 'job' }
-        end
-
-        span_ids = job_logs.map { |log| log[:spanId] }
-
-        aggregate_failures do
-          expect(span_ids.uniq.size).to eq(2)
-          expect(span_ids.first).to eq(Gitlab::Ci::TraceContext.span_id_for_job(root_pipeline_id, 1, :export))
-          expect(span_ids.last).to eq(Gitlab::Ci::TraceContext.span_id_for_job(root_pipeline_id, 2, :export))
-        end
-      end
-
-      context 'with root_pipeline_id in pipeline data' do
-        let(:root_pipeline_id) { 999 }
-
-        before do
-          pipeline_data[:object_attributes][:root_pipeline_id] = root_pipeline_id
-        end
-
-        it 'uses root_pipeline_id for trace correlation' do
-          result = converter.convert
-          log_records = result[:resourceLogs].first[:scopeLogs].first[:logRecords]
-
-          pipeline_log = log_records.find do |log|
-            log[:attributes].any? { |attr| attr[:key] == 'log.source' && attr[:value][:stringValue] == 'pipeline' }
-          end
-
-          expect(pipeline_log[:traceId]).to eq(Gitlab::Ci::TraceContext.trace_id_for(999))
-        end
-      end
-
-      it 'produces trace IDs matching PipelineToTraces for the same pipeline', :aggregate_failures do
-        logs_result = converter.convert
-        traces_converter = Gitlab::Observability::PipelineToTraces.new(integration, pipeline_data)
-        traces_result = traces_converter.convert
-
-        log_trace_id = logs_result[:resourceLogs].first[:scopeLogs].first[:logRecords].first[:traceId]
-        span_trace_id = traces_result[:resourceSpans].first[:scopeSpans].first[:spans].first[:traceId]
-
-        expect(log_trace_id).to eq(span_trace_id)
-      end
-    end
-
     it 'includes resource attributes' do
       result = converter.convert
       resource = result[:resourceLogs].first[:resource]
 
       expect(resource[:attributes]).to include(
         { key: 'service.name', value: { stringValue: 'gitlab-ci' } },
-        { key: 'gitlab.project.id', value: { intValue: 789 } },
-        { key: 'gitlab.pipeline.id', value: { intValue: 123 } }
+        { key: 'vcs.provider.name', value: { stringValue: 'gitlab' } },
+        { key: 'vcs.repository.name', value: { stringValue: 'test-project' } },
+        { key: 'vcs.owner.name', value: { stringValue: 'test-org' } }
       )
+    end
+
+    it 'does not include pipeline run attributes in resource' do
+      result = converter.convert
+      resource = result[:resourceLogs].first[:resource]
+      resource_keys = resource[:attributes].map { |a| a[:key] }
+
+      expect(resource_keys).not_to include('cicd.pipeline.run.id')
+      expect(resource_keys).not_to include('cicd.pipeline.name')
     end
 
     it 'includes pipeline log record' do
@@ -198,10 +48,9 @@ RSpec.describe Gitlab::Observability::PipelineToLogs, feature_category: :observa
       log_records = result[:resourceLogs].first[:scopeLogs].first[:logRecords]
 
       pipeline_log = log_records.find do |log|
-        log[:attributes].any? do |attr|
-          attr[:key] == 'log.source' && attr[:value][:stringValue] == 'pipeline'
-        end
+        log[:attributes].any? { |attr| attr[:key] == 'log.source' && attr[:value][:stringValue] == 'pipeline' }
       end
+
       aggregate_failures do
         expect(pipeline_log).to be_present
         expect(pipeline_log[:body][:stringValue]).to include('Pipeline success: test-pipeline')
@@ -214,23 +63,16 @@ RSpec.describe Gitlab::Observability::PipelineToLogs, feature_category: :observa
       log_records = result[:resourceLogs].first[:scopeLogs].first[:logRecords]
 
       job_logs = log_records.select do |log|
-        log[:attributes].any? do |attr|
-          attr[:key] == 'log.source' && attr[:value][:stringValue] == 'job'
-        end
+        log[:attributes].any? { |attr| attr[:key] == 'log.source' && attr[:value][:stringValue] == 'job' }
       end
+
       expect(job_logs.length).to eq(2)
 
       success_job_log = job_logs.find { |log| log[:body][:stringValue].include?('test-job') }
-      aggregate_failures do
-        expect(success_job_log).to be_present
-        expect(success_job_log[:severityText]).to eq('INFO')
-      end
+      expect(success_job_log[:severityText]).to eq('INFO')
 
       failed_job_log = job_logs.find { |log| log[:body][:stringValue].include?('failed-job') }
-      aggregate_failures do
-        expect(failed_job_log).to be_present
-        expect(failed_job_log[:severityText]).to eq('ERROR')
-      end
+      expect(failed_job_log[:severityText]).to eq('ERROR')
     end
 
     it 'sets correct severity levels' do
@@ -238,34 +80,31 @@ RSpec.describe Gitlab::Observability::PipelineToLogs, feature_category: :observa
       log_records = result[:resourceLogs].first[:scopeLogs].first[:logRecords]
 
       pipeline_log = log_records.find do |log|
-        log[:attributes].any? do |attr|
-          attr[:key] == 'log.source' && attr[:value][:stringValue] == 'pipeline'
-        end
+        log[:attributes].any? { |attr| attr[:key] == 'log.source' && attr[:value][:stringValue] == 'pipeline' }
       end
+
       aggregate_failures do
-        expect(pipeline_log[:severityNumber]).to eq(9) # INFO
+        expect(pipeline_log[:severityNumber]).to eq(9)
         expect(pipeline_log[:severityText]).to eq('INFO')
       end
 
       failed_job_log = log_records.find { |log| log[:body][:stringValue].include?('failed-job') }
+
       aggregate_failures do
-        expect(failed_job_log[:severityNumber]).to eq(17) # ERROR
+        expect(failed_job_log[:severityNumber]).to eq(17)
         expect(failed_job_log[:severityText]).to eq('ERROR')
       end
     end
 
-    it 'includes pipeline attributes' do
+    it 'includes pipeline legacy attributes' do
       result = converter.convert
       log_records = result[:resourceLogs].first[:scopeLogs].first[:logRecords]
 
       pipeline_log = log_records.find do |log|
-        log[:attributes].any? do |attr|
-          attr[:key] == 'log.source' && attr[:value][:stringValue] == 'pipeline'
-        end
+        log[:attributes].any? { |attr| attr[:key] == 'log.source' && attr[:value][:stringValue] == 'pipeline' }
       end
-      attributes = pipeline_log[:attributes]
 
-      expect(attributes).to include(
+      expect(pipeline_log[:attributes]).to include(
         { key: 'pipeline.id', value: { intValue: 123 } },
         { key: 'pipeline.name', value: { stringValue: 'test-pipeline' } },
         { key: 'pipeline.status', value: { stringValue: 'success' } },
@@ -273,14 +112,13 @@ RSpec.describe Gitlab::Observability::PipelineToLogs, feature_category: :observa
       )
     end
 
-    it 'includes job attributes' do
+    it 'includes job legacy attributes' do
       result = converter.convert
       log_records = result[:resourceLogs].first[:scopeLogs].first[:logRecords]
 
       job_log = log_records.find { |log| log[:body][:stringValue].include?('test-job') }
-      attributes = job_log[:attributes]
 
-      expect(attributes).to include(
+      expect(job_log[:attributes]).to include(
         { key: 'job.id', value: { intValue: 1 } },
         { key: 'job.name', value: { stringValue: 'test-job' } },
         { key: 'job.stage', value: { stringValue: 'test' } },
@@ -291,10 +129,9 @@ RSpec.describe Gitlab::Observability::PipelineToLogs, feature_category: :observa
     end
 
     it 'handles empty pipeline data' do
-      empty_data = {}
-      converter = described_class.new(integration, empty_data)
-
+      converter = described_class.new(integration, {})
       result = converter.convert
+
       expect(result[:resourceLogs]).to be_empty
     end
 
@@ -304,10 +141,9 @@ RSpec.describe Gitlab::Observability::PipelineToLogs, feature_category: :observa
       log_records = result[:resourceLogs].first[:scopeLogs].first[:logRecords]
 
       pipeline_log = log_records.find do |log|
-        log[:attributes].any? do |attr|
-          attr[:key] == 'log.source' && attr[:value][:stringValue] == 'pipeline'
-        end
+        log[:attributes].any? { |attr| attr[:key] == 'log.source' && attr[:value][:stringValue] == 'pipeline' }
       end
+
       expect(pipeline_log[:timeUnixNano]).to be > 0
     end
 
@@ -318,21 +154,18 @@ RSpec.describe Gitlab::Observability::PipelineToLogs, feature_category: :observa
       log_records = result[:resourceLogs].first[:scopeLogs].first[:logRecords]
 
       pipeline_log = log_records.find do |log|
-        log[:attributes].any? do |attr|
-          attr[:key] == 'log.source' && attr[:value][:stringValue] == 'pipeline'
-        end
+        log[:attributes].any? { |attr| attr[:key] == 'log.source' && attr[:value][:stringValue] == 'pipeline' }
       end
+
       expect(pipeline_log[:timeUnixNano]).to eq(0)
     end
 
     it 'includes failure reason for failed jobs' do
       result = converter.convert
       log_records = result[:resourceLogs].first[:scopeLogs].first[:logRecords]
-
       failed_job_log = log_records.find { |log| log[:body][:stringValue].include?('failed-job') }
-      attributes = failed_job_log[:attributes]
 
-      expect(attributes).to include(
+      expect(failed_job_log[:attributes]).to include(
         { key: 'job.failure_reason', value: { stringValue: 'script_failure' } }
       )
     end
@@ -363,42 +196,125 @@ RSpec.describe Gitlab::Observability::PipelineToLogs, feature_category: :observa
       log_records = result[:resourceLogs].first[:scopeLogs].first[:logRecords]
 
       pipeline_log = log_records.find do |log|
-        log[:attributes].any? do |attr|
-          attr[:key] == 'log.source' && attr[:value][:stringValue] == 'pipeline'
-        end
+        log[:attributes].any? { |attr| attr[:key] == 'log.source' && attr[:value][:stringValue] == 'pipeline' }
       end
+
       expect(pipeline_log[:severityText]).to eq('WARN')
     end
 
-    context 'with OTel Semantic Convention attributes' do
-      describe 'resource-level semconv attributes' do
-        it 'includes cicd.pipeline.run.id as string' do
-          result = converter.convert
-          resource = result[:resourceLogs].first[:resource]
+    context 'with trace context correlation' do
+      it 'includes traceId on pipeline log record' do
+        result = converter.convert
+        log_records = result[:resourceLogs].first[:scopeLogs].first[:logRecords]
 
-          expect(resource[:attributes]).to include(
-            { key: 'cicd.pipeline.run.id', value: { stringValue: '123' } }
-          )
+        pipeline_log = log_records.find do |log|
+          log[:attributes].any? { |attr| attr[:key] == 'log.source' && attr[:value][:stringValue] == 'pipeline' }
         end
 
-        it 'includes vcs.ref.head.name' do
-          result = converter.convert
-          resource = result[:resourceLogs].first[:resource]
+        expect(pipeline_log[:traceId]).to eq(expected_trace_id)
+      end
 
-          expect(resource[:attributes]).to include(
-            { key: 'vcs.ref.head.name', value: { stringValue: 'main' } }
-          )
+      it 'includes spanId on pipeline log record' do
+        result = converter.convert
+        log_records = result[:resourceLogs].first[:scopeLogs].first[:logRecords]
+
+        pipeline_log = log_records.find do |log|
+          log[:attributes].any? { |attr| attr[:key] == 'log.source' && attr[:value][:stringValue] == 'pipeline' }
+        end
+
+        expect(pipeline_log[:spanId]).to eq(expected_pipeline_span_id)
+      end
+
+      it 'includes flags: 1 on pipeline log record' do
+        result = converter.convert
+        log_records = result[:resourceLogs].first[:scopeLogs].first[:logRecords]
+
+        pipeline_log = log_records.find do |log|
+          log[:attributes].any? { |attr| attr[:key] == 'log.source' && attr[:value][:stringValue] == 'pipeline' }
+        end
+
+        expect(pipeline_log[:flags]).to eq(1)
+      end
+
+      it 'includes traceId on job log records' do
+        result = converter.convert
+        log_records = result[:resourceLogs].first[:scopeLogs].first[:logRecords]
+
+        job_logs = log_records.select do |log|
+          log[:attributes].any? { |attr| attr[:key] == 'log.source' && attr[:value][:stringValue] == 'job' }
+        end
+
+        job_logs.each do |job_log|
+          expect(job_log[:traceId]).to eq(expected_trace_id)
         end
       end
 
+      it 'includes distinct spanId per job log record' do
+        result = converter.convert
+        log_records = result[:resourceLogs].first[:scopeLogs].first[:logRecords]
+
+        job_logs = log_records.select do |log|
+          log[:attributes].any? { |attr| attr[:key] == 'log.source' && attr[:value][:stringValue] == 'job' }
+        end
+
+        span_ids = job_logs.map { |log| log[:spanId] }
+
+        aggregate_failures do
+          expect(span_ids.uniq.size).to eq(2)
+          expect(span_ids.first).to eq(Gitlab::Ci::TraceContext.span_id_for_job(root_pipeline_id, 1, :export))
+          expect(span_ids.last).to eq(Gitlab::Ci::TraceContext.span_id_for_job(root_pipeline_id, 2, :export))
+        end
+      end
+
+      it 'includes flags: 1 on job log records' do
+        result = converter.convert
+        log_records = result[:resourceLogs].first[:scopeLogs].first[:logRecords]
+
+        job_logs = log_records.select do |log|
+          log[:attributes].any? { |attr| attr[:key] == 'log.source' && attr[:value][:stringValue] == 'job' }
+        end
+
+        job_logs.each do |job_log|
+          expect(job_log[:flags]).to eq(1)
+        end
+      end
+
+      context 'with root_pipeline_id in pipeline data' do
+        before do
+          pipeline_data[:object_attributes][:root_pipeline_id] = 999
+        end
+
+        it 'uses root_pipeline_id for trace correlation' do
+          result = converter.convert
+          log_records = result[:resourceLogs].first[:scopeLogs].first[:logRecords]
+
+          pipeline_log = log_records.find do |log|
+            log[:attributes].any? { |attr| attr[:key] == 'log.source' && attr[:value][:stringValue] == 'pipeline' }
+          end
+
+          expect(pipeline_log[:traceId]).to eq(Gitlab::Ci::TraceContext.trace_id_for(999))
+        end
+      end
+
+      it 'produces trace IDs matching PipelineToTraces for the same pipeline' do
+        logs_result = converter.convert
+        traces_converter = Gitlab::Observability::PipelineToTraces.new(integration, pipeline_data)
+        traces_result = traces_converter.convert
+
+        log_trace_id = logs_result[:resourceLogs].first[:scopeLogs].first[:logRecords].first[:traceId]
+        span_trace_id = traces_result[:resourceSpans].first[:scopeSpans].first[:spans].first[:traceId]
+
+        expect(log_trace_id).to eq(span_trace_id)
+      end
+    end
+
+    context 'with OTel Semantic Convention attributes' do
       describe 'pipeline log semconv attributes' do
         let(:pipeline_log) do
           result = converter.convert
           log_records = result[:resourceLogs].first[:scopeLogs].first[:logRecords]
           log_records.find do |log|
-            log[:attributes].any? do |attr|
-              attr[:key] == 'log.source' && attr[:value][:stringValue] == 'pipeline'
-            end
+            log[:attributes].any? { |attr| attr[:key] == 'log.source' && attr[:value][:stringValue] == 'pipeline' }
           end
         end
 
@@ -410,142 +326,122 @@ RSpec.describe Gitlab::Observability::PipelineToLogs, feature_category: :observa
 
         it 'omits cicd.pipeline.name when pipeline name is blank' do
           pipeline_data[:object_attributes][:name] = nil
-          name_attrs = pipeline_log[:attributes].select { |attr| attr[:key] == 'cicd.pipeline.name' }
-          expect(name_attrs).to be_empty
+          keys = pipeline_log[:attributes].map { |a| a[:key] }
+
+          expect(keys).not_to include('cicd.pipeline.name')
         end
 
-        it 'omits cicd.pipeline.run.url.full when url is blank' do
-          pipeline_data[:object_attributes][:url] = nil
-          url_attrs = pipeline_log[:attributes].select { |attr| attr[:key] == 'cicd.pipeline.run.url.full' }
-          expect(url_attrs).to be_empty
+        it 'includes cicd.pipeline.run.id' do
+          expect(pipeline_log[:attributes]).to include(
+            { key: 'cicd.pipeline.run.id', value: { stringValue: '123' } }
+          )
         end
 
         it 'includes cicd.pipeline.run.url.full' do
           expect(pipeline_log[:attributes]).to include(
-            { key: 'cicd.pipeline.run.url.full', value: { stringValue: 'https://gitlab.com/project/-/pipelines/123' } }
+            { key: 'cicd.pipeline.run.url.full',
+              value: { stringValue: 'https://gitlab.com/project/-/pipelines/123' } }
           )
         end
 
-        it 'includes cicd.pipeline.run.duration' do
+        it 'omits cicd.pipeline.run.url.full when url is blank' do
+          pipeline_data[:object_attributes][:url] = nil
+          keys = pipeline_log[:attributes].map { |a| a[:key] }
+
+          expect(keys).not_to include('cicd.pipeline.run.url.full')
+        end
+
+        it 'includes vcs.ref.head.name' do
           expect(pipeline_log[:attributes]).to include(
-            { key: 'cicd.pipeline.run.duration', value: { intValue: 300000 } }
+            { key: 'vcs.ref.head.name', value: { stringValue: 'main' } }
           )
         end
 
-        it 'includes cicd.pipeline.run.queued_duration' do
+        it 'includes vcs.ref.head.revision' do
           expect(pipeline_log[:attributes]).to include(
-            { key: 'cicd.pipeline.run.queued_duration', value: { intValue: 30000 } }
+            { key: 'vcs.ref.head.revision', value: { stringValue: 'abc123' } }
           )
         end
 
-        it 'includes cicd.pipeline.trigger.type mapped via map_pipeline_trigger_type' do
+        it 'includes vcs.ref.head.type as branch' do
           expect(pipeline_log[:attributes]).to include(
-            { key: 'cicd.pipeline.trigger.type', value: { stringValue: 'push' } }
+            { key: 'vcs.ref.head.type', value: { stringValue: 'branch' } }
           )
         end
 
-        context 'for cicd.pipeline.trigger.type mapping via CicdSemconv' do
-          it 'maps push source to push' do
-            pipeline_data[:object_attributes][:source] = 'push'
-            expect(pipeline_log[:attributes]).to include(
-              { key: 'cicd.pipeline.trigger.type', value: { stringValue: 'push' } }
-            )
-          end
+        it 'includes vcs.ref.head.type as tag when pipeline is a tag' do
+          pipeline_data[:object_attributes][:tag] = true
 
-          it 'maps schedule source to schedule' do
-            pipeline_data[:object_attributes][:source] = 'schedule'
-            expect(pipeline_log[:attributes]).to include(
-              { key: 'cicd.pipeline.trigger.type', value: { stringValue: 'schedule' } }
-            )
-          end
-
-          it 'maps web source to manual' do
-            pipeline_data[:object_attributes][:source] = 'web'
-            expect(pipeline_log[:attributes]).to include(
-              { key: 'cicd.pipeline.trigger.type', value: { stringValue: 'manual' } }
-            )
-          end
-
-          it 'maps trigger source to manual' do
-            pipeline_data[:object_attributes][:source] = 'trigger'
-            expect(pipeline_log[:attributes]).to include(
-              { key: 'cicd.pipeline.trigger.type', value: { stringValue: 'manual' } }
-            )
-          end
-
-          it 'maps api source to manual' do
-            pipeline_data[:object_attributes][:source] = 'api'
-            expect(pipeline_log[:attributes]).to include(
-              { key: 'cicd.pipeline.trigger.type', value: { stringValue: 'manual' } }
-            )
-          end
-
-          it 'maps merge_request_event source to merge_request_event' do
-            pipeline_data[:object_attributes][:source] = 'merge_request_event'
-            expect(pipeline_log[:attributes]).to include(
-              { key: 'cicd.pipeline.trigger.type', value: { stringValue: 'merge_request_event' } }
-            )
-          end
-
-          it 'maps external_pull_request_event source to pull_request_event' do
-            pipeline_data[:object_attributes][:source] = 'external_pull_request_event'
-            expect(pipeline_log[:attributes]).to include(
-              { key: 'cicd.pipeline.trigger.type', value: { stringValue: 'pull_request_event' } }
-            )
-          end
-
-          it 'maps pipeline source to pipeline' do
-            pipeline_data[:object_attributes][:source] = 'pipeline'
-            expect(pipeline_log[:attributes]).to include(
-              { key: 'cicd.pipeline.trigger.type', value: { stringValue: 'pipeline' } }
-            )
-          end
-
-          it 'omits cicd.pipeline.trigger.type for unknown source' do
-            pipeline_data[:object_attributes][:source] = 'unknown_source'
-            trigger_attrs = pipeline_log[:attributes].select do |attr|
-              attr[:key] == 'cicd.pipeline.trigger.type'
-            end
-            expect(trigger_attrs).to be_empty
-          end
-        end
-
-        it 'includes vcs.ref.head.protected' do
           expect(pipeline_log[:attributes]).to include(
-            { key: 'vcs.ref.head.protected', value: { boolValue: true } }
+            { key: 'vcs.ref.head.type', value: { stringValue: 'tag' } }
           )
         end
 
-        it 'sets vcs.ref.head.protected to false when ref is not protected' do
+        it 'includes gitlab.cicd.pipeline.run.duration' do
+          expect(pipeline_log[:attributes]).to include(
+            { key: 'gitlab.cicd.pipeline.run.duration', value: { intValue: 300000 } }
+          )
+        end
+
+        it 'includes gitlab.cicd.pipeline.run.queued_duration' do
+          expect(pipeline_log[:attributes]).to include(
+            { key: 'gitlab.cicd.pipeline.run.queued_duration', value: { intValue: 30000 } }
+          )
+        end
+
+        it 'includes gitlab.cicd.pipeline.trigger.type with raw source value' do
+          expect(pipeline_log[:attributes]).to include(
+            { key: 'gitlab.cicd.pipeline.trigger.type', value: { stringValue: 'push' } }
+          )
+        end
+
+        it 'omits gitlab.cicd.pipeline.trigger.type when source is nil' do
+          pipeline_data[:object_attributes][:source] = nil
+          keys = pipeline_log[:attributes].map { |a| a[:key] }
+
+          expect(keys).not_to include('gitlab.cicd.pipeline.trigger.type')
+        end
+
+        it 'includes gitlab.vcs.ref.head.protected' do
+          expect(pipeline_log[:attributes]).to include(
+            { key: 'gitlab.vcs.ref.head.protected', value: { boolValue: true } }
+          )
+        end
+
+        it 'sets gitlab.vcs.ref.head.protected to false when ref is not protected' do
           pipeline_data[:object_attributes][:protected_ref] = false
+
           expect(pipeline_log[:attributes]).to include(
-            { key: 'vcs.ref.head.protected', value: { boolValue: false } }
+            { key: 'gitlab.vcs.ref.head.protected', value: { boolValue: false } }
           )
         end
 
         context 'for cicd.pipeline.result via CicdSemconv' do
-          it 'maps success to cicd.pipeline.result = success' do
+          it 'maps success to success' do
             expect(pipeline_log[:attributes]).to include(
               { key: 'cicd.pipeline.result', value: { stringValue: 'success' } }
             )
           end
 
-          it 'maps failed to cicd.pipeline.result = failure' do
+          it 'maps failed to failure' do
             pipeline_data[:object_attributes][:status] = 'failed'
+
             expect(pipeline_log[:attributes]).to include(
               { key: 'cicd.pipeline.result', value: { stringValue: 'failure' } }
             )
           end
 
-          it 'maps canceled to cicd.pipeline.result = cancellation' do
+          it 'maps canceled to cancellation' do
             pipeline_data[:object_attributes][:status] = 'canceled'
+
             expect(pipeline_log[:attributes]).to include(
               { key: 'cicd.pipeline.result', value: { stringValue: 'cancellation' } }
             )
           end
 
-          it 'maps skipped to cicd.pipeline.result = skip' do
+          it 'maps skipped to skip' do
             pipeline_data[:object_attributes][:status] = 'skipped'
+
             expect(pipeline_log[:attributes]).to include(
               { key: 'cicd.pipeline.result', value: { stringValue: 'skip' } }
             )
@@ -553,35 +449,40 @@ RSpec.describe Gitlab::Observability::PipelineToLogs, feature_category: :observa
 
           it 'omits cicd.pipeline.result when status has no mapped result' do
             pipeline_data[:object_attributes][:status] = 'running'
-            result_attrs = pipeline_log[:attributes].select { |attr| attr[:key] == 'cicd.pipeline.result' }
-            expect(result_attrs).to be_empty
+            keys = pipeline_log[:attributes].map { |a| a[:key] }
+
+            expect(keys).not_to include('cicd.pipeline.result')
           end
         end
 
         context 'for cicd.pipeline.run.state via CicdSemconv' do
-          it 'maps running to cicd.pipeline.run.state = executing' do
+          it 'maps running to executing' do
             pipeline_data[:object_attributes][:status] = 'running'
+
             expect(pipeline_log[:attributes]).to include(
               { key: 'cicd.pipeline.run.state', value: { stringValue: 'executing' } }
             )
           end
 
-          it 'maps pending to cicd.pipeline.run.state = pending' do
+          it 'maps pending to pending' do
             pipeline_data[:object_attributes][:status] = 'pending'
+
             expect(pipeline_log[:attributes]).to include(
               { key: 'cicd.pipeline.run.state', value: { stringValue: 'pending' } }
             )
           end
 
-          it 'maps waiting_for_resource to cicd.pipeline.run.state = pending' do
+          it 'maps waiting_for_resource to pending' do
             pipeline_data[:object_attributes][:status] = 'waiting_for_resource'
+
             expect(pipeline_log[:attributes]).to include(
               { key: 'cicd.pipeline.run.state', value: { stringValue: 'pending' } }
             )
           end
 
-          it 'maps preparing to cicd.pipeline.run.state = pending' do
+          it 'maps preparing to pending' do
             pipeline_data[:object_attributes][:status] = 'preparing'
+
             expect(pipeline_log[:attributes]).to include(
               { key: 'cicd.pipeline.run.state', value: { stringValue: 'pending' } }
             )
@@ -589,8 +490,9 @@ RSpec.describe Gitlab::Observability::PipelineToLogs, feature_category: :observa
 
           it 'omits cicd.pipeline.run.state when status has no mapped state' do
             pipeline_data[:object_attributes][:status] = 'success'
-            state_attrs = pipeline_log[:attributes].select { |attr| attr[:key] == 'cicd.pipeline.run.state' }
-            expect(state_attrs).to be_empty
+            keys = pipeline_log[:attributes].map { |a| a[:key] }
+
+            expect(keys).not_to include('cicd.pipeline.run.state')
           end
         end
       end
@@ -620,17 +522,34 @@ RSpec.describe Gitlab::Observability::PipelineToLogs, feature_category: :observa
           )
         end
 
+        it 'includes cicd.pipeline.task.run.url.full' do
+          expect(job_log[:attributes]).to include(
+            { key: 'cicd.pipeline.task.run.url.full',
+              value: { stringValue: 'https://gitlab.com/test-org/test-project/-/jobs/1' } }
+          )
+        end
+
         it 'includes cicd.pipeline.task.type from stage' do
           expect(job_log[:attributes]).to include(
             { key: 'cicd.pipeline.task.type', value: { stringValue: 'test' } }
           )
         end
 
-        it 'includes cicd.pipeline.task.run.result for terminal job statuses' do
+        it 'includes cicd.pipeline.task.type with raw stage value' do
+          pipeline_data[:builds].first[:stage] = 'deploy'
+          result = converter.convert
+          log_records = result[:resourceLogs].first[:scopeLogs].first[:logRecords]
+          deploy_job_log = log_records.find { |log| log[:body][:stringValue].include?('test-job') }
+
+          expect(deploy_job_log[:attributes]).to include(
+            { key: 'cicd.pipeline.task.type', value: { stringValue: 'deploy' } }
+          )
+        end
+
+        it 'includes cicd.pipeline.task.run.result for terminal statuses' do
           expect(job_log[:attributes]).to include(
             { key: 'cicd.pipeline.task.run.result', value: { stringValue: 'success' } }
           )
-
           expect(failed_job_log[:attributes]).to include(
             { key: 'cicd.pipeline.task.run.result', value: { stringValue: 'failure' } }
           )
@@ -640,77 +559,77 @@ RSpec.describe Gitlab::Observability::PipelineToLogs, feature_category: :observa
           pipeline_data[:builds].first[:status] = 'running'
           result = converter.convert
           log_records = result[:resourceLogs].first[:scopeLogs].first[:logRecords]
-          running_job_log = log_records.find { |log| log[:body][:stringValue].include?('test-job') }
-          result_attrs = running_job_log[:attributes].select { |attr| attr[:key] == 'cicd.pipeline.task.run.result' }
-          expect(result_attrs).to be_empty
+          running_log = log_records.find { |log| log[:body][:stringValue].include?('test-job') }
+          keys = running_log[:attributes].map { |a| a[:key] }
+
+          expect(keys).not_to include('cicd.pipeline.task.run.result')
         end
 
         it 'omits cicd.pipeline.task.run.state when status has no mapped state' do
-          # 'success' is not in TASK_RUN_STATE_MAP
-          state_attrs = job_log[:attributes].select { |attr| attr[:key] == 'cicd.pipeline.task.run.state' }
-          expect(state_attrs).to be_empty
+          keys = job_log[:attributes].map { |a| a[:key] }
+
+          expect(keys).not_to include('cicd.pipeline.task.run.state')
         end
 
-        it 'includes cicd.pipeline.task.run.state for in-progress job statuses' do
+        it 'includes cicd.pipeline.task.run.state for in-progress statuses' do
           pipeline_data[:builds].first[:status] = 'running'
           result = converter.convert
           log_records = result[:resourceLogs].first[:scopeLogs].first[:logRecords]
-          running_job_log = log_records.find { |log| log[:body][:stringValue].include?('test-job') }
-          expect(running_job_log[:attributes]).to include(
+          running_log = log_records.find { |log| log[:body][:stringValue].include?('test-job') }
+
+          expect(running_log[:attributes]).to include(
             { key: 'cicd.pipeline.task.run.state', value: { stringValue: 'executing' } }
           )
         end
 
-        it 'includes cicd.pipeline.task.run.allow_failure' do
+        it 'includes gitlab.cicd.pipeline.task.allow_failure' do
           expect(job_log[:attributes]).to include(
-            { key: 'cicd.pipeline.task.run.allow_failure', value: { boolValue: false } }
+            { key: 'gitlab.cicd.pipeline.task.allow_failure', value: { boolValue: false } }
           )
-
           expect(failed_job_log[:attributes]).to include(
-            { key: 'cicd.pipeline.task.run.allow_failure', value: { boolValue: true } }
+            { key: 'gitlab.cicd.pipeline.task.allow_failure', value: { boolValue: true } }
           )
         end
 
-        it 'includes cicd.pipeline.task.run.failure_reason when present' do
+        it 'includes gitlab.cicd.pipeline.task.run.failure_reason when present' do
           expect(failed_job_log[:attributes]).to include(
-            { key: 'cicd.pipeline.task.run.failure_reason', value: { stringValue: 'script_failure' } }
+            { key: 'gitlab.cicd.pipeline.task.run.failure_reason', value: { stringValue: 'script_failure' } }
           )
         end
 
-        it 'omits cicd.pipeline.task.run.failure_reason when not present' do
-          failure_attrs = job_log[:attributes].select { |attr| attr[:key] == 'cicd.pipeline.task.run.failure_reason' }
-          expect(failure_attrs).to be_empty
+        it 'omits gitlab.cicd.pipeline.task.run.failure_reason when not present' do
+          keys = job_log[:attributes].map { |a| a[:key] }
+
+          expect(keys).not_to include('gitlab.cicd.pipeline.task.run.failure_reason')
         end
 
-        it 'includes cicd.pipeline.task.trigger.type as automatic when not manual' do
+        it 'includes gitlab.cicd.pipeline.task.trigger.type with raw source value' do
           expect(job_log[:attributes]).to include(
-            { key: 'cicd.pipeline.task.trigger.type', value: { stringValue: 'automatic' } }
+            { key: 'gitlab.cicd.pipeline.task.trigger.type', value: { stringValue: 'push' } }
           )
         end
 
-        it 'includes cicd.pipeline.task.trigger.type as manual when manual' do
+        it 'includes gitlab.cicd.pipeline.task.trigger.type with raw source for manual jobs' do
           expect(failed_job_log[:attributes]).to include(
-            { key: 'cicd.pipeline.task.trigger.type', value: { stringValue: 'manual' } }
+            { key: 'gitlab.cicd.pipeline.task.trigger.type', value: { stringValue: 'push' } }
           )
         end
 
-        it 'includes cicd.pipeline.task.run.queue_duration' do
+        it 'includes gitlab.cicd.pipeline.task.run.queued_duration' do
           expect(job_log[:attributes]).to include(
-            { key: 'cicd.pipeline.task.run.queue_duration', value: { intValue: 5000 } }
+            { key: 'gitlab.cicd.pipeline.task.run.queued_duration', value: { intValue: 5000 } }
           )
-
           expect(failed_job_log[:attributes]).to include(
-            { key: 'cicd.pipeline.task.run.queue_duration', value: { intValue: 2000 } }
+            { key: 'gitlab.cicd.pipeline.task.run.queued_duration', value: { intValue: 2000 } }
           )
         end
 
-        it 'includes cicd.pipeline.task.run.duration' do
+        it 'includes gitlab.cicd.pipeline.task.run.duration' do
           expect(job_log[:attributes]).to include(
-            { key: 'cicd.pipeline.task.run.duration', value: { intValue: 120000 } }
+            { key: 'gitlab.cicd.pipeline.task.run.duration', value: { intValue: 120000 } }
           )
-
           expect(failed_job_log[:attributes]).to include(
-            { key: 'cicd.pipeline.task.run.duration', value: { intValue: 60000 } }
+            { key: 'gitlab.cicd.pipeline.task.run.duration', value: { intValue: 60000 } }
           )
         end
       end
@@ -728,9 +647,9 @@ RSpec.describe Gitlab::Observability::PipelineToLogs, feature_category: :observa
           )
         end
 
-        it 'includes cicd.worker.tags' do
+        it 'includes gitlab.cicd.worker.tags' do
           expect(job_log[:attributes]).to include(
-            { key: 'cicd.worker.tags', value: { arrayValue: { values: [
+            { key: 'gitlab.cicd.worker.tags', value: { arrayValue: { values: [
               { stringValue: 'docker' },
               { stringValue: 'linux' }
             ] } } }
@@ -742,69 +661,66 @@ RSpec.describe Gitlab::Observability::PipelineToLogs, feature_category: :observa
           log_records = result[:resourceLogs].first[:scopeLogs].first[:logRecords]
           failed_job_log = log_records.find { |log| log[:body][:stringValue].include?('failed-job') }
 
-          worker_attrs = failed_job_log[:attributes].select { |attr| attr[:key].start_with?('cicd.worker.') }
+          worker_attrs = failed_job_log[:attributes].select do |attr|
+            attr[:key].start_with?('cicd.worker.', 'gitlab.cicd.worker.')
+          end
+
           expect(worker_attrs).to be_empty
         end
       end
     end
 
     it 'includes environment attributes correctly' do
-      test_cases = [
-        {
-          environment: { name: 'production', action: 'start' },
-          expected_name: 'production',
-          expected_action: 'start'
-        },
-        {
-          environment: { name: nil, action: nil },
-          expected_name: '',
-          expected_action: ''
-        }
-      ]
+      pipeline_data[:builds].first[:environment] = { name: 'production', action: 'start' }
+      result = converter.convert
+      log_records = result[:resourceLogs].first[:scopeLogs].first[:logRecords]
+      job_log = log_records.find { |log| log[:body][:stringValue].include?('test-job') }
 
-      test_cases.each do |test_case|
-        pipeline_data[:builds].first[:environment] = test_case[:environment]
+      expect(job_log[:attributes]).to include(
+        { key: 'job.environment.name', value: { stringValue: 'production' } },
+        { key: 'job.environment.action', value: { stringValue: 'start' } }
+      )
+    end
+
+    context 'with bridge jobs' do
+      before do
+        pipeline_data[:bridges] = [{
+          id: 3,
+          name: 'trigger-child',
+          stage: 'trigger',
+          status: 'success',
+          started_at: Time.zone.parse('2023-01-01T10:04:00Z'),
+          finished_at: Time.zone.parse('2023-01-01T10:04:30Z'),
+          duration: 30000,
+          queued_duration: 1000,
+          manual: false,
+          allow_failure: false,
+          bridge: true
+        }]
+      end
+
+      it 'emits bridge jobs as log records' do
         result = converter.convert
         log_records = result[:resourceLogs].first[:scopeLogs].first[:logRecords]
-        job_log = log_records.find { |log| log[:body][:stringValue].include?('test-job') }
-        attributes = job_log[:attributes]
 
-        expect(attributes).to include(
-          { key: 'job.environment.name', value: { stringValue: test_case[:expected_name] } },
-          { key: 'job.environment.action', value: { stringValue: test_case[:expected_action] } }
-        )
-      end
-    end
-  end
+        bridge_log = log_records.find { |log| log[:body][:stringValue].include?('trigger-child') }
 
-  describe '#build_environment_attributes' do
-    it 'returns environment attributes correctly' do
-      test_cases = [
-        {
-          build: { name: 'test-job', status: 'success' },
-          expected: []
-        },
-        {
-          build: {
-            name: 'test-job',
-            status: 'success',
-            environment: {
-              name: 'staging',
-              action: 'stop'
-            }
-          },
-          expected: [
-            { key: 'job.environment.name', value: { stringValue: 'staging' } },
-            { key: 'job.environment.action', value: { stringValue: 'stop' } }
-          ]
-        }
-      ]
-
-      aggregate_failures do
-        test_cases.each do |test_case|
-          result = converter.send(:build_environment_attributes, test_case[:build])
-          expect(result).to eq(test_case[:expected])
+        aggregate_failures do
+          expect(bridge_log).to be_present
+          expect(bridge_log[:body][:stringValue]).to eq('Job success: trigger-child (trigger)')
+          expect(bridge_log[:severityText]).to eq('INFO')
         end
+      end
+
+      it 'marks bridge job log with job.type attribute' do
+        result = converter.convert
+        log_records = result[:resourceLogs].first[:scopeLogs].first[:logRecords]
+
+        bridge_log = log_records.find { |log| log[:body][:stringValue].include?('trigger-child') }
+
+        expect(bridge_log[:attributes]).to include(
+          { key: 'job.type', value: { stringValue: 'bridge' } }
+        )
       end
     end
   end
@@ -821,9 +737,9 @@ RSpec.describe Gitlab::Observability::PipelineToLogs, feature_category: :observa
       }
 
       aggregate_failures do
-        test_cases.each do |status, expected_severity|
-          expect(converter.send(:map_severity, status)).to eq(expected_severity),
-            "Expected #{status.inspect} to map to #{expected_severity}"
+        test_cases.each do |status, expected|
+          expect(converter.send(:map_severity, status)).to eq(expected),
+            "Expected #{status.inspect} to map to #{expected}"
         end
       end
     end
@@ -841,9 +757,9 @@ RSpec.describe Gitlab::Observability::PipelineToLogs, feature_category: :observa
       }
 
       aggregate_failures do
-        test_cases.each do |status, expected_severity|
-          expect(converter.send(:map_severity_text, status)).to eq(expected_severity),
-            "Expected #{status.inspect} to map to #{expected_severity}"
+        test_cases.each do |status, expected|
+          expect(converter.send(:map_severity_text, status)).to eq(expected),
+            "Expected #{status.inspect} to map to #{expected}"
         end
       end
     end
@@ -857,56 +773,15 @@ RSpec.describe Gitlab::Observability::PipelineToLogs, feature_category: :observa
       end
     end
 
-    it 'converts ActiveSupport::TimeWithZone timestamps to nanoseconds' do
+    it 'converts ActiveSupport::TimeWithZone to nanoseconds' do
       time = ActiveSupport::TimeZone['UTC'].parse('2023-01-01T10:00:00Z')
-      expected_nanoseconds = (time.to_f * 1_000_000_000).to_i
+      expected = (time.to_f * 1_000_000_000).to_i
 
-      expect(converter.send(:time_to_nanoseconds, time)).to eq(expected_nanoseconds)
+      expect(converter.send(:time_to_nanoseconds, time)).to eq(expected)
     end
 
     it 'returns 0 for non-TimeWithZone objects' do
-      time = Time.parse('2023-01-01T10:00:00Z')
-
-      expect(converter.send(:time_to_nanoseconds, time)).to eq(0)
-    end
-  end
-
-  describe '#compact_attributes' do
-    it 'removes nil entries' do
-      attrs = [
-        { key: 'keep', value: { stringValue: 'value' } },
-        nil,
-        { key: 'also_keep', value: { intValue: 1 } }
-      ]
-
-      result = converter.send(:compact_attributes, attrs)
-      expect(result).to eq([
-        { key: 'keep', value: { stringValue: 'value' } },
-        { key: 'also_keep', value: { intValue: 1 } }
-      ])
-    end
-
-    it 'removes attributes with blank string values' do
-      attrs = [
-        { key: 'present', value: { stringValue: 'hello' } },
-        { key: 'empty', value: { stringValue: '' } },
-        { key: 'nil_string', value: { stringValue: nil } }
-      ]
-
-      result = converter.send(:compact_attributes, attrs)
-      expect(result).to eq([
-        { key: 'present', value: { stringValue: 'hello' } }
-      ])
-    end
-
-    it 'preserves non-string value types regardless of value' do
-      attrs = [
-        { key: 'zero_int', value: { intValue: 0 } },
-        { key: 'false_bool', value: { boolValue: false } }
-      ]
-
-      result = converter.send(:compact_attributes, attrs)
-      expect(result).to eq(attrs)
+      expect(converter.send(:time_to_nanoseconds, Time.parse('2023-01-01T10:00:00Z'))).to eq(0)
     end
   end
 end

@@ -13,19 +13,12 @@ import { currentUserData, discussion, noteableId, noteableType, note } from '../
 describe('WikiDiscussion', () => {
   let wrapper;
 
-  const $apollo = {
-    mutate: jest.fn(),
-  };
-
   const createWrapper = ({ props, provideData = { userData: currentUserData } } = {}) =>
     shallowMountExtended(WikiDiscussion, {
       propsData: {
         discussion,
         noteableId,
         ...props,
-      },
-      mocks: {
-        $apollo,
       },
       provide: {
         noteableType,

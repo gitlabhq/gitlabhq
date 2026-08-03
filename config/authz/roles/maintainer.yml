@@ -88,6 +88,7 @@ project:
   - create_protected_tags
   - create_resource_access_tokens
   - create_runners
+  - create_security_scan_profiles
   - create_service_account
   - create_squash_option
   - create_web_ide_terminal
@@ -230,6 +231,7 @@ group:
   - create_jira_connect_subscription
   - create_project_fork
   - create_protected_branch
+  - create_security_scan_profiles
   - create_subgroup
   - create_virtual_registry
   - create_work_item_type

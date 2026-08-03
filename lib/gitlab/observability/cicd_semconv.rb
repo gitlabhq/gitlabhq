@@ -20,23 +20,6 @@ module Gitlab
         "running" => "executing"
       }.freeze
 
-      PIPELINE_TRIGGER_TYPE_MAP = {
-        "push" => "push",
-        "schedule" => "schedule",
-        "web" => "manual",
-        "trigger" => "manual",
-        "api" => "manual",
-        "merge_request_event" => "merge_request_event",
-        "external_pull_request_event" => "pull_request_event",
-        "pipeline" => "pipeline"
-      }.freeze
-
-      PIPELINE_TASK_TYPE_MAP = {
-        "build" => "build",
-        "test" => "test",
-        "deploy" => "deploy"
-      }.freeze
-
       TASK_RUN_STATE_MAP = {
         "pending" => "pending",
         "running" => "executing",
@@ -70,14 +53,6 @@ module Gitlab
 
       def map_pipeline_run_state(status)
         PIPELINE_RUN_STATE_MAP[status]
-      end
-
-      def map_pipeline_trigger_type(source)
-        PIPELINE_TRIGGER_TYPE_MAP[source]
-      end
-
-      def map_pipeline_task_type(stage)
-        PIPELINE_TASK_TYPE_MAP[stage]
       end
 
       def map_worker_state(active)

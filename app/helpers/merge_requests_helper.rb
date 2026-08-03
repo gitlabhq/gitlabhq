@@ -188,7 +188,7 @@ module MergeRequestsHelper
       help_page_path: help_page_path('user/project/merge_requests/reviews/suggestions.md'),
       current_user_data: @current_user_data,
       update_current_user_path: @update_current_user_path,
-      project_path: project_path(merge_request.project),
+      project_path: merge_request.project.full_path,
       changes_empty_state_illustration: image_path('illustrations/empty-state/empty-commit-md.svg'),
       is_fluid_layout: fluid_layout.to_s,
       dismiss_endpoint: callouts_path,

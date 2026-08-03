@@ -69,13 +69,13 @@ PUT /application/appearance
 
 | Attribute                         | Type    | Required | Description |
 |-----------------------------------|---------|----------|-------------|
-| `title`                           | string  | no       | Instance title on the sign in / sign up page |
-| `description`                     | string  | no       | Markdown text shown on the sign in / sign up page |
+| `title`                           | string  | no       | Instance title on the sign-in and new user account page |
+| `description`                     | string  | no       | Markdown text shown on the sign-in and new user account page |
 | `pwa_name`                        | string  | no       | Full name of the Progressive Web App. Used for the attribute `name` in `manifest.json`. |
 | `pwa_short_name`                  | string  | no       | Short name for Progressive Web App. |
 | `pwa_description`                 | string  | no       | An explanation of what the Progressive Web App does. Used for the attribute `description` in `manifest.json`. |
 | `pwa_icon`                        | mixed   | no       | Icon used for Progressive Web App. See [Update application logo](#update-application-logo). |
-| `logo`                            | mixed   | no       | Instance image used on the sign in / sign up page. See [Update application logo](#update-application-logo) |
+| `logo`                            | mixed   | no       | Instance image used on the sign-in and new user account page. See [Update application logo](#update-application-logo) |
 | `header_logo`                     | mixed   | no       | Instance image used for the main navigation bar |
 | `favicon`                         | mixed   | no       | Instance favicon in `.ico` or `.png` format |
 | `member_guidelines`               | string  | no       | Markdown text shown on the group or project member page for users with permission to change members |

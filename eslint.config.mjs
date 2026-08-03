@@ -649,13 +649,9 @@ export default [
       ],
     },
   },
-  // Frontend test guardrails (WS1 Guardrail 2).
   // Scoped to .js/.vue so the `local-rules` plugin and the rule live in the
-  // same config object (flat config requires co-location for non-`off`
-  // rules). New tests must not stub Apollo via `mocks: { $apollo }`; use
-  // createMockApollo instead. Existing offenders are grandfathered in
-  // `.eslint_todo/local-rules-no-apollo-mock.mjs` and surfaced non-blocking
-  // by the `eslint-todo` CI job (REVEAL_ESLINT_TODO=true).
+  // same config object (flat config requires co-location for non-`off` rules).
+  // Tests must not stub Apollo via `mocks: { $apollo }`; use createMockApollo instead.
   // See https://gitlab.com/groups/gitlab-org/plan-stage/-/work_items/477
   {
     files: ['{,ee/,jh/}spec/frontend*/**/*.{js,vue}'],

@@ -8,6 +8,7 @@ import { getMatchedComponents } from '~/lib/utils/vue3compat/vue_router';
 import { setTitle } from '~/repository/utils/title';
 
 const isVue3 = Vue.version.startsWith('3');
+const projectPath = 'group/project';
 
 jest.mock('~/repository/utils/title');
 jest.mock('jh_else_ce/repository/components/tree_content.vue', () => ({
@@ -33,7 +34,7 @@ describe('Repository router spec', () => {
     ${'/-/tree/main/app/assets'} | ${'main'}       | ${TreePage}  | ${'TreePage'}
     ${'/-/blob/main/file.md'}    | ${'main'}       | ${BlobPage}  | ${'BlobPage'}
   `('sets component as $componentName for path "$path"', ({ path, component, branch }) => {
-    const router = createRouter('', branch);
+    const router = createRouter(projectPath, branch);
 
     const componentsForRoute = getMatchedComponents(router, path);
 
@@ -41,7 +42,6 @@ describe('Repository router spec', () => {
   });
 
   describe('Storing Web IDE path globally', () => {
-    const proj = 'foo-bar-group/foo-bar-proj';
     let originalGl;
 
     beforeEach(() => {
@@ -54,16 +54,16 @@ describe('Repository router spec', () => {
 
     it.each`
       path                         | branch          | expectedPath
-      ${'/'}                       | ${'main'}       | ${`/-/ide/project/${proj}/edit/main/-/`}
-      ${'/tree/main'}              | ${'main'}       | ${`/-/ide/project/${proj}/edit/main/-/`}
-      ${'/tree/feat(test)'}        | ${'feat(test)'} | ${`/-/ide/project/${proj}/edit/feat(test)/-/`}
-      ${'/-/tree/main'}            | ${'main'}       | ${`/-/ide/project/${proj}/edit/main/-/`}
-      ${'/-/tree/main/app/assets'} | ${'main'}       | ${`/-/ide/project/${proj}/edit/main/-/app/assets/`}
-      ${'/-/blob/main/file.md'}    | ${'main'}       | ${`/-/ide/project/${proj}/edit/main/-/file.md`}
+      ${'/'}                       | ${'main'}       | ${`/-/ide/project/${projectPath}/edit/main/-/`}
+      ${'/tree/main'}              | ${'main'}       | ${`/-/ide/project/${projectPath}/edit/main/-/`}
+      ${'/tree/feat(test)'}        | ${'feat(test)'} | ${`/-/ide/project/${projectPath}/edit/feat(test)/-/`}
+      ${'/-/tree/main'}            | ${'main'}       | ${`/-/ide/project/${projectPath}/edit/main/-/`}
+      ${'/-/tree/main/app/assets'} | ${'main'}       | ${`/-/ide/project/${projectPath}/edit/main/-/app/assets/`}
+      ${'/-/blob/main/file.md'}    | ${'main'}       | ${`/-/ide/project/${projectPath}/edit/main/-/file.md`}
     `(
       'generates the correct Web IDE url for $path',
       async ({ path, branch, expectedPath } = {}) => {
-        const router = createRouter(proj, branch);
+        const router = createRouter(projectPath, branch);
 
         await router.push(path);
         expect(window.gl.webIDEPath).toBe(expectedPath);
@@ -72,7 +72,6 @@ describe('Repository router spec', () => {
   });
 
   describe('Setting page title', () => {
-    const projectPath = 'group/project';
     const projectName = 'Project Name';
     const branch = 'main';
 
@@ -101,7 +100,7 @@ describe('Repository router spec', () => {
     `(
       'encodes special characters in branch "$branch" and matches path "$path" to $componentName',
       ({ path, component, branch }) => {
-        const router = createRouter('', branch);
+        const router = createRouter(projectPath, branch);
 
         const componentsForRoute = getMatchedComponents(router, path);
 
@@ -122,7 +121,7 @@ describe('Repository router spec', () => {
 
     it('removes container-limited when navigating to a tree route', async () => {
       const containerEl = setupContainer('container-fluid container-limited');
-      const router = createRouter('', 'main');
+      const router = createRouter(projectPath, 'main');
 
       await router.push('/-/tree/main/app');
 
@@ -131,7 +130,7 @@ describe('Repository router spec', () => {
 
     it('removes container-limited when navigating to a blob route', async () => {
       const containerEl = setupContainer('container-fluid container-limited');
-      const router = createRouter('', 'main');
+      const router = createRouter(projectPath, 'main');
 
       await router.push('/-/blob/main/file.md');
 
@@ -140,7 +139,7 @@ describe('Repository router spec', () => {
 
     it('restores container-limited when returning to project root from a fluid route', async () => {
       const containerEl = setupContainer('container-fluid container-limited');
-      const router = createRouter('', 'main');
+      const router = createRouter(projectPath, 'main');
 
       await router.push('/-/tree/main/app');
       expect(containerEl.classList.contains('container-limited')).toBe(false);
@@ -151,7 +150,7 @@ describe('Repository router spec', () => {
 
     it('preserves a Fluid layout preference when navigating to project root', async () => {
       const containerEl = setupContainer('container-fluid');
-      const router = createRouter('', 'main');
+      const router = createRouter(projectPath, 'main');
 
       await router.push('/-/tree/main/app');
       expect(containerEl.classList.contains('container-limited')).toBe(false);
@@ -161,19 +160,18 @@ describe('Repository router spec', () => {
     });
 
     it('does not throw when #content-body is absent from the DOM', async () => {
-      const router = createRouter('', 'main');
+      const router = createRouter(projectPath, 'main');
 
       await expect(router.push('/-/tree/main/app')).resolves.not.toThrow();
     });
   });
 
   describe('Component reactivity with route changes', () => {
-    const PROJECT_PATH = 'project';
     const BRANCH = 'master';
     const REF_TYPE = 'heads';
 
     const createRouterAndNavigate = async (initialRoute) => {
-      const router = createRouter(PROJECT_PATH, BRANCH);
+      const router = createRouter(projectPath, BRANCH);
       await router.push(initialRoute);
       return router;
     };
@@ -183,7 +181,7 @@ describe('Repository router spec', () => {
         router,
         propsData: {
           path,
-          projectPath: PROJECT_PATH,
+          projectPath,
           refType: REF_TYPE,
         },
       });
@@ -221,11 +219,11 @@ describe('Repository router spec', () => {
     );
 
     it('TreePage isRoot computed updates when navigating to/from root', async () => {
-      const router = createRouter(PROJECT_PATH, BRANCH);
+      const router = createRouter(projectPath, BRANCH);
       const wrapper = shallowMount(TreePage, {
         router,
         propsData: {
-          path: PROJECT_PATH,
+          path: projectPath,
           refType: REF_TYPE,
         },
         data() {

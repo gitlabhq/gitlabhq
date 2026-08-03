@@ -10,7 +10,7 @@ RSpec.describe 'Query.ciConfig', feature_category: :continuous_integration do
   subject(:post_graphql_query) { post_graphql(query, current_user: user) }
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :repository, creator: user, namespace: user.namespace) }
+  let_it_be(:project) { create(:project, :small_repo, creator: user, namespace: user.namespace) }
 
   let_it_be(:content) do
     File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci_includes.yml'))
@@ -364,7 +364,7 @@ RSpec.describe 'Query.ciConfig', feature_category: :continuous_integration do
   end
 
   context 'when the config file has multiple includes' do
-    let_it_be(:other_project) { create(:project, :repository, creator: user, namespace: user.namespace) }
+    let_it_be(:other_project) { create(:project, :small_repo, creator: user, namespace: user.namespace) }
 
     let_it_be(:content) do
       YAML.dump(

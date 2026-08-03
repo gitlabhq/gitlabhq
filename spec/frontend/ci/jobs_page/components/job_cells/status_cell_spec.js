@@ -74,4 +74,10 @@ describe('Duration Cell', () => {
     expect(findFinishedTimeIcon().props('name')).toBe('calendar');
     expect(findDurationIcon().props('name')).toBe('timer');
   });
+
+  it('renders a tooltip explaining the duration', () => {
+    createComponent({ duration: 7 });
+
+    expect(findJobDuration().attributes('title')).toBe('Total time to run');
+  });
 });
