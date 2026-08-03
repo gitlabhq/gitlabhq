@@ -26,14 +26,16 @@ RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :gr
     sign_in(current_user)
   end
 
-  it 'show members from project and group', :aggregate_failures,
-    quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9376' do
+  it 'show members from project and group', :aggregate_failures do
     visit_members_page
 
-    expect(first_row).to have_content(group_owner.name)
-    expect(second_row).to have_content(project_owner.name)
-    expect(third_row).to have_content(project_maintainer.name)
-    expect(all_rows[3]).to have_content(project_developer.name)
+    expect(members_table).to have_content(group_owner.name)
+    expect(members_table).to have_content(project_owner.name)
+    expect(members_table).to have_content(project_maintainer.name)
+    expect(members_table).to have_content(project_developer.name)
+
+    # all_rows doesn't wait - keep it after the waiting matchers above
+    expect(all_rows.size).to eq(4)
   end
 
   it 'show user once if member of both group and project', :aggregate_failures do

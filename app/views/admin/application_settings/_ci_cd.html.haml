@@ -104,7 +104,6 @@
             = gitlab_ui_form_for plan.actual_limits, url: admin_plan_limits_path(anchor: 'js-ci-cd-settings'), html: { class: 'fieldset-form' }, method: :post do |f|
               = form_errors(plan)
               %fieldset
-                = f.hidden_field(:plan_id, value: plan.id)
                 = f.hidden_field(:plan_name_uid, value: plan.plan_name_uid_before_type_cast)
                 .form-group
                   = f.label :ci_instance_level_variables, plan_limit_setting_description(:ci_instance_level_variables)

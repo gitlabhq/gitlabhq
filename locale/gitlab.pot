@@ -11791,10 +11791,22 @@ msgstr ""
 msgid "ArtifactRegistry|Docker"
 msgstr ""
 
+msgid "ArtifactRegistry|Downloads"
+msgstr ""
+
 msgid "ArtifactRegistry|Enable Artifact Registry for this organization. All projects and groups will have access to a unified registry once enabled."
 msgstr ""
 
 msgid "ArtifactRegistry|Format"
+msgstr ""
+
+msgid "ArtifactRegistry|Hosted"
+msgstr ""
+
+msgid "ArtifactRegistry|Last updated"
+msgstr ""
+
+msgid "ArtifactRegistry|Loading repositories."
 msgstr ""
 
 msgid "ArtifactRegistry|Maven"
@@ -11830,13 +11842,25 @@ msgstr ""
 msgid "ArtifactRegistry|Organization could not be determined."
 msgstr ""
 
+msgid "ArtifactRegistry|Private"
+msgstr ""
+
+msgid "ArtifactRegistry|Remote"
+msgstr ""
+
 msgid "ArtifactRegistry|Repositories"
+msgstr ""
+
+msgid "ArtifactRegistry|Repositories list updated."
 msgstr ""
 
 msgid "ArtifactRegistry|Repository was successfully created."
 msgstr ""
 
 msgid "ArtifactRegistry|Resource ID must be a valid UUIDv7."
+msgstr ""
+
+msgid "ArtifactRegistry|Size"
 msgstr ""
 
 msgid "ArtifactRegistry|The Artifact Registry service did not respond in time."
@@ -11863,6 +11887,9 @@ msgstr ""
 msgid "ArtifactRegistry|This organization has no repositories yet."
 msgstr ""
 
+msgid "ArtifactRegistry|Type"
+msgstr ""
+
 msgid "ArtifactRegistry|Unknown Artifact Registry role: %{role}."
 msgstr ""
 
@@ -11870,6 +11897,9 @@ msgid "ArtifactRegistry|Unknown Artifact Registry roles: %{roles}."
 msgstr ""
 
 msgid "ArtifactRegistry|Use lowercase letters, digits, periods, underscores, and hyphens. Must start and end with a letter or digit. Cannot be changed after creation."
+msgstr ""
+
+msgid "ArtifactRegistry|Virtual"
 msgstr ""
 
 msgid "ArtifactRegistry|Visibility"
@@ -22885,7 +22915,6 @@ msgstr ""
 msgid "ContinuousDeployment|No releases match your filter."
 msgstr ""
 
-
 msgid "ContinuousDeployment|No services in this release."
 msgstr ""
 
@@ -22984,7 +23013,6 @@ msgstr ""
 
 msgid "ContinuousDeployment|Superseded"
 msgstr ""
-
 
 msgid "ContinuousDeployment|Sync"
 msgstr ""

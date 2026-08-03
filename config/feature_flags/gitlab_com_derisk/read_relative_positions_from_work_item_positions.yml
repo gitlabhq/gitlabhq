@@ -3,7 +3,7 @@ name: read_relative_positions_from_work_item_positions
 description: Read work item relative positions from the work_item_positions table instead of issues.relative_position.
 feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/594236
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240241
-rollout_issue_url:
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/607801
 milestone: '19.3'
 group: group::product planning
 type: gitlab_com_derisk

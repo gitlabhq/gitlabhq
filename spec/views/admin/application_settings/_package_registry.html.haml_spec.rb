@@ -46,11 +46,10 @@ RSpec.describe 'admin/application_settings/_package_registry' do
       expect(page.find_field('Maximum PyPI package file size in bytes').value).to eq(default_plan_limits.pypi_max_file_size.to_s)
     end
 
-    it 'renders both plan_id and plan_name_uid hidden fields for rolling-update compatibility' do
+    it 'renders the plan_name_uid hidden field and no plan_id field', :aggregate_failures do
       subject
 
-      expect(rendered).to have_field('plan_limits[plan_id]', type: :hidden,
-        with: default_plan_limits.plan.id.to_s)
+      expect(rendered).not_to have_field('plan_limits[plan_id]', type: :hidden)
       expect(rendered).to have_field('plan_limits[plan_name_uid]', type: :hidden,
         with: default_plan_limits.plan.plan_name_uid_before_type_cast.to_s)
     end
