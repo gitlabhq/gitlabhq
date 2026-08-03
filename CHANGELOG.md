@@ -2,6 +2,15 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.11.8 (2026-08-03)
+
+### Fixed (4 changes)
+
+- [Add postgres_index_bloat_estimate SQL function](https://gitlab.com/gitlab-org/gitlab/-/commit/6aced1ce4f8f8319fd82f4bca6ba5bf166ae58fc) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/247963))
+- [Remove --unlink-first and --recursive-unlink from tar extract](https://gitlab.com/gitlab-org/gitlab/-/commit/5fcd6c7fb50e1b7745968804460298a49bde0ce6) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245799))
+- [Fix blob preview diff hiding blank added lines](https://gitlab.com/gitlab-org/gitlab/-/commit/608bc241013c31353a800a8fda531f2d50aca276) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244214))
+- [Fix virtual registry settings toggle disappearing when disabled](https://gitlab.com/gitlab-org/gitlab/-/commit/649cd1d5994bb00daf3ceccee1d259b813676ed9) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244020)) **GitLab Enterprise Edition**
+
 ## 18.11.7 (2026-07-07)
 
 ### Fixed (1 change)
