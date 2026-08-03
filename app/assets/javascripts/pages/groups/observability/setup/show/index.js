@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import { GlToast } from '@gitlab/ui';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { GlTabsBehavior } from '~/tabs';
 import QuickStartSnippets from '~/observability/setup/components/quick_start_snippets.vue';
 
@@ -14,14 +15,11 @@ const initQuickStartSnippets = () => {
 
   const { endpoint } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'ObservabilityQuickStartRoot',
-    render(h) {
-      return h(QuickStartSnippets, {
-        props: { endpoint },
-      });
-    },
+    component: QuickStartSnippets,
+    props: { endpoint },
   });
 };
 

@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import ProfileEditApp from './components/profile_edit_app.vue';
 
@@ -44,7 +44,7 @@ export const initProfileEdit = () => {
     ...provides
   } = mountEl.dataset;
 
-  return new Vue({
+  return initVueApp({
     el: mountEl,
     name: 'ProfileEditRoot',
     provide: {
@@ -97,13 +97,10 @@ export const initProfileEdit = () => {
         achievementsEnabled,
       },
     },
-    render(createElement) {
-      return createElement(ProfileEditApp, {
-        props: {
-          profilePath,
-          userPath,
-        },
-      });
+    component: ProfileEditApp,
+    props: {
+      profilePath,
+      userPath,
     },
   });
 };

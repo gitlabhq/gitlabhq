@@ -73,6 +73,10 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
       publish(draft: drafts.first)
     end
 
+    it 'reports that review delivery is handled asynchronously' do
+      expect(publish(draft: drafts.first)[:async_notifications]).to be(true)
+    end
+
     context 'commit_id is set' do
       let(:commit_id) { commit.id }
 
@@ -143,6 +147,10 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
       result = publish
 
       expect(result[:status]).to eq(:success)
+    end
+
+    it 'reports that review delivery is handled asynchronously' do
+      expect(publish[:async_notifications]).to be(true)
     end
 
     it 'publishes all draft notes for a user in a merge request' do
@@ -283,6 +291,10 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
       expect(::Gitlab::EventStore).not_to receive(:publish)
 
       publish
+    end
+
+    it 'reports that review delivery is not handled asynchronously' do
+      expect(publish[:async_notifications]).to be(false)
     end
 
     it 'does not track the publish event' do

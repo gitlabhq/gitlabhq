@@ -1,5 +1,6 @@
 import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { groupsProvideData } from 'ee_else_ce/invite_members/utils';
 import InviteGroupsModal from '~/invite_members/components/invite_groups_modal.vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
@@ -27,23 +28,21 @@ export default function initInviteGroupsModal() {
 
   initedInviteGroupsModal = true;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'InviteGroupsModalRoot',
     provide: groupsProvideData(el),
-    render: (createElement) =>
-      createElement(InviteGroupsModal, {
-        props: {
-          ...el.dataset,
-          isProject: parseBoolean(el.dataset.isProject),
-          accessLevels: JSON.parse(el.dataset.accessLevels),
-          defaultAccessLevel: parseInt(el.dataset.defaultAccessLevel, 10),
-          groupSelectFilter: el.dataset.groupsFilter,
-          groupSelectParentId: parseInt(el.dataset.parentId, 10),
-          invalidGroups: JSON.parse(el.dataset.invalidGroups || '[]'),
-          freeUserCapEnabled: parseBoolean(el.dataset.freeUserCapEnabled),
-          reloadPageOnSubmit: parseBoolean(el.dataset.reloadPageOnSubmit),
-        },
-      }),
+    component: InviteGroupsModal,
+    props: {
+      ...el.dataset,
+      isProject: parseBoolean(el.dataset.isProject),
+      accessLevels: JSON.parse(el.dataset.accessLevels),
+      defaultAccessLevel: parseInt(el.dataset.defaultAccessLevel, 10),
+      groupSelectFilter: el.dataset.groupsFilter,
+      groupSelectParentId: parseInt(el.dataset.parentId, 10),
+      invalidGroups: JSON.parse(el.dataset.invalidGroups || '[]'),
+      freeUserCapEnabled: parseBoolean(el.dataset.freeUserCapEnabled),
+      reloadPageOnSubmit: parseBoolean(el.dataset.reloadPageOnSubmit),
+    },
   });
 }

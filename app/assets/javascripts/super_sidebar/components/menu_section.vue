@@ -218,6 +218,7 @@ export default {
             :key="`${item.title}-${subItem.title}`"
             :item="subItem"
             :async-count="asyncCount"
+            hide-icon
             @pin-add="(itemId, itemTitle) => $emit('pin-add', itemId, itemTitle)"
             @pin-remove="(itemId, itemTitle) => $emit('pin-remove', itemId, itemTitle)"
           />

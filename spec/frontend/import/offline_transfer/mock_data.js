@@ -106,3 +106,19 @@ export const mockGroupsPage2Response = {
     },
   },
 };
+
+export const emptyGroupsResponse = {
+  data: {
+    groups: {
+      nodes: [],
+      pageInfo: {
+        hasNextPage: false,
+        hasPreviousPage: false,
+        startCursor: null,
+        endCursor: null,
+        __typename: 'PageInfo',
+      },
+      __typename: 'GroupConnection',
+    },
+  },
+};

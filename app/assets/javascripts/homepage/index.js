@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import HomepageApp from './components/homepage_app.vue';
 
@@ -25,7 +26,7 @@ export default () => {
   // Parse lastPushEvent - it's already JSON string from backend
   const parsedLastPushEvent = lastPushEvent ? JSON.parse(lastPushEvent) : null;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'HomepageAppRoot',
     provide: {
@@ -34,17 +35,14 @@ export default () => {
     apolloProvider: new VueApollo({
       defaultClient: createDefaultClient(),
     }),
-    render(createElement) {
-      return createElement(HomepageApp, {
-        props: {
-          reviewRequestedPath,
-          activityPath,
-          assignedMergeRequestsPath,
-          assignedWorkItemsPath,
-          authoredWorkItemsPath,
-          lastPushEvent: parsedLastPushEvent,
-        },
-      });
+    component: HomepageApp,
+    props: {
+      reviewRequestedPath,
+      activityPath,
+      assignedMergeRequestsPath,
+      assignedWorkItemsPath,
+      authoredWorkItemsPath,
+      lastPushEvent: parsedLastPushEvent,
     },
   });
 };

@@ -1,5 +1,5 @@
-import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import createDefaultClient from '~/lib/graphql';
@@ -20,7 +20,7 @@ export const initOrganizationsSettingsGeneral = () => {
     defaultClient: createDefaultClient(),
   });
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'OrganizationSettingsGeneralRoot',
     apolloProvider,
@@ -30,8 +30,6 @@ export const initOrganizationsSettingsGeneral = () => {
       previewMarkdownPath,
       maxGroupVisibilityLevel,
     },
-    render(createElement) {
-      return createElement(App);
-    },
+    component: App,
   });
 };

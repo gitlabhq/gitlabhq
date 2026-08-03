@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import GroupNewRunnerApp from './group_new_runner_app.vue';
 
@@ -18,16 +19,13 @@ export const initGroupNewRunner = (selector = '#js-group-new-runner') => {
     defaultClient: createDefaultClient(),
   });
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'GroupNewRunnerAppRoot',
     apolloProvider,
-    render(h) {
-      return h(GroupNewRunnerApp, {
-        props: {
-          groupId,
-        },
-      });
+    component: GroupNewRunnerApp,
+    props: {
+      groupId,
     },
   });
 };

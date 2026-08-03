@@ -99,7 +99,7 @@ describe('IssuableLabelSelector', () => {
     ]);
   });
 
-  it('updates the selected labels on the `onLabelRemove` event', async () => {
+  it('updates the selected labels on the `label-removed` event', async () => {
     wrapper = createComponent({ initialLabels: [mockRegularLabel] });
 
     expect(findLabelSelector().props('selectedLabels')).toStrictEqual([mockRegularLabel]);
@@ -107,7 +107,7 @@ describe('IssuableLabelSelector', () => {
       `${mockRegularLabel.id}`,
     ]);
 
-    await findLabelSelector().vm.$emit('onLabelRemove', mockRegularLabel.id);
+    await findLabelSelector().vm.$emit('label-removed', mockRegularLabel.id);
 
     expect(findLabelSelector().props('selectedLabels')).toStrictEqual([]);
     expect(findAllHiddenInputs()).toHaveLength(0);

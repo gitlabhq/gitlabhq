@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { defaultClient } from '~/graphql_shared/issuable_client';
 import GlobalSearchResults from './components/app.vue';
 
@@ -13,13 +14,11 @@ export const initZoektBlobResult = (store) => {
   const el = document.getElementById('js-search-zoekt-blob-results');
   if (!el) return false;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'GlobalSearchResults',
     store,
     apolloProvider,
-    render(createElement) {
-      return createElement(GlobalSearchResults);
-    },
+    component: GlobalSearchResults,
   });
 };

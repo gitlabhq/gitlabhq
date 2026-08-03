@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import CommitBranches from './components/commit_refs.vue';
 
@@ -18,7 +19,7 @@ export default (selector = 'js-commit-branches-and-tags') => {
 
   const { fullPath, commitSha } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'CommitBranchesRoot',
     apolloProvider,
@@ -26,8 +27,6 @@ export default (selector = 'js-commit-branches-and-tags') => {
       fullPath,
       commitSha,
     },
-    render(createElement) {
-      return createElement(CommitBranches);
-    },
+    component: CommitBranches,
   });
 };

@@ -1,6 +1,7 @@
 import { GlToast } from '@gitlab/ui';
 import Visibility from 'visibilityjs';
 import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { createAlert } from '~/alert';
 import AccessorUtilities from '~/lib/utils/accessor';
 import Poll from '~/lib/utils/poll';
@@ -127,17 +128,14 @@ export default class Clusters {
     if (el && el.dataset) {
       const { clusterName, clusterPath, hasManagementProject } = el.dataset;
 
-      this.removeClusterAction = new Vue({
+      this.removeClusterAction = initVueApp({
         el,
         name: 'RemoveClusterConfirmationRoot',
-        render(createElement) {
-          return createElement(RemoveClusterConfirmation, {
-            props: {
-              clusterName,
-              clusterPath,
-              hasManagementProject,
-            },
-          });
+        component: RemoveClusterConfirmation,
+        props: {
+          clusterName,
+          clusterPath,
+          hasManagementProject,
         },
       });
     }

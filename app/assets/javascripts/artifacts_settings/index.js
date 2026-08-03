@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import KeepLatestArtifactToggle from '~/artifacts_settings/keep_latest_artifact_toggle.vue';
 import createDefaultClient from '~/lib/graphql';
 
@@ -18,7 +19,7 @@ export default (containerId = 'js-artifacts-settings-app') => {
 
   const { fullPath, helpPagePath } = containerEl.dataset;
 
-  return new Vue({
+  return initVueApp({
     el: containerEl,
     name: 'KeepLatestArtifactToggleRoot',
     apolloProvider,
@@ -26,8 +27,6 @@ export default (containerId = 'js-artifacts-settings-app') => {
       fullPath,
       helpPagePath,
     },
-    render(createElement) {
-      return createElement(KeepLatestArtifactToggle);
-    },
+    component: KeepLatestArtifactToggle,
   });
 };

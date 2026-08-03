@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import DeleteBranchButton from '~/branches/components/branch_more_actions.vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 
@@ -17,20 +17,18 @@ export default function initBranchMoreActions(el) {
     deletePath,
   } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'DeleteBranchButtonRoot',
-    render: (createElement) =>
-      createElement(DeleteBranchButton, {
-        props: {
-          branchName,
-          defaultBranchName,
-          canDeleteBranch: parseBoolean(canDeleteBranch),
-          isProtectedBranch: parseBoolean(isProtectedBranch),
-          merged: parseBoolean(merged),
-          comparePath,
-          deletePath,
-        },
-      }),
+    component: DeleteBranchButton,
+    props: {
+      branchName,
+      defaultBranchName,
+      canDeleteBranch: parseBoolean(canDeleteBranch),
+      isProtectedBranch: parseBoolean(isProtectedBranch),
+      merged: parseBoolean(merged),
+      comparePath,
+      deletePath,
+    },
   });
 }

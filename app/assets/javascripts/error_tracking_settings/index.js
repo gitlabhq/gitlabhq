@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { pinia } from '~/pinia/instance';
 import ErrorTrackingSettings from './components/app.vue';
 
@@ -17,23 +17,20 @@ export default () => {
     },
   } = formContainerEl;
 
-  return new Vue({
+  return initVueApp({
     el: formContainerEl,
     name: 'ErrorTrackingSettingsRoot',
     pinia,
-    render(createElement) {
-      return createElement(ErrorTrackingSettings, {
-        props: {
-          initialApiHost: apiHost,
-          initialEnabled: enabled,
-          initialIntegrated: integrated,
-          initialProject: project,
-          initialToken: token,
-          listProjectsEndpoint,
-          operationsSettingsEndpoint,
-          gitlabDsn,
-        },
-      });
+    component: ErrorTrackingSettings,
+    props: {
+      initialApiHost: apiHost,
+      initialEnabled: enabled,
+      initialIntegrated: integrated,
+      initialProject: project,
+      initialToken: token,
+      listProjectsEndpoint,
+      operationsSettingsEndpoint,
+      gitlabDsn,
     },
   });
 };

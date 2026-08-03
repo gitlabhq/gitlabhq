@@ -9,15 +9,19 @@ import SelectGroupsTab from '~/import/offline_transfer/export/select_groups_tab.
 import ExportConfigTab from '~/import/offline_transfer/export/export_config_tab.vue';
 import ReviewExportTab from '~/import/offline_transfer/export/review_export_tab.vue';
 import offlineTransferSourceOwnedGroupsQuery from '~/import/offline_transfer/graphql/queries/offline_transfer_source_owned_groups.query.graphql';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import { OFFLINE_EXPORT_TAB_HEADINGS } from '~/import/offline_transfer/constants';
 import {
   mockGroups,
   mockGroupsResponse,
   mockGroupsPage1Response,
   mockGroupsPage2Response,
+  emptyGroupsResponse,
 } from '../mock_data';
 
 Vue.use(VueApollo);
+
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 describe('OfflineTransferExportApp', () => {
   let wrapper;
@@ -35,7 +39,10 @@ describe('OfflineTransferExportApp', () => {
   const findExportConfigTab = () => wrapper.findComponent(ExportConfigTab);
   const findReviewExportTab = () => wrapper.findComponent(ReviewExportTab);
   const findCompletionAlert = () => wrapper.findByTestId('completion-alert');
-  const findFetchErrorAlert = () => wrapper.findByTestId('fetch-error-alert');
+
+  const queryError = new Error('query failed');
+  const failingHandler = () => jest.fn().mockRejectedValue(queryError);
+  const emptyHandler = () => jest.fn().mockResolvedValue(emptyGroupsResponse);
 
   describe('passes to FormStepper', () => {
     beforeEach(() => {
@@ -52,6 +59,51 @@ describe('OfflineTransferExportApp', () => {
 
     it('validateStep as a function', () => {
       expect(findFormStepper().props('validateStep')).toBeInstanceOf(Function);
+    });
+
+    describe('canStart', () => {
+      it('as false when the user has no groups', async () => {
+        createComponent({ handler: emptyHandler() });
+        await waitForPromises();
+
+        expect(findFormStepper().props('canStart')).toBe(false);
+      });
+
+      it('as false when there is a fetch error', async () => {
+        createComponent({ handler: failingHandler() });
+        await waitForPromises();
+
+        expect(findFormStepper().props('canStart')).toBe(false);
+      });
+
+      it('as true while a search is active, even with no matches', async () => {
+        createComponent({ handler: emptyHandler() });
+        await waitForPromises();
+        expect(findFormStepper().props('canStart')).toBe(false);
+
+        findSelectGroupsTab().vm.$emit('search', 'no match');
+        await waitForPromises();
+
+        expect(findFormStepper().props('canStart')).toBe(true);
+      });
+
+      it('as true when groups are selected, even if a later fetch fails', async () => {
+        const handler = jest
+          .fn()
+          .mockResolvedValueOnce(mockGroupsResponse)
+          .mockRejectedValue(queryError);
+        createComponent({ handler });
+        await waitForPromises();
+
+        findSelectGroupsTab().vm.$emit('toggle', mockGroups[0]);
+        await nextTick();
+
+        findSelectGroupsTab().vm.$emit('search', 'triggers a failing refetch');
+        await waitForPromises();
+        expect(findSelectGroupsTab().props('hasFetchError')).toBe(true);
+
+        expect(findFormStepper().props('canStart')).toBe(true);
+      });
     });
   });
 
@@ -85,7 +137,7 @@ describe('OfflineTransferExportApp', () => {
 
       expect(
         findSelectGroupsTab()
-          .props('pageGroups')
+          .props('currentPageGroups')
           .map((group) => group.id),
       ).toEqual(['gid://glab/Group/1', 'gid://glab/Group/2', 'gid://glab/Group/3']);
     });
@@ -109,11 +161,40 @@ describe('OfflineTransferExportApp', () => {
       expect(findSelectGroupsTab().props('initialLoading')).toBe(false);
     });
 
-    it('shows the fetch error alert when groups query fails', async () => {
-      createComponent({ handler: jest.fn().mockRejectedValue(new Error('query failed')) });
+    it('receives hasFetchError as false by default', () => {
+      createComponent();
+      expect(findSelectGroupsTab().props('hasFetchError')).toBe(false);
+    });
+
+    it('passes hasFetchError when the groups query fails', async () => {
+      createComponent({ handler: failingHandler() });
       await waitForPromises();
 
-      expect(findFetchErrorAlert().exists()).toBe(true);
+      expect(findSelectGroupsTab().props('hasFetchError')).toBe(true);
+    });
+
+    it('reports the error to Sentry when the groups query fails', async () => {
+      createComponent({ handler: failingHandler() });
+      await waitForPromises();
+
+      expect(captureException).toHaveBeenCalledWith(queryError);
+    });
+
+    it('re-runs the query when the tab emits retry-fetch', async () => {
+      const handler = jest
+        .fn()
+        .mockRejectedValueOnce(queryError)
+        .mockResolvedValue(mockGroupsResponse);
+      createComponent({ handler });
+      await waitForPromises();
+      expect(findSelectGroupsTab().props('hasFetchError')).toBe(true);
+
+      findSelectGroupsTab().vm.$emit('retry-fetch');
+      await waitForPromises();
+
+      expect(handler).toHaveBeenCalledTimes(2);
+      expect(findSelectGroupsTab().props('hasFetchError')).toBe(false);
+      expect(findSelectGroupsTab().props('currentPageGroups')).toHaveLength(3);
     });
 
     describe('selection', () => {
@@ -196,7 +277,7 @@ describe('OfflineTransferExportApp', () => {
         );
         expect(
           findSelectGroupsTab()
-            .props('pageGroups')
+            .props('currentPageGroups')
             .map((group) => group.id),
         ).toEqual(PAGE_2_IDS);
       });
@@ -317,7 +398,7 @@ describe('OfflineTransferExportApp', () => {
       });
     });
 
-    describe('validation', () => {
+    describe('form validation', () => {
       beforeEach(async () => {
         createComponent();
         await waitForPromises();

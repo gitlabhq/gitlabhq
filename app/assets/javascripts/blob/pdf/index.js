@@ -1,18 +1,15 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import PdfViewer from './pdf_viewer.vue';
 
 export default () => {
   const el = document.getElementById('js-pdf-viewer');
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'PdfViewerRoot',
-    render(createElement) {
-      return createElement(PdfViewer, {
-        props: {
-          pdf: el.dataset.endpoint,
-        },
-      });
+    component: PdfViewer,
+    props: {
+      pdf: el.dataset.endpoint,
     },
   });
 };

@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { pinia } from '~/pinia/instance';
 import CommitFormModal from './components/form_modal.vue';
@@ -44,22 +44,20 @@ export default function initInviteMembersModal(primaryActionEventName) {
     projects: convertObjectPropsToCamelCase(JSON.parse(projects), { deep: true }),
   });
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'CommitFormModalRoot',
     pinia,
     provide: {
       modalStore,
     },
-    render: (createElement) =>
-      createElement(CommitFormModal, {
-        props: {
-          i18n: { ...I18N_CHERRY_PICK_MODAL, ...I18N_MODAL },
-          openModal: OPEN_CHERRY_PICK_MODAL,
-          modalId: CHERRY_PICK_MODAL_ID,
-          isCherryPick: true,
-          primaryActionEventName,
-        },
-      }),
+    component: CommitFormModal,
+    props: {
+      i18n: { ...I18N_CHERRY_PICK_MODAL, ...I18N_MODAL },
+      openModal: OPEN_CHERRY_PICK_MODAL,
+      modalId: CHERRY_PICK_MODAL_ID,
+      isCherryPick: true,
+      primaryActionEventName,
+    },
   });
 }

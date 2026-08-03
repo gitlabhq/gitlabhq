@@ -57,6 +57,8 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
   end
 
   def publish
+    experience = Labkit::UserExperienceSli.start(:submit_mr_review_ui)
+
     result = DraftNotes::PublishService.new(merge_request, current_user, draft_note_ids_param)
       .execute(draft: draft_note(allow_nil: true))
 
@@ -68,9 +70,13 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
 
     update_reviewer_state if reviewer_state_params[:reviewer_state]
 
+    experience.checkpoint(checkpoint_action: 'notes_published') if result[:async_notifications]
+
     if result[:status] == :success
+      experience.complete(notes_published: false) unless result[:async_notifications]
       head :ok
     else
+      experience.error!(result[:message]).complete
       render json: { message: result[:message] }, status: :internal_server_error
     end
   end

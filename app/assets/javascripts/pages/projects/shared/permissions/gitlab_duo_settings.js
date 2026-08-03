@@ -1,5 +1,5 @@
-import Vue from 'vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import GitlabDuoSettings from './components/gitlab_duo_settings.vue';
 
 export default function initGitlabDuoSettings() {
@@ -16,17 +16,15 @@ export default function initGitlabDuoSettings() {
   });
   const { targetFormId } = mountPoint.dataset;
 
-  return new Vue({
+  return initVueApp({
     el: mountPoint,
     name: 'GitlabDuoSettingsRoot',
-    render: (createElement) =>
-      createElement(GitlabDuoSettings, {
-        props: componentPropsParsed,
-        on: {
-          confirm: () => {
-            if (targetFormId) document.getElementById(targetFormId)?.submit();
-          },
-        },
-      }),
+    component: GitlabDuoSettings,
+    props: componentPropsParsed,
+    events: {
+      confirm: () => {
+        if (targetFormId) document.getElementById(targetFormId)?.submit();
+      },
+    },
   });
 }

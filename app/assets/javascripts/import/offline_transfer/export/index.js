@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import OfflineTransferExportApp from '~/import/offline_transfer/export/app.vue';
 
@@ -14,12 +15,10 @@ export const initOfflineTransferExport = () => {
     defaultClient: createDefaultClient(),
   });
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'OfflineTransferExportRoot',
     apolloProvider,
-    render(createElement) {
-      return createElement(OfflineTransferExportApp, {});
-    },
+    component: OfflineTransferExportApp,
   });
 };

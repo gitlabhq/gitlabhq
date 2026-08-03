@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import NewUserOrganizationField from './components/new_user_organization_field.vue';
@@ -80,14 +81,11 @@ export const initAdminNewUserOrganizationField = () => {
     defaultClient: createDefaultClient(),
   });
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'AdminNewUserOrganizationFieldRoot',
     apolloProvider,
-    render(createElement) {
-      return createElement(NewUserOrganizationField, {
-        props: { hasMultipleOrganizations, initialOrganization },
-      });
-    },
+    component: NewUserOrganizationField,
+    props: { hasMultipleOrganizations, initialOrganization },
   });
 };

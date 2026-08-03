@@ -37,7 +37,7 @@ export default {
       required: true,
     },
   },
-  emits: ['onLabelRemove'],
+  emits: ['label-removed'],
   computed: {
     sortedSelectedLabels() {
       return sortBy(this.selectedLabels, (label) => isScopedLabel(label));
@@ -61,7 +61,7 @@ export default {
       return this.allowLabelRemove && !this.isLabelLocked(label);
     },
     removeLabel(labelId) {
-      this.$emit('onLabelRemove', labelId);
+      this.$emit('label-removed', labelId);
     },
   },
 };

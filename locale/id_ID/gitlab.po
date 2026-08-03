@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: id\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2026-07-28 07:47\n"
+"PO-Revision-Date: 2026-07-29 11:01\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} hingga %{end}"
@@ -829,7 +829,7 @@ msgid "%{displayType} supports a maximum of %{maxDimensions} dimensions"
 msgstr "%{displayType} mendukung maksimum %{maxDimensions} dimensi"
 
 msgid "%{displayType} supports exactly one dimension"
-msgstr ""
+msgstr "%{displayType} mendukung secara tepat satu dimensi"
 
 msgid "%{displayType} with %{maxDimensions} dimensions supports only a single metric"
 msgstr "%{displayType} dengan %{maxDimensions} dimensi hanya mendukung metrik tunggal"
@@ -3510,7 +3510,7 @@ msgid "AICatalog|can't be made private because this item is enabled outside its 
 msgstr "tidak dapat dibuat privat karena item ini diaktifkan di luar proyek pemiliknya"
 
 msgid "AICatalog|can't be made restricted because this item is enabled outside the top-level group hierarchy"
-msgstr ""
+msgstr "tidak dapat dibuat terbatas karena item ini diaktifkan di luar hirarki grup tingkat atas"
 
 msgid "AICatalog|cannot be enabled because your top-level group settings block enabling items outside of its hierarchy"
 msgstr "tidak dapat diaktifkan karena pengaturan grup tingkat atas memblokir mengaktifkan item di luar hirarkinya"
@@ -3520,6 +3520,9 @@ msgstr "alur"
 
 msgid "AICatalog|flows"
 msgstr "alur"
+
+msgid "AICatalog|foundational items must be public"
+msgstr ""
 
 msgid "AICatalog|is private in another project"
 msgstr "privat di proyek lain"
@@ -5695,7 +5698,7 @@ msgid_plural "AdminAIPoweredFeatures|%d models selected"
 msgstr[0] "%d model dipilih"
 
 msgid "AdminAIPoweredFeatures|%{allowedCount} of %{totalCount} models allowed"
-msgstr ""
+msgstr "%{allowedCount} dari %{totalCount} model diizinkan"
 
 msgid "AdminAIPoweredFeatures|AI-native features"
 msgstr "Fitur bawaan AI"
@@ -5714,7 +5717,7 @@ msgid_plural "AdminAIPoweredFeatures|All available models (%d models)"
 msgstr[0] "Semua model tersedia (%d model)"
 
 msgid "AdminAIPoweredFeatures|Allow list disabled"
-msgstr ""
+msgstr "Daftar izin dinonaktifkan"
 
 msgid "AdminAIPoweredFeatures|An AI assistant that helps users accelerate software development using real-time conversational AI. This setting is for regular Duo Chat only. %{linkStart}Learn more.%{linkEnd}"
 msgstr "Asisten AI yang membantu pengguna mempercepat pengembangan perangkat lunak menggunakan AI percakapan waktu nyata. Pengaturan ini hanya untuk Duo Chat reguler. %{linkStart}Pelajari lebih lanjut.%{linkEnd}"
@@ -7537,8 +7540,8 @@ msgstr "kap pengguna"
 msgid "Administrator Account Setup"
 msgstr "Penyiapan Akun Administrator"
 
-msgid "Administrator users are required to enable Two-Factor Authentication for their account."
-msgstr "Pengguna administrator diperlukan mengaktifkan Otentikasi Dua Faktor untuk akun mereka."
+msgid "Administrator users are required to enable two-factor authentication (2FA) for their account."
+msgstr "Pengguna administrasi diperlukan untuk mengaktifkan otentikasi dua faktor (2FA) untuk akun mereka."
 
 msgid "Administrators"
 msgstr "Administrator"
@@ -7735,9 +7738,6 @@ msgstr "Setelah Anda meninjau panduan kontribusi ini, Anda siap untuk"
 msgid "Agent Information"
 msgstr "Informasi Agen"
 
-msgid "Agent artifacts"
-msgstr "Artefak agen"
-
 msgid "Agent not found for provided id."
 msgstr "Agen tidak ditemukan untuk id yang disediakan."
 
@@ -7751,7 +7751,7 @@ msgid "AgentArtifacts|AI Item"
 msgstr "Item AI"
 
 msgid "AgentArtifacts|AI audit event storage is turned off, so no audit events are being recorded. %{linkStart}Turn on storage%{linkEnd} to start capturing audit events."
-msgstr ""
+msgstr "Penyimpanan peristiwa audit AI dimatikan, sehingga tidak ada peristiwa audit direkam. %{linkStart}Nyalakan penyimpanan%{linkEnd} untuk memulai menangkap peristiwa audit."
 
 msgid "AgentArtifacts|Agent audit events"
 msgstr "Peristiwa audit agen"
@@ -7800,6 +7800,9 @@ msgstr "Gagal membuat proyek."
 
 msgid "AgentArtifacts|Filter agent artifacts"
 msgstr "Saring artefak agen"
+
+msgid "AgentArtifacts|GitLab Duo"
+msgstr "GitLab Duo"
 
 msgid "AgentArtifacts|Goal"
 msgstr "Tujuan"
@@ -10033,7 +10036,7 @@ msgid "An error occurred while fetching branches."
 msgstr "Terjadi galat ketika mengambil cabang."
 
 msgid "An error occurred while fetching branches. Retry the search."
-msgstr "Terjadi galat ketika mengambil cabang. Coba lagi pencarian."
+msgstr "Terjadi galat ketika mengambil cabang. Ulangi pencarian."
 
 msgid "An error occurred while fetching codequality mr diff reports."
 msgstr "Terjadi galat ketika mengambil laporan codequality mr diff"
@@ -10042,7 +10045,7 @@ msgid "An error occurred while fetching commit data."
 msgstr "Terjadi galat ketika mengambil data commit."
 
 msgid "An error occurred while fetching commits. Retry the search."
-msgstr "Terjadi galat saat mengambil komit. Coba lagi pencarian."
+msgstr "Terjadi galat saat mengambil komit. Ulangi pencarian."
 
 msgid "An error occurred while fetching coverage reports."
 msgstr "Terjadi galat ketika mengambil laporan cakupan."
@@ -10087,7 +10090,7 @@ msgid "An error occurred while fetching reviewers."
 msgstr "Terjadi galat ketika mengambil peninjau."
 
 msgid "An error occurred while fetching tags. Retry the search."
-msgstr "Terjadi galat ketika mengambil tag. Coba lagi pencarian."
+msgstr "Terjadi galat ketika mengambil tag. Ulangi pencarian."
 
 msgid "An error occurred while fetching terraform reports."
 msgstr "Terjadi galat ketika mengambil laporan form terra."
@@ -10474,6 +10477,9 @@ msgstr "Selanjutnya"
 msgid "AnalyticsDashboards|No dashboards found"
 msgstr "Tidak ada dasbor ditemukan"
 
+msgid "AnalyticsDashboards|Panel query"
+msgstr "Kueri panel"
+
 msgid "AnalyticsDashboards|Projects"
 msgstr "Proyek"
 
@@ -10638,7 +10644,7 @@ msgid "Anonymous user"
 msgstr "Pengguna anonim"
 
 msgid "Another GitLab Duo availability override is in progress for this group. Please retry."
-msgstr "Penimpaan ketersediaan GitLab Duo lain sedang berlangsung untuk grup ini. Silakan coba lagi."
+msgstr "Penimpaan ketersediaan GitLab Duo lain sedang berlangsung untuk grup ini. Silakan ulangi."
 
 msgid "Another issue tracker is already in use. Only one issue tracker service can be active at a time"
 msgstr "Pelacak isu lain sudah digunakan. Hanya satu layanan pelacak isu yang dapat aktif dalam satu waktu"
@@ -11484,7 +11490,7 @@ msgid "Are you sure you want to reset the registration token?"
 msgstr "Apakah Anda yakin ingin mengatur ulang token pendaftaran?"
 
 msgid "Are you sure you want to retry this migration?"
-msgstr "Apakah Anda yakin Anda ingin mencoba ulang migrasi ini?"
+msgstr "Apakah Anda yakin Anda ingin mengulangi migrasi ini?"
 
 msgid "Are you sure you want to revoke this SSH key?"
 msgstr "Apakah Anda yakin Anda ingin mencabut kunci SSH ini?"
@@ -11541,7 +11547,7 @@ msgid "ArtifactRegistry|Activation"
 msgstr "Aktivasi"
 
 msgid "ArtifactRegistry|Ancestor ID must be a valid UUID."
-msgstr ""
+msgstr "ID leluhur harus berupa UUID valid."
 
 msgid "ArtifactRegistry|Artifact registry"
 msgstr "Registri artefak"
@@ -11580,16 +11586,16 @@ msgid "ArtifactRegistry|The Artifact Registry service is unavailable."
 msgstr "Layanan Registri Artefak tidak tersedia."
 
 msgid "ArtifactRegistry|The requested resources could not be found."
-msgstr ""
+msgstr "Sumber daya diminta tidak dapat ditemukan."
 
 msgid "ArtifactRegistry|The role assignment could not be completed."
 msgstr "Penugasan peran tidak dapat diselesaikan."
 
 msgid "ArtifactRegistry|The role assignment lookup could not be completed."
-msgstr ""
+msgstr "Pencarian penugasan peran tidak dapat diselesaikan."
 
 msgid "ArtifactRegistry|The role assignment lookup request was invalid."
-msgstr ""
+msgstr "Permintaan pencarian penugasan peran tidak valid."
 
 msgid "ArtifactRegistry|The role assignment request was invalid."
 msgstr "Permintaan penugasan peran tidak valid."
@@ -11598,13 +11604,13 @@ msgid "ArtifactRegistry|Unknown Artifact Registry role: %{role}."
 msgstr "Peran Registri Artefak tidak diketahui: %{role}."
 
 msgid "ArtifactRegistry|Unknown Artifact Registry roles: %{roles}."
-msgstr ""
+msgstr "Peran Registri Artefak tidak diketahui: %{roles}."
 
 msgid "ArtifactRegistry|You are not authorized to grant this role on this resource."
 msgstr "Anda tidak diotorisasikan untuk memberikan peran ini pada sumber daya ini."
 
 msgid "ArtifactRegistry|You are not authorized to read these role assignments."
-msgstr ""
+msgstr "Anda tidak diotorisasikan untuk membaca penugasan peran ini."
 
 msgid "ArtifactRegistry|You cannot grant roles in another organization."
 msgstr "Anda tidak dapat memberikan peran di organisasi lain."
@@ -11613,7 +11619,7 @@ msgid "ArtifactRegistry|You must be signed in to grant a role."
 msgstr "Anda harus masuk untuk memberikan peran."
 
 msgid "ArtifactRegistry|You must be signed in to read role assignments."
-msgstr ""
+msgstr "Anda harus masuk untuk membaca penugasan peran."
 
 msgid "Artifacts"
 msgstr "Artefak"
@@ -16213,7 +16219,7 @@ msgid "Check out, review, and resolve locally"
 msgstr "Periksa, tinjau, dan selesaikan secara lokal"
 
 msgid "Check the %{code_open}elasticsearch.log%{code_close} file to debug why the migration halted and make any changes before retrying the migration. When you fix the cause of the failure, select %{strong_open}Retry migration%{strong_close}, and the migration is scheduled to retry in the background."
-msgstr "Periksa berkas %{code_open}elasticsearch.log%{code_close} untuk mengawakutukan kenapa migrasi dihentikan dan membuat perubahan apa pun sebelum mencoba ulang migrasi. Ketika Anda memperbaiki penyebab kegagalan, pilih %{strong_open}Coba ulang migrasi%{strong_close}, dan migrasi dijadwalkan untuk mencoba ulang di latar belakang."
+msgstr "Periksa berkas %{code_open}elasticsearch.log%{code_close} untuk mengawakutukan kenapa migrasi dihentikan dan membuat perubahan apa pun sebelum mengulangi migrasi. Ketika Anda memperbaiki penyebab kegagalan, pilih %{strong_open}Ulangi migrasi%{strong_close}, dan migrasi dijadwalkan untuk mengulangi di latar belakang."
 
 msgid "Check the current instance configuration."
 msgstr "Periksa konfigurasi instansi saat ini."
@@ -19160,7 +19166,7 @@ msgid "CompareRevisions|%{source_branch} and %{target_branch} are the same."
 msgstr "%{source_branch} dan %{target_branch} sama."
 
 msgid "CompareRevisions|Additional commits have been omitted to prevent performance issues."
-msgstr ""
+msgstr "Komit tambahan telah dihilangkan untuk mencegah isu kinerja."
 
 msgid "CompareRevisions|An error occurred while retrieving target projects."
 msgstr "Terjadi galat ketika menerima proyek target."
@@ -22349,6 +22355,9 @@ msgstr "Batalkan"
 msgid "ContinuousDeployment|Cancelled"
 msgstr "Dibatalkan"
 
+msgid "ContinuousDeployment|Clear filters"
+msgstr "Bersihkan saring"
+
 msgid "ContinuousDeployment|Cluster agent"
 msgstr "Agen klaster"
 
@@ -22366,6 +22375,9 @@ msgstr "Ciutkan layanan"
 
 msgid "ContinuousDeployment|Continuous Deployment"
 msgstr "Pengerahan Berkelanjutan"
+
+msgid "ContinuousDeployment|Create applications to track them and deploy them to environments"
+msgstr "Buat aplikasi untuk melacak mereka dan mengerahkan mereka ke lingkungan"
 
 msgid "ContinuousDeployment|Created"
 msgstr "Dibuat"
@@ -22525,6 +22537,12 @@ msgstr "Nama diperlukan."
 
 msgid "ContinuousDeployment|New application"
 msgstr "Aplikasi baru"
+
+msgid "ContinuousDeployment|No applications match your filters"
+msgstr "Tidak ada aplikasi cocok filter Anda"
+
+msgid "ContinuousDeployment|No applications yet"
+msgstr "Belum ada aplikasi"
 
 msgid "ContinuousDeployment|No artifact sources configured."
 msgstr "Tidak ada sumber artefak dikonfigurasikan."
@@ -25041,31 +25059,31 @@ msgid "DastProfiles|Log file levels"
 msgstr "Tingkat berkas log"
 
 msgid "DastProfiles|Log file path"
-msgstr ""
+msgstr "Jalur berkas log"
 
 msgid "DastProfiles|Log levels"
-msgstr ""
+msgstr "Tingkat log"
 
 msgid "DastProfiles|Log messages"
-msgstr ""
+msgstr "Pesan log"
 
 msgid "DastProfiles|Manage %{profileType} profiles"
-msgstr ""
+msgstr "Kelola profil %{profileType}"
 
 msgid "DastProfiles|Manage profiles"
 msgstr "Kelola profil"
 
 msgid "DastProfiles|Maximum action count"
-msgstr ""
+msgstr "Hitungan tindakan maksimum"
 
 msgid "DastProfiles|Maximum action depth"
-msgstr ""
+msgstr "Kedalaman tindakan maksimum"
 
 msgid "DastProfiles|Maximum response size (MB)"
-msgstr ""
+msgstr "Ukuran tanggapan maksimum (MB)"
 
 msgid "DastProfiles|Minimum = 0 (no timeout enabled), Maximum = 2880 minutes"
-msgstr ""
+msgstr "Minimum = 0 (tidak ada waktu habis diaktifkan), Maksimum = 2880 menit"
 
 msgid "DastProfiles|Minimum = 1 second, Maximum = 3600 seconds"
 msgstr "Minimum = 1 detik, Maksimum = 3600 detik"
@@ -25074,64 +25092,64 @@ msgid "DastProfiles|Modifying the URL will clear any previously entered values f
 msgstr "Memodifikasikan URL akan membersihkan nilai yang dimasukkan apa pun sebelumnya untuk header permintaan tambahan dan kolom kata sandi."
 
 msgid "DastProfiles|Monitors all HTTP requests sent to the target to find potential vulnerabilities."
-msgstr ""
+msgstr "Memantau semua permintaan HTTP dikirimkan ke target untuk menemukan kerentanan potensial."
 
 msgid "DastProfiles|Must allow introspection queries to request the API schema. %{linkStart}How do I enable introspection%{linkEnd}?"
-msgstr ""
+msgstr "Harus mengizinkan kueri introspeksi ke skema API. %{linkStart}Bagaimana saya mengaktifkan introspeksi%{linkEnd}?"
 
 msgid "DastProfiles|New scanner profile"
-msgstr ""
+msgstr "Profil pemindai baru"
 
 msgid "DastProfiles|New site profile"
 msgstr "Situs profil baru"
 
 msgid "DastProfiles|No scanner profile selected"
-msgstr ""
+msgstr "Tidak ada profil pemindai dipilih"
 
 msgid "DastProfiles|No scanner profiles created yet"
-msgstr ""
+msgstr "Belum ada profil pemindai dibuat"
 
 msgid "DastProfiles|No site profile selected"
-msgstr ""
+msgstr "Tidak ada profil situs dipilih"
 
 msgid "DastProfiles|No site profiles created yet"
-msgstr ""
+msgstr "Belum ada profil situs dibuat"
 
 msgid "DastProfiles|No variables found"
-msgstr ""
+msgstr "Tidak ada variabel ditemukan"
 
 msgid "DastProfiles|Number of workers that passive scan in parallel. Defaults to the number of available CPUs."
-msgstr ""
+msgstr "Jumlah pekerja yang pemindaian pasif dalam paralel. Bawaannya ke jumlah CPU tersedia."
 
 msgid "DastProfiles|OTP field"
 msgstr "Kolom OTP"
 
 msgid "DastProfiles|OTP secret key"
-msgstr ""
+msgstr "Kunci rahasia OTP"
 
 msgid "DastProfiles|OTP submit field"
 msgstr "Kolom ajuan OTP"
 
 msgid "DastProfiles|PKCS12 certificate"
-msgstr ""
+msgstr "Sertifikat PKCS12"
 
 msgid "DastProfiles|PKCS12 password"
-msgstr ""
+msgstr "Kata sandi PKCS12"
 
 msgid "DastProfiles|Page ready timeout"
-msgstr ""
+msgstr "Waktu habis siap halaman"
 
 msgid "DastProfiles|Page ready timeout (after action)"
-msgstr ""
+msgstr "Waktu habis siap halaman (setelah tindakan)"
 
 msgid "DastProfiles|Page ready timeout (after navigation)"
-msgstr ""
+msgstr "Waktu habis siap halaman (setelah navigasi)"
 
 msgid "DastProfiles|Passive"
 msgstr "Pasif"
 
 msgid "DastProfiles|Passive scan worker count"
-msgstr ""
+msgstr "Hitungan pekerja pemindaian pasif"
 
 msgid "DastProfiles|Password"
 msgstr "Kata sandi"
@@ -25143,25 +25161,25 @@ msgid "DastProfiles|Password form field"
 msgstr "Kolom formulir kata sandi"
 
 msgid "DastProfiles|Profile in use and cannot be renamed"
-msgstr ""
+msgstr "Profil digunakan dan tidak dapat diganti nama"
 
 msgid "DastProfiles|Profile is being used by this on-demand scan"
-msgstr ""
+msgstr "Profil sedang digunakan oleh pemindaian permintaan ini"
 
 msgid "DastProfiles|Profile name"
 msgstr "Nama profil"
 
 msgid "DastProfiles|Ready element"
-msgstr ""
+msgstr "Elemen siap"
 
 msgid "DastProfiles|Request cookies"
-msgstr ""
+msgstr "Kuki permintaan"
 
 msgid "DastProfiles|Request headers"
-msgstr ""
+msgstr "Header permintaan"
 
 msgid "DastProfiles|Retry"
-msgstr ""
+msgstr "Ulangi"
 
 msgid "DastProfiles|Run the AJAX spider, in addition to the traditional spider, to crawl the target site."
 msgstr ""
@@ -26478,6 +26496,9 @@ msgid "Dependencies|The dependency list was successfully exported."
 msgstr ""
 
 msgid "Dependencies|There was a problem fetching the licenses for this group."
+msgstr ""
+
+msgid "Dependencies|There was a problem fetching the refs for this dependency."
 msgstr ""
 
 msgid "Dependencies|There was a problem fetching vulnerabilities."
@@ -28530,7 +28551,7 @@ msgid "DuoAgentPlatform|Response"
 msgstr "Tanggapan"
 
 msgid "DuoAgentPlatform|Retry"
-msgstr "Coba lagi"
+msgstr "Ulangi"
 
 msgid "DuoAgentPlatform|Returned to agent"
 msgstr "Dikembalikan ke agen"
@@ -30351,9 +30372,6 @@ msgstr ""
 msgid "DuoSlack|Not helpful"
 msgstr ""
 
-msgid "DuoSlack|On it! Working on your request."
-msgstr ""
-
 msgid "DuoSlack|Plan"
 msgstr ""
 
@@ -30376,6 +30394,12 @@ msgid "DuoSlack|View session in GitLab"
 msgstr ""
 
 msgid "DuoSlack|Your message is too long for me to process (the limit is about %{limit} characters). Shorten it and mention me again."
+msgstr ""
+
+msgid "DuoSlack|is thinking it through…"
+msgstr ""
+
+msgid "DuoSlack|is working on your request…"
 msgstr ""
 
 msgid "DuoTrialDiscover|Ask questions, explore concepts, test ideas, and receive instant feedback directly in your workflow."
@@ -48857,12 +48881,6 @@ msgstr ""
 msgid "Monitor and enforce compliance status and reports"
 msgstr ""
 
-msgid "Monitor and observe AI agent behavior and activities across your group."
-msgstr ""
-
-msgid "Monitor and observe AI agent behavior and activities across your project."
-msgstr ""
-
 msgid "Monitor automation session history"
 msgstr ""
 
@@ -53010,6 +53028,9 @@ msgid "One or more findings do not belong to the project"
 msgstr ""
 
 msgid "One or more groups could not be found"
+msgstr ""
+
+msgid "One or more groups require you to add 2FA to your account. Choose your preferred method below or review and leave groups to continue using your account."
 msgstr ""
 
 msgid "One or more groups that you don't have access to."
@@ -57758,7 +57779,22 @@ msgstr ""
 msgid "PolicyStore|Audit"
 msgstr ""
 
+msgid "PolicyStore|Build policy"
+msgstr ""
+
+msgid "PolicyStore|Create new policy"
+msgstr ""
+
+msgid "PolicyStore|Describe what this policy does"
+msgstr ""
+
+msgid "PolicyStore|Description"
+msgstr ""
+
 msgid "PolicyStore|Disabled"
+msgstr ""
+
+msgid "PolicyStore|Edit policy"
 msgstr ""
 
 msgid "PolicyStore|Enforce"
@@ -57773,10 +57809,25 @@ msgstr ""
 msgid "PolicyStore|Mode"
 msgstr ""
 
+msgid "PolicyStore|Name"
+msgstr ""
+
+msgid "PolicyStore|New policy"
+msgstr ""
+
 msgid "PolicyStore|Policies"
 msgstr ""
 
+msgid "PolicyStore|Review"
+msgstr ""
+
 msgid "PolicyStore|Scope"
+msgstr ""
+
+msgid "PolicyStore|This step is coming soon."
+msgstr ""
+
+msgid "PolicyStore|Untitled policy"
 msgstr ""
 
 msgid "PolicyStore|Warn"
@@ -63820,6 +63871,9 @@ msgstr ""
 msgid "Review and edit media"
 msgstr ""
 
+msgid "Review and leave groups"
+msgstr ""
+
 msgid "Review approval"
 msgstr ""
 
@@ -67319,6 +67373,9 @@ msgid "Secure files"
 msgstr ""
 
 msgid "Secure token that identifies an external storage request."
+msgstr ""
+
+msgid "Secure your account with two-factor authentication (2FA)"
 msgstr ""
 
 msgid "SecureFiles|%{name} Metadata"
@@ -76813,6 +76870,12 @@ msgstr ""
 msgid "Tables containing block elements (like multiple paragraphs, lists or blockquotes, or task lists with text or multiple items) are not supported in Markdown and will be converted to HTML."
 msgstr ""
 
+msgid "Table|Click to sort ascending"
+msgstr ""
+
+msgid "Table|Click to sort descending"
+msgstr ""
+
 msgid "Tag"
 msgstr ""
 
@@ -77873,17 +77936,14 @@ msgstr ""
 msgid "The git server, Gitaly, is not available at this time. Please contact your administrator."
 msgstr ""
 
-msgid "The global settings require you to enable Two-Factor Authentication for your account."
-msgstr "Pengaturan global memerlukan Anda mengaktifkan Otentikasi Dua Faktor untuk akun Anda."
+msgid "The global settings require you to enable two-factor authentication (2FA) for your account."
+msgstr ""
 
 msgid "The group export can be downloaded from:"
 msgstr ""
 
 msgid "The group has already been shared with this group"
 msgstr ""
-
-msgid "The group settings for %{group_links} require you to enable Two-Factor Authentication for your account. You can %{leave_group_links}."
-msgstr "Pengaturan grup untuk %{group_links} memerlukan Anda untuk mengaktifkan Otentikasi Dua Faktor untuk akun Anda. Anda dapat %{leave_group_links}."
 
 msgid "The group_project_ids parameter is only allowed for a group"
 msgstr ""
@@ -85929,6 +85989,18 @@ msgstr ""
 msgid "VulnerabilityManagement|Vulnerability set to %{severity} severity"
 msgstr ""
 
+msgid "VulnerabilityManagement|Vulnerability set to confirmed"
+msgstr ""
+
+msgid "VulnerabilityManagement|Vulnerability set to dismissed"
+msgstr ""
+
+msgid "VulnerabilityManagement|Vulnerability set to needs triage"
+msgstr ""
+
+msgid "VulnerabilityManagement|Vulnerability set to resolved"
+msgstr ""
+
 msgid "VulnerabilityManagement|Will not fix or a false-positive"
 msgstr ""
 
@@ -90053,6 +90125,9 @@ msgstr ""
 msgid "You are receiving this message because you are a GitLab administrator for %{url}."
 msgstr ""
 
+msgid "You are the last owner"
+msgstr ""
+
 msgid "You are trying to upload something other than an image. Please upload a .png, .jpg, .jpeg, .gif, .bmp, .tiff or .ico."
 msgstr ""
 
@@ -90644,7 +90719,7 @@ msgstr ""
 msgid "You need to upload a GitLab project export archive (ending in .gz)."
 msgstr ""
 
-msgid "You need to verify your primary email first before enabling Two-Factor Authentication."
+msgid "You need to verify your primary email first before enabling two-factor authentication (2FA)."
 msgstr ""
 
 msgid "You published branch %{branchName}. Take the next step when you are ready."
@@ -92730,9 +92805,6 @@ msgid "latest deployment"
 msgstr ""
 
 msgid "latest version"
-msgstr ""
-
-msgid "leave %{group_name}"
 msgstr ""
 
 msgid "less than a minute"

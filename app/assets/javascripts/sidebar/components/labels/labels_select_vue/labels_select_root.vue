@@ -130,7 +130,7 @@ export default {
       default: false,
     },
   },
-  emits: ['onDropdownClose', 'onLabelRemove', 'toggleCollapse', 'updateSelectedLabels'],
+  emits: ['label-removed', 'onDropdownClose', 'toggleCollapse', 'updateSelectedLabels'],
   data() {
     return {
       contentIsOnViewport: true,
@@ -324,7 +324,7 @@ export default {
       />
       <dropdown-value
         :disable-labels="labelsSelectInProgress"
-        @onLabelRemove="$emit('onLabelRemove', $event)"
+        @label-removed="$emit('label-removed', $event)"
       >
         <slot></slot>
       </dropdown-value>

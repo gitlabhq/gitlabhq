@@ -101,6 +101,15 @@ const checkProjectName = (projectNameInput, description) => {
 };
 
 const setProjectNamePathHandlers = ($projectNameInput, $projectPathInput) => {
+  // Panels without name/path fields (e.g. Import, CI/CD for external
+  // repository) have no `.tab-pane.active #project_name` /
+  // `#project_path` to bind to. `bindEvents()` calls this unconditionally
+  // for every panel `LegacyContainer` adopts, so this must no-op instead of
+  // throwing on those panels.
+  if (!$projectNameInput || !$projectPathInput) {
+    return;
+  }
+
   const specialRepo = document.querySelector('.js-user-readme-repo');
   const projectNameDescription = document.querySelector('#js-project-name-description');
   const projectNameInputListener = () => {

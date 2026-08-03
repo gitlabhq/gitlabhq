@@ -1,5 +1,6 @@
 import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import Translate from '~/vue_shared/translate';
 import CleanupImageTags from './components/cleanup_image_tags.vue';
@@ -22,7 +23,7 @@ export default () => {
     tagsRegexHelpPagePath,
     helpPagePath,
   } = el.dataset;
-  return new Vue({
+  return initVueApp({
     el,
     name: 'PackagesCleanupImageTagsRoot',
     apolloProvider,
@@ -35,8 +36,6 @@ export default () => {
       tagsRegexHelpPagePath,
       helpPagePath,
     },
-    render(createElement) {
-      return createElement(CleanupImageTags, {});
-    },
+    component: CleanupImageTags,
   });
 };

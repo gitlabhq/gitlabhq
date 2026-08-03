@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import JiraConnectNewBranchPage from '~/jira_connect/branches/pages/index.vue';
 import createDefaultClient from '~/lib/graphql';
 
@@ -17,7 +18,7 @@ export default function initJiraConnectBranches() {
     defaultClient: createDefaultClient(),
   });
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'JiraConnectNewBranchRoot',
     apolloProvider,
@@ -25,8 +26,6 @@ export default function initJiraConnectBranches() {
       initialBranchName,
       successStateSvgPath,
     },
-    render(createElement) {
-      return createElement(JiraConnectNewBranchPage);
-    },
+    component: JiraConnectNewBranchPage,
   });
 }

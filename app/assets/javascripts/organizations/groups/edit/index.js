@@ -1,5 +1,5 @@
-import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import createDefaultClient from '~/lib/graphql';
@@ -29,7 +29,7 @@ export const initOrganizationsGroupsEdit = () => {
     defaultClient: createDefaultClient(),
   });
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'OrganizationGroupsEditRoot',
     apolloProvider,
@@ -44,8 +44,6 @@ export const initOrganizationsGroupsEdit = () => {
       pathMaxlength,
       pathPattern,
     },
-    render(createElement) {
-      return createElement(App);
-    },
+    component: App,
   });
 };

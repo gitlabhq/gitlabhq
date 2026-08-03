@@ -1,5 +1,6 @@
 import VueApollo from 'vue-apollo';
 import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { pinia } from '~/pinia/instance';
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
@@ -23,7 +24,7 @@ export const initPersonalAccessTokenApp = () => {
   const { accessTokenGranularNew, accessTokenLegacyNew, accessTokenGranularTokensEnforced } =
     el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'PersonalAccessTokensRoot',
     apolloProvider,
@@ -32,9 +33,7 @@ export const initPersonalAccessTokenApp = () => {
       accessTokenLegacyNewUrl: accessTokenLegacyNew,
       granularTokensEnforced: parseBoolean(accessTokenGranularTokensEnforced),
     },
-    render(createElement) {
-      return createElement(PersonalAccessTokensApp);
-    },
+    component: PersonalAccessTokensApp,
   });
 };
 
@@ -53,7 +52,7 @@ export const initCreateGranularTokenApp = () => {
     accessTokenCanEnableSudo,
   } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'CreateGranularTokenRoot',
     apolloProvider,
@@ -64,9 +63,7 @@ export const initCreateGranularTokenApp = () => {
       agenticAvailable: parseBoolean(accessTokenAgenticAvailable),
       canEnableSudo: parseBoolean(accessTokenCanEnableSudo),
     },
-    render(createElement) {
-      return createElement(CreateGranularPersonalAccessTokenForm);
-    },
+    component: CreateGranularPersonalAccessTokenForm,
   });
 };
 
@@ -92,7 +89,7 @@ export const initCreateLegacyTokenApp = () => {
     accessTokenTableUrl,
   } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'CreateLegacyTokenRoot',
     pinia,
@@ -110,12 +107,9 @@ export const initCreateLegacyTokenApp = () => {
       accessTokenShow,
       accessTokenTableUrl,
     },
-    render(createElement) {
-      return createElement(CreateLegacyPersonalAccessTokenForm, {
-        props: {
-          id: gon.current_user_id,
-        },
-      });
+    component: CreateLegacyPersonalAccessTokenForm,
+    props: {
+      id: gon.current_user_id,
     },
   });
 };

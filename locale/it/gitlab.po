@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: it\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2026-07-28 07:47\n"
+"PO-Revision-Date: 2026-07-29 11:01\n"
 
 msgid " %{start} to %{end}"
 msgstr " Dal giorno %{start} al giorno %{end}"
@@ -3710,6 +3710,9 @@ msgstr "flusso"
 
 msgid "AICatalog|flows"
 msgstr "flussi"
+
+msgid "AICatalog|foundational items must be public"
+msgstr ""
 
 msgid "AICatalog|is private in another project"
 msgstr "è privato in un altro progetto"
@@ -7732,8 +7735,8 @@ msgstr "limite massimo di utenti"
 msgid "Administrator Account Setup"
 msgstr "Configurazione dell'account amministratore"
 
-msgid "Administrator users are required to enable Two-Factor Authentication for their account."
-msgstr "Gli utenti amministratori sono tenuti ad abilitare l'autenticazione a due fattori per il proprio account."
+msgid "Administrator users are required to enable two-factor authentication (2FA) for their account."
+msgstr ""
 
 msgid "Administrators"
 msgstr "Amministratori"
@@ -7930,9 +7933,6 @@ msgstr "Dopo aver rivisto queste linee guida per i contributi, sarà tutto pront
 msgid "Agent Information"
 msgstr "Informazione sull'agente"
 
-msgid "Agent artifacts"
-msgstr "Artefatti agente"
-
 msgid "Agent not found for provided id."
 msgstr "Agente non trovato per l'ID fornito."
 
@@ -7995,6 +7995,9 @@ msgstr "Impossibile caricare progetti."
 
 msgid "AgentArtifacts|Filter agent artifacts"
 msgstr "Filtra artefatti dell'agente"
+
+msgid "AgentArtifacts|GitLab Duo"
+msgstr ""
 
 msgid "AgentArtifacts|Goal"
 msgstr "Obiettivo"
@@ -10671,6 +10674,9 @@ msgstr "Avanti"
 
 msgid "AnalyticsDashboards|No dashboards found"
 msgstr "Nessuna dashboard trovata"
+
+msgid "AnalyticsDashboards|Panel query"
+msgstr ""
 
 msgid "AnalyticsDashboards|Projects"
 msgstr "Progetti"
@@ -22590,6 +22596,9 @@ msgstr "Annulla"
 msgid "ContinuousDeployment|Cancelled"
 msgstr "Annullata"
 
+msgid "ContinuousDeployment|Clear filters"
+msgstr ""
+
 msgid "ContinuousDeployment|Cluster agent"
 msgstr "Cluster di agenti"
 
@@ -22607,6 +22616,9 @@ msgstr "Comprimi servizi"
 
 msgid "ContinuousDeployment|Continuous Deployment"
 msgstr "Deployment continuo"
+
+msgid "ContinuousDeployment|Create applications to track them and deploy them to environments"
+msgstr ""
 
 msgid "ContinuousDeployment|Created"
 msgstr "Creato"
@@ -22766,6 +22778,12 @@ msgstr "Il nome è obbligatorio."
 
 msgid "ContinuousDeployment|New application"
 msgstr "Nuova applicazione"
+
+msgid "ContinuousDeployment|No applications match your filters"
+msgstr ""
+
+msgid "ContinuousDeployment|No applications yet"
+msgstr ""
 
 msgid "ContinuousDeployment|No artifact sources configured."
 msgstr "Nessuna sorgente di artefatti configurata."
@@ -26733,6 +26751,9 @@ msgstr "L'elenco delle dipendenze è stato esportato correttamente."
 msgid "Dependencies|There was a problem fetching the licenses for this group."
 msgstr "Si è verificato un problema durante il recupero delle licenze per questo gruppo."
 
+msgid "Dependencies|There was a problem fetching the refs for this dependency."
+msgstr ""
+
 msgid "Dependencies|There was a problem fetching vulnerabilities."
 msgstr "Si è verificato un problema durante il recupero delle vulnerabilità."
 
@@ -30623,9 +30644,6 @@ msgstr ""
 msgid "DuoSlack|Not helpful"
 msgstr ""
 
-msgid "DuoSlack|On it! Working on your request."
-msgstr "Sono al lavoro! Sto elaborando la tua richiesta."
-
 msgid "DuoSlack|Plan"
 msgstr "Piano"
 
@@ -30649,6 +30667,12 @@ msgstr "Visualizza la sessione in GitLab"
 
 msgid "DuoSlack|Your message is too long for me to process (the limit is about %{limit} characters). Shorten it and mention me again."
 msgstr "Il tuo messaggio è troppo lungo perché io possa elaborarlo (il limite è di circa %{limit} caratteri). Abbrevialo e menzionami di nuovo."
+
+msgid "DuoSlack|is thinking it through…"
+msgstr ""
+
+msgid "DuoSlack|is working on your request…"
+msgstr ""
 
 msgid "DuoTrialDiscover|Ask questions, explore concepts, test ideas, and receive instant feedback directly in your workflow."
 msgstr "Poni domande, esplora concetti, metti alla prova idee e ricevi feedback immediati direttamente nel tuo flusso di lavoro."
@@ -49191,12 +49215,6 @@ msgstr "Monitora e risolvi le vulnerabilità di sicurezza"
 msgid "Monitor and enforce compliance status and reports"
 msgstr "Monitora e applica in modo forzato lo stato di conformità e i relativi report"
 
-msgid "Monitor and observe AI agent behavior and activities across your group."
-msgstr "Monitora e osserva il comportamento e le attività degli agenti IA all'interno del tuo gruppo."
-
-msgid "Monitor and observe AI agent behavior and activities across your project."
-msgstr "Monitora e osserva il comportamento e le attività degli agenti di IA nell'ambito del tuo intero progetto."
-
 msgid "Monitor automation session history"
 msgstr "Monitora la cronologia delle sessioni di automazione"
 
@@ -53354,6 +53372,9 @@ msgstr ""
 
 msgid "One or more groups could not be found"
 msgstr "Non è stato possibile trovare uno o più gruppi"
+
+msgid "One or more groups require you to add 2FA to your account. Choose your preferred method below or review and leave groups to continue using your account."
+msgstr ""
 
 msgid "One or more groups that you don't have access to."
 msgstr "Uno o più gruppi a cui non hai accesso."
@@ -58113,7 +58134,22 @@ msgstr ""
 msgid "PolicyStore|Audit"
 msgstr ""
 
+msgid "PolicyStore|Build policy"
+msgstr ""
+
+msgid "PolicyStore|Create new policy"
+msgstr ""
+
+msgid "PolicyStore|Describe what this policy does"
+msgstr ""
+
+msgid "PolicyStore|Description"
+msgstr ""
+
 msgid "PolicyStore|Disabled"
+msgstr ""
+
+msgid "PolicyStore|Edit policy"
 msgstr ""
 
 msgid "PolicyStore|Enforce"
@@ -58128,10 +58164,25 @@ msgstr ""
 msgid "PolicyStore|Mode"
 msgstr ""
 
+msgid "PolicyStore|Name"
+msgstr ""
+
+msgid "PolicyStore|New policy"
+msgstr ""
+
 msgid "PolicyStore|Policies"
 msgstr ""
 
+msgid "PolicyStore|Review"
+msgstr ""
+
 msgid "PolicyStore|Scope"
+msgstr ""
+
+msgid "PolicyStore|This step is coming soon."
+msgstr ""
+
+msgid "PolicyStore|Untitled policy"
 msgstr ""
 
 msgid "PolicyStore|Warn"
@@ -64195,6 +64246,9 @@ msgstr "Visualizza l'app più recente"
 msgid "Review and edit media"
 msgstr "Revisiona e modifica i supporti"
 
+msgid "Review and leave groups"
+msgstr ""
+
 msgid "Review approval"
 msgstr "Rivedi approvazione"
 
@@ -67725,6 +67779,9 @@ msgstr "File sicuri"
 
 msgid "Secure token that identifies an external storage request."
 msgstr "Token sicuro che identifica una richiesta di archiviazione esterna."
+
+msgid "Secure your account with two-factor authentication (2FA)"
+msgstr ""
 
 msgid "SecureFiles|%{name} Metadata"
 msgstr "Metadati di %{name}"
@@ -77245,6 +77302,12 @@ msgstr "Dimensione della tabella"
 msgid "Tables containing block elements (like multiple paragraphs, lists or blockquotes, or task lists with text or multiple items) are not supported in Markdown and will be converted to HTML."
 msgstr "Le tabelle contenenti elementi di blocco (come più paragrafi, elenchi o citazioni lunghe, oppure elenchi di attività con testo o più elementi) non sono supportate in Markdown e verranno convertite in HTML."
 
+msgid "Table|Click to sort ascending"
+msgstr ""
+
+msgid "Table|Click to sort descending"
+msgstr ""
+
 msgid "Tag"
 msgstr "Tag"
 
@@ -78312,17 +78375,14 @@ msgstr "Il modulo contiene il seguente avviso:"
 msgid "The git server, Gitaly, is not available at this time. Please contact your administrator."
 msgstr "Il server git Gitaly non è al momento disponibile. Contatta il tuo amministratore."
 
-msgid "The global settings require you to enable Two-Factor Authentication for your account."
-msgstr "Le impostazioni globali richiedono l'abilitazione dell'autenticazione a due fattori per il tuo account."
+msgid "The global settings require you to enable two-factor authentication (2FA) for your account."
+msgstr ""
 
 msgid "The group export can be downloaded from:"
 msgstr "L'esportazione del gruppo può essere scaricata da:"
 
 msgid "The group has already been shared with this group"
 msgstr "Il gruppo è già stato condiviso con questo gruppo"
-
-msgid "The group settings for %{group_links} require you to enable Two-Factor Authentication for your account. You can %{leave_group_links}."
-msgstr "Le impostazioni del gruppo per %{group_links} richiedono l'abilitazione dell'autenticazione a due fattori per il tuo account. Puoi %{leave_group_links}."
 
 msgid "The group_project_ids parameter is only allowed for a group"
 msgstr "Il parametro group_project_ids è consentito solo per un gruppo"
@@ -86426,6 +86486,18 @@ msgstr "Nome o tipo di vulnerabilità. Ad es.: cross-site scripting"
 msgid "VulnerabilityManagement|Vulnerability set to %{severity} severity"
 msgstr "Vulnerabilità impostata su gravità %{severity}"
 
+msgid "VulnerabilityManagement|Vulnerability set to confirmed"
+msgstr ""
+
+msgid "VulnerabilityManagement|Vulnerability set to dismissed"
+msgstr ""
+
+msgid "VulnerabilityManagement|Vulnerability set to needs triage"
+msgstr ""
+
+msgid "VulnerabilityManagement|Vulnerability set to resolved"
+msgstr ""
+
 msgid "VulnerabilityManagement|Will not fix or a false-positive"
 msgstr "Non si corregge o è un falso positivo"
 
@@ -90564,6 +90636,9 @@ msgstr "Stai ricevendo questa email perché sei un proprietario o gestore del pr
 msgid "You are receiving this message because you are a GitLab administrator for %{url}."
 msgstr "Stai ricevendo questo messaggio perché sei un amministratore di GitLab per %{url}."
 
+msgid "You are the last owner"
+msgstr ""
+
 msgid "You are trying to upload something other than an image. Please upload a .png, .jpg, .jpeg, .gif, .bmp, .tiff or .ico."
 msgstr "Stai tentando di caricare qualcosa di diverso da un'immagine. Carica un file .png, .jpg, .jpeg, .gif, .bmp, .tiff o .ico."
 
@@ -91155,8 +91230,8 @@ msgstr "Devi specificare sia un token di accesso sia un URL dell'host."
 msgid "You need to upload a GitLab project export archive (ending in .gz)."
 msgstr "È necessario caricare un archivio di esportazione del progetto GitLab (che termina con .gz)."
 
-msgid "You need to verify your primary email first before enabling Two-Factor Authentication."
-msgstr "Prima di abilitare l'autenticazione a due fattori, è necessario verificare l'indirizzo email principale."
+msgid "You need to verify your primary email first before enabling two-factor authentication (2FA)."
+msgstr ""
 
 msgid "You published branch %{branchName}. Take the next step when you are ready."
 msgstr "Hai pubblicato il ramo%{branchName}. Procedi con il passaggio successivo quando è tutto pronto."
@@ -93278,9 +93353,6 @@ msgstr "deployment più recente"
 
 msgid "latest version"
 msgstr "ultima versione"
-
-msgid "leave %{group_name}"
-msgstr "abbandona %{group_name}"
 
 msgid "less than a minute"
 msgstr "meno di un minuto"

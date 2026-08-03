@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import GitlabSlackApplication from './components/gitlab_slack_application.vue';
 
@@ -10,20 +10,17 @@ export default () => {
   const { projects, isSignedIn, signInPath, slackLinkPath, gitlabLogoPath, slackLogoPath } =
     el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'GitlabSlackApplicationRoot',
-    render(createElement) {
-      return createElement(GitlabSlackApplication, {
-        props: {
-          projects: JSON.parse(projects),
-          isSignedIn: parseBoolean(isSignedIn),
-          signInPath,
-          slackLinkPath,
-          gitlabLogoPath,
-          slackLogoPath,
-        },
-      });
+    component: GitlabSlackApplication,
+    props: {
+      projects: JSON.parse(projects),
+      isSignedIn: parseBoolean(isSignedIn),
+      signInPath,
+      slackLinkPath,
+      gitlabLogoPath,
+      slackLogoPath,
     },
   });
 };

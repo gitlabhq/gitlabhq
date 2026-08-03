@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import AbuseReportsApp from './components/app.vue';
 
@@ -17,16 +17,14 @@ export const initAbuseReportsApp = () => {
     },
   );
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'AbuseReportsAppRoot',
     provide: { categories },
-    render: (createElement) =>
-      createElement(AbuseReportsApp, {
-        props: {
-          abuseReports: reports,
-          pagination,
-        },
-      }),
+    component: AbuseReportsApp,
+    props: {
+      abuseReports: reports,
+      pagination,
+    },
   });
 };

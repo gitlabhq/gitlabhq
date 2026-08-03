@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ko\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2026-07-28 07:47\n"
+"PO-Revision-Date: 2026-07-29 11:01\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start}부터 %{end}까지"
@@ -3520,6 +3520,9 @@ msgstr "플로우"
 
 msgid "AICatalog|flows"
 msgstr "플로우"
+
+msgid "AICatalog|foundational items must be public"
+msgstr ""
 
 msgid "AICatalog|is private in another project"
 msgstr "다른 프로젝트에서는 비공개임"
@@ -7537,8 +7540,8 @@ msgstr "사용자 한도"
 msgid "Administrator Account Setup"
 msgstr "운영자 계정 설정"
 
-msgid "Administrator users are required to enable Two-Factor Authentication for their account."
-msgstr "운영자 사용자는 계정에 대해 이중 인증을 사용하도록 설정해야 합니다."
+msgid "Administrator users are required to enable two-factor authentication (2FA) for their account."
+msgstr "운영자 사용자는 자신의 계정에 대해 2단계 인증(2FA)을 활성화해야 합니다."
 
 msgid "Administrators"
 msgstr "운영자"
@@ -7735,9 +7738,6 @@ msgstr "이러한 기여 가이드라인을 검토한 후에는 다음과 같이
 msgid "Agent Information"
 msgstr "에이전트정보"
 
-msgid "Agent artifacts"
-msgstr "에이전트 아티팩트"
-
 msgid "Agent not found for provided id."
 msgstr "제공된 ID에 대한 에이전트를 찾을 수 없습니다."
 
@@ -7800,6 +7800,9 @@ msgstr "프로젝트를 로딩하는데 실패함."
 
 msgid "AgentArtifacts|Filter agent artifacts"
 msgstr "에이전트 아티팩트 필터링"
+
+msgid "AgentArtifacts|GitLab Duo"
+msgstr "GitLab Duo"
 
 msgid "AgentArtifacts|Goal"
 msgstr "목표"
@@ -10473,6 +10476,9 @@ msgstr "다음"
 
 msgid "AnalyticsDashboards|No dashboards found"
 msgstr "대시보드를 찾을 수 없음"
+
+msgid "AnalyticsDashboards|Panel query"
+msgstr ""
 
 msgid "AnalyticsDashboards|Projects"
 msgstr "프로젝트"
@@ -22349,6 +22355,9 @@ msgstr "취소"
 msgid "ContinuousDeployment|Cancelled"
 msgstr "취소됨"
 
+msgid "ContinuousDeployment|Clear filters"
+msgstr "필터링 삭제"
+
 msgid "ContinuousDeployment|Cluster agent"
 msgstr "클러스터 에이전트"
 
@@ -22366,6 +22375,9 @@ msgstr "서비스 접기"
 
 msgid "ContinuousDeployment|Continuous Deployment"
 msgstr "연속 배포"
+
+msgid "ContinuousDeployment|Create applications to track them and deploy them to environments"
+msgstr "이를 추적하고 환경에 배포할 애플리케이션을 만듭니다"
 
 msgid "ContinuousDeployment|Created"
 msgstr "생성됨"
@@ -22525,6 +22537,12 @@ msgstr "이름은 필수사항임."
 
 msgid "ContinuousDeployment|New application"
 msgstr "새 어플리케이션"
+
+msgid "ContinuousDeployment|No applications match your filters"
+msgstr "필터와 일치하는 애플리케이션이 없습니다"
+
+msgid "ContinuousDeployment|No applications yet"
+msgstr "어플리케이션이 아직 없습니다."
 
 msgid "ContinuousDeployment|No artifact sources configured."
 msgstr "구성된 아티팩트 소스가 없습니다."
@@ -26480,6 +26498,9 @@ msgstr "의존성 목록이 성공적으로 내보내졌습니다."
 msgid "Dependencies|There was a problem fetching the licenses for this group."
 msgstr "이 그룹의 라이선스를 가져오는 중에 문제가 발생했습니다."
 
+msgid "Dependencies|There was a problem fetching the refs for this dependency."
+msgstr "이 종속성에 대한 참조를 가져오는 중에 문제가 발생했습니다."
+
 msgid "Dependencies|There was a problem fetching vulnerabilities."
 msgstr "취약점을 가져오는 중에 문제가 발생했습니다."
 
@@ -30351,9 +30372,6 @@ msgstr ""
 msgid "DuoSlack|Not helpful"
 msgstr ""
 
-msgid "DuoSlack|On it! Working on your request."
-msgstr "확인! 귀하의 요청을 처리하는 중입니다."
-
 msgid "DuoSlack|Plan"
 msgstr "플랜"
 
@@ -30377,6 +30395,12 @@ msgstr "GitLab에서 세션 보기"
 
 msgid "DuoSlack|Your message is too long for me to process (the limit is about %{limit} characters). Shorten it and mention me again."
 msgstr "귀하의 메시지가 너무 길어 처리할 수 없습니다 (한도는 약 %{limit}자입니다). 짧게 다시 말해 주세요."
+
+msgid "DuoSlack|is thinking it through…"
+msgstr "깊이이 생각하고 있어요…"
+
+msgid "DuoSlack|is working on your request…"
+msgstr "귀하의 요청을 처리하는 중입니다..."
 
 msgid "DuoTrialDiscover|Ask questions, explore concepts, test ideas, and receive instant feedback directly in your workflow."
 msgstr "질문을 하고, 개념을 탐구하고, 아이디어를 테스트하고, 워크플로에서 직접 즉각적인 피드백을 받으세요."
@@ -48857,12 +48881,6 @@ msgstr "보안 취약점 모니터링 및 해결"
 msgid "Monitor and enforce compliance status and reports"
 msgstr "규정 준수 상태 및 보고서 모니터링 및 시행"
 
-msgid "Monitor and observe AI agent behavior and activities across your group."
-msgstr "그룹 전체의 AI 에이전트 행동과 활동을 모니터링하고 관찰하세요."
-
-msgid "Monitor and observe AI agent behavior and activities across your project."
-msgstr "프로젝트 전체에서 AI 에이전트 동작과 활동을 모니터링하고 관찰하세요."
-
 msgid "Monitor automation session history"
 msgstr "자동화 세션 이력 모니터링"
 
@@ -53011,6 +53029,9 @@ msgstr "하나 이상의 발견 항목이 프로젝트에 속하지 않습니다
 
 msgid "One or more groups could not be found"
 msgstr "아나 이상의 그룹을 찾을 수 없음"
+
+msgid "One or more groups require you to add 2FA to your account. Choose your preferred method below or review and leave groups to continue using your account."
+msgstr "한개 이상의 그룹에서 계정에 2FA를 요구하고 있습니다. 계정을 계속 사용하려면 아래에서 원하는 방법을 선택하여 2FA를 사용하거나, 해당 그룹에서 탈퇴하세요."
 
 msgid "One or more groups that you don't have access to."
 msgstr "액세스 권한이 없는 하나 이상의 그룹."
@@ -57758,8 +57779,23 @@ msgstr ""
 msgid "PolicyStore|Audit"
 msgstr ""
 
+msgid "PolicyStore|Build policy"
+msgstr "정책 빌드"
+
+msgid "PolicyStore|Create new policy"
+msgstr "새 정책 생성"
+
+msgid "PolicyStore|Describe what this policy does"
+msgstr "이 정책이 하는 일을 설명하세요"
+
+msgid "PolicyStore|Description"
+msgstr "설명"
+
 msgid "PolicyStore|Disabled"
 msgstr ""
+
+msgid "PolicyStore|Edit policy"
+msgstr "정책 편집"
 
 msgid "PolicyStore|Enforce"
 msgstr ""
@@ -57773,11 +57809,26 @@ msgstr ""
 msgid "PolicyStore|Mode"
 msgstr ""
 
+msgid "PolicyStore|Name"
+msgstr "이름"
+
+msgid "PolicyStore|New policy"
+msgstr "새 정책"
+
 msgid "PolicyStore|Policies"
 msgstr ""
 
+msgid "PolicyStore|Review"
+msgstr "리뷰"
+
 msgid "PolicyStore|Scope"
 msgstr ""
+
+msgid "PolicyStore|This step is coming soon."
+msgstr "이 단계는 곧 지원됩니다."
+
+msgid "PolicyStore|Untitled policy"
+msgstr "제목없는 정책"
 
 msgid "PolicyStore|Warn"
 msgstr ""
@@ -63820,6 +63871,9 @@ msgstr "최신 앱 보기"
 msgid "Review and edit media"
 msgstr "검토하고 미디어 편집"
 
+msgid "Review and leave groups"
+msgstr "검토후 그룹에서 나가기"
+
 msgid "Review approval"
 msgstr "리뷰 승인"
 
@@ -67320,6 +67374,9 @@ msgstr "보안 파일"
 
 msgid "Secure token that identifies an external storage request."
 msgstr "외부 스토리지 요청을 식별하는 보안 토큰"
+
+msgid "Secure your account with two-factor authentication (2FA)"
+msgstr "이중 인증(2FA)으로 계정을 보호"
 
 msgid "SecureFiles|%{name} Metadata"
 msgstr "%{name} 메타데이터"
@@ -76813,6 +76870,12 @@ msgstr "테이블 크기"
 msgid "Tables containing block elements (like multiple paragraphs, lists or blockquotes, or task lists with text or multiple items) are not supported in Markdown and will be converted to HTML."
 msgstr "Markdown에서는 여러 단락, 목록, 블록 인용 또는 텍스트나 여러 항목이 포함된 작업 목록과 같은 블록 요소를 포함하는 표를 지원하지 않으며, 이러한 표는 HTML로 변환됩니다."
 
+msgid "Table|Click to sort ascending"
+msgstr "오름 차순으로 정렬"
+
+msgid "Table|Click to sort descending"
+msgstr "내림 차순으로 정렬"
+
 msgid "Tag"
 msgstr "태그"
 
@@ -77873,17 +77936,14 @@ msgstr "양식에 다음과 같은 경고가 있습니다:"
 msgid "The git server, Gitaly, is not available at this time. Please contact your administrator."
 msgstr "git 서버, Gitaly는 현재 사용할 수 없습니다. 운영자에게 문의하십시오."
 
-msgid "The global settings require you to enable Two-Factor Authentication for your account."
-msgstr "전역 설정을 사용하려면 계정에 대해 이중 인증을 활성화해야 합니다."
+msgid "The global settings require you to enable two-factor authentication (2FA) for your account."
+msgstr "전역 설정에서는 계정에 대해 2단계 인증(2FA)을 활성화해야 합니다."
 
 msgid "The group export can be downloaded from:"
 msgstr "그룹 내보내기는 다음에서 다운로드할 수 있습니다:"
 
 msgid "The group has already been shared with this group"
 msgstr "이미 이 그룹과 공유되었습니다."
-
-msgid "The group settings for %{group_links} require you to enable Two-Factor Authentication for your account. You can %{leave_group_links}."
-msgstr "%{group_links} 에 대한 그룹 설정을 사용하려면 계정에 대해 이중 인증을 활성화해야 합니다. 당신은 %{leave_group_links}."
 
 msgid "The group_project_ids parameter is only allowed for a group"
 msgstr "group_project_ids 매개변수는 그룹에만 허용됩니다."
@@ -85929,6 +85989,18 @@ msgstr "취약성 이름 또는 유형. 예:Cross-site scripting"
 msgid "VulnerabilityManagement|Vulnerability set to %{severity} severity"
 msgstr "취약점이 %{severity} 심각도로 설정됨"
 
+msgid "VulnerabilityManagement|Vulnerability set to confirmed"
+msgstr "취약점이 확인됨으로 설정됨"
+
+msgid "VulnerabilityManagement|Vulnerability set to dismissed"
+msgstr "취약성이 해지됨으로 설정됨"
+
+msgid "VulnerabilityManagement|Vulnerability set to needs triage"
+msgstr "취약점이 분류 필요로 설정됨"
+
+msgid "VulnerabilityManagement|Vulnerability set to resolved"
+msgstr "취약성이 해결됨을 설정됨"
+
 msgid "VulnerabilityManagement|Will not fix or a false-positive"
 msgstr "고쳐지지 않거나 거짓-양성"
 
@@ -90053,6 +90125,9 @@ msgstr "귀하가 프로젝트의 소유자 또는 유지관리자이기 때문�
 msgid "You are receiving this message because you are a GitLab administrator for %{url}."
 msgstr "%{url}의 GitLab 운영자이기 때문에 이 메시지를 받은 것입니다."
 
+msgid "You are the last owner"
+msgstr "당신이 마지막 남은 소유자임"
+
 msgid "You are trying to upload something other than an image. Please upload a .png, .jpg, .jpeg, .gif, .bmp, .tiff or .ico."
 msgstr "이미지가 아닌 다른 것을 업로드하려고 합니다. .png, .jpg, .jpeg, .gif, .bmp, .tif 또는 .ico를 업로드하십시오."
 
@@ -90644,8 +90719,8 @@ msgstr "액세스 토큰과 호스트 URL을 모두 지정해야 합니다."
 msgid "You need to upload a GitLab project export archive (ending in .gz)."
 msgstr "GitLab 프로젝트 내보내기 아카이브(.gz로 끝나는)를 업로드해야 합니다."
 
-msgid "You need to verify your primary email first before enabling Two-Factor Authentication."
-msgstr "이중 인증을 사용하려면 먼저 기본 email을 확인해야 합니다."
+msgid "You need to verify your primary email first before enabling two-factor authentication (2FA)."
+msgstr "2단계 인증(2FA)을 활성화하기 전에 먼저 기본 이메일을 검증해야 합니다."
 
 msgid "You published branch %{branchName}. Take the next step when you are ready."
 msgstr "%{branchName} 브랜치를 게시했습니다. 준비가 되면 다음 단계로 넘어가세요."
@@ -92731,9 +92806,6 @@ msgstr "최신 배포"
 
 msgid "latest version"
 msgstr "최신 버전"
-
-msgid "leave %{group_name}"
-msgstr "%{group_name} 나가기"
 
 msgid "less than a minute"
 msgstr "1분 이내"

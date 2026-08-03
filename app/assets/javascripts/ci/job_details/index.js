@@ -1,6 +1,7 @@
 import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import JobApp from './job_app.vue';
@@ -45,7 +46,7 @@ export const initJobDetails = () => {
     fullScreenAPIAvailable,
   });
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'JobAppRoot',
     apolloProvider,
@@ -57,15 +58,12 @@ export const initJobDetails = () => {
       pipelineTestReportUrl,
       canSetPipelineVariables: parseBoolean(canSetPipelineVariables),
     },
-    render(h) {
-      return h(JobApp, {
-        props: {
-          artifactHelpUrl,
-          deploymentHelpUrl,
-          runnerSettingsUrl,
-          logViewerPath,
-        },
-      });
+    component: JobApp,
+    props: {
+      artifactHelpUrl,
+      deploymentHelpUrl,
+      runnerSettingsUrl,
+      logViewerPath,
     },
   });
 };

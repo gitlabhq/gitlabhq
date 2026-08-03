@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import PipelineSummary from '~/ci/common/pipeline_summary/pipeline_summary.vue';
 
@@ -18,15 +19,11 @@ export default (selector = '#js-commit-box-pipeline-summary') => {
 
   const { fullPath, iid, graphqlResourceEtag } = el.dataset;
 
-  // eslint-disable-next-line no-new
-  new Vue({
+  initVueApp({
     el,
     name: 'PipelineSummaryRoot',
     apolloProvider,
-    render(createElement) {
-      return createElement(PipelineSummary, {
-        props: { fullPath, iid, pipelineEtag: graphqlResourceEtag },
-      });
-    },
+    component: PipelineSummary,
+    props: { fullPath, iid, pipelineEtag: graphqlResourceEtag },
   });
 };

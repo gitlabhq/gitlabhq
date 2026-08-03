@@ -2,6 +2,7 @@ import { defaultDataIdFromObject } from '@apollo/client/core';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { PAGE_CONFIG } from '~/vue_shared/alert_details/constants';
 import AlertManagementList from './components/alert_management_list_wrapper.vue';
@@ -49,12 +50,10 @@ export default () => {
     },
   });
 
-  return new Vue({
+  return initVueApp({
     el: selector,
     name: 'AlertManagementListRoot',
-    components: {
-      AlertManagementList,
-    },
+    component: AlertManagementList,
     provide: {
       projectPath,
       textQuery,
@@ -67,8 +66,5 @@ export default () => {
       userCanEnableAlertManagement: parseBoolean(userCanEnableAlertManagement),
     },
     apolloProvider,
-    render(createElement) {
-      return createElement('alert-management-list');
-    },
   });
 };

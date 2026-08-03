@@ -1,5 +1,5 @@
-import Vue from 'vue';
 import { pickBy } from 'lodash-es';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean } from './lib/utils/common_utils';
 import ConfirmDanger from './vue_shared/components/confirm_danger/confirm_danger.vue';
 
@@ -23,7 +23,7 @@ export default () => {
       htmlConfirmationMessage,
     } = element.dataset;
 
-    return new Vue({
+    return initVueApp({
       el: element,
       name: 'ConfirmDangerRoot',
       provide: pickBy(
@@ -35,22 +35,20 @@ export default () => {
         },
         (v) => Boolean(v),
       ),
-      render: (createElement) =>
-        createElement(ConfirmDanger, {
-          props: {
-            phrase,
-            buttonText,
-            buttonClass,
-            buttonVariant,
-            buttonTestid,
-            disabled: parseBoolean(disabled),
-          },
-          on: {
-            confirm: () => {
-              if (removeFormId) document.getElementById(removeFormId)?.submit();
-            },
-          },
-        }),
+      component: ConfirmDanger,
+      props: {
+        phrase,
+        buttonText,
+        buttonClass,
+        buttonVariant,
+        buttonTestid,
+        disabled: parseBoolean(disabled),
+      },
+      events: {
+        confirm: () => {
+          if (removeFormId) document.getElementById(removeFormId)?.submit();
+        },
+      },
     });
   });
 };

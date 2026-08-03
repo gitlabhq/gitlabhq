@@ -1,22 +1,16 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_status.vue';
 
 export default function initCommitPipelineStatus() {
   const commitPipelineStatusEl = document.querySelector('.js-commit-pipeline-status');
   if (!commitPipelineStatusEl) return null;
 
-  return new Vue({
+  return initVueApp({
     el: commitPipelineStatusEl,
     name: 'BlobCommitPipelineStatusRoot',
-    components: {
-      CommitPipelineStatus,
-    },
-    render(createElement) {
-      return createElement('commit-pipeline-status', {
-        props: {
-          endpoint: commitPipelineStatusEl.dataset.endpoint,
-        },
-      });
+    component: CommitPipelineStatus,
+    props: {
+      endpoint: commitPipelineStatusEl.dataset.endpoint,
     },
   });
 }

@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import BroadcastMessagesBase from './components/base.vue';
 
 export default () => {
@@ -6,7 +6,7 @@ export default () => {
   const { page, targetAccessLevelOptions, messagesPath, previewPath, messagesCount, messages } =
     el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'BroadcastMessages',
     provide: {
@@ -14,14 +14,11 @@ export default () => {
       messagesPath,
       previewPath,
     },
-    render(createElement) {
-      return createElement(BroadcastMessagesBase, {
-        props: {
-          page: Number(page),
-          messagesCount: Number(messagesCount),
-          messages: JSON.parse(messages),
-        },
-      });
+    component: BroadcastMessagesBase,
+    props: {
+      page: Number(page),
+      messagesCount: Number(messagesCount),
+      messages: JSON.parse(messages),
     },
   });
 };

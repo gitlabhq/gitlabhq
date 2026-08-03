@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { resolvers } from '~/vue_shared/components/groups_list/resolvers';
@@ -36,18 +37,15 @@ export const initYourWorkGroups = () => {
     defaultClient: createDefaultClient(resolvers(endpoint)),
   });
 
-  return new Vue({
+  return initVueApp({
     el,
     router: createRouter(basePath),
     apolloProvider,
     name: 'YourWorkGroupsRoot',
-    render(createElement) {
-      return createElement(YourWorkGroupsApp, {
-        props: {
-          initialSort,
-          canCreateGroup,
-        },
-      });
+    component: YourWorkGroupsApp,
+    props: {
+      initialSort,
+      canCreateGroup,
     },
   });
 };

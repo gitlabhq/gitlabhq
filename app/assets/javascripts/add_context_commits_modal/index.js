@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import AddContextCommitsModalTrigger from './components/add_context_commits_modal_trigger.vue';
 import AddContextCommitsModalWrapper from './components/add_context_commits_modal_wrapper.vue';
@@ -9,55 +9,34 @@ export default function initAddContextCommitsTriggers() {
   const addContextCommitsModalWrapperEl = document.querySelector('.add-review-item-modal-wrapper');
 
   if (addContextCommitsModalTriggerEl) {
-    // eslint-disable-next-line no-new
-    new Vue({
+    const { commitsEmpty, contextCommitsEmpty } = addContextCommitsModalTriggerEl.dataset;
+
+    initVueApp({
       el: addContextCommitsModalTriggerEl,
       name: 'AddContextCommitsModalTriggerRoot',
-      data() {
-        const { commitsEmpty, contextCommitsEmpty } = this.$options.el.dataset;
-        return {
-          commitsEmpty: parseBoolean(commitsEmpty),
-          contextCommitsEmpty: parseBoolean(contextCommitsEmpty),
-        };
-      },
-      render(createElement) {
-        return createElement(AddContextCommitsModalTrigger, {
-          props: {
-            commitsEmpty: this.commitsEmpty,
-            contextCommitsEmpty: this.contextCommitsEmpty,
-          },
-        });
+      component: AddContextCommitsModalTrigger,
+      props: {
+        commitsEmpty: parseBoolean(commitsEmpty),
+        contextCommitsEmpty: parseBoolean(contextCommitsEmpty),
       },
     });
   }
 
   if (addContextCommitsModalWrapperEl) {
     const store = createStore();
+    const { contextCommitsPath, targetBranch, mergeRequestIid, projectId } =
+      addContextCommitsModalWrapperEl.dataset;
 
-    // eslint-disable-next-line no-new
-    new Vue({
+    initVueApp({
       el: addContextCommitsModalWrapperEl,
       name: 'AddContextCommitsModalWrapperRoot',
       store,
-      data() {
-        const { contextCommitsPath, targetBranch, mergeRequestIid, projectId } =
-          this.$options.el.dataset;
-        return {
-          contextCommitsPath,
-          targetBranch,
-          mergeRequestIid: Number(mergeRequestIid),
-          projectId: Number(projectId),
-        };
-      },
-      render(createElement) {
-        return createElement(AddContextCommitsModalWrapper, {
-          props: {
-            contextCommitsPath: this.contextCommitsPath,
-            targetBranch: this.targetBranch,
-            mergeRequestIid: this.mergeRequestIid,
-            projectId: this.projectId,
-          },
-        });
+      component: AddContextCommitsModalWrapper,
+      props: {
+        contextCommitsPath,
+        targetBranch,
+        mergeRequestIid: Number(mergeRequestIid),
+        projectId: Number(projectId),
       },
     });
   }

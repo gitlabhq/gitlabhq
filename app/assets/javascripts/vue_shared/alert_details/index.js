@@ -3,6 +3,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { pinia } from '~/pinia/instance';
 import service from './service';
 import AlertDetails from './components/alert_details.vue';
@@ -57,19 +58,13 @@ export default (selector) => {
   provide.trackAlertsDetailsViewsOptions = TRACK_ALERTS_DETAILS_VIEWS_OPTIONS;
   provide.trackAlertStatusUpdateOptions = TRACK_ALERT_STATUS_UPDATE_OPTIONS;
 
-  // eslint-disable-next-line no-new
-  new Vue({
+  initVueApp({
     el: selector,
     name: 'AlertDetailsRoot',
-    components: {
-      AlertDetails,
-    },
+    component: AlertDetails,
     pinia,
     provide,
     apolloProvider,
     router,
-    render(createElement) {
-      return createElement('alert-details', {});
-    },
   });
 };

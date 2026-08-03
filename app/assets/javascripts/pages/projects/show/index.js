@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import { initFindFileShortcut } from '~/projects/behaviors';
@@ -134,30 +134,27 @@ const initCodeDropdown = () => {
   const { gitpodEnabled, showWebIdeButton, showGitpodButton, webIdeUrl, gitpodUrl } =
     convertObjectPropsToCamelCase(ideData ? JSON.parse(ideData) : {});
 
-  return new Vue({
+  return initVueApp({
     el: codeDropdownEl,
     name: 'CompactCodeDropdownRoot',
     provide: { newWorkspacePath, organizationId },
     apolloProvider,
-    render(createElement) {
-      return createElement(CompactCodeDropdown, {
-        props: {
-          sshUrl,
-          httpUrl,
-          kerberosUrl,
-          xcodeUrl,
-          webIdeUrl,
-          gitpodUrl,
-          showWebIdeButton,
-          isGitpodEnabledForInstance: parseBoolean(showGitpodButton),
-          isGitpodEnabledForUser: parseBoolean(gitpodEnabled),
-          directoryDownloadLinks: directoryDownloadLinks ? JSON.parse(directoryDownloadLinks) : [],
-          showNoSshKeyMessage: parseBoolean(showNoSshKeyMessage),
-          userSettingsSshKeysPath,
-          projectId,
-          projectPath,
-        },
-      });
+    component: CompactCodeDropdown,
+    props: {
+      sshUrl,
+      httpUrl,
+      kerberosUrl,
+      xcodeUrl,
+      webIdeUrl,
+      gitpodUrl,
+      showWebIdeButton,
+      isGitpodEnabledForInstance: parseBoolean(showGitpodButton),
+      isGitpodEnabledForUser: parseBoolean(gitpodEnabled),
+      directoryDownloadLinks: directoryDownloadLinks ? JSON.parse(directoryDownloadLinks) : [],
+      showNoSshKeyMessage: parseBoolean(showNoSshKeyMessage),
+      userSettingsSshKeysPath,
+      projectId,
+      projectPath,
     },
   });
 };

@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import DeleteBranchModal from '~/branches/components/delete_branch_modal.vue';
 
 export default function initDeleteBranchModal() {
@@ -7,11 +7,5 @@ export default function initDeleteBranchModal() {
     return false;
   }
 
-  return new Vue({
-    el,
-    name: 'DeleteBranchModalRoot',
-    render(createComponent) {
-      return createComponent(DeleteBranchModal);
-    },
-  });
+  return initVueApp({ el, name: 'DeleteBranchModalRoot', component: DeleteBranchModal });
 }

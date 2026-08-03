@@ -1,5 +1,6 @@
 import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import ServiceDeskRoot from './components/service_desk_root.vue';
 
@@ -31,7 +32,7 @@ export default () => {
     customEmailEndpoint,
   } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'ServiceDeskRootRoot',
     provide: {
@@ -52,6 +53,6 @@ export default () => {
       publicProject: parseBoolean(publicProject),
       customEmailEndpoint,
     },
-    render: (createElement) => createElement(ServiceDeskRoot),
+    component: ServiceDeskRoot,
   });
 };

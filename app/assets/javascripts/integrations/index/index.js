@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import IntegrationList from './components/integrations_list.vue';
 
@@ -11,7 +11,7 @@ export default () => {
 
   const { integrations, isAdmin } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'IntegrationListRoot',
     provide() {
@@ -19,12 +19,9 @@ export default () => {
         isAdmin: parseBoolean(isAdmin),
       };
     },
-    render(createElement) {
-      return createElement(IntegrationList, {
-        props: {
-          integrations: JSON.parse(integrations),
-        },
-      });
+    component: IntegrationList,
+    props: {
+      integrations: JSON.parse(integrations),
     },
   });
 };

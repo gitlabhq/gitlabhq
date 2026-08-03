@@ -2,6 +2,7 @@ import { defaultDataIdFromObject } from '@apollo/client/core';
 import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import TerraformList from './components/terraform_list.vue';
 import resolvers from './graphql/resolvers';
@@ -26,7 +27,7 @@ export default () => {
 
   const { emptyStateImage, projectPath, accessTokensPath, terraformApiUrl, username } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'TerraformListRoot',
     apolloProvider: new VueApollo({ defaultClient }),
@@ -36,13 +37,10 @@ export default () => {
       terraformApiUrl,
       username,
     },
-    render(createElement) {
-      return createElement(TerraformList, {
-        props: {
-          emptyStateImage,
-          terraformAdmin: Object.prototype.hasOwnProperty.call(el.dataset, 'terraformAdmin'),
-        },
-      });
+    component: TerraformList,
+    props: {
+      emptyStateImage,
+      terraformAdmin: Object.prototype.hasOwnProperty.call(el.dataset, 'terraformAdmin'),
     },
   });
 };

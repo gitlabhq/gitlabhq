@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import IssuesDashboardApp from 'ee_else_ce/issues/dashboard/components/issues_dashboard_app.vue';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { parseBoolean } from '~/lib/utils/common_utils';
@@ -36,7 +37,7 @@ export function mountIssuesDashboardApp() {
     rssPath,
   } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'IssuesDashboardRoot',
     apolloProvider,
@@ -62,6 +63,6 @@ export function mountIssuesDashboardApp() {
       isSignedIn: parseBoolean(isSignedIn),
       rssPath,
     },
-    render: (createComponent) => createComponent(IssuesDashboardApp),
+    component: IssuesDashboardApp,
   });
 }

@@ -1,6 +1,6 @@
 /* eslint-disable no-new */
 import $ from 'jquery';
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import loadAwardsHandler from '~/awards_handler';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
@@ -43,21 +43,18 @@ const loadDiffStats = () => {
     diffStatsElements.forEach((diffStatsEl) => {
       const { addedLines, removedLines, oldSize, newSize, viewerName } = diffStatsEl.dataset;
 
-      new Vue({
+      initVueApp({
         el: diffStatsEl,
         name: 'DiffStatsRoot',
-        render(createElement) {
-          return createElement(DiffStats, {
-            props: {
-              diffFile: {
-                old_size: oldSize,
-                new_size: newSize,
-                viewer: { name: viewerName },
-              },
-              addedLines: Number(addedLines),
-              removedLines: Number(removedLines),
-            },
-          });
+        component: DiffStats,
+        props: {
+          diffFile: {
+            old_size: oldSize,
+            new_size: newSize,
+            viewer: { name: viewerName },
+          },
+          addedLines: Number(addedLines),
+          removedLines: Number(removedLines),
         },
       });
     });

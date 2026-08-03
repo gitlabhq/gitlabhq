@@ -23,6 +23,11 @@ export default {
       type: String,
       required: true,
     },
+    canStart: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   emits: ['validation-failed', 'complete', 'stepped-back', 'stepped-forward'],
 
@@ -43,8 +48,11 @@ export default {
     showBackButton() {
       return !this.isFirstStep && !this.isFormComplete;
     },
+    isStartingBlocked() {
+      return this.isFirstStep && !this.canStart;
+    },
     showContinueButton() {
-      return !this.isLastStep;
+      return !this.isLastStep && !this.isStartingBlocked;
     },
     showCompletionButton() {
       return this.isLastStep;

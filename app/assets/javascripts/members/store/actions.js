@@ -1,6 +1,28 @@
 import axios from '~/lib/utils/axios_utils';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import * as types from './mutation_types';
+
+export const fetchMembers = async ({ state, commit }, params = {}) => {
+  if (!state.membersPath) {
+    return;
+  }
+
+  commit(types.REQUEST_MEMBERS);
+
+  try {
+    const { data } = await axios.get(state.membersPath, { params });
+
+    const { members, pagination } = convertObjectPropsToCamelCase(data, {
+      deep: true,
+      ignoreKeyNames: ['params'],
+    });
+
+    commit(types.RECEIVE_MEMBERS_SUCCESS, { members, pagination });
+  } catch (error) {
+    commit(types.RECEIVE_MEMBERS_ERROR, { error });
+  }
+};
 
 export const updateMemberRole = async (
   { state, commit },

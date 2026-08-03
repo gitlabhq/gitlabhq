@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import { s__ } from '~/locale';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { pinia } from '~/pinia/instance';
 import PackagesListApp from '~/packages_and_registries/infrastructure_registry/list/components/packages_list_app.vue';
 import Translate from '~/vue_shared/translate';
@@ -13,13 +14,11 @@ export default () => {
   const { pageType, resourceId, emptyListIllustration } = el.dataset;
   const isGroupPage = pageType === GROUP_PAGE_TYPE;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'PackagesListAppRoot',
     pinia,
-    components: {
-      PackagesListApp,
-    },
+    component: PackagesListApp,
     provide: {
       isGroupPage,
       resourceId,
@@ -27,9 +26,6 @@ export default () => {
       noResultsText: s__(
         'InfrastructureRegistry|Terraform modules are the main way to package and reuse resource configurations with Terraform. Learn more about how to %{noPackagesLinkStart}create Terraform modules%{noPackagesLinkEnd} in GitLab.',
       ),
-    },
-    render(createElement) {
-      return createElement('packages-list-app');
     },
   });
 };

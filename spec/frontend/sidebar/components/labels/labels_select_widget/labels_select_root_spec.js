@@ -160,10 +160,10 @@ describe('LabelsSelectRoot', () => {
         ]);
       });
 
-      it('emits `onLabelRemove` event on dropdown value label remove event', () => {
+      it('emits `label-removed` event on dropdown value label remove event', () => {
         const label = { id: 'gid://gitlab/ProjectLabel/1' };
-        findDropdownValue().vm.$emit('onLabelRemove', label);
-        expect(wrapper.emitted('onLabelRemove')).toEqual([[label]]);
+        findDropdownValue().vm.$emit('label-removed', label);
+        expect(wrapper.emitted('label-removed')).toEqual([[label]]);
       });
     });
 
@@ -294,7 +294,7 @@ describe('LabelsSelectRoot', () => {
       expect(findDropdownContents().props('selectedLabels')).toStrictEqual(mockLabels);
     });
 
-    it('emits the `onLabelRemove` when the embedded list triggers a removal', () => {
+    it('emits the `label-removed` when the embedded list triggers a removal', () => {
       createComponent({
         config: {
           ...mockConfig,
@@ -305,8 +305,8 @@ describe('LabelsSelectRoot', () => {
         },
       });
 
-      findEmbeddedLabelsList().vm.$emit('onLabelRemove', [mockRegularLabel.id]);
-      expect(wrapper.emitted('onLabelRemove')).toStrictEqual([[[mockRegularLabel.id]]]);
+      findEmbeddedLabelsList().vm.$emit('label-removed', [mockRegularLabel.id]);
+      expect(wrapper.emitted('label-removed')).toStrictEqual([[[mockRegularLabel.id]]]);
     });
   });
 

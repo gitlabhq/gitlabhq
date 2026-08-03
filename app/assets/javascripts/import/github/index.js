@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import ImportFromGithubApp from './import_from_github_app.vue';
 
@@ -12,12 +12,10 @@ export function initGitHubImportProjectForm() {
   const { viewModel } = el.dataset;
   const provide = JSON.parse(viewModel);
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'ImportFromGitHubRoot',
     provide: convertObjectPropsToCamelCase(provide),
-    render(createElement) {
-      return createElement(ImportFromGithubApp);
-    },
+    component: ImportFromGithubApp,
   });
 }

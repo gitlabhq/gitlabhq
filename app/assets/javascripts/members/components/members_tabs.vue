@@ -2,15 +2,12 @@
 import { GlBadge, GlButton, GlTab, GlTabs } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
-import { getParameterByName, queryToObject, setUrlParams, visitUrl } from '~/lib/utils/url_utility';
-import {
-  ACTIVE_TAB_QUERY_PARAM_NAME,
-  DIRECT_MEMBERS_PAGE_QUERY_PARAM_NAME,
-  MEMBERS_TAB_TYPES,
-  TAB_QUERY_PARAM_VALUES,
-} from 'ee_else_ce/members/constants';
+import { queryToObject, setUrlParams } from '~/lib/utils/url_utility';
+import { ACTIVE_TAB_QUERY_PARAM_NAME, MEMBERS_TAB_TYPES } from 'ee_else_ce/members/constants';
 import { TABS } from 'ee_else_ce/members/tabs_metadata';
 import MembersApp from './app.vue';
+
+const FETCH_MEMBERS_ACTION = 'fetchMembers';
 
 const countComputed = (state, namespace) => state[namespace]?.pagination?.totalItems || 0;
 
@@ -53,9 +50,17 @@ export default {
     tabs() {
       return this.$options.TABS.filter(this.showTab);
     },
+    selectedTab() {
+      return this.tabs[this.selectedTabIndex];
+    },
   },
-  mounted() {
-    this.ensureDirectMembersPageParam();
+  watch: {
+    selectedTab: {
+      immediate: true,
+      handler(tab) {
+        this.maybeFetchLazyMembers(tab);
+      },
+    },
   },
   methods: {
     getTabUrlParams(namespace) {
@@ -81,40 +86,56 @@ export default {
       }
 
       const { requiredPermissions = [] } = tab;
+      // `alwaysShow` only applies when the tab has a store module for this mount.
+      // The Direct members tab is only wired up on the project members page, so
+      // this keeps it from surfacing as an empty, data-less tab on the group page
+      // (which shares the same `TABS` array but does not build a `directMembers`
+      // store module).
+      const hasStoreModule = Boolean(this.$store.state[tab.namespace]);
       const tabCanBeShown =
-        this.getTabCount(tab) > 0 || this.activeTabIndexCalculatedFromUrlParams === index;
+        (tab.alwaysShow && hasStoreModule) ||
+        this.getTabCount(tab) > 0 ||
+        this.activeTabIndexCalculatedFromUrlParams === index;
 
       return (
         tabCanBeShown && requiredPermissions.every((requiredPermission) => this[requiredPermission])
       );
     },
     tabPath(value) {
-      const params = { tab: value };
-
-      // The Direct members tab must request page 1 explicitly so the backend
-      // loads direct members via the dedicated finder rather than deriving them
-      // from the combined members page (which can omit direct members that fall
-      // on a later page of the combined list).
-      if (value === TAB_QUERY_PARAM_VALUES.directMembers) {
-        params[DIRECT_MEMBERS_PAGE_QUERY_PARAM_NAME] = 1;
-      }
-
-      return setUrlParams(params, { clearParams: true });
+      return setUrlParams({ tab: value }, { clearParams: true });
     },
     titleLinkAttrs({ attrs, queryParamValue: value }) {
       return { ...attrs, href: this.tabPath(value) };
     },
-    ensureDirectMembersPageParam() {
-      // When landing directly on the Direct members tab (e.g. via a bookmark or
-      // shared link) without the page param, the server-rendered seed comes from
-      // the wrong code path. Reload with the page param so the dedicated finder
-      // provides the correct, complete list.
-      const isDirectMembersTab =
-        getParameterByName(ACTIVE_TAB_QUERY_PARAM_NAME) === TAB_QUERY_PARAM_VALUES.directMembers;
-      const hasPageParam = getParameterByName(DIRECT_MEMBERS_PAGE_QUERY_PARAM_NAME) !== null;
+    lazyMembersParams(namespace) {
+      // Pass the tab's own search/sort/page params from the URL to the fetch so
+      // reloads with those params (search, pagination) fetch the matching page.
+      const { searchParam } = this.$store.state[namespace]?.filteredSearchBar || {};
+      const { paramName } = this.$store.state[namespace]?.pagination || {};
+      const query = queryToObject(window.location.search);
 
-      if (isDirectMembersTab && !hasPageParam) {
-        visitUrl(setUrlParams({ [DIRECT_MEMBERS_PAGE_QUERY_PARAM_NAME]: 1 }));
+      return {
+        ...(searchParam && query[searchParam] ? { [searchParam]: query[searchParam] } : {}),
+        ...(query.sort ? { sort: query.sort } : {}),
+        ...(paramName && query[paramName] ? { [paramName]: query[paramName] } : {}),
+        ...(query.max_role ? { max_role: query.max_role } : {}),
+      };
+    },
+    maybeFetchLazyMembers(tab) {
+      if (!tab) {
+        return;
+      }
+
+      const { namespace } = tab;
+      const state = this.$store.state[namespace];
+
+      // Only tabs seeded with a `membersPath` fetch their data lazily. Fetch once
+      // per page load; search/pagination reload the page and re-seed the flag.
+      if (state?.membersPath && !state.loadRequested) {
+        this.$store.dispatch(
+          `${namespace}/${FETCH_MEMBERS_ACTION}`,
+          this.lazyMembersParams(namespace),
+        );
       }
     },
   },

@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import ExploreGroupsApp from '~/explore/groups/components/app.vue';
 import createDefaultClient from '~/lib/graphql';
 import { resolvers } from '~/vue_shared/components/groups_list/resolvers';
@@ -29,13 +30,12 @@ export const initExploreGroups = () => {
     defaultClient: createDefaultClient(resolvers(endpoint)),
   });
 
-  return new Vue({
+  return initVueApp({
     el,
     router: createRouter(basePath),
     apolloProvider,
     name: 'ExploreGroupsRoot',
-    render(createElement) {
-      return createElement(ExploreGroupsApp, { props: { initialSort } });
-    },
+    component: ExploreGroupsApp,
+    props: { initialSort },
   });
 };

@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import RefSelector from '~/ref/components/ref_selector.vue';
 
 export default function initNewTagRefSelector() {
@@ -6,20 +6,17 @@ export default function initNewTagRefSelector() {
 
   if (el) {
     const { projectId, defaultBranchName, hiddenInputName } = el.dataset;
-    // eslint-disable-next-line no-new
-    new Vue({
+
+    initVueApp({
       el,
       name: 'RefSelectorRoot',
-      render(createComponent) {
-        return createComponent(RefSelector, {
-          props: {
-            value: defaultBranchName,
-            name: hiddenInputName,
-            queryParams: { sort: 'updated_desc' },
-            projectId,
-            useSymbolicRefNames: true,
-          },
-        });
+      component: RefSelector,
+      props: {
+        value: defaultBranchName,
+        name: hiddenInputName,
+        queryParams: { sort: 'updated_desc' },
+        projectId,
+        useSymbolicRefNames: true,
       },
     });
   }

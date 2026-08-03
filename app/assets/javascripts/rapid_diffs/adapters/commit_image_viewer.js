@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import ImageViewer from '~/rapid_diffs/app/image_viewer/image_diff_viewer_with_discussions.vue';
 import { commitDiffDiscussionsStore } from '~/rapid_diffs/stores/instances/commit_discussions';
 import { MOUNTED } from '../adapter_events';
@@ -10,8 +10,7 @@ export const commitImageViewerAdapter = {
     );
     const { oldPath, newPath, diffRefs } = this.data;
     const { appData } = this;
-    // eslint-disable-next-line no-new
-    new Vue({
+    initVueApp({
       el: this.diffElement.querySelector('[data-image-view]'),
       name: 'ImageViewerRoot',
       provide() {
@@ -29,15 +28,12 @@ export const commitImageViewerAdapter = {
           noteableType: appData.noteableType,
         };
       },
-      render(h) {
-        return h(ImageViewer, {
-          props: {
-            imageData,
-            oldPath,
-            newPath,
-            diffRefs,
-          },
-        });
+      component: ImageViewer,
+      props: {
+        imageData,
+        oldPath,
+        newPath,
+        diffRefs,
       },
     });
   },

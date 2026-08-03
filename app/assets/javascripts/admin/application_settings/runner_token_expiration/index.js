@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseInterval } from '~/ci/runner/utils';
 import ExpirationIntervals from './components/expiration_intervals.vue';
 
@@ -15,17 +15,14 @@ const initRunnerTokenExpirationIntervals = (selector = '#js-runner-token-expirat
     projectRunnerTokenExpirationInterval,
   } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'ExpirationIntervalsRoot',
-    render(h) {
-      return h(ExpirationIntervals, {
-        props: {
-          instanceRunnerExpirationInterval: parseInterval(instanceRunnerTokenExpirationInterval),
-          groupRunnerExpirationInterval: parseInterval(groupRunnerTokenExpirationInterval),
-          projectRunnerExpirationInterval: parseInterval(projectRunnerTokenExpirationInterval),
-        },
-      });
+    component: ExpirationIntervals,
+    props: {
+      instanceRunnerExpirationInterval: parseInterval(instanceRunnerTokenExpirationInterval),
+      groupRunnerExpirationInterval: parseInterval(groupRunnerTokenExpirationInterval),
+      projectRunnerExpirationInterval: parseInterval(projectRunnerTokenExpirationInterval),
     },
   });
 };

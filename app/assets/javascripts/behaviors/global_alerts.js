@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 
 import GlobalAlerts from './components/global_alerts.vue';
 
@@ -7,11 +7,5 @@ export const initGlobalAlerts = () => {
 
   if (!el) return false;
 
-  return new Vue({
-    el,
-    name: 'GlobalAlertsRoot',
-    render(createElement) {
-      return createElement(GlobalAlerts);
-    },
-  });
+  return initVueApp({ el, name: 'GlobalAlertsRoot', component: GlobalAlerts });
 };

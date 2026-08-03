@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import NewResourceDropdown from './new_resource_dropdown.vue';
 
@@ -18,29 +19,26 @@ export const initNewResourceDropdown = (props = {}) => {
 
   const { groupId, fullPath, username } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'NewResourceDropdownRoot',
     apolloProvider,
-    render(createElement) {
-      return createElement(NewResourceDropdown, {
-        props: {
-          groupId,
-          queryVariables: {
-            ...(fullPath
-              ? {
-                  fullPath,
-                }
-              : {}),
-            ...(username
-              ? {
-                  username,
-                }
-              : {}),
-          },
-          ...props,
-        },
-      });
+    component: NewResourceDropdown,
+    props: {
+      groupId,
+      queryVariables: {
+        ...(fullPath
+          ? {
+              fullPath,
+            }
+          : {}),
+        ...(username
+          ? {
+              username,
+            }
+          : {}),
+      },
+      ...props,
     },
   });
 };

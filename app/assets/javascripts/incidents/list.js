@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import IncidentsList from './components/incidents_list.vue';
 
 Vue.use(VueApollo);
@@ -28,12 +29,10 @@ export default () => {
     defaultClient: createDefaultClient(),
   });
 
-  return new Vue({
+  return initVueApp({
     el: selector,
     name: 'IncidentsListRoot',
-    components: {
-      IncidentsList,
-    },
+    component: IncidentsList,
     provide: {
       projectPath,
       incidentTemplateName,
@@ -49,8 +48,5 @@ export default () => {
       canCreateIncident: parseBoolean(canCreateIncident),
     },
     apolloProvider,
-    render(createElement) {
-      return createElement('incidents-list');
-    },
   });
 };

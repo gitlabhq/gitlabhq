@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ro\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2026-07-28 07:47\n"
+"PO-Revision-Date: 2026-07-29 11:01\n"
 
 msgid " %{start} to %{end}"
 msgstr " de la %{start} până la %{end}"
@@ -3899,6 +3899,9 @@ msgid "AICatalog|flow"
 msgstr ""
 
 msgid "AICatalog|flows"
+msgstr ""
+
+msgid "AICatalog|foundational items must be public"
 msgstr ""
 
 msgid "AICatalog|is private in another project"
@@ -7927,7 +7930,7 @@ msgstr "limita de utilizare"
 msgid "Administrator Account Setup"
 msgstr ""
 
-msgid "Administrator users are required to enable Two-Factor Authentication for their account."
+msgid "Administrator users are required to enable two-factor authentication (2FA) for their account."
 msgstr ""
 
 msgid "Administrators"
@@ -8125,9 +8128,6 @@ msgstr "După revizuirea acestor orientări privind contribuțiile, veți fi gat
 msgid "Agent Information"
 msgstr ""
 
-msgid "Agent artifacts"
-msgstr ""
-
 msgid "Agent not found for provided id."
 msgstr ""
 
@@ -8189,6 +8189,9 @@ msgid "AgentArtifacts|Failed to load projects."
 msgstr ""
 
 msgid "AgentArtifacts|Filter agent artifacts"
+msgstr ""
+
+msgid "AgentArtifacts|GitLab Duo"
 msgstr ""
 
 msgid "AgentArtifacts|Goal"
@@ -10868,6 +10871,9 @@ msgid "AnalyticsDashboards|Next"
 msgstr ""
 
 msgid "AnalyticsDashboards|No dashboards found"
+msgstr ""
+
+msgid "AnalyticsDashboards|Panel query"
 msgstr ""
 
 msgid "AnalyticsDashboards|Projects"
@@ -22831,6 +22837,9 @@ msgstr ""
 msgid "ContinuousDeployment|Cancelled"
 msgstr ""
 
+msgid "ContinuousDeployment|Clear filters"
+msgstr ""
+
 msgid "ContinuousDeployment|Cluster agent"
 msgstr ""
 
@@ -22847,6 +22856,9 @@ msgid "ContinuousDeployment|Collapse services"
 msgstr ""
 
 msgid "ContinuousDeployment|Continuous Deployment"
+msgstr ""
+
+msgid "ContinuousDeployment|Create applications to track them and deploy them to environments"
 msgstr ""
 
 msgid "ContinuousDeployment|Created"
@@ -23006,6 +23018,12 @@ msgid "ContinuousDeployment|Name is required."
 msgstr ""
 
 msgid "ContinuousDeployment|New application"
+msgstr ""
+
+msgid "ContinuousDeployment|No applications match your filters"
+msgstr ""
+
+msgid "ContinuousDeployment|No applications yet"
 msgstr ""
 
 msgid "ContinuousDeployment|No artifact sources configured."
@@ -26986,6 +27004,9 @@ msgstr ""
 msgid "Dependencies|There was a problem fetching the licenses for this group."
 msgstr ""
 
+msgid "Dependencies|There was a problem fetching the refs for this dependency."
+msgstr ""
+
 msgid "Dependencies|There was a problem fetching vulnerabilities."
 msgstr ""
 
@@ -30895,9 +30916,6 @@ msgstr ""
 msgid "DuoSlack|Not helpful"
 msgstr ""
 
-msgid "DuoSlack|On it! Working on your request."
-msgstr ""
-
 msgid "DuoSlack|Plan"
 msgstr ""
 
@@ -30920,6 +30938,12 @@ msgid "DuoSlack|View session in GitLab"
 msgstr ""
 
 msgid "DuoSlack|Your message is too long for me to process (the limit is about %{limit} characters). Shorten it and mention me again."
+msgstr ""
+
+msgid "DuoSlack|is thinking it through…"
+msgstr ""
+
+msgid "DuoSlack|is working on your request…"
 msgstr ""
 
 msgid "DuoTrialDiscover|Ask questions, explore concepts, test ideas, and receive instant feedback directly in your workflow."
@@ -49525,12 +49549,6 @@ msgstr ""
 msgid "Monitor and enforce compliance status and reports"
 msgstr ""
 
-msgid "Monitor and observe AI agent behavior and activities across your group."
-msgstr ""
-
-msgid "Monitor and observe AI agent behavior and activities across your project."
-msgstr ""
-
 msgid "Monitor automation session history"
 msgstr ""
 
@@ -53696,6 +53714,9 @@ msgid "One or more findings do not belong to the project"
 msgstr ""
 
 msgid "One or more groups could not be found"
+msgstr ""
+
+msgid "One or more groups require you to add 2FA to your account. Choose your preferred method below or review and leave groups to continue using your account."
 msgstr ""
 
 msgid "One or more groups that you don't have access to."
@@ -58468,7 +58489,22 @@ msgstr ""
 msgid "PolicyStore|Audit"
 msgstr ""
 
+msgid "PolicyStore|Build policy"
+msgstr ""
+
+msgid "PolicyStore|Create new policy"
+msgstr ""
+
+msgid "PolicyStore|Describe what this policy does"
+msgstr ""
+
+msgid "PolicyStore|Description"
+msgstr ""
+
 msgid "PolicyStore|Disabled"
+msgstr ""
+
+msgid "PolicyStore|Edit policy"
 msgstr ""
 
 msgid "PolicyStore|Enforce"
@@ -58483,10 +58519,25 @@ msgstr ""
 msgid "PolicyStore|Mode"
 msgstr ""
 
+msgid "PolicyStore|Name"
+msgstr ""
+
+msgid "PolicyStore|New policy"
+msgstr ""
+
 msgid "PolicyStore|Policies"
 msgstr ""
 
+msgid "PolicyStore|Review"
+msgstr ""
+
 msgid "PolicyStore|Scope"
+msgstr ""
+
+msgid "PolicyStore|This step is coming soon."
+msgstr ""
+
+msgid "PolicyStore|Untitled policy"
 msgstr ""
 
 msgid "PolicyStore|Warn"
@@ -64570,6 +64621,9 @@ msgstr "Vizualizați cea mai recentă aplicație"
 msgid "Review and edit media"
 msgstr ""
 
+msgid "Review and leave groups"
+msgstr ""
+
 msgid "Review approval"
 msgstr ""
 
@@ -68130,6 +68184,9 @@ msgstr ""
 
 msgid "Secure token that identifies an external storage request."
 msgstr "Token securizat care identifică o solicitare de stocare externă."
+
+msgid "Secure your account with two-factor authentication (2FA)"
+msgstr ""
 
 msgid "SecureFiles|%{name} Metadata"
 msgstr ""
@@ -77677,6 +77734,12 @@ msgstr ""
 msgid "Tables containing block elements (like multiple paragraphs, lists or blockquotes, or task lists with text or multiple items) are not supported in Markdown and will be converted to HTML."
 msgstr ""
 
+msgid "Table|Click to sort ascending"
+msgstr ""
+
+msgid "Table|Click to sort descending"
+msgstr ""
+
 msgid "Tag"
 msgstr "Etichetă"
 
@@ -78751,17 +78814,14 @@ msgstr "Formularul conține următorul avertisment:"
 msgid "The git server, Gitaly, is not available at this time. Please contact your administrator."
 msgstr "Serverul git, Gitaly, nu este disponibil pentru moment. Vă rugăm să vă contactați administratorul."
 
-msgid "The global settings require you to enable Two-Factor Authentication for your account."
-msgstr "Setările globale necesită activarea Autentificării cu doi factori pentru contul dumneavoastră."
+msgid "The global settings require you to enable two-factor authentication (2FA) for your account."
+msgstr ""
 
 msgid "The group export can be downloaded from:"
 msgstr "Exportul grupului poate fi descărcat de la:"
 
 msgid "The group has already been shared with this group"
 msgstr "Grupul menționat a fost deja partajat cu acest grup"
-
-msgid "The group settings for %{group_links} require you to enable Two-Factor Authentication for your account. You can %{leave_group_links}."
-msgstr "Setările de grup pentru %{group_links} necesită activarea Autentificării cu doi factori pentru contul dumneavoastră. Puteți %{leave_group_links}."
 
 msgid "The group_project_ids parameter is only allowed for a group"
 msgstr "Parametrul group_project_ids este permis numai pentru un grup"
@@ -86923,6 +86983,18 @@ msgstr "Numele sau tipul vulnerabilității. De exemplu: scripturi cross-site"
 msgid "VulnerabilityManagement|Vulnerability set to %{severity} severity"
 msgstr ""
 
+msgid "VulnerabilityManagement|Vulnerability set to confirmed"
+msgstr ""
+
+msgid "VulnerabilityManagement|Vulnerability set to dismissed"
+msgstr ""
+
+msgid "VulnerabilityManagement|Vulnerability set to needs triage"
+msgstr ""
+
+msgid "VulnerabilityManagement|Vulnerability set to resolved"
+msgstr ""
+
 msgid "VulnerabilityManagement|Will not fix or a false-positive"
 msgstr "Nu se repară sau este un fals pozitiv"
 
@@ -91075,6 +91147,9 @@ msgstr ""
 msgid "You are receiving this message because you are a GitLab administrator for %{url}."
 msgstr "Primiți acest mesaj deoarece sunteți un administrator GitLab pentru %{url}."
 
+msgid "You are the last owner"
+msgstr ""
+
 msgid "You are trying to upload something other than an image. Please upload a .png, .jpg, .jpeg, .gif, .bmp, .tiff or .ico."
 msgstr "Încercați să încărcați altceva decât o imagine. Vă rugăm să încărcați un fișier .png, .jpg, .jpeg, .gif, .bmp, .tiff sau .ico."
 
@@ -91666,8 +91741,8 @@ msgstr ""
 msgid "You need to upload a GitLab project export archive (ending in .gz)."
 msgstr "Trebuie să încărcați o arhivă de export a proiectului GitLab (care se termină în .gz)."
 
-msgid "You need to verify your primary email first before enabling Two-Factor Authentication."
-msgstr "Trebuie să vă verificați mai întâi e-mailul principal înainte de a activa Autentificarea cu doi factori."
+msgid "You need to verify your primary email first before enabling two-factor authentication (2FA)."
+msgstr ""
 
 msgid "You published branch %{branchName}. Take the next step when you are ready."
 msgstr ""
@@ -93825,9 +93900,6 @@ msgstr "ultima implementare"
 
 msgid "latest version"
 msgstr "ultima versiune"
-
-msgid "leave %{group_name}"
-msgstr "părăsiți %{group_name}"
 
 msgid "less than a minute"
 msgstr "mai puțin de un minut"

@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import { generateCacheConfig, resolvers } from '../ci_variable_list/graphql/settings';
 import InheritedCiVariables from './components/inherited_ci_variables_app.vue';
@@ -22,7 +23,7 @@ export default (containerId = 'js-inherited-group-ci-variables') => {
   });
 
   // eslint-disable-next-line consistent-return
-  return new Vue({
+  return initVueApp({
     el,
     name: 'InheritedCiVariablesRoot',
     apolloProvider,
@@ -30,8 +31,6 @@ export default (containerId = 'js-inherited-group-ci-variables') => {
       isInheritedGroupVars: true,
       projectPath,
     },
-    render(createElement) {
-      return createElement(InheritedCiVariables);
-    },
+    component: InheritedCiVariables,
   });
 };

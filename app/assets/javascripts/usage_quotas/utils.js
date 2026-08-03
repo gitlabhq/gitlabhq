@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import UsageQuotasApp from './components/usage_quotas_app.vue';
 
 export const mountUsageQuotasApp = (tabs) => {
@@ -6,14 +6,12 @@ export const mountUsageQuotasApp = (tabs) => {
 
   if (!el || !tabs) return false;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'UsageQuotasView',
     provide: {
       tabs,
     },
-    render(createElement) {
-      return createElement(UsageQuotasApp);
-    },
+    component: UsageQuotasApp,
   });
 };

@@ -1,5 +1,5 @@
-import Vue from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import ErrorTrackingList from './components/error_tracking_list.vue';
 import store from './store';
 
@@ -21,28 +21,21 @@ export default () => {
   integratedErrorTrackingEnabled = parseBoolean(integratedErrorTrackingEnabled);
   showIntegratedTrackingDisabledAlert = parseBoolean(showIntegratedTrackingDisabledAlert);
 
-  // eslint-disable-next-line no-new
-  new Vue({
+  initVueApp({
     el: selector,
     name: 'ErrorTrackingListRoot',
-    components: {
-      ErrorTrackingList,
-    },
     store,
-    render(createElement) {
-      return createElement('error-tracking-list', {
-        props: {
-          indexPath,
-          enableErrorTrackingLink,
-          errorTrackingEnabled,
-          illustrationPath,
-          userCanEnableErrorTracking,
-          projectPath,
-          listPath,
-          showIntegratedTrackingDisabledAlert,
-          integratedErrorTrackingEnabled,
-        },
-      });
+    component: ErrorTrackingList,
+    props: {
+      indexPath,
+      enableErrorTrackingLink,
+      errorTrackingEnabled,
+      illustrationPath,
+      userCanEnableErrorTracking,
+      projectPath,
+      listPath,
+      showIntegratedTrackingDisabledAlert,
+      integratedErrorTrackingEnabled,
     },
   });
 };

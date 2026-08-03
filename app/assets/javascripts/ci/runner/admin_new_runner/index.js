@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import AdminNewRunnerApp from './admin_new_runner_app.vue';
 
@@ -18,16 +19,13 @@ export const initAdminNewRunner = (selector = '#js-admin-new-runner') => {
     defaultClient: createDefaultClient(),
   });
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'AdminNewRunnerAppRoot',
     apolloProvider,
-    render(h) {
-      return h(AdminNewRunnerApp, {
-        props: {
-          runnersPath,
-        },
-      });
+    component: AdminNewRunnerApp,
+    props: {
+      runnersPath,
     },
   });
 };

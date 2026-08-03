@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import MessageForm from './components/message_form.vue';
 
@@ -20,7 +20,7 @@ export default () => {
     showInCli,
   } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'EditBroadcastMessage',
     provide: {
@@ -28,23 +28,20 @@ export default () => {
       messagesPath,
       previewPath,
     },
-    render(createElement) {
-      return createElement(MessageForm, {
-        props: {
-          broadcastMessage: {
-            id: parseInt(id, 10),
-            message,
-            broadcastType,
-            theme,
-            dismissable: parseBoolean(dismissable),
-            targetAccessLevels: JSON.parse(targetAccessLevels),
-            targetPath,
-            startsAt: new Date(startsAt),
-            endsAt: new Date(endsAt),
-            showInCli: parseBoolean(showInCli),
-          },
-        },
-      });
+    component: MessageForm,
+    props: {
+      broadcastMessage: {
+        id: parseInt(id, 10),
+        message,
+        broadcastType,
+        theme,
+        dismissable: parseBoolean(dismissable),
+        targetAccessLevels: JSON.parse(targetAccessLevels),
+        targetPath,
+        startsAt: new Date(startsAt),
+        endsAt: new Date(endsAt),
+        showInCli: parseBoolean(showInCli),
+      },
     },
   });
 };

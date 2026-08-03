@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlToast } from '@gitlab/ui';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import AnalyticsDashboardsBreadcrumbs from '~/analytics/shared/components/analytics_dashboards_breadcrumbs.vue';
 import createDefaultClient from '~/lib/graphql';
 import { injectVueAppBreadcrumbs } from '~/lib/utils/breadcrumbs';
@@ -41,7 +42,7 @@ export default () => {
   const router = createRouter(exploreAnalyticsDashboardsPath, breadcrumbState);
   injectVueAppBreadcrumbs(router, AnalyticsDashboardsBreadcrumbs);
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'AnalyticsDashboardsRoot',
     apolloProvider,
@@ -50,12 +51,9 @@ export default () => {
       exploreAnalyticsDashboardsPath,
       breadcrumbState,
     },
-    render(h) {
-      return h(App, {
-        props: {
-          currentUserId,
-        },
-      });
+    component: App,
+    props: {
+      currentUserId,
     },
   });
 };

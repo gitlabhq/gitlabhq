@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import BindInOut from '~/behaviors/bind_in_out';
 import initFilePickers from '~/file_pickers';
 import Group from '~/group';
@@ -56,13 +57,12 @@ export function initNewGroupCreation() {
     defaultClient: createDefaultClient(),
   });
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'NewGroupCreationAppRoot',
     apolloProvider,
     provide,
-    render(h) {
-      return h(NewGroupCreationApp, { props });
-    },
+    component: NewGroupCreationApp,
+    props,
   });
 }

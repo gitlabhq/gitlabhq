@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import Translate from '~/vue_shared/translate';
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
@@ -22,7 +23,7 @@ export const initAdminJobsApp = () => {
 
   const { jobStatuses, url, canUpdateAllJobs } = containerEl.dataset;
 
-  return new Vue({
+  return initVueApp({
     el: containerEl,
     name: 'AdminJobsTableAppRoot',
     apolloProvider,
@@ -31,8 +32,6 @@ export const initAdminJobsApp = () => {
       jobStatuses: JSON.parse(jobStatuses),
       canUpdateAllJobs: parseBoolean(canUpdateAllJobs),
     },
-    render(createElement) {
-      return createElement(AdminJobsTableApp);
-    },
+    component: AdminJobsTableApp,
   });
 };

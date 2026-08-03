@@ -60,6 +60,11 @@ export default {
       required: false,
       default: false,
     },
+    hideIcon: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     isFlyout: {
       type: Boolean,
       required: false,
@@ -241,7 +246,7 @@ export default {
             'gl-rounded-base gl-bg-default': hasAvatar && avatarShape === 'rect',
           }"
         >
-          <slot name="icon">
+          <slot v-if="!hideIcon" name="icon">
             <template
               v-if="
                 isInPinnedSection && glFeatures.hideUnpinnedSidebarItems && itemIcon && !isIconOnly

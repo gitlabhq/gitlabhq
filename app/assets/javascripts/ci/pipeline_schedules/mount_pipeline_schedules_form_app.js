@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import PipelineSchedulesForm from './components/pipeline_schedules_form.vue';
@@ -29,7 +30,7 @@ export default (selector, editing = false) => {
     workerCronExpression,
   } = containerEl.dataset;
 
-  return new Vue({
+  return initVueApp({
     el: containerEl,
     name: 'PipelineSchedulesFormRoot',
     apolloProvider,
@@ -42,14 +43,11 @@ export default (selector, editing = false) => {
       settingsLink,
       workerCronExpression,
     },
-    render(createElement) {
-      return createElement(PipelineSchedulesForm, {
-        props: {
-          timezoneData: JSON.parse(timezoneData),
-          editing,
-          canSetPipelineVariables: parseBoolean(canSetPipelineVariables),
-        },
-      });
+    component: PipelineSchedulesForm,
+    props: {
+      timezoneData: JSON.parse(timezoneData),
+      editing,
+      canSetPipelineVariables: parseBoolean(canSetPipelineVariables),
     },
   });
 };

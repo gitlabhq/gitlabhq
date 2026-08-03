@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import PipelineHeader from './header/pipeline_header.vue';
 
@@ -24,8 +25,7 @@ export const createPipelineHeaderApp = (elSelector, apolloProvider, graphqlResou
     mergeRequestPath,
   } = el.dataset;
 
-  // eslint-disable-next-line no-new
-  new Vue({
+  initVueApp({
     el,
     name: 'PipelineHeaderApp',
     apolloProvider,
@@ -43,8 +43,6 @@ export const createPipelineHeaderApp = (elSelector, apolloProvider, graphqlResou
       canReadMergeTrain: parseBoolean(canReadMergeTrain),
       mergeTrainsPath,
     },
-    render(createElement) {
-      return createElement(PipelineHeader);
-    },
+    component: PipelineHeader,
   });
 };

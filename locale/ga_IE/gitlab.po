@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ga-IE\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2026-07-28 07:47\n"
+"PO-Revision-Date: 2026-07-29 11:01\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} go %{end}"
@@ -4281,6 +4281,9 @@ msgstr "sreabhadh"
 msgid "AICatalog|flows"
 msgstr "sreabha"
 
+msgid "AICatalog|foundational items must be public"
+msgstr ""
+
 msgid "AICatalog|is private in another project"
 msgstr "atá príobháideach i dtionscadal eile"
 
@@ -8317,8 +8320,8 @@ msgstr "Caipín úsáideora"
 msgid "Administrator Account Setup"
 msgstr "Socrú Cuntas Riarthóra"
 
-msgid "Administrator users are required to enable Two-Factor Authentication for their account."
-msgstr "Ceanglaítear ar úsáideoirí riarthóra Fíordheimhniú Dhá Fhachtóir a chumasú dá gcuntas."
+msgid "Administrator users are required to enable two-factor authentication (2FA) for their account."
+msgstr ""
 
 msgid "Administrators"
 msgstr "Riarthóirí"
@@ -8515,9 +8518,6 @@ msgstr "Tar éis duit na treoirlínte ranníocaíochta seo a athbhreithniú, bei
 msgid "Agent Information"
 msgstr "Eolas Gníomhaire"
 
-msgid "Agent artifacts"
-msgstr "Déantúsáin ghníomhaire"
-
 msgid "Agent not found for provided id."
 msgstr "Níor aimsíodh gníomhaire le haghaidh id curtha ar fáil."
 
@@ -8580,6 +8580,9 @@ msgstr "Theip ar lódáil na dtionscadal."
 
 msgid "AgentArtifacts|Filter agent artifacts"
 msgstr "Déantúsáin ghníomhaire scagaire"
+
+msgid "AgentArtifacts|GitLab Duo"
+msgstr ""
 
 msgid "AgentArtifacts|Goal"
 msgstr "Sprioc"
@@ -11265,6 +11268,9 @@ msgstr "Ar Aghaidh"
 
 msgid "AnalyticsDashboards|No dashboards found"
 msgstr "Níor aimsíodh aon phainéil rialaithe"
+
+msgid "AnalyticsDashboards|Panel query"
+msgstr ""
 
 msgid "AnalyticsDashboards|Projects"
 msgstr "Tionscadail"
@@ -23313,6 +23319,9 @@ msgstr "Cealaigh"
 msgid "ContinuousDeployment|Cancelled"
 msgstr "Cealaithe"
 
+msgid "ContinuousDeployment|Clear filters"
+msgstr ""
+
 msgid "ContinuousDeployment|Cluster agent"
 msgstr "Gníomhaire braisle"
 
@@ -23330,6 +23339,9 @@ msgstr "Seirbhísí a dhúnadh"
 
 msgid "ContinuousDeployment|Continuous Deployment"
 msgstr "Imscaradh Leanúnach"
+
+msgid "ContinuousDeployment|Create applications to track them and deploy them to environments"
+msgstr ""
 
 msgid "ContinuousDeployment|Created"
 msgstr "Cruthaithe"
@@ -23489,6 +23501,12 @@ msgstr "Tá ainm ag teastáil."
 
 msgid "ContinuousDeployment|New application"
 msgstr "Feidhmchlár nua"
+
+msgid "ContinuousDeployment|No applications match your filters"
+msgstr ""
+
+msgid "ContinuousDeployment|No applications yet"
+msgstr ""
 
 msgid "ContinuousDeployment|No artifact sources configured."
 msgstr "Níl aon fhoinsí déantán cumraithe."
@@ -27492,6 +27510,9 @@ msgstr "Easpórtáladh an liosta spleáchais go rathúil."
 msgid "Dependencies|There was a problem fetching the licenses for this group."
 msgstr "Bhí fadhb ann na ceadúnais don ghrúpa seo a fháil."
 
+msgid "Dependencies|There was a problem fetching the refs for this dependency."
+msgstr ""
+
 msgid "Dependencies|There was a problem fetching vulnerabilities."
 msgstr "Bhí fadhb ann leochaileachtaí a fháil."
 
@@ -31439,9 +31460,6 @@ msgstr ""
 msgid "DuoSlack|Not helpful"
 msgstr ""
 
-msgid "DuoSlack|On it! Working on your request."
-msgstr "Ar siúl! Ag obair ar d'iarratas."
-
 msgid "DuoSlack|Plan"
 msgstr "Plean"
 
@@ -31465,6 +31483,12 @@ msgstr "Féach ar an seisiún i GitLab"
 
 msgid "DuoSlack|Your message is too long for me to process (the limit is about %{limit} characters). Shorten it and mention me again."
 msgstr "Tá do theachtaireacht rófhada domsa le próiseáil (tá an teorainn thart ar %{limit} carachtar). Giorraigh í agus luaigh mé arís."
+
+msgid "DuoSlack|is thinking it through…"
+msgstr ""
+
+msgid "DuoSlack|is working on your request…"
+msgstr ""
 
 msgid "DuoTrialDiscover|Ask questions, explore concepts, test ideas, and receive instant feedback directly in your workflow."
 msgstr "Cuir ceisteanna, déan iniúchadh ar choincheapa, déan tástáil ar smaointe, agus faigh aiseolas láithreach go díreach i do shreabhadh oibre."
@@ -50193,12 +50217,6 @@ msgstr "Monatóireacht a dhéanamh ar leochaileachtaí slándála agus aghaidh a
 msgid "Monitor and enforce compliance status and reports"
 msgstr "Stádas agus tuarascálacha comhlíontachta a mhonatóiriú agus a fhorfheidhmiú"
 
-msgid "Monitor and observe AI agent behavior and activities across your group."
-msgstr "Déan monatóireacht agus breathnóireacht ar iompar agus ar ghníomhaíochtaí gníomhairí AI ar fud do ghrúpa."
-
-msgid "Monitor and observe AI agent behavior and activities across your project."
-msgstr "Déan monatóireacht agus breathnóireacht ar iompar agus ar ghníomhaíochtaí gníomhairí AI ar fud do thionscadail."
-
 msgid "Monitor automation session history"
 msgstr "Monatóireacht a dhéanamh ar stair seisiún uathoibrithe"
 
@@ -54383,6 +54401,9 @@ msgstr "Ní bhaineann ceann amháin nó níos mó de na torthaí leis an tionsca
 
 msgid "One or more groups could not be found"
 msgstr "Níorbh fhéidir grúpa amháin nó níos mó a aimsiú"
+
+msgid "One or more groups require you to add 2FA to your account. Choose your preferred method below or review and leave groups to continue using your account."
+msgstr ""
 
 msgid "One or more groups that you don't have access to."
 msgstr "Grúpa amháin nó níos mó nach bhfuil rochtain agat orthu."
@@ -59178,7 +59199,22 @@ msgstr ""
 msgid "PolicyStore|Audit"
 msgstr ""
 
+msgid "PolicyStore|Build policy"
+msgstr ""
+
+msgid "PolicyStore|Create new policy"
+msgstr ""
+
+msgid "PolicyStore|Describe what this policy does"
+msgstr ""
+
+msgid "PolicyStore|Description"
+msgstr ""
+
 msgid "PolicyStore|Disabled"
+msgstr ""
+
+msgid "PolicyStore|Edit policy"
 msgstr ""
 
 msgid "PolicyStore|Enforce"
@@ -59193,10 +59229,25 @@ msgstr ""
 msgid "PolicyStore|Mode"
 msgstr ""
 
+msgid "PolicyStore|Name"
+msgstr ""
+
+msgid "PolicyStore|New policy"
+msgstr ""
+
 msgid "PolicyStore|Policies"
 msgstr ""
 
+msgid "PolicyStore|Review"
+msgstr ""
+
 msgid "PolicyStore|Scope"
+msgstr ""
+
+msgid "PolicyStore|This step is coming soon."
+msgstr ""
+
+msgid "PolicyStore|Untitled policy"
 msgstr ""
 
 msgid "PolicyStore|Warn"
@@ -65320,6 +65371,9 @@ msgstr "Féach ar an aip is déanaí"
 msgid "Review and edit media"
 msgstr "Athbhreithnigh agus cuir in eagar na meáin"
 
+msgid "Review and leave groups"
+msgstr ""
+
 msgid "Review approval"
 msgstr "Ceadú athbhreithnithe"
 
@@ -68940,6 +68994,9 @@ msgstr "Comhaid slán"
 
 msgid "Secure token that identifies an external storage request."
 msgstr "Comhartha slán a shainaithníonn iarratas stórála seachtrach."
+
+msgid "Secure your account with two-factor authentication (2FA)"
+msgstr ""
 
 msgid "SecureFiles|%{name} Metadata"
 msgstr "%{name} Meiteashonraí"
@@ -78541,6 +78598,12 @@ msgstr "Méid an tábla"
 msgid "Tables containing block elements (like multiple paragraphs, lists or blockquotes, or task lists with text or multiple items) are not supported in Markdown and will be converted to HTML."
 msgstr "Ní thacaítear le táblaí ina bhfuil eilimintí bloc (cosúil le míreanna iolracha, liostaí nó luachana bloc, nó liostaí tascanna le téacs nó míreanna iolracha) i Markdown agus déanfar iad a thiontú go HTML."
 
+msgid "Table|Click to sort ascending"
+msgstr ""
+
+msgid "Table|Click to sort descending"
+msgstr ""
+
 msgid "Tag"
 msgstr "Clib"
 
@@ -79629,17 +79692,14 @@ msgstr "Tá an rabhadh seo a leanas san fhoirm:"
 msgid "The git server, Gitaly, is not available at this time. Please contact your administrator."
 msgstr "Níl an freastalaí git, Gitaly, ar fáil ag an am seo. Téigh i dteagmháil le do riarthóir."
 
-msgid "The global settings require you to enable Two-Factor Authentication for your account."
-msgstr "Éilíonn na socruithe domhanda ort Fíordheimhniú Dhá fhachtóir a chumasú do do chuntas."
+msgid "The global settings require you to enable two-factor authentication (2FA) for your account."
+msgstr ""
 
 msgid "The group export can be downloaded from:"
 msgstr "Is féidir an onnmhairiú grúpa a íoslódáil ó:"
 
 msgid "The group has already been shared with this group"
 msgstr "Tá an grúpa roinnte leis an ngrúpa seo cheana féin"
-
-msgid "The group settings for %{group_links} require you to enable Two-Factor Authentication for your account. You can %{leave_group_links}."
-msgstr "Éilíonn na socruithe grúpa do %{group_links} ort Fíordheimhniú Dhá fhachtóir a chumasú do do chuntas. Is féidir leat %{leave_group_links}."
 
 msgid "The group_project_ids parameter is only allowed for a group"
 msgstr "Ní cheadaítear an paraiméadar group_project_ids ach do ghrúpa"
@@ -87917,6 +87977,18 @@ msgstr "Ainm nó cineál leochaileachta. Ex: Scripteáil tras-láithreáin"
 msgid "VulnerabilityManagement|Vulnerability set to %{severity} severity"
 msgstr "Leochaileacht socraithe chuig %{severity} déine"
 
+msgid "VulnerabilityManagement|Vulnerability set to confirmed"
+msgstr ""
+
+msgid "VulnerabilityManagement|Vulnerability set to dismissed"
+msgstr ""
+
+msgid "VulnerabilityManagement|Vulnerability set to needs triage"
+msgstr ""
+
+msgid "VulnerabilityManagement|Vulnerability set to resolved"
+msgstr ""
+
 msgid "VulnerabilityManagement|Will not fix or a false-positive"
 msgstr "Ní shocróidh sé nó ní shocróidh sé bréag-dearfach"
 
@@ -92097,6 +92169,9 @@ msgstr "Tá an ríomhphost seo á fháil agat toisc gur Úinéir nó Cothabhála
 msgid "You are receiving this message because you are a GitLab administrator for %{url}."
 msgstr "Tá an teachtaireacht seo á fháil agat toisc gur riarthóir GitLab tú do %{url}."
 
+msgid "You are the last owner"
+msgstr ""
+
 msgid "You are trying to upload something other than an image. Please upload a .png, .jpg, .jpeg, .gif, .bmp, .tiff or .ico."
 msgstr "Tá tú ag iarraidh rud éigin seachas íomhá a uaslódáil. Uaslódáil .png, .jpg, .jpeg, .gif, .bmp, .tiff nó .ico le do thoil."
 
@@ -92688,8 +92763,8 @@ msgstr "Ní mór duit comhartha rochtana agus URL Óstach a shonrú."
 msgid "You need to upload a GitLab project export archive (ending in .gz)."
 msgstr "Ní mór duit cartlann onnmhairithe tionscadail GitLab a uaslódáil (ag críochnú i.gz)."
 
-msgid "You need to verify your primary email first before enabling Two-Factor Authentication."
-msgstr "Ní mór duit do phríomhphost ríomhphoist a fhíorú ar dtús sula gcumasaítear Fíordheimhniú Dhá Fhachtóir."
+msgid "You need to verify your primary email first before enabling two-factor authentication (2FA)."
+msgstr ""
 
 msgid "You published branch %{branchName}. Take the next step when you are ready."
 msgstr "D’fhoilsigh tú brainse %{branchName}. Glac an chéad chéim eile nuair a bheidh tú réidh."
@@ -94919,9 +94994,6 @@ msgstr "imscaradh is déanaí"
 
 msgid "latest version"
 msgstr "leagan is déanaí"
-
-msgid "leave %{group_name}"
-msgstr "fág %{group_name}"
 
 msgid "less than a minute"
 msgstr "níos lú ná nóiméad"

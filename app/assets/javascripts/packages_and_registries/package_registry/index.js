@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import Translate from '~/vue_shared/translate';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { apolloProvider } from '~/packages_and_registries/package_registry/graphql/index';
@@ -29,7 +30,7 @@ export default () => {
   const router = createRouter(endpoint);
 
   const attachMainComponent = () =>
-    new Vue({
+    initVueApp({
       el,
       name: 'PackageRegistry',
       router,
@@ -45,9 +46,7 @@ export default () => {
         settingsPath,
         canDeletePackages: parseBoolean(canDeletePackages),
       },
-      render(createElement) {
-        return createElement(PackageRegistry);
-      },
+      component: PackageRegistry,
     });
 
   return {

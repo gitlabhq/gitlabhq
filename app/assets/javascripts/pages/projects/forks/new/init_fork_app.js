@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import App from './components/app.vue';
 
@@ -28,7 +29,7 @@ export function initForkApp() {
     restrictedVisibilityLevels,
   } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'ForkAppRoot',
     apolloProvider: new VueApollo({
@@ -48,12 +49,9 @@ export function initForkApp() {
       projectVisibility,
       restrictedVisibilityLevels: JSON.parse(restrictedVisibilityLevels),
     },
-    render(h) {
-      return h(App, {
-        props: {
-          forkIllustration,
-        },
-      });
+    component: App,
+    props: {
+      forkIllustration,
     },
   });
 }

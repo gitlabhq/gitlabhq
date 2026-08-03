@@ -1,6 +1,7 @@
 import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import TokenAccessApp from './components/token_access_app.vue';
 import cacheConfig from './graphql/cache_config';
@@ -22,7 +23,7 @@ export const initJobTokenAccess = (containerId = 'js-ci-job-token-access-app') =
   const { csvDownloadPath, enforceAllowlist, fullPath, projectAllowlistLimit } =
     containerEl.dataset;
 
-  return new Vue({
+  return initVueApp({
     el: containerEl,
     name: 'TokenAccessAppsRoot',
     apolloProvider,
@@ -32,8 +33,6 @@ export const initJobTokenAccess = (containerId = 'js-ci-job-token-access-app') =
       fullPath,
       projectAllowlistLimit: Number(projectAllowlistLimit),
     },
-    render(createElement) {
-      return createElement(TokenAccessApp);
-    },
+    component: TokenAccessApp,
   });
 };

@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ja\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2026-07-28 07:47\n"
+"PO-Revision-Date: 2026-07-29 11:01\n"
 
 msgid " %{start} to %{end}"
 msgstr "%{start}から%{end}まで"
@@ -829,7 +829,7 @@ msgid "%{displayType} supports a maximum of %{maxDimensions} dimensions"
 msgstr "%{displayType}は最大%{maxDimensions}個のディメンションをサポートします。"
 
 msgid "%{displayType} supports exactly one dimension"
-msgstr ""
+msgstr "%{displayType}は1つのディメンションのみをサポートします。"
 
 msgid "%{displayType} with %{maxDimensions} dimensions supports only a single metric"
 msgstr "%{maxDimensions}個のディメンションを持つ%{displayType}では、1つのメトリックのみサポートされます。"
@@ -3521,6 +3521,9 @@ msgstr "フロー"
 msgid "AICatalog|flows"
 msgstr "フロー"
 
+msgid "AICatalog|foundational items must be public"
+msgstr ""
+
 msgid "AICatalog|is private in another project"
 msgstr "別のプロジェクトでは非公開です"
 
@@ -5695,7 +5698,7 @@ msgid_plural "AdminAIPoweredFeatures|%d models selected"
 msgstr[0] "%d件のモデルを選択"
 
 msgid "AdminAIPoweredFeatures|%{allowedCount} of %{totalCount} models allowed"
-msgstr ""
+msgstr "%{totalCount}件中%{allowedCount}件のモデルが許可されている"
 
 msgid "AdminAIPoweredFeatures|AI-native features"
 msgstr "AIネイティブ機能"
@@ -7537,8 +7540,8 @@ msgstr "ユーザーキャップ"
 msgid "Administrator Account Setup"
 msgstr "管理者アカウントのセットアップ"
 
-msgid "Administrator users are required to enable Two-Factor Authentication for their account."
-msgstr "管理者ユーザーは、自分のアカウントで二段階認証を有効にする必要があります。"
+msgid "Administrator users are required to enable two-factor authentication (2FA) for their account."
+msgstr ""
 
 msgid "Administrators"
 msgstr "管理者"
@@ -7735,9 +7738,6 @@ msgstr "これらのコントリビュートのガイドラインを確認した
 msgid "Agent Information"
 msgstr "エージェント情報"
 
-msgid "Agent artifacts"
-msgstr "エージェントアーティファクト"
-
 msgid "Agent not found for provided id."
 msgstr "指定されたエージェントIDは見つかりません。"
 
@@ -7800,6 +7800,9 @@ msgstr "プロジェクトの読み込みに失敗しました。"
 
 msgid "AgentArtifacts|Filter agent artifacts"
 msgstr "エージェントアーティファクトのフィルタ"
+
+msgid "AgentArtifacts|GitLab Duo"
+msgstr ""
 
 msgid "AgentArtifacts|Goal"
 msgstr "ゴール"
@@ -10474,6 +10477,9 @@ msgstr "次"
 msgid "AnalyticsDashboards|No dashboards found"
 msgstr "ダッシュボードがみつかりませんでした"
 
+msgid "AnalyticsDashboards|Panel query"
+msgstr ""
+
 msgid "AnalyticsDashboards|Projects"
 msgstr "プロジェクト"
 
@@ -11538,10 +11544,10 @@ msgid "ArtifactRegistry|A user can hold only one Artifact Registry role per reso
 msgstr "ユーザーが保持できるアーティファクトレジストリロールは、リソースごとに1つだけです。以下が複数回指定されています。"
 
 msgid "ArtifactRegistry|Activation"
-msgstr ""
+msgstr "有効化"
 
 msgid "ArtifactRegistry|Ancestor ID must be a valid UUID."
-msgstr ""
+msgstr "祖先IDは有効なUUIDである必要があります。"
 
 msgid "ArtifactRegistry|Artifact registry"
 msgstr "アーティファクトレジストリ"
@@ -11580,16 +11586,16 @@ msgid "ArtifactRegistry|The Artifact Registry service is unavailable."
 msgstr "アーティファクトレジストリサービスは利用できません。"
 
 msgid "ArtifactRegistry|The requested resources could not be found."
-msgstr ""
+msgstr "要求されたリソースが見つかりませんでした。"
 
 msgid "ArtifactRegistry|The role assignment could not be completed."
 msgstr "ロールの割り当てを完了できませんでした。"
 
 msgid "ArtifactRegistry|The role assignment lookup could not be completed."
-msgstr ""
+msgstr "ロールの割り当て検索を完了できませんでした。"
 
 msgid "ArtifactRegistry|The role assignment lookup request was invalid."
-msgstr ""
+msgstr "ロールの割り当て検索リクエストが無効です。"
 
 msgid "ArtifactRegistry|The role assignment request was invalid."
 msgstr "ロールの割り当てリクエストが無効でした。"
@@ -11598,13 +11604,13 @@ msgid "ArtifactRegistry|Unknown Artifact Registry role: %{role}."
 msgstr "不明なアーティファクトレジストリロール: %{role}"
 
 msgid "ArtifactRegistry|Unknown Artifact Registry roles: %{roles}."
-msgstr ""
+msgstr "不明なアーティファクトレジストリロール: %{roles}"
 
 msgid "ArtifactRegistry|You are not authorized to grant this role on this resource."
 msgstr "このリソースに対してこのロールを付与する権限がありません"
 
 msgid "ArtifactRegistry|You are not authorized to read these role assignments."
-msgstr ""
+msgstr "これらのロールの割り当てを読み込む権限がありません。"
 
 msgid "ArtifactRegistry|You cannot grant roles in another organization."
 msgstr "別の組織でロールを付与することはできません。"
@@ -11613,7 +11619,7 @@ msgid "ArtifactRegistry|You must be signed in to grant a role."
 msgstr "ロールを付与するにはサインインが必要です。"
 
 msgid "ArtifactRegistry|You must be signed in to read role assignments."
-msgstr ""
+msgstr "ロール割り当てを読み込むにはサインインが必要です。"
 
 msgid "Artifacts"
 msgstr "アーティファクト"
@@ -19160,7 +19166,7 @@ msgid "CompareRevisions|%{source_branch} and %{target_branch} are the same."
 msgstr "%{source_branch} と %{target_branch} は同じものです。"
 
 msgid "CompareRevisions|Additional commits have been omitted to prevent performance issues."
-msgstr ""
+msgstr "パフォーマンス上の問題を防ぐため、追加のコミットは省略されています。"
 
 msgid "CompareRevisions|An error occurred while retrieving target projects."
 msgstr "ターゲットプロジェクトの取得中にエラーが発生しました。"
@@ -22349,6 +22355,9 @@ msgstr "キャンセル"
 msgid "ContinuousDeployment|Cancelled"
 msgstr "キャンセル済み"
 
+msgid "ContinuousDeployment|Clear filters"
+msgstr ""
+
 msgid "ContinuousDeployment|Cluster agent"
 msgstr "クラスターエージェント"
 
@@ -22366,6 +22375,9 @@ msgstr "サービスを折りたたむ"
 
 msgid "ContinuousDeployment|Continuous Deployment"
 msgstr "継続的デプロイ"
+
+msgid "ContinuousDeployment|Create applications to track them and deploy them to environments"
+msgstr ""
 
 msgid "ContinuousDeployment|Created"
 msgstr "作成済み"
@@ -22526,6 +22538,12 @@ msgstr "名前は必須です。"
 msgid "ContinuousDeployment|New application"
 msgstr "新しいアプリケーション"
 
+msgid "ContinuousDeployment|No applications match your filters"
+msgstr ""
+
+msgid "ContinuousDeployment|No applications yet"
+msgstr ""
+
 msgid "ContinuousDeployment|No artifact sources configured."
 msgstr "アーティファクトのソースが設定されていません。"
 
@@ -22638,7 +22656,7 @@ msgid "ContinuousDeployment|The application may have been removed or you may not
 msgstr "アプリケーションが削除されたか、アクセス権がない可能性があります。"
 
 msgid "ContinuousDeployment|The cluster that backs this environment. Deploy connects through a GitLab Agent — no cluster endpoint required."
-msgstr ""
+msgstr "この環境を支えるクラスターです。デプロイはGitLab Agentを経由して接続されるため、クラスターエンドポイントは不要です。"
 
 msgid "ContinuousDeployment|The deployable units. Each service has its own deployment strategy."
 msgstr "デプロイ可能な単位。それぞれのサービスは独自のデプロイ戦略があります。"
@@ -26479,6 +26497,9 @@ msgstr "依存関係リストが正常にエクスポートされました。"
 
 msgid "Dependencies|There was a problem fetching the licenses for this group."
 msgstr "このグループのライセンスの取得に問題がありました。"
+
+msgid "Dependencies|There was a problem fetching the refs for this dependency."
+msgstr ""
 
 msgid "Dependencies|There was a problem fetching vulnerabilities."
 msgstr "脆弱性の取得中に問題が発生しました。"
@@ -30351,9 +30372,6 @@ msgstr "この回答が役に立たなかったと評価する"
 msgid "DuoSlack|Not helpful"
 msgstr "役に立たなかった"
 
-msgid "DuoSlack|On it! Working on your request."
-msgstr "対応中です。リクエストを実行しています。"
-
 msgid "DuoSlack|Plan"
 msgstr "プラン"
 
@@ -30377,6 +30395,12 @@ msgstr "GitLabのセッションを表示"
 
 msgid "DuoSlack|Your message is too long for me to process (the limit is about %{limit} characters). Shorten it and mention me again."
 msgstr "メッセージが長すぎて処理できません(約%{limit}文字まで)。短くして、もう一度メンションしてください。"
+
+msgid "DuoSlack|is thinking it through…"
+msgstr ""
+
+msgid "DuoSlack|is working on your request…"
+msgstr ""
 
 msgid "DuoTrialDiscover|Ask questions, explore concepts, test ideas, and receive instant feedback directly in your workflow."
 msgstr "ワークフロー内で直接質問をしたり、概念を検索したり、アイデアをテストしながら、すぐにフィードバックを受け取ることができます。"
@@ -37979,7 +38003,7 @@ msgid "GroupSettings|Configure merge request checks and automatic reviews by Git
 msgstr "このグループのプロジェクトに対して、GitLab Duoによるマージリクエストのチェックと自動レビューを設定します。これらの設定はサブプロジェクトとプロジェクトに適用されます。"
 
 msgid "GroupSettings|Configure merge request settings for projects in this group. These settings cascade to subgroups and projects."
-msgstr ""
+msgstr "このグループのプロジェクトに対して、マージリクエストの設定を構成します。これらの設定はサブプロジェクトとプロジェクトに適用されます。"
 
 msgid "GroupSettings|Contact source"
 msgstr "連絡先のソース"
@@ -38534,7 +38558,7 @@ msgid "Groups|Group name"
 msgstr "グループ名"
 
 msgid "Groups|Group name is required."
-msgstr ""
+msgstr "グループ名が必要です。"
 
 msgid "Groups|Group path is available."
 msgstr "そのグループパスは利用可能です。"
@@ -48857,12 +48881,6 @@ msgstr "セキュリティの脆弱性をモニターし、対処する"
 msgid "Monitor and enforce compliance status and reports"
 msgstr "コンプライアンス状況とレポートをモニタリングして、コンプライアンスを徹底する"
 
-msgid "Monitor and observe AI agent behavior and activities across your group."
-msgstr "グループ全体でAIエージェントの動作やアクティビティを監視する。"
-
-msgid "Monitor and observe AI agent behavior and activities across your project."
-msgstr "プロジェクト全体でAIエージェントの動作やアクティビティを監視する。"
-
 msgid "Monitor automation session history"
 msgstr "オートメーションセッション履歴のモニタリング"
 
@@ -53011,6 +53029,9 @@ msgstr "1つ以上の検出がこのプロジェクトに属していません"
 
 msgid "One or more groups could not be found"
 msgstr "1つ以上のグループがみつかりませんでした"
+
+msgid "One or more groups require you to add 2FA to your account. Choose your preferred method below or review and leave groups to continue using your account."
+msgstr ""
 
 msgid "One or more groups that you don't have access to."
 msgstr "アクセスできない 1 つまたは複数のグループ"
@@ -57750,37 +57771,67 @@ msgid "PolicyRuleMultiSelect|Select all"
 msgstr "すべて選択"
 
 msgid "PolicyStore|Active"
-msgstr ""
+msgstr "有効"
 
 msgid "PolicyStore|Active policies"
-msgstr ""
+msgstr "有効なポリシー"
 
 msgid "PolicyStore|Audit"
+msgstr "監査"
+
+msgid "PolicyStore|Build policy"
+msgstr ""
+
+msgid "PolicyStore|Create new policy"
+msgstr ""
+
+msgid "PolicyStore|Describe what this policy does"
+msgstr ""
+
+msgid "PolicyStore|Description"
 msgstr ""
 
 msgid "PolicyStore|Disabled"
+msgstr "無効"
+
+msgid "PolicyStore|Edit policy"
 msgstr ""
 
 msgid "PolicyStore|Enforce"
-msgstr ""
+msgstr "適用"
 
 msgid "PolicyStore|Evaluations this week"
-msgstr ""
+msgstr "今週の評価"
 
 msgid "PolicyStore|Last updated"
-msgstr ""
+msgstr "最新の更新"
 
 msgid "PolicyStore|Mode"
+msgstr "モード"
+
+msgid "PolicyStore|Name"
+msgstr ""
+
+msgid "PolicyStore|New policy"
 msgstr ""
 
 msgid "PolicyStore|Policies"
+msgstr "ポリシー"
+
+msgid "PolicyStore|Review"
 msgstr ""
 
 msgid "PolicyStore|Scope"
+msgstr "スコープ"
+
+msgid "PolicyStore|This step is coming soon."
+msgstr ""
+
+msgid "PolicyStore|Untitled policy"
 msgstr ""
 
 msgid "PolicyStore|Warn"
-msgstr ""
+msgstr "警告"
 
 msgid "Polling interval multiplier"
 msgstr "ポーリング間隔倍率"
@@ -63820,6 +63871,9 @@ msgstr "最新のアプリを表示"
 msgid "Review and edit media"
 msgstr "メディアのレビューと編集"
 
+msgid "Review and leave groups"
+msgstr ""
+
 msgid "Review approval"
 msgstr "レビューの承認"
 
@@ -67320,6 +67374,9 @@ msgstr "安全なファイル"
 
 msgid "Secure token that identifies an external storage request."
 msgstr "外部ストレージリクエストを識別する、セキュアトークン。"
+
+msgid "Secure your account with two-factor authentication (2FA)"
+msgstr ""
 
 msgid "SecureFiles|%{name} Metadata"
 msgstr "%{name}メタデータ"
@@ -73115,7 +73172,7 @@ msgid "SemanticSearch|Elasticsearch"
 msgstr "Elasticsearch"
 
 msgid "SemanticSearch|Embedding model"
-msgstr ""
+msgstr "埋め込みモデル"
 
 msgid "SemanticSearch|Embedding model configuration is not available. Ensure %{coll_name} collection exists."
 msgstr "埋め込みモデルの設定を利用できません。%{coll_name}コレクションが存在することを確認してください。"
@@ -76813,6 +76870,12 @@ msgstr "テーブルサイズ"
 msgid "Tables containing block elements (like multiple paragraphs, lists or blockquotes, or task lists with text or multiple items) are not supported in Markdown and will be converted to HTML."
 msgstr "ブロック要素(複数の段落、リスト、引用ブロック、テキストまたは複数のアイテムのあるタスクリストなど)を含む表はMarkdownではサポートされていないため、HTMLに変換されます。"
 
+msgid "Table|Click to sort ascending"
+msgstr ""
+
+msgid "Table|Click to sort descending"
+msgstr ""
+
 msgid "Tag"
 msgstr "タグ"
 
@@ -77668,7 +77731,7 @@ msgid "The blob is too large to render"
 msgstr "このblobはレンダリングするには大きすぎます。"
 
 msgid "The blocking merge request must be in the same organization"
-msgstr ""
+msgstr "マージをブロックしているマージリクエストは、同じ組織内に存在する必要があります"
 
 msgid "The branch for this project has no active pipeline configuration."
 msgstr "このプロジェクトのこのブランチにアクティブなパイプライン設定がありません。"
@@ -77873,17 +77936,14 @@ msgstr "フォームに次の警告が含まれています。"
 msgid "The git server, Gitaly, is not available at this time. Please contact your administrator."
 msgstr "git サーバーのGitalyは現在利用できません。管理者に問い合わせてください。"
 
-msgid "The global settings require you to enable Two-Factor Authentication for your account."
-msgstr "グローバル設定では、自分のアカウントに対して2要素認証を有効にする必要があります。"
+msgid "The global settings require you to enable two-factor authentication (2FA) for your account."
+msgstr ""
 
 msgid "The group export can be downloaded from:"
 msgstr "グループエクスポートは以下からダウンロードできます:"
 
 msgid "The group has already been shared with this group"
 msgstr "対象のグループは既にこのグループと共有されています"
-
-msgid "The group settings for %{group_links} require you to enable Two-Factor Authentication for your account. You can %{leave_group_links}."
-msgstr "%{group_links}のグループ設定では、アカウントの 2要素認証を有効にする必要があります。%{leave_group_links}することができます。"
 
 msgid "The group_project_ids parameter is only allowed for a group"
 msgstr "'group_project_ids' パラメータはグループにのみ許可されています"
@@ -78217,7 +78277,7 @@ msgid "The snippet is visible to any logged in user except external users."
 msgstr "このスニペットは、外部のユーザー以外のログインしたユーザーからアクセスできます。"
 
 msgid "The source branch must be rebased."
-msgstr ""
+msgstr "ソースブランチはリベースする必要があります。"
 
 msgid "The source branch must exist and contain commits."
 msgstr "ソースブランチが存在し、コミットが含まれている必要があります。"
@@ -85929,6 +85989,18 @@ msgstr "脆弱性の名前または種類。例: クロスサイトスクリプ�
 msgid "VulnerabilityManagement|Vulnerability set to %{severity} severity"
 msgstr "脆弱性を重大度%{severity}に設定"
 
+msgid "VulnerabilityManagement|Vulnerability set to confirmed"
+msgstr ""
+
+msgid "VulnerabilityManagement|Vulnerability set to dismissed"
+msgstr ""
+
+msgid "VulnerabilityManagement|Vulnerability set to needs triage"
+msgstr ""
+
+msgid "VulnerabilityManagement|Vulnerability set to resolved"
+msgstr ""
+
 msgid "VulnerabilityManagement|Will not fix or a false-positive"
 msgstr "脆弱性は修正されないか、誤検出"
 
@@ -86257,7 +86329,7 @@ msgid "Vulnerability|Medium"
 msgstr "中"
 
 msgid "Vulnerability|Method"
-msgstr ""
+msgstr "方法"
 
 msgid "Vulnerability|NOT a false positive"
 msgstr "誤検出ではない"
@@ -87362,7 +87434,7 @@ msgid "Wiki404|Would you like to create it?"
 msgstr "作成しますか?"
 
 msgid "WikiClone|Clone Wiki repository"
-msgstr "Wikiリポジトリをクローンする"
+msgstr "Wikiリポジトリをクローン"
 
 msgid "WikiClone|Git Access"
 msgstr "Gitアクセス"
@@ -90053,6 +90125,9 @@ msgstr "このメールはプロジェクトのオーナーまたはメンテナ
 msgid "You are receiving this message because you are a GitLab administrator for %{url}."
 msgstr "あなたは %{url} のGitLab管理者であるため、このメッセージを受け取っています。"
 
+msgid "You are the last owner"
+msgstr ""
+
 msgid "You are trying to upload something other than an image. Please upload a .png, .jpg, .jpeg, .gif, .bmp, .tiff or .ico."
 msgstr "画像ファイル以外のものをアップロードしようとしています。拡張子が .png、.jpg、.jpeg、.gif、.bmp、.tiff、または .ico のファイルをアップロードしてください。"
 
@@ -90644,8 +90719,8 @@ msgstr "アクセストークンとホストURLの両方を指定しなければ
 msgid "You need to upload a GitLab project export archive (ending in .gz)."
 msgstr "GitLab プロジェクトのエクスポートアーカイブ (.gz で終わる) をアップロードする必要があります。"
 
-msgid "You need to verify your primary email first before enabling Two-Factor Authentication."
-msgstr "2要素認証を有効にする前に、プライマリーメールアドレスを確認する必要があります。"
+msgid "You need to verify your primary email first before enabling two-factor authentication (2FA)."
+msgstr ""
 
 msgid "You published branch %{branchName}. Take the next step when you are ready."
 msgstr "あなたが公開したブランチ%{branchName}。準備ができた時、次のステップに進めてください。"
@@ -92731,9 +92806,6 @@ msgstr "最新のデプロイ"
 
 msgid "latest version"
 msgstr "最新バージョン"
-
-msgid "leave %{group_name}"
-msgstr "%{group_name}から離れる"
 
 msgid "less than a minute"
 msgstr "1 分未満"

@@ -248,6 +248,19 @@ RSpec.describe Gitlab::BillingEvents::Client, :freeze_time, feature_category: :a
       end
     end
 
+    it 'logs a success message including namespace_id' do
+      allow(Gitlab::AppLogger).to receive(:info)
+
+      track
+
+      expect(Gitlab::AppLogger).to have_received(:info).with(
+        hash_including(
+          message: 'BillingEvents: billing event tracked',
+          namespace_id: namespace.id
+        )
+      )
+    end
+
     context 'when billing_event_tracking feature flag is disabled' do
       before do
         stub_feature_flags(billing_event_tracking: false)
@@ -283,10 +296,15 @@ RSpec.describe Gitlab::BillingEvents::Client, :freeze_time, feature_category: :a
         allow(Gitlab::Tracking).to receive(:billing_event).and_raise(StandardError, 'boom')
       end
 
-      it 'tracks the exception and does not raise', :aggregate_failures do
+      it 'tracks the exception with billing context and does not raise', :aggregate_failures do
         expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
           an_instance_of(StandardError),
-          hash_including(event_type: event_type)
+          hash_including(
+            message: 'BillingEvents: tracking failed',
+            event_type: event_type,
+            event_id: an_instance_of(String),
+            namespace_id: namespace.id
+          )
         )
 
         expect { track }.not_to raise_error

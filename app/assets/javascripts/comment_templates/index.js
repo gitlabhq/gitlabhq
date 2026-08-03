@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import routes from './routes';
 import CommentTemplatesApp from './components/app.vue';
@@ -27,8 +28,7 @@ export const initCommentTemplates = ({
     routes,
   });
 
-  // eslint-disable-next-line no-new
-  new Vue({
+  initVueApp({
     el,
     name: 'CommentTemplatesAppRoot',
     router,
@@ -43,8 +43,6 @@ export const initCommentTemplates = ({
       deleteMutation,
       updateMutation,
     },
-    render(h) {
-      return h(CommentTemplatesApp);
-    },
+    component: CommentTemplatesApp,
   });
 };

@@ -68,6 +68,67 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Links do
       end
     end
 
+    context 'with a relative link in an inline code span' do
+      let(:content) { 'Use `For more information, see [link text](link.md)`.' }
+      let(:exist) { ->(_path) { false } }
+      let(:warn_unresolved) { instance_double(Proc) }
+
+      it 'leaves it untouched without reporting it' do
+        expect(warn_unresolved).not_to receive(:call)
+
+        expect(absolutize).to eq(content)
+      end
+    end
+
+    context 'with a relative link in a fenced code block' do
+      let(:content) do
+        <<~MD
+          ```markdown
+          For more information, see [link text](link.md).
+          ```
+        MD
+      end
+
+      let(:exist) { ->(_path) { false } }
+      let(:warn_unresolved) { instance_double(Proc) }
+
+      it 'leaves it untouched without reporting it' do
+        expect(warn_unresolved).not_to receive(:call)
+
+        expect(absolutize).to eq(content)
+      end
+    end
+
+    context 'with a relative link in a list-indented fenced code block' do
+      let(:content) do
+        <<~MD
+          - Example:
+            ```markdown
+            For more information, see [link text](link.md).
+            ```
+        MD
+      end
+
+      let(:exist) { ->(_path) { false } }
+      let(:warn_unresolved) { instance_double(Proc) }
+
+      it 'leaves it untouched without reporting it' do
+        expect(warn_unresolved).not_to receive(:call)
+
+        expect(absolutize).to eq(content)
+      end
+    end
+
+    context 'with a relative link outside an inline code span' do
+      let(:content) { 'Use `a code example` and [word list](word_list.md).' }
+
+      it 'rewrites the link outside the code span' do
+        expect(absolutize).to eq(
+          'Use `a code example` and [word list](https://docs.gitlab.com/development/documentation/word_list/).'
+        )
+      end
+    end
+
     context 'with multiple sources' do
       let(:sources) do
         [

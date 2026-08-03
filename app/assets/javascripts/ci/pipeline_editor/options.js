@@ -120,8 +120,6 @@ export const createAppOptions = (el) => {
       usesExternalConfig: parseBoolean(usesExternalConfig),
       ymlHelpPagePath,
     },
-    render(h) {
-      return h(PipelineEditorApp);
-    },
+    component: PipelineEditorApp,
   };
 };

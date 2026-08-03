@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import UserTypeSelector from '~/admin/users/components/user_type/user_type_selector.vue';
 
@@ -8,16 +8,13 @@ export const initUserTypeSelector = () => {
 
   const { userType, isCurrentUser } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'UserTypeSelectorRoot',
-    render(createElement) {
-      return createElement(UserTypeSelector, {
-        props: {
-          userType,
-          isCurrentUser: parseBoolean(isCurrentUser),
-        },
-      });
+    component: UserTypeSelector,
+    props: {
+      userType,
+      isCurrentUser: parseBoolean(isCurrentUser),
     },
   });
 };

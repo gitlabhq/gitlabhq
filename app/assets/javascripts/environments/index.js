@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlToast } from '@gitlab/ui';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean } from '../lib/utils/common_utils';
 import { apolloProvider } from './graphql/client';
 import EnvironmentsApp from './components/environments_app.vue';
@@ -19,7 +20,7 @@ export default (el) => {
       projectId,
     } = el.dataset;
 
-    return new Vue({
+    return initVueApp({
       el,
       name: 'EnvironmentsAppRoot',
       apolloProvider: apolloProvider(endpoint),
@@ -30,9 +31,7 @@ export default (el) => {
         projectId,
         canCreateEnvironment: parseBoolean(canCreateEnvironment),
       },
-      render(h) {
-        return h(EnvironmentsApp);
-      },
+      component: EnvironmentsApp,
     });
   }
 

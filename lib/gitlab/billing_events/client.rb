@@ -68,7 +68,8 @@ module Gitlab
           message: 'BillingEvents: billing event tracked',
           event_type: event_type,
           event_id: event_id,
-          quantity: quantity
+          quantity: quantity,
+          namespace_id: namespace&.id
         )
 
         Gitlab::InternalEvents.track_event(
@@ -89,7 +90,13 @@ module Gitlab
           event_id: event_id
         )
       rescue StandardError => e
-        Gitlab::ErrorTracking.track_exception(e, event_type: event_type, event_id: event_id)
+        Gitlab::ErrorTracking.track_exception(
+          e,
+          message: 'BillingEvents: tracking failed',
+          event_type: event_type,
+          event_id: event_id,
+          namespace_id: namespace&.id
+        )
       end
 
       private

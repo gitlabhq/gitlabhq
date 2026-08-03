@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: zh-CN\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2026-07-28 07:46\n"
+"PO-Revision-Date: 2026-07-29 11:00\n"
 
 msgid " %{start} to %{end}"
 msgstr "从%{start}到%{end}"
@@ -3520,6 +3520,9 @@ msgstr "流"
 
 msgid "AICatalog|flows"
 msgstr "工作流"
+
+msgid "AICatalog|foundational items must be public"
+msgstr ""
 
 msgid "AICatalog|is private in another project"
 msgstr "在另一个项目中是私有的"
@@ -7537,8 +7540,8 @@ msgstr "用户上限"
 msgid "Administrator Account Setup"
 msgstr "管理员帐户设置"
 
-msgid "Administrator users are required to enable Two-Factor Authentication for their account."
-msgstr "管理员用户需要为他们的账户启用双重身份验证。"
+msgid "Administrator users are required to enable two-factor authentication (2FA) for their account."
+msgstr ""
 
 msgid "Administrators"
 msgstr "管理员"
@@ -7735,9 +7738,6 @@ msgstr "在阅读这些贡献指南后，您将准备好"
 msgid "Agent Information"
 msgstr "代理信息"
 
-msgid "Agent artifacts"
-msgstr "代理产物"
-
 msgid "Agent not found for provided id."
 msgstr "未找到所提供 ID 的代理。"
 
@@ -7800,6 +7800,9 @@ msgstr "加载项目失败。"
 
 msgid "AgentArtifacts|Filter agent artifacts"
 msgstr "筛选智能体产物"
+
+msgid "AgentArtifacts|GitLab Duo"
+msgstr ""
 
 msgid "AgentArtifacts|Goal"
 msgstr "目标"
@@ -10473,6 +10476,9 @@ msgstr "下一页"
 
 msgid "AnalyticsDashboards|No dashboards found"
 msgstr "未找到仪表盘"
+
+msgid "AnalyticsDashboards|Panel query"
+msgstr ""
 
 msgid "AnalyticsDashboards|Projects"
 msgstr "项目"
@@ -22349,6 +22355,9 @@ msgstr "取消"
 msgid "ContinuousDeployment|Cancelled"
 msgstr "已取消"
 
+msgid "ContinuousDeployment|Clear filters"
+msgstr ""
+
 msgid "ContinuousDeployment|Cluster agent"
 msgstr "集群代理"
 
@@ -22366,6 +22375,9 @@ msgstr "折叠服务"
 
 msgid "ContinuousDeployment|Continuous Deployment"
 msgstr "持续部署"
+
+msgid "ContinuousDeployment|Create applications to track them and deploy them to environments"
+msgstr ""
 
 msgid "ContinuousDeployment|Created"
 msgstr "已创建"
@@ -22525,6 +22537,12 @@ msgstr "名称为必填项。"
 
 msgid "ContinuousDeployment|New application"
 msgstr "新建应用程序"
+
+msgid "ContinuousDeployment|No applications match your filters"
+msgstr ""
+
+msgid "ContinuousDeployment|No applications yet"
+msgstr ""
 
 msgid "ContinuousDeployment|No artifact sources configured."
 msgstr "未配置产物源。"
@@ -26480,6 +26498,9 @@ msgstr "依赖项列表已成功导出。"
 msgid "Dependencies|There was a problem fetching the licenses for this group."
 msgstr "获取此群组的许可证时出现问题。"
 
+msgid "Dependencies|There was a problem fetching the refs for this dependency."
+msgstr ""
+
 msgid "Dependencies|There was a problem fetching vulnerabilities."
 msgstr "获取漏洞时出现问题。"
 
@@ -30351,9 +30372,6 @@ msgstr ""
 msgid "DuoSlack|Not helpful"
 msgstr ""
 
-msgid "DuoSlack|On it! Working on your request."
-msgstr "收到！正在处理您的请求。"
-
 msgid "DuoSlack|Plan"
 msgstr "方案"
 
@@ -30377,6 +30395,12 @@ msgstr "在极狐GitLab 中查看会话"
 
 msgid "DuoSlack|Your message is too long for me to process (the limit is about %{limit} characters). Shorten it and mention me again."
 msgstr "您的消息太长，我无法处理（上限约为 %{limit} 个字符）。请缩短后再次提及我。"
+
+msgid "DuoSlack|is thinking it through…"
+msgstr ""
+
+msgid "DuoSlack|is working on your request…"
+msgstr ""
 
 msgid "DuoTrialDiscover|Ask questions, explore concepts, test ideas, and receive instant feedback directly in your workflow."
 msgstr "提出问题，探索概念，测试想法，并直接在您的工作流中获得即时反馈。"
@@ -48857,12 +48881,6 @@ msgstr "监控和解决安全漏洞"
 msgid "Monitor and enforce compliance status and reports"
 msgstr "监控并强制执行合规状态和报告"
 
-msgid "Monitor and observe AI agent behavior and activities across your group."
-msgstr "监控和观测您群组中 AI 智能体的行为与活动。"
-
-msgid "Monitor and observe AI agent behavior and activities across your project."
-msgstr "监控并观察您项目中 AI 代理的行为和活动。"
-
 msgid "Monitor automation session history"
 msgstr "监控自动化会话历史"
 
@@ -53011,6 +53029,9 @@ msgstr "一个或多个发现不属于该项目"
 
 msgid "One or more groups could not be found"
 msgstr "无法找到一个或多个群组"
+
+msgid "One or more groups require you to add 2FA to your account. Choose your preferred method below or review and leave groups to continue using your account."
+msgstr ""
 
 msgid "One or more groups that you don't have access to."
 msgstr "您无权访问的一个或多个群组。"
@@ -57758,7 +57779,22 @@ msgstr ""
 msgid "PolicyStore|Audit"
 msgstr ""
 
+msgid "PolicyStore|Build policy"
+msgstr ""
+
+msgid "PolicyStore|Create new policy"
+msgstr ""
+
+msgid "PolicyStore|Describe what this policy does"
+msgstr ""
+
+msgid "PolicyStore|Description"
+msgstr ""
+
 msgid "PolicyStore|Disabled"
+msgstr ""
+
+msgid "PolicyStore|Edit policy"
 msgstr ""
 
 msgid "PolicyStore|Enforce"
@@ -57773,10 +57809,25 @@ msgstr ""
 msgid "PolicyStore|Mode"
 msgstr ""
 
+msgid "PolicyStore|Name"
+msgstr ""
+
+msgid "PolicyStore|New policy"
+msgstr ""
+
 msgid "PolicyStore|Policies"
 msgstr ""
 
+msgid "PolicyStore|Review"
+msgstr ""
+
 msgid "PolicyStore|Scope"
+msgstr ""
+
+msgid "PolicyStore|This step is coming soon."
+msgstr ""
+
+msgid "PolicyStore|Untitled policy"
 msgstr ""
 
 msgid "PolicyStore|Warn"
@@ -63820,6 +63871,9 @@ msgstr "查看最新应用"
 msgid "Review and edit media"
 msgstr "查看和编辑媒体"
 
+msgid "Review and leave groups"
+msgstr ""
+
 msgid "Review approval"
 msgstr "审查批准"
 
@@ -67320,6 +67374,9 @@ msgstr "安全文件"
 
 msgid "Secure token that identifies an external storage request."
 msgstr "识别外部存储请求的安全令牌。"
+
+msgid "Secure your account with two-factor authentication (2FA)"
+msgstr ""
 
 msgid "SecureFiles|%{name} Metadata"
 msgstr "%{name} 元数据"
@@ -76813,6 +76870,12 @@ msgstr "表格大小"
 msgid "Tables containing block elements (like multiple paragraphs, lists or blockquotes, or task lists with text or multiple items) are not supported in Markdown and will be converted to HTML."
 msgstr "包含块级元素（如多个段落、列表或引用块，或含文本或多个项目的任务列表）的表格在 Markdown 中不受支持，并将被转换为 HTML。"
 
+msgid "Table|Click to sort ascending"
+msgstr ""
+
+msgid "Table|Click to sort descending"
+msgstr ""
+
 msgid "Tag"
 msgstr "标签"
 
@@ -77873,17 +77936,14 @@ msgstr "该表格包含以下警告："
 msgid "The git server, Gitaly, is not available at this time. Please contact your administrator."
 msgstr "git 服务器 Gitaly 目前不可用。请联系您的管理员。"
 
-msgid "The global settings require you to enable Two-Factor Authentication for your account."
-msgstr "系统设置要求您为帐户启用双重认证。"
+msgid "The global settings require you to enable two-factor authentication (2FA) for your account."
+msgstr ""
 
 msgid "The group export can be downloaded from:"
 msgstr "群组导出可以从以下位置下载："
 
 msgid "The group has already been shared with this group"
 msgstr "该群组已与此群组共享"
-
-msgid "The group settings for %{group_links} require you to enable Two-Factor Authentication for your account. You can %{leave_group_links}."
-msgstr "%{group_links} 的群组设置要求您为帐户启用双重认证。你也可以 %{leave_group_links}。"
 
 msgid "The group_project_ids parameter is only allowed for a group"
 msgstr "group_project_ids 参数只允许用于一个群组"
@@ -85929,6 +85989,18 @@ msgstr "漏洞名称或类型。例如：跨站脚本"
 msgid "VulnerabilityManagement|Vulnerability set to %{severity} severity"
 msgstr "漏洞设置为 %{severity} 严重性"
 
+msgid "VulnerabilityManagement|Vulnerability set to confirmed"
+msgstr ""
+
+msgid "VulnerabilityManagement|Vulnerability set to dismissed"
+msgstr ""
+
+msgid "VulnerabilityManagement|Vulnerability set to needs triage"
+msgstr ""
+
+msgid "VulnerabilityManagement|Vulnerability set to resolved"
+msgstr ""
+
 msgid "VulnerabilityManagement|Will not fix or a false-positive"
 msgstr "将不修复或为误报"
 
@@ -90053,6 +90125,9 @@ msgstr "您收到此电子邮件是因为您是项目的所有者或维护者之
 msgid "You are receiving this message because you are a GitLab administrator for %{url}."
 msgstr "您收到此消息是因为您是 %{url} 的GitLab管理员。"
 
+msgid "You are the last owner"
+msgstr ""
+
 msgid "You are trying to upload something other than an image. Please upload a .png, .jpg, .jpeg, .gif, .bmp, .tiff or .ico."
 msgstr "您正在尝试上传非图片文件。请上传.png、.jpg、.jpeg、.gif、.bmp、.tiff或.ico。"
 
@@ -90644,8 +90719,8 @@ msgstr "您需要同时指定访问令牌和主机 URL。"
 msgid "You need to upload a GitLab project export archive (ending in .gz)."
 msgstr "您需要上传GitLab项目导出文件(以.gz结尾)."
 
-msgid "You need to verify your primary email first before enabling Two-Factor Authentication."
-msgstr "您需要先验证您的主要电子邮件，然后才能启用双重身份验证。"
+msgid "You need to verify your primary email first before enabling two-factor authentication (2FA)."
+msgstr ""
 
 msgid "You published branch %{branchName}. Take the next step when you are ready."
 msgstr "您发布了分支 %{branchName}。准备好后请进行下一步。"
@@ -92731,9 +92806,6 @@ msgstr "最新部署"
 
 msgid "latest version"
 msgstr "最新版本"
-
-msgid "leave %{group_name}"
-msgstr "退出%{group_name}"
 
 msgid "less than a minute"
 msgstr "少于一分钟"

@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import apolloProvider from '~/repository/graphql';
 import RepositoryApp from '~/repository/components/app.vue';
@@ -20,7 +20,7 @@ export default function initRepositoryApp(router, options = {}) {
 
   if (!viewBlobEl || !blobPath || !projectPath || !highlightWorker) return null;
 
-  return new Vue({
+  return initVueApp({
     el: viewBlobEl,
     name: 'RepositoryAppRoot',
     store: createStore(),
@@ -34,13 +34,10 @@ export default function initRepositoryApp(router, options = {}) {
       canDownloadCode: parseBoolean(canDownloadCode),
       hasRevsFile: parseBoolean(hasRevsFile),
     },
-    render(createElement) {
-      return createElement(RepositoryApp, {
-        props: {
-          projectPath,
-          refType,
-        },
-      });
+    component: RepositoryApp,
+    props: {
+      projectPath,
+      refType,
     },
   });
 }

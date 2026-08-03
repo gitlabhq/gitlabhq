@@ -80,7 +80,7 @@ export default {
           :selected-labels="selectedLabels"
           :issuable-supports-lock-on-merge="issuableSupportsLockOnMerge"
           @updateSelectedLabels="handleUpdateSelectedLabels"
-          @onLabelRemove="handleLabelRemove"
+          @label-removed="handleLabelRemove"
         >
           {{ $options.i18n.emptySelection }}
         </labels-select>

@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createApolloClient from '~/lib/graphql';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
 import csrf from '~/lib/utils/csrf';
@@ -16,12 +17,7 @@ export const mountSidebarResizer = () => {
   const resizer = document.querySelector('.js-wiki-sidebar-resizer');
 
   if (resizer) {
-    // eslint-disable-next-line no-new
-    new Vue({
-      el: resizer,
-      name: 'SidebarResizerRoot',
-      render: (createElement) => createElement(SidebarResizer),
-    });
+    initVueApp({ el: resizer, name: 'SidebarResizerRoot', component: SidebarResizer });
   }
 };
 
@@ -82,7 +78,7 @@ export const mountWikiApp = () => {
     queryVariables.namespaceId = convertToGraphQLId(TYPENAME_GROUP, containerId);
   }
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'WikiContentAppRoot',
     apolloProvider,
@@ -125,8 +121,6 @@ export const mountWikiApp = () => {
       containerName,
       pageAuthorEmail,
     },
-    render(createElement) {
-      return createElement(WikiContentApp);
-    },
+    component: WikiContentApp,
   });
 };

@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import ImportHistoryApp from './components/import_history_app.vue';
 
 export function initImportHistory() {
@@ -8,7 +8,7 @@ export function initImportHistory() {
     return null;
   }
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'ImportHistoryRoot',
     provide: {
@@ -16,8 +16,6 @@ export function initImportHistory() {
         gitlabLogo: el.dataset.logo,
       },
     },
-    render(createElement) {
-      return createElement(ImportHistoryApp);
-    },
+    component: ImportHistoryApp,
   });
 }

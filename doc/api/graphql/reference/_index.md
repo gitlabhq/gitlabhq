@@ -34066,9 +34066,8 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="analytics-agentplatformsessions-createdeventatfrom"></a>`createdEventAtFrom` | [`Time`](#time) | Filter by session creation timestamp. Start of the range. |
 | <a id="analytics-agentplatformsessions-createdeventatto"></a>`createdEventAtTo` | [`Time`](#time) | Filter by session creation timestamp. End of the range. |
+| <a id="analytics-agentplatformsessions-descendantsscope"></a>`descendantsScope` | [`AggregationScopeInput`](#aggregationscopeinput) | Child groups and projects to aggregate data for. Not supported at project level. |
 | <a id="analytics-agentplatformsessions-flowtype"></a>`flowType` | [`[String!]`](#string) | Filter by one or many flow types. |
-| <a id="analytics-agentplatformsessions-groupfullpaths"></a>`groupFullPaths` | [`[ID!]`](#id) | Full paths of groups to aggregate data for. All groups must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `projectFullPaths`, at most 20 sources can be requested. Not supported at project level. |
-| <a id="analytics-agentplatformsessions-projectfullpaths"></a>`projectFullPaths` | [`[ID!]`](#id) | Full paths of projects to aggregate data for. All projects must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `groupFullPaths`, at most 20 sources can be requested. Not supported at project level. |
 | <a id="analytics-agentplatformsessions-userid"></a>`userId` | [`[String!]`](#string) | Filter by one or many user Global IDs. |
 
 ##### `Analytics.contributions`
@@ -34091,8 +34090,7 @@ Arguments:
 | <a id="analytics-contributions-authorid"></a>`authorId` | [`[String!]`](#string) | Filter by one or many author Global IDs. |
 | <a id="analytics-contributions-createdatfrom"></a>`createdAtFrom` | [`Time`](#time) | Filter by contribution timestamp. Start of the range. |
 | <a id="analytics-contributions-createdatto"></a>`createdAtTo` | [`Time`](#time) | Filter by contribution timestamp. End of the range. |
-| <a id="analytics-contributions-groupfullpaths"></a>`groupFullPaths` | [`[ID!]`](#id) | Full paths of groups to aggregate data for. All groups must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `projectFullPaths`, at most 20 sources can be requested. Not supported at project level. |
-| <a id="analytics-contributions-projectfullpaths"></a>`projectFullPaths` | [`[ID!]`](#id) | Full paths of projects to aggregate data for. All projects must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `groupFullPaths`, at most 20 sources can be requested. Not supported at project level. |
+| <a id="analytics-contributions-descendantsscope"></a>`descendantsScope` | [`AggregationScopeInput`](#aggregationscopeinput) | Child groups and projects to aggregate data for. Not supported at project level. |
 
 ##### `Analytics.deployments`
 
@@ -34113,11 +34111,10 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="analytics-deployments-createdatfrom"></a>`createdAtFrom` | [`Time`](#time) | Filter by deployment creation timestamp. Start of the range. |
 | <a id="analytics-deployments-createdatto"></a>`createdAtTo` | [`Time`](#time) | Filter by deployment creation timestamp. End of the range. |
+| <a id="analytics-deployments-descendantsscope"></a>`descendantsScope` | [`AggregationScopeInput`](#aggregationscopeinput) | Child groups and projects to aggregate data for. Not supported at project level. |
 | <a id="analytics-deployments-environmentid"></a>`environmentId` | [`[String!]`](#string) | Filter by one or many environment Global IDs. |
 | <a id="analytics-deployments-finishedatfrom"></a>`finishedAtFrom` | [`Time`](#time) | Filter by deployment finish timestamp. Start of the range. |
 | <a id="analytics-deployments-finishedatto"></a>`finishedAtTo` | [`Time`](#time) | Filter by deployment finish timestamp. End of the range. |
-| <a id="analytics-deployments-groupfullpaths"></a>`groupFullPaths` | [`[ID!]`](#id) | Full paths of groups to aggregate data for. All groups must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `projectFullPaths`, at most 20 sources can be requested. Not supported at project level. |
-| <a id="analytics-deployments-projectfullpaths"></a>`projectFullPaths` | [`[ID!]`](#id) | Full paths of projects to aggregate data for. All projects must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `groupFullPaths`, at most 20 sources can be requested. Not supported at project level. |
 | <a id="analytics-deployments-ref"></a>`ref` | [`[String!]`](#string) | Filter by one or many deployment refs. |
 | <a id="analytics-deployments-status"></a>`status` | [`[String!]`](#string) | Filter by one or many deployment statuses. |
 
@@ -34131,10 +34128,9 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="analytics-duocodesuggestions-groupfullpaths"></a>`groupFullPaths` | [`[ID!]`](#id) | Full paths of groups to aggregate data for. All groups must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `projectFullPaths`, at most 20 sources can be requested. Not supported at project level. |
+| <a id="analytics-duocodesuggestions-descendantsscope"></a>`descendantsScope` | [`AggregationScopeInput`](#aggregationscopeinput) | Child groups and projects to aggregate data for. Not supported at project level. |
 | <a id="analytics-duocodesuggestions-idename"></a>`ideName` | [`[String!]`](#string) | Filter by IDE name. |
 | <a id="analytics-duocodesuggestions-language"></a>`language` | [`[String!]`](#string) | Filter by suggestion language. |
-| <a id="analytics-duocodesuggestions-projectfullpaths"></a>`projectFullPaths` | [`[ID!]`](#id) | Full paths of projects to aggregate data for. All projects must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `groupFullPaths`, at most 20 sources can be requested. Not supported at project level. |
 | <a id="analytics-duocodesuggestions-timestampfrom"></a>`timestampFrom` | [`Time`](#time) | Filter by suggestion timestamp. Start of the range. |
 | <a id="analytics-duocodesuggestions-timestampto"></a>`timestampTo` | [`Time`](#time) | Filter by suggestion timestamp. End of the range. |
 | <a id="analytics-duocodesuggestions-userid"></a>`userId` | [`[String!]`](#string) | Filter by one or many user Global IDs. |
@@ -34149,10 +34145,9 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="analytics-duousageevents-descendantsscope"></a>`descendantsScope` | [`AggregationScopeInput`](#aggregationscopeinput) | Child groups and projects to aggregate data for. Not supported at project level. |
 | <a id="analytics-duousageevents-event"></a>`event` | [`[String!]`](#string) | Filter by one or many events. |
 | <a id="analytics-duousageevents-feature"></a>`feature` | [`[String!]`](#string) | Filter by one or many features. |
-| <a id="analytics-duousageevents-groupfullpaths"></a>`groupFullPaths` | [`[ID!]`](#id) | Full paths of groups to aggregate data for. All groups must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `projectFullPaths`, at most 20 sources can be requested. Not supported at project level. |
-| <a id="analytics-duousageevents-projectfullpaths"></a>`projectFullPaths` | [`[ID!]`](#id) | Full paths of projects to aggregate data for. All projects must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `groupFullPaths`, at most 20 sources can be requested. Not supported at project level. |
 | <a id="analytics-duousageevents-timestampfrom"></a>`timestampFrom` | [`Time`](#time) | Filter by event timestamp. Start of the range. |
 | <a id="analytics-duousageevents-timestampto"></a>`timestampTo` | [`Time`](#time) | Filter by event timestamp. End of the range. |
 | <a id="analytics-duousageevents-userid"></a>`userId` | [`[String!]`](#string) | Filter by one or many user Global IDs. |
@@ -34174,10 +34169,9 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="analytics-finishedpipelines-descendantsscope"></a>`descendantsScope` | [`AggregationScopeInput`](#aggregationscopeinput) | Child groups and projects to aggregate data for. Not supported at project level. |
 | <a id="analytics-finishedpipelines-finishedatfrom"></a>`finishedAtFrom` | [`Time`](#time) | Filter by pipeline finish timestamp. Start of the range. |
 | <a id="analytics-finishedpipelines-finishedatto"></a>`finishedAtTo` | [`Time`](#time) | Filter by pipeline finish timestamp. End of the range. |
-| <a id="analytics-finishedpipelines-groupfullpaths"></a>`groupFullPaths` | [`[ID!]`](#id) | Full paths of groups to aggregate data for. All groups must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `projectFullPaths`, at most 20 sources can be requested. Not supported at project level. |
-| <a id="analytics-finishedpipelines-projectfullpaths"></a>`projectFullPaths` | [`[ID!]`](#id) | Full paths of projects to aggregate data for. All projects must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `groupFullPaths`, at most 20 sources can be requested. Not supported at project level. |
 | <a id="analytics-finishedpipelines-ref"></a>`ref` | [`[String!]`](#string) | Filter by one or many pipeline refs. |
 | <a id="analytics-finishedpipelines-source"></a>`source` | [`[String!]`](#string) | Filter by one or many pipeline sources. |
 | <a id="analytics-finishedpipelines-startedatfrom"></a>`startedAtFrom` | [`Time`](#time) | Filter by pipeline start timestamp. Start of the range. |
@@ -34203,10 +34197,9 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="analytics-mergerequests-createdatfrom"></a>`createdAtFrom` | [`Time`](#time) | Filter by merge request creation timestamp. Start of the range. |
 | <a id="analytics-mergerequests-createdatto"></a>`createdAtTo` | [`Time`](#time) | Filter by merge request creation timestamp. End of the range. |
-| <a id="analytics-mergerequests-groupfullpaths"></a>`groupFullPaths` | [`[ID!]`](#id) | Full paths of groups to aggregate data for. All groups must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `projectFullPaths`, at most 20 sources can be requested. Not supported at project level. |
+| <a id="analytics-mergerequests-descendantsscope"></a>`descendantsScope` | [`AggregationScopeInput`](#aggregationscopeinput) | Child groups and projects to aggregate data for. Not supported at project level. |
 | <a id="analytics-mergerequests-metricmergedatfrom"></a>`metricMergedAtFrom` | [`Time`](#time) | Filter by merge timestamp. Start of the range. |
 | <a id="analytics-mergerequests-metricmergedatto"></a>`metricMergedAtTo` | [`Time`](#time) | Filter by merge timestamp. End of the range. |
-| <a id="analytics-mergerequests-projectfullpaths"></a>`projectFullPaths` | [`[ID!]`](#id) | Full paths of projects to aggregate data for. All projects must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `groupFullPaths`, at most 20 sources can be requested. Not supported at project level. |
 | <a id="analytics-mergerequests-stateid"></a>`stateId` | [`[String!]`](#string) | Filter by one or many states (opened, closed, merged, locked). |
 | <a id="analytics-mergerequests-targetbranch"></a>`targetBranch` | [`[String!]`](#string) | Filter by one or many target branches. |
 
@@ -34227,10 +34220,9 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="analytics-pipelines-descendantsscope"></a>`descendantsScope` | [`AggregationScopeInput`](#aggregationscopeinput) | Child groups and projects to aggregate data for. Not supported at project level. |
 | <a id="analytics-pipelines-finishedatfrom"></a>`finishedAtFrom` | [`Time`](#time) | Filter by pipeline finish timestamp. Start of the range. |
 | <a id="analytics-pipelines-finishedatto"></a>`finishedAtTo` | [`Time`](#time) | Filter by pipeline finish timestamp. End of the range. |
-| <a id="analytics-pipelines-groupfullpaths"></a>`groupFullPaths` | [`[ID!]`](#id) | Full paths of groups to aggregate data for. All groups must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `projectFullPaths`, at most 20 sources can be requested. Not supported at project level. |
-| <a id="analytics-pipelines-projectfullpaths"></a>`projectFullPaths` | [`[ID!]`](#id) | Full paths of projects to aggregate data for. All projects must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `groupFullPaths`, at most 20 sources can be requested. Not supported at project level. |
 | <a id="analytics-pipelines-ref"></a>`ref` | [`[String!]`](#string) | Filter by one or many pipeline refs. |
 | <a id="analytics-pipelines-source"></a>`source` | [`[String!]`](#string) | Filter by one or many pipeline sources. |
 | <a id="analytics-pipelines-startedatfrom"></a>`startedAtFrom` | [`Time`](#time) | Filter by pipeline start timestamp. Start of the range. |
@@ -41233,6 +41225,9 @@ Fields:
 | <a id="duoworkflow-createdat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the session was created. |
 | <a id="duoworkflow-environment"></a>`environment` | [`WorkflowEnvironment`](#workflowenvironment) | Environment, like IDE or web. |
 | <a id="duoworkflow-firstcheckpoint"></a>`firstCheckpoint` | [`DuoWorkflowEvent`](#duoworkflowevent) | First checkpoint of the session. |
+| <a id="duoworkflow-flowmetadataid"></a>`flowMetadataId` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.3. Status: Experiment. Identifier of the flow that was executed in the session. |
+| <a id="duoworkflow-flowmetadataschemaversion"></a>`flowMetadataSchemaVersion` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.3. Status: Experiment. Schema version of the flow metadata for the session. |
+| <a id="duoworkflow-flowmetadataversion"></a>`flowMetadataVersion` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.3. Status: Experiment. Version of the flow that was executed in the session. |
 | <a id="duoworkflow-goal"></a>`goal` | [`String`](#string) | Goal of the session. |
 | <a id="duoworkflow-humanstatus"></a>`humanStatus` | [`String!`](#string) | Human-readable status of the session. |
 | <a id="duoworkflow-id"></a>`id` | [`ID!`](#id) | ID of the session. |
@@ -41370,6 +41365,7 @@ Fields:
 | <a id="duoworkflowevent-duomessages"></a>`duoMessages` | [`[DuoMessage!]`](#duomessage) | Messages from the ui_chat_log for the checkpoint. |
 | <a id="duoworkflowevent-errors"></a>`errors` | [`[String!]`](#string) | Message errors. |
 | <a id="duoworkflowevent-executionstatus"></a>`executionStatus` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 17.10. Status: Experiment. Granular status of the session's execution. |
+| <a id="duoworkflowevent-lastduomessage"></a>`lastDuoMessage` {{< icon name="warning-solid" >}} | [`DuoMessage`](#duomessage) | Introduced in GitLab 19.3. Status: Experiment. Most recent message from the ui_chat_log for the checkpoint. Cheaper than duoMessages for list previews: it reads only the latest message instead of the full chat log. |
 | <a id="duoworkflowevent-metadata"></a>`metadata` | [`JsonString`](#jsonstring) | Metadata associated with the event. |
 | <a id="duoworkflowevent-parentts"></a>`parentTs` | [`String`](#string) | UUID v7 timestamp identifier of the parent message for branched conversations or responses. |
 | <a id="duoworkflowevent-threadts"></a>`threadTs` | [`String`](#string) | UUID v7 timestamp identifier for the conversation thread/session in LangGraph state management. |
@@ -73971,6 +73967,15 @@ Arguments:
 | <a id="aggregationorder-direction"></a>`direction` | [`SortDirectionEnum!`](#sortdirectionenum) | Sorting direction. |
 | <a id="aggregationorder-identifier"></a>`identifier` | [`String!`](#string) | Dimension or metric identifier. |
 | <a id="aggregationorder-parameters"></a>`parameters` | [`JSON`](#json) | Parameters for parameterized dimensions. |
+
+### `AggregationScopeInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aggregationscopeinput-groupfullpaths"></a>`groupFullPaths` | [`[ID!]`](#id) | Full paths of groups to aggregate data for. Combined with `projectFullPaths`, at most 20 sources can be requested. |
+| <a id="aggregationscopeinput-projectfullpaths"></a>`projectFullPaths` | [`[ID!]`](#id) | Full paths of projects to aggregate data for. Combined with `groupFullPaths`, at most 20 sources can be requested. |
 
 ### `AiAdditionalContextInput`
 

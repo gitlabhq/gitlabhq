@@ -52,6 +52,11 @@ module Gitlab
         # Teams are published independently: one team's failure is logged and the run continues with the rest, then a
         # non-zero exit is raised at the end so the scheduled job surfaces the partial failure.
         #
+        # Each team branch, and the tooling branch, is either adopted from an already-open service-account MR or freshly
+        # dated; see prefetch_adopted_branches! and branch_name_for.
+        # This keeps at most one open MR per team across scheduled runs, instead of opening a new dated MR every week
+        # the previous one goes unmerged.
+        #
         # `failed` (principles that failed distillation, distinct from the per-team publish `failures` below) and
         # `not_run` (principles whose distill job never completed) travel with the rest of the run-invariant inputs via
         # `ctx` (see PublishContext).
@@ -67,18 +72,18 @@ module Gitlab
             base_branch: workflow.default_branch,
             project_id: project_id,
             api_token: api_token,
-            # UTC date as identifier; same-day re-runs reuse each branch and
-            # update the existing MR (see find_open_mr_iid).
+            # UTC date for this run.
+            # It names a brand-new branch, and it refreshes the title of every MR this run touches, so an adopted MR
+            # shows its latest re-distillation date even though its branch keeps the original one.
             date: Time.now.utc.strftime('%Y%m%d'),
             auto_mr_cfg: auto_mr_cfg,
             failed: failed,
             not_run: not_run
           )
 
-          # Fetch every prior SHA once up front so each team branch can embed its SSOT diffs without re-fetching.
-          prefetch_prior_shas!(affected)
-
           teams = manifest.group_principles_by_team(distilled_contents.keys)
+          prefetch_publish_inputs!(affected, teams, ctx)
+
           failures = []
 
           teams.each do |team, names|
@@ -125,6 +130,7 @@ module Gitlab
           # Skip the team MR instead (mirrors the guard in publish_tooling_branch).
           unless git_has_staged_changes?
             puts Rainbow("  #{team}: principles already up to date; skipping team MR.").faint
+            close_adopted_mr_if_empty(branch, ctx)
             cleanup_branch(ctx.base_branch, branch)
             return
           end
@@ -184,6 +190,7 @@ module Gitlab
 
           unless git_has_staged_changes?
             puts Rainbow('  Tooling files already up to date; skipping tooling MR.').faint
+            close_adopted_mr_if_empty(branch, ctx)
             cleanup_branch(ctx.base_branch, branch)
             return
           end
@@ -277,12 +284,22 @@ module Gitlab
         end
 
         def team_branch_name(auto_mr_cfg, date, team)
-          "#{auto_mr_cfg['branch_prefix']}-#{date}-#{manifest.team_slug(team)}"
+          branch_name_for(auto_mr_cfg, date, manifest.team_slug(team))
         end
 
         def tooling_branch_name(auto_mr_cfg, date)
-          "#{auto_mr_cfg['branch_prefix']}-#{date}-tooling"
+          branch_name_for(auto_mr_cfg, date, 'tooling')
         end
+
+        # Reuses the source branch of an already-open service-account MR for this slug.
+        # If none was found during the run-level prefetch, mints a dated branch as before.
+        # Keeping the original branch name is required because an existing MR cannot have its source_branch changed
+        # through the API.
+        # rubocop:disable Gitlab/ModuleWithInstanceVariables -- run-scoped branch cache on the host Sync instance
+        def branch_name_for(auto_mr_cfg, date, slug)
+          @adopted_branches&.fetch(slug, nil) || "#{auto_mr_cfg['branch_prefix']}-#{date}-#{slug}"
+        end
+        # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
         # Branch off origin/<default_branch> (not the current HEAD) so the MR diff contains only our files.
         # The CI before_script fetches origin/<default_branch> for us.
@@ -311,8 +328,10 @@ module Gitlab
         def commit_and_push(branch, project_id, api_token, commit_msg)
           assert_commit_lines_within_limit!(commit_msg)
           system('git', '-C', Workspace.path, 'commit', '-m', commit_msg, exception: true)
-          # --force is safe here: the branch is auto-generated and always rebuilt from origin/<default_branch>, so only
-          # our own prior commit can be lost. (--force-with-lease would require a prefetch.)
+          # The branch is auto-generated and always rebuilt from origin/<default_branch>.
+          # An adopted branch can carry reviewer commits, so prefetch_adopted_branches! warns before this force-push
+          # when its tip was not authored by the configured service account.
+          # (--force-with-lease would require fetching every adopted branch.)
           push_url = push_remote_url(project_id)
           env = git_push_env(api_token, push_url)
           push_with_retries(env, push_url, branch)
@@ -477,6 +496,124 @@ module Gitlab
           end
         end
 
+        def prefetch_publish_inputs!(affected, teams, ctx)
+          # Fetch every prior SHA once up front so each team branch can embed its SSOT diffs without re-fetching.
+          prefetch_prior_shas!(affected)
+
+          # Resolve adoption for every branch this run will touch, once, before any branch is cut.
+          # `team_slug` is the same key `team_branch_name` derives its suffix from, plus the fixed `tooling` slug.
+          slugs = teams.keys.map { |team| manifest.team_slug(team) } + ['tooling']
+          prefetch_adopted_branches!(ctx, slugs)
+        end
+
+        # Finds open auto-MRs owned by the service account and records their branches by team or tooling slug.
+        # This lookup happens once per collect run, before any force-push, so a weekly run refreshes an existing MR
+        # rather than opening another dated one.
+        # Best-effort: an API or identity lookup failure preserves the old fresh-branch behaviour.
+        # rubocop:disable Gitlab/ModuleWithInstanceVariables -- run-scoped branch cache on the host Sync instance
+        def prefetch_adopted_branches!(ctx, slugs)
+          @adopted_branches = {}
+          @adopted_mrs = {}
+          author_id = mr_assignee_id(ctx.api_token)
+          return unless author_id
+
+          encoded_project = URI.encode_www_form_component(ctx.project_id)
+          open_mrs = open_mrs_by_author(encoded_project, author_id, ctx.api_token)
+          return unless open_mrs
+
+          prefix = Regexp.escape(ctx.auto_mr_cfg.fetch('branch_prefix'))
+          slugs.each do |slug|
+            pattern = /\A#{prefix}-\d{8}-#{Regexp.escape(slug)}\z/
+            mr = open_mrs.find do |candidate|
+              pattern.match?(candidate['source_branch'].to_s) &&
+                candidate['source_project_id'] == candidate['target_project_id'] &&
+                candidate['target_branch'] == ctx.base_branch
+            end
+            next unless mr
+
+            @adopted_branches[slug] = mr.fetch('source_branch')
+            @adopted_mrs[mr.fetch('source_branch')] = mr
+            warn_if_adopted_branch_has_foreign_tip(encoded_project, mr, ctx.api_token)
+          end
+        rescue StandardError => e
+          @adopted_branches = {}
+          @adopted_mrs = {}
+          warn Rainbow("WARNING: could not look up open distillation MRs (#{e.message}); using fresh branches").yellow
+        end
+        # rubocop:enable Gitlab/ModuleWithInstanceVariables
+
+        def open_mrs_by_author(encoded_project, author_id, api_token)
+          uri = URI("#{workflow.gitlab_host}/api/v4/projects/#{encoded_project}/merge_requests")
+          uri.query = URI.encode_www_form(
+            state: 'opened', author_id: author_id, order_by: 'created_at', sort: 'desc', per_page: 100
+          )
+          response = authenticated_get(uri, api_token)
+          unless response.is_a?(Net::HTTPSuccess)
+            warn Rainbow("WARNING: open distillation MR lookup failed (#{response.code}); using fresh branches").yellow
+            return
+          end
+
+          JSON.parse(response.body)
+        end
+
+        def warn_if_adopted_branch_has_foreign_tip(encoded_project, mr, api_token)
+          expected_email = configured_git_user_email
+          sha = mr['sha'].to_s
+          return if expected_email.empty? || sha.empty?
+
+          encoded_sha = URI.encode_www_form_component(sha)
+          uri = URI("#{workflow.gitlab_host}/api/v4/projects/#{encoded_project}/repository/commits/#{encoded_sha}")
+          response = authenticated_get(uri, api_token)
+          unless response.is_a?(Net::HTTPSuccess)
+            warn Rainbow("WARNING: could not verify adopted branch #{mr['source_branch']} tip " \
+              "(HTTP #{response.code}); the generated force-push will proceed").yellow
+            return
+          end
+
+          commit = JSON.parse(response.body)
+          author_email = commit['author_email'].to_s
+          return if author_email.empty? || author_email.casecmp?(expected_email)
+
+          warn Rainbow("WARNING: adopted branch #{mr['source_branch']} tip #{sha[0, 12]} was authored by " \
+            "#{commit['author_name']} <#{author_email}>; the generated force-push will discard that commit").yellow
+        rescue StandardError => e
+          warn Rainbow("WARNING: could not verify adopted branch #{mr['source_branch']} tip (#{e.message})").yellow
+        end
+
+        def configured_git_user_email
+          IO.popen(['git', '-C', Workspace.path, 'config', '--get', 'user.email'], err: File::NULL, &:read).strip
+        end
+
+        def authenticated_get(uri, api_token)
+          http = Net::HTTP.new(uri.host, uri.port)
+          http.use_ssl = uri.scheme == 'https'
+          http.read_timeout = 60
+          request = Net::HTTP::Get.new(uri)
+          request['PRIVATE-TOKEN'] = api_token
+          http.request(request)
+        end
+
+        # A reused branch can end up empty when a later distillation decides master already has the correct content.
+        # Close that now-obsolete MR instead of leaving its previous generated commit open indefinitely.
+        # rubocop:disable Gitlab/ModuleWithInstanceVariables -- run-scoped MR cache on the host Sync instance
+        def close_adopted_mr_if_empty(branch, ctx)
+          mr = @adopted_mrs&.fetch(branch, nil)
+          return unless mr
+
+          encoded_project = URI.encode_www_form_component(ctx.project_id)
+          response = workflow.put_json(
+            "#{workflow.gitlab_host}/api/v4/projects/#{encoded_project}/merge_requests/#{mr.fetch('iid')}",
+            headers: { 'PRIVATE-TOKEN' => ctx.api_token },
+            body: { state_event: 'close' }
+          )
+          return if response.is_a?(Net::HTTPSuccess)
+
+          warn Rainbow("WARNING: could not close empty adopted MR !#{mr['iid']} (#{response.code})").yellow
+        rescue StandardError => e
+          warn Rainbow("WARNING: could not close empty adopted MR for #{branch} (#{e.message})").yellow
+        end
+        # rubocop:enable Gitlab/ModuleWithInstanceVariables
+
         def sha_present_locally?(sha)
           system('git', '-C', Workspace.path, 'cat-file', '-e', "#{sha}^{commit}", out: File::NULL, err: File::NULL)
         end
@@ -500,14 +637,7 @@ module Gitlab
           uri = URI("#{workflow.gitlab_host}/api/v4/projects/#{encoded_project}/merge_requests")
           uri.query = URI.encode_www_form(state: 'opened', source_branch: source_branch,
             order_by: 'created_at', sort: 'desc')
-
-          http = Net::HTTP.new(uri.host, uri.port)
-          http.use_ssl = uri.scheme == 'https'
-          http.read_timeout = 60
-
-          request = Net::HTTP::Get.new(uri)
-          request['PRIVATE-TOKEN'] = api_token
-          response = http.request(request)
+          response = authenticated_get(uri, api_token)
           return nil unless response.is_a?(Net::HTTPSuccess)
 
           mrs = JSON.parse(response.body)
@@ -949,8 +1079,10 @@ module Gitlab
           SECTION
         end
 
-        # Shared create-or-update with same-day idempotency: an open MR for the same source branch is updated in place
-        # rather than failing on a 409.
+        # Shared create-or-update.
+        # Branch adoption lets this find an open MR across scheduled runs, while a same-day fresh branch stays
+        # idempotent.
+        # Either way the MR is updated in place rather than failing on a 409.
         def submit_mr(branch, default_branch, ctx, title, description)
           encoded_project = URI.encode_www_form_component(ctx.project_id)
           existing_mr_iid = find_open_mr_iid(encoded_project, branch, ctx.api_token)

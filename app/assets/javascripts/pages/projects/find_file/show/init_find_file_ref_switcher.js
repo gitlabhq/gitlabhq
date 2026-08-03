@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import { s__ } from '~/locale';
 import Translate from '~/vue_shared/translate';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import { joinPaths, visitUrl } from '~/lib/utils/url_utility';
 import { generateRefDestinationPath } from './ref_switcher_utils';
@@ -15,26 +16,23 @@ export function initFindFileRefSwitcher() {
 
   const { projectId, ref, refType, namespace } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'FindFileRefSelectorRoot',
-    render(createElement) {
-      return createElement(RefSelector, {
-        props: {
-          projectId,
-          value: refType ? joinPaths('refs', refType, ref) : ref,
-          useSymbolicRefNames: Boolean(refType),
-          translations: {
-            dropdownHeader: REF_SWITCH_HEADER,
-            searchPlaceholder: REF_SWITCH_HEADER,
-          },
-        },
-        on: {
-          input(selected) {
-            visitUrl(generateRefDestinationPath(selected, namespace));
-          },
-        },
-      });
+    component: RefSelector,
+    props: {
+      projectId,
+      value: refType ? joinPaths('refs', refType, ref) : ref,
+      useSymbolicRefNames: Boolean(refType),
+      translations: {
+        dropdownHeader: REF_SWITCH_HEADER,
+        searchPlaceholder: REF_SWITCH_HEADER,
+      },
+    },
+    events: {
+      input(selected) {
+        visitUrl(generateRefDestinationPath(selected, namespace));
+      },
     },
   });
 }

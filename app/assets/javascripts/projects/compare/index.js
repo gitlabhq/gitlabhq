@@ -1,5 +1,5 @@
-import Vue from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import CompareApp from './components/app.vue';
 
 export default function init() {
@@ -19,30 +19,24 @@ export default function init() {
     targetProjectsPath,
   } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'CompareAppRoot',
-    components: {
-      CompareApp,
-    },
     provide: {
       targetProjectsPath,
     },
-    render(createElement) {
-      return createElement(CompareApp, {
-        props: {
-          sourceProjectRefsPath,
-          targetProjectRefsPath,
-          paramsFrom,
-          paramsTo,
-          straight: parseBoolean(straight),
-          projectCompareIndexPath,
-          projectMergeRequestPath,
-          createMrPath,
-          sourceProject: JSON.parse(sourceProject),
-          targetProject: JSON.parse(targetProject),
-        },
-      });
+    component: CompareApp,
+    props: {
+      sourceProjectRefsPath,
+      targetProjectRefsPath,
+      paramsFrom,
+      paramsTo,
+      straight: parseBoolean(straight),
+      projectCompareIndexPath,
+      projectMergeRequestPath,
+      createMrPath,
+      sourceProject: JSON.parse(sourceProject),
+      targetProject: JSON.parse(targetProject),
     },
   });
 }

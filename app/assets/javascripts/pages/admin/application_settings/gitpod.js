@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import IntegrationHelpText from '~/vue_shared/components/integrations_help_text.vue';
 
 export default function initGitpod() {
@@ -10,16 +10,13 @@ export default function initGitpod() {
 
   const { message, messageUrl } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'GitpodIntegrationHelpTextRoot',
-    render(createElement) {
-      return createElement(IntegrationHelpText, {
-        props: {
-          message,
-          messageUrl,
-        },
-      });
+    component: IntegrationHelpText,
+    props: {
+      message,
+      messageUrl,
     },
   });
 }

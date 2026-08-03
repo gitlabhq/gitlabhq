@@ -1,6 +1,7 @@
 import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import createDefaultClient from '~/lib/graphql';
 import ClustersMainView from './components/clusters_main_view.vue';
@@ -35,7 +36,7 @@ export default () => {
     certificateBasedClustersEnabled,
   } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'ClustersMainViewRoot',
     apolloProvider: new VueApollo({ defaultClient }),
@@ -55,12 +56,9 @@ export default () => {
       certificateBasedClustersEnabled: parseBoolean(certificateBasedClustersEnabled),
     },
     store: createStore(el.dataset),
-    render(createElement) {
-      return createElement(ClustersMainView, {
-        props: {
-          defaultBranchName,
-        },
-      });
+    component: ClustersMainView,
+    props: {
+      defaultBranchName,
     },
   });
 };

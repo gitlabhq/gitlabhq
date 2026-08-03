@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import ContributorsGraphs from './components/contributors.vue';
 import { createStore } from './stores';
 
@@ -10,19 +10,16 @@ export default () => {
   const { projectGraphPath, projectBranch, defaultBranch, projectId, commitsPath } = el.dataset;
   const store = createStore(defaultBranch);
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'ContributorsGraphsRoot',
     store,
-    render(createElement) {
-      return createElement(ContributorsGraphs, {
-        props: {
-          endpoint: projectGraphPath,
-          branch: projectBranch,
-          projectId,
-          commitsPath,
-        },
-      });
+    component: ContributorsGraphs,
+    props: {
+      endpoint: projectGraphPath,
+      branch: projectBranch,
+      projectId,
+      commitsPath,
     },
   });
 };

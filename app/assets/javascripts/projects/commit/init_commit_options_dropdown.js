@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import CommitOptionsDropdown from './components/commit_options_dropdown.vue';
 
@@ -19,18 +19,16 @@ export default function initCommitOptionsDropdown() {
     canEmailPatches,
   } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'CommitOptionsDropdownRoot',
     provide: { newProjectTagPath, emailPatchesPath, plainDiffPath },
-    render: (createElement) =>
-      createElement(CommitOptionsDropdown, {
-        props: {
-          canRevert: parseBoolean(canRevert),
-          canCherryPick: parseBoolean(canCherryPick),
-          canTag: parseBoolean(canTag),
-          canEmailPatches: parseBoolean(canEmailPatches),
-        },
-      }),
+    component: CommitOptionsDropdown,
+    props: {
+      canRevert: parseBoolean(canRevert),
+      canCherryPick: parseBoolean(canCherryPick),
+      canTag: parseBoolean(canTag),
+      canEmailPatches: parseBoolean(canEmailPatches),
+    },
   });
 }

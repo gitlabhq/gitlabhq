@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { sprintf } from '~/locale';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -23,7 +24,7 @@ export default () => {
     isPaidGroup,
   } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'TransferGroupFormRoot',
     apolloProvider: new VueApollo({
@@ -52,19 +53,16 @@ export default () => {
       confirmButtonText: i18n.confirmButtonText,
       resourceId,
     },
-    render(createElement) {
-      return createElement(TransferGroupForm, {
-        props: {
-          isPaidGroup: parseBoolean(isPaidGroup),
-          confirmButtonText,
-          confirmationPhrase: groupFullPath,
-        },
-        on: {
-          confirm: () => {
-            document.getElementById(targetFormId)?.submit();
-          },
-        },
-      });
+    component: TransferGroupForm,
+    props: {
+      isPaidGroup: parseBoolean(isPaidGroup),
+      confirmButtonText,
+      confirmationPhrase: groupFullPath,
+    },
+    events: {
+      confirm: () => {
+        document.getElementById(targetFormId)?.submit();
+      },
     },
   });
 };

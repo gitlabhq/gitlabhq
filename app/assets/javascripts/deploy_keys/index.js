@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import DeployKeysApp from './components/app.vue';
 import { createApolloProvider } from './graphql/client';
 
@@ -10,7 +11,7 @@ export default () => {
 
   if (!el) return false;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'DeployKeysAppRoot',
     apolloProvider: createApolloProvider({
@@ -18,13 +19,10 @@ export default () => {
       availableProjectKeysEndpoint: el.dataset.availableProjectEndpoint,
       availablePublicKeysEndpoint: el.dataset.availablePublicEndpoint,
     }),
-    render(createElement) {
-      return createElement(DeployKeysApp, {
-        props: {
-          projectId: el.dataset.projectId,
-          projectPath: el.dataset.projectPath,
-        },
-      });
+    component: DeployKeysApp,
+    props: {
+      projectId: el.dataset.projectId,
+      projectPath: el.dataset.projectPath,
     },
   });
 };

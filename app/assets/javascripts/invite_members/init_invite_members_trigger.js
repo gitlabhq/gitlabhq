@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
 
 export default function initInviteMembersTrigger() {
@@ -9,15 +9,13 @@ export default function initInviteMembersTrigger() {
   }
 
   return triggers.forEach((el) => {
-    return new Vue({
+    return initVueApp({
       el,
       name: 'InviteMembersTriggerRoot',
-      render: (createElement) =>
-        createElement(InviteMembersTrigger, {
-          props: {
-            ...el.dataset,
-          },
-        }),
+      component: InviteMembersTrigger,
+      props: {
+        ...el.dataset,
+      },
     });
   });
 }

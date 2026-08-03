@@ -1,6 +1,7 @@
 import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import App from './components/app.vue';
@@ -21,7 +22,7 @@ export const initArtifactsTable = () => {
 
   const { projectPath, projectId, canDestroyArtifacts, jobArtifactsCountLimit } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'CiArtifactsRoot',
     apolloProvider,
@@ -31,6 +32,6 @@ export const initArtifactsTable = () => {
       canDestroyArtifacts: parseBoolean(canDestroyArtifacts),
       jobArtifactsCountLimit: parseInt(jobArtifactsCountLimit, 10),
     },
-    render: (createElement) => createElement(App),
+    component: App,
   });
 };

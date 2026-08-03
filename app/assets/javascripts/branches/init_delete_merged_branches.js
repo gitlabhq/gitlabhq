@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import DeleteMergedBranches from '~/branches/components/delete_merged_branches.vue';
 
 export default function initDeleteMergedBranchesModal() {
@@ -9,16 +9,13 @@ export default function initDeleteMergedBranchesModal() {
 
   const { formPath, defaultBranch } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'DeleteMergedBranchesRoot',
-    render(createComponent) {
-      return createComponent(DeleteMergedBranches, {
-        props: {
-          formPath,
-          defaultBranch,
-        },
-      });
+    component: DeleteMergedBranches,
+    props: {
+      formPath,
+      defaultBranch,
     },
   });
 }

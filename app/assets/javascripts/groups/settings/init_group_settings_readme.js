@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import GroupSettingsReadme from './components/group_settings_readme.vue';
 
 export const initGroupSettingsReadme = () => {
@@ -8,18 +8,15 @@ export const initGroupSettingsReadme = () => {
 
   const { groupReadmePath, readmeProjectPath, groupPath, groupId } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'GroupSettingsReadmeRoot',
-    render(createElement) {
-      return createElement(GroupSettingsReadme, {
-        props: {
-          groupReadmePath,
-          readmeProjectPath,
-          groupPath,
-          groupId,
-        },
-      });
+    component: GroupSettingsReadme,
+    props: {
+      groupReadmePath,
+      readmeProjectPath,
+      groupPath,
+      groupId,
     },
   });
 };

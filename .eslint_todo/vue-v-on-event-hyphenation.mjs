@@ -177,7 +177,6 @@ export default {
     'ee/app/assets/javascripts/roadmap/components/roadmap_settings.vue',
     'ee/app/assets/javascripts/roadmap/components/roadmap_shell.vue',
     'ee/app/assets/javascripts/saml_providers/saml_membership_role_selector/components/saml_membership_role_selector.vue',
-    'ee/app/assets/javascripts/security_configuration/components/security_attributes/configure_attributes.vue',
     'ee/app/assets/javascripts/security_configuration/corpus_management/components/corpus_upload_button.vue',
     'ee/app/assets/javascripts/security_configuration/dast_profiles/components/dast_variables_form_group.vue',
     'ee/app/assets/javascripts/security_configuration/secret_detection/components/app.vue',

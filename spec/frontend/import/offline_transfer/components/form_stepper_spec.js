@@ -101,6 +101,29 @@ describe('FormStepper', () => {
     });
   });
 
+  describe('canStart check', () => {
+    it('hides the continue button on first step when canStart is false', () => {
+      createComponent({ propsData: { canStart: false } });
+      expect(findContinueButton().exists()).toBe(false);
+    });
+
+    it('shows the continue button on first step when canStart is true', () => {
+      createComponent({ propsData: { canStart: true } });
+
+      expect(findContinueButton().exists()).toBe(true);
+    });
+
+    it('only gates the first step', async () => {
+      createComponent();
+      await clickContinue();
+      expect(findContinueButton().exists()).toBe(true);
+
+      await wrapper.setProps({ canStart: false });
+
+      expect(findContinueButton().exists()).toBe(true);
+    });
+  });
+
   describe('step navigation', () => {
     beforeEach(() => {
       createComponent();

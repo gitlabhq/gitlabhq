@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import View from 'ee_else_ce/projects/settings/branch_rules/components/index.vue';
@@ -36,7 +37,7 @@ export default function mountBranchRules(el, store, squashOptionsFeatureAvailabl
     canUpdateSquashOption = 'false',
   } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'ViewRoot',
     store,
@@ -62,8 +63,6 @@ export default function mountBranchRules(el, store, squashOptionsFeatureAvailabl
       canReadSquashOption: parseBoolean(canReadSquashOption),
       canUpdateSquashOption: parseBoolean(canUpdateSquashOption),
     },
-    render(h) {
-      return h(View);
-    },
+    component: View,
   });
 }

@@ -1,19 +1,16 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import CsvViewer from './csv_viewer.vue';
 
 export default () => {
   const el = document.getElementById('js-csv-viewer');
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'CsvViewerRoot',
-    render(createElement) {
-      return createElement(CsvViewer, {
-        props: {
-          csv: el.dataset.data,
-          remoteFile: true,
-        },
-      });
+    component: CsvViewer,
+    props: {
+      csv: el.dataset.data,
+      remoteFile: true,
     },
   });
 };

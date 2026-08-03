@@ -1,6 +1,7 @@
 import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 
 import { parseBoolean } from '~/lib/utils/common_utils';
@@ -71,7 +72,7 @@ const initHomePanel = () => {
     cicdCatalogPath,
   } = container.dataset;
 
-  return new Vue({
+  return initVueApp({
     apolloProvider,
     el: container,
     name: 'HomePanelRoot',
@@ -123,16 +124,14 @@ const initHomePanel = () => {
       // CI/CD Catalogue Badge
       cicdCatalogPath,
     },
-    render: (createElement) =>
-      createElement(HomePanelApp, {
-        props: {
-          canRequestAccess: parseBoolean(canRequestAccess),
-          canWithdrawAccessRequest: parseBoolean(canWithdrawAccessRequest),
-          requestAccessPath,
-          withdrawAccessRequestPath,
-          dashboardPath,
-        },
-      }),
+    component: HomePanelApp,
+    props: {
+      canRequestAccess: parseBoolean(canRequestAccess),
+      canWithdrawAccessRequest: parseBoolean(canWithdrawAccessRequest),
+      requestAccessPath,
+      withdrawAccessRequestPath,
+      dashboardPath,
+    },
   });
 };
 

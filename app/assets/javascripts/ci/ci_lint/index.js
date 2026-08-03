@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import { resolvers } from '~/ci/pipeline_editor/graphql/resolvers';
 
@@ -15,18 +16,15 @@ export default (containerId = '#js-ci-lint') => {
   const containerEl = document.querySelector(containerId);
   const { lintHelpPagePath, pipelineSimulationHelpPagePath, projectFullPath } = containerEl.dataset;
 
-  return new Vue({
+  return initVueApp({
     el: containerEl,
     name: 'CiLintRoot',
     apolloProvider,
-    render(createElement) {
-      return createElement(CiLint, {
-        props: {
-          lintHelpPagePath,
-          pipelineSimulationHelpPagePath,
-          projectFullPath,
-        },
-      });
+    component: CiLint,
+    props: {
+      lintHelpPagePath,
+      pipelineSimulationHelpPagePath,
+      projectFullPath,
     },
   });
 };

@@ -2,6 +2,7 @@ import { concatPagination } from '@apollo/client/utilities';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import createDefaultClient from '~/lib/graphql';
@@ -103,7 +104,7 @@ export function initMergeRequestDashboard(el) {
     },
   });
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'MergeRequestDashboardRoot',
     router,
@@ -111,12 +112,9 @@ export function initMergeRequestDashboard(el) {
     provide: {
       mergeRequestsSearchDashboardPath: el.dataset.mergeRequestsSearchDashboardPath,
     },
-    render(createElement) {
-      return createElement(App, {
-        props: {
-          tabs,
-        },
-      });
+    component: App,
+    props: {
+      tabs,
     },
   });
 }

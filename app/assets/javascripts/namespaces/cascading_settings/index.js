@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import HamlLockTooltips from './components/haml_lock_tooltips.vue';
 
 export const initCascadingSettingsLockTooltips = () => {
@@ -6,11 +6,5 @@ export const initCascadingSettingsLockTooltips = () => {
 
   if (!el) return false;
 
-  return new Vue({
-    el,
-    name: 'HamlLockTooltipsRoot',
-    render(createElement) {
-      return createElement(HamlLockTooltips);
-    },
-  });
+  return initVueApp({ el, name: 'HamlLockTooltipsRoot', component: HamlLockTooltips });
 };

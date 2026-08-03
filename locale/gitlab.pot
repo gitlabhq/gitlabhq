@@ -47487,6 +47487,9 @@ msgstr ""
 msgid "Members|Activity"
 msgstr ""
 
+msgid "Members|An error occurred while loading members, please try again."
+msgstr ""
+
 msgid "Members|An error occurred while trying to enable LDAP override, please try again."
 msgstr ""
 
@@ -52907,9 +52910,6 @@ msgstr ""
 msgid "OfflineTransferExport|Connect using path-style bucket URLs instead of the default virtual-hosted style. Most AWS S3 buckets use the default, so leave this unchecked unless your setup requires it."
 msgstr ""
 
-msgid "OfflineTransferExport|Could not load groups. Please try again."
-msgstr ""
-
 msgid "OfflineTransferExport|Deselect all"
 msgstr ""
 
@@ -52970,6 +52970,9 @@ msgstr ""
 msgid "OfflineTransferExport|Select page"
 msgstr ""
 
+msgid "OfflineTransferExport|Something went wrong retrieving your groups"
+msgstr ""
+
 msgid "OfflineTransferExport|Start export"
 msgstr ""
 
@@ -52983,6 +52986,9 @@ msgid "OfflineTransferExport|The offline export you started on %{start_date} fro
 msgstr ""
 
 msgid "OfflineTransferExport|The offline export you started on %{start_date} from %{strong_open}%{source_hostname}%{strong_close} is complete. Find the export at %{strong_open}%{export_prefix}%{strong_close} in the configured object storage bucket."
+msgstr ""
+
+msgid "OfflineTransferExport|Try again, or refresh the page."
 msgstr ""
 
 msgid "OfflineTransferExport|Use path-style URLs (optional)"

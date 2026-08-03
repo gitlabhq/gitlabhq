@@ -1,6 +1,6 @@
 <script>
 import { defineAsyncComponent } from 'vue';
-import { GlTable, GlBadge, GlButton } from '@gitlab/ui';
+import { GlTable, GlBadge, GlButton, GlLoadingIcon } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
 import EmptyResult from '~/vue_shared/components/empty_result.vue';
@@ -43,6 +43,7 @@ export default {
     GlTable,
     GlBadge,
     GlButton,
+    GlLoadingIcon,
     EmptyResult,
     MemberAvatar,
     CreatedAt,
@@ -102,6 +103,9 @@ export default {
       },
       pagination(state) {
         return state[this.namespace].pagination;
+      },
+      loading(state) {
+        return state[this.namespace].loading;
       },
     }),
     filteredAndModifiedFields() {
@@ -246,8 +250,9 @@ export default {
 <template>
   <div>
     <user-limit-reached-alert v-if="onAccessRequestTab" />
+    <gl-loading-icon v-if="loading" size="md" class="gl-my-5" data-testid="members-loading-icon" />
     <gl-table
-      v-if="members.length > 0"
+      v-else-if="members.length > 0"
       v-bind="tableAttrs.table"
       class="members-table"
       data-testid="members-table"
@@ -336,7 +341,7 @@ export default {
         <span data-testid="col-actions" class="gl-sr-only">{{ label }}</span>
       </template>
     </gl-table>
-    <empty-result v-else />
+    <empty-result v-else-if="!loading" />
     <members-pagination :pagination="pagination" :tab-query-param-value="tabQueryParamValue" />
     <disable-two-factor-modal />
     <remove-group-link-modal />

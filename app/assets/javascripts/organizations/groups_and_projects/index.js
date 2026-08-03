@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { ORGANIZATION_ROOT_ROUTE_NAME } from '~/organizations/shared/constants';
@@ -44,7 +45,7 @@ export const initOrganizationsGroupsAndProjects = () => {
   });
   const router = createRouter();
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'OrganizationsGroupsAndProjects',
     apolloProvider,
@@ -60,8 +61,6 @@ export const initOrganizationsGroupsAndProjects = () => {
       userPreferenceSortDirection: userPreferenceSortDirection(userPreferenceSort),
       userPreferenceDisplay,
     },
-    render(createElement) {
-      return createElement(App);
-    },
+    component: App,
   });
 };

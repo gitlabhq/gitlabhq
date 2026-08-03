@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import StatisticsPanelApp from './components/app.vue';
 import createStore from './store';
 
@@ -9,15 +9,10 @@ export default function initStatisticsPanel(el) {
 
   const store = createStore();
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'StatisticsPanelAppRoot',
     store,
-    components: {
-      StatisticsPanelApp,
-    },
-    render(h) {
-      return h(StatisticsPanelApp);
-    },
+    component: StatisticsPanelApp,
   });
 }

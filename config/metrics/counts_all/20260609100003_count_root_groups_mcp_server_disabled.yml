@@ -1,7 +1,7 @@
 ---
 key_path: counts.count_root_groups_mcp_server_disabled
 description: Count of top-level groups with MCP server explicitly disabled (mcp_server_enabled set to false)
-product_group: ai_framework
+product_group: ai_model_services
 product_categories:
   - mcp_server
 value_type: number

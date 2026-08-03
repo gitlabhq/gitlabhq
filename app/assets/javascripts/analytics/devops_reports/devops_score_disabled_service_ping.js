@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import UserCallout from '~/user_callout';
 import ServicePingDisabled from './components/service_ping_disabled.vue';
@@ -13,15 +13,13 @@ export default () => {
 
   const { isAdmin, enableServicePingPath } = emptyStateContainer.dataset;
 
-  return new Vue({
+  return initVueApp({
     el: emptyStateContainer,
     name: 'ServicePingDisabledRoot',
     provide: {
       isAdmin: parseBoolean(isAdmin),
       primaryButtonPath: enableServicePingPath,
     },
-    render(h) {
-      return h(ServicePingDisabled);
-    },
+    component: ServicePingDisabled,
   });
 };

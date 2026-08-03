@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import JiraIssuesImportStatusApp from './components/jira_issues_import_status_app.vue';
@@ -21,17 +22,14 @@ export function initJiraIssuesImportStatusRoot() {
 
   Vue.use(VueApollo);
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'JiraIssuesImportStatusRoot',
     apolloProvider,
-    render(createComponent) {
-      return createComponent(JiraIssuesImportStatusApp, {
-        props: {
-          issuesPath,
-          projectPath,
-        },
-      });
+    component: JiraIssuesImportStatusApp,
+    props: {
+      issuesPath,
+      projectPath,
     },
   });
 }

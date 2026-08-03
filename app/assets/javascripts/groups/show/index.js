@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { rootPath } from '~/lib/utils/path_helpers/routes';
@@ -44,7 +45,7 @@ export const initGroupsShowApp = () => {
     defaultClient: createDefaultClient(resolvers(subgroupsAndProjectsEndpoint)),
   });
 
-  return new Vue({
+  return initVueApp({
     el,
     router: createRouter(),
     apolloProvider,
@@ -56,8 +57,7 @@ export const initGroupsShowApp = () => {
       canCreateProjects,
       emptyProjectsIllustration,
     },
-    render(createElement) {
-      return createElement(GroupsShowApp, { props: { initialSort, fullPath } });
-    },
+    component: GroupsShowApp,
+    props: { initialSort, fullPath },
   });
 };

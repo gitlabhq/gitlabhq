@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import BoardApp from '~/boards/components/board_app.vue';
 import { TYPE_ISSUE, NAMESPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';
 import {
@@ -79,8 +80,7 @@ function mountBoardApp(el) {
 
   const boardType = el.dataset.parent;
 
-  // eslint-disable-next-line no-new
-  new Vue({
+  initVueApp({
     el,
     name: 'BoardAppRoot',
     router: new VueRouter(),
@@ -146,7 +146,7 @@ function mountBoardApp(el) {
       statusListsAvailable: parseBoolean(el.dataset.statusListsAvailable),
       hasStatusFeature: parseBoolean(el.dataset.workItemStatusAvailable),
     },
-    render: (createComponent) => createComponent(BoardApp),
+    component: BoardApp,
   });
 }
 

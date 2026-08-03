@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import MirrorTable from 'ee_else_ce/mirrors/components/mirror_table.vue';
 
@@ -9,7 +9,7 @@ export default function mountMirrorTable() {
   const { mirrors, projectId, settingsEnabled, repositoryMirrorsAvailable, pullMirror } =
     el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'MirrorTableRoot',
     provide: {
@@ -17,15 +17,12 @@ export default function mountMirrorTable() {
       settingsEnabled: settingsEnabled === 'true',
       repositoryMirrorsAvailable: repositoryMirrorsAvailable === 'true',
     },
-    render(h) {
-      return h(MirrorTable, {
-        props: {
-          initialMirrors: convertObjectPropsToCamelCase(JSON.parse(mirrors), { deep: true }),
-          initialPullMirror: pullMirror
-            ? convertObjectPropsToCamelCase(JSON.parse(pullMirror), { deep: true })
-            : null,
-        },
-      });
+    component: MirrorTable,
+    props: {
+      initialMirrors: convertObjectPropsToCamelCase(JSON.parse(mirrors), { deep: true }),
+      initialPullMirror: pullMirror
+        ? convertObjectPropsToCamelCase(JSON.parse(pullMirror), { deep: true })
+        : null,
     },
   });
 }

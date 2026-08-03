@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlToast } from '@gitlab/ui';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import createDefaultClient from '~/lib/graphql';
 import { parseBooleanDataAttributes } from '~/lib/utils/dom_utils';
@@ -26,7 +27,7 @@ export const initSecurityConfiguration = (el) => {
   const shouldUseGraphql = parseBoolean(useGraphql);
 
   if (shouldUseGraphql) {
-    return new Vue({
+    return initVueApp({
       el,
       apolloProvider,
       name: 'SecurityConfigurationRoot',
@@ -34,9 +35,7 @@ export const initSecurityConfiguration = (el) => {
         projectId,
         projectFullPath,
       },
-      render(createElement) {
-        return createElement(SecurityConfigurationProvider);
-      },
+      component: SecurityConfigurationProvider,
     });
   }
 
@@ -62,7 +61,7 @@ export const initSecurityConfiguration = (el) => {
 
   const { augmentedSecurityFeatures } = augmentFeatures(features ? JSON.parse(features) : []);
 
-  return new Vue({
+  return initVueApp({
     el,
     apolloProvider,
     name: 'SecurityConfigurationRoot',
@@ -93,21 +92,18 @@ export const initSecurityConfiguration = (el) => {
         'licenseScanningForCyclonedxEnabled',
       ]),
     },
-    render(createElement) {
-      return createElement(SecurityConfigurationApp, {
-        props: {
-          augmentedSecurityFeatures,
-          latestPipelinePath,
-          gitlabCiHistoryPath,
-          ...parseBooleanDataAttributes(el, [
-            'gitlabCiPresent',
-            'autoDevopsEnabled',
-            'canEnableAutoDevops',
-            'securityTrainingEnabled',
-            'mergeRequestsEnabled',
-          ]),
-        },
-      });
+    component: SecurityConfigurationApp,
+    props: {
+      augmentedSecurityFeatures,
+      latestPipelinePath,
+      gitlabCiHistoryPath,
+      ...parseBooleanDataAttributes(el, [
+        'gitlabCiPresent',
+        'autoDevopsEnabled',
+        'canEnableAutoDevops',
+        'securityTrainingEnabled',
+        'mergeRequestsEnabled',
+      ]),
     },
   });
 };

@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { removeLastSlashInUrlPath } from '~/lib/utils/url_utility';
 import csrf from '~/lib/utils/csrf';
 import { apolloProvider as createApolloProvider } from './graphql/client';
@@ -32,7 +33,7 @@ const initKubernetesDashboard = () => {
     base: basePath,
   });
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'KubernetesDashboardRoot',
     router,
@@ -41,7 +42,7 @@ const initKubernetesDashboard = () => {
       agent: agentObject,
       configuration,
     },
-    render: (createElement) => createElement(App),
+    component: App,
   });
 };
 

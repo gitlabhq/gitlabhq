@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import OfflineTransferExportHistoryApp from '~/import/offline_transfer/export/history/app.vue';
 
 export const initOfflineTransferExportHistory = () => {
@@ -6,11 +6,9 @@ export const initOfflineTransferExportHistory = () => {
 
   if (!el) return null;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'OfflineTransferExportHistoryRoot',
-    render(createElement) {
-      return createElement(OfflineTransferExportHistoryApp, {});
-    },
+    component: OfflineTransferExportHistoryApp,
   });
 };

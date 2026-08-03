@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import { showAlertFromLocalStorage } from '~/lib/utils/local_storage_alert';
 import AdminRunnerShowApp from './admin_runner_show_app.vue';
@@ -23,18 +24,15 @@ export const initAdminRunnerShow = (selector = '#js-admin-runner-show') => {
     defaultClient: createDefaultClient(),
   });
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'AdminRunnerShowAppRoot',
     apolloProvider,
-    render(h) {
-      return h(AdminRunnerShowApp, {
-        props: {
-          runnerId,
-          runnersPath,
-          editPath,
-        },
-      });
+    component: AdminRunnerShowApp,
+    props: {
+      runnerId,
+      runnersPath,
+      editPath,
     },
   });
 };

@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { visitUrl, joinPaths } from '~/lib/utils/url_utility';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ShortcutsNetwork from '~/behaviors/shortcuts/shortcuts_network';
@@ -17,21 +17,18 @@ export const initRefSwitcher = () => {
   const { projectId, ref, networkPath } = refSwitcherEl.dataset;
   const networkRootPath = networkPath.match(NETWORK_PATH_REGEX)?.[0]; // gets the network path without the ref
 
-  return new Vue({
+  return initVueApp({
     el: refSwitcherEl,
     name: 'NetworkRefSelectorRoot',
-    render(createElement) {
-      return createElement(RefSelector, {
-        props: {
-          projectId,
-          value: ref,
-        },
-        on: {
-          input(selectedRef) {
-            visitUrl(joinPaths(networkRootPath, encodeURIComponent(selectedRef)));
-          },
-        },
-      });
+    component: RefSelector,
+    props: {
+      projectId,
+      value: ref,
+    },
+    events: {
+      input(selectedRef) {
+        visitUrl(joinPaths(networkRootPath, encodeURIComponent(selectedRef)));
+      },
     },
   });
 };
@@ -43,15 +40,12 @@ export const initRefSearchForm = () => {
 
   const { networkPath } = refSearchEl.dataset;
 
-  return new Vue({
+  return initVueApp({
     el: refSearchEl,
     name: 'RefSearchFormRoot',
-    render(h) {
-      return h(RefSearchForm, {
-        props: {
-          networkPath,
-        },
-      });
+    component: RefSearchForm,
+    props: {
+      networkPath,
     },
   });
 };

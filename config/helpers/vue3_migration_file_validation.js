@@ -20,6 +20,10 @@
  *                has been fully rolled out and removed.
  *                `feature_flag` must be absent.
  *
+ * A declared `feature_flag` must be named `vue3_migrate_<page>`, so that
+ * flags driving this mechanism are greppable as a group and cannot be
+ * confused with unrelated flags that happen to gate the same page.
+ *
  * Lifecycle: file added with `rollout` -> moved to `migrated` once the
  * feature flag is retired -> file deleted once Vue 2 is no longer
  * needed for the page.
@@ -32,6 +36,8 @@ const VUE3_MIGRATION_STATUS_MIGRATED = 'migrated';
 
 const ALL_STATUSES = [VUE3_MIGRATION_STATUS_ROLLOUT, VUE3_MIGRATION_STATUS_MIGRATED];
 const ALLOWED_KEYS = Object.freeze(['status', 'feature_flag', 'group', 'migration_issue']);
+
+const VUE3_MIGRATION_FLAG_PREFIX = 'vue3_migrate_';
 
 /**
  * Validate a parsed `vue3_migration.yml` document.
@@ -67,6 +73,12 @@ function validateVue3MigrationFile(doc) {
   if (status === VUE3_MIGRATION_STATUS_ROLLOUT) {
     if (typeof featureFlag !== 'string' || featureFlag.length === 0) {
       errors.push('`feature_flag` is required when status is `rollout`');
+    } else if (!featureFlag.startsWith(VUE3_MIGRATION_FLAG_PREFIX)) {
+      errors.push(
+        `\`feature_flag\` must start with \`${VUE3_MIGRATION_FLAG_PREFIX}\` (got ${JSON.stringify(
+          featureFlag,
+        )})`,
+      );
     }
   } else if (featureFlag !== undefined) {
     errors.push(`\`feature_flag\` must be absent when status is \`${status}\``);
@@ -79,5 +91,6 @@ module.exports = {
   VUE3_MIGRATION_STATUS_ROLLOUT,
   VUE3_MIGRATION_STATUS_MIGRATED,
   VUE3_MIGRATION_FILENAME,
+  VUE3_MIGRATION_FLAG_PREFIX,
   validateVue3MigrationFile,
 };

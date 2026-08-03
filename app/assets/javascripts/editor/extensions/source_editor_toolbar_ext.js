@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import getToolbarItemsQuery from '~/editor/graphql/get_items.query.graphql';
 import removeToolbarItemsMutation from '~/editor/graphql/remove_items.mutation.graphql';
 import updateToolbarItemMutation from '~/editor/graphql/update_item.mutation.graphql';
@@ -41,13 +41,11 @@ export class ToolbarExtension {
   static setupVue(el) {
     client.cache.writeQuery({ query: getToolbarItemsQuery, data: { items: { nodes: [] } } });
 
-    return new Vue({
+    return initVueApp({
       el,
       name: 'SourceEditorToolbarRoot',
       apolloProvider,
-      render(createElement) {
-        return createElement(SourceEditorToolbar);
-      },
+      component: SourceEditorToolbar,
     });
   }
 

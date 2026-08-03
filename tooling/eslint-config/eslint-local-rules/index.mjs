@@ -13,6 +13,7 @@ import { vueNoUnusedInjects } from './vue_no_unused_injects.mjs';
 import { vue3FindComponentUpgrade } from './vue3_find_component_upgrade.mjs';
 import { vue3GlSlots } from './vue3_gl_slots.mjs';
 import { vue3GlSlotsMixinPairing } from './vue3_gl_slots_mixin_pairing.mjs';
+import { vue3InitVueApp } from './vue3_init_vue_app.mjs';
 
 export const eslintLocalRules = {
   rules: {
@@ -31,5 +32,6 @@ export const eslintLocalRules = {
     'vue3-find-component-upgrade': vue3FindComponentUpgrade,
     'vue3-gl-slots': vue3GlSlots,
     'vue3-gl-slots-mixin-pairing': vue3GlSlotsMixinPairing,
+    'vue3-init-vue-app': vue3InitVueApp,
   },
 };

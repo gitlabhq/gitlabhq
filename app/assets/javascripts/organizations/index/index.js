@@ -1,5 +1,5 @@
-import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import OrganizationsIndexApp from './components/app.vue';
@@ -20,7 +20,7 @@ export const initOrganizationsIndex = () => {
     JSON.parse(appData),
   );
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'OrganizationsIndexRoot',
     apolloProvider,
@@ -28,8 +28,6 @@ export const initOrganizationsIndex = () => {
       newOrganizationUrl,
       canCreateOrganization,
     },
-    render(createElement) {
-      return createElement(OrganizationsIndexApp);
-    },
+    component: OrganizationsIndexApp,
   });
 };

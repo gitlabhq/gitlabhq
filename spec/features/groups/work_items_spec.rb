@@ -155,7 +155,12 @@ RSpec.describe 'Group work items page', feature_category: :team_planning do
 
       expect_issue_order
 
-      visit group_work_items_path(group)
+      # The list is reordered in the DOM before the reorder mutation resolves, so wait for it
+      # to land before navigating away. Revisit with an explicit sort so the assertion depends
+      # on the persisted order rather than on the sort preference having been saved.
+      wait_for_requests
+
+      visit group_work_items_path(group, sort: 'relative_position')
 
       expect_issue_order
     end

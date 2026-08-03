@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import ImportProjectMembersModal from '~/invite_members/components/import_project_members_modal.vue';
 import { parseBoolean, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 
@@ -12,21 +12,19 @@ export default function initImportProjectMembersModal() {
   const { projectId, projectName, reloadPageOnSubmit, usersLimitDataset, addSeatsHref } =
     el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'ImportProjectMembersModalRoot',
     provide: {
       name: projectName,
       addSeatsHref,
     },
-    render: (createElement) =>
-      createElement(ImportProjectMembersModal, {
-        props: {
-          projectId,
-          projectName,
-          reloadPageOnSubmit: parseBoolean(reloadPageOnSubmit),
-          usersLimitDataset: convertObjectPropsToCamelCase(JSON.parse(usersLimitDataset || '{}')),
-        },
-      }),
+    component: ImportProjectMembersModal,
+    props: {
+      projectId,
+      projectName,
+      reloadPageOnSubmit: parseBoolean(reloadPageOnSubmit),
+      usersLimitDataset: convertObjectPropsToCamelCase(JSON.parse(usersLimitDataset || '{}')),
+    },
   });
 }

@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import EmailVerification from './components/email_verification.vue';
 import TwoFactorEmailFallback from './components/two_factor_email_fallback.vue';
@@ -12,20 +12,17 @@ export const initTwoFactorEmailOTP = () => {
 
   const { sendEmailOtpPath, username, emailVerificationData } = twoFactorFallbackElement.dataset;
 
-  return new Vue({
+  const parsedEmailVerificationData =
+    emailVerificationData && convertObjectPropsToCamelCase(JSON.parse(emailVerificationData));
+
+  return initVueApp({
     el: twoFactorFallbackElement,
     name: 'TwoFactorEmailFallbackRoot',
-    render(createElement) {
-      const parsedEmailVerificationData =
-        emailVerificationData && convertObjectPropsToCamelCase(JSON.parse(emailVerificationData));
-
-      return createElement(TwoFactorEmailFallback, {
-        props: {
-          sendEmailOtpPath,
-          username,
-          emailVerificationData: parsedEmailVerificationData,
-        },
-      });
+    component: TwoFactorEmailFallback,
+    props: {
+      sendEmailOtpPath,
+      username,
+      emailVerificationData: parsedEmailVerificationData,
     },
   });
 };
@@ -40,20 +37,17 @@ export const initEmailVerification = () => {
   const { username, obfuscatedEmail, verifyPath, resendPath, skipPath, showResendAfter } =
     emailVerificationElement.dataset;
 
-  return new Vue({
+  return initVueApp({
     el: emailVerificationElement,
     name: 'EmailVerificationRoot',
-    render(createElement) {
-      return createElement(EmailVerification, {
-        props: {
-          username,
-          obfuscatedEmail,
-          verifyPath,
-          resendPath,
-          skipPath,
-          initialShowResendAfter: showResendAfter ? Number(showResendAfter) : null,
-        },
-      });
+    component: EmailVerification,
+    props: {
+      username,
+      obfuscatedEmail,
+      verifyPath,
+      resendPath,
+      skipPath,
+      initialShowResendAfter: showResendAfter ? Number(showResendAfter) : null,
     },
   });
 };

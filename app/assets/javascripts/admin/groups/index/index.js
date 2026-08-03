@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import { adminGroupsPath } from '~/lib/utils/path_helpers/admin';
 import routes from './routes';
@@ -27,13 +28,11 @@ export const initAdminGroups = () => {
     defaultClient: createDefaultClient(),
   });
 
-  return new Vue({
+  return initVueApp({
     el,
     router: createRouter(adminGroupsPath()),
     apolloProvider,
     name: 'AdminGroupsRoot',
-    render(createElement) {
-      return createElement(AdminGroupsApp);
-    },
+    component: AdminGroupsApp,
   });
 };

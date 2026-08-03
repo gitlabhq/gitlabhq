@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import FilepathForm from './components/filepath_form.vue';
 
 const getInputOptions = (el) => {
@@ -12,20 +12,21 @@ const getInputOptions = (el) => {
 export default ({ onTemplateSelected }) => {
   const el = document.getElementById('js-template-selectors-menu');
 
-  return new Vue({
+  if (!el) {
+    return null;
+  }
+
+  return initVueApp({
     el,
     name: 'FilepathFormRoot',
-    render(h) {
-      return h(FilepathForm, {
-        props: {
-          inputOptions: getInputOptions(el),
-          templates: JSON.parse(el.dataset.templates),
-          initialTemplate: el.dataset.selected,
-        },
-        on: {
-          'template-selected': onTemplateSelected,
-        },
-      });
+    component: FilepathForm,
+    props: {
+      inputOptions: getInputOptions(el),
+      templates: JSON.parse(el.dataset.templates),
+      initialTemplate: el.dataset.selected,
+    },
+    events: {
+      'template-selected': onTemplateSelected,
     },
   });
 };

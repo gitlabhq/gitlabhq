@@ -1,6 +1,7 @@
 import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import PipelineSchedules from './components/pipeline_schedules.vue';
 
@@ -20,7 +21,7 @@ export default () => {
 
   const { projectPath, pipelinesPath, newSchedulePath, projectId } = containerEl.dataset;
 
-  return new Vue({
+  return initVueApp({
     el: containerEl,
     name: 'PipelineSchedulesRoot',
     apolloProvider,
@@ -30,8 +31,6 @@ export default () => {
       newSchedulePath,
       projectId,
     },
-    render(createElement) {
-      return createElement(PipelineSchedules);
-    },
+    component: PipelineSchedules,
   });
 };

@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import DeleteApplication from './components/delete_application.vue';
 
 export default () => {
@@ -6,11 +6,5 @@ export default () => {
 
   if (!el) return false;
 
-  return new Vue({
-    el,
-    name: 'DeleteApplicationRoot',
-    render(h) {
-      return h(DeleteApplication);
-    },
-  });
+  return initVueApp({ el, name: 'DeleteApplicationRoot', component: DeleteApplication });
 };

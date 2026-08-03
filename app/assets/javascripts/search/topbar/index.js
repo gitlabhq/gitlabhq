@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import Translate from '~/vue_shared/translate';
 import GlobalSearchTopbar from './components/app.vue';
 
@@ -11,12 +12,5 @@ export const initTopbar = (store) => {
     return false;
   }
 
-  return new Vue({
-    el,
-    name: 'GlobalSearchTopbar',
-    store,
-    render(createElement) {
-      return createElement(GlobalSearchTopbar);
-    },
-  });
+  return initVueApp({ el, name: 'GlobalSearchTopbar', store, component: GlobalSearchTopbar });
 };

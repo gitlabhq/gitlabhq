@@ -2,6 +2,7 @@ import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
 import IncidentsSettingsService from '~/incidents_settings/incidents_settings_service';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import AlertSettingsWrapper from './components/alerts_settings_wrapper.vue';
 import apolloProvider from './graphql';
 import getCurrentIntegrationQuery from './graphql/queries/get_current_integration.query.graphql';
@@ -35,11 +36,12 @@ export default (el) => {
   } = el.dataset;
 
   const service = new IncidentsSettingsService(operationsSettingsEndpoint, pagerdutyResetKeyPath);
-  return new Vue({
+  return initVueApp({
     el,
     name: 'AlertSettingsWrapperRoot',
-    components: {
-      AlertSettingsWrapper,
+    component: AlertSettingsWrapper,
+    props: {
+      alertFields: parseBoolean(multiIntegrations) ? JSON.parse(alertFields) : null,
     },
     provide: {
       service,
@@ -57,12 +59,5 @@ export default (el) => {
       multiIntegrations: parseBoolean(multiIntegrations),
     },
     apolloProvider,
-    render(createElement) {
-      return createElement('alert-settings-wrapper', {
-        props: {
-          alertFields: parseBoolean(multiIntegrations) ? JSON.parse(alertFields) : null,
-        },
-      });
-    },
   });
 };

@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import BadgeSettings from '~/badges/components/badge_settings.vue';
 import createStore from '~/badges/store';
 
@@ -7,18 +7,14 @@ export default (kind) => {
 
   if (!badgeSettingsElement) return null;
 
-  return new Vue({
+  return initVueApp({
     el: badgeSettingsElement,
+    name: 'BadgeSettingsRoot',
     store: createStore({
       kind,
       apiEndpointUrl: badgeSettingsElement.dataset.apiEndpointUrl,
       docsUrl: badgeSettingsElement.dataset.docsUrl,
     }),
-    components: {
-      BadgeSettings,
-    },
-    render(createElement) {
-      return createElement(BadgeSettings);
-    },
+    component: BadgeSettings,
   });
 };

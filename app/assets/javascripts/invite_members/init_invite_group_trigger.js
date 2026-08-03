@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import InviteGroupTrigger from '~/invite_members/components/invite_group_trigger.vue';
 
 export default function initInviteGroupTrigger() {
@@ -8,14 +8,12 @@ export default function initInviteGroupTrigger() {
     return false;
   }
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'InviteGroupTriggerRoot',
-    render: (createElement) =>
-      createElement(InviteGroupTrigger, {
-        props: {
-          ...el.dataset,
-        },
-      }),
+    component: InviteGroupTrigger,
+    props: {
+      ...el.dataset,
+    },
   });
 }

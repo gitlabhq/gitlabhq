@@ -10107,6 +10107,57 @@
           "possibleTypes": null
         },
         {
+          "kind": "INPUT_OBJECT",
+          "name": "AggregationScopeInput",
+          "description": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "groupFullPaths",
+              "description": "Full paths of groups to aggregate data for. Combined with `projectFullPaths`, at most 20 sources can be requested.",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "projectFullPaths",
+              "description": "Full paths of projects to aggregate data for. Combined with `groupFullPaths`, at most 20 sources can be requested.",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
           "kind": "OBJECT",
           "name": "AggregationStatus",
           "description": null,
@@ -31808,40 +31859,12 @@
               "description": "Aggregation engine for GitLab Duo Agent Platform sessions usage",
               "args": [
                 {
-                  "name": "groupFullPaths",
-                  "description": "Full paths of groups to aggregate data for. All groups must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `projectFullPaths`, at most 20 sources can be requested. Not supported at project level.",
+                  "name": "descendantsScope",
+                  "description": "Child groups and projects to aggregate data for. Not supported at project level.",
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "ID",
-                        "ofType": null
-                      }
-                    }
-                  },
-                  "defaultValue": null,
-                  "isDeprecated": false,
-                  "deprecationReason": null
-                },
-                {
-                  "name": "projectFullPaths",
-                  "description": "Full paths of projects to aggregate data for. All projects must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `groupFullPaths`, at most 20 sources can be requested. Not supported at project level.",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "ID",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "INPUT_OBJECT",
+                    "name": "AggregationScopeInput",
+                    "ofType": null
                   },
                   "defaultValue": null,
                   "isDeprecated": false,
@@ -31925,40 +31948,12 @@
               "description": "Aggregation engine for contribution analytics Introduced in GitLab 19.0: Status: Experiment.",
               "args": [
                 {
-                  "name": "groupFullPaths",
-                  "description": "Full paths of groups to aggregate data for. All groups must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `projectFullPaths`, at most 20 sources can be requested. Not supported at project level.",
+                  "name": "descendantsScope",
+                  "description": "Child groups and projects to aggregate data for. Not supported at project level.",
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "ID",
-                        "ofType": null
-                      }
-                    }
-                  },
-                  "defaultValue": null,
-                  "isDeprecated": false,
-                  "deprecationReason": null
-                },
-                {
-                  "name": "projectFullPaths",
-                  "description": "Full paths of projects to aggregate data for. All projects must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `groupFullPaths`, at most 20 sources can be requested. Not supported at project level.",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "ID",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "INPUT_OBJECT",
+                    "name": "AggregationScopeInput",
+                    "ofType": null
                   },
                   "defaultValue": null,
                   "isDeprecated": false,
@@ -32022,40 +32017,12 @@
               "description": "Aggregation engine for deployment analytics Introduced in GitLab 19.0: Status: Experiment.",
               "args": [
                 {
-                  "name": "groupFullPaths",
-                  "description": "Full paths of groups to aggregate data for. All groups must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `projectFullPaths`, at most 20 sources can be requested. Not supported at project level.",
+                  "name": "descendantsScope",
+                  "description": "Child groups and projects to aggregate data for. Not supported at project level.",
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "ID",
-                        "ofType": null
-                      }
-                    }
-                  },
-                  "defaultValue": null,
-                  "isDeprecated": false,
-                  "deprecationReason": null
-                },
-                {
-                  "name": "projectFullPaths",
-                  "description": "Full paths of projects to aggregate data for. All projects must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `groupFullPaths`, at most 20 sources can be requested. Not supported at project level.",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "ID",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "INPUT_OBJECT",
+                    "name": "AggregationScopeInput",
+                    "ofType": null
                   },
                   "defaultValue": null,
                   "isDeprecated": false,
@@ -32183,40 +32150,12 @@
               "description": "Aggregation engine for GitLab Duo Code Suggestions usage",
               "args": [
                 {
-                  "name": "groupFullPaths",
-                  "description": "Full paths of groups to aggregate data for. All groups must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `projectFullPaths`, at most 20 sources can be requested. Not supported at project level.",
+                  "name": "descendantsScope",
+                  "description": "Child groups and projects to aggregate data for. Not supported at project level.",
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "ID",
-                        "ofType": null
-                      }
-                    }
-                  },
-                  "defaultValue": null,
-                  "isDeprecated": false,
-                  "deprecationReason": null
-                },
-                {
-                  "name": "projectFullPaths",
-                  "description": "Full paths of projects to aggregate data for. All projects must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `groupFullPaths`, at most 20 sources can be requested. Not supported at project level.",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "ID",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "INPUT_OBJECT",
+                    "name": "AggregationScopeInput",
+                    "ofType": null
                   },
                   "defaultValue": null,
                   "isDeprecated": false,
@@ -32320,40 +32259,12 @@
               "description": "Aggregation engine for GitLab Duo AI usage events",
               "args": [
                 {
-                  "name": "groupFullPaths",
-                  "description": "Full paths of groups to aggregate data for. All groups must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `projectFullPaths`, at most 20 sources can be requested. Not supported at project level.",
+                  "name": "descendantsScope",
+                  "description": "Child groups and projects to aggregate data for. Not supported at project level.",
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "ID",
-                        "ofType": null
-                      }
-                    }
-                  },
-                  "defaultValue": null,
-                  "isDeprecated": false,
-                  "deprecationReason": null
-                },
-                {
-                  "name": "projectFullPaths",
-                  "description": "Full paths of projects to aggregate data for. All projects must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `groupFullPaths`, at most 20 sources can be requested. Not supported at project level.",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "ID",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "INPUT_OBJECT",
+                    "name": "AggregationScopeInput",
+                    "ofType": null
                   },
                   "defaultValue": null,
                   "isDeprecated": false,
@@ -32457,40 +32368,12 @@
               "description": "Aggregation engine for finished pipelines analytics Introduced in GitLab 19.0: Status: Experiment.",
               "args": [
                 {
-                  "name": "groupFullPaths",
-                  "description": "Full paths of groups to aggregate data for. All groups must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `projectFullPaths`, at most 20 sources can be requested. Not supported at project level.",
+                  "name": "descendantsScope",
+                  "description": "Child groups and projects to aggregate data for. Not supported at project level.",
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "ID",
-                        "ofType": null
-                      }
-                    }
-                  },
-                  "defaultValue": null,
-                  "isDeprecated": false,
-                  "deprecationReason": null
-                },
-                {
-                  "name": "projectFullPaths",
-                  "description": "Full paths of projects to aggregate data for. All projects must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `groupFullPaths`, at most 20 sources can be requested. Not supported at project level.",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "ID",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "INPUT_OBJECT",
+                    "name": "AggregationScopeInput",
+                    "ofType": null
                   },
                   "defaultValue": null,
                   "isDeprecated": false,
@@ -32618,40 +32501,12 @@
               "description": "Aggregation engine for merge request analytics Introduced in GitLab 19.2: Status: Experiment.",
               "args": [
                 {
-                  "name": "groupFullPaths",
-                  "description": "Full paths of groups to aggregate data for. All groups must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `projectFullPaths`, at most 20 sources can be requested. Not supported at project level.",
+                  "name": "descendantsScope",
+                  "description": "Child groups and projects to aggregate data for. Not supported at project level.",
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "ID",
-                        "ofType": null
-                      }
-                    }
-                  },
-                  "defaultValue": null,
-                  "isDeprecated": false,
-                  "deprecationReason": null
-                },
-                {
-                  "name": "projectFullPaths",
-                  "description": "Full paths of projects to aggregate data for. All projects must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `groupFullPaths`, at most 20 sources can be requested. Not supported at project level.",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "ID",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "INPUT_OBJECT",
+                    "name": "AggregationScopeInput",
+                    "ofType": null
                   },
                   "defaultValue": null,
                   "isDeprecated": false,
@@ -32759,40 +32614,12 @@
               "description": "Aggregation engine for CI pipeline analytics Introduced in GitLab 19.2: Status: Experiment.",
               "args": [
                 {
-                  "name": "groupFullPaths",
-                  "description": "Full paths of groups to aggregate data for. All groups must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `projectFullPaths`, at most 20 sources can be requested. Not supported at project level.",
+                  "name": "descendantsScope",
+                  "description": "Child groups and projects to aggregate data for. Not supported at project level.",
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "ID",
-                        "ofType": null
-                      }
-                    }
-                  },
-                  "defaultValue": null,
-                  "isDeprecated": false,
-                  "deprecationReason": null
-                },
-                {
-                  "name": "projectFullPaths",
-                  "description": "Full paths of projects to aggregate data for. All projects must belong to the parent organization or group hierarchy and be accessible to the current user. Combined with `groupFullPaths`, at most 20 sources can be requested. Not supported at project level.",
-                  "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "ID",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "INPUT_OBJECT",
+                    "name": "AggregationScopeInput",
+                    "ofType": null
                   },
                   "defaultValue": null,
                   "isDeprecated": false,
@@ -137848,6 +137675,42 @@
               "deprecationReason": null
             },
             {
+              "name": "flowMetadataId",
+              "description": "Identifier of the flow that was executed in the session. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
+              "name": "flowMetadataSchemaVersion",
+              "description": "Schema version of the flow metadata for the session. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
+              "name": "flowMetadataVersion",
+              "description": "Version of the flow that was executed in the session. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
               "name": "goal",
               "description": "Goal of the session.",
               "args": [],
@@ -138891,6 +138754,18 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 17.10."
+            },
+            {
+              "name": "lastDuoMessage",
+              "description": "Most recent message from the ui_chat_log for the checkpoint. Cheaper than duoMessages for list previews: it reads only the latest message instead of the full chat log. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "DuoMessage",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
             },
             {
               "name": "metadata",

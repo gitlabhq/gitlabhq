@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import DiffFileOptionsDropdown from '~/rapid_diffs/app/options_menu/diff_file_options_dropdown.vue';
 
 function getMenuItems(container) {
@@ -15,14 +15,12 @@ export const createOptionsMenuAdapter = (dropdownComponent, store) => {
         const { oldPath, newPath } = this.data;
         const fileId = this.id;
 
-        // eslint-disable-next-line no-new
-        new Vue({
+        initVueApp({
           el: button,
           name: 'DropdownComponentRoot',
           provide: { store },
-          render(h) {
-            return h(dropdownComponent, { props: { items, oldPath, newPath, fileId } });
-          },
+          component: dropdownComponent,
+          props: { items, oldPath, newPath, fileId },
         });
       },
     },

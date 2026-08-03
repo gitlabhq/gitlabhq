@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import IntegrationForm from '../components/integration_form.vue';
 import { createStore } from '../stores';
 
@@ -11,8 +11,7 @@ export default () => {
 
   const { autoDevopsHelpPath, externalEndpointHelpPath } = entryPoint.dataset;
 
-  // eslint-disable-next-line no-new
-  new Vue({
+  initVueApp({
     el: entryPoint,
     name: 'ClustersIntegrationFormRoot',
     store: createStore(entryPoint.dataset),
@@ -20,9 +19,6 @@ export default () => {
       autoDevopsHelpPath,
       externalEndpointHelpPath,
     },
-
-    render(createElement) {
-      return createElement(IntegrationForm, {});
-    },
+    component: IntegrationForm,
   });
 };

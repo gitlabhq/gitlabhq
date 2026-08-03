@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import TodosApp from './components/todos_app.vue';
 
@@ -16,7 +17,7 @@ export default () => {
 
   const { issuesDashboardPath, mergeRequestsDashboardPath } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'TodosAppRoot',
     apolloProvider: new VueApollo({
@@ -31,8 +32,6 @@ export default () => {
       mode: 'history',
       routes: [{ path: '/' }],
     }),
-    render(createElement) {
-      return createElement(TodosApp);
-    },
+    component: TodosApp,
   });
 };

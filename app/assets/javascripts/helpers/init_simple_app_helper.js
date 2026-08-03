@@ -2,6 +2,7 @@ import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 
 /**
@@ -112,13 +113,5 @@ export const initSimpleApp = (
   };
   const props = element.dataset.viewModel ? JSON.parse(element.dataset.viewModel) : {};
 
-  return new Vue({
-    el: element,
-    apolloProvider,
-    name,
-    provide,
-    render(h) {
-      return h(component, { props });
-    },
-  });
+  return initVueApp({ el: element, apolloProvider, name, provide, component, props });
 };

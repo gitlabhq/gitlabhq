@@ -11,6 +11,14 @@ module MergeRequests
     idempotent!
 
     def handle_event(event)
+      # Completes the "submit MR review" experience started in the web request
+      # (Projects::MergeRequests::DraftsController#publish) and propagated here
+      # through the Sidekiq user experience middleware. Completed in an ensure so
+      # every exit path is covered without altering this method's return value. On
+      # paths where it was never started (API, quick actions, AI reviews), Labkit
+      # short-circuits resume/complete on the unstarted experience.
+      experience = Labkit::UserExperienceSli.resume(:submit_mr_review_ui)
+
       current_user = User.find_by_id(event.data[:current_user_id])
       unless current_user
         logger.info(structured_payload(message: 'Current user not found.',
@@ -33,6 +41,8 @@ module MergeRequests
       return unless merge_request.discussions_resolved?
 
       notification_service.resolve_all_discussions(merge_request, current_user)
+    ensure
+      experience&.complete(notes_published: true)
     end
 
     private

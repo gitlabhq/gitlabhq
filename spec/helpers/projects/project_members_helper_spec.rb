@@ -29,7 +29,6 @@ RSpec.describe Projects::ProjectMembersHelper, feature_category: :groups_and_pro
           helper.project_members_app_data_json(
             project,
             members: present_members(members_collection),
-            direct_members: present_members(members_collection),
             invited: present_members(invited),
             links: links,
             access_requests: present_members(access_requests),
@@ -67,6 +66,36 @@ RSpec.describe Projects::ProjectMembersHelper, feature_category: :groups_and_pro
 
       it 'sets `member_path` property' do
         expect(subject['user']['member_path']).to eq('/foo-bar/-/project_members/:id')
+      end
+
+      it 'seeds `direct_members` empty with a `members_path` for lazy fetching' do
+        expect(subject['direct_members']['members']).to eq([])
+        expect(subject['direct_members']['members_path'])
+          .to eq(project_project_members_path(project, format: :json))
+      end
+
+      it 'seeds `direct_members` pagination with the count from the same finder that loads the tab rows' do
+        finder_count = MembersFinder
+          .new(project, current_user)
+          .execute(include_relations: [:direct])
+          .non_invite
+          .count
+
+        expect(subject['direct_members']['pagination']['total_items']).to eq(finder_count)
+      end
+
+      context 'when a direct members search param is present' do
+        let(:searched_member) { members.first }
+
+        before do
+          allow(helper).to receive(:params).and_return(
+            ActionController::Parameters.new(search_direct_members: searched_member.user.name)
+          )
+        end
+
+        it 'seeds `direct_members` pagination with the filtered count' do
+          expect(subject['direct_members']['pagination']['total_items']).to eq(1)
+        end
       end
 
       context 'when pagination is not available' do

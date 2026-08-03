@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import AmbiguousRefModal from './components/ambiguous_ref_modal.vue';
@@ -11,11 +11,10 @@ export default (el = document.querySelector('#js-ambiguous-ref-modal')) => {
 
   const { ref } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'AmbiguousRefModalRoot',
-    render(createElement) {
-      return createElement(AmbiguousRefModal, { props: { refName: ref } });
-    },
+    component: AmbiguousRefModal,
+    props: { refName: ref },
   });
 };

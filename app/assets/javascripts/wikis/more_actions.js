@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import WikiMoreDropdown from './components/wiki_more_dropdown.vue';
 
 const mountWikiMoreActions = () => {
@@ -7,7 +7,7 @@ const mountWikiMoreActions = () => {
   if (!el) return false;
   const { pageHeading, cloneSshUrl, cloneHttpUrl, wikiUrl, newUrl, templatesUrl } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'WikiMoreDropdownRoot',
     provide: {
@@ -18,9 +18,7 @@ const mountWikiMoreActions = () => {
       newUrl,
       templatesUrl,
     },
-    render(createElement) {
-      return createElement(WikiMoreDropdown);
-    },
+    component: WikiMoreDropdown,
   });
 };
 

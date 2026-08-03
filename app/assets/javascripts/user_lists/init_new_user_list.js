@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import NewUserList from './components/new_user_list.vue';
 
 export const initNewUserList = () => {
@@ -10,7 +10,7 @@ export const initNewUserList = () => {
 
   const { userListsDocsPath, featureFlagsPath, projectId } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'FeatureFlagsNewUserListRoot',
     provide: {
@@ -18,8 +18,6 @@ export const initNewUserList = () => {
       featureFlagsPath,
       projectId,
     },
-    render(h) {
-      return h(NewUserList);
-    },
+    component: NewUserList,
   });
 };

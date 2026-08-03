@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import csrf from '~/lib/utils/csrf';
 import { parseBoolean } from '~/lib/utils/common_utils';
@@ -22,27 +23,20 @@ export default () => {
     defaultClient: createDefaultClient(),
   });
 
-  // eslint-disable-next-line no-new
-  new Vue({
+  initVueApp({
     el: selector,
     name: 'ErrorTrackingDetailsRoot',
     apolloProvider,
-    components: {
-      ErrorDetails,
-    },
     store,
-    render(createElement) {
-      return createElement('error-details', {
-        props: {
-          issueId,
-          projectPath,
-          issueUpdatePath,
-          issueStackTracePath,
-          projectIssuesPath,
-          csrfToken: csrf.token,
-          integratedErrorTrackingEnabled,
-        },
-      });
+    component: ErrorDetails,
+    props: {
+      issueId,
+      projectPath,
+      issueUpdatePath,
+      issueStackTracePath,
+      projectIssuesPath,
+      csrfToken: csrf.token,
+      integratedErrorTrackingEnabled,
     },
   });
 };

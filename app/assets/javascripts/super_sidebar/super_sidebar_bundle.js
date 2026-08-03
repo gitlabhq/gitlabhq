@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import { GlToast } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
 import { CONTEXT_NAMESPACE_GROUPS } from './constants';
@@ -102,7 +103,7 @@ export const initSuperSidebar = ({
   bindSuperSidebarCollapsedEvents();
   initSuperSidebarCollapsedState();
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'SuperSidebarRoot',
     apolloProvider,
@@ -129,12 +130,9 @@ export const initSuperSidebar = ({
       searchContext,
       search: '',
     }),
-    render(h) {
-      return h(SuperSidebar, {
-        props: {
-          sidebarData,
-        },
-      });
+    component: SuperSidebar,
+    props: {
+      sidebarData,
     },
   });
 };
@@ -160,7 +158,7 @@ export const initSuperTopbar = ({
   const el = document.querySelector('.js-super-topbar');
   if (!el) return false;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'SuperTopbarRoot',
     apolloProvider,
@@ -183,12 +181,9 @@ export const initSuperTopbar = ({
       searchContext,
       search: '',
     }),
-    render(h) {
-      return h(SuperTopbar, {
-        props: {
-          sidebarData,
-        },
-      });
+    component: SuperTopbar,
+    props: {
+      sidebarData,
     },
   });
 };

@@ -144,7 +144,7 @@ export default {
       default: () => [],
     },
   },
-  emits: ['onLabelRemove', 'toggleCollapse', 'updateSelectedLabels'],
+  emits: ['label-removed', 'toggleCollapse', 'updateSelectedLabels'],
   data() {
     return {
       issuable: null,
@@ -415,7 +415,7 @@ export default {
         this.updateSelectedLabels(this.getRemoveVariables(labelId));
       }
 
-      this.$emit('onLabelRemove', labelId);
+      this.$emit('label-removed', labelId);
     },
     isDropdownVariantSidebar,
     isDropdownVariantStandalone,
@@ -533,7 +533,7 @@ export default {
         :labels-filter-param="labelsFilterParam"
         class="gl-pt-2"
         @onCollapsedValueClick="onCollapsedValueClick"
-        @onLabelRemove="handleLabelRemove"
+        @label-removed="handleLabelRemove"
       >
         <slot></slot>
       </dropdown-value>
@@ -564,7 +564,7 @@ export default {
         :supports-lock-on-merge="isLockOnMergeSupported"
         :labels-filter-base-path="labelsFilterBasePath"
         :labels-filter-param="labelsFilterParam"
-        @onLabelRemove="handleLabelRemove"
+        @label-removed="handleLabelRemove"
       />
     </template>
   </div>

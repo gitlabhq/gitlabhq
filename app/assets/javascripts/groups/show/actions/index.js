@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import GroupActionsApp from '~/groups/show/actions/components/app.vue';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
@@ -25,7 +26,7 @@ export const initGroupActions = () => {
     canRequestAccess: parseBoolean(canRequestAccess),
   });
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'GroupActionsApp',
     apolloProvider,
@@ -33,6 +34,7 @@ export const initGroupActions = () => {
       triggerDeleteLocation: 'header',
       triggerRestoreLocation: 'header',
     },
-    render: (createElement) => createElement(GroupActionsApp, { props: { group, dashboardPath } }),
+    component: GroupActionsApp,
+    props: { group, dashboardPath },
   });
 };

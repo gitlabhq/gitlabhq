@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import {
   extractFilterQueryParameters,
   extractPaginationQueryParameters,
@@ -33,8 +34,7 @@ export default () => {
     pagination,
   });
 
-  // eslint-disable-next-line no-new
-  new Vue({
+  initVueApp({
     el,
     name: 'CycleAnalytics',
     apolloProvider: new VueApollo({ defaultClient }),
@@ -42,11 +42,9 @@ export default () => {
       hasScopedLabelsFeature: parseBoolean(hasScopedLabelsFeature),
     },
     store,
-    render: (createElement) =>
-      createElement(CycleAnalytics, {
-        props: {
-          noDataSvgPath,
-        },
-      }),
+    component: CycleAnalytics,
+    props: {
+      noDataSvgPath,
+    },
   });
 };

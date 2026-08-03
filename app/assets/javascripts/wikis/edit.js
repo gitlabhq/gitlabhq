@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createApolloClient from '~/lib/graphql';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
 import csrf from '~/lib/utils/csrf';
@@ -26,7 +27,7 @@ const mountWikiEditApp = () => {
   Vue.use(VueApollo);
   const apolloProvider = new VueApollo({ defaultClient: createApolloClient() });
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'WikiContentAppRoot',
     apolloProvider,
@@ -45,9 +46,7 @@ const mountWikiEditApp = () => {
       templatesUrl,
       error,
     },
-    render(createElement) {
-      return createElement(WikiContentApp);
-    },
+    component: WikiContentApp,
   });
 };
 

@@ -1,6 +1,7 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
 import { DEFAULT_PER_PAGE } from '~/api';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import offlineTransferSourceOwnedGroupsQuery from '~/import/offline_transfer/graphql/queries/offline_transfer_source_owned_groups.query.graphql';
 import FormStepper from '~/import/offline_transfer/components/form_stepper.vue';
 import SelectGroupsTab from '~/import/offline_transfer/export/select_groups_tab.vue';
@@ -57,14 +58,15 @@ export default {
           ...this.pagination,
         };
       },
-      error() {
+      error(error) {
         this.showFetchError = true;
+        captureException(error);
       },
     },
   },
 
   computed: {
-    pageGroups() {
+    currentPageGroups() {
       return this.offlineTransferSourceOwnedGroups?.nodes ?? [];
     },
     pageInfo() {
@@ -94,6 +96,15 @@ export default {
     selectedGroupsCount() {
       return this.selectedGroups.length;
     },
+    isEmptyGroupsList() {
+      return !this.isLoading && !this.search && !this.currentPageGroups.length;
+    },
+    canStart() {
+      if (this.selectedGroupsCount > 0) return true;
+      // Block starting the wizard when there is nothing to select
+      if (this.showFetchError) return false;
+      return !this.isEmptyGroupsList;
+    },
   },
   watch: {
     selectedGroupsCount() {
@@ -109,6 +120,10 @@ export default {
       this.search = searchTerm;
       this.startCursor = null;
       this.endCursor = null;
+    },
+    onRetry() {
+      this.showFetchError = false;
+      this.$apollo.queries.offlineTransferSourceOwnedGroups.refetch().catch(() => {});
     },
     isGroupSelected(group) {
       return this.selectedGroups.some((selected) => selected.id === group.id);
@@ -131,7 +146,7 @@ export default {
       this.resetStepError(previousTabIndex);
     },
     onSelectAllCurrentPage() {
-      const newSelections = this.pageGroups.filter((group) => !this.isGroupSelected(group));
+      const newSelections = this.currentPageGroups.filter((group) => !this.isGroupSelected(group));
       this.selectedGroups = [...this.selectedGroups, ...newSelections];
     },
     onDeselectAll() {
@@ -194,18 +209,6 @@ export default {
       </p>
       <!-- // temporary alerts, to be replaced-->
       <gl-alert
-        v-if="showFetchError"
-        :title="__('Error')"
-        :dismiss-label="__('Dismiss')"
-        dismissible
-        variant="danger"
-        data-testid="fetch-error-alert"
-        @dismiss="showFetchError = false"
-      >
-        {{ s__('OfflineTransferExport|Could not load groups. Please try again.') }}
-      </gl-alert>
-
-      <gl-alert
         v-if="isFormComplete"
         :title="__('Complete')"
         :dismiss-label="__('Dismiss')"
@@ -219,6 +222,7 @@ export default {
     <form-stepper
       :steps="$options.STEPS"
       :validate-step="validateStep"
+      :can-start="canStart"
       :completion-button-text="s__('OfflineTransferExport|Start export')"
       @stepped-back="onStepChanged"
       @stepped-forward="onStepChanged"
@@ -230,12 +234,13 @@ export default {
           {{ s__('OfflineTransferExport|Select groups to export') }}
         </h2>
         <select-groups-tab
-          :page-groups="pageGroups"
+          :current-page-groups="currentPageGroups"
           :selected-ids="selectedGroupIds"
           :loading="isLoading"
           :initial-loading="isInitialLoading"
           :page-info="pageInfo"
           :show-select-error="showSelectError"
+          :has-fetch-error="showFetchError"
           :search-term="search"
           @toggle="onToggleGroup"
           @select-current-page="onSelectAllCurrentPage"
@@ -243,6 +248,7 @@ export default {
           @next="onNext"
           @prev="onPrev"
           @search="onSearch"
+          @retry-fetch="onRetry"
         />
       </template>
 

@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import NewCluster from './components/new_cluster.vue';
 
 export default () => {
@@ -8,11 +8,5 @@ export default () => {
     return null;
   }
 
-  return new Vue({
-    el,
-    name: 'NewClusterRoot',
-    render(createElement) {
-      return createElement(NewCluster);
-    },
-  });
+  return initVueApp({ el, name: 'NewClusterRoot', component: NewCluster });
 };

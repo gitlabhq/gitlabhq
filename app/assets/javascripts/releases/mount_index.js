@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlToast } from '@gitlab/ui';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import ReleaseIndexApp from './components/app_index.vue';
 
@@ -25,11 +26,11 @@ export default () => {
     ),
   });
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'ReleaseIndexAppRoot',
     apolloProvider,
     provide: { ...el.dataset },
-    render: (h) => h(ReleaseIndexApp),
+    component: ReleaseIndexApp,
   });
 };

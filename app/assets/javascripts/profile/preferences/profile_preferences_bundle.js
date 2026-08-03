@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import { GlToast } from '@gitlab/ui';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { initListboxInputs } from '~/vue_shared/components/listbox_input/init_listbox_inputs';
 import ProfilePreferences from './components/profile_preferences.vue';
 import ColorModeSelector from './components/color_mode_selector.vue';
@@ -12,16 +13,14 @@ function initColorModeSelector() {
   const colorModes = JSON.parse(el.dataset.colorModes);
   const initialColorModeId = Number(el.dataset.initialColorModeId);
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'ColorModeSelectorRoot',
-    render: (createElement) =>
-      createElement(ColorModeSelector, {
-        props: {
-          colorModes,
-          initialColorModeId,
-        },
-      }),
+    component: ColorModeSelector,
+    props: {
+      colorModes,
+      initialColorModeId,
+    },
   });
 }
 
@@ -103,10 +102,5 @@ export default () => {
 
   Vue.use(GlToast);
 
-  return new Vue({
-    el,
-    name: 'ProfilePreferencesApp',
-    provide,
-    render: (createElement) => createElement(ProfilePreferences),
-  });
+  return initVueApp({ el, name: 'ProfilePreferencesApp', provide, component: ProfilePreferences });
 };

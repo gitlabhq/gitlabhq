@@ -3,6 +3,7 @@ import VueApollo from 'vue-apollo';
 import ResourceLinksBlock from 'ee_component/linked_resources/components/resource_links_block.vue';
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 
 Vue.use(VueApollo);
 
@@ -16,21 +17,15 @@ export default function initLinkedResources() {
       defaultClient: createDefaultClient(),
     });
 
-    // eslint-disable-next-line no-new
-    new Vue({
+    initVueApp({
       el: linkedResourcesRootElement,
       name: 'LinkedResourcesRoot',
       apolloProvider,
-      components: {
-        ResourceLinksBlock,
+      component: ResourceLinksBlock,
+      props: {
+        issuableId: parseInt(issuableId, 10),
+        canAddResourceLinks: parseBoolean(canAddResourceLinks),
       },
-      render: (createElement) =>
-        createElement('resource-links-block', {
-          props: {
-            issuableId: parseInt(issuableId, 10),
-            canAddResourceLinks: parseBoolean(canAddResourceLinks),
-          },
-        }),
     });
   }
 }

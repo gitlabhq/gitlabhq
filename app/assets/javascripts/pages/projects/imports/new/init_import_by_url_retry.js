@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import ImportByUrlToExistingProjectForm from '~/projects/new_v2/components/import_by_url_to_existing_project_form.vue';
 
@@ -25,12 +25,10 @@ export function initImportByUrlRetry() {
     hasRepositoryMirrorsFeature: parseBoolean(hasRepositoryMirrorsFeature),
   };
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'ImportByUrlToExistingProjectRoot',
     provide,
-    render(createElement) {
-      return createElement(ImportByUrlToExistingProjectForm);
-    },
+    component: ImportByUrlToExistingProjectForm,
   });
 }

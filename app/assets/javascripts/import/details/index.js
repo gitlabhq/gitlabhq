@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import BulkImportDetailsApp from './components/bulk_import_details_app.vue';
 import ImportDetailsApp from './components/import_details_app.vue';
 
@@ -11,15 +11,13 @@ export default () => {
 
   const { failuresPath } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'ImportDetailsRoot',
     provide: {
       failuresPath,
     },
-    render(createElement) {
-      return createElement(ImportDetailsApp);
-    },
+    component: ImportDetailsApp,
   });
 };
 
@@ -32,17 +30,14 @@ export const initBulkImportDetails = () => {
 
   const { id, entityId, fullPath } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'BulkImportDetailsRoot',
-    render(createElement) {
-      return createElement(BulkImportDetailsApp, {
-        props: {
-          id,
-          entityId,
-          fullPath,
-        },
-      });
+    component: BulkImportDetailsApp,
+    props: {
+      id,
+      entityId,
+      fullPath,
     },
   });
 };

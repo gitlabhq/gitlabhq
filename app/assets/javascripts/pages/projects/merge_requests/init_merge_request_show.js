@@ -1,5 +1,5 @@
-import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { s__ } from '~/locale';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ShortcutsIssuable from '~/behaviors/shortcuts/shortcuts_issuable';
@@ -28,8 +28,7 @@ export default function initMergeRequestShow() {
   const el = document.querySelector('.js-mr-header');
   const { hidden, imported, isDraft, iid, projectPath, state } = el.dataset;
 
-  // eslint-disable-next-line no-new
-  new Vue({
+  initVueApp({
     el,
     name: 'MergeRequestHeaderRoot',
     pinia,
@@ -42,14 +41,11 @@ export default function initMergeRequestShow() {
       iid,
       projectPath,
     },
-    render(createElement) {
-      return createElement(MergeRequestHeader, {
-        props: {
-          initialState: state,
-          isImported: parseBoolean(imported),
-          isDraft: parseBoolean(isDraft),
-        },
-      });
+    component: MergeRequestHeader,
+    props: {
+      initialState: state,
+      isImported: parseBoolean(imported),
+      isDraft: parseBoolean(isDraft),
     },
   });
 

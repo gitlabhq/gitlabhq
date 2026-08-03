@@ -1,6 +1,8 @@
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
+
 import { createMilestoneComboboxModule } from '~/milestones/stores';
 import ReleaseEditNewApp from './components/app_edit_new.vue';
 import createStore from './stores';
@@ -18,10 +20,5 @@ export default () => {
     },
   });
 
-  return new Vue({
-    el,
-    name: 'ReleaseEditNewAppRoot',
-    store,
-    render: (h) => h(ReleaseEditNewApp),
-  });
+  return initVueApp({ el, name: 'ReleaseEditNewAppRoot', store, component: ReleaseEditNewApp });
 };

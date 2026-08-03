@@ -54,7 +54,7 @@ The `auto_mr:` map controls how the scheduled sync opens its merge request:
 
 | Key                    | Type            | Required | Description |
 |------------------------|-----------------|----------|-------------|
-| `branch_prefix`        | string          | Yes      | Prefix for the source branch name. The sync appends the run date. |
+| `branch_prefix`        | string          | Yes      | Prefix for source branch names. The sync reuses an open team or tooling branch, or appends the run date when creating one. |
 | `title_template`       | string          | Yes      | Title template for the merge request. Supports `%{date}` interpolation. |
 | `labels`               | list of strings | Yes      | Labels applied to the merge request. |
 | `remove_source_branch` | boolean         | Yes      | When `true`, the source branch is deleted after the merge request merges. |

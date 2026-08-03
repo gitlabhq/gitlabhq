@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import Translate from '~/vue_shared/translate';
 import ImportTable from './components/import_table.vue';
 import { createApolloClient } from './graphql/client_factory';
@@ -31,22 +32,19 @@ export function mountImportGroupsApp(mountElement) {
     }),
   });
 
-  return new Vue({
+  return initVueApp({
     el: mountElement,
     name: 'ImportGroupsRoot',
     apolloProvider,
-    render(createElement) {
-      return createElement(ImportTable, {
-        props: {
-          sourceUrl,
-          jobsPath,
-          groupPathRegex: new RegExp(`^(${groupPathRegex})$`),
-          historyPath,
-          historyShowPath,
-          defaultTargetNamespace: parseInt(defaultTargetNamespace, 10) || null,
-          importGroupPath,
-        },
-      });
+    component: ImportTable,
+    props: {
+      sourceUrl,
+      jobsPath,
+      groupPathRegex: new RegExp(`^(${groupPathRegex})$`),
+      historyPath,
+      historyShowPath,
+      defaultTargetNamespace: parseInt(defaultTargetNamespace, 10) || null,
+      importGroupPath,
     },
   });
 }

@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import MoreActionsDropdown from '~/milestones/components/more_actions_dropdown.vue';
 
@@ -27,7 +27,7 @@ export default function InitMoreActionsDropdown() {
       size,
     } = el.dataset;
 
-    return new Vue({
+    return initVueApp({
       el,
       name: 'MoreActionsDropdownRoot',
       provide: {
@@ -46,7 +46,7 @@ export default function InitMoreActionsDropdown() {
         mergeRequestCount: Number(mergeRequestCount),
         size: size || 'medium',
       },
-      render: (createElement) => createElement(MoreActionsDropdown),
+      component: MoreActionsDropdown,
     });
   });
 }

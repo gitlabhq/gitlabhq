@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'labkit/rspec/matchers'
 
 RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :code_review_workflow do
   include RepoHelpers
@@ -325,6 +326,29 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
   end
 
   describe 'POST #publish' do
+    it 'starts the submit_mr_review_ui user experience' do
+      create(:draft_note, merge_request: merge_request, author: user)
+
+      expect { post :publish, params: params }
+        .to start_user_experience(:submit_mr_review_ui)
+    end
+
+    context 'when review delivery is scheduled asynchronously' do
+      it 'leaves the submit_mr_review_ui experience to be completed by the worker' do
+        create(:draft_note, merge_request: merge_request, author: user)
+
+        expect { post :publish, params: params }
+          .not_to complete_user_experience(:submit_mr_review_ui)
+      end
+    end
+
+    context 'when nothing is delivered asynchronously' do
+      it 'completes the submit_mr_review_ui user experience in the request' do
+        expect { post :publish, params: params }
+          .to complete_user_experience(:submit_mr_review_ui)
+      end
+    end
+
     context 'without permissions' do
       shared_examples_for 'action that does not allow publishing draft note' do
         it 'does not allow publishing draft note' do
@@ -378,6 +402,17 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
 
         expect(response).to have_gitlab_http_status(:error)
         expect(json_response["message"]).to include(error_message)
+      end
+
+      it 'completes the submit_mr_review_ui user experience with an error' do
+        create(:draft_note, merge_request: merge_request, author: user)
+
+        expect_next_instance_of(DraftNotes::PublishService) do |service|
+          allow(service).to receive(:execute).and_return({ message: 'boom', status: :error })
+        end
+
+        expect { post :publish, params: params }
+          .to complete_user_experience(:submit_mr_review_ui, error: true)
       end
     end
 

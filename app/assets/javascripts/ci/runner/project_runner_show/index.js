@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import ProjectRunnerShowApp from './project_runner_show_app.vue';
 
@@ -20,18 +21,15 @@ export const initProjectRunnerShow = (selector = '#js-project-runner-show') => {
     defaultClient: createDefaultClient(),
   });
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'ProjectRunnerShowAppRoot',
     apolloProvider,
-    render(h) {
-      return h(ProjectRunnerShowApp, {
-        props: {
-          runnerId,
-          runnersPath,
-          editPath,
-        },
-      });
+    component: ProjectRunnerShowApp,
+    props: {
+      runnerId,
+      runnersPath,
+      editPath,
     },
   });
 };

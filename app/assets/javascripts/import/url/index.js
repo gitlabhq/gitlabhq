@@ -1,5 +1,5 @@
-import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import ImportByUrlForm from '~/projects/new_v2/components/import_by_url_form.vue';
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
@@ -40,17 +40,14 @@ export function initImportByUrl() {
     userNamespaceId,
   };
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'ImportByUrlRoot',
     apolloProvider: new VueApollo({
       defaultClient: createDefaultClient(),
     }),
     provide,
-    render(createElement) {
-      return createElement(ImportByUrlForm, {
-        props: { namespace },
-      });
-    },
+    component: ImportByUrlForm,
+    props: { namespace },
   });
 }

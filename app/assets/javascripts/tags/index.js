@@ -1,20 +1,17 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import initSourceCodeDropdowns from '~/vue_shared/components/download_dropdown/init_download_dropdowns';
 import SortDropdown from './components/sort_dropdown.vue';
 
 const mountDropdownApp = (el) => {
   const { filterTagsPath } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'SortTagsDropdownApp',
-    components: {
-      SortDropdown,
-    },
     provide: {
       filterTagsPath,
     },
-    render: (createElement) => createElement(SortDropdown),
+    component: SortDropdown,
   });
 };
 

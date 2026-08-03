@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import { cacheConfig, resolvers } from '~/ci/catalog/graphql/settings';
 import typeDefs from '~/ci/catalog/graphql/typedefs.graphql';
@@ -29,7 +30,7 @@ export const initCatalog = (selector = '#js-ci-cd-catalog') => {
 
   injectVueAppBreadcrumbs(router, CiCatalogBreadcrumb);
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'GlobalCatalog',
     router,
@@ -38,8 +39,6 @@ export const initCatalog = (selector = '#js-ci-cd-catalog') => {
       reportAbusePath,
       legalDisclaimer,
     },
-    render(h) {
-      return h(GlobalCatalog);
-    },
+    component: GlobalCatalog,
   });
 };

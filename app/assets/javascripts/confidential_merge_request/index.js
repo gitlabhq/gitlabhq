@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean } from '../lib/utils/common_utils';
 import ProjectFormGroup from './components/project_form_group.vue';
 import state from './state';
@@ -14,18 +14,15 @@ export function canCreateConfidentialMergeRequest() {
 export function init() {
   const el = document.getElementById('js-forked-project');
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'ProjectFormGroupRoot',
-    render(h) {
-      return h(ProjectFormGroup, {
-        props: {
-          namespacePath: el.dataset.namespacePath,
-          projectPath: el.dataset.projectPath,
-          newForkPath: el.dataset.newForkPath,
-          helpPagePath: el.dataset.helpPagePath,
-        },
-      });
+    component: ProjectFormGroup,
+    props: {
+      namespacePath: el.dataset.namespacePath,
+      projectPath: el.dataset.projectPath,
+      newForkPath: el.dataset.newForkPath,
+      helpPagePath: el.dataset.helpPagePath,
     },
   });
 }

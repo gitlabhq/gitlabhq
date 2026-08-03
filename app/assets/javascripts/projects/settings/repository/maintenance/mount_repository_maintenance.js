@@ -1,5 +1,5 @@
-import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import RemoveBlobs from '~/projects/settings/repository/maintenance/remove_blobs.vue';
 import RedactText from '~/projects/settings/repository/maintenance/redact_text.vue';
@@ -10,16 +10,14 @@ const mountRemoveBlobs = () => {
 
   const { projectPath, housekeepingPath } = removeBlobsEl.dataset;
 
-  return new Vue({
+  return initVueApp({
     el: removeBlobsEl,
     name: 'RemoveBlobsRoot',
     apolloProvider: new VueApollo({
       defaultClient: createDefaultClient(),
     }),
     provide: { projectPath, housekeepingPath },
-    render(createElement) {
-      return createElement(RemoveBlobs);
-    },
+    component: RemoveBlobs,
   });
 };
 
@@ -29,16 +27,14 @@ const mountRedactText = () => {
 
   const { projectPath, housekeepingPath } = redactTextEl.dataset;
 
-  return new Vue({
+  return initVueApp({
     el: redactTextEl,
     name: 'RedactTextRoot',
     apolloProvider: new VueApollo({
       defaultClient: createDefaultClient(),
     }),
     provide: { projectPath, housekeepingPath },
-    render(createElement) {
-      return createElement(RedactText);
-    },
+    component: RedactText,
   });
 };
 

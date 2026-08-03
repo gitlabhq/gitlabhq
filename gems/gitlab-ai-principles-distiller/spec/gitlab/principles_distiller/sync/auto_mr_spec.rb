@@ -799,7 +799,8 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
         system: true,
         distillation_base_sha: 'abcdef1234567890abcdef1234567890abcdef12',
         regenerate_static_artifacts: nil,
-        git_has_staged_changes?: true
+        git_has_staged_changes?: true,
+        open_mrs_by_author: []
       )
       allow(sync.workflow).to receive_messages(
         post_json: mock_response,
@@ -1610,6 +1611,186 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
 
     it 'is date-free so the daily job reuses one MR across runs' do
       expect(branch_name).to eq('docs-sync/principles-reconcile-fences')
+    end
+  end
+
+  describe 'distillation branch adoption' do
+    subject(:prefetch) { sync.send(:prefetch_adopted_branches!, ctx, slugs) }
+
+    let(:auto_mr_cfg) { { 'branch_prefix' => 'docs-sync/principles' } }
+    let(:ctx) do
+      described_class::PublishContext.new(
+        project_id: 'gitlab-org/gitlab', api_token: 'token', auto_mr_cfg: auto_mr_cfg
+      )
+    end
+
+    let(:slugs) { %w[writing tooling] }
+
+    before do
+      sync.manifest.data = {
+        'principles' => {
+          'writing' => { 'owner_team' => '@gitlab-org/technical-writing', 'team_slug' => 'writing' }
+        }
+      }
+      allow(sync).to receive_messages(mr_assignee_id: 42, warn_if_adopted_branch_has_foreign_tip: nil)
+    end
+
+    context 'when no open MR is available' do
+      before do
+        allow(sync).to receive(:open_mrs_by_author).and_return([])
+      end
+
+      it 'mints a dated branch' do
+        prefetch
+
+        expect(sync.team_branch_name(auto_mr_cfg, '20260731', '@gitlab-org/technical-writing'))
+          .to eq('docs-sync/principles-20260731-writing')
+      end
+    end
+
+    context 'when an open MR exactly matches the team branch' do
+      let(:open_mr) do
+        {
+          'source_branch' => 'docs-sync/principles-20260724-writing',
+          'sha' => 'a' * 40,
+          'source_project_id' => 278_964,
+          'target_project_id' => 278_964,
+          'target_branch' => 'master'
+        }
+      end
+
+      before do
+        ctx.base_branch = 'master'
+        allow(sync).to receive(:open_mrs_by_author).and_return([open_mr])
+      end
+
+      it 'adopts its branch and existing MR', :aggregate_failures do
+        prefetch
+
+        expect(sync.team_branch_name(auto_mr_cfg, '20260731', '@gitlab-org/technical-writing'))
+          .to eq('docs-sync/principles-20260724-writing')
+        expect(sync).to have_received(:warn_if_adopted_branch_has_foreign_tip)
+          .with('gitlab-org%2Fgitlab', open_mr, 'token')
+      end
+    end
+
+    context 'when an open MR has a longer slug suffix' do
+      before do
+        allow(sync).to receive(:open_mrs_by_author).and_return([
+          { 'source_branch' => 'docs-sync/principles-20260724-technical-writing', 'sha' => 'a' * 40 }
+        ])
+      end
+
+      it 'does not cross-match it' do
+        prefetch
+
+        expect(sync.team_branch_name(auto_mr_cfg, '20260731', '@gitlab-org/technical-writing'))
+          .to eq('docs-sync/principles-20260731-writing')
+      end
+    end
+
+    context 'when a matching branch belongs to an incoming fork MR' do
+      before do
+        ctx.base_branch = 'master'
+        allow(sync).to receive(:open_mrs_by_author).and_return([
+          {
+            'source_branch' => 'docs-sync/principles-20260724-writing',
+            'sha' => 'a' * 40,
+            'source_project_id' => 123,
+            'target_project_id' => 278_964,
+            'target_branch' => 'master'
+          }
+        ])
+      end
+
+      it 'does not adopt it' do
+        prefetch
+
+        expect(sync.team_branch_name(auto_mr_cfg, '20260731', '@gitlab-org/technical-writing'))
+          .to eq('docs-sync/principles-20260731-writing')
+      end
+    end
+
+    context 'when the lookup raises' do
+      before do
+        allow(sync).to receive(:open_mrs_by_author).and_raise(Net::ReadTimeout)
+      end
+
+      it 'falls back to fresh branches', :aggregate_failures do
+        expect { prefetch }.to output(/could not look up open distillation MRs/).to_stderr
+        expect(sync.tooling_branch_name(auto_mr_cfg, '20260731'))
+          .to eq('docs-sync/principles-20260731-tooling')
+      end
+    end
+  end
+
+  describe '#warn_if_adopted_branch_has_foreign_tip' do
+    subject(:warn_for_tip) do
+      sync.send(:warn_if_adopted_branch_has_foreign_tip, 'gitlab-org%2Fgitlab', mr, 'token')
+    end
+
+    let(:mr) do
+      { 'source_branch' => 'docs-sync/principles-20260724-writing', 'sha' => 'abcdef1234567890' }
+    end
+
+    let(:response) { instance_double(Net::HTTPResponse, body: response_body, is_a?: true) }
+
+    before do
+      allow(sync).to receive_messages(
+        configured_git_user_email: 'service-modelops-agent-principles-distiller@gitlab.com',
+        authenticated_get: response
+      )
+    end
+
+    context 'when a reviewer authored the branch tip' do
+      let(:response_body) do
+        JSON.generate(author_name: 'Reviewer', author_email: 'reviewer@gitlab.com')
+      end
+
+      it 'warns that the force-push will discard the commit' do
+        expect { warn_for_tip }.to output(
+          /tip abcdef123456 was authored by Reviewer <reviewer@gitlab.com>.*force-push will discard/
+        ).to_stderr
+      end
+    end
+
+    context 'when the service account authored the branch tip' do
+      let(:response_body) do
+        JSON.generate(
+          author_name: 'Agent Principles Distiller',
+          author_email: 'service-modelops-agent-principles-distiller@gitlab.com'
+        )
+      end
+
+      it 'does not warn' do
+        expect { warn_for_tip }.not_to output.to_stderr
+      end
+    end
+  end
+
+  describe '#close_adopted_mr_if_empty' do
+    subject(:close_mr) { sync.send(:close_adopted_mr_if_empty, branch, ctx) }
+
+    let(:branch) { 'docs-sync/principles-20260724-writing' }
+    let(:ctx) do
+      described_class::PublishContext.new(project_id: 'gitlab-org/gitlab', api_token: 'token')
+    end
+
+    let(:response) { instance_double(Net::HTTPResponse, is_a?: true) }
+
+    before do
+      sync.instance_variable_set(:@adopted_mrs, { branch => { 'iid' => 123 } })
+      allow(sync.workflow).to receive_messages(gitlab_host: 'https://gitlab.com', put_json: response)
+    end
+
+    it 'closes the obsolete adopted MR' do
+      close_mr
+
+      expect(sync.workflow).to have_received(:put_json).with(
+        'https://gitlab.com/api/v4/projects/gitlab-org%2Fgitlab/merge_requests/123',
+        headers: { 'PRIVATE-TOKEN' => 'token' },
+        body: { state_event: 'close' }
+      )
     end
   end
 

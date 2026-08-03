@@ -5,9 +5,6 @@ module Resolvers
     module Aggregation
       module EngineResolver
         class BaseEngineResolver < BaseResolver # rubocop:disable Graphql/ResolverType -- type declared in subclasses
-          # Shared limit for the combined number of requested groups and projects.
-          MAX_SOURCES = 20
-
           class << self
             attr_accessor :engine
           end
@@ -16,17 +13,9 @@ module Resolvers
           # Set while mounting an engine.
           class_attribute :resource_ability
 
-          argument :group_full_paths, [GraphQL::Types::ID],
+          argument :descendants_scope, ::Types::Analytics::Aggregation::ScopeInputType,
             required: false,
-            description: 'Full paths of groups to aggregate data for. All groups must belong to the parent ' \
-              'organization or group hierarchy and be accessible to the current user. Combined with ' \
-              "`projectFullPaths`, at most #{MAX_SOURCES} sources can be requested. Not supported at project level."
-
-          argument :project_full_paths, [GraphQL::Types::ID],
-            required: false,
-            description: 'Full paths of projects to aggregate data for. All projects must belong to the parent ' \
-              'organization or group hierarchy and be accessible to the current user. Combined with ' \
-              "`groupFullPaths`, at most #{MAX_SOURCES} sources can be requested. Not supported at project level."
+            description: 'Child groups and projects to aggregate data for. Not supported at project level.'
 
           def resolve(**arguments)
             authorize!(object) if self.class.authorization.any?
@@ -55,8 +44,9 @@ module Resolvers
           end
 
           def aggregation_scope(arguments)
-            group_paths = Array(arguments[:group_full_paths])
-            project_paths = Array(arguments[:project_full_paths])
+            scope = arguments[:descendants_scope] || {}
+            group_paths = Array(scope[:group_full_paths])
+            project_paths = Array(scope[:project_full_paths])
 
             case object
             when ::Project
@@ -73,14 +63,16 @@ module Resolvers
               group_paths = [object.full_path] if group_paths.empty? && project_paths.empty?
             end
 
-            sources = authorized_sources!(group_paths, project_paths)
+            if group_paths.empty? && project_paths.empty?
+              raise ::Gitlab::Graphql::Errors::ArgumentError,
+                'at least one of the groupFullPaths or projectFullPaths arguments is required'
+            end
 
-            engine_class.prepare_base_aggregation_scope(sources)
+            engine_class.prepare_base_aggregation_scope(authorized_sources!(group_paths, project_paths))
           end
 
           def authorized_sources!(group_paths, project_paths)
             paths = (group_paths + project_paths).uniq(&:downcase)
-            validate_sources_size!(paths)
 
             sources_by_path = load_sources(group_paths, project_paths)
 
@@ -100,18 +92,6 @@ module Resolvers
             end
 
             accessible.map { |path| sources_by_path[path.downcase] }
-          end
-
-          def validate_sources_size!(paths)
-            if paths.empty?
-              raise ::Gitlab::Graphql::Errors::ArgumentError,
-                'at least one of the groupFullPaths or projectFullPaths arguments is required'
-            end
-
-            return unless paths.size > MAX_SOURCES
-
-            raise ::Gitlab::Graphql::Errors::ArgumentError,
-              "groupFullPaths and projectFullPaths arguments combined must not exceed #{MAX_SOURCES}"
           end
 
           def load_sources(group_paths, project_paths)

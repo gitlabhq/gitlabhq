@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import DevopsScore from './components/devops_score.vue';
 
 export default () => {
@@ -8,14 +8,12 @@ export default () => {
 
   const { devopsScoreMetrics } = el.dataset;
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'DevopsScoreRoot',
     provide: {
       devopsScoreMetrics: JSON.parse(devopsScoreMetrics),
     },
-    render(h) {
-      return h(DevopsScore);
-    },
+    component: DevopsScore,
   });
 };

@@ -1,5 +1,5 @@
-import Vue from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import DiscussionCounter from '~/notes/components/discussion_counter.vue';
 import { pinia } from '~/pinia/instance';
 
@@ -9,25 +9,18 @@ export function initDiscussionCounter(store) {
   if (el) {
     const { blocksMerge, canResolveDiscussion } = el.dataset;
 
-    // eslint-disable-next-line no-new
-    new Vue({
+    initVueApp({
       el,
       name: 'DiscussionCounterApp',
-      components: {
-        DiscussionCounter,
-      },
       pinia,
       provide: {
         store,
       },
-      render(createElement) {
-        return createElement('discussion-counter', {
-          props: {
-            blocksMerge: parseBoolean(blocksMerge),
-            canResolveDiscussion: parseBoolean(canResolveDiscussion),
-            compact: true,
-          },
-        });
+      component: DiscussionCounter,
+      props: {
+        blocksMerge: parseBoolean(blocksMerge),
+        canResolveDiscussion: parseBoolean(canResolveDiscussion),
+        compact: true,
       },
     });
   }

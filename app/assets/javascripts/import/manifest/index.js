@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import ImportManifestFileApp from './import_manifest_file_app.vue';
 
 export function initManifestImportProjectForm() {
@@ -17,11 +17,10 @@ export function initManifestImportProjectForm() {
     namespaceId: namespaceId ? parseInt(namespaceId, 10) : null,
   };
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'ImportManifestFileRoot',
-    render(h) {
-      return h(ImportManifestFileApp, { props });
-    },
+    component: ImportManifestFileApp,
+    props,
   });
 }

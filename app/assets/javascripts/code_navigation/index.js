@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import App from './components/app.vue';
 import createStore from './store';
 
@@ -11,11 +11,5 @@ export default (initialData) => {
 
   store.dispatch('setInitialData', initialData);
 
-  return new Vue({
-    el,
-    store,
-    render(h) {
-      return h(App);
-    },
-  });
+  return initVueApp({ el, store, component: App });
 };

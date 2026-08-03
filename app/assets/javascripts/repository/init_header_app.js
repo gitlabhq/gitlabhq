@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { parseBoolean, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { pinia } from '~/pinia/instance';
 import apolloProvider from './graphql';
@@ -90,8 +90,7 @@ export default function initHeaderApp({ router, isReadmeView = false }) {
 
     initClientQueries({ projectPath, projectShortPath, ref, escapedRef });
 
-    // eslint-disable-next-line no-new
-    new Vue({
+    initVueApp({
       el: headerEl,
       name: 'RepositoryHeaderAreaRoot',
       pinia,
@@ -142,15 +141,12 @@ export default function initHeaderApp({ router, isReadmeView = false }) {
       },
       apolloProvider,
       router: router || createRouter(projectPath, escapedRef, fullName),
-      render(h) {
-        return h(HeaderArea, {
-          props: {
-            refType,
-            currentRef: ref,
-            projectPath,
-            projectId,
-          },
-        });
+      component: HeaderArea,
+      props: {
+        refType,
+        currentRef: ref,
+        projectPath,
+        projectId,
       },
     });
   }

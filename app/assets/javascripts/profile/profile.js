@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import Vue from 'vue';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { VARIANT_DANGER, VARIANT_INFO, createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { parseBoolean } from '~/lib/utils/common_utils';
@@ -116,14 +116,12 @@ export const initSetStatusForm = () => {
 
   const fields = parseRailsFormFields(el);
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'UserProfileStatusForm',
     provide: {
       fields,
     },
-    render(h) {
-      return h(UserProfileSetStatusWrapper);
-    },
+    component: UserProfileSetStatusWrapper,
   });
 };

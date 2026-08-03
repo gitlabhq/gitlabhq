@@ -21,7 +21,7 @@ export default {
       default: false,
     },
   },
-  emits: ['onLabelRemove'],
+  emits: ['label-removed'],
   computed: {
     ...mapState([
       'selectedLabels',
@@ -69,7 +69,7 @@ export default {
         :show-close-button="allowLabelRemove"
         :disabled="disableLabels"
         tooltip-placement="top"
-        @close="$emit('onLabelRemove', label.id)"
+        @close="$emit('label-removed', label.id)"
       />
     </template>
   </div>

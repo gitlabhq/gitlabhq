@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
+import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import MlExperimentsShow from './routes/experiments/show/ml_experiments_show.vue';
@@ -40,12 +41,11 @@ export const initShowExperiment = () => {
     canWriteModelExperiments: Boolean(canWriteModelExperiments),
   };
 
-  return new Vue({
+  return initVueApp({
     el,
     name: 'MlExperimentsShow',
     apolloProvider,
-    render(h) {
-      return h(MlExperimentsShow, { props });
-    },
+    component: MlExperimentsShow,
+    props,
   });
 };
