@@ -42,8 +42,12 @@ module Ci
 
       private
 
+      # The pipeline filter is applied before the stages join so the siphon
+      # finder can scope the join by the pipelines CTE it attaches.
       def build_finder
         finder = scope_to_project(base_finder)
+
+        finder = apply_pipeline_attrs(finder)
 
         finder = finder.with_stages(project) if siphon_finder?(finder) && stage_name_requested?
 
@@ -55,7 +59,6 @@ module Ci
 
         finder = finder.filter_by_job_name(name_search) if name_search
 
-        finder = apply_pipeline_attrs(finder)
         apply_time_filter(finder)
       end
 

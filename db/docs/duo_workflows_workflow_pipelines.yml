@@ -1,6 +1,7 @@
 ---
 table_name: duo_workflows_workflow_pipelines
-classes: []
+classes:
+- Ai::DuoWorkflows::WorkflowPipeline
 feature_categories:
 - duo_agent_platform
 description: Join table linking Duo Workflow runs to CI pipelines.

@@ -59,6 +59,11 @@ domains:
     feature_categories:
       - settings
 
+  ArtifactRegistry:
+    description: Organization-level multi-format artifact management
+    feature_categories:
+      - artifact_registry
+
   AuditEvents:
     description:
     feature_categories:

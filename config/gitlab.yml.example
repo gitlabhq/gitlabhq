@@ -817,6 +817,12 @@ production: &base
     #   headers:
     #     Authorization: secret_phrase
 
+  ## Artifact Registry
+  # The organization-level Artifact Registry service the Rails-side client talks
+  # to.
+  artifact_registry:
+    # api_url: https://artifact-registry.example.com # internal address of the Artifact Registry API
+
   ## Error Reporting and Logging with Sentry
   sentry:
     # enabled: false

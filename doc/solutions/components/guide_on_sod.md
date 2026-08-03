@@ -54,7 +54,7 @@ The feature branch workflow supports SoD by defining clear boundaries between de
 
 ### Protected Branches & Environments
 
-The default branch play a key role in enforcing SoD:
+The default branch plays a key role in enforcing SoD:
 
 - Protected environments restrict deployments to designated teams
 - Deployer teams have permission to execute deployments but are restricted from modifying source code

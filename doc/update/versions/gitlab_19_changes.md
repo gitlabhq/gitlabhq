@@ -297,10 +297,19 @@ is installed with:
 RuntimeError: Removed configurations found in gitlab.rb. Aborting reconfigure.
 ```
 
-> [!NOTE]
-> `gitlab-ctl check-config --version 19.0.x` does not currently detect this condition.
-> Do not rely on `check-config` to validate Mattermost key removal before upgrading.
-> See [issue 9916](https://gitlab.com/gitlab-org/omnibus-gitlab/-/work_items/9916) for details.
+> [!warning]
+> The behavior when upgrading from certain 18.11.x versions differs:
+>
+> - 18.11.0 through 18.11.6: The upgrade does not detect stale Mattermost configuration,
+>   so the upgrade proceeds without warning even if cleanup is incomplete.
+>   Do not rely on `gitlab-ctl check-config --version 19.0.x` to validate
+>   Mattermost key removal before upgrading ([issue 9916](https://gitlab.com/gitlab-org/omnibus-gitlab/-/work_items/9916)).
+> - 18.11.7: The upgrade is blocked, even when all `mattermost[...]` keys have been
+>   removed from `gitlab.rb`. The block is a false positive caused by stale Mattermost secrets
+>   that GitLab generated unconditionally in the node cache.
+>   To unblock the upgrade, use one of the following options:
+>   - Upgrade to a later version of 18.11.x (when available) before upgrading to 19.0.
+>   - Apply the [manual workaround](https://gitlab.com/gitlab-org/omnibus-gitlab/-/work_items/10001#workaround).
 
 ### Linux package support for SUSE distributions discontinued
 

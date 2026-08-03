@@ -128,7 +128,7 @@ For details, refer to the [documentation](https://docs.gitlab.com/omnibus/settin
 
 ## Introduction
 
-Before setting up GitLab Duo Self-Hosted, it's important to understand how AI works. AI model is the AI's brain trained with data. This brain needs a framework to operate, which is called an LLM Serving Platform or simply "Serving Platform." In AWS, this is "Amazon Bedrock," in Azure, it's "Azure OpenAI Service," and for ChatGPT, it's their platform. For Anthropic, it's "Claude.". For self-hosing models, Ollama is a common choice.
+Before setting up GitLab Duo Self-Hosted, it's important to understand how AI works. An AI model is the AI's brain trained with data. This brain needs a framework to operate, which is called an LLM Serving Platform or simply "Serving Platform." In AWS, this is "Amazon Bedrock," in Azure, it's "Azure OpenAI Service," and for ChatGPT, it's their platform. For Anthropic, it's "Claude." For self-hosting models, Ollama is a common choice.
 
 For example:
 

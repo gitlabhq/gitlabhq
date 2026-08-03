@@ -185,7 +185,7 @@ module Gitlab
         # rubocop: enable CodeReuse/ActiveRecord
 
         def auto_link_ldap_user?
-          Gitlab.config.omniauth.auto_link_ldap_user
+          Gitlab::Auth::Ldap::Config.enabled? && Gitlab.config.omniauth.auto_link_ldap_user
         end
 
         def creating_linked_ldap_user?
@@ -194,6 +194,7 @@ module Gitlab
 
         def ldap_person
           return @ldap_person if defined?(@ldap_person)
+          return @ldap_person = nil unless Gitlab::Auth::Ldap::Config.enabled?
 
           # Look for a corresponding person with same uid in any of the configured LDAP providers
           Gitlab::Auth::Ldap::Config.providers.each do |provider|

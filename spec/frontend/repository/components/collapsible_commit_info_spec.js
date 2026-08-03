@@ -64,6 +64,7 @@ describe('CollapsibleCommitInfo', () => {
         tooltipPlacement: 'top',
         tooltipText: '',
         username: '',
+        truncateUsername: false,
       });
     });
 

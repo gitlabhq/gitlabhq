@@ -257,6 +257,17 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
           expect(finder.to_sql).to include('siphon_p_ci_stages')
         end
       end
+
+      context 'when a pipeline filter is combined with stage_name' do
+        let(:options) do
+          { select_fields: [:name, :stage_name], aggregations: [:mean_duration], source: 'web' }
+        end
+
+        it 'scopes the stages join by the pipelines CTE' do
+          expect(finder.to_sql)
+            .to include('`siphon_p_ci_stages`.`pipeline_id` IN (SELECT `pipelines`.`id` FROM `pipelines`)')
+        end
+      end
     end
   end
 

@@ -6,7 +6,7 @@ description: GitLab partnership certifications and designations from AWS.
 title: GitLab partnership certifications and designations from AWS
 ---
 
-The certifications and designations outlined here can be validated on [GitLabs partner page at AWS](https://partners.amazonaws.com/partners/001E0000018YWFfIAO/GitLab,%20Inc.).
+The certifications and designations outlined here can be validated on the [GitLab partner page at AWS](https://partners.amazonaws.com/partners/001E0000018YWFfIAO/GitLab,%20Inc.).
 
 All AWS partner qualifications require submission and validation of extensive checklists and submission of backing evidence that AWS utilizes to determine whether to grant the qualification.
 
@@ -28,7 +28,7 @@ GitLab Instances and Runners have been tested and work on AWS Graviton. For Amaz
 
 ## Amazon Linux Ready
 
-GitLab Instances and Runner have been validated on Amazon Linux 2 and 2023 - this includes YUM packages and package repositories for both and over 2300 CI tests for both before packaging. [AWS Program Information](https://aws.amazon.com/amazon-linux/partners/)
+GitLab Instances and Runners have been validated on Amazon Linux 2 and 2023 - this includes YUM packages and package repositories for both and over 2300 CI tests for both before packaging. [AWS Program Information](https://aws.amazon.com/amazon-linux/partners/)
 
 ## AWS Marketplace Seller
 

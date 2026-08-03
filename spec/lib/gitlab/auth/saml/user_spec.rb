@@ -180,6 +180,7 @@ RSpec.describe Gitlab::Auth::Saml::User, feature_category: :system_access do
         context 'and at least one LDAP provider is defined' do
           before do
             stub_ldap_config(providers: %w[ldapmain])
+            stub_ldap_setting(enabled: true)
           end
 
           context 'and a corresponding LDAP person' do

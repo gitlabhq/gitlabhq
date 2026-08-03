@@ -11752,7 +11752,13 @@ msgstr ""
 msgid "Artifact was successfully deleted."
 msgstr ""
 
+msgid "ArtifactRegistry|A hosted repository directly hosts artifacts. You can publish artifacts to and pull them from a hosted repository."
+msgstr ""
+
 msgid "ArtifactRegistry|A user can hold only one Artifact Registry role per resource. The following are listed more than once."
+msgstr ""
+
+msgid "ArtifactRegistry|Access is limited to members with explicit permissions only."
 msgstr ""
 
 msgid "ArtifactRegistry|Activation"
@@ -11777,6 +11783,9 @@ msgid "ArtifactRegistry|At least one assignment is required."
 msgstr ""
 
 msgid "ArtifactRegistry|Could not authenticate with the Artifact Registry service."
+msgstr ""
+
+msgid "ArtifactRegistry|Create hosted repository"
 msgstr ""
 
 msgid "ArtifactRegistry|Create repository"
@@ -11809,6 +11818,9 @@ msgstr ""
 msgid "ArtifactRegistry|Loading repositories."
 msgstr ""
 
+msgid "ArtifactRegistry|Lowercase letters, numbers, hyphens (-), and underscores (_) only. The repository name cannot be changed after creation."
+msgstr ""
+
 msgid "ArtifactRegistry|Maven"
 msgstr ""
 
@@ -11827,16 +11839,10 @@ msgstr ""
 msgid "ArtifactRegistry|Name must use lowercase letters, digits, periods, underscores, and hyphens, and start and end with a letter or digit."
 msgstr ""
 
-msgid "ArtifactRegistry|New repository"
-msgstr ""
-
 msgid "ArtifactRegistry|No repositories"
 msgstr ""
 
 msgid "ArtifactRegistry|OCI"
-msgstr ""
-
-msgid "ArtifactRegistry|Only members of the organization can access this repository."
 msgstr ""
 
 msgid "ArtifactRegistry|Organization could not be determined."
@@ -11869,6 +11875,9 @@ msgstr ""
 msgid "ArtifactRegistry|The Artifact Registry service is unavailable."
 msgstr ""
 
+msgid "ArtifactRegistry|The format cannot be changed after the repository is created."
+msgstr ""
+
 msgid "ArtifactRegistry|The requested resources could not be found."
 msgstr ""
 
@@ -11896,13 +11905,10 @@ msgstr ""
 msgid "ArtifactRegistry|Unknown Artifact Registry roles: %{roles}."
 msgstr ""
 
-msgid "ArtifactRegistry|Use lowercase letters, digits, periods, underscores, and hyphens. Must start and end with a letter or digit. Cannot be changed after creation."
-msgstr ""
-
 msgid "ArtifactRegistry|Virtual"
 msgstr ""
 
-msgid "ArtifactRegistry|Visibility"
+msgid "ArtifactRegistry|Visibility level"
 msgstr ""
 
 msgid "ArtifactRegistry|You are not authorized to grant this role on this resource."
@@ -94553,6 +94559,9 @@ msgid "my-awesome-group"
 msgstr ""
 
 msgid "my-channel"
+msgstr ""
+
+msgid "my-hosted-repository"
 msgstr ""
 
 msgid "my-topic"

@@ -7,7 +7,7 @@ title: GitLab AI Solution Components
 ---
 
 This documentation section covers a variety of Solution components developed and provided by GitLab.
-To download and run these solution components, request your account team for invitation code.
+To download and run these solution components, request an invitation code from your account team.
 
 The use of any Solution component is subject to the [GitLab Subscription Agreement](https://handbook.gitlab.com/handbook/legal/subscription-agreement/) (the "Agreement") and constitutes Free Software as defined within the Agreement.
 
@@ -19,6 +19,6 @@ For detailed information about GitLab Duo Workflow, review [the document here](.
 
 ## Duo Workflow Solution
 
-The Duo Workflow Solution provides prompt and context library for different software development use cases. Each solution use case with the prompt and context library support the desired autonomous workflow to automate the development tasks, including tasks ranged from coding changes, problem fixing and code review based on the defined workflow plan.
+The Duo Workflow Solution provides a prompt and context library for different software development use cases. Each solution use case with the prompt and context library supports the desired autonomous workflow to automate the development tasks, including tasks ranging from coding changes, problem fixing, and code review based on the defined workflow plan.
 
 [Agentic Workflow: Apply Coding Style Guide](duo_workflow_codestyle.md)

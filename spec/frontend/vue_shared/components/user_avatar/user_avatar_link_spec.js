@@ -71,6 +71,16 @@ describe('User Avatar Link Component', () => {
         }),
       );
     });
+
+    it('does not truncate the username by default', () => {
+      expect(findUserName().classes()).not.toContain('gl-truncate');
+    });
+
+    it('truncates the username when truncateUsername is true', () => {
+      createWrapper({ truncateUsername: true });
+
+      expect(findUserName().classes()).toContain('gl-truncate');
+    });
   });
 
   describe('when username is NOT provided', () => {

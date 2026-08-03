@@ -14,7 +14,7 @@ title: AI Gateway Solution
 
 {{< /details >}}
 
-The document describes the installation package and integration scripts of GitLab and GitLab Duo with a self-hosted Large Language Model (LLM) running a selected models on Ollama.
+The document describes the installation package and integration scripts of GitLab and GitLab Duo with a self-hosted Large Language Model (LLM) running a selected model on Ollama.
 
 <!--
 This page has been removed from the Global Navigation as it does not contain any content.

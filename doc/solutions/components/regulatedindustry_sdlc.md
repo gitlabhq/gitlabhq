@@ -13,7 +13,7 @@ title: Sectors - Regulated Industry Solution
 
 {{< /details >}}
 
-This document provides the instruction and functional detail for GitLab Regulated Industry SDLC Compliance Solution.
+This document provides instructions and functional details for the GitLab Regulated Industry SDLC Compliance Solution.
 
 <!--
 This page is not in the Global Navigation as it does not contain any content.

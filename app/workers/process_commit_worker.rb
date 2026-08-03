@@ -48,8 +48,20 @@ class ProcessCommitWorker
   private
 
   def process_commit_message(project, commit, user, default = false)
-    # Ignore closing references from GitLab-generated commit messages.
-    find_closing_issues = default && !commit.merged_merge_request?(user)
+    # Skip closing references only when the commit belongs to an MR that was
+    # merged into the default branch, since PostMergeService already handles
+    # issue closing in that case. When an MR targets a non-default branch
+    # (e.g. merging into 'master' when 'develop' is the default), PostMergeService
+    # does not close issues, so we must process them here when the merge commit
+    # eventually lands on the default branch.
+    find_closing_issues =
+      if default
+        merged_mr = commit.merged_merge_request(user)
+        !(merged_mr && merged_mr.target_branch == project.default_branch)
+      else
+        false
+      end
+
     closed_issues = find_closing_issues ? issues_to_close(project, commit, user) : []
 
     close_issues(project, user, commit, closed_issues) if closed_issues.any?

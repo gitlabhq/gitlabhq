@@ -84,7 +84,7 @@ To set the access and authentication, follow these steps:
 ![Security Dashboard](img/secret_detection_group_token_v17_9.png)
 
 1. Create a group variable: Copy the token value and store safely. Add a group variable under `Settings` menu option called `SECRET_DETECTION_GROUP_TOKEN` as the key with the token value.
-1. Obtain the group token bot user: In the same group, navigate to `manage` menu option to select `member` and look up corresponding bot user for the group access token `Secrete Detection Group Token`, copy the value representing the bot user for the group in the format of `@group_[group_id]_bot_[random_number]`
+1. Obtain the group token bot user: In the same group, navigate to `manage` menu option to select `member` and look up corresponding bot user for the group access token `Secret Detection Group Token`, copy the value representing the bot user for the group in the format of `@group_[group_id]_bot_[random_number]`
 
 ![Secret detection group token bot](img/secret_detection_group_token_bot_v17_9.png)
 
@@ -151,10 +151,10 @@ approval_policy: []
 
 ## How It Works
 
-Once the policy is running. all the projects associated with the global policy will have the `secret detect` job will run automatically in the pipeline as `secret_detection_0` job.
+Once the policy is running, all the projects associated with the global policy will have the `secret detect` job run automatically in the pipeline as `secret_detection_0` job.
 ![The Security Dashboard showing secret detection job details.](img/secret_detection_job_v17_9.png)
 
-Secrets will be detected and surfaced. If there is a merge request, the net new secrets will be displayed on the **Reports** tab. If it is the default branch merged, they will be shown in the security vulnerability report as following:
+Secrets will be detected and surfaced. If there is a merge request, the net new secrets will be displayed on the **Reports** tab. If it is the default branch merged, they will be shown in the security vulnerability report as follows:
 ![Secret detection password vulnerability results](img/secret_detection_pwd_vuln_v17_9.png)
 
 The following is an example password in clear text:

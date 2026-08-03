@@ -14,9 +14,9 @@ You can use the GitLab Environment Toolkit to deploy a Cloud Native Hybrid envir
 
 ### Two and Three Zone High Availability
 
-While GitLab Reference Architectures generally encourage three zone redundancy, the AWS Well Architected framework consider two zone redundancy as AWS Well Architected. Individual implementations should weigh the costs of two and three zone configurations against their own high availability requirements for a final configuration.
+While GitLab Reference Architectures generally encourage three zone redundancy, the AWS Well Architected framework considers two zone redundancy as AWS Well Architected. Individual implementations should weigh the costs of two and three zone configurations against their own high availability requirements for a final configuration.
 
-Gitaly Cluster (Praefect) uses a consistency voting system to implement strong consistency between synchronized nodes. Regardless of the number of availability zones implemented, there will always need to be a minimum of three Gitaly and three Praefect nodes in the cluster to avoid voting stalemates cause by an even number of nodes.
+Gitaly Cluster (Praefect) uses a consistency voting system to implement strong consistency between synchronized nodes. Regardless of the number of availability zones implemented, there will always need to be a minimum of three Gitaly and three Praefect nodes in the cluster to avoid voting stalemates caused by an even number of nodes.
 
 ## AWS PaaS qualified for all GitLab implementations
 
@@ -24,7 +24,7 @@ For both implementations that used the Linux package or Cloud Native Hybrid impl
 
 These services have been tested with GitLab.
 
-Some services, such as log aggregation, outbound email are not specified by GitLab, but where provided are noted.
+Some services, such as log aggregation and outbound email, are not specified by GitLab, but where provided are noted.
 
 | GitLab Services                                              | AWS PaaS (Tested)              |
 | ------------------------------------------------------------ | ------------------------------ |

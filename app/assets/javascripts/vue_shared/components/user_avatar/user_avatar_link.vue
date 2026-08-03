@@ -90,6 +90,11 @@ export default {
       required: false,
       default: '',
     },
+    truncateUsername: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     userId() {
@@ -136,6 +141,7 @@ export default {
       :title="tooltipText"
       :tooltip-placement="tooltipPlacement"
       class="gl-ml-1"
+      :class="{ 'gl-truncate': truncateUsername }"
       data-testid="user-avatar-link-username"
     >
       {{ username }}

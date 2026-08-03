@@ -428,9 +428,26 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
           include_examples "to verify compliance with allow_single_sign_on"
         end
 
+        context "and LDAP is disabled instance-wide" do
+          before do
+            allow(Gitlab::Auth::Ldap::Config).to receive(:enabled?).and_return(false)
+          end
+
+          it "does not treat the user as an auto_link_ldap_user candidate" do
+            expect(oauth_user.send(:auto_link_ldap_user?)).to be false
+          end
+
+          it "does not attempt to construct an LDAP adapter for a disabled provider" do
+            expect(Gitlab::Auth::Ldap::Adapter).not_to receive(:new)
+
+            oauth_user.send(:ldap_person)
+          end
+        end
+
         context "and at least one LDAP provider is defined" do
           before do
             stub_ldap_config(providers: %w[ldapmain])
+            stub_ldap_setting(enabled: true)
           end
 
           context "and a corresponding LDAP person" do
@@ -684,6 +701,7 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
         context "and at least one LDAP provider is defined" do
           before do
             stub_ldap_config(providers: %w[ldapmain])
+            stub_ldap_setting(enabled: true)
           end
 
           context "and a corresponding LDAP person" do

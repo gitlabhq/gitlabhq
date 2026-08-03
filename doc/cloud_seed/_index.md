@@ -157,7 +157,7 @@ Successful creation of the database instance triggers a background worker to per
 ### Connect to the database
 
 After the database instance setup is complete, the database connection details are available as project variables. These
-can be managed through the `Project :: Settings :: CI` page and are made available to pipeline executing in the
+can be managed through the `Project :: Settings :: CI` page and are made available to pipelines executing in the
 appropriate environment.
 
 ### Managing the database instance

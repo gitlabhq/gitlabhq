@@ -13,11 +13,11 @@ title: Integrated Change Management - ServiceNow
 
 {{< /details >}}
 
-This document provides the instruction and functional detail for GitLab to orchestrate the change management with integrated ServiceNow solution using ServiceNow DevOps Change Velocity.
+This document provides instructions and functional details for GitLab to orchestrate the change management with an integrated ServiceNow solution using ServiceNow DevOps Change Velocity.
 
-With the ServiceNow DevOps Change Velocity integration, it's able to track information about activity in GitLab repositories and CI/CD pipelines in ServiceNow.
+With the ServiceNow DevOps Change Velocity integration, you can track information about activity in GitLab repositories and CI/CD pipelines in ServiceNow.
 
-It automates the creation of change requests and automatically approve the change requests based on the policy criteria when it's integrated with GitLab CI/CD pipelines.
+It automates the creation of change requests and automatically approves the change requests based on the policy criteria when it's integrated with GitLab CI/CD pipelines.
 
 This document shows you how to
 
@@ -43,11 +43,11 @@ There are multiple ways to integrate GitLab with ServiceNow. The following optio
 
 ## ServiceNow DevOps Change Velocity
 
-Upon installing and configuring DevOps Change Velocity from ServiceNow store, enable change control through automated change creation in the DevOps Change Workspace Directly.
+Upon installing and configuring DevOps Change Velocity from the ServiceNow store, enable change control through automated change creation in the DevOps Change Workspace directly.
 
 ### Built-in Change Request Process
 
-ServiceNow DevOps Change Velocity provides built-in change request model for normal change process and the change request created automatically has default naming convention.
+ServiceNow DevOps Change Velocity provides a built-in change request model for the normal change process and the change request created automatically has default naming convention.
 
 The normal change process requires the change request to be approved before the deployment pipeline job to production can occur.
 

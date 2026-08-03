@@ -908,7 +908,7 @@
   :queue_namespace: :cronjob
 - :name: cronjob:gitlab_performance_bar_stats
   :worker_name: GitlabPerformanceBarStatsWorker
-  :feature_category: :observability
+  :feature_category: :performance_tooling
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :cpu

@@ -355,6 +355,12 @@ Settings.registry['path']            = Settings.absolute(Settings.registry['path
 Settings.registry['notifications'] ||= []
 
 #
+# Artifact Registry
+#
+Settings['artifact_registry'] ||= {}
+Settings.artifact_registry['api_url'] ||= 'http://localhost:8080' if Rails.env.development? || Rails.env.test?
+
+#
 # Error Reporting and Logging with Sentry
 #
 Settings['sentry'] ||= {}

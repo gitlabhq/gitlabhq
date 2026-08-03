@@ -59,6 +59,24 @@ RSpec.describe ClickHouse::Finders::Ci::SiphonStagesFinder, :click_house, :freez
       end
     end
 
+    describe '#for_pipeline_ids' do
+      context 'with an array of ids' do
+        let(:query) { instance.for_pipeline_ids([10, 20]) }
+
+        it { is_expected.to include('`siphon_p_ci_stages`.`pipeline_id` IN (10, 20)') }
+      end
+
+      context 'with a QueryBuilder subquery' do
+        let(:query) do
+          instance.for_pipeline_ids(ClickHouse::Client::QueryBuilder.new('pipelines').select(:id))
+        end
+
+        it 'renders as pipeline_id IN (SELECT ...)' do
+          is_expected.to include('`siphon_p_ci_stages`.`pipeline_id` IN (SELECT `pipelines`.`id` FROM `pipelines`)')
+        end
+      end
+    end
+
     describe '#select narrows the outer projection' do
       let(:query) { instance.select(:id, :name) }
 
