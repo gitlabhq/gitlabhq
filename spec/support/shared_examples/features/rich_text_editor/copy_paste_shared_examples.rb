@@ -8,7 +8,7 @@ RSpec.shared_examples 'rich text editor - copy/paste' do
   let(:is_mac) { page.evaluate_script('navigator.platform').include?('Mac') }
   let(:modifier_key) { is_mac ? :command : :control }
 
-  describe 'pasting text' do
+  describe 'pasting text', feature_category: :markdown do
     before do
       switch_to_content_editor
 

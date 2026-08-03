@@ -43,68 +43,36 @@ RSpec.describe 'Merge request > User sees discussions navigation', :js, feature_
       ).to_discussion
     end
 
+    let!(:third_discussion) do
+      create(
+        :diff_note_on_merge_request, :resolved,
+        noteable: merge_request,
+        project: project,
+        position: position
+      ).to_discussion
+    end
+
     let(:first_discussion_selector) { ".discussion[data-discussion-id='#{first_discussion.id}']" }
     let(:second_discussion_selector) { ".discussion[data-discussion-id='#{second_discussion.id}']" }
 
     shared_examples 'a page with a thread navigation' do
       context 'with active threads' do
-        it 'navigates to the first thread' do
+        it 'navigates and cycles back to the first thread' do
+          goto_next_thread
+          expect(page).to have_selector(first_discussion_selector, obscured: false)
+          goto_next_thread
+          expect(page).to have_selector(second_discussion_selector, obscured: false)
           goto_next_thread
           expect(page).to have_selector(first_discussion_selector, obscured: false)
         end
 
-        it 'navigates to the last thread' do
+        it 'navigates and cycles back to the last thread' do
           goto_previous_thread
           expect(page).to have_selector(second_discussion_selector, obscured: false)
-        end
-
-        it 'navigates through active threads' do
-          goto_next_thread
-          goto_next_thread
-          expect(page).to have_selector(second_discussion_selector, obscured: false)
-        end
-
-        it 'cycles back to the first thread' do
-          goto_next_thread
-          goto_next_thread
-          goto_next_thread
+          goto_previous_thread
           expect(page).to have_selector(first_discussion_selector, obscured: false)
-        end
-
-        it 'cycles back to the last thread' do
-          goto_previous_thread
-          goto_previous_thread
           goto_previous_thread
           expect(page).to have_selector(second_discussion_selector, obscured: false)
-        end
-      end
-
-      context 'with resolved threads' do
-        let!(:resolved_discussion) do
-          create(
-            :diff_note_on_merge_request,
-            noteable: merge_request,
-            project: project,
-            position: position
-          ).to_discussion
-        end
-
-        let(:resolved_discussion_selector) { ".discussion[data-discussion-id='#{resolved_discussion.id}']" }
-
-        before do
-          # :resolved attr doesn't actually resolve the thread but just collapses it
-          page.within(resolved_discussion_selector) do
-            click_button text: 'Resolve thread'
-          end
-          page.execute_script("window.scrollTo(0,0)")
-        end
-
-        it 'excludes resolved threads during navigation',
-          quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24863' do
-          goto_next_thread
-          goto_next_thread
-          goto_next_thread
-          expect(page).to have_selector(first_discussion_selector, obscured: false)
         end
       end
     end
@@ -185,16 +153,12 @@ RSpec.describe 'Merge request > User sees discussions navigation', :js, feature_
       it_behaves_like 'a page with no code discussions'
     end
 
-    context 'on pipelines page',
-      quarantine: {
-        issue: [
-          'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/6901',
-          'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/6900'
-        ]
-      } do
+    context 'on pipelines page' do
       before do
         visit project_merge_request_path(project, merge_request)
-        click_link 'Pipelines'
+        within '.merge-request-tabs' do
+          click_link 'Pipelines'
+        end
       end
 
       it_behaves_like 'a page with no code discussions'
@@ -203,13 +167,9 @@ RSpec.describe 'Merge request > User sees discussions navigation', :js, feature_
 
   def goto_next_thread
     click_button 'Next open thread', obscured: false
-    # Wait for scroll
-    sleep(1)
   end
 
   def goto_previous_thread
     click_button 'Previous open thread', obscured: false
-    # Wait for scroll
-    sleep(1)
   end
 end

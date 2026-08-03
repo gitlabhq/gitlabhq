@@ -45144,6 +45144,8 @@ CREATE INDEX idx_oauth_access_grants_on_organization_id ON oauth_access_grants U
 
 CREATE INDEX idx_oauth_access_tokens_on_organization_id ON oauth_access_tokens USING btree (organization_id);
 
+CREATE INDEX idx_oauth_applications_dynamic_and_id ON oauth_applications USING btree (dynamic, id);
+
 CREATE INDEX idx_oauth_applications_organization_id ON oauth_applications USING btree (organization_id);
 
 CREATE INDEX idx_oauth_device_grants_on_organization_id ON oauth_device_grants USING btree (organization_id);

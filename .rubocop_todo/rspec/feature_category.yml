@@ -604,7 +604,6 @@ RSpec/FeatureCategory:
     - 'spec/controllers/admin/gitaly_servers_controller_spec.rb'
     - 'spec/controllers/admin/health_check_controller_spec.rb'
     - 'spec/controllers/admin/identities_controller_spec.rb'
-    - 'spec/controllers/admin/impersonations_controller_spec.rb'
     - 'spec/controllers/admin/plan_limits_controller_spec.rb'
     - 'spec/controllers/admin/topics/avatars_controller_spec.rb'
     - 'spec/controllers/admin/usage_trends_controller_spec.rb'

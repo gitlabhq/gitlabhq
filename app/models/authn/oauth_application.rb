@@ -8,6 +8,7 @@ module Authn
 
     belongs_to :organization, class_name: 'Organizations::Organization', optional: false
 
+    scope :dynamic, -> { where(dynamic: true) }
     scope :with_token_digests, ->(hashed_tokens) do
       return none if hashed_tokens.blank?
 

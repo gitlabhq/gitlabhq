@@ -50,6 +50,18 @@ RSpec.describe Authn::OauthApplication, feature_category: :system_access do
     expect(application).to be_valid
   end
 
+  describe '.dynamic' do
+    let_it_be(:dynamic_app) { create(:oauth_application, :dynamic) }
+
+    it 'returns only dynamic applications' do
+      expect(described_class.dynamic).to include(dynamic_app)
+    end
+
+    it 'excludes non-dynamic applications' do
+      expect(described_class.dynamic).not_to include(application)
+    end
+  end
+
   describe '#secret_matches?' do
     let_it_be(:plaintext_secret) { 'CzOBzBfU9F-HvsqfTaTXF4ivuuxYZuv3BoAK4pnvmyw' }
     let_it_be_with_reload(:application) { create(:oauth_application, secret: plaintext_secret) }

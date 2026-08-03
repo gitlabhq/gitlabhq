@@ -3185,6 +3185,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: authn_oauth_applications_cleanup_dynamic_applications
+  :worker_name: Authn::OauthApplications::CleanupDynamicApplicationsWorker
+  :feature_category: :system_access
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: authorized_keys
   :worker_name: AuthorizedKeysWorker
   :feature_category: :source_code_management

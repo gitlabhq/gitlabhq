@@ -8,7 +8,7 @@ RSpec.shared_examples 'rich text editor - autocomplete' do |params = {
 }|
   include RichTextEditorHelpers
 
-  describe 'autocomplete suggestions' do
+  describe 'autocomplete suggestions', feature_category: :markdown do
     let(:suggestions_dropdown) { '[data-testid="content-editor-suggestions-dropdown"]' }
 
     before do

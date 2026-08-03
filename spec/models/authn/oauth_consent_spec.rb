@@ -103,5 +103,22 @@ RSpec.describe Authn::OauthConsent, feature_category: :system_access do
       expect(already_revoked.reload).to be_revoked
       expect(rejected.reload).to be_rejected
     end
+
+    context 'when user is omitted' do
+      subject(:revoke) { described_class.revoke_authorized_for(client_id: app.uid) }
+
+      it 'revokes authorized consents for all users' do
+        expect { revoke }
+          .to change { authorized.reload.status }.from('authorized').to('revoked')
+          .and change { other_user_authorized.reload.status }.from('authorized').to('revoked')
+      end
+
+      it 'does not touch already-revoked or rejected consents', :aggregate_failures do
+        revoke
+
+        expect(already_revoked.reload).to be_revoked
+        expect(rejected.reload).to be_rejected
+      end
+    end
   end
 end

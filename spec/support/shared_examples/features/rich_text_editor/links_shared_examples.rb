@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.shared_examples 'rich text editor - links' do
   include RichTextEditorHelpers
 
-  describe 'creating and editing links' do
+  describe 'creating and editing links', feature_category: :markdown do
     before do
       switch_to_content_editor
     end
@@ -228,7 +228,7 @@ RSpec.shared_examples 'rich text editor - links' do
     end
   end
 
-  describe 'copy link functionality for uploaded files' do
+  describe 'copy link functionality for uploaded files', feature_category: :markdown do
     before do
       switch_to_content_editor
       click_attachment_button
@@ -252,7 +252,7 @@ RSpec.shared_examples 'rich text editor - links' do
     end
   end
 
-  describe 'copy link functionality for external URLs' do
+  describe 'copy link functionality for external URLs', feature_category: :markdown do
     before do
       switch_to_content_editor
     end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Admin impersonates user', :enable_admin_mode, feature_category: :user_management do
+RSpec.describe 'Admin impersonates user', :enable_admin_mode, feature_category: :system_access do
   let_it_be(:user) { create(:omniauth_user, provider: 'twitter', extern_uid: '123456') }
   let_it_be(:current_user) { create(:admin) }
 
