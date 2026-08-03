@@ -1,28 +1,26 @@
 inherit_from:
   - ../config/rubocop.yml
 
-Gitlab/HTTParty:
-  Enabled: false
-
 Rails/Output:
   Enabled: false
 
-# This gem ships standalone (no ActiveSupport at runtime). Disable Rails
-# cops that depend on Rails monkeypatches like Time.zone.
-Rails/TimeZone:
-  Enabled: false
-
-# This gem runs as a standalone CLI, so `exit` is the correct way to signal a
-# non-zero status to the shell (e.g. the --check-duo-instructions guard).
-Rails/Exit:
-  Enabled: false
-
+# Bundler does not accept the GitLab-specific `feature_category` option without the root Gemfile's monkeypatch.
 Gemfile/MissingFeatureCategory:
   Enabled: false
 
+# This standalone gem does not load ActiveSupport, which provides `exclude?`.
 Rails/NegateInclude:
   Enabled: false
 
 RSpec/MultipleMemoizedHelpers:
-  Max: 25
-  AllowSubject: true
+  Max: 10
+
+# Spec helpers intentionally keep temporary-directory state on the example instance.
+Gitlab/ModuleWithInstanceVariables:
+  Exclude:
+    - 'spec/**/*.rb'
+
+# The shared test harness sets and restores CI_DEFAULT_BRANCH around each example.
+RSpec/EnvAssignment:
+  Exclude:
+    - 'spec/spec_helper.rb'

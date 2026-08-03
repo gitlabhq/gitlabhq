@@ -312,7 +312,9 @@ module Gitlab
         end
 
         report_failing_fences(result, warn_stale: warn_stale)
+        # rubocop:disable Rails/Exit -- standalone CLI uses the process status to signal guard failure to the shell
         exit 1
+        # rubocop:enable Rails/Exit
       end
 
       # Prints the stale fences as a non-blocking warning (used under

@@ -52,7 +52,11 @@ RSpec.describe Gitlab::Ci::Pipeline::SlowOperationLogger, :request_store, featur
         expect(result).to eq('expected_result')
       end
 
-      it 'captures instrumentation counters' do
+      it 'captures instrumentation counters',
+        quarantine: {
+          issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/43750',
+          type: 'flaky'
+        } do
         allow(Gitlab::GitalyClient).to receive(:get_request_count).and_return(0, 1)
 
         expect(Gitlab::AppJsonLogger).to receive(:info).with(a_hash_including(

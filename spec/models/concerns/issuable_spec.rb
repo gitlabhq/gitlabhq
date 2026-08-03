@@ -1160,7 +1160,7 @@ RSpec.describe Issuable, feature_category: :team_planning do
     end
 
     context "note with long path string" do
-      let(:project) { create(:project, :public, :repository) }
+      let_it_be(:project) { create(:project, :public, :small_repo) }
       let(:mentionable) { project.commit }
 
       before do

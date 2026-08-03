@@ -31,6 +31,10 @@ module Gitlab
       valid_ref_name?(ref_name)
     end
 
+    def has_space?(ref_name)
+      ref_name.to_s.include?(' ')
+    end
+
     private
 
     # Custom validation according to git-check-ref-format rules

@@ -26,7 +26,7 @@ export default {
       required: true,
     },
   },
-  emits: ['dismissHoverTip', 'updateShowLinksState', 'updateViewType'],
+  emits: ['dismiss-hover-tip', 'update-show-links-state', 'update-view-type'],
   data() {
     return {
       hoverTipDismissed: false,
@@ -97,7 +97,7 @@ export default {
   methods: {
     dismissTip() {
       this.hoverTipDismissed = true;
-      this.$emit('dismissHoverTip');
+      this.$emit('dismiss-hover-tip');
     },
     isCurrentType(type) {
       return this.segmentSelectedType === type;
@@ -121,14 +121,14 @@ export default {
         this.isSwitcherLoading = true;
         this.segmentSelectedType = type;
         setTimeout(() => {
-          this.$emit('updateViewType', type);
+          this.$emit('update-view-type', type);
         });
       }
     },
     toggleShowLinksActive(val) {
       this.isToggleLoading = true;
       setTimeout(() => {
-        this.$emit('updateShowLinksState', val);
+        this.$emit('update-show-links-state', val);
       });
     },
   },

@@ -7,16 +7,6 @@ require_relative '../../../lib/gitlab/principles_distiller/sync'
 RSpec.describe Gitlab::PrinciplesDistiller::Sync do
   include TmpdirHelper
 
-  # rubocop:disable RSpec/EnvAssignment -- ENV assignment is necessary in `around` blocks; stub_env requires `allow` which is not available outside `before`
-  around do |example|
-    original_branch = ENV['CI_DEFAULT_BRANCH']
-    ENV['CI_DEFAULT_BRANCH'] ||= 'master'
-    example.run
-  ensure
-    ENV['CI_DEFAULT_BRANCH'] = original_branch
-  end
-  # rubocop:enable RSpec/EnvAssignment
-
   let(:tmpdir) { mktmpdir }
   let(:sync) { described_class.new }
 

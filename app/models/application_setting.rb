@@ -807,6 +807,9 @@ class ApplicationSetting < ApplicationRecord
     if: :granular_tokens_enforced_after_changed?
 
   jsonb_accessor :diff_limits,
+    diff_max_patch_bytes: [:integer, { default: Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES }],
+    diff_max_files: [:integer, { default: Commit::DEFAULT_MAX_DIFF_FILES_SETTING }],
+    diff_max_lines: [:integer, { default: Commit::DEFAULT_MAX_DIFF_LINES_SETTING }],
     diff_max_versions: [:integer, { default: 1_000 }],
     diff_max_commits: [:integer, { default: 1_000_000 }]
 

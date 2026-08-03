@@ -6,7 +6,7 @@ module Tags
       return error('Target is empty', 400) if target.blank?
 
       valid_tag = Gitlab::GitRefValidator.validate(tag_name)
-      return error('Tag name invalid', 400) unless valid_tag
+      return error(tag_name_error(tag_name), 400) unless valid_tag
 
       repository = project.repository
       message = message&.strip
@@ -29,6 +29,16 @@ module Tags
         success.merge(tag: new_tag)
       else
         error("Target #{target} is invalid", 400)
+      end
+    end
+
+    private
+
+    def tag_name_error(tag_name)
+      if Gitlab::GitRefValidator.has_space?(tag_name)
+        'Tag name invalid. Tag names cannot have spaces in them.'
+      else
+        'Tag name invalid'
       end
     end
   end

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Integrations::Jira, feature_category: :integrations do
   include AssetsHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
 
   let(:current_user) { build_stubbed(:user) }
   let(:url) { 'http://jira.example.com' }

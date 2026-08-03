@@ -356,7 +356,7 @@ describe('Pipeline graph wrapper', () => {
       it('shows error alert when switching to layer view', async () => {
         expect(findAlert().exists()).toBe(false);
 
-        await findViewSelector().vm.$emit('updateViewType', LAYER_VIEW);
+        await findViewSelector().vm.$emit('update-view-type', LAYER_VIEW);
         await waitForPromises();
 
         expect(findAlert().text()).toBe('Currently unable to fetch data for this pipeline.');
@@ -372,7 +372,7 @@ describe('Pipeline graph wrapper', () => {
         await waitForPromises();
         expect(findLoadingIcon().exists()).toBe(false);
 
-        findViewSelector().vm.$emit('updateViewType', LAYER_VIEW);
+        findViewSelector().vm.$emit('update-view-type', LAYER_VIEW);
         await nextTick();
 
         expect(findLoadingIcon().exists()).toBe(true);
@@ -399,31 +399,31 @@ describe('Pipeline graph wrapper', () => {
       it('switches between views', async () => {
         expect(findStageColumnTitle().text()).toBe('build');
 
-        await findViewSelector().vm.$emit('updateViewType', LAYER_VIEW);
+        await findViewSelector().vm.$emit('update-view-type', LAYER_VIEW);
 
         expect(findStageColumnTitle().exists()).toBe(false);
       });
 
       it('saves the view type to local storage', async () => {
-        await findViewSelector().vm.$emit('updateViewType', LAYER_VIEW);
+        await findViewSelector().vm.$emit('update-view-type', LAYER_VIEW);
         expect(localStorage.setItem.mock.calls).toEqual([[VIEW_TYPE_KEY, LAYER_VIEW]]);
       });
 
       it('calls listByLayers only once no matter how many times view is switched', async () => {
         expect(layersFn).not.toHaveBeenCalled();
-        await findViewSelector().vm.$emit('updateViewType', LAYER_VIEW);
+        await findViewSelector().vm.$emit('update-view-type', LAYER_VIEW);
         await waitForPromises();
 
         expect(layersFn).toHaveBeenCalledTimes(1);
-        await findViewSelector().vm.$emit('updateViewType', STAGE_VIEW);
-        await findViewSelector().vm.$emit('updateViewType', LAYER_VIEW);
-        await findViewSelector().vm.$emit('updateViewType', STAGE_VIEW);
+        await findViewSelector().vm.$emit('update-view-type', STAGE_VIEW);
+        await findViewSelector().vm.$emit('update-view-type', LAYER_VIEW);
+        await findViewSelector().vm.$emit('update-view-type', STAGE_VIEW);
         expect(layersFn).toHaveBeenCalledTimes(1);
       });
 
       it('requests needs data only for the layers view', async () => {
         expect(pipelineNeedsHandler).not.toHaveBeenCalled();
-        await findViewSelector().vm.$emit('updateViewType', LAYER_VIEW);
+        await findViewSelector().vm.$emit('update-view-type', LAYER_VIEW);
         await waitForPromises();
 
         expect(pipelineNeedsHandler).toHaveBeenCalledWith({
@@ -444,7 +444,7 @@ describe('Pipeline graph wrapper', () => {
           expect(job.previousStageJobsUnionNeeds).toEqual([]);
         });
 
-        await findViewSelector().vm.$emit('updateViewType', LAYER_VIEW);
+        await findViewSelector().vm.$emit('update-view-type', LAYER_VIEW);
         await waitForPromises();
 
         // In layer view, at least some jobs should have populated needs/previousStageJobsUnionNeeds
@@ -656,7 +656,7 @@ describe('Pipeline graph wrapper', () => {
 
           await waitForPromises();
 
-          await findViewSelector().vm.$emit('updateViewType', LAYER_VIEW);
+          await findViewSelector().vm.$emit('update-view-type', LAYER_VIEW);
           await waitForPromises();
         });
 
@@ -683,7 +683,7 @@ describe('Pipeline graph wrapper', () => {
           });
           await waitForPromises();
 
-          await findViewSelector().vm.$emit('updateViewType', LAYER_VIEW);
+          await findViewSelector().vm.$emit('update-view-type', LAYER_VIEW);
           await waitForPromises();
         });
 

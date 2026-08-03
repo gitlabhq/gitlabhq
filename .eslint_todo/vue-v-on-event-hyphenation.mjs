@@ -21,8 +21,6 @@ export default {
     'app/assets/javascripts/ci/job_token_access/components/inbound_token_access.vue',
     'app/assets/javascripts/ci/job_token_access/components/namespace_form.vue',
     'app/assets/javascripts/ci/job_token_access/components/outbound_token_access.vue',
-    'app/assets/javascripts/ci/pipeline_details/graph/graph_component_wrapper.vue',
-    'app/assets/javascripts/ci/pipeline_details/header/pipeline_header.vue',
     'app/assets/javascripts/ci/pipeline_new/components/pipeline_new_form.vue',
     'app/assets/javascripts/ci/pipelines_page/components/pipeline_status_badge.vue',
     'app/assets/javascripts/ci/runner/admin_register_runner/admin_register_runner_app.vue',

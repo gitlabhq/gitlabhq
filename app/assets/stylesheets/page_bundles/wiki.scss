@@ -318,6 +318,11 @@ ul.wiki-pages-list.content-list {
     max-height: none;
   }
 
+  .md-area:hover,
+  .md-area:focus-within {
+    @apply gl-shadow-none;
+  }
+
   .flexible-input-container {
     @apply gl-w-full;
   }

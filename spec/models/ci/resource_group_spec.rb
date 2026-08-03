@@ -112,7 +112,7 @@ RSpec.describe Ci::ResourceGroup, feature_category: :continuous_delivery, factor
   end
 
   describe 'processables scope' do
-    let_it_be(:project) { create(:project, :repository, group: group) }
+    let_it_be(:project) { create(:project, :small_repo, group: group) }
     let_it_be(:pipeline_1) { create(:ci_pipeline, project: project) }
     let_it_be(:pipeline_2) { create(:ci_pipeline, project: project) }
 

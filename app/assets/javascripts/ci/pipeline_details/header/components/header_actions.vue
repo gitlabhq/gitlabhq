@@ -47,7 +47,7 @@ export default {
       required: true,
     },
   },
-  emits: ['cancelPipeline', 'deletePipeline', 'retryPipeline'],
+  emits: ['cancel-pipeline', 'delete-pipeline', 'retry-pipeline'],
   computed: {
     canRetryPipeline() {
       const { retryable, userPermissions } = this.pipeline;
@@ -75,7 +75,7 @@ export default {
         :disabled="isRetrying"
         variant="confirm"
         data-testid="retry-pipeline"
-        @click="$emit('retryPipeline', pipeline.id)"
+        @click="$emit('retry-pipeline', pipeline.id)"
       >
         {{ __('Retry') }}
       </gl-button>
@@ -89,7 +89,7 @@ export default {
         :disabled="isCanceling"
         variant="danger"
         data-testid="cancel-pipeline"
-        @click="$emit('cancelPipeline', pipeline.id)"
+        @click="$emit('cancel-pipeline', pipeline.id)"
       >
         {{ __('Cancel pipeline') }}
       </gl-button>
@@ -113,7 +113,7 @@ export default {
       :title="__('Delete pipeline')"
       :action-primary="$options.modal.actionPrimary"
       :action-cancel="$options.modal.actionCancel"
-      @primary="$emit('deletePipeline', pipeline.id)"
+      @primary="$emit('delete-pipeline', pipeline.id)"
     >
       <p>
         {{

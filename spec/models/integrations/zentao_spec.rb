@@ -8,7 +8,7 @@ RSpec.describe Integrations::Zentao, feature_category: :team_planning do
   let(:api_token) { 'ZENTAO_TOKEN' }
   let(:zentao_product_xid) { '3' }
   let(:zentao_integration) { build(:zentao_integration, project: project) }
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
 
   it_behaves_like Integrations::ResetSecretFields do
     let(:integration) { zentao_integration }

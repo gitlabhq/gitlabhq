@@ -511,8 +511,15 @@ RSpec.describe API::Tags, feature_category: :source_code_management do
         end
       end
 
-      it 'returns 400 if tag name is invalid' do
+      it 'returns 400 if tag name contains spaces' do
         post api(route, current_user), params: { tag_name: 'new design', ref: 'master' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eq('Tag name invalid. Tag names cannot have spaces in them.')
+      end
+
+      it 'returns 400 if tag name is invalid' do
+        post api(route, current_user), params: { tag_name: 'HEAD', ref: 'master' }
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['message']).to eq('Tag name invalid')

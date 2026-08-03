@@ -2,8 +2,6 @@
 
 module Gitlab
   class StringRangeMarker
-    include Gitlab::Utils::StrongMemoize
-
     attr_accessor :raw_line, :rich_line, :html_escaped
 
     def initialize(raw_line, rich_line = nil)
@@ -29,16 +27,12 @@ module Gitlab
       else
         rich_marker_ranges = []
         marker_ranges.each do |range|
-          if use_safe_position_mapping?
-            mapped_length = position_mapping.length
-            next if range.begin >= mapped_length
+          mapped_length = position_mapping.length
+          next if range.begin >= mapped_length
 
-            effective_end = [range.end, mapped_length - 1].min
-            effective_range = range.begin..effective_end
-            rich_positions = position_mapping[effective_range].flatten
-          else
-            rich_positions = position_mapping[range].flatten
-          end
+          effective_end = [range.end, mapped_length - 1].min
+          effective_range = range.begin..effective_end
+          rich_positions = position_mapping[effective_range].flatten
 
           rich_marker_ranges.concat(collapse_ranges(rich_positions, range.mode))
         end
@@ -63,21 +57,12 @@ module Gitlab
 
     private
 
-    def use_safe_position_mapping?
-      Feature.enabled?(:fix_string_range_marker_infinite_loop, Feature.current_request)
-    end
-    strong_memoize_attr :use_safe_position_mapping?
-
     def identity_mapping?
       raw_line.length == rich_line.length
     end
 
     def position_mapping
-      @position_mapping ||= if use_safe_position_mapping?
-                              safe_position_mapping
-                            else
-                              legacy_position_mapping
-                            end
+      @position_mapping ||= safe_position_mapping
     end
 
     def safe_position_mapping
@@ -109,44 +94,6 @@ module Gitlab
           mapping[raw_pos] = rich_pos
           rich_pos += 1
         end
-      end
-
-      mapping
-    end
-
-    def legacy_position_mapping
-      mapping = []
-      rich_pos = 0
-      (0..raw_line.length).each do |raw_pos|
-        rich_char = rich_line[rich_pos]
-
-        # The raw and rich lines are the same except for HTML tags,
-        # so skip over any `<...>` segment
-        while rich_char == '<'
-          until rich_char == '>'
-            rich_pos += 1
-            rich_char = rich_line[rich_pos]
-          end
-
-          rich_pos += 1
-          rich_char = rich_line[rich_pos]
-        end
-
-        # multi-char HTML entities in the rich line correspond to a single character in the raw line
-        if rich_char == '&'
-          multichar_mapping = [rich_pos]
-          until rich_char == ';'
-            rich_pos += 1
-            multichar_mapping << rich_pos
-            rich_char = rich_line[rich_pos]
-          end
-
-          mapping[raw_pos] = multichar_mapping
-        else
-          mapping[raw_pos] = rich_pos
-        end
-
-        rich_pos += 1
       end
 
       mapping

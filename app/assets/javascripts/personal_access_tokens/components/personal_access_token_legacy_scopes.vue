@@ -24,7 +24,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-p-5">
+  <div>
     <gl-badge icon="error" variant="warning">{{ $options.i18n.reduceScope }}</gl-badge>
 
     <div v-for="(scope, index) in scopes" :key="index" class="gl-my-2">

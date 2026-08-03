@@ -218,7 +218,7 @@ RSpec.describe ProjectStatistics, feature_category: :source_code_management do
     end
 
     context 'with deleted repositories' do
-      let(:project) { create(:project, :repository, :wiki_repo) }
+      let(:project) { create(:project, :small_repo, :wiki_repo) }
 
       before do
         project.repository.remove

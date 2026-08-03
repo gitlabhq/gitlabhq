@@ -1495,7 +1495,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_7cf2d653fe95"
+              "$ref": "#/components/schemas/RequestBody_66ff509e3374"
     get:
       operationId: getApiV4AiDuoWorkflowsWorkflowsIdCheckpoints
       summary: List all workflow checkpoints
@@ -94494,7 +94494,7 @@ components:
           nullable: true
       required:
       - status_event
-    RequestBody_7cf2d653fe95:
+    RequestBody_66ff509e3374:
       type: object
       properties:
         thread_ts:
@@ -94548,7 +94548,8 @@ components:
                 maxLength: 255
               write_type:
                 type: string
-                description: Serialization type (e.g. msgpack)
+                description: Blob serialization type. The read path decodes zlib-compressed
+                  JSON, so producers must send "json".
                 nullable: true
                 maxLength: 255
               step_action:

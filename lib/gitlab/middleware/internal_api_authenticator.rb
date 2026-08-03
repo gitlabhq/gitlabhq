@@ -217,8 +217,9 @@ module Gitlab
         File.join('', Gitlab.config.gitlab.relative_url_root).chomp('/')
       end
 
-      # This matches the way gems/grape-2.0.0/lib/grape/request.rb#headers works
-      # this helper method is used to extract headers for JWT auth for internal apis
+      # Builds a Title-Cased header hash from the Rack env, which is the form the
+      # verifiers above look keys up in (for example `headers['Job-Token']`).
+      # This helper method is used to extract headers for JWT auth for internal apis
       def normalize_headers(env)
         headers = {}
 

@@ -26,8 +26,8 @@ module API
     # grape_logging 3.0.0's Reporters::LoggerReporter clones the logger it is given, so the request
     # logger emits through a clone of LOGGER rather than LOGGER itself. The clone exists only to hold a
     # per-reporter formatter, which we already supply explicitly via `formatter:` below, so it changes
-    # nothing in production. Returning self from #clone keeps LOGGER the single emitting object, matching
-    # Grape 2.0/grape_logging 1.8.4 behavior and letting specs stub LOGGER directly.
+    # nothing in production. Returning self from #clone keeps LOGGER the single emitting object, so specs
+    # can stub LOGGER directly.
     LOGGER = Logger.new(LOG_FILENAME, level: ::Gitlab::Utils.to_rails_log_level(ENV["GITLAB_LOG_LEVEL"], :info))
       .tap { |logger| def logger.clone = self }
 

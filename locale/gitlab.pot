@@ -83699,6 +83699,9 @@ msgstr[1] ""
 msgid "UsageBilling|Track monthly credit consumption and the main drivers of credit usage."
 msgstr ""
 
+msgid "UsageBilling|Track your GitLab Credits consumption for %{strong_start}%{group_name}%{strong_end} group."
+msgstr ""
+
 msgid "UsageBilling|Trial"
 msgstr ""
 
@@ -83745,6 +83748,9 @@ msgid "UsageBilling|You won't be billed for this usage until you accept the On-D
 msgstr ""
 
 msgid "UsageBilling|You won't be billed for this usage until you accept the on-demand billing terms."
+msgstr ""
+
+msgid "UsageBilling|Your GitLab Credits usage"
 msgstr ""
 
 msgid "UsageBilling|Your GitLab evaluation credits are active"

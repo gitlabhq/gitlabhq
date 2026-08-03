@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe MergeRequestsClosingIssues, feature_category: :code_review_workflow do
   let_it_be(:namespace) { create_default(:namespace).freeze }
-  let_it_be(:project) { create_default(:project, :repository).freeze }
+  let_it_be(:project) { create_default(:project).freeze }
   let_it_be(:merge_request) { create_default(:merge_request, source_project: project).freeze }
   let_it_be(:issue1) { create(:issue, project: project) }
   let_it_be(:issue2) { create(:issue, project: project) }

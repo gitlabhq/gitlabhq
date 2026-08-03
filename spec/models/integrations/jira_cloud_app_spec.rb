@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Integrations::JiraCloudApp, feature_category: :integrations do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
 
   subject(:integration) { build(:jira_cloud_app_integration, project: project) }
 

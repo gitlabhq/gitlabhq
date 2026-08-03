@@ -19,12 +19,12 @@ title: GitLab Flex
 
 {{< /history >}}
 
-GitLab Flex is a purchasing model that provides a single annual dollar commitment that covers all GitLab capabilities.
-You can adjust your seat allocation and GitLab Credits month-to-month, without additional contracts or amendments.
+GitLab Flex is a purchasing model that covers all GitLab capabilities with a single commitment.
+You can adjust your seats and credits allocation month-to-month, without additional contracts or amendments.
 
-With GitLab Flex, you commit to an annual dollar amount based on your projected GitLab spend.
-This commitment creates an annual balance that you draw down from as you consume seats and credits for credit-based capabilities,
-priced according to the [GitLab Rate Card](https://about.gitlab.com/pricing/).
+You commit to an annual dollar amount based on your projected GitLab spend.
+This commitment creates a balance that you draw down from as you consume seats and credits
+for credit-based capabilities, priced according to the [GitLab Rate Card](https://about.gitlab.com/pricing/).
 
 GitLab Flex is also available for offline environments.
 
@@ -64,7 +64,7 @@ GitLab Flex operates on a monthly drawdown cycle based on calendar month.
   - Reserved credits are consumed first: Your usage draws from your monthly reserved pool first. After you use up the pool, usage draws from your On-Demand spend.
 - End of the month
   - Unused reserved credits expire: You lose any credits you did not use during the month, and they do not roll over. GitLab already debited the cost of these credits from your balance at the start of the month.
-  - Reservation is debited: GitLab draws down your reserved credit pool and any reserved add-ons from your annual Flex balance at your discounted Flex rate. The drawdown reduces your reserved quantity at the discounted rate. It does not charge a separate dollar amount against your annual commitment.
+  - Reservation is debited: GitLab draws down your reserved credit pool and any reserved add-ons from your total Flex balance at your discounted Flex rate. The drawdown reduces your reserved quantity at the discounted rate. It does not charge a separate dollar amount against your total commitment.
   - Seats are charged at the monthly peak: GitLab counts the highest number of seats you used at any point during the month, and charges for that number. Seats above your reservation are charged at your per-seat rate and draw from your remaining Flex balance.
   - Overage is calculated: If your total monthly usage is more than your allocation, GitLab bills the extra amount separately at the beginning of the next month.
 
@@ -72,9 +72,9 @@ At the beginning of the next month, a new reservation debits and the drawdown cy
 
 ## Volume discounts
 
-Tiered volume discounts are automatically applied based on your total Flex annual commitment amount.
+Tiered volume discounts are automatically applied based on your total Flex commitment amount.
 The volume discount does not reduce your commitment value, the reserved credits are debited from your Flex balance at this discounted rate.
-The higher your annual commitment, the lower your reserved per-credit rate.
+The higher your commitment, the lower your reserved per-credit rate.
 The per-user effective price is a separate component and is determined independently of your volume discount tier.
 
 ## Buy GitLab Flex
@@ -82,16 +82,17 @@ The per-user effective price is a separate component and is determined independe
 GitLab Flex is available as a recurring annual or multi-year term, for full annual terms of 12 months.
 To buy GitLab Flex, contact your GitLab account team or the [GitLab Sales team](https://about.gitlab.com/sales/).
 
-Your annual commitment should account for:
+Your total commitment should account for:
 
 - Base seat costs: Number of users × seat tier price (Premium or Ultimate) × 12 months.
 - Expected credit usage: Estimated monthly consumption for credit-based capabilities × 12 months.
 - Growth buffer: Additional capacity for mid-year expansion or new capability adoption.
 
-Tiered volume discounts are available and automatically applied based on your total annual commitment size.
+Tiered volume discounts are available and automatically applied based on your total commitment size.
 
 Multi-year contracts operate as separate annual pools.
-This means that an unused balance in one year balance does not carry over to the following year.
+This means that an unused balance in one year does not carry over to the following year.
+For a multi-year term, your total commitment is the amount for a single year, not the sum of all years.
 
 After you sign your GitLab Flex agreement, you can start provisioning your initial allocation.
 
@@ -112,7 +113,7 @@ After you sign your GitLab Flex agreement, you can set your initial monthly rese
 The reservation management page displays:
 
 - **Minimum required reservation**: The minimum monthly dollar amount fixed in your contract.
-- **Maximum reservation**: The maximum monthly dollar amount available based on your remaining annual balance.
+- **Maximum reservation**: The maximum monthly dollar amount available based on your remaining balance.
 - **Seats**: The number of seats to reserve for the month.
 - **Credits (DAP)**: The number of GitLab Credits (Duo Agent Platform) to reserve for the month.
 
@@ -148,7 +149,8 @@ If you set the number of **Credits** for GitLab Duo Agent Platform to `0`, no cr
 
 The following adjustment conditions apply:
 
-- Changes must fit within your monthly starting commitment. This is your initial annual commitment divided by the number of months in your subscription.
+- Changes must fit within your monthly starting commitment. This is your initial total commitment divided by number of months in your contract term.
+  For example, if your annual commitment is $120,000, your monthly starting commitment is $120,000 / 12 = $10,000. Each month, your reservation changes must not exceed $10,000. If you have a 2-year subscription, the monthly starting commitment is still $10,000, based on the $120,000 annual term, not the $240,000 combined total divided by 24 months.
 - Due date for changes is the second-to-last day of the month. You must submit changes before 11:59 PM UTC on the second-to-last day of the current month to apply them to the next month.
   For example, you must submit changes by July 30th so that they apply to the month of August.
   After a month begins, that month's reservation is final and you can't reduce, reverse, or prorate it.
@@ -166,7 +168,7 @@ The following errors prevent a reservation from being saved:
 
 ##### Error: `Invalid value`
 
-The seat or credits quantity is negative. 
+The seat or credits quantity is negative.
 
 To resolve this issue, enter a whole number of `0` or greater.
 
@@ -194,7 +196,7 @@ You can renew your GitLab Flex commitment for a one-year or multi-year term in c
 
 90 days before the end of your contract, your GitLab account team contacts you to begin renewal discussions.
 Based on your year-to-date consumption, overage patterns, capacity needs, and growth projections,
-you can choose to increase or decrease your annual commitment.
+you can choose to increase or decrease your total commitment.
 The new volume discount tier is based on the renewed commitment amount.
 
 ## Flex Usage dashboard
@@ -240,7 +242,7 @@ Subscription billing contacts receive dollar-based notifications, and namespace 
 GitLab sends usage notifications when:
 
 - A product crosses 50%, 80%, or 100% of its monthly reservation. At 100% the product starts drawing per-use and is entering overage.
-- A product first enters overage for the month, billing at the list rate against your annual commitment.
+- A product first enters overage for the month, billing at the list rate against your total commitment.
 - A capped product crosses 50% or 80% of its cap (warning notification), or reaches 100% and is cut off (cut-off notification).
 
 ### View the Flex Usage dashboard

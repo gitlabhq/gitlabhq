@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Network::Graph, feature_category: :source_code_management do
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
 
   shared_examples 'a collection of commits' do
     it 'returns a list of commits' do

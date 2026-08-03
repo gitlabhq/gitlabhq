@@ -544,9 +544,9 @@ export default {
           :is-retrying="isRetrying"
           :is-canceling="isCanceling"
           :is-deleting="isDeleting"
-          @retryPipeline="retryPipeline($event)"
-          @cancelPipeline="cancelPipeline($event)"
-          @deletePipeline="deletePipeline($event)"
+          @retry-pipeline="retryPipeline($event)"
+          @cancel-pipeline="cancelPipeline($event)"
+          @delete-pipeline="deletePipeline($event)"
         />
       </template>
     </page-heading>

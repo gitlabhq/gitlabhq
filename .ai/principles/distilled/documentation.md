@@ -1,6 +1,6 @@
 ---
-source_checksum: 87cff74ae8d8aa47
-distilled_at_sha: a12edd3cd641812cf27868b59ce605d439d981b5
+source_checksum: 0150729b538de768
+distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -59,7 +59,7 @@ distilled_at_sha: a12edd3cd641812cf27868b59ce605d439d981b5
 - DO NOT use HTML in Markdown unless no Markdown equivalent exists, the content is reviewed by a technical writer, and the need is urgent.
 - Any `<a>` tags created with HTML must use absolute URLs as `href` attributes.
 - Use inline links, not reference-style links.
-- Split long lines at approximately 100 characters; DO NOT split links across lines. Try to avoid splitting lines between logical word groupings; keep them together on the same line.
+- Start each new sentence on a new line. Split long lines at approximately 100 characters; DO NOT split links across lines. Try to avoid splitting lines between logical word groupings; keep them together on the same line.
 - Use `<!-- -->` HTML comments for author notes; DO NOT use comments to hide documentation.
 
 ### Text Formatting
@@ -243,4 +243,3 @@ For the full picture, see:
 - doc/development/documentation/styleguide/availability_details.md
 - doc/development/documentation/styleguide/deprecations_and_removals.md
 - doc/development/documentation/metadata.md
-

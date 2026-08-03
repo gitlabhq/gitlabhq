@@ -2435,8 +2435,13 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
     describe 'diff_limits jsonb settings' do
       context 'for diff_limits json schema validation' do
         it 'allows valid integer values' do
-          is_expected.to allow_value({ diff_max_versions: 500, diff_max_commits: 100 })
-            .for(:diff_limits)
+          is_expected.to allow_value({
+            diff_max_patch_bytes: 300_000,
+            diff_max_files: 2000,
+            diff_max_lines: 60_000,
+            diff_max_versions: 500,
+            diff_max_commits: 100
+          }).for(:diff_limits)
         end
 
         it 'allows empty hash' do
@@ -2448,7 +2453,7 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         end
 
         where(:attribute) do
-          %i[diff_max_versions diff_max_commits]
+          %i[diff_max_patch_bytes diff_max_files diff_max_lines diff_max_versions diff_max_commits]
         end
 
         with_them do
@@ -2456,6 +2461,42 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
           it { is_expected.not_to allow_value({ attribute => 0 }).for(:diff_limits) }
           it { is_expected.not_to allow_value({ attribute => 'abc' }).for(:diff_limits) }
         end
+      end
+
+      it 'has correct defaults for migrated diff settings', :aggregate_failures do
+        expect(setting.diff_max_patch_bytes).to eq(Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES)
+        expect(setting.diff_max_files).to eq(Commit::DEFAULT_MAX_DIFF_FILES_SETTING)
+        expect(setting.diff_max_lines).to eq(Commit::DEFAULT_MAX_DIFF_LINES_SETTING)
+      end
+
+      it 'has correct defaults for new diff settings', :aggregate_failures do
+        expect(setting.diff_max_versions).to eq(1_000)
+        expect(setting.diff_max_commits).to eq(1_000_000)
+      end
+    end
+
+    describe 'dual-write to legacy columns' do
+      it 'syncs diff limits to legacy columns on save', :aggregate_failures do
+        setting.update_columns(diff_max_patch_bytes: 1, diff_max_files: 1, diff_max_lines: 1)
+        setting.update!(diff_limits: {
+          diff_max_patch_bytes: 300_000,
+          diff_max_files: 2000,
+          diff_max_lines: 60_000,
+          diff_max_versions: 1_000,
+          diff_max_commits: 1_000_000
+        })
+
+        legacy_diff_limits = described_class.connection.select_one(<<~SQL)
+          SELECT diff_max_patch_bytes, diff_max_files, diff_max_lines
+          FROM application_settings
+          WHERE id = #{setting.id}
+        SQL
+
+        expect(legacy_diff_limits).to include(
+          'diff_max_patch_bytes' => 300_000,
+          'diff_max_files' => 2000,
+          'diff_max_lines' => 60_000
+        )
       end
     end
 

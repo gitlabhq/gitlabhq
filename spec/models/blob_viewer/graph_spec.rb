@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe BlobViewer::Graph, feature_category: :source_code_management do
   include FakeBlobHelpers
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project) }
 
   describe '.can_render?' do
     described_class::INTERNAL_EXTENSIONS.each do |tested_extension|

@@ -1,6 +1,6 @@
 ---
-source_checksum: 1bc92ed264b6835e
-distilled_at_sha: 56d6e7df2193336003a2368db3b4c1ae9cb6f911
+source_checksum: 859f4898d452fb1a
+distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -110,7 +110,8 @@ distilled_at_sha: 56d6e7df2193336003a2368db3b4c1ae9cb6f911
 - Place translations close to where they are used
 - Prefer `__()` / `s__()` calls over module-level constants (e.g., `const MY_STRING = __('...')`)
 - DO NOT import translation constants into specs
-- When sharing a translation across multiple uses in a Vue SFC, define it in the component's `$options.i18n` object rather than as a module-level constant
+- For translations used more than once in a Vue SFC, define them in the component's `$options.i18n` object rather than as a module-level constant
+- Extract translation strings to a static `i18n` object on the Vue component (e.g., `$options.i18n.myString`) instead of inlining `s__()` / `__()` calls directly in `<template>`
 
 ### Vue Testing
 
@@ -142,7 +143,6 @@ distilled_at_sha: 56d6e7df2193336003a2368db3b4c1ae9cb6f911
 - Tests cover experiment variants and tracking behavior
 - Temporary assets (icons/illustrations) are in `/ee/app/assets/images` or `/app/assets/images`, not Pajamas library
 
-
 ## Authoritative sources
 
 For the full picture, see:
@@ -156,4 +156,3 @@ For the full picture, see:
 - doc/development/fe_guide/pinia.md
 - doc/development/fe_guide/axios.md
 - doc/development/i18n/externalization.md
-

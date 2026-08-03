@@ -1,6 +1,6 @@
 ---
-source_checksum: 635b68d02ba3f98e
-distilled_at_sha: f22602e37afb92eb7028b601a922ebde417df6e4
+source_checksum: f8153b4aad87d4cb
+distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -67,7 +67,7 @@ distilled_at_sha: f22602e37afb92eb7028b601a922ebde417df6e4
 
 ### Finding Elements & Interactions
 
-- Use `@testing-library/vue` queries to locate elements.
+- Use `@testing-library/vue` queries to locate elements
 - Drive navigation and state changes through user-facing UI actions (click the link or button); DO NOT push routes or call component methods to get the app into a state.
 - DO NOT spy on or assert against component internals (methods, computed props); assert against rendered output instead.
 
@@ -82,4 +82,3 @@ distilled_at_sha: f22602e37afb92eb7028b601a922ebde417df6e4
 For the full picture, see:
 
 - doc/development/testing_guide/frontend_testing.md
-

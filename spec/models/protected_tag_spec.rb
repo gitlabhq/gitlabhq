@@ -16,7 +16,7 @@ RSpec.describe ProtectedTag, feature_category: :source_code_management do
   end
 
   describe '#protected?' do
-    let(:project) { create(:project, :repository) }
+    let(:project) { create(:project, :small_repo) }
 
     it 'returns true when the tag matches a protected tag via direct match' do
       create(:protected_tag, project: project, name: 'foo')
@@ -45,7 +45,7 @@ RSpec.describe ProtectedTag, feature_category: :source_code_management do
     end
 
     context 'with caching', :request_store do
-      let_it_be_with_reload(:project) { create(:project, :repository) }
+      let_it_be_with_reload(:project) { create(:project, :small_repo) }
       let_it_be_with_reload(:protected_tag) { create(:protected_tag, project: project, name: 'foo') }
 
       it 'correctly invalidates a cache' do

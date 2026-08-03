@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe CommitStatus, feature_category: :continuous_integration do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :small_repo) }
 
   let_it_be_with_reload(:pipeline) do
     create(:ci_pipeline, project: project, sha: project.commit.id, user: create(:user))
@@ -535,7 +535,7 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
     end
 
     context 'with a single path' do
-      let(:other_project) { create(:project, :repository) }
+      let_it_be(:other_project) { create(:project, :small_repo) }
       let(:paths) { other_project.full_path }
 
       let(:other_pipeline) do

@@ -290,7 +290,6 @@ Gitlab/JsonSafeParse:
     - 'spec/frontend/fixtures/search_navigation.rb'
     - 'spec/helpers/admin/abuse_reports_helper_spec.rb'
     - 'spec/helpers/admin/broadcast_messages_helper_spec.rb'
-    - 'spec/helpers/admin/groups_helper_spec.rb'
     - 'spec/helpers/admin/projects_helper_spec.rb'
     - 'spec/helpers/admin/users_helper_spec.rb'
     - 'spec/helpers/breadcrumbs_helper_spec.rb'

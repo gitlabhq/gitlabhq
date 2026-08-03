@@ -95,8 +95,8 @@ describe('the graph view selector component', () => {
       });
     });
 
-    it('shows loading state and emits updateViewType when view type toggled', async () => {
-      expect(wrapper.emitted().updateViewType).toBeUndefined();
+    it('shows loading state and emits update-view-type when view type toggled', async () => {
+      expect(wrapper.emitted()['update-view-type']).toBeUndefined();
       expect(findSwitcherLoader().exists()).toBe(false);
 
       await findStageViewButton().trigger('click');
@@ -108,12 +108,12 @@ describe('the graph view selector component', () => {
       expect(findSwitcherLoader().exists()).toBe(true);
       jest.runOnlyPendingTimers();
 
-      expect(wrapper.emitted().updateViewType).toHaveLength(1);
-      expect(wrapper.emitted().updateViewType).toEqual([[STAGE_VIEW]]);
+      expect(wrapper.emitted()['update-view-type']).toHaveLength(1);
+      expect(wrapper.emitted()['update-view-type']).toEqual([[STAGE_VIEW]]);
     });
 
-    it('shows loading state and emits updateShowLinks when show links toggle is clicked', async () => {
-      expect(wrapper.emitted().updateShowLinksState).toBeUndefined();
+    it('shows loading state and emits update-show-links-state when show links toggle is clicked', async () => {
+      expect(wrapper.emitted()['update-show-links-state']).toBeUndefined();
       expect(findToggleLoader().exists()).toBe(false);
 
       await findDependenciesToggle().vm.$emit('change', true);
@@ -125,16 +125,16 @@ describe('the graph view selector component', () => {
       expect(findToggleLoader().exists()).toBe(true);
       jest.runOnlyPendingTimers();
 
-      expect(wrapper.emitted().updateShowLinksState).toHaveLength(1);
-      expect(wrapper.emitted().updateShowLinksState).toEqual([[true]]);
+      expect(wrapper.emitted()['update-show-links-state']).toHaveLength(1);
+      expect(wrapper.emitted()['update-show-links-state']).toEqual([[true]]);
     });
 
     it('does not emit an event if the click occurs on the currently selected view button', async () => {
-      expect(wrapper.emitted().updateShowLinksState).toBeUndefined();
+      expect(wrapper.emitted()['update-show-links-state']).toBeUndefined();
 
       await findLayerViewButton().trigger('click');
 
-      expect(wrapper.emitted().updateShowLinksState).toBeUndefined();
+      expect(wrapper.emitted()['update-show-links-state']).toBeUndefined();
     });
   });
 
@@ -158,10 +158,10 @@ describe('the graph view selector component', () => {
         expect(findHoverTip().text()).toBe(wrapper.vm.$options.i18n.hoverTipText);
       });
 
-      it('emits dismissHoverTip event when the tip is dismissed', async () => {
-        expect(wrapper.emitted().dismissHoverTip).toBeUndefined();
+      it('emits dismiss-hover-tip event when the tip is dismissed', async () => {
+        expect(wrapper.emitted()['dismiss-hover-tip']).toBeUndefined();
         await findHoverTip().find('button').trigger('click');
-        expect(wrapper.emitted().dismissHoverTip).toHaveLength(1);
+        expect(wrapper.emitted()['dismiss-hover-tip']).toHaveLength(1);
       });
 
       it('is displayed at first then hidden on swith to STAGE_VIEW then displayed on switch to LAYER_VIEW', async () => {

@@ -394,9 +394,9 @@ export default {
         :type="graphViewType"
         :show-links="showLinks"
         :tip-previously-dismissed="hoverTipPreviouslyDismissed"
-        @dismissHoverTip="handleTipDismissal"
-        @updateViewType="updateViewType"
-        @updateShowLinksState="updateShowLinksState"
+        @dismiss-hover-tip="handleTipDismissal"
+        @update-view-type="updateViewType"
+        @update-show-links-state="updateShowLinksState"
       />
     </local-storage-sync>
     <gl-loading-icon v-if="showLoadingIcon" class="gl-mx-auto gl-my-4" size="lg" />

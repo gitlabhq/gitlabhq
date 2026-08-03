@@ -91,7 +91,7 @@ RSpec.describe Issue, "Mentionable", feature_category: :team_planning do
   end
 
   describe '#create_cross_references!' do
-    let(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :small_repo) }
     let(:author)  { build(:user) }
     let(:commit)  { project.commit }
     let(:commit2) { project.commit }
@@ -188,8 +188,8 @@ RSpec.describe Issue, "Mentionable", feature_category: :team_planning do
 end
 
 RSpec.describe Commit, 'Mentionable', feature_category: :source_code_management do
-  let(:project) { create(:project, :public, :repository) }
-  let(:commit)  { project.commit }
+  let_it_be(:project) { create(:project, :public, :small_repo) }
+  let(:commit) { project.commit }
 
   describe '#matches_cross_reference_regex?' do
     it "is false when message doesn't reference anything" do
@@ -225,7 +225,7 @@ RSpec.describe Commit, 'Mentionable', feature_category: :source_code_management 
     end
 
     context 'with external issue tracker' do
-      let_it_be(:project) { create(:project, :with_jira_integration, :repository) }
+      let_it_be(:project) { create(:project, :with_jira_integration, :small_repo) }
 
       it 'is true if external issues referenced' do
         allow(commit.raw).to receive(:message).and_return 'JIRA-123'
@@ -249,7 +249,7 @@ RSpec.describe Commit, 'Mentionable', feature_category: :source_code_management 
 
     context 'with sharding_key trigger' do
       let_it_be(:user) { create(:user) }
-      let_it_be(:project) { create(:project, :public, :repository) }
+      let_it_be(:project) { create(:project, :public, :small_repo) }
       let_it_be(:commit) { project.commit }
 
       let(:note) { create(:note_on_commit, commit_id: commit.id, project: project) }

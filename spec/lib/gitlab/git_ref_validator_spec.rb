@@ -217,4 +217,30 @@ RSpec.describe Gitlab::GitRefValidator, feature_category: :source_code_managemen
       expect(described_class.validate_merge_request_branch("\xA0\u0000\xB0")).to be false
     end
   end
+
+  describe '.has_space?' do
+    it 'returns true when the name contains a space' do
+      expect(described_class.has_space?('v 1.0')).to be true
+    end
+
+    it 'returns false when the name contains no space' do
+      expect(described_class.has_space?('v1.0')).to be false
+    end
+
+    it 'returns false for empty string' do
+      expect(described_class.has_space?("")).to be false
+    end
+
+    it 'returns false for nil' do
+      expect(described_class.has_space?(nil)).to be false
+    end
+
+    it 'returns false for invalid byte sequences without a space' do
+      expect(described_class.has_space?("\xA0\xB0")).to be false
+    end
+
+    it 'detects a space among invalid byte sequences' do
+      expect(described_class.has_space?("\xA0 \xB0")).to be true
+    end
+  end
 end
