@@ -48,5 +48,29 @@ RSpec.describe Gitlab::Pagination::Keyset::GraphqlCursorBuilder, feature_categor
     context 'when neither :after nor :before is given' do
       it { is_expected.to be_nil }
     end
+
+    context 'when :after is an empty string' do
+      let(:after_cursor) { '' }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when :before is an empty string' do
+      let(:before_cursor) { '' }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when :after is an empty string and :before is given' do
+      let(:after_cursor) { '' }
+      let(:before_cursor) { base_cursor }
+
+      it 'tags the cursor with the backward direction and preserves the payload' do
+        decoded = converter.parse(cursor)
+
+        expect(decoded[:_kd]).to eq(Gitlab::Pagination::Keyset::Paginator::BACKWARD_DIRECTION)
+        expect(decoded.slice(:severity, :id)).to eq('severity' => 'low', 'id' => '42')
+      end
+    end
   end
 end

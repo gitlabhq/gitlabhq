@@ -43,6 +43,41 @@ RSpec.describe Gitlab::Database::SchemaCleaner, feature_category: :database do
     expect(subject).to match(/CREATE FUNCTION gitlab_schema_prevent_write/)
   end
 
+  context 'with replication objects created by rake tasks' do
+    let(:example_schema) do
+      <<~SQL
+        CREATE TABLE issues (id bigint NOT NULL);
+
+        CREATE FUNCTION public.siphon_alter_publication(pbl text, tbl text, op integer) RETURNS void
+            LANGUAGE plpgsql SECURITY DEFINER
+            SET search_path TO ''
+            AS $_$
+        BEGIN
+          RAISE EXCEPTION 'Invalid publication name';
+        END;
+        $_$;
+
+        CREATE PUBLICATION siphon_publication_main_1 WITH (publish = 'insert, update, delete, truncate');
+        ALTER PUBLICATION siphon_publication_main_1 OWNER TO siphon;
+        ALTER PUBLICATION siphon_publication_main_1 ADD TABLE ONLY public.issues;
+        CREATE PUBLICATION geo_publication;
+      SQL
+    end
+
+    it 'removes publications, which are replication config rather than schema' do
+      expect(subject).not_to match(/PUBLICATION/)
+    end
+
+    it 'removes the siphon helper function, body included', :aggregate_failures do
+      expect(subject).not_to include('siphon_alter_publication')
+      expect(subject).not_to include('RAISE EXCEPTION')
+    end
+
+    it 'keeps the surrounding schema' do
+      expect(subject).to include('CREATE TABLE issues')
+    end
+  end
+
   it 'cleans up the full schema as expected (blackbox test with example)' do
     expected_schema = fixture_file(File.join('gitlab', 'database', 'structure_example_cleaned.sql'))
 

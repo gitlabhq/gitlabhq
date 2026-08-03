@@ -12,9 +12,9 @@ module Gitlab
         BACKWARD = Paginator::BACKWARD_DIRECTION
 
         def self.build(after: nil, before: nil)
-          if after
+          if after.present?
             with_direction(after, FORWARD)
-          elsif before
+          elsif before.present?
             with_direction(before, BACKWARD)
           end
         end
