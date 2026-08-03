@@ -131,7 +131,7 @@ export default {
 </script>
 
 <template>
-  <div class="settings-section">
+  <div :class="{ 'settings-section': integrationViews.length }">
     <settings-section v-if="integrationViews.length" id="integrations" class="js-preferences-form">
       <template #heading>
         {{ $options.i18n.integrations }}

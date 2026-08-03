@@ -50,8 +50,6 @@ export default {
     'app/assets/javascripts/packages_and_registries/infrastructure_registry/list/components/packages_list.vue',
     'app/assets/javascripts/packages_and_registries/infrastructure_registry/shared/package_list_row.vue',
     'app/assets/javascripts/pipeline_wizard/components/input_wrapper.vue',
-    'app/assets/javascripts/projects/compare/components/repo_dropdown.vue',
-    'app/assets/javascripts/projects/compare/components/revision_dropdown.vue',
     'app/assets/javascripts/projects/settings/branch_rules/components/access_levels_drawer.vue',
     'app/assets/javascripts/projects/settings/components/transfer_project_form.vue',
     'app/assets/javascripts/related_issues/components/related_issues_block.vue',

@@ -180,11 +180,7 @@ module Ci
 
     def git_depth_value
       strong_memoize(:git_depth_value) do
-        if ::Feature.enabled?(:ci_optimize_merge_request_approved_resolution, project)
-          variables&.[]("GIT_DEPTH")&.value
-        else
-          variables&.to_hash&.dig("GIT_DEPTH")
-        end
+        variables&.[]("GIT_DEPTH")&.value
       end
     end
 

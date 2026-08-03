@@ -183,6 +183,23 @@ To work around this issue, try the following:
 - Use `after_script` to output diagnostic information after the main script completes.
 - Split verbose jobs into smaller, focused jobs with more concise logs.
 
+### Fix pipeline with Duo button does not appear
+
+You meet the [prerequisites](#prerequisites), but the **Fix pipeline with Duo** button
+does not appear.
+
+This issue occurs because the button depends on settings across three separate pages (GitLab
+Duo, the Agent Platform, and foundational flows).
+A setting turned on at one level does not guarantee it is on at every level below it.
+
+To resolve this issue, recheck each requirement:
+
+- [GitLab Duo](../../turn_on_off.md#turn-gitlab-duo-on-or-off) or
+  [GitLab Duo Core](../../turn_on_off.md#turn-gitlab-duo-core-on-or-off) is turned on.
+- The [Agent Platform is turned on](../../turn_on_off.md#turn-gitlab-duo-agent-platform-on-or-off).
+- **Allow foundational flows** and **Fix CI/CD Pipeline** are turned on for the top-level group
+  and, on GitLab Self-Managed, the instance.
+
 ## Give feedback
 
 The team is actively improving the Fix CI/CD Pipeline Flow. To report issues or suggest improvements, leave your feedback in [feedback issue 601991](https://gitlab.com/gitlab-org/gitlab/-/work_items/601991).

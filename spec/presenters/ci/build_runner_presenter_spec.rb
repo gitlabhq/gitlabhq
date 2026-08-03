@@ -259,17 +259,6 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
     it 'defaults to git depth setting for the project' do
       expect(git_depth).to eq(build.project.ci_default_git_depth)
     end
-
-    context 'when the ci_optimize_merge_request_approved_resolution flag is disabled' do
-      before do
-        stub_feature_flags(ci_optimize_merge_request_approved_resolution: false)
-        create_or_replace_pipeline_variables(build.pipeline, { key: 'GIT_DEPTH', value: 1 })
-      end
-
-      it 'returns the value via the legacy hash lookup' do
-        expect(git_depth).to eq(1)
-      end
-    end
   end
 
   describe '#repo_object_format' do

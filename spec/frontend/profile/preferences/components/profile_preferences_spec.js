@@ -114,6 +114,7 @@ describe('ProfilePreferences component', () => {
 
     expect(heading.exists()).toBe(false);
     expect(views).toHaveLength(0);
+    expect(wrapper.classes('settings-section')).toBe(false);
   });
 
   it('should render Integration section', () => {
@@ -123,6 +124,7 @@ describe('ProfilePreferences component', () => {
 
     expect(heading.exists()).toBe(true);
     expect(views).toHaveLength(integrationViews.length);
+    expect(wrapper.classes('settings-section')).toBe(true);
   });
 
   describe('form submit', () => {

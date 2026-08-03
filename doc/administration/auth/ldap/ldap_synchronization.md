@@ -330,6 +330,28 @@ To take advantage of group sync, group Owners or users with the [Maintainer role
 For information on adding group links by using CNs and filters, refer to the
 [GitLab groups documentation](../../../user/group/access_and_permissions.md#manage-group-memberships-with-ldap).
 
+### Sync service accounts
+
+By default, group sync does not manage [service account](../../../user/profile/service_accounts.md)
+group membership, because a service account has no LDAP identity to match against.
+
+To let group sync manage a service account's membership the same way it manages a human user's,
+use the [Modify a user API endpoint](../../../api/users.md#modify-a-user) to assign the service account an LDAP identity
+with `provider` and `extern_uid` attributes:
+
+```shell
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --data "provider=ldapmain" \
+  --data "extern_uid=uid=example-service-account,ou=people,dc=example,dc=com" \
+  --url "https://gitlab.example.com/api/v4/users/<service_account_user_id>"
+```
+
+After you assign the identity, group sync manages the service account's group membership
+the same way group sync manages a human user's membership.
+
+A dedicated UI and API endpoint are proposed in [issue 578187](https://gitlab.com/gitlab-org/gitlab/-/issues/578187).
+
 ### Assign an admin role to an LDAP group
 
 As an extension of group sync, you can automatically manage your global GitLab

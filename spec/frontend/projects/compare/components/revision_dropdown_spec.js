@@ -210,7 +210,7 @@ describe('RevisionDropdown component', () => {
   it('emits `select` event when another revision is selected', () => {
     findGlListbox().vm.$emit('select', 'some-branch');
 
-    expect(wrapper.emitted('selectRevision')[0][0]).toEqual({
+    expect(wrapper.emitted('select-revision')[0][0]).toEqual({
       direction: 'to',
       revision: 'some-branch',
     });

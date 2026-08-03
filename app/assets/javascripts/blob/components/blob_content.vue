@@ -145,7 +145,7 @@ export default {
         :is-blame-link-hidden="isBlameLinkHidden"
         :hide-line-numbers="hideLineNumbers"
         data-testid="blob-viewer-file-content"
-        @richContentLoaded="richContentLoaded = true"
+        @rich-content-loaded="richContentLoaded = true"
       />
     </template>
   </div>

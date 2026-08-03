@@ -92,12 +92,12 @@ describe('RepoDropdown component', () => {
         expect(findHiddenInput().attributes('value')).toBe(repoId);
       });
 
-      it('emits `selectProject` event when another target project is selected', async () => {
+      it('emits `select-project` event when another target project is selected', async () => {
         findGlCollapsibleListbox().vm.$emit('select', '1');
 
         await nextTick();
 
-        expect(wrapper.emitted().selectProject).toEqual([
+        expect(wrapper.emitted('select-project')).toEqual([
           [
             {
               direction: 'from',

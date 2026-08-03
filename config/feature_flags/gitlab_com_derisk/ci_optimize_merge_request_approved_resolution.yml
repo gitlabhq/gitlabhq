@@ -1,9 +1,0 @@
----
-name: ci_optimize_merge_request_approved_resolution
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/606211
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/246162
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/606300
-milestone: '19.3'
-group: group::pipeline authoring
-type: gitlab_com_derisk
-default_enabled: false

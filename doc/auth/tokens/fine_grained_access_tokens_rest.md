@@ -820,6 +820,45 @@ Grants the ability to create, delete, read, repair, and update Geo sites.
 | Repair | Instance | `POST` | `/geo_sites/:id/repair` |
 | Update | Instance | `PUT` | `/geo_sites/:id` |
 
+### GitLab Orbit resources
+
+#### GitLab Orbit MCP tool
+
+Grants the ability to execute tools through the GitLab Orbit MCP server.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Execute | User | `GET` | `/orbit/mcp` |
+| Execute | User | `POST` | `/orbit/mcp` |
+
+#### Knowledge Graph
+
+Grants the ability to read knowledge graph data.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Read | User | `GET` | `/orbit/agent/commands` |
+| Read | User | `GET` | `/orbit/graph_status` |
+| Read | User | `GET` | `/orbit/query/templates` |
+| Read | User | `GET` | `/orbit/schema` |
+| Read | User | `GET` | `/orbit/schema/dsl` |
+| Read | User | `GET` | `/orbit/schema/format` |
+| Read | User | `GET` | `/orbit/status` |
+| Read | User | `GET` | `/orbit/tools` |
+| Read | User | `POST` | `/orbit/agent/commands/:name` |
+| Read | User | `POST` | `/orbit/query` |
+| Read | User | `POST` | `/orbit/query/:name` |
+
+#### Knowledge Graph Enabled Namespace
+
+Grants the ability to create, delete, and read knowledge graph enabled namespaces.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Create | Instance | `PUT` | `/admin/knowledge_graph/namespaces/:id` |
+| Delete | Instance | `DELETE` | `/admin/knowledge_graph/namespaces/:id` |
+| Read | Instance | `GET` | `/admin/knowledge_graph/namespaces` |
+
 ### Groups resources
 
 #### Activity
@@ -1494,45 +1533,6 @@ Grants the ability to create, delete, read, and update todos.
 | Read | User | `GET` | `/todos` |
 | Update | User | `POST` | `/todos/:id/mark_as_done` |
 | Update | User | `POST` | `/todos/mark_as_done` |
-
-### Orbit resources
-
-#### Knowledge Graph
-
-Grants the ability to read knowledge graph data.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Read | User | `GET` | `/orbit/agent/commands` |
-| Read | User | `GET` | `/orbit/graph_status` |
-| Read | User | `GET` | `/orbit/query/templates` |
-| Read | User | `GET` | `/orbit/schema` |
-| Read | User | `GET` | `/orbit/schema/dsl` |
-| Read | User | `GET` | `/orbit/schema/format` |
-| Read | User | `GET` | `/orbit/status` |
-| Read | User | `GET` | `/orbit/tools` |
-| Read | User | `POST` | `/orbit/agent/commands/:name` |
-| Read | User | `POST` | `/orbit/query` |
-| Read | User | `POST` | `/orbit/query/:name` |
-
-#### Knowledge Graph Enabled Namespace
-
-Grants the ability to create, delete, and read knowledge graph enabled namespaces.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Create | Instance | `PUT` | `/admin/knowledge_graph/namespaces/:id` |
-| Delete | Instance | `DELETE` | `/admin/knowledge_graph/namespaces/:id` |
-| Read | Instance | `GET` | `/admin/knowledge_graph/namespaces` |
-
-#### Orbit MCP tool
-
-Grants the ability to execute tools through the Orbit Knowledge Graph MCP server.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Execute | User | `GET` | `/orbit/mcp` |
-| Execute | User | `POST` | `/orbit/mcp` |
 
 ### Organizations resources
 
@@ -4011,15 +4011,15 @@ incompatible with personal access tokens.
 | `POST` | `/internal/observability/project/:id/write/logs` | Workhorse verification |
 | `POST` | `/internal/observability/project/:id/write/metrics` | Workhorse verification |
 | `POST` | `/internal/observability/project/:id/write/traces` | Workhorse verification |
-| `GET` | `/internal/orbit/project/:project_id/info` | Orbit internal token |
-| `GET` | `/internal/orbit/project/:project_id/merge_request_diffs/:diff_id` | Orbit internal token |
-| `GET` | `/internal/orbit/project/:project_id/merge_request_diffs/:diff_id/raw_diffs` | Orbit internal token |
-| `GET` | `/internal/orbit/project/:project_id/merge_requests/:merge_request_iid/raw_diffs` | Orbit internal token |
-| `GET` | `/internal/orbit/project/:project_id/repository/archive` | Orbit internal token |
-| `GET` | `/internal/orbit/project/:project_id/repository/changed_paths` | Orbit internal token |
-| `GET` | `/internal/orbit/project/:project_id/repository/commits` | Orbit internal token |
-| `POST` | `/internal/orbit/project/:project_id/repository/list_blobs` | Orbit internal token |
-| `POST` | `/internal/orbit/redaction` | Orbit internal token |
+| `GET` | `/internal/orbit/project/:project_id/info` | GitLab Orbit internal token |
+| `GET` | `/internal/orbit/project/:project_id/merge_request_diffs/:diff_id` | GitLab Orbit internal token |
+| `GET` | `/internal/orbit/project/:project_id/merge_request_diffs/:diff_id/raw_diffs` | GitLab Orbit internal token |
+| `GET` | `/internal/orbit/project/:project_id/merge_requests/:merge_request_iid/raw_diffs` | GitLab Orbit internal token |
+| `GET` | `/internal/orbit/project/:project_id/repository/archive` | GitLab Orbit internal token |
+| `GET` | `/internal/orbit/project/:project_id/repository/changed_paths` | GitLab Orbit internal token |
+| `GET` | `/internal/orbit/project/:project_id/repository/commits` | GitLab Orbit internal token |
+| `POST` | `/internal/orbit/project/:project_id/repository/list_blobs` | GitLab Orbit internal token |
+| `POST` | `/internal/orbit/redaction` | GitLab Orbit internal token |
 | `GET` | `/internal/pages` | GitLab Pages token |
 | `GET` | `/internal/pages/status` | GitLab Pages token |
 | `POST` | `/internal/personal_access_token` | GitLab Shell token |

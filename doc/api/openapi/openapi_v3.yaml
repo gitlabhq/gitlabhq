@@ -81449,6 +81449,12 @@ components:
         key:
           type: string
           example: code_quality_walkthrough
+        context:
+          type: array
+          example:
+          - user
+          items:
+            type: string
         definition:
           "$ref": "#/components/schemas/APIEntitiesFeatureDefinition"
         current_status:

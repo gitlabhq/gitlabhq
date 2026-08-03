@@ -27,7 +27,7 @@ export default {
       default: false,
     },
   },
-  emits: ['selectProject'],
+  emits: ['select-project'],
   data() {
     return {
       loadingProjects: false,
@@ -81,7 +81,7 @@ export default {
       const project = this.allProjects.find(({ value }) => value === projectId);
 
       if (project) {
-        this.$emit('selectProject', { direction: this.paramsName, project });
+        this.$emit('select-project', { direction: this.paramsName, project });
       }
     },
     onSearch(searchTerm) {

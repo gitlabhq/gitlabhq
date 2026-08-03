@@ -31,7 +31,7 @@ export default {
       default: null,
     },
   },
-  emits: ['selectRevision'],
+  emits: ['select-revision'],
   data() {
     return {
       branches: [],
@@ -149,7 +149,7 @@ export default {
     },
     onClick(revision) {
       this.setSelectedRevision(revision);
-      this.$emit('selectRevision', { direction: this.paramsName, revision });
+      this.$emit('select-revision', { direction: this.paramsName, revision });
     },
     handleKeyDown(e) {
       // temporary hacks to support searching for commits on enter

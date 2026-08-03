@@ -24,8 +24,20 @@ Prerequisites:
 
 ## List all experiments
 
+{{< history >}}
+
+- `context` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248274) in GitLab 19.3.
+
+{{< /history >}}
+
 Lists all experiments on the GitLab instance. Each experiment has an `enabled` status that indicates
 whether the experiment is enabled globally, or only in specific contexts.
+
+Each experiment also exposes a `context` array with the context keys the experiment declares:
+`user`, `namespace`, `project`, or `actor`. Pass these keys when you
+[force, read, or clear a variant assignment](#experiment-assignments). For an `actor` key, pass the
+`context[user]` parameter, because GitLab resolves the actor from the user. The array is empty for
+experiments that declare no context keys.
 
 ```plaintext
 GET /experiments
@@ -43,6 +55,7 @@ Example response:
 [
   {
     "key": "code_quality_walkthrough",
+    "context": ["user"],
     "definition": {
       "name": "code_quality_walkthrough",
       "introduced_by_url": "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58900",
@@ -68,6 +81,7 @@ Example response:
   },
   {
     "key": "ci_runner_templates",
+    "context": ["user", "namespace"],
     "definition": {
       "name": "ci_runner_templates",
       "introduced_by_url": "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58357",
