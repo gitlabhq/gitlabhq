@@ -20,6 +20,7 @@ fragment IssueNode on Issue {
   confidential
   hidden
   webPath
+  webUrl
   relativePosition
   type
   workItemType @gl_introduced(version: "18.10.0-pre") {

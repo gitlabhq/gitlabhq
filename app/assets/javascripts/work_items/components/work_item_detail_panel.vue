@@ -11,7 +11,14 @@ import {
   WORK_ITEM_TYPE_ROUTE_WORK_ITEM,
 } from '~/work_items/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { visitUrl, setUrlParams, updateHistory, removeParams } from '~/lib/utils/url_utility';
+import {
+  visitUrl,
+  setUrlParams,
+  updateHistory,
+  removeParams,
+  relativePathToAbsolute,
+  getBaseURL,
+} from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { makeDetailPanelItemFullPath, makeDetailPanelUrlParam, canRouterNav } from '../utils';
 import WorkItemMetadataProvider from './work_item_metadata_provider.vue';
@@ -81,6 +88,13 @@ export default {
     headerReference() {
       const path = this.activeItemFullPath.substring(this.activeItemFullPath.lastIndexOf('/') + 1);
       return `${path}#${this.activeItem.iid}`;
+    },
+    itemWebUrl() {
+      // eslint-disable-next-line local-rules/no-web-url
+      return this.activeItem.webPath || this.activeItem.webUrl;
+    },
+    itemAbsoluteUrl() {
+      return relativePathToAbsolute(this.itemWebUrl, getBaseURL());
     },
   },
   watch: {
@@ -159,7 +173,7 @@ export default {
           },
         });
       } else {
-        visitUrl(workItem.webUrl); // eslint-disable-line local-rules/no-web-url
+        visitUrl(this.itemWebUrl);
       }
     },
     handleCopyToClipboard() {
@@ -242,11 +256,10 @@ export default {
     <div data-testid="work-item-detail-panel" class="work-item-detail-panel gl-leading-reset">
       <div class="work-item-detail-panel-header">
         <div class="gl-flex gl-min-w-0 gl-grow gl-items-center gl-gap-2">
-          <!-- eslint-disable local-rules/vue-no-web-url -->
           <gl-link
             ref="workItemUrl"
             data-testid="work-item-detail-panel-ref-link"
-            :href="activeItem.webUrl"
+            :href="itemWebUrl"
             class="gl-truncate gl-text-sm gl-font-bold gl-text-default"
             @click="redirectToWorkItem"
           >
@@ -260,7 +273,7 @@ export default {
             icon="link"
             size="small"
             :aria-label="$options.i18n.copyTooltipText"
-            :data-clipboard-text="activeItem.webUrl"
+            :data-clipboard-text="itemAbsoluteUrl"
             @click="handleCopyToClipboard"
           />
         </div>
@@ -268,7 +281,7 @@ export default {
           <gl-button
             v-gl-tooltip.bottom
             data-testid="work-item-detail-panel-link-button"
-            :href="activeItem.webUrl"
+            :href="itemWebUrl"
             :title="$options.i18n.openTooltipText"
             category="tertiary"
             icon="maximize"
@@ -276,7 +289,6 @@ export default {
             :aria-label="$options.i18n.openTooltipText"
             @click="redirectToWorkItem"
           />
-          <!-- eslint-enable local-rules/vue-no-web-url -->
           <gl-button
             v-gl-tooltip.bottom
             class="gl-detail-panel-close-button"
