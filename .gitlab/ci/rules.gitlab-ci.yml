@@ -1542,7 +1542,7 @@
   rules:
     - <<: *if-merge-request-labels-skip-release-note-categories
       when: never
-    - <<: *if-default-refs
+    - <<: *if-merge-request
       changes: *docs-release-note-categories-patterns
 
 .docs:rules:rubocop-docs-site:
