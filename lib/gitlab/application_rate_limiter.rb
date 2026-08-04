@@ -96,6 +96,7 @@ module Gitlab
           runner_jobs_request_api: { threshold: -> { application_settings.runner_jobs_request_api_limit }, interval: 1.minute },
           runner_jobs_patch_trace_api: { threshold: -> { application_settings.runner_jobs_patch_trace_api_limit }, interval: 1.minute },
           runner_jobs_api: { threshold: -> { application_settings.runner_jobs_endpoints_api_limit }, interval: 1.minute },
+          search_index_integrity: { threshold: 1, interval: 30.minutes },
           search_rate_limit: { threshold: -> { application_settings.search_rate_limit }, interval: 1.minute },
           search_rate_limit_unauthenticated: { threshold: -> { application_settings.search_rate_limit_unauthenticated }, interval: 1.minute },
           service_account_creation: { threshold: 10, interval: 1.minute },
