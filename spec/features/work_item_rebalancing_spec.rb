@@ -19,7 +19,6 @@ RSpec.describe 'Work item rebalancing', feature_category: :team_planning do
 
   context 'when issue rebalancing is in progress' do
     before do
-      create(:callout, user: user, feature_name: :work_items_onboarding_modal)
       sign_in(user)
 
       stub_feature_flags(block_issue_repositioning: true)

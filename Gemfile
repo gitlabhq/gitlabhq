@@ -421,6 +421,10 @@ gem 'gitlab-policy-store', path: 'gems/gitlab-policy-store',
   require: 'gitlab/policy_store', feature_category: :security_policy_management
 
 gem 'premailer-rails', '~> 1.12.0', feature_category: :notifications
+
+# Mobile push notifications via APNs (GitLab mobile app prototype)
+gem 'apnotic', '~> 1.8', require: false, feature_category: :notifications
+
 gem 'gitlab-labkit', '~> 3.0.0', feature_category: :error_budgets
 gem 'thrift', '~> 0.22.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 

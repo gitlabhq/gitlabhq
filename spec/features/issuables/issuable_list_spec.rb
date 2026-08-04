@@ -10,7 +10,6 @@ RSpec.describe 'issuable list', :js, feature_category: :portfolio_management do
 
   before do
     project.add_member(user, :developer)
-    create(:callout, user: user, feature_name: :work_items_onboarding_modal)
     sign_in(user)
     issuable_types.each { |type| create_issuables(type) }
   end

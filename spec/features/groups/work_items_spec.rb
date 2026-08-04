@@ -15,11 +15,6 @@ RSpec.describe 'Group work items page', feature_category: :team_planning do
   context 'with shared examples', :js do
     let(:issuable) { create(:issue, project: project, title: "this is my created issuable") }
 
-    before do
-      create(:callout, user: user_in_group, feature_name: :work_items_onboarding_modal)
-      create(:callout, user: user_outside_group, feature_name: :work_items_onboarding_modal)
-    end
-
     include_examples 'project features apply to issuables', Issue
 
     context 'with rss feed' do
@@ -118,7 +113,6 @@ RSpec.describe 'Group work items page', feature_category: :team_planning do
     let!(:issue3) { create(:issue, project: project, title: 'Issue #3', relative_position: 3) }
 
     before do
-      create(:callout, user: user_in_group, feature_name: :work_items_onboarding_modal)
       sign_in(user_in_group)
     end
 
@@ -203,7 +197,6 @@ RSpec.describe 'Group work items page', feature_category: :team_planning do
     end
 
     before do
-      create(:callout, user: user_in_group, feature_name: :work_items_onboarding_modal)
       sign_in(user_in_group)
       visit group_work_items_path(group)
     end

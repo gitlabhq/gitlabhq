@@ -27,7 +27,6 @@ RSpec.describe 'Work items bulk editing', :js, feature_category: :team_planning 
   end
 
   before_all do
-    create(:callout, user: user, feature_name: :work_items_onboarding_modal)
     project.add_developer(user)
   end
 

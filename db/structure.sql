@@ -21166,7 +21166,9 @@ CREATE TABLE geo_nodes (
     created_at timestamp with time zone,
     updated_at timestamp with time zone,
     sync_object_storage boolean DEFAULT false NOT NULL,
-    blob_download_timeout integer DEFAULT 28800 NOT NULL
+    blob_download_timeout integer DEFAULT 28800 NOT NULL,
+    checksum_mismatch_report_threshold integer DEFAULT 3 NOT NULL,
+    checksum_mismatch_self_heal_cooldown_minutes integer DEFAULT 60 NOT NULL
 );
 
 CREATE SEQUENCE geo_nodes_id_seq

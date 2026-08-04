@@ -25,8 +25,6 @@ RSpec.describe "User sorts work items", feature_category: :portfolio_management 
     create_list(:award_emoji, 2, :downvote, awardable: issue2)
     create(:award_emoji, :downvote, awardable: issue1)
     create(:award_emoji, :upvote, awardable: issue2)
-
-    create(:callout, user: user, feature_name: :work_items_onboarding_modal)
     sign_in(user)
   end
 

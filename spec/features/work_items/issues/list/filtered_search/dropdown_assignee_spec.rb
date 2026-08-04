@@ -12,7 +12,6 @@ RSpec.describe 'Dropdown assignee', :js, feature_category: :team_planning do
   describe 'behavior' do
     before do
       project.add_maintainer(user)
-      create(:callout, user: user, feature_name: :work_items_onboarding_modal)
       sign_in(user)
 
       visit project_work_items_path(project)
@@ -36,7 +35,6 @@ RSpec.describe 'Dropdown assignee', :js, feature_category: :team_planning do
   describe 'selecting from dropdown without Ajax call' do
     before do
       project.add_maintainer(user)
-      create(:callout, user: user, feature_name: :work_items_onboarding_modal)
       sign_in(user)
 
       visit project_work_items_path(project)
@@ -87,7 +85,6 @@ RSpec.describe 'Dropdown assignee', :js, feature_category: :team_planning do
       create(:group_group_link, shared_group: subgroup, shared_with_group: invited_to_group_group)
       create(:project_group_link, project: subgroup_project, group: invited_to_project_group)
 
-      create(:callout, user: subgroup_user, feature_name: :work_items_onboarding_modal)
       sign_in(subgroup_user)
     end
 

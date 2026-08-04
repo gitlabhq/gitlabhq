@@ -13,7 +13,6 @@ RSpec.describe 'Work items > User creates work item by email', feature_category:
   end
 
   before do
-    create(:callout, user: user, feature_name: :work_items_onboarding_modal)
     sign_in(user)
   end
 

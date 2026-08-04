@@ -529,6 +529,8 @@
   - 1
 - - geo_bulk_registry_reverification
   - 1
+- - geo_verification_failure_report
+  - 1
 - - github_gists_importer
   - 1
 - - github_import_advance_stage

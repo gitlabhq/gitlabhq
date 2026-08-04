@@ -17,7 +17,6 @@ RSpec.describe 'Project Issues RSS', :js, feature_category: :team_planning do
     end
 
     before do
-      create(:callout, user: user, feature_name: :work_items_onboarding_modal)
       sign_in(user)
       visit path
       click_button 'Actions'
@@ -38,10 +37,6 @@ RSpec.describe 'Project Issues RSS', :js, feature_category: :team_planning do
   end
 
   describe 'feeds' do
-    before do
-      create(:callout, user: user, feature_name: :work_items_onboarding_modal)
-    end
-
     it_behaves_like 'updates atom feed link', :project, 'assignee_username' do
       let(:path) { project_work_items_path(project, assignee_id: user.id) }
     end

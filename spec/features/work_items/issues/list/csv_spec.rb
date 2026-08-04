@@ -13,7 +13,6 @@ RSpec.describe 'Issues csv', :js, feature_category: :team_planning do
   let_it_be_with_reload(:issue) { create(:issue, project: project, author: user) }
 
   before do
-    create(:callout, user: user, feature_name: :work_items_onboarding_modal)
     sign_in(user)
     visit project_work_items_path(project)
   end

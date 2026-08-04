@@ -20,7 +20,6 @@ RSpec.describe 'Labels Hierarchy', :js, feature_category: :team_planning do
   before do
     grandparent.add_owner(user)
 
-    create(:callout, user: user, feature_name: :work_items_onboarding_modal)
     sign_in(user)
   end
 

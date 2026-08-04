@@ -85,7 +85,6 @@ import getNamespaceSavedViewsQuery from '~/work_items/list/graphql/work_item_sav
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import IssuableTabs from '~/vue_shared/issuable/list/components/issuable_tabs.vue';
-import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 
 import {
   convertLegacyTypeFormat,
@@ -154,7 +153,6 @@ import EmptyStateWithAnyTickets from '../list/components/empty_state_with_any_ti
 import EmptyStateWithoutAnyTickets from '../list/components/empty_state_without_any_tickets.vue';
 import InfoBanner from '../list/components/info_banner.vue';
 import NewSavedViewModal from '../list/components/work_items_new_saved_view_modal.vue';
-import WorkItemsOnboardingModal from '../components/work_items_onboarding_modal/work_items_onboarding_modal.vue';
 import WorkItemDetailPanel from '../components/work_item_detail_panel.vue';
 import WorkItemDisplaySettingsDrawer from '../list/components/work_item_display_settings_drawer.vue';
 
@@ -225,8 +223,6 @@ export default {
     IssuableTabs,
     ListView,
     BoardView,
-    WorkItemsOnboardingModal,
-    UserCalloutDismisser,
     WorkItemDetailPanel,
   },
   mixins: [glFeatureFlagMixin(), InternalEvents.mixin()],
@@ -1923,11 +1919,6 @@ export default {
 
 <template>
   <div class="planning-view">
-    <user-callout-dismisser feature-name="work_items_onboarding_modal">
-      <template #default="{ dismiss, shouldShowCallout }">
-        <work-items-onboarding-modal v-if="shouldShowCallout" @close="dismiss" />
-      </template>
-    </user-callout-dismisser>
     <saved-views-not-found-modal
       :show="showSavedViewNotFoundModal"
       data-testid="view-not-found-modal"

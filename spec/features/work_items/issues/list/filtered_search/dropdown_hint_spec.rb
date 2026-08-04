@@ -27,7 +27,6 @@ RSpec.describe 'Dropdown hint', :js, feature_category: :team_planning do
 
   context 'when user logged in' do
     before do
-      create(:callout, user: user, feature_name: :work_items_onboarding_modal)
       sign_in(user)
       visit project_work_items_path(project, sort: 'created_date')
     end

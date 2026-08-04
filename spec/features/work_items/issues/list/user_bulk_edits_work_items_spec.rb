@@ -11,7 +11,6 @@ RSpec.describe 'Multiple work item updating from work items list', :js, feature_
 
   before do
     project.add_maintainer(user)
-    create(:callout, user: user, feature_name: :work_items_onboarding_modal)
     sign_in(user)
   end
 

@@ -9668,9 +9668,6 @@ msgstr ""
 msgid "All users with matching phone numbers"
 msgstr ""
 
-msgid "All work items in one place"
-msgstr ""
-
 msgid "All your to-do items are done."
 msgstr ""
 
@@ -11811,6 +11808,12 @@ msgstr ""
 msgid "ArtifactRegistry|Downloads"
 msgstr ""
 
+msgid "ArtifactRegistry|Edit hosted repository"
+msgstr ""
+
+msgid "ArtifactRegistry|Edit repository"
+msgstr ""
+
 msgid "ArtifactRegistry|Enable Artifact Registry for this organization. All projects and groups will have access to a unified registry once enabled."
 msgstr ""
 
@@ -11833,6 +11836,9 @@ msgid "ArtifactRegistry|Lowercase letters, numbers, hyphens (-), and underscores
 msgstr ""
 
 msgid "ArtifactRegistry|Maven"
+msgstr ""
+
+msgid "ArtifactRegistry|More actions for %{name}"
 msgstr ""
 
 msgid "ArtifactRegistry|Name"
@@ -11874,7 +11880,13 @@ msgstr ""
 msgid "ArtifactRegistry|Repositories list updated."
 msgstr ""
 
+msgid "ArtifactRegistry|Repository not found."
+msgstr ""
+
 msgid "ArtifactRegistry|Repository was successfully created."
+msgstr ""
+
+msgid "ArtifactRegistry|Repository was successfully updated."
 msgstr ""
 
 msgid "ArtifactRegistry|Resource ID must be a valid UUIDv7."
@@ -32410,9 +32422,6 @@ msgstr ""
 msgid "Epics, issues, and merge requests"
 msgstr ""
 
-msgid "Epics, issues, and tasks are now %{boldStart}work items%{boldEnd}. We’ve improved how your team finds and organizes work with customizable views."
-msgstr ""
-
 msgid "Erased"
 msgstr ""
 
@@ -36211,9 +36220,6 @@ msgstr ""
 msgid "Geo|secondary"
 msgstr ""
 
-msgid "Get Started"
-msgstr ""
-
 msgid "Get a support subscription"
 msgstr ""
 
@@ -39995,9 +40001,6 @@ msgstr ""
 msgid "Homepage|Your corner of GitLab"
 msgstr ""
 
-msgid "Hone in on what’s important"
-msgstr ""
-
 msgid "Hook execution failed. %{error}"
 msgstr ""
 
@@ -41113,9 +41116,6 @@ msgstr ""
 msgid "In GitLab"
 msgstr ""
 
-msgid "In a group, epics and issues are all together under %{boldStart}Work items%{boldEnd}. To view them separately, filter the list by type and save the view."
-msgstr ""
-
 msgid "In case of pull mirroring, your user will be the author of all events in the activity feed that are the result of an update, like new branches being created or new commits being pushed to existing branches."
 msgstr ""
 
@@ -42166,9 +42166,6 @@ msgid "Internal users cannot be deactivated"
 msgstr ""
 
 msgid "Interval"
-msgstr ""
-
-msgid "Introducing the work items list"
 msgstr ""
 
 msgid "Invalid 'schemaVersion' '%{schema_version}'"
@@ -51642,6 +51639,9 @@ msgid "Notify|Incorrect forwarding target:"
 msgstr ""
 
 msgid "Notify|Incorrect verification token:"
+msgstr ""
+
+msgid "Notify|Internal note"
 msgstr ""
 
 msgid "Notify|Invalid credentials:"
@@ -66567,9 +66567,6 @@ msgstr ""
 msgid "Save password"
 msgstr ""
 
-msgid "Save views with your preferred filters and display options to plan and track work easier. Add views shared by your team or create your own."
-msgstr ""
-
 msgid "Saving"
 msgstr ""
 
@@ -78163,9 +78160,6 @@ msgstr ""
 msgid "TagsPage|protected"
 msgstr ""
 
-msgid "Tailor your views list"
-msgstr ""
-
 msgid "Take a look at the documentation to discover all of GitLab’s capabilities."
 msgstr ""
 
@@ -79491,9 +79485,6 @@ msgid "The value must match the defined regular expression."
 msgstr ""
 
 msgid "The value of the provided variable exceeds the %{count} character limit"
-msgstr ""
-
-msgid "The views that appear in your tabs at the top are specific to you. Add, reorder, and remove views to create the best setup for your needs."
 msgstr ""
 
 msgid "The vulnerability is known, and has not been remediated or mitigated, but is considered to be an acceptable business risk."
@@ -89003,9 +88994,6 @@ msgid "WizardStepper|Step has validation errors"
 msgstr ""
 
 msgid "Work Item type %{gid} was not found"
-msgstr ""
-
-msgid "Work Items Onboarding Modal"
 msgstr ""
 
 msgid "Work in progress (open and unassigned)"

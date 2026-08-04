@@ -34,7 +34,11 @@ module QA
       end
 
       it 'serves the jobs page with Vue 2 by default and Vue 3 when the rollout flag is enabled',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/606899' do
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/606899',
+        quarantine: {
+          issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/43839',
+          type: :flaky
+        } do
         project.visit!
         Page::Project::Menu.perform(&:go_to_jobs)
 

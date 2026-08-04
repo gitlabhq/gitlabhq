@@ -53,7 +53,6 @@ RSpec.describe 'Filter work items', :js, feature_category: :portfolio_management
 
     create(:labeled_issue, title: "Issue with multiple words label", project: project, labels: [multiple_words_label])
 
-    create(:callout, user: user, feature_name: :work_items_onboarding_modal)
     sign_in(user)
     visit project_work_items_path(project)
   end

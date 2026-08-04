@@ -12,7 +12,6 @@ RSpec.describe 'Work Items List', :js, feature_category: :team_planning do
     let(:issuable_container) { '[data-testid="issuable-container"]' }
 
     before_all do
-      create(:callout, user: user, feature_name: :work_items_onboarding_modal)
       group.add_owner(user)
     end
 

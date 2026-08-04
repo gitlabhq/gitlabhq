@@ -9,7 +9,6 @@ RSpec.describe 'Redirect from issues', :js, feature_category: :team_planning do
 
   context 'for signed in user' do
     before do
-      create(:callout, user: user, feature_name: :work_items_onboarding_modal)
       sign_in(user)
     end
 

@@ -39,11 +39,8 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
     end
 
     before do
-      # Feature flag stubs are reset after every example, so this has to run per example
-      # rather than in `before_all`, where only the first example would see it.
       stub_feature_flags(comment_temperature: false)
       stub_const("AutocompleteSources::ExpiresIn::AUTOCOMPLETE_EXPIRES_IN", 0)
-      create(:callout, user: user, feature_name: :work_items_onboarding_modal)
       sign_in(user)
       visit work_items_path
     end

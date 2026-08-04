@@ -254,9 +254,6 @@ const MUTATION_OPERATION_HANDLERS = {
     data: {
       currentUser: {
         id: 'gid://gitlab/User/1',
-        callouts: {
-          nodes: [{ featureName: 'work_items_onboarding_modal', __typename: 'UserCallout' }],
-        },
         __typename: 'UserCore',
       },
     },

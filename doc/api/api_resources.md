@@ -176,6 +176,7 @@ The following API resources are available outside of project and group contexts 
 | [Applications](applications.md)                                                              | `/applications` |
 | [Audit events](audit_events.md)                                                              | `/audit_events` |
 | [Avatar](avatar.md)                                                                          | `/avatar` |
+| [Batched background migrations](admin/batched_background_migrations.md)                      | `/admin/batched_background_migrations` |
 | [Broadcast messages](broadcast_messages.md)                                                  | `/broadcast_messages` |
 | [Code snippets](snippets.md)                                                                 | `/snippets` |
 | [Code Suggestions](code_suggestions.md)                                                      | `/code_suggestions` |

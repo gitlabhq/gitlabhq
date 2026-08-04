@@ -8,7 +8,6 @@ RSpec.describe 'New issue breadcrumb', :js, feature_category: :team_planning do
   let(:user) { project.creator }
 
   before do
-    create(:callout, user: user, feature_name: :work_items_onboarding_modal)
     sign_in(user)
   end
 

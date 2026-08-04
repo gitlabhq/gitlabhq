@@ -32,7 +32,6 @@ RSpec.describe 'Issues > User sees empty state', :js, feature_category: :team_pl
 
   describe 'while user is signed in' do
     before do
-      create(:callout, user: user, feature_name: :work_items_onboarding_modal)
       sign_in(user)
     end
 

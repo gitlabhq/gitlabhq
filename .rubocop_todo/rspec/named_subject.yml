@@ -11,7 +11,6 @@ RSpec/NamedSubject:
     - 'ee/spec/controllers/ee/projects/settings/ci_cd_controller_spec.rb'
     - 'ee/spec/controllers/ee/projects_controller_spec.rb'
     - 'ee/spec/controllers/ee/registrations_controller_spec.rb'
-    - 'ee/spec/controllers/ee/root_controller_spec.rb'
     - 'ee/spec/controllers/gitlab_subscriptions/subscriptions_controller_spec.rb'
     - 'ee/spec/controllers/groups/analytics/cycle_analytics/summary_controller_spec.rb'
     - 'ee/spec/controllers/groups/analytics/productivity_analytics_controller_spec.rb'

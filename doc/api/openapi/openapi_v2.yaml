@@ -45634,6 +45634,34 @@ paths:
       tags:
       - geo
       operationId: postApiV4GeoStatus
+  "/api/v4/geo/failures":
+    post:
+      summary: Internal endpoint that reports persistent verification failures to
+        the primary
+      description: Reports resources that persistently fail verification on a secondary
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - name: postApiV4GeoFailures
+        in: body
+        required: true
+        schema:
+          "$ref": "#/definitions/postApiV4GeoFailures"
+      responses:
+        '202':
+          description: Reports resources that persistently fail verification on a
+            secondary
+        '401':
+          description: 401 Unauthorized
+        '404':
+          description: 404 Not found
+        '400':
+          description: 400 Bad request
+      tags:
+      - geo
+      operationId: postApiV4GeoFailures
   "/api/v4/geo/proxy_git_ssh/info_refs_upload_pack":
     post:
       summary: Internal endpoint that returns info refs upload pack for clone or pull
@@ -78302,6 +78330,47 @@ definitions:
         type: string
     required:
     - name
+  postApiV4GeoFailures:
+    type: object
+    properties:
+      geo_node_id:
+        type: integer
+        format: int32
+        description: The Geo node ID of the reporting secondary
+      failures:
+        type: array
+        description: Persistent verification failures reported by the secondary
+        items:
+          type: object
+          properties:
+            error_type:
+              type: string
+              description: The type of verification error being reported
+              example: checksum_mismatch
+            replicable_name:
+              type: string
+              description: The replicable name of a replicator instance
+              example: upload
+            replicable_id:
+              type: integer
+              format: int32
+              description: The model record ID
+            verification_retry_count:
+              type: integer
+              format: int32
+              description: The number of consecutive verification failures
+            context:
+              type: object
+              description: Additional error-type-specific data
+          required:
+          - error_type
+          - replicable_name
+          - replicable_id
+          - verification_retry_count
+    required:
+    - geo_node_id
+    - failures
+    description: Reports resources that persistently fail verification on a secondary
   postApiV4GeoProxyGitSshInfoRefsUploadPack:
     type: object
     properties:

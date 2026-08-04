@@ -832,6 +832,30 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
             is_expected.not_to have_body_text('#heading-2')
           end
         end
+
+        context 'when note is internal' do
+          let(:note) do
+            create(:discussion_note_on_issue, :internal, noteable: issue, project: project, author: note_author)
+          end
+
+          it 'shows the internal note indicator in the HTML part' do
+            is_expected.to have_body_text('Internal note')
+          end
+
+          it 'shows the [Internal note] indicator in the plain-text part' do
+            is_expected.to have_plain_text_content('[Internal note]')
+          end
+        end
+
+        context 'when note is not internal (public comment)' do
+          it 'does not show an internal note indicator in the HTML part' do
+            is_expected.not_to have_body_text('Internal note')
+          end
+
+          it 'does not show an [Internal note] indicator in the plain-text part' do
+            is_expected.not_to have_plain_text_content('[Internal note]')
+          end
+        end
       end
 
       describe 'on a wiki_page' do

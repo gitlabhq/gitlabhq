@@ -17,6 +17,24 @@ class NotifyPreview < ActionMailer::Preview
     end
   end
 
+  def note_issue_email_for_internal_note
+    @user = project.first_owner
+    note_email(:note_issue_email) do
+      note = <<-MD.strip_heredoc
+        This is an internal note on an issue :lock:
+
+        In this notification email, we expect to see:
+
+        - An "Internal note" indicator above the author line
+        - The note contents (that's what you're looking at)
+        - A link to view this note on GitLab
+        - An explanation for why the user is receiving this notification
+      MD
+
+      create_note(noteable_type: 'Issue', noteable_id: issue.id, note: note, internal: true)
+    end
+  end
+
   def note_wiki_page_email_for_individual_note
     note_email(:note_wiki_page_email) do
       note = <<-MD.strip_heredoc

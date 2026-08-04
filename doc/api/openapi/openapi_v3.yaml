@@ -8052,7 +8052,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_0547387828a9"
+              "$ref": "#/components/schemas/RequestBody_b85115ec6b7f"
     get:
       operationId: getApiV4GeoSites
       summary: List all Geo sites
@@ -8190,7 +8190,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_8420106513ed"
+              "$ref": "#/components/schemas/RequestBody_f1ca644921ba"
     delete:
       operationId: deleteApiV4GeoSitesId
       summary: Delete a Geo site
@@ -8304,7 +8304,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_5acd407be8fe"
+              "$ref": "#/components/schemas/RequestBody_d46c6d1b5ffd"
     get:
       operationId: getApiV4GeoNodes
       summary: List all Geo nodes
@@ -8442,7 +8442,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_ed161d2436c1"
+              "$ref": "#/components/schemas/RequestBody_ca570d552a23"
     delete:
       operationId: deleteApiV4GeoNodesId
       summary: Delete a Geo node
@@ -56349,6 +56349,27 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/RequestBody_d02bf987c989"
+  "/api/v4/geo/failures":
+    post:
+      operationId: postApiV4GeoFailures
+      summary: Reports resources that persistently fail verification on a secondary
+      tags:
+      - Geo
+      responses:
+        '202':
+          description: Accepted
+        '401':
+          description: 401 Unauthorized
+        '404':
+          description: 404 Not found
+        '400':
+          description: 400 Bad request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/RequestBody_c16df62e1c21"
   "/api/v4/geo/proxy_git_ssh/info_refs_upload_pack":
     post:
       operationId: postApiV4GeoProxyGitSshInfoRefsUploadPack
@@ -78865,6 +78886,10 @@ components:
           type: integer
         blob_download_timeout:
           type: integer
+        checksum_mismatch_report_threshold:
+          type: integer
+        checksum_mismatch_self_heal_cooldown_minutes:
+          type: integer
         sync_object_storage:
           type: boolean
         web_edit_url:
@@ -80167,6 +80192,10 @@ components:
         selective_sync_organization_ids:
           type: array
         minimum_reverification_interval:
+          type: integer
+        checksum_mismatch_report_threshold:
+          type: integer
+        checksum_mismatch_self_heal_cooldown_minutes:
           type: integer
         sync_object_storage:
           type: boolean
@@ -96851,7 +96880,7 @@ components:
       required:
       - group_access
       - provider
-    RequestBody_0547387828a9:
+    RequestBody_b85115ec6b7f:
       type: object
       properties:
         primary:
@@ -96933,6 +96962,20 @@ components:
             is valid. Once expired, it will be reverified. This has no effect when
             set on a secondary site.
           nullable: true
+        checksum_mismatch_report_threshold:
+          type: integer
+          description: The number of consecutive checksum mismatches on a secondary
+            before it reports the resource to the primary for self-heal re-verification.
+            Read from the secondary site; has no effect when set on the primary.
+          nullable: true
+        checksum_mismatch_self_heal_cooldown_minutes:
+          type: integer
+          description: 'The minimum time (in minutes) between self-heal re-verification
+            triggers for the same resource. Both the primary and each secondary use
+            their own value: secondaries use it to throttle re-reporting the same
+            resource, and the primary uses it to throttle re-verifying an already-verified
+            resource.'
+          nullable: true
         blob_download_timeout:
           type: integer
           description: Maximum time (in seconds) for blob downloads during Geo sync.
@@ -96941,7 +96984,7 @@ components:
       required:
       - name
       - url
-    RequestBody_8420106513ed:
+    RequestBody_f1ca644921ba:
       type: object
       properties:
         enabled:
@@ -97019,12 +97062,26 @@ components:
             is valid. Once expired, it will be reverified. This has no effect when
             set on a secondary site.
           nullable: true
+        checksum_mismatch_report_threshold:
+          type: integer
+          description: The number of consecutive checksum mismatches on a secondary
+            before it reports the resource to the primary for self-heal re-verification.
+            Read from the secondary site; has no effect when set on the primary.
+          nullable: true
+        checksum_mismatch_self_heal_cooldown_minutes:
+          type: integer
+          description: 'The minimum time (in minutes) between self-heal re-verification
+            triggers for the same resource. Both the primary and each secondary use
+            their own value: secondaries use it to throttle re-reporting the same
+            resource, and the primary uses it to throttle re-verifying an already-verified
+            resource.'
+          nullable: true
         blob_download_timeout:
           type: integer
           description: Maximum time (in seconds) for blob downloads during Geo sync.
             Defaults to 28800 (8 hours). Maximum is 86400 (24 hours).
           nullable: true
-    RequestBody_5acd407be8fe:
+    RequestBody_d46c6d1b5ffd:
       type: object
       properties:
         primary:
@@ -97106,10 +97163,24 @@ components:
             is valid. Once expired, it will be reverified. This has no effect when
             set on a secondary node.
           nullable: true
+        checksum_mismatch_report_threshold:
+          type: integer
+          description: The number of consecutive checksum mismatches on a secondary
+            before it reports the resource to the primary for self-heal re-verification.
+            Read from the secondary node; has no effect when set on the primary.
+          nullable: true
+        checksum_mismatch_self_heal_cooldown_minutes:
+          type: integer
+          description: 'The minimum time (in minutes) between self-heal re-verification
+            triggers for the same resource. Both the primary and each secondary use
+            their own value: secondaries use it to throttle re-reporting the same
+            resource, and the primary uses it to throttle re-verifying an already-verified
+            resource.'
+          nullable: true
       required:
       - name
       - url
-    RequestBody_ed161d2436c1:
+    RequestBody_ca570d552a23:
       type: object
       properties:
         enabled:
@@ -97186,6 +97257,20 @@ components:
           description: The interval (in days) in which the repository verification
             is valid. Once expired, it will be reverified. This has no effect when
             set on a secondary node.
+          nullable: true
+        checksum_mismatch_report_threshold:
+          type: integer
+          description: The number of consecutive checksum mismatches on a secondary
+            before it reports the resource to the primary for self-heal re-verification.
+            Read from the secondary node; has no effect when set on the primary.
+          nullable: true
+        checksum_mismatch_self_heal_cooldown_minutes:
+          type: integer
+          description: 'The minimum time (in minutes) between self-heal re-verification
+            triggers for the same resource. Both the primary and each secondary use
+            their own value: secondaries use it to throttle re-reporting the same
+            resource, and the primary uses it to throttle re-verifying an already-verified
+            resource.'
           nullable: true
     RequestBody_bddd5de04ffa:
       type: object
@@ -113070,6 +113155,50 @@ components:
           required:
           - geo_node_id
           nullable: true
+    RequestBody_c16df62e1c21:
+      type: object
+      properties:
+        geo_node_id:
+          type: integer
+          description: The Geo node ID of the reporting secondary
+          nullable: true
+        failures:
+          type: array
+          description: Persistent verification failures reported by the secondary
+          items:
+            type: object
+            properties:
+              error_type:
+                type: string
+                description: The type of verification error being reported
+                example: checksum_mismatch
+                nullable: true
+              replicable_name:
+                type: string
+                description: The replicable name of a replicator instance
+                example: upload
+                nullable: true
+              replicable_id:
+                type: integer
+                description: The model record ID
+                nullable: true
+              verification_retry_count:
+                type: integer
+                description: The number of consecutive verification failures
+                nullable: true
+              context:
+                type: object
+                description: Additional error-type-specific data
+                nullable: true
+            required:
+            - error_type
+            - replicable_name
+            - replicable_id
+            - verification_retry_count
+          nullable: true
+      required:
+      - geo_node_id
+      - failures
     RequestBody_4fa5ffbaad65:
       type: object
       properties:

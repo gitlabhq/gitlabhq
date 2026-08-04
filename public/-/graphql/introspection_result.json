@@ -154605,6 +154605,30 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.0."
             },
             {
+              "name": "checksumMismatchReportThreshold",
+              "description": "Number of consecutive checksum mismatches on a secondary before it reports the resource to the primary for self-heal re-verification.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "checksumMismatchSelfHealCooldownMinutes",
+              "description": "Minimum time (in minutes) between self-heal re-verification triggers for the same resource on the primary.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "ciSecureFileRegistries",
               "description": "Find Ci Secure File registries on this Geo node",
               "args": [
@@ -402703,12 +402727,6 @@
             {
               "name": "DUO_PANEL_AUTO_EXPANDED",
               "description": "Callout feature name for duo_panel_auto_expanded.",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "WORK_ITEMS_ONBOARDING_MODAL",
-              "description": "Callout feature name for work_items_onboarding_modal.",
               "isDeprecated": false,
               "deprecationReason": null
             },

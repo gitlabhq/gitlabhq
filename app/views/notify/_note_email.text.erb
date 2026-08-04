@@ -5,6 +5,10 @@
 <% discussion = local_assigns.fetch(:discussion) { note.discussion } if note.part_of_discussion? -%>
 <% project = local_assigns.fetch(:project, @project) -%>
 
+<% if note.internal? -%>
+[<%= s_('Notify|Internal note') %>]
+
+<% end -%>
 <%= sanitize_name(author.name) -%>
 <%  if discussion.nil? -%>
  <%= 'commented' -%>

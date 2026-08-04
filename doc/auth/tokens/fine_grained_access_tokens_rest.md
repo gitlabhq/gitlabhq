@@ -3934,6 +3934,7 @@ incompatible with personal access tokens.
 | `POST` | `/feature_flags/unleash/:project_id/client/metrics` | Unleash token |
 | `POST` | `/feature_flags/unleash/:project_id/client/register` | Unleash token |
 | `GET` | `/feature_flags/unleash/:project_id/features` | Unleash token |
+| `POST` | `/geo/failures` | Geo node JWT |
 | `GET` | `/geo/proxy` | Geo proxy |
 | `POST` | `/geo/proxy_git_ssh/info_refs_receive_pack` | GitLab Shell token |
 | `POST` | `/geo/proxy_git_ssh/info_refs_upload_pack` | GitLab Shell token |

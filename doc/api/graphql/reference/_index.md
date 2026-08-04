@@ -42403,6 +42403,8 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="geonode-checksummismatchreportthreshold"></a>`checksumMismatchReportThreshold` | [`Int`](#int) | Number of consecutive checksum mismatches on a secondary before it reports the resource to the primary for self-heal re-verification. |
+| <a id="geonode-checksummismatchselfhealcooldownminutes"></a>`checksumMismatchSelfHealCooldownMinutes` | [`Int`](#int) | Minimum time (in minutes) between self-heal re-verification triggers for the same resource on the primary. |
 | <a id="geonode-containerrepositoriesmaxcapacity"></a>`containerRepositoriesMaxCapacity` | [`Int`](#int) | Maximum concurrency of container repository sync for the secondary node. |
 | <a id="geonode-enabled"></a>`enabled` | [`Boolean`](#boolean) | Indicates whether the Geo node is enabled. |
 | <a id="geonode-filesmaxcapacity"></a>`filesMaxCapacity` | [`Int`](#int) | Maximum concurrency of LFS/attachment backfill for the secondary node. |
@@ -69499,7 +69501,6 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenum-vulnerability_report_limited_experience"></a>`VULNERABILITY_REPORT_LIMITED_EXPERIENCE` | Callout feature name for vulnerability_report_limited_experience. |
 | <a id="usercalloutfeaturenameenum-web_ide_alert_dismissed"></a>`WEB_IDE_ALERT_DISMISSED` | Callout feature name for web_ide_alert_dismissed. |
 | <a id="usercalloutfeaturenameenum-web_ide_ci_environments_guidance"></a>`WEB_IDE_CI_ENVIRONMENTS_GUIDANCE` | Callout feature name for web_ide_ci_environments_guidance. |
-| <a id="usercalloutfeaturenameenum-work_items_onboarding_modal"></a>`WORK_ITEMS_ONBOARDING_MODAL` | Callout feature name for work_items_onboarding_modal. |
 | <a id="usercalloutfeaturenameenum-work_item_epic_feedback"></a>`WORK_ITEM_EPIC_FEEDBACK` | Callout feature name for work_item_epic_feedback. |
 
 ### `UserEventFilter`

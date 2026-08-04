@@ -111,7 +111,6 @@ RSpec.describe "User views work items", feature_category: :team_planning do
   context "when signed in as developer", :js do
     before do
       project.add_developer(user)
-      create(:callout, user: user, feature_name: :work_items_onboarding_modal)
       sign_in(user)
     end
 

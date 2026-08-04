@@ -869,7 +869,6 @@ class ProjectPolicy < BasePolicy
   rule { security_and_compliance_disabled }.policy do
     prevent :access_security_and_compliance
     prevent :admin_vulnerability
-    prevent :read_compliance_framework
     prevent :read_vulnerability
     prevent :update_vulnerability_flag
     prevent :read_security_configuration

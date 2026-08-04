@@ -389,6 +389,10 @@ GEM
     android_key_attestation (0.3.0)
     anonymous_loader (0.1.2)
       version_gem (~> 1.1, >= 1.1.13)
+    apnotic (1.8.0)
+      base64
+      connection_pool (>= 2, < 4)
+      net-http2 (>= 0.18.3, < 2)
     apollo_upload_server (2.1.8)
       actionpack (>= 6.1.6)
       graphql (>= 1.8)
@@ -1209,6 +1213,7 @@ GEM
       nokogiri (>= 1.0, < 2.0)
     htmlbeautifier (1.4.2)
     htmlentities (4.3.4)
+    http-2 (1.2.1)
     http (5.3.1)
       addressable (~> 2.8)
       http-cookie (~> 1.0)
@@ -1402,6 +1407,8 @@ GEM
       uri
     net-http-persistent (4.0.5)
       connection_pool (~> 2.2)
+    net-http2 (0.19.0)
+      http-2 (>= 1.0)
     net-imap (0.6.4.1)
       date
       net-protocol
@@ -2415,6 +2422,7 @@ DEPENDENCIES
   addressable (~> 2.8)
   akismet (~> 3.0)
   amazing_print
+  apnotic (~> 1.8)
   apollo_upload_server (~> 2.1.6)
   app_store_connect
   arr-pm (~> 0.0.12)
@@ -2823,6 +2831,7 @@ CHECKSUMS
   amazing_print (1.8.1) sha256=f53b4e1881f53f9663cb222840c7a027d0e61d46cc908366965739559c0d6d68
   android_key_attestation (0.3.0) sha256=467eb01a99d2bb48ef9cf24cc13712669d7056cba5a52d009554ff037560570b
   anonymous_loader (0.1.2) sha256=8ccf77c3f0812fb93d47956fdd6f30344a3835864e3cb1431ca597905985efc2
+  apnotic (1.8.0) sha256=2638d2820d7a2ae94fc46cd38bdee47bb87d3823c13623d1d44393ba973002e9
   apollo_upload_server (2.1.8) sha256=404812f0e1b139ff88a2fc89aa5b6906b377812ddea654459cbf551a4b25a8e8
   app_store_connect (0.38.0) sha256=30f624109298ed009a36408edac264a5200d967d28d960f3e37f02e9cab25ce6
   arr-pm (0.0.12) sha256=fdff482f75239239201f4d667d93424412639aad0b3b0ad4d827e7c637e0ad39
@@ -3145,6 +3154,7 @@ CHECKSUMS
   htmlbeautifier (1.4.2) sha256=9de0c98480fe80d795ed5734a11f183563cd969686f25a04609c0f5a446fa5f8
   htmlentities (4.3.4) sha256=125a73c6c9f2d1b62100b7c3c401e3624441b663762afa7fe428476435a673da
   http (5.3.1) sha256=c50802d8e9be3926cb84ac3b36d1a31fbbac383bc4cbecdce9053cb604231d7d
+  http-2 (1.2.1) sha256=d290f3b7daa70b8be8cd2260306c01243c73ec4df9d598feadaf0ed26e00b9b7
   http-accept (1.7.0) sha256=c626860682bfbb3b46462f8c39cd470fd7b0584f61b3cc9df5b2e9eb9972a126
   http-cookie (1.0.5) sha256=73756d46c7dbdc7023deecdb8a171348ea95a1b99810b31cfe8b4fb4e9a6318f
   http-form_data (2.3.0) sha256=cc4eeb1361d9876821e31d7b1cf0b68f1cf874b201d27903480479d86448a5f3
@@ -3233,6 +3243,7 @@ CHECKSUMS
   nenv (0.3.0) sha256=d9de6d8fb7072228463bf61843159419c969edb34b3cef51832b516ae7972765
   net-http (0.6.0) sha256=9621b20c137898af9d890556848c93603716cab516dc2c89b01a38b894e259fb
   net-http-persistent (4.0.5) sha256=6e42880b347e650ffeaf679ae59c9d5a6ed8a22cda6e1b959d9c270050aefa8e
+  net-http2 (0.19.0) sha256=84c03b8dbff7e82ef7ff06958c228554cd6963e19f65a5bd10f4473662048ab2
   net-imap (0.6.4.1) sha256=29f0360d75a7efd3539f16ac1957dea5c0a51ddeceb348db4553c3120914ea0d
   net-ldap (0.20.0) sha256=b2080b350753a9ac4930869ded8e61a1d2151c01e03b0bf07b4675cbd9ce5372
   net-ntp (2.1.3) sha256=5bc73f4102bde0d1872bd3b293608ae99d9f5007d744f21919c6a565eda9267d

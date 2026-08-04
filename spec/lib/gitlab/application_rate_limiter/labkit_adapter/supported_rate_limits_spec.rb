@@ -41,6 +41,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter::SupportedRateLimit
         expect(limiter).to be_a(::Labkit::RateLimit::Limiter), "#{key} limiter must be a Labkit limiter"
         expect(rule).to be_a(::Labkit::RateLimit::Rule), "#{key} rule must be a Labkit rule"
         expect(rule.name).not_to be_empty, "#{key} rule name must not be empty"
+        expect(rule.name).to start_with('limit_'), "#{key} rule name must start with limit_"
         expect(rule.characteristics).to be_an(Array), "#{key} characteristics must be an Array"
         expect(rule.characteristics).not_to be_empty, "#{key} characteristics must not be empty"
         expect(rule.characteristics).to all(be_a(Symbol)), "#{key} characteristics must be Symbols"
