@@ -433,7 +433,7 @@ control over how the Pages daemon runs and serves content in your environment.
 |-----------------------------------------|-------------------------------------------------------|-------------|
 | `pages_external_url` <sup>1</sup>       | Not applicable                                        | The URL where GitLab Pages is accessible, including protocol (HTTP / HTTPS). If `https://` is used, additional configuration is required. For more information, see [wildcard domains with TLS support](#wildcard-domains-with-tls-support) and [custom domains with TLS support](#custom-domains-with-tls-support). |
 | **`gitlab_pages[]`**                    | Not applicable                                        |             |
-| `access_control`                        | Not applicable                                        | Whether to enable [access control](_index.md#access-control). |
+| `access_control`                        | Not applicable                                        | Whether to enable [access control](#access-control). |
 | `api_secret_key`                        | Auto-generated                                        | Full path to file with secret key used to authenticate with the GitLab API. |
 | `artifacts_server`                      | Not applicable                                        | Enable viewing [job artifacts](../cicd/job_artifacts.md) in GitLab Pages. |
 | `artifacts_server_timeout`              | Not applicable                                        | Timeout (in seconds) for a proxied request to the artifacts server. |
@@ -495,7 +495,7 @@ control over how the Pages daemon runs and serves content in your environment.
 | `pages_domain_removal_cron_worker`      | Not applicable                                        | Schedule for removing unverified custom GitLab Pages domains. |
 | `pages_path`                            | `GITLAB-RAILS/shared/pages`                           | The directory on disk where pages are stored. |
 | **`pages_nginx[]`**                     | Not applicable                                        |             |
-| `enable`                                | Not applicable                                        | Include a virtual host `server{}` block for Pages inside NGINX. Needed for NGINX to proxy traffic back to the Pages daemon. Set to `false` if the Pages daemon should directly receive all requests, for example, when using [custom domains](_index.md#custom-domains). |
+| `enable`                                | Not applicable                                        | Include a virtual host `server{}` block for Pages inside NGINX. Needed for NGINX to proxy traffic back to the Pages daemon. Set to `false` if the Pages daemon should directly receive all requests, for example, when using [custom domains](#custom-domains). |
 | `FF_CONFIGURABLE_ROOT_DIR`              | Not applicable                                        | Feature flag to [customize the default folder](../../user/project/pages/introduction.md#customize-the-default-folder) (enabled by default). |
 | `FF_ENABLE_PLACEHOLDERS`                | Not applicable                                        | Feature flag for rewrites (enabled by default). For more information, see [rewrites](../../user/project/pages/redirects.md#rewrites). |
 | `rate_limit_source_ip`                  | Not applicable                                        | Rate limit per source IP in number of requests per second. Set to `0` to disable this feature. |

@@ -8,6 +8,7 @@ RSpec.describe Import::OfflineController, feature_category: :importers do
 
     before do
       login_as(user)
+      stub_application_setting(offline_transfer_exports_enabled: true, offline_transfer_imports_enabled: true)
     end
 
     context 'when offline_transfer_ui feature flag is disabled' do
@@ -77,6 +78,39 @@ RSpec.describe Import::OfflineController, feature_category: :importers do
           offlineTransferExports: true,
           offlineTransferImports: true
         )
+      end
+    end
+
+    context 'when both offline transfer settings are disabled' do
+      before do
+        stub_application_setting(offline_transfer_exports_enabled: false, offline_transfer_imports_enabled: false)
+      end
+
+      it 'returns 404' do
+        get import_offline_path
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when only offline_transfer_imports_enabled setting is enabled' do
+      before do
+        stub_application_setting(offline_transfer_exports_enabled: false, offline_transfer_imports_enabled: true)
+      end
+
+      it 'returns 200' do
+        get import_offline_path
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
+    context 'when only offline_transfer_exports_enabled setting is enabled' do
+      before do
+        stub_application_setting(offline_transfer_exports_enabled: true, offline_transfer_imports_enabled: false)
+      end
+
+      it 'returns 200' do
+        get import_offline_path
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
   end

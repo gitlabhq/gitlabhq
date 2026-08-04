@@ -79,7 +79,7 @@ many of the 10 available jobs that you want to run).
 
 #### Selective test execution
 
-In order to limit amount of tests executed in a merge request, dynamic selection of which tests to execute is present. Algorithm of which tests to run is based on changed files and merge request labels. Following criteria determine which tests will run:
+To limit the number of tests executed in a merge request, dynamic selection of which tests to execute is present. The algorithm for determining which tests to run is based on changed files and merge request labels. The following criteria determine which tests will run:
 
 1. Changes in `qa` framework code would execute the full suite
 1. Changes in particular `_spec.rb` file in `qa` folder would execute only that particular test. In this case knapsack will not be used to run jobs in parallel.

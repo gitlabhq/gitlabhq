@@ -241,7 +241,7 @@ class AiFeaturesCatalogue
   }.freeze
 ```
 
-1. Create `prompt_migration_#{feature_name}` feature flag (e.g `prompt_migration_generate_description`)
+1. Create `prompt_migration_#{feature_name}` feature flag (for example, `prompt_migration_generate_description`)
 
 When the feature flag is enabled, the `aigw_service_class` will be used to process the AI action.
 Once you've validated the correct functioning of your action, you can remove the `aigw_service_class` key and replace
@@ -254,7 +254,7 @@ For a complete example of the changes needed to migrate an AI action, see the fo
 
 ### Authorization in GitLab-Rails
 
-We recommend to use [policies](../policies.md) to deal with authorization for a feature. Currently we need to make sure to cover the following checks:
+We recommend using [policies](../policies.md) to deal with authorization for a feature. Currently we need to make sure to cover the following checks:
 
 Some basic authorization is included in the Abstraction Layer classes that are base classes for more specialized classes.
 
@@ -263,7 +263,7 @@ What needs to be included in the code:
 1. Check for feature flag compatibility: `Gitlab::Llm::Utils::FlagChecker.flag_enabled_for_feature?(ai_action)` - included in the `Llm::BaseService` class.
 1. Check if resource is authorized: `Gitlab::Llm::Utils::Authorizer.resource(resource: resource, user: user).allowed?` - also included in the `Llm::BaseService` class.
 1. Both of those checks are included in the `::Gitlab::Llm::FeatureAuthorizer.new(container: subject_container, feature_name: action_name).allowed?`
-1. Access to AI features depend on several factors, such as: their maturity, if they are enabled on self-managed, if they are bundled within an add-on etc.
+1. Access to AI features depends on several factors, such as: their maturity, if they are enabled on self-managed, if they are bundled within an add-on etc.
    - [Example](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/policies/ee/global_policy.rb#L222-222) of policy not connected to the particular resource.
    - [Example](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/policies/ee/issue_policy.rb#L25-25) of policy connected to the particular resource.
 
@@ -421,7 +421,7 @@ the evolution of our codebase. Changes in MINOR and PATCH are more subjective.
 
 ### Immutability of prompt versions
 
-To guarantee traceability of changes, only prompts with a [pre-release version](https://semver.org/#spec-item-9) (eg `1.0.1-dev.yml`)
+To guarantee traceability of changes, only prompts with a [pre-release version](https://semver.org/#spec-item-9) (for example, `1.0.1-dev.yml`)
 may be changed once committed. Prompts defining a stable version are immutable, and changing them will trigger a pipeline failure.
 
 ### Using partials

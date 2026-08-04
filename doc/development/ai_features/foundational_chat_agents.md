@@ -190,7 +190,7 @@ Not every agent is useful in every area. For example, some agents operate in pro
 ## Triggers
 
 Triggers are not supported for foundational chat agents. However, if they are defined on AI Catalog, users can
-still add it to their project at which point they can be used through triggers.
+still add them to their project at which point they can be used through triggers.
 
 ## Versioning
 
@@ -731,10 +731,8 @@ This design could also be extended to support
 
 Defining foundational agents in the monolith serves two purposes: backwards compatibility support and release control.
 
-With [`FoundationalChatAgentsDefinitions`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/ai/foundational_chat_agents_definitions.rb)
 The [`FoundationalChatAgentsDefinitions`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/ai/foundational_chat_agents_definitions.rb)
-module manages agent versioning based on the GitLab instance version.
-affecting older GitLab versions, similar to [prompt versioning](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/prompts_migration/#versioning).
+module manages agent versioning based on the GitLab instance version, affecting older GitLab versions, similar to [prompt versioning](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/prompts_migration/#versioning).
 
 Additionally, on [`FoundationalChatAgentsResolver`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/app/graphql/resolvers/ai/foundational_chat_agents_resolver.rb),
 teams are able to select which conditions can make a foundational chat agent available, for situations like:
@@ -775,7 +773,7 @@ but that comes with
 the downside of not being able to quickly ship fixes to cloud-connected self-managed instances.
 
 Eventually, if labels are implemented on AI Catalog,
-teams wouldn't need to add their entries to the Dockerfile, versions
+teams wouldn't need to add their entries to the Dockerfile. Versions
 could be fetched by the correct labels.
 
 ### Creation flow

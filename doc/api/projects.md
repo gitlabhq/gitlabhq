@@ -2930,7 +2930,7 @@ Supported attributes:
 | Attribute            | Type              | Required | Description |
 |:---------------------|:------------------|:---------|:------------|
 | `id`                 | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `full_path`          | string            | no       | Full path of project to use with `permanently_remove`. Moved to GitLab Free in GitLab 18.0. To find the project path, use `path_with_namespace` from [get single project](projects.md#retrieve-a-project). |
+| `full_path`          | string            | no       | Full path of project to use with `permanently_remove`. Moved to GitLab Free in GitLab 18.0. To find the project path, use `path_with_namespace` from [get single project](#retrieve-a-project). |
 | `permanently_remove` | boolean/string    | no       | Immediately deletes a project if it is marked for deletion. Moved to GitLab Free in GitLab 18.0. Disabled on GitLab.com and Dedicated. |
 
 ### Restore a project marked for deletion

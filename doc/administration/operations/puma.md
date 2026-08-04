@@ -416,7 +416,7 @@ gitlab_rails['env'] = {
 ```
 
 For self-compiled installations, set the environment variable.
-Refer to [Puma Worker timeout](puma.md#change-the-worker-timeout).
+Refer to [Puma Worker timeout](#change-the-worker-timeout).
 
 [Reconfigure](../restart_gitlab.md#reconfigure-a-linux-package-installation) GitLab for the changes to take effect.
 

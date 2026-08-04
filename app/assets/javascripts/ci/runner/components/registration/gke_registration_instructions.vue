@@ -537,6 +537,7 @@ export default {
     <h3 v-if="isWidget" class="gl-heading-3">{{ $options.i18n.stepTwoHeading }}</h3>
     <h2 v-else class="gl-heading-2">{{ $options.i18n.stepTwoHeading }}</h2>
     <p>{{ $options.i18n.stepTwoDescription }}</p>
+    <!-- eslint-disable vue/v-on-event-hyphenation -- GlAlert emits the camelCase `primaryAction` event -->
     <gl-alert
       v-if="showAlert"
       :primary-button-text="$options.i18n.invalidFormButton"
@@ -552,6 +553,7 @@ export default {
         {{ $options.i18n.invalidFieldsAlertMessage }}
       </template>
     </gl-alert>
+    <!-- eslint-enable vue/v-on-event-hyphenation -->
     <gl-button
       data-testid="show-instructions-button"
       :variant="showInstructionsButtonVariant"

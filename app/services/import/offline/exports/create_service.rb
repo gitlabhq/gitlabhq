@@ -37,7 +37,6 @@ module Import
         end
 
         def execute
-          return feature_flag_disabled_error unless Feature.enabled?(:offline_transfer_exports, current_user)
           return adc_admin_required_error if adc_without_admin?
           return invalid_params_error unless portable_params_valid?
           return insufficient_permissions_error unless user_can_export_all_portables?
@@ -175,10 +174,6 @@ module Import
 
         def source_hostname
           Settings.gitlab.url
-        end
-
-        def feature_flag_disabled_error
-          service_error('offline_transfer_exports feature flag must be enabled.')
         end
 
         def invalid_params_error

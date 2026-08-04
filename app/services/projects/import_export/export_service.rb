@@ -28,8 +28,8 @@ module Projects
           version_saver, avatar_saver, project_tree_saver, uploads_saver,
           repo_saver, wiki_repo_saver, lfs_saver, snippets_repo_saver, design_repo_saver,
           max_iids_saver,
-          (commit_notes_saver if commit_notes_export_via_repo?)
-        ].compact
+          commit_notes_saver
+        ]
       end
 
       protected
@@ -104,14 +104,8 @@ module Projects
       # Excludes commit_notes from the tree saver so it doesn't overwrite the
       # `tree/project/commit_notes.ndjson` written by CommitNotesSaver.
       def tree_saver_params
-        return params unless commit_notes_export_via_repo?
-
         existing = Array.wrap(params[:excluded_relations])
         params.merge(excluded_relations: existing + [Projects::ImportExport::RelationExport::COMMIT_NOTES_RELATION])
-      end
-
-      def commit_notes_export_via_repo?
-        Feature.enabled?(:commit_notes_export_via_repo, project.root_ancestor)
       end
 
       def tree_saver_class

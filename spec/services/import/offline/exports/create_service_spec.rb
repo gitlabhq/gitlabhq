@@ -370,17 +370,5 @@ RSpec.describe Import::Offline::Exports::CreateService, :aggregate_failures, fea
         end
       end
     end
-
-    context 'when offline_transfer_exports is disabled' do
-      before do
-        stub_feature_flags(offline_transfer_exports: false)
-      end
-
-      it_behaves_like 'an error response', error: 'offline_transfer_exports feature flag must be enabled.'
-
-      it 'does not track the start offline transfer export event' do
-        expect { result }.not_to trigger_internal_events('start_offline_transfer_export')
-      end
-    end
   end
 end

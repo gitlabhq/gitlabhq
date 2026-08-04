@@ -21,7 +21,7 @@ GitLab includes reports from any job in any stage in the pipeline.
 Coverage visualization uses the [`artifacts:reports:coverage_report`](../../yaml/artifacts_reports.md#artifactsreportscoverage_report)
 keyword. It does not display a coverage percentage in the MR widget or populate coverage history graphs.
 To display a coverage percentage, configure the
-[`coverage`](../../../ci/yaml/_index.md#coverage) keyword separately.
+[`coverage`](../../yaml/_index.md#coverage) keyword separately.
 
 The [Cobertura XML](https://cobertura.github.io/cobertura/) format was originally
 developed for Java, but most coverage frameworks support it through plugins or built-in

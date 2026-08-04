@@ -166,7 +166,7 @@ To do this:
 
 If GitLab Duo still fails to connect, you might need to
 ignore certificate errors. You might see errors in the GitLab Language Server logs after enabling
-[debug mode](jetbrains_troubleshooting.md#enable-debug-mode):
+[debug mode](#enable-debug-mode):
 
 ```plaintext
 2024-10-31T10:32:54:165 [error]: fetch: request to https://gitlab.com/api/v4/personal_access_tokens/self failed with:

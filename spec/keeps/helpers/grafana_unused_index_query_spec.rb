@@ -138,4 +138,56 @@ RSpec.describe Keeps::Helpers::GrafanaUnusedIndexQuery, feature_category: :datab
       expect(query.unused?(table: 'users', type: 'patroni', indexrelname: 'x')).to be_nil
     end
   end
+
+  describe '#scans_by_index' do
+    def stub_totals_response(totals)
+      series = totals.map { |name, value| { metric: { indexrelname: name }, value: [1, value.to_s] } }
+      body = { status: 'success', data: { resultType: 'vector', result: series } }.to_json
+      instance_double(HTTParty::Response, body: body)
+    end
+
+    it 'returns totals keyed by indexrelname' do
+      allow(grafana_client).to receive(:proxy_datasource)
+        .and_return(stub_totals_response('child_a' => 0, 'child_b' => 42))
+
+      expect(query.scans_by_index(indexrelnames: %w[child_a child_b], type: 'patroni-ci'))
+        .to eq('child_a' => 0.0, 'child_b' => 42.0)
+    end
+
+    it 'omits names without a series so the caller can treat them as no signal' do
+      allow(grafana_client).to receive(:proxy_datasource).and_return(stub_totals_response('child_a' => 0))
+
+      expect(query.scans_by_index(indexrelnames: %w[child_a child_b], type: 'patroni'))
+        .to eq('child_a' => 0.0)
+    end
+
+    it 'anchors each name exactly in the PromQL alternation', :aggregate_failures do
+      allow(grafana_client).to receive(:proxy_datasource) do |args|
+        expect(args[:query][:query]).to include('indexrelname=~"child_a|child\\\\.b"')
+        expect(args[:query][:query]).to include('type="patroni-ci"')
+        stub_totals_response({})
+      end
+
+      query.scans_by_index(indexrelnames: %w[child_a child.b], type: 'patroni-ci')
+    end
+
+    it 'returns an empty hash without querying when given no names' do
+      expect(grafana_client).not_to receive(:proxy_datasource)
+
+      expect(query.scans_by_index(indexrelnames: [], type: 'patroni')).to eq({})
+    end
+
+    it 'returns nil when the request fails' do
+      allow(grafana_client).to receive(:proxy_datasource).and_raise(Grafana::Client::Error, 'boom')
+
+      expect(query.scans_by_index(indexrelnames: %w[child_a], type: 'patroni')).to be_nil
+    end
+
+    it 'returns nil when the response is not "success"' do
+      response = instance_double(HTTParty::Response, body: { status: 'error' }.to_json)
+      allow(grafana_client).to receive(:proxy_datasource).and_return(response)
+
+      expect(query.scans_by_index(indexrelnames: %w[child_a], type: 'patroni')).to be_nil
+    end
+  end
 end

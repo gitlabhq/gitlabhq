@@ -23950,6 +23950,25 @@ CREATE SEQUENCE merge_request_reviewers_id_seq
 
 ALTER SEQUENCE merge_request_reviewers_id_seq OWNED BY merge_request_reviewers.id;
 
+CREATE TABLE merge_request_saved_views (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    name text NOT NULL,
+    filters jsonb DEFAULT '{}'::jsonb NOT NULL,
+    CONSTRAINT check_350966a17b CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE merge_request_saved_views_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE merge_request_saved_views_id_seq OWNED BY merge_request_saved_views.id;
+
 CREATE TABLE merge_request_user_mentions (
     id bigint NOT NULL,
     merge_request_id bigint NOT NULL,
@@ -36854,6 +36873,8 @@ ALTER TABLE ONLY merge_request_requested_changes ALTER COLUMN id SET DEFAULT nex
 
 ALTER TABLE ONLY merge_request_reviewers ALTER COLUMN id SET DEFAULT nextval('merge_request_reviewers_id_seq'::regclass);
 
+ALTER TABLE ONLY merge_request_saved_views ALTER COLUMN id SET DEFAULT nextval('merge_request_saved_views_id_seq'::regclass);
+
 ALTER TABLE ONLY merge_request_user_mentions ALTER COLUMN id SET DEFAULT nextval('merge_request_user_mentions_id_seq'::regclass);
 
 ALTER TABLE ONLY merge_requests ALTER COLUMN id SET DEFAULT nextval('merge_requests_id_seq'::regclass);
@@ -40500,6 +40521,9 @@ ALTER TABLE ONLY merge_request_requested_changes
 
 ALTER TABLE ONLY merge_request_reviewers
     ADD CONSTRAINT merge_request_reviewers_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY merge_request_saved_views
+    ADD CONSTRAINT merge_request_saved_views_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY merge_request_user_mentions
     ADD CONSTRAINT merge_request_user_mentions_pkey PRIMARY KEY (id);
@@ -48470,6 +48494,8 @@ CREATE UNIQUE INDEX index_merge_request_reviewers_on_merge_request_id_and_user_i
 CREATE INDEX index_merge_request_reviewers_on_project_id ON merge_request_reviewers USING btree (project_id);
 
 CREATE INDEX index_merge_request_reviewers_on_user_id ON merge_request_reviewers USING btree (user_id);
+
+CREATE UNIQUE INDEX index_merge_request_saved_views_on_user_id_and_name ON merge_request_saved_views USING btree (user_id, name);
 
 CREATE UNIQUE INDEX index_merge_request_user_mentions_on_note_id ON merge_request_user_mentions USING btree (note_id) WHERE (note_id IS NOT NULL);
 
@@ -60222,6 +60248,9 @@ ALTER TABLE ONLY packages_debian_project_architectures
 
 ALTER TABLE ONLY virtual_registries_container_registry_upstreams
     ADD CONSTRAINT fk_rails_583c557285 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY merge_request_saved_views
+    ADD CONSTRAINT fk_rails_5894b59c1e FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE merge_requests_merge_data
     ADD CONSTRAINT fk_rails_593f9b7924 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;

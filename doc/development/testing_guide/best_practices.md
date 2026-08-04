@@ -127,7 +127,7 @@ scripts/rspec_check_order_dependence spec/models/project_spec.rb
 If the specs pass the check the script removes them from
 [`rspec_order_todo.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/rspec_order_todo.yml) automatically.
 
-If the specs fail the check they must be fixed before than can run in random order.
+If the specs fail the check they must be fixed before they can run in random order.
 
 ### Test flakiness
 
@@ -168,9 +168,9 @@ expensive than the database writes around it. Pass only the traits the test
 actually exercises. For repository traits specifically, see
 [Repositories](#repositories).
 
-#### Profiling: see where your test spend its time
+#### Profiling: see where your test spends its time
 
-[`rspec-stackprof`](https://github.com/dkhroad/rspec-stackprof) can be used to generate a flame graph that shows you where you test spend its time.
+[`rspec-stackprof`](https://github.com/dkhroad/rspec-stackprof) can be used to generate a flame graph that shows you where your test spends its time.
 
 The gem generates a JSON report that we can upload to <https://www.speedscope.app> for an interactive visualization.
 
@@ -525,7 +525,7 @@ See [Run `:js` spec in a visible browser](#run-js-spec-in-a-visible-browser) for
 
 <!-- TODO: Add the search keywords -->
 
-When using [`stackprof` flamegraphs](#profiling-see-where-your-test-spend-its-time), search for `Capybara::DSL#` in the search to see the capybara actions that are made, and how long they take!
+When using [`stackprof` flamegraphs](#profiling-see-where-your-test-spends-its-time), search for `Capybara::DSL#` in the search to see the capybara actions that are made, and how long they take!
 
 #### Identify slow tests
 
@@ -1709,7 +1709,7 @@ However, if a spec makes direct Redis calls, it should mark itself with the
 #### Background jobs / Sidekiq
 
 By default, Sidekiq jobs are enqueued into a jobs array and aren't processed.
-If a test queues Sidekiq jobs and need them to be processed, the
+If a test queues Sidekiq jobs and needs them to be processed, the
 `:sidekiq_inline` trait can be used.
 
 The `:sidekiq_might_not_need_inline` trait was added when
@@ -2114,8 +2114,8 @@ The `match_schema` matcher allows validating that the subject matches a
 [JSON schema](https://json-schema.org/). The item inside `expect` can be
 a JSON string or a JSON-compatible data structure.
 
-`match_response_schema` is a convenience matcher for using with a
-response object. from a [request spec](testing_levels.md#integration-tests).
+`match_response_schema` is a convenience matcher for use with a
+response object from a [request spec](testing_levels.md#integration-tests).
 
 Examples:
 

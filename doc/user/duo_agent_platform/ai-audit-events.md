@@ -114,6 +114,6 @@ cannot be changed at the project level.
 ## Related topics
 
 - [GitLab Duo Agent Platform](_index.md)
-- [Audit events](../../user/compliance/audit_events.md)
-- [Audit event types](../../user/compliance/audit_event_types.md)
+- [Audit events](../compliance/audit_events.md)
+- [Audit event types](../compliance/audit_event_types.md)
 - [Audit event reports](../../administration/compliance/audit_event_reports.md)

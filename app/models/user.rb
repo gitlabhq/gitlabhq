@@ -332,6 +332,8 @@ class User < ApplicationRecord
 
   has_many :created_saved_views, class_name: 'WorkItems::SavedViews::SavedView', foreign_key: :created_by_id, dependent: :nullify
   has_many :user_saved_views, class_name: 'WorkItems::SavedViews::UserSavedView', dependent: :delete_all
+  has_many :merge_request_saved_views, class_name: 'MergeRequests::SavedView', inverse_of: :user,
+    dependent: :delete_all
 
   has_many :resource_label_events, dependent: :nullify
   has_many :resource_state_events, dependent: :nullify

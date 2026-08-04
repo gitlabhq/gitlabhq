@@ -20,6 +20,12 @@
     },
     "allow_application_default_credentials_for_offline_transfer": {
       "type": "boolean"
+    },
+    "offline_transfer_exports_enabled": {
+      "type": "boolean"
+    },
+    "offline_transfer_imports_enabled": {
+      "type": "boolean"
     }
   },
   "additionalProperties": false

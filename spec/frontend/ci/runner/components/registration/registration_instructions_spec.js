@@ -12,6 +12,7 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
 import PlatformsDrawer from '~/ci/runner/components/registration/platforms_drawer.vue';
 import RegistrationInstructions from '~/ci/runner/components/registration/registration_instructions.vue';
+import RunnerPlatformsRadioGroup from '~/ci/runner/components/runner_platforms_radio_group.vue';
 import runnerForRegistrationQuery from '~/ci/runner/graphql/register/runner_for_registration.query.graphql';
 import CliCommand from '~/ci/runner/components/registration/cli_command.vue';
 import GoogleCloudRegistrationInstructions from '~/ci/runner/components/registration/google_cloud_registration_instructions.vue';
@@ -49,6 +50,8 @@ describe('RegistrationInstructions', () => {
   const findHeading = () => wrapper.find('h1');
   const findStepAt = (i) => extendedWrapper(wrapper.findAll('section').at(i));
   const findPlatformsDrawer = () => wrapper.findComponent(PlatformsDrawer);
+  const findPlatformsRadioGroup = () => wrapper.findComponent(RunnerPlatformsRadioGroup);
+  const findGoogleCloudOptions = () => wrapper.findComponent({ name: 'RunnerGoogleCloudOptions' });
   const findByText = (text, container = wrapper) => container.findByText(text);
 
   const waitForPolling = async () => {
@@ -106,6 +109,26 @@ describe('RegistrationInstructions', () => {
     createComponent();
 
     expect(mockRunnerQuery).toHaveBeenCalledWith({ id: mockRunner.id });
+  });
+
+  describe('platform selection', () => {
+    it('emits `select-platform` when the platforms radio group changes', () => {
+      createComponent();
+
+      findPlatformsRadioGroup().vm.$emit('input', WINDOWS_PLATFORM);
+
+      expect(wrapper.emitted('select-platform')).toEqual([[WINDOWS_PLATFORM]]);
+    });
+
+    it('emits `select-platform` when a cloud option changes', () => {
+      createComponent({
+        stubs: { GlSprintf, RunnerGoogleCloudOptions: true, RunnerPlatformsRadioGroup },
+      });
+
+      findGoogleCloudOptions().vm.$emit('input', GOOGLE_CLOUD_PLATFORM);
+
+      expect(wrapper.emitted('select-platform')).toEqual([[GOOGLE_CLOUD_PLATFORM]]);
+    });
   });
 
   describe('heading', () => {
@@ -216,17 +239,17 @@ describe('RegistrationInstructions', () => {
       });
 
       it('when runner is online, stops polling and announces runner is registered', async () => {
-        expect(wrapper.emitted('runnerRegistered')).toBeUndefined();
+        expect(wrapper.emitted('runner-registered')).toBeUndefined();
 
         mockResolvedRunner({ ...mockRunner, creationState: CREATION_STATE_FINISHED });
         await waitForPolling();
 
-        expect(wrapper.emitted('runnerRegistered')).toHaveLength(1);
+        expect(wrapper.emitted('runner-registered')).toHaveLength(1);
 
         expect(mockRunnerQuery).toHaveBeenCalledTimes(2);
         await waitForPolling();
 
-        expect(wrapper.emitted('runnerRegistered')).toHaveLength(1);
+        expect(wrapper.emitted('runner-registered')).toHaveLength(1);
         expect(mockRunnerQuery).toHaveBeenCalledTimes(2);
       });
 

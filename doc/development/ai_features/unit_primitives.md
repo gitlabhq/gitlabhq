@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: 'Cloud Connector: Unit Primitives and Configuration'
 ---
 
-A GitLab Rails instance accesses backend services uses a Cloud Connector [Service Access Token](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cloud_connector/authentication/architecture/#access-control):
+A GitLab Rails instance accesses backend services using a Cloud Connector [Service Access Token](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cloud_connector/authentication/architecture/#access-control):
 
 - This token is synced to a GitLab instance from CustomersDot daily and stored in the instance's local database.
 - For GitLab.com, we do not require this step; instead, we issue short-lived tokens for each request.
@@ -55,7 +55,7 @@ config
 #### Unit primitive configuration
 
 We have a YAML file per unit primitive. It contains information on how this unit primitive is bundled with add-ons and license types, and other metadata.
-The configuration for each unit primitive adhere to the following schema.
+The configuration for each unit primitive adheres to the following schema.
 
 ##### Required Fields
 

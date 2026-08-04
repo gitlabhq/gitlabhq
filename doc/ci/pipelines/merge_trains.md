@@ -315,9 +315,8 @@ or restarted.
 
 {{< /history >}}
 
-By default, each [merge train](../../ci/pipelines/merge_trains.md) can run
-a maximum of 20 pipelines in parallel. When this limit is reached,
-additional merge requests are queued until a pipeline slot is available.
+By default, each merge train can run a maximum of 20 pipelines in parallel. When this limit is
+reached, additional merge requests are queued until a pipeline slot is available.
 
 To modify this limit for your project:
 

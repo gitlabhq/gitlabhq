@@ -17689,7 +17689,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_e431b88ea4c1"
+              "$ref": "#/components/schemas/RequestBody_3dc15d3c2ef0"
   "/api/v4/service_accounts":
     post:
       operationId: postApiV4ServiceAccounts
@@ -85067,6 +85067,10 @@ components:
           type: string
         allow_application_default_credentials_for_offline_transfer:
           type: string
+        offline_transfer_exports_enabled:
+          type: string
+        offline_transfer_imports_enabled:
+          type: string
         allow_runner_registration_token:
           type: string
         valid_runner_registrars:
@@ -99158,7 +99162,7 @@ components:
           description: Scopes available to the application. Separate multiple scopes
             with a space.
           nullable: true
-    RequestBody_e431b88ea4c1:
+    RequestBody_3dc15d3c2ef0:
       type: object
       properties:
         admin_mode:
@@ -101060,6 +101064,12 @@ components:
           type: string
           nullable: true
         allow_application_default_credentials_for_offline_transfer:
+          type: string
+          nullable: true
+        offline_transfer_exports_enabled:
+          type: string
+          nullable: true
+        offline_transfer_imports_enabled:
           type: string
           nullable: true
         user_defaults_to_private_profile:

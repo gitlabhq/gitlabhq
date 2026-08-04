@@ -210,7 +210,6 @@ The dashboard displays:
 - **Credit consumption by capability**: Breakdown of credits used for each usage-based product.
 - **Credit consumption by project**: Top projects by credit usage.
 - **Credit consumption by offering**: Usage split between GitLab.com, GitLab Self-Managed, GitLab Dedicated, and offline environments.
-- **Forecast vs. actual usage**: Projected annual consumption compared to actual pace.
 - **Overage summary**: Month-to-date and year-to-date overage.
 
 ### Usage and spend controls
@@ -265,3 +264,28 @@ To set a per-capability spend cap:
    If you enter a value for the cap, it is converted to a dollar figure at that product's rate.
 1. Review the reservation summary to confirm the caps are reflected in your add-ons subtotal and total.
 1. Select **Save**.
+
+### View daily usage by capability
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/customers-gitlab-com/-/merge_requests/16457) in GitLab 19.2.
+
+{{< /history >}}
+
+The GitLab Flex dashboard shows a daily usage chart for each capability in your reservation, including seats.
+Use these charts to see how much of each capability you consumed on each day of a billing period.
+
+The chart:
+
+- Shows accumulated usage for each day of the billing period.
+- Shows usage up to the current date for the current billing period.
+- Displays the entire billing period, or only the prorated dates if your contract started or ended mid-period.
+- Highlights in orange any usage above your monthly reservation, including seat overages.
+
+To view daily usage by capability:
+
+1. Sign in to [Customers Portal](https://customers.gitlab.com/).
+1. Select **Flex dashboard**.
+1. In the **Month** column, select the current or a past month.
+1. Select the tab for the capability you want to view.

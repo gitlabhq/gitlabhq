@@ -28,7 +28,6 @@ module Import
         end
 
         def execute
-          return feature_flag_disabled_error unless Feature.enabled?(:offline_transfer_imports, current_user)
           return adc_admin_required_error if adc_without_admin?
           return destination_validation_error unless destinations_valid?
           return cross_organization_error(cross_organization_destination) if cross_organization_destination
@@ -121,10 +120,6 @@ module Import
 
         def uses_application_default_credentials?
           Import::Offline::Configuration.new(provider: storage_configuration[:provider]).gcs_application_default?
-        end
-
-        def feature_flag_disabled_error
-          service_error('offline_transfer_imports feature flag must be enabled.')
         end
 
         def adc_admin_required_error

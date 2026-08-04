@@ -37,6 +37,34 @@ module Keeps
         result.include?(indexrelname)
       end
 
+      # Scan totals over the lookback window for an exact set of index names,
+      # keyed by indexrelname. Names without a series in the window are absent
+      # from the result, letting the caller treat them as "no signal". Returns
+      # an empty hash without querying when indexrelnames is empty, and nil
+      # when Mimir is unreachable or the query fails, so callers checking
+      # `nil?` treat only genuine failures as no-signal.
+      def scans_by_index(indexrelnames:, type:)
+        return {} if indexrelnames.empty?
+
+        response = client.proxy_datasource(
+          datasource_id: "uid/#{@datasource_uid}",
+          proxy_path: 'api/v1/query',
+          query: { query: scans_promql_for(indexrelnames, type), time: Time.now.to_i }
+        )
+
+        parsed = Gitlab::Json.safe_parse(response.body) || {}
+        return unless parsed['status'] == 'success'
+
+        Array(parsed.dig('data', 'result')).each_with_object({}) do |entry, totals|
+          name = entry.dig('metric', 'indexrelname')
+          value = entry.dig('value', 1)
+          totals[name] = value.to_f if name && value
+        end
+      rescue Grafana::Client::Error => e
+        warn "[GrafanaUnusedIndexQuery] scans_by_index failed for #{type}: #{e.message}"
+        nil
+      end
+
       private
 
       def unused_indexes_for(table:, type:)
@@ -76,6 +104,23 @@ module Keeps
               relname="#{escape_label_value(table)}"
             }[#{LOOKBACK}])
           ) == 0
+        PROMQL
+      end
+
+      # PromQL `=~` is fully anchored, so an alternation of escaped names
+      # matches each name exactly; dropped or detached siblings can never
+      # sneak in via pattern matching.
+      def scans_promql_for(indexrelnames, type)
+        pattern = indexrelnames.map { |name| Regexp.escape(name.to_s) }.join('|')
+
+        <<~PROMQL.squish
+          sum by (indexrelname) (
+            increase(pg_stat_user_indexes_idx_scan{
+              env="#{escape_label_value(@query_env)}",
+              type="#{escape_label_value(type)}",
+              indexrelname=~"#{escape_label_value(pattern)}"
+            }[#{LOOKBACK}])
+          )
         PROMQL
       end
 

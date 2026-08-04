@@ -44,6 +44,7 @@ describe('Create Runner Required Fields', () => {
       await nextTick();
 
       expect(findAlert().exists()).toBe(true);
+      expect(wrapper.emitted('on-required-fields-update')).toBeUndefined();
     });
 
     it('does not render error when user click next button with tags provided', async () => {
@@ -53,6 +54,9 @@ describe('Create Runner Required Fields', () => {
       await nextTick();
 
       expect(findAlert().exists()).toBe(false);
+      expect(wrapper.emitted('on-required-fields-update')).toEqual([
+        [{ tags: 'tag1, tag2', runUntagged: false }],
+      ]);
     });
 
     it('does not renders error when user click next button with runUntagged provided', async () => {

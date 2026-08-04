@@ -7,6 +7,7 @@ RSpec.describe Import::Offline::ImportController, feature_category: :importers d
 
   before do
     login_as(user)
+    stub_application_setting(offline_transfer_imports_enabled: true)
   end
 
   describe 'GET show' do
@@ -24,6 +25,17 @@ RSpec.describe Import::Offline::ImportController, feature_category: :importers d
     context 'when offline_transfer_imports feature flag is disabled' do
       before do
         stub_feature_flags(offline_transfer_ui: true, offline_transfer_imports: false)
+      end
+
+      it 'returns 404' do
+        get import_offline_import_path
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when offline_transfer_imports_enabled setting is disabled' do
+      before do
+        stub_application_setting(offline_transfer_imports_enabled: false)
       end
 
       it 'returns 404' do

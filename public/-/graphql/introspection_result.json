@@ -420898,6 +420898,18 @@
           "description": "A step in the vulnerability resolution funnel.",
           "fields": [
             {
+              "name": "canEnable",
+              "description": "Whether the current user can enable the setting that would make this step available. Null when there is no single setting the user can act on, such as an aggregated group view.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "count",
               "description": "Count for the step. Null when status is not AVAILABLE.",
               "args": [],
@@ -420946,14 +420958,14 @@
               "deprecationReason": null
             },
             {
-              "name": "UNAVAILABLE_NO_LICENSE",
-              "description": "User's plan does not include the required capability.",
+              "name": "UNAVAILABLE_DISABLED",
+              "description": "Feature is disabled in settings.",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
-              "name": "UNAVAILABLE_DISABLED",
-              "description": "Licensed but the underlying feature is disabled in settings.",
+              "name": "UNAVAILABLE_DUO_DISABLED",
+              "description": "GitLab Duo is not enabled, so the AI-derived data for the step cannot be shown.",
               "isDeprecated": false,
               "deprecationReason": null
             },

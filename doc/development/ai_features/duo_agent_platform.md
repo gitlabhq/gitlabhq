@@ -487,7 +487,7 @@ This creates the breadcrumb hierarchy:
 To generate fake flows to test out the platform, you can run
 `ee/lib/tasks/gitlab/duo_workflow/duo_workflow.rake` Rake task.
 
-Example to make 50 flows, 20 made by the specified user in specific project
+Example to make 50 flows, 20 made by the specified user in a specific project
 
 ```shell
 bundle exec rake "gitlab:duo_workflow:populate[50,20,user@example.com,gitlab-org/gitlab-test]

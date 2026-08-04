@@ -163,7 +163,7 @@ Example response:
 
 > [!warning]
 > This configuration option was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/494294) in GitLab 17.6
-> and is planned for removal in v5 of the API. Use the [new configuration and endpoint](project_pull_mirroring.md#update-project-pull-mirroring-settings) instead.
+> and is planned for removal in v5 of the API. Use the [new configuration and endpoint](#update-project-pull-mirroring-settings) instead.
 > This change is a breaking change.
 
 If the remote repository is publicly accessible or uses `username:token` authentication, use the API

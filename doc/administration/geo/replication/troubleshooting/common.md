@@ -747,7 +747,7 @@ Follow [issue 479852](https://gitlab.com/gitlab-org/gitlab/-/issues/479852) to g
 
 ### Error `end of file reached` when running Geo Rake check task on secondary
 
-You may face the following error when running the [health check Rake task](common.md#health-check-rake-task) on the secondary site:
+You may face the following error when running the [health check Rake task](#health-check-rake-task) on the secondary site:
 
 ```plaintext
 Can connect to the primary node ... no
@@ -822,7 +822,7 @@ The following example sets the job to run every 30 minutes. Adjust the cron sche
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/590853) in GitLab 19.0 [with a feature flag](../../../../administration/feature_flags/_index.md) named `geo_job_artifact_verification_summaries`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/590853) in GitLab 19.0 [with a feature flag](../../../feature_flags/_index.md) named `geo_job_artifact_verification_summaries`. Disabled by default.
 
 {{< /history >}}
 

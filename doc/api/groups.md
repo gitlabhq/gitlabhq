@@ -1463,7 +1463,7 @@ DELETE /groups/:id
 | Attribute            | Type              | Required | Description |
 |----------------------|-------------------|----------|-------------|
 | `id`                 | integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
-| `full_path`          | string            | Conditional       | The full path to the subgroup. Used to confirm deletion of the subgroup. If `permanently_remove` is `true`, this attribute is required. To find the subgroup path, see the [group details](groups.md#retrieve-a-group). |
+| `full_path`          | string            | Conditional       | The full path to the subgroup. Used to confirm deletion of the subgroup. If `permanently_remove` is `true`, this attribute is required. To find the subgroup path, see the [group details](#retrieve-a-group). |
 | `permanently_remove` | boolean/string    | No       | If `true`, immediately deletes a subgroup that is already scheduled for deletion. Cannot delete top-level groups. |
 
 If successful, returns a [`202 Accepted`](rest/troubleshooting.md#status-codes) status code.

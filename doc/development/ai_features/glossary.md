@@ -13,7 +13,7 @@ to AI that you think could benefit from being in this list, add it!
 
 ### Adapters
 
-A variation on Fine Tuning. Instead of opening the model and adjusting the layer weights, new trained layers are added onto the model or hosted in an upstream standalone model. Also known as Adapter-based Models. By selectively fine-tuning these specific modules rather than the entire model, Adapters facilitate the customisation of pre-trained models for distinct tasks, requiring only a minimal increase in parameters. This method enables precise, task-specific adjustments of the model without altering its foundational structure.
+A variation on Fine Tuning. Instead of opening the model and adjusting the layer weights, new trained layers are added onto the model or hosted in an upstream standalone model. Also known as Adapter-based Models. By selectively fine-tuning these specific modules rather than the entire model, Adapters facilitate the customization of pre-trained models for distinct tasks, requiring only a minimal increase in parameters. This method enables precise, task-specific adjustments of the model without altering its foundational structure.
 
 ### AI Catalog
 
@@ -59,7 +59,7 @@ Cloud Connector is a way to access services common to multiple GitLab deployment
 
 ### Closed source model
 
-A private model fine-tuned or built from scratch by an organisation. These may be hosted as cloud services, for example ChatGPT.
+A private model fine-tuned or built from scratch by an organization. These may be hosted as cloud services, for example ChatGPT.
 
 ### Consensus filtering
 
@@ -135,11 +135,11 @@ Natural language instructions sent to an LLM to perform certain tasks. [Prompt g
 
 ### RAG (Retrieval Augmented Generation)
 
-RAG provide contextual data to an LLM as part of a query to personalise results. RAG is used to inject additional context into a prompt to decrease hallucinations and improve the quality of outputs.
+RAG provides contextual data to an LLM as part of a query to personalize results. RAG is used to inject additional context into a prompt to decrease hallucinations and improve the quality of outputs.
 
 ### RAG pipeline
 
-A mechanism used to take an input (such as a user question) into a system, retrieve any relevant data for that input, augment the input with additional context, and then synthesize the information to generate a coherent, contextualy-relevant answer. This design pattern is helpful in open-domain question answering with LLMs, which is why we use this design pattern for answering questions to GitLab Duo Chat.
+A mechanism used to take an input (such as a user question) into a system, retrieve any relevant data for that input, augment the input with additional context, and then synthesize the information to generate a coherent, contextually-relevant answer. This design pattern is helpful in open-domain question answering with LLMs, which is why we use this design pattern for answering questions to GitLab Duo Chat.
 
 ### Self-hosted model
 
@@ -227,7 +227,7 @@ system in the GitLab ecosystem
 - **Custom**: Built by users through the AI Catalog.
   - Purpose: Enables teams to leverage proprietary knowledge, tools, and decision logic in GitLab guardrails.
   - How to invoke: Custom Agents can be invoked in GitLab Duo Chat only
-  - Example: An agent created specifically answering a questions about a codebase
+  - Example: An agent created specifically answering questions about a codebase
 - **External**: Also known as "Third-Party Flows" or "CLI Agents." An externally developed agent integrated into the GitLab Duo Agent Platform
   - Purpose: Expands platform capability by allowing external vendors to operate
     in the GitLab workflow orchestration and policy layer.
@@ -281,7 +281,7 @@ there must be a trigger configured for that External Agent or Flow in that proje
 Events include:
 
 - System events (for example, new merge request opened, CI job failed)
-- User prompts or actions (for example, `@` mention on an issue, issue assignment “)
+- User prompts or actions (for example, `@` mention on an issue, issue assignment)
 - Time-based (for example, daily at 18:00, every Monday) (planned)
 
 Many Triggers can be created to start Flows, however, there are only two available
@@ -316,7 +316,7 @@ beyond a single file, including open file tabs, imports, dependencies,
 cross-file symbols and definitions, and project-wide relevant code snippets.
 
 Advanced context *resolver* is a system designed to gather the above advanced context.
-By providing advanced context, the resolver providers the LLM with a more
+By providing advanced context, the resolver provides the LLM with a more
 holistic understanding of the project structure, enabling more accurate and
 context-aware code suggestions and generation.
 

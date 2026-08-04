@@ -12,7 +12,7 @@ to drive GitLab QA scenarios. Whenever we do something on a page, like filling
 in a form or selecting a button, we do that only through a page object
 associated with this area of GitLab.
 
-For example, when GitLab QA test harness signs in into GitLab, it needs to fill
+For example, when the GitLab QA test harness signs in to GitLab, it needs to fill
 in user login and user password. To do that, we have a class, called
 `Page::Main::Login` and `sign_in_using_credentials` methods, that is the only
 piece of the code, that reads the `user-login` and `user-password`
@@ -30,7 +30,7 @@ invoking `fill_in 'user-login'` in every `*_spec.rb` file / test example.
 
 When someone later changes `t.text_field 'login'` in the view associated with
 this page to `t.text_field 'username'` it generates a different field
-identifier, what would effectively break all tests.
+identifier, which would effectively break all tests.
 
 Because we are using `Page::Main::Login.perform(&:sign_in_using_credentials)`
 everywhere, when we want to sign in to GitLab, the page object is the single

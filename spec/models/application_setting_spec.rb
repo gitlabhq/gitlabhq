@@ -31,6 +31,8 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         allow_local_requests_from_web_hooks_and_services: false,
         allow_s3_compatible_storage_for_offline_transfer: false,
         allow_application_default_credentials_for_offline_transfer: false,
+        offline_transfer_exports_enabled: false,
+        offline_transfer_imports_enabled: false,
         allow_possible_spam: false,
         allow_project_creation_for_guest_and_below: true,
         allow_runner_registration_token: true,
@@ -524,6 +526,12 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
 
     it { is_expected.to allow_value(true).for(:silent_admin_exports_enabled) }
     it { is_expected.to allow_value(false).for(:silent_admin_exports_enabled) }
+
+    it { is_expected.to allow_value(true).for(:offline_transfer_exports_enabled) }
+    it { is_expected.to allow_value(false).for(:offline_transfer_exports_enabled) }
+
+    it { is_expected.to allow_value(true).for(:offline_transfer_imports_enabled) }
+    it { is_expected.to allow_value(false).for(:offline_transfer_imports_enabled) }
 
     it { is_expected.to allow_values([true, false]).for(:enforce_ci_inbound_job_token_scope_enabled) }
     it { is_expected.not_to allow_value(nil).for(:enforce_ci_inbound_job_token_scope_enabled) }

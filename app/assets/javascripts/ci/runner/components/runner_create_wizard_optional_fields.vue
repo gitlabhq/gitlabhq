@@ -62,7 +62,7 @@ export default {
       required: true,
     },
   },
-  emits: ['back', 'next', 'onGetNewRunnerId'],
+  emits: ['back', 'next', 'on-get-new-runner-id'],
   data() {
     return {
       runner: {
@@ -134,7 +134,7 @@ export default {
           return;
         }
 
-        this.$emit('onGetNewRunnerId', runner.id);
+        this.$emit('on-get-new-runner-id', runner.id);
         this.$emit('next');
         // destroy the alert
         createAlert({ message: null }).dismiss();

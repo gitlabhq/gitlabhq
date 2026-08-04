@@ -62081,6 +62081,7 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="vulnerabilityfunnelstep-canenable"></a>`canEnable` | [`Boolean`](#boolean) | Whether the current user can enable the setting that would make this step available. Null when there is no single setting the user can act on, such as an aggregated group view. |
 | <a id="vulnerabilityfunnelstep-count"></a>`count` | [`Int`](#int) | Count for the step. Null when status is not AVAILABLE. |
 | <a id="vulnerabilityfunnelstep-status"></a>`status` | [`VulnerabilityFunnelStepStatus!`](#vulnerabilityfunnelstepstatus) | Whether the step's data can be shown, and if not, why. |
 
@@ -69797,8 +69798,8 @@ Status of a step in the vulnerability resolution funnel.
 | Value | Description |
 | ----- | ----------- |
 | <a id="vulnerabilityfunnelstepstatus-available"></a>`AVAILABLE` | Data is available and count is populated. |
-| <a id="vulnerabilityfunnelstepstatus-unavailable_disabled"></a>`UNAVAILABLE_DISABLED` | Licensed but the underlying feature is disabled in settings. |
-| <a id="vulnerabilityfunnelstepstatus-unavailable_no_license"></a>`UNAVAILABLE_NO_LICENSE` | User's plan does not include the required capability. |
+| <a id="vulnerabilityfunnelstepstatus-unavailable_disabled"></a>`UNAVAILABLE_DISABLED` | Feature is disabled in settings. |
+| <a id="vulnerabilityfunnelstepstatus-unavailable_duo_disabled"></a>`UNAVAILABLE_DUO_DISABLED` | GitLab Duo is not enabled, so the AI-derived data for the step cannot be shown. |
 | <a id="vulnerabilityfunnelstepstatus-unavailable_upstream_disabled"></a>`UNAVAILABLE_UPSTREAM_DISABLED` | An earlier step in the funnel is unavailable, so no data can be shown for the step. |
 
 ### `VulnerabilityGrade`

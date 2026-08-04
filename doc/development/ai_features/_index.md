@@ -102,7 +102,7 @@ If not, make sure to check the tests are passing in the `gitlab-ai-gateway` repo
 
 [A1003](../../user/gitlab_duo_chat/troubleshooting.md#error-a1003) is more around permissions, either an invalid/missing Anthropic token or a misconfiguration of `gcloud`.
 
-In Agentic Chat, authentication errors may happen and not result in A1003 error. Use `gdk tail duo-workflow-service` to make sure the workflow service runs without issues. If you see an authentication error, you need to [get a new Anthropic key](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/ai/#set-up-anthropic-api-key) and [re-run the ai-setup script](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitlab_ai_gateway/#set-up-the-ai-gateway)
+In Agentic Chat, authentication errors may happen and not result in an A1003 error. Use `gdk tail duo-workflow-service` to make sure the workflow service runs without issues. If you see an authentication error, you need to [get a new Anthropic key](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/ai/#set-up-anthropic-api-key) and [re-run the ai-setup script](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitlab_ai_gateway/#set-up-the-ai-gateway)
 
 ### Tips for local development
 

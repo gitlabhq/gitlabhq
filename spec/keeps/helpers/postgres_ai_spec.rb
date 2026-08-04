@@ -131,4 +131,34 @@ RSpec.describe Keeps::Helpers::PostgresAi, feature_category: :tooling do
       end
     end
   end
+
+  describe '.available?' do
+    it 'is true when both env vars are present' do
+      expect(described_class).to be_available
+    end
+
+    it 'is false when the connection string is missing' do
+      stub_env('POSTGRES_AI_CONNECTION_STRING', '')
+
+      expect(described_class).not_to be_available
+    end
+  end
+
+  describe '#close' do
+    it 'closes the connection once established' do
+      allow(pg_client).to receive(:close)
+      helper = described_class.new
+
+      helper.pg_client
+      helper.close
+
+      expect(pg_client).to have_received(:close)
+    end
+
+    it 'is a no-op when no connection was established' do
+      expect(PG).not_to receive(:connect)
+
+      described_class.new.close
+    end
+  end
 end

@@ -43,8 +43,7 @@ module BulkImports
       end
 
       def commit_notes_export_via_git?(relation)
-        relation == COMMIT_NOTES_RELATION &&
-          Feature.enabled?(:commit_notes_export_via_repo, portable.root_ancestor)
+        relation == COMMIT_NOTES_RELATION
       end
     end
   end

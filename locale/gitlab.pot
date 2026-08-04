@@ -47992,6 +47992,9 @@ msgstr ""
 msgid "MergeRequestDiffs|Select comment starting line"
 msgstr ""
 
+msgid "MergeRequestSavedViews|You can create a maximum of %{limit} saved views."
+msgstr ""
+
 msgid "MergeRequestsTab|Active"
 msgstr ""
 

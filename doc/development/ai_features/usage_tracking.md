@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: AI Usage Tracking
 ---
 
-GitLab stores AI usage data to provide usage analytics for our customers. AI usage tracking have been generalized to
+GitLab stores AI usage data to provide usage analytics for our customers. AI usage tracking has been generalized to
 make it easy for developers to add new usage events and metrics.
 
 ## Usage event record structure

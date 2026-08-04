@@ -84,7 +84,7 @@ A request made with a composite identity token is authorized only if both are tr
 When a request includes a composite identity OAuth token, the Rails request context overrides `current_user` to the human user extracted from the `user:$ID` scope. While the token itself still belongs to the service account, the user who originated the request is considered the current user. This means:
 
 - Any code that depends on `current_user` runs as the human user.
-- Use `resolve_composite_identity_actor` to determine the correct actor for attribution, the result depends on how the identity was linked for the current request.
+- Use `resolve_composite_identity_actor` to determine the correct actor for attribution. The result depends on how the identity was linked for the current request.
 
 ### Attributing actions to the correct actor
 

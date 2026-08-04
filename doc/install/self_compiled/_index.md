@@ -17,7 +17,7 @@ This is the official installation guide to set up a production GitLab server
 using the source files. It was created for and tested on **Debian/Ubuntu** operating systems.
 Read [requirements.md](../requirements.md) for hardware and operating system requirements.
 If you want to install on RHEL/CentOS, you should use the [Linux packages](https://about.gitlab.com/install/).
-For many other installation options, see the [main installation page](_index.md).
+For many other installation options, see the [main installation page](../_index.md).
 
 This guide is long because it covers many cases and includes all commands you
 need. The following steps have been known to work. **Use caution when you deviate**

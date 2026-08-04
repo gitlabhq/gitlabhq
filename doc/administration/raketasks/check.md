@@ -568,7 +568,7 @@ W, [2022-11-28T13:14:09.283833 #10025]  WARN -- : Failed to transfer Ci::JobArti
 W, [2022-11-28T13:14:09.296911 #10025]  WARN -- : Failed to transfer Ci::JobArtifact ID 12 with error: undefined method `body' for nil:NilClass
 ```
 
-Attempting to [delete references to missing artifacts](check.md#delete-references-to-missing-artifacts) after you have disabled object storage, results in the following error:
+Attempting to [delete references to missing artifacts](#delete-references-to-missing-artifacts) after you have disabled object storage, results in the following error:
 
 ```plaintext
 RuntimeError (Object Storage is not enabled for JobArtifactUploader)
@@ -589,7 +589,7 @@ To update these references to point to local storage:
    puts "Updated file_store count: #{artifacts_updated}"
    ```
 
-The script to [delete references to missing artifacts](check.md#delete-references-to-missing-artifacts) now functions correctly and cleans up the database.
+The script to [delete references to missing artifacts](#delete-references-to-missing-artifacts) now functions correctly and cleans up the database.
 
 ### Delete references to missing secure files
 

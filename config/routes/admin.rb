@@ -134,6 +134,8 @@ namespace :admin do
       get :collation_check_results
       post :run_schema_check
       get :schema_check_results
+      post :run_lfk_backlog_check
+      get :lfk_backlog_check_results
     end
   end
 

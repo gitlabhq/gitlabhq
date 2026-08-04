@@ -560,13 +560,13 @@ and [add another billing account manager](billing_account.md#add-a-billing-accou
 
 ### Transfer restrictions
 
-You can change the linked namespace, however this is not supported for all subscription types.
+You can change the linked namespace. However, this is not supported for all subscription types.
 
 You cannot transfer:
 
 - An expired or trial subscription.
 - A subscription with compute minutes which is already linked to a namespace.
 - A subscription with a Premium or Ultimate plan to a namespace which already has a Premium or Ultimate plan.
-- A subscription with a GitLab Duo add-on to a namespace which already has a subscriptions with a GitLab Duo add-on.
+- A subscription with a GitLab Duo add-on to a namespace which already has a subscription with a GitLab Duo add-on.
 - A subscription with a Premium or Ultimate plan to a personal namespace.
 - A subscription purchased using a discount code.

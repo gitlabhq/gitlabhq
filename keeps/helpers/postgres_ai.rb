@@ -5,8 +5,15 @@ module Keeps
     class PostgresAi
       Error = Class.new(StandardError)
 
+      CONNECTION_STRING_ENV = 'POSTGRES_AI_CONNECTION_STRING'
+      PASSWORD_ENV = 'POSTGRES_AI_PASSWORD'
+
+      def self.available?
+        ENV[CONNECTION_STRING_ENV].present? && ENV[PASSWORD_ENV].present?
+      end
+
       def initialize
-        raise Error, "No credentials supplied" unless connection_string.present? && password.present?
+        raise Error, "No credentials supplied" unless self.class.available?
       end
 
       def fetch_background_migration_status(job_class_name)
@@ -58,18 +65,23 @@ module Keeps
         false
       end
 
+      def pg_client
+        @pg_client ||= PG.connect(connection_string, password: password)
+      end
+
+      def close
+        @pg_client&.close
+        @pg_client = nil
+      end
+
       private
 
       def connection_string
-        ENV["POSTGRES_AI_CONNECTION_STRING"]
+        ENV[CONNECTION_STRING_ENV]
       end
 
       def password
-        ENV["POSTGRES_AI_PASSWORD"]
-      end
-
-      def pg_client
-        @pg_client ||= PG.connect(connection_string, password: password)
+        ENV[PASSWORD_ENV]
       end
     end
   end

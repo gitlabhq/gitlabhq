@@ -338,19 +338,6 @@ RSpec.describe BulkImports::BatchedRelationExportService, feature_category: :imp
           service.execute
         end
       end
-
-      context 'when the feature flag is disabled' do
-        before do
-          stub_feature_flags(commit_notes_export_via_repo: false)
-        end
-
-        it 'does not fall back and re-raises the timeout' do
-          expect(::Import::Export::Project::CommitNotesBatcher).not_to receive(:new)
-          expect(BulkImports::RelationBatchExportWorker).not_to receive(:perform_async)
-
-          expect { service.execute }.to raise_error(ActiveRecord::QueryCanceled)
-        end
-      end
     end
 
     context 'when the pagination creates a batch and then times out' do
@@ -404,18 +391,6 @@ RSpec.describe BulkImports::BatchedRelationExportService, feature_category: :imp
         export = empty_notes_project.bulk_import_exports.first
         expect(export.finished?).to be(true)
         expect(export.batches.count).to eq(0)
-      end
-    end
-
-    context 'when the feature flag is disabled' do
-      before do
-        stub_feature_flags(commit_notes_export_via_repo: false)
-      end
-
-      it 'uses the default notes-table pagination path' do
-        expect(::Import::Export::Project::CommitNotesBatcher).not_to receive(:new)
-
-        service.execute
       end
     end
   end

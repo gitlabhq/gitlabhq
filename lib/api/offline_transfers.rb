@@ -87,6 +87,7 @@ module API
     resource :offline_exports do
       before do
         not_found! unless Feature.enabled?(:offline_transfer_exports, current_user)
+        not_found! unless Gitlab::CurrentSettings.offline_transfer_exports_enabled
       end
 
       desc 'Start a new offline transfer export' do
@@ -154,6 +155,11 @@ module API
     end
 
     resource :offline_imports do
+      before do
+        not_found! unless Feature.enabled?(:offline_transfer_imports, current_user)
+        not_found! unless Gitlab::CurrentSettings.offline_transfer_imports_enabled
+      end
+
       desc 'Start a new offline transfer import' do
         detail 'Initiates a new offline transfer import from object storage'
         success code: 201, model: Entities::BulkImport
@@ -179,8 +185,6 @@ module API
       end
       route_setting :authorization, permissions: :create_offline_import, boundary_type: :instance
       post do
-        not_found! unless Feature.enabled?(:offline_transfer_imports, current_user)
-
         check_rate_limit!(:offline_import, scope: current_user)
 
         provider, credentials = object_storage_provider_and_credentials

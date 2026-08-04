@@ -29,7 +29,7 @@ way to deploy Gitaly. The rest of this document details best practices for doing
 
 ## Timeline
 
-[Gitaly on Kubernetes](kubernetes.md) is generally available as of GitLab 18.11. GitLab does not
+Gitaly on Kubernetes is generally available as of GitLab 18.11. GitLab does not
 guarantee compatibility with specific managed Kubernetes offerings from cloud
 providers (such as Amazon EKS, Google GKE, or Azure AKS). You should validate
 your specific environment before deploying to production.

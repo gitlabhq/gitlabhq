@@ -213,6 +213,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :sidekiq do
         'Database::BackgroundOperation::CiOrchestratorCellLocalWorker' => 0,
         'Database::BackgroundOperation::SecOrchestratorCellLocalWorker' => 0,
         'Database::CollationCheckerWorker' => false,
+        'Database::LooseForeignKeysBacklogCheckerWorker' => false,
         'Database::SchemaCheckerWorker' => false,
         'DeleteDiffFilesWorker' => 3,
         'DeleteMergedBranchesWorker' => 3,

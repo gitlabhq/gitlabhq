@@ -216,7 +216,7 @@ This is needed for example in a known edge-case with
 
 ### Remove licenses
 
-To clean up the [License History table](license_file.md#view-license-details-and-history):
+To clean up the [License History table](#view-license-details-and-history):
 
 ```ruby
 TYPE = :trial?

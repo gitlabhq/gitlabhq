@@ -371,7 +371,7 @@ To disable a feature flag that has been enabled for a specific project you can r
 /chatops gitlab run feature set --project=gitlab-org/gitlab some_feature false
 ```
 
-You cannot selectively disable feature flags for a specific project/group/user without applying a [specific method of implementing](controls.md#selectively-disable-by-actor) the feature flags.
+You cannot selectively disable feature flags for a specific project/group/user without applying a [specific method of implementing](#selectively-disable-by-actor) the feature flags.
 
 If a feature flag is disabled via ChatOps, that will take precedence over the `default_enabled` value in the YAML. In other words, you could have a feature enabled for on-premise installations but not for GitLab.com.
 

@@ -41,7 +41,7 @@ To make a configuration change:
 1. Follow the instructions in the relevant sections below.
 
 For all other instance configurations, submit a support ticket according to the
-[configuration change request policy](_index.md#request-configuration-changes-with-a-support-ticket).
+[configuration change request policy](#request-configuration-changes-with-a-support-ticket).
 
 ### Apply configuration changes in Switchboard
 

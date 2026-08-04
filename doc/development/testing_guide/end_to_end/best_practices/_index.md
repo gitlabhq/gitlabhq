@@ -100,7 +100,8 @@ We recommend creating four associated test cases, two for each shared example.
 
 ## Test naming
 
-Test names should form a readable sentence defining the purpose of the test. Our [testing guide](_index.md) extends the [Thoughtbot testing style guide](https://github.com/thoughtbot/guides/tree/master/testing-rspec). This page clarifies the guidelines, along with input from <https://www.betterspecs.org/> and [the RSpec naming guide](https://rspec.rubystyle.guide/#naming).
+Test names should form a readable sentence defining the purpose of the test. Our testing guide
+extends the [Thoughtbot testing style guide](https://github.com/thoughtbot/guides/tree/master/testing-rspec). This page clarifies the guidelines, along with input from <https://www.betterspecs.org/> and [the RSpec naming guide](https://rspec.rubystyle.guide/#naming).
 
 ### Recommended approach
 

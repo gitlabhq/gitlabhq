@@ -10,9 +10,21 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
   let_it_be(:export_2) { create(:offline_export, :with_configuration, user: user) }
   let_it_be(:other_user_export) { create(:offline_export, :with_configuration) }
 
+  before do
+    stub_application_setting(offline_transfer_exports_enabled: true, offline_transfer_imports_enabled: true)
+  end
+
   shared_examples 'not found when offline_transfer_exports is disabled' do
     before do
       stub_feature_flags(offline_transfer_exports: false)
+    end
+
+    it_behaves_like '404 response'
+  end
+
+  shared_examples 'not found when offline_transfer_exports_enabled setting is disabled' do
+    before do
+      stub_application_setting(offline_transfer_exports_enabled: false)
     end
 
     it_behaves_like '404 response'
@@ -289,6 +301,7 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
     end
 
     it_behaves_like 'not found when offline_transfer_exports is disabled'
+    it_behaves_like 'not found when offline_transfer_exports_enabled setting is disabled'
   end
 
   describe 'GET /offline_exports' do
@@ -383,6 +396,7 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
     end
 
     it_behaves_like 'not found when offline_transfer_exports is disabled'
+    it_behaves_like 'not found when offline_transfer_exports_enabled setting is disabled'
   end
 
   describe 'GET /offline_exports/:id' do
@@ -430,6 +444,7 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
     end
 
     it_behaves_like 'not found when offline_transfer_exports is disabled'
+    it_behaves_like 'not found when offline_transfer_exports_enabled setting is disabled'
   end
 
   describe 'POST /offline_imports', :with_current_organization do
@@ -647,6 +662,14 @@ RSpec.describe API::OfflineTransfers, feature_category: :importers do
     context 'when offline_transfer_imports is disabled' do
       before do
         stub_feature_flags(offline_transfer_imports: false)
+      end
+
+      it_behaves_like '404 response'
+    end
+
+    context 'when offline_transfer_imports_enabled setting is disabled' do
+      before do
+        stub_application_setting(offline_transfer_imports_enabled: false)
       end
 
       it_behaves_like '404 response'

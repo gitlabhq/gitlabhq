@@ -17,7 +17,7 @@ A downstream pipeline is any GitLab CI/CD pipeline triggered by another pipeline
 Downstream pipelines run independently and concurrently to the upstream pipeline
 that triggered them.
 
-- A [parent-child pipeline](downstream_pipelines.md#parent-child-pipelines) is a downstream pipeline
+- A [parent-child pipeline](#parent-child-pipelines) is a downstream pipeline
   triggered in the same project as the first pipeline.
 - A [multi-project pipeline](#multi-project-pipelines) is a downstream pipeline triggered
   in a different project than the first pipeline.

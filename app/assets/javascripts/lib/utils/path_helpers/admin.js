@@ -2140,6 +2140,50 @@ export const schemaCheckResultsAdminDatabaseDiagnosticsPath = /*#__PURE__*/ (...
 /**
  * Generates the Rails route:
  *
+ * - href: `/admin/database_diagnostics/run_lfk_backlog_check(.:format)`
+ * - Path helper: `run_lfk_backlog_check_admin_database_diagnostics_path`
+ * - URL helper: `run_lfk_backlog_check_admin_database_diagnostics_url`
+ * - controller#action: `admin/database_diagnostics#run_lfk_backlog_check`
+ *
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const runLfkBacklogCheckAdminDatabaseDiagnosticsPath = /*#__PURE__*/ (...args) => {
+  const _runLfkBacklogCheckOrganizationAdminDatabaseDiagnosticsPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"database_diagnostics"],[2,[7,"/"],[2,[6,"run_lfk_backlog_check"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
+  const _runLfkBacklogCheckAdminDatabaseDiagnosticsPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"database_diagnostics"],[2,[7,"/"],[2,[6,"run_lfk_backlog_check"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
+
+  if (hasOrganizationScopedPaths()) {
+    return _runLfkBacklogCheckOrganizationAdminDatabaseDiagnosticsPath(gon.current_organization.path, ...args);
+  }
+
+  return _runLfkBacklogCheckAdminDatabaseDiagnosticsPath(...args);
+};
+
+/**
+ * Generates the Rails route:
+ *
+ * - href: `/admin/database_diagnostics/lfk_backlog_check_results(.:format)`
+ * - Path helper: `lfk_backlog_check_results_admin_database_diagnostics_path`
+ * - URL helper: `lfk_backlog_check_results_admin_database_diagnostics_url`
+ * - controller#action: `admin/database_diagnostics#lfk_backlog_check_results`
+ *
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const lfkBacklogCheckResultsAdminDatabaseDiagnosticsPath = /*#__PURE__*/ (...args) => {
+  const _lfkBacklogCheckResultsOrganizationAdminDatabaseDiagnosticsPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"database_diagnostics"],[2,[7,"/"],[2,[6,"lfk_backlog_check_results"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
+  const _lfkBacklogCheckResultsAdminDatabaseDiagnosticsPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"database_diagnostics"],[2,[7,"/"],[2,[6,"lfk_backlog_check_results"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
+
+  if (hasOrganizationScopedPaths()) {
+    return _lfkBacklogCheckResultsOrganizationAdminDatabaseDiagnosticsPath(gon.current_organization.path, ...args);
+  }
+
+  return _lfkBacklogCheckResultsAdminDatabaseDiagnosticsPath(...args);
+};
+
+/**
+ * Generates the Rails route:
+ *
  * - href: `/admin/database_diagnostics(.:format)`
  * - Path helper: `admin_database_diagnostics_path`
  * - URL helper: `admin_database_diagnostics_url`

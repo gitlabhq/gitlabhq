@@ -17,8 +17,17 @@ module Import
     def check_feature_flag
       return render_404 if Feature.disabled?(:offline_transfer_ui, current_user)
 
-      render_404 unless Feature.enabled?(:offline_transfer_exports,
-        current_user) || Feature.enabled?(:offline_transfer_imports, current_user)
+      render_404 unless offline_transfer_exports_available? || offline_transfer_imports_available?
+    end
+
+    def offline_transfer_exports_available?
+      Feature.enabled?(:offline_transfer_exports, current_user) &&
+        Gitlab::CurrentSettings.offline_transfer_exports_enabled
+    end
+
+    def offline_transfer_imports_available?
+      Feature.enabled?(:offline_transfer_imports, current_user) &&
+        Gitlab::CurrentSettings.offline_transfer_imports_enabled
     end
   end
 end

@@ -178,19 +178,6 @@ RSpec.describe Import::Offline::Imports::CreateService, :aggregate_failures, fea
       end
     end
 
-    context 'when offline_transfer_imports is disabled' do
-      before do
-        stub_feature_flags(offline_transfer_imports: false)
-      end
-
-      it 'returns an error' do
-        response = service.execute
-
-        expect(response).to be_error
-        expect(response.message).to eq('offline_transfer_imports feature flag must be enabled.')
-      end
-    end
-
     describe 'cross-organization destination validation' do
       let_it_be_with_reload(:request_organization) { create(:organization, path: 'request-org') }
       let_it_be_with_reload(:other_organization) { create(:organization, path: 'other-org') }

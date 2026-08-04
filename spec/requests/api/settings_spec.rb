@@ -125,6 +125,8 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['authn_data_retention_cleanup_enabled']).to be(false)
       expect(json_response['allow_application_default_credentials_for_offline_transfer']).to be(false)
       expect(json_response['allow_s3_compatible_storage_for_offline_transfer']).to be(false)
+      expect(json_response['offline_transfer_exports_enabled']).to be(false)
+      expect(json_response['offline_transfer_imports_enabled']).to be(false)
       expect(json_response['logging_field_schema_version']).to eq(0)
       expect(json_response['logging_field_dual_emit_target']).to be_nil
     end
@@ -326,7 +328,9 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             terraform_state_encryption_enabled: false,
             authn_data_retention_cleanup_enabled: true,
             allow_s3_compatible_storage_for_offline_transfer: true,
-            allow_application_default_credentials_for_offline_transfer: true
+            allow_application_default_credentials_for_offline_transfer: true,
+            offline_transfer_exports_enabled: true,
+            offline_transfer_imports_enabled: true
           }
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -428,6 +432,8 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['authn_data_retention_cleanup_enabled']).to be(true)
         expect(json_response['allow_s3_compatible_storage_for_offline_transfer']).to be(true)
         expect(json_response['allow_application_default_credentials_for_offline_transfer']).to be(true)
+        expect(json_response['offline_transfer_exports_enabled']).to be(true)
+        expect(json_response['offline_transfer_imports_enabled']).to be(true)
       end
     end
 

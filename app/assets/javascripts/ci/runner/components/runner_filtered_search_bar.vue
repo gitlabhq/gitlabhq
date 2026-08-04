@@ -92,6 +92,7 @@ export default {
 };
 </script>
 <template>
+  <!-- eslint-disable vue/v-on-event-hyphenation -- FilteredSearchBar emits legacy camelCase events -->
   <filtered-search-bar
     v-bind="$attrs"
     :namespace="namespace"
@@ -108,4 +109,5 @@ export default {
     @token-complete="onTokenComplete"
     @token-destroy="onTokenDestroy"
   />
+  <!-- eslint-enable vue/v-on-event-hyphenation -->
 </template>

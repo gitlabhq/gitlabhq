@@ -65,8 +65,6 @@ module Projects
       end
 
       def commit_notes_saver
-        return default_relation_saver unless Feature.enabled?(:commit_notes_export_via_repo, project.root_ancestor)
-
         ::Import::Export::Project::CommitNotesSaver.new(
           project: project,
           shared: shared,
