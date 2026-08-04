@@ -58,7 +58,7 @@ module Mcp
         protected
 
         # Main implementation - returns raw git conflict content
-        def perform_0_1_0(arguments)
+        def perform_v0_1_0(arguments)
           mr = merge_request(arguments)
           return ::Mcp::Tools::Base::Response.error('Merge request not found') if mr.nil?
 

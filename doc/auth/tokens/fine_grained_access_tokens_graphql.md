@@ -447,6 +447,15 @@ Grants the ability to restore AI catalog items.
 | ------ | ------ | ---- | ---- |
 | Restore | Project | Mutation | `AiCatalogItemVersionRestore` |
 
+#### AI catalog MCP server
+
+Grants the ability to block AI catalog MCP servers.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Block | Project | Mutation | `AiCatalogMcpServerSetBlock` |
+| Block | Group | Mutation | `AiCatalogMcpServerSetBlock` |
+
 #### AI tool rule
 
 Grants the ability to read and update AI tool rules, which control per-tool approval (Allow, Ask, Deny) for the Duo Agent Platform.

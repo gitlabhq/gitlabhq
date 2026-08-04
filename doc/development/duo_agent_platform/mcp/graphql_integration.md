@@ -405,7 +405,7 @@ def build_variables
 end
 
 # Version 2.0.0 specific implementation
-def build_variables_2_0_0
+def build_variables_v2_0_0
   {
     input: {
       projectPath: params[:project_path],
@@ -468,14 +468,14 @@ module Mcp
         end
 
         # Version 0.1.0 implementation
-        def perform_0_1_0(arguments)
+        def perform_v0_1_0(arguments)
           execute_graphql_tool(arguments)
         end
 
         # Fallback to 0.1.0 behavior for any unimplemented versions
         override :perform_default
         def perform_default(arguments = {})
-          perform_0_1_0(arguments)
+          perform_v0_1_0(arguments)
         end
       end
     end
@@ -488,7 +488,7 @@ end
 - **Inheritance from GraphqlService**: Provides user validation and GraphQL tool execution infrastructure
 - **Version registration**: Uses register_version to define tool metadata per version
 - **Automatic `additionalProperties: false`**: The shared tool abstraction rejects unrecognized arguments by default, so you do not add `additionalProperties` to `input_schema`. To accept arbitrary arguments, set `additionalProperties: true`. Schemas that use `oneOf`, `anyOf`, `allOf`, or `$ref` keep their own behavior.
-- **Version-specific methods**: Implement perform_0_1_0, perform_0_2_0, etc. for different versions
+- **Version-specific methods**: Implement perform_v0_1_0, perform_v0_2_0, etc. for different versions
 - **GraphQL tool class**: Override `graphql_tool_class` to specify which tool to use
 - **Simplified perform methods**: Just call `execute_graphql_tool(arguments)` which handles tool instantiation and execution
 - **Response handling**: Tool execution returns MCP Response directly
@@ -594,10 +594,10 @@ register_version '0.2.0', {
 }
 ```
 
-To send different variables for a version, define a `build_variables_<version>` method, such as
-`build_variables_0_2_0` for version `0.2.0`. The suffix is the version with each dot replaced by an
+To send different variables for a version, define a `build_variables_v<version>` method, such as
+`build_variables_v0_2_0` for version `0.2.0`. The suffix is the version with each dot replaced by an
 underscore. `build_variables_for_version` calls that method when it exists, and otherwise falls back
-to `build_variables`. Version-specific `perform_<version>` methods follow the same pattern.
+to `build_variables`. Version-specific `perform_v<version>` methods follow the same pattern.
 
 ### Composite Tool Example
 
@@ -721,7 +721,7 @@ module Mcp
         # Optional: Version-specific variable building
         private
 
-        def build_variables_0_2_0
+        def build_variables_v0_2_0
           {
             input: {
               projectPath: params[:project_path],
@@ -765,14 +765,14 @@ module Mcp
         end
 
         # Version 0.1.0 implementation
-        def perform_0_1_0(arguments)
+        def perform_v0_1_0(arguments)
           execute_graphql_tool(arguments)
         end
 
         # Fallback to 0.1.0 behavior for any unimplemented versions
         override :perform_default
         def perform_default(arguments = {})
-          perform_0_1_0(arguments)
+          perform_v0_1_0(arguments)
         end
       end
     end
@@ -805,7 +805,7 @@ GRAPHQL_TOOLS = {
 
 ```ruby
 class CreateWorkItemNoteService < Base::GraphqlService
-  def perform_0_1_0(params)
+  def perform_v0_1_0(params)
     result = GitlabSchema.execute(MUTATION, variables: params, context: {...})
     # Handle result inline
   end
@@ -832,7 +832,7 @@ end
 
 ```ruby
 class ProxyService < Base::GraphqlService
-  def perform_0_1_0(params)
+  def perform_v0_1_0(params)
     query = params[:query]
     GitlabSchema.execute(query, variables: params[:variables], context: {...})
   end

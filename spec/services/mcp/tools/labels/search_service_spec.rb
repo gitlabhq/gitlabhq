@@ -67,7 +67,7 @@ RSpec.describe Mcp::Tools::Labels::SearchService, feature_category: :mcp_server 
     end
   end
 
-  describe '#perform_0_1_0' do
+  describe '#perform_v0_1_0' do
     let(:arguments) do
       {
         full_path: project.full_path,
@@ -78,11 +78,11 @@ RSpec.describe Mcp::Tools::Labels::SearchService, feature_category: :mcp_server 
     it 'executes graphql tool with arguments' do
       expect(service).to receive(:execute_graphql_tool).with(arguments)
 
-      service.send(:perform_0_1_0, arguments)
+      service.send(:perform_v0_1_0, arguments)
     end
 
     it 'returns result from graphql tool' do
-      result = service.send(:perform_0_1_0, arguments)
+      result = service.send(:perform_v0_1_0, arguments)
 
       expect(result).to be_a(Hash)
       expect(result[:isError]).to be(false)
@@ -98,8 +98,8 @@ RSpec.describe Mcp::Tools::Labels::SearchService, feature_category: :mcp_server 
       }
     end
 
-    it 'delegates to perform_0_1_0' do
-      expect(service).to receive(:perform_0_1_0).with(arguments)
+    it 'delegates to perform_v0_1_0' do
+      expect(service).to receive(:perform_v0_1_0).with(arguments)
 
       service.send(:perform_default, arguments)
     end

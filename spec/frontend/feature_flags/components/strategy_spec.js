@@ -78,7 +78,6 @@ describe('Feature flags strategy', () => {
 
   describe.each`
     name
-    ${ROLLOUT_STRATEGY_ALL_USERS}
     ${ROLLOUT_STRATEGY_PERCENT_ROLLOUT}
     ${ROLLOUT_STRATEGY_FLEXIBLE_ROLLOUT}
     ${ROLLOUT_STRATEGY_USER_ID}
@@ -103,6 +102,25 @@ describe('Feature flags strategy', () => {
       expect(last(wrapper.emitted('change'))).toEqual([
         { name, parameters: { test: 'parameters' } },
       ]);
+    });
+  });
+
+  describe(`with strategy ${ROLLOUT_STRATEGY_ALL_USERS}`, () => {
+    beforeEach(async () => {
+      const strategy = { name: ROLLOUT_STRATEGY_ALL_USERS, parameters: {}, scopes: [] };
+      factory({ propsData: { strategy, index: 0 }, provide });
+      await nextTick();
+    });
+
+    it('should set the select to match the strategy name', () => {
+      expect(wrapper.findComponent(GlFormSelect).attributes('value')).toBe(
+        ROLLOUT_STRATEGY_ALL_USERS,
+      );
+    });
+
+    it('should not render the parameters and scopes section', () => {
+      expect(wrapper.find('[data-testid="strategy"]').exists()).toBe(false);
+      expect(findStrategyParameters().exists()).toBe(false);
     });
   });
 
@@ -153,6 +171,44 @@ describe('Feature flags strategy', () => {
           },
         ]);
       });
+
+      it('should not add the same environment scope twice', async () => {
+        const dropdown = wrapper.findComponent(NewEnvironmentsDropdown);
+        dropdown.vm.$emit('add', 'production');
+        await nextTick();
+
+        expect(wrapper.findAllComponents(GlToken)).toHaveLength(1);
+        expect(wrapper.emitted('change')).toBeUndefined();
+      });
+
+      it('should exclude selected environment scopes from the dropdown', async () => {
+        const dropdown = wrapper.findComponent(NewEnvironmentsDropdown);
+        expect(dropdown.props('excludedEnvironments')).toEqual(['production']);
+
+        dropdown.vm.$emit('add', 'staging');
+        await nextTick();
+
+        expect(dropdown.props('excludedEnvironments')).toEqual(['production', 'staging']);
+      });
+
+      it('should drop the unsaved all-environments scope when a new scope is added after removing the last one', async () => {
+        findToken().vm.$emit('close');
+        await nextTick();
+
+        wrapper.findComponent(NewEnvironmentsDropdown).vm.$emit('add', 'staging');
+        await nextTick();
+
+        const tokens = wrapper.findAllComponents(GlToken);
+        expect(tokens).toHaveLength(1);
+        expect(tokens.at(0).text()).toBe('staging');
+        expect(last(wrapper.emitted('change'))).toEqual([
+          {
+            name: ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
+            parameters: { percentage: '50', groupId: PERCENT_ROLLOUT_GROUP_ID },
+            scopes: [{ environmentScope: 'staging' }],
+          },
+        ]);
+      });
     });
 
     describe('with a single environment scope defined and existing feature flag', () => {
@@ -182,6 +238,73 @@ describe('Feature flags strategy', () => {
               ],
             },
           ],
+        ]);
+      });
+
+      it('should restore a removed scope instead of adding a duplicate', async () => {
+        findToken().vm.$emit('close');
+        await nextTick();
+
+        wrapper.findComponent(NewEnvironmentsDropdown).vm.$emit('add', 'production');
+        await nextTick();
+
+        expect(wrapper.findAllComponents(GlToken)).toHaveLength(1);
+        expect(last(wrapper.emitted('change'))).toEqual([
+          {
+            name: ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
+            parameters: { percentage: '50', groupId: PERCENT_ROLLOUT_GROUP_ID },
+            scopes: [{ environmentScope: 'production', id: 1, shouldBeDestroyed: false }],
+          },
+        ]);
+      });
+    });
+
+    describe('with a persisted all-environments scope defined', () => {
+      let strategy;
+
+      beforeEach(() => {
+        strategy = {
+          name: ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
+          parameters: { percentage: '50', groupId: PERCENT_ROLLOUT_GROUP_ID },
+          scopes: [{ environmentScope: '*', id: 2, shouldBeDestroyed: false }],
+        };
+        const propsData = { strategy, index: 0 };
+        factory({ propsData, provide });
+      });
+
+      it('should mark the all-environments scope for destruction when a scope is added', async () => {
+        wrapper.findComponent(NewEnvironmentsDropdown).vm.$emit('add', 'production');
+        await nextTick();
+
+        const tokens = wrapper.findAllComponents(GlToken);
+        expect(tokens).toHaveLength(1);
+        expect(tokens.at(0).text()).toBe('production');
+        expect(last(wrapper.emitted('change'))).toEqual([
+          {
+            name: ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
+            parameters: { percentage: '50', groupId: PERCENT_ROLLOUT_GROUP_ID },
+            scopes: [
+              { environmentScope: '*', id: 2, shouldBeDestroyed: true },
+              { environmentScope: 'production' },
+            ],
+          },
+        ]);
+      });
+
+      it('should restore the all-environments scope instead of adding a duplicate when the last scope is removed', async () => {
+        wrapper.findComponent(NewEnvironmentsDropdown).vm.$emit('add', 'production');
+        await nextTick();
+
+        findToken().vm.$emit('close');
+        await nextTick();
+
+        expect(wrapper.findAllComponents(GlToken)).toHaveLength(0);
+        expect(last(wrapper.emitted('change'))).toEqual([
+          {
+            name: ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
+            parameters: { percentage: '50', groupId: PERCENT_ROLLOUT_GROUP_ID },
+            scopes: [{ environmentScope: '*', id: 2, shouldBeDestroyed: false }],
+          },
         ]);
       });
     });
@@ -239,10 +362,7 @@ describe('Feature flags strategy', () => {
           {
             name: ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
             parameters: { percentage: '50', groupId: PERCENT_ROLLOUT_GROUP_ID },
-            scopes: [
-              { environmentScope: '*', shouldBeDestroyed: true },
-              { environmentScope: 'production' },
-            ],
+            scopes: [{ environmentScope: 'production' }],
           },
         ]);
       });

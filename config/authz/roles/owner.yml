@@ -16,6 +16,7 @@ project:
   - admin_organization_cluster_agent_mapping
   - admin_project_secrets_manager
   - archive_project
+  - block_ai_catalog_mcp_server
   - cancel_project_import
   - change_namespace
   - change_visibility_level
@@ -91,6 +92,7 @@ group:
   - admin_web_hook
   - archive_group
   - ban_group_member
+  - block_ai_catalog_mcp_server
   - change_group
   - change_new_user_signups_cap
   - change_prevent_group_forking

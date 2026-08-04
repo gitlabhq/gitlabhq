@@ -152,11 +152,7 @@ module Ci
     scope :with_creator_id, ->(value) { where(creator_id: value) }
 
     scope :belonging_to_group_or_project_descendants, ->(group_id) {
-      group_mirrors = if ci_runners_count_traversal_ids_index_enabled?
-                        Ci::NamespaceMirror.by_group_and_descendants_using_covering_index(group_id)
-                      else
-                        Ci::NamespaceMirror.by_group_and_descendants(group_id)
-                      end
+      group_mirrors = Ci::NamespaceMirror.by_group_and_descendants(group_id)
 
       group_ids = group_mirrors.select(:namespace_id)
       project_ids = Ci::ProjectMirror.by_namespace_id(group_ids).select(:project_id)
@@ -378,19 +374,6 @@ module Ci
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/594861.
     def self.ci_runner_partition_pruning_enabled?
       Feature.enabled?(:ci_runner_partition_pruning, Feature.current_request)
-    end
-
-    # Gates resolving group descendants in `belonging_to_group_or_project_descendants` through
-    # the `index_ci_namespace_mirrors_on_traversal_ids_unnest` covering index instead of the
-    # GIN `traversal_ids @>` operator, which times out for large subtrees.
-    #
-    # We gate on `Feature.current_request` rather than a domain actor for the same reasons as
-    # `ci_runner_partition_pruning_enabled?`: this is a class-level scope invoked with a raw id,
-    # the change is a logical no-op (identical result sets), and a per-request gate keeps the
-    # query-plan change observable on the database dashboards.
-    # See https://gitlab.com/gitlab-org/gitlab/-/issues/601877.
-    def self.ci_runners_count_traversal_ids_index_enabled?
-      Feature.enabled?(:ci_runners_count_traversal_ids_index, Feature.current_request)
     end
 
     def self.created_runner_prefix

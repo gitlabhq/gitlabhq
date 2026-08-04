@@ -36,7 +36,7 @@ module Mcp
 
         protected
 
-        def build_variables_0_1_0
+        def build_variables_v0_1_0
           build_variables
         end
 
@@ -120,10 +120,6 @@ module Mcp
         # which is distinct from a licensed-but-empty wiki (`wikiPages: { nodes: [] }`).
         def wiki_unavailable?(data)
           data&.key?('wikiPages') && data['wikiPages'].nil?
-        end
-
-        def resource_not_found?(result)
-          result['errors'].blank? && result.dig('data', operation_name).nil?
         end
 
         def resource_not_found_error

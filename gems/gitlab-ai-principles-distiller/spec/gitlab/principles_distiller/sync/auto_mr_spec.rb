@@ -178,12 +178,12 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
     end
   end
 
-  describe '.find_open_mr_iid' do
-    # find_open_mr_iid is a private AutoMr helper. Specs reach it via send
+  describe '.find_open_mr' do
+    # find_open_mr is a private AutoMr helper. Specs reach it via send
     # and stub the Net::HTTP transport directly (the same seam the
     # GraphqlClient spec uses).
     subject(:iid) do
-      sync.send(:find_open_mr_iid, 'gitlab-org%2Fgitlab', 'feature-branch', 'api-token')
+      sync.send(:find_open_mr, 'gitlab-org%2Fgitlab', 'feature-branch', 'api-token')
     end
 
     let(:fake_response) { instance_double(Net::HTTPResponse, code: '200', body: response_body) }
@@ -204,10 +204,10 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
 
     context 'when the API returns one open MR' do
       let(:http_success) { true }
-      let(:response_body) { '[{"iid":42}]' }
+      let(:response_body) { '[{"iid":42,"reviewers":[{"id":7}]}]' }
 
-      it 'returns the iid' do
-        expect(iid).to eq(42)
+      it 'returns the merge request' do
+        expect(iid).to eq({ 'iid' => 42, 'reviewers' => [{ 'id' => 7 }] })
       end
     end
 
@@ -294,164 +294,6 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
         2.times { sync.send(:mr_assignee_id, 'api-token') }
 
         expect(captured_request.size).to eq(1)
-      end
-    end
-  end
-
-  describe '.ssot_author_mentions' do
-    subject(:mentions) { sync.send(:ssot_author_mentions, affected_entries) }
-
-    before do
-      allow(sync.workflow).to receive_messages(
-        gitlab_host: 'https://gitlab.com',
-        catalog_project_path: 'gitlab-org/gitlab',
-        default_branch: 'master'
-      )
-      allow(sync).to receive(:distillation_base_sha).and_return('2222222222222222222222222222222222222222')
-    end
-
-    let(:affected_entries) do
-      {
-        'qa' => {
-          config: { 'sources' => [{ 'path' => 'doc/development/qa.md' }] },
-          changed_sources: [{ 'path' => 'doc/development/qa.md' }],
-          prior_sha: '1111111111111111111111111111111111111111'
-        }
-      }
-    end
-
-    # Builds the `commits(...)` GraphQL response payload for the single
-    # `p0` alias used by these single-source fixtures.
-    def commits_response(authors, has_next_page: false)
-      {
-        'project' => {
-          'repository' => {
-            'p0' => {
-              'nodes' => authors.map { |author| { 'author' => author } },
-              'pageInfo' => { 'hasNextPage' => has_next_page }
-            }
-          }
-        }
-      }
-    end
-
-    context 'when an author has no public email' do
-      # GraphQL's `Commit.author` resolves through
-      # `User.by_any_email(confirmed: true)`, which matches private and
-      # secondary emails too, so the commit author is still found even though
-      # the account has no public_email set.
-      before do
-        allow(sync.workflow).to receive(:query_graphql)
-          .and_return(commits_response([{ 'username' => 'eread', 'bot' => false }]))
-      end
-
-      it 'pings the author despite the account having no public email' do
-        expect(mentions).to eq(%w[@eread])
-      end
-    end
-
-    context 'when a prior SHA is reachable and authors resolve to users' do
-      before do
-        allow(sync.workflow).to receive(:query_graphql).and_return(
-          commits_response([
-            { 'username' => 'ada', 'bot' => false },
-            { 'username' => 'grace', 'bot' => false },
-            { 'username' => 'ada', 'bot' => false }
-          ])
-        )
-      end
-
-      it 'returns deduped @username mentions in author order' do
-        expect(mentions).to eq(%w[@ada @grace])
-      end
-    end
-
-    context 'when an author is a bot or on the deny-list' do
-      before do
-        allow(sync.workflow).to receive(:query_graphql).and_return(
-          commits_response([
-            { 'username' => 'some-bot', 'bot' => true },
-            { 'username' => 'service-modelops-agent-principles-distiller', 'bot' => false },
-            { 'username' => 'ada', 'bot' => false }
-          ])
-        )
-      end
-
-      it 'excludes bot accounts and deny-listed service accounts' do
-        expect(mentions).to eq(%w[@ada])
-      end
-    end
-
-    context 'when a commit has no linked GitLab account' do
-      before do
-        allow(sync.workflow).to receive(:query_graphql)
-          .and_return(commits_response([nil, { 'username' => 'ada', 'bot' => false }]))
-      end
-
-      it 'drops the unlinked commit (falls back to team ping upstream)' do
-        expect(mentions).to eq(%w[@ada])
-      end
-    end
-
-    context 'when the commit range for a path has more pages than AUTHOR_LOOKUP_PAGE_SIZE' do
-      before do
-        allow(sync.workflow).to receive(:query_graphql)
-          .and_return(commits_response([{ 'username' => 'ada', 'bot' => false }], has_next_page: true))
-      end
-
-      it 'still returns the authors from the first page but warns about the truncation', :aggregate_failures do
-        expect { expect(mentions).to eq(%w[@ada]) }
-          .to output(%r{doc/development/qa\.md has more than \d+ commits}).to_stderr
-      end
-    end
-
-    context 'when there is no reachable prior SHA' do
-      let(:affected_entries) do
-        { 'qa' => { config: {}, changed_sources: [{ 'path' => 'doc/development/qa.md' }], prior_sha: nil } }
-      end
-
-      it 'returns no mentions without querying GraphQL' do
-        expect(sync.workflow).not_to receive(:query_graphql)
-        expect(mentions).to eq([])
-      end
-    end
-
-    context 'when the range is unreachable (e.g. prior_sha predates the fetched history)' do
-      before do
-        # Workflow#query_graphql mirrors the existing warn-and-return-nil
-        # policy on GraphQL::Error / transport failure (see Workflow#graphql).
-        allow(sync.workflow).to receive(:query_graphql).and_return(nil)
-      end
-
-      it 'returns no mentions instead of raising' do
-        expect(mentions).to eq([])
-      end
-    end
-
-    context 'when a principle has more sources than the batch size' do
-      let(:many_paths) { (1..12).map { |i| "doc/development/topic-#{i}.md" } }
-      let(:affected_entries) do
-        {
-          'backend-ruby' => {
-            config: {},
-            changed_sources: many_paths.map { |p| { 'path' => p } },
-            prior_sha: '1111111111111111111111111111111111111111'
-          }
-        }
-      end
-
-      it 'splits the request into batches within AUTHOR_LOOKUP_BATCH_SIZE aliases each', :aggregate_failures do
-        batch_sizes = []
-        allow(sync.workflow).to receive(:query_graphql) do |query, _variables|
-          batch_sizes << query.scan(/^\s*p\d+:/).size
-          commits_response([{ 'username' => 'ada', 'bot' => false }])
-        end
-
-        expect(mentions).to eq(%w[@ada])
-        expect(batch_sizes).to eq([
-          Gitlab::PrinciplesDistiller::Sync::AutoMr::AUTHOR_LOOKUP_BATCH_SIZE,
-          many_paths.size - Gitlab::PrinciplesDistiller::Sync::AutoMr::AUTHOR_LOOKUP_BATCH_SIZE
-        ])
       end
     end
   end
@@ -744,6 +586,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
     end
 
     let(:failed) { [] }
+    let(:received_body) { capture_post_body }
 
     let(:distilled_contents) do
       { 'qa' => "---\nsource_checksum: abc\n---\n# QA Principles\n" }
@@ -772,7 +615,10 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
       instance_double(Net::HTTPResponse, is_a?: true, body: '{"web_url":"https://gitlab.com/foo"}', code: '201')
     end
 
-    let(:received_body) { capture_post_body }
+    def reviewer_resolver
+      @reviewer_resolver ||= instance_double(Gitlab::PrinciplesDistiller::Sync::ReviewerResolver,
+        ssot_authors: [], owner_team_reviewer: nil)
+    end
 
     before do
       stub_const('ENV', { 'GITLAB_API_TOKEN' => 'token', 'CI_PROJECT_ID' => 'gitlab-org/gitlab',
@@ -825,7 +671,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
       # Default: no SSOT authors resolve, so the description falls back to the
       # team ping (contexts below override this to exercise the author path).
       # Keeps these tests hermetic (no /users lookup over the network).
-      allow(sync).to receive_messages(find_open_mr_iid: nil, ssot_author_mentions: [])
+      allow(sync).to receive_messages(find_open_mr: nil, reviewer_resolver: reviewer_resolver)
     end
 
     # Captures the team MR body (the one whose title is NOT the tooling MR),
@@ -1108,16 +954,61 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
       before do
         # Override the hermetic default: individuals who changed the SSOT are
         # pinged instead of the owning team.
-        allow(sync).to receive(:ssot_author_mentions).and_return(%w[@ada @grace])
+        allow(reviewer_resolver).to receive(:ssot_authors).and_return([
+          { username: 'ada', id: 1 }, { username: 'grace', id: 2 }
+        ])
       end
 
       it 'pings the resolved authors and omits the team fallback ping', :aggregate_failures do
         body = capture_post_body
 
         expect(body[:description]).to include('authored by @ada @grace')
+        expect(body[:reviewer_ids]).to eq([1, 2])
         # The team-fallback ping ("Please review: **team**.") must not appear
         # when authors resolved.
         expect(body[:description]).not_to include('Please review: **')
+      end
+    end
+
+    context 'when no SSOT author resolves but an owner-team member is available' do
+      before do
+        allow(reviewer_resolver).to receive(:owner_team_reviewer).and_return(username: 'ada', id: 1, review_count: 0)
+      end
+
+      it 'mentions and assigns the fallback reviewer', :aggregate_failures do
+        body = capture_post_body
+
+        expect(body[:description]).to include('routing to @ada')
+        expect(body[:reviewer_ids]).to eq([1])
+      end
+    end
+
+    context 'when authors are mentioned but cannot be assigned as reviewers' do
+      before do
+        allow(reviewer_resolver).to receive_messages(
+          ssot_authors: [{ username: 'ada', id: nil }],
+          owner_team_reviewer: { username: 'grace', id: 2, review_count: 0 }
+        )
+      end
+
+      it 'assigns and names the fallback reviewer without hiding the author mention', :aggregate_failures do
+        body = capture_post_body
+
+        expect(body[:description]).to include('authored by @ada')
+        expect(body[:description]).to include('Reviewer assignment routed to @grace')
+        expect(body[:reviewer_ids]).to eq([2])
+      end
+    end
+
+    context 'when authors resolve to reviewer IDs' do
+      before do
+        allow(reviewer_resolver).to receive(:ssot_authors).and_return([{ username: 'ada', id: 1 }])
+      end
+
+      it 'does not query a fallback reviewer' do
+        expect(reviewer_resolver).not_to receive(:owner_team_reviewer)
+
+        capture_post_body
       end
     end
 
@@ -1535,7 +1426,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
                           'CI_PROJECT_DIR' => tmpdir })
 
       allow(File).to receive(:realpath) { |arg| arg }
-      allow(sync).to receive_messages(system: true, git_has_staged_changes?: true, find_open_mr_iid: nil)
+      allow(sync).to receive_messages(system: true, git_has_staged_changes?: true, find_open_mr: nil)
       # The fences are projected AFTER the fresh branch is cut, so the manifest
       # regenerates against the branch's base. Default: a change is produced.
       allow(manifest).to receive(:generate_duo_review_instructions).and_return(true)
@@ -1855,7 +1746,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
                           'CI_PROJECT_DIR' => tmpdir })
 
       allow(File).to receive(:realpath) { |arg| arg }
-      allow(sync).to receive_messages(system: true, git_has_staged_changes?: true, find_open_mr_iid: nil)
+      allow(sync).to receive_messages(system: true, git_has_staged_changes?: true, find_open_mr: nil)
       allow(sync.workflow).to receive_messages(
         post_json: mock_response,
         gitlab_host: 'https://gitlab.com',

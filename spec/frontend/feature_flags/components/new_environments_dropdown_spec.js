@@ -12,11 +12,12 @@ describe('New Environments Dropdown', () => {
   let wrapper;
   let axiosMock;
 
-  const createWrapper = (axiosResult = []) => {
+  const createWrapper = (axiosResult = [], props = {}) => {
     axiosMock = new MockAdapter(axios);
     axiosMock.onGet(TEST_HOST).reply(HTTP_STATUS_OK, axiosResult);
 
     wrapper = shallowMountExtended(NewEnvironmentsDropdown, {
+      propsData: props,
       provide: { environmentsEndpoint: TEST_HOST },
       stubs: {
         GlCollapsibleListbox,
@@ -83,6 +84,30 @@ describe('New Environments Dropdown', () => {
     });
 
     it('should not display a footer with the create button', () => {
+      expect(findCreateEnvironmentButton().exists()).toBe(false);
+    });
+  });
+
+  describe('with excluded environments', () => {
+    beforeEach(async () => {
+      createWrapper(['prod', 'production'], { excludedEnvironments: ['prod'] });
+      findListbox().vm.$emit('search', TEST_SEARCH);
+      await axios.waitForAll();
+    });
+
+    it('should not show excluded environments in the dropdown items', () => {
+      expect(findListbox().props('items')).toEqual([{ text: 'production', value: 'production' }]);
+    });
+
+    it('should show an excluded environment again after it is removed from the exclusions', async () => {
+      await wrapper.setProps({ excludedEnvironments: [] });
+
+      expect(findListbox().props('items')).toHaveLength(2);
+    });
+
+    it('should not display the create button when all results are excluded', async () => {
+      await wrapper.setProps({ excludedEnvironments: ['prod', 'production'] });
+
       expect(findCreateEnvironmentButton().exists()).toBe(false);
     });
   });

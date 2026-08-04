@@ -1417,6 +1417,19 @@ class Project < ApplicationRecord
         .transform_values { |projects| projects.map(&:first) }
     end
 
+    def root_namespace_ids_by_project_ids(project_ids)
+      return {} if project_ids.blank?
+
+      project_ids.each_slice(Project::MAX_PLUCK).each_with_object({}) do |ids_batch, result|
+        result.merge!(
+          id_in(ids_batch)
+            .joins(:namespace)
+            .pluck(:id, Arel.sql('namespaces.traversal_ids[1]'))
+            .to_h
+        )
+      end
+    end
+
     def root_ids_for(project_ids)
       namespace_ids = id_in(project_ids)
         .limit(Project::MAX_PLUCK)

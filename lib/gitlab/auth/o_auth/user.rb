@@ -103,6 +103,14 @@ module Gitlab
           gl_user
         end
 
+        def existing_user_for_email_link
+          return unless new?
+          return if auto_link_user?
+          return unless auth_hash.has_attribute?(:email)
+
+          ::User.find_by_any_email(auth_hash.email)
+        end
+
         def bypass_two_factor?
           providers = Gitlab.config.omniauth.allow_bypass_two_factor
           if providers.is_a?(Array)

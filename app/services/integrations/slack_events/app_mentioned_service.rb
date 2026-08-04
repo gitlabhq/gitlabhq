@@ -145,12 +145,9 @@ module Integrations
       end
 
       def privacy_notice_text
-        format(
-          s_("SlackIntegration|Heads up: your prompt and this thread's context get recorded in a " \
-            "GitLab Duo session, visible to anyone with access to the project it's saved in, " \
-            'not just people here. Learn more: %{docs_url}'),
-          docs_url: DUO_SLACK_DOCS_URL
-        )
+        s_("SlackIntegration|Heads up: your prompt and this thread's context are saved in a " \
+          "GitLab Duo session. These are visible to anyone with access to the project it's saved in, " \
+          'not just people in this conversation.')
       end
 
       def privacy_notice_blocks

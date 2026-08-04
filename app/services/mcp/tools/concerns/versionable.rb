@@ -138,7 +138,7 @@ module Mcp
         end
 
         def version_method_suffix
-          version.tr('.', '_')
+          "v#{version.tr('.', '_')}"
         end
       end
     end

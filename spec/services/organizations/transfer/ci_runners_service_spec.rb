@@ -108,6 +108,20 @@ RSpec.describe Organizations::Transfer::CiRunnersService, :aggregate_failures, f
       end
     end
 
+    context 'when the group namespace mirror has not been synced yet' do
+      before do
+        Ci::NamespaceMirror.by_namespace_id(group.id).delete_all
+      end
+
+      it 'does not transfer any runners' do
+        execute
+
+        expect(group_runner.reload.organization_id).to eq(old_organization.id)
+        expect(subgroup_runner.reload.organization_id).to eq(old_organization.id)
+        expect(project_runner.reload.organization_id).to eq(old_organization.id)
+      end
+    end
+
     context 'when batching updates' do
       it 'processes records in batches' do
         stub_const(

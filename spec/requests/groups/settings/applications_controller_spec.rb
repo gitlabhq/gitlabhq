@@ -15,8 +15,6 @@ RSpec.describe Groups::Settings::ApplicationsController, feature_category: :syst
 
   include_examples 'applications controller - GET #show'
 
-  include_examples 'applications controller - GET #new'
-
   include_examples 'applications controller - POST #create'
 
   context 'on GET #index' do
@@ -24,7 +22,7 @@ RSpec.describe Groups::Settings::ApplicationsController, feature_category: :syst
       get group_settings_applications_path(group)
     end
 
-    include_examples 'applications controller - scopes exclude mcp'
+    include_examples 'applications controller - scopes include mcp'
   end
 
   context 'on GET #edit' do
@@ -32,6 +30,6 @@ RSpec.describe Groups::Settings::ApplicationsController, feature_category: :syst
       get edit_group_settings_application_path(group, application)
     end
 
-    include_examples 'applications controller - scopes exclude mcp'
+    include_examples 'applications controller - scopes include mcp'
   end
 end

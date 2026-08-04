@@ -56,13 +56,13 @@ module Mcp
           Mcp::Tools::MergeRequests::GetMergeRequestNotesTool
         end
 
-        def perform_0_1_0(arguments)
+        def perform_v0_1_0(arguments)
           execute_graphql_tool(arguments)
         end
 
         override :perform_default
         def perform_default(arguments = {})
-          perform_0_1_0(arguments)
+          perform_v0_1_0(arguments)
         end
       end
     end

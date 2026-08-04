@@ -67,21 +67,21 @@ RSpec.describe Mcp::Tools::WorkItems::GetWorkItemTypesService, feature_category:
     end
   end
 
-  describe '#perform_0_1_0' do
+  describe '#perform_v0_1_0' do
     let(:arguments) { { project_id: project.id.to_s } }
 
     it 'executes graphql tool with arguments' do
       expect(service).to receive(:execute_graphql_tool).with(arguments)
 
-      service.send(:perform_0_1_0, arguments)
+      service.send(:perform_v0_1_0, arguments)
     end
   end
 
   describe '#perform_default' do
     let(:arguments) { { project_id: project.id.to_s } }
 
-    it 'delegates to perform_0_1_0' do
-      expect(service).to receive(:perform_0_1_0).with(arguments)
+    it 'delegates to perform_v0_1_0' do
+      expect(service).to receive(:perform_v0_1_0).with(arguments)
 
       service.send(:perform_default, arguments)
     end

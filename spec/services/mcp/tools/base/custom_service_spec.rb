@@ -59,14 +59,14 @@ RSpec.describe Mcp::Tools::Base::CustomService, :aggregate_failures, feature_cat
 
       protected
 
-      def perform_1_0_0(arguments = {})
+      def perform_v1_0_0(arguments = {})
         ::Mcp::Tools::Base::Response.success(
           [{ type: 'text', text: "Hello #{arguments[:name]} (v1.0.0)" }],
           { version: '1.0.0', name: arguments[:name] }
         )
       end
 
-      def perform_1_1_0(arguments = {})
+      def perform_v1_1_0(arguments = {})
         text = "Hello #{arguments[:name]}"
         text += ", age #{arguments[:age]}" if arguments[:age]
         text += " (v1.1.0)"
@@ -77,7 +77,7 @@ RSpec.describe Mcp::Tools::Base::CustomService, :aggregate_failures, feature_cat
         )
       end
 
-      def perform_2_0_0(arguments = {})
+      def perform_v2_0_0(arguments = {})
         ::Mcp::Tools::Base::Response.success(
           [{ type: 'text', text: "Hello #{arguments[:full_name]} (v2.0.0)" }],
           { version: '2.0.0', full_name: arguments[:full_name], metadata: arguments[:metadata] }

@@ -154,7 +154,7 @@ If someone else closes or takes action on an issue or epic, your to-do item
 remains pending.
 
 When a merge request is merged or closed, to-do items for all users that were
-assigned, requested to review, required to approve, or added as approvers are marked as done.
+assigned, added as reviewers or approvers, or required to approve are marked as done. This includes to do items related to failed pipelines.
 
 ## Mark a to-do item as done
 

@@ -382,7 +382,7 @@ module Mcp
         }
       }
 
-      def perform_0_1_0(_arguments = {})
+      def perform_v0_1_0(_arguments = {})
         data = { version: Gitlab::VERSION, revision: Gitlab.revision }
         formatted_content = [{ type: 'text', text: data[:version] }]
         ::Mcp::Tools::Base::Response.success(formatted_content, data)
@@ -390,7 +390,7 @@ module Mcp
 
       override :perform_default
       def perform_default(arguments = {})
-        perform_0_1_0(arguments)
+        perform_v0_1_0(arguments)
       end
     end
   end
@@ -422,7 +422,7 @@ register_version '0.2.0', {
 1. Implement the version-specific method:
 
 ```ruby
-def perform_0_2_0(arguments = {})
+def perform_v0_2_0(arguments = {})
   data = {
     version: Gitlab::VERSION,
     revision: Gitlab.revision
@@ -442,7 +442,7 @@ end
 ```ruby
 override :perform_default
 def perform_default(arguments = {})
-  perform_0_2_0(arguments)
+  perform_v0_2_0(arguments)
 end
 ```
 

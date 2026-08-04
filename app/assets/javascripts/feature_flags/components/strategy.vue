@@ -1,11 +1,21 @@
 <script>
-import { GlAlert, GlButton, GlFormSelect, GlFormGroup, GlLink, GlToken } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlButton,
+  GlFormSelect,
+  GlFormGroup,
+  GlLink,
+  GlToken,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import { isNumber } from 'lodash-es';
 import { s__, __ } from '~/locale';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import {
+  ALL_ENVIRONMENTS_NAME,
   EMPTY_PARAMETERS,
   STRATEGY_SELECTIONS,
+  ROLLOUT_STRATEGY_ALL_USERS,
   ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
 } from '../constants';
 
@@ -24,6 +34,9 @@ export default {
     NewEnvironmentsDropdown,
     StrategyParameters,
     HelpIcon,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   inject: {
     strategyTypeDocsPagePath: {
@@ -81,25 +94,47 @@ export default {
     appliesToAllEnvironments() {
       return (
         this.filteredEnvironments.length === 1 &&
-        this.filteredEnvironments[0].environmentScope === '*'
+        this.filteredEnvironments[0].environmentScope === ALL_ENVIRONMENTS_NAME
       );
     },
     filteredEnvironments() {
       return this.environments.filter((e) => !e.shouldBeDestroyed);
     },
+    selectedEnvironmentScopes() {
+      return this.filteredEnvironments.map(({ environmentScope }) => environmentScope);
+    },
     isPercentUserRollout() {
       return this.formStrategy.name === ROLLOUT_STRATEGY_PERCENT_ROLLOUT;
+    },
+    isDefaultStrategy() {
+      return this.formStrategy.name === ROLLOUT_STRATEGY_ALL_USERS;
     },
   },
   methods: {
     addEnvironment(environment) {
-      const allEnvironmentsScope = this.environments.find(
-        (scope) => scope.environmentScope === '*',
+      const existingScope = this.environments.find(
+        (scope) => scope.environmentScope === environment,
       );
-      if (allEnvironmentsScope) {
-        allEnvironmentsScope.shouldBeDestroyed = true;
+
+      if (existingScope && !existingScope.shouldBeDestroyed) {
+        return;
       }
-      this.environments.push({ environmentScope: environment });
+
+      if (environment !== ALL_ENVIRONMENTS_NAME) {
+        // Adding a specific environment replaces the "All environments" (*) scope.
+        this.environments
+          .filter((scope) => scope.environmentScope === ALL_ENVIRONMENTS_NAME)
+          .forEach((scope) => this.discardScope(scope));
+      }
+
+      if (existingScope) {
+        this.environments = this.environments.map((scope) =>
+          scope === existingScope ? { ...scope, shouldBeDestroyed: false } : scope,
+        );
+      } else {
+        this.environments.push({ environmentScope: environment });
+      }
+
       this.onStrategyChange({ ...this.formStrategy, scopes: this.environments });
     },
     onStrategyTypeChange(name) {
@@ -113,15 +148,26 @@ export default {
       this.$emit('change', s);
       this.formStrategy = s;
     },
+    // A persisted scope must be sent back marked for destruction; an unsaved
+    // one can just be dropped.
+    discardScope(scope) {
+      this.environments = isNumber(scope.id)
+        ? this.environments.map((s) => (s === scope ? { ...s, shouldBeDestroyed: true } : s))
+        : this.environments.filter((s) => s !== scope);
+    },
     removeScope(environment) {
-      if (isNumber(environment.id)) {
-        // eslint-disable-next-line no-param-reassign
-        environment.shouldBeDestroyed = true;
-      } else {
-        this.environments = this.environments.filter((e) => e !== environment);
-      }
+      this.discardScope(environment);
       if (this.filteredEnvironments.length === 0) {
-        this.environments.push({ environmentScope: '*' });
+        const allEnvironmentsScope = this.environments.find(
+          (scope) => scope.environmentScope === ALL_ENVIRONMENTS_NAME,
+        );
+        if (allEnvironmentsScope) {
+          this.environments = this.environments.map((scope) =>
+            scope === allEnvironmentsScope ? { ...scope, shouldBeDestroyed: false } : scope,
+          );
+        } else {
+          this.environments.push({ environmentScope: ALL_ENVIRONMENTS_NAME });
+        }
       }
       this.onStrategyChange({ ...this.formStrategy, scopes: this.environments });
     },
@@ -129,93 +175,90 @@ export default {
 };
 </script>
 <template>
-  <div>
-    <gl-alert v-if="isPercentUserRollout" variant="tip" :dismissible="false">
-      {{ $options.i18n.considerFlexibleRollout }}
-    </gl-alert>
+  <div class="gl-border-b gl-mb-6 gl-flex gl-justify-between gl-gap-3 gl-pb-5">
+    <div class="gl-flex gl-flex-col gl-gap-3">
+      <gl-form-group :label="$options.i18n.strategyTypeLabel" :label-for="strategyTypeId">
+        <template #description>
+          {{ $options.i18n.strategyTypeDescription }}
+          <gl-link
+            :aria-label="s__('FeatureFlag|Feature flag strategy documentation')"
+            :href="strategyTypeDocsPagePath"
+            target="_blank"
+          >
+            <help-icon />
+          </gl-link>
+        </template>
+        <gl-form-select
+          :id="strategyTypeId"
+          :value="formStrategy.name"
+          :options="$options.strategies"
+          @change="onStrategyTypeChange"
+        />
+      </gl-form-group>
 
-    <div class="gl-border-t-1 gl-border-t-default gl-py-6 gl-border-t-solid">
-      <div class="gl-flex gl-flex-col @md/panel:gl-flex-row @md/panel:!gl-flex-wrap">
-        <div class="!gl-mr-7">
-          <gl-form-group :label="$options.i18n.strategyTypeLabel" :label-for="strategyTypeId">
-            <template #description>
-              {{ $options.i18n.strategyTypeDescription }}
-              <gl-link
-                :aria-label="s__('FeatureFlag|Feature flag strategy documentation')"
-                :href="strategyTypeDocsPagePath"
-                target="_blank"
-              >
-                <help-icon />
-              </gl-link>
-            </template>
-            <gl-form-select
-              :id="strategyTypeId"
-              :value="formStrategy.name"
-              :options="$options.strategies"
-              @change="onStrategyTypeChange"
-            />
-          </gl-form-group>
-        </div>
+      <gl-alert v-if="isPercentUserRollout" variant="tip" :dismissible="false">
+        {{ $options.i18n.considerFlexibleRollout }}
+      </gl-alert>
 
-        <div data-testid="strategy">
-          <strategy-parameters
-            :strategy="strategy"
-            :user-lists="userLists"
-            @change="onStrategyChange"
-          />
-        </div>
-
-        <div
-          class="gl-offset-md-0 gl-order-md-0 !gl-order-first gl-ml-auto !gl-self-end @md/panel:!gl-self-stretch"
-        >
-          <gl-button
-            data-testid="delete-strategy-button"
-            variant="danger"
-            icon="remove"
-            :aria-label="__('Delete')"
-            @click="$emit('delete')"
-          />
-        </div>
+      <div v-if="!isDefaultStrategy" data-testid="strategy">
+        <strategy-parameters
+          :strategy="strategy"
+          :user-lists="userLists"
+          @change="onStrategyChange"
+        />
       </div>
 
-      <label class="gl-block" :for="environmentsDropdownId">{{
-        $options.i18n.environmentsLabel
-      }}</label>
-      <div class="gl-flex gl-flex-col">
-        <div class="gl-flex gl-flex-col @md/panel:gl-flex-row @md/panel:gl-items-center">
-          <new-environments-dropdown
-            :id="environmentsDropdownId"
-            class="gl-mr-3"
-            @add="addEnvironment"
-          />
-          <span
-            v-if="appliesToAllEnvironments"
-            class="gl-mt-3 gl-text-subtle @md/panel:!gl-ml-5 @md/panel:!gl-mt-0"
-          >
-            {{ $options.i18n.allEnvironments }}
-          </span>
-          <div v-else class="gl-flex gl-flex-wrap gl-items-center">
-            <gl-token
-              v-for="environment in filteredEnvironments"
-              :key="environment.id"
-              class="gl-mb-3 gl-mr-3 gl-mt-3 !gl-rounded-full @md/panel:!gl-ml-3 @md/panel:!gl-mr-0 @md/panel:!gl-mt-0"
-              @close="removeScope(environment)"
-            >
-              {{ environment.environmentScope }}
-            </gl-token>
+      <div class="gl-flex gl-flex-col gl-gap-2">
+        <label class="gl-mb-0 gl-block" :for="environmentsDropdownId">{{
+          $options.i18n.environmentsLabel
+        }}</label>
+        <div class="gl-flex gl-flex-col">
+          <div class="gl-flex gl-flex-col @md/panel:gl-flex-row @md/panel:gl-items-center">
+            <new-environments-dropdown
+              :id="environmentsDropdownId"
+              class="gl-mr-3"
+              :excluded-environments="selectedEnvironmentScopes"
+              @add="addEnvironment"
+            />
+            <span v-if="appliesToAllEnvironments" class="gl-text-subtle">
+              {{ $options.i18n.allEnvironments }}
+            </span>
+            <div v-else class="gl-flex gl-flex-wrap gl-items-center gl-gap-2">
+              <gl-token
+                v-for="environment in filteredEnvironments"
+                :key="environment.id"
+                @close="removeScope(environment)"
+              >
+                {{ environment.environmentScope }}
+              </gl-token>
+            </div>
           </div>
         </div>
       </div>
-      <span class="gl-inline-block gl-py-3">
-        {{ $options.i18n.environmentsSelectDescription }}
-      </span>
-      <gl-link
-        :aria-label="s__('FeatureFlag|Feature flag environment documentation')"
-        :href="environmentsScopeDocsPath"
-        target="_blank"
-      >
-        <help-icon />
-      </gl-link>
+
+      <div class="gl-flex gl-items-baseline gl-gap-2">
+        <span class="gl-inline-block gl-py-3">
+          {{ $options.i18n.environmentsSelectDescription }}
+        </span>
+        <gl-link
+          :aria-label="s__('FeatureFlag|Feature flag environment documentation')"
+          :href="environmentsScopeDocsPath"
+          target="_blank"
+        >
+          <help-icon />
+        </gl-link>
+      </div>
     </div>
+
+    <gl-button
+      v-gl-tooltip
+      class="gl-self-start"
+      data-testid="delete-strategy-button"
+      category="tertiary"
+      icon="remove"
+      :title="__('Remove')"
+      :aria-label="__('Remove')"
+      @click="$emit('delete')"
+    />
   </div>
 </template>

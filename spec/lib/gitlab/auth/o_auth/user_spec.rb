@@ -80,6 +80,85 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
     end
   end
 
+  describe '#existing_user_for_email_link' do
+    subject(:result) { oauth_user.existing_user_for_email_link }
+
+    context 'when auto_link_user is disabled' do
+      before do
+        stub_omniauth_config(auto_link_user: false, allow_single_sign_on: [provider])
+      end
+
+      context 'and an existing user has the same email' do
+        let!(:existing_user) { create(:user, email: 'john@mail.com') }
+
+        it 'returns the existing user' do
+          expect(result).to eq(existing_user)
+        end
+      end
+
+      context 'and an existing user has the email as a confirmed secondary email' do
+        let!(:existing_user) { create(:user, email: 'primary@mail.com') }
+        let!(:secondary_email) { create(:email, :confirmed, user: existing_user, email: 'john@mail.com') }
+
+        it 'returns the existing user' do
+          expect(result).to eq(existing_user)
+        end
+      end
+
+      context 'and an existing user has the email as an unconfirmed secondary email' do
+        let!(:existing_user) { create(:user, email: 'primary@mail.com') }
+        let!(:secondary_email) { create(:email, user: existing_user, email: 'john@mail.com') }
+
+        it 'returns nil because only confirmed secondary emails are matched' do
+          expect(result).to be_nil
+        end
+      end
+
+      context 'and no existing user has the same email' do
+        it 'returns nil' do
+          expect(result).to be_nil
+        end
+      end
+
+      context 'and the identity already exists for the provider' do
+        let!(:existing_user) { create(:omniauth_user, extern_uid: uid, provider: provider, email: 'john@mail.com') }
+
+        it 'returns nil because the user is not a new record' do
+          expect(result).to be_nil
+        end
+      end
+
+      context 'and the auth hash has no email' do
+        let(:info_hash) { { nickname: 'john', name: 'John' } }
+        let!(:existing_user) { create(:user, email: 'john@mail.com') }
+
+        it 'returns nil' do
+          expect(result).to be_nil
+        end
+      end
+    end
+
+    context 'when auto_link_user is enabled' do
+      before do
+        stub_omniauth_config(auto_link_user: true, allow_single_sign_on: [provider])
+      end
+
+      context 'and an existing user has the same email' do
+        let!(:existing_user) { create(:user, email: 'john@mail.com') }
+
+        it 'returns nil because auto-link links the existing user (not a new record)' do
+          expect(result).to be_nil
+        end
+      end
+
+      context 'and no existing user has the same email' do
+        it 'returns nil because auto-link is enabled' do
+          expect(result).to be_nil
+        end
+      end
+    end
+  end
+
   describe '#persisted?' do
     let_it_be(:existing_user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'my-provider') }
 

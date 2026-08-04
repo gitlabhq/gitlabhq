@@ -94,7 +94,7 @@ class Snippet < ApplicationRecord
   scope :inc_statistics, -> { includes(:statistics) }
   scope :with_statistics, -> { joins(:statistics) }
   scope :with_repository_storage_moves, -> { joins(:repository_storage_moves) }
-  scope :inc_projects_namespace_route, -> { includes(project: [:route, :namespace]) }
+  scope :inc_projects_namespace_route, -> { includes(project: [:route, :namespace, :group]) }
 
   scope :in_organization, ->(organization_id) do
     project_snippets_in_org = only_project_snippets

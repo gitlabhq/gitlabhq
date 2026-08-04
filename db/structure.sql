@@ -17467,6 +17467,7 @@ CREATE TABLE ci_pipeline_metadata (
     auto_cancel_on_new_commit smallint DEFAULT 0 NOT NULL,
     auto_cancel_on_job_failure smallint DEFAULT 0 NOT NULL,
     partition_id bigint NOT NULL,
+    security_policy_protected_branch_bypassed boolean DEFAULT false NOT NULL,
     CONSTRAINT check_9d3665463c CHECK ((char_length(name) <= 255))
 );
 
@@ -30910,6 +30911,7 @@ CREATE TABLE security_scan_profiles (
     name text NOT NULL,
     description text,
     configuration jsonb DEFAULT '{}'::jsonb NOT NULL,
+    deleted_at timestamp with time zone,
     CONSTRAINT check_58c7066495 CHECK ((char_length(description) <= 2047)),
     CONSTRAINT check_f1e9f004bb CHECK ((char_length(name) <= 255))
 );
@@ -50187,9 +50189,11 @@ CREATE INDEX index_security_scan_profile_triggers_on_namespace_id ON security_sc
 
 CREATE UNIQUE INDEX index_security_scan_profile_triggers_on_profile_trigger_unique ON security_scan_profile_triggers USING btree (security_scan_profile_id, trigger_type);
 
-CREATE UNIQUE INDEX index_security_scan_profiles_namespace_scan_type_name ON security_scan_profiles USING btree (namespace_id, scan_type, lower(name));
+CREATE INDEX index_security_scan_profiles_on_namespace_id ON security_scan_profiles USING btree (namespace_id);
 
 CREATE UNIQUE INDEX index_security_scan_profiles_projects_on_unique_project_profile ON security_scan_profiles_projects USING btree (project_id, security_scan_profile_id);
+
+CREATE UNIQUE INDEX index_security_scan_profiles_unique_name_not_deleted ON security_scan_profiles USING btree (namespace_id, scan_type, lower(name)) WHERE (deleted_at IS NULL);
 
 CREATE INDEX index_security_scans_for_non_purged_records ON security_scans USING btree (created_at, id) WHERE (status <> 6);
 
@@ -61204,6 +61208,9 @@ ALTER TABLE ONLY scim_oauth_access_tokens
 
 ALTER TABLE ONLY vulnerability_occurrences
     ADD CONSTRAINT fk_rails_c8661a61eb FOREIGN KEY (primary_identifier_id) REFERENCES vulnerability_identifiers(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY vulnerability_occurrences
+    ADD CONSTRAINT fk_rails_c8661a61eb_p FOREIGN KEY (partition_id, primary_identifier_id) REFERENCES vulnerability_identifiers(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY project_export_jobs
     ADD CONSTRAINT fk_rails_c88d8db2e1 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

@@ -111,6 +111,31 @@ Prerequisites:
 If the setting is locked by a parent group, the control is disabled and
 cannot be changed at the project level.
 
+## Event attribution with composite identity
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/247149) in GitLab 19.3.
+
+{{< /history >}}
+
+When an agent session runs with a [composite identity](composite_identity.md),
+which is the default identity for agent sessions, the AI audit events for the session
+are attributed to the service account.
+The `author_id` field contains the user ID of the service account, and the
+service account appears as the event author.
+
+The event `details` field records the human user who started the session:
+
+| Field                   | Description                |
+|-------------------------|----------------------------|
+| `human_author_id`       | User ID of the human user  |
+| `human_author_name`     | Name of the human user     |
+| `human_author_username` | Username of the human user |
+
+When a session is authenticated with a human user's own token, the human user
+is the event author and the `human_author_*` fields are not added.
+
 ## Related topics
 
 - [GitLab Duo Agent Platform](_index.md)

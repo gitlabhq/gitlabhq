@@ -83,13 +83,13 @@ RSpec.describe Mcp::Tools::Base::AggregatedService, feature_category: :mcp_serve
 
           private
 
-          def perform_1_0_0(_args)
+          def perform_v1_0_0(_args)
             tool = tools.first
 
             tool.execute(request:, params:)
           end
 
-          def perform_2_0_0(_args)
+          def perform_v2_0_0(_args)
             tool = tools.second
             params[:arguments][:another] = 1
 

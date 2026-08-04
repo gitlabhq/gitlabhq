@@ -21,6 +21,8 @@ describe('FileBrowser', () => {
     });
   };
 
+  const findTree = () => wrapper.findComponent(DiffsFileTree);
+
   beforeEach(() => {
     pinia = createTestingPinia();
     useDiffsList();
@@ -34,7 +36,7 @@ describe('FileBrowser', () => {
     useDiffsList().loadedFiles = loadedFiles;
     useDiffsView().diffsStats = { diffsCount: totalFilesCount };
     createComponent();
-    const tree = wrapper.findComponent(DiffsFileTree);
+    const tree = findTree();
     expect(tree.props('loadedFiles')).toStrictEqual(loadedFiles);
     expect(tree.props('totalFilesCount')).toStrictEqual(totalFilesCount);
     expect(tree.props('floatingResize')).toBe(true);
@@ -42,43 +44,89 @@ describe('FileBrowser', () => {
 
   it('uses floating resize', () => {
     createComponent();
-    expect(wrapper.findComponent(DiffsFileTree).props('floatingResize')).toBe(true);
+    expect(findTree().props('floatingResize')).toBe(true);
   });
 
   it('is visible by default', () => {
     createComponent();
-    expect(wrapper.findComponent(DiffsFileTree).exists()).toBe(true);
+    expect(findTree().exists()).toBe(true);
   });
 
   it('hides file browser', () => {
     useFileBrowser().fileBrowserVisible = false;
     createComponent();
-    expect(wrapper.findComponent(DiffsFileTree).exists()).toBe(false);
+    expect(findTree().exists()).toBe(false);
   });
 
   it('handles click', async () => {
     const file = { fileHash: 'foo' };
     createComponent();
-    await wrapper.findComponent(DiffsFileTree).vm.$emit('click-file', file);
+    await findTree().vm.$emit('click-file', file);
     expect(wrapper.emitted('click-file')).toStrictEqual([[file]]);
   });
 
   it('handles toggle-folder', async () => {
     const path = 'foo';
     createComponent();
-    await wrapper.findComponent(DiffsFileTree).vm.$emit('toggle-folder', path);
+    await findTree().vm.$emit('toggle-folder', path);
     expect(useFileBrowser().toggleTreeOpen).toHaveBeenCalledWith(path);
   });
 
   describe('linkedFilePath prop', () => {
     it('passes linkedFilePath to DiffsFileTree', () => {
       createComponent({ linkedFilePath: 'path/to/file.txt' });
-      expect(wrapper.findComponent(DiffsFileTree).props('linkedFilePath')).toBe('path/to/file.txt');
+      expect(findTree().props('linkedFilePath')).toBe('path/to/file.txt');
     });
 
     it('passes null when linkedFilePath is not provided', () => {
       createComponent();
-      expect(wrapper.findComponent(DiffsFileTree).props('linkedFilePath')).toBeNull();
+      expect(findTree().props('linkedFilePath')).toBeNull();
+    });
+  });
+
+  describe('current file highlight', () => {
+    beforeEach(() => {
+      useFileBrowser().tree = [
+        { type: 'blob', fileHash: 'first' },
+        { type: 'blob', fileHash: 'second' },
+      ];
+    });
+
+    it('reflects the clicked file when not in single-file mode', async () => {
+      useDiffsView().singleFileMode = false;
+      createComponent();
+      expect(findTree().props('currentDiffFileId')).toBe('');
+      await findTree().vm.$emit('click-file', { fileHash: 'second' });
+      expect(findTree().props('currentDiffFileId')).toBe('second');
+    });
+
+    describe('in single-file mode', () => {
+      beforeEach(() => {
+        useDiffsView().singleFileMode = true;
+      });
+
+      it('tracks currentFileIndex regardless of prior click', async () => {
+        useDiffsView().currentFileIndex = 0;
+        createComponent();
+        // simulate a stale click on a different file
+        await findTree().vm.$emit('click-file', { fileHash: 'second' });
+        expect(findTree().props('currentDiffFileId')).toBe('first');
+      });
+
+      it('updates the highlight when navigating to the next file', async () => {
+        useDiffsView().currentFileIndex = 0;
+        createComponent();
+        expect(findTree().props('currentDiffFileId')).toBe('first');
+        useDiffsView().currentFileIndex = 1;
+        await Vue.nextTick();
+        expect(findTree().props('currentDiffFileId')).toBe('second');
+      });
+
+      it('falls back to empty string for an out-of-range index', () => {
+        useDiffsView().currentFileIndex = 5;
+        createComponent();
+        expect(findTree().props('currentDiffFileId')).toBe('');
+      });
     });
   });
 });

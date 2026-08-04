@@ -694,8 +694,6 @@ principles:
     description: Frontend testing hierarchy — which test type to write (unit vs MSW integration vs Capybara vs QA), lazy-load discovery, and cross-layer anti-patterns
     group: Testing
     owner_team: '@gitlab-org/maintainers/frontend'
-    secondary_teams:
-      - '@gitlab-org/plan-stage/frontend-engineers'
     file_filters:
       - 'spec/frontend/**/*'
       - 'ee/spec/frontend/**/*'
@@ -712,8 +710,6 @@ principles:
     description: How to write MSW integration tests correctly (setup, mounting, handlers, fixtures, request counting)
     group: Testing
     owner_team: '@gitlab-org/maintainers/frontend'
-    secondary_teams:
-      - '@gitlab-org/plan-stage/frontend-engineers'
     file_filters:
       - 'spec/frontend/msw_integration/**/*'
       - 'ee/spec/frontend/msw_integration/**/*'

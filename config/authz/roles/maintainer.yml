@@ -59,6 +59,7 @@ project:
   - admin_web_hook
   - admin_wiki
   - apply_security_scan_profiles
+  - block_ai_catalog_mcp_server
   - change_commit_committer_check
   - change_commit_committer_name_check
   - change_push_rules

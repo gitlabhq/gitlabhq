@@ -18,8 +18,10 @@ Gem::Specification.new do |spec|
   spec.files = Dir['lib/**/*.rb', "README.md"]
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "freezolite", "~> 0.6"
+  spec.add_dependency "freezolite", "~> 0.7"
 
   spec.add_development_dependency "gitlab-styles", "~> 14.0"
   spec.add_development_dependency "pry-byebug", "~> 3.12"
+  spec.add_development_dependency "strings", "~> 0.2"
+  spec.add_development_dependency "unicode_utils", "1.4.0"
 end

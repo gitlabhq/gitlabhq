@@ -212,6 +212,10 @@ schema](#manifest-schema)). The separate tooling MR, which carries only
 the global routing tables (AGENTS.md, CLAUDE.md, SKILL.md), falls back
 to the broad `/.ai/` and `/.claude/` AI-harness owners.
 
+When individual SSOT authors resolve, the distiller mentions and assigns up to
+three of them as reviewers. If no author resolves, it selects one available
+member of the principle's `owner_team`; CODEOWNERS remains the approval route.
+
 ## Running the sync locally
 
 Both binaries operate on the consuming repository's working tree, which they

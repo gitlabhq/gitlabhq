@@ -631,9 +631,9 @@ module Gitlab
           truncate_diff(out)
         end
 
-        # Returns the iid of an open MR for the given source branch, or nil.
+        # Returns an open MR for the given source branch, or nil.
         # `order_by=created_at&sort=desc` is explicit because the API default is implementation-defined.
-        def find_open_mr_iid(encoded_project, source_branch, api_token)
+        def find_open_mr(encoded_project, source_branch, api_token)
           uri = URI("#{workflow.gitlab_host}/api/v4/projects/#{encoded_project}/merge_requests")
           uri.query = URI.encode_www_form(state: 'opened', source_branch: source_branch,
             order_by: 'created_at', sort: 'desc')
@@ -641,7 +641,7 @@ module Gitlab
           return nil unless response.is_a?(Net::HTTPSuccess)
 
           mrs = JSON.parse(response.body)
-          mrs.first&.fetch('iid', nil)
+          mrs.first
         end
 
         # The MR author's user ID (the service account whose token we use), memoized for the run.
@@ -658,126 +658,11 @@ module Gitlab
         end
         # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
-        # Machine accounts that commit to SSOT docs but should never be pinged
-        # as "authors". Required in addition to the API `bot` flag because these
-        # accounts report `bot: false`.
-        NON_PINGABLE_USERNAMES = %w[
-          service-modelops-agent-principles-distiller
-          gitlab-bot
-        ].freeze
-
-        # GraphQL `Repository.commits(ref:, path:)` is `calls_gitaly!` and costs ~12 complexity per aliased call against
-        # the API's 250-point cap.
-        # Measured empirically: 13 aliases is the last value that succeeds when each alias also selects `pageInfo`; we
-        # select only `author` here and still keep a comfortable margin below the ceiling for any future field additions
-        # (a 15-source principle like `backend-ruby` would otherwise blow past 13 in a single request).
-        AUTHOR_LOOKUP_BATCH_SIZE = 10
-
-        # Builds the list of `@username` mentions for the people who changed the SSOT docs backing the given principles
-        # since each was last distilled. Returns [] when nothing resolves, so the caller falls back to the team ping.
-        # Best-effort: any GraphQL failure logs and contributes no mentions rather than failing the MR.
-        #
-        # Only the notification changes: CODEOWNERS still routes approval to the principle's owner_team, so an
-        # unavailable SSOT author cannot block the MR.
-        def ssot_author_mentions(affected_entries)
-          usernames = affected_entries.values.flat_map { |entry| ssot_author_usernames(entry) }.uniq
-
-          usernames.map { |username| "@#{username}" }
-        end
-
-        # Pingable GitLab usernames of everyone who authored a commit touching this principle's SSOT paths in the range
-        # prior_sha..target_sha, resolved via GraphQL `Repository.commits(ref: "A..B", path:)`.
-        # The range walk happens server-side, so it works regardless of how much history the CI job's local clone has
-        # fetched. `Commit.author` resolves through `User.by_any_email(confirmed: true)`, which matches private and
-        # secondary emails (not just `public_email`), so authors who never published a public email still resolve.
-        #
-        # Empty when there is no reachable prior SHA (e.g. first distillation), the range has no matching commits, or
-        # the range/paths cannot be resolved (e.g. prior_sha predates the project's history - logged and treated as
-        # empty, not fatal).
-        def ssot_author_usernames(affected_entry)
-          return [] unless affected_entry
-
-          prior_sha = affected_entry[:prior_sha]
-          return [] if prior_sha.nil? || prior_sha.empty?
-
-          sources = affected_entry[:changed_sources] || []
-          baseline_path = affected_entry.dig(:config, 'baseline')
-          paths = sources.map { |s| s['path'] }
-          paths.unshift(baseline_path) if baseline_path
-          return [] if paths.empty?
-
-          commit_range = "#{prior_sha}..#{distillation_base_sha}"
-
-          paths.each_slice(AUTHOR_LOOKUP_BATCH_SIZE).flat_map do |batch|
-            pingable_usernames_for_paths(commit_range, batch)
-          end.uniq
-        end
-
-        # Per-path commit page size for the author lookup. A page beyond this size is unusual (it implies 100+ commits
-        # touched a single SSOT file since the last distillation) but not impossible for a frequently-edited doc over a
-        # long-stale principle; see pingable_usernames_from_commits for the truncation warning.
-        AUTHOR_LOOKUP_PAGE_SIZE = 100
-
-        # One GraphQL round trip for a batch of paths (see AUTHOR_LOOKUP_BATCH_SIZE), each as its own aliased `commits`
-        # field so a single request covers every source of a principle without exceeding the query complexity limit.
-        # Returns [] (logged) on any GraphQL failure, including an unreachable ref in `commit_range`.
-        def pingable_usernames_for_paths(commit_range, paths)
-          aliases = paths.each_with_index.to_h { |path, i| ["p#{i}", path] }
-          path_vars = aliases.keys.map { |alias_name| "$path_#{alias_name}: String!" }.join(', ')
-
-          query = <<~GRAPHQL
-            query($fullPath: ID!, $range: String!, #{path_vars}) {
-              project(fullPath: $fullPath) {
-                repository {
-                  #{aliases.keys.map { |alias_name| commits_alias_fragment(alias_name) }.join("\n")}
-                }
-              }
-            }
-          GRAPHQL
-
-          variables = { fullPath: workflow.catalog_project_path, range: commit_range }
-          aliases.each { |alias_name, path| variables["path_#{alias_name}"] = path }
-
-          data = workflow.query_graphql(query, variables)
-          return [] unless data
-
-          repository = data.dig('project', 'repository') || {}
-          aliases.flat_map do |alias_name, path|
-            pingable_usernames_from_commits(repository[alias_name], path)
-          end.uniq
-        end
-
-        def commits_alias_fragment(alias_name)
-          "#{alias_name}: commits(ref: $range, path: $path_#{alias_name}, first: #{AUTHOR_LOOKUP_PAGE_SIZE}) " \
-            '{ nodes { author { username bot } } pageInfo { hasNextPage } }'
-        end
-
-        # Extracts pingable usernames from one `commits` connection's nodes: drops commits with no linked GitLab
-        # account, bot accounts (per the API `bot` flag), and the non-pingable deny-list.
-        #
-        # Warns (without failing) when the connection has more pages than AUTHOR_LOOKUP_PAGE_SIZE, since pagination is
-        # not implemented here: authors of commits beyond the first page are silently missed rather than pinged.
-        def pingable_usernames_from_commits(commits_connection, path)
-          return [] unless commits_connection
-
-          if commits_connection.dig('pageInfo', 'hasNextPage')
-            warn Rainbow("WARNING: #{path} has more than #{AUTHOR_LOOKUP_PAGE_SIZE} commits in range; " \
-              'some SSOT authors may not be pinged').yellow
-          end
-
-          nodes = commits_connection['nodes'] || []
-
-          nodes.filter_map do |node|
-            author = node['author']
-            next unless author
-            next if author['bot'] == true
-
-            username = author['username'].to_s
-            next if username.empty?
-            next if NON_PINGABLE_USERNAMES.include?(username.downcase)
-
-            username
-          end
+        def reviewer_resolver
+          @reviewer_resolver ||= ReviewerResolver.new(
+            workflow: workflow,
+            distillation_base_sha: distillation_base_sha
+          )
         end
 
         def fetch_current_user_id(api_token)
@@ -928,9 +813,20 @@ module Gitlab
 
           # Ping the individuals who actually changed the SSOT docs rather than the whole owning team.
           # Falls back to the team ping (or the non-mention slug when fallback_ping_team: false) only when no author
-          # resolves (see ssot_author_mentions and team_display).
-          mentions = ssot_author_mentions(affected.slice(*changed_principles.keys))
-          ping_line = if mentions.empty?
+          # resolves (see team_display).
+          author_entries = affected.slice(*changed_principles.keys)
+          authors = reviewer_resolver.ssot_authors(author_entries)
+          mentions = authors.map { |author| "@#{author[:username]}" }
+          reviewer_ids = authors.filter_map { |author| author[:id] }
+          fallback_reviewer = reviewer_resolver.owner_team_reviewer(team) if reviewer_ids.empty?
+          ping_line = if mentions.any? && fallback_reviewer
+                        "Recent SSOT changes here were authored by #{mentions.join(' ')} — please review. " \
+                          "Reviewer assignment routed to @#{fallback_reviewer[:username]} from " \
+                          "**#{manifest.team_display(team)}**."
+                      elsif fallback_reviewer
+                        "No SSOT author resolved; routing to @#{fallback_reviewer[:username]} from " \
+                          "**#{manifest.team_display(team)}**."
+                      elsif mentions.empty?
                         "Please review: **#{manifest.team_display(team)}**."
                       else
                         "Recent SSOT changes here were authored by #{mentions.join(' ')} — please review."
@@ -961,7 +857,8 @@ module Gitlab
         reflect the documentation updates.
           DESC
 
-          submit_mr(branch, default_branch, ctx, title, description)
+          reviewer_ids = [fallback_reviewer[:id]] if reviewer_ids.empty? && fallback_reviewer
+          submit_mr(branch, default_branch, ctx, title, description, reviewer_ids: reviewer_ids)
         end
 
         # Opens/updates the tooling MR carrying the regenerated global routing tables. Routed to the broad `/.ai/`
@@ -1083,17 +980,10 @@ module Gitlab
         # Branch adoption lets this find an open MR across scheduled runs, while a same-day fresh branch stays
         # idempotent.
         # Either way the MR is updated in place rather than failing on a 409.
-        def submit_mr(branch, default_branch, ctx, title, description)
+        def submit_mr(branch, default_branch, ctx, title, description, reviewer_ids: [])
           encoded_project = URI.encode_www_form_component(ctx.project_id)
-          existing_mr_iid = find_open_mr_iid(encoded_project, branch, ctx.api_token)
-          body = {
-            title: title,
-            # Collapse runs of blank lines so an empty `job_line` (when CI_JOB_URL is unset) doesn't leave a spurious
-            # gap mid-paragraph.
-            description: description.gsub(/\n{3,}/, "\n\n"),
-            labels: Array(ctx.auto_mr_cfg['labels']).join(','),
-            remove_source_branch: ctx.auto_mr_cfg.fetch('remove_source_branch', true)
-          }
+          existing_mr = find_open_mr(encoded_project, branch, ctx.api_token)
+          body = mr_body(ctx, title, description)
           # Assign the MR to its author (the service account) and tag the current milestone so Danger's "no assignee" /
           # "no milestone" warnings don't fire on every weekly auto-MR. Both are best-effort: a lookup failure logs and
           # omits the field rather than aborting.
@@ -1101,22 +991,16 @@ module Gitlab
           body[:assignee_id] = assignee_id if assignee_id
           milestone_id = current_milestone_id(encoded_project, ctx.api_token)
           body[:milestone_id] = milestone_id if milestone_id
+          existing_reviewer_ids = existing_mr.to_h.fetch('reviewers', []).filter_map { |reviewer| reviewer['id']&.to_i }
+          merged_reviewer_ids = (existing_reviewer_ids + reviewer_ids).uniq
+          body[:reviewer_ids] = merged_reviewer_ids if merged_reviewer_ids.any?
 
-          host = workflow.gitlab_host
-          if existing_mr_iid
-            response = workflow.put_json(
-              "#{host}/api/v4/projects/#{encoded_project}/merge_requests/#{existing_mr_iid}",
-              headers: { 'PRIVATE-TOKEN' => ctx.api_token },
-              body: body
-            )
-            action = 'updated'
-          else
-            response = workflow.post_json(
-              "#{host}/api/v4/projects/#{encoded_project}/merge_requests",
-              headers: { 'PRIVATE-TOKEN' => ctx.api_token },
-              body: body.merge(source_branch: branch, target_branch: default_branch)
-            )
-            action = 'created'
+          response, action = submit_mr_request(existing_mr, encoded_project, branch, default_branch, ctx, body)
+
+          if body[:reviewer_ids] && !response.is_a?(Net::HTTPSuccess)
+            warn Rainbow("WARNING: reviewer assignment failed (#{response.code}); retrying without reviewers").yellow
+            body.delete(:reviewer_ids)
+            response, = submit_mr_request(existing_mr, encoded_project, branch, default_branch, ctx, body)
           end
 
           unless response.is_a?(Net::HTTPSuccess)
@@ -1125,7 +1009,47 @@ module Gitlab
             raise "Failed to #{action.delete_suffix('ed')} MR: #{response.code} #{response.body.slice(0, 200)}"
           end
 
-          puts "\n#{Rainbow("MR #{action}: #{JSON.parse(response.body)['web_url']}").green}"
+          response_body = JSON.parse(response.body)
+          warn_if_reviewers_dropped(body[:reviewer_ids], response_body['reviewers'])
+          puts "\n#{Rainbow("MR #{action}: #{response_body['web_url']}").green}"
+        end
+
+        def mr_body(ctx, title, description)
+          {
+            title: title,
+            # Collapse runs of blank lines so an empty `job_line` (when CI_JOB_URL is unset) doesn't leave a spurious
+            # gap mid-paragraph.
+            description: description.gsub(/\n{3,}/, "\n\n"),
+            labels: Array(ctx.auto_mr_cfg['labels']).join(','),
+            remove_source_branch: ctx.auto_mr_cfg.fetch('remove_source_branch', true)
+          }
+        end
+
+        def submit_mr_request(existing_mr, encoded_project, branch, default_branch, ctx, body)
+          if existing_mr
+            response = workflow.put_json(
+              "#{workflow.gitlab_host}/api/v4/projects/#{encoded_project}/merge_requests/#{existing_mr.fetch('iid')}",
+              headers: { 'PRIVATE-TOKEN' => ctx.api_token }, body: body
+            )
+            [response, 'updated']
+          else
+            response = workflow.post_json(
+              "#{workflow.gitlab_host}/api/v4/projects/#{encoded_project}/merge_requests",
+              headers: { 'PRIVATE-TOKEN' => ctx.api_token },
+              body: body.merge(source_branch: branch, target_branch: default_branch)
+            )
+            [response, 'created']
+          end
+        end
+
+        def warn_if_reviewers_dropped(requested_ids, reviewers)
+          return unless requested_ids
+
+          returned_ids = Array(reviewers).filter_map { |reviewer| reviewer['id']&.to_i }
+          dropped_ids = requested_ids - returned_ids
+          return if dropped_ids.empty?
+
+          warn Rainbow("WARNING: GitLab did not assign reviewer IDs: #{dropped_ids.join(', ')}").yellow
         end
       end
     end

@@ -37,7 +37,7 @@ export default {
       default: null,
     },
   },
-  emits: ['setNamespace'],
+  emits: ['set-namespace'],
   data() {
     return {
       namespaceOptions: [],
@@ -88,7 +88,7 @@ export default {
     },
     selectNamespace(value) {
       this.selectedNamespaceId = value;
-      this.$emit('setNamespace', this.selectedNamespaceId);
+      this.$emit('set-namespace', this.selectedNamespaceId);
     },
     getNamespaceString(namespace) {
       return `${namespace.kind}: ${namespace.full_path}`;
@@ -99,7 +99,7 @@ export default {
     }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS),
     onReset() {
       this.selectedNamespaceId = null;
-      this.$emit('setNamespace', null);
+      this.$emit('set-namespace', null);
     },
   },
 };

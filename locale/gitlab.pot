@@ -10085,6 +10085,9 @@ msgstr ""
 msgid "An %{link_start}alert%{link_end} with the same fingerprint is already open. To change the status of this alert, resolve the linked alert."
 msgstr ""
 
+msgid "An account already exists with the email address for your %{label} account. Sign in with your existing credentials to connect your %{label} account."
+msgstr ""
+
 msgid "An administrator added this OAuth application "
 msgstr ""
 
@@ -33992,7 +33995,7 @@ msgstr ""
 msgid "Feature flag"
 msgstr ""
 
-msgid "Feature flag status"
+msgid "Feature flag %{name}"
 msgstr ""
 
 msgid "Feature flag was not removed."
@@ -75854,7 +75857,7 @@ msgstr ""
 msgid "SlackIntegration|GitLab slash commands"
 msgstr ""
 
-msgid "SlackIntegration|Heads up: your prompt and this thread's context get recorded in a GitLab Duo session, visible to anyone with access to the project it's saved in, not just people here. Learn more: %{docs_url}"
+msgid "SlackIntegration|Heads up: your prompt and this thread's context are saved in a GitLab Duo session. These are visible to anyone with access to the project it's saved in, not just people in this conversation."
 msgstr ""
 
 msgid "SlackIntegration|Install GitLab for Slack app…"

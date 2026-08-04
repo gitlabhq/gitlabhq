@@ -572,11 +572,11 @@ RSpec.describe Mcp::Tools::Concerns::Versionable, feature_category: :mcp_server 
 
           private
 
-          def build_variables_1_0_0
+          def build_variables_v1_0_0
             { version: '1.0.0', basic: true, id: params[:id] }
           end
 
-          def build_variables_2_0_0
+          def build_variables_v2_0_0
             {
               version: '2.0.0',
               advanced: true,
@@ -652,7 +652,7 @@ RSpec.describe Mcp::Tools::Concerns::Versionable, feature_category: :mcp_server 
 
           private
 
-          def build_variables_1_0_0
+          def build_variables_v1_0_0
             { version: '1.0.0' }
           end
         end
@@ -668,9 +668,9 @@ RSpec.describe Mcp::Tools::Concerns::Versionable, feature_category: :mcp_server 
   end
 
   describe '#version_method_suffix' do
-    it 'converts version dots to underscores' do
+    it 'prefixes the version with v and converts dots to underscores' do
       instance = test_class.new(version: '1.1.0')
-      expect(instance.send(:version_method_suffix)).to eq('1_1_0')
+      expect(instance.send(:version_method_suffix)).to eq('v1_1_0')
     end
   end
 
@@ -718,14 +718,14 @@ RSpec.describe Mcp::Tools::Concerns::Versionable, feature_category: :mcp_server 
 
         protected
 
-        def perform_1_0_0(arguments = {})
+        def perform_v1_0_0(arguments = {})
           {
             content: [{ type: 'text', text: "Hello #{arguments[:name]} (v1.0.0)" }],
             structuredContent: { version: '1.0.0', name: arguments[:name] }
           }
         end
 
-        def perform_1_1_0(arguments = {})
+        def perform_v1_1_0(arguments = {})
           text = "Hello #{arguments[:name]}"
           text += ", age #{arguments[:age]}" if arguments[:age]
           text += " (v1.1.0)"
@@ -736,7 +736,7 @@ RSpec.describe Mcp::Tools::Concerns::Versionable, feature_category: :mcp_server 
           }
         end
 
-        def perform_2_0_0(arguments = {})
+        def perform_v2_0_0(arguments = {})
           {
             content: [{ type: 'text', text: "Hello #{arguments[:full_name]} (v2.0.0)" }],
             structuredContent: { version: '2.0.0', full_name: arguments[:full_name], metadata: arguments[:metadata] }

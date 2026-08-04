@@ -48,25 +48,6 @@ module Mcp
         def auth_target(_params)
           raise NoMethodError, "#{self.class.name}#auth_target should be implemented in a subclass"
         end
-
-        protected
-
-        override :perform
-        def perform(arguments = {})
-          method_name = "perform_#{version_method_suffix}"
-
-          if respond_to?(method_name, true)
-            send(method_name, arguments) # rubocop:disable GitlabSecurity/PublicSend -- To map version with corresponding method
-          else
-            # Fallback to default implementation if version-specific method doesn't exist
-            perform_default(arguments)
-          end
-        end
-
-        # Default implementation - can be overridden in subclasses
-        def perform_default(_arguments = {})
-          raise NoMethodError, "No implementation found for version #{version}"
-        end
       end
     end
   end

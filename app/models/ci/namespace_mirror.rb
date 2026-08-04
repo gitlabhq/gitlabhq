@@ -9,22 +9,16 @@ module Ci
     belongs_to :namespace
     has_many :project_mirrors, primary_key: :namespace_id, foreign_key: :namespace_id, inverse_of: :namespace_mirror
 
-    scope :by_group_and_descendants, ->(id) do
-      where("traversal_ids @> '{?}'", id)
-    end
-
     # Resolves a single group and its descendants using the
-    # `index_ci_namespace_mirrors_on_traversal_ids_unnest` covering index instead of the
-    # GIN `traversal_ids @>` operator. The GIN path requires a bitmap heap scan that becomes
-    # prohibitively expensive for large subtrees (see
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/601877), whereas the unnest index supports
-    # an index-only scan via the `(traversal_ids[1..N]) IN (...)` form built by
-    # `contains_traversal_ids`.
+    # `index_ci_namespace_mirrors_on_traversal_ids_unnest` covering index via the
+    # `(traversal_ids[1..N]) IN (...)` form built by `contains_traversal_ids`, which
+    # supports an index-only scan even for large subtrees
+    # (see https://gitlab.com/gitlab-org/gitlab/-/issues/601877).
     #
-    # Unlike `by_group_and_descendants`, this only accepts a single id. The GIN scope's array
-    # form (`traversal_ids @> '{a, b}'`) expresses per-row ancestry containment, which the
-    # single-prefix lookup here does not reproduce.
-    scope :by_group_and_descendants_using_covering_index, ->(id) do
+    # Only a single id is supported: the prefix lookup anchors on one group's
+    # traversal_ids, so it cannot express per-row ancestry containment for
+    # multiple ids. Callers with several groups should invoke the scope per id.
+    scope :by_group_and_descendants, ->(id) do
       raise ArgumentError, 'only a single id is supported' if id.is_a?(Enumerable)
 
       traversal_ids = by_namespace_id(id).pick(:traversal_ids)

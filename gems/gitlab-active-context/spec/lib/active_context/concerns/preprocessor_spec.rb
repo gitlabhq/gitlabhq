@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ActiveContext::Concerns::Preprocessor do
+RSpec.describe ActiveContext::Concerns::Preprocessor, :aggregate_failures do
   let(:test_ref_class) do
     Class.new do
       extend ActiveContext::Concerns::Preprocessor
@@ -21,6 +21,38 @@ RSpec.describe ActiveContext::Concerns::Preprocessor do
 
       expect(test_ref_class.preprocessors.length).to eq(1)
       expect(test_ref_class.preprocessors.first[:name]).to eq(:test)
+    end
+
+    context 'with preprocessors added conditionally' do
+      before do
+        test_ref_class.add_preprocessor :test do |refs|
+          { successful: refs, failed: [] }
+        end
+
+        test_ref_class.add_preprocessor(
+          :conditional_false,
+          should_run: -> { 1.is_a?(String) }
+        ) do |refs|
+          { successful: refs, failed: [] }
+        end
+
+        test_ref_class.add_preprocessor(
+          :conditional_true,
+          should_run: -> { "a".is_a?(String) }
+        ) do |refs|
+          { successful: refs, failed: [] }
+        end
+      end
+
+      it 'adds all preprocessors and correctly evaluates eligible preprocessors' do
+        expect(test_ref_class.preprocessors.length).to eq(3)
+        expect(test_ref_class.preprocessors.pluck(:name))
+          .to eq([:test, :conditional_false, :conditional_true])
+
+        expect(test_ref_class.eligible_preprocessors.length).to eq(2)
+        expect(test_ref_class.eligible_preprocessors.pluck(:name))
+          .to eq([:test, :conditional_true])
+      end
     end
   end
 
@@ -56,6 +88,60 @@ RSpec.describe ActiveContext::Concerns::Preprocessor do
       end
 
       it 'chains preprocessors in order' do
+        result = test_ref_class.preprocess(refs)
+
+        expect(result[:successful]).to eq(refs)
+        expect(result[:failed]).to be_empty
+      end
+    end
+
+    context 'with conditional preprocessors' do
+      let(:test_ref_class) do
+        Class.new do
+          extend ActiveContext::Concerns::Preprocessor
+
+          def self.preprocessors
+            @preprocessors ||= []
+          end
+
+          def self.first_preprocessor(refs)
+            { successful: refs, failed: [] }
+          end
+
+          def self.second_preprocessor(_refs)
+            nil
+          end
+
+          def self.third_preprocessor(refs)
+            { successful: refs, failed: [] }
+          end
+
+          add_preprocessor :first do |refs|
+            first_preprocessor(refs)
+          end
+
+          add_preprocessor(
+            :second,
+            should_run: -> { 1.is_a?(String) }
+          ) do |refs|
+            second_preprocessor(refs)
+          end
+
+          add_preprocessor(
+            :third,
+            should_run: -> { "a".is_a?(String) }
+          ) do |refs|
+            third_preprocessor(refs)
+          end
+        end
+      end
+
+      it 'chains preprocessors in order' do
+        expect(test_ref_class).not_to receive(:second_preprocessor)
+
+        expect(test_ref_class).to receive(:first_preprocessor).ordered.and_call_original
+        expect(test_ref_class).to receive(:third_preprocessor).ordered.and_call_original
+
         result = test_ref_class.preprocess(refs)
 
         expect(result[:successful]).to eq(refs)

@@ -12,6 +12,43 @@ RSpec.describe 'shared/snippets/_snippet.html.haml' do
     @noteable_meta_data = Class.new { include Gitlab::NoteableMetadata }.new.noteable_meta_data([snippet], 'Snippet')
   end
 
+  describe 'snippet title rendering', feature_category: :markdown do
+    it 'renders the snippet title as a link using title_html' do
+      render 'shared/snippets/snippet', snippet: snippet
+
+      expect(rendered).to have_link(snippet.title, href: gitlab_snippet_path(snippet))
+    end
+
+    context 'when title_html contains inline markup' do
+      before do
+        snippet.title = 'Hello `world`'
+        snippet.save!
+      end
+
+      it 'renders the title with inline HTML markup' do
+        render 'shared/snippets/snippet', snippet: snippet
+
+        expect(rendered).to have_css('a.title code', text: 'world')
+      end
+    end
+
+    context 'when title_html contains a reference link' do
+      let_it_be(:issue) { create(:issue, project: snippet.project) }
+
+      before do
+        snippet.title = "Fixes #{issue.to_reference}"
+        snippet.save!
+      end
+
+      it 'strips the inner reference link, leaving a single title link' do
+        render 'shared/snippets/snippet', snippet: snippet
+
+        expect(rendered).to have_link(snippet.title, href: gitlab_snippet_path(snippet))
+        expect(rendered).not_to have_css('a.title a')
+      end
+    end
+  end
+
   context 'for snippet with statistics' do
     let_it_be_with_reload(:snippet) { create(:project_snippet) }
 

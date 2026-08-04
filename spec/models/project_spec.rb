@@ -3657,6 +3657,74 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '.root_namespace_ids_by_project_ids' do
+    let_it_be(:group1) { create(:group) }
+    let_it_be(:group_project) { create(:project, namespace: group1) }
+
+    let_it_be(:group2) { create(:group) }
+    let_it_be(:subgroup) { create(:group, parent: group2) }
+    let_it_be(:subgroup_project) { create(:project, namespace: subgroup) }
+
+    let_it_be(:user) { create(:user, :with_namespace) }
+    let_it_be(:personal_project) { create(:project, namespace: user.namespace) }
+
+    let(:project_ids) { [group_project.id, subgroup_project.id, personal_project.id] }
+
+    subject(:root_namespace_ids_by_project_ids) do
+      described_class.root_namespace_ids_by_project_ids(project_ids)
+    end
+
+    it 'returns a hash mapping each project id to its root namespace id' do
+      expect(root_namespace_ids_by_project_ids).to eq({
+        group_project.id => group1.id,
+        subgroup_project.id => group2.id,
+        personal_project.id => user.namespace.id
+      })
+    end
+
+    context 'when given project_ids is nil' do
+      let(:project_ids) { nil }
+
+      it { is_expected.to eq({}) }
+    end
+
+    context 'when given project_ids is an empty array' do
+      let(:project_ids) { [] }
+
+      it { is_expected.to eq({}) }
+    end
+
+    context 'when project_ids includes a non-existent record' do
+      let(:project_ids) { [group_project.id, non_existing_record_id] }
+
+      it 'excludes non-existent project ids' do
+        expect(root_namespace_ids_by_project_ids).to eq(group_project.id => group1.id)
+      end
+    end
+
+    context 'when the number of project_ids is greater than the allowed MAX_PLUCK' do
+      before do
+        stub_const('Project::MAX_PLUCK', 2)
+      end
+
+      it 'fetches the results in batches and merges them' do
+        control = ActiveRecord::QueryRecorder.new do
+          described_class.root_namespace_ids_by_project_ids([group_project.id])
+        end
+
+        batched = ActiveRecord::QueryRecorder.new do
+          expect(root_namespace_ids_by_project_ids).to eq({
+            group_project.id => group1.id,
+            subgroup_project.id => group2.id,
+            personal_project.id => user.namespace.id
+          })
+        end
+
+        expect(batched.count).to eq(control.count + 1)
+      end
+    end
+  end
+
   context 'repository storage by default' do
     let(:project) { build(:project) }
 

@@ -17,7 +17,7 @@ module Mcp
 
         protected
 
-        def build_variables_0_1_0
+        def build_variables_v0_1_0
           build_variables
         end
 

@@ -51,3 +51,8 @@ columns:
   default_kind: DEFAULT
   default_expression: now64(6, 'UTC')
   compression_codec: CODEC(ZSTD(1))
+- name: security_policy_protected_branch_bypassed
+  type: Bool
+  default_kind: DEFAULT
+  default_expression: 'false'
+  compression_codec: CODEC(ZSTD(1))

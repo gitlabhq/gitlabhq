@@ -26,7 +26,7 @@ module Mcp
       protected
 
       # Version 0.1.0 implementation
-      def perform_0_1_0(_arguments = {})
+      def perform_v0_1_0(_arguments = {})
         data = { version: Gitlab::VERSION, revision: Gitlab.revision }
         formatted_content = [{ type: 'text', text: data[:version] }]
         ::Mcp::Tools::Base::Response.success(formatted_content, data)
@@ -35,7 +35,7 @@ module Mcp
       # Fallback to 0.1.0 behavior for any unimplemented versions
       override :perform_default
       def perform_default(arguments = {})
-        perform_0_1_0(arguments)
+        perform_v0_1_0(arguments)
       end
     end
   end

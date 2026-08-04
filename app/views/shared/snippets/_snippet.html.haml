@@ -8,8 +8,7 @@
 
   .gl-justify-between.gl-items-center.gl-grow{ class: "@sm/panel:gl-flex" }
     %div
-      = link_to gitlab_snippet_path(snippet), class: "title gl-text-default gl-font-bold" do
-        = snippet.title
+      = link_to_markdown_field(snippet, :title, gitlab_snippet_path(snippet), { class: "title gl-text-default gl-font-bold" }, strip_links: true)
       - if snippet.hidden_due_to_author_ban?
         %span{ class: 'has-tooltip gl-bg-orange-50 gl-text-orange-600 gl-rounded-base gl-p-2', title: s_("Snippets|This snippet is hidden because its author has been banned") }
           = sprite_icon('spam', size: '16')

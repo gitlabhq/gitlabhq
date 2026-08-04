@@ -93,8 +93,8 @@ describe('NamespaceSelect', () => {
         });
       });
 
-      it('triggers a setNamespace event upon selection', () => {
-        expect(wrapper.emitted('setNamespace')).toEqual([[selectId]]);
+      it('triggers a set-namespace event upon selection', () => {
+        expect(wrapper.emitted('set-namespace')).toEqual([[selectId]]);
       });
     });
   });
@@ -137,8 +137,8 @@ describe('NamespaceSelect', () => {
       });
     });
 
-    it('triggers a setNamespace event upon reset', () => {
-      expect(wrapper.emitted('setNamespace')).toEqual([[null]]);
+    it('triggers a set-namespace event upon reset', () => {
+      expect(wrapper.emitted('set-namespace')).toEqual([[null]]);
     });
   });
 });

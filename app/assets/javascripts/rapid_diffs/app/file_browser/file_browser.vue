@@ -29,11 +29,20 @@ export default {
     };
   },
   computed: {
-    ...mapState(useDiffsView, ['totalFilesCount', 'singleFileMode']),
+    ...mapState(useDiffsView, ['totalFilesCount', 'singleFileMode', 'currentFileIndex']),
     ...mapState(useDiffsList, ['loadedFiles']),
-    ...mapState(useFileBrowser, ['fileBrowserVisible']),
+    ...mapState(useFileBrowser, ['fileBrowserVisible', 'flatBlobsList']),
     treeLoadedFiles() {
       return this.singleFileMode ? null : this.loadedFiles;
+    },
+    currentDiffFileId() {
+      let hash = this.currentFileHash;
+
+      if (this.singleFileMode) {
+        hash = this.flatBlobsList[this.currentFileIndex]?.fileHash ?? '';
+      }
+
+      return hash;
     },
   },
   methods: {
@@ -55,7 +64,7 @@ export default {
     :loaded-files="treeLoadedFiles"
     :total-files-count="totalFilesCount"
     :group-blobs-list-items="groupBlobsListItems"
-    :current-diff-file-id="currentFileHash"
+    :current-diff-file-id="currentDiffFileId"
     :linked-file-path="linkedFilePath"
     @click-file="clickFile"
     @toggle-folder="toggleFolder"

@@ -53,6 +53,64 @@ RSpec.describe UserSettings::IdentitiesController, feature_category: :system_acc
         expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
+
+    context 'when the pending link is bound to a different user' do
+      let(:other_user) { create(:user) }
+
+      before do
+        stub_session(
+          session_data: {
+            identity_link_state: state,
+            identity_link_provider: 'jwt',
+            identity_link_extern_uid: 'jwt-uid',
+            identity_link_user_id: other_user.id
+          }
+        )
+      end
+
+      it 'returns 403 forbidden' do
+        request
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'when no user is bound to the pending link (already-authenticated link flow)' do
+      before do
+        stub_session(
+          session_data: {
+            identity_link_state: state,
+            identity_link_provider: 'jwt',
+            identity_link_extern_uid: 'jwt-uid'
+          }
+        )
+      end
+
+      it 'returns 200 OK' do
+        request
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
+    context 'when the pending link is bound to the authenticated user' do
+      before do
+        stub_session(
+          session_data: {
+            identity_link_state: state,
+            identity_link_provider: 'jwt',
+            identity_link_extern_uid: 'jwt-uid',
+            identity_link_user_id: user.id
+          }
+        )
+      end
+
+      it 'returns 200 OK' do
+        request
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
   end
 
   describe 'POST /-/user_settings/identities', :clean_gitlab_redis_sessions do
@@ -94,6 +152,47 @@ RSpec.describe UserSettings::IdentitiesController, feature_category: :system_acc
         expect(flash[:notice]).to eq(
           format(_('Error linking identity: %{errors}'), errors: 'Provider and Extern UID must be in the session.')
         )
+      end
+    end
+
+    context 'when the pending link is bound to a different user' do
+      let(:other_user) { create(:user) }
+
+      before do
+        stub_session(
+          session_data: {
+            identity_link_state: state,
+            identity_link_provider: 'jwt',
+            identity_link_extern_uid: 'jwt-uid',
+            identity_link_user_id: other_user.id
+          }
+        )
+      end
+
+      it 'returns 403 forbidden and does not link the identity' do
+        expect { request }.not_to change { user.identities.count }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'when the pending link is bound to the authenticated user' do
+      before do
+        stub_session(
+          session_data: {
+            identity_link_state: state,
+            identity_link_provider: 'jwt',
+            identity_link_extern_uid: 'jwt-uid',
+            identity_link_user_id: user.id
+          }
+        )
+      end
+
+      it 'links the identity and notifies the user' do
+        request
+
+        expect(response).to redirect_to profile_account_path
+        expect(flash[:notice]).to eq(_('Authentication method updated'))
       end
     end
 

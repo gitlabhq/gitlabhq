@@ -3903,6 +3903,37 @@ Fields:
 | <a id="mutation-aicatalogmcpservercreate-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutation-aicatalogmcpservercreate-mcpserver"></a>`mcpServer` | [`AiCatalogMcpServer`](#aicatalogmcpserver) | MCP server created. |
 
+### `Mutation.aiCatalogMcpServerSetBlock`
+
+{{< details >}}
+
+- Introduced in GitLab 19.3.
+- Status: Experiment.
+
+{{< /details >}}
+
+Blocks or allows an external MCP server for a group or project (kill-switch).
+
+Input type: `AiCatalogMcpServerSetBlockInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-aicatalogmcpserversetblock-blocked"></a>`blocked` | [`Boolean!`](#boolean) | Set to true to block the MCP server, false to allow it. |
+| <a id="mutation-aicatalogmcpserversetblock-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-aicatalogmcpserversetblock-groupfullpath"></a>`groupFullPath` | [`ID`](#id) | Full path of the group to block or allow the MCP server for. Provide exactly one of `groupFullPath` or `projectFullPath`. |
+| <a id="mutation-aicatalogmcpserversetblock-id"></a>`id` | [`AiCatalogMcpServerID!`](#aicatalogmcpserverid) | Global ID of the MCP server. |
+| <a id="mutation-aicatalogmcpserversetblock-projectfullpath"></a>`projectFullPath` | [`ID`](#id) | Full path of the project to block or allow the MCP server for. Provide exactly one of `groupFullPath` or `projectFullPath`. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-aicatalogmcpserversetblock-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-aicatalogmcpserversetblock-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-aicatalogmcpserversetblock-mcpserver"></a>`mcpServer` | [`AiCatalogMcpServer`](#aicatalogmcpserver) | MCP server with its updated block status. |
+
 ### `Mutation.aiCatalogMcpServerUpdate`
 
 {{< details >}}
@@ -41254,6 +41285,7 @@ Fields:
 | <a id="duoworkflow-auditevents"></a>`auditEvents` {{< icon name="warning-solid" >}} | [`AiAuditEventConnection`](#aiauditeventconnection) | Introduced in GitLab 19.0. Status: Experiment. Audit events recorded for the session. Requires `read_agent_artifacts` on the workflow's project or namespace. Returns no events when the `agent_artifacts_page` feature flag is disabled. |
 | <a id="duoworkflow-createdat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the session was created. |
 | <a id="duoworkflow-environment"></a>`environment` | [`WorkflowEnvironment`](#workflowenvironment) | Environment, like IDE or web. |
+| <a id="duoworkflow-externalmcpblocked"></a>`externalMcpBlocked` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.3. Status: Experiment. Whether the workflow's external MCP server tools are currently blocked for the namespace (group-level kill-switch). Checked per tool call so blocking takes effect mid-session. |
 | <a id="duoworkflow-flowmetadataid"></a>`flowMetadataId` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.3. Status: Experiment. Identifier of the flow that was executed in the session. |
 | <a id="duoworkflow-flowmetadataschemaversion"></a>`flowMetadataSchemaVersion` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.3. Status: Experiment. Schema version of the flow metadata for the session. |
 | <a id="duoworkflow-flowmetadataversion"></a>`flowMetadataVersion` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.3. Status: Experiment. Version of the flow that was executed in the session. |

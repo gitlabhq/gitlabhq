@@ -7,8 +7,12 @@ module ActiveContext
         @preprocessors ||= []
       end
 
-      def add_preprocessor(name, &block)
-        preprocessors << { name: name, block: block }
+      def eligible_preprocessors
+        preprocessors.select { |preprocessor| preprocessor[:should_run].call }
+      end
+
+      def add_preprocessor(name, should_run: -> { true }, &block)
+        preprocessors << { name: name, should_run: should_run, block: block }
       end
 
       def preprocess(refs, **options)
@@ -21,7 +25,7 @@ module ActiveContext
           all_retryable_refs = []
           current_successful_refs = class_refs
 
-          klass.preprocessors.each do |preprocessor|
+          klass.eligible_preprocessors.each do |preprocessor|
             next if current_successful_refs.empty?
 
             processed = preprocessor[:block].call(current_successful_refs, **options)

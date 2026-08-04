@@ -14,7 +14,7 @@ PATH
   remote: gems/auto_freeze
   specs:
     auto_freeze (0.3.0)
-      freezolite (~> 0.6)
+      freezolite (~> 0.7)
 
 PATH
   remote: gems/bundler-checksum
@@ -797,8 +797,8 @@ GEM
       nokogiri (>= 1.5.11, < 2.0.0)
     formatador (0.2.5)
     forwardable (1.3.3)
-    freezolite (0.6.0)
-      require-hooks (~> 0.2)
+    freezolite (0.7.0)
+      require-hooks (~> 0.4)
     fugit (1.11.2)
       et-orbi (~> 1, >= 1.2.11)
       raabro (~> 1.4)
@@ -1966,7 +1966,7 @@ GEM
       uber (< 0.2.0)
     request_store (1.7.0)
       rack (>= 1.4)
-    require-hooks (0.2.3)
+    require-hooks (0.4.1)
     resolv (0.7.1)
     resolv-replace (0.2.0)
       resolv
@@ -3011,7 +3011,7 @@ CHECKSUMS
   fog-xml (0.1.5) sha256=52b9fea10701461dd3eaf9d9839702169b418dbbf50426786b9b74fade373bd6
   formatador (0.2.5) sha256=80821869ddacb79e72870ff4bb1531efacd278c04f2df26bc6b4529ee13582bd
   forwardable (1.3.3) sha256=f17df4bd6afa6f46a003217023fe5716ef88ce261f5c4cf0edbdeed6470cafac
-  freezolite (0.6.0) sha256=a1305e324738633a30904b50f085bebe7b43c64ebc1e23ce848ee0eeaf3b1dfd
+  freezolite (0.7.0) sha256=bc665ea47406ce4971a1cea4debde1675f467132f545d17b12ea7039acd19d3c
   fugit (1.11.2) sha256=4c2e234f750c78d4514d0ca343a0b923847eac3846976fdb23ed4245d8fde6fe
   fuzzyurl (0.9.0) sha256=542efa80f2bcaadbdc402c2f0b572f2e335a1d53e375aecad68bbb3d86860c0f
   gapic-common (1.1.0) sha256=3270ab3c5135012a4ab4d8848f945cf35014192f24504cdb40c66fc67f1beaa3
@@ -3443,7 +3443,7 @@ CHECKSUMS
   reline (0.6.3) sha256=1198b04973565b36ec0f11542ab3f5cfeeec34823f4e54cebde90968092b1835
   representable (3.2.0) sha256=cc29bf7eebc31653586849371a43ffe36c60b54b0a6365b5f7d95ec34d1ebace
   request_store (1.7.0) sha256=e1b75d5346a315f452242a68c937ef8e48b215b9453a77a6c0acdca2934c88cb
-  require-hooks (0.2.3) sha256=224be5b4be0fd2a47cb73286c500da366704a54ec195b6627366380c950efac8
+  require-hooks (0.4.1) sha256=3a4cd3ed0131b9ec5c2e68f64cb0c5ba56daec6fc363d56e8eef74816c374d7d
   resolv (0.7.1) sha256=27d9d5972a61d6401f4e26c84136f1cab6c3ca1938bba7119415df3e926894b8
   resolv-replace (0.2.0) sha256=76d2c92dc6a744b9e27a915d1962b641c52e2c6ef6662a23335672a3ca593b30
   responders (3.0.1) sha256=613fe28e498987f4feaa3230aa6313ca4bd5f0563a3da83511b0dd6cd8f47292
