@@ -22,7 +22,7 @@ query: label = "AI Model Migration" AND opened = true
 ## Quick Links
 
 - **[GitLab AI Features - Default GitLab AI Vendor Models](https://duo-feature-list-754252.gitlab.io/)**: View all features and their current model mappings
-- **[AI Model Version Migration Initiative Epic](https://gitlab.com/groups/gitlab-org/-/epics/15650)**: Central tracking epic for all model migration work
+- **[AI Model Version Migration Initiative Epic](https://gitlab.com/groups/gitlab-org/-/work_items/15650)**: Central tracking epic for all model migration work
 - **[AI Gateway Repository](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist)**: Where model configurations are managed
 - **[Centralized Evaluation Framework](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library)**: For evaluating models and prompts
 
@@ -94,7 +94,7 @@ R = Responsible, A = Accountable, C = Consulted, I = Informed
 ### Standard Migration Process
 
 1. **Initialization**
-   - AI Framework team creates an Issue in the [AI Model Version Migration Initiative Epic](https://gitlab.com/groups/gitlab-org/-/epics/15650)
+   - AI Framework team creates an Issue in the [AI Model Version Migration Initiative Epic](https://gitlab.com/groups/gitlab-org/-/work_items/15650)
    - Issue should use the naming convention: `AI Model Migration - Provider/Model/Version`
    - Apply the [`AI Model Migration`](https://gitlab.com/gitlab-org/gitlab/-/labels?subscribed=&sort=relevance&search=AI+Model+Migration#) label
    - AI Framework team adds model configuration to AI Gateway
@@ -156,7 +156,7 @@ R = Responsible, A = Accountable, C = Consulted, I = Informed
 
 Before starting a model migration:
 
-1. **Create an issue** under the [AI Model Version Migration Initiative epic](https://gitlab.com/groups/gitlab-org/-/epics/15650):
+1. **Create an issue** under the [AI Model Version Migration Initiative epic](https://gitlab.com/groups/gitlab-org/-/work_items/15650):
    - Label with `group::ai framework` and `AI Model Migration`
    - Document behavioral changes or improvements
    - Include any breaking changes or compatibility issues
@@ -425,4 +425,4 @@ See an example in our [Claude 3.7 Model Upgrade](https://gitlab.com/gitlab-org/g
   - [GitLab AI Features - Default GitLab AI Vendor Models](https://duo-feature-list-754252.gitlab.io/)
   - [AI Gateway Repository](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist)
   - [Centralized Evaluation Framework](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library)
-  - [AI Model Version Migration Initiative](https://gitlab.com/groups/gitlab-org/-/epics/15650)
+  - [AI Model Version Migration Initiative](https://gitlab.com/groups/gitlab-org/-/work_items/15650)

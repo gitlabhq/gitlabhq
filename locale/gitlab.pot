@@ -11796,6 +11796,12 @@ msgstr ""
 msgid "ArtifactRegistry|Create repository"
 msgstr ""
 
+msgid "ArtifactRegistry|Delete repository"
+msgstr ""
+
+msgid "ArtifactRegistry|Delete repository?"
+msgstr ""
+
 msgid "ArtifactRegistry|Description (optional)"
 msgstr ""
 
@@ -11886,6 +11892,9 @@ msgstr ""
 msgid "ArtifactRegistry|Repository was successfully created."
 msgstr ""
 
+msgid "ArtifactRegistry|Repository was successfully deleted."
+msgstr ""
+
 msgid "ArtifactRegistry|Repository was successfully updated."
 msgstr ""
 
@@ -11919,10 +11928,16 @@ msgstr ""
 msgid "ArtifactRegistry|The role assignment request was invalid."
 msgstr ""
 
+msgid "ArtifactRegistry|This action permanently deletes the repository and all of its artifacts. If this repository is connected to a virtual repository, the virtual repository loses access to this repository and its artifacts."
+msgstr ""
+
 msgid "ArtifactRegistry|This organization has no repositories yet."
 msgstr ""
 
 msgid "ArtifactRegistry|Type"
+msgstr ""
+
+msgid "ArtifactRegistry|Type the repository name below to confirm: %{phrase}"
 msgstr ""
 
 msgid "ArtifactRegistry|Unknown Artifact Registry role: %{role}."
@@ -73088,6 +73103,9 @@ msgstr ""
 msgid "SecurityReports|All tracked refs"
 msgstr ""
 
+msgid "SecurityReports|Ask a group Owner to turn it on."
+msgstr ""
+
 msgid "SecurityReports|Ask someone with the Maintainer or Owner role to turn it on."
 msgstr ""
 
@@ -73239,6 +73257,12 @@ msgid "SecurityReports|Edit vulnerability"
 msgstr ""
 
 msgid "SecurityReports|Enable"
+msgstr ""
+
+msgid "SecurityReports|Enable False Positive Detection on at least 1 project in this group."
+msgstr ""
+
+msgid "SecurityReports|Enable Vulnerability Resolution on at least 1 project in this group."
 msgstr ""
 
 msgid "SecurityReports|Ensure that %{trackingStart}issue tracking%{trackingEnd} is enabled for this project and you have %{permissionsStart}permission to create new issues%{permissionsEnd}."
@@ -83676,6 +83700,12 @@ msgstr ""
 msgid "UsageBilling|Blocked usage"
 msgstr ""
 
+msgid "UsageBilling|Chat"
+msgstr ""
+
+msgid "UsageBilling|Code Suggestions"
+msgstr ""
+
 msgid "UsageBilling|Contact sales"
 msgstr ""
 
@@ -83757,6 +83787,9 @@ msgid "UsageBilling|GitLab Credits usage"
 msgstr ""
 
 msgid "UsageBilling|GitLab Credits usage trends chart"
+msgstr ""
+
+msgid "UsageBilling|GitLab Duo Agent Platform"
 msgstr ""
 
 msgid "UsageBilling|Go to Customers Portal"
@@ -89153,6 +89186,9 @@ msgid "WorkItems|How do I use statuses?"
 msgstr ""
 
 msgid "WorkItems|No fields match your search."
+msgstr ""
+
+msgid "WorkItems|No groups match your search."
 msgstr ""
 
 msgid "WorkItems|Open items in side panel"

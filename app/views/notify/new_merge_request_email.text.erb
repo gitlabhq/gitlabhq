@@ -3,8 +3,6 @@
 %>
 
 <%= merge_path_description(@merge_request) %>
-<%= "#{_('Author')}:   #{sanitize_name(@merge_request.author_name)}" %>
-<%= assignees_label(@merge_request) if @merge_request.assignees.any? %>
-<%= reviewers_label(@merge_request) if @merge_request.reviewers.any? %>
+<%= render 'merge_request_participants', merge_request: @merge_request -%>
 
 <%= @merge_request.description %>

@@ -3,7 +3,7 @@
 # Extracts any quick actions from the text, find any users or suggestions.
 # If a block is provided, then it should return rendered HTML from the
 # Banzai pipeline. If there is no block, then the act of finding users
-# will cause the the pipeline to be invoked.
+# will cause the pipeline to be invoked.
 class PreviewMarkdownService < BaseContainerService
   def execute(&block)
     text, commands = explain_quick_actions(params[:text])

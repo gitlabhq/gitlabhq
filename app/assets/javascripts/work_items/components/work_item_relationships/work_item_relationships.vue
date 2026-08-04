@@ -459,7 +459,7 @@ export default {
         @showModal="
           $emit('showModal', {
             event: $event.event,
-            modalWorkItem: $event.child,
+            child: $event.child,
             context: widgetName,
           })
         "
@@ -482,7 +482,7 @@ export default {
         @showModal="
           $emit('showModal', {
             event: $event.event,
-            modalWorkItem: $event.child,
+            child: $event.child,
             context: widgetName,
           })
         "
@@ -505,7 +505,7 @@ export default {
         @showModal="
           $emit('showModal', {
             event: $event.event,
-            modalWorkItem: $event.child,
+            child: $event.child,
             context: widgetName,
           })
         "

@@ -126,7 +126,7 @@ You can change the default editor for editing content in GitLab.
 
 {{< history >}}
 
-- [Homepage options changed](https://gitlab.com/groups/gitlab-org/-/epics/13066) in GitLab 17.9 [with a feature flag](../../administration/feature_flags/_index.md) named `your_work_projects_vue`. Disabled by default.
+- [Homepage options changed](https://gitlab.com/groups/gitlab-org/-/work_items/13066) in GitLab 17.9 [with a feature flag](../../administration/feature_flags/_index.md) named `your_work_projects_vue`. Disabled by default.
 - [Homepage option changes generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/465889) in GitLab 17.10. Feature flag `your_work_projects_vue` removed.
 - [Personal homepage introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/546151) in GitLab 18.1 [with a feature flag](../../administration/feature_flags/_index.md) named `personal_homepage`. Disabled by default.
 - [Personal homepage enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/554048) in GitLab 18.4 for a subset of users.

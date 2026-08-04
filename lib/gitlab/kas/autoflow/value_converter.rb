@@ -11,10 +11,10 @@ module Gitlab
         module_function
 
         # @param named [Hash{String => Object}] name => Ruby value
-        # @return [Array<Gitlab::Agent::Autoflow::NamedValue>]
-        def named_values(named)
+        # @return [Array<Gitlab::Agent::Autoflow::Kwarg>]
+        def kwargs(named)
           named.map do |name, value|
-            ::Gitlab::Agent::Autoflow::NamedValue.new(name: name.to_s, value: to_value(value))
+            ::Gitlab::Agent::Autoflow::Kwarg.new(name: name.to_s, value: to_value(value))
           end
         end
 

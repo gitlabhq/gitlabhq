@@ -1495,7 +1495,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_66ff509e3374"
+              "$ref": "#/components/schemas/RequestBody_c3a5d8790936"
     get:
       operationId: getApiV4AiDuoWorkflowsWorkflowsIdCheckpoints
       summary: List all workflow checkpoints
@@ -1522,6 +1522,17 @@ paths:
         schema:
           type: boolean
           nullable: true
+        in: query
+      - name: checkpoint_ns
+        required: false
+        description: 'Only return checkpoints belonging to this LangGraph checkpoint
+          namespace (the flow''s own top-level lineage if omitted or blank). Unset
+          (the default): return checkpoints from every lineage, unfiltered, preserving
+          prior behavior.'
+        schema:
+          type: string
+          nullable: true
+          maxLength: 255
         in: query
   "/api/v4/ai/duo_workflows/workflows/{id}/checkpoints/{checkpoint_id}":
     get:
@@ -94536,7 +94547,7 @@ components:
           nullable: true
       required:
       - status_event
-    RequestBody_66ff509e3374:
+    RequestBody_c3a5d8790936:
       type: object
       properties:
         thread_ts:
@@ -94547,6 +94558,14 @@ components:
           type: string
           description: The parent ts
           nullable: true
+        checkpoint_ns:
+          type: string
+          description: LangGraph checkpoint namespace this checkpoint belongs to.
+            Omitted (or blank) for the flow's own top-level checkpoint lineage; set
+            to LangGraph's namespace string for one nested subgraph invocation, e.g.
+            a delegated subagent dispatched by DelegationNode.
+          nullable: true
+          maxLength: 255
         checkpoint:
           type: object
           description: Checkpoint content

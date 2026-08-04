@@ -15,7 +15,6 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
       abuse_report_upload_states
       abuse_report_user_mentions
       abuse_reports
-      admin_roles
       agent_organization_authorizations
       ai_catalog_item_version_dependencies
       ai_conversation_messages
@@ -43,19 +42,15 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
       dependency_list_export_part_upload_states
       dependency_list_export_part_uploads
       dependency_list_export_parts
-      iam_outbox
       jira_connect_installations
-      ldap_admin_role_links
       merge_request_diff_commit_users
-      non_sql_service_pings
       oauth_device_grants
       oauth_openid_requests
       organization_user_details
       personal_access_token_last_used_ips
       pool_repositories
       project_topic_upload_states
-      queries_service_pings
-      raw_usage_data
+
       sbom_component_versions
       sbom_components
       sbom_source_packages
@@ -79,6 +74,7 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
 
   let(:allowed_no_work_needed_tables) do
     %w[
+      admin_roles
       ai_settings
       bulk_import_batch_trackers
       bulk_import_configurations
@@ -90,13 +86,16 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
       dependency_list_export_uploads
       dependency_list_exports
       enabled_foundational_flow_check_results
+      iam_outbox
       import_offline_configurations
       integrations
       issue_tracker_data
       jira_tracker_data
       labels
+      ldap_admin_role_links
       loose_foreign_keys_organization_deleted_records
       member_roles
+      non_sql_service_pings
       organization_detail_upload_states
       organization_detail_uploads
       organization_details
@@ -104,8 +103,10 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
       organization_isolations
       organization_push_rules
       organization_settings
-      project_topic_uploads
       loose_foreign_keys_organization_deleted_records
+      project_topic_uploads
+      queries_service_pings
+      raw_usage_data
       slack_integrations
       slack_integrations_scopes
       web_hook_logs_daily

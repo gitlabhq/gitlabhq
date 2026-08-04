@@ -53,19 +53,11 @@ export default {
       default: false,
       required: false,
     },
-    smallHeaderStyle: {
-      type: Boolean,
-      default: false,
-      required: false,
-    },
   },
   emits: ['changeFilter', 'changeSort'],
   computed: {
     summarizeTracking() {
       return { label: 'work_item_view_summary', property: this.workItemType };
-    },
-    headerClasses() {
-      return this.smallHeaderStyle ? 'gl-text-base gl-m-0' : 'gl-text-size-h1 gl-m-0';
     },
   },
   buttonOptions: { size: 'small' },
@@ -86,7 +78,7 @@ export default {
 <template>
   <div class="gl-flex gl-flex-wrap gl-items-center gl-gap-3 gl-pb-3">
     <div class="gl-flex gl-grow gl-items-center gl-justify-between gl-gap-3">
-      <component :is="useH2 ? 'h2' : 'h3'" :class="headerClasses">
+      <component :is="useH2 ? 'h2' : 'h3'" class="gl-m-0 gl-text-size-h1">
         {{ s__('WorkItem|Activity') }}
       </component>
       <duo-chat-quick-action

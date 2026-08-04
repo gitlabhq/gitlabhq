@@ -82,7 +82,7 @@ To do it, paste the issue URL when
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9290) in GitLab 17.2 [with a feature flag](../../../administration/feature_flags/_index.md) named `work_item_epics`. Disabled by default. Introduced in [beta](../../../policy/development_stages_support.md#beta).
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/9290) in GitLab 17.2 [with a feature flag](../../../administration/feature_flags/_index.md) named `work_item_epics`. Disabled by default. Introduced in [beta](../../../policy/development_stages_support.md#beta).
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/470685) in GitLab 17.6.
 - [Enabled by default on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/468310) in GitLab 17.7.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/468310) in GitLab 18.1. Feature flag `work_item_epics` removed.
@@ -92,7 +92,7 @@ To do it, paste the issue URL when
 We have changed how epics look by migrating them to a unified framework for work items to better
 meet the product needs of our Agile Planning offering.
 
-For more information, see [epic 9290](https://gitlab.com/groups/gitlab-org/-/epics/9290) and the
+For more information, see [epic 9290](https://gitlab.com/groups/gitlab-org/-/work_items/9290) and the
 following blog posts:
 
 - [First look: The new Agile planning experience in GitLab](https://about.gitlab.com/blog/first-look-the-new-agile-planning-experience-in-gitlab/) (June 2024)

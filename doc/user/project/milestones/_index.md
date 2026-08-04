@@ -272,7 +272,7 @@ To promote a project milestone:
 
 {{< history >}}
 
-- Ability to assign milestones to epics [introduced](https://gitlab.com/groups/gitlab-org/-/epics/329) in GitLab 18.2.
+- Ability to assign milestones to epics [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/329) in GitLab 18.2.
 
 {{< /history >}}
 

@@ -112,7 +112,7 @@ For detailed information about channel routing, see [Routing KAS requests in the
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12180) in GitLab 17.4.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/12180) in GitLab 17.4.
 
 {{< /history >}}
 

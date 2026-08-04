@@ -58,9 +58,9 @@ RSpec.describe Gitlab::Kas::Autoflow::ValueConverter, feature_category: :deploym
     end
   end
 
-  describe '.named_values' do
-    it 'builds NamedValue entries keyed by name' do
-      result = described_class.named_values('environment' => { 'id' => '42' })
+  describe '.kwargs' do
+    it 'builds Kwarg entries keyed by name' do
+      result = described_class.kwargs('environment' => { 'id' => '42' })
 
       expect(result.size).to eq(1)
       expect(result.first.name).to eq('environment')

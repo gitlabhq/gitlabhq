@@ -141,12 +141,6 @@ $work-item-overview-gap-width: 2rem;
     grid-column-start: 2;
     grid-row-end: 50;
     @apply gl-pb-10;
-
-    &.is-modal {
-      .work-item-attributes-wrapper {
-        top: 0;
-      }
-    }
   }
 }
 

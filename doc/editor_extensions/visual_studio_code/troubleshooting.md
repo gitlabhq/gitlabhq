@@ -228,9 +228,9 @@ These errors can occur if your certificates use the following settings:
 | Setting name                     | Information |
 |----------------------------------|-------------|
 | `gitlab.ca`                      | Supported. See [the SSL setup guide](ssl.md#use-a-self-signed-ssl-certificate) for more information on how to set up your self-signed CA.|
-| `gitlab.cert`                    | Unsupported. See [epic 6244](https://gitlab.com/groups/gitlab-org/-/epics/6244). |
-| `gitlab.certKey`                 | Unsupported. See [epic 6244](https://gitlab.com/groups/gitlab-org/-/epics/6244). |
-| `gitlab.ignoreCertificateErrors` | Unsupported. See [epic 6244](https://gitlab.com/groups/gitlab-org/-/epics/6244). |
+| `gitlab.cert`                    | Unsupported. See [epic 6244](https://gitlab.com/groups/gitlab-org/-/work_items/6244). |
+| `gitlab.certKey`                 | Unsupported. See [epic 6244](https://gitlab.com/groups/gitlab-org/-/work_items/6244). |
+| `gitlab.ignoreCertificateErrors` | Unsupported. See [epic 6244](https://gitlab.com/groups/gitlab-org/-/work_items/6244). |
 
 To resolve, see [configure the extension for Custom Certificate Authorities](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/docs/user/custom-certificates.md).
 

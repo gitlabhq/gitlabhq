@@ -347,7 +347,7 @@ class Snippet < ApplicationRecord
     @storage ||= Storage::Hashed.new(self, prefix: Storage::Hashed::SNIPPET_REPOSITORY_PATH_PREFIX)
   end
 
-  # This is the full_path used to identify the the snippet repository.
+  # This is the full_path used to identify the snippet repository.
   override :full_path
   def full_path
     return unless persisted?

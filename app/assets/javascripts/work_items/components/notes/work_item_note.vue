@@ -77,11 +77,6 @@ export default {
       type: String,
       required: true,
     },
-    isModal: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     markdownPreviewPath: {
       type: String,
       required: true,
@@ -371,10 +366,6 @@ export default {
       };
     },
     notifyCopyDone() {
-      if (this.isModal) {
-        // eslint-disable-next-line no-restricted-properties
-        navigator.clipboard.writeText(this.noteUrl);
-      }
       toast(__('Link copied to clipboard.'));
     },
     async assignUserAction() {

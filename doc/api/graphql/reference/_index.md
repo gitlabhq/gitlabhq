@@ -41254,7 +41254,6 @@ Fields:
 | <a id="duoworkflow-auditevents"></a>`auditEvents` {{< icon name="warning-solid" >}} | [`AiAuditEventConnection`](#aiauditeventconnection) | Introduced in GitLab 19.0. Status: Experiment. Audit events recorded for the session. Requires `read_agent_artifacts` on the workflow's project or namespace. Returns no events when the `agent_artifacts_page` feature flag is disabled. |
 | <a id="duoworkflow-createdat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the session was created. |
 | <a id="duoworkflow-environment"></a>`environment` | [`WorkflowEnvironment`](#workflowenvironment) | Environment, like IDE or web. |
-| <a id="duoworkflow-firstcheckpoint"></a>`firstCheckpoint` | [`DuoWorkflowEvent`](#duoworkflowevent) | First checkpoint of the session. |
 | <a id="duoworkflow-flowmetadataid"></a>`flowMetadataId` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.3. Status: Experiment. Identifier of the flow that was executed in the session. |
 | <a id="duoworkflow-flowmetadataschemaversion"></a>`flowMetadataSchemaVersion` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.3. Status: Experiment. Schema version of the flow metadata for the session. |
 | <a id="duoworkflow-flowmetadataversion"></a>`flowMetadataVersion` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.3. Status: Experiment. Version of the flow that was executed in the session. |
@@ -41263,7 +41262,6 @@ Fields:
 | <a id="duoworkflow-id"></a>`id` | [`ID!`](#id) | ID of the session. |
 | <a id="duoworkflow-incrementalcheckpointsenabled"></a>`incrementalCheckpointsEnabled` | [`Boolean`](#boolean) | Indicates incremental checkpoints were enabled for the session at creation. |
 | <a id="duoworkflow-lastexecutorlogsurl"></a>`lastExecutorLogsUrl` | [`String`](#string) | URL to the latest executor logs of the workflow. |
-| <a id="duoworkflow-latestcheckpoint"></a>`latestCheckpoint` | [`DuoWorkflowEvent`](#duoworkflowevent) | Latest checkpoint of the session. |
 | <a id="duoworkflow-mcpenabled"></a>`mcpEnabled` | [`Boolean`](#boolean) | Has MCP been enabled for the namespace. |
 | <a id="duoworkflow-mergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Associated merge request, if any. |
 | <a id="duoworkflow-modelmetadataidentifier"></a>`modelMetadataIdentifier` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.2. Status: Experiment. Provider model identifier used for the session. |
@@ -41293,6 +41291,30 @@ Fields:
 | <a id="duoworkflow-workflowdefinition"></a>`workflowDefinition` | [`String`](#string) | GitLab Duo Agent Platform flow type based on its capabilities. |
 
 #### Fields with arguments
+
+##### `DuoWorkflow.firstCheckpoint`
+
+First checkpoint of the session.
+
+Returns [`DuoWorkflowEvent`](#duoworkflowevent).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflow-firstcheckpoint-checkpointns"></a>`checkpointNs` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.3. Status: Experiment. LangGraph checkpoint namespace to scope the lookup to. Omit (or pass an empty string) for the session's own top-level checkpoint lineage; used internally to resolve one nested subgraph invocation, e.g. a delegated subagent. |
+
+##### `DuoWorkflow.latestCheckpoint`
+
+Latest checkpoint of the session.
+
+Returns [`DuoWorkflowEvent`](#duoworkflowevent).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflow-latestcheckpoint-checkpointns"></a>`checkpointNs` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.3. Status: Experiment. LangGraph checkpoint namespace to scope the lookup to. Omit (or pass an empty string) for the session's own top-level checkpoint lineage; used internally to resolve one nested subgraph invocation, e.g. a delegated subagent. |
 
 ##### `DuoWorkflow.mergeRequestLinks`
 
@@ -41355,6 +41377,22 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="duoworkflow-workitemlinks-linktype"></a>`linkType` | [`DuoWorkflowWorkItemLinkType`](#duoworkflowworkitemlinktype) | Filter links by their link type. |
 
+### `DuoWorkflowCheckpointWrite`
+
+A pending write associated with a Duo Workflow checkpoint.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflowcheckpointwrite-channel"></a>`channel` | [`String!`](#string) | LangGraph channel the write was made to. |
+| <a id="duoworkflowcheckpointwrite-data"></a>`data` | [`String!`](#string) | Write data. |
+| <a id="duoworkflowcheckpointwrite-id"></a>`id` | [`ID!`](#id) | ID of the checkpoint write. |
+| <a id="duoworkflowcheckpointwrite-idx"></a>`idx` | [`Int`](#int) | Index of the write within the task. |
+| <a id="duoworkflowcheckpointwrite-task"></a>`task` | [`String!`](#string) | LangGraph task identifier the write was made for. |
+| <a id="duoworkflowcheckpointwrite-threadts"></a>`threadTs` | [`String!`](#string) | LangGraph thread timestamp identifier the write belongs to. |
+| <a id="duoworkflowcheckpointwrite-writetype"></a>`writeType` | [`String!`](#string) | Serialization type of the write data. |
+
 ### `DuoWorkflowEnablement`
 
 Duo Agent Platform enablement status checks.
@@ -41391,6 +41429,8 @@ Fields:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="duoworkflowevent-checkpoint"></a>`checkpoint` {{< icon name="warning-solid" >}} | [`JsonString`](#jsonstring) | Deprecated in GitLab 18.7. Checkpoints are big & contain internal langgraph details. |
+| <a id="duoworkflowevent-checkpointns"></a>`checkpointNs` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.3. Status: Experiment. LangGraph checkpoint namespace this checkpoint belongs to. Blank for the session's own top-level checkpoint lineage; this field only ever surfaces that lineage (via first_checkpoint/latest_checkpoint), never a nested subgraph invocation's own. |
+| <a id="duoworkflowevent-checkpointwrites"></a>`checkpointWrites` {{< icon name="warning-solid" >}} | [`[DuoWorkflowCheckpointWrite!]`](#duoworkflowcheckpointwrite) | Introduced in GitLab 19.3. Status: Experiment. Pending writes associated with the checkpoint, e.g. interrupts awaiting resumption. |
 | <a id="duoworkflowevent-compressedcheckpoint"></a>`compressedCheckpoint` | [`String`](#string) | Checkpoint of the event, zlib-compressed and Base64-encoded. |
 | <a id="duoworkflowevent-duomessages"></a>`duoMessages` | [`[DuoMessage!]`](#duomessage) | Messages from the ui_chat_log for the checkpoint. |
 | <a id="duoworkflowevent-errors"></a>`errors` | [`[String!]`](#string) | Message errors. |

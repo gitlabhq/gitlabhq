@@ -789,8 +789,8 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
     end
 
     shared_examples 'incrementing failure reason counter' do
-      it 'increments the counter with the failure_reason' do
-        expect { subject }.to change { counter.get(reason: failure_reason) }.by(1)
+      it 'increments the counter with the failure_reason and runner_type' do
+        expect { subject }.to change { counter.get(reason: failure_reason, runner_type: 'none') }.by(1)
       end
     end
 
@@ -817,6 +817,17 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
       it { is_expected.to be_unmet_prerequisites }
 
       it_behaves_like 'incrementing failure reason counter'
+    end
+
+    context 'when the commit status is a build with a runner' do
+      let(:runner) { create(:ci_runner, :instance) }
+      let(:commit_status) { create(:ci_build, :created, runner: runner) }
+      let(:reason) { :script_failure }
+      let(:failure_reason) { reason.to_s }
+
+      it 'increments the counter with the runner type' do
+        expect { subject }.to change { counter.get(reason: failure_reason, runner_type: 'instance_type') }.by(1)
+      end
     end
 
     context 'when status is manual' do

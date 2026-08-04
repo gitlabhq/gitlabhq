@@ -3456,6 +3456,24 @@
         - '**/*.rb'
         - '**/*.php'
 
+.reports:rules:gitlab-advanced-sast-ext:
+  rules:
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
+    - if: $SAST_DISABLED
+      when: never
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /gitlab-advanced-sast-ext/
+      when: never
+    # Same tier-3 gating as .reports:rules:gitlab-advanced-sast above.
+    - !reference [".prevent-tier-2-and-below", rules]
+    - <<: *if-default-refs
+      changes:
+        # this list should match the `exists` rule for gitlab-advanced-sast-ext in
+        # lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml
+        - '**/*.swift'
+        - '**/*.m'
+        - '**/*.mm'
+
 .reports:rules:semgrep-sast:
   rules:
     - <<: *if-merge-request-labels-pipeline-expedite

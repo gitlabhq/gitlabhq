@@ -9,7 +9,7 @@ Work items introduce a flexible model that standardizes and extends issue tracki
 With work items, you can define different types that can be customized with various widgets to meet
 specific needs - whether you're tracking bugs, incidents, test cases, or other units of work.
 This architectural documentation covers the development details and implementation strategies for
-work items and work item types. For a rough outline of the work ahead, see [epic 6033](https://gitlab.com/groups/gitlab-org/-/epics/6033).
+work items and work item types. For a rough outline of the work ahead, see [epic 6033](https://gitlab.com/groups/gitlab-org/-/work_items/6033).
 
 ## Challenges
 

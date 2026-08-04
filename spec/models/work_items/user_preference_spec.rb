@@ -276,6 +276,76 @@ RSpec.describe WorkItems::UserPreference, type: :model, feature_category: :team_
           expect(preferences.errors[:display_settings]).to include('must be a valid json schema')
         end
       end
+
+      context 'with groupOrder property' do
+        it 'is valid with an empty groupOrder array' do
+          preferences = described_class.new(namespace: namespace, display_settings: { 'groupOrder' => [] })
+
+          expect(preferences).to be_valid
+        end
+
+        it 'is valid with group identifier strings', :aggregate_failures do
+          valid_display_settings = {
+            'groupOrder' => [
+              'status:gid://gitlab/WorkItems::Statuses::SystemDefined::Status/1',
+              'status:gid://gitlab/WorkItems::Statuses::Custom::Status/42'
+            ]
+          }
+          preferences = described_class.new(namespace: namespace, display_settings: valid_display_settings)
+
+          expect(preferences).to be_valid
+          expect(preferences.display_settings['groupOrder']).to eq(
+            [
+              'status:gid://gitlab/WorkItems::Statuses::SystemDefined::Status/1',
+              'status:gid://gitlab/WorkItems::Statuses::Custom::Status/42'
+            ]
+          )
+        end
+
+        it 'is valid alongside the other grouping properties' do
+          valid_display_settings = {
+            'hiddenMetadataKeys' => %w[labels],
+            'collapsedGroups' => %w[status:gid://gitlab/WorkItems::Statuses::Custom::Status/42],
+            'visibleGroups' => %w[status:gid://gitlab/WorkItems::Statuses::Custom::Status/42],
+            'groupOrder' => %w[status:gid://gitlab/WorkItems::Statuses::Custom::Status/42]
+          }
+          preferences = described_class.new(namespace: namespace, display_settings: valid_display_settings)
+
+          expect(preferences).to be_valid
+        end
+
+        it 'is invalid with duplicate group identifiers' do
+          invalid_display_settings = { 'groupOrder' => %w[status:gid status:gid] }
+          preferences = described_class.new(namespace: namespace, display_settings: invalid_display_settings)
+
+          expect(preferences).not_to be_valid
+          expect(preferences.errors[:display_settings]).to include('must be a valid json schema')
+        end
+
+        it 'is invalid with non-string group identifiers' do
+          invalid_display_settings = { 'groupOrder' => [1] }
+          preferences = described_class.new(namespace: namespace, display_settings: invalid_display_settings)
+
+          expect(preferences).not_to be_valid
+          expect(preferences.errors[:display_settings]).to include('must be a valid json schema')
+        end
+
+        it 'is invalid when more than 100 groups are ordered' do
+          invalid_display_settings = { 'groupOrder' => (1..101).map { |i| "status:#{i}" } }
+          preferences = described_class.new(namespace: namespace, display_settings: invalid_display_settings)
+
+          expect(preferences).not_to be_valid
+          expect(preferences.errors[:display_settings]).to include('must be a valid json schema')
+        end
+
+        it 'is invalid when a group identifier exceeds the length limit' do
+          invalid_display_settings = { 'groupOrder' => ["status:#{'a' * 256}"] }
+          preferences = described_class.new(namespace: namespace, display_settings: invalid_display_settings)
+
+          expect(preferences).not_to be_valid
+          expect(preferences.errors[:display_settings]).to include('must be a valid json schema')
+        end
+      end
     end
   end
 end

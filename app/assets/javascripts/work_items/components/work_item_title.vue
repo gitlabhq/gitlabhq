@@ -34,7 +34,7 @@ export default {
       required: false,
       default: false,
     },
-    isModal: {
+    isDetailPanel: {
       type: Boolean,
       required: false,
       default: false,
@@ -108,7 +108,7 @@ export default {
     </template>
   </gl-form-group>
   <component
-    :is="isModal ? 'h2' : 'h1'"
+    :is="isDetailPanel ? 'h2' : 'h1'"
     v-else
     data-testid="work-item-title"
     class="gl-heading-1 !gl-m-0 gl-w-full gl-wrap-anywhere"

@@ -18,7 +18,7 @@ export const RECAPTCHA_ONLOAD_CALLBACK_NAME = 'recaptchaOnloadCallback';
  *
  */
 export const initRecaptchaScript = memoize(() => {
-  // Appends the the reCAPTCHA script tag to the head of document
+  // Appends the reCAPTCHA script tag to the head of document
   const appendRecaptchaScript = () => {
     const script = document.createElement('script');
     script.src = `${RECAPTCHA_API_URL_PREFIX}?onload=${RECAPTCHA_ONLOAD_CALLBACK_NAME}&render=explicit`;

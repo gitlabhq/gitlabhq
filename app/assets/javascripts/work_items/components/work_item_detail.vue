@@ -178,11 +178,6 @@ export default {
     isGroup: {},
   },
   props: {
-    isModal: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     workItemId: {
       type: String,
       required: false,
@@ -212,11 +207,8 @@ export default {
   emits: [
     'add-child',
     'attributesUpdated',
-    'close',
     'deleteWorkItem',
-    'openReportAbuse',
     'promotedToObjective',
-    'update-modal',
     'work-item-emoji-updated',
     'work-item-updated',
     'workItemStateUpdated',
@@ -306,7 +298,7 @@ export default {
           this.refetchError = null;
         }
 
-        if (!(this.isModal || this.isDetailPanel) && this.workItem.namespace) {
+        if (!this.isDetailPanel && this.workItem.namespace) {
           const path = this.workItem.namespace.fullPath
             ? ` · ${this.workItem.namespace.fullPath}`
             : '';
@@ -480,7 +472,7 @@ export default {
         : __('Resolved 1 discussion.');
     },
     showIntersectionObserver() {
-      return !this.isModal && !this.editMode;
+      return !this.editMode;
     },
     workItemLinkedItems() {
       return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC
@@ -516,12 +508,6 @@ export default {
       return shouldDisableShortcuts()
         ? description
         : sanitize(`${description} <kbd class="flat gl-ml-1" aria-hidden=true>${key}</kbd>`);
-    },
-    modalCloseButtonClass() {
-      return {
-        '@sm/panel:gl-hidden': !this.error,
-        'gl-flex': true,
-      };
     },
     workItemPresent() {
       return !isEmpty(this.workItem);
@@ -566,9 +552,6 @@ export default {
     hasChildren() {
       return this.workItemHierarchy?.hasChildren;
     },
-    isModalOrDetailPanel() {
-      return this.isModal || this.isDetailPanel;
-    },
     workItemActionProps() {
       return {
         fullPath: this.workItemFullPath,
@@ -588,7 +571,7 @@ export default {
         workItemReference: this.workItem.reference,
         workItemWebUrl: this.workItem.webUrl,
         workItemCreateNoteEmail: this.workItem.createNoteEmail,
-        isModal: this.isModalOrDetailPanel,
+        isDetailPanel: this.isDetailPanel,
         workItemState: this.workItem.state,
         hasChildren: this.hasChildren,
         hasParent: this.shouldShowAncestors,
@@ -721,30 +704,25 @@ export default {
       this.error = this.$options.i18n.fetchError;
       document.title = s__('404|Not found');
     },
-    openContextualView({ event, modalWorkItem }) {
-      if (!modalWorkItem) {
+    openContextualView({ event, child }) {
+      if (!child) {
         this.activeChildItem = null;
         this.activePanel = null;
         return;
       }
 
-      if (modalWorkItem.workItemType?.name === WORK_ITEM_TYPE_NAME_INCIDENT || this.isDetailPanel) {
+      if (child.workItemType?.name === WORK_ITEM_TYPE_NAME_INCIDENT || this.isDetailPanel) {
         return;
       }
       if (event) {
         event.preventDefault();
       }
 
-      if (this.isModal) {
-        this.$emit('update-modal', event, modalWorkItem);
-        return;
-      }
-
-      if (this.activeChildItem && this.activeChildItem.iid === modalWorkItem.iid) {
+      if (this.activeChildItem && this.activeChildItem.iid === child.iid) {
         this.activeChildItem = null;
         this.activePanel = null;
       } else {
-        this.activeChildItem = modalWorkItem;
+        this.activeChildItem = child;
         this.activePanel = WORK_ITEM_DETAIL_PANEL;
       }
     },
@@ -759,11 +737,7 @@ export default {
       this.activePanel = null;
     },
     openReportAbuseModal(reply) {
-      if (this.isModal) {
-        this.$emit('openReportAbuse', reply);
-      } else {
-        this.toggleReportAbuseModal(true, reply);
-      }
+      this.toggleReportAbuseModal(true, reply);
     },
     toggleReportAbuseModal(isOpen, workItem = this.workItem) {
       this.isReportModalOpen = isOpen;
@@ -1021,7 +995,6 @@ export default {
             :show-work-item-current-user-todos="showWorkItemCurrentUserTodos"
             :parent-work-item-confidentiality="parentWorkItemConfidentiality"
             :full-path="workItemFullPath"
-            :is-modal="isModal"
             :is-drawer="isDetailPanel"
             :work-item="workItem"
             :is-sticky-header-showing="isStickyHeaderShowing"
@@ -1059,7 +1032,7 @@ export default {
 
         <template #heading-wrapper>
           <div class="gl-min-w-0 gl-grow">
-            <component :is="isModalOrDetailPanel ? 'h2' : 'h1'" v-if="editMode" class="gl-sr-only">
+            <component :is="isDetailPanel ? 'h2' : 'h1'" v-if="editMode" class="gl-sr-only">
               {{ s__('WorkItem|Edit work item') }}
             </component>
             <work-item-ancestors v-if="shouldShowAncestors" :work-item="workItem" class="gl-mb-1" />
@@ -1068,7 +1041,7 @@ export default {
                 v-if="workItem.title"
                 ref="title"
                 :is-editing="editMode"
-                :is-modal="isModalOrDetailPanel"
+                :is-detail-panel="isDetailPanel"
                 :title="workItem.title"
                 :title-html="workItem.titleHtml"
                 @updateWorkItem="updateWorkItem"
@@ -1080,7 +1053,7 @@ export default {
               v-if="workItem.title && shouldShowAncestors"
               ref="title"
               :is-editing="editMode"
-              :is-modal="isModalOrDetailPanel"
+              :is-detail-panel="isDetailPanel"
               :class="titleClassComponent"
               :title="workItem.title"
               :title-html="workItem.titleHtml"
@@ -1156,15 +1129,6 @@ export default {
               @toggle-sidebar="handleToggleSidebar"
               @toggleTruncationEnabled="handleTruncationEnabled"
             />
-            <gl-button
-              v-if="isModal"
-              class="gl-hidden @sm/panel:!gl-block"
-              category="tertiary"
-              data-testid="work-item-close"
-              icon="close"
-              :aria-label="__('Close')"
-              @click="$emit('close')"
-            />
           </div>
         </template>
 
@@ -1210,7 +1174,7 @@ export default {
           <section
             data-testid="work-item-overview-right-sidebar"
             class="work-item-overview-right-sidebar"
-            :class="{ 'is-modal': isModal, '@md/panel:gl-hidden': !showSidebar }"
+            :class="{ '@md/panel:gl-hidden': !showSidebar }"
           >
             <h2 class="gl-sr-only">{{ s__('WorkItem|Attributes') }}</h2>
             <work-item-attributes-wrapper
@@ -1286,7 +1250,7 @@ export default {
             :allowed-child-types="allowedChildTypes"
             :is-drawer="isDetailPanel"
             contextual-view-enabled
-            @show-modal="openContextualView"
+            @select-child="openContextualView"
             @add-child="$emit('add-child')"
           />
           <work-item-relationships
@@ -1305,7 +1269,6 @@ export default {
 
           <work-item-development
             v-if="workItemDevelopment"
-            :is-modal="isModal"
             :work-item-id="workItem.id"
             :work-item-iid="iid"
             :work-item-full-path="workItemFullPath"
@@ -1326,7 +1289,6 @@ export default {
             :work-item-iid="workItem.iid"
             :work-item-type="workItemType"
             :work-item-type-id="workItemTypeId"
-            :is-modal="isModal"
             :is-drawer="isDetailPanel"
             :assignees="workItemAssignees && workItemAssignees.assignees.nodes"
             :can-set-work-item-metadata="canAssignUnassignUser"
@@ -1335,8 +1297,7 @@ export default {
             :is-discussion-locked="isDiscussionLocked"
             :is-work-item-confidential="workItem.confidential"
             :new-comment-template-paths="workItem.commentTemplatesPaths"
-            :use-h2="!isModalOrDetailPanel"
-            :small-header-style="isModal"
+            :use-h2="!isDetailPanel"
             :parent-id="parentWorkItemId"
             :hide-fullscreen-markdown-button="isDetailPanel"
             @error="updateError = $event"
@@ -1349,17 +1310,6 @@ export default {
         </template>
 
         <section class="work-item-view">
-          <div :class="modalCloseButtonClass">
-            <gl-button
-              v-if="isModal"
-              class="gl-ml-auto"
-              category="tertiary"
-              data-testid="work-item-close"
-              icon="close"
-              :aria-label="__('Close')"
-              @click="$emit('close')"
-            />
-          </div>
           <gl-empty-state
             v-if="error"
             :title="s__('WorkItem|Work item not found')"

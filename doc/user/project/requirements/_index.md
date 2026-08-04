@@ -122,7 +122,7 @@ Prerequisites:
 
 - You must have the Planner, Reporter, Developer, Maintainer, or Owner role or be the author or assignee of the requirement.
 
-![archived requirements list](img/requirements_archived_list_view_v13_1.png)
+![The archived requirements list view.](img/requirements_archived_list_view_v13_1.png)
 
 To reopen an archived requirement, select **Reopen**.
 

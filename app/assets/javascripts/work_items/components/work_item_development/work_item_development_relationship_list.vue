@@ -27,11 +27,6 @@ export default {
       type: Object,
       required: true,
     },
-    isModal: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     canCreateMergeRequest: {
       type: Boolean,
       required: false,
@@ -137,7 +132,6 @@ export default {
         <component
           :is="itemComponent(item)"
           :item-content="item"
-          :is-modal="isModal"
           :work-item-full-path="workItemFullPath"
           :work-item-iid="workItemIid"
           :can-create-merge-request="canCreateMergeRequest"

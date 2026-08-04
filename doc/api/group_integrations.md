@@ -428,7 +428,8 @@ Parameters:
 | `datadog_service`      | string  | no    | Tag all data from this GitLab instance in Datadog. Can be used when managing several self-managed deployments.                                                                          |
 | `datadog_site`         | string  | no    | The Datadog site to send data to. To send data to the EU site, use `datadoghq.eu`.                                                                                                      |
 | `datadog_tags`         | string  | no    | Custom tags in Datadog. Specify one tag per line in the format `key:value\nkey2:value2`                                                                                                 |
-| `archive_trace_events` | boolean | no    | When enabled, job logs are collected by Datadog and displayed along with pipeline execution traces. |
+| `datadog_ci_visibility` | boolean | no   | Enables collection of pipeline and job events in Datadog to display pipeline execution traces. |
+| `archive_trace_events` | boolean | no    | When enabled, job logs are collected by Datadog and displayed along with pipeline execution traces. Requires `datadog_ci_visibility` to be enabled. |
 | `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
 
 ### Disable Datadog

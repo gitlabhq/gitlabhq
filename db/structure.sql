@@ -6896,8 +6896,10 @@ CREATE TABLE p_duo_workflows_checkpoints (
     metadata jsonb NOT NULL,
     ui_chat_log jsonb,
     current_thread integer DEFAULT 0 NOT NULL,
+    checkpoint_ns text,
     CONSTRAINT check_70d1d05b50 CHECK ((num_nonnulls(namespace_id, project_id) = 1)),
     CONSTRAINT check_b55c120f3f CHECK ((char_length(thread_ts) <= 255)),
+    CONSTRAINT check_duo_wf_checkpoints_checkpoint_ns_limit CHECK ((char_length(checkpoint_ns) <= 255)),
     CONSTRAINT check_e63817afa6 CHECK ((char_length(parent_ts) <= 255))
 )
 PARTITION BY RANGE (created_at);

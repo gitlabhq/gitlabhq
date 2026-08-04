@@ -337,7 +337,7 @@ export default {
           :disable-content="disableContent"
           :has-indirect-children="false"
           @error="error = $event"
-          @show-modal="navigateToChild"
+          @select-child="navigateToChild"
         />
         <work-item-children-load-more
           v-if="hasNextPage"

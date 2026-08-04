@@ -40,6 +40,7 @@ export default {
     searchPlaceholder: s__('WorkItems|Search groups'),
     shown: s__('WorkItems|Shown'),
     hideAll: s__('WorkItems|Hide all'),
+    noGroupsFound: s__('WorkItems|No groups match your search.'),
   },
   props: {
     fullPath: {
@@ -71,6 +72,7 @@ export default {
   SORT_LABEL_ID: 'work-item-display-settings-sort-label',
   data() {
     return {
+      searchQuery: '',
       groupByValues: [],
       workItemsGroupByVisibleGroups: SHOW_ALL_GROUPS,
     };
@@ -91,8 +93,16 @@ export default {
     sortByOptions() {
       return [{ text: this.$options.i18n.ascending, value: 'asc' }];
     },
+    isSearching() {
+      return Boolean(this.searchQuery.trim());
+    },
+    filteredGroupByValues() {
+      const query = this.searchQuery.trim().toLowerCase();
+      if (!query) return this.groupByValues;
+      return this.groupByValues.filter((value) => value.name.toLowerCase().includes(query));
+    },
     decoratedGroupByValues() {
-      return this.groupByValues.map((value) => {
+      return this.filteredGroupByValues.map((value) => {
         const decoration = this.strategy.headerDecoration(value);
         return {
           value,
@@ -101,6 +111,9 @@ export default {
           iconStyle: decorationIconStyle(decoration),
         };
       });
+    },
+    noGroupsAvailable() {
+      return this.isSearching && this.filteredGroupByValues.length === 0;
     },
   },
   apollo: {
@@ -211,12 +224,19 @@ export default {
     <div class="gl-border-t gl-pt-4">
       <span>{{ $options.i18n.groups }}</span>
       <gl-search-box-by-type
-        disabled
+        v-model="searchQuery"
         :placeholder="$options.i18n.searchPlaceholder"
         class="gl-mt-3"
         data-testid="group-by-search"
       />
       <gl-loading-icon v-if="isLoading" class="gl-mt-4" />
+      <p
+        v-else-if="noGroupsAvailable"
+        data-testid="no-groups-found"
+        class="gl-mb-0 gl-mt-4 gl-text-sm gl-text-subtle"
+      >
+        {{ $options.i18n.noGroupsFound }}
+      </p>
       <template v-else>
         <div class="gl-mt-4 gl-flex gl-items-center gl-justify-between">
           <span class="gl-text-sm gl-font-bold">{{ $options.i18n.shown }}</span>

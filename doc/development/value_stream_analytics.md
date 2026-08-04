@@ -43,7 +43,7 @@ Apart from the durations, we expose the record count within a stage.
 | Cycle time and lead time summary (Lifecycle metrics) | Yes                                                                                           | Yes                                                                    | No                   |
 | New issues, commits and deploys (Lifecycle metrics)  | Yes, excluding commits                                                                        | Yes                                                                    | Yes                  |
 | Uses aggregated backend                              | Yes                                                                                           | No                                                                     | No                   |
-| Date filter behavior                                 | Filters items [finished in the date range](https://gitlab.com/groups/gitlab-org/-/epics/6046) | Filters items by creation date.                                        | Filters items by creation date. |
+| Date filter behavior                                 | Filters items [finished in the date range](https://gitlab.com/groups/gitlab-org/-/work_items/6046) | Filters items by creation date.                                        | Filters items by creation date. |
 | Authorization                                        | At least reporter                                                                             | At least reporter                                                      | Can be public.       |
 
 ## VSA core domain objects

@@ -113,7 +113,7 @@ export default {
       default: true,
     },
   },
-  emits: ['click', 'drag', 'drop', 'error', 'show-modal'],
+  emits: ['click', 'drag', 'drop', 'error', 'select-child'],
   data() {
     return {
       updateInProgress: false,
@@ -569,7 +569,7 @@ export default {
         return;
       }
       if (this.isTopLevel) {
-        this.$emit('show-modal', { event, child: event.childItem || child });
+        this.$emit('select-child', { event, child: event.childItem || child });
       } else {
         // To avoid incorrect work item to be bubbled up
         // Assign the correct child item

@@ -106,8 +106,8 @@ To view the projects on your GitLab instance:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13066) in GitLab 17.9 [with a feature flag](../../administration/feature_flags/_index.md) named `your_work_projects_vue`. Disabled by default.
-- [Changed](https://gitlab.com/groups/gitlab-org/-/epics/13066) tab label from **Yours** to **Member** in GitLab 17.9 [with a feature flag](../../administration/feature_flags/_index.md) named `your_work_projects_vue`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/13066) in GitLab 17.9 [with a feature flag](../../administration/feature_flags/_index.md) named `your_work_projects_vue`. Disabled by default.
+- [Changed](https://gitlab.com/groups/gitlab-org/-/work_items/13066) tab label from **Yours** to **Member** in GitLab 17.9 [with a feature flag](../../administration/feature_flags/_index.md) named `your_work_projects_vue`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/465889) in GitLab 17.10. Feature flag `your_work_projects_vue` removed.
 
 {{< /history >}}
@@ -138,7 +138,7 @@ You can also view your starred and personal projects from your personal profile:
 
 {{< history >}}
 
-- [Changed](https://gitlab.com/groups/gitlab-org/-/epics/13066) tab label from "Pending deletion" to "Inactive" in GitLab 17.9 [with a feature flag](../../administration/feature_flags/_index.md) named `your_work_projects_vue`. Disabled by default.
+- [Changed](https://gitlab.com/groups/gitlab-org/-/work_items/13066) tab label from "Pending deletion" to "Inactive" in GitLab 17.9 [with a feature flag](../../administration/feature_flags/_index.md) named `your_work_projects_vue`. Disabled by default.
 - [Changed tab label generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/465889) in GitLab 17.10. Feature flag `your_work_projects_vue` removed.
 - [Moved](https://gitlab.com/groups/gitlab-org/-/work_items/17208) from GitLab Premium to GitLab Free in 18.0.
 - [Enabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/issues/536244) in GitLab 18.0.

@@ -147,7 +147,7 @@ You must register an agent before you can install the agent in your cluster. To 
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12180) in GitLab 17.4.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/12180) in GitLab 17.4.
 
 {{< /history >}}
 

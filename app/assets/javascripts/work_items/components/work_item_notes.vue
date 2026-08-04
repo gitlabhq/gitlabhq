@@ -89,11 +89,6 @@ export default {
       required: false,
       default: false,
     },
-    isModal: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     assignees: {
       type: Array,
       required: false,
@@ -139,11 +134,6 @@ export default {
       required: false,
       default: () => [],
     },
-    smallHeaderStyle: {
-      type: Boolean,
-      default: false,
-      required: false,
-    },
     hideFullscreenMarkdownButton: {
       type: Boolean,
       required: false,
@@ -170,10 +160,10 @@ export default {
   },
   computed: {
     shouldLoadPreviewNote() {
-      return this.previewNoteId && !this.isDrawer && !this.isModal;
+      return this.previewNoteId && !this.isDrawer;
     },
     shouldScrollToTargetNote() {
-      return this.targetNoteHash?.startsWith('note_') && !this.isDrawer && !this.isModal;
+      return this.targetNoteHash?.startsWith('note_') && !this.isDrawer;
     },
     initialLoading() {
       return this.$apollo.queries.workItemNotes.loading && !this.isLoadingMore;
@@ -624,7 +614,6 @@ export default {
       :work-item-type="workItemType"
       :discussion-filter="discussionFilter"
       :use-h2="useH2"
-      :small-header-style="smallHeaderStyle"
       @changeSort="setSort"
       @changeFilter="setFilter"
     />
@@ -661,7 +650,6 @@ export default {
             :work-item-id="workItemId"
             :work-item-iid="workItemIid"
             :work-item-type="workItemType"
-            :is-modal="isModal"
             :autocomplete-data-sources="autocompleteDataSources"
             :markdown-preview-path="markdownPreviewPath"
             :new-comment-template-paths="newCommentTemplatePaths"

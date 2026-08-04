@@ -9,7 +9,7 @@ title: MCP servers in the AI Catalog
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Offering: GitLab.com, GitLab Self-Managed
 - Status: Experiment
 
 {{< /details >}}
@@ -50,6 +50,8 @@ at both the group and project level.
   [turned on GitLab Duo experiment and beta features](../turn_on_off.md#on-gitlabcom-2).
 - On GitLab Self-Managed, your instance has
   [GitLab Duo experiment and beta features turned on](../turn_on_off.md#on-gitlab-self-managed-2).
+- On GitLab Self-Managed, an administrator has enabled the `mcp_client`
+  [feature flag](../../../administration/feature_flags/_index.md).
 - The MCP server must be a:
   - Vetted or partner MCP server. Arbitrary URLs are not allowed.
   - Remote MCP server.

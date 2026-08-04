@@ -22,7 +22,7 @@ For information on managing child items of an epic, see [child items](../../work
 {{< history >}}
 
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
-- Assigning milestones to epics [introduced](https://gitlab.com/groups/gitlab-org/-/epics/329) in GitLab 18.2.
+- Assigning milestones to epics [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/329) in GitLab 18.2.
 - Assigning weight to epics [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/12273) in GitLab 18.11.
 
 {{< /history >}}

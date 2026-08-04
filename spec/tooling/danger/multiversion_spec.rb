@@ -24,17 +24,6 @@ RSpec.describe Tooling::Danger::Multiversion, feature_category: :shared do
   describe '#check!' do
     using RSpec::Parameterized::TableSyntax
 
-    context 'when not in ci environment' do
-      let(:ci_env) { false }
-
-      it 'does not add the warning markdown section' do
-        expect(multiversion).not_to receive(:markdown)
-        expect(multiversion).not_to receive(:warn)
-
-        multiversion.check!
-      end
-    end
-
     context 'when GraphQL API and frontend assets have not been simultaneously updated' do
       where(:modified_files, :added_files) do
         %w[app/assets/helloworld.vue]     | %w[]
@@ -46,6 +35,14 @@ RSpec.describe Tooling::Danger::Multiversion, feature_category: :shared do
         %w[app/views/foo.haml] | %w[app/graphql/type.rb]
         %w[foo] | %w[]
         %w[] | %w[]
+        # Client-side query documents are frontend-only, so they never satisfy both sides alone.
+        %w[app/graphql/queries/snippet/snippet.query.graphql] | %w[]
+        %w[] | %w[ee/app/graphql/queries/analytics/foo.query.graphql]
+        %w[app/assets/helloworld.vue app/graphql/queries/snippet/snippet.query.graphql] | %w[]
+        # A schema change on its own, without any frontend change.
+        %w[doc/api/graphql/reference/_index.md] | %w[]
+        %w[app/assets/javascripts/graphql_shared/possible_types.json] | %w[]
+        %w[app/models/users/callout.rb doc/api/graphql/reference/_index.md] | %w[]
       end
 
       with_them do
@@ -67,6 +64,13 @@ RSpec.describe Tooling::Danger::Multiversion, feature_category: :shared do
         %w[app/assets/helloworld.graphql]    | %w[ee/app/graphql/type.rb]
         %w[ee/app/assets/helloworld.graphql] | %w[ee/app/graphql/type.rb]
         %w[ee/app/assets/helloworld.graphql] | %w[jh/app/graphql/type.rb]
+        # A client-side query document consuming a new field from the backend.
+        %w[app/graphql/queries/snippet/snippet.query.graphql] | %w[app/graphql/types/snippet_type.rb]
+        %w[ee/app/graphql/queries/analytics/foo.query.graphql] | %w[ee/app/graphql/types/foo_type.rb]
+        # A schema change whose source lives outside app/graphql, surfaced by the generated files.
+        %w[app/models/users/callout.rb doc/api/graphql/reference/_index.md app/assets/foo.vue] | %w[]
+        %w[app/assets/helloworld.vue app/assets/javascripts/graphql_shared/possible_types.json] | %w[]
+        %w[app/assets/helloworld.vue] | %w[doc/api/graphql/reference/_index.md]
       end
 
       with_them do
@@ -76,6 +80,20 @@ RSpec.describe Tooling::Danger::Multiversion, feature_category: :shared do
 
           multiversion.check!
         end
+      end
+    end
+
+    context 'when running outside ci' do
+      let(:ci_env) { false }
+      let(:modified_files) { %w[app/assets/helloworld.vue] }
+      let(:added_files) { %w[app/graphql/type.rb] }
+
+      it 'tells the author how to compare against a target branch other than master' do
+        expect(multiversion).to receive(:markdown)
+        expect(multiversion).to receive(:warn)
+          .with("#{described_class::WARNING} #{described_class::LOCAL_BASE_HINT}")
+
+        multiversion.check!
       end
     end
   end

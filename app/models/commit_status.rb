@@ -238,7 +238,12 @@ class CommitStatus < Ci::ApplicationRecord
 
     after_transition any => :failed do |commit_status|
       commit_status.run_after_commit do
-        ::Gitlab::Ci::Pipeline::Metrics.job_failure_reason_counter.increment(reason: commit_status.failure_reason)
+        # `try` (not `&.`) because only `Ci::Build` defines `runner`;
+        # bridges/generic statuses don't respond to it.
+        runner_type = commit_status.try(:runner)&.runner_type || 'none'
+
+        ::Gitlab::Ci::Pipeline::Metrics.job_failure_reason_counter
+          .increment(reason: commit_status.failure_reason, runner_type: runner_type)
       end
     end
   end

@@ -14,21 +14,28 @@ title: Troubleshooting the GitLab MCP server
 
 {{< /details >}}
 
-When working with GitLab MCP server, you might encounter the following issues.
+When working with the GitLab MCP server, you might encounter the following issues.
 
-## `404 Not Found` when starting the GitLab MCP server
+## Error: `404 Not Found`
 
-You might get a `404 Not Found` error when you try to start the GitLab MCP server.
-This error occurs when MCP server access is turned off.
+You might get this error when you start the GitLab MCP server, or when
+`POST /api/v4/mcp` returns `404 Not Found` after the OAuth flow completes.
 
-To resolve this issue, ensure you meet all [prerequisites for the GitLab MCP server](mcp_server.md#prerequisites).
+This issue occurs when you have not met the
+[prerequisites for the GitLab MCP server](mcp_server.md#prerequisites).
 
-## `/api/v4/mcp` returns `404 Not Found`
+To find the cause, check the [`mcp.log`](../../administration/logs/_index.md#mcplog) file
+for the `denial_reason` field:
 
-After the OAuth flow completes successfully, you might still encounter
-an error where `POST /api/v4/mcp` returns `404 Not Found`.
+- `instance_setting_disabled`: On GitLab Self-Managed, the MCP server is
+  [turned off](../../administration/settings/visibility_and_access_controls.md#allow-access-to-the-mcp-server)
+  for the instance.
+- `no_enabled_namespace`: On GitLab.com, no top-level group you belong to has the MCP server
+  [turned on](../group/access_and_permissions.md#allow-access-to-the-mcp-server).
 
-To resolve this issue, ensure you meet all [prerequisites for the GitLab MCP server](mcp_server.md#prerequisites).
+> [!note]
+> `404` errors returned in a tool call, for example `404 Project Not Found`, are not logged
+> in `mcp.log`. Instead, these errors appear in the JSON-RPC response body with `isError: true`.
 
 ## Error: `Server's protocol version is not supported: 2025-06-18`
 

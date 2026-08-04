@@ -139,7 +139,7 @@ describe('WorkItemChildrenWrapper', () => {
     expect(workItemLinkChildren).toHaveLength(3);
   });
 
-  it('emits `show-modal` on `toggleDrawer` event', () => {
+  it('emits `select-child` on `toggleDrawer` event', () => {
     createComponent();
     const event = {
       childItem: 'gid://gitlab/WorkItem/2',
@@ -148,7 +148,7 @@ describe('WorkItemChildrenWrapper', () => {
 
     findFirstWorkItemLinkChildItem().vm.$emit('toggleDrawer', event);
 
-    expect(wrapper.emitted('show-modal')).toEqual([[{ event, child: event.childItem }]]);
+    expect(wrapper.emitted('select-child')).toEqual([[{ event, child: event.childItem }]]);
   });
 
   it('emits `toggleDrawer` event when clicking on nested child', () => {

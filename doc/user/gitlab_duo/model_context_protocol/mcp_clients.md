@@ -78,6 +78,11 @@ For more information about extension support, see [version compatibility](#versi
 
 Allow the IDE to access external MCP tools in the top-level group where GitLab Duo is configured.
 
+> [!note]
+> On GitLab Self-Managed, an administrator must also enable the `mcp_client`
+> [feature flag](../../../administration/feature_flags/_index.md) for custom agents and flows
+> to use external MCP tools.
+
 ### On GitLab.com
 
 To allow your local environment to access external MCP tools on GitLab.com:

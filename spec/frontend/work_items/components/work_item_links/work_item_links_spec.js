@@ -241,7 +241,7 @@ describe('WorkItemLinks', () => {
       const [child] = findWorkItemLinkChildrenWrapper().props('children');
       const event = { preventDefault: jest.fn() };
 
-      findWorkItemLinkChildrenWrapper().vm.$emit('show-modal', { event, child });
+      findWorkItemLinkChildrenWrapper().vm.$emit('select-child', { event, child });
 
       expect(event.preventDefault).toHaveBeenCalled();
       expect(visitUrl).toHaveBeenCalledWith('/gitlab-org/gitlab-test/-/work_items/13');

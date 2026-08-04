@@ -261,6 +261,7 @@ CI/CD job tokens can access the following REST API endpoints:
 | Retrieve a commit | `GET /projects/:id/repository/commits/:sha` | `READ_REPOSITORIES` | Read |
 | Retrieve a raw file from a repository | `GET /projects/:id/repository/files/:file_path/raw` | `READ_REPOSITORIES` | Read |
 | Retrieve a single repository tag | `GET /projects/:id/repository/tags/:tag_name` | `READ_REPOSITORIES` | Read |
+| Retrieve file archive from a repository | `GET /projects/:id/repository/archive` | `READ_REPOSITORIES` | Read |
 
 ### Secure files endpoints
 

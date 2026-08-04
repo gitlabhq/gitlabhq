@@ -136,7 +136,6 @@ describe('WorkItemNotes component', () => {
     deleteWINoteMutationHandler = deleteWorkItemNoteMutationSuccessHandler,
     canCreateNote = false,
     isDrawer = false,
-    isModal = false,
     isWorkItemConfidential = false,
     parentId = null,
     propsData = {},
@@ -181,7 +180,6 @@ describe('WorkItemNotes component', () => {
         workItemType: 'task',
         workItemTypeId: 'gid://gitlab/WorkItems::Type/1',
         isDrawer,
-        isModal,
         isWorkItemConfidential,
         parentId,
         canCreateNote,
@@ -245,31 +243,6 @@ describe('WorkItemNotes component', () => {
 
       expect(workItemNoteQueryHandler).not.toHaveBeenCalled();
       expect(scrollToTargetOnResize).toHaveBeenCalled();
-    });
-
-    it('skips preview note if modal is open', async () => {
-      const mockPreviewNote = {
-        id: 'gid://gitlab/Note/174',
-        discussion: { id: 'discussion-1' },
-      };
-
-      createComponent({
-        propsData: {
-          previewNote: mockPreviewNote,
-          isModal: true,
-        },
-      });
-
-      await waitForPromises();
-
-      // Preview note should not be rendered when modal is open
-      const discussions = wrapper.findAllComponents(WorkItemDiscussion);
-      expect(discussions).toHaveLength(0);
-
-      // Should still show loading state
-      expect(findNotesLoading().exists()).toBe(true);
-      expect(workItemNoteQueryHandler).not.toHaveBeenCalled();
-      expect(scrollToTargetOnResize).not.toHaveBeenCalled();
     });
 
     it('skips preview note if open in drawer', async () => {

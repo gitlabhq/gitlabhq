@@ -148,7 +148,6 @@ export default {
     'ee/app/assets/javascripts/group_links/group_link_role_selector/components/group_link_role_selector.vue',
     'ee/app/assets/javascripts/insights/components/insights_chart.vue',
     'ee/app/assets/javascripts/integrations/jira/issues_show/components/sidebar/jira_issues_sidebar_root.vue',
-    'ee/app/assets/javascripts/issues_analytics/components/issues_analytics.vue',
     'ee/app/assets/javascripts/logs/list/filter_bar/logs_filtered_search.vue',
     'ee/app/assets/javascripts/logs/list/logs_list.vue',
     'ee/app/assets/javascripts/metrics/details/filter_bar/metrics_filtered_search.vue',

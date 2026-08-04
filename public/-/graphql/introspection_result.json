@@ -137665,7 +137665,20 @@
             {
               "name": "firstCheckpoint",
               "description": "First checkpoint of the session.",
-              "args": [],
+              "args": [
+                {
+                  "name": "checkpointNs",
+                  "description": "LangGraph checkpoint namespace to scope the lookup to. Omit (or pass an empty string) for the session's own top-level checkpoint lineage; used internally to resolve one nested subgraph invocation, e.g. a delegated subagent. Introduced in GitLab 19.3: Status: Experiment.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+                }
+              ],
               "type": {
                 "kind": "OBJECT",
                 "name": "DuoWorkflowEvent",
@@ -137781,7 +137794,20 @@
             {
               "name": "latestCheckpoint",
               "description": "Latest checkpoint of the session.",
-              "args": [],
+              "args": [
+                {
+                  "name": "checkpointNs",
+                  "description": "LangGraph checkpoint namespace to scope the lookup to. Omit (or pass an empty string) for the session's own top-level checkpoint lineage; used internally to resolve one nested subgraph invocation, e.g. a delegated subagent. Introduced in GitLab 19.3: Status: Experiment.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+                }
+              ],
               "type": {
                 "kind": "OBJECT",
                 "name": "DuoWorkflowEvent",
@@ -138412,6 +138438,125 @@
         },
         {
           "kind": "OBJECT",
+          "name": "DuoWorkflowCheckpointWrite",
+          "description": "A pending write associated with a Duo Workflow checkpoint.",
+          "fields": [
+            {
+              "name": "channel",
+              "description": "LangGraph channel the write was made to.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "data",
+              "description": "Write data.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": "ID of the checkpoint write.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "idx",
+              "description": "Index of the write within the task.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "task",
+              "description": "LangGraph task identifier the write was made for.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "threadTs",
+              "description": "LangGraph thread timestamp identifier the write belongs to.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "writeType",
+              "description": "Serialization type of the write data.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
           "name": "DuoWorkflowConnection",
           "description": "The connection type for DuoWorkflow.",
           "fields": [
@@ -138686,6 +138831,38 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Checkpoints are big & contain internal langgraph details. Deprecated in GitLab 18.7."
+            },
+            {
+              "name": "checkpointNs",
+              "description": "LangGraph checkpoint namespace this checkpoint belongs to. Blank for the session's own top-level checkpoint lineage; this field only ever surfaces that lineage (via first_checkpoint/latest_checkpoint), never a nested subgraph invocation's own. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
+              "name": "checkpointWrites",
+              "description": "Pending writes associated with the checkpoint, e.g. interrupts awaiting resumption. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "DuoWorkflowCheckpointWrite",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
             },
             {
               "name": "compressedCheckpoint",

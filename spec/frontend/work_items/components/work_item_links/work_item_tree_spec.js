@@ -569,57 +569,57 @@ describe('WorkItemTree', () => {
   });
 
   describe('when there is show URL parameter', () => {
-    it('emits `show-modal` event when child work item id is encoded in the URL', async () => {
+    it('emits `select-child` event when child work item id is encoded in the URL', async () => {
       const encodedWorkItemId = btoa(JSON.stringify({ id: 31 }));
       setWindowLocation(`?show=${encodedWorkItemId}`);
       await createComponent();
 
-      expect(wrapper.emitted('show-modal')).toEqual([
-        [{ modalWorkItem: expect.objectContaining({ id: 'gid://gitlab/WorkItem/31' }) }],
+      expect(wrapper.emitted('select-child')).toEqual([
+        [{ child: expect.objectContaining({ id: 'gid://gitlab/WorkItem/31' }) }],
       ]);
     });
 
-    it('does not emit `show-modal` event when child work item id is not encoded in the URL', async () => {
+    it('does not emit `select-child` event when child work item id is not encoded in the URL', async () => {
       const encodedWorkItemId = btoa(JSON.stringify({ id: 1 }));
       setWindowLocation(`?show=${encodedWorkItemId}`);
       await createComponent();
 
-      expect(wrapper.emitted('show-modal')).toBeUndefined();
+      expect(wrapper.emitted('select-child')).toBeUndefined();
     });
 
-    it('emits `show-modal` event with child work item id on window `popstate` event', async () => {
+    it('emits `select-child` event with child work item id on window `popstate` event', async () => {
       const encodedWorkItemId = btoa(JSON.stringify({ id: 31 }));
       await createComponent();
 
-      expect(wrapper.emitted('show-modal')).toEqual([[{ modalWorkItem: null }]]);
+      expect(wrapper.emitted('select-child')).toEqual([[{ child: null }]]);
 
       setWindowLocation(`?show=${encodedWorkItemId}`);
       window.dispatchEvent(new Event('popstate'));
 
       await waitForPromises();
 
-      expect(wrapper.emitted('show-modal')).toEqual([
-        [{ modalWorkItem: null }],
-        [{ modalWorkItem: expect.objectContaining({ id: 'gid://gitlab/WorkItem/31' }) }],
+      expect(wrapper.emitted('select-child')).toEqual([
+        [{ child: null }],
+        [{ child: expect.objectContaining({ id: 'gid://gitlab/WorkItem/31' }) }],
       ]);
     });
 
-    it('emits `show-modal` event with `null` id on window `popstate` event when there is no show URL parameter', async () => {
+    it('emits `select-child` event with `null` id on window `popstate` event when there is no show URL parameter', async () => {
       const encodedWorkItemId = btoa(JSON.stringify({ id: 31 }));
       setWindowLocation(`?show=${encodedWorkItemId}`);
       await createComponent();
 
-      expect(wrapper.emitted('show-modal')).toEqual([
-        [{ modalWorkItem: expect.objectContaining({ id: 'gid://gitlab/WorkItem/31' }) }],
+      expect(wrapper.emitted('select-child')).toEqual([
+        [{ child: expect.objectContaining({ id: 'gid://gitlab/WorkItem/31' }) }],
       ]);
 
       setWindowLocation('?otherThing=true');
       window.dispatchEvent(new Event('popstate'));
       await waitForPromises();
 
-      expect(wrapper.emitted('show-modal')).toEqual([
-        [{ modalWorkItem: expect.objectContaining({ id: 'gid://gitlab/WorkItem/31' }) }],
-        [{ modalWorkItem: null }],
+      expect(wrapper.emitted('select-child')).toEqual([
+        [{ child: expect.objectContaining({ id: 'gid://gitlab/WorkItem/31' }) }],
+        [{ child: null }],
       ]);
     });
 

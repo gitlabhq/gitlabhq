@@ -1204,7 +1204,7 @@ module Ci
 
       ::Gitlab::Ci::Pipeline::Metrics
         .job_failure_reason_counter
-        .increment(reason: :data_integrity_failure)
+        .increment(reason: :data_integrity_failure, runner_type: runner&.runner_type || 'none')
 
       Gitlab::AppLogger.info(
         message: 'Build doomed',

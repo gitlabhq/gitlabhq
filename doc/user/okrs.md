@@ -34,7 +34,7 @@ OKRs are a type of work item, a step towards [default issue types](https://gitla
 in GitLab.
 For the roadmap of migrating [issues](project/issues/_index.md) and [epics](group/epics/_index.md)
 to work items and adding custom work item types, see
-[epic 6033](https://gitlab.com/groups/gitlab-org/-/epics/6033) or the
+[epic 6033](https://gitlab.com/groups/gitlab-org/-/work_items/6033) or the
 [Plan direction page](https://about.gitlab.com/direction/plan/).
 
 ## Designing effective OKRs

@@ -154,8 +154,6 @@ export default {
     'ee/app/assets/javascripts/diffs/components/shared/findings_drawer_details.vue',
     'ee/app/assets/javascripts/groups/settings/work_items/custom_status/status_form.vue',
     'ee/app/assets/javascripts/hand_raise_leads/hand_raise_lead/components/hand_raise_lead_button.vue',
-    'ee/app/assets/javascripts/issues_analytics/components/issues_analytics_chart.vue',
-    'ee/app/assets/javascripts/issues_analytics/components/total_issues_analytics_chart.vue',
     'ee/app/assets/javascripts/on_demand_scans/components/action_button.vue',
     'ee/app/assets/javascripts/pages/admin/application_settings/general/components/seat_control_section.vue',
     'ee/app/assets/javascripts/requirements/components/requirement_item.vue',

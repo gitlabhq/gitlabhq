@@ -11,6 +11,7 @@ import { initCiSecureFiles } from '~/ci_secure_files';
 import initDeployTokens from '~/deploy_tokens';
 import { initProjectRunnersSettings } from '~/ci/runner/project_runners_settings/index';
 import { initGeneralPipelinesOptions } from '~/ci_settings_general_pipeline';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 // Initialize expandable settings panels
 initSettingsPanels();
@@ -39,4 +40,21 @@ initRefSwitcherBadges();
 initJobTokenAccess();
 initCiSecureFiles();
 initGeneralPipelinesOptions();
-initProjectRunnersSettings();
+
+if (gon.features?.vue3MigrateAdminRunners) {
+  (async () => {
+    try {
+      // eslint-disable-next-line no-shadow -- Override with Vue 3 app
+      const { initProjectRunnersSettings } =
+        await import('~/ci/runner/project_runners_settings/index?vue3');
+      initProjectRunnersSettings();
+      return;
+    } catch (e) {
+      Sentry.captureException(e);
+    }
+
+    initProjectRunnersSettings();
+  })();
+} else {
+  initProjectRunnersSettings();
+}

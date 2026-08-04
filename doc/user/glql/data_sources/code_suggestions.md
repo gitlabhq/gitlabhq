@@ -91,7 +91,7 @@ The following dimensions are supported:
 |-----------|------------------|------------------------------------------------------|
 | IDE name  | `ideName`        | Group by IDE used (for example, VSCode, JetBrains).  |
 | Language  | `language`       | Group by programming language.                       |
-| Timestamp | `timestamp`      | Group by date.                                       |
+| Timestamp | `timestamp`      | Group by date. Accepts only the `monthly` [`granularity` parameter](../_index.md#field-parameters) (default: `monthly`). |
 | User      | `user`           | Group by user (displays avatar, name, and username). |
 
 ## Metrics

@@ -276,27 +276,26 @@ For premium models with optimized integration:
 
 | Model | Calls with one credit |
 |-------|------------------------|
+| `gpt-5.6-luna` | 8.0 |
 | `claude-4.5-haiku` | 6.7 |
 | `gpt-5-4-mini` | 6.7 |
-| `gpt-5.6-luna` <sup>2</sup> | 5.0 |
 | `gemini-3.5-flash` | 3.3 |
 | `gemini-3.6-flash` | 3.3 |
 | `gpt-5` | 3.3 |
 | `gpt-5-codex` | 3.3 |
 | `claude-sonnet-5` <sup>1</sup> | 3.2 |
-| `gpt-5.6-luna` <sup>3</sup> | 2.86 |
 | `gpt-5.2` | 2.5 |
 | `gpt-5.2-codex` | 2.5 |
 | `gpt-5.3-codex` | 2.5 |
+| `gpt-5.6-terra` <sup>2</sup> | 2.5 |
 | `claude-3.5-sonnet` | 2.0 |
 | `claude-3.7-sonnet` | 2.0 |
 | `claude-sonnet-4.5` | 2.0 |
 | `claude-sonnet-4.6` | 2.0 |
 | `gpt-5.4` <sup>2</sup> | 2.0 |
-| `gpt-5.6-terra` <sup>2</sup> | 2.0 |
+| `gpt-5.6-terra` <sup>3</sup> | 1.43 |
 | `claude-opus-4.5` | 1.2 |
 | `gpt-5.4` <sup>3</sup> | 1.11 |
-| `gpt-5.6-terra` <sup>3</sup> | 1.11 |
 | `claude-opus-4.6` | 1.1 |
 | `claude-opus-4.7` | 1.1 |
 | `claude-opus-4.8` | 1.1 |

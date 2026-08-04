@@ -163,7 +163,7 @@ Prerequisites:
 
 > [!note]
 > If you also use a proxy to connect to your GitLab instance, add a comment to [issue 314](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/314).
-> If you still have connection problems after completing these steps, review [epic 6244](https://gitlab.com/groups/gitlab-org/-/epics/6244), which links to all existing SSL issues for the GitLab for VS Code extension.
+> If you still have connection problems after completing these steps, review [epic 6244](https://gitlab.com/groups/gitlab-org/-/work_items/6244), which links to all existing SSL issues for the GitLab for VS Code extension.
 
 To use a self-signed SSL certificate:
 

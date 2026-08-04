@@ -169,7 +169,7 @@ model.predict(data=sample_input)
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119454) in GitLab 16.1.
-- [Changed](https://gitlab.com/groups/gitlab-org/-/epics/9423) to beta in GitLab 17.1.
+- [Changed](https://gitlab.com/groups/gitlab-org/-/work_items/9423) to beta in GitLab 17.1.
 
 {{< /history >}}
 

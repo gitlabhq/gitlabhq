@@ -66,6 +66,13 @@ export default {
       required: false,
       default: CONFIRM_DANGER_MODAL_TITLE,
     },
+    // Rendered through GlSprintf, so an override must carry a `%{phrase}` placeholder:
+    // that is where the phrase to type is interpolated.
+    phraseLabel: {
+      type: String,
+      required: false,
+      default: CONFIRM_DANGER_PHRASE_TEXT,
+    },
   },
   emits: ['change', 'confirm'],
   data() {
@@ -117,7 +124,6 @@ export default {
     CONFIRM_DANGER_MODAL_BUTTON,
     CONFIRM_DANGER_MODAL_TITLE,
     CONFIRM_DANGER_WARNING,
-    CONFIRM_DANGER_PHRASE_TEXT,
   },
 };
 </script>
@@ -152,7 +158,7 @@ export default {
       </p>
     </slot>
     <label data-testid="confirm-danger-phrase" for="confirm_name_input" class="gl-mb-3 gl-block">
-      <gl-sprintf :message="$options.i18n.CONFIRM_DANGER_PHRASE_TEXT">
+      <gl-sprintf :message="phraseLabel">
         <template #phrase>
           <code class="gl-whitespace-pre-wrap">{{ phrase }}</code>
         </template>

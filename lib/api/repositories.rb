@@ -227,7 +227,10 @@ module API
           default: [],
           desc: 'Comma-separated list of paths to exclude from the archive'
       end
-      route_setting :authorization, permissions: :read_repository_archive, boundary_type: :project
+      route_setting :authentication, job_token_allowed: true
+      route_setting :authorization, permissions: :read_repository_archive, boundary_type: :project,
+        job_token_policies: :read_repositories,
+        allow_public_access_for_enabled_project_features: :repository
       get ':id/repository/archive', requirements: { format: Gitlab::PathRegex.archive_formats_regex } do
         check_archive_rate_limit!(current_user, user_project) do
           render_api_error!({ error: _('This archive has been requested too many times. Try again later.') }, 429)

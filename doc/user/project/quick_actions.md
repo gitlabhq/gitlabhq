@@ -1079,7 +1079,7 @@ Merge the changes.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/329) for epics in GitLab 18.2.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/329) for epics in GitLab 18.2.
 
 {{< /history >}}
 
@@ -1627,7 +1627,7 @@ Remove the iteration.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/329) for epics in GitLab 18.2.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/329) for epics in GitLab 18.2.
 
 {{< /history >}}
 

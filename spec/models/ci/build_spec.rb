@@ -6332,7 +6332,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     it 'logs a message and increments the job failure counter', :aggregate_failures do
       expect(::Gitlab::Ci::Pipeline::Metrics.job_failure_reason_counter)
         .to(receive(:increment))
-        .with(reason: :data_integrity_failure)
+        .with(reason: :data_integrity_failure, runner_type: 'none')
 
       expect(Gitlab::AppLogger)
         .to receive(:info)
@@ -6340,6 +6340,22 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         .and_call_original
 
       doom!
+    end
+
+    context 'when the build has a runner' do
+      let(:runner) { create(:ci_runner, :instance) }
+
+      before do
+        build.runner = runner
+      end
+
+      it 'increments the job failure counter with the runner type' do
+        expect(::Gitlab::Ci::Pipeline::Metrics.job_failure_reason_counter)
+          .to(receive(:increment))
+          .with(reason: :data_integrity_failure, runner_type: 'instance_type')
+
+        doom!
+      end
     end
 
     context 'with deployment' do

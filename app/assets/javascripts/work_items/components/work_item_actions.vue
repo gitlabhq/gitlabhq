@@ -172,7 +172,7 @@ export default {
       required: false,
       default: null,
     },
-    isModal: {
+    isDetailPanel: {
       type: Boolean,
       required: false,
       default: false,
@@ -440,7 +440,7 @@ export default {
   },
   methods: {
     copyToClipboard(text, message) {
-      if (this.isModal) {
+      if (this.isDetailPanel) {
         // eslint-disable-next-line no-restricted-properties
         navigator.clipboard.writeText(text);
       }

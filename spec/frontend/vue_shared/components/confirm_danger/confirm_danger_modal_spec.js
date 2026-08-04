@@ -87,6 +87,24 @@ describe('Confirm Danger Modal', () => {
     it('renders the default cancel button', () => {
       expect(findCancelAction().text).toBe(CONFIRM_DANGER_MODAL_CANCEL);
     });
+
+    it('labels the confirmation input with the default phrase text', () => {
+      expect(findConfirmationPhrase().text()).toBe(`Enter the following to confirm: ${phrase}`);
+    });
+  });
+
+  describe('with a custom phrase label', () => {
+    beforeEach(() => {
+      createComponent({ props: { phraseLabel: 'Type the name below to confirm: %{phrase}' } });
+    });
+
+    it('labels the confirmation input with the given text', () => {
+      expect(findConfirmationPhrase().text()).toBe(`Type the name below to confirm: ${phrase}`);
+    });
+
+    it('still interpolates the phrase into a code element', () => {
+      expect(findConfirmationPhrase().find('code').text()).toBe(phrase);
+    });
   });
 
   describe('with a valid confirmation phrase', () => {

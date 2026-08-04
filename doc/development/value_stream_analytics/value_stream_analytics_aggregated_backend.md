@@ -26,7 +26,7 @@ statement timeout (15 s).
 
 The database queries in the old backend use the core domain models directly through
 `IssuableFinders` classes: ([MergeRequestsFinder](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/finders/merge_requests_finder.rb) and [IssuesFinder](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/finders/issues_finder.rb)).
-With the requested change of the [date range filters](https://gitlab.com/groups/gitlab-org/-/epics/6046),
+With the requested change of the [date range filters](https://gitlab.com/groups/gitlab-org/-/work_items/6046),
 this approach was no longer viable from the performance point of view.
 
 Benefits of the aggregated VSA backend:

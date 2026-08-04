@@ -312,7 +312,7 @@ module Gitlab
           workflow_definition: workflow_definition,
           namespace_id: namespace_id,
           args: Autoflow::ValueConverter.values(args),
-          kwargs: Autoflow::ValueConverter.named_values(kwargs)
+          kwargs: Autoflow::ValueConverter.kwargs(kwargs)
         )
 
         stub_for(:autoflow).start_workflow(request, metadata: metadata)

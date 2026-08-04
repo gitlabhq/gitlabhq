@@ -123,7 +123,6 @@ describe('WorkItemDetail component', () => {
   const findWorkItemDescription = () => wrapper.findComponent(WorkItemDescription);
   const findWorkItemAttributesWrapper = () => wrapper.findComponent(WorkItemAttributesWrapper);
   const findAncestors = () => wrapper.findComponent(WorkItemAncestors);
-  const findCloseButton = () => wrapper.findComponentByTestId('work-item-close');
   const findWorkItemType = () => wrapper.findByTestId('work-item-type');
   const findErrorTrackingWidget = () => wrapper.findComponent(WorkItemErrorTracking);
   const findLinkedResourcesWidget = () => wrapper.findComponent(WorkItemLinkedResources);
@@ -184,7 +183,6 @@ describe('WorkItemDetail component', () => {
       isLoggedIn: isLoggedIn(),
       propsData: {
         isDetailPanel: false,
-        isModal: false,
         workItemFullPath: 'group/project',
         workItemId: '',
         workItemIid: '1',
@@ -339,36 +337,6 @@ describe('WorkItemDetail component', () => {
       expect(findErrorTrackingWidget().props()).toEqual({
         fullPath: 'group/project',
         iid: '1',
-      });
-    });
-  });
-
-  describe('close button', () => {
-    describe('when isModal prop is false', () => {
-      it('does not render', async () => {
-        createComponent({ props: { isModal: false } });
-        await mockApollo.resolveAll();
-
-        expect(findCloseButton().exists()).toBe(false);
-      });
-    });
-
-    describe('when isModal prop is true', () => {
-      it('renders', async () => {
-        createComponent({ props: { isModal: true } });
-        await mockApollo.resolveAll();
-
-        expect(findCloseButton().props('icon')).toBe('close');
-        expect(findCloseButton().attributes('aria-label')).toBe('Close');
-      });
-
-      it('emits `close` event when clicked', async () => {
-        createComponent({ props: { isModal: true } });
-        await mockApollo.resolveAll();
-
-        findCloseButton().vm.$emit('click');
-
-        expect(wrapper.emitted('close')).toEqual([[]]);
       });
     });
   });
@@ -589,24 +557,6 @@ describe('WorkItemDetail component', () => {
         expect(findWorkItemTwoColumnViewContainer().exists()).toBe(false);
       });
     });
-
-    describe('modal view', () => {
-      it('shows the modal close button', async () => {
-        createComponent({
-          props: { isModal: true },
-          handler: jest.fn(),
-        });
-
-        await mockApollo.rejectQuery(workItemByIidQuery);
-        await mockApollo.resolveQuery(getAllowedWorkItemChildTypes);
-        await mockApollo.resolveQuery(workspacePermissionsQuery);
-        await mockApollo.resolveQuery(workItemLinkedItemsQuery);
-
-        expect(findCloseButton().exists()).toBe(true);
-        expect(findEmptyState().exists()).toBe(true);
-        expect(findEmptyState().props('description')).toBe(i18n.fetchError);
-      });
-    });
   });
 
   it('renders the resources widget', async () => {
@@ -685,15 +635,6 @@ describe('WorkItemDetail component', () => {
     expect(successHandler).not.toHaveBeenCalled();
   });
 
-  it('calls the work item query when isModal=true', async () => {
-    createComponent({ props: { isModal: true } });
-    await mockApollo.resolveAll();
-
-    expect(successHandler).toHaveBeenCalledWith(
-      expect.objectContaining({ fullPath: 'group/project', iid: '1' }),
-    );
-  });
-
   describe('hierarchy widget', () => {
     it('does not render children tree by when widget is not present', async () => {
       const workItemWithoutHierarchy = workItemByIidResponseFactory({
@@ -750,22 +691,22 @@ describe('WorkItemDetail component', () => {
         },
       );
 
-      it('opens the drawer with the child when `show-modal` is emitted', async () => {
+      it('opens the drawer with the child when `select-child` is emitted', async () => {
         createComponent({ handler: objectiveHandler });
         await mockApollo.resolveAll();
 
         const event = {
           preventDefault: jest.fn(),
         };
-        const modalWorkItem = { id: 'childWorkItemId' };
+        const child = { id: 'childWorkItemId' };
 
-        findHierarchyTree().vm.$emit('show-modal', {
+        findHierarchyTree().vm.$emit('select-child', {
           event,
-          modalWorkItem,
+          child,
         });
         await nextTick();
 
-        expect(findDetailPanel().props('activeItem')).toEqual(modalWorkItem);
+        expect(findDetailPanel().props('activeItem')).toEqual(child);
       });
 
       it('closes the drawer when `close-drawer` is emitted from the selected work item', async () => {
@@ -775,70 +716,45 @@ describe('WorkItemDetail component', () => {
         const event = {
           preventDefault: jest.fn(),
         };
-        const modalWorkItem = { id: 'childWorkItemId' };
+        const child = { id: 'childWorkItemId' };
 
-        findHierarchyTree().vm.$emit('show-modal', {
+        findHierarchyTree().vm.$emit('select-child', {
           event,
-          modalWorkItem,
+          child,
         });
         await nextTick();
 
-        findHierarchyTree().vm.$emit('show-modal', {
+        findHierarchyTree().vm.$emit('select-child', {
           event,
-          modalWorkItem,
+          child,
         });
         await nextTick();
 
         expect(findDetailPanel().props('activeItem')).toEqual(null);
       });
 
-      it('closes the drawer when `show-modal` is emitted with `null`', async () => {
+      it('closes the drawer when `select-child` is emitted with `null`', async () => {
         createComponent({ handler: objectiveHandler });
         await mockApollo.resolveAll();
         const event = {
           preventDefault: jest.fn(),
         };
-        const modalWorkItem = { id: 'childWorkItemId' };
-        findHierarchyTree().vm.$emit('show-modal', {
+        const child = { id: 'childWorkItemId' };
+        findHierarchyTree().vm.$emit('select-child', {
           event,
-          modalWorkItem,
+          child,
         });
         await nextTick();
 
-        expect(findDetailPanel().props('activeItem')).toEqual(modalWorkItem);
+        expect(findDetailPanel().props('activeItem')).toEqual(child);
 
-        findHierarchyTree().vm.$emit('show-modal', {
+        findHierarchyTree().vm.$emit('select-child', {
           event,
-          modalWorkItem: null,
+          child: null,
         });
         await nextTick();
 
         expect(findDetailPanel().props('activeItem')).toEqual(null);
-      });
-
-      describe('work item is rendered in a modal and has children', () => {
-        beforeEach(async () => {
-          createComponent({
-            props: { isModal: true },
-            handler: objectiveHandler,
-          });
-
-          await mockApollo.resolveAll();
-        });
-
-        it('emits `update-modal` when `show-modal` is emitted', async () => {
-          const event = {
-            preventDefault: jest.fn(),
-          };
-
-          findHierarchyTree().vm.$emit('show-modal', {
-            event,
-            modalWorkItem: { id: 'childWorkItemId' },
-          });
-          await nextTick();
-
-          expect(wrapper.emitted('update-modal')).toBeDefined();
-        });
       });
     });
   });
@@ -883,7 +799,7 @@ describe('WorkItemDetail component', () => {
         expect(findWorkItemRelationships().exists()).toBe(true);
       });
 
-      it('opens the modal with the linked item when `showModal` is emitted', async () => {
+      it('opens the drawer with the linked item when `showModal` is emitted', async () => {
         createComponent({
           handler,
         });
@@ -892,40 +808,15 @@ describe('WorkItemDetail component', () => {
         const event = {
           preventDefault: jest.fn(),
         };
-        const modalWorkItem = { id: 'childWorkItemId' };
+        const child = { id: 'childWorkItemId' };
 
         findWorkItemRelationships().vm.$emit('showModal', {
           event,
-          modalWorkItem,
+          child,
         });
         await nextTick();
 
-        expect(findDetailPanel().props('activeItem')).toEqual(modalWorkItem);
-      });
-
-      describe('linked work item is rendered in a modal and has linked items', () => {
-        beforeEach(async () => {
-          createComponent({
-            props: { isModal: true },
-            handler,
-          });
-
-          await mockApollo.resolveAll();
-        });
-
-        it('emits `update-modal` when `show-modal` is emitted', async () => {
-          const event = {
-            preventDefault: jest.fn(),
-          };
-
-          findWorkItemRelationships().vm.$emit('showModal', {
-            event,
-            modalWorkItem: { id: 'childWorkItemId' },
-          });
-          await nextTick();
-
-          expect(wrapper.emitted('update-modal')).toBeDefined();
-        });
+        expect(findDetailPanel().props('activeItem')).toEqual(child);
       });
     });
   });
