@@ -171,6 +171,36 @@ RSpec.describe ProjectAuthorizations::Changes, feature_category: :groups_and_pro
         it_behaves_like 'does not publish AuthorizationsRemovedEvent'
       end
 
+      describe '#rows_added' do
+        it 'counts every inserted row' do
+          expect(apply_project_authorization_changes.rows_added).to eq(3)
+        end
+
+        it 'counts rows inserted across several batches' do
+          stub_const("#{described_class}::BATCH_SIZE", 2)
+
+          expect(apply_project_authorization_changes.rows_added).to eq(3)
+        end
+
+        context 'when a row already exists for the user and project' do
+          before do
+            create(:project_authorization, user: user, project: project_1)
+          end
+
+          it 'does not count the row skipped by the insert conflict' do
+            expect(apply_project_authorization_changes.rows_added).to eq(2)
+          end
+        end
+
+        context 'when there is nothing to add' do
+          let(:authorizations_to_add) { [] }
+
+          it 'is zero' do
+            expect(apply_project_authorization_changes.rows_added).to eq(0)
+          end
+        end
+      end
+
       describe 'and authorizations should be removed as well' do
         let(:project_authorization_changes) do
           ProjectAuthorizations::Changes.new do |changes|
@@ -457,6 +487,58 @@ RSpec.describe ProjectAuthorizations::Changes, feature_category: :groups_and_pro
         it_behaves_like 'does not removes any project authorizations from the current user'
         it_behaves_like 'does not publish AuthorizationsRemovedEvent'
         it_behaves_like 'does not publish AuthorizationsAddedEvent'
+      end
+
+      describe '#rows_deleted' do
+        it 'counts every deleted row' do
+          expect(apply_project_authorization_changes.rows_deleted).to eq(3)
+        end
+
+        it 'counts rows deleted across several batches' do
+          stub_const("#{described_class}::BATCH_SIZE", 2)
+
+          expect(apply_project_authorization_changes.rows_deleted).to eq(3)
+        end
+
+        # A project id can be requested for removal without a row backing it, because
+        # the diff feeding this class is computed from a possibly stale read while the
+        # row may already be gone - deleted by the `projects` cascade or by a
+        # concurrent refresh.
+        context 'when a requested project has no authorization row for the user' do
+          let_it_be(:unauthorized_project) { create(:project) }
+
+          let(:project_ids) { [project_1.id, unauthorized_project.id] }
+
+          it 'only counts the rows that were present' do
+            expect(apply_project_authorization_changes.rows_deleted).to eq(1)
+          end
+        end
+
+        context 'when none of the requested projects have authorization rows' do
+          let_it_be(:unauthorized_project) { create(:project) }
+
+          let(:project_ids) { [unauthorized_project.id] }
+
+          it 'is zero' do
+            expect(apply_project_authorization_changes.rows_deleted).to eq(0)
+          end
+        end
+
+        context 'when the project_ids list is empty' do
+          let(:project_ids) { [] }
+
+          it 'is zero' do
+            expect(apply_project_authorization_changes.rows_deleted).to eq(0)
+          end
+        end
+
+        context 'when the project_ids list is nil' do
+          let(:project_ids) { nil }
+
+          it 'is zero' do
+            expect(apply_project_authorization_changes.rows_deleted).to eq(0)
+          end
+        end
       end
     end
   end

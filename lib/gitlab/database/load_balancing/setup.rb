@@ -75,6 +75,15 @@ module Gitlab
               super(*args, **kwargs, &block)
             end
           end
+
+          # Since Rails 7.2, models load schema information through the class-level
+          # `schema_cache` method, which delegates to `connection_pool.schema_cache` and
+          # checks out connections directly from the pool, bypassing the ConnectionProxy.
+          # Route it through the proxy so that schema queries are sent to replicas
+          # (see ConnectionProxy#schema_cache).
+          @model.singleton_class.define_method(:schema_cache) do
+            uses_load_balancer ? connection.schema_cache : super()
+          end
         end
 
         def setup_service_discovery

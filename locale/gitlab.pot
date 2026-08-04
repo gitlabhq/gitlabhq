@@ -152,6 +152,11 @@ msgid_plural "%d additional users"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d app"
+msgid_plural "%d apps"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d approval"
 msgid_plural "%d approvals"
 msgstr[0] ""
@@ -22645,12 +22650,6 @@ msgstr ""
 msgid "ContinuousDeployment|+ Add service"
 msgstr ""
 
-msgid "ContinuousDeployment|10m ago"
-msgstr ""
-
-msgid "ContinuousDeployment|5 apps"
-msgstr ""
-
 msgid "ContinuousDeployment|A short name and description."
 msgstr ""
 
@@ -22949,9 +22948,6 @@ msgid "ContinuousDeployment|Production"
 msgstr ""
 
 msgid "ContinuousDeployment|QA"
-msgstr ""
-
-msgid "ContinuousDeployment|Region"
 msgstr ""
 
 msgid "ContinuousDeployment|Register application"
@@ -34192,7 +34188,16 @@ msgstr ""
 msgid "FeatureFlag|User List"
 msgstr ""
 
+msgid "FeatureLibrary|Can't find what you're looking for? Search with AI"
+msgstr ""
+
+msgid "FeatureLibrary|Gemini couldn't find a matching feature. Try different keywords."
+msgstr ""
+
 msgid "FeatureLibrary|GitLab features"
+msgstr ""
+
+msgid "FeatureLibrary|Hide"
 msgstr ""
 
 msgid "FeatureLibrary|No features match your search"
@@ -34204,7 +34209,13 @@ msgstr ""
 msgid "FeatureLibrary|Pin %{title}"
 msgstr ""
 
+msgid "FeatureLibrary|Powered by Gemini"
+msgstr ""
+
 msgid "FeatureLibrary|Recommended"
+msgstr ""
+
+msgid "FeatureLibrary|Recommended based on your search"
 msgstr ""
 
 msgid "FeatureLibrary|Search GitLab features"
@@ -34216,7 +34227,16 @@ msgstr ""
 msgid "FeatureLibrary|Search features in this project"
 msgstr ""
 
+msgid "FeatureLibrary|Searching with Gemini …"
+msgstr ""
+
 msgid "FeatureLibrary|Share feedback about this feature library"
+msgstr ""
+
+msgid "FeatureLibrary|Something went wrong searching with Gemini. Try again."
+msgstr ""
+
+msgid "FeatureLibrary|Suggested by Gemini"
 msgstr ""
 
 msgid "FeatureLibrary|Try a different search term."
@@ -34226,6 +34246,9 @@ msgid "FeatureLibrary|Unpin"
 msgstr ""
 
 msgid "FeatureLibrary|Unpin %{title}"
+msgstr ""
+
+msgid "FeatureLibrary|You have reached the search limit. Try again later."
 msgstr ""
 
 msgid "FeaturedUpdate|%{releaseNumber} release"
@@ -38600,6 +38623,15 @@ msgstr ""
 msgid "GroupSettings|Control whether built-in project templates are available for new projects. You can enforce this setting for all subgroups."
 msgstr ""
 
+msgid "GroupSettings|Create an organization"
+msgstr ""
+
+msgid "GroupSettings|Create an organization to manage your top-level group and its data. %{link_start}How do organizations work?%{link_end}."
+msgstr ""
+
+msgid "GroupSettings|Create organization…"
+msgstr ""
+
 msgid "GroupSettings|Custom project templates"
 msgstr ""
 
@@ -38744,6 +38776,9 @@ msgstr ""
 msgid "GroupSettings|Include diff previews"
 msgstr ""
 
+msgid "GroupSettings|Keep your data separate from other organizations."
+msgstr ""
+
 msgid "GroupSettings|MCP client access"
 msgstr ""
 
@@ -38850,6 +38885,12 @@ msgid "GroupSettings|This setting is applied on %{ancestor_group}. To share proj
 msgstr ""
 
 msgid "GroupSettings|This setting is applied on %{ancestor_group}. You can override the setting or %{remove_ancestor_share_with_group_lock}."
+msgstr ""
+
+msgid "GroupSettings|This will:"
+msgstr ""
+
+msgid "GroupSettings|Transfer all your groups, projects, and members to the organization."
 msgstr ""
 
 msgid "GroupSettings|Transfer group"
@@ -73714,6 +73755,9 @@ msgstr ""
 msgid "SecurityTrackedRefs|Are you sure you want to remove tracking from this %{refType}?"
 msgstr ""
 
+msgid "SecurityTrackedRefs|Beta"
+msgstr ""
+
 msgid "SecurityTrackedRefs|Could not fetch available refs. Please try again later."
 msgstr ""
 
@@ -73779,7 +73823,16 @@ msgstr ""
 msgid "SecurityTrackedRefs|Track ref(s)"
 msgstr ""
 
+msgid "SecurityTrackedRefs|Track vulnerabilities across refs (Beta)"
+msgstr ""
+
 msgid "SecurityTrackedRefs|Tracking refs in progress. Please wait."
+msgstr ""
+
+msgid "SecurityTrackedRefs|What can I expect after Beta?"
+msgstr ""
+
+msgid "SecurityTrackedRefs|You can now track vulnerabilities on refs other than the default branch. During Beta, you're limited to %{limit} refs per project, but we'll expand this and add more capabilities over time."
 msgstr ""
 
 msgid "SecurityTrackedRefs|You can remove tracked refs in the Configuration page."

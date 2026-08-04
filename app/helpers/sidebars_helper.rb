@@ -88,7 +88,8 @@ module SidebarsHelper
       work_items: work_items_modal_data(group, project),
       has_multiple_organizations: user.has_multiple_organizations?,
       show_feature_library_feedback: show_feature_library_feedback?,
-      show_feature_library_shimmer: show_feature_library_shimmer?
+      show_feature_library_shimmer: show_feature_library_shimmer?,
+      ai_search_available: feature_library_ai_search_available?(project: project, group: group)
     })
   end
 
@@ -195,6 +196,13 @@ module SidebarsHelper
   def show_feature_library_feedback?
     true
   end
+
+  # overridden on EE with the FF/trial/resource checks
+  # rubocop:disable Lint/UnusedMethodArgument -- project and group are used on EE
+  def feature_library_ai_search_available?(project:, group:)
+    false
+  end
+  # rubocop:enable Lint/UnusedMethodArgument
 
   def fallback_sidebar_panel(nav, context_adds, user = nil)
     # Fallback when panels fail to render:

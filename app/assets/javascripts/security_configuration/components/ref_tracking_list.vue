@@ -6,9 +6,13 @@ import {
   GlSkeletonLoader,
   GlAlert,
   GlKeysetPagination,
+  GlLink,
+  GlPopover,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { s__, sprintf } from '~/locale';
+import { helpPagePath } from '~/helpers/help_page_helper';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { untrackRefsOptimisticResponse, updateUntrackedRefsCache } from '../graphql/cache_utils';
 import securityTrackedRefs from '../graphql/security_tracked_refs.query.graphql';
 import untrackSecurityRefsMutation from '../graphql/untrack_security_refs.mutation.graphql';
@@ -26,6 +30,8 @@ export default {
     GlBadge,
     GlSkeletonLoader,
     GlKeysetPagination,
+    GlLink,
+    GlPopover,
     RefTrackingListItem,
     RefUntrackingConfirmation,
     RefTrackingSelection,
@@ -33,6 +39,8 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  betaHelpPath: helpPagePath('user/application_security/vulnerability_report/_index.md'),
+  mixins: [glFeatureFlagMixin()],
   inject: ['projectFullPath', 'maxTrackedRefs'],
   apollo: {
     trackedRefs: {
@@ -103,6 +111,17 @@ export default {
     },
     hasMaxTrackedRefs() {
       return this.totalCount >= this.maxTrackedRefs;
+    },
+    showBeta() {
+      return Boolean(this.glFeatures?.vulnerabilitiesAcrossContexts);
+    },
+    betaPopoverDescription() {
+      return sprintf(
+        s__(
+          "SecurityTrackedRefs|You can now track vulnerabilities on refs other than the default branch. During Beta, you're limited to %{limit} refs per project, but we'll expand this and add more capabilities over time.",
+        ),
+        { limit: this.maxTrackedRefs },
+      );
     },
     shouldDisableTrackNewRefButton() {
       return this.isLoading || this.isTrackingRefs || this.hasMaxTrackedRefs;
@@ -226,6 +245,28 @@ export default {
           <gl-badge variant="neutral"
             >{{ totalCount === null ? '-' : totalCount }}/{{ maxTrackedRefs }}</gl-badge
           >
+          <template v-if="showBeta">
+            <gl-badge
+              id="tracked-refs-beta-badge"
+              variant="neutral"
+              class="hover:gl-cursor-pointer"
+              data-testid="tracked-refs-beta-badge"
+              >{{ s__('SecurityTrackedRefs|Beta') }}</gl-badge
+            >
+            <gl-popover
+              target="tracked-refs-beta-badge"
+              triggers="hover focus click"
+              placement="bottom"
+              show-close-button
+              :title="s__('SecurityTrackedRefs|Track vulnerabilities across refs (Beta)')"
+              data-testid="tracked-refs-beta-popover"
+            >
+              <p class="gl-mb-3">{{ betaPopoverDescription }}</p>
+              <gl-link :href="$options.betaHelpPath" target="_blank">{{
+                s__('SecurityTrackedRefs|What can I expect after Beta?')
+              }}</gl-link>
+            </gl-popover>
+          </template>
         </div>
         <span
           v-gl-tooltip

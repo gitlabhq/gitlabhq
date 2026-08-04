@@ -838,7 +838,7 @@ export default {
       const persistedTypeId = getLastUsedWorkItemTypeIdForNamespace(this.inputNamespacePath);
 
       /**
-       * Override to use the preselected work item type when using creation context descriptiion checklist
+       * Override to use the preselected work item type when using creation context description checklist
        * https://gitlab.com/gitlab-org/gitlab/-/work_items/585444
        * We do not want the last work item type/ draft work item type overriding the valid
        * child work item item in the task list
@@ -1533,7 +1533,7 @@ export default {
           :class="formButtonsClasses"
           data-testid="form-buttons"
         >
-          <!-- We're duplicating information here in a differnet order, rather than reordering with CSS, to maintain correct tab ordering for accessibility -->
+          <!-- We're duplicating information here in a different order, rather than reordering with CSS, to maintain correct tab ordering for accessibility -->
           <!-- In modal, contribution guidelines come first; in standalone page, buttons come first -->
           <div v-if="isModal">
             <div v-if="contributionGuidePath" class="gl-text-sm">

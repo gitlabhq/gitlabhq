@@ -346,6 +346,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/escalation_policies.css"
     config.assets.precompile << "page_bundles/graph_charts.css"
     config.assets.precompile << "page_bundles/graphql_explorer.css"
+    config.assets.precompile << "page_bundles/group_edit.css"
     config.assets.precompile << "page_bundles/group.css"
     config.assets.precompile << "page_bundles/ide.css"
     config.assets.precompile << "page_bundles/import.css"

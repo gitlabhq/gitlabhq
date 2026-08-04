@@ -16,25 +16,39 @@ RSpec.describe Gitlab::PolicyStore do
         .and_return(Gitlab::PolicyStore::Configuration.new(repository))
     end
 
-    it 'delegates #store to the configured repository' do
-      attributes = { name: 'policy' }
-      policy = instance_double(Gitlab::PolicyStore::Policy)
-      allow(repository).to receive(:store).with(attributes).and_return(policy)
+    describe '#create' do
+      it 'delegates to the configured repository' do
+        attributes = { name: 'policy' }
+        policy = instance_double(Gitlab::PolicyStore::Policy)
+        allow(repository).to receive(:create).with(attributes).and_return(policy)
 
-      expect(described_class.store(attributes)).to eq(policy)
+        expect(described_class.create(attributes)).to eq(policy)
+      end
     end
 
-    it 'delegates #find to the configured repository' do
-      policy = instance_double(Gitlab::PolicyStore::Policy)
-      allow(repository).to receive(:find).with(1).and_return(policy)
+    describe '#find' do
+      it 'delegates to the configured repository' do
+        policy = instance_double(Gitlab::PolicyStore::Policy)
+        allow(repository).to receive(:find).with(1).and_return(policy)
 
-      expect(described_class.find(1)).to eq(policy)
+        expect(described_class.find(1)).to eq(policy)
+      end
     end
 
-    it 'delegates #list to the configured repository' do
-      allow(repository).to receive(:list).with(organization_id: 5).and_return([])
+    describe '#delete' do
+      it 'delegates to the configured repository' do
+        allow(repository).to receive(:delete).with(1).and_return(nil)
 
-      expect(described_class.list(organization_id: 5)).to eq([])
+        expect(described_class.delete(1)).to be_nil
+      end
+    end
+
+    describe '#list' do
+      it 'delegates to the configured repository' do
+        allow(repository).to receive(:list).with(organization_id: 5).and_return([])
+
+        expect(described_class.list(organization_id: 5)).to eq([])
+      end
     end
   end
 end

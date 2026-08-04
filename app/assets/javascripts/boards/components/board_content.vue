@@ -329,7 +329,6 @@ export default {
           @highlight-list="highlightList"
           @setActiveList="$emit('setActiveList', $event)"
           @set-filters="$emit('set-filters', $event)"
-          @addNewListAfter="$emit('set-add-column-form-visibility', $event)"
           @cannot-find-active-item="handleCannotFindActiveItem"
           @focus-adjacent="focusAdjacentList(list.id, $event)"
         />

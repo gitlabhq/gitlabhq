@@ -129,7 +129,7 @@ model_name = "<your_model_name>"
 model_endpoint = "<your_model_endpoint>"
 model_api_key = "<your_model_api_key>"
 body = {:prompt_components=>[{:type=>"prompt", :metadata=>{:source=>"GitLab EE", :version=>"17.3.0"}, :payload=>{:content=>[{:role=>:user, :content=>"Hello"}], :provider=>:litellm, :model=>model_name, :model_endpoint=>model_endpoint, :model_api_key=>model_api_key}}]}
-ai_gateway_url = Ai::Setting.instance.ai_gateway_url # Verify that the AI Gateway URL is set in the database
+ai_gateway_url = ApplicationSetting.current.ai_gateway_url # Verify that the AI Gateway URL is set in the database
 client = Gitlab::Llm::AiGateway::Client.new(User.find_by_id(1), unit_primitive_name: :self_hosted_models)
 client.complete(url: "#{ai_gateway_url}/v1/chat/agent", body: body)
 ```
@@ -187,7 +187,7 @@ To check if GitLab Duo was configured correctly:
 To check that the AI Gateway URL is correct, run the following on the GitLab Rails console:
 
 ```ruby
-Ai::Setting.instance.ai_gateway_url == "<your-ai-gateway-instance-url>"
+ApplicationSetting.current.ai_gateway_url == "<your-ai-gateway-instance-url>"
 ```
 
 If the AI Gateway is not set up, [configure your GitLab instance to access the AI Gateway](configure_duo_features.md#configure-access-to-the-local-ai-gateway).
@@ -197,7 +197,7 @@ If the AI Gateway is not set up, [configure your GitLab instance to access the A
 To check that the URL for the Agent Platform service is correct, run the following on the GitLab Rails console:
 
 ```ruby
-Ai::Setting.instance.duo_agent_platform_service_url == "<your-duo-agent-platform-instance-url>"
+ApplicationSetting.current.duo_agent_platform_service_url == "<your-duo-agent-platform-instance-url>"
 ```
 
 The URL for the Agent Platform service is a TCP URL and cannot have the prefixes `http://` or `https://`.

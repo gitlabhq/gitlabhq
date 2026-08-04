@@ -1,6 +1,6 @@
 ---
-source_checksum: 70ab0a587d351b96
-distilled_at_sha: 0bc240cb0e70d2bba500cca6317a5c7e9e06605e
+source_checksum: 73d062f7c41319ed
+distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -75,13 +75,18 @@ distilled_at_sha: 0bc240cb0e70d2bba500cca6317a5c7e9e06605e
 
 - Ensure the `granular_personal_access_tokens` feature flag is enabled for the token's user during development and testing; when the flag is disabled, granular PATs do not work for GraphQL requests.
 
+### Documentation and Validation
+
+- Run `bundle exec rake gitlab:permissions:graphql:compile_docs` to regenerate the fine-grained token reference documentation at `doc/auth/tokens/fine_grained_access_tokens_graphql.md`; DO NOT edit that file by hand.
+- Ensure the `gitlab:permissions:validate` Rake task passes before pushing; it also fails when a permission in a directive has no authorization test — add the test in the same merge request as the directive declaration (each type, mutation, or field declaring a permission needs its own test per boundary type, with no grandfathered exceptions).
+
 ### Authorization Tests
 
 - Use the `'authorizing granular token permissions for GraphQL'` shared example for both query and mutation specs; provide `user`, `boundary_object`, and `request` let-bindings.
 - Use the `'authorizing granular token permissions for GraphQL with a skipped child type'` shared example for types that declare `skip_reason: :parent_authorizes`; provide `user`, `boundary_object`, `request`, and `skipped_data_path` let-bindings.
 - Set `boundary_object` to match the `boundary_type`: `project` for `:project`, `group` for `:group`, `:user` for `:user`, `:instance` for `:instance`.
 - Ensure the `user` is a member of the `boundary_object` namespace (project or group) when the boundary type is `:project` or `:group`; authorization is denied otherwise.
-- Verify that the shared example covers: legacy PATs still grant access, granular PATs with the required permission grant access, granular PATs without the required permission are denied, and the `granular_personal_access_tokens` feature flag is enforced.
+- Verify that the shared example covers: legacy PATs still grant access, legacy tokens are denied when the boundary's top-level group enforces fine-grained tokens, granular PATs with the required permission grant access, granular PATs without the required permission are denied (unauthorized queries return `null` data with a `200` response; unauthorized mutations return a top-level GraphQL error), and the `granular_personal_access_tokens` feature flag is enforced.
 
 ## Authoritative sources
 

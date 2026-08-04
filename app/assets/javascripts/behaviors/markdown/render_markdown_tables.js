@@ -2,7 +2,7 @@ import { memoize } from 'lodash-es';
 import Vue from 'vue';
 
 // Async import component since we might not need it...
-const MarkdownTable = memoize(
+const loadMarkdownTable = memoize(
   () => import(/* webpackChunkName: 'gfm_markdown_table' */ '../components/markdown_table.vue'),
 );
 
@@ -36,22 +36,17 @@ function observeRemoval(table, app) {
   removalObserver.observe(document.body, { childList: true, subtree: true });
 }
 
-function cellContent(cell) {
-  return {
-    html: cell ? cell.innerHTML : '',
-    text: cell ? cell.textContent.trim() : '',
-  };
-}
-
-// Read the rendered markdown <table> into a data model the component understands.
-// Cell `html` preserves the rendered markdown (links, code, emoji, ...), while
-// `text` is used for sorting comparisons.
+// Collect the rendered <table> into a data model the component understands; this
+// includes the *actual* cell DOM elements, so that we don't drop any vivified
+// GLFM, properties, DOM references, etc.  MarkdownTable adopts those cell elements
+// directly.
 //
-// The header comes from <thead> when present. Some markdown tables omit <thead>
-// and use the first <tbody> row as the header instead, so we fall back to that.
+// The header comes from <thead> when present. Some tables omit <thead> and use the
+// first <tbody> row as the header instead, so we fall back to that.
 function parseTable(table) {
-  const thead = table.querySelector('thead');
-  const tbody = table.querySelector('tbody');
+  // Take care to grab only *this* table's cells, and not any nested tables'.
+  const thead = table.tHead;
+  const [tbody] = table.tBodies;
 
   if (!thead && !tbody) return null;
 
@@ -59,46 +54,56 @@ function parseTable(table) {
   let bodyRows;
 
   if (thead) {
-    headerRow = thead.querySelector('tr');
-    bodyRows = tbody ? Array.from(tbody.querySelectorAll('tr')) : [];
+    [headerRow] = thead.rows;
+    bodyRows = tbody ? Array.from(tbody.rows) : [];
   } else {
-    const rows = Array.from(tbody.querySelectorAll('tr'));
+    const rows = Array.from(tbody.rows);
     [headerRow] = rows;
     bodyRows = rows.slice(1);
   }
 
   if (!headerRow) return null;
 
-  // Header cells may be <th> (from <thead>) or <td> (first <tbody> row).
-  const headerCells = Array.from(headerRow.querySelectorAll('th, td'));
+  const headerCells = Array.from(headerRow.cells);
   if (headerCells.length === 0) return null;
 
   const fields = headerCells.map((cell, index) => ({
     key: `col_${index}`,
-    label: cell.innerHTML,
+    cell,
     isSortable: true,
   }));
 
   const items = bodyRows.map((row, rowIndex) => {
-    const cells = Array.from(row.querySelectorAll('th, td'));
-    const item = {};
+    const cells = Array.from(row.cells);
+    const item = { cells, rowIndex };
     fields.forEach((field, index) => {
-      item[field.key] = cellContent(cells[index]);
+      item[field.key] = { text: cells[index] ? cells[index].textContent.trim() : '' };
     });
-    item.rowIndex = rowIndex;
     return item;
   });
 
   return { fields, items };
 }
 
+/**
+ * Replace each table with the component that renders it.
+ *
+ * The component chunk is resolved before anything is mounted, so a table is only
+ * ever swapped for its finished replacement; it stays as it is until then.
+ *
+ * @param {Element[]} els - Candidate `.md table:not(.code)` elements.
+ * @returns {?Promise} Resolves once every table has been replaced, or `null` when
+ *   there is nothing to render.
+ */
 export default function renderMarkdownTables(els) {
   const isSticky = window.gon?.features?.editorStickyTableHeaders;
   const isSortable = window.gon?.features?.markdownSortableTableColumns;
 
   if (!isSticky && !isSortable) {
-    return;
+    return null;
   }
+
+  const claimed = [];
 
   els.forEach((table) => {
     if (mountedTables.has(table)) return;
@@ -107,15 +112,31 @@ export default function renderMarkdownTables(els) {
     const parsed = parseTable(table);
     if (!parsed) return;
 
-    const { fields, items } = parsed;
+    mountedTables.set(table, null);
+    claimed.push({ table, ...parsed });
+  });
 
-    const app = new Vue({
-      el: table,
-      name: 'MarkdownTableRoot',
-      render: (h) => h(MarkdownTable, { props: { fields, items, isSortable, isSticky } }),
+  if (!claimed.length) {
+    return null;
+  }
+
+  return loadMarkdownTable().then(({ default: MarkdownTable }) => {
+    claimed.forEach(({ table, fields, items }) => {
+      // The table might be removed from the document while loading the
+      // MarkdownTable chunk, e.g. by a description re-rendering underneath us.
+      if (!table.parentNode) {
+        mountedTables.delete(table);
+        return;
+      }
+
+      const app = new Vue({
+        el: table,
+        name: 'MarkdownTableRoot',
+        render: (h) => h(MarkdownTable, { props: { fields, items, isSortable, isSticky } }),
+      });
+
+      mountedTables.set(table, app);
+      observeRemoval(table, app);
     });
-
-    mountedTables.set(table, app);
-    observeRemoval(table, app);
   });
 }

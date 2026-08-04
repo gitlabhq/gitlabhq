@@ -13,13 +13,22 @@ module Gitlab
           @sequence = 0
         end
 
-        def store(attributes)
+        def create(attributes)
+          normalized = normalize_attributes(attributes)
+          validate_required_attributes!(normalized)
+
           @sequence += 1
-          @policies[@sequence] = build_policy(@sequence, attributes)
+          @policies[@sequence] = build_policy(@sequence, normalized)
         end
 
         def find(id)
           @policies.fetch(id) { raise PolicyStore::NotFound, "Policy with id #{id} was not found" }
+        end
+
+        def delete(id)
+          @policies.delete(id) { raise PolicyStore::NotFound, "Policy with id #{id} was not found" }
+
+          nil
         end
 
         def list(organization_id:)

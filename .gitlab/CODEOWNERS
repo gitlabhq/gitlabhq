@@ -2440,5 +2440,5 @@ frontend/**/geo_* @zcuddy
 /app/services/push_event_payload_service.rb
 
 # Ensure database sharding requirements are followed - See https://docs.gitlab.com/development/organization/sharding/
-[Database Sharding] @tkuah @tskorupa-gl @chen-gitlab @dblessing @alexpooley @rutgerwessels
+[Database Sharding] @gitlab-com/gl-infra/tenant-scale/transport/backend-engineers @tkuah @tskorupa-gl @chen-gitlab @dblessing @alexpooley @rutgerwessels
 /spec/lib/gitlab/organizations/sharding_key_spec.rb

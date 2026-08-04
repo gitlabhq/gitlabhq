@@ -1,6 +1,6 @@
 ---
-source_checksum: 2e6df0de94d1c44f
-distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
+source_checksum: f7ec4e5077eb3636
+distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -12,7 +12,7 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 
 - Consider whether queries could take down critical services or allow abuse by malicious users
 - Document the expected data set size and potential problems for each feature
-- Consider how users might abuse or stress the feature with unconventional usage patterns
+- Consider how users might be using the feature instead — users often test features in unconventional ways, including brute forcing or abusing edge conditions
 - Validate query behavior against both small (hundreds) and large (100,000+) data sets
 - Request a performance specialist review when impact is unclear
 

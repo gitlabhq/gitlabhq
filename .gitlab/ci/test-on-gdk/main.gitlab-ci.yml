@@ -11,16 +11,6 @@ include:
         - ".gitlab/ci/test-on-gdk/**"
         - "lib/gitlab/database/load_balancing/**/*"
 
-.rules:test:gdk-gitaly-version-change:
-  rules:
-    - if: '$PARENT_PIPELINE_SOURCE == "schedule"'
-      when: manual
-      allow_failure: true
-    - changes:
-        - "GITALY_SERVER_VERSION"
-    - when: manual
-      allow_failure: true
-
 .with-parallel:
   parallel: 15
 
@@ -90,13 +80,6 @@ gdk-instance:
     - .with-parallel
   variables:
     QA_SCENARIO: Test::Instance::All
-
-gdk-instance-gitaly-transactions:
-  extends: gdk-instance
-  variables:
-    QA_GITALY_TRANSACTIONS_ENABLED: "true"
-  rules:
-    - !reference [.rules:test:gdk-gitaly-version-change, rules]
 
 # Take the existing GDK docker image and reconfigure it with Postgres load
 # balancing. Adding 5s lag to 1 of the replicas to validate robustness of

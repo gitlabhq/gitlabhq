@@ -215,6 +215,22 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
       it { is_expected.to include(show_feature_library_feedback: true) }
     end
 
+    describe 'ai_search_available' do
+      it { is_expected.to include(ai_search_available: false) }
+
+      context 'without a project or group' do
+        let(:group) { nil }
+
+        it { is_expected.to include(ai_search_available: false) }
+      end
+
+      context 'with a project' do
+        let(:project) { build_stubbed(:project) }
+
+        it { is_expected.to include(ai_search_available: false) }
+      end
+    end
+
     describe "shortcut links" do
       describe "as the anonymous user" do
         let(:user) { nil }

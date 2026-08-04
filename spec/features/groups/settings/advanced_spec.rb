@@ -304,6 +304,36 @@ RSpec.describe 'Group settings > Advanced', :with_current_organization, feature_
     end
   end
 
+  describe 'create organization' do
+    context 'when create_org_from_group_settings release flag is enabled' do
+      let_it_be(:subgroup) { create(:group, parent: group) }
+
+      it 'shows section to create an organization for a TLG' do
+        visit edit_group_path(group)
+
+        expect(page).to have_content(s_('GroupSettings|Create an organization'))
+      end
+
+      it 'does not show section to create an organization for a subgroup' do
+        visit edit_group_path(subgroup)
+
+        expect(page).to have_no_content(s_('GroupSettings|Create an organization'))
+      end
+    end
+
+    context 'when create_org_from_group_settings release flag is disabled' do
+      before do
+        stub_organization_release(create_org_from_group_settings: false)
+      end
+
+      it 'does not show section to create an organization' do
+        visit edit_group_path(group)
+
+        expect(page).to have_no_content(s_('GroupSettings|Create an organization'))
+      end
+    end
+  end
+
   def update_path(new_group_path)
     visit edit_group_path(group)
 

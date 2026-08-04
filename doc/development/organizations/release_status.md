@@ -24,5 +24,6 @@ The stage determines who can use a flag and whether it can be disabled.
 
 | Flag | Stage | Description |
 |------|-------|-------------|
+| `create_org_from_group_settings` | Experimental | Create organization from group settings. |
 | `org_admin_area` | Experimental | Organization admin area for organization owners. |
 | `org_switcher` | Experimental | The organization switcher dropdown component. |

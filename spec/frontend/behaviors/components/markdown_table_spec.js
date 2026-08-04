@@ -1,31 +1,40 @@
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import MarkdownTable from '~/behaviors/components/markdown_table.vue';
-import initPopovers from '~/behaviors/markdown/init_popovers';
-import {
-  renderImageLightbox,
-  destroyImageLightbox,
-} from '~/behaviors/markdown/render_image_lightbox';
-
-jest.mock('~/behaviors/markdown/init_popovers');
-jest.mock('~/behaviors/markdown/render_image_lightbox');
 
 describe('MarkdownTable', () => {
   let wrapper;
 
-  // Build the plain `fields`/`items` props the component expects. Each header
-  // becomes `{ key, label }`; each cell becomes `{ html, text }` where `text`
-  // is derived from the (HTML-stripped) cell content for sorting comparisons.
-  const buildFields = (headers) => headers.map((label, index) => ({ key: `col_${index}`, label }));
+  // Build the `fields`/`items` props the component expects, as
+  // ~/behaviors/markdown/render_markdown_tables would: cells are elements, which
+  // the component adopts, and `text` is the sorting comparison key.
+  const createCell = (tagName, content) => {
+    const cell = document.createElement(tagName);
+
+    if (content instanceof Node) {
+      cell.appendChild(content);
+    } else {
+      cell.textContent = content;
+    }
+
+    return cell;
+  };
+
+  const buildFields = (headers) =>
+    headers.map((content, index) => ({
+      key: `col_${index}`,
+      cell: createCell('th', content),
+      isSortable: true,
+    }));
 
   const buildItems = (fields, rows) =>
-    rows.map((cells, rowIndex) => {
-      const item = {};
+    rows.map((contents, rowIndex) => {
+      const cells = contents.map((content) => createCell('td', content));
+      const item = { cells, rowIndex };
+
       fields.forEach((field, index) => {
-        const html = cells[index] ?? '';
-        const text = html.replace(/<[^>]*>/g, '').trim();
-        item[field.key] = { html, text };
+        item[field.key] = { text: cells[index] ? cells[index].textContent.trim() : '' };
       });
-      item.rowIndex = rowIndex;
+
       return item;
     });
 
@@ -57,47 +66,35 @@ describe('MarkdownTable', () => {
       expect(headers[1]).toContain('Age');
     });
 
-    it('renders cell HTML content', () => {
-      createWrapper([['<a href="/foo">Alice</a>', '25']]);
+    it('adopts the cells it was given, rather than rebuilding them', () => {
+      const link = document.createElement('a');
+      link.href = '/foo';
+      link.textContent = 'Alice';
 
-      expect(wrapper.find('tbody tr a').attributes('href')).toBe('/foo');
+      createWrapper([[link, '25']]);
+
+      expect(wrapper.find('tbody tr a').element).toBe(link);
     });
 
-    it('initializes reference popovers on the re-rendered cell and header content', () => {
-      createWrapper([['<a class="gfm-work_item" href="/foo/-/work_items/1">#1</a>', '25']], {
-        headers: ['<a class="gfm-issue" href="/foo/-/issues/2">#2</a>', 'Age'],
+    it('adopts header cell content and keeps its alignment', () => {
+      const label = document.createElement('code');
+      label.textContent = 'Name';
+
+      const fields = buildFields([label, 'Age', 'Height']);
+      fields[1].cell.setAttribute('align', 'right');
+      fields[2].cell.setAttribute('style', 'text-align: center');
+
+      wrapper = mountExtended(MarkdownTable, {
+        propsData: {
+          fields,
+          items: buildItems(fields, [['Alice', '25', '160cm']]),
+          isSortable: true,
+        },
       });
 
-      expect(initPopovers).toHaveBeenCalledTimes(1);
-
-      const elements = initPopovers.mock.calls[0][0];
-      expect(elements.map((el) => el.className)).toEqual(['gfm-issue', 'gfm-work_item']);
-      expect(elements.every((el) => wrapper.element.contains(el))).toBe(true);
-    });
-
-    it('initializes the image lightbox on the re-rendered cell content', () => {
-      createWrapper([['<a href="/uploads/foo.png"><img src="/uploads/foo.png" alt="foo"></a>']], {
-        headers: ['Image'],
-      });
-
-      expect(renderImageLightbox).toHaveBeenCalledTimes(1);
-
-      const [images, container] = renderImageLightbox.mock.calls[0];
-      expect(images).toHaveLength(1);
-      expect(images[0].tagName).toBe('IMG');
-      expect(wrapper.element.contains(images[0])).toBe(true);
-      expect(container).toBe(wrapper.element);
-    });
-
-    it('destroys the image lightbox instance when the component is destroyed', () => {
-      createWrapper([['<a href="/uploads/foo.png"><img src="/uploads/foo.png" alt="foo"></a>']], {
-        headers: ['Image'],
-      });
-      const { element } = wrapper;
-
-      wrapper.destroy();
-
-      expect(destroyImageLightbox).toHaveBeenCalledWith(element);
+      expect(findHeaders().at(0).find('code').element).toBe(label);
+      expect(findHeaders().at(1).attributes('align')).toBe('right');
+      expect(findHeaders().at(2).attributes('style')).toBe('text-align: center;');
     });
   });
 

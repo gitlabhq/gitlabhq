@@ -19,6 +19,7 @@ module Gitlab
     # or transport-specific exceptions across the component boundary.
     Error = Class.new(StandardError)
     NotFound = Class.new(Error)
+    ValidationError = Class.new(Error)
 
     class << self
       def configure
@@ -29,12 +30,16 @@ module Gitlab
         @configuration ||= Configuration.new(Adapters::InMemoryPolicyRepository.new)
       end
 
-      def store(attributes)
-        configuration.repository.store(attributes)
+      def create(attributes)
+        configuration.repository.create(attributes)
       end
 
       def find(id)
         configuration.repository.find(id)
+      end
+
+      def delete(id)
+        configuration.repository.delete(id)
       end
 
       def list(organization_id:)

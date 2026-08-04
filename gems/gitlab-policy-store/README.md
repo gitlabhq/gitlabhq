@@ -19,7 +19,8 @@ persistence object ever crosses the component boundary.
 ## Usage
 
 ```ruby
-policy = Gitlab::PolicyStore.store(
+# Create a new policy
+policy = Gitlab::PolicyStore.create(
   organization_id: 1,
   name: "My approval policy",
   trigger_id: "merge_request",
@@ -30,8 +31,14 @@ policy = Gitlab::PolicyStore.store(
   mode: "audit"
 )
 
+# Find a policy by ID
 Gitlab::PolicyStore.find(policy.id)
+
+# List all policies for an organization
 Gitlab::PolicyStore.list(organization_id: 1)
+
+# Delete a policy
+Gitlab::PolicyStore.delete(policy.id)
 ```
 
 Swap the storage backend by injecting a different repository:
@@ -41,3 +48,13 @@ Gitlab::PolicyStore.configure do |config|
   config.repository = MyRemotePolicyRepository.new
 end
 ```
+
+## Repository Contract
+
+Any storage adapter must implement the `Gitlab::PolicyStore::Ports::PolicyRepository`
+interface:
+
+- `#create(attributes)` - Creates a new policy, returns a `Policy` value object
+- `#find(id)` - Returns a `Policy` by ID, raises `NotFound` if not found
+- `#delete(id)` - Deletes a policy by ID, raises `NotFound` if not found
+- `#list(organization_id:)` - Returns all policies for an organization

@@ -512,6 +512,21 @@ RSpec.describe Gitlab::Database::LoadBalancing, :suppress_gitlab_schemas_validat
             :replica
           ],
 
+          # Since Rails 7.2, model schema loading goes through the class-level
+          # `schema_cache` method instead of `connection.schema_cache`, so it must be
+          # routed through the ConnectionProxy explicitly. See
+          # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244970#note_3621005235
+          [
+            -> {
+              current_session.use_primary!
+              model.connection.clear_cache!
+              model.reset_column_information
+              model.columns
+              model.connection.pool.release_connection
+            },
+            :replica
+          ],
+
           # Call model's connection method
           [
             -> {

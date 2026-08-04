@@ -1,6 +1,6 @@
 ---
-source_checksum: fab567b0daaf77a4
-distilled_at_sha: 0bc240cb0e70d2bba500cca6317a5c7e9e06605e
+source_checksum: 7d96259c52a8d3b6
+distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -47,7 +47,7 @@ distilled_at_sha: 0bc240cb0e70d2bba500cca6317a5c7e9e06605e
 - DO NOT define a `let` variable that's only used by the definition of another — use a helper method instead.
 - Use `let!` only when strict evaluation with defined order is required.
 - DO NOT reference `subject` directly in examples — use a named subject `subject(:name)` or a `let` variable instead.
-- Treat objects inside `let_it_be` as immutable; use `freeze: true` to enforce immutability and detect state leakage.
+- Treat objects inside `let_it_be` as immutable; `freeze: true` is the project default. When an example must modify one, use `let_it_be_with_reload` or `let_it_be_with_refind` so it is restored between examples.
 - DO NOT use `let_it_be` when the factory uses stubs (`allow`); use `let` instead, or change the factory to avoid stubs.
 - Ensure `let_it_be` blocks do not depend on a `before` block — `let_it_be` executes in `before(:all)` before per-example `before` hooks run.
 
@@ -55,6 +55,7 @@ distilled_at_sha: 0bc240cb0e70d2bba500cca6317a5c7e9e06605e
 
 - Use `let_it_be` and `before_all` (from `test-prof`) instead of `before(:all)` / `before(:context)` to share objects across examples without manual cleanup.
 - DO NOT use `let_it_be` or `before_all` in migration specs, Rake task specs, or specs tagged `:delete` — they do not work with DatabaseCleaner's deletion strategy; use `let` / `let!` and `before` instead.
+- Use `before_all` (not `before`) to assign roles to `let_it_be` objects shared across examples in a context (enforced by the `RSpec/BeforeAllRoleAssignment` RuboCop rule); alternatively, pass membership directly to the factory via transient attributes such as `developers:`, `maintainers:`, or `owner_of:`.
 
 ### Table-Based / Parameterized Tests
 
@@ -77,7 +78,7 @@ distilled_at_sha: 0bc240cb0e70d2bba500cca6317a5c7e9e06605e
 ### Fixtures and Repositories
 
 - Place all fixtures under `spec/fixtures/`.
-- Use the `:repository` trait on project factories to get a copy of the `gitlab-test` repository; prefer `:custom_repo` when you need to specify exact file contents.
+- Pick the repository trait that matches what the test actually needs: omit any repository trait when the test does not touch Git; use `:small_repo` when the test only needs a non-empty repository (one commit, valid default branch); use `:custom_repo` when the test needs specific file paths or contents; use `:repository` only when the test depends on the full `gitlab-test` history (branches, tags, merge conflicts); use `:empty_repo` only when the test must distinguish a repository that exists but has no commits.
 
 ### Test Performance
 
@@ -154,6 +155,7 @@ distilled_at_sha: 0bc240cb0e70d2bba500cca6317a5c7e9e06605e
 - Use `stub_file_read` / `expect_file_read` helpers to stub `File.read`; DO NOT stub `File.read` globally without also calling the original for other paths.
 - DO NOT specify a `path` override on `:legacy_storage` projects — the default path includes the project ID and avoids repository conflicts between specs.
 - Use `:disable_rate_limit` when a single test triggers rate limiting; use `:clean_gitlab_redis_rate_limiting` when rate limiting is triggered across multiple examples in a feature spec using `:js`.
+- Tag an example or context with `:verify_workhorse_jwt` only when the test asserts the Workhorse JWT enforcement boundary itself (for example, a `403 Forbidden` response when the header is absent); DO NOT apply it to ordinary tests — auto-injection covers them.
 
 ### Matchers and Assertions
 
@@ -228,4 +230,3 @@ For the full picture, see:
 - doc/development/testing_guide/best_practices.md
 - doc/development/testing_guide/testing_levels.md
 - doc/development/testing_guide/testing_rake_tasks.md
-

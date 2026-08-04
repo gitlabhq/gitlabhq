@@ -48,7 +48,7 @@ Developers may also choose to connect their local GitLab instance to the staging
 To connect to the staging AI Gateway:
 
 - Set the `DEVELOPMENT_AI_GATEWAY_URL` environment variable to `https://cloud.staging.gitlab.com`
-- `AI_GATEWAY_URL` is unset and `Ai::Setting.instance.ai_gateway_url` is `nil`
+- `AI_GATEWAY_URL` is unset and `ApplicationSetting.current.ai_gateway_url` is `nil`
 - Restart your GDK.
 
 ## Troubleshooting

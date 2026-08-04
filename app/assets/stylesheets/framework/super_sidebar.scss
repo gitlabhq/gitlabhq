@@ -421,6 +421,28 @@ $command-palette-spacing: px-to-rem(14px);
     padding-top: 0;
     padding-bottom: $gl-spacing-scale-3;
   }
+
+  .feature-library-gemini-button {
+    &.gl-button.gl-button {
+      background-color: var(--gl-background-color-default);
+      background-image: linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--gl-color-purple-500) 12%, transparent),
+        color-mix(in srgb, var(--gl-color-blue-500) 12%, transparent)
+      );
+      border-color: color-mix(in srgb, var(--gl-color-purple-500) 60%, transparent);
+    }
+
+    &.gl-button.gl-button:hover,
+    &.gl-button.gl-button:focus,
+    &.gl-button.gl-button:active {
+      background-image: linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--gl-color-purple-500) 24%, transparent),
+        color-mix(in srgb, var(--gl-color-blue-500) 24%, transparent)
+      );
+    }
+  }
 }
 
 /**

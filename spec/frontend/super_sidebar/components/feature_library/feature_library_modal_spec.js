@@ -32,9 +32,11 @@ jest.mock('~/lib/utils/url_utility', () => ({
 }));
 jest.mock('~/lib/utils/path_helpers/feature_library', () => ({
   onboardingFeatureLibrarySearchPath: () => '/-/onboarding/feature_library/search',
+  onboardingFeatureLibraryAiSearchPath: () => '/-/onboarding/feature_library/ai_search',
 }));
 
 const SEARCH_URL = '/-/onboarding/feature_library/search';
+const AI_SEARCH_URL = '/-/onboarding/feature_library/ai_search';
 
 // Mirrors the nav tree shape passed down from sidebar_menu.vue: sections (menu
 // groups) holding leaf nav items enriched with feature-library metadata.
@@ -122,11 +124,13 @@ describe('FeatureLibraryModal', () => {
     panelType = 'project',
     showFeedbackLink = false,
     sections = defaultSections,
+    aiSearchAvailable = false,
+    resourceId = null,
     supportsPins,
   } = {}) => {
     wrapper = shallowMountExtended(FeatureLibraryModal, {
       propsData: { sections, currentPinnedIds, showFeedbackLink, supportsPins },
-      provide: { panelType },
+      provide: { panelType, aiSearchAvailable, resourceId },
       // Stub GlModal (declared props stay props, everything else surfaces as
       // attrs) and render all its slots so footer/body content is inspectable.
       stubs: {
@@ -158,9 +162,30 @@ describe('FeatureLibraryModal', () => {
   const findGrid = () => wrapper.findByTestId('feature-library-grid');
   const findSectionGrid = () => wrapper.findByTestId('feature-library-section-grid');
   const findFeedbackLink = () => wrapper.findComponent(GlLink);
+  const findGeminiButton = () => wrapper.findComponentByTestId('search-with-gemini-button');
+  const findGeminiSection = () => wrapper.findByTestId('gemini-results-grid');
+  const findHideGeminiButton = () => wrapper.findComponentByTestId('hide-gemini-section');
+  const findGeminiEmptyState = () => wrapper.findByTestId('gemini-empty-state');
+  const findGeminiLoading = () => wrapper.findByTestId('gemini-loading');
+  const findGeminiError = () => wrapper.findByTestId('gemini-error');
+  const findGeminiItems = () =>
+    findGeminiSection().exists()
+      ? findGeminiSection().findAllComponents(FeatureLibraryItem)
+      : { wrappers: [] };
 
   const emitSearch = async (query) => {
     await findSearch().vm.$emit('input', query);
+  };
+
+  const mockSearch = (response = { ids: [] }) =>
+    mockAxios.onGet(SEARCH_URL).reply(HTTP_STATUS_OK, response);
+
+  const mockAiSearch = (response = { ids: [], ai_search_available: true }) =>
+    mockAxios.onGet(AI_SEARCH_URL).reply(HTTP_STATUS_OK, response);
+
+  const clickGeminiSearch = async () => {
+    await findGeminiButton().vm.$emit('click');
+    await waitForPromises();
   };
 
   describe('rendering', () => {
@@ -263,6 +288,32 @@ describe('FeatureLibraryModal', () => {
           beforeEach(() => createWrapper({ showFeedbackLink: false }));
 
           it('hides the footer', () => {
+            expect(findModal().attributes('hide-footer')).toBe('true');
+          });
+        });
+
+        describe('when the gemini search button is not available', () => {
+          beforeEach(() => {
+            createWrapper({ showFeedbackLink: false, aiSearchAvailable: false, resourceId: 1 });
+          });
+
+          it('hides the footer', () => {
+            expect(findModal().attributes('hide-footer')).toBe('true');
+          });
+        });
+
+        describe('when the gemini search button is clicked', () => {
+          beforeEach(async () => {
+            mockSearch();
+            mockAiSearch();
+
+            createWrapper({ showFeedbackLink: false, aiSearchAvailable: true, resourceId: 1 });
+            await emitSearch('re');
+            await waitForPromises();
+            await clickGeminiSearch();
+          });
+
+          it('hides the search button / footer', () => {
             expect(findModal().attributes('hide-footer')).toBe('true');
           });
         });
@@ -644,6 +695,466 @@ describe('FeatureLibraryModal', () => {
     });
   });
 
+  describe('"Search with Gemini" button', () => {
+    describe('when aiSearchAvailable is false', () => {
+      it('does not render the button', async () => {
+        createWrapper({ aiSearchAvailable: false, resourceId: 1 });
+        await emitSearch('something');
+        expect(findGeminiButton().exists()).toBe(false);
+      });
+    });
+
+    describe('when resourceId is absent', () => {
+      it('does not render the button', async () => {
+        createWrapper({ aiSearchAvailable: true, resourceId: null });
+        await emitSearch('something');
+        expect(findGeminiButton().exists()).toBe(false);
+      });
+    });
+
+    describe('when query is shorter than 2 characters', () => {
+      it('does not render the button', async () => {
+        createWrapper({ aiSearchAvailable: true, resourceId: 1 });
+        await emitSearch('r');
+        expect(findGeminiButton().exists()).toBe(false);
+      });
+    });
+
+    describe('when modal opens with no query', () => {
+      it('does not render the button', () => {
+        createWrapper({ aiSearchAvailable: true, resourceId: 1 });
+        expect(findGeminiButton().exists()).toBe(false);
+      });
+    });
+
+    describe('when available and query is active', () => {
+      beforeEach(() => createWrapper({ aiSearchAvailable: true, resourceId: 1 }));
+
+      it('renders the button once a query of 2+ chars is entered and the endpoint resolves', async () => {
+        mockSearch();
+        await emitSearch('re');
+        await waitForPromises();
+        expect(findGeminiButton().exists()).toBe(true);
+      });
+
+      it('renders the button even on zero matches (empty state)', async () => {
+        mockSearch();
+        await emitSearch('zzznomatch');
+        await waitForPromises();
+        expect(findEmptyState().exists()).toBe(true);
+        expect(findGeminiButton().exists()).toBe(true);
+      });
+
+      it('shows the footer when the button is visible', async () => {
+        mockSearch();
+        await emitSearch('re');
+        await waitForPromises();
+        expect(findModal().attributes('hide-footer')).toBeUndefined();
+      });
+    });
+
+    describe('after Gemini has been triggered', () => {
+      beforeEach(async () => {
+        mockSearch();
+        mockAiSearch();
+        createWrapper({ aiSearchAvailable: true, resourceId: 1 });
+
+        await emitSearch('re');
+        await waitForPromises();
+        await clickGeminiSearch();
+      });
+
+      it('removes the button', () => {
+        expect(findGeminiButton().exists()).toBe(false);
+      });
+
+      describe('when the query changes', () => {
+        beforeEach(async () => {
+          await emitSearch('repo');
+          await waitForPromises();
+        });
+
+        it('restores the button', () => {
+          expect(findGeminiButton().exists()).toBe(true);
+        });
+      });
+    });
+  });
+
+  describe('Gemini search', () => {
+    const RESOURCE_ID = 42;
+
+    beforeEach(() => {
+      mockSearch();
+      createWrapper({ aiSearchAvailable: true, resourceId: RESOURCE_ID, panelType: 'project' });
+    });
+
+    describe('while the request is in flight', () => {
+      beforeEach(async () => {
+        mockAxios.onGet(AI_SEARCH_URL).reply(() => new Promise(() => {}));
+        await emitSearch('re');
+        await waitForPromises();
+
+        await findGeminiButton().vm.$emit('click');
+        await nextTick();
+      });
+
+      it('shows the loading state and hides the button, results, and empty state', () => {
+        expect(findGeminiLoading().exists()).toBe(true);
+        expect(findGeminiButton().exists()).toBe(false);
+        expect(findGeminiSection().exists()).toBe(false);
+        expect(findGeminiEmptyState().exists()).toBe(false);
+      });
+
+      it('does not render the "Suggested by Gemini" header or Hide button', () => {
+        expect(findHideGeminiButton().exists()).toBe(false);
+      });
+
+      it('does not render the generic empty state, even though the main search has no matches', () => {
+        expect(findEmptyState().exists()).toBe(false);
+      });
+    });
+
+    describe('when the request resolves with results', () => {
+      beforeEach(async () => {
+        mockAiSearch({ ids: ['boards'], ai_search_available: true });
+        await emitSearch('re');
+        await waitForPromises();
+
+        await clickGeminiSearch();
+      });
+
+      it('hides the loading state', () => {
+        expect(findGeminiLoading().exists()).toBe(false);
+        expect(findGeminiSection().exists()).toBe(true);
+      });
+
+      it('renders the hide button', () => {
+        expect(findGeminiSection().exists()).toBe(true);
+        expect(findHideGeminiButton().exists()).toBe(true);
+      });
+    });
+
+    describe('when the request resolves empty', () => {
+      beforeEach(async () => {
+        mockAiSearch();
+        await emitSearch('re');
+        await waitForPromises();
+
+        await clickGeminiSearch();
+      });
+
+      it('hides the loading state', () => {
+        expect(findGeminiLoading().exists()).toBe(false);
+        expect(findGeminiEmptyState().exists()).toBe(true);
+      });
+    });
+
+    describe('when Gemini returns matching ids', () => {
+      beforeEach(async () => {
+        await emitSearch('repo');
+        await waitForPromises();
+        // 'boards' is in the catalog but NOT a text match for 'repo', so it surfaces as a Gemini result.
+        mockAiSearch({ ids: ['boards', 'repository'], ai_search_available: true });
+        await clickGeminiSearch();
+      });
+
+      it('sends query, panel, and resource_id to the ai_search endpoint', () => {
+        const req = mockAxios.history.get.find((r) => r.url === AI_SEARCH_URL);
+        expect(req.params).toMatchObject({
+          query: 'repo',
+          panel: 'project',
+          resource_id: RESOURCE_ID,
+        });
+      });
+
+      it('renders the Gemini results section', () => {
+        expect(findGeminiSection().exists()).toBe(true);
+      });
+
+      it('deduplicates: omits ids already shown in the main grid', () => {
+        // 'repository' is a direct text match for 'repo' so it should not appear in the Gemini section.
+        const geminiIds = findGeminiItems().wrappers.map((w) => w.props('item').id);
+        expect(geminiIds).not.toContain('repository');
+        expect(geminiIds).toContain('boards');
+      });
+    });
+
+    describe('when Gemini returns no results', () => {
+      describe('and the main search also has no results', () => {
+        it('shows only the Gemini empty state, not the generic empty state', async () => {
+          mockAiSearch();
+          await emitSearch('zzznomatch');
+          await waitForPromises();
+          await clickGeminiSearch();
+
+          expect(findGeminiSection().exists()).toBe(false);
+          expect(findGeminiEmptyState().exists()).toBe(true);
+          expect(findGeminiEmptyState().text()).toBe(
+            "Gemini couldn't find a matching feature. Try different keywords.",
+          );
+          expect(findEmptyState().exists()).toBe(false);
+        });
+      });
+
+      describe('and the main search has results', () => {
+        it('shows the main grid and the Gemini empty state', async () => {
+          mockAiSearch();
+          await emitSearch('repo');
+          await waitForPromises();
+          await clickGeminiSearch();
+
+          expect(findGrid().exists()).toBe(true);
+          expect(findGeminiSection().exists()).toBe(false);
+          expect(findGeminiEmptyState().exists()).toBe(true);
+        });
+      });
+
+      it('does not render the Gemini results section', async () => {
+        mockAiSearch();
+        await emitSearch('re');
+        await waitForPromises();
+        await clickGeminiSearch();
+        expect(findGeminiSection().exists()).toBe(false);
+      });
+    });
+
+    describe('when the main search has no results but Gemini has results', () => {
+      it('shows the generic empty state and the Gemini results section', async () => {
+        await emitSearch('zzznomatch');
+        await waitForPromises();
+        expect(findEmptyState().exists()).toBe(true);
+
+        mockAiSearch({ ids: ['repository'], ai_search_available: true });
+        await clickGeminiSearch();
+
+        expect(findEmptyState().exists()).toBe(true);
+        expect(findGeminiSection().exists()).toBe(true);
+        expect(findGeminiEmptyState().exists()).toBe(false);
+      });
+    });
+
+    describe('when the ai_search rate limit is exceeded (429)', () => {
+      it('surfaces the rate limit error and does not report to Sentry', async () => {
+        mockAxios.onGet(AI_SEARCH_URL).reply(HTTP_STATUS_TOO_MANY_REQUESTS, {
+          error: 'This endpoint has been requested too many times. Try again later.',
+        });
+        await emitSearch('re');
+        await waitForPromises();
+        await clickGeminiSearch();
+
+        expect(findGeminiSection().exists()).toBe(false);
+        expect(findGeminiEmptyState().exists()).toBe(false);
+        expect(findGeminiError().exists()).toBe(true);
+        expect(findGeminiError().text()).toBe(
+          'This endpoint has been requested too many times. Try again later.',
+        );
+        expect(Sentry.captureException).not.toHaveBeenCalled();
+      });
+
+      it('falls back to a generic rate limit message when the server does not provide one', async () => {
+        mockAxios.onGet(AI_SEARCH_URL).reply(HTTP_STATUS_TOO_MANY_REQUESTS);
+        await emitSearch('re');
+        await waitForPromises();
+        await clickGeminiSearch();
+
+        expect(findGeminiError().text()).toBe(
+          'You have reached the search limit. Try again later.',
+        );
+      });
+    });
+
+    describe('when the request fails unexpectedly', () => {
+      it('surfaces a generic error and reports to Sentry', async () => {
+        mockAxios.onGet(AI_SEARCH_URL).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+        await emitSearch('re');
+        await waitForPromises();
+        await clickGeminiSearch();
+
+        expect(findGeminiSection().exists()).toBe(false);
+        expect(findGeminiEmptyState().exists()).toBe(false);
+        expect(findGeminiError().exists()).toBe(true);
+        expect(findGeminiError().text()).toBe(
+          'Something went wrong searching with Gemini. Try again.',
+        );
+        expect(Sentry.captureException).toHaveBeenCalledWith(expect.any(Error), {
+          tags: { feature_category: 'onboarding' },
+        });
+      });
+    });
+
+    describe('retrying after an error', () => {
+      it('keeps the "Search with Gemini" button available so the user can retry', async () => {
+        mockAxios.onGet(AI_SEARCH_URL).reply(HTTP_STATUS_TOO_MANY_REQUESTS);
+        await emitSearch('re');
+        await waitForPromises();
+        await clickGeminiSearch();
+
+        expect(findGeminiError().exists()).toBe(true);
+        expect(findGeminiButton().exists()).toBe(true);
+      });
+
+      it('clears the previous error once the retry succeeds', async () => {
+        mockAxios.onGet(AI_SEARCH_URL).replyOnce(HTTP_STATUS_TOO_MANY_REQUESTS);
+        await emitSearch('re');
+        await waitForPromises();
+        await clickGeminiSearch();
+        expect(findGeminiError().exists()).toBe(true);
+
+        mockAiSearch({ ids: ['boards'], ai_search_available: true });
+        await clickGeminiSearch();
+
+        expect(findGeminiError().exists()).toBe(false);
+        expect(findGeminiSection().exists()).toBe(true);
+      });
+    });
+
+    describe('Hide button', () => {
+      beforeEach(async () => {
+        mockAiSearch({ ids: ['boards'], ai_search_available: true });
+        await emitSearch('re');
+        await waitForPromises();
+        await clickGeminiSearch();
+      });
+
+      it('renders a Hide button inside the Gemini section', () => {
+        expect(findHideGeminiButton().exists()).toBe(true);
+      });
+
+      it('dismisses the Gemini section when clicked', async () => {
+        await findHideGeminiButton().vm.$emit('click');
+        expect(findGeminiSection().exists()).toBe(false);
+      });
+
+      it('re-offers the search CTA after Hide is clicked, without changing the query', async () => {
+        expect(findGeminiButton().exists()).toBe(false);
+
+        await findHideGeminiButton().vm.$emit('click');
+
+        expect(findGeminiSection().exists()).toBe(false);
+        expect(findGeminiButton().exists()).toBe(true);
+      });
+
+      it('re-runs the Gemini search in place when the CTA is clicked again after Hide', async () => {
+        await findHideGeminiButton().vm.$emit('click');
+        expect(findGeminiButton().exists()).toBe(true);
+
+        await clickGeminiSearch();
+
+        expect(findGeminiSection().exists()).toBe(true);
+        expect(findGeminiButton().exists()).toBe(false);
+      });
+
+      it('restores the Gemini section when the query changes and Gemini is re-triggered', async () => {
+        await findHideGeminiButton().vm.$emit('click');
+
+        await emitSearch('repo');
+        await waitForPromises();
+        await clickGeminiSearch();
+        expect(findGeminiSection().exists()).toBe(true);
+      });
+    });
+
+    describe('Hide button on the Gemini empty state', () => {
+      beforeEach(async () => {
+        mockAiSearch();
+        await emitSearch('zzznomatch');
+        await waitForPromises();
+        await clickGeminiSearch();
+      });
+
+      it('shows the Gemini empty state before Hide is clicked', () => {
+        expect(findGeminiEmptyState().exists()).toBe(true);
+        expect(findEmptyState().exists()).toBe(false);
+      });
+
+      it('shows the original (generic) empty state instead of nothing after Hide is clicked', async () => {
+        await findHideGeminiButton().vm.$emit('click');
+
+        expect(findGeminiEmptyState().exists()).toBe(false);
+        expect(findEmptyState().exists()).toBe(true);
+      });
+
+      it('re-offers the search CTA after Hide is clicked', async () => {
+        expect(findGeminiButton().exists()).toBe(false);
+
+        await findHideGeminiButton().vm.$emit('click');
+
+        expect(findGeminiButton().exists()).toBe(true);
+      });
+    });
+
+    describe('on modal hidden', () => {
+      it('resets the Gemini section, results, and button back to their initial state', async () => {
+        mockAiSearch({ ids: ['boards'], ai_search_available: true });
+        await emitSearch('re');
+        await waitForPromises();
+        await clickGeminiSearch();
+        expect(findGeminiSection().exists()).toBe(true);
+        expect(findGeminiButton().exists()).toBe(false);
+
+        findModal().vm.$emit('hidden');
+        await nextTick();
+
+        // Re-opening and re-searching should behave as if Gemini was never triggered:
+        // results are cleared and the button is offered again.
+        findModal().vm.$emit('shown');
+        await emitSearch('re');
+        await waitForPromises();
+
+        expect(findGeminiSection().exists()).toBe(false);
+        expect(findGeminiButton().exists()).toBe(true);
+      });
+    });
+
+    describe('stale response handling', () => {
+      it('ignores a stale response when the query changed mid-flight', async () => {
+        let resolveRequest;
+        mockAxios.onGet(AI_SEARCH_URL).reply(
+          () =>
+            new Promise((resolve) => {
+              resolveRequest = resolve;
+            }),
+        );
+        await emitSearch('re');
+        await waitForPromises();
+        await clickGeminiSearch();
+
+        // The user changes the query while the original request is still in flight.
+        await emitSearch('other');
+        await waitForPromises();
+
+        // The stale response for the old query lands after the query has changed.
+        resolveRequest([HTTP_STATUS_OK, { ids: ['boards'], ai_search_available: true }]);
+        await waitForPromises();
+
+        expect(findGeminiSection().exists()).toBe(false);
+        expect(findGeminiButton().exists()).toBe(true);
+      });
+
+      it('does not report a superseded response error to Sentry', async () => {
+        let rejectRequest;
+        mockAxios.onGet(AI_SEARCH_URL).reply(
+          () =>
+            new Promise((_resolve, reject) => {
+              rejectRequest = reject;
+            }),
+        );
+        await emitSearch('re');
+        await waitForPromises();
+        await clickGeminiSearch();
+
+        await emitSearch('other');
+        await waitForPromises();
+
+        rejectRequest({ response: { status: HTTP_STATUS_INTERNAL_SERVER_ERROR } });
+        await waitForPromises();
+
+        expect(Sentry.captureException).not.toHaveBeenCalled();
+      });
+    });
+  });
+
   describe('progressive reveal', () => {
     const largeSections = [
       {
@@ -958,6 +1469,11 @@ describe('FeatureLibraryModal', () => {
       findSearch().vm.$emit('input', 'repo');
       expect(trackEventSpy).toHaveBeenCalledTimes(1);
     });
+
+    // The Gemini search tracking assertion lives in the EE spec because the
+    // search_with_gemini_in_feature_library_modal event definition is EE-only
+    // (tiers: premium, ultimate) and lives in ee/config/events/:
+    // ee/spec/frontend/super_sidebar/components/feature_library_modal_spec.js
   });
 
   describe('feedback link', () => {

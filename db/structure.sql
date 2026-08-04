@@ -13161,6 +13161,7 @@ CREATE TABLE ai_settings (
     denied_domains text[] DEFAULT '{}'::text[] NOT NULL,
     organization_id bigint,
     CONSTRAINT check_3cf9826589 CHECK ((char_length(ai_gateway_url) <= 2048)),
+    CONSTRAINT check_6e16f4d23e CHECK ((organization_id IS NOT NULL)),
     CONSTRAINT check_900d7a89b3 CHECK ((char_length(duo_agent_platform_service_url) <= 2048)),
     CONSTRAINT check_a02bd8868c CHECK ((char_length(amazon_q_role_arn) <= 2048)),
     CONSTRAINT check_ai_settings_feature_settings_is_hash CHECK ((jsonb_typeof(feature_settings) = 'object'::text))

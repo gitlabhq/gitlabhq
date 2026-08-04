@@ -24,7 +24,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
     # https://gitlab.com/gitlab-org/gitlab/-/work_items/603303 and re-validated (these entries removed)
     # in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244171
     %w[
-      ai_settings.organization_id
       web_hook_logs_daily.organization_id
       web_hook_logs_daily.group_id
       web_hook_logs_daily.project_id
@@ -138,8 +137,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "abuse_report_assignees" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553428",
       "abuse_report_labels" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553427",
       "achievement_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
-      # organization_id becomes non-null in a follow-up MR after organization-scoped lookup lands.
-      "ai_settings" => "https://gitlab.com/gitlab-org/gitlab/-/issues/531356",
       "ai_catalog_item_consumers" => "https://gitlab.com/gitlab-org/gitlab/-/work_items/596012",
       "ai_vectorizable_file_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
       "alert_management_alert_metric_image_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",

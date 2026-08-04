@@ -15,7 +15,10 @@ import axios from '~/lib/utils/axios_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { HTTP_STATUS_TOO_MANY_REQUESTS } from '~/lib/utils/http_status';
 import { visitUrl } from '~/lib/utils/url_utility';
-import { onboardingFeatureLibrarySearchPath } from '~/lib/utils/path_helpers/feature_library';
+import {
+  onboardingFeatureLibrarySearchPath,
+  onboardingFeatureLibraryAiSearchPath,
+} from '~/lib/utils/path_helpers/feature_library';
 import { InternalEvents } from '~/tracking';
 import {
   EVENT_OPEN_FEATURE_LIBRARY_MODAL,
@@ -23,6 +26,7 @@ import {
   EVENT_PIN_ITEM_IN_FEATURE_LIBRARY_MODAL,
   EVENT_UNPIN_ITEM_IN_FEATURE_LIBRARY_MODAL,
   EVENT_NAVIGATE_TO_FEATURE_FROM_FEATURE_LIBRARY_MODAL,
+  EVENT_SEARCH_WITH_GEMINI_IN_FEATURE_LIBRARY_MODAL,
 } from '../../tracking_constants';
 import { PANEL_TYPES } from '../../constants';
 import ScrollScrim from '../scroll_scrim.vue';
@@ -56,6 +60,8 @@ export default {
   FEEDBACK_ISSUE_URL,
   inject: {
     panelType: { default: '' },
+    resourceId: { default: null },
+    aiSearchAvailable: { default: false },
   },
   props: {
     supportsPins: {
@@ -89,11 +95,19 @@ export default {
       latestQuery: null,
       renderLimit: ITEMS_PER_RENDER_FRAME,
       revealFrameId: null,
+      geminiResultIds: [],
+      isGeminiSearching: false,
+      geminiSearched: false,
+      geminiHidden: false,
+      geminiErrorMessage: null,
     };
   },
   computed: {
     trimmedQuery() {
       return this.searchQuery.trim();
+    },
+    hasSearchableQuery() {
+      return this.trimmedQuery.length >= MIN_SEARCH_QUERY_LENGTH;
     },
     searchPlaceholder() {
       switch (this.panelType) {
@@ -182,9 +196,50 @@ export default {
     showEmptyState() {
       return (
         !this.isSearching &&
-        this.trimmedQuery.length >= MIN_SEARCH_QUERY_LENGTH &&
-        this.filteredItems.length === 0
+        !this.isGeminiSearching &&
+        this.hasSearchableQuery &&
+        this.filteredItems.length === 0 &&
+        !this.showGeminiEmptyState
       );
+    },
+    geminiItems() {
+      if (!this.geminiResultIds.length) return [];
+
+      const shownIds = new Set(this.filteredItems.map((item) => item.id));
+
+      return this.geminiResultIds
+        .map((id) => this.catalogById[id])
+        .filter((item) => item && !shownIds.has(item.id));
+    },
+    showGeminiSection() {
+      return (
+        (this.isGeminiSearching || this.geminiSearched || Boolean(this.geminiErrorMessage)) &&
+        !this.geminiHidden
+      );
+    },
+    showGeminiHeader() {
+      return (this.geminiSearched || Boolean(this.geminiErrorMessage)) && !this.geminiHidden;
+    },
+    showGeminiEmptyState() {
+      return (
+        this.showGeminiSection &&
+        !this.isGeminiSearching &&
+        !this.geminiErrorMessage &&
+        this.geminiItems.length === 0
+      );
+    },
+    showGeminiButton() {
+      return (
+        this.aiSearchAvailable &&
+        this.resourceId &&
+        !this.isSearching &&
+        this.hasSearchableQuery &&
+        (!this.geminiSearched || this.geminiHidden) &&
+        !this.isGeminiSearching
+      );
+    },
+    showFooter() {
+      return this.showFeedbackLink || this.showGeminiButton;
     },
     emptyStateTitle() {
       return s__('FeatureLibrary|No features match your search');
@@ -240,9 +295,17 @@ export default {
       this.latestQuery = null;
       this.searchResultIds = [];
     },
+    resetGeminiState() {
+      this.geminiResultIds = [];
+      this.isGeminiSearching = false;
+      this.geminiSearched = false;
+      this.geminiHidden = false;
+      this.geminiErrorMessage = null;
+    },
     onSearchInput(value) {
       this.searchQuery = value;
       const query = value.trim();
+      this.resetGeminiState();
 
       if (query) {
         this.fetchResults(query);
@@ -265,6 +328,7 @@ export default {
     },
     onHidden() {
       this.resetSearchState();
+      this.resetGeminiState();
       this.cancelReveal();
       this.searchQuery = '';
       this.collapsedSectionIds = [];
@@ -300,6 +364,48 @@ export default {
           this.isSearching = false;
         });
     },
+    async searchWithGemini() {
+      if (!this.resourceId || !this.aiSearchAvailable) return;
+
+      const query = this.trimmedQuery;
+      this.trackEvent(EVENT_SEARCH_WITH_GEMINI_IN_FEATURE_LIBRARY_MODAL);
+      this.geminiHidden = false;
+      this.isGeminiSearching = true;
+      this.geminiErrorMessage = null;
+
+      try {
+        const { data } = await axios.get(onboardingFeatureLibraryAiSearchPath(), {
+          params: { query, panel: this.panelType, resource_id: this.resourceId },
+        });
+        if (query !== this.trimmedQuery) return;
+        this.geminiResultIds = data.ids || [];
+        this.geminiSearched = true;
+      } catch (e) {
+        if (query !== this.trimmedQuery) return;
+
+        const status = e.response?.status;
+        if (status === HTTP_STATUS_TOO_MANY_REQUESTS) {
+          this.geminiErrorMessage =
+            e.response?.data?.error ||
+            s__('FeatureLibrary|You have reached the search limit. Try again later.');
+        } else {
+          // Includes 404: the button is gated on aiSearchAvailable, so this
+          // shouldn't normally occur; if it does (e.g. a stale flag/trial state),
+          // it's unexpected and worth reporting.
+          Sentry.captureException(e, { tags: { feature_category: 'onboarding' } });
+          this.geminiErrorMessage = s__(
+            'FeatureLibrary|Something went wrong searching with Gemini. Try again.',
+          );
+        }
+      } finally {
+        if (query === this.trimmedQuery) {
+          this.isGeminiSearching = false;
+        }
+      }
+    },
+    hideGeminiSection() {
+      this.geminiHidden = true;
+    },
   },
 };
 </script>
@@ -309,7 +415,7 @@ export default {
     ref="modal"
     :modal-id="$options.modalId"
     :aria-label="s__('FeatureLibrary|GitLab features')"
-    :hide-footer="!showFeedbackLink"
+    :hide-footer="!showFooter"
     modal-class="feature-library-modal"
     body-class="gl-flex gl-flex-col"
     size="lg"
@@ -403,13 +509,92 @@ export default {
           :title="emptyStateTitle"
           :description="s__('FeatureLibrary|Try a different search term.')"
         />
+        <template v-if="showGeminiSection">
+          <div
+            :class="[
+              'gl-p-4',
+              'gl-pt-3',
+              { 'gl-border-t': !isGeminiSearching && !(showGeminiEmptyState && !showEmptyState) },
+            ]"
+          >
+            <div v-if="showGeminiHeader" class="gl-flex gl-items-center gl-justify-between gl-py-2">
+              <h3 class="gl-m-0 gl-text-base gl-font-bold">
+                <gl-icon name="tanuki-ai" :size="16" class="gl-mr-2" />
+                {{ s__('FeatureLibrary|Suggested by Gemini') }}
+              </h3>
+              <gl-button
+                category="tertiary"
+                size="small"
+                data-testid="hide-gemini-section"
+                @click="hideGeminiSection"
+              >
+                {{ s__('FeatureLibrary|Hide') }}
+              </gl-button>
+            </div>
+            <div
+              v-if="isGeminiSearching || geminiErrorMessage || showGeminiEmptyState"
+              class="gl-flex gl-items-center gl-justify-center gl-gap-3 gl-py-5 gl-text-subtle"
+            >
+              <template v-if="isGeminiSearching">
+                <gl-loading-icon size="sm" data-testid="gemini-loading" />
+                <span>{{ s__('FeatureLibrary|Searching with Gemini …') }}</span>
+              </template>
+              <span v-else-if="geminiErrorMessage" data-testid="gemini-error">
+                {{ geminiErrorMessage }}
+              </span>
+              <span v-else data-testid="gemini-empty-state">
+                {{
+                  s__(
+                    "FeatureLibrary|Gemini couldn't find a matching feature. Try different keywords.",
+                  )
+                }}
+              </span>
+            </div>
+            <ul
+              v-if="geminiItems.length > 0"
+              data-testid="gemini-results-grid"
+              class="gl-grid gl-list-none gl-grid-cols-1 gl-gap-3 gl-p-0 sm:gl-grid-cols-2 md:gl-grid-cols-3"
+            >
+              <feature-library-item
+                v-for="item in geminiItems"
+                :key="item.id"
+                :item="item"
+                :pinned="isPinned(item.id)"
+                @pin-toggle="onPinToggle"
+                @navigate="onNavigate"
+              />
+            </ul>
+            <p v-if="geminiItems.length > 0" class="gl-mb-0 gl-text-subtle">
+              {{ s__('FeatureLibrary|Recommended based on your search') }}
+            </p>
+          </div>
+        </template>
       </div>
     </scroll-scrim>
-    <template v-if="showFeedbackLink" #modal-footer>
-      <div class="gl-w-full gl-text-center gl-text-sm">
-        <gl-link :href="$options.FEEDBACK_ISSUE_URL" target="_blank" rel="noopener noreferrer">{{
-          s__('FeatureLibrary|Share feedback about this feature library')
-        }}</gl-link>
+    <template #modal-footer>
+      <div class="gl-m-0 gl-flex gl-w-full gl-flex-col gl-gap-4">
+        <gl-button
+          v-if="showGeminiButton"
+          class="feature-library-gemini-button"
+          block
+          data-testid="search-with-gemini-button"
+          :button-text-classes="['gl-flex', 'gl-justify-between', 'gl-w-full']"
+          @click="searchWithGemini"
+        >
+          <span class="gl-my-3">
+            {{ s__("FeatureLibrary|Can't find what you're looking for? Search with AI") }}
+          </span>
+          <span class="gl-my-3 gl-text-sm">
+            <gl-icon name="tanuki-ai" :size="16" />
+            <span>{{ s__('FeatureLibrary|Powered by Gemini') }}</span>
+          </span>
+        </gl-button>
+
+        <div v-if="showFeedbackLink" class="gl-text-center gl-text-sm">
+          <gl-link :href="$options.FEEDBACK_ISSUE_URL" target="_blank" rel="noopener noreferrer">{{
+            s__('FeatureLibrary|Share feedback about this feature library')
+          }}</gl-link>
+        </div>
       </div>
     </template>
   </gl-modal>

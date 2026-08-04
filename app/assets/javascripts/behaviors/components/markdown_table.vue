@@ -3,12 +3,6 @@ import {
   STICKY_HEADER_CLASSES,
   STICKY_TABLE_WRAPPER_CLASSES,
 } from '~/lib/utils/table_sticky_header';
-import initPopovers from '~/behaviors/markdown/init_popovers';
-import { GFM_POPOVER_SELECTOR, GFM_LIGHTBOX_IMAGE_SELECTOR } from '~/behaviors/markdown/constants';
-import {
-  renderImageLightbox,
-  destroyImageLightbox,
-} from '~/behaviors/markdown/render_image_lightbox';
 import { s__ } from '~/locale';
 
 const ASCENDING = 'ascending';
@@ -21,20 +15,44 @@ function isEmpty(value) {
   return value === '';
 }
 
+// Move the rendered cells into the table we render, rather than rebuilding it, so
+// that whatever is already attached to them (popovers, lightbox handlers, Mermaid
+// diagrams iframes) comes along with them.
+//
+// The value is either the nodes to adopt, or the element to adopt the children of.
+const adopt = (el, { value, oldValue }) => {
+  if (value === oldValue) return;
+
+  const nodes = Array.isArray(value) ? value : Array.from(value.childNodes);
+
+  el.textContent = '';
+  nodes.forEach((node) => el.appendChild(node));
+};
+
+// `bind`/`update` are the Vue 2 hook names, which @vue/compat maps to their Vue 3
+// equivalents; ~/vue_shared/directives/safe_html.js does the same.
+const adoptDirective = { bind: adopt, update: adopt };
+
 export default {
   name: 'MarkdownTable',
+  directives: {
+    // On a <tr>: the row's own <td>/<th> elements, attributes and all.
+    adoptCells: adoptDirective,
+    // On a <span>: the child nodes of a header cell, whose <th> we render ourselves.
+    adoptContent: adoptDirective,
+  },
   stickyHeaderClasses: STICKY_HEADER_CLASSES,
   stickyTableWrapperClasses: STICKY_TABLE_WRAPPER_CLASSES,
   props: {
-    // Parsed header cells. Each field is `{ key, label }` where `label` is the
-    // rendered markdown HTML for the header cell.
+    // Header cells. Each field is `{ key, cell }`, where `cell` is the header cell
+    // element.
     fields: {
       type: Array,
       required: false,
       default: () => [],
     },
-    // Parsed body rows. Each item maps a field `key` to `{ html, text, rowIndex }`, where
-    // `html` preserves the rendered markdown and `text` is used for sorting.
+    // Body rows. Each item is `{ cells, rowIndex }` plus, per field `key`,
+    // a `{ text }` used for sorting comparisons.
     items: {
       type: Array,
       required: false,
@@ -82,25 +100,16 @@ export default {
       });
     },
   },
-  mounted() {
-    // Cell content is re-rendered from the parsed markdown via `v-html`, which
-    // creates new DOM nodes. Popover listeners added by `renderGFM` were attached
-    // to the original (replaced) table, so reference popovers (issues, work items,
-    // MRs, ...) must be re-initialized on the new nodes.
-    initPopovers(Array.from(this.$el.querySelectorAll(GFM_POPOVER_SELECTOR)));
-
-    // creates new DOM nodes. Lightbox click listeners added by `renderGFM` were
-    // attached to the original (replaced) table, so the image lightbox must be
-    // re-initialized on the new nodes.
-    renderImageLightbox(
-      Array.from(this.$el.querySelectorAll(GFM_LIGHTBOX_IMAGE_SELECTOR)),
-      this.$el,
-    );
-  },
-  beforeDestroy() {
-    destroyImageLightbox(this.$el);
-  },
   methods: {
+    // We render the <th> ourselves, so the source cell's alignment has to be applied
+    // to it: GLFM renders pipe tables with `align`, but `text-align` styles are also
+    // permitted, so we have to preserve either/both!
+    headerAlign({ cell }) {
+      return cell.getAttribute('align');
+    },
+    headerStyle({ cell }) {
+      return cell.getAttribute('style');
+    },
     ariaSort(key) {
       if (!this.canSort) return null;
       if (this.sortKey !== key) return 'none';
@@ -156,6 +165,8 @@ export default {
             <th
               v-for="field in fields"
               :key="field.key"
+              :align="headerAlign(field)"
+              :style="headerStyle(field)"
               :aria-sort="ariaSort(field.key)"
               :tabindex="canSort ? '0' : null"
               :class="{ 'gl-cursor-pointer': canSort }"
@@ -164,8 +175,7 @@ export default {
               @keydown.space.prevent="handleSort(field.key)"
             >
               <div class="gl-flex">
-                <!-- eslint-disable-next-line vue/no-v-html -->
-                <span v-html="field.label"></span>
+                <span v-adopt-content="field.cell"></span>
                 <template v-if="canSort">
                   <div
                     class="gl-table-th-sort-icon-wrapper gl-ml-2 gl-flex gl-w-5 gl-justify-center"
@@ -179,12 +189,7 @@ export default {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in sortedItems" :key="item.rowIndex">
-            <td v-for="field in fields" :key="field.key">
-              <!-- eslint-disable-next-line vue/no-v-html -->
-              <span v-html="item[field.key] && item[field.key].html"></span>
-            </td>
-          </tr>
+          <tr v-for="item in sortedItems" :key="item.rowIndex" v-adopt-cells="item.cells"></tr>
         </tbody>
       </table>
     </div>
