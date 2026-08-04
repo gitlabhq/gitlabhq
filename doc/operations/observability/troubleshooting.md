@@ -33,11 +33,16 @@ docker logs [container_name]
 
 ## Menu doesn't appear
 
-1. Check that the Observability service URL is configured for your group:
+1. Check that the Observability service URL is configured for your group or personal namespace:
 
    ```ruby
-   group = Group.find_by_path('your-group-name')
-   group.observability_group_o11y_setting&.o11y_service_url
+   # For a group:
+   namespace = Group.find_by_path('your-group-name')
+
+   # For a personal namespace:
+   namespace = User.find_by_username('your-username').namespace
+
+   namespace.observability_group_o11y_setting&.o11y_service_url
    ```
 
 1. Ensure the routes are properly registered:

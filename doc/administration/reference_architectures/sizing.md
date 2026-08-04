@@ -2,8 +2,8 @@
 stage: GitLab Delivery
 group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-description: Guide to define Reference Architecture size and component-specific adjustments.
-title: Assess reference architecture size
+description: Guide to assess and plan your GitLab deployment size.
+title: Assess and plan deployment size
 ---
 
 {{< details >}}
@@ -13,21 +13,69 @@ title: Assess reference architecture size
 
 {{< /details >}}
 
-To select an appropriate reference architecture, you should use a systematic approach for assessing and sizing GitLab
-environments based on reference architectures.
+Assess your GitLab environment's workload and determine the appropriate deployment
+requirements before installation, or when evaluating whether an existing environment is correctly sized.
 
-To determine the appropriate reference architecture and any required component-specific adjustments, the following
-information helps you analyze:
+## Workload characterization
 
-- Requests per second (RPS) patterns.
-- Workload characteristics.
-- Resource saturation.
+GitLab environments vary significantly in their infrastructure needs, even at similar user counts or
+request volumes. The mix of Git operations, CI/CD activity, API usage, and automation determines
+which components come under pressure and how they need to scale.
+
+Rather than mapping environments to a fixed size tier, workload characterization describes the
+profile of an environment. The characterization you arrive at after measuring your
+environment guides which component-level requirements and scaling considerations apply.
+
+| Characterization | Typical profile |
+|:-----------------|:----------------|
+| Small | Light Git activity, minimal automation, low CI/CD concurrency. |
+| Medium | Moderate Git activity, standard CI/CD usage, some automation. |
+| Large | Heavy CI/CD, active monorepos, significant API automation. |
+| Extra Large | Intensive workloads, extensive integrations, high concurrency across all components. |
+
+These characterizations are descriptive, not prescriptive. They are conclusions you arrive at by
+measuring your environment, not categories you select upfront. Many environments do not fit cleanly
+into a single characterization. An environment with light web and API activity but heavy Git
+operations sits differently to one with the inverse profile.
+
+For small and medium environments, the guidance on this page is designed to be self-sufficient.
+For large and extra large environments, the operational complexity often warrants engagement with
+[Professional Services](https://about.gitlab.com/professional-services/), or consideration of
+[GitLab Dedicated](../../subscriptions/gitlab_dedicated/_index.md) or GitLab.com as alternatives
+that remove the operational burden entirely.
+
+## Workload considerations
+
+Some workload patterns need more than the standard RPS-based methodology that this guide accounts
+for. Two of these are covered later once you've extracted your RPS metrics:
+[large monorepos and other infrastructure-specific factors](#assess-special-infrastructure-requirements),
+and [atypical workload patterns](#understanding-rps-composition-and-workload-patterns) such as
+heavy automation, CI/CD usage, or security scanning.
+
+GitLab Duo Agent Platform introduces its own infrastructure considerations beyond standard
+workload sizing. See
+[scaling for GitLab Duo Agent Platform](_index.md#scaling-for-gitlab-duo-agent-platform)
+before sizing an environment that will use it.
+
+### Autoscaling
+
+Rails (Puma) and Sidekiq are stateless and support autoscaling groups. Size these components for
+average sustained load and let autoscaling handle peaks.
+
+Gitaly is stateful and does not support autoscaling. Size Gitaly nodes for peak load using the
+guidance below.
+
+If autoscaling is a requirement, a [cloud-native deployment](_index.md#cloud-native) is
+generally preferred over VM-based autoscaling groups. Components that must run on a single node,
+such as database migrations and [Mailroom](../incoming_email.md), are handled more reliably by
+Kubernetes than by VM autoscaling groups, so account for this limitation before choosing
+VM-based autoscaling.
 
 ## Before you begin
 
-You can use this information if you have a complex environment to select an appropriate reference architecture.
-You might not require this level of detail, and you can assess the size of your environment by using the
-[information for less complex environments](_index.md).
+These instructions use Prometheus metrics to assess your environment accurately. If your environment is
+straightforward, the [reference architectures](_index.md)
+may provide sufficient guidance without this level of analysis.
 
 > [!note]
 > Need expert guidance? Sizing your architecture correctly is critical for optimal performance. Our
@@ -183,7 +231,9 @@ To identify typical high-load levels, filtering out rare spikes:
 
 ### Map traffic to reference architectures
 
-To map traffic to reference architectures, using the results you recorded earlier:
+How you map traffic to a reference architecture depends on your deployment path.
+
+Linux package (Omnibus) or Cloud Native Hybrid:
 
 1. Consult the [available reference architectures](_index.md#available-reference-architectures) to see which reference architecture each traffic
    type suggests.
@@ -202,27 +252,55 @@ To map traffic to reference architectures, using the results you recorded earlie
    - Largest peak RA suggested.
    - Largest sustained RA suggested.
 
+Cloud Native:
+
+Cloud Native architectures are sized by a single overall RPS band rather than per-traffic-type targets, since API
+traffic typically accounts for the large majority of load (see [RPS breakdown by request type](#rps-breakdown-by-request-type)).
+
+1. Compare your peak and sustained overall RPS against the available sizes:
+
+   | Characterization | Cloud Native size                                  | Target RPS |
+   |:------------------|:----------------------------------------------------|:-----------|
+   | Small             | [Small (S)](cloud_native.md#small-s)               | ≤100 RPS   |
+   | Medium            | [Medium (M)](cloud_native.md#medium-m)             | ≤200 RPS   |
+   | Large             | [Large (L)](cloud_native.md#large-l)               | ≤500 RPS   |
+   | Extra Large       | [Extra Large (XL)](cloud_native.md#extra-large-xl) | ≤1000 RPS  |
+
+1. Document the baseline:
+   - Peak suggested size.
+   - Sustained suggested size.
+
 ### Choose a reference architecture
 
-At this point, there are two candidate reference architecture sizes:
+At this point, there are two candidate sizes: one based on absolute peaks, one based on sustained load.
 
-- One based on absolute peaks.
-- One based on sustained load.
+When choosing a size:
 
-To choose a reference architecture:
-
-1. If peak and sustained suggest the same RA, use that RA.
-1. If peak suggests a larger RA than sustained. Calculate the gap. Is peak RPS within 10-15% of the sustained RA's upper
-   limit?
+1. If peak and sustained suggest the same size, use that size.
+1. If peak suggests a larger size than sustained, calculate the gap. Is peak RPS within 10-15% of the sustained size's
+   upper limit?
 
 General guidelines:
 
-- If peak RPS exceeds the sustained RA limit by less than 10-15%, sustained RA can be considered with acceptable risk
-  because reference architectures have built-in headroom.
-- Beyond 15%, start with the peak-based RA, then monitor and adjust if metrics support downsizing.
-  - Example 1: Peak is 110 RPS, Large RA handles "up to 100 RPS" → 10% over → Large should suffice (Reference architectures have built-in headroom)
-  - Example 2: Peak is 150 RPS, Large RA handles "up to 100 RPS" → 50% over → Use X-Large (up to 200 RPS)
-  - Example 3: Peak is 100 RPS (Large/100 RPS) but sustained is 50 RPS (Medium/60 RPS). Raw RPS graphs show automation spikes cause peaks while load is <50 RPS most of the time. User evaluates whether to start conservative with Large then scale down, or start Medium with [workload-specific scaling](#identify-component-adjustments) (higher risk).
+- If peak RPS exceeds the sustained size's limit by less than 10-15%, the sustained size can be considered with
+  acceptable risk, because reference architectures have built-in headroom.
+- Beyond 15%, start with the peak-based size, then monitor and adjust if metrics support downsizing.
+
+Linux package / Cloud Native Hybrid examples:
+
+- Peak is 110 RPS against the 5,000 users architecture (up to 100 RPS) → 10% over → the 5,000 users architecture
+  should suffice.
+- Peak is 150 RPS against the 5,000 users architecture (up to 100 RPS) → 50% over → use the 10,000 users
+  architecture (up to 200 RPS).
+- Peak is 100 RPS (5,000 users architecture) but sustained is 50 RPS (3,000 users architecture, up to 60 RPS). Raw
+  RPS graphs show automation spikes cause peaks while load is under 50 RPS most of the time. Evaluate whether to
+  start conservative with the 5,000 users architecture then scale down, or start with the 3,000 users architecture
+  with [workload-specific scaling](#identify-component-adjustments) (higher risk).
+
+Cloud Native example:
+
+- Peak is 120 RPS (medium) but sustained is 80 RPS (small). Evaluate whether to start conservative with medium then
+  scale down, or start with small with [workload-specific scaling](#identify-component-adjustments) (higher risk).
 
 For environments under 40 RPS and where high availability (HA) is a requirement, consult the
 [high availability section](_index.md#high-availability-ha) to identify whether switching to the 60 RPS / 3,000 user

@@ -15,18 +15,48 @@ title: Set up Observability on GitLab.com
 
 {{< /details >}}
 
-To set up GitLab Observability on GitLab.com, enable GitLab Observability for your group.
+To set up GitLab Observability on GitLab.com, enable GitLab Observability for your group
+or for a project in your personal namespace.
+
+{{< tabs >}}
+
+{{< tab title="Group" >}}
 
 Prerequisites:
 
 - You must have the Developer, Maintainer, or Owner role for the group.
 
 1. In the top bar, select **Search or go to** and find your group.
-1. In the left sidebar, select **Observability** > **Setup**.
+1. In the left sidebar, select **Observe** > **Setup**.
 1. Select **Enable Observability**.
 1. After enabling, your OpenTelemetry (OTEL) endpoint URL is generated and displayed on the page.
 
 Copy the OTEL endpoint URL to use when instrumenting your applications.
+
+{{< /tab >}}
+
+{{< tab title="Personal project" >}}
+
+Prerequisites:
+
+- You must have the Owner role for the project.
+- The project must be in your personal namespace and not part of a group.
+
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Observe** > **Setup**.
+1. Select **Enable Observability**.
+1. After enabling, your OpenTelemetry (OTEL) endpoint URL is generated and displayed on the page.
+
+Copy the OTEL endpoint URL to use when instrumenting your applications.
+
+Enabling Observability applies to all projects in your personal namespace.
+
+If you have the Maintainer or Developer role for the project, you cannot enable Observability yourself.
+Ask the project owner to enable it.
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Next steps
 

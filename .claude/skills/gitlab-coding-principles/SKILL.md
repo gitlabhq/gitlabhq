@@ -80,5 +80,9 @@ ALWAYS load Database principles regardless of which files you are editing.
 **Analytics:**
 - **Analytics instrumentation and metrics**: Read .ai/principles/distilled/analytics.md
 
+**Import:**
+- **Import/Export framework internals and general importer-design points that are NOT specific to particular import source**: Read .ai/principles/distilled/import-fundamentals.md *(load for any import work)*
+- **Bulk Import/Offline Transfer specific import/export documentation**: Read .ai/principles/distilled/import-direct-and-offline.md *(also load: .ai/principles/distilled/import-fundamentals.md)*
+
 - **Git, commits, or branches**: Read .ai/git.md
 - **CI/CD pipelines or `.gitlab-ci.yml`**: Read .ai/ci-cd.md

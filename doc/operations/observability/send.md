@@ -24,8 +24,8 @@ or [use templates](#gitlab-observability-templates).
 
 After GitLab Observability is configured:
 
-1. In the top bar, select **Search or go to** and find your group.
-1. In the left sidebar, select **Observability** > **Services**.
+1. In the top bar, select **Search or go to** and find your group or project.
+1. In the left sidebar, select **Observe** > **Services**.
 1. Select the service you want to view details for.
 
 ![GitLab.com Observability Dashboard](img/gitLab_o11y_gitlab_com_dashboard_v18_1.png "GitLab.com Observability Dashboard")
@@ -154,7 +154,7 @@ Replace `[your-o11y-instance-ip]` with your GitLab Observability instance's IP a
    ruby test_o11y.rb
    ```
 
-1. Go to **Observability** > **Services**. Select the `test-service` service to see traces and spans.
+1. Go to **Observe** > **Services**. Select the `test-service` service to see traces and spans.
 
 ## GitLab Observability templates
 

@@ -21,7 +21,6 @@ RSpec/NamedSubject:
     - 'ee/spec/controllers/groups/insights_controller_spec.rb'
     - 'ee/spec/controllers/groups/issues_controller_spec.rb'
     - 'ee/spec/controllers/groups/iterations_controller_spec.rb'
-    - 'ee/spec/controllers/groups/ldaps_controller_spec.rb'
     - 'ee/spec/controllers/groups/merge_requests_controller_spec.rb'
     - 'ee/spec/controllers/groups/saml_providers_controller_spec.rb'
     - 'ee/spec/controllers/groups/scim_oauth_controller_spec.rb'

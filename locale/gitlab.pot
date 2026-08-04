@@ -11820,6 +11820,9 @@ msgstr ""
 msgid "ArtifactRegistry|Hosted"
 msgstr ""
 
+msgid "ArtifactRegistry|Hosted repository"
+msgstr ""
+
 msgid "ArtifactRegistry|Last updated"
 msgstr ""
 
@@ -11845,6 +11848,9 @@ msgid "ArtifactRegistry|Name is required."
 msgstr ""
 
 msgid "ArtifactRegistry|Name must use lowercase letters, digits, periods, underscores, and hyphens, and start and end with a letter or digit."
+msgstr ""
+
+msgid "ArtifactRegistry|New repository"
 msgstr ""
 
 msgid "ArtifactRegistry|No repositories"

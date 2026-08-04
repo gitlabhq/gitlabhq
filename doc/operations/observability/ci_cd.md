@@ -274,8 +274,8 @@ No changes to your `.gitlab-ci.yml` file are required. The instrumentation happe
 
 After running pipelines with instrumentation enabled:
 
-1. In the top bar, select **Search or go to** and find your group.
-1. In the left sidebar, select **Observability** > **Services**.
+1. In the top bar, select **Search or go to** and find your group or project.
+1. In the left sidebar, select **Observe** > **Services**.
 1. Select your `gitlab-ci` service to view traces, metrics, and logs from your pipeline executions.
 
 The CI/CD dashboard template from [GitLab Observability Templates](https://gitlab.com/gitlab-org/embody-team/experimental-observability/o11y-templates/) provides pre-built visualizations for pipeline performance analysis.

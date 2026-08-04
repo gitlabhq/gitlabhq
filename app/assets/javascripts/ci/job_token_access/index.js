@@ -20,8 +20,7 @@ export const initJobTokenAccess = (containerId = 'js-ci-job-token-access-app') =
     return false;
   }
 
-  const { csvDownloadPath, enforceAllowlist, fullPath, projectAllowlistLimit } =
-    containerEl.dataset;
+  const { csvDownloadPath, enforceAllowlist, fullPath } = containerEl.dataset;
 
   return initVueApp({
     el: containerEl,
@@ -31,7 +30,6 @@ export const initJobTokenAccess = (containerId = 'js-ci-job-token-access-app') =
       csvDownloadPath,
       enforceAllowlist: JSON.parse(enforceAllowlist),
       fullPath,
-      projectAllowlistLimit: Number(projectAllowlistLimit),
     },
     component: TokenAccessApp,
   });
