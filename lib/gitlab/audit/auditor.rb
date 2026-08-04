@@ -69,13 +69,14 @@ module Gitlab
         @name = @context.fetch(:name, 'audit_operation')
         @is_audit_event_yaml_defined = Gitlab::Audit::Type::Definition.defined?(@name)
         @stream_only = stream_only?
-        @author = @context.fetch(:author)
         @scope = @context.fetch(:scope)
+        @author = resolve_author(@context.fetch(:author))
         @target = @context.fetch(:target)
         @created_at = @context.fetch(:created_at, DateTime.current)
         @message = @context.fetch(:message, '')
         @additional_details = @context.fetch(:additional_details, {})
         @additional_details[:event_name] = @name
+        @additional_details.merge!(human_author_details) if @human_author
         @ip_address = @context[:ip_address]
         @target_details = @context[:target_details]
         @authentication_event = @context.fetch(:authentication_event, false)
@@ -215,6 +216,36 @@ module Gitlab
       end
 
       private
+
+      # When a service account authenticates via a composite identity (OAuth on
+      # behalf of a human in the :authentication context), the context author is
+      # the human (current_user). resolve_composite_identity_actor returns the
+      # service account, which is the true authenticating actor. We keep the SA
+      # as the author (so author_id stays correct) and remember the human so it
+      # can be recorded in the event details.
+      def resolve_author(author)
+        return author unless Feature.enabled?(:composite_identity_audit_event_attribution, attribution_flag_actor)
+        return author unless author.is_a?(::User)
+
+        actor = ::Gitlab::Auth::Identity.resolve_composite_identity_actor(author)
+
+        return author if actor.nil? || actor == author
+
+        @human_author = author
+        ::Gitlab::Audit::CompositeIdentityAuthor.new(actor, human_author: author)
+      end
+
+      def attribution_flag_actor
+        @scope.respond_to?(:root_ancestor) ? @scope.root_ancestor : :instance
+      end
+
+      def human_author_details
+        {
+          human_author_id: @human_author.id,
+          human_author_name: @human_author.name,
+          human_author_username: @human_author.username
+        }
+      end
 
       def log_payload(event)
         payload = event.as_json

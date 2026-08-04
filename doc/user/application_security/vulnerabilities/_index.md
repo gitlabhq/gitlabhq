@@ -13,20 +13,36 @@ description: Vulnerability details, status, resolution, and linking issues.
 
 {{< /details >}}
 
-Each vulnerability in a project has a vulnerability page containing details of the vulnerability,
-including:
+{{< history >}}
 
-- Description
-- When it was detected
-- Current status
-- Available actions
-- Linked issues
-- Actions log
-- Location
-- Severity
+- Redesigned vulnerability page [introduced](https://gitlab.com/groups/gitlab-org/-/epics/21907) in GitLab 19.0 as a [beta](../../../policy/development_stages_support.md#beta) feature [with a feature flag](../../../administration/feature_flags/_index.md) named `vulnerability_details_enrichment`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of the redesigned vulnerability page is controlled by a feature flag.
+> For more information, see the history.
+
+Each vulnerability in a project has a vulnerability page. The page header shows the vulnerability
+title, when and in which pipeline it was detected, how many related merge requests and issues there
+are (if any), and the actions available to you. The right sidebar shows the vulnerability's status
+and severity. The rest of the vulnerability's data is grouped into the following sections:
+
+- **Risk**: The scores and flags that help you prioritize the vulnerability.
+- **Remediation**: The solution reported by the scanner, when one is available.
+- **Details**: The vulnerability description, the scanner that reported it, and the location in your
+  code, container image, or dependencies.
+- **Supplementary information**: Identifiers such as CVE and CWE, links to external references, and
+  security training.
+- **Evidence**: The request and response recorded by the scanner, for the scanners that report them.
+- **Related MRs** and **Related issues**: The merge requests and issues linked to the vulnerability.
+- **Activity**: A log of status changes, comments, and detection events.
+
+Each section is collapsible. To hide or show the contents of a section, in the section header,
+select **Collapse** ({{< icon name="chevron-lg-up" >}}) or **Expand** ({{< icon name="chevron-lg-down" >}}).
 
 For vulnerabilities in the [Common Vulnerabilities and Exposures (CVE)](https://www.cve.org/)
-catalog, these details also include:
+catalog, the **Risk** section also includes:
 
 - CVSS score
 - [EPSS score](risk_assessment_data.md#epss)
@@ -35,8 +51,10 @@ catalog, these details also include:
 
 For further details on this additional data, see [vulnerability risk assessment data](risk_assessment_data.md).
 
-If the scanner determined the vulnerability to be a false positive, an alert message is included at
-the top of the vulnerability's page.
+If the scanner determined the vulnerability to be a false positive, an alert is shown above the
+**Risk** section. If GitLab Duo identified the vulnerability as a possible false positive, the
+**Risk** section shows a **False positive confidence** score instead. For more information, see
+[false positive detection](false_positive_detection.md).
 
 For vulnerabilities detected by SAST, GitLab Duo can automatically analyze them and generate a merge
 request with context-aware code fixes. For more information, see
@@ -127,7 +145,11 @@ To resolve the vulnerability:
 1. Select outside the filter field. The vulnerability severity totals and list of matching vulnerabilities are updated.
 1. Select the SAST vulnerability you want resolved.
    - A blue icon is shown next to vulnerabilities that support Vulnerability Resolution.
-1. In the upper-right corner, select **Resolve with AI**. If this project is a public project be aware that creating an MR will publicly expose the vulnerability and offered resolution. To create the MR privately, [create a private fork](../../project/merge_requests/confidential.md), and repeat this process.
+1. In the upper-right corner, select **Resolve with AI**. If that button is not shown, select
+   **AI actions**, then select **Resolve with AI**. If this project is a public project be aware
+   that creating an MR will publicly expose the vulnerability and offered resolution. To create the
+   MR privately, [create a private fork](../../project/merge_requests/confidential.md), and repeat
+   this process.
 1. Add an additional commit to the MR. This forces a new pipeline to run.
 1. After the pipeline is complete, on the [pipeline security tab](../detect/security_scanning_results.md), confirm that the vulnerability no longer appears.
 1. On the vulnerability report, [manually update the vulnerability](../vulnerability_report/_index.md#change-status-of-vulnerabilities).
@@ -287,7 +309,7 @@ A vulnerability's code flow is the path the data takes from the user input (sour
 For details on how to view a vulnerability's code flow, see
 [Vulnerability code flow](../sast/gitlab_advanced_sast.md#code-flow).
 
-![A code flow of a Python application across two files](img/code_flow_view_v17_7.png)
+![The data flow of a SQL injection, from the request parameter that supplies the search term to the database query that executes it](img/code_flow_view_v19_3.png)
 
 ## Vulnerability status values
 
@@ -338,7 +360,8 @@ vulnerability has been resolved and if so,
 use a [vulnerability management policy](../policies/vulnerability_management_policy.md) to
 automatically change the status of vulnerabilities matching specific criteria to **Resolved**.
 
-You can find a link to the commit that resolved the vulnerability at the top or bottom of the vulnerability page.
+You can find a link to the commit that resolved the vulnerability in the **Activity** section of the
+vulnerability page.
 
 ## Vulnerability dismissal reasons
 
@@ -375,13 +398,14 @@ To change a vulnerability's status from its Vulnerability Page:
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Secure** > **Vulnerability report**.
 1. Select the vulnerability's description.
-1. Select **Change status**.
+1. In the right sidebar, in the **Status** section, select **Edit**.
 1. From the **Status** dropdown list, select a status or a [dismissal reason](#vulnerability-dismissal-reasons)
    when you want to change the vulnerability's status to **Dismissed**.
 1. In the **Comment** text box, provide a comment with more details about the reasons for dismissal. When you apply the **Dismissed** status, a comment is required.
+1. Select **Change status**.
 
 Details of the status change, including who made the change and when, are recorded in the
-vulnerability's action log.
+**Activity** section of the vulnerability page.
 
 ## Create a GitLab issue for a vulnerability
 
@@ -414,14 +438,14 @@ To link a vulnerability to existing GitLab issues:
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Secure** > **Vulnerability report**.
 1. Select the vulnerability's description.
-1. In the **Linked issues** section, select the plus icon ({{< icon name="plus" >}}).
+1. In the **Related issues** section, select **Add existing issue**.
 1. For each issue to be linked, either:
    - Paste a link to the issue.
    - Enter the issue's ID (prefixed with a hash `#`).
 1. Select **Add**.
 
-The selected GitLab issues are added to the **Linked items** section, and the linked issues counter is
-updated.
+The selected GitLab issues are added to the **Related issues** section, and the linked issues counter
+is updated.
 
 GitLab issues linked to a vulnerability are shown in the vulnerability report and the vulnerability's page.
 
@@ -461,12 +485,12 @@ Be aware of the following conditions between a vulnerability and a linked Jira i
 ## Resolve a vulnerability
 
 For some vulnerabilities a solution is already known but needs to be implemented manually. The
-**Solution** field in the Vulnerability page is provided by the security scanning tool that
-reported the security finding, or entered during the [manual creation of a vulnerability](../vulnerability_report/_index.md#manually-add-a-vulnerability).
+**Remediation** section of the vulnerability page shows a solution provided by the security scanning
+tool that reported the security finding, or entered during the [manual creation of a vulnerability](../vulnerability_report/_index.md#manually-add-a-vulnerability).
 The GitLab tools utilize information from the [GitLab advisory database](../gitlab_advisory_database/_index.md).
 
 Additionally, some tools may include a software patch to apply the suggested solution. In those instances,
-a vulnerability's page includes a **Resolve with merge request** option.
+the **Other actions** dropdown list on a vulnerability's page includes a **Resolve with scanner suggestion** action.
 
 The following scanners are supported by this feature:
 
@@ -488,7 +512,7 @@ To resolve the vulnerability with a merge request:
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Secure** > **Vulnerability report**.
 1. Select the vulnerability's description.
-1. From the **Resolve with merge request** dropdown list, select **Resolve with merge request**.
+1. In the upper-right corner, select **Other actions**, then select **Resolve with scanner suggestion**.
 
 A merge request is created which applies the patch required to resolve the vulnerability.
 Process the merge request according to your standard workflow.
@@ -500,7 +524,7 @@ To manually apply the patch that GitLab generated for a vulnerability:
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Secure** > **Vulnerability report**.
 1. Select the vulnerability's description.
-1. From the **Resolve with merge request** dropdown list, select **Download patch to resolve**.
+1. In the upper-right corner, select **Other actions**, then select **Download Patch**.
 1. Ensure your local project has the same commit checked out that was used to generate the patch.
 1. Run `git apply remediation.patch`.
 1. Verify and commit the changes to your branch.
@@ -539,7 +563,7 @@ To view the security training for a vulnerability:
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Secure** > **Vulnerability report**.
 1. Select the vulnerability for which you want to view security training.
-1. Select **View training**.
+1. In the **Supplementary information** section, under **Training**, select **View training**.
 
 ## View the location of a vulnerability in transitive dependencies
 
@@ -554,7 +578,8 @@ To view the security training for a vulnerability:
 > The availability of this feature is controlled by a feature flag.
 > For more information, see the history.
 
-When managing vulnerabilities found in dependencies in the vulnerability details, under **Location**, you can view:
+When managing vulnerabilities found in dependencies, the **Details** section of the vulnerability
+page shows:
 
 - The location of the direct dependency where the vulnerability was found.
 - If available, the specific line number where the vulnerability occurs.
@@ -563,4 +588,4 @@ If the vulnerability occurs in one or more transitive dependencies, knowing only
 
 If any transitive dependencies exist, you can view the paths to all dependencies, including the transitive dependencies that contain the vulnerability.
 
-- On the vulnerability details page, under **Location**, select **View dependency paths**. If **View dependency paths** doesn't appear, then there are no transitive dependencies.
+- On the vulnerability page, in the **Details** section, select **View dependency paths**. If **View dependency paths** doesn't appear, then there are no transitive dependencies.

@@ -84,6 +84,6 @@ class Admin::TopicsController < Admin::ApplicationController
   end
 
   def organization_id
-    ::Current.organization.id
+    admin_current_organization.id
   end
 end

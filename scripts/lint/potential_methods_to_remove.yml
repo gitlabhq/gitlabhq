@@ -61,10 +61,6 @@ ee/app/models/project_security_setting.rb:
 ee/app/models/search/zoekt.rb:
   - index_in
   - delete_in
-ee/app/models/security/attribute.rb:
-  - really_destroy!
-ee/app/models/security/category.rb:
-  - really_destroy!
 ee/app/models/security/orchestration_policy_configuration.rb:
   - compliance_framework_ids_with_policy_index
   - experiment_configuration

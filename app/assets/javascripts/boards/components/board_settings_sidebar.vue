@@ -57,7 +57,7 @@ export default {
       required: true,
     },
   },
-  emits: ['unsetActiveId'],
+  emits: ['unset-active-id'],
   data() {
     return {
       ListType,
@@ -100,7 +100,7 @@ export default {
       this.unsetActiveListId();
     },
     unsetActiveListId() {
-      this.$emit('unsetActiveId');
+      this.$emit('unset-active-id');
     },
     async deleteList(listId) {
       try {

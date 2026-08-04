@@ -67,7 +67,7 @@ export default {
       default: '',
     },
   },
-  emits: ['show-board-modal', 'switchBoard', 'update-board'],
+  emits: ['show-board-modal', 'switch-board', 'update-board'],
   data() {
     return {
       boards: [],
@@ -234,7 +234,7 @@ export default {
         data: newData,
       });
 
-      this.$emit('switchBoard', board.id);
+      this.$emit('switch-board', board.id);
     },
     setFilterTerm(value) {
       this.filterTerm = value;
@@ -247,7 +247,7 @@ export default {
     },
     switchBoardGroup(value) {
       // Epic board ID is supported in EE version of this file
-      this.$emit('switchBoard', this.fullBoardId(value));
+      this.$emit('switch-board', this.fullBoardId(value));
     },
   },
   formType,
@@ -312,7 +312,7 @@ export default {
         :current-page="boardModalForm"
         :is-last-board="isLastBoard"
         :parent-type="parentType"
-        @addBoard="addBoard"
+        @add-board="addBoard"
         @update-board="$emit('update-board', $event)"
         @show-board-modal="$emit('show-board-modal', $event)"
         @shown="loadBoards"

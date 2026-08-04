@@ -189,6 +189,28 @@ RSpec.shared_examples 'includes ::AuditEvents::CommonModel concern' do
       end
     end
 
+    context 'when the event was authored by a composite identity' do
+      let(:user) { create(:user, name: 'John Doe') }
+      let(:event) do
+        build(:audit_events_user_audit_event, :composite_identity_author, user: user)
+      end
+
+      it 'returns the stored composite author name' do
+        expect(event.author_name).to eq('Service Account on behalf of @human')
+      end
+    end
+
+    context 'when user exists and database contains a different author_name' do
+      let(:user) { create(:user, name: 'John Doe') }
+      let(:event) do
+        build(:audit_events_user_audit_event, user: user, author_name: 'Old Name')
+      end
+
+      it 'returns the current author name' do
+        expect(event.author_name).to eq('John Doe')
+      end
+    end
+
     context 'when user does not exist anymore' do
       context 'when database contains author_name' do
         subject(:event) { build(audit_event_symbol, author_id: non_existing_record_id, author_name: 'Jane Doe') }

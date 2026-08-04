@@ -59,7 +59,8 @@ Gitlab::GrapeOpenapi.configure do |config|
   # value: rendered annotation key
   # e.g. route_setting :lifecycle, "experimental" => YAML: `x-gitlab-lifecycle: experimental`
   config.annotations = {
-    lifecycle: 'x-gitlab-lifecycle'
+    lifecycle: 'x-gitlab-lifecycle',
+    tier: 'x-gitlab-tier'
   }
 
   config.tag_overrides = {

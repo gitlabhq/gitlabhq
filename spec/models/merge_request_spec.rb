@@ -5334,6 +5334,39 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         expect(subject[:status_reason]).to eq('This merge request does not have test reports')
       end
     end
+
+    context 'when diff_head_sha has advanced past head_pipeline sha (real ReactiveCachingWorker trigger)' do
+      # Reproduces the dominant crash scenario: a push advances diff_head_sha while
+      # head_pipeline_id still points at the previous sha's pipeline, so
+      # diff_head_pipeline returns nil. ReactiveCachingWorker keeps re-scheduling
+      # refreshes without re-running the read-path guard, hitting the nil in the
+      # service layer.
+      let_it_be(:head_pipeline) do
+        create(
+          :ci_pipeline,
+          :with_test_reports,
+          project: project,
+          ref: merge_request.source_branch,
+          sha: 'aabbccdd' # deliberately does NOT match merge_request.diff_head_sha
+        )
+      end
+
+      context 'when calculating the reactive cache' do
+        subject(:result) do
+          merge_request.calculate_reactive_cache(Ci::CompareTestReportsService.name)
+        end
+
+        # :error rather than :parsing, because the pipeline may never arrive and
+        # :parsing would poll unboundedly. The key is included so the cache
+        # self-heals once a pipeline finally appears.
+        it 'returns an error payload with the cache key instead of raising', :aggregate_failures do
+          expect { result }.not_to raise_error
+          expect(result[:status]).to eq(:error)
+          expect(result[:status_reason]).to eq(_('This merge request does not have reports to compare.'))
+          expect(result[:key]).to be_present
+        end
+      end
+    end
   end
 
   describe '#compare_accessibility_reports' do

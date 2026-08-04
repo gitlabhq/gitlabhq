@@ -771,29 +771,34 @@ $scroll-scrim-height: 2.25rem;
 
   position: relative;
 
-  // The shimmer visuals live on a pseudo-element so the whole treatment can be
-  // faded out by animating `opacity`. Fading the gradient directly is not
-  // possible because `background-image` is a discrete property and cannot be
-  // interpolated; isolating it here also avoids fading the nav item's text.
-  @media (prefers-reduced-motion: no-preference) {
-    // Raise the nav item's icon and label above the shimmer overlay so the
-    // content stays visible while the pseudo-element animates on top of the
-    // nav item's own background.
-    .gl-nav-item-slot,
-    .gl-nav-item-label {
-      position: relative;
-      z-index: 1;
-    }
+  // Raise the nav item's icon and label above the overlay so the content stays
+  // visible while the pseudo-element is drawn on top of the nav item's own
+  // background.
+  .gl-nav-item-slot,
+  .gl-nav-item-label {
+    position: relative;
+    z-index: 1;
+  }
 
+  // Static outline, drawn regardless of motion preference so users who prefer
+  // reduced motion still get a motion-free highlight on the nav item. Inset
+  // box-shadow renders the outline inside the element's edge so it does not add
+  // to the box and shift the nav item's layout.
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--gl-border-radius-lg);
+    pointer-events: none;
+    box-shadow: inset 0 0 0 2px var(--super-sidebar-shimmer-border-color);
+  }
+
+  // Only the animated gradient sweep depends on motion preference. It lives on
+  // the same pseudo-element so the whole treatment can be faded out by
+  // animating `opacity`; fading the gradient directly is not possible because
+  // `background-image` is a discrete property and cannot be interpolated.
+  @media (prefers-reduced-motion: no-preference) {
     &::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: var(--gl-border-radius-lg);
-      pointer-events: none;
-      // Inset box-shadow renders the outline inside the element's edge so it
-      // does not add to the box and shift the nav item's layout.
-      box-shadow: inset 0 0 0 2px var(--super-sidebar-shimmer-border-color);
       background-image: linear-gradient(
         90deg,
         var(--super-sidebar-shimmer-base-color),

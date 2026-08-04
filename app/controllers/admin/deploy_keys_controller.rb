@@ -15,7 +15,7 @@ class Admin::DeployKeysController < Admin::ApplicationController
 
   def create
     @deploy_key = DeployKeys::CreateService.new(current_user,
-      create_params.merge(public: true, organization: Current.organization)).execute
+      create_params.merge(public: true, organization: admin_current_organization)).execute
 
     if @deploy_key.persisted?
       redirect_to admin_deploy_keys_path

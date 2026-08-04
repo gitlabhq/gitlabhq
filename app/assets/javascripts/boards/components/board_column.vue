@@ -73,7 +73,7 @@ export default {
     'drag-stop',
     'focus-adjacent',
     'highlight-list',
-    'setActiveList',
+    'set-active-list',
     'set-filters',
   ],
   data() {
@@ -142,7 +142,7 @@ export default {
           :filter-params="filters"
           :board-id="boardId"
           @toggle-new-form="toggleNewForm"
-          @setActiveList="$emit('setActiveList', $event)"
+          @set-active-list="$emit('set-active-list', $event)"
         />
         <board-list
           ref="board-list"

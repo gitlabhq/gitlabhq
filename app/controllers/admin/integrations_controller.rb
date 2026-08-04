@@ -30,7 +30,7 @@ class Admin::IntegrationsController < Admin::ApplicationController
       name,
       instance: true
     ).tap do |integration|
-      integration.organization_id = Current.organization.id if integration&.new_record?
+      integration.organization_id = admin_current_organization.id if integration&.new_record?
     end
   end
 end

@@ -111,5 +111,6 @@ and usage examples, see the
 
 ## Related topics
 
+- [Observability MCP server](mcp_server.md)
 - [Send telemetry data to GitLab Observability](send.md)
 - [Troubleshooting Observability](troubleshooting.md)

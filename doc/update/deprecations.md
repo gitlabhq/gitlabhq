@@ -259,18 +259,6 @@ They now validate the parameter type and return `400 Bad Request`.
 To migrate, send a single numeric ID with each request. Legitimate clients
 already do this, so no action is required for well-formed requests.
 
-### The `glab duo ask` command
-
-- Announced in GitLab 19.0
-- Removal in GitLab 19.3 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/597732).
-
-The `glab duo ask` command in the GitLab CLI is deprecated in GitLab 19.0
-and will be removed in GitLab 19.3. The command generates Git commands from
-natural language descriptions.
-
-Use [`glab duo cli`](https://docs.gitlab.com/cli/duo/cli/) instead for AI-powered assistance in the CLI.
-
 ## GitLab 19.2
 
 ### Advanced Search is Required for Self Managed Ultimate Tier

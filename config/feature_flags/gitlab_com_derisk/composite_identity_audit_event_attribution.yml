@@ -1,0 +1,11 @@
+---
+name: composite_identity_audit_event_attribution
+description: Gates attributing audit events to the service account with human author
+  details under composite identity
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/599098
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240418
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/607074
+milestone: '19.3'
+group: group::compliance
+type: gitlab_com_derisk
+default_enabled: false

@@ -4769,6 +4769,7 @@ paths:
         schema:
           type: string
         in: path
+      x-gitlab-tier: ultimate
   "/api/v4/vulnerabilities/{id}/resolve":
     post:
       operationId: postApiV4VulnerabilitiesIdResolve
@@ -9383,6 +9384,7 @@ paths:
           nullable: true
         in: query
         example: root
+      x-gitlab-tier: premium
   "/api/v4/groups/{id}/-/epics":
     get:
       operationId: getApiV4GroupsIdDashEpics
@@ -9614,6 +9616,7 @@ paths:
           nullable: true
         in: query
         example: root
+      x-gitlab-tier: premium
   "/api/v4/groups/{id}/epics/{epic_iid}":
     get:
       operationId: getApiV4GroupsIdEpicsEpicIid

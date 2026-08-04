@@ -14,6 +14,7 @@ project:
   - create_vulnerability_state_transition
   - read_build
   - read_on_demand_dast_scan
+  - read_package
   - read_project
   - update_pipeline
 group:

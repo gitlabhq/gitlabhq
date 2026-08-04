@@ -43,7 +43,7 @@ export default {
       required: true,
     },
   },
-  emits: ['set-filters', 'switchBoard', 'toggleSwimlanes', 'update-board'],
+  emits: ['set-filters', 'switch-board', 'toggle-swimlanes', 'update-board'],
   data() {
     return {
       board: {},
@@ -103,7 +103,7 @@ export default {
             :is-current-board-loading="isLoading"
             :board-modal-form="currentForm"
             class="gl-flex-grow"
-            @switchBoard="$emit('switchBoard', $event)"
+            @switch-board="$emit('switch-board', $event)"
             @update-board="$emit('update-board', $event)"
             @show-board-modal="setCurrentForm"
           />
@@ -111,7 +111,7 @@ export default {
             <board-options
               :show-epic-lane-option="swimlanesFeatureAvailable && isSignedIn"
               :is-swimlanes-on="isSwimlanesOn"
-              @toggleSwimlanes="$emit('toggleSwimlanes', $event)"
+              @toggle-swimlanes="$emit('toggle-swimlanes', $event)"
             />
             <config-toggle @show-board-modal="setCurrentForm" />
           </div>
@@ -137,7 +137,7 @@ export default {
         <board-options
           :show-epic-lane-option="swimlanesFeatureAvailable && isSignedIn"
           :is-swimlanes-on="isSwimlanesOn"
-          @toggleSwimlanes="$emit('toggleSwimlanes', $event)"
+          @toggle-swimlanes="$emit('toggle-swimlanes', $event)"
         />
         <config-toggle @show-board-modal="setCurrentForm" />
 

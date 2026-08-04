@@ -132,7 +132,8 @@ To triage the vulnerabilities:
 
    The recommended solution is to upgrade the `fastify` package. You would usually investigate
    this further, but for this tutorial, you can consider this vulnerability confirmed.
-1. From the **Status** dropdown list select **Confirm**, then select **Change status**.
+1. In the right sidebar, in the **Status** section, select **Edit**.
+1. From the **Status** dropdown list, select **Confirmed**, then select **Change status**.
 
 ## Resolve the high severity vulnerability
 
@@ -175,7 +176,8 @@ To fix the vulnerability:
    A banner confirms that the vulnerability has been resolved in the `main` branch. You would
    usually confirm that manually by verifying the version of the `fastify` package specified in the
    `yarn.lock` file. For this tutorial, you can skip the verification step.
-1. In the **Status** dropdown list, select **Resolve**, then select **Change status**.
+1. In the right sidebar, in the **Status** section, select **Edit**.
+1. From the **Status** dropdown list, select **Resolved**, then select **Change status**.
 1. Go to **Secure** > **Vulnerability report**.
 
    You should now see no vulnerabilities listed in the vulnerability report.

@@ -85,7 +85,13 @@ module AuditEvents
     end
 
     def author_name
+      return self[:author_name] if composite_identity_author?
+
       author&.name
+    end
+
+    def composite_identity_author?
+      details[:author_class] == ::Gitlab::Audit::CompositeIdentityAuthor.name
     end
 
     def formatted_details

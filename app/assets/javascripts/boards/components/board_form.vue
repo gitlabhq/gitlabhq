@@ -108,7 +108,7 @@ export default {
       default: null,
     },
   },
-  emits: ['addBoard', 'cancel', 'show-board-modal', 'shown', 'update-board'],
+  emits: ['add-board', 'cancel', 'show-board-modal', 'shown', 'update-board'],
   data() {
     return {
       board: { ...boardDefaults, ...this.currentBoard },
@@ -276,7 +276,7 @@ export default {
           if (this.board.id) {
             this.$emit('update-board', board);
           } else {
-            this.$emit('addBoard', board);
+            this.$emit('add-board', board);
           }
           this.close();
         } catch (error) {

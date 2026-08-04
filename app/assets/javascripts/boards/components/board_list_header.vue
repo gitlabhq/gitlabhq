@@ -100,7 +100,7 @@ export default {
       required: true,
     },
   },
-  emits: ['openUnassignedLane', 'setActiveList', 'toggle-new-form'],
+  emits: ['open-unassigned-lane', 'set-active-list', 'toggle-new-form'],
   data() {
     return {
       showMilestonePopover: false,
@@ -250,7 +250,7 @@ export default {
         mutation: setActiveBoardItemMutation,
         variables: { boardItem: null, listId: null },
       });
-      this.$emit('setActiveList', this.list.id);
+      this.$emit('set-active-list', this.list.id);
 
       this.track('click_button', { label: 'list_settings' });
     },
@@ -259,7 +259,7 @@ export default {
     },
     showNewForm() {
       if (this.isSwimlanesHeader) {
-        this.$emit('openUnassignedLane');
+        this.$emit('open-unassigned-lane');
         this.$nextTick(() => {
           this.$emit('toggle-new-form');
         });

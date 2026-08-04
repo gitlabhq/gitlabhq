@@ -18,7 +18,11 @@ class Admin::HooksController < Admin::ApplicationController
   private
 
   def relation
-    Current.organization.system_hooks
+    admin_current_organization.system_hooks
+  end
+
+  def hook_organization
+    admin_current_organization
   end
 
   def hook

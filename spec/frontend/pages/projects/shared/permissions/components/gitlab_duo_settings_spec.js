@@ -9,6 +9,7 @@ const defaultProps = {
   projectId: 123,
   projectFullPath: 'namespace/project',
   duoFeaturesEnabled: true,
+  duoReadinessAvailable: true,
   amazonQAvailable: false,
   amazonQAutoReviewEnabled: false,
   duoFeaturesLocked: false,
@@ -49,6 +50,10 @@ describe('GitlabDuoSettings', () => {
   const findCard = () => wrapper.findByTestId('gitlab-duo-settings');
   const findSaveButton = () => wrapper.findComponentByTestId('gitlab-duo-save-button');
   const findDuoSettings = () => wrapper.findComponentByTestId('duo-settings');
+  const findReadinessBlock = () => wrapper.findByTestId('duo-readiness-block');
+  const findDuoRow = () => wrapper.findComponentByTestId('duo-row');
+  const findFlowExecutionRow = () => wrapper.findComponentByTestId('flow-execution-row');
+  const findFoundationalFlowsRow = () => wrapper.findComponentByTestId('foundational-flows-row');
   const findDuoEnabledToggle = () => wrapper.findByTestId('duo_features_enabled_toggle');
   const findDuoCascadingLockIcon = () => wrapper.findComponentByTestId('duo-cascading-lock-icon');
   const findDuoFeaturesEnabledToggle = () =>
@@ -104,8 +109,27 @@ describe('GitlabDuoSettings', () => {
     expect(findSaveButton().exists()).toBe(true);
   });
 
+  // The toggles moved into the card, so the flag-off path has to keep rendering them where
+  // they were. Losing them would silently remove two settings from every project.
+  describe('when the readiness card is off', () => {
+    beforeEach(() => {
+      wrapper = createWrapper({ duoReadinessAvailable: false });
+    });
+
+    it('hides the card and keeps the original Duo row', () => {
+      expect(findReadinessBlock().exists()).toBe(false);
+      expect(findDuoSettings().exists()).toBe(true);
+    });
+
+    it('still renders the flow toggles in the flat list', () => {
+      expect(findDuoRemoteFlowsToggle().exists()).toBe(true);
+      expect(findDuoFoundationalFlowsToggle().exists()).toBe(true);
+      expect(findDuoRemoteFlowsHiddenInput().exists()).toBe(true);
+    });
+  });
+
   it('displays the correct header text', () => {
-    expect(findDuoSettings().props('label')).toContain('GitLab Duo');
+    expect(findDuoRow().props('title')).toContain('GitLab Duo');
   });
 
   it('has the correct save button properties', () => {
@@ -116,17 +140,27 @@ describe('GitlabDuoSettings', () => {
   });
 
   describe('Duo', () => {
-    it('shows duo toggle', () => {
+    it('shows duo toggle inside the readiness card', () => {
       wrapper = createWrapper({});
 
-      expect(findDuoSettings().exists()).toBe(true);
-      expect(findDuoSettings().props()).toEqual({
-        helpPath: '/help/user/gitlab_duo/_index',
-        helpText: 'Use AI-native features in this project.',
-        label: 'GitLab Duo',
-        labelFor: null,
-        locked: false,
+      expect(findReadinessBlock().exists()).toBe(true);
+      expect(findDuoRow().props()).toMatchObject({
+        title: 'GitLab Duo',
+        description: 'Use AI-native features in this project.',
+        status: 'done',
       });
+      expect(findDuoEnabledToggle().exists()).toBe(true);
+    });
+
+    // Duo being off is the state the card exists to fix, so it has to survive a reload: the
+    // toggle that turns Duo back on lives inside the card.
+    it('keeps the card, and marks the rows below as blocked, when Duo is off', () => {
+      wrapper = createWrapper({ duoFeaturesEnabled: false });
+
+      expect(findReadinessBlock().exists()).toBe(true);
+      expect(findDuoRow().props('status')).toBe('todo');
+      expect(findFlowExecutionRow().props('status')).toBe('blocked');
+      expect(findFoundationalFlowsRow().props('status')).toBe('blocked');
     });
 
     describe('Auto review settings', () => {
@@ -194,7 +228,7 @@ describe('GitlabDuoSettings', () => {
       describe.each`
         amazonQAvailable | duoFeaturesEnabled | shouldRender | scenario
         ${true}          | ${true}            | ${false}     | ${'Amazon Q is enabled'}
-        ${false}         | ${false}           | ${false}     | ${'Duo features are not enabled'}
+        ${false}         | ${false}           | ${true}      | ${'Duo features are not enabled'}
         ${false}         | ${true}            | ${true}      | ${'all conditions are met'}
       `('when $scenario', ({ amazonQAvailable, duoFeaturesEnabled, shouldRender }) => {
         beforeEach(() => {
@@ -210,6 +244,19 @@ describe('GitlabDuoSettings', () => {
 
         it(`${shouldRender ? 'renders' : 'does not render'} the Duo foundational flows toggle`, () => {
           expect(findDuoFoundationalFlowsToggle().exists()).toBe(shouldRender);
+        });
+      });
+
+      // The card lists every requirement, so a prerequisite that is off leaves the row visible
+      // and disabled rather than removing it.
+      describe('when GitLab Duo is off', () => {
+        beforeEach(() => {
+          wrapper = createWrapper({ amazonQAvailable: false, duoFeaturesEnabled: false });
+        });
+
+        it('keeps the flow toggles visible but disabled', () => {
+          expect(findDuoRemoteFlowsToggle().props('disabled')).toBe(true);
+          expect(findDuoFoundationalFlowsToggle().props('disabled')).toBe(true);
         });
       });
 

@@ -33,7 +33,7 @@ The GitLab Duo assessment includes information about each false positive detecti
 Results are based on AI analysis and should be reviewed by security professionals. This feature requires GitLab Duo with an active subscription.
 
 > [!note]
->You can't trigger this flow by mentioning, assigning, or requesting a review from its service account. The flow runs automatically after security scans complete. You can run it manually from the vulnerability report by clicking the **Check for false positive** button.
+> You can't trigger this flow by mentioning, assigning, or requesting a review from its service account. The flow runs automatically after security scans complete. To run it manually, on a vulnerability page, select **AI actions**, then select **Check for false positive**.
 
 ## Prerequisites
 
@@ -55,7 +55,7 @@ You can also manually trigger analysis for existing vulnerabilities:
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Secure** > **Vulnerability report**.
 1. Select the vulnerability you want to analyze.
-1. In the upper-right corner, select **Check for false positive**.
+1. In the upper-right corner, select **AI actions**, then select **Check for false positive**.
 
 ## Related links
 

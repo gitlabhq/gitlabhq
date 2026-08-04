@@ -144,7 +144,8 @@ To resolve a vulnerability from the vulnerability report:
 1. Select outside the filter field. The vulnerability severity totals and list of matching vulnerabilities are updated.
 1. Select the SAST vulnerability you want resolved.
    - A blue icon is shown next to vulnerabilities that support Vulnerability Resolution.
-1. In the upper-right corner, select **Resolve with AI**.
+1. In the upper-right corner, select **Resolve with AI**. If that button is not shown, select
+   **AI actions**, then select **Resolve with AI**.
    > [!warning]
    > If this project is a public project be aware that creating an MR will publicly expose the
    > vulnerability and offered resolution. To create the MR privately,

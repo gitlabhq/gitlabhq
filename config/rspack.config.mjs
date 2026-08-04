@@ -206,7 +206,7 @@ export default {
         buildDependencies: [configPath],
         storage: {
           type: 'filesystem',
-          directory: path.join(ROOT_PATH, 'tmp/cache/rspack'),
+          location: path.join(ROOT_PATH, 'tmp/cache/rspack'),
         },
       },
   stats: {

@@ -18,9 +18,7 @@ module WebHooks
     end
 
     def create
-      organization = Current.organization
-
-      result = WebHooks::CreateService.new(current_user).execute(hook_params, relation, organization)
+      result = WebHooks::CreateService.new(current_user).execute(hook_params, relation, hook_organization)
 
       if result.success?
         flash[:notice] = _('Webhook created')
@@ -74,6 +72,10 @@ module WebHooks
         valid_headers[key] = value if temp_hook.errors[:custom_headers].empty?
       end
       valid_headers
+    end
+
+    def hook_organization
+      Current.organization
     end
 
     def hook_params

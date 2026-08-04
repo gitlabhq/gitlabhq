@@ -61,7 +61,7 @@ To explain the vulnerability:
 1. Do one of the following:
 
    - Select the text below the vulnerability description that reads _You can also use AI by asking GitLab Duo Chat to explain this vulnerability and a suggested fix._
-   - In the upper right, from the **Resolve with merge request** dropdown list, select **Explain vulnerability**, then select **Explain vulnerability**.
+   - In the upper-right corner, select **AI actions**, then select **Explain with AI**.
    - Open GitLab Duo Chat and use the [explain a vulnerability](../../gitlab_duo_chat/examples.md#explain-a-vulnerability) command by typing `/vulnerability_explain`.
 
 The response is shown on the right side of the page.

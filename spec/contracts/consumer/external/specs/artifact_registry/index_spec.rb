@@ -36,8 +36,18 @@ end
 # pact-ruby has no DSL option to set a custom filename - it always writes
 # <consumer>-<provider>.json. Use at_exit to rename after pact-ruby's own
 # after(:suite) hook has finished writing the file.
+#
+# The contract file only exists if this spec's examples actually executed:
+# the file may also be loaded in runs where the examples are filtered out by
+# tags or nothing is executed at all (--dry-run), and then there is nothing
+# to rename.
 at_exit do
-  if RSpec.world.example_count == 0
+  this_file_examples_ran = !RSpec.configuration.dry_run? &&
+    RSpec.world.example_groups.flat_map(&:descendants)
+      .select { |group| group.metadata[:absolute_file_path] == __FILE__ }
+      .any? { |group| RSpec.world.filtered_examples[group]&.any? }
+
+  if !this_file_examples_ran
     puts "No examples ran, skipping contract file rename."
   else
     # pact-ruby lowercases both names when building the default filename

@@ -25,5 +25,10 @@ FactoryBot.define do
         entity_path: target_user.full_path
       }
     end
+
+    trait :composite_identity_author do
+      author_name { 'Service Account on behalf of @human' }
+      details { { author_class: ::Gitlab::Audit::CompositeIdentityAuthor.name } }
+    end
   end
 end

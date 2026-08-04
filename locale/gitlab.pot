@@ -2569,6 +2569,9 @@ msgstr ""
 msgid "AICatalog|A public %{itemType}:"
 msgstr ""
 
+msgid "AICatalog|A restricted %{itemType}:"
+msgstr ""
+
 msgid "AICatalog|AI Catalog"
 msgstr ""
 
@@ -2659,6 +2662,12 @@ msgstr ""
 msgid "AICatalog|Anyone can view and use the flow."
 msgstr ""
 
+msgid "AICatalog|Anyone in the owning project's top-level group can view and use this agent. It won't be visible outside the owning project's top-level group."
+msgstr ""
+
+msgid "AICatalog|Anyone in the owning project's top-level group can view and use this flow. It won't be visible outside the owning project's top-level group."
+msgstr ""
+
 msgid "AICatalog|Are you sure you want to delete %{itemType} %{name}?"
 msgstr ""
 
@@ -2716,6 +2725,9 @@ msgstr ""
 msgid "AICatalog|Bulk enablement failed for %{item_name}"
 msgstr ""
 
+msgid "AICatalog|Can be enabled in other projects within the owning project's top-level group."
+msgstr ""
+
 msgid "AICatalog|Can be enabled in other projects."
 msgstr ""
 
@@ -2726,6 +2738,9 @@ msgid "AICatalog|Can't be made private if enabled in a project."
 msgstr ""
 
 msgid "AICatalog|Can't be shared, even within your organization."
+msgstr ""
+
+msgid "AICatalog|Can't be viewed or used outside the owning project's top-level group."
 msgstr ""
 
 msgid "AICatalog|Cannot restore a deprecated version."
@@ -3115,7 +3130,13 @@ msgstr ""
 msgid "AICatalog|Input cannot exceed %{value} characters."
 msgstr ""
 
+msgid "AICatalog|Internal tools and shared workflows."
+msgstr ""
+
 msgid "AICatalog|Is visible only to users with at least the Developer role for this project, and to users with the Owner role for the top-level group."
+msgstr ""
+
+msgid "AICatalog|Is visible to everyone in the owning project's top-level group."
 msgstr ""
 
 msgid "AICatalog|Is visible to everyone, including users outside your organization."
@@ -3304,6 +3325,9 @@ msgstr ""
 msgid "AICatalog|Projects using this service account"
 msgstr ""
 
+msgid "AICatalog|Public"
+msgstr ""
+
 msgid "AICatalog|Public %{itemTypePlural} are best for:"
 msgstr ""
 
@@ -3326,6 +3350,15 @@ msgid "AICatalog|Research Assistant, Creative Writer, Code Helper"
 msgstr ""
 
 msgid "AICatalog|Restrict the AI Catalog to this group"
+msgstr ""
+
+msgid "AICatalog|Restricted"
+msgstr ""
+
+msgid "AICatalog|Restricted %{itemTypePlural} are best for:"
+msgstr ""
+
+msgid "AICatalog|Reuse across teams."
 msgstr ""
 
 msgid "AICatalog|Save changes"
@@ -3385,6 +3418,9 @@ msgstr ""
 msgid "AICatalog|Spam or low quality"
 msgstr ""
 
+msgid "AICatalog|Standardizing configuration without duplicating it per project."
+msgstr ""
+
 msgid "AICatalog|Star"
 msgstr ""
 
@@ -3413,6 +3449,9 @@ msgid "AICatalog|There was a problem fetching agents."
 msgstr ""
 
 msgid "AICatalog|There was a problem fetching flows."
+msgstr ""
+
+msgid "AICatalog|This %{itemType} can only be enabled in projects within the top-level group %{groupName}."
 msgstr ""
 
 msgid "AICatalog|This %{itemType} is already enabled."
@@ -3695,6 +3734,9 @@ msgid "AICatalog|foundational items must be public"
 msgstr ""
 
 msgid "AICatalog|is private in another project"
+msgstr ""
+
+msgid "AICatalog|is restricted and cannot be used outside the owning project's top-level group"
 msgstr ""
 
 msgid "AICatalog|must be a service account"
@@ -28947,6 +28989,9 @@ msgstr[1] ""
 msgid "DuoAgentPlatform|%{linkStart}What are flows%{linkEnd}?"
 msgstr ""
 
+msgid "DuoAgentPlatform|%{linkStart}What are flows?%{linkEnd}"
+msgstr ""
+
 msgid "DuoAgentPlatform|%{name} session %{id}"
 msgstr ""
 
@@ -28969,6 +29014,9 @@ msgid "DuoAgentPlatform|Agent required human input"
 msgstr ""
 
 msgid "DuoAgentPlatform|Agent todos"
+msgstr ""
+
+msgid "DuoAgentPlatform|Agents cannot run here until everything below is in place."
 msgstr ""
 
 msgid "DuoAgentPlatform|Allow GitLab Duo agents to execute flows in this project."
@@ -29067,6 +29115,9 @@ msgstr ""
 msgid "DuoAgentPlatform|Request"
 msgstr ""
 
+msgid "DuoAgentPlatform|Required"
+msgstr ""
+
 msgid "DuoAgentPlatform|Resolve with GitLab Duo"
 msgstr ""
 
@@ -29080,6 +29131,9 @@ msgid "DuoAgentPlatform|Returned to agent"
 msgstr ""
 
 msgid "DuoAgentPlatform|Review the %{linkStart}most recent job%{linkEnd} for details on what went wrong."
+msgstr ""
+
+msgid "DuoAgentPlatform|Run GitLab Duo agents on this project"
 msgstr ""
 
 msgid "DuoAgentPlatform|Running"
@@ -80445,6 +80499,9 @@ msgid "This merge request does not have accessibility reports"
 msgstr ""
 
 msgid "This merge request does not have codequality reports"
+msgstr ""
+
+msgid "This merge request does not have reports to compare."
 msgstr ""
 
 msgid "This merge request has reached the maximum limit of %{limit} diff commits and cannot be updated further. Close this merge request and create a new one instead."

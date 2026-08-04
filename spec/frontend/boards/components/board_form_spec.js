@@ -211,7 +211,7 @@ describe('BoardForm', () => {
         });
 
         await mockApollo.resolveMutation(createBoardMutation);
-        expect(wrapper.emitted('addBoard')).toHaveLength(1);
+        expect(wrapper.emitted('add-board')).toHaveLength(1);
       });
 
       it('sets error in state if GraphQL mutation fails', async () => {

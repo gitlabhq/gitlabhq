@@ -533,6 +533,7 @@ export default {
 </script>
 
 <template>
+  <!-- eslint-disable vue/v-on-event-hyphenation -- FilteredSearchBar is a shared component that emits the camelCase `onFilter` event -->
   <filtered-search-bar
     :key="filteredSearchKey"
     class="gl-w-full"
@@ -543,4 +544,5 @@ export default {
     :initial-filter-value="getFilteredSearchValue"
     @onFilter="handleFilter"
   />
+  <!-- eslint-enable vue/v-on-event-hyphenation -->
 </template>

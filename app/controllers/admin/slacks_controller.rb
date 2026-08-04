@@ -21,7 +21,7 @@ module Admin
         current_user: current_user,
         params: params
           .permit(:code)
-          .merge(organization_id: Current.organization.id)
+          .merge(organization_id: admin_current_organization.id)
       )
     end
   end

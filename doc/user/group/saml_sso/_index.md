@@ -480,6 +480,9 @@ requires a different format. You can use any format except `Transient`.
 
 Group owners can use the [SAML API](../../../api/saml.md#update-extern_uid-field-for-a-saml-identity) to change their group members' **NameID** and update their SAML identities.
 
+> [!warning]
+> Updating the `extern_uid` through the API marks the SAML identity as untrusted. The affected user cannot sign in with SAML until they [re-link their account to the new SAML app](#link-saml-to-your-existing-gitlabcom-account).
+
 If [SCIM](scim_setup.md) is configured, group owners can update the SCIM identities using the [SCIM API](../../../api/scim.md#update-extern_uid-field-for-a-scim-identity).
 
 Alternatively, ask the users to reconnect their SAML account.

@@ -7,7 +7,7 @@ class Admin::LabelsController < Admin::ApplicationController
   urgency :low
 
   def index
-    @labels = Label.in_organization(Current.organization).templates.page(pagination_params[:page])
+    @labels = Label.in_organization(admin_current_organization).templates.page(pagination_params[:page])
   end
 
   def show; end
@@ -20,7 +20,7 @@ class Admin::LabelsController < Admin::ApplicationController
 
   def create
     @label = Labels::CreateService.new(nil, label_params).execute(template: true,
-      organization_id: Current.organization.id)
+      organization_id: admin_current_organization.id)
 
     if @label.persisted?
       redirect_to admin_labels_url, notice: _("Label was created")
@@ -60,7 +60,7 @@ class Admin::LabelsController < Admin::ApplicationController
   private
 
   def set_label
-    @label = Label.in_organization(Current.organization).templates.find(params.permit(:id)[:id])
+    @label = Label.in_organization(admin_current_organization).templates.find(params.permit(:id)[:id])
   end
 
   def label_params

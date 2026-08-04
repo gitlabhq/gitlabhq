@@ -998,9 +998,9 @@ Lock file tampering, for example, is outside of the scope of security policy man
 
 To avoid unnecessary approval requirements, these additional filters help ensure you only block MRs on the most actionable findings.
 
-By setting `fix_available` to `false` in YAML, or **is not** and **Fix Available** in the policy editor, the finding is not considered a policy violation when the finding has a solution or remediation available. Solutions appear at the bottom of the vulnerability object under the heading **Solution**. Remediations appear as a **Resolve with Merge Request** button within the vulnerability object.
+By setting `fix_available` to `false` in YAML, or **is not** and **Fix Available** in the policy editor, the finding is not considered a policy violation when the finding has a solution or remediation available. Solutions appear in the **Remediation** section of the vulnerability page. Remediations appear as a **Resolve with scanner suggestion** action in the **Other actions** dropdown list on the vulnerability page.
 
-The **Resolve with Merge Request** button only appears when one of the following criteria is met:
+The **Resolve with scanner suggestion** action only appears when one of the following criteria is met:
 
 1. A SAST vulnerability is found in a project that is on the Ultimate Tier with GitLab Duo Enterprise.
 1. A container scanning vulnerability is found in a project that is on the Ultimate Tier in a job where `GIT_STRATEGY: fetch` has been set. Additionally, the vulnerability must have a package containing a fix that is available for the repositories enabled for the container image.

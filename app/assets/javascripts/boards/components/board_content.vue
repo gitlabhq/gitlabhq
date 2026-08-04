@@ -78,7 +78,7 @@ export default {
   emits: [
     'drawer-closed',
     'drawer-opened',
-    'setActiveList',
+    'set-active-list',
     'set-add-column-form-visibility',
     'set-filters',
   ],
@@ -327,7 +327,7 @@ export default {
           @drag-start="handleDragStart"
           @drag-stop="handleDragStop"
           @highlight-list="highlightList"
-          @setActiveList="$emit('setActiveList', $event)"
+          @set-active-list="$emit('set-active-list', $event)"
           @set-filters="$emit('set-filters', $event)"
           @cannot-find-active-item="handleCannotFindActiveItem"
           @focus-adjacent="focusAdjacentList(list.id, $event)"
@@ -359,7 +359,7 @@ export default {
       :can-admin-list="canAdminList"
       :filters="filterParams"
       :highlighted-lists="highlightedLists"
-      @setActiveList="$emit('setActiveList', $event)"
+      @set-active-list="$emit('set-active-list', $event)"
       @move-list="updateListPosition"
       @set-filters="$emit('set-filters', $event)"
     >
@@ -395,6 +395,7 @@ export default {
           onStateUpdated,
         }"
       >
+        <!-- eslint-disable vue/v-on-event-hyphenation -- work_item_detail_panel is a shared component that emits the camelCase `attributesUpdated` and `workItemStateUpdated` events -->
         <work-item-detail-panel
           :open="Boolean(activeIssuable && activeIssuable.iid)"
           :active-item="activeIssuable"
@@ -414,6 +415,7 @@ export default {
           @opened="$emit('drawer-opened')"
           @clicked-outside="$emit('drawer-closed')"
         />
+        <!-- eslint-enable vue/v-on-event-hyphenation -->
       </template>
     </board-drawer-wrapper>
   </div>

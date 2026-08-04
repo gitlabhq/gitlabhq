@@ -1,6 +1,6 @@
 ---
-source_checksum: e73ec0269ddcc91b
-distilled_at_sha: a12edd3cd641812cf27868b59ce605d439d981b5
+source_checksum: 9530fbb4a8d2fc3f
+distilled_at_sha: 2437a5545d9f350b76b314e8cf58cde7e0d785ac
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -85,6 +85,11 @@ distilled_at_sha: a12edd3cd641812cf27868b59ce605d439d981b5
 ### Job Size
 
 - DO NOT pass large objects as job arguments; if compressed arguments exceed 5 MB, store data in object storage or reload from the database inside the job.
+
+### Job Duration
+
+- Prefer many small jobs over one large job; split long-running workers and parallelize when the 99th-percentile duration exceeds the urgency target for the worker's shard.
+- When breaking up a long-running job into many smaller jobs, set a `concurrency_limit` to avoid contention on database connections (see Concurrency Limit).
 
 ### Logging and Context
 

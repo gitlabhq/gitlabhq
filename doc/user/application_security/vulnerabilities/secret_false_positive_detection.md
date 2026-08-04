@@ -56,7 +56,7 @@ You can manually run false positive detection for existing vulnerabilities:
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Secure** > **Vulnerability report**.
 1. Select the vulnerability you want to analyze.
-1. In the upper-right corner, select **Check for false positive** to trigger false positive detection.
+1. In the upper-right corner, select **AI actions**, then select **Check for false positive**.
 
 The GitLab Duo analysis runs and displays the results on the vulnerability details page.
 
@@ -119,10 +119,10 @@ When the GitLab Duo analysis identifies a vulnerability as a false positive, you
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Secure** > **Vulnerability report**.
 1. Select the vulnerability you want to dismiss.
-1. Select **Change status**.
-1. From the **Status** dropdown list, select **Dismissed**.
-1. From the **Set dismissal reason** dropdown list, select **False positive**.
-1. In the **Add a comment** input, provide context about why you're dismissing it as a false positive.
+1. In the right sidebar, in the **Status** section, select **Edit**.
+1. From the **Status** dropdown list, under **Dismiss as...**, select **False positive**.
+1. In the **Comment** text box, provide context about why you're dismissing it as a false positive.
+   A comment is required.
 1. Select **Change status**.
 
 The vulnerability is marked as dismissed and does not appear in future scans unless it is reintroduced.

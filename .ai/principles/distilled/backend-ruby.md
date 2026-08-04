@@ -1,6 +1,6 @@
 ---
-source_checksum: 89caa66e4bc5ccee
-distilled_at_sha: 0bc240cb0e70d2bba500cca6317a5c7e9e06605e
+source_checksum: 850b047440757755
+distilled_at_sha: 2437a5545d9f350b76b314e8cf58cde7e0d785ac
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -98,6 +98,7 @@ distilled_at_sha: 0bc240cb0e70d2bba500cca6317a5c7e9e06605e
 - Use organization-scoped routes (`/o/:organization_path/*path`) for organization-level resources.
 - DO NOT change an existing URL without providing a redirect; support both old and new URLs for at least one major release for script-facing URLs, and add a redirect for user-facing URLs until the next major release.
 - Use `Gitlab::Routing.redirect_legacy_paths` when adding `/-/` scope to previously unscoped routes, and create a technical debt issue to remove deprecated routes in a later release.
+- When updating a Rails route, run `bin/rake gitlab:js:routes` and commit the changes to keep JavaScript path helpers in sync (enforced by Lefthook and CI).
 
 ### Rails Initializers
 

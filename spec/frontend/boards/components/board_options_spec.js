@@ -83,9 +83,9 @@ describe('BoardOptions component', () => {
         expect(wrapper.findComponent(ToggleEpicsSwimlanes).exists()).toBe(expected);
       },
     );
-    it('emits toggleSwimlanes when toggled', () => {
+    it('emits toggle-swimlanes when toggled', () => {
       wrapper.findComponentByTestId('epic-swimlanes-toggle-item').vm.$emit('action');
-      expect(wrapper.emitted('toggleSwimlanes')).toHaveLength(1);
+      expect(wrapper.emitted('toggle-swimlanes')).toHaveLength(1);
     });
   });
 });
