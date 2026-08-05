@@ -37,6 +37,14 @@ module Ci
         can?(:_read_security_report_job_artifact, @subject.job.project)
     end
 
+    # NOTE: for report artifacts, :read_job_artifacts is memoized keyed by
+    # (user, project, accessibility, file_type) in BOTH
+    # Ci::Build#test_report_readable_by? and
+    # Ci::Pipeline#accessible_test_report_build_ids (incl. its fallback). If you
+    # add or change a condition below to read another subject attribute, extend
+    # the memo key in both. The `read_job_artifacts memoization contract` canary
+    # in spec/policies/ci/job_artifact_policy_spec.rb fails on condition changes
+    # to force this re-check.
     rule { can_read_project_build & ~none_access }.enable :read_job_artifacts
     rule { ~public_access & ~can_read_developer_artifacts & ~can_read_security_report_job_artifacts }
       .prevent :read_job_artifacts
