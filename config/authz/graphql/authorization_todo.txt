@@ -475,6 +475,7 @@ type:AppearanceUploadRegistry
 type:ApprovalPolicy
 type:ApprovalPolicyAttributesType
 type:ApprovalScanResultPolicy
+type:ArtifactRegistryRoleAssignment
 type:AscpComponent
 type:AscpScan
 type:AscpSecurityContext

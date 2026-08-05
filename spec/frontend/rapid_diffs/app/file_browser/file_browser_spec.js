@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { createTestingPinia } from '@pinia/testing';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import { PiniaVuePlugin } from 'pinia';
 import FileBrowser from '~/rapid_diffs/app/file_browser/file_browser.vue';
 import DiffsFileTree from '~/diffs/components/diffs_file_tree.vue';
@@ -118,7 +118,7 @@ describe('FileBrowser', () => {
         createComponent();
         expect(findTree().props('currentDiffFileId')).toBe('first');
         useDiffsView().currentFileIndex = 1;
-        await Vue.nextTick();
+        await nextTick();
         expect(findTree().props('currentDiffFileId')).toBe('second');
       });
 

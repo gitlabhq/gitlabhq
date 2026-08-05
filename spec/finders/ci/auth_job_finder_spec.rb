@@ -177,18 +177,6 @@ RSpec.describe Ci::AuthJobFinder, feature_category: :continuous_integration do
           expect { execute }.to raise_error(described_class::NotRunningJobError)
         end
       end
-
-      context 'when the ci_job_token_auth_stale_read_retry feature flag is disabled' do
-        before do
-          stub_feature_flags(ci_job_token_auth_stale_read_retry: false)
-        end
-
-        it 'raises NotRunningJobError without retrying' do
-          expect(job).not_to receive(:reset)
-
-          expect { execute }.to raise_error(described_class::NotRunningJobError)
-        end
-      end
     end
 
     it 'raises error if the job is erased' do

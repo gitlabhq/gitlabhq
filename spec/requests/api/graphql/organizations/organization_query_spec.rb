@@ -237,6 +237,28 @@ RSpec.describe 'getting organization information', feature_category: :organizati
         end
       end
 
+      context 'with negated `ids` argument' do
+        let(:organization_fields) do
+          <<~FIELDS
+            id
+            path
+            groups(not: { ids: ["#{private_group.to_global_id}"] }) {
+              nodes {
+                id
+                name
+              }
+            }
+          FIELDS
+        end
+
+        it 'excludes the given groups' do
+          request_organization
+
+          expect(groups.pluck('id')).not_to include(private_group.to_global_id.to_s)
+          expect(groups.pluck('id')).to include(public_group.to_global_id.to_s)
+        end
+      end
+
       describe 'group sorting' do
         let_it_be(:authorized_groups) { [parent_group, public_group, private_group, other_group, organization_group] }
         let_it_be(:first_param) { 2 }

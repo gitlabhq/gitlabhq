@@ -1,7 +1,5 @@
-import { mountApplications } from '~/wikis/edit';
+import { mountApplications } from '~/wikis/show';
 import { mountMoreActions } from '~/wikis/more_actions';
-import { mountWikiSidebar } from '~/wikis/mount_sidebar';
 
-mountWikiSidebar();
 mountApplications();
 mountMoreActions();

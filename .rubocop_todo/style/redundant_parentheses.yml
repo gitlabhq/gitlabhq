@@ -28,7 +28,6 @@ Style/RedundantParentheses:
     - 'qa/qa/specs/features/api/12_systems/gitaly/distributed_reads_spec.rb'
     - 'qa/qa/specs/features/browser_ui/4_verify/ci_project_artifacts/user_can_bulk_delete_artifacts_spec.rb'
     - 'qa/spec/support/run_spec.rb'
-    - 'scripts/qa/testcases-check'
     - 'spec/features/boards/boards_spec.rb'
     - 'spec/graphql/mutations/todos/base_many_spec.rb'
     - 'spec/lib/gitlab/avatar_cache_spec.rb'

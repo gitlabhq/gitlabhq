@@ -230,7 +230,10 @@ class Projects::IssuesController < Projects::ApplicationController
 
     respond_to do |format|
       format.json do
-        render json: { can_create_branch: can_create, suggested_branch_name: issue.suggested_branch_name }
+        render json: {
+          can_create_branch: can_create,
+          suggested_branch_name: issue.suggested_branch_name(current_user: current_user)
+        }
       end
     end
   end

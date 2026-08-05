@@ -85,7 +85,6 @@ Style/RedundantRegexpEscape:
     - 'qa/spec/runtime/key/ecdsa_spec.rb'
     - 'qa/spec/runtime/key/ed25519_spec.rb'
     - 'qa/spec/runtime/key/rsa_spec.rb'
-    - 'scripts/qa/testcases-check'
     - 'scripts/setup/find-jh-branch.rb'
     - 'scripts/trigger-build.rb'
     - 'spec/lib/gitlab/import_export/file_importer_spec.rb'

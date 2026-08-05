@@ -88,7 +88,7 @@ describe('WorkItemProjectsListbox', () => {
       await nextTick();
       await findDropdownItemFor(namespaceProjectsData[0].fullPath).trigger('click');
 
-      expect(wrapper.emitted('selectProject').pop()).toEqual([namespaceProjectsData[0].fullPath]);
+      expect(wrapper.emitted('select-project').pop()).toEqual([namespaceProjectsData[0].fullPath]);
     });
 
     it('renders recent projects if present', async () => {
@@ -113,7 +113,7 @@ describe('WorkItemProjectsListbox', () => {
       await nextTick();
       await findRecentDropdownItemAt(0).trigger('click');
 
-      expect(wrapper.emitted('selectProject').pop()).toEqual([namespaceProjectsData[1].fullPath]);
+      expect(wrapper.emitted('select-project').pop()).toEqual([namespaceProjectsData[1].fullPath]);
     });
 
     it('supports filtering recent projects via search input', async () => {
@@ -141,7 +141,7 @@ describe('WorkItemProjectsListbox', () => {
       findDropdown().vm.$emit('shown');
       await nextTick();
 
-      expect(wrapper.emitted('selectProject')).toEqual([[namespaceProjectsData[0].fullPath]]);
+      expect(wrapper.emitted('select-project')).toEqual([[namespaceProjectsData[0].fullPath]]);
     });
   });
 
@@ -219,7 +219,7 @@ describe('WorkItemProjectsListbox', () => {
       await nextTick();
       await findDropdownItemFor(namespaceProjectsData[1].fullPath).trigger('click');
 
-      expect(wrapper.emitted('selectProject').pop()).toEqual([namespaceProjectsData[1].fullPath]);
+      expect(wrapper.emitted('select-project').pop()).toEqual([namespaceProjectsData[1].fullPath]);
     });
 
     it('renders recent projects if present', async () => {
@@ -244,7 +244,7 @@ describe('WorkItemProjectsListbox', () => {
       await nextTick();
       await findRecentDropdownItemAt(0).trigger('click');
 
-      expect(wrapper.emitted('selectProject').pop()).toEqual([namespaceProjectsData[1].fullPath]);
+      expect(wrapper.emitted('select-project').pop()).toEqual([namespaceProjectsData[1].fullPath]);
     });
 
     it('supports filtering recent projects via search input', async () => {

@@ -23,6 +23,9 @@
 /tooling/ @gitlab-org/maintainers/frontend @gitlab-org/maintainers/database @gl-dx/maintainers @gl-dx/tooling-maintainers @gitlab-org/delivery @gitlab-org/maintainers/cicd-templates @gitlab-org/tw-leadership @gitlab-org/technical-writing/tw-docops @gitlab-org/maintainers/kas-version-maintainers @gitlab-org/maintainers/rails-backend
 /.gitlab/ @gitlab-org/maintainers/frontend @gitlab-org/maintainers/database @gl-dx/maintainers @gl-dx/tooling-maintainers @gitlab-org/delivery @gitlab-org/maintainers/cicd-templates @gitlab-org/tw-leadership @gitlab-org/technical-writing/tw-docops @gitlab-org/maintainers/kas-version-maintainers @gitlab-org/maintainers/rails-backend
 
+# Caproni
+/.gitlab/caproni @gitlab-org/maintainers/caproni
+
 # Workhorse
 /workhorse/ @gitlab-org/maintainers/gitlab-workhorse
 
@@ -1952,8 +1955,10 @@ lib/gitlab/checks/
 /lib/gitlab/seeders/ci/runner/
 /lib/tasks/gitlab/seed/runner_fleet.rake
 
-# Require approvals for Project API entities affecting availability
+# Require approvals for organization transfer support registry and Project API entities affecting availability
 [Organizations] @gitlab-com/gl-infra/tenant-scale/organizations/backend-engineers
+/config/organizations/transfer_support.yml
+/spec/lib/gitlab/organizations/organization_transfer_support_spec.rb
 lib/api/entities/basic_project_details.rb
 lib/api/entities/project_with_access.rb
 lib/api/entities/project_identity.rb

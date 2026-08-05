@@ -26,7 +26,6 @@ to run locally against GDK.
 
 ### Checklist
 
-- [ ] Confirm the test has a [`testcase:` tag linking to an existing test case](https://docs.gitlab.com/development/testing_guide/end_to_end/best_practices/#link-a-test-to-its-test-case-issue) in the test case project.
 - [ ] Note if the test is intended to run in specific scenarios. If a scenario is new, add a link to the MR that adds the new scenario.
 - [ ] Follow the end-to-end tests [style guide](https://docs.gitlab.com/development/testing_guide/end_to_end/style_guide/) and [best practices](https://docs.gitlab.com/development/testing_guide/end_to_end/best_practices/).
 - [ ] Use the appropriate [RSpec metadata tag(s)](https://docs.gitlab.com/development/testing_guide/end_to_end/rspec_metadata_tests/#rspec-metadata-for-end-to-end-tests).

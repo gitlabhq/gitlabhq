@@ -214,6 +214,16 @@ describe('Merge requests list app', () => {
     });
   });
 
+  describe('when the initial sort value is not available in the sort options', () => {
+    beforeEach(() => {
+      createComponent({ provide: { initialSort: 'due_date_desc' } });
+    });
+
+    it('sets the initial-sort-by prop to the default sort', () => {
+      expect(findIssuableList().props('initialSortBy')).toBe('CREATED_DESC');
+    });
+  });
+
   describe('fetching branches', () => {
     const apiVersion = 1;
     const projectId = 1;

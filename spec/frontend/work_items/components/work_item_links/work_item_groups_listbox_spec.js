@@ -69,7 +69,7 @@ describe('WorkItemGroupsListbox', () => {
 
     await findDropdownItemFor(namespaceGroupsData[0].fullPath).trigger('click');
 
-    expect(wrapper.emitted('selectGroup')).toEqual([[namespaceGroupsData[0].fullPath]]);
+    expect(wrapper.emitted('select-group')).toEqual([[namespaceGroupsData[0].fullPath]]);
   });
 
   describe('with a default group', () => {

@@ -36,13 +36,6 @@ function observeRemoval(table, app) {
   removalObserver.observe(document.body, { childList: true, subtree: true });
 }
 
-// Collect the rendered <table> into a data model the component understands; this
-// includes the *actual* cell DOM elements, so that we don't drop any vivified
-// GLFM, properties, DOM references, etc.  MarkdownTable adopts those cell elements
-// directly.
-//
-// The header comes from <thead> when present. Some tables omit <thead> and use the
-// first <tbody> row as the header instead, so we fall back to that.
 function parseTable(table) {
   // Take care to grab only *this* table's cells, and not any nested tables'.
   const thead = table.tHead;
@@ -88,9 +81,6 @@ function parseTable(table) {
 /**
  * Replace each table with the component that renders it.
  *
- * The component chunk is resolved before anything is mounted, so a table is only
- * ever swapped for its finished replacement; it stays as it is until then.
- *
  * @param {Element[]} els - Candidate `.md table:not(.code)` elements.
  * @returns {?Promise} Resolves once every table has been replaced, or `null` when
  *   there is nothing to render.
@@ -122,8 +112,6 @@ export default function renderMarkdownTables(els) {
 
   return loadMarkdownTable().then(({ default: MarkdownTable }) => {
     claimed.forEach(({ table, fields, items }) => {
-      // The table might be removed from the document while loading the
-      // MarkdownTable chunk, e.g. by a description re-rendering underneath us.
       if (!table.parentNode) {
         mountedTables.delete(table);
         return;

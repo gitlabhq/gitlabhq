@@ -68,11 +68,12 @@ Grants the ability to read secrets managers.
 
 #### Security Scan Profiles
 
-Grants the ability to create security scan profiles.
+Grants the ability to create and update security scan profiles.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
 | Create | Group | Mutation | `SecurityScanProfileCreate` |
+| Update | Group | Mutation | `SecurityScanProfileUpdate` |
 
 #### Vulnerability
 

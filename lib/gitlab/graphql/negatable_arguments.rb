@@ -25,8 +25,23 @@ module Gitlab
 
         def build_type
           klass = Class.new(::Types::BaseInputObject)
-          ::Types.const_set(type_class_name, klass)
+          namespace_path, _, name = type_class_name.rpartition('::')
+          namespace_for(namespace_path).const_set(name, klass)
           klass
+        end
+
+        # Resolvers in nested modules, for example `Resolvers::Namespaces::BaseGroupsResolver`, get their
+        # negated params type defined in the matching `Types` module, creating it when it does not exist yet.
+        def namespace_for(path)
+          return ::Types if path.empty?
+
+          path.split('::').reduce(::Types) do |namespace, module_name|
+            if namespace.const_defined?(module_name, false)
+              namespace.const_get(module_name, false)
+            else
+              namespace.const_set(module_name, Module.new)
+            end
+          end
         end
 
         def type_class_name

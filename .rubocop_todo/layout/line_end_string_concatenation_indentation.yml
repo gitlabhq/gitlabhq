@@ -386,7 +386,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'scripts/failed_tests.rb'
     - 'scripts/flaky_examples/prune-old-flaky-examples'
     - 'scripts/generate_rspec_pipeline.rb'
-    - 'scripts/qa/testcases-check'
     - 'spec/controllers/concerns/controller_with_cross_project_access_check_spec.rb'
     - 'spec/controllers/graphql_controller_spec.rb'
     - 'spec/controllers/import/github_controller_spec.rb'

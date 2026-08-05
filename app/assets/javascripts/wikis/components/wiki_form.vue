@@ -16,7 +16,7 @@ import {
   GlToggle,
 } from '@gitlab/ui';
 import produce from 'immer';
-import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
+import { getDraft, clearDraft, updateDraft, getLockVersion } from '~/lib/utils/autosave';
 import csrf from '~/lib/utils/csrf';
 import { __, s__, sprintf } from '~/locale';
 import Tracking from '~/tracking';
@@ -65,8 +65,18 @@ const formatAutosaveKey = (pageInfo) => autosaveKey(pageInfo, 'format');
 const contentAutosaveKey = (pageInfo) => autosaveKey(pageInfo, 'content');
 const commitAutosaveKey = (pageInfo) => autosaveKey(pageInfo, 'commit');
 
+const isDraftStale = (pageInfo) => {
+  if (!pageInfo.persisted) return false;
+
+  const storedLockVersion = getLockVersion(titleAutosaveKey(pageInfo));
+
+  return Boolean(storedLockVersion) && storedLockVersion !== pageInfo.lastCommitSha;
+};
+
+const readDraft = (pageInfo, key) => (isDraftStale(pageInfo) ? null : getDraft(key));
+
 const getTitle = (pageInfo, frontMatter) => {
-  const autosavedTitle = getDraft(titleAutosaveKey(pageInfo));
+  const autosavedTitle = readDraft(pageInfo, titleAutosaveKey(pageInfo));
   const frontMatterTitle = frontMatter?.title?.trim();
   const pageInfoTitle = pageInfo.title?.trim();
 
@@ -74,11 +84,12 @@ const getTitle = (pageInfo, frontMatter) => {
 };
 
 const getFormat = (pageInfo) =>
-  getDraft(formatAutosaveKey(pageInfo)) || pageInfo.format || 'markdown';
-const getContent = (pageInfo) => getDraft(contentAutosaveKey(pageInfo)) || pageInfo.content || '';
+  readDraft(pageInfo, formatAutosaveKey(pageInfo)) || pageInfo.format || 'markdown';
+const getContent = (pageInfo) =>
+  readDraft(pageInfo, contentAutosaveKey(pageInfo)) || pageInfo.content || '';
 const getCommitMessage = (pageInfo) =>
-  getDraft(commitAutosaveKey(pageInfo)) || pageInfo.commitMessage || '';
-const getIsFormDirty = (pageInfo) => Boolean(getDraft(titleAutosaveKey(pageInfo)));
+  readDraft(pageInfo, commitAutosaveKey(pageInfo)) || pageInfo.commitMessage || '';
+const getIsFormDirty = (pageInfo) => Boolean(readDraft(pageInfo, titleAutosaveKey(pageInfo)));
 
 export default {
   name: 'WikiForm',
@@ -158,15 +169,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [trackingMixin, glFeatureFlagsMixin()],
-  inject: [
-    'isEditingPath',
-    'formatOptions',
-    'pageInfo',
-    'drawioUrl',
-    'templates',
-    'pageHeading',
-    'wikiUrl',
-  ],
+  inject: ['formatOptions', 'pageInfo', 'drawioUrl', 'templates', 'pageHeading', 'wikiUrl'],
   emits: ['is-editing'],
   saveOptions: [
     {
@@ -213,6 +216,7 @@ export default {
       savingPreference: false,
       commitMessageModalOpen: false,
       isTemplateUrl: isTemplateUrl(),
+      isSubmitting: false,
     };
   },
   apollo: {
@@ -273,22 +277,11 @@ export default {
 
       return buttonText;
     },
-    cancelFormPath() {
-      if (this.pageInfo.persisted) return this.pageInfo.path;
-      return this.pageInfo.wikiPath;
-    },
     isMarkdownFormat() {
       return this.format === 'markdown';
     },
     drawioEnabled() {
       return typeof this.drawioUrl === 'string' && this.drawioUrl.length > 0;
-    },
-    cancelFormHref() {
-      if (this.isEditingPath) {
-        return this.cancelFormPath;
-      }
-
-      return null;
     },
     isCustomSidebar() {
       return this.wikiUrl.endsWith('_sidebar');
@@ -331,6 +324,10 @@ export default {
   mounted() {
     this.initializeTitlePlaceholder();
 
+    if (isDraftStale(this.pageInfo)) {
+      this.clearDrafts();
+    }
+
     if (!this.commitMessage) this.updateCommitMessage();
     window.addEventListener('beforeunload', this.onPageUnload);
   },
@@ -341,6 +338,8 @@ export default {
     async submitForm() {
       this.setMissingFields();
 
+      this.updateDrafts();
+      this.isSubmitting = true;
       this.isFormDirty = false;
 
       this.trackFormSubmit();
@@ -380,10 +379,11 @@ export default {
     },
 
     updateDrafts() {
-      updateDraft(titleAutosaveKey(this.pageInfo), this.title);
-      updateDraft(formatAutosaveKey(this.pageInfo), this.format);
-      updateDraft(contentAutosaveKey(this.pageInfo), this.content);
-      updateDraft(commitAutosaveKey(this.pageInfo), this.commitMessage);
+      const lockVersion = this.pageInfo.lastCommitSha;
+      updateDraft(titleAutosaveKey(this.pageInfo), this.title, lockVersion);
+      updateDraft(formatAutosaveKey(this.pageInfo), this.format, lockVersion);
+      updateDraft(contentAutosaveKey(this.pageInfo), this.content, lockVersion);
+      updateDraft(commitAutosaveKey(this.pageInfo), this.commitMessage, lockVersion);
     },
 
     clearDrafts() {
@@ -394,6 +394,8 @@ export default {
     },
 
     onPageUnload() {
+      if (this.isSubmitting) return;
+
       if (this.isFormDirty) {
         this.updateDrafts();
       } else {
@@ -454,10 +456,7 @@ export default {
     },
     cancelFormAction() {
       this.isFormDirty = false;
-
-      if (!this.isEditingPath) {
-        this.$emit('is-editing', false);
-      }
+      this.$emit('is-editing', false);
     },
 
     isPrintableKey(event) {
@@ -801,11 +800,7 @@ export default {
                       </template>
                     </gl-collapsible-listbox>
                   </gl-button-group>
-                  <gl-button
-                    data-testid="wiki-cancel-button"
-                    :href="cancelFormHref"
-                    @click="cancelFormAction"
-                  >
+                  <gl-button data-testid="wiki-cancel-button" @click="cancelFormAction">
                     {{ $options.i18n.cancel }}</gl-button
                   >
                   <delete-wiki-modal v-if="isCustomSidebar || isTemplate" />

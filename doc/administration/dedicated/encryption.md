@@ -98,6 +98,22 @@ You can configure keys at different levels:
 - Per-service keys per region: Use different keys for different services (backup, EBS,
   RDS, S3, advanced search) within each region.
 
+#### Create keys automatically with Terraform
+
+Instead of creating keys manually in the AWS Management Console, you can use the
+[`terraform-byok-kms`](https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/customer-tools/terraform-byok-kms)
+Terraform module. The module generates the required key policy, creates the primary and
+replica keys, and validates them before you submit the Amazon Resource Names (ARNs) in Switchboard.
+
+Prerequisites:
+
+- OpenTofu 1.9.0 or later, or Terraform 1.9.0 or later, with AWS provider 6.0 or later.
+- Your GitLab Dedicated AWS account ID, which is shown in the Security step of Switchboard onboarding where you enter the KMS keys. For more information, see [Create your GitLab Dedicated instance](create_instance/_index.md).
+- AWS credentials for your own account with permission to create KMS keys in every region you target.
+- One or more IAM user or role ARNs in your account to administer the key.
+
+For usage instructions, see the module's README.
+
 #### Create encryption keys
 
 Due to key rotation requirements, your instance only supports keys where AWS generates the cryptographic key material

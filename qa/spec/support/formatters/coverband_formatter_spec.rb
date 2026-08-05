@@ -15,7 +15,6 @@ describe QA::Support::Formatters::CoverbandFormatter do
       file_path: 'create_issue_spec.rb',
       execution_result: instance_double(RSpec::Core::Example::ExecutionResult, status: status),
       metadata: {
-        testcase: 'testcase',
         full_description: "Plan",
         location: "./qa/specs/features/browser_ui/2_plan/issue/create_issue_spec.rb:5"
       }

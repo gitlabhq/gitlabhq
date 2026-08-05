@@ -6539,6 +6539,12 @@ msgstr ""
 msgid "AdminSettings|Allow contribution mapping to administrators %{allow_contribution_mapping_to_admins_link_start}%{icon}%{allow_contribution_mapping_to_admins_link_end}"
 msgstr ""
 
+msgid "AdminSettings|Allow exporting GitLab groups and projects by offline transfer"
+msgstr ""
+
+msgid "AdminSettings|Allow importing GitLab groups and projects by offline transfer"
+msgstr ""
+
 msgid "AdminSettings|Allow migrating GitLab groups and projects by direct transfer"
 msgstr ""
 
@@ -11814,6 +11820,9 @@ msgstr ""
 msgid "ArtifactRegistry|Activation"
 msgstr ""
 
+msgid "ArtifactRegistry|All formats"
+msgstr ""
+
 msgid "ArtifactRegistry|Ancestor ID must be a valid UUIDv7."
 msgstr ""
 
@@ -11862,10 +11871,16 @@ msgstr ""
 msgid "ArtifactRegistry|Edit hosted repository"
 msgstr ""
 
+msgid "ArtifactRegistry|Edit or clear your filters to see more repositories."
+msgstr ""
+
 msgid "ArtifactRegistry|Edit repository"
 msgstr ""
 
 msgid "ArtifactRegistry|Enable Artifact Registry for this organization. All projects and groups will have access to a unified registry once enabled."
+msgstr ""
+
+msgid "ArtifactRegistry|Filter repositories"
 msgstr ""
 
 msgid "ArtifactRegistry|Format"
@@ -11911,6 +11926,9 @@ msgid "ArtifactRegistry|New repository"
 msgstr ""
 
 msgid "ArtifactRegistry|No repositories"
+msgstr ""
+
+msgid "ArtifactRegistry|No repositories match your filters."
 msgstr ""
 
 msgid "ArtifactRegistry|OCI"
@@ -17535,6 +17553,9 @@ msgid "Clear chart filters"
 msgstr ""
 
 msgid "Clear due date"
+msgstr ""
+
+msgid "Clear filters"
 msgstr ""
 
 msgid "Clear health status"
@@ -61874,6 +61895,21 @@ msgstr ""
 msgid "ProjectsNew|Project slug"
 msgstr ""
 
+msgid "ProjectsNew|Project slug can only contain letters, digits, underscores, periods, and dashes."
+msgstr ""
+
+msgid "ProjectsNew|Project slug must end with a letter or digit."
+msgstr ""
+
+msgid "ProjectsNew|Project slug must not contain consecutive underscores, periods, or dashes."
+msgstr ""
+
+msgid "ProjectsNew|Project slug must not end with `.git` or `.atom`."
+msgstr ""
+
+msgid "ProjectsNew|Project slug must start with a letter or digit."
+msgstr ""
+
 msgid "ProjectsNew|Projects"
 msgstr ""
 
@@ -73828,6 +73864,9 @@ msgid "SecurityReports|scanned resources"
 msgstr ""
 
 msgid "SecurityReports|security scanning prerequisites"
+msgstr ""
+
+msgid "SecurityScanProfile|Default GitLab-recommended profiles are not editable."
 msgstr ""
 
 msgid "SecurityScanProfile|cannot have more than %{count} scan profiles."

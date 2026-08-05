@@ -91,8 +91,6 @@ app/models/clusters/concerns/application_version.rb:
   - update_available?
 app/models/concerns/ci/metadatable.rb:
   - degenerate!
-app/models/concerns/counter_attribute.rb:
-  - update_counters_with_lease
 app/models/concerns/forced_email_confirmation.rb:
   - confirmation_period_expired?
 app/models/concerns/has_check_constraints.rb:

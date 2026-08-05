@@ -26,8 +26,7 @@ policy = Gitlab::PolicyStore.create(
   trigger_id: "merge_request",
   rules: { rules: [{ type: "scan_finding" }] },
   actions: [{ type: "require_approval" }],
-  policy_scope: { compliance_frameworks: [] },
-  scope_rego: "package gitlab.policy.scope",
+  policy_scope: { compliance_frameworks: [{ id: 5 }] },
   mode: "audit"
 )
 
@@ -48,6 +47,30 @@ Gitlab::PolicyStore.configure do |config|
   config.repository = MyRemotePolicyRepository.new
 end
 ```
+
+## Scope compilation
+
+A policy's scope is authored one of two ways:
+
+- **Structured data in `policy_scope`**: on create,
+  `Gitlab::PolicyStore::ScopeTranspiler` compiles it into `scope_rego`.
+- **Rego supplied directly in `scope_rego`**: stored as authored, which always wins
+  over compilation.
+
+A policy with neither compiles to a program that applies everywhere, so `scope_rego`
+is never blank after create.
+
+```ruby
+Gitlab::PolicyStore.create(
+  organization_id: 1, name: "Framework 5 only", trigger_id: "deployment_requested",
+  policy_scope: { compliance_frameworks: [{ id: 5 }] }
+).scope_rego
+# => "package gitlab.scope\n\nimport rego.v1\n\n..."
+```
+
+The generated program is `package gitlab.scope`, per
+[GOVERN-006: Policy scope as Rego and quick-check strategy](https://gitlab.com/gitlab-org/architecture/govern/design-doc/-/blob/main/decisions/006-policy-scope-rego-quick-check.md).
+The gem compiles it. Evaluating a program against a project is the engine's job.
 
 ## Repository Contract
 

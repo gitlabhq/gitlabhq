@@ -18,7 +18,7 @@ export default {
   },
   model: {
     prop: 'selectedProjectFullPath',
-    event: 'selectProject',
+    event: 'select-project',
   },
   props: {
     fullPath: {
@@ -51,7 +51,7 @@ export default {
       default: '',
     },
   },
-  emits: ['selectProject'],
+  emits: ['select-project'],
   data() {
     return {
       projects: [],
@@ -86,7 +86,7 @@ export default {
         // Only update and emit if we found a valid project
         if (candidateProject) {
           this.selectedProject = candidateProject;
-          this.$emit('selectProject', candidateProject.fullPath);
+          this.$emit('select-project', candidateProject.fullPath);
         }
         // If no results found during search, keep the previous selection
         // and don't emit undefined
@@ -170,7 +170,7 @@ export default {
     },
     handleSelect(projectFullPath) {
       this.selectedProject = this.findSelectedProject(projectFullPath);
-      this.$emit('selectProject', projectFullPath);
+      this.$emit('select-project', projectFullPath);
     },
     findSelectedProject(projectFullPath) {
       const project = this.projects.find((proj) => proj.fullPath === projectFullPath);

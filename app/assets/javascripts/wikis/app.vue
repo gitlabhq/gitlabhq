@@ -18,7 +18,6 @@ export default {
     WikiNotesApp,
   },
   inject: {
-    isEditingPath: { default: false },
     isPageHistorical: { default: null },
     wikiUrl: { default: null },
     historyUrl: { default: null },
@@ -32,13 +31,10 @@ export default {
   },
   data() {
     return {
-      hasEnteredEditMode: false,
+      isEditing: false,
     };
   },
   computed: {
-    isEditing() {
-      return this.isEditingPath || this.hasEnteredEditMode;
-    },
     showWikiNotes() {
       return !this.isCustomSidebar && (!this.isEditing || this.pagePersisted);
     },
@@ -50,13 +46,15 @@ export default {
     },
   },
   watch: {
-    hasEnteredEditMode() {
+    isEditing() {
+      // sync the mode with the URL to ensure the state survives a page reload
       const url = new URL(window.location);
 
-      if (this.hasEnteredEditMode) {
+      if (this.isEditing) {
         url.searchParams.set('edit', 'true');
       } else {
         url.searchParams.delete('edit');
+        url.searchParams.delete('view');
       }
 
       window.history.pushState({}, '', url);
@@ -71,12 +69,12 @@ export default {
   },
   methods: {
     setEditingMode(value) {
-      this.hasEnteredEditMode = value;
+      this.isEditing = value;
     },
     checkEditingMode() {
       const url = new URL(window.location);
 
-      if (url.searchParams.has('edit')) {
+      if (url.searchParams.has('edit') || url.searchParams.get('view') === 'create' || this.error) {
         this.setEditingMode(true);
       } else {
         this.setEditingMode(false);

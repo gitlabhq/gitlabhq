@@ -46,7 +46,6 @@ describe('wikis/components/wiki_header', () => {
         pageHeading: 'Wiki page heading',
         queryVariables,
         isPageTemplate: false,
-        isEditingPath: false,
         showEditButton: true,
         showRestoreVersionButton: false,
         wikiUrl: 'http://wiki.url',

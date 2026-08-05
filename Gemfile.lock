@@ -2506,7 +2506,7 @@ DEPENDENCIES
   fog-core (~> 2.5)
   fog-google (~> 1.29.0)
   fog-local (~> 0.8)
-  fugit (~> 1.11.1)
+  fugit (= 1.11.2)
   gdk-toogle (~> 1.0)
   gettext (~> 3.5, >= 3.5.1)
   gettext_i18n_rails (~> 1.13.0)

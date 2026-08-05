@@ -5,6 +5,7 @@ module Resolvers
     class BaseGroupsResolver < BaseResolver # rubocop:disable Graphql/ResolverType -- Child class defines the type
       include ResolvesGroups
       include Gitlab::Graphql::Authorize::AuthorizeResource
+      extend ::Gitlab::Graphql::NegatableArguments
 
       # Sorting by storage size needs to be optimized. Restricted to admin-only to prevent abuse.
       # https://gitlab.com/gitlab-org/gitlab/-/issues/556662
@@ -14,6 +15,18 @@ module Resolvers
         required: false,
         description: 'Filter groups by IDs.',
         prepare: ->(global_ids, _ctx) { GitlabSchema.parse_gids(global_ids, expected_type: ::Group).map(&:model_id) }
+
+      # rubocop:disable GraphQL/ArgumentUniqueness -- `ids` is defined on the negated input type, not on the resolver
+      negated do
+        argument :ids, [::Types::GlobalIDType[::Group]],
+          as: :exclude_group_ids,
+          required: false,
+          validates: { length: { maximum: 10 } },
+          description: 'Filters groups to exclude the group IDs provided in the given array. ' \
+            "Up to 10 values.",
+          prepare: ->(global_ids, _ctx) { GitlabSchema.parse_gids(global_ids, expected_type: ::Group).map(&:model_id) }
+      end
+      # rubocop:enable GraphQL/ArgumentUniqueness
 
       argument :top_level_only, GraphQL::Types::Boolean,
         required: false,
@@ -63,12 +76,20 @@ module Resolvers
       private
 
       def resolve_groups(parent_path: nil, **args)
-        sanitized_args = sanitize_sort_args(args)
+        sanitized_args = sanitize_sort_args(unpack_negated_args(args))
         sanitized_args[:parent] = find_authorized_parent!(parent_path) if parent_path
 
         GroupsFinder
           .new(context[:current_user], sanitized_args)
           .execute
+      end
+
+      # GroupsFinder takes flat params, so negated arguments are merged into the top level.
+      def unpack_negated_args(args)
+        negated_args = args[:not]
+        return args unless negated_args
+
+        args.except(:not).merge(negated_args.to_h)
       end
 
       def find_authorized_parent!(path)

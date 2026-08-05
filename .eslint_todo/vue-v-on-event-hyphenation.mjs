@@ -13,7 +13,6 @@ export default {
     'app/assets/javascripts/ci/job_token_access/components/namespace_form.vue',
     'app/assets/javascripts/ci/job_token_access/components/outbound_token_access.vue',
     'app/assets/javascripts/ci/pipeline_new/components/pipeline_new_form.vue',
-    'app/assets/javascripts/ci/pipelines_page/components/pipeline_status_badge.vue',
     'app/assets/javascripts/credentials/components/credentials_filter_sort_app.vue',
     'app/assets/javascripts/diffs/components/app.vue',
     'app/assets/javascripts/diffs/components/diff_app_controls.vue',

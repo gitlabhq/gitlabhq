@@ -109,8 +109,7 @@ module Ci
     # arriving outside that window lose the protection and can very
     # occasionally read a stale status.
     def stale_status_read?(job)
-      Ci::HasStatus::PRE_EXECUTION_STATUSES.include?(job.status) &&
-        Feature.enabled?(:ci_job_token_auth_stale_read_retry, ::Project.actor_from_id(job.project_id))
+      Ci::HasStatus::PRE_EXECUTION_STATUSES.include?(job.status)
     end
 
     def refresh_job_from_primary(job)

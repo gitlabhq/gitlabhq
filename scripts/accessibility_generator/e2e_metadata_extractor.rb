@@ -10,12 +10,12 @@ class E2EMetadataExtractor
   include RuboCop::AST::Traversal
   include AstHelpers
 
-  # Match it blocks with optional testcase argument
+  # Match it blocks with optional hash arguments
   def_node_matcher :it_block_with_args, <<~PATTERN
     (block
       (send nil? :it
         (str $_description)
-        (hash $...)?
+        (hash ...)?
       )
       ...
     )
@@ -104,20 +104,8 @@ class E2EMetadataExtractor
   end
 
   def extract_it_block_metadata(node)
-    description, *hash_pairs = it_block_with_args(node)
+    description = it_block_with_args(node)
     it_block = { 'description' => description }
-
-    # Extract testcase URL from hash arguments if present
-    # hash_pairs is an array of individual pair nodes from the hash
-    hash_pairs.each do |pair|
-      next unless pair.is_a?(RuboCop::AST::Node) && pair.pair_type?
-
-      key, value = *pair
-      if key.sym_type? && key.value == :testcase && value.str_type?
-        it_block['testcase_url'] = value.value
-        break
-      end
-    end
 
     @it_blocks << it_block
   end

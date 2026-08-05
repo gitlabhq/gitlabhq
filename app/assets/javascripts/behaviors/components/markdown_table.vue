@@ -15,11 +15,6 @@ function isEmpty(value) {
   return value === '';
 }
 
-// Move the rendered cells into the table we render, rather than rebuilding it, so
-// that whatever is already attached to them (popovers, lightbox handlers, Mermaid
-// diagrams iframes) comes along with them.
-//
-// The value is either the nodes to adopt, or the element to adopt the children of.
 const adopt = (el, { value, oldValue }) => {
   if (value === oldValue) return;
 
@@ -36,9 +31,7 @@ const adoptDirective = { bind: adopt, update: adopt };
 export default {
   name: 'MarkdownTable',
   directives: {
-    // On a <tr>: the row's own <td>/<th> elements, attributes and all.
     adoptCells: adoptDirective,
-    // On a <span>: the child nodes of a header cell, whose <th> we render ourselves.
     adoptContent: adoptDirective,
   },
   stickyHeaderClasses: STICKY_HEADER_CLASSES,
@@ -101,9 +94,6 @@ export default {
     },
   },
   methods: {
-    // We render the <th> ourselves, so the source cell's alignment has to be applied
-    // to it: GLFM renders pipe tables with `align`, but `text-align` styles are also
-    // permitted, so we have to preserve either/both!
     headerAlign({ cell }) {
       return cell.getAttribute('align');
     },

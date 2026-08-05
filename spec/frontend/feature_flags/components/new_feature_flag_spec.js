@@ -7,6 +7,9 @@ import { TEST_HOST } from 'spec/test_constants';
 import Form from '~/feature_flags/components/form.vue';
 import NewFeatureFlag from '~/feature_flags/components/new_feature_flag.vue';
 import createStore from '~/feature_flags/store/new';
+import DetailLayout from '~/vue_shared/components/detail_layout.vue';
+import BaseLayout from '~/vue_shared/components/base_layout.vue';
+import PageHeading from '~/vue_shared/components/page_heading.vue';
 import { allUsersStrategy } from '../mock_data';
 
 const userCalloutId = 'feature_flags_new_version';
@@ -16,13 +19,13 @@ Vue.use(Vuex);
 
 describe('New feature flag form', () => {
   let wrapper;
-
-  const store = createStore({
-    endpoint: `${TEST_HOST}/feature_flags.json`,
-    path: '/feature_flags',
-  });
+  let store;
 
   const factory = (opts = {}) => {
+    store = createStore({
+      endpoint: `${TEST_HOST}/feature_flags.json`,
+      path: '/feature_flags',
+    });
     wrapper = shallowMount(NewFeatureFlag, {
       store,
       provide: {
@@ -33,6 +36,7 @@ describe('New feature flag form', () => {
         projectId: '8',
         ...opts,
       },
+      stubs: { DetailLayout, BaseLayout, PageHeading },
     });
   };
 
@@ -53,8 +57,14 @@ describe('New feature flag form', () => {
     });
   });
 
-  it('renders form title', () => {
-    expect(wrapper.text()).toContain('New feature flag');
+  describe('without error', () => {
+    it('should not render an alert', () => {
+      expect(findWarningGlAlert()).toHaveLength(0);
+    });
+  });
+
+  it('renders the page title', () => {
+    expect(wrapper.find('h1').text()).toBe('New feature flag');
   });
 
   it('should render feature flag form', () => {

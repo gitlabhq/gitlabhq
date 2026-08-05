@@ -78,7 +78,6 @@
 module CounterAttribute
   extend ActiveSupport::Concern
   include AfterCommitQueue
-  include Gitlab::ExclusiveLeaseHelpers
   include Gitlab::Utils::StrongMemoize
 
   class_methods do
@@ -166,12 +165,6 @@ module CounterAttribute
     self.class.update_counters(id, increments)
   end
 
-  def update_counters_with_lease(increments)
-    detect_race_on_record(log_fields: { caller: __method__, attributes: increments.keys }) do
-      update_counters(increments)
-    end
-  end
-
   def initiate_refresh!(attribute)
     raise ArgumentError, %(attribute "#{attribute}" cannot be refreshed) unless counter_attribute_enabled?(attribute)
 
@@ -211,47 +204,6 @@ module CounterAttribute
 
   def buffered_counter(attribute)
     Gitlab::Counters::BufferedCounter.new(self, attribute)
-  end
-
-  def database_lock_key
-    "#{counters_key_prefix}:#{self.class}:#{id}"
-  end
-
-  # This method uses a lease to monitor access to the model row.
-  # This is needed to detect concurrent attempts to increment columns,
-  # which could result in a race condition.
-  #
-  # As the purpose is to detect and warn concurrent attempts,
-  # it falls back to direct update on the row if it fails to obtain the lease.
-  #
-  # It does not guarantee that there will not be any concurrent updates.
-  def detect_race_on_record(log_fields: {})
-    # Ensure attributes is always an array before we log
-    log_fields[:attributes] = Array(log_fields[:attributes])
-
-    Gitlab::AppLogger.info(
-      message: 'Acquiring lease for project statistics update',
-      model: self.class.name,
-      model_id: id,
-      **parent_log_fields,
-      **log_fields,
-      **Gitlab::ApplicationContext.current
-    )
-
-    in_lock(database_lock_key, retries: 0) do
-      yield
-    end
-  rescue Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError
-    Gitlab::AppLogger.warn(
-      message: 'Concurrent project statistics update detected',
-      model: self.class.name,
-      model_id: id,
-      **parent_log_fields,
-      **log_fields,
-      **Gitlab::ApplicationContext.current
-    )
-
-    yield
   end
 
   def log_increment_counter(attribute, increment, new_value)

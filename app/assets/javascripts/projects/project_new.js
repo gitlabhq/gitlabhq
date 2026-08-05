@@ -14,6 +14,7 @@ import {
 } from '~/lib/utils/text_utility';
 import axios from '../lib/utils/axios_utils';
 import { validateProjectName } from './project_name_validation';
+import { validateProjectPath } from './project_path_validation';
 
 let hasUserDefinedProjectPath = false;
 let hasUserDefinedProjectName = false;
@@ -100,6 +101,11 @@ const checkProjectName = (projectNameInput, description) => {
   return validateProjectName(projectNameInput, projectNameError, description);
 };
 
+const checkProjectSlug = (projectPathInput) => {
+  const projectPathError = document.querySelector('#js-project-path-error');
+  return validateProjectPath(projectPathInput, projectPathError);
+};
+
 const setProjectNamePathHandlers = ($projectNameInput, $projectPathInput) => {
   // Panels without name/path fields (e.g. Import, CI/CD for external
   // repository) have no `.tab-pane.active #project_name` /
@@ -119,6 +125,7 @@ const setProjectNamePathHandlers = ($projectNameInput, $projectPathInput) => {
     if (hasUserDefinedProjectPath) return;
 
     onProjectNameChange($projectNameInput, $projectPathInput);
+    checkProjectSlug($projectPathInput);
   };
 
   $projectNameInput.removeEventListener('keyup', projectNameInputListener);
@@ -128,6 +135,7 @@ const setProjectNamePathHandlers = ($projectNameInput, $projectPathInput) => {
 
   const projectPathInputListener = () => {
     onProjectPathChange($projectNameInput, $projectPathInput, hasUserDefinedProjectName);
+    checkProjectSlug($projectPathInput);
 
     if ($projectPathInput.value.trim().length > 0) {
       hasUserDefinedProjectPath = true;
@@ -170,7 +178,8 @@ const setProjectNamePathHandlers = ($projectNameInput, $projectPathInput) => {
 
   document.querySelector('.js-create-project-button').addEventListener('click', (e) => {
     const hasNameError = checkProjectName($projectNameInput);
-    if (hasNameError) e.preventDefault();
+    const hasPathError = checkProjectSlug($projectPathInput);
+    if (hasNameError || hasPathError) e.preventDefault();
 
     validateGroupNamespaceDropdown(e);
   });

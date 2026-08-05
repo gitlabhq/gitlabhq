@@ -67,7 +67,7 @@ export default {
     </template>
 
     <template v-if="error.length" #alerts>
-      <gl-alert variant="warning" class="gl-mb-5" :dismissible="false">
+      <gl-alert variant="warning" :dismissible="false">
         <p v-for="(message, index) in error" :key="index" class="gl-mb-0">{{ message }}</p>
       </gl-alert>
     </template>

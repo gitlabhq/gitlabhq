@@ -198,7 +198,6 @@ Lint/UnusedBlockArgument:
     - 'scripts/docs_screenshots.rb'
     - 'scripts/packages/automated_cleanup.rb'
     - 'scripts/perf/gc/collect_gc_stats.rb'
-    - 'scripts/qa/testcases-check'
     - 'sidekiq_cluster/cli.rb'
     - 'spec/components/previews/pajamas/banner_component_preview.rb'
     - 'spec/controllers/concerns/confirm_email_warning_spec.rb'

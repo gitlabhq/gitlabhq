@@ -1,12 +1,5 @@
 import { checkRules } from './project_name_rules';
-
-const setOrRemoveAttribute = (el, name, value) => {
-  if (value == null) {
-    el.removeAttribute(name);
-  } else {
-    el.setAttribute(name, value);
-  }
-};
+import { setOrRemoveAttribute } from './project_form_utils';
 
 export const validateProjectName = (projectNameInput, projectNameError, description) => {
   if (!projectNameInput || !projectNameError) return false;

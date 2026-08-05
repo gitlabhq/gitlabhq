@@ -35752,6 +35752,167 @@
           "possibleTypes": null
         },
         {
+          "kind": "OBJECT",
+          "name": "ArtifactRegistryRoleAssignment",
+          "description": "A direct role assignment. A user, the Artifact Registry role they hold, and the resource it is assigned on. Does not represent inherited access.",
+          "fields": [
+            {
+              "name": "assignee",
+              "description": "User the role is assigned to.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "UserCore",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "createdAt",
+              "description": "Time the assignment was created.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Time",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "resourceId",
+              "description": "UUID of the Artifact Registry resource the role is assigned on.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "role",
+              "description": "Assigned Artifact Registry role.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "ArtifactRegistryRole",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ArtifactRegistryRoleAssignmentConnection",
+          "description": "The connection type for ArtifactRegistryRoleAssignment.",
+          "fields": [
+            {
+              "name": "edges",
+              "description": "A list of edges.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "ArtifactRegistryRoleAssignmentEdge",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "nodes",
+              "description": "A list of nodes.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "ArtifactRegistryRoleAssignment",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "pageInfo",
+              "description": "Information to aid in pagination.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PageInfo",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ArtifactRegistryRoleAssignmentEdge",
+          "description": "An edge in a connection.",
+          "fields": [
+            {
+              "name": "cursor",
+              "description": "A cursor for use in pagination.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "node",
+              "description": "The item at the end of the edge.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "ArtifactRegistryRoleAssignment",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
           "kind": "INPUT_OBJECT",
           "name": "ArtifactRegistryRoleAssignmentInput",
           "description": "Single Artifact Registry role assignment.",
@@ -47632,6 +47793,37 @@
               "ofType": null
             }
           ]
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "BaseGroupsResolverNegatedParams",
+          "description": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "ids",
+              "description": "Filters groups to exclude the group IDs provided in the given array. Up to 10 values.",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "GroupID",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
         },
         {
           "kind": "INTERFACE",
@@ -216522,6 +216714,12 @@
               "deprecationReason": null
             },
             {
+              "name": "UPDATE_SECURITY_SCAN_PROFILES",
+              "description": "Update security scan profiles.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "READ_ADMIN_CICD",
               "description": "Read CI/CD details for runners and jobs in the Admin Area.",
               "isDeprecated": false,
@@ -216787,6 +216985,12 @@
             {
               "name": "UPDATE_SEC_AI_WORKFLOW_SETTINGS",
               "description": "Update security AI workflow settings such as SAST Vulnerability Resolution. Also requires the `read_vulnerability` permission.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "UPDATE_SECURITY_SCAN_PROFILES",
+              "description": "Update security scan profiles.",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -263826,6 +264030,35 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 18.9."
             },
             {
+              "name": "securityScanProfileUpdate",
+              "description": null,
+              "args": [
+                {
+                  "name": "input",
+                  "description": "Parameters for SecurityScanProfileUpdate",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "SecurityScanProfileUpdateInput",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "SecurityScanProfileUpdatePayload",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
               "name": "securityTrainingUpdate",
               "description": null,
               "args": [
@@ -281052,6 +281285,18 @@
                         "ofType": null
                       }
                     }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "not",
+                  "description": "List of negated arguments.\nWarning: this argument is experimental and a subject to change in future.\n",
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "BaseGroupsResolverNegatedParams",
+                    "ofType": null
                   },
                   "defaultValue": null,
                   "isDeprecated": false,
@@ -339496,6 +339741,18 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "not",
+                  "description": "List of negated arguments.\nWarning: this argument is experimental and a subject to change in future.\n",
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "BaseGroupsResolverNegatedParams",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "topLevelOnly",
                   "description": "Only include top-level groups.",
                   "type": {
@@ -342231,6 +342488,83 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 18.7."
             },
             {
+              "name": "artifactRegistryRoleAssignments",
+              "description": "Direct Artifact Registry role assignments on the given resources. Returns only roles assigned on a resource itself, not members who inherit access from a membership on an ancestor namespace, so it is not a complete list of everyone who can access the resource. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [
+                {
+                  "name": "resourceIds",
+                  "description": "UUIDs of the Artifact Registry resources to read role assignments for. Empty reads the whole organization, which only the organization owner may do.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "String",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": "[]",
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "roles",
+                  "description": "Only return assignments for these roles.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "ArtifactRegistryRole",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": "[]",
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "after",
+                  "description": "Returns the elements in the list that come after the specified cursor.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "first",
+                  "description": "Returns the first _n_ elements from the list.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "ArtifactRegistryRoleAssignmentConnection",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
               "name": "auditEventDefinitions",
               "description": "Definitions for all audit events available on the instance.",
               "args": [
@@ -344852,6 +345186,18 @@
                         "ofType": null
                       }
                     }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "not",
+                  "description": "List of negated arguments.\nWarning: this argument is experimental and a subject to change in future.\n",
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "BaseGroupsResolverNegatedParams",
+                    "ofType": null
                   },
                   "defaultValue": null,
                   "isDeprecated": false,
@@ -371164,6 +371510,160 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.2."
             }
           ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "SecurityScanProfileUpdateInput",
+          "description": "Autogenerated input type of SecurityScanProfileUpdate",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": "Global ID of the scan profile to update.",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "SecurityScanProfileID",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name",
+              "description": "Name of the scan profile.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "description",
+              "description": "Description of the scan profile.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "triggers",
+              "description": "Complete set of triggers with optional configuration for the scan profile. When provided, triggers omitted from the list are removed, and a trigger sent without a configuration has its existing configuration removed.",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "SecurityScanProfileTriggerInput",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null,
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "stripDefaults",
+              "description": "When true, trigger configuration values equal to the defaults are removed before storage so only overrides are persisted. When false, the configuration is stored as provided, ignoring defaults.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "defaultValue": "true",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "SecurityScanProfileUpdatePayload",
+          "description": "Autogenerated return type of SecurityScanProfileUpdate.",
+          "fields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "errors",
+              "description": "Errors encountered during the mutation.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "scanProfile",
+              "description": "Updated scan profile.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "ScanProfileType",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
           "possibleTypes": null
         },
         {

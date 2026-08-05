@@ -130,7 +130,8 @@ RSpec.shared_examples 'User views a wiki page' do
 
       click_link("Create this page…")
 
-      expect(page).to have_content('New page')
+      expect(page).to have_css('.wiki-form')
+      expect(page).to have_button('Create page')
     end
   end
 
@@ -288,7 +289,8 @@ RSpec.shared_examples 'User views a wiki page' do
 
     click_link "Create your first page"
 
-    expect(page).to have_content('New page')
+    expect(page).to have_css('.wiki-form')
+    expect(page).to have_button('Create page')
   end
 end
 

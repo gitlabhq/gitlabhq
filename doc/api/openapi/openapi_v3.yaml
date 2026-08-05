@@ -6952,7 +6952,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_1c9e643f3fda"
+              "$ref": "#/components/schemas/RequestBody_099e406a34d9"
   "/api/v4/groups/{id}/member_roles/{member_role_id}":
     delete:
       operationId: deleteApiV4GroupsIdMemberRolesMemberRoleId
@@ -7022,7 +7022,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_1c9e643f3fda"
+              "$ref": "#/components/schemas/RequestBody_099e406a34d9"
   "/api/v4/member_roles/{member_role_id}":
     delete:
       operationId: deleteApiV4MemberRolesMemberRoleId
@@ -78471,6 +78471,9 @@ components:
         update_sec_ai_workflow_settings:
           type: boolean
           default: false
+        update_security_scan_profiles:
+          type: boolean
+          default: false
         read_admin_cicd:
           type: boolean
           default: false
@@ -96392,7 +96395,7 @@ components:
           nullable: true
       required:
       - extern_uid
-    RequestBody_1c9e643f3fda:
+    RequestBody_099e406a34d9:
       type: object
       properties:
         base_access_level:
@@ -96568,6 +96571,10 @@ components:
           type: boolean
           description: Update security AI workflow settings such as SAST Vulnerability
             Resolution. Also requires the `read_vulnerability` permission.
+          nullable: true
+        update_security_scan_profiles:
+          type: boolean
+          description: Update security scan profiles.
           nullable: true
         read_admin_cicd:
           type: boolean

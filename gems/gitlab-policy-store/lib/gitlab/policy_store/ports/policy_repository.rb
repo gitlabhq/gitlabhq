@@ -53,6 +53,19 @@ module Gitlab
         def blank?(value)
           value.nil? || (value.respond_to?(:empty?) && value.empty?)
         end
+
+        # `scope_rego` is the form that gets evaluated, so it is always present.
+        # `policy_scope` exists only as its source, which is why authoring Rego
+        # directly clears it: there is no structured form of a hand-written
+        # program, and keeping a stale one would let the two describe different
+        # sets of projects.
+        def with_compiled_scope(attributes)
+          return attributes.merge(policy_scope: nil) unless blank?(attributes[:scope_rego])
+
+          transpiler = ScopeTranspiler.new(attributes[:policy_scope], policy_name: attributes[:name])
+
+          attributes.merge(scope_rego: transpiler.transpile)
+        end
       end
     end
   end

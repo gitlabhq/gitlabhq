@@ -11,7 +11,6 @@ milestone: '17.9'
 gitlab_schema: gitlab_main_org
 sharding_key:
   organization_id: organizations
-organization_transfer_support: no_work_needed
 table_size: small
 removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235394
 removed_in_milestone: '19.2'

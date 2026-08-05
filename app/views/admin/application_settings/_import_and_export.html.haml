@@ -38,7 +38,17 @@
         = f.gitlab_ui_checkbox_component :allow_bypass_placeholder_confirmation, s_('AdminSettings|Enabled')
       - else
         = f.gitlab_ui_checkbox_component :allow_bypass_placeholder_confirmation, s_('AdminSettings|Enabled'), checkbox_options: { disabled: true }, label_options: { title: s_('AdminSettings|User impersonation is not enabled on the GitLab instance.'), data: { toggle: 'tooltip', container: 'body' } }
-    - if Feature.enabled?(:offline_transfer_exports, current_user)
+    - offline_transfer_exports_enabled = Feature.enabled?(:offline_transfer_exports, current_user)
+    - offline_transfer_imports_enabled = Feature.enabled?(:offline_transfer_imports, current_user)
+    - if offline_transfer_exports_enabled
+      .form-group
+        = f.label :offline_transfer_exports_enabled, s_('AdminSettings|Allow exporting GitLab groups and projects by offline transfer'), class: 'gl-font-bold'
+        = f.gitlab_ui_checkbox_component :offline_transfer_exports_enabled, s_('AdminSettings|Enabled')
+    - if offline_transfer_imports_enabled
+      .form-group
+        = f.label :offline_transfer_imports_enabled, s_('AdminSettings|Allow importing GitLab groups and projects by offline transfer'), class: 'gl-font-bold'
+        = f.gitlab_ui_checkbox_component :offline_transfer_imports_enabled, s_('AdminSettings|Enabled')
+    - if offline_transfer_exports_enabled || offline_transfer_imports_enabled
       .form-group
         = f.label :allow_s3_compatible_storage_for_offline_transfer, s_('AdminSettings|Allow S3 compatible object storage for offline transfer'), class: 'gl-font-bold'
         = f.gitlab_ui_checkbox_component :allow_s3_compatible_storage_for_offline_transfer, s_('AdminSettings|Enabled')

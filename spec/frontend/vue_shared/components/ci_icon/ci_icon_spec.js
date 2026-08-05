@@ -28,6 +28,14 @@ describe('CI Icon component', () => {
     expect(findIcon().exists()).toBe(true);
   });
 
+  it('emits `ci-status-badge-click` when clicked', async () => {
+    createComponent();
+
+    await wrapper.trigger('click');
+
+    expect(wrapper.emitted('ci-status-badge-click')).toEqual([[]]);
+  });
+
   describe.each`
     showStatusText | showTooltip | expectedText         | expectedTooltip
     ${true}        | ${true}     | ${'Success'}         | ${undefined}

@@ -135,6 +135,7 @@ Arguments:
 | <a id="query-admingroups-allavailable"></a>`allAvailable` | [`Boolean`](#boolean) | When `true`, returns all accessible groups. When `false`, returns only groups where the user is a member. Unauthenticated requests always return all public groups. The `owned_only` argument takes precedence. |
 | <a id="query-admingroups-ids"></a>`ids` | [`[ID!]`](#id) | Filter groups by IDs. |
 | <a id="query-admingroups-markedfordeletionon"></a>`markedForDeletionOn` | [`Date`](#date) | Date when the group was marked for deletion. |
+| <a id="query-admingroups-not"></a>`not` | [`BaseGroupsResolverNegatedParams`](#basegroupsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
 | <a id="query-admingroups-ownedonly"></a>`ownedOnly` | [`Boolean`](#boolean) | Only include groups where the current user has an owner role. |
 | <a id="query-admingroups-parentpath"></a>`parentPath` | [`ID`](#id) | Full path of the parent group. |
 | <a id="query-admingroups-search"></a>`search` | [`String`](#string) | Search query for group name or group full path. |
@@ -826,6 +827,30 @@ Arguments:
 Instance level AI-related data. Admins only.
 
 Returns [`AiInstanceUsageData`](#aiinstanceusagedata).
+
+### `Query.artifactRegistryRoleAssignments`
+
+{{< details >}}
+
+- Introduced in GitLab 19.3.
+- Status: Experiment.
+
+{{< /details >}}
+
+Direct Artifact Registry role assignments on the given resources. Returns only roles assigned on a resource itself, not members who inherit access from a membership on an ancestor namespace, so it is not a complete list of everyone who can access the resource.
+
+Returns [`ArtifactRegistryRoleAssignmentConnection`](#artifactregistryroleassignmentconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="query-artifactregistryroleassignments-resourceids"></a>`resourceIds` | [`[String!]`](#string) | UUIDs of the Artifact Registry resources to read role assignments for. Empty reads the whole organization, which only the organization owner may do. |
+| <a id="query-artifactregistryroleassignments-roles"></a>`roles` | [`[ArtifactRegistryRole!]`](#artifactregistryrole) | Only return assignments for these roles. |
 
 ### `Query.auditEventDefinitions`
 
@@ -1620,6 +1645,7 @@ Arguments:
 | <a id="query-groups-allavailable"></a>`allAvailable` | [`Boolean`](#boolean) | When `true`, returns all accessible groups. When `false`, returns only groups where the user is a member. Unauthenticated requests always return all public groups. The `owned_only` argument takes precedence. |
 | <a id="query-groups-ids"></a>`ids` | [`[ID!]`](#id) | Filter groups by IDs. |
 | <a id="query-groups-markedfordeletionon"></a>`markedForDeletionOn` | [`Date`](#date) | Date when the group was marked for deletion. |
+| <a id="query-groups-not"></a>`not` | [`BaseGroupsResolverNegatedParams`](#basegroupsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
 | <a id="query-groups-ownedonly"></a>`ownedOnly` | [`Boolean`](#boolean) | Only include groups where the current user has an owner role. |
 | <a id="query-groups-parentpath"></a>`parentPath` | [`ID`](#id) | Full path of the parent group. |
 | <a id="query-groups-search"></a>`search` | [`String`](#string) | Search query for group name or group full path. |
@@ -16512,6 +16538,36 @@ Fields:
 | <a id="mutation-securityscanprofiledetach-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-securityscanprofiledetach-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
+### `Mutation.securityScanProfileUpdate`
+
+{{< details >}}
+
+- Introduced in GitLab 19.3.
+- Status: Experiment.
+
+{{< /details >}}
+
+Input type: `SecurityScanProfileUpdateInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-securityscanprofileupdate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-securityscanprofileupdate-description"></a>`description` | [`String`](#string) | Description of the scan profile. |
+| <a id="mutation-securityscanprofileupdate-id"></a>`id` | [`SecurityScanProfileID!`](#securityscanprofileid) | Global ID of the scan profile to update. |
+| <a id="mutation-securityscanprofileupdate-name"></a>`name` | [`String`](#string) | Name of the scan profile. |
+| <a id="mutation-securityscanprofileupdate-stripdefaults"></a>`stripDefaults` | [`Boolean`](#boolean) | When true, trigger configuration values equal to the defaults are removed before storage so only overrides are persisted. When false, the configuration is stored as provided, ignoring defaults. |
+| <a id="mutation-securityscanprofileupdate-triggers"></a>`triggers` | [`[SecurityScanProfileTriggerInput!]`](#securityscanprofiletriggerinput) | Complete set of triggers with optional configuration for the scan profile. When provided, triggers omitted from the list are removed, and a trigger sent without a configuration has its existing configuration removed. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-securityscanprofileupdate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-securityscanprofileupdate-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-securityscanprofileupdate-scanprofile"></a>`scanProfile` | [`ScanProfileType`](#scanprofiletype) | Updated scan profile. |
+
 ### `Mutation.securityTrainingUpdate`
 
 Input type: `SecurityTrainingUpdateInput`
@@ -21489,6 +21545,29 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="approvalprojectruleedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="approvalprojectruleedge-node"></a>`node` | [`ApprovalProjectRule`](#approvalprojectrule) | The item at the end of the edge. |
+
+#### `ArtifactRegistryRoleAssignmentConnection`
+
+The connection type for [`ArtifactRegistryRoleAssignment`](#artifactregistryroleassignment).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistryroleassignmentconnection-edges"></a>`edges` | [`[ArtifactRegistryRoleAssignmentEdge]`](#artifactregistryroleassignmentedge) | A list of edges. |
+| <a id="artifactregistryroleassignmentconnection-nodes"></a>`nodes` | [`[ArtifactRegistryRoleAssignment]`](#artifactregistryroleassignment) | A list of nodes. |
+| <a id="artifactregistryroleassignmentconnection-pageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ArtifactRegistryRoleAssignmentEdge`
+
+The edge type for [`ArtifactRegistryRoleAssignment`](#artifactregistryroleassignment).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistryroleassignmentedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="artifactregistryroleassignmentedge-node"></a>`node` | [`ArtifactRegistryRoleAssignment`](#artifactregistryroleassignment) | The item at the end of the edge. |
 
 #### `AscpComponentConnection`
 
@@ -34481,6 +34560,19 @@ Fields:
 | <a id="approvalscanresultpolicy-approvalsrequired"></a>`approvalsRequired` | [`Int!`](#int) | Represents the required approvals defined in the policy. |
 | <a id="approvalscanresultpolicy-name"></a>`name` | [`String!`](#string) | Represents the name of the policy. |
 | <a id="approvalscanresultpolicy-reporttype"></a>`reportType` | [`ApprovalReportType!`](#approvalreporttype) | Represents the report_type of the approval rule. |
+
+### `ArtifactRegistryRoleAssignment`
+
+A direct role assignment. A user, the Artifact Registry role they hold, and the resource it is assigned on. Does not represent inherited access.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistryroleassignment-assignee"></a>`assignee` | [`UserCore`](#usercore) | User the role is assigned to. |
+| <a id="artifactregistryroleassignment-createdat"></a>`createdAt` | [`Time`](#time) | Time the assignment was created. |
+| <a id="artifactregistryroleassignment-resourceid"></a>`resourceId` | [`String!`](#string) | UUID of the Artifact Registry resource the role is assigned on. |
+| <a id="artifactregistryroleassignment-role"></a>`role` | [`ArtifactRegistryRole`](#artifactregistryrole) | Assigned Artifact Registry role. |
 
 ### `AscpComponent`
 
@@ -52335,6 +52427,7 @@ Arguments:
 | <a id="organization-groups-allavailable"></a>`allAvailable` | [`Boolean`](#boolean) | When `true`, returns all accessible groups. When `false`, returns only groups where the user is a member. Unauthenticated requests always return all public groups. The `owned_only` argument takes precedence. |
 | <a id="organization-groups-ids"></a>`ids` | [`[ID!]`](#id) | Filter groups by IDs. |
 | <a id="organization-groups-markedfordeletionon"></a>`markedForDeletionOn` | [`Date`](#date) | Date when the group was marked for deletion. |
+| <a id="organization-groups-not"></a>`not` | [`BaseGroupsResolverNegatedParams`](#basegroupsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
 | <a id="organization-groups-ownedonly"></a>`ownedOnly` | [`Boolean`](#boolean) | Only include groups where the current user has an owner role. |
 | <a id="organization-groups-parentpath"></a>`parentPath` | [`ID`](#id) | Full path of the parent group. |
 | <a id="organization-groups-search"></a>`search` | [`String`](#string) | Search query for group name or group full path. |
@@ -67761,6 +67854,7 @@ Member role permission.
 | <a id="memberrolepermission-read_vulnerability"></a>`READ_VULNERABILITY` | Read vulnerability reports and security dashboards. |
 | <a id="memberrolepermission-remove_group"></a>`REMOVE_GROUP` | Ability to delete or restore a subgroup. This ability does not allow deleting top-level groups. Review the retention period settings to prevent accidental deletion. |
 | <a id="memberrolepermission-remove_project"></a>`REMOVE_PROJECT` | Allows deletion of projects. |
+| <a id="memberrolepermission-update_security_scan_profiles"></a>`UPDATE_SECURITY_SCAN_PROFILES` | Update security scan profiles. |
 | <a id="memberrolepermission-update_sec_ai_workflow_settings"></a>`UPDATE_SEC_AI_WORKFLOW_SETTINGS` | Update security AI workflow settings such as SAST Vulnerability Resolution. Also requires the `read_vulnerability` permission. |
 
 ### `MemberRoleStandardPermission`
@@ -67805,6 +67899,7 @@ Member role standard permission.
 | <a id="memberrolestandardpermission-read_vulnerability"></a>`READ_VULNERABILITY` | Read vulnerability reports and security dashboards. |
 | <a id="memberrolestandardpermission-remove_group"></a>`REMOVE_GROUP` | Ability to delete or restore a subgroup. This ability does not allow deleting top-level groups. Review the retention period settings to prevent accidental deletion. |
 | <a id="memberrolestandardpermission-remove_project"></a>`REMOVE_PROJECT` | Allows deletion of projects. |
+| <a id="memberrolestandardpermission-update_security_scan_profiles"></a>`UPDATE_SECURITY_SCAN_PROFILES` | Update security scan profiles. |
 | <a id="memberrolestandardpermission-update_sec_ai_workflow_settings"></a>`UPDATE_SEC_AI_WORKFLOW_SETTINGS` | Update security AI workflow settings such as SAST Vulnerability Resolution. Also requires the `read_vulnerability` permission. |
 
 ### `MemberRolesAccessLevel`
@@ -74324,6 +74419,14 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="attributefilterinput-attributes"></a>`attributes` | [`[SecurityAttributeID!]!`](#securityattributeid) | Global IDs of the security attributes to filter by. Up to 20 values. |
 | <a id="attributefilterinput-operator"></a>`operator` | [`AttributeFilterOperator!`](#attributefilteroperator) | Operator to apply for the attribute filter. |
+
+### `BaseGroupsResolverNegatedParams`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="basegroupsresolvernegatedparams-ids"></a>`ids` | [`[GroupID!]`](#groupid) | Filters groups to exclude the group IDs provided in the given array. Up to 10 values. |
 
 ### `BoardIssueInput`
 

@@ -21,13 +21,13 @@ module Branches
       create_branch(branch_name, ref)
     end
 
-    def bulk_create(branches)
+    def bulk_create(branches, skip_ci: false)
       reset_errors
 
       created_branches =
         branches
           .then { |branches| only_valid_branches(branches) }
-          .then { |branches| create_branches(branches) }
+          .then { |branches| create_branches(branches, skip_ci: skip_ci) }
           .then { |branches| expire_branches_cache(branches) }
 
       return error(errors) if errors.present?
@@ -56,9 +56,9 @@ module Branches
       end
     end
 
-    def create_branches(branches)
+    def create_branches(branches, skip_ci: false)
       branches.filter_map do |branch_name, ref|
-        result = create_branch(branch_name, ref, expire_cache: false)
+        result = create_branch(branch_name, ref, expire_cache: false, skip_ci: skip_ci)
 
         if result[:status] == :error
           errors << result[:message]
@@ -75,12 +75,13 @@ module Branches
       branches
     end
 
-    def create_branch(branch_name, ref, expire_cache: true)
+    def create_branch(branch_name, ref, expire_cache: true, skip_ci: false)
       new_branch = repository.add_branch(
         current_user,
         branch_name,
         ref,
         expire_cache: expire_cache,
+        skip_ci: skip_ci,
         raise_on_invalid_ref: true
       )
 

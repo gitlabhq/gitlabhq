@@ -188,6 +188,18 @@ RSpec.describe MergeRequests::CreateFromIssueService, feature_category: :code_re
 
         expect(result[:merge_request].title).to eq("Draft: Resolve \"#{issue.title}\"")
       end
+
+      context 'when the issue branch template contains %{branch_creator}' do
+        before do
+          project.project_setting.update!(issue_branch_template: 'feature-%{id}-%{branch_creator}')
+        end
+
+        it 'sets the merge request source branch to include the branch creator username' do
+          result = service.execute
+
+          expect(result[:merge_request].source_branch).to eq("feature-#{issue.iid}-#{user.username}")
+        end
+      end
     end
 
     context 'target_project_id is specified' do

@@ -61,7 +61,7 @@ module MergeRequests
     # rubocop: enable CodeReuse/ActiveRecord
 
     def branch_name
-      @branch ||= @branch_name || issue.to_branch_name
+      @branch ||= @branch_name || issue.to_branch_name(current_user: current_user)
     end
 
     def ref

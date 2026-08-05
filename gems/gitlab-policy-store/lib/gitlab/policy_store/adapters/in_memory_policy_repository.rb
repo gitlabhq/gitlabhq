@@ -16,6 +16,7 @@ module Gitlab
         def create(attributes)
           normalized = normalize_attributes(attributes)
           validate_required_attributes!(normalized)
+          normalized = with_compiled_scope(normalized)
 
           @sequence += 1
           @policies[@sequence] = build_policy(@sequence, normalized)

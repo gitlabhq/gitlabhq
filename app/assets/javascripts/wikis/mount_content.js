@@ -58,6 +58,7 @@ export const mountWikiApp = () => {
     reportAbusePath,
     containerName,
     pageAuthorEmail,
+    error,
   } = el.dataset;
 
   Vue.use(VueApollo);
@@ -83,7 +84,6 @@ export const mountWikiApp = () => {
     name: 'WikiContentAppRoot',
     apolloProvider,
     provide: {
-      isEditingPath: false,
       pageHeading,
       contentApi,
       canCreateNewPage: parseBoolean(canCreateNewPage),
@@ -95,7 +95,7 @@ export const mountWikiApp = () => {
       isPageHistorical: parseBoolean(isPageHistorical),
       createFromTemplateUrl,
       lastVersion,
-      pageVersion: JSON.parse(pageVersion),
+      pageVersion: JSON.parse(pageVersion || 'null'),
       authorUrl,
       cloneSshUrl,
       cloneHttpUrl,
@@ -110,7 +110,7 @@ export const mountWikiApp = () => {
       pagePersisted: parseBoolean(pagePersisted),
       containerType,
       markdownPreviewPath,
-      currentUserData: JSON.parse(currentUserData || {}),
+      currentUserData: JSON.parse(currentUserData || '{}'),
       reportAbusePath,
       registerPath,
       signInPath,
@@ -120,6 +120,7 @@ export const mountWikiApp = () => {
       isContainerArchived: parseBoolean(isContainerArchived),
       containerName,
       pageAuthorEmail,
+      error,
     },
     component: WikiContentApp,
   });

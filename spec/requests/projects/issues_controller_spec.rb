@@ -97,6 +97,25 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
     end
   end
 
+  describe 'GET #can_create_branch' do
+    before do
+      project.add_developer(user)
+      login_as(user)
+    end
+
+    it 'returns a suggested branch name that includes the requesting user' do
+      project.project_setting.update!(issue_branch_template: 'feature-%{id}-%{branch_creator}')
+
+      get can_create_branch_project_issue_path(project, issue, format: :json)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(Gitlab::Json.parse(response.body)).to include(
+        'can_create_branch' => true,
+        'suggested_branch_name' => "feature-#{issue.iid}-#{user.username}"
+      )
+    end
+  end
+
   describe 'GET #discussions' do
     before do
       login_as(user)

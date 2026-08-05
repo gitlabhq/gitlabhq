@@ -7,6 +7,7 @@ import WikiContent from '~/wikis/components/wiki_content.vue';
 import WikiForm from '~/wikis/components/wiki_form.vue';
 import WikiNotesApp from '~/wikis/wiki_notes/components/wiki_notes_app.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import setWindowLocation from 'helpers/set_window_location_helper';
 
 describe('WikiApp', () => {
   let wrapper;
@@ -85,7 +86,8 @@ describe('WikiApp', () => {
 
   describe('when creating a new page', () => {
     beforeEach(() => {
-      createComponent({ isEditingPath: true, pagePersisted: false });
+      setWindowLocation('?view=create');
+      createComponent({ pagePersisted: false });
     });
 
     expectEditingInterface();
@@ -97,7 +99,8 @@ describe('WikiApp', () => {
 
   describe('when opening an edit URL on an existing page', () => {
     beforeEach(() => {
-      createComponent({ isEditingPath: true, pagePersisted: true });
+      setWindowLocation('?edit=true');
+      createComponent({ pagePersisted: true });
     });
 
     expectEditingInterface();
@@ -109,7 +112,8 @@ describe('WikiApp', () => {
 
   describe('when editing the custom sidebar', () => {
     beforeEach(() => {
-      createComponent({ isEditingPath: true, pagePersisted: true, wikiUrl: '_sidebar' });
+      setWindowLocation('?edit=true');
+      createComponent({ pagePersisted: true, wikiUrl: '_sidebar' });
     });
 
     expectEditingInterface();
@@ -121,7 +125,8 @@ describe('WikiApp', () => {
 
   describe('when editing a saved wiki page', () => {
     beforeEach(() => {
-      createComponent({ isEditingPath: true, pagePersisted: true });
+      setWindowLocation('?edit=true');
+      createComponent({ pagePersisted: true });
     });
 
     it('does show the wiki notes', () => {
@@ -155,6 +160,93 @@ describe('WikiApp', () => {
       const alert = wrapper.getComponent(WikiAlert);
       expect(alert.props('error')).toBe('Some Error');
       expect(alert.props('wikiPagePath')).toBe('foo/bar');
+    });
+
+    it('enters edit mode', () => {
+      expect(wrapper.findComponent(WikiForm).exists()).toBe(true);
+      expect(wrapper.findComponent(WikiContent).exists()).toBe(false);
+    });
+
+    it('does not show the wiki header', () => {
+      expect(wrapper.findComponent(WikiHeader).exists()).toBe(false);
+    });
+  });
+
+  describe('when the page has an error on a new page', () => {
+    beforeEach(() => {
+      createComponent({
+        error: 'Validation failed',
+        pagePersisted: false,
+      });
+    });
+
+    it('enters edit mode', () => {
+      expect(wrapper.findComponent(WikiForm).exists()).toBe(true);
+      expect(wrapper.findComponent(WikiContent).exists()).toBe(false);
+    });
+
+    it('does show the error notification', () => {
+      const alert = wrapper.getComponent(WikiAlert);
+      expect(alert.props('error')).toBe('Validation failed');
+    });
+
+    it('does not show the wiki notes', () => {
+      expect(wrapper.findComponent(WikiNotesApp).exists()).toBe(false);
+    });
+  });
+
+  describe('when the page has an error on an existing page', () => {
+    beforeEach(() => {
+      createComponent({
+        error: 'Validation failed',
+        pagePersisted: true,
+      });
+    });
+
+    it('enters edit mode', () => {
+      expect(wrapper.findComponent(WikiForm).exists()).toBe(true);
+      expect(wrapper.findComponent(WikiContent).exists()).toBe(false);
+    });
+
+    it('does show the wiki notes', () => {
+      expect(wrapper.findComponent(WikiNotesApp).exists()).toBe(true);
+    });
+  });
+
+  describe('when URL has view=create param', () => {
+    beforeEach(() => {
+      setWindowLocation('?view=create');
+      createComponent();
+    });
+
+    it('enters edit mode', () => {
+      expect(wrapper.findComponent(WikiForm).exists()).toBe(true);
+      expect(wrapper.findComponent(WikiContent).exists()).toBe(false);
+    });
+  });
+
+  describe('when exiting edit mode', () => {
+    let pushStateSpy;
+
+    beforeEach(async () => {
+      setWindowLocation('?edit=true&view=create');
+      pushStateSpy = jest.spyOn(window.history, 'pushState').mockImplementation(() => {});
+      createComponent();
+      await nextTick();
+
+      wrapper.getComponent(WikiForm).vm.$emit('is-editing', false);
+      await nextTick();
+    });
+
+    afterEach(() => {
+      pushStateSpy.mockRestore();
+    });
+
+    it('removes both edit and view params from URL', () => {
+      expect(pushStateSpy).toHaveBeenCalled();
+      const pushedUrl = pushStateSpy.mock.calls[0][2];
+      expect(pushedUrl).not.toContain('edit=');
+      expect(pushedUrl).not.toContain('view=');
     });
   });
 });

@@ -523,7 +523,7 @@ describe('Create work item component', () => {
       createComponent({ props: { preselectedWorkItemType: null, showProjectSelector: true } });
       await resolveAll();
 
-      findProjectsSelector().vm.$emit('selectProject', 'fullPath');
+      findProjectsSelector().vm.$emit('select-project', 'fullPath');
       await nextTick();
 
       expect(findSelect().attributes('disabled')).not.toBeUndefined();
@@ -747,7 +747,7 @@ describe('Create work item component', () => {
       createComponent({ props: { showProjectSelector: true } });
       await resolveAll();
 
-      findProjectsSelector().vm.$emit('selectProject', fullPath);
+      findProjectsSelector().vm.$emit('select-project', fullPath);
       await updateWorkItemTitle();
       wrapper.find('form').trigger('submit');
 
@@ -766,7 +766,7 @@ describe('Create work item component', () => {
 
       expect(findAssigneesWidget().props('fullPath')).toBe('full-path');
 
-      findProjectsSelector().vm.$emit('selectProject', fullPath);
+      findProjectsSelector().vm.$emit('select-project', fullPath);
 
       await nextTick();
 

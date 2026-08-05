@@ -255,7 +255,7 @@ export default {
         fullPath: this.fullPath,
         hideUsers: this.isPublicVisibilityRestricted && !this.isSignedIn,
         isSignedIn: this.isSignedIn,
-        sort: this.sortKey,
+        sort: this.existingSortKey,
         state: this.state,
         ...this.pageParams,
         ...this.apiFilterParams,
@@ -575,6 +575,15 @@ export default {
     currentTabCount() {
       return this.tabCounts[this.state] || 0;
     },
+    existingSortKey() {
+      const hasSortKey = this.sortOptions.some(
+        (option) =>
+          option.sortDirection.ascending === this.sortKey ||
+          option.sortDirection.descending === this.sortKey,
+      );
+
+      return hasSortKey ? this.sortKey : CREATED_DESC;
+    },
   },
   watch: {
     $route(newValue, oldValue) {
@@ -837,7 +846,7 @@ export default {
       :has-scoped-labels-feature="hasScopedLabelsFeature"
       :initial-filter-value="filterTokens"
       :sort-options="sortOptions"
-      :initial-sort-by="sortKey"
+      :initial-sort-by="existingSortKey"
       :issuables="mergeRequests"
       issuable-symbol="!"
       :error="mergeRequestsError"

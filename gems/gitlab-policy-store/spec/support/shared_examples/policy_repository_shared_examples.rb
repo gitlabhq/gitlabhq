@@ -20,7 +20,7 @@ RSpec.shared_examples 'a policy repository' do
       rules: { 'rules' => [{ 'type' => 'scan_finding' }] },
       actions: [{ 'type' => 'require_approval' }],
       policy_scope: { 'compliance_frameworks' => [] },
-      scope_rego: 'package gitlab.policy.scope',
+      scope_rego: 'package gitlab.scope',
       mode: 'audit',
       lifecycle_state: 'active'
     }
@@ -46,7 +46,7 @@ RSpec.shared_examples 'a policy repository' do
         trigger_id: 'merge_request',
         rules: { 'rules' => [{ 'type' => 'scan_finding' }] },
         actions: [{ 'type' => 'require_approval' }],
-        scope_rego: 'package gitlab.policy.scope',
+        scope_rego: 'package gitlab.scope',
         mode: 'audit',
         lifecycle_state: 'active'
       )
@@ -76,6 +76,32 @@ RSpec.shared_examples 'a policy repository' do
       expect(policy).to be_a(Gitlab::PolicyStore::Policy)
       expect(policy.name).to eq('String key policy')
       expect(policy.organization_id).to eq(organization_id)
+    end
+
+    it 'compiles scope_rego from policy_scope when none is supplied' do
+      policy = repository.create(attributes.except(:scope_rego))
+
+      expect(policy.scope_rego).to include('package gitlab.scope')
+    end
+
+    it 'preserves an authored scope_rego instead of compiling one' do
+      authored = "package gitlab.scope\n\n# hand written"
+
+      policy = repository.create(attributes.merge(scope_rego: authored))
+
+      expect(policy.scope_rego).to eq(authored)
+    end
+
+    it 'clears policy_scope when scope_rego is authored, so the two cannot disagree' do
+      policy = repository.create(attributes.merge(scope_rego: 'package gitlab.scope'))
+
+      expect(policy.policy_scope).to be_nil
+    end
+
+    it 'compiles an applies-to-all scope_rego when the policy has no scope' do
+      policy = repository.create(minimal_attributes)
+
+      expect(policy.scope_rego).to include('no policy_scope: applies to all projects')
     end
 
     it 'raises ValidationError when organization_id is missing' do

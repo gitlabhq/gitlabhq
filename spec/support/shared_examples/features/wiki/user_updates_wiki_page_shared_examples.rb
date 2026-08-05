@@ -185,7 +185,7 @@ RSpec.shared_examples 'User updates wiki page' do
     let!(:wiki_page) { create(:wiki_page, wiki: wiki, title: page_dir, content: 'Home page') }
 
     before do
-      visit wiki_page_path(wiki, wiki_page, action: :edit)
+      visit wiki_page_path(wiki, wiki_page, action: :show, edit: 'true')
     end
 
     it 'does not move the page to root folder on changing the title' do
@@ -273,7 +273,7 @@ RSpec.shared_examples 'User updates wiki page' do
     before do
       stub_application_setting(wiki_page_max_content_bytes: 10)
 
-      visit wiki_page_path(wiki_page.wiki, wiki_page, action: :edit)
+      visit wiki_page_path(wiki_page.wiki, wiki_page, action: :show, edit: 'true')
     end
 
     it 'allows changing the path if the content does not change', :js,

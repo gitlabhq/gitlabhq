@@ -701,17 +701,18 @@ When you omit a foreign key for this reason, add the column to `allowed_to_be_mi
 
 ### Add transfer service support
 
-1. When a table is sharded by `organization_id`, you must also add `organization_transfer_support` to track whether the table is handled during organization transfers (when users or groups move between organizations).
-   - Set to `supported` if you've implemented the transfer logic in one of the transfer services:
-     - `app/services/organizations/transfer/groups_service.rb`
-     - `app/services/organizations/transfer/users_service.rb`
-     - `ee/app/services/ee/organizations/transfer/groups_service.rb`
+1. When a table is sharded by `organization_id`, you must also register its transfer support status
+   in `config/organizations/transfer_support.yml`. This file tracks whether each table is handled
+   during organization transfers (when users or groups move between organizations).
+   - Set to `supported` if you've implemented the transfer logic in one of the transfer services
+     at `{,ee/}app/services/**/organizations/transfer/*_service.rb`.
    - Set to `todo` if the table needs transfer support but doesn't have it yet (only for existing tables - new tables must be `supported`)
 
+   Add an entry in alphabetical order:
+
    ```yaml
-     sharding_key:
-       organization_id: organizations
-     organization_transfer_support: supported
+   # config/organizations/transfer_support.yml
+   your_table_name: supported
    ```
 
 1. Add your table to the appropriate transfer service using the `update_organization_id_for` helper:

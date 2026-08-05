@@ -83,6 +83,45 @@ RSpec.shared_examples 'groups query' do
         expect(names).to contain_exactly(owned_group.name)
       end
     end
+
+    context 'with negated `ids` argument' do
+      let(:filters) { { not: { ids: [public_group.to_global_id.to_s] } } }
+
+      it 'excludes the specified group from results' do
+        subject
+
+        expect(names).not_to include(public_group.name)
+      end
+
+      it 'returns other groups' do
+        private_group.add_maintainer(user)
+
+        subject
+
+        expect(names).to contain_exactly(private_group.name)
+      end
+
+      context 'when the negated arguments are empty' do
+        let(:filters) { { not: {} } }
+
+        it 'returns all accessible groups' do
+          subject
+
+          expect(names).to contain_exactly(public_group.name)
+        end
+      end
+
+      context 'when more IDs than the maximum are given' do
+        let(:filters) { { not: { ids: (1..11).map { |index| "gid://gitlab/Group/#{index}" } } } }
+
+        it 'returns an error' do
+          subject
+
+          expect(graphql_errors)
+            .to include(a_hash_including('message' => "ids is too long (maximum is 10)"))
+        end
+      end
+    end
   end
 
   describe 'active argument' do

@@ -11,6 +11,7 @@ describe('New Project', () => {
   let $projectPath;
   let $projectName;
   let $projectNameError;
+  let $projectPathError;
 
   const mockKeyup = (el) => el.dispatchEvent(new KeyboardEvent('keyup'));
   const mockChange = (el) => el.dispatchEvent(new Event('change'));
@@ -41,7 +42,8 @@ describe('New Project', () => {
               </div>
               <button class="js-group-namespace-button" type="button"></button>
               <div class="js-group-namespace-error gl-hidden"></div>
-              <input id="project_path" />
+              <input id="project_path" aria-invalid="false" />
+              <div class="gl-field-error gl-hidden" id="js-project-path-error" role="alert"></div>
               <div class="js-import-url-error hide"></div>
             </div>
             <div class="js-user-readme-repo"></div>
@@ -55,6 +57,7 @@ describe('New Project', () => {
     $projectPath = document.querySelector('#project_path');
     $projectName = document.querySelector('#project_name');
     $projectNameError = document.querySelector('#js-project-name-error');
+    $projectPathError = document.querySelector('#js-project-path-error');
   });
 
   afterEach(() => {
@@ -153,6 +156,98 @@ describe('New Project', () => {
       document.querySelector('.js-create-project-button').dispatchEvent(event);
 
       expect(event.defaultPrevented).toBe(false);
+    });
+  });
+
+  describe('project slug inline validation', () => {
+    beforeEach(() => {
+      projectNew.bindEvents();
+    });
+
+    it('shows no error for a valid slug', () => {
+      $projectPath.value = 'my-awesome-project';
+      triggerEvent($projectPath, 'change');
+
+      expect($projectPathError.classList.contains('gl-hidden')).toBe(true);
+      expect($projectPath.getAttribute('aria-invalid')).toBe('false');
+      expect($projectPath.hasAttribute('aria-describedby')).toBe(false);
+    });
+
+    it.each`
+      slug          | message
+      ${'-bad'}     | ${'Project slug must start with a letter or digit.'}
+      ${'bad!char'} | ${'Project slug can only contain letters, digits, underscores, periods, and dashes.'}
+      ${'repo.git'} | ${'Project slug must not end with `.git` or `.atom`.'}
+    `('shows the inline error "$message" for slug "$slug"', ({ slug, message }) => {
+      $projectPath.value = slug;
+      triggerEvent($projectPath, 'change');
+
+      expect($projectPathError.innerText).toBe(message);
+      expect($projectPathError.classList.contains('gl-hidden')).toBe(false);
+      expect($projectPath.getAttribute('aria-invalid')).toBe('true');
+      expect($projectPath.getAttribute('aria-describedby')).toBe($projectPathError.id);
+    });
+
+    it.each(['a', 'a.b-c_d'])('shows no error for backend-valid slug %p', (slug) => {
+      $projectPath.value = slug;
+      triggerEvent($projectPath, 'change');
+
+      expect($projectPathError.classList.contains('gl-hidden')).toBe(true);
+      expect($projectPath.getAttribute('aria-invalid')).toBe('false');
+    });
+
+    it('clears the inline error once the slug becomes valid', () => {
+      $projectPath.value = '-bad';
+      triggerEvent($projectPath, 'change');
+      expect($projectPathError.classList.contains('gl-hidden')).toBe(false);
+
+      $projectPath.value = 'my-awesome-project';
+      triggerEvent($projectPath, 'change');
+
+      expect($projectPathError.classList.contains('gl-hidden')).toBe(true);
+      expect($projectPath.getAttribute('aria-invalid')).toBe('false');
+    });
+
+    it('runs slug validation and prevents submission when the create project button is clicked with an invalid slug', () => {
+      $projectPath.value = '-bad';
+
+      const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+      document.querySelector('.js-create-project-button').dispatchEvent(event);
+
+      expect($projectPathError.innerText).toBe('Project slug must start with a letter or digit.');
+      expect($projectPathError.classList.contains('gl-hidden')).toBe(false);
+      expect($projectPath.getAttribute('aria-invalid')).toBe('true');
+      expect(event.defaultPrevented).toBe(true);
+    });
+
+    it('does not prevent submission when the slug is valid', () => {
+      $projectPath.value = 'my-project';
+      $projectName.value = 'my-project';
+
+      const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+      document.querySelector('.js-create-project-button').dispatchEvent(event);
+
+      expect(event.defaultPrevented).toBe(false);
+    });
+
+    it('does not prevent submission when the slug is only valid after the form trims it', () => {
+      $projectPath.value = ' a ';
+      $projectName.value = 'my-project';
+
+      const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+      document.querySelector('.js-create-project-button').dispatchEvent(event);
+
+      expect($projectPathError.classList.contains('gl-hidden')).toBe(true);
+      expect($projectPath.getAttribute('aria-invalid')).toBe('false');
+      expect(event.defaultPrevented).toBe(false);
+    });
+
+    it('does not validate mixed-case .git/.atom suffixes that the backend allows', () => {
+      $projectPath.value = 'repo.GIT';
+      triggerEvent($projectPath, 'change');
+
+      expect($projectPathError.classList.contains('gl-hidden')).toBe(true);
+      expect($projectPath.getAttribute('aria-invalid')).toBe('false');
     });
   });
 

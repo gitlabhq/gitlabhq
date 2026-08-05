@@ -46,10 +46,7 @@ export default {
     lastVersion: { default: null },
     pageVersion: { default: null },
     authorUrl: { default: null },
-    isEditingPath: { default: null },
-    wikiUrl: { default: null },
     createFromTemplateUrl: { default: null },
-    pagePersisted: { default: null },
     queryVariables: { default: null },
   },
   emits: ['is-editing'],
@@ -71,27 +68,6 @@ export default {
   computed: {
     showCreateFromTemplateButton() {
       return this.showEditButton && this.isPageTemplate && this.createFromTemplateUrl;
-    },
-    pageHeadingComputed() {
-      let { pageHeading } = this;
-
-      if (this.isEditingPath) {
-        if (this.wikiUrl.endsWith('_sidebar')) {
-          pageHeading = this.pagePersisted
-            ? this.$options.i18n.editSidebar
-            : this.$options.i18n.newSidebar;
-        } else if (this.isPageTemplate) {
-          pageHeading = this.pagePersisted
-            ? this.$options.i18n.editTemplate
-            : this.$options.i18n.newTemplate;
-        } else {
-          pageHeading = this.pagePersisted
-            ? this.$options.i18n.editPage
-            : this.$options.i18n.newPage;
-        }
-      }
-
-      return pageHeading;
     },
     editTooltipText() {
       return this.isPageTemplate ? this.$options.i18n.editTemplate : this.$options.i18n.editPage;
@@ -217,11 +193,11 @@ export default {
               <div class="toggle-with-hide-transition -gl-mr-2 gl-mb-1">
                 <wiki-sidebar-toggle action="open" />
               </div>
-              <span>{{ pageHeadingComputed }}</span>
+              <span>{{ pageHeading }}</span>
             </span>
           </template>
 
-          <template v-if="!isEditingPath" #actions>
+          <template #actions>
             <gl-button
               v-if="showCreateFromTemplateButton"
               v-gl-tooltip.html
@@ -289,7 +265,7 @@ export default {
 
     <wiki-sticky-header
       :is-sticky-header-showing="isStickyHeaderVisible"
-      :page-heading="pageHeadingComputed"
+      :page-heading="pageHeading"
       :show-edit-button="Boolean(showEditButton)"
       :wiki-page="wikiPage"
       @edit="setEditingMode"

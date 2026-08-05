@@ -314,7 +314,10 @@ gem 'gitlab-sidekiq-fetcher',
   feature_category: :scalability
 
 # Cron Parser
-gem 'fugit', '~> 1.11.1', feature_category: :continuous_integration
+# Pinned exactly: fugit 1.12 bumps et-orbi to 1.4, which shifts the `rweek`
+# reference date and changes which weeks match `%` cron expressions. See
+# https://gitlab.com/gitlab-org/gitlab/-/work_items/607759
+gem 'fugit', '1.11.2', feature_category: :continuous_integration
 
 # HTTP requests
 gem 'httparty', '~> 0.24.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839

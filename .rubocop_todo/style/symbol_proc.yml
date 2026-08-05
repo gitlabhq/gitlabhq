@@ -106,7 +106,6 @@ Style/SymbolProc:
     - 'qa/qa/specs/features/browser_ui/3_create/merge_request/rebase_merge_request_spec.rb'
     - 'qa/qa/specs/features/ee/browser_ui/3_create/merge_request/approval_rules_spec.rb'
     - 'rubocop/cop/gitlab/namespaced_class.rb'
-    - 'scripts/qa/testcases-check'
     - 'scripts/static-analysis'
     - 'spec/controllers/concerns/product_analytics_tracking_spec.rb'
     - 'spec/controllers/projects/merge_requests/conflicts_controller_spec.rb'

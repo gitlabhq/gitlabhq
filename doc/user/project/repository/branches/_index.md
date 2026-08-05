@@ -231,6 +231,7 @@ To change the default pattern for branches created from issues:
 1. Scroll to **Branch name template** and enter a value. The field supports these variables:
    - `%{id}`: The numeric ID of the issue.
    - `%{title}`: The title of the issue, modified to use only characters acceptable in Git branch names.
+   - `%{branch_creator}`: The username of the user who creates the branch, modified to use only characters acceptable in Git branch names.
 1. Select **Save changes**.
 
 ### Prefix branch names with a number

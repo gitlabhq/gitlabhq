@@ -7,9 +7,11 @@ module Gitlab
     # component boundary.
     #
     # A policy belongs to an organization, targets a single trigger, and carries
-    # its rules and actions as structured data. Scope is held both as authored
-    # data (`policy_scope`) and its compiled Rego form (`scope_rego`). `mode` is
-    # one of audit/warn/enforce; `lifecycle_state` tracks whether it is active.
+    # its rules and actions as structured data. `scope_rego` is the form that
+    # gets evaluated and is always present. `policy_scope` holds the authored
+    # structured source when there was one, and is nil when Rego was authored
+    # directly. `mode` is one of audit/warn/enforce, and `lifecycle_state`
+    # tracks whether the policy is active.
     class Policy
       attr_reader :id, :organization_id, :name, :version, :trigger_id,
         :rules, :actions, :policy_scope, :scope_rego, :mode, :lifecycle_state

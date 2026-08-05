@@ -1,0 +1,9 @@
+---
+name: update_security_scan_profiles
+description: Grants the ability to update security scan profiles
+boundaries:
+  - group
+available_for:
+  - granular_access_token
+permissions:
+  - update_security_scan_profiles

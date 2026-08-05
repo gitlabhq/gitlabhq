@@ -600,10 +600,11 @@ class Issue < ApplicationRecord
     )
   end
 
-  def self.to_branch_name(id, title, project: nil)
+  def self.to_branch_name(id, title, project: nil, current_user: nil)
     params = {
       'id' => id.to_s.parameterize(preserve_case: true),
-      'title' => title.to_s.parameterize
+      'title' => title.to_s.parameterize,
+      'branch_creator' => current_user&.username.to_s.parameterize(preserve_case: true)
     }
     template = project&.issue_branch_template
 
@@ -613,7 +614,7 @@ class Issue < ApplicationRecord
           params[arg]
         end
       else
-        params.values.select(&:present?).join('-')
+        params.values_at('id', 'title').select(&:present?).join('-')
       end
 
     if branch_name.length > 100
@@ -656,14 +657,15 @@ class Issue < ApplicationRecord
     "#{namespace.to_reference_base(from, full: full, absolute_path: absolute_path)}#{reference}"
   end
 
-  def suggested_branch_name
-    return to_branch_name unless project.repository.branch_exists?(to_branch_name)
+  def suggested_branch_name(current_user: nil)
+    base_branch_name = to_branch_name(current_user: current_user)
+    return base_branch_name unless project.repository.branch_exists?(base_branch_name)
 
     start_counting_from = 2
 
     branch_name_generator = ->(counter) do
       suffix = counter > 5 ? SecureRandom.hex(8) : counter
-      "#{to_branch_name}-#{suffix}"
+      "#{base_branch_name}-#{suffix}"
     end
 
     Gitlab::Utils::Uniquify.new(start_counting_from).string(branch_name_generator) do |suggested_branch_name|
@@ -698,11 +700,11 @@ class Issue < ApplicationRecord
   end
   alias_method :can_clone?, :can_move?
 
-  def to_branch_name
+  def to_branch_name(current_user: nil)
     if self.confidential?
       "#{iid}-confidential-issue"
     else
-      self.class.to_branch_name(iid, title, project: project)
+      self.class.to_branch_name(iid, title, project: project, current_user: current_user)
     end
   end
 

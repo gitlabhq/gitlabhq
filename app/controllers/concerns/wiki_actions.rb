@@ -212,7 +212,7 @@ module WikiActions
     @page = build_page(title: title)
     @templates = templates_list
 
-    render 'shared/wikis/edit'
+    render 'shared/wikis/show'
 
     flash[:notice] = nil if params[:redirected_from]
   end
@@ -223,9 +223,9 @@ module WikiActions
   end
 
   def edit
-    @templates = templates_list
-
-    render 'shared/wikis/edit'
+    redirect_to(
+      wiki_page_path(wiki, page, action: :show, edit: 'true')
+    )
   end
 
   def update
@@ -241,10 +241,8 @@ module WikiActions
     if response.success?
       handle_action_success :updated, @page
     else
-      @error = response.message
-      @templates = templates_list
-
-      render 'shared/wikis/edit'
+      flash[:error] = response.message
+      redirect_to wiki_page_path(wiki, @page, action: :show, edit: 'true')
     end
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
@@ -258,9 +256,10 @@ module WikiActions
     if response.success?
       handle_action_success :created, @page
     else
+      @error = response.message
       @templates = templates_list
 
-      render 'shared/wikis/edit'
+      render 'shared/wikis/show'
     end
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
@@ -296,7 +295,6 @@ module WikiActions
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
-  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def destroy
     return render_404 unless page
 
@@ -307,13 +305,10 @@ module WikiActions
 
       redirect_to wiki_path(wiki), status: :found
     else
-      @error = response.message
-      @templates = templates_list
-
-      render 'shared/wikis/edit'
+      flash[:error] = response.message
+      redirect_to wiki_page_path(wiki, page, action: :show, edit: 'true'), status: :found
     end
   end
-  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   def git_access
     render 'shared/wikis/git_access'

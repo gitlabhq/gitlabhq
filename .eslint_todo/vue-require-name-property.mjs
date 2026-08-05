@@ -3,8 +3,6 @@
  */
 export default {
   files: [
-    'app/assets/javascripts/contributors/components/contributors.vue',
-    'app/assets/javascripts/contributors/components/individual_chart.vue',
     'ee/app/assets/javascripts/ci/job_details/components/root_cause_analysis_button.vue',
     'ee/app/assets/javascripts/ci/pipeline_details/tabs/pipeline_tabs.vue',
     'ee/app/assets/javascripts/compliance_dashboard/components/dashboard/components/status_chart.vue',

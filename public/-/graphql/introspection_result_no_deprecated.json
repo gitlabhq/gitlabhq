@@ -13906,6 +13906,35 @@
           ]
         },
         {
+          "kind": "INPUT_OBJECT",
+          "name": "BaseGroupsResolverNegatedParams",
+          "description": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "ids",
+              "description": "Filters groups to exclude the group IDs provided in the given array. Up to 10 values.",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "GroupID",
+                    "ofType": null
+                  }
+                }
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
           "kind": "INTERFACE",
           "name": "BaseNoteInterface",
           "description": null,
@@ -104845,6 +104874,12 @@
               "deprecationReason": null
             },
             {
+              "name": "UPDATE_SECURITY_SCAN_PROFILES",
+              "description": "Update security scan profiles.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "READ_ADMIN_CICD",
               "description": "Read CI/CD details for runners and jobs in the Admin Area.",
               "isDeprecated": false,
@@ -177364,6 +177399,16 @@
                         "ofType": null
                       }
                     }
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "not",
+                  "description": "List of negated arguments.\nWarning: this argument is experimental and a subject to change in future.\n",
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "BaseGroupsResolverNegatedParams",
+                    "ofType": null
                   },
                   "defaultValue": null
                 },

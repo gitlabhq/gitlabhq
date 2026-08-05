@@ -36,7 +36,7 @@ export default {
       class="gl-mb-2"
       :status="pipelineStatus"
       show-status-text
-      @ciStatusBadgeClick="trackClick"
+      @ci-status-badge-click="trackClick"
     />
     <pipelines-timeago :pipeline="pipeline" />
   </div>

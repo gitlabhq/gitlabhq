@@ -14,7 +14,7 @@ export default {
   },
   model: {
     prop: 'selectedGroupFullPath',
-    event: 'selectGroup',
+    event: 'select-group',
   },
   props: {
     fullPath: {
@@ -32,7 +32,7 @@ export default {
       default: null,
     },
   },
-  emits: ['error', 'selectGroup'],
+  emits: ['error', 'select-group'],
   data() {
     return {
       group: {},
@@ -114,7 +114,7 @@ export default {
       this.searchKey = keyword;
     },
     handleSelect(groupFullPath) {
-      this.$emit('selectGroup', groupFullPath);
+      this.$emit('select-group', groupFullPath);
     },
     async handleDropdownShow() {
       this.searchKey = '';

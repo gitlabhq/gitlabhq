@@ -40,7 +40,6 @@ module QA
           line_number: line_number.to_i,
           run_time: example.execution_result.run_time,
           pending_message: example.execution_result.pending_message,
-          testcase: example.metadata[:testcase],
           quarantine: example.metadata[:quarantine],
           screenshot: example.metadata[:screenshot],
           product_group: example.metadata[:product_group],

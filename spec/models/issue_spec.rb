@@ -1279,6 +1279,31 @@ RSpec.describe Issue, feature_category: :team_planning do
         end
       end
     end
+
+    context 'with current_user given' do
+      subject(:issue) { create(:issue) }
+
+      let(:user) { build_stubbed(:user, username: 'jane_doe') }
+
+      before do
+        subject.project.project_setting.update!(issue_branch_template: '%{branch_creator}-%{id}')
+      end
+
+      it 'threads current_user through to #to_branch_name' do
+        allow(repository).to receive(:branch_exists?).and_return(false)
+
+        expect(subject.suggested_branch_name(current_user: user)).to eq(subject.to_branch_name(current_user: user))
+      end
+
+      it 'threads current_user through when de-duplicating the suggested name' do
+        allow(repository).to receive(:branch_exists?).and_return(true)
+        allow(repository).to receive(:branch_exists?)
+          .with(/#{subject.to_branch_name(current_user: user)}-\d/).and_return(false)
+
+        expect(subject.suggested_branch_name(current_user: user))
+          .to eq("#{subject.to_branch_name(current_user: user)}-2")
+      end
+    end
   end
 
   it_behaves_like 'a time trackable' do
@@ -1326,6 +1351,36 @@ RSpec.describe Issue, feature_category: :team_planning do
 
       expect(described_class.to_branch_name(123, 'issue title', project: project)).to eq('feature-123-issue-title')
     end
+
+    context 'with %{branch_creator} in the issue branch template' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:user) { create(:user, username: 'jane.doe_1') }
+
+      before do
+        project.project_setting.update!(issue_branch_template: 'feature-%{id}-%{branch_creator}-%{title}')
+      end
+
+      it 'substitutes it with the parameterized username of the given current_user' do
+        branch_name = described_class.to_branch_name(123, 'issue title', project: project, current_user: user)
+
+        expect(branch_name).to eq('feature-123-jane-doe_1-issue-title')
+      end
+
+      it 'substitutes it with an empty string when no current_user is given' do
+        branch_name = described_class.to_branch_name(123, 'issue title', project: project)
+
+        expect(branch_name).to eq('feature-123--issue-title')
+        expect(branch_name).not_to include('branch_creator')
+      end
+    end
+
+    it 'does not include the branch creator in the default branch name when no template is set' do
+      user = build_stubbed(:user, username: 'jane_doe')
+
+      branch_name = described_class.to_branch_name(123, 'issue title', current_user: user)
+
+      expect(branch_name).to eq('123-issue-title')
+    end
   end
 
   describe '#to_branch_name' do
@@ -1338,6 +1393,20 @@ RSpec.describe Issue, feature_category: :team_planning do
     it 'returns a generic branch name if confidential' do
       issue.confidential = true
       expect(issue.to_branch_name).to eq('123-confidential-issue')
+    end
+
+    it 'ignores current_user when the issue is confidential' do
+      issue.confidential = true
+      user = build_stubbed(:user, username: 'jane_doe')
+
+      expect(issue.to_branch_name(current_user: user)).to eq('123-confidential-issue')
+    end
+
+    it 'substitutes %{branch_creator} when the project template references it' do
+      issue.project.project_setting.update!(issue_branch_template: '%{branch_creator}-%{id}')
+      user = build_stubbed(:user, username: 'jane_doe')
+
+      expect(issue.to_branch_name(current_user: user)).to eq('jane_doe-123')
     end
   end
 
