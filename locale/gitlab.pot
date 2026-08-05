@@ -7985,6 +7985,9 @@ msgstr ""
 msgid "AgentArtifacts|Author name"
 msgstr ""
 
+msgid "AgentArtifacts|Client type"
+msgstr ""
+
 msgid "AgentArtifacts|Content"
 msgstr ""
 
