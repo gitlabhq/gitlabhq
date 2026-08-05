@@ -1,0 +1,14 @@
+---
+table_name: mobile_device_push_subscriptions
+classes:
+- Notifications::MobileDevicePushSubscription
+feature_categories:
+- notifications
+description: Stores APNs push notification subscriptions registered by the GitLab
+  mobile app. Each record represents one device installation for a user.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248022
+milestone: '19.3'
+gitlab_schema: gitlab_main_user
+sharding_key:
+  user_id: users
+table_size: small

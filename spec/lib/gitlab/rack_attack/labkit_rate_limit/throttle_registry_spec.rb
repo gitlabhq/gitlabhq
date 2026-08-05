@@ -69,6 +69,26 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::ThrottleRegistry, feature_ca
 
       expect { described_class.all }.to raise_error(KeyError, /unknown throttle/)
     end
+
+    it 'declares a claim on every entry' do
+      # Every throttle currently claims its requests (the terminating :skip pair
+      # Limiters derives), preserving Rack::Attack's exclusions. An entry opting
+      # out of that is a deliberate fall-through and would change this expectation.
+      entries.each_value do |entry|
+        expect(entry.claims?).to be(true), "expected #{entry.rule_name} to declare claims: true"
+      end
+    end
+
+    it 'raises if an entry does not declare :claims' do
+      # The declaration is mandatory, never defaulted: a new throttle cannot
+      # silently decide whether requests it counts fall through to the rules
+      # below it.
+      undeclared = described_class.meta.deep_dup
+      undeclared['throttle_unauthenticated_api'].delete(:claims)
+      allow(described_class).to receive(:meta).and_return(undeclared)
+
+      expect { described_class.all }.to raise_error(KeyError, /must declare :claims/)
+    end
   end
 
   describe 'classification matches' do

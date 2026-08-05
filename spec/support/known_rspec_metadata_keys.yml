@@ -109,6 +109,7 @@
 - :path
 - :pending
 - :permit_dns
+- :policy_store
 - :postgres_adapter
 - :praefect
 - :prometheus

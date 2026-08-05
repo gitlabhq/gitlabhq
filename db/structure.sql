@@ -24508,6 +24508,35 @@ CREATE SEQUENCE ml_models_id_seq
 
 ALTER SEQUENCE ml_models_id_seq OWNED BY ml_models.id;
 
+CREATE TABLE mobile_device_push_subscriptions (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    last_seen_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    platform smallint DEFAULT 0 NOT NULL,
+    apns_environment smallint DEFAULT 0 NOT NULL,
+    payload_mode smallint DEFAULT 0 NOT NULL,
+    device_token jsonb NOT NULL,
+    bundle_identifier text,
+    device_name text,
+    app_version text,
+    locale text,
+    CONSTRAINT check_2a42d22870 CHECK ((char_length(locale) <= 32)),
+    CONSTRAINT check_7822aaa873 CHECK ((char_length(app_version) <= 64)),
+    CONSTRAINT check_b73b87a4a0 CHECK ((char_length(bundle_identifier) <= 255)),
+    CONSTRAINT check_d597db7547 CHECK ((char_length(device_name) <= 255))
+);
+
+CREATE SEQUENCE mobile_device_push_subscriptions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE mobile_device_push_subscriptions_id_seq OWNED BY mobile_device_push_subscriptions.id;
+
 CREATE TABLE namespace_admin_notes (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -36925,6 +36954,8 @@ ALTER TABLE ONLY ml_model_versions ALTER COLUMN id SET DEFAULT nextval('ml_model
 
 ALTER TABLE ONLY ml_models ALTER COLUMN id SET DEFAULT nextval('ml_models_id_seq'::regclass);
 
+ALTER TABLE ONLY mobile_device_push_subscriptions ALTER COLUMN id SET DEFAULT nextval('mobile_device_push_subscriptions_id_seq'::regclass);
+
 ALTER TABLE ONLY namespace_admin_notes ALTER COLUMN id SET DEFAULT nextval('namespace_admin_notes_id_seq'::regclass);
 
 ALTER TABLE ONLY namespace_bans ALTER COLUMN id SET DEFAULT nextval('namespace_bans_id_seq'::regclass);
@@ -40602,6 +40633,9 @@ ALTER TABLE ONLY ml_model_versions
 
 ALTER TABLE ONLY ml_models
     ADD CONSTRAINT ml_models_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY mobile_device_push_subscriptions
+    ADD CONSTRAINT mobile_device_push_subscriptions_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY namespace_admin_notes
     ADD CONSTRAINT namespace_admin_notes_pkey PRIMARY KEY (id);
@@ -45137,6 +45171,8 @@ CREATE INDEX idx_merge_requests_on_source_project_and_branch_state_opened ON mer
 
 CREATE INDEX idx_merge_requests_on_unmerged_state_id ON merge_requests USING btree (id) WHERE (state_id <> 3);
 
+CREATE UNIQUE INDEX idx_mobile_push_subscriptions_on_token_and_environment ON mobile_device_push_subscriptions USING btree (device_token, apns_environment);
+
 CREATE INDEX idx_mr_cc_diff_files_on_mr_cc_id_and_sha ON merge_request_context_commit_diff_files USING btree (merge_request_context_commit_id, sha);
 
 CREATE INDEX idx_mr_closing_issues_on_mr_link_issue_from ON merge_requests_closing_issues USING btree (merge_request_id, link_type, issue_id, from_mr_description);
@@ -48666,6 +48702,10 @@ CREATE INDEX index_ml_models_on_project_id ON ml_models USING btree (project_id)
 CREATE UNIQUE INDEX index_ml_models_on_project_id_and_name ON ml_models USING btree (project_id, name);
 
 CREATE INDEX index_ml_models_on_user_id ON ml_models USING btree (user_id);
+
+CREATE INDEX index_mobile_device_push_subscriptions_on_last_seen_at ON mobile_device_push_subscriptions USING btree (last_seen_at);
+
+CREATE INDEX index_mobile_device_push_subscriptions_on_user_id ON mobile_device_push_subscriptions USING btree (user_id);
 
 CREATE UNIQUE INDEX index_mr_approval_metrics_on_project_id_and_mr_id ON merge_request_approval_metrics USING btree (target_project_id, merge_request_id);
 
@@ -58783,6 +58823,9 @@ ALTER TABLE ONLY cluster_providers_aws
 
 ALTER TABLE ONLY incident_management_escalation_rules
     ADD CONSTRAINT fk_cdfc40b861 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY mobile_device_push_subscriptions
+    ADD CONSTRAINT fk_ce6837f03a FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY packages_dependencies
     ADD CONSTRAINT fk_cea1124da7 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

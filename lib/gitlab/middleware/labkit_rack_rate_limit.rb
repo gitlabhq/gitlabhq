@@ -111,9 +111,9 @@ module Gitlab
       end
 
       # The first rule that blocked, or nil. A dry-run throttle's rule is :log, so it
-      # never reports :block; the synthetic bypass/skip/runner rules and an unmatched
-      # request are :allow. So neither a tracked-only throttle nor a short-circuited
-      # request is ever read as a block.
+      # never reports :block; the synthetic bypass/skip/runner/claim rules and an
+      # unmatched request are :allow. So neither a tracked-only throttle nor a
+      # short-circuited request is ever read as a block.
       def blocking_result(results)
         results.find { |result| blocked?(result) }
       end

@@ -83,7 +83,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
     end
 
     context 'when the labkit check errors' do
-      let(:broken_result) { Labkit::RateLimit::Result.new(matched: false, error: true, action: :allow) }
+      let(:broken_result) { Labkit::RateLimit::Result.error }
       let(:limiter) { instance_double(Labkit::RateLimit::Limiter, check: broken_result) }
 
       before do
@@ -96,7 +96,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
     end
 
     it 'checks through the cached limiter from the registry' do
-      result = Labkit::RateLimit::Result.new(matched: false, error: false, action: :allow)
+      result = Labkit::RateLimit::Result.new
       limiter = instance_double(Labkit::RateLimit::Limiter, check: result)
 
       allow(supported_rate_limits).to receive(:limiter_for).with(:users_get_by_id).and_return(limiter)
@@ -111,7 +111,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
     end
 
     it 'delegates to SupportedRateLimits.limiter_for on each check' do
-      result = Labkit::RateLimit::Result.new(matched: false, error: false, action: :allow)
+      result = Labkit::RateLimit::Result.new
       limiter = instance_double(Labkit::RateLimit::Limiter, check: result)
 
       allow(supported_rate_limits).to receive(:limiter_for).with(:users_get_by_id).and_return(limiter)
@@ -253,7 +253,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
           count_distinct: :project_id,
           limit: ->(ctx) { ctx&.dig(:threshold) || 5 },
           period: ->(ctx) { ctx&.dig(:interval) || 60 },
-          action: :block
+          action: :limit
         )
       end
 
@@ -518,7 +518,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
     end
 
     context 'when the labkit peek errors' do
-      let(:broken_result) { Labkit::RateLimit::Result.new(matched: false, error: true, action: :allow) }
+      let(:broken_result) { Labkit::RateLimit::Result.error }
       let(:limiter) { instance_double(Labkit::RateLimit::Limiter, peek: broken_result) }
 
       before do
@@ -531,7 +531,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
     end
 
     it 'peeks through the cached limiter from the registry' do
-      result = Labkit::RateLimit::Result.new(matched: false, error: false, action: :allow)
+      result = Labkit::RateLimit::Result.new
       limiter = instance_double(Labkit::RateLimit::Limiter, peek: result)
 
       allow(supported_rate_limits).to receive(:limiter_for).with(:glql).and_return(limiter)
@@ -545,7 +545,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
     end
 
     it 'delegates to SupportedRateLimits.limiter_for on each peek' do
-      result = Labkit::RateLimit::Result.new(matched: false, error: false, action: :allow)
+      result = Labkit::RateLimit::Result.new
       limiter = instance_double(Labkit::RateLimit::Limiter, peek: result)
 
       allow(supported_rate_limits).to receive(:limiter_for).with(:glql).and_return(limiter)

@@ -42,7 +42,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
       characteristics: characteristics,
       limit: ->(ctx) { ctx&.dig(:threshold) || limit.to_i },
       period: ->(ctx) { ctx&.dig(:interval) || period.to_i },
-      action: :block
+      action: :limit
     )
   end
 
@@ -300,7 +300,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
           characteristics: characteristics,
           limit: limit,
           period: period,
-          action: :block
+          action: :limit
         )
       end
 
@@ -694,7 +694,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
           count_distinct: :project_id,
           limit: ->(ctx) { ctx&.dig(:threshold) || 1 },
           period: ->(ctx) { ctx&.dig(:interval) || 1.minute },
-          action: :block
+          action: :limit
         )
       end
 

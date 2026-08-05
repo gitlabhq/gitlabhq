@@ -21234,7 +21234,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_f8df00b9df82"
+              "$ref": "#/components/schemas/RequestBody_047f0d8da63f"
     get:
       operationId: getApiV4Mcp
       summary: Get MCP response listener
@@ -102097,7 +102097,7 @@ components:
           description: "[Deprecated in 14.10] No longer allowed to update confidentiality
             of notes"
           nullable: true
-    RequestBody_f8df00b9df82:
+    RequestBody_047f0d8da63f:
       type: object
       properties:
         jsonrpc:
@@ -102111,9 +102111,11 @@ components:
           description: Name of the JSON-RPC method invoked on the MCP server.
           nullable: true
         id:
-          type: string
-          description: ID of the JSON-RPC request returned in the response.
-          nullable: true
+          oneOf:
+          - type: integer
+            nullable: true
+          - type: string
+            nullable: true
         params:
           oneOf:
           - type: object

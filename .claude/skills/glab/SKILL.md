@@ -1,7 +1,7 @@
 ---
 name: glab
-description: GitLab workflow automation using glab CLI
-version: 1.11.1
+description: GitLab workflow automation using the glab CLI. Use when the user asks to create, update, close, label, or comment on a GitLab issue, merge request, work item, or epic; to post a note, review comment, or discussion reply; to call the GitLab REST or GraphQL API through "glab api"; to inspect or retry pipelines and jobs; or to configure glab auth against gitlab.com, a self-managed instance, or a local GDK. Read it before any glab write operation, because several field flags fail silently - they exit 0 while posting the wrong content.
+version: 1.12.0
 category: Development Workflow
 license: MIT
 metadata:

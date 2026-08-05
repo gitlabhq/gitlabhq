@@ -230,7 +230,7 @@ This endpoint has been requested too many times. Try again later.
 
 This setting limits the request rate to the pipeline creation endpoints.
 
-Read more about [pipeline creation rate limits](settings/rate_limit_on_pipelines_creation.md).
+Read more about [pipeline creation rate limits](cicd/limits.md#pipeline-creation-rate-limits).
 
 ## Gitaly concurrency limit
 
@@ -697,7 +697,7 @@ the project's unique domain is treated as its own top-level namespace with a sep
 
 This setting limits the number of inbound alert payloads over a period of time.
 
-Read more about [incident management rate limits](settings/rate_limit_on_pipelines_creation.md).
+Read more about [incident management rate limits](settings/incident_management_rate_limits.md).
 
 ### Prometheus Alert JSON payloads
 

@@ -20,9 +20,10 @@ module Gitlab
       #                   (unauthenticated? is exactly no-requester-and-no-runner). The
       #                   match carries no negations: a general throttle does not
       #                   exclude the specialized ones it overlaps; instead the rules
-      #                   are ordered specialized-before-general and Labkit's
-      #                   first-match-wins evaluation lets the specialized rule claim
-      #                   the request, exactly as Rack::Attack's hand-written
+      #                   are ordered specialized-before-general and each entry
+      #                   declares a terminating claim (:claims below), so the first
+      #                   throttle to match counts the request and stops evaluation,
+      #                   exactly as Rack::Attack's hand-written
       #                   `!throttle_packages? && ...` exclusions do.
       #   :characteristics the identifier slots the rule counts by, as the array the
       #                   SDK's Rule expects. Labkit joins them in order into the redis
@@ -38,12 +39,22 @@ module Gitlab
       #                   presence gate on the id ({ requester_id => /./ }, { aid => /./ })
       #                   in its :match, which suppresses it when the value is absent -
       #                   mirroring the Rack::Attack lambda returning nil.
+      #   :claims         whether Limiters follows the counting rule with a
+      #                   terminating :skip claim (<rule_name>_claim, or
+      #                   <rule_name>_dry_run_bypass in dry-run mode). The claim's
+      #                   match is always derived from this entry's :match, never
+      #                   written out here, so a claim can never match a request its
+      #                   counting rule did not count. Mandatory on every entry
+      #                   (.all raises on an undeclared one): adding a throttle
+      #                   forces the decision of whether it stops evaluation or lets
+      #                   the request fall through to the rules below it.
       #   :cohort         drives the per-cohort enforce flag. Cohort gates enforcement
       #                   only: every rule is always built (universal presence), so
       #                   an inactive cohort still classifies and counts but its block
       #                   does not become a 429.
       #
-      # Order within a limiter is load-bearing (it encodes the exclusions): the hash
+      # Order within a limiter is load-bearing (together with the declared claim
+      # rules, it encodes the exclusions): the hash
       # is insertion-ordered and Limiters builds rules in that order. The order is
       # specialized API -> git -> web -> general API, so a packages request is claimed
       # by the packages rule before the general API rule, a frontend request (an API
@@ -73,9 +84,11 @@ module Gitlab
         # only for a sibling rule that shares another throttle (the web frontend
         # companions): name is the shared throttle, rule_name the companion's own.
         Entry = Struct.new(
-          :name, :limiter, :rule_name, :characteristics, :match, :cohort, :definition,
+          :name, :limiter, :rule_name, :characteristics, :match, :cohort, :definition, :claims,
           keyword_init: true
-        )
+        ) do
+          alias_method :claims?, :claims
+        end
 
         class << self
           # The static throttle metadata, keyed by throttle name, in rule order.
@@ -102,6 +115,10 @@ module Gitlab
               throttle = attrs[:throttle] || rule_id
               definition = definitions.fetch(throttle) do
                 raise KeyError, "LabkitRateLimit registry references unknown throttle #{throttle.inspect}"
+              end
+
+              unless attrs.key?(:claims)
+                raise KeyError, "LabkitRateLimit registry entry #{rule_id.inspect} must declare :claims"
               end
 
               entries[rule_id] = Entry.new(
@@ -187,31 +204,31 @@ module Gitlab
               # deprecated). Ordered first so they claim their requests before the
               # general API rule. Lowest risk.
               'throttle_product_analytics_collector' => {
-                limiter: GENERAL, characteristics: [:aid], cohort: 1,
+                limiter: GENERAL, characteristics: [:aid], cohort: 1, claims: true,
                 match: { path: COLLECTOR_PATH_REGEX, aid: /./ }
               },
               'throttle_unauthenticated_packages_api' => {
-                limiter: GENERAL, characteristics: [:ip], cohort: 1,
+                limiter: GENERAL, characteristics: [:ip], cohort: 1, claims: true,
                 match: { path: packages, requester_id: nil, runner_id: nil, setting_unauthenticated_packages: true }
               },
               'throttle_authenticated_packages_api' => {
-                limiter: GENERAL, characteristics: [:requester_type, :requester_id], cohort: 1,
+                limiter: GENERAL, characteristics: [:requester_type, :requester_id], cohort: 1, claims: true,
                 match: { path: packages, setting_authenticated_packages: true, requester_id: /./ }
               },
               'throttle_unauthenticated_files_api' => {
-                limiter: GENERAL, characteristics: [:ip], cohort: 1,
+                limiter: GENERAL, characteristics: [:ip], cohort: 1, claims: true,
                 match: { path: files, requester_id: nil, runner_id: nil, setting_unauthenticated_files: true }
               },
               'throttle_authenticated_files_api' => {
-                limiter: GENERAL, characteristics: [:requester_type, :requester_id], cohort: 1,
+                limiter: GENERAL, characteristics: [:requester_type, :requester_id], cohort: 1, claims: true,
                 match: { path: files, setting_authenticated_files: true, requester_id: /./ }
               },
               'throttle_unauthenticated_deprecated_api' => {
-                limiter: GENERAL, characteristics: [:ip], cohort: 1,
+                limiter: GENERAL, characteristics: [:ip], cohort: 1, claims: true,
                 match: { deprecated: true, requester_id: nil, runner_id: nil, setting_unauthenticated_deprecated: true }
               },
               'throttle_authenticated_deprecated_api' => {
-                limiter: GENERAL, characteristics: [:requester_type, :requester_id], cohort: 1,
+                limiter: GENERAL, characteristics: [:requester_type, :requester_id], cohort: 1, claims: true,
                 match: { deprecated: true, setting_authenticated_deprecated: true, requester_id: /./ }
               },
 
@@ -220,15 +237,15 @@ module Gitlab
               # non-LFS git request falls through to git_http. Promoted last (cohort
               # 3) alongside protected paths.
               'throttle_authenticated_git_lfs' => {
-                limiter: GENERAL, characteristics: [:requester_type, :requester_id], cohort: 3,
+                limiter: GENERAL, characteristics: [:requester_type, :requester_id], cohort: 3, claims: true,
                 match: { path: git_lfs, setting_authenticated_git_lfs: true, requester_id: /./ }
               },
               'throttle_authenticated_git_http' => {
-                limiter: GENERAL, characteristics: [:requester_type, :requester_id], cohort: 3,
+                limiter: GENERAL, characteristics: [:requester_type, :requester_id], cohort: 3, claims: true,
                 match: { path: git, setting_authenticated_git_http: true, requester_id: /./ }
               },
               'throttle_unauthenticated_git_http' => {
-                limiter: GENERAL, characteristics: [:ip], cohort: 3,
+                limiter: GENERAL, characteristics: [:ip], cohort: 3, claims: true,
                 match: { path: git, requester_id: nil, runner_id: nil, setting_unauthenticated_git_http: true }
               },
 
@@ -243,29 +260,29 @@ module Gitlab
               # immediately after its web-path rule and before the API rules so it
               # claims frontend requests on API paths first.
               'throttle_unauthenticated_web' => {
-                limiter: GENERAL, characteristics: [:ip], cohort: 2,
+                limiter: GENERAL, characteristics: [:ip], cohort: 2, claims: true,
                 match: { path: WEB_PATH_REGEX, requester_id: nil, runner_id: nil, setting_unauthenticated_web: true }
               },
               'throttle_unauthenticated_web_frontend' => {
                 throttle: 'throttle_unauthenticated_web',
-                limiter: GENERAL, characteristics: [:ip], cohort: 2,
+                limiter: GENERAL, characteristics: [:ip], cohort: 2, claims: true,
                 match: { frontend: true, requester_id: nil, runner_id: nil, setting_unauthenticated_web: true }
               },
               'throttle_authenticated_web' => {
-                limiter: GENERAL, characteristics: [:requester_type, :requester_id], cohort: 2,
+                limiter: GENERAL, characteristics: [:requester_type, :requester_id], cohort: 2, claims: true,
                 match: { path: WEB_PATH_REGEX, setting_authenticated_web: true, requester_id: /./ }
               },
               'throttle_authenticated_web_frontend' => {
                 throttle: 'throttle_authenticated_web',
-                limiter: GENERAL, characteristics: [:requester_type, :requester_id], cohort: 2,
+                limiter: GENERAL, characteristics: [:requester_type, :requester_id], cohort: 2, claims: true,
                 match: { frontend: true, setting_authenticated_web: true, requester_id: /./ }
               },
               'throttle_unauthenticated_api' => {
-                limiter: GENERAL, characteristics: [:ip], cohort: 2,
+                limiter: GENERAL, characteristics: [:ip], cohort: 2, claims: true,
                 match: { path: api, requester_id: nil, runner_id: nil, setting_unauthenticated_api: true }
               },
               'throttle_authenticated_api' => {
-                limiter: GENERAL, characteristics: [:requester_type, :requester_id], cohort: 2,
+                limiter: GENERAL, characteristics: [:requester_type, :requester_id], cohort: 2, claims: true,
                 match: { path: api, setting_authenticated_api: true, requester_id: /./ }
               },
 
@@ -274,41 +291,41 @@ module Gitlab
               # variants split by method; api/web split by the api path regex / the
               # web path regex (WEB_PATH_REGEX, the native form of web_request?).
               'throttle_unauthenticated_protected_paths' => {
-                limiter: PROTECTED, characteristics: [:ip], cohort: 3,
+                limiter: PROTECTED, characteristics: [:ip], cohort: 3, claims: true,
                 match: {
                   method: 'POST', protected_path: true, requester_id: nil, runner_id: nil,
                   setting_protected_paths: true
                 }
               },
               'throttle_authenticated_protected_paths_api' => {
-                limiter: PROTECTED, characteristics: [:requester_type, :requester_id], cohort: 3,
+                limiter: PROTECTED, characteristics: [:requester_type, :requester_id], cohort: 3, claims: true,
                 match: {
                   method: 'POST', path: api, protected_path: true, setting_protected_paths: true, requester_id: /./
                 }
               },
               'throttle_authenticated_protected_paths_web' => {
-                limiter: PROTECTED, characteristics: [:requester_type, :requester_id], cohort: 3,
+                limiter: PROTECTED, characteristics: [:requester_type, :requester_id], cohort: 3, claims: true,
                 match: {
                   method: 'POST', path: WEB_PATH_REGEX, protected_path: true, setting_protected_paths: true,
                   requester_id: /./
                 }
               },
               'throttle_unauthenticated_get_protected_paths' => {
-                limiter: PROTECTED, characteristics: [:ip], cohort: 3,
+                limiter: PROTECTED, characteristics: [:ip], cohort: 3, claims: true,
                 match: {
                   method: 'GET', protected_path: true, requester_id: nil, runner_id: nil,
                   setting_protected_paths: true
                 }
               },
               'throttle_authenticated_get_protected_paths_api' => {
-                limiter: PROTECTED, characteristics: [:requester_type, :requester_id], cohort: 3,
+                limiter: PROTECTED, characteristics: [:requester_type, :requester_id], cohort: 3, claims: true,
                 match: {
                   method: 'GET', path: api, protected_path: true, setting_protected_paths: true,
                   requester_id: /./
                 }
               },
               'throttle_authenticated_get_protected_paths_web' => {
-                limiter: PROTECTED, characteristics: [:requester_type, :requester_id], cohort: 3,
+                limiter: PROTECTED, characteristics: [:requester_type, :requester_id], cohort: 3, claims: true,
                 match: {
                   method: 'GET', path: WEB_PATH_REGEX, protected_path: true, setting_protected_paths: true,
                   requester_id: /./

@@ -45,7 +45,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter::SupportedRateLimit
         expect(rule.characteristics).to be_an(Array), "#{key} characteristics must be an Array"
         expect(rule.characteristics).not_to be_empty, "#{key} characteristics must not be empty"
         expect(rule.characteristics).to all(be_a(Symbol)), "#{key} characteristics must be Symbols"
-        expect(rule.action).to eq(:block), "#{key} action must be :block"
+        expect(rule.action).to eq(:limit), "#{key} action must be :limit"
       end
     end
 
@@ -126,7 +126,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter::SupportedRateLimit
         characteristics: %i[user],
         limit: ->(ctx) { ctx&.dig(:threshold) || 3 },
         period: ->(ctx) { ctx&.dig(:interval) || 1.minute },
-        action: :block
+        action: :limit
       )
     end
 
@@ -154,7 +154,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter::SupportedRateLimit
         characteristics: %i[user],
         limit: ->(ctx) { ctx&.dig(:threshold) || 1 },
         period: ->(ctx) { ctx&.dig(:interval) || 2.minutes },
-        action: :block
+        action: :limit
       )
     end
 
@@ -164,7 +164,7 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter::SupportedRateLimit
         characteristics: %i[user],
         limit: ->(ctx) { ctx&.dig(:threshold) || 1 },
         period: ->(ctx) { ctx&.dig(:interval) || 0 },
-        action: :block
+        action: :limit
       )
     end
 

@@ -3,10 +3,33 @@
 RSpec.describe Gitlab::PolicyStore do
   let(:repository) { instance_double(Gitlab::PolicyStore::Ports::PolicyRepository) }
 
+  after do
+    described_class.reset_configuration!
+  end
+
   describe 'default configuration' do
     it 'uses the in-memory adapter' do
       expect(described_class.configuration.repository)
         .to be_a(Gitlab::PolicyStore::Adapters::InMemoryPolicyRepository)
+    end
+  end
+
+  describe '.reset_configuration!' do
+    it 'restores the default configuration' do
+      described_class.configure { |config| config.repository = repository }
+
+      described_class.reset_configuration!
+
+      expect(described_class.configuration.repository)
+        .to be_a(Gitlab::PolicyStore::Adapters::InMemoryPolicyRepository)
+    end
+
+    it 'discards policies held by the in-memory adapter' do
+      policy = described_class.create(organization_id: 1, name: 'policy', trigger_id: 'deployment_requested')
+
+      described_class.reset_configuration!
+
+      expect { described_class.find(policy.id) }.to raise_error(Gitlab::PolicyStore::NotFound)
     end
   end
 

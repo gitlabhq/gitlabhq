@@ -107,12 +107,28 @@ RSpec.describe Ci::ExpirePipelineCacheService, feature_category: :continuous_int
     context 'when the pipeline is triggered by another pipeline' do
       let(:source) { create(:ci_sources_pipeline, pipeline: pipeline) }
 
-      it 'updates the cache of dependent pipeline' do
-        dependent_pipeline_path = "/#{source.source_project.full_path}/-/pipelines/#{source.source_pipeline.id}.json"
+      shared_examples 'updating the cache of the dependent pipeline' do
+        it 'updates the cache of dependent pipeline' do
+          # Sanity check: the dependent pipeline lives in another project, so its routes
+          # cannot be served by the record reuse and have to be loaded.
+          expect(source.source_project).not_to eq(project)
 
-        expect_touched_etag_caching_paths(dependent_pipeline_path)
+          dependent_pipeline_path = "/#{source.source_project.full_path}/-/pipelines/#{source.source_pipeline.id}.json"
 
-        subject.execute(pipeline)
+          expect_touched_etag_caching_paths(dependent_pipeline_path)
+
+          subject.execute(pipeline)
+        end
+      end
+
+      it_behaves_like 'updating the cache of the dependent pipeline'
+
+      context 'when ci_expire_pipeline_cache_record_reuse is disabled' do
+        before do
+          stub_feature_flags(ci_expire_pipeline_cache_record_reuse: false)
+        end
+
+        it_behaves_like 'updating the cache of the dependent pipeline'
       end
     end
 
@@ -130,6 +146,9 @@ RSpec.describe Ci::ExpirePipelineCacheService, feature_category: :continuous_int
     end
 
     it 'does not do N+1 queries' do
+      create(:ci_sources_pipeline, pipeline: pipeline)
+      create(:ci_sources_pipeline, source_job: create(:ci_build, pipeline: pipeline, ci_stage: create(:ci_stage)))
+
       subject.execute(pipeline)
 
       control = ActiveRecord::QueryRecorder.new { subject.execute(pipeline) }
@@ -138,6 +157,16 @@ RSpec.describe Ci::ExpirePipelineCacheService, feature_category: :continuous_int
       create(:ci_sources_pipeline, source_job: create(:ci_build, pipeline: pipeline, ci_stage: create(:ci_stage)))
 
       expect { subject.execute(pipeline) }.not_to exceed_query_limit(control)
+    end
+
+    it 'reuses the loaded project of the pipeline instead of reloading it', :aggregate_failures do
+      subject.execute(pipeline)
+
+      recorder = ActiveRecord::QueryRecorder.new { subject.execute(pipeline) }
+
+      expect(recorder.log).not_to include(/FROM "projects"/)
+      expect(recorder.log).not_to include(/FROM "namespaces"/)
+      expect(recorder.log).not_to include(/FROM "routes"/)
     end
   end
 

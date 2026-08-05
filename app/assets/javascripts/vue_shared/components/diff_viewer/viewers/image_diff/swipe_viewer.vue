@@ -128,7 +128,7 @@ export default {
         :path="oldPath"
         class="frame deleted"
         :encode-path="encodePath"
-        @imgLoaded="swipeOldImgLoaded"
+        @img-loaded="swipeOldImgLoaded"
       />
       <div
         ref="swipeWrap"
@@ -146,7 +146,7 @@ export default {
           }"
           class="frame added"
           :encode-path="encodePath"
-          @imgLoaded="swipeNewImgLoaded"
+          @img-loaded="swipeNewImgLoaded"
         >
           <template #image-overlay="{ width, height, renderedWidth, renderedHeight }">
             <slot

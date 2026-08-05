@@ -23,8 +23,8 @@ RSpec.describe API::Mcp, 'Initialized notification request', feature_category: :
       post api('/mcp', user, oauth_access_token: access_token), params: params
     end
 
-    it 'returns no content' do
-      expect(response).to have_gitlab_http_status(:no_content)
+    it 'returns accepted' do
+      expect(response).to have_gitlab_http_status(:accepted)
     end
 
     it 'returns empty body for notification' do

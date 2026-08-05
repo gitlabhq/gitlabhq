@@ -26,11 +26,16 @@ module Gitlab
       # registry's :match) and counts by its discriminators (the :characteristics).
       # Both are taken straight from the registry in the shape the SDK's Rule expects,
       # including the presence gate the registry bakes into the match.
-      # Within a limiter the rules are evaluated in registry order and Labkit stops
-      # at the first match, so the specialized-before-general ordering reproduces
-      # Rack::Attack's exclusions. Limit and period are resolved per check from the
-      # same Gitlab::Throttle options the Rack::Attack throttle uses, so the two
-      # stacks stay in lock-step even when an admin changes a limit at runtime.
+      # Within a limiter the rules are evaluated in registry order. The SDK counts
+      # every matching rule (labkit >= 4.0 evaluates all matches; nothing terminates
+      # on match alone), so each throttle declaring :claims in the registry pairs
+      # its counting rule with a terminating :skip claim of the same match (see
+      # build_rules). Ordering plus the claims reproduce Rack::Attack's exclusions:
+      # the first throttle to match counts the request and stops evaluation before
+      # the general rules below it. Limit and
+      # period are resolved per check from the same Gitlab::Throttle options the
+      # Rack::Attack throttle uses, so the two stacks stay in lock-step even when an
+      # admin changes a limit at runtime.
       #
       # Three synthetic rules sit ahead of the throttle rules. They carry no
       # Rack::Attack throttle and exist to express, as ordered terminating rules,
@@ -137,20 +142,31 @@ module Gitlab
             )
           end
 
-          # An enforced throttle is a single :block rule. A dry-run throttle (named
-          # in GITLAB_THROTTLE_DRY_RUN, so Gitlab::RackAttack.track? is true) is two
-          # rules in order: a :log rule that counts the hit and records whether it
-          # would have exceeded, then a terminating :skip with the same match. The
-          # SDK does not terminate on :log (evaluation continues to later rules), so
-          # the :log rule alone would let a dry-run specialized request fall through
-          # and be reclaimed by the general rule below it. Rack::Attack's
-          # !throttle_*? exclusion holds regardless of whether the throttle is
-          # tracked, so the :skip restores that: the request short-circuits
-          # unblocked, with only the :log rule counting.
+          # A throttle declaring :claims in the registry builds as an ordered
+          # pair: a counting rule, then a terminating :skip with the same match
+          # (the claim). The SDK evaluates every matching rule and terminates
+          # only on :skip or an over-limit :limit rule, so without the claim a
+          # specialized request would also be counted by the general rules below
+          # it (a git request is also a web request), breaking parity with
+          # Rack::Attack's !throttle_*? exclusions. The claim restores them: the
+          # counting rule debits its counter, then the claim terminates
+          # evaluation while permitting. A :limit rule over its limit blocks
+          # before its claim is reached, so enforcement is unchanged; a claimed
+          # under-limit result reports the claim rule (matched, :allow, no info)
+          # with the counted evaluation still readable via Result#evaluations.
+          # The registry only declares the claim; its match is derived here from
+          # the entry's own, so it cannot drift from the counting rule's.
+          #
+          # An enforced throttle counts with :limit; a dry-run throttle (named in
+          # GITLAB_THROTTLE_DRY_RUN, so Gitlab::RackAttack.track? is true) counts
+          # with :log, which records whether the hit would have exceeded but never
+          # blocks. The claim is the same in both shapes; the dry-run one keeps
+          # its historical _dry_run_bypass name.
           def build_rules(entry)
-            return [throttle_rule(entry, :block)] unless ::Gitlab::RackAttack.track?(entry.name)
-
-            [throttle_rule(entry, :log), dry_run_bypass_rule(entry)]
+            dry_run = ::Gitlab::RackAttack.track?(entry.name)
+            rules = [throttle_rule(entry, dry_run ? :log : :limit)]
+            rules << (dry_run ? dry_run_bypass_rule(entry) : claim_rule(entry)) if entry.claims?
+            rules
           end
 
           def throttle_rule(entry, action)
@@ -171,6 +187,13 @@ module Gitlab
           # would have; the preceding :log rule does the counting.
           def dry_run_bypass_rule(entry)
             skip_rule("#{entry.rule_name}_dry_run_bypass", entry.match)
+          end
+
+          # The terminating :skip paired with an enforced throttle's :limit rule.
+          # Same match, so it claims exactly the requests that rule counted and
+          # stops them reaching the general rules below.
+          def claim_rule(entry)
+            skip_rule("#{entry.rule_name}_claim", entry.match)
           end
 
           # Rack::Attack options carry either a plain value (e.g. the hardcoded

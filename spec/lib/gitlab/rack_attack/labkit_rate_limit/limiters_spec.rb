@@ -14,11 +14,11 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
       allow(Labkit::RateLimit::Rule).to receive(:new).and_call_original
     end
 
-    it 'builds each throttle rule with action :block by default' do
+    it 'builds each throttle rule with action :limit by default' do
       described_class.all
 
       expect(Labkit::RateLimit::Rule).to have_received(:new)
-        .with(hash_including(name: 'unauthenticated_web', action: :block))
+        .with(hash_including(name: 'unauthenticated_web', action: :limit))
     end
 
     it 'builds every rule regardless of cohort (universal presence)', :aggregate_failures do
@@ -39,17 +39,41 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
         .with(hash_including(name: entry.rule_name, match: entry.match))
     end
 
-    it 'builds the web-path rule and its frontend companion as sibling :block rules' do
+    it 'follows each claiming throttle rule with a terminating claim of the same match' do
+      # labkit evaluates every matching rule, so the claim is what stops a
+      # specialized request also being counted by the general rules below it.
+      # The registry declares the claim (claims: true); the match is derived
+      # from the entry's own, never written out.
+      entry = registry.all.fetch('throttle_unauthenticated_web')
+      described_class.all
+
+      expect(Labkit::RateLimit::Rule).to have_received(:new)
+        .with(hash_including(name: 'unauthenticated_web_claim', match: entry.match, action: :skip))
+    end
+
+    it 'builds only the counting rule for an entry that does not declare a claim' do
+      entries = registry.all
+      entries.fetch('throttle_unauthenticated_web').claims = false
+      allow(registry).to receive(:all).and_return(entries)
+      described_class.all
+
+      expect(Labkit::RateLimit::Rule).to have_received(:new)
+        .with(hash_including(name: 'unauthenticated_web', action: :limit))
+      expect(Labkit::RateLimit::Rule).not_to have_received(:new)
+        .with(hash_including(name: 'unauthenticated_web_claim'))
+    end
+
+    it 'builds the web-path rule and its frontend companion as sibling :limit rules' do
       # The companion is its own registry entry (its own counter/rule name) backing the
-      # same throttle; both build as :block by default.
+      # same throttle; both build as :limit by default.
       web = registry.all.fetch('throttle_unauthenticated_web')
       frontend = registry.all.fetch('throttle_unauthenticated_web_frontend')
       described_class.all
 
       expect(Labkit::RateLimit::Rule).to have_received(:new)
-        .with(hash_including(name: 'unauthenticated_web', match: web.match, action: :block))
+        .with(hash_including(name: 'unauthenticated_web', match: web.match, action: :limit))
       expect(Labkit::RateLimit::Rule).to have_received(:new)
-        .with(hash_including(name: 'unauthenticated_web_frontend', match: frontend.match, action: :block))
+        .with(hash_including(name: 'unauthenticated_web_frontend', match: frontend.match, action: :limit))
     end
 
     describe 'synthetic terminating rules' do
@@ -97,6 +121,20 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
 
         expect(Labkit::RateLimit::Rule).to have_received(:new)
           .with(hash_including(name: 'unauthenticated_web_dry_run_bypass', match: entry.match, action: :skip))
+      end
+
+      it 'omits the dry-run bypass for an entry that does not declare a claim' do
+        # One declaration governs both shapes: the bypass is the claim in its
+        # dry-run form.
+        entries = registry.all
+        entries.fetch('throttle_unauthenticated_web').claims = false
+        allow(registry).to receive(:all).and_return(entries)
+        described_class.all
+
+        expect(Labkit::RateLimit::Rule).to have_received(:new)
+          .with(hash_including(name: 'unauthenticated_web', action: :log))
+        expect(Labkit::RateLimit::Rule).not_to have_received(:new)
+          .with(hash_including(name: 'unauthenticated_web_dry_run_bypass'))
       end
 
       it 'shapes the frontend companion as its own dry-run log rule and bypass' do
@@ -149,9 +187,14 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
         )
     end
 
+    # The rule that terminated evaluation. An enforced throttle terminates on its
+    # claim skip (the counting rule itself never terminates under labkit's
+    # evaluate-all semantics), so the claim suffix is stripped: the selection
+    # under test is the throttle, not the mechanism. Synthetic skips (bypass,
+    # skip_*, runner_jobs) and dry-run bypasses keep their own names.
     def selected_in(limiter, **overrides)
       result = limiter.check(facts(**overrides))
-      result.rule.name if result.matched?
+      result.rule.name.delete_suffix('_claim') if result.matched?
     end
 
     # The git rows carry a git path, which also matches WEB_PATH_REGEX (a git path is
@@ -339,12 +382,18 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
         ))
       end
 
+      # An under-limit check terminates on the claim skip, which carries no
+      # counter, so the counted throttle evaluation is read off #evaluations.
+      def counted(result)
+        result.evaluations.first
+      end
+
       it 'collides two requests with the same (type, id) on one counter' do
         first = check_api(type: 'user', id: '42')
         second = check_api(type: 'user', id: '42')
 
-        expect(first.rule.name).to eq('authenticated_api')
-        expect(second.info.count).to eq(2)
+        expect(counted(first).rule.name).to eq('authenticated_api')
+        expect(counted(second).info.count).to eq(2)
       end
 
       it 'keeps a DeployToken and a User with the same numeric id on separate counters' do
@@ -353,16 +402,16 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
 
         # Distinct counters: each first hit on its own key reads count 1, so the type
         # segment is part of the redis key (a DeployToken does not bump the User key).
-        expect(user.info.count).to eq(1)
-        expect(deploy_token.info.count).to eq(1)
+        expect(counted(user).info.count).to eq(1)
+        expect(counted(deploy_token).info.count).to eq(1)
       end
 
       it 'keeps two different ids of the same type on separate counters' do
         first = check_api(type: 'user', id: '1')
         second = check_api(type: 'user', id: '2')
 
-        expect(first.info.count).to eq(1)
-        expect(second.info.count).to eq(1)
+        expect(counted(first).info.count).to eq(1)
+        expect(counted(second).info.count).to eq(1)
       end
     end
   end

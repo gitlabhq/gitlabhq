@@ -8503,10 +8503,7 @@ msgstr ""
 msgid "AiModelDeprecation|Change model"
 msgstr ""
 
-msgid "AiModelDeprecation|Model %{strong_start}%{model_name}%{strong_end} was deprecated on %{strong_start}%{deprecation_date}%{strong_end} and will stop working after GitLab removes it in %{strong_start}%{removal_version}%{strong_end}. Please change to an alternative model before %{strong_start}%{removal_version}%{strong_end} to avoid disruption."
-msgstr ""
-
-msgid "AiModelDeprecation|The following models have been deprecated and will stop working after GitLab removes them. Please change to an alternative model before the removal version to avoid disruption."
+msgid "AiModelDeprecation|The following models have been deprecated for all AI-powered features and will stop working after GitLab removes them. Please change to an alternative model before the removal version to avoid disruption."
 msgstr ""
 
 msgid "AiPowered|%{word} by %{source} — subgroups cannot opt in."
@@ -22840,9 +22837,6 @@ msgid "ContinuousDeployment|All systems healthy"
 msgstr ""
 
 msgid "ContinuousDeployment|All types"
-msgstr ""
-
-msgid "ContinuousDeployment|Application"
 msgstr ""
 
 msgid "ContinuousDeployment|Application identity"
@@ -83917,6 +83911,9 @@ msgid "UsageBilling|Credits used"
 msgstr ""
 
 msgid "UsageBilling|Credits used after all included user credits and monthly commitment pool have been exhausted. Learn about %{linkStart}GitLab Credit pricing%{linkEnd}."
+msgstr ""
+
+msgid "UsageBilling|Credits used in this billing period"
 msgstr ""
 
 msgid "UsageBilling|Credits used this month"

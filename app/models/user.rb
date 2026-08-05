@@ -280,6 +280,8 @@ class User < ApplicationRecord
   has_many :pipeline_schedules,       foreign_key: :owner_id, class_name: 'Ci::PipelineSchedule'
   has_many :todos,                    dependent: :delete_all
   has_many :authored_todos, class_name: 'Todo', dependent: :destroy, foreign_key: :author_id
+  has_many :mobile_device_push_subscriptions, class_name: 'Notifications::MobileDevicePushSubscription',
+    inverse_of: :user, dependent: :delete_all
   has_many :notification_settings
   has_many :award_emoji, dependent: :destroy
   has_many :triggers, -> { not_expired }, class_name: 'Ci::Trigger', foreign_key: :owner_id

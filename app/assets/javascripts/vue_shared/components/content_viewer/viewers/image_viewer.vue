@@ -33,7 +33,7 @@ export default {
       default: true,
     },
   },
-  emits: ['imgLoaded'],
+  emits: ['img-loaded'],
   data() {
     return {
       width: 0,
@@ -82,7 +82,7 @@ export default {
           this.renderedWidth = contentImg.clientWidth;
           this.renderedHeight = contentImg.clientHeight;
 
-          this.$emit('imgLoaded', {
+          this.$emit('img-loaded', {
             width: this.width,
             height: this.height,
             renderedWidth: this.renderedWidth,

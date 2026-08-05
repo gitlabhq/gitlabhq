@@ -104,7 +104,7 @@ module Ci
       end
 
       Gitlab::Database::LoadBalancing::SessionMap.use_replica_if_available do
-        pipeline.upstream_and_all_downstreams.includes(project: [:route, { namespace: :route }]).each do |relative_pipeline| # rubocop: disable CodeReuse/ActiveRecord
+        load_relative_pipelines(pipeline).each do |relative_pipeline|
           etag_paths << project_pipeline_path(relative_pipeline.project, relative_pipeline)
           etag_paths << graphql_pipeline_path(relative_pipeline)
           etag_paths << graphql_pipeline_sha_path(relative_pipeline.sha) if relative_pipeline.sha
@@ -112,6 +112,28 @@ module Ci
       end
 
       store.touch(*etag_paths)
+    end
+
+    def load_relative_pipelines(pipeline)
+      project = pipeline.project
+
+      unless Feature.enabled?(:ci_expire_pipeline_cache_record_reuse, project)
+        return pipeline.upstream_and_all_downstreams.includes(project: [:route, { namespace: :route }]) # rubocop: disable CodeReuse/ActiveRecord -- legacy path, removed with the feature flag
+      end
+
+      relative_pipelines = pipeline.upstream_and_all_downstreams.to_a
+
+      # `available_records` lets relatives in the caller's project point at the project
+      # instance we already hold, instead of re-querying the project, namespace and both
+      # routes. Relatives in other projects are loaded normally. The shared instance is
+      # only read from here, never mutated.
+      ActiveRecord::Associations::Preloader.new(
+        records: relative_pipelines,
+        associations: { project: [:route, { namespace: :route }] },
+        available_records: [project]
+      ).call
+
+      relative_pipelines
     end
 
     def url_helpers

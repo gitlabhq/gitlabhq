@@ -6,5 +6,4 @@ API/ParameterType:
     - 'lib/api/helpers/merge_requests_helpers.rb'
     - 'lib/api/integrations.rb'
     - 'lib/api/integrations/integratable_operations.rb'
-    - 'lib/api/mcp/base.rb'
     - 'lib/api/settings.rb'

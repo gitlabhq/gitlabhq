@@ -54,7 +54,7 @@ You can set these rate limits in the **Admin** area of your instance:
 - [Files API rate limits](../administration/settings/files_api_rate_limits.md)
 - [Deprecated API rate limits](../administration/settings/deprecated_api_rate_limits.md)
 - [GitLab Pages rate limits](../administration/pages/_index.md#rate-limits)
-- [Pipeline rate limits](../administration/settings/rate_limit_on_pipelines_creation.md)
+- [Pipeline rate limits](../administration/cicd/limits.md#pipeline-creation-rate-limits)
 - [Incident management rate limits](../administration/settings/incident_management_rate_limits.md)
 - [Projects API rate limits](../administration/settings/rate_limit_on_projects_api.md)
 - [Groups API rate limits](../administration/settings/rate_limit_on_groups_api.md)

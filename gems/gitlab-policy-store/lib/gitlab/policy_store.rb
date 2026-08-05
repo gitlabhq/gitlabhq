@@ -31,6 +31,13 @@ module Gitlab
         @configuration ||= Configuration.new(Adapters::InMemoryPolicyRepository.new)
       end
 
+      # Discards the configured repository, and with it any state the in-memory
+      # adapter accumulated. Intended for specs and console sessions; callers
+      # that configured a repository must configure it again afterwards.
+      def reset_configuration!
+        @configuration = nil
+      end
+
       def create(attributes)
         configuration.repository.create(attributes)
       end

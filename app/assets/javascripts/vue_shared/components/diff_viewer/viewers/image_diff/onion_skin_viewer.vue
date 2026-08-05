@@ -130,7 +130,7 @@ export default {
           :render-info="false"
           :path="oldPath"
           :encode-path="encodePath"
-          @imgLoaded="onionOldImgLoaded"
+          @img-loaded="onionOldImgLoaded"
         />
       </div>
       <div
@@ -147,7 +147,7 @@ export default {
           :render-info="false"
           :path="newPath"
           :encode-path="encodePath"
-          @imgLoaded="onionNewImgLoaded"
+          @img-loaded="onionNewImgLoaded"
         >
           <template #image-overlay="{ width, height, renderedWidth, renderedHeight }">
             <slot

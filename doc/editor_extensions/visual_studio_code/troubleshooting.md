@@ -248,6 +248,58 @@ To resolve this error, disable system certificates:
 1. On the **User** settings tab, select **Application** > **Proxy**.
 1. Disable the settings for **Proxy Strict SSL** and **System Certificates**.
 
+### Unreachable localhost port
+
+When you use the GitLab Duo Agent Platform in VS Code, either on the desktop or in
+your browser, you might get an error that states:
+
+```plaintext
+GitLab could not reach a service running on localhost:<unreachable_port> that this view depends on.
+```
+
+The cause of this issue and its resolution depend on whether
+you use VS Code on the desktop or in your browser.
+
+#### Desktop environment
+
+The GitLab Language Server runs an HTTP server on a localhost port to render the
+GitLab Duo Agent Platform UI in VS Code. This server might cause issues in the
+following VS Code desktop-based remote development environments:
+
+- Remote-SSH: A VS Code feature that lets you connect to a remote machine
+  (for example, a cloud VM or server) over SSH.
+- Dev Containers: A VS Code feature (and open standard) that runs your development
+  environment inside a Docker container.
+- Windows Subsystem for Linux (WSL): A Windows feature that runs a Linux
+  environment directly on Windows.
+
+The issue occurs in these remote development environments because the Language
+Server webview port is not guaranteed to be reachable from the VS Code UI
+rendering context.
+
+To resolve this issue:
+
+1. To open the **Ports** panel, select **View** > **Open View...** > **Ports**.
+1. Find the port from the error message and open it, or enter the port
+   manually.
+
+   A green dot next to the port does not guarantee that the connection works.
+   Reopen the GitLab Duo Agent Platform view to confirm.
+1. If you cannot open the port, your firewall, VPN, or antivirus settings might be
+   blocking it. Check those settings, then reopen the view.
+
+#### Browser environment
+
+How you resolve this issue depends on whether your browser-based VS Code environment
+supports forwarding this type of localhost port.
+
+- If your environment does support forwarding this type of localhost port,
+  and a **Ports** panel is available, select **View** > **Open View...** > **Ports**.
+  Find and open the blocked port from the error message.
+- If your environment does not support forwarding this type of localhost port,
+  this webview does not work. Instead, use the VS Code desktop application connected
+  to the same workspace.
+
 ## GitLab Duo
 
 When you use GitLab Duo in VS Code, you might encounter the following issues.

@@ -170,6 +170,11 @@ Prerequisites:
 - The Owner role for the top-level group.
 - A project in the group contains the custom review instructions that you want to use as a template.
 
+  > [!warning]
+  > Do not store sensitive or confidential information in `mr-review-instructions.yaml`.
+  > Any user who can view a merge request in the group can access group review instructions,
+  > even if they do not have access to the project that contains the file.
+
 To configure custom review instructions for a group:
 
 1. In the top bar, select **Search or go to** and find your top-level group.
@@ -204,6 +209,11 @@ Prerequisites:
 
 - Administrator access for the instance.
 - A project on the instance contains the custom review instructions that you want to use as a template.
+
+  > [!warning]
+  > Do not store sensitive or confidential information in `mr-review-instructions.yaml`.
+  > Any user who can view a merge request on the instance can access instance review instructions,
+  > even if they do not have access to the project that contains the file.
 
 To configure custom review instructions for an instance:
 
