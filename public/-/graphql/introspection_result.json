@@ -176342,7 +176342,7 @@
               "args": [
                 {
                   "name": "projectId",
-                  "description": "Filter by project IDs in a group. This argument is ignored when we are querying for a project or an organization.",
+                  "description": "Filter by project IDs in a group or an organization. This argument is ignored when we are querying for a project.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -177011,6 +177011,26 @@
               "name": "statuses",
               "description": "Statuses of work items available to the namespace. Introduced in GitLab 18.1: Status: Experiment.",
               "args": [
+                {
+                  "name": "ids",
+                  "description": "Filter statuses by ID. A max of 70 can be provided.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "WorkItemsStatusesStatusID",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
                 {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
@@ -270591,6 +270611,26 @@
               "description": "Statuses of work items available to the namespace. Introduced in GitLab 18.1: Status: Experiment.",
               "args": [
                 {
+                  "name": "ids",
+                  "description": "Filter statuses by ID. A max of 70 can be provided.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "WorkItemsStatusesStatusID",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
                   "type": {
@@ -281971,7 +282011,7 @@
               "args": [
                 {
                   "name": "projectId",
-                  "description": "Filter by project IDs in a group. This argument is ignored when we are querying for a project or an organization.",
+                  "description": "Filter by project IDs in a group or an organization. This argument is ignored when we are querying for a project.",
                   "type": {
                     "kind": "LIST",
                     "name": null,
@@ -319167,7 +319207,7 @@
               "args": [
                 {
                   "name": "projectId",
-                  "description": "Filter by project IDs in a group. This argument is ignored when we are querying for a project or an organization.",
+                  "description": "Filter by project IDs in a group or an organization. This argument is ignored when we are querying for a project.",
                   "type": {
                     "kind": "LIST",
                     "name": null,

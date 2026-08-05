@@ -3,7 +3,7 @@ import { GlButton, GlModal, GlSprintf } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import { createAlert } from '~/alert';
 import { isDefaultOrganization } from '~/organizations/shared/utils';
-import organizationsForReconciliationQuery from '~/organizations/index/graphql/queries/organizations_for_reconciliation.query.graphql';
+import organizationsForReconciliationQuery from '../graphql/queries/organizations_for_reconciliation.query.graphql';
 import SkeletonLoader from './skeleton_loader.vue';
 import Step1 from './steps/step_1.vue';
 import Step2 from './steps/step_2.vue';

@@ -151,9 +151,16 @@ If a secret is already present in a file and not part of the changes, it is not 
 
 ## Audit events
 
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/604787) in GitLab 19.3.
+
+{{< /history >}}
+
 [Audit events](../../../compliance/audit_event_types.md#secret-detection) are logged when:
 
 - Secret push protection skips scanning because the push contains [too many changed paths](#push-size-threshold).
+- Secret push protection is skipped because a push [changes too many lines](#push-size-threshold).
 - Secret push protection scan timeout occurs and GitLab accepts the push.
 - Secret push protection encounters a ruleset parse or compile error.
 

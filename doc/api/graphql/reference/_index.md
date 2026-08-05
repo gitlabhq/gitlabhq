@@ -44217,7 +44217,6 @@ Fields:
 | <a id="group-sharedrunnerssetting"></a>`sharedRunnersSetting` | [`SharedRunnersSetting`](#sharedrunnerssetting) | Shared runners availability for the namespace and its descendants. |
 | <a id="group-sidebar"></a>`sidebar` {{< icon name="warning-solid" >}} | [`NamespaceSidebar`](#namespacesidebar) | Introduced in GitLab 17.6. Status: Experiment. Data needed to render the sidebar for the namespace. |
 | <a id="group-stats"></a>`stats` | [`GroupStats`](#groupstats) | Group statistics. |
-| <a id="group-statuses"></a>`statuses` {{< icon name="warning-solid" >}} | [`WorkItemStatusConnection`](#workitemstatusconnection) | Introduced in GitLab 18.1. Status: Experiment. Statuses of work items available to the namespace. |
 | <a id="group-storagesizelimit"></a>`storageSizeLimit` | [`Float`](#float) | The storage limit (in bytes) included with the root namespace plan. This limit only applies to namespaces under namespace limit enforcement. |
 | <a id="group-subgroupcreationlevel"></a>`subgroupCreationLevel` | [`String`](#string) | Permission level required to create subgroups within the group. |
 | <a id="group-subscribedsavedviewlimit"></a>`subscribedSavedViewLimit` {{< icon name="warning-solid" >}} | [`Int!`](#int) | Introduced in GitLab 18.8. Status: Experiment. Maximum number of subscribed saved views allowed on the namespace. |
@@ -45878,7 +45877,7 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="group-securitymetrics-projectid"></a>`projectId` | [`[ID!]`](#id) | Filter by project IDs in a group. This argument is ignored when we are querying for a project or an organization. |
+| <a id="group-securitymetrics-projectid"></a>`projectId` | [`[ID!]`](#id) | Filter by project IDs in a group or an organization. This argument is ignored when we are querying for a project. |
 | <a id="group-securitymetrics-reporttype"></a>`reportType` | [`[VulnerabilityReportType!]`](#vulnerabilityreporttype) | Filter by report types. |
 | <a id="group-securitymetrics-securityattributesfilters"></a>`securityAttributesFilters` {{< icon name="warning-solid" >}} | [`[AttributeFilterInput!]`](#attributefilterinput) | Introduced in GitLab 18.8. Status: Experiment. Filter by security attributes. Up to 20 filters. |
 | <a id="group-securitymetrics-trackedrefids"></a>`trackedRefIds` {{< icon name="warning-solid" >}} | [`[SecurityProjectTrackedContextID!]`](#securityprojecttrackedcontextid) | Introduced in GitLab 18.11. Status: Experiment. Filter by tracked ref IDs. This argument is ignored when querying for a group. To use this argument, you must have advanced search configured, advanced vulnerability management set up and `vulnerabilities_across_contexts` feature flag enabled. |
@@ -46003,6 +46002,29 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="group-standardroles-accesslevel"></a>`accessLevel` | [`[MemberAccessLevel!]`](#memberaccesslevel) | Access level or levels to filter by. |
+
+##### `Group.statuses`
+
+{{< details >}}
+
+- Introduced in GitLab 18.1.
+- Status: Experiment.
+
+{{< /details >}}
+
+Statuses of work items available to the namespace.
+
+Returns [`WorkItemStatusConnection`](#workitemstatusconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="group-statuses-ids"></a>`ids` | [`[WorkItemsStatusesStatusID!]`](#workitemsstatusesstatusid) | Filter statuses by ID. A max of 70 can be provided. |
 
 ##### `Group.timelogs`
 
@@ -51211,7 +51233,6 @@ Fields:
 | <a id="namespace-securitypolicyproject"></a>`securityPolicyProject` | [`Project`](#project) | Security policy project assigned to the namespace. |
 | <a id="namespace-sharedrunnerssetting"></a>`sharedRunnersSetting` | [`SharedRunnersSetting`](#sharedrunnerssetting) | Shared runners availability for the namespace and its descendants. |
 | <a id="namespace-sidebar"></a>`sidebar` {{< icon name="warning-solid" >}} | [`NamespaceSidebar`](#namespacesidebar) | Introduced in GitLab 17.6. Status: Experiment. Data needed to render the sidebar for the namespace. |
-| <a id="namespace-statuses"></a>`statuses` {{< icon name="warning-solid" >}} | [`WorkItemStatusConnection`](#workitemstatusconnection) | Introduced in GitLab 18.1. Status: Experiment. Statuses of work items available to the namespace. |
 | <a id="namespace-storagesizelimit"></a>`storageSizeLimit` | [`Float`](#float) | The storage limit (in bytes) included with the root namespace plan. This limit only applies to namespaces under namespace limit enforcement. |
 | <a id="namespace-subscribedsavedviewlimit"></a>`subscribedSavedViewLimit` {{< icon name="warning-solid" >}} | [`Int!`](#int) | Introduced in GitLab 18.8. Status: Experiment. Maximum number of subscribed saved views allowed on the namespace. |
 | <a id="namespace-subscriptionhistory"></a>`subscriptionHistory` {{< icon name="warning-solid" >}} | [`GitlabSubscriptionHistoryConnection`](#gitlabsubscriptionhistoryconnection) | Introduced in GitLab 17.3. Status: Experiment. Find subscription history records. |
@@ -51608,6 +51629,29 @@ Arguments:
 | <a id="namespace-securitypolicies-includeunscoped"></a>`includeUnscoped` | [`Boolean`](#boolean) | Filter policies that are scoped to the project. |
 | <a id="namespace-securitypolicies-relationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. |
 | <a id="namespace-securitypolicies-type"></a>`type` | [`PolicyType`](#policytype) | Filter policies by type. |
+
+##### `Namespace.statuses`
+
+{{< details >}}
+
+- Introduced in GitLab 18.1.
+- Status: Experiment.
+
+{{< /details >}}
+
+Statuses of work items available to the namespace.
+
+Returns [`WorkItemStatusConnection`](#workitemstatusconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="namespace-statuses-ids"></a>`ids` | [`[WorkItemsStatusesStatusID!]`](#workitemsstatusesstatusid) | Filter statuses by ID. A max of 70 can be provided. |
 
 ##### `Namespace.vulnerabilityManagementPolicies`
 
@@ -52497,7 +52541,7 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="organization-securitymetrics-projectid"></a>`projectId` | [`[ID!]`](#id) | Filter by project IDs in a group. This argument is ignored when we are querying for a project or an organization. |
+| <a id="organization-securitymetrics-projectid"></a>`projectId` | [`[ID!]`](#id) | Filter by project IDs in a group or an organization. This argument is ignored when we are querying for a project. |
 | <a id="organization-securitymetrics-reporttype"></a>`reportType` | [`[VulnerabilityReportType!]`](#vulnerabilityreporttype) | Filter by report types. |
 | <a id="organization-securitymetrics-securityattributesfilters"></a>`securityAttributesFilters` {{< icon name="warning-solid" >}} | [`[AttributeFilterInput!]`](#attributefilterinput) | Introduced in GitLab 18.8. Status: Experiment. Filter by security attributes. Up to 20 filters. |
 | <a id="organization-securitymetrics-trackedrefids"></a>`trackedRefIds` {{< icon name="warning-solid" >}} | [`[SecurityProjectTrackedContextID!]`](#securityprojecttrackedcontextid) | Introduced in GitLab 18.11. Status: Experiment. Filter by tracked ref IDs. This argument is ignored when querying for a group. To use this argument, you must have advanced search configured, advanced vulnerability management set up and `vulnerabilities_across_contexts` feature flag enabled. |
@@ -56588,7 +56632,7 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="project-securitymetrics-projectid"></a>`projectId` | [`[ID!]`](#id) | Filter by project IDs in a group. This argument is ignored when we are querying for a project or an organization. |
+| <a id="project-securitymetrics-projectid"></a>`projectId` | [`[ID!]`](#id) | Filter by project IDs in a group or an organization. This argument is ignored when we are querying for a project. |
 | <a id="project-securitymetrics-reporttype"></a>`reportType` | [`[VulnerabilityReportType!]`](#vulnerabilityreporttype) | Filter by report types. |
 | <a id="project-securitymetrics-securityattributesfilters"></a>`securityAttributesFilters` {{< icon name="warning-solid" >}} | [`[AttributeFilterInput!]`](#attributefilterinput) | Introduced in GitLab 18.8. Status: Experiment. Filter by security attributes. Up to 20 filters. |
 | <a id="project-securitymetrics-trackedrefids"></a>`trackedRefIds` {{< icon name="warning-solid" >}} | [`[SecurityProjectTrackedContextID!]`](#securityprojecttrackedcontextid) | Introduced in GitLab 18.11. Status: Experiment. Filter by tracked ref IDs. This argument is ignored when querying for a group. To use this argument, you must have advanced search configured, advanced vulnerability management set up and `vulnerabilities_across_contexts` feature flag enabled. |

@@ -65,6 +65,9 @@ We achieve this by importing a JavaScript file like [`app/assets/javascripts/ci/
 
 Often, a feature will have multiple routes, such as `index`, `show`, `edit`, or `new`. For these cases, we typically inject different Vue applications based on the specific route. The folder structure within `app/assets/javascripts/pages` reflects this setup. For example, a subfolder like `app/assets/javascripts/pages/<feature-name>/show` corresponds to the Rails controller `app/controllers/<controller-name>` and its action `def show; end`. Alternatively, we can mount the Vue application on the `index` route and handle routing on the client with [Vue Router](https://router.vuejs.org/).
 
+Each top-level folder is a package, and which packages may import which is enforced in CI. For the
+layering and how to work with it, see [Frontend package boundaries](package_boundaries.md).
+
 ## Vision
 
 As Frontend engineers, we strive to give users **delightful experiences**. We should always think of how this applies at GitLab specifically: a great GitLab experience means helping our user base ship **their own projects faster and with more confidence** when shipping their own software. This means that whenever confronted with a choice for the future of our department, we should remember to try to put this first.

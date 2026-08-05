@@ -43,9 +43,9 @@ To import the project:
 
 This project provides you with:
 
-- An Amazon [Virtual Private Cloud (VPC)](https://gitlab.com/gitlab-org/configure/examples/gitlab-terraform-eks/-/blob/main/vpc.tf).
-- An Amazon [Elastic Kubernetes Service (EKS)](https://gitlab.com/gitlab-org/configure/examples/gitlab-terraform-eks/-/blob/main/eks.tf) cluster.
-- The [GitLab agent for Kubernetes](https://gitlab.com/gitlab-org/configure/examples/gitlab-terraform-eks/-/blob/main/agent.tf) installed in the cluster.
+- An Amazon [Virtual Private Cloud (VPC)](https://gitlab.com/gitlab-org/ci-cd/deploy-stage/environments-group/examples/gitlab-terraform-eks/-/blob/main/vpc.tf).
+- An Amazon [Elastic Kubernetes Service (EKS)](https://gitlab.com/gitlab-org/ci-cd/deploy-stage/environments-group/examples/gitlab-terraform-eks/-/blob/main/eks.tf) cluster.
+- The [GitLab agent for Kubernetes](https://gitlab.com/gitlab-org/ci-cd/deploy-stage/environments-group/examples/gitlab-terraform-eks/-/blob/main/agent.tf) installed in the cluster.
 
 ## Register the agent
 
@@ -140,7 +140,7 @@ Use CI/CD environment variables to configure your project.
 
 **Optional configuration**:
 
-The file [`variables.tf`](https://gitlab.com/gitlab-org/configure/examples/gitlab-terraform-eks/-/blob/main/variables.tf)
+The file [`variables.tf`](https://gitlab.com/gitlab-org/ci-cd/deploy-stage/environments-group/examples/gitlab-terraform-eks/-/blob/main/variables.tf)
 contains other variables that you can override according to your needs:
 
 - `TF_VAR_region`: Set your cluster's region.

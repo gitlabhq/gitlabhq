@@ -197,7 +197,7 @@ export default {
         if (
           (sastReport?.status === FINDINGS_STATUS_PARSED || !this.sastReportAvailable) &&
           (!this.codequalityReportAvailable ||
-            codequalityReportsComparer.status === FINDINGS_STATUS_PARSED)
+            codequalityReportsComparer?.status === FINDINGS_STATUS_PARSED)
         ) {
           this.$apollo.queries.getMRCodequalityAndSecurityReports.stopPolling();
         }

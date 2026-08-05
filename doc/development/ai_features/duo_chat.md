@@ -252,7 +252,7 @@ LangSmith integration works with any tools, including [GitLab Centralized Evalua
 
 ### Sharing your LangSmith traces (for internal team members)
 
-You can share your trace URL with team members directly by copying the entire URL from the web browser. This is the preferred way of sharing your traces instead of the ["share" trace feature present in the LangSmith UI](https://docs.langchain.com/langsmith/share-trace). Sharing a trace publicly will make it accessible to anyone with the link, even if they don’t have a LangSmith access via OKTA. Traces contain sensitive information such as CI tokens.
+You can share your trace URL with team members directly by copying the entire URL from the web browser. This is the preferred way of sharing your traces instead of the ["share" trace feature present in the LangSmith UI](https://docs.langchain.com/langsmith/share-trace). Sharing a trace publicly will make it accessible to anyone with the link, even if they don't have a LangSmith access via OKTA. Traces contain sensitive information such as CI tokens.
 
 ## Evaluate your merge request in one click
 

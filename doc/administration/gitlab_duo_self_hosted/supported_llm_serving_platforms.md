@@ -212,7 +212,7 @@ To use IRSA to authenticate Amazon EKS:
 
 1. Optional. For stricter access control, replace the wildcard resource with specific model Amazon Resource Name (ARN).
    This ensures only approved models can be accessed, even if GitLab configuration changes. For
-   available model ARNs, see [Amazon Bedrock model IDs](https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids.html).
+   available model ARNs, see [Amazon Bedrock model IDs](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html).
 
    ```json
    "Resource": [
@@ -224,7 +224,7 @@ To use IRSA to authenticate Amazon EKS:
    > [!note]
    > Some models might use different ARN formats. For example, newer models might
    > require inference profile ARNs in addition to foundation model ARNs. To check the
-   > the ARN format for your specific model, see the [Amazon Bedrock model IDs](https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids.html).
+   > the ARN format for your specific model, see the [Amazon Bedrock model IDs](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html).
 
 1. Create an IAM role with a trust policy for your Amazon EKS service account to use. Replace the following values:
 

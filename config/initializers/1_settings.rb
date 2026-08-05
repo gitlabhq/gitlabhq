@@ -606,6 +606,27 @@ Gitlab.ee do
 end
 
 #
+# NATS (JetStream messaging, used for audit event streaming)
+#
+Gitlab.ee do
+  Settings['nats'] ||= {}
+  # An empty `servers` list means NATS is not configured on this instance
+  # (Gitlab::Nats.configured? returns false and consumers fall back to
+  # their non-NATS code paths, e.g. Sidekiq for audit event streaming).
+  Settings.nats['servers'] ||= Rails.env.development? ? ['nats://127.0.0.1:4222'] : []
+  Settings.nats['connect_timeout'] ||= nil
+  # Mutual TLS: the GitLab NATS clusters use verify_and_map, so the client
+  # presents a client cert whose CN maps to a NATS authorization user. When
+  # present, `tls` carries file paths for the CA, client cert, and key.
+  Settings.nats['tls'] ||= nil
+  # JetStream stream replication factor for audit event streaming. Defaults
+  # to 1 for single-node deployments (e.g. GDK/dev); clustered production
+  # NATS overrides this to 3. A value > 1 on a non-clustered server is
+  # rejected by JetStream (err 10074).
+  Settings.nats['stream_replicas'] ||= 1
+end
+
+#
 # IAM Auth Service
 #
 Settings['iam_auth_service'] ||= {}

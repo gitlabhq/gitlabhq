@@ -405,7 +405,7 @@ Beyond simple path rebasing, `cdb-rebase` can also manage include files between 
 
 - Cache external headers: with `--include-cache`, headers outside the source tree are copied into a portable cache.
 - Add include paths: with `--include`, specify extra include directories to be cached.
-- Exclude files: with `--exclude`, skip headers you don’t want to carry over.
+- Exclude files: with `--exclude`, skip headers you don't want to carry over.
 
 Example:
 

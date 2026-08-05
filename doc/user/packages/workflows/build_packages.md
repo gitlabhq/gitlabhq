@@ -186,7 +186,7 @@ Prerequisites:
 
 - To test the package registry, you must have a C++ project.
 
-Go to your local project folder and use the `conan new` command to create a `“Hello World”` C++ library example project with the `cmake_lib` template:
+Go to your local project folder and use the `conan new` command to create a `"Hello World"` C++ library example project with the `cmake_lib` template:
 
 ```shell
 mkdir hello && cd hello

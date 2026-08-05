@@ -344,7 +344,6 @@ First, set the `uid_field`. Both the `uid_field` and the `sub` claim that you ca
 
 | Provider                                                                                                        | `uid_field` | Supporting information  |
 |-----------------------------------------------------------------------------------------------------------------|-------|-----------------------------------------------------------------------|
-| [`omniauth-azure-oauth2`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/vendor/gems/omniauth-azure-oauth2) | `sub` | Additional attributes `oid` and `tid` are offered in the `info` object. |
 | [`omniauth-azure-activedirectory-v2`](https://github.com/RIPAGlobal/omniauth-azure-activedirectory-v2/)         | `oid` | You must configure `oid` as `uid_field` when migrating. |
 | [`omniauth_openid_connect`](https://github.com/omniauth/omniauth_openid_connect/)                               | `sub` | Specify `uid_field` to use another field. |
 

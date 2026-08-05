@@ -56,6 +56,9 @@ class ProjectsController < Projects::ApplicationController
     # TODO: We need to remove the FF eventually when we rollout page_specific_styles
     push_frontend_feature_flag(:page_specific_styles, current_user)
     push_licensed_feature(:file_locks) if @project.present? && @project.licensed_feature_available?(:file_locks)
+    # This page cannot be migrated as a whole, it is migrated partially with
+    # `?vue3` imports, so it cannot use `vue3_migration.yml`. See:
+    # https://docs.gitlab.com/development/fe_guide/vue3_migration/#option-2-migrate-your-page-partially-using-vue3
     push_frontend_feature_flag(:vue3_migrate_repository, current_user)
 
     if @project.present? && @project.licensed_feature_available?(:security_orchestration_policies)

@@ -5,10 +5,6 @@ module RegistrationsHelper
     false
   end
 
-  def arkose_reactive_submit_button?
-    ::Feature.enabled?(:arkose_labs_signup_challenge_loading_state, :instance)
-  end
-
   def signup_submit_button_data(button_text, button_class, track_label)
     {
       view_model: {

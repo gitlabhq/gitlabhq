@@ -1362,7 +1362,7 @@ See also:
 
 - [Custom filename configuration](#backup-filename)
 - [Upload backups to remote cloud storage](#upload-backups-to-a-remote-cloud-storage)
-- [AWS S3 lifecycle policies](https://docs.aws.amazon.com/AmazonS3/latest/user-guide/create-lifecycle.html)
+- [AWS S3 lifecycle policies](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lifecycle-mgmt.html)
 
 {{< tabs >}}
 

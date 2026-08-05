@@ -208,13 +208,6 @@ Service discovery:
 
 - [`gitlab-cookbooks` / `gitlab_consul` · GitLab](https://gitlab.com/gitlab-cookbooks/gitlab_consul)
 
-### Elastic cluster
-
-We use Elasticsearch and Kibana for part of our monitoring solution:
-
-- [`gitlab-cookbooks` / `gitlab-elk` · GitLab](https://gitlab.com/gitlab-cookbooks/gitlab-elk)
-- [`gitlab-cookbooks` / `gitlab_elasticsearch` · GitLab](https://gitlab.com/gitlab-cookbooks/gitlab_elasticsearch)
-
 ### Fluentd
 
 We use Fluentd to unify our GitLab logs:

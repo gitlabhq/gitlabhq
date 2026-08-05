@@ -25,30 +25,6 @@ RSpec.describe 'devise/registrations/_signup_box_form', feature_category: :syste
     expect(rendered).to have_css('#js-signup-submit-button')
   end
 
-  it 'does not render the server-rendered submit button' do
-    render
-
-    expect(rendered).not_to have_testid('new-user-register-button')
-  end
-
-  context 'when arkose_labs_signup_challenge_loading_state is disabled' do
-    before do
-      stub_feature_flags(arkose_labs_signup_challenge_loading_state: false)
-    end
-
-    it 'renders the server-rendered submit button' do
-      render
-
-      expect(rendered).to have_testid('new-user-register-button')
-    end
-
-    it 'does not render the Vue submit button mount point' do
-      render
-
-      expect(rendered).not_to have_css('#js-signup-submit-button')
-    end
-  end
-
   def stub_devise
     allow(view).to receive(:devise_mapping).and_return(Devise.mappings[:user])
     allow(view).to receive(:resource).and_return(spy)

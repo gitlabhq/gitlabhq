@@ -120,6 +120,10 @@ downstream pipeline is created successfully, otherwise it shows `failed`. Altern
 you can [set the trigger job to show the downstream pipeline's status](#mirror-the-status-of-a-downstream-pipeline-in-the-trigger-job)
 instead.
 
+Trigger jobs do not use runners, so a long-running `pending` trigger job
+usually means GitLab could not create the downstream pipeline. For troubleshooting steps, see
+[Downstream pipelines troubleshooting](downstream_pipelines_troubleshooting.md).
+
 ### Use `rules` to control downstream pipeline jobs
 
 Use CI/CD variables or the [`rules`](../yaml/_index.md#rulesif) keyword to

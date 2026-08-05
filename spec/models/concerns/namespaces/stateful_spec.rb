@@ -44,6 +44,39 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
     end
   end
 
+  describe '.overwrite_state_in_batch' do
+    let_it_be_with_reload(:overwritable) { create(:namespace, state: :ancestor_inherited) }
+    let_it_be_with_reload(:higher_precedence) { create(:namespace, state: :deletion_scheduled) }
+    let_it_be_with_reload(:out_of_batch) { create(:namespace, state: :ancestor_inherited) }
+
+    it 'moves only rows in an overwritable state to the target state', :aggregate_failures do
+      Namespace.overwrite_state_in_batch(
+        [overwritable.id, higher_precedence.id],
+        from: [:ancestor_inherited],
+        to: :archived
+      )
+
+      expect(overwritable.reload.state).to eq('archived')
+      expect(higher_precedence.reload.state).to eq('deletion_scheduled')
+    end
+
+    it 'does not touch rows outside the given ids' do
+      Namespace.overwrite_state_in_batch([overwritable.id], from: [:ancestor_inherited], to: :archived)
+
+      expect(out_of_batch.reload.state).to eq('ancestor_inherited')
+    end
+
+    it 'returns the number of updated rows' do
+      updated = Namespace.overwrite_state_in_batch(
+        [overwritable.id, higher_precedence.id],
+        from: [:ancestor_inherited],
+        to: :archived
+      )
+
+      expect(updated).to eq(1)
+    end
+  end
+
   describe 'zero handling' do
     describe 'state reading' do
       it 'treats 0 state as ancestor_inherited' do

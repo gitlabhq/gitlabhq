@@ -56,7 +56,7 @@ To provide GitLab with the AWS account information needed to push content to you
 1. Select the **Active** checkbox.
 1. In the **Status Page URL** box, provide the URL for your external status page.
 1. In the **S3 Bucket name** box, type the name of your S3 bucket. For more information, see
-   [Bucket configuration documentation](https://docs.aws.amazon.com/AmazonS3/latest/dev/HostingWebsiteOnS3Setup.html).
+   [Bucket configuration documentation](https://docs.aws.amazon.com/AmazonS3/latest/userguide/HostingWebsiteOnS3Setup.html).
 1. In the **AWS region** box, type the region for your bucket. For more information, see the
    [AWS documentation](https://github.com/aws/aws-sdk-ruby#configuration).
 1. Enter your **AWS access key ID** and **AWS Secret access key**.
@@ -84,7 +84,7 @@ the necessary CI/CD variables to deploy the Status Page to AWS S3:
    - `S3_BUCKET_NAME` - The name of the Amazon S3 bucket.
      If no bucket with the provided name exists, the first pipeline run creates
      one and configures it for
-     [static website hosting](https://docs.aws.amazon.com/AmazonS3/latest/dev/HostingWebsiteOnS3Setup.html).
+     [static website hosting](https://docs.aws.amazon.com/AmazonS3/latest/userguide/HostingWebsiteOnS3Setup.html).
 
    - `AWS_DEFAULT_REGION` - The AWS region.
    - `AWS_ACCESS_KEY_ID` - The AWS access key ID.

@@ -17703,7 +17703,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_3dc15d3c2ef0"
+              "$ref": "#/components/schemas/RequestBody_9f15ccbe765c"
   "/api/v4/service_accounts":
     post:
       operationId: postApiV4ServiceAccounts
@@ -85508,6 +85508,8 @@ components:
           type: string
         display_gitlab_credits_user_data:
           type: string
+        use_nats_for_audit_streaming:
+          type: boolean
         project_secrets_limit:
           type: string
         group_secrets_limit:
@@ -99191,7 +99193,7 @@ components:
           description: Scopes available to the application. Separate multiple scopes
             with a space.
           nullable: true
-    RequestBody_3dc15d3c2ef0:
+    RequestBody_9f15ccbe765c:
       type: object
       properties:
         admin_mode:
@@ -100521,6 +100523,11 @@ components:
           type: integer
           description: The ID of a project to use as the Duo Code Review custom instructions
             template for this instance
+          nullable: true
+        use_nats_for_audit_streaming:
+          type: boolean
+          description: Route audit event streaming through NATS JetStream when the
+            instance has NATS configured
           nullable: true
         allow_local_requests_from_web_hooks_and_services:
           type: string

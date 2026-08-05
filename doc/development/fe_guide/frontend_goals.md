@@ -198,7 +198,8 @@ While GitLab UI is well-documented and components are abstract enough to be reus
 
 We should perform an audit of `vue_shared`, find out what can and what cannot be moved to GitLab UI, and refactor existing components to remove duplicates and increase reusability. The ideal outcome would be having application-specific components moved to application folders, and keep reusable "smart" components in the shared folder/library, ensuring that every single piece of reusable functionality has _only one implementation_.
 
-This is currently under development. Follow the [GitLab Modular Monolith for FE](https://gitlab.com/gitlab-org/gitlab/-/issues/422903) for updates on how we will enforce encapsulation on top-level folders like `vue_shared`.
+Encapsulation of top-level folders such as `vue_shared` is enforced by the rules described in
+[Frontend package boundaries](package_boundaries.md).
 
 **Current Status**
 

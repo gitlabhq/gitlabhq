@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "check-dependencies": "scripts/frontend/check_dependencies.sh",
-    "deps:check": "depcruise --config config/dependency_cruiser.js --no-ignore-known",
+    "deps:check": "depcruise --config config/dependency_cruiser.mjs --no-ignore-known",
     "deps:check:all": "yarn run deps:check .",
     "clean": "rm -rf public/assets tmp/cache/webpack tmp/cache/rspack tmp/cache/vite",
     "dev-server": "scripts/build_frontend_islands && NODE_OPTIONS=\"${NODE_OPTIONS:=--max-old-space-size=10240}\" node scripts/frontend/webpack_dev_server.js",

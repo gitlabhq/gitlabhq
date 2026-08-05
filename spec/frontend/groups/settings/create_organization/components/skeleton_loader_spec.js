@@ -1,6 +1,6 @@
 import { GlSkeletonLoader } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import SkeletonLoader from '~/organizations/index/components/reconciliation/skeleton_loader.vue';
+import SkeletonLoader from '~/groups/settings/create_organization/components/skeleton_loader.vue';
 
 describe('ReconciliationSkeletonLoader', () => {
   let wrapper;

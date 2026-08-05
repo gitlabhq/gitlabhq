@@ -44,7 +44,7 @@ You can also see any epics, issues, and tasks inherited by descendant items.
 
 Only epics, issues, and tasks that you can access show on the list.
 
-You can view issues assigned to an epic if they are in the group’s child project.
+You can view issues assigned to an epic if they are in the group's child project.
 This is because a project's visibility setting must be the same as, or less
 restrictive than, its parent group.
 

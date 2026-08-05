@@ -229,7 +229,7 @@ module QA
 
           # Return if new password page is shown
           # Happens on clean GDK installations when seeded root admin password is expired
-          if has_content?('Update password for', wait: 0)
+          if has_text?('Update password for', wait: 0)
             raise Runtime::User::ExpiredPasswordError, "Password for #{user.username} is expired and must be reset"
           end
 

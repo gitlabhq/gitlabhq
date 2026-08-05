@@ -59,7 +59,7 @@ Gitaly functions as the primary Git Repository Storage in GitLab. However, it's 
 
 #### Disk I/O recommendations
 
-- Use only SSD storage and the [class of Elastic Block Store (EBS) storage](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-volume-types.html) that suits your durability and speed requirements.
+- Use only SSD storage and the [class of Elastic Block Store (EBS) storage](https://docs.aws.amazon.com/ebs/latest/userguide/ebs-volume-types.html) that suits your durability and speed requirements.
 - When not using provisioned EBS IO, EBS volume size determines the I/O level, so provisioning volumes that are much larger than needed can be the least expensive way to improve EBS IO.
 - If Gitaly performance monitoring shows signs of disk stress then one of the provisioned IOPS levels can be chosen. EBS IOPS levels also have enhanced durability which may be appealing for some implementations aside from performance considerations.
 

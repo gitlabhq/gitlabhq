@@ -104,7 +104,7 @@ On the left side we have the events that can trigger a pipeline based on various
 - When project is [subscribed to an upstream project](../../ci/pipelines/_index.md#trigger-a-pipeline-when-an-upstream-project-is-rebuilt).
 - When [Auto DevOps](../../topics/autodevops/_index.md) is enabled.
 - When GitHub integration is used with [external pull requests](../../ci/ci_cd_for_external_repos/_index.md#pipelines-for-external-pull-requests).
-- When an upstream pipeline contains a [bridge job](../../ci/yaml/_index.md#trigger) which triggers a downstream pipeline.
+- When an upstream pipeline contains a [trigger job](#trigger-jobs) which triggers a downstream pipeline.
 
 Triggering any of these events invokes the [`CreatePipelineService`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/ci/create_pipeline_service.rb)
 which takes as input event data and the user triggering it, then attempts to create a pipeline.
@@ -152,7 +152,7 @@ specific failed jobs or the entire pipeline. Anything that
 causes a job to change status triggers `ProcessPipelineService`, as it's responsible for
 tracking the status of the entire pipeline.
 
-A special type of job is the [bridge job](../../ci/yaml/_index.md#trigger) which is executed server-side
+A special type of job is the [trigger job](#trigger-jobs) which is executed server-side
 when transitioning to the `pending` state. This job is responsible for creating a downstream pipeline, such as
 a multi-project or child pipeline. The workflow loop starts again
 from the `CreatePipelineService` every time a downstream pipeline is triggered.
@@ -369,7 +369,7 @@ In Active Record modeling, Job is defined as `CommitStatus` class.
 On top of that, we have the following types of jobs:
 
 - `Ci::Build` ... The job to be executed by runners.
-- `Ci::Bridge` ... The job to trigger a downstream pipeline.
+- `Ci::Bridge` ... The job to trigger a downstream pipeline. (See [trigger jobs](#trigger-jobs))
 - `GenericCommitStatus` ... The job to be executed in an external CI/CD system, for example Jenkins.
 
 When you use the "Job" terminology in codebase, readers would
@@ -382,6 +382,16 @@ We have a few inconsistencies in our codebase that should be refactored.
 For example, `CommitStatus` should be `Ci::Job` and `Ci::JobArtifact` should be `Ci::BuildArtifact`.
 See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/16111) for the full refactoring plan.
 
+### Trigger jobs
+
+[Trigger jobs](../../ci/yaml/_index.md#trigger), known internally as bridge jobs, differ from regular jobs. Trigger jobs:
+
+- Do not run on a runner and do not execute a `script`.
+- Cause GitLab to create and orchestrate a downstream pipeline.
+- Start in the `pending` state, then transition to `passed` or `failed` based on
+  whether GitLab creates the downstream pipeline (or, with [`trigger:strategy`](../../ci/yaml/_index.md#triggerstrategy),
+  based on the downstream pipeline's status).
+
 ## Compute Minutes and Quota
 
-See [compute minutes development documentation](compute_minutes.md)
+See [compute minutes development documentation](compute_minutes.md).

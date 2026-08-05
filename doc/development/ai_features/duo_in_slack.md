@@ -23,7 +23,7 @@ To test the feature locally, you must:
   executor does not work. For more information, see
   [Configure runners to execute flows](../../user/duo_agent_platform/flows/execution/_index.md#configure-runners-to-execute-flows).
 - A Slack workspace where you are an administrator. Use a personal test workspace, not the GitLab workspace.
-- The `slack_duo_agent` [feature flag](../feature_flags/_index.md) enabled for your user:
+- The `slack_duo_agent` [feature flag](../feature_flags/_index.md) enabled globally:
 
   ```ruby
   Feature.enable(:slack_duo_agent)
@@ -90,7 +90,7 @@ forwards to your GDK works.
    except `oauth_config.redirect_urls`, which must stay as your GDK URL. Note the scheme change from `http` to `https`.
 
    > [!note]
-   > Editing these values in the **Create Slack app** page did not work for me, as Slack was ignoring
+   > Editing these values in the **Create Slack app** page does not work, as Slack ignores
    > the changes. This may be a bug that gets fixed at some point.
 
 1. Select **Save Changes**.
@@ -187,7 +187,7 @@ Two cases behave differently in local development:
   might be turned off for your top-level group. In the group, go to **Settings** > **GitLab Duo**,
   select **Change configuration**, and under **Flow execution**, turn on the Developer Flow.
 
-### `gitlab-duo/duo-workspace` project does not get initialized properly
+### Default Duo namespace project does not get initialized properly
 
 `Ai::Messaging::WorkspaceProjectService` creates the project with `initialize_with_readme: true`, so
 the repository has a `README.md` commit on the default branch.

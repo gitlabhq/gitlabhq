@@ -18,7 +18,7 @@ The GraphQL API is [versionless](https://graphql.org/learn/best-practices/#versi
 ### Multi-version compatibility
 
 Though the GraphQL API is versionless, we have to be considerate about [Backwards compatibility across updates](multi_version_compatibility.md),
-and how it can cause incidents, like [Sidebar wasn’t loading for some users](multi_version_compatibility.md#sidebar-wasnt-loading-for-some-users).
+and how it can cause incidents, like [Sidebar wasn't loading for some users](multi_version_compatibility.md#sidebar-wasnt-loading-for-some-users).
 
 #### Mitigation
 

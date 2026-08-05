@@ -160,7 +160,6 @@ export default {
     'ee/app/assets/javascripts/tracing/list/filter_bar/tracing_filtered_search.vue',
     'ee/app/assets/javascripts/tracing/list/tracing_list.vue',
     'ee/app/assets/javascripts/tracing/list/tracing_scatter_chart.vue',
-    'ee/app/assets/javascripts/usage_quotas/code_suggestions/components/add_on_eligible_user_list.vue',
     'ee/app/assets/javascripts/usage_quotas/code_suggestions/components/saas_add_on_eligible_user_list.vue',
     'ee/app/assets/javascripts/usage_quotas/code_suggestions/components/search_and_sort_bar.vue',
     'ee/app/assets/javascripts/usage_quotas/code_suggestions/components/self_managed_add_on_eligible_user_list.vue',

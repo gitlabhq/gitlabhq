@@ -1,6 +1,6 @@
 ---
-source_checksum: c22e8bf4ebee1953
-distilled_at_sha: f22602e37afb92eb7028b601a922ebde417df6e4
+source_checksum: 897da855b56a02f6
+distilled_at_sha: 2437a5545d9f350b76b314e8cf58cde7e0d785ac
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -32,6 +32,7 @@ distilled_at_sha: f22602e37afb92eb7028b601a922ebde417df6e4
 - Use `nulls_not_distinct: true` on unique indexes when you need to enforce full uniqueness including `NULL` values, instead of combining two separate indexes
 - When dropping a composite index, verify that queries filtering only on non-leading columns have another suitable index
 - For large tables, use `prepare_async_index_removal` to schedule index removal asynchronously, then add a synchronous follow-up migration after verifying removal in production
+- When an automated `CleanupUnusedIndexes` MR is received, verify the index is truly unused on both GitLab.com and Self-Managed (including infrequent cron jobs) before merging; if the index must stay, add it to the keep list and close the MR
 
 ### Index Removal
 
@@ -57,6 +58,7 @@ distilled_at_sha: f22602e37afb92eb7028b601a922ebde417df6e4
 - Add columns with `_id` suffix to `ignored_fk_columns_map` in `spec/db/schema_spec.rb` only when they meet the documented criteria (cross-schema, loose FK, polymorphic, or non-reference)
 - For FK validation on very large tables, use `prepare_async_foreign_key_validation` / `prepare_partitioned_async_foreign_key_validation` to schedule validation during low-traffic windows
 - When adding two foreign keys to a new table, split them into different migrations to avoid locking more than one table at a time
+- When using a FK as a primary key (for `has_one` associations), consider using a regular `id` column if the table is relevant for Service Ping, as FK-as-primary-key can make batch counting less efficient
 
 ### NOT NULL Constraints
 

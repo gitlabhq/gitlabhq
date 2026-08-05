@@ -123,7 +123,7 @@ Generally solutions demonstrate end-to-end capabilities for the development fram
 
 ### CloudFormation
 
-[CloudFormation Development and Deployment With GitLab Lifecycle Managed DevOps Environments Working Code](https://gitlab.com/guided-explorations/aws/cloudformation-deploy) `[GitLab Solution]` `[CI Solution]`
+[CloudFormation Development and Deployment With GitLab Lifecycle Managed DevOps Environments Working Code](https://gitlab.com/guided-explorations/aws/cloudformation/cloudformation-deploy) `[GitLab Solution]` `[CI Solution]`
 
 ### CDK
 

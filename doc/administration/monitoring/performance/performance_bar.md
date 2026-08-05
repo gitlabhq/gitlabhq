@@ -82,7 +82,7 @@ From left to right, the performance bar displays:
 
 > [!note]
 > Not all indicators are available in all environments. For instance, the memory view
-> requires running Ruby with [specific patches](https://gitlab.com/gitlab-org/gitlab-build-images/-/blob/master/patches/ruby/2.7.4/thread-memory-allocations-2.7.patch)
+> requires running Ruby with [specific patches](https://gitlab.com/gitlab-org/gitlab-build-images/-/blob/master/patches/ruby/2.7/thread-memory-allocations.patch)
 > applied. When running GitLab locally using the [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit),
 > this is typically not the case and the memory view cannot be used.
 

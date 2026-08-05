@@ -1,6 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import ReconciliationModal from '~/organizations/index/components/reconciliation/modal.vue';
+import ReconciliationModal from './modal.vue';
 
 export default {
   name: 'GroupSettingsCreateOrganization',

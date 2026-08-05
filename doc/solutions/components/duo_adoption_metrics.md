@@ -111,7 +111,7 @@ All Duo-related GraphQL logic is encapsulated in the `gitlab_graphql_api` Python
 Key ideas:
 
 - **GraphQL client abstraction** – A central client handles authentication, pagination, and error handling against the GitLab GraphQL endpoint.
-- **Collection classes** – The `collections` module provides higher-level abstractions (such as “project collections” or “user collections”) that expose methods for retrieving structured data. Duo collectors use these to:
+- **Collection classes** – The `collections` module provides higher-level abstractions (such as "project collections" or "user collections") that expose methods for retrieving structured data. Duo collectors use these to:
   - Fetch groups and projects for a given `GROUP_PATH`.
   - Query Duo usage fields and AI-related activity.
 - **Versioned API usage** – The same collections API can be extended as GitLab improves or expands Duo-related GraphQL fields without changing the orchestrator.

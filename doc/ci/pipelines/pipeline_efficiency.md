@@ -42,6 +42,9 @@ heavily influenced by the:
 Additional points to pay attention to relate to [GitLab Runners](../runners/_index.md):
 
 - Availability of the runners and the resources they are provisioned with.
+  If you use GitLab-hosted runners, choose a
+  [machine type](../runners/hosted_runners/linux.md#machine-types-available-for-linux---x86-64)
+  sized for the job instead of over-provisioning or under-provisioning.
 - Build dependencies, their installation time, and storage space requirements.
 - [Container image size](#docker-images).
 - Network latency and slow connections.
@@ -113,7 +116,7 @@ be embedded into incidents making problem resolution easier. Additionally, it ca
 
 If you use the GitLab CI Pipelines Exporter, you should start with the [example configuration](https://github.com/mvisonneau/gitlab-ci-pipelines-exporter/blob/main/docs/configuration_syntax.md).
 
-![Grafana Dashboard showing CI run statuses and historical statistics including frequency and fail rate.](img/ci_efficiency_pipeline_health_grafana_dashboard_v13_7.png)
+![Grafana Dashboard showing CI run statuses and historical statistics including frequency and fail rate.](img/ci_efficiency_pipeline_health_grafana_dashboard_v19_3.png)
 
 Alternatively, you can use a monitoring tool that can execute scripts, like
 [`check_gitlab`](https://gitlab.com/6uellerBpanda/check_gitlab) for example.
@@ -191,11 +194,20 @@ cases. [Pipelines with the `needs` keyword](../yaml/needs.md) and
 [parent/child pipelines](downstream_pipelines.md#parent-child-pipelines) are more flexible and can
 be more efficient, but can also make pipelines harder to understand and analyze.
 
+### Reuse configuration with CI/CD components
+
+Instead of duplicating pipeline configuration with [`include`](../yaml/includes.md), use
+[CI/CD components](../components/_index.md) to reuse tested, versioned configuration
+across projects.
+You can find published components in the CI/CD Catalog.
+Components reduce the maintenance overhead of keeping duplicated configuration in sync.
+
 ### Caching
 
 Another optimization method is to [cache](../caching/_index.md) dependencies. If your
-dependencies change rarely, like [NodeJS `/node_modules`](../caching/examples.md#nodejs),
-caching can make pipeline execution much faster.
+dependencies change rarely, caching can make pipeline execution much faster.
+For configuration examples for NodeJS, PHP, Python, Ruby, and Go, see
+[cache dependencies examples](../caching/examples.md#cache-dependencies).
 
 You can use [`cache:when`](../yaml/_index.md#cachewhen) to cache downloaded dependencies
 even when a job fails.
@@ -226,6 +238,9 @@ has more information about building efficient Docker images.
 Methods to reduce Docker image size:
 
 - Use a small base image, for example `debian-slim`.
+- Use a [distroless](https://github.com/GoogleContainerTools/distroless) image, which
+  contains only your application and its runtime dependencies, with no package manager,
+  shell, or other programs found in a typical Linux distribution.
 - Do not install convenience tools such as vim or curl if they aren't strictly needed.
 - Create a dedicated development image.
 - Disable man pages and documentation installed by packages to save space.
@@ -235,7 +250,7 @@ Methods to reduce Docker image size:
 - If using `apt`, add `--no-install-recommends` to avoid unnecessary packages.
 - Clean up caches and files that are no longer needed at the end. For example
   `rm -rf /var/lib/apt/lists/*` for Debian and Ubuntu, or `yum clean all` for RHEL and CentOS.
-- Use tools like [dive](https://github.com/wagoodman/dive) or [DockerSlim](https://github.com/docker-slim/docker-slim)
+- Use tools like [dive](https://github.com/wagoodman/dive) or [Slim Toolkit](https://github.com/slimtoolkit/slim)
   to analyze and shrink images.
 
 To simplify Docker image management, you can create a dedicated group for managing
@@ -258,5 +273,5 @@ identify recurring problems with CI pipeline efficiency.
 ### Related topics
 
 - [CI expert agent](../../user/duo_agent_platform/agents/foundational_agents/ci_expert_agent.md)
-- GitLab.com Monitoring Handbook
+- [CI/CD analytics](../../user/analytics/ci_cd_analytics.md)
 - [Building dashboards for operational visibility](https://aws.amazon.com/builders-library/building-dashboards-for-operational-visibility/)

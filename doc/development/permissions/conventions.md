@@ -45,7 +45,7 @@ We recognize that this set of actions is limited and not applicable to every fea
 
 The following action patterns are examples of those that should not be introduced into the permission catalog:
 
-| Action     | Why it’s disallowed |
+| Action     | Why it's disallowed |
 |-----------|--------------------|
 | `admin`   | Implies broad, undefined authority with unclear scope |
 | `change`  | Redundant with `update` |

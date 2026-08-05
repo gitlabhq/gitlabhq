@@ -1,9 +1,9 @@
 ---
 description: Tracks toggling of the security training provider setting.
 action: toggle_security_training_provider
-product_group: security_insights
+product_group: vulnerability_management
 product_categories:
-- vulnerability_management
+  - vulnerability_management
 milestone: '14.8'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80458
 tiers:

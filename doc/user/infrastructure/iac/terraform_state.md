@@ -584,4 +584,4 @@ To reduce exposure of sensitive data:
 ## Related topics
 
 - [Troubleshooting GitLab-managed Terraform state](troubleshooting.md)
-- [Sample project: Terraform deployment of AWS EC2 instance in a custom VPC](https://gitlab.com/gitlab-org/configure/examples/gitlab-terraform-aws)
+- [Sample project: Terraform deployment of AWS EC2 instance in a custom VPC](https://gitlab.com/gitlab-org/ci-cd/deploy-stage/environments-group/examples/gitlab-terraform-aws)

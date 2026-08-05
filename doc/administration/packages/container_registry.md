@@ -956,7 +956,7 @@ However, this behavior is undesirable for registries used by internal hosts that
 #### Encrypted S3 buckets
 
 You can use server-side encryption with AWS KMS for S3 buckets that have
-[SSE-S3 or SSE-KMS encryption enabled by default](https://docs.aws.amazon.com/kms/latest/developerguide/services-s3.html).
+[SSE-S3 or SSE-KMS encryption enabled by default](https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingKMSEncryption.html).
 Customer master keys (CMKs) and SSE-C encryption aren't supported because this requires sending the
 encryption keys in every request.
 

@@ -1,8 +1,8 @@
 import illustrationUrl from '@gitlab/svgs/dist/illustrations/empty-state/empty-organizations-add-md.svg?url';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import Step1 from '~/organizations/index/components/reconciliation/steps/step_1.vue';
-import BaseStep from '~/organizations/index/components/reconciliation/steps/base_step.vue';
-import OrganizationCard from '~/organizations/index/components/reconciliation/organization_card.vue';
+import Step1 from '~/groups/settings/create_organization/components/steps/step_1.vue';
+import BaseStep from '~/groups/settings/create_organization/components/steps/base_step.vue';
+import OrganizationCard from '~/groups/settings/create_organization/components/organization_card.vue';
 import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
 import { mockOrganizations } from '../mock_data';
 

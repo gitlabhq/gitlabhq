@@ -18,7 +18,7 @@ In addition, we want to thank all of our contributors, including this month's no
 Everyone can [nominate GitLab’s community contributors](https://gitlab.com/gitlab-org/developer-relations/contributor-success/team-task/-/issues/490)!
 Show your support for our active candidates or add a new nomination! 🙌
 
-Through the Co-Create Program, [Océane Legrand](https://gitlab.com/oceane_scania) has been leading efforts to enhance the Conan package registry feature set, collaborating with Juan Pablo Gonzalez.
+Through the Co-Create Program, [Océane Legrand](https://gitlab.com/oceane_legrand) has been leading efforts to enhance the Conan package registry feature set, collaborating with Juan Pablo Gonzalez.
 Their work has focused on bringing the feature closer to GA readiness while implementing Conan version 2 support.
 This collaboration demonstrates how the Co-Create Program can drive significant improvements to GitLab’s package registry capabilities.
 

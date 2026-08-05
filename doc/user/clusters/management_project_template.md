@@ -96,7 +96,7 @@ from your cluster. [Read more](https://helmfile.readthedocs.io/en/latest/) about
 The template contains an `applications` directory with a `helmfile.yaml` configured for each
 application in the template.
 
-The [built-in supported applications](https://gitlab.com/gitlab-org/project-templates/cluster-management/-/tree/master/applications) are:
+The [built-in supported applications](https://gitlab.com/gitlab-org/project-templates/cluster-management/-/tree/main/applications) are:
 
 - [Cert-manager](../infrastructure/clusters/manage/management_project_applications/certmanager.md)
 - [GitLab Runner](../infrastructure/clusters/manage/management_project_applications/runner.md)

@@ -143,7 +143,7 @@ class CheckCiPartitionPruning
     MAX_PAGES = 20
     MAX_RETRIES = 2
     MAX_BACKOFF = 60 # seconds
-    MAX_BODY_BYTESIZE = 900_000 # a note is rejected if size > 1 MiB
+    MAX_BODY_BYTESIZE = 200_000 # ~8 queries inline, well under the 1 MiB note limit
 
     attr_reader :logger
 

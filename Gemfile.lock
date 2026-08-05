@@ -1403,6 +1403,12 @@ GEM
       mustermann (>= 1.0.0)
     mutex_m (0.3.0)
     nap (1.1.0)
+    nats-pure (2.5.0)
+      base64
+      concurrent-ruby (~> 1.0)
+      json
+      securerandom
+      uri
     nenv (0.3.0)
     net-http (0.6.0)
       uri
@@ -2635,6 +2641,7 @@ DEPENDENCIES
   mini_magick (~> 4.12)
   minitest (~> 5.11.0)
   multi_json (~> 1.17.0)
+  nats-pure (~> 2.5.0)
   net-http (= 0.6.0)
   net-ldap (~> 0.20.0)
   net-ntp
@@ -3241,6 +3248,7 @@ CHECKSUMS
   mustermann-grape (1.1.0) sha256=8d258a986004c8f01ce4c023c0b037c168a9ed889cf5778068ad54398fa458c5
   mutex_m (0.3.0) sha256=cfcb04ac16b69c4813777022fdceda24e9f798e48092a2b817eb4c0a782b0751
   nap (1.1.0) sha256=949691660f9d041d75be611bb2a8d2fd559c467537deac241f4097d9b5eea576
+  nats-pure (2.5.0) sha256=95e03c6aa6afaa33c6938928a04efbef8474844b11c95c8219c1c397ce030a4a
   nenv (0.3.0) sha256=d9de6d8fb7072228463bf61843159419c969edb34b3cef51832b516ae7972765
   net-http (0.6.0) sha256=9621b20c137898af9d890556848c93603716cab516dc2c89b01a38b894e259fb
   net-http-persistent (4.0.5) sha256=6e42880b347e650ffeaf679ae59c9d5a6ed8a22cda6e1b959d9c270050aefa8e

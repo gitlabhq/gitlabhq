@@ -143,5 +143,11 @@ module Namespaces
         { message: 'Namespace state transition', namespace_id: id }
       end
     end
+
+    class_methods do
+      def overwrite_state_in_batch(ids, from:, to:)
+        with_state(from).id_in(ids).update_all(state: states[to])
+      end
+    end
   end
 end

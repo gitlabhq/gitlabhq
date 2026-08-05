@@ -1,7 +1,7 @@
 import { nextTick } from 'vue';
 import GroupSettingsCreateOrganization from '~/groups/settings/create_organization/components/app.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import ReconciliationModal from '~/organizations/index/components/reconciliation/modal.vue';
+import ReconciliationModal from '~/groups/settings/create_organization/components/modal.vue';
 
 describe('GroupSettingsCreateOrganization', () => {
   let wrapper;

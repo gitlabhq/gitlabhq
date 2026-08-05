@@ -1,9 +1,9 @@
 import { GlCard } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import Step3 from '~/organizations/index/components/reconciliation/steps/step_3.vue';
-import BaseStep from '~/organizations/index/components/reconciliation/steps/base_step.vue';
-import OrganizationCard from '~/organizations/index/components/reconciliation/organization_card.vue';
-import OrganizationGroupCard from '~/organizations/index/components/reconciliation/organization_group_card.vue';
+import Step3 from '~/groups/settings/create_organization/components/steps/step_3.vue';
+import BaseStep from '~/groups/settings/create_organization/components/steps/base_step.vue';
+import OrganizationCard from '~/groups/settings/create_organization/components/organization_card.vue';
+import OrganizationGroupCard from '~/groups/settings/create_organization/components/organization_group_card.vue';
 import {
   mockOrganizations,
   organizationWithGroups,

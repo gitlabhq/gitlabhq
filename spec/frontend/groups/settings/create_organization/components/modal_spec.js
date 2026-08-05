@@ -7,12 +7,12 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
 import { createAlert } from '~/alert';
-import ReconciliationModal from '~/organizations/index/components/reconciliation/modal.vue';
-import SkeletonLoader from '~/organizations/index/components/reconciliation/skeleton_loader.vue';
-import organizationsForReconciliationQuery from '~/organizations/index/graphql/queries/organizations_for_reconciliation.query.graphql';
-import Step1 from '~/organizations/index/components/reconciliation/steps/step_1.vue';
-import Step2 from '~/organizations/index/components/reconciliation/steps/step_2.vue';
-import Step3 from '~/organizations/index/components/reconciliation/steps/step_3.vue';
+import ReconciliationModal from '~/groups/settings/create_organization/components/modal.vue';
+import SkeletonLoader from '~/groups/settings/create_organization/components/skeleton_loader.vue';
+import organizationsForReconciliationQuery from '~/groups/settings/create_organization/graphql/queries/organizations_for_reconciliation.query.graphql';
+import Step1 from '~/groups/settings/create_organization/components/steps/step_1.vue';
+import Step2 from '~/groups/settings/create_organization/components/steps/step_2.vue';
+import Step3 from '~/groups/settings/create_organization/components/steps/step_3.vue';
 import { mockDefaultOrganization } from 'jest/organizations/shared/mock_data';
 import {
   mockOrganizations,

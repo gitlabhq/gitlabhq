@@ -3,10 +3,10 @@ import { nextTick } from 'vue';
 import Draggable from '~/lib/utils/vue3compat/draggable_compat.vue';
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
-import Step2 from '~/organizations/index/components/reconciliation/steps/step_2.vue';
-import BaseStep from '~/organizations/index/components/reconciliation/steps/base_step.vue';
-import OrganizationCard from '~/organizations/index/components/reconciliation/organization_card.vue';
-import OrganizationGroupCard from '~/organizations/index/components/reconciliation/organization_group_card.vue';
+import Step2 from '~/groups/settings/create_organization/components/steps/step_2.vue';
+import BaseStep from '~/groups/settings/create_organization/components/steps/base_step.vue';
+import OrganizationCard from '~/groups/settings/create_organization/components/organization_card.vue';
+import OrganizationGroupCard from '~/groups/settings/create_organization/components/organization_group_card.vue';
 import {
   mockOrganizations,
   mockGroup,

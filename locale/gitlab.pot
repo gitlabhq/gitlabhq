@@ -8221,6 +8221,12 @@ msgstr ""
 msgid "AiGovernance|Action"
 msgstr ""
 
+msgid "AiGovernance|Active"
+msgstr ""
+
+msgid "AiGovernance|Allow"
+msgstr ""
+
 msgid "AiGovernance|Always allow"
 msgstr ""
 
@@ -8236,10 +8242,22 @@ msgstr ""
 msgid "AiGovernance|Audit trail"
 msgstr ""
 
+msgid "AiGovernance|Block"
+msgstr ""
+
+msgid "AiGovernance|Blocked"
+msgstr ""
+
+msgid "AiGovernance|Blocked by a parent group and cannot be changed here."
+msgstr ""
+
 msgid "AiGovernance|Category"
 msgstr ""
 
 msgid "AiGovernance|Compliance posture"
+msgstr ""
+
+msgid "AiGovernance|Connection"
 msgstr ""
 
 msgid "AiGovernance|Control how your AI-powered features are used."
@@ -8251,7 +8269,16 @@ msgstr ""
 msgid "AiGovernance|Dashboard"
 msgstr ""
 
+msgid "AiGovernance|Description"
+msgstr ""
+
 msgid "AiGovernance|Destroy"
+msgstr ""
+
+msgid "AiGovernance|External"
+msgstr ""
+
+msgid "AiGovernance|Failed to load MCP servers."
 msgstr ""
 
 msgid "AiGovernance|Failed to load agent inventory."
@@ -8261,6 +8288,9 @@ msgid "AiGovernance|Failed to load audit trail."
 msgstr ""
 
 msgid "AiGovernance|Failed to load tool rules."
+msgstr ""
+
+msgid "AiGovernance|Failed to update the MCP server. Try again."
 msgstr ""
 
 msgid "AiGovernance|Failed to update tool rule. Please try again."
@@ -8278,6 +8308,15 @@ msgstr ""
 msgid "AiGovernance|Local access is not currently enforced."
 msgstr ""
 
+msgid "AiGovernance|MCP registry"
+msgstr ""
+
+msgid "AiGovernance|MCP server"
+msgstr ""
+
+msgid "AiGovernance|No MCP servers found."
+msgstr ""
+
 msgid "AiGovernance|No agents configured yet."
 msgstr ""
 
@@ -8285,6 +8324,9 @@ msgid "AiGovernance|No recent agent sessions."
 msgstr ""
 
 msgid "AiGovernance|No tool rules found."
+msgstr ""
+
+msgid "AiGovernance|None"
 msgstr ""
 
 msgid "AiGovernance|Overrides group"
@@ -8305,6 +8347,9 @@ msgstr ""
 msgid "AiGovernance|Source"
 msgstr ""
 
+msgid "AiGovernance|Status"
+msgstr ""
+
 msgid "AiGovernance|This tool can access any GitLab read endpoint. Changes to other read tools may not take effect if this tool remains on Allow."
 msgstr ""
 
@@ -8315,6 +8360,9 @@ msgid "AiGovernance|Tool management"
 msgstr ""
 
 msgid "AiGovernance|Tool name"
+msgstr ""
+
+msgid "AiGovernance|Type"
 msgstr ""
 
 msgid "AiGovernance|View all agents"
@@ -68078,7 +68126,10 @@ msgstr ""
 msgid "Secret push protection skipped via"
 msgstr ""
 
-msgid "Secret push protection was skipped: %{changed_paths_count} changed paths exceeds the threshold of %{changed_paths_threshold}. The push has been accepted."
+msgid "Secret push protection was skipped: %{changed_paths_count} changed paths exceeds the threshold of %{changed_paths_threshold}."
+msgstr ""
+
+msgid "Secret push protection was skipped: %{lines_count} lines count exceeds the threshold of %{lines_threshold}."
 msgstr ""
 
 msgid "Secret token."
@@ -73774,6 +73825,9 @@ msgid "SecurityReports|There was an error fetching the finding. The security rep
 msgstr ""
 
 msgid "SecurityReports|There was an error fetching the identifiers for this project. Please try again later."
+msgstr ""
+
+msgid "SecurityReports|There was an error fetching the projects. Please try again later."
 msgstr ""
 
 msgid "SecurityReports|There was an error reverting the dismissal."

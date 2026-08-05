@@ -81,6 +81,39 @@ RSpec.describe Namespaces::StatePropagation, feature_category: :groups_and_proje
         expect(ids).to eq([oldest.id, pending_propagation.id, newest.id])
       end
     end
+
+    describe '.for_namespace_and_target' do
+      it 'returns records matching the namespace and target_state' do
+        expect(described_class.for_namespace_and_target(namespace.id, :archived))
+          .to contain_exactly(pending_propagation)
+      end
+
+      it 'excludes records with a different target_state' do
+        expect(described_class.for_namespace_and_target(namespace.id, :archived))
+          .not_to include(processing_propagation)
+      end
+
+      it 'excludes records for a different namespace' do
+        other = create(:namespace_state_propagation, namespace: create(:namespace), target_state: :archived)
+
+        expect(described_class.for_namespace_and_target(namespace.id, :archived))
+          .not_to include(other)
+      end
+    end
+
+    describe '.next_pending_for' do
+      it 'returns the pending record matching the namespace and target_state' do
+        expect(described_class.next_pending_for(namespace.id, :archived)).to eq(pending_propagation)
+      end
+
+      it 'returns nil when no pending record matches the target_state' do
+        expect(described_class.next_pending_for(namespace.id, :deletion_scheduled)).to be_nil
+      end
+
+      it 'returns nil when no pending record matches the namespace' do
+        expect(described_class.next_pending_for(create(:namespace).id, :archived)).to be_nil
+      end
+    end
   end
 
   describe 'unique constraint' do

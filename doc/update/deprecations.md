@@ -575,7 +575,7 @@ See the following resources for migrating an external Redis 6 deployment:
 - **AWS ElastiCache**: ElastiCache for Redis 7.2 is not available on AWS. Migrate to
   [Amazon ElastiCache for Valkey 7.2](https://aws.amazon.com/elasticache/what-is-valkey/), which is recommended.
   ElastiCache for Redis 7.1 is built on Redis 7.0 and is known to work.
-  For available upgrade paths, see [AWS ElastiCache documentation](https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/supported-engine-versions.html).
+  For available upgrade paths, see [AWS ElastiCache documentation](https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/engine-versions.html).
 - **GCP Memorystore**: Upgrade your Redis 6 instance to Redis 7.2 or Valkey 7.2. For available upgrade paths, see
   [GCP Memorystore documentation](https://docs.cloud.google.com/memorystore/docs/redis/supported-versions).
 - **Azure Cache for Redis**: A managed Redis 7.2 or Valkey 7.2 option is not currently available on Azure. You can
@@ -3588,7 +3588,7 @@ The Phabricator task importer is being deprecated. Phabricator itself as a proje
 
 With every major GitLab version, we update the stable Terraform templates with the current latest templates.
 This change affects the [quickstart](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform.gitlab-ci.yml)
-and the [base](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform/Base.gitlab-ci.yml) templates.
+and the [base templates](https://docs.gitlab.com/update/deprecations/#deprecate-terraform-cicd-templates).
 
 Because the new templates ship with default rules, the update might break your Terraform pipelines.
 For example, if your Terraform jobs are triggered as a downstream pipeline, the rules won't trigger your jobs

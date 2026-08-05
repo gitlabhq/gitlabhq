@@ -210,8 +210,10 @@ export default [
       'spec/frontend/scripts/infection_scanner/fixtures/**',
 
       // Dot-prefixed directories were implicitly ignored under legacy
-      // eslintrc config (FlatCompat) but must be listed explicitly in flat config
+      // eslintrc config (FlatCompat) but must be listed explicitly in flat config.
+      // Both of these hold generated todo lists, so they are not linted.
       '.eslint_todo/**',
+      '.dependency_cruiser_todo/**',
 
       // Shared agent skills are documentation assets (including example
       // .graphql queries), not application code, so they are not linted.
@@ -277,8 +279,8 @@ export default [
       // Import rules
       'import/no-commonjs': 'error',
       'import/no-default-export': 'off',
-      // Use dependency-cruiser to get an accurate analysis on circular dependencies
-      // and for better performance
+      // Dependency rules are enfoced by `config/dependency_cruiser.mjs`
+      // It is more accurate and faster than the ESLint rule.
       'import/no-cycle': 'off',
 
       'no-underscore-dangle': [
@@ -590,6 +592,14 @@ export default [
   {
     files: ['{,ee/,jh/}spec/frontend*/**/*'],
 
+    // Co-located because this block enables `local-rules/no-apollo-mock` as an
+    // error; flat config only resolves a plugin for rules in the same object,
+    // and this glob also matches `.mjs` specs that the `**/*.{js,vue}` block
+    // registering the plugin does not.
+    plugins: {
+      'local-rules': eslintLocalRules,
+    },
+
     rules: {
       ...relaxedUrlAndI18nRules,
       '@gitlab/no-runtime-template-compiler': 'off',
@@ -639,6 +649,7 @@ export default [
       'no-unsanitized/property': 'off',
       'local-rules/require-valid-help-page-path': 'off',
       'local-rules/vue-require-valid-help-page-link-component': 'off',
+      'local-rules/no-apollo-mock': 'error',
 
       'no-restricted-imports': [
         'error',
@@ -647,19 +658,6 @@ export default [
           patterns: restrictedImportsPatterns,
         },
       ],
-    },
-  },
-  // Scoped to .js/.vue so the `local-rules` plugin and the rule live in the
-  // same config object (flat config requires co-location for non-`off` rules).
-  // Tests must not stub Apollo via `mocks: { $apollo }`; use createMockApollo instead.
-  // See https://gitlab.com/groups/gitlab-org/plan-stage/-/work_items/477
-  {
-    files: ['{,ee/,jh/}spec/frontend*/**/*.{js,vue}'],
-    plugins: {
-      'local-rules': eslintLocalRules,
-    },
-    rules: {
-      'local-rules/no-apollo-mock': 'error',
     },
   },
   // Flag unused `inject` declarations in Vue components, mirroring

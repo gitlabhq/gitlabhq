@@ -1518,6 +1518,23 @@ production: &base
 
   # The legacy `knowledge_graph` section remains supported as an alias for `orbit`.
 
+  ## NATS (JetStream messaging, used for audit event streaming)
+  # An empty (or absent) `servers` list means NATS is not configured; audit
+  # event streaming then falls back to the Sidekiq delivery path.
+  nats:
+    # servers:
+    #   - "tls://nats.example.com:4222"
+    # connect_timeout: 2
+    # Mutual TLS. The GitLab NATS clusters use verify_and_map, so the client
+    # must present a client certificate whose CN maps to a NATS user.
+    # tls:
+    #   ca_file: /path/to/ca.pem
+    #   cert: /path/to/client-cert.pem
+    #   key: /path/to/client-key.pem
+    # JetStream stream replication factor. Defaults to 1 for single-node
+    # deployments; set to 3 for a clustered NATS deployment.
+    # stream_replicas: 1
+
   ## GitLab Elasticsearch settings
   elasticsearch:
     indexer_path: /home/git/gitlab-elasticsearch-indexer/

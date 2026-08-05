@@ -82,7 +82,7 @@ my_fuzz_target:
 The `Coverage-Fuzzing` template includes the [hidden job](../../../ci/jobs/_index.md#hide-a-job)
 `.fuzz_base`, which you must [extend](../../../ci/yaml/_index.md#extends) for each of your fuzzing
 targets. Each fuzzing target **must** have a separate job. For example, the
-[go-fuzzing-example project](https://gitlab.com/gitlab-org/security-products/demos/go-fuzzing-example)
+[go-fuzzing-example project](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/go-fuzzing-example)
 contains one job that extends `.fuzz_base` for its single fuzzing target.
 
 The hidden job `.fuzz_base` uses several YAML keys that you must not override in your own

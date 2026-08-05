@@ -19,7 +19,6 @@ RSpec.describe Gitlab::Database::Namespaces::StatePropagationIterator, feature_c
   def collected_ids
     [].tap do |ids|
       described_class.new(
-        namespace_class: Namespace,
         cursor: cursor,
         state_filter: state_filter
       ).each_batch(of: 3) do |batch_ids|
@@ -95,7 +94,6 @@ RSpec.describe Gitlab::Database::Namespaces::StatePropagationIterator, feature_c
   describe '#each_batch with cursor rewind' do
     let(:iterator) do
       described_class.new(
-        namespace_class: Namespace,
         cursor: cursor,
         state_filter: state_filter
       )
@@ -208,7 +206,6 @@ RSpec.describe Gitlab::Database::Namespaces::StatePropagationIterator, feature_c
         # child) as the cursor's leaf, so we can verify the rewind doesn't
         # step into project1.
         local_iterator = described_class.new(
-          namespace_class: Namespace,
           cursor: cursor,
           state_filter: state_filter
         )

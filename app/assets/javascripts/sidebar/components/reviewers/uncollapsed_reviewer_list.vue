@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlTooltipDirective, GlIcon, GlAnimatedLoaderIcon } from '@gitlab/ui';
 import { TYPE_ISSUE } from '~/issues/constants';
+import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import { userTypes } from '../assignees/constants';
@@ -116,7 +117,7 @@ export default {
     },
     reRequestReview(userId) {
       this.loadingStates[userId] = LOADING_STATE;
-      this.$root.$emit('bv::hide::tooltip');
+      this.$root.$emit(BV_HIDE_TOOLTIP);
       this.$emit('request-review', { userId, callback: this.requestReviewComplete });
     },
     removeReviewer(userId) {

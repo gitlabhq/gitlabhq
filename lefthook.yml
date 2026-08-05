@@ -18,7 +18,7 @@ pre-push:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '*.{js,vue}'
       run: REVEAL_ESLINT_TODO=0 yarn run lint:eslint --no-warn-ignored {files}
-    circular-dependencies:
+    dependency-rules:
       tags: frontend
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '*.{js,mjs,cjs,vue}'

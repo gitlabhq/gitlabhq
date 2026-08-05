@@ -759,7 +759,7 @@ variables:
 ### Demonstration projects
 
 Browse the
-[demonstration projects](https://gitlab.com/gitlab-org/security-products/demos/SAST-analyzer-configurations)
+[demonstration projects](https://gitlab.com/gitlab-org/security-products/demos/analyzer-configurations)
 that illustrate some of these configuration options.
 
 Many of these projects demonstrate using remote rulesets to override or disable rules and are

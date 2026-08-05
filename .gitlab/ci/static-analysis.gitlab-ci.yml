@@ -100,19 +100,6 @@ eslint:
     reports:
       codequality: gl-code-quality-report.json
 
-# Non-blocking visibility for the `local-rules/no-apollo-mock` guardrail
-# (WS1 Guardrail 2). New violations are caught by the blocking `eslint` job;
-# this job reveals the existing offenders grandfathered in `.eslint_todo` so
-# the remaining migration work stays visible without breaking the pipeline.
-# See https://gitlab.com/groups/gitlab-org/plan-stage/-/work_items/477
-eslint-todo-no-apollo-mock:
-  extends:
-    - .eslint-base
-    - .frontend:rules:eslint-default
-  script:
-    - node scripts/frontend/reveal_eslint_todo_rule.mjs local-rules/no-apollo-mock
-  allow_failure: true
-
 .eslint:fe-islands:
   extends:
     - .eslint-base

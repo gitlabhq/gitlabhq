@@ -97,6 +97,7 @@ yarn.lock @gitlab-org/maintainers/frontend
 /.stylelintrc @gitlab-org/maintainers/frontend
 /axe-linter.yml @gitlab-org/maintainers/frontend
 /.eslint_todo/ @gitlab-org/maintainers/frontend
+/.dependency_cruiser_todo/ @gitlab-org/maintainers/frontend
 /storybook/ @gitlab-org/maintainers/frontend
 # Overrides above BE directory assignments
 /app/assets/ @gitlab-org/maintainers/frontend

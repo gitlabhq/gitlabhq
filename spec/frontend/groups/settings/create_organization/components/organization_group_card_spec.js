@@ -1,6 +1,6 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
-import OrganizationGroupCard from '~/organizations/index/components/reconciliation/organization_group_card.vue';
+import OrganizationGroupCard from '~/groups/settings/create_organization/components/organization_group_card.vue';
 import ListItemStat from '~/vue_shared/components/resource_lists/list_item_stat.vue';
 import { mockGroup } from './mock_data';
 

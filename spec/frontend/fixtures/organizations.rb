@@ -111,7 +111,7 @@ RSpec.describe 'Organizations (GraphQL fixtures)', feature_category: :organizati
     end
 
     describe 'organizations for reconciliation' do
-      base_input_path = 'organizations/index/graphql/queries/'
+      base_input_path = 'groups/settings/create_organization/graphql/queries/'
       base_output_path = 'graphql/organizations/'
       query_name = 'organizations_for_reconciliation.query.graphql'
 

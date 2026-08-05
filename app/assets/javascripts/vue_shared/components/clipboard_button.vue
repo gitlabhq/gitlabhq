@@ -15,6 +15,7 @@
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { uniqueId } from 'lodash-es';
 import { sanitize } from '~/lib/dompurify';
+import { BV_HIDE_TOOLTIP, BV_SHOW_TOOLTIP } from '~/lib/utils/constants';
 
 import { __ } from '~/locale';
 import {
@@ -123,13 +124,13 @@ export default {
   methods: {
     updateTooltip(title) {
       this.localTitle = title;
-      this.$root.$emit('bv::show::tooltip', this.id);
+      this.$root.$emit(BV_SHOW_TOOLTIP, this.id);
 
       clearTimeout(this.titleTimeout);
 
       this.titleTimeout = setTimeout(() => {
         this.localTitle = this.title;
-        this.$root.$emit('bv::hide::tooltip', this.id);
+        this.$root.$emit(BV_HIDE_TOOLTIP, this.id);
       }, 1000);
     },
   },

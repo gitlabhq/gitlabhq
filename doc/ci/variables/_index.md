@@ -679,7 +679,7 @@ When the runner executes the job:
   with `K8S_SECRET_`.
 
 - The [Managing the Complex Configuration Data Management Monster Using GitLab](https://www.youtube.com/watch?v=v4ZOJ96hAck)
-  video is a walkthrough of the [Complex Configuration Data Monorepo](https://gitlab.com/guided-explorations/config-data-top-scope/config-data-subscope/config-data-monorepo)
+  video is a walkthrough of the [Complex Configuration Data Monorepo](https://gitlab.com/guided-explorations/cfg-data/complex-config-data-using-ci-variables/config-data-top-scope/config-data-subscope/config-data-monorepo)
   working example project. It explains how multiple levels of group CI/CD variables
   can be combined with environment-scoped project variables for complex configuration
   of application builds or deployments.

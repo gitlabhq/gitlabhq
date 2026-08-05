@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { uniqueId } from 'lodash-es';
+import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { __ } from '~/locale';
 import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -113,7 +114,7 @@ export default {
     },
     onMouseout() {
       // Tooltip still appears after clicking focusing on the button, ensure it's hidden
-      this.$root.$emit('bv::hide::tooltip', this.id);
+      this.$root.$emit(BV_HIDE_TOOLTIP, this.id);
     },
   },
 };

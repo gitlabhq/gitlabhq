@@ -3,7 +3,7 @@ import gitlabLogoUrl from '@gitlab/svgs/dist/illustrations/gitlab_logo.svg?url';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
-import OrganizationCard from '~/organizations/index/components/reconciliation/organization_card.vue';
+import OrganizationCard from '~/groups/settings/create_organization/components/organization_card.vue';
 import { mockDefaultOrganization } from 'jest/organizations/shared/mock_data';
 import { mockOrganizations } from './mock_data';
 

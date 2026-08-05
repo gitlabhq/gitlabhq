@@ -18,6 +18,16 @@ module QA
       # @return [Regex]
       CSS_SELECTOR_PATTERN = /^(\.[a-z-]+|\#[a-z-]+)+|([a-z]+\[.*\])$/i
 
+      # Chrome's message when a node is read after a navigation replaced the document it came from
+      #
+      # @return [String]
+      SWAPPED_DOCUMENT_MESSAGE = 'Node with given id does not belong to the document'
+
+      # Attempts a DOM read gets before a swapped document is treated as a real failure
+      #
+      # @return [Integer]
+      SWAPPED_DOCUMENT_MAX_ATTEMPTS = 3
+
       prepend Support::Page::Logging
       prepend Mobile::Page::Base if QA::Runtime::Env.mobile_layout?
 
@@ -142,7 +152,9 @@ module QA
         wait_for_requests
 
         element_selector = element_selector_css(name, reject_capybara_query_keywords(kwargs))
-        find(element_selector, **only_capybara_query_keywords(kwargs))
+        retry_on_swapped_document do
+          find(element_selector, **only_capybara_query_keywords(kwargs))
+        end
       end
 
       def only_capybara_query_keywords(kwargs)
@@ -166,7 +178,9 @@ module QA
 
         wait_for_requests
 
-        all(element_selector_css(name), **kwargs)
+        retry_on_swapped_document do
+          all(element_selector_css(name), **kwargs)
+        end
       end
 
       def check_element(name, click_by_js = false, **kwargs)
@@ -244,7 +258,13 @@ module QA
         text = kwargs.delete(:text)
 
         begin
-          find(element_selector_css(name, kwargs), text: text, wait: wait).click
+          # Only the lookup is retried on a swapped document; repeating the click could submit the
+          # same action twice.
+          element = retry_on_swapped_document do
+            find(element_selector_css(name, kwargs), text: text, wait: wait)
+          end
+
+          element.click
         rescue Net::ReadTimeout => error
           # In some situations due to perhaps a slow environment we can encounter errors
           # where clicks are registered, but the calls to selenium-webdriver result in
@@ -315,10 +335,12 @@ module QA
         visible = true if visible.nil?
 
         try_find_element = ->(wait) do
-          if disabled.nil?
-            has_css?(element_selector_css(name, kwargs), text: text, wait: wait, class: klass, visible: visible)
-          else
-            element_disabled?(name, **original_kwargs) == disabled
+          retry_on_swapped_document do
+            if disabled.nil?
+              has_css?(element_selector_css(name, kwargs), text: text, wait: wait, class: klass, visible: visible)
+            else
+              element_disabled?(name, **original_kwargs) == disabled
+            end
           end
         rescue Capybara::ElementNotFound
           false
@@ -339,13 +361,17 @@ module QA
         wait = kwargs.delete(:wait) || Capybara.default_max_wait_time
         text = kwargs.delete(:text)
 
-        has_no_css?(element_selector_css(name, kwargs), wait: wait, text: text)
+        retry_on_swapped_document do
+          has_no_css?(element_selector_css(name, kwargs), wait: wait, text: text)
+        end
       end
 
       def has_text?(text, wait: Capybara.default_max_wait_time)
         wait_for_requests
 
-        page.has_text?(text, wait: wait)
+        retry_on_swapped_document do
+          page.has_text?(text, wait: wait)
+        end
       end
 
       def has_field?(type:, with:, wait: Capybara.default_max_wait_time)
@@ -357,7 +383,9 @@ module QA
       def has_no_text?(text, wait: Capybara.default_max_wait_time)
         wait_for_requests
 
-        page.has_no_text?(text, wait: wait)
+        retry_on_swapped_document do
+          page.has_no_text?(text, wait: wait)
+        end
       end
 
       def has_normalized_ws_text?(text, wait: Capybara.default_max_wait_time)
@@ -532,6 +560,46 @@ module QA
 
       private
 
+      # Re-run a DOM read that Chrome aborted because the document was swapped underneath it.
+      #
+      # Chrome raises `UnknownError` with "unhandled inspector error: {"code":-32000,"message":"Node
+      # with given id does not belong to the document"}" when a node resolved from the outgoing
+      # document is read after a navigation replaced that document -- for example a presence check
+      # immediately after clicking sign in or sign out.
+      #
+      # Capybara cannot retry this for us. `Capybara::Node::Base#synchronize` only retries errors
+      # listed in the driver's `invalid_element_errors`, which `UnknownError` is not a member of, and
+      # that list matches on error class alone -- registering `UnknownError` there would also retry
+      # unrelated failures such as "session deleted because of page crash" for the whole wait
+      # duration. So the retry happens here, filtered on the one message that is safe to retry.
+      #
+      # For the same reason this does not use Support::Retrier, whose `retry_on_exception` rescues
+      # StandardError: it wraps every DOM read in the suite, so a broad rescue would delay genuine
+      # failures -- an invalid selector, or the `Capybara::ElementNotFound` that `has_element?`
+      # deliberately converts to false -- by the retry budget on every single call.
+      #
+      # Retrying rather than returning false matters: callers such as Page::Main::Menu#sign_out treat
+      # a false as "already signed out" and would skip work they still need to do.
+      #
+      # Only reads are wrapped. `click_element` retries its lookup but not the click itself, and
+      # `within_element` is left alone entirely, because re-running either could repeat an action the
+      # caller has already performed.
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/594514
+      def retry_on_swapped_document
+        attempts = 0
+
+        begin
+          yield
+        rescue Selenium::WebDriver::Error::UnknownError => e
+          raise unless e.message.include?(SWAPPED_DOCUMENT_MESSAGE)
+          raise if (attempts += 1) >= SWAPPED_DOCUMENT_MAX_ATTEMPTS
+
+          QA::Runtime::Logger.debug("Document was swapped mid-read, retrying (attempt #{attempts})")
+          sleep 0.5
+          retry
+        end
+      end
+
       def click_checkbox_or_radio(name, click_by_js, **kwargs)
         box = find_element(name, **kwargs)
         # Some checkboxes and radio buttons are hidden by their labels and cannot be clicked directly
@@ -568,7 +636,11 @@ module QA
 
       def wait_for_gitlab_to_respond
         wait_until(sleep_interval: 5, message: '502 - GitLab is taking too much time to respond') do
-          Capybara.page.has_no_text?(/GitLab is taking too much time to respond|Waiting for GitLab to boot/)
+          # Reads Capybara directly rather than through #has_no_text?, so it needs its own guard
+          # against the document being replaced mid-check.
+          retry_on_swapped_document do
+            Capybara.page.has_no_text?(/GitLab is taking too much time to respond|Waiting for GitLab to boot/)
+          end
         rescue Capybara::ElementNotFound, Selenium::WebDriver::Error::StaleElementReferenceError
           # In Chrome 138 we occasionally get `Unable to find xpath "/html"`
           # https://github.com/teamcapybara/capybara/issues/2800

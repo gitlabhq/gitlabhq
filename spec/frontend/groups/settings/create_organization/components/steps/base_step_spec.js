@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import BaseStep from '~/organizations/index/components/reconciliation/steps/base_step.vue';
+import BaseStep from '~/groups/settings/create_organization/components/steps/base_step.vue';
 
 describe('ReconciliationBaseStep', () => {
   let wrapper;
