@@ -1,0 +1,10 @@
+---
+name: iam_data_replication
+description: Replicate IAM entities (currently Authn::OauthApplication) to the IAM service via the iam_outbox (in-transaction outbox rows plus the delayed drain worker). Instance-wide gate for outbox row creation.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/602678
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/242097
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/606908
+milestone: '19.3'
+group: group::authentication
+type: wip
+default_enabled: false

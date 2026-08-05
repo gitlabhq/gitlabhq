@@ -1207,7 +1207,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
     let(:job_class_name) { 'CopyColumnUsingBackgroundMigrationJob' }
     let(:batched_migration) { create(:batched_background_migration, table_name: :users, job_class_name: job_class_name) }
 
-    context 'when tables to check for vacuum are not specifed' do
+    context 'when tables to check for vacuum are not specified' do
       it 'defaults to [table_name]' do
         expect(batched_migration.health_context_tables).to match_array(['users'])
       end

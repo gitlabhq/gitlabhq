@@ -42,7 +42,7 @@ To help you estimate the scope of future upgrades, see the efforts required for 
 
 - [Patch upgrade 2.7.2 -> 2.7.4](https://gitlab.com/gitlab-org/gitlab/-/issues/335890)
 - [Minor upgrade 2.6.x -> 2.7.x](https://gitlab.com/groups/gitlab-org/-/epics/2380)
-- [Major upgrade 2.x.x -> 3.x.x](https://gitlab.com/groups/gitlab-org/-/epics/5149)
+- [Major upgrade 2.x.x -> 3.x.x](https://gitlab.com/groups/gitlab-org/-/work_items/5149)
 
 ## Affected audiences and targets
 

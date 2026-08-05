@@ -156,12 +156,12 @@ describe('Markdown field header component', () => {
     findPreviewToggle().vm.$emit('click', true);
 
     await nextTick();
-    expect(wrapper.emitted('showPreview')).toHaveLength(1);
+    expect(wrapper.emitted('show-preview')).toHaveLength(1);
 
     findPreviewToggle().vm.$emit('click', false);
 
     await nextTick();
-    expect(wrapper.emitted('showPreview')).toHaveLength(2);
+    expect(wrapper.emitted('show-preview')).toHaveLength(2);
   });
 
   it('does not emit toggle markdown event when triggered from another form', () => {
@@ -171,8 +171,8 @@ describe('Markdown field header component', () => {
 
     document.dispatchEvent(new CustomEvent(MARKDOWN_EVENT_SHOW, { detail: { form } }));
 
-    expect(wrapper.emitted('showPreview')).toBeUndefined();
-    expect(wrapper.emitted('hidePreview')).toBeUndefined();
+    expect(wrapper.emitted('show-preview')).toBeUndefined();
+    expect(wrapper.emitted('hide-preview')).toBeUndefined();
   });
 
   describe('markdown table button', () => {

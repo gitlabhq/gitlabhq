@@ -72,7 +72,7 @@ Browser-based DAST version 5 does not include the proxy-based analyzer, so there
 
 There is one proxy-based active check that the browser-based analyzer does not cover. Migration of
 the remaining active check is proposed in
-[epic 13411](https://gitlab.com/groups/gitlab-org/-/epics/13411). If you prefer to remain on DAST
+[epic 13411](https://gitlab.com/groups/gitlab-org/-/work_items/13411). If you prefer to remain on DAST
 version 4 until the last check is migrated, see
 [Continuing to use version 4](#continuing-to-use-version-4).
 
@@ -80,7 +80,7 @@ Remaining check:
 
 - CWE-79: Cross-site Scripting (XSS)
 
-Follow the progress of the remaining check in the epic [Remaining active checks for BBD](https://gitlab.com/groups/gitlab-org/-/epics/13411).
+Follow the progress of the remaining check in the epic [Remaining active checks for BBD](https://gitlab.com/groups/gitlab-org/-/work_items/13411).
 
 ## Changes to CI/CD variables
 

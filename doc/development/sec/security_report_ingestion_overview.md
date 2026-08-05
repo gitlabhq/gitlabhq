@@ -6,13 +6,13 @@ title: Security report ingestion overview
 ---
 
 > [!warning]
-> The `Vulnerability::Feedback` model is currently undergoing deprecation and should be actively avoided in all further development. It is currently maintained with feature parity to enable revert should any issues arise, but is intended to be removed in 16.0. Any interactions relating to the Feedback model are superseded by the `StateTransition`, `IssueLink`, and `MergeRequestLink` models. You can find out more on [in this epic](https://gitlab.com/groups/gitlab-org/-/epics/5629).
+> The `Vulnerability::Feedback` model is currently undergoing deprecation and should be actively avoided in all further development. It is currently maintained with feature parity to enable revert should any issues arise, but is intended to be removed in 16.0. Any interactions relating to the Feedback model are superseded by the `StateTransition`, `IssueLink`, and `MergeRequestLink` models. You can find out more on [in this epic](https://gitlab.com/groups/gitlab-org/-/work_items/5629).
 
 ## Commonly used terms
 
 ### Feedback
 
-An instance of `Vulnerabilities::Feedback` class. They are created to keep track of users' interactions with Vulnerability Findings before they are promoted to a Vulnerability. This model is deprecated and due to be removed as part of the [Deprecate and remove Vulnerabilities::Feedback epic](https://gitlab.com/groups/gitlab-org/-/epics/5629).
+An instance of `Vulnerabilities::Feedback` class. They are created to keep track of users' interactions with Vulnerability Findings before they are promoted to a Vulnerability. This model is deprecated and due to be removed as part of the [Deprecate and remove Vulnerabilities::Feedback epic](https://gitlab.com/groups/gitlab-org/-/work_items/5629).
 
 ### Issue Link
 

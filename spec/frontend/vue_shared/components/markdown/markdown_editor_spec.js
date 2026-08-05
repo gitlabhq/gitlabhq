@@ -84,7 +84,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     window.gon = { text_editor: 'rich_text_editor' };
     return new Promise((resolve) => {
       markdownEditorEventHub.$once(CONTENT_EDITOR_READY_EVENT, resolve);
-      findMarkdownField().vm.$emit('enableContentEditor');
+      findMarkdownField().vm.$emit('enable-content-editor');
     });
   };
 
@@ -445,7 +445,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     expect(findTextarea().attributes('data-can-suggest')).toBe('true');
   });
 
-  it(`emits ${EDITING_MODE_CONTENT_EDITOR} event when enableContentEditor emitted from markdown editor`, async () => {
+  it(`emits ${EDITING_MODE_CONTENT_EDITOR} event when enable-content-editor emitted from markdown editor`, async () => {
     buildWrapper();
 
     await enableContentEditor();
@@ -511,7 +511,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
       expect(wrapper.emitted('keydown')).toHaveLength(1);
     });
 
-    describe(`when markdown field triggers enableContentEditor event`, () => {
+    describe(`when markdown field triggers enable-content-editor event`, () => {
       beforeEach(async () => {
         buildWrapper();
         await enableContentEditor();

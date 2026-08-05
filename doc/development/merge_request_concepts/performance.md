@@ -417,7 +417,7 @@ The main styles of pagination are:
 
 The ultimately scalable solution for pagination is to use Keyset-based pagination.
 However, we don't have support for that at GitLab at that moment. You
-can follow the progress looking at [API: Keyset Pagination](https://gitlab.com/groups/gitlab-org/-/epics/2039).
+can follow the progress looking at [API: Keyset Pagination](https://gitlab.com/groups/gitlab-org/-/work_items/2039).
 
 Take into consideration the following when choosing a pagination strategy:
 

@@ -201,6 +201,10 @@ export default {
   VIEW_MODE_LIST,
   VIEW_MODE_BOARD,
   searchProjectsQuery,
+  i18n: {
+    boardFeedbackLinkText: s__('WorkItemPlanningView|Share feedback on the Board view'),
+  },
+  BOARD_FEEDBACK_ISSUE_URL: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/607858',
   name: 'PlanningView',
   components: {
     GlButton,
@@ -2114,7 +2118,7 @@ export default {
       <div
         class="gl-border-b gl-flex gl-flex-wrap gl-justify-between gl-gap-y-3 gl-py-3 sm:gl-flex-nowrap"
       >
-        <div class="gl-flex gl-items-center">
+        <div class="gl-flex gl-items-center gl-gap-3">
           <span data-testid="work-item-count" class="gl-mr-3">{{ workItemTotalStateCount }}</span>
           <gl-button
             v-if="allowBulkEditing"
@@ -2126,6 +2130,18 @@ export default {
             @click="showBulkEditSidebar = true"
           >
             {{ __('Bulk edit') }}
+          </gl-button>
+          <gl-button
+            v-if="isPlanningViewBoardEnabled && viewMode === $options.VIEW_MODE_BOARD"
+            size="small"
+            variant="link"
+            class="!gl-text-sm"
+            :href="$options.BOARD_FEEDBACK_ISSUE_URL"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-testid="board-feedback-link"
+          >
+            {{ $options.i18n.boardFeedbackLinkText }}
           </gl-button>
         </div>
 

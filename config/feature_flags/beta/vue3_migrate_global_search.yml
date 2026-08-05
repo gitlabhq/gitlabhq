@@ -1,0 +1,10 @@
+---
+name: vue3_migrate_global_search
+description: Enables Vue 3 in compatibility mode for the global search page
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/23003
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248509
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/607973
+milestone: '19.3'
+group: group::global search
+type: beta
+default_enabled: false

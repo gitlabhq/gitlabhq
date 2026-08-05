@@ -142,7 +142,7 @@ export default {
       default: false,
     },
   },
-  emits: ['handle-suggest-dismissed', 'hidePreview', 'showPreview'],
+  emits: ['handle-suggest-dismissed', 'hide-preview', 'show-preview'],
   data() {
     const modifierKey = getModifierKey();
 
@@ -319,12 +319,12 @@ export default {
     showMarkdownPreview(e) {
       if (!this.isValid(e?.detail?.form)) return;
 
-      this.$emit('showPreview');
+      this.$emit('show-preview');
     },
     hideMarkdownPreview(e) {
       if (!this.isValid(e?.detail?.form)) return;
 
-      this.$emit('hidePreview');
+      this.$emit('hide-preview');
     },
     handleSuggestDismissed() {
       this.$emit('handle-suggest-dismissed');

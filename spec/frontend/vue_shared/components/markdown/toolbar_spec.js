@@ -70,7 +70,7 @@ describe('toolbar', () => {
     it('re-emits event from switcher', () => {
       wrapper.findComponent(EditorModeSwitcher).vm.$emit('switch');
 
-      expect(wrapper.emitted('enableContentEditor')).toEqual([[]]);
+      expect(wrapper.emitted('enable-content-editor')).toEqual([[]]);
       expect(updateText).not.toHaveBeenCalled();
     });
   });

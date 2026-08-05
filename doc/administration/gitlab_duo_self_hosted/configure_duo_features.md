@@ -117,7 +117,7 @@ If a model has its own timeout in `MODEL_SPECIFICATIONS`, that value takes prece
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/19213) in GitLab 18.4, as an [experiment](../../policy/development_stages_support.md#experiment) with a [feature flag](../feature_flags/_index.md) named `self_hosted_agent_platform`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/19213) in GitLab 18.4, as an [experiment](../../policy/development_stages_support.md#experiment) with a [feature flag](../feature_flags/_index.md) named `self_hosted_agent_platform`. Disabled by default.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/558083) from experiment to beta in GitLab 18.5.
 - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208951) in GitLab 18.7.
 - [Generally available](https://gitlab.com/groups/gitlab-org/-/work_items/19125) in GitLab 18.8.
@@ -265,7 +265,7 @@ To select a self-hosted model:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17192) in GitLab 18.3, as a [beta](../../policy/development_stages_support.md#beta) with a [feature flag](../feature_flags/_index.md) named `ai_self_hosted_vendored_features`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/17192) in GitLab 18.3, as a [beta](../../policy/development_stages_support.md#beta) with a [feature flag](../feature_flags/_index.md) named `ai_self_hosted_vendored_features`. Disabled by default.
 - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214030) in GitLab 18.7
 - Generally available in GitLab 18.9. Feature flag `ai_self_hosted_vendored_features` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218595).
 

@@ -134,7 +134,7 @@ export default {
       default: false,
     },
   },
-  emits: ['enableContentEditor', 'handle-suggest-dismissed'],
+  emits: ['enable-content-editor', 'handle-suggest-dismissed'],
   data() {
     return {
       glForm: null,
@@ -357,8 +357,8 @@ export default {
         data-testid="markdownHeader"
         :restricted-tool-bar-items="restrictedToolBarItems"
         :immersive="immersive"
-        @showPreview="showPreview"
-        @hidePreview="hidePreview"
+        @show-preview="showPreview"
+        @hide-preview="hidePreview"
         @handle-suggest-dismissed="() => $emit('handle-suggest-dismissed')"
       >
         <template #header-buttons>
@@ -370,7 +370,7 @@ export default {
               :can-attach-file="canAttachFile"
               :show-comment-tool-bar="showCommentToolBar"
               :show-content-editor-switcher="showContentEditorSwitcher"
-              @enableContentEditor="$emit('enableContentEditor')"
+              @enable-content-editor="$emit('enable-content-editor')"
             />
           </div>
         </template>
@@ -394,7 +394,7 @@ export default {
           :show-comment-tool-bar="showCommentToolBar"
           :show-content-editor-switcher="showContentEditorSwitcher"
           :class="{ 'gl-border-t': showContentEditorSwitcher }"
-          @enableContentEditor="$emit('enableContentEditor')"
+          @enable-content-editor="$emit('enable-content-editor')"
         >
           <template #toolbar><slot name="toolbar"></slot></template>
         </markdown-toolbar>

@@ -68,7 +68,7 @@ Why is this a problem?
 
 - Many of these columns are included in indexes, which leads to index write amplification.
   When the number of indexes on the table is more than 16, it affects query planning,
-  and may lead to [light-weight lock (LWLock) contention](https://gitlab.com/groups/gitlab-org/-/epics/11543).
+  and may lead to [light-weight lock (LWLock) contention](https://gitlab.com/groups/gitlab-org/-/work_items/11543).
 - Updates in PostgreSQL are implemented as a combination of delete and insert. This means that each column,
   even if rarely used, is copied over and over again, on each update. This affects the amount of generated
   write ahead log (WAL).

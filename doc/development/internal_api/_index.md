@@ -1237,7 +1237,7 @@ Returns an empty response with a `204` status code if successful.
 
 {{< history >}}
 
-- Group sync support [added](https://gitlab.com/groups/gitlab-org/-/epics/15990) in GitLab 18.0.
+- Group sync support [added](https://gitlab.com/groups/gitlab-org/-/work_items/15990) in GitLab 18.0.
 
 {{< /history >}}
 

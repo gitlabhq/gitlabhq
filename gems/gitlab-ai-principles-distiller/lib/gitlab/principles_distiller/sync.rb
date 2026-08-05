@@ -672,7 +672,45 @@ module Gitlab
           return
         end
 
-        Diff.strip_preamble(updated)
+        repair_entity_escapes(Diff.strip_preamble(updated), config, log_warn)
+      end
+
+      # Preserve literal entities copied from the SSOT while correcting entities
+      # that appear only in output from the distillation workflow.
+      def repair_entity_escapes(content, config, log_warn)
+        in_fence = false
+        repaired_lines = []
+        source_lines = manifest.config_source_paths(config)
+          .filter_map { |path| manifest.read_repo_file(path) }
+          .flat_map(&:lines)
+          .map { |line| normalize_entity_escape_line(line) }
+
+        repaired = content.lines.map.with_index do |line, index|
+          if line.match?(/^[ \t]*(?:`{3,}|~{3,})/)
+            in_fence = !in_fence
+            next line
+          end
+
+          next line if in_fence
+          next line if source_lines.include?(normalize_entity_escape_line(line))
+
+          unescaped = line.gsub(/&(lt|gt|amp|quot|#39);/) do
+            { 'lt' => '<', 'gt' => '>', 'amp' => '&', 'quot' => '"', '#39' => "'" }.fetch(Regexp.last_match(1))
+          end
+
+          repaired_lines << (index + 1) if unescaped != line
+          unescaped
+        end
+
+        if repaired_lines.any?
+          log_warn.call("  WARNING: repaired HTML entity escapes on line(s) #{repaired_lines.join(', ')}")
+        end
+
+        repaired.join
+      end
+
+      def normalize_entity_escape_line(line)
+        line.strip.sub(/\A[-*+]\s+/, '')
       end
 
       # Chooses the pre-retry backoff. A deterministic failure (baseline

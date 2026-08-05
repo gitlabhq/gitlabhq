@@ -491,7 +491,7 @@ For more information about `labels`, see
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14910) in GitLab 17.6.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/14910) in GitLab 17.6.
 
 {{< /history >}}
 
@@ -528,7 +528,7 @@ This means that the workspace might be active for up to one hour longer than the
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14910) in GitLab 17.6.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/14910) in GitLab 17.6.
 
 {{< /history >}}
 

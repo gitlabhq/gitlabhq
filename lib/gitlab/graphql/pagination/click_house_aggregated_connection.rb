@@ -12,21 +12,6 @@ module Gitlab
 
         private
 
-        def limited_nodes
-          if last
-            query = reverse_order(sliced_nodes).limit(limit_value + 1)
-            nodes = execute_query(query)
-            nodes = nodes.reverse
-
-            @has_previous_page_cache = nodes.count > limit_value
-            @has_previous_page_cache ? nodes.last(limit_value) : nodes
-          else
-            super
-          end
-        end
-
-        strong_memoize_attr :limited_nodes
-
         def sliced_nodes
           query = ensure_stable_ordering(items)
 

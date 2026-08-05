@@ -351,7 +351,7 @@ RSpec.describe ClickHouse::Finders::Ci::SiphonFinishedBuildsFinder, :click_house
     let(:to_time) { Time.utc(2026, 2, 1) }
 
     it 'replaces literals with positional placeholders', :aggregate_failures do
-      expect(redacted_sql).to include('$1')
+      expect(redacted_sql).to include('?')
       expect(redacted_sql).not_to include(project_path)
       expect(redacted_sql).not_to include('2026-01-01')
     end

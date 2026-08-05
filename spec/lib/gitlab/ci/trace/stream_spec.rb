@@ -713,6 +713,43 @@ RSpec.describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache, feature_cat
 
       it_behaves_like 'extract_coverages'
     end
+
+    context 'when extraction raises' do
+      let(:data) { 'Coverage 1033 / 1051 LOC (98.29%) covered' }
+      let(:io) { StringIO.new(data) }
+      let(:stream) { described_class.new { io } }
+
+      shared_examples 'a tracked failure' do
+        it 'tracks the exception and returns nil', :aggregate_failures do
+          expect(Gitlab::ErrorTracking)
+            .to receive(:track_exception)
+            .with(instance_of(error_class), stream_class: 'StringIO')
+          expect(stream.metrics)
+            .to receive(:increment_error_counter)
+            .with(error_reason: :coverage_extraction_failed)
+
+          is_expected.to be_nil
+        end
+      end
+
+      context 'when the regex cannot be compiled' do
+        let(:regex) { '(a)\1' }
+        let(:error_class) { RegexpError }
+
+        it_behaves_like 'a tracked failure'
+      end
+
+      context 'when reading the trace fails' do
+        let(:regex) { '\(\d+.\d+\%\) covered' }
+        let(:error_class) { Net::OpenTimeout }
+
+        before do
+          allow(io).to receive(:read).and_raise(Net::OpenTimeout)
+        end
+
+        it_behaves_like 'a tracked failure'
+      end
+    end
   end
 
   describe '#raw_range' do

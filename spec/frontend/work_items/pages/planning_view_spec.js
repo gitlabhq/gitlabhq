@@ -3081,6 +3081,59 @@ describe('planning-view', () => {
       });
     });
 
+    describe('board feedback link', () => {
+      const findBoardFeedbackLink = () => wrapper.findByTestId('board-feedback-link');
+
+      describe('when planningViewBoards is enabled and board view is active', () => {
+        beforeEach(async () => {
+          await mountComponent({
+            provide: { glFeatures: { planningViewBoards: true } },
+            stubs: { BoardView: boardViewStub },
+          });
+          findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+          await waitForPromises();
+        });
+
+        it('renders the feedback link', () => {
+          expect(findBoardFeedbackLink().exists()).toBe(true);
+        });
+
+        it('links to the feedback work item', () => {
+          expect(findBoardFeedbackLink().attributes('href')).toBe(
+            'https://gitlab.com/gitlab-org/gitlab/-/work_items/607858',
+          );
+        });
+
+        it('opens in a new tab', () => {
+          expect(findBoardFeedbackLink().attributes('target')).toBe('_blank');
+        });
+      });
+
+      describe('when planningViewBoards is enabled but list view is active', () => {
+        beforeEach(async () => {
+          await mountComponent({
+            provide: { glFeatures: { planningViewBoards: true } },
+          });
+        });
+
+        it('does not render the feedback link', () => {
+          expect(findBoardFeedbackLink().exists()).toBe(false);
+        });
+      });
+
+      describe('when planningViewBoards is disabled', () => {
+        beforeEach(async () => {
+          await mountComponent({
+            provide: { glFeatures: { planningViewBoards: false } },
+          });
+        });
+
+        it('does not render the feedback link', () => {
+          expect(findBoardFeedbackLink().exists()).toBe(false);
+        });
+      });
+    });
+
     describe('persistence on a saved view', () => {
       const mountSavedViewWithDrawer = async (savedViewOverride = {}) => {
         const savedView = { ...singleSavedView[0], ...savedViewOverride };

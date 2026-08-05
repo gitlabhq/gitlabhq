@@ -6866,6 +6866,9 @@ msgstr ""
 msgid "AdminSettings|Maximum parallel pipelines per merge train"
 msgstr ""
 
+msgid "AdminSettings|Maximum size of a CycloneDX artifact in MB"
+msgstr ""
+
 msgid "AdminSettings|Maximum size of a dotenv artifact in bytes"
 msgstr ""
 
@@ -7002,6 +7005,9 @@ msgid "AdminSettings|Set the maximum number of GitLab Pages custom domains per p
 msgstr ""
 
 msgid "AdminSettings|Set the maximum size of GitLab Pages per project (0 for unlimited). %{link_start}Learn more%{link_end}."
+msgstr ""
+
+msgid "AdminSettings|Set to 0 to use the maximum artifacts size limit instead."
 msgstr ""
 
 msgid "AdminSettings|Set visibility of project contents and configure Git access protocols."
@@ -89314,10 +89320,13 @@ msgstr ""
 msgid "WorkItemCustomField|Use on"
 msgstr ""
 
-msgid "WorkItemPlanningView|Board"
+msgid "WorkItemPlanningView|Board (Beta)"
 msgstr ""
 
 msgid "WorkItemPlanningView|List"
+msgstr ""
+
+msgid "WorkItemPlanningView|Share feedback on the Board view"
 msgstr ""
 
 msgid "WorkItemStatus|%{status_name} is not a valid status for this item."

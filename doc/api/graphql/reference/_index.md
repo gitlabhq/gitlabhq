@@ -16501,6 +16501,7 @@ Arguments:
 | <a id="mutation-securityscanprofilecreate-name"></a>`name` | [`String!`](#string) | Name of the scan profile. |
 | <a id="mutation-securityscanprofilecreate-namespaceid"></a>`namespaceId` | [`NamespaceID!`](#namespaceid) | Global ID of the top level namespace to create the scan profile for. |
 | <a id="mutation-securityscanprofilecreate-scantype"></a>`scanType` | [`SecurityScanProfileType!`](#securityscanprofiletype) | Type of the scan profile. |
+| <a id="mutation-securityscanprofilecreate-stripdefaults"></a>`stripDefaults` | [`Boolean`](#boolean) | When true, trigger configuration values equal to the defaults are removed before storage so only overrides are persisted. When false, the configuration is stored as provided, ignoring defaults. |
 | <a id="mutation-securityscanprofilecreate-triggers"></a>`triggers` | [`[SecurityScanProfileTriggerInput!]!`](#securityscanprofiletriggerinput) | Triggers with optional configuration for the scan profile. At least one is required. |
 
 Fields:
@@ -69240,6 +69241,15 @@ Template type for predefined security categories.
 | <a id="securityreporttypeenum-sast_iac"></a>`SAST_IAC` | SAST IAC scan report. |
 | <a id="securityreporttypeenum-secret_detection"></a>`SECRET_DETECTION` | SECRET DETECTION scan report. |
 
+### `SecurityScanProfileImageSuffix`
+
+Suffix appended to the analyzer image name.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="securityscanprofileimagesuffix-default"></a>`DEFAULT` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.3. Status: Experiment. No suffix; use the standard analyzer image. |
+| <a id="securityscanprofileimagesuffix-fips"></a>`FIPS` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.3. Status: Experiment. Use the FIPS-compliant analyzer image. |
+
 ### `SecurityScanProfileType`
 
 Scan profile type.
@@ -75524,6 +75534,7 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="securityscanprofileconfigurationinput-dependencyscanningpostprocessing"></a>`dependencyScanningPostProcessing` {{< icon name="warning-solid" >}} | [`SecurityScanProfileDependencyScanningPostProcessingConfigurationInput`](#securityscanprofiledependencyscanningpostprocessingconfigurationinput) | Introduced in GitLab 19.3. Status: Experiment. Configuration for a dependency scanning post-processing scan profile. |
+| <a id="securityscanprofileconfigurationinput-secretdetection"></a>`secretDetection` {{< icon name="warning-solid" >}} | [`SecurityScanProfileSecretDetectionConfigurationInput`](#securityscanprofilesecretdetectionconfigurationinput) | Introduced in GitLab 19.3. Status: Experiment. Configuration for a secret detection scan profile. |
 
 ### `SecurityScanProfileDependencyScanningPostProcessingConfigurationInput`
 
@@ -75534,6 +75545,21 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="securityscanprofiledependencyscanningpostprocessingconfigurationinput-autoremediation"></a>`autoRemediation` {{< icon name="warning-solid" >}} | [`SecurityScanProfileAutoRemediationInput`](#securityscanprofileautoremediationinput) | Introduced in GitLab 19.3. Status: Experiment. Auto-remediation configuration. |
+
+### `SecurityScanProfileSecretDetectionConfigurationInput`
+
+Configuration for a secret detection scan profile.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="securityscanprofilesecretdetectionconfigurationinput-excludedpaths"></a>`excludedPaths` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | Introduced in GitLab 19.3. Status: Experiment. Glob paths excluded from the scan. |
+| <a id="securityscanprofilesecretdetectionconfigurationinput-historicscan"></a>`historicScan` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.3. Status: Experiment. Whether to scan the full git history instead of only the current state. |
+| <a id="securityscanprofilesecretdetectionconfigurationinput-imagesuffix"></a>`imageSuffix` {{< icon name="warning-solid" >}} | [`SecurityScanProfileImageSuffix`](#securityscanprofileimagesuffix) | Introduced in GitLab 19.3. Status: Experiment. Suffix appended to the analyzer image name. |
+| <a id="securityscanprofilesecretdetectionconfigurationinput-logoptions"></a>`logOptions` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.3. Status: Experiment. Options passed to git log to control the commit range scanned. |
+| <a id="securityscanprofilesecretdetectionconfigurationinput-rulesetgitreference"></a>`rulesetGitReference` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.3. Status: Experiment. Git reference of the remote ruleset configuration to use. |
+| <a id="securityscanprofilesecretdetectionconfigurationinput-secureanalyzersprefix"></a>`secureAnalyzersPrefix` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.3. Status: Experiment. Prefix for the container registry from which the analyzer image is pulled. |
 
 ### `SecurityScanProfileTriggerInput`
 

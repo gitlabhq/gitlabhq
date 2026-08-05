@@ -22,9 +22,10 @@ module Gitlab
         ].freeze
 
         TRACE_ERROR_REASONS = [
-          :chunks_invalid_size,       # used to be :corrupted
-          :chunks_invalid_checksum,   # used to be :invalid
-          :archive_invalid_checksum   # malformed trace found into object store after comparing MD5
+          :chunks_invalid_size,          # used to be :corrupted
+          :chunks_invalid_checksum,      # used to be :invalid
+          :archive_invalid_checksum,     # malformed trace found into object store after comparing MD5
+          :coverage_extraction_failed    # coverage extraction raised and the failure was not propagated
         ].freeze
 
         def increment_trace_operation(operation: :unknown)

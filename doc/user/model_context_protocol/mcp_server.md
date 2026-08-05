@@ -444,49 +444,64 @@ You can now start a new chat and ask a question depending on the [available tool
 
 {{< details >}}
 
-- Offering: GitLab Self-Managed, GitLab Dedicated
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
 {{< history >}}
 
-- OAuth application creation through the UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245979) in GitLab 19.3.
+- OAuth application creation through the Admin UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245979) in GitLab 19.3.
+- OAuth application creation through the group and user UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/247698) in GitLab 19.3.
 
 {{< /history >}}
 
 When an MCP client connects to the GitLab MCP server,
 it uses OAuth 2.0 Dynamic Client Registration (DCR)
 to create a new OAuth application on your GitLab instance.
-In environments with many users or frequent reconnections, this can result in a large number
-of OAuth applications on the instance.
 
-To avoid a large number of OAuth applications, create a single, shared OAuth application and give
-its client ID to users.
+Reuse a pre-registered OAuth application to avoid the following issues with DCR:
 
-When users configure their MCP client with this client ID,
-all connections reuse the same OAuth application instead of creating new ones.
+- On GitLab Self-Managed and GitLab Dedicated, many users, or clients that connect repeatedly,
+  can create a large number of OAuth applications on the instance.
+- IP addresses rate-limit DCR requests to 10 registrations per hour. Users who share an
+  egress IP address, such as a corporate network or VPN, can exceed this limit and
+  fail to authenticate to the MCP server.
 
-When a user authenticates with the shared `clientId`, GitLab reuses the same OAuth application
-for every subsequent authentication from any user with the same configuration.
-Users authorize with OAuth and receive their own access token.
-The shared application is the OAuth client identity, not a shared credential.
+To reuse a pre-registered OAuth application, create the application, then configure the MCP client
+with its client ID. An administrator or group Owner can create a shared application and give the
+client ID to users. Alternatively, a user can create an application for their own account.
+
+Every user still authorizes with OAuth and receives their own access token. A shared application
+is the OAuth client identity, not a shared credential.
+
+Create the OAuth application for one of the following scopes, depending on who reuses it:
+
+- Instance: Shared by all users on the instance. Requires administrator access. 
+- Group: Shared by members of a group. Requires the Owner role for the group.
+- User: For a user's own account.
 
 Prerequisites:
 
-- You must be an administrator.
 - An MCP client that supports the following:
   - Pre-configured OAuth credentials
   - The `clientId` field in its configuration
 
-1. In the upper-right corner, select **Admin**.
-1. In the left sidebar, select **Applications** > **New application**.
-1. Complete the fields. Select the **mcp** scope and clear the **Confidential** checkbox.
-1. Select **Save application**.
-1. Give the application ID to your users. This is the `clientId` that users
-   configure in the MCP client. The configuration key varies by client, but is typically named `clientId` or `client_id`
-   in the OAuth configuration of the GitLab MCP server. This is typically in an `mcp.json` file.
+To create the OAuth application:
 
-You can also use the [REST API](../../api/applications.md#create-an-application) to create the application.
+1. Create an OAuth application at the
+   [instance](../../integration/oauth_provider.md#create-an-instance-wide-application),
+   [group](../../integration/oauth_provider.md#create-a-group-owned-application), or
+   [user](../../integration/oauth_provider.md#create-a-user-owned-application) level.
+1. For the scopes, select **mcp** and clear the **Confidential** checkbox.
+1. Save the application.
+1. Configure your MCP client with the application ID, or give the application ID to the users who
+   reuse the application. The application ID is the `clientId`. The configuration key varies by
+   client, but is typically named `clientId` or `client_id` in the OAuth configuration of the
+   GitLab MCP server, usually in an `mcp.json` file.
+
+For instance and user applications, you can also use the
+[REST API](../../api/applications.md#create-an-application) to create the application.
+No REST API exists for group-owned applications, so you must use the group UI.
 
 > [!note]
 > The redirect URI registered on the OAuth application must exactly match the redirect URI

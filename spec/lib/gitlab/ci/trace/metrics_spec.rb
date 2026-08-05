@@ -22,12 +22,14 @@ RSpec.describe Gitlab::Ci::Trace::Metrics, :prometheus do
         subject.increment_error_counter(error_reason: :chunks_invalid_size)
         subject.increment_error_counter(error_reason: :chunks_invalid_checksum)
         subject.increment_error_counter(error_reason: :archive_invalid_checksum)
+        subject.increment_error_counter(error_reason: :coverage_extraction_failed)
 
         expect(described_class.trace_errors_counter.get(error_reason: :chunks_invalid_size)).to eq 1
         expect(described_class.trace_errors_counter.get(error_reason: :chunks_invalid_checksum)).to eq 1
         expect(described_class.trace_errors_counter.get(error_reason: :archive_invalid_checksum)).to eq 1
+        expect(described_class.trace_errors_counter.get(error_reason: :coverage_extraction_failed)).to eq 1
 
-        expect(described_class.trace_errors_counter.values.count).to eq 3
+        expect(described_class.trace_errors_counter.values.count).to eq 4
       end
     end
 

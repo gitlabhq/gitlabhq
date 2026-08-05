@@ -221,8 +221,8 @@ instructions:
       - Reference: https://docs.gitlab.com/development/feature_flags/
 
   # >>> generated: authentication — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
-  # distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
-  # source_checksum: 29cbb8c6517cd27b
+  # distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
+  # source_checksum: 4902d9ae179555c2
   - name: Authentication & Authorization Security
     fileFilters:
       # Controllers / entry points
@@ -307,6 +307,7 @@ instructions:
       - DO NOT change the token resolution order in `AuthFinders` (`lib/gitlab/auth/auth_finders.rb`); deploy tokens, bearer tokens, job tokens, and sessions are checked in a specific priority — reordering can cause one token type to shadow another.
       - DO NOT implement custom API authentication; use `API::APIGuard` (`lib/api/api_guard.rb`).
       - DO NOT hand-roll JWT or token parsing; use `Authn::IamService::JwtValidationService`.
+      - DO NOT use `lib/gitlab/auth/request_authenticator.rb` for access control; it is for `Rack::Attack` and logging only.
       - Use `check_rate_limit!` for rate limiting on token creation and verification endpoints.
 
       ### Token Prefixes and Storage
@@ -1057,6 +1058,7 @@ instructions:
       - Reference: doc/development/testing_guide/best_practices.md
       - Reference: doc/development/testing_guide/testing_levels.md
       - Reference: doc/development/testing_guide/testing_rake_tasks.md
+      - Reference: doc/development/testing_guide/unhealthy_tests.md
   # <<< end generated: testing-rspec
 
   # >>> generated: testing-e2e — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)

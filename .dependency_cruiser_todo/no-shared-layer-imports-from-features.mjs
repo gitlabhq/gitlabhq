@@ -80,7 +80,6 @@ export default {
     'app/assets/javascripts/vue_shared/new_namespace/components/welcome.vue',
     'app/assets/javascripts/vue_shared/security_configuration/components/manage_via_mr.vue',
     'ee/app/assets/javascripts/vue_shared/components/code_flow/code_flow_file_viewer.vue',
-    'ee/app/assets/javascripts/vue_shared/components/dashboards_list/dashboards_list_item_actions.vue',
     'ee/app/assets/javascripts/vue_shared/components/filtered_search_bar/tokens/custom_field_token.vue',
     'ee/app/assets/javascripts/vue_shared/components/filtered_search_bar/tokens/iteration_token.vue',
     'ee/app/assets/javascripts/vue_shared/components/filtered_search_bar/tokens/work_item_status_token.vue',

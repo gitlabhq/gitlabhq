@@ -394,7 +394,7 @@ gem 'rack-proxy', '~> 0.7.7', feature_category: :shared # rubocop:todo Gemfile/M
 gem 'cssbundling-rails', '1.4.3', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 gem 'terser', '1.0.2', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
-gem 'click_house-client', '0.11.0', feature_category: :database
+gem 'click_house-client', '0.12.0', feature_category: :database
 
 # NATS JetStream client, used for audit event streaming
 gem 'nats-pure', '~> 2.5.0', feature_category: :audit_events

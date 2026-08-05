@@ -17,7 +17,7 @@ description: "Migrate from Bitbucket Server to GitLab."
 
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153041) to map users only by email address in GitLab 17.1.
 - An **Imported** badge on some imported items [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461211) in GitLab 17.2.
-- [Changed on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/14667) to [post-migration user contribution and membership mapping](mapping/post_migration_mapping.md) in GitLab 17.8.
+- [Changed on GitLab.com](https://gitlab.com/groups/gitlab-org/-/work_items/14667) to [post-migration user contribution and membership mapping](mapping/post_migration_mapping.md) in GitLab 17.8.
 - Post-migration user and contribution membership mapping [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176675) in GitLab 17.8.
 
 {{< /history >}}

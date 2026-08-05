@@ -41,7 +41,7 @@ export default {
     },
     {
       value: VIEW_MODE_BOARD,
-      text: s__('WorkItemPlanningView|Board'),
+      text: s__('WorkItemPlanningView|Board (Beta)'),
       props: { icon: 'work-item-issue-board' },
     },
   ],

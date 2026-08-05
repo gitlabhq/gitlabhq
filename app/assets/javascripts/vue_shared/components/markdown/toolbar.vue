@@ -35,7 +35,7 @@ export default {
       default: false,
     },
   },
-  emits: ['enableContentEditor'],
+  emits: ['enable-content-editor'],
   computed: {
     showEditorModeSwitcher() {
       return this.showContentEditorSwitcher;
@@ -57,7 +57,7 @@ export default {
       v-if="showEditorModeSwitcher"
       size="small"
       value="markdown"
-      @switch="$emit('enableContentEditor')"
+      @switch="$emit('enable-content-editor')"
     />
     <div class="gl-flex">
       <div v-if="canAttachFile" class="uploading-container gl-mr-3 gl-text-sm gl-leading-32">

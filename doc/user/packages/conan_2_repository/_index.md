@@ -16,7 +16,7 @@ title: Conan 2 packages in the package registry
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519741) in GitLab 18.1 [with a feature flag](../../../administration/feature_flags/_index.md) named `conan_package_revisions_support`. Disabled by default.
-- [Enabled on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/14896) in GitLab 18.3. Feature flag `conan_package_revisions_support` removed.
+- [Enabled on GitLab.com](https://gitlab.com/groups/gitlab-org/-/work_items/14896) in GitLab 18.3. Feature flag `conan_package_revisions_support` removed.
 
 {{< /history >}}
 
@@ -28,7 +28,7 @@ packages whenever you need to use them as a dependency.
 
 > [!warning]
 > The Conan 2 package registry for GitLab is under development and isn't ready for production use due to
-> limited functionality. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/8258) details the remaining
+> limited functionality. This [epic](https://gitlab.com/groups/gitlab-org/-/work_items/8258) details the remaining
 > work and timelines to make it production ready.
 
 To publish Conan 2 packages to the package registry, add the package registry as a

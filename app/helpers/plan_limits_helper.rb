@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module PlanLimitsHelper
-  def plan_limit_setting_description(limit_name)
+  def plan_limit_setting_description(limit_name) # rubocop:disable Metrics/CyclomaticComplexity -- This is a simple case statement
     case limit_name
     when :ci_instance_level_variables
       s_('AdminSettings|Maximum number of Instance-level CI/CD variables that can be defined')
@@ -13,6 +13,8 @@ module PlanLimitsHelper
       s_('AdminSettings|Maximum number of pipeline subscriptions to and from a project')
     when :ci_pipeline_schedules
       s_('AdminSettings|Maximum number of pipeline schedules')
+    when :ci_max_artifact_size_cyclonedx
+      s_('AdminSettings|Maximum size of a CycloneDX artifact in MB')
     when :ci_needs_size_limit
       s_('AdminSettings|Maximum number of needs dependencies that a job can have')
     when :ci_registered_group_runners
@@ -30,5 +32,5 @@ module PlanLimitsHelper
     else
       raise ArgumentError, "No description available for plan limit #{limit_name}"
     end
-  end
+  end # rubocop:enable Metrics/CyclomaticComplexity
 end

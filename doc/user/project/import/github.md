@@ -237,7 +237,7 @@ These backticks prevent linking to an incorrect user with the same username on t
 
 {{< history >}}
 
-- [Changed on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/14667) to [**user contribution and membership mapping**](../../import/mapping/post_migration_mapping.md) in GitLab 17.8.
+- [Changed on GitLab.com](https://gitlab.com/groups/gitlab-org/-/work_items/14667) to [**user contribution and membership mapping**](../../import/mapping/post_migration_mapping.md) in GitLab 17.8.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176675) in GitLab 17.8.
 
 {{< /history >}}

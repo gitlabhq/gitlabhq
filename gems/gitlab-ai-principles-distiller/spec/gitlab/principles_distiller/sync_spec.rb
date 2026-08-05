@@ -1071,6 +1071,71 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
     end
   end
 
+  describe '.repair_entity_escapes' do
+    subject(:repair) { sync.send(:repair_entity_escapes, content, config, log_warn) }
+
+    let(:log_warn) { instance_double(Proc) }
+    let(:source_content) { '' }
+    let(:config) { { 'sources' => [{ 'path' => 'doc/source.md' }] } }
+
+    before do
+      Gitlab::PrinciplesDistiller::Workspace.path = tmpdir
+      FileUtils.mkdir_p(File.join(tmpdir, 'doc'))
+      File.write(File.join(tmpdir, 'doc/source.md'), source_content)
+    end
+
+    context 'with entity escapes outside fenced code blocks' do
+      let(:content) do
+        "# Principles\n\n- Run `tool &lt;argument&gt;` &amp; inspect `&quot;output&quot;`&#39;s value.\n"
+      end
+
+      it 'repairs the content and warns with the affected line number' do
+        expect(log_warn).to receive(:call).with('  WARNING: repaired HTML entity escapes on line(s) 3')
+
+        expect(repair).to eq("# Principles\n\n- Run `tool <argument>` & inspect `\"output\"`'s value.\n")
+      end
+    end
+
+    context 'with entity escapes in a fenced code block' do
+      let(:content) do
+        <<~MARKDOWN
+          # Principles
+
+          ```markdown
+          Use `&lt;placeholder&gt;` in documentation.
+          ```
+        MARKDOWN
+      end
+
+      it 'preserves the example without warning' do
+        expect(log_warn).not_to receive(:call)
+
+        expect(repair).to eq(content)
+      end
+    end
+
+    context 'with an entity escape copied from the SSOT' do
+      let(:content) { "# Principles\n\n- Use the entity code `&lt;` for a literal angle bracket.\n" }
+      let(:source_content) { 'Use the entity code `&lt;` for a literal angle bracket.' }
+
+      it 'preserves the SSOT content without warning' do
+        expect(log_warn).not_to receive(:call)
+
+        expect(repair).to eq(content)
+      end
+    end
+
+    context 'with clean content' do
+      let(:content) { "# Principles\n\n- Run `tool <argument>`.\n" }
+
+      it 'leaves content unchanged without warning' do
+        expect(log_warn).not_to receive(:call)
+
+        expect(repair).to eq(content)
+      end
+    end
+  end
+
   describe 'MAX_CONCURRENT_DISTILLATIONS' do
     subject(:cap) { described_class::MAX_CONCURRENT_DISTILLATIONS }
 

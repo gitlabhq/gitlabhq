@@ -123,7 +123,7 @@ DAST version 5 scans provide better coverage of your application, so they may id
 
 One proxy-based active check is yet to be implemented in the browser-based DAST analyzer.
 Migration of the remaining active check is proposed in
-[epic 13411](https://gitlab.com/groups/gitlab-org/-/epics/13411). If you prefer to remain on DAST
+[epic 13411](https://gitlab.com/groups/gitlab-org/-/work_items/13411). If you prefer to remain on DAST
 version 4 until the last check is migrated, see [Continuing to use the proxy-based analyzer](#continuing-to-use-the-proxy-based-analyzer).
 
 Remaining check:

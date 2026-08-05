@@ -42,7 +42,7 @@ balancing and available HA mechanisms configured as follows:
 - Internal load balancer configured for any PgBouncer and Praefect components with TCP health checks enabled.
 - HA mechanisms configured for the Consul, Postgres, and Redis components if present.
   - Any of these components that are not deployed in a HA fashion must upgraded separately with downtime.
-  - For databases, the [Linux package only supports HA for the main GitLab database](https://gitlab.com/groups/gitlab-org/-/epics/7814).
+  - For databases, the [Linux package only supports HA for the main GitLab database](https://gitlab.com/groups/gitlab-org/-/work_items/7814).
     For any other databases, such as the [Praefect database](#upgrade-gitaly-cluster-praefect-nodes), a third party
     database solution is required to achieve HA and subsequently to avoid downtime.
 
@@ -189,7 +189,7 @@ This process applies to both Gitaly Sharded and Cluster setups. Run through the 
 
 > [!note]
 > This section focuses exclusively on the Praefect component, not its [required PostgreSQL database](../administration/gitaly/praefect/configure.md#postgresql).
-> The [GitLab Linux package does not offer HA](https://gitlab.com/groups/gitlab-org/-/epics/7814) and subsequently Zero Downtime support for the Praefect database.
+> The [GitLab Linux package does not offer HA](https://gitlab.com/groups/gitlab-org/-/work_items/7814) and subsequently Zero Downtime support for the Praefect database.
 > A third party database solution is required to avoid downtime.
 
 For Gitaly Cluster (Praefect) setups, you must deploy and upgrade Praefect in a similar way by using a graceful reload.

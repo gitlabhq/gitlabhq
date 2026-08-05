@@ -459,7 +459,7 @@ export default {
       :drawio-enabled="drawioEnabled"
       :immersive="immersive"
       :restricted-tool-bar-items="markdownFieldRestrictedToolBarItems"
-      @enableContentEditor="onEditingModeChange('contentEditor')"
+      @enable-content-editor="onEditingModeChange('contentEditor')"
       @handle-suggest-dismissed="() => $emit('handle-suggest-dismissed')"
     >
       <template #header><slot name="header"></slot></template>

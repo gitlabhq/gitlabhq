@@ -232,6 +232,39 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
 
           expect { service.execute }.not_to change { user_app.reload.organization_id }
         end
+
+        context 'when IAM replication is enabled' do
+          before do
+            stub_feature_flags(iam_data_replication: true)
+          end
+
+          it 'records an upsert outbox row carrying the new organization for the moved application',
+            :aggregate_failures do
+            app = create(:oauth_application, owner_id: group.id, owner_type: 'Namespace',
+              organization: old_organization)
+
+            expect { service.execute }
+              .to change { Authn::IamOutbox.where(entity_id: app.id, event_type: :upsert).count }.by(1)
+
+            row = Authn::IamOutbox.where(
+              entity_id: app.id, event_type: :upsert, organization_id: new_organization.id
+            ).sole
+            expect(row).to have_attributes(entity_type: 'oauth_application', payload: {})
+          end
+        end
+
+        context 'when IAM replication is disabled' do
+          before do
+            stub_feature_flags(iam_data_replication: false)
+          end
+
+          it 'records no outbox row for the moved application' do
+            create(:oauth_application, owner_id: group.id, owner_type: 'Namespace',
+              organization: old_organization)
+
+            expect { service.execute }.not_to change { Authn::IamOutbox.count }
+          end
+        end
       end
 
       context 'when transferring topics' do

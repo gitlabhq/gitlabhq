@@ -739,7 +739,7 @@ If a task is closed with a locked discussion, then you cannot reopen it until th
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416558) in GitLab 16.5 [with a feature flag](../administration/feature_flags/_index.md) named `linked_work_items`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139394) in GitLab 16.7.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150148) in GitLab 17.0. Feature flag `linked_work_items` removed.
-- [Changed](https://gitlab.com/groups/gitlab-org/-/epics/10267) minimum required role from Reporter (if true) to Guest in GitLab 17.0.
+- [Changed](https://gitlab.com/groups/gitlab-org/-/work_items/10267) minimum required role from Reporter (if true) to Guest in GitLab 17.0.
 
 {{< /history >}}
 

@@ -112,9 +112,17 @@ module Gitlab
           end
 
           nil
-        rescue StandardError
-          # if bad regex or something goes wrong we dont want to interrupt transition
-          # so we just silently ignore error for now
+        rescue StandardError => e
+          # Extraction must not interrupt the build transition, but the failure is not
+          # necessarily a bad regex: the scan reads the whole trace, so a timeout against
+          # object storage ends up here too. Track it instead of discarding it.
+          #
+          # Returning nil explicitly: the tracking call returns a truthy value, and
+          # callers write the result to Ci::Build#coverage.
+          metrics.increment_error_counter(error_reason: :coverage_extraction_failed)
+          Gitlab::ErrorTracking.track_exception(e, stream_class: stream.class.name)
+
+          nil
         end
 
         def extract_sections

@@ -692,7 +692,7 @@ This analyzer may scan JavaScript files vendored in a npm project using the `Ret
 **New behavior**: The new dependency scanning analyzer also extracts the project dependencies by parsing the `package-lock.json` or `npm-shrinkwrap.json.lock` files and generates a CycloneDX SBOM report artifact with the `dependency-scanning` CI/CD job.
 This analyzer does not scan vendored JavaScript files. For more information, see the
 [Dependency Scanning for JavaScript vendored libraries deprecation announcement](../../../update/deprecations.md#dependency-scanning-for-javascript-vendored-libraries)
-for context and available actions. Support for a replacement feature is proposed in [epic 7186](https://gitlab.com/groups/gitlab-org/-/epics/7186).
+for context and available actions. Support for a replacement feature is proposed in [epic 7186](https://gitlab.com/groups/gitlab-org/-/work_items/7186).
 
 #### Migrate an npm project
 
@@ -810,7 +810,7 @@ This analyzer may scan JavaScript files vendored in a npm project using the `Ret
 **New behavior**: The new dependency scanning analyzer also extracts the project dependencies by parsing the `pnpm-lock.yaml` file and generates a CycloneDX SBOM report artifact with the `dependency-scanning` CI/CD job.
 This analyzer does not scan vendored JavaScript files. For more information, see the
 [Dependency Scanning for JavaScript vendored libraries deprecation announcement](../../../update/deprecations.md#dependency-scanning-for-javascript-vendored-libraries)
-for context and available actions. Support for a replacement feature is proposed in [epic 7186](https://gitlab.com/groups/gitlab-org/-/epics/7186).
+for context and available actions. Support for a replacement feature is proposed in [epic 7186](https://gitlab.com/groups/gitlab-org/-/work_items/7186).
 
 #### Migrate a pnpm project
 
@@ -922,7 +922,7 @@ This analyzer does not provide remediation data for Yarn dependencies. For more 
 Support for a replacement feature is proposed in [epic 759](https://gitlab.com/groups/gitlab-org/-/epics/759).
 This analyzer does not scan vendored JavaScript files. For more information, see the
 [Dependency Scanning for JavaScript vendored libraries deprecation announcement](../../../update/deprecations.md#dependency-scanning-for-javascript-vendored-libraries)
-for context and available actions. Support for a replacement feature is proposed in [epic 7186](https://gitlab.com/groups/gitlab-org/-/epics/7186).
+for context and available actions. Support for a replacement feature is proposed in [epic 7186](https://gitlab.com/groups/gitlab-org/-/work_items/7186).
 
 #### Migrate a Yarn project
 

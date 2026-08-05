@@ -120,7 +120,7 @@ Vulnerability Resolution is available in the following workflows:
   - Changed to beta in GitLab 17.3.
   - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 - Vulnerability Resolution activity icon:
-  - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15036) in GitLab 17.5 with a flag named [`vulnerability_report_vr_badge`](https://gitlab.com/gitlab-org/gitlab/-/issues/486549). Disabled by default.
+  - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/15036) in GitLab 17.5 with a flag named [`vulnerability_report_vr_badge`](https://gitlab.com/gitlab-org/gitlab/-/issues/486549). Disabled by default.
   - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171718) in GitLab 17.6.
   - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/503568) in GitLab 18.0. Feature flag `vulnerability_report_vr_badge` removed.
 

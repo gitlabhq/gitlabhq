@@ -75,7 +75,7 @@ describe('WorkItemDisplaySettingsDrawer', () => {
         },
         {
           value: VIEW_MODE_BOARD,
-          text: 'Board',
+          text: 'Board (Beta)',
           props: { icon: 'work-item-issue-board' },
         },
       ]);

@@ -284,7 +284,7 @@ GitLab supports the following pagination methods:
 - Offset-based pagination. The default method and available on all endpoints except
   the `users` endpoint.
 - Keyset-based pagination. Added to selected endpoints but being
-  [progressively rolled out](https://gitlab.com/groups/gitlab-org/-/epics/2039).
+  [progressively rolled out](https://gitlab.com/groups/gitlab-org/-/work_items/2039).
 
 For large collections, you should use keyset pagination
 (when available) instead of offset pagination, for performance reasons.

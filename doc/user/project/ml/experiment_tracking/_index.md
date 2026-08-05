@@ -14,8 +14,8 @@ title: Machine learning model experiments
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9341) in GitLab 15.11.
-- [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/9341) in GitLab 17.8.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/9341) in GitLab 15.11.
+- [Generally available](https://gitlab.com/groups/gitlab-org/-/work_items/9341) in GitLab 17.8.
 
 {{< /history >}}
 

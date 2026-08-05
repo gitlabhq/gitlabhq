@@ -115,6 +115,10 @@
                   = f.label :dotenv_variables, plan_limit_setting_description(:dotenv_variables)
                   = f.number_field :dotenv_variables, class: 'form-control gl-form-input', min: 0
                 .form-group
+                  = f.label :ci_max_artifact_size_cyclonedx, plan_limit_setting_description(:ci_max_artifact_size_cyclonedx)
+                  = f.number_field :ci_max_artifact_size_cyclonedx, class: 'form-control gl-form-input', min: 0
+                  .form-text.gl-text-subtle= s_('AdminSettings|Set to 0 to use the maximum artifacts size limit instead.')
+                .form-group
                   = f.label :ci_pipeline_size, plan_limit_setting_description(:ci_pipeline_size)
                   = f.number_field :ci_pipeline_size, class: 'form-control gl-form-input', min: 0
                 .form-group

@@ -168,7 +168,7 @@ GitLab enforces a limit of **15 indexes** per table. This limitation:
 
 We have RuboCop checks (`PreventIndexCreation`) against further new indexes on selected tables
 that are frequently accessed.
-This is due to [LockManager LWLock contention](https://gitlab.com/groups/gitlab-org/-/epics/11543).
+This is due to [LockManager LWLock contention](https://gitlab.com/groups/gitlab-org/-/work_items/11543).
 
 For the same reason, there are also RuboCop checks (`AddColumnsToWideTables`) against adding
 new columns to these tables.

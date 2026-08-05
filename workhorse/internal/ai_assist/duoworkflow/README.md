@@ -247,7 +247,7 @@ Client receives action response
 
 ## Metrics
 
-The package exposes four Prometheus counters.
+The package exposes six Prometheus counters and one histogram.
 
 ### `gitlab_workhorse_duo_workflow_connections_total`
 
@@ -270,7 +270,7 @@ The ratio `connection_errors_total / connections_total` gives the connection err
 Example query to break down errors by type:
 
 ```promql
-rate(gitlab_workhorse_duo_workflow_connection_errors_total[5m]) by (error_type)
+sum(rate(gitlab_workhorse_duo_workflow_connection_errors_total[5m])) by (error_type)
 ```
 
 ### `gitlab_workhorse_duo_workflow_sessions_total`
@@ -284,7 +284,48 @@ Incremented for every non-EOF error received on the `ExecuteWorkflow` stream, la
 Example query:
 
 ```promql
-rate(gitlab_workhorse_duo_workflow_session_errors_total[5m]) by (grpc_code)
+sum(rate(gitlab_workhorse_duo_workflow_session_errors_total[5m])) by (grpc_code)
+```
+
+### `gitlab_workhorse_duo_workflow_http_actions_total`
+
+Incremented once for every HTTP action executed on behalf of the Duo Workflow Service (in `runHTTPActionHandler.Execute`), labelled by `method` and `status_code`.
+
+`status_code` is `"0"` when the request could not be completed at all, so no response status exists — for example a timeout, an aborted request, or a response exceeding the body size limit. Those cases are also counted in `http_action_errors_total`.
+
+Example query for the rate of 5xx actions:
+
+```promql
+sum(rate(gitlab_workhorse_duo_workflow_http_actions_total{status_code=~"5.."}[5m])) by (method)
+```
+
+### `gitlab_workhorse_duo_workflow_http_action_duration_seconds`
+
+Histogram of HTTP action latency in seconds, labelled by `method`, using the Prometheus default buckets. The duration is observed for every action, including those that end in a transport-level error.
+
+Example query for the 95th percentile:
+
+```promql
+histogram_quantile(0.95, sum(rate(gitlab_workhorse_duo_workflow_http_action_duration_seconds_bucket[5m])) by (le, method))
+```
+
+### `gitlab_workhorse_duo_workflow_http_action_errors_total`
+
+Incremented when an HTTP action fails with a transport-level error, labelled by `error_type`:
+
+| `error_type`          | Trigger                                                                                    |
+| --------------------- | ------------------------------------------------------------------------------------------ |
+| `timeout`             | Request context deadline exceeded (`httpRequestTimeout`)                                    |
+| `aborted`             | Backend panicked with `http.ErrAbortHandler`, typically a client disconnect or cancellation |
+| `size_limit_exceeded` | Response body exceeded `ActionResponseBodyLimit`                                            |
+| `other`               | Defensive fallback for any error not matching the above                                     |
+
+HTTP 4xx and 5xx responses are not errors at this layer: the backend answered, so they are counted only in `http_actions_total` under their status code.
+
+Example query:
+
+```promql
+sum(rate(gitlab_workhorse_duo_workflow_http_action_errors_total[5m])) by (error_type)
 ```
 
 ## Configuration

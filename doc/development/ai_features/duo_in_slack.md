@@ -22,7 +22,8 @@ To test the feature locally, you must:
   tagged `gitlab--duo`. Use the `docker` executor: flows run in a Docker image, so the `shell`
   executor does not work. For more information, see
   [Configure runners to execute flows](../../user/duo_agent_platform/flows/execution/_index.md#configure-runners-to-execute-flows).
-- A Slack workspace where you are an administrator. Use a personal test workspace, not the GitLab workspace.
+- A Slack workspace where you are an administrator. Use a
+  [Slack developer sandbox](#use-a-slack-developer-sandbox), not the GitLab workspace.
 - The `slack_duo_agent` [feature flag](../feature_flags/_index.md) enabled globally:
 
   ```ruby
@@ -32,6 +33,24 @@ To test the feature locally, you must:
 - A [default GitLab Duo namespace](../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace)
   set on your user, with the [Developer Flow](../../user/duo_agent_platform/flows/foundational_flows/developer.md)
   turned on for that top-level group.
+
+## Use a Slack developer sandbox
+
+Some Slack features are only available on paid Slack plans, and a free workspace silently
+lacks them. A developer sandbox is a workspace with all paid features enabled, so use one as
+your test workspace.
+
+To get a sandbox:
+
+1. Enroll in the free [Slack developer program](https://api.slack.com/developer-program).
+1. On the [developer dashboard](https://api.slack.com/developer-program/dashboard), select
+   **Provision Sandbox**.
+1. Open the sandbox workspace at the URL shown on the
+   [Sandboxes page](https://api.slack.com/developer-program/sandboxes), and sign in with your
+   Slack developer account.
+
+Sandboxes archive automatically after about six months, and the free plan includes a monthly
+provisioning limit, so reuse one sandbox rather than creating a new one per test.
 
 ## Expose your GDK to the internet
 

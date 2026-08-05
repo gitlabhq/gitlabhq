@@ -117,6 +117,26 @@ RSpec.describe Admin::PlanLimitsController do
       end
     end
 
+    context "when ci_max_artifact_size_cyclonedx is passed in params" do
+      let(:params) do
+        {
+          plan_limits: {
+            plan_name_uid: plan.plan_name_uid_before_type_cast,
+            ci_max_artifact_size_cyclonedx: 5
+          }
+        }
+      end
+
+      it "updates the ci_max_artifact_size_cyclonedx plan limit" do
+        sign_in(create(:admin))
+
+        post :create, params: params
+
+        expect(response).to redirect_to(general_admin_application_settings_path)
+        expect(plan_limits.reload.ci_max_artifact_size_cyclonedx).to eq(5)
+      end
+    end
+
     context 'without admin access' do
       let(:file_size) { 1.megabyte }
 
