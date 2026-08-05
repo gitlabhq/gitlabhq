@@ -1,0 +1,19 @@
+---
+description: Tracks when a user successfully visits the group-level Observability dashboard.
+internal_events: true
+action: visit_group_observability_dashboard
+identifiers:
+- namespace
+- user
+additional_properties:
+  label:
+    description: The observability sub-path being viewed, e.g. "traces", "logs", "metrics", or empty for the root path.
+product_group: platform_insights
+product_categories:
+- observability
+milestone: '19.3'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248590
+tiers:
+- free
+- premium
+- ultimate

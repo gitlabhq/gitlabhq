@@ -64,6 +64,17 @@ RSpec.describe "Groups::Observability::AccessRequests", feature_category: :obser
             expect(service_instance).to have_received(:execute)
           end
         end
+
+        it 'tracks the create_observability_access_request internal event', :clean_gitlab_redis_shared_state do
+          expect { create_access_request }
+            .to trigger_internal_events('create_observability_access_request')
+            .with(user: user, namespace: group, additional_properties: { label: 'group' },
+              category: 'Groups::Observability::AccessRequestsController')
+            .and increment_usage_metrics(
+              'redis_hll_counters.count_distinct_user_id_from_create_observability_access_request_monthly',
+              'redis_hll_counters.count_distinct_user_id_from_create_observability_access_request_weekly'
+            )
+        end
       end
 
       context 'when service fails' do
@@ -80,6 +91,10 @@ RSpec.describe "Groups::Observability::AccessRequests", feature_category: :obser
             expect(response).to redirect_to(group_observability_setup_path(group))
             expect(flash[:alert]).to eq(error_message)
           end
+        end
+
+        it 'does not track the create_observability_access_request internal event' do
+          expect { create_access_request }.not_to trigger_internal_events('create_observability_access_request')
         end
       end
 
@@ -98,6 +113,10 @@ RSpec.describe "Groups::Observability::AccessRequests", feature_category: :obser
             expect(flash[:alert]).to eq('Observability is already enabled for this group')
             expect(::Observability::AccessRequestService).not_to have_received(:new)
           end
+        end
+
+        it 'does not track the create_observability_access_request internal event' do
+          expect { create_access_request }.not_to trigger_internal_events('create_observability_access_request')
         end
       end
     end

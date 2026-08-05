@@ -192,6 +192,8 @@ The object types that support direct downloads include:
 
 When you download one of the above object types, your browser or client connects directly to Amazon S3 rather than routing through GitLab infrastructure.
 
+If your network has no internet egress, your runners run in an offline environment, or your compliance requirements prohibit pre-signed URLs on the public internet, you can keep this traffic on the AWS network with S3 VPC endpoints. For more information, see [private S3 access for object storage](../../administration/dedicated/configure_instance/network_security.md#private-s3-access-for-object-storage).
+
 ### Application
 
 GitLab Dedicated comes with the self-managed [Ultimate feature set](https://about.gitlab.com/pricing/feature-comparison/) with a small number of exceptions. For more information, see [Unavailable features](#unavailable-features).

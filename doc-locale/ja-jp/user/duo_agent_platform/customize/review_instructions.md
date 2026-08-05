@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: AI Coding
+stage: AI Coding
+group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: マージリクエストのレビューでAIが使用する指示をカスタマイズします。
 title: Agent Platformに合わせてレビュー指示をカスタマイズする
@@ -24,7 +24,7 @@ title: Agent Platformに合わせてレビュー指示をカスタマイズす�
 
 GitLab Duoがマージリクエストをレビューする際に参照する標準を提供するための、カスタムレビュー指示を作成します。
 
-例えば、GitLab DuoにRubyファイルではRubyのスタイル規則に、GoファイルではGoのスタイル規則に焦点を当てるように誘導できます。
+たとえば、RubyファイルではRubyのスタイル規則を、GoファイルではGoのスタイル規則を重視するよう、GitLab Duoに指示できます。
 
 > [!note]
 > カスタムレビュー指示は、AIレビュアー向けのガイダンスであり、強制的なポリシーではありません。GitLab Duoは、レビューを形成するためのコンテキストとしてこれらを使用しますが、すべての指示がすべての場合に適用されることを保証することはできません。セキュリティ管理、コンプライアンス上の義務、または一貫した強制が必要なその他の要件のためにカスタム指示に依存しないでください。
@@ -52,7 +52,7 @@ GitLab Duoは、標準のレビュー基準を置き換えるのではなく、�
          <your_custom_review_instructions>
    ```
 
-   `fileFilters`セクションはオプションです。このセクションでは、グロブパターンを使用して、特定のファイルを対象とする指示を定めます。`fileFilters`を省略するか、空のままにすると、GitLab Duoはマージリクエスト内のすべてのファイルに指示を適用します。
+   `fileFilters`セクションはオプションです。このセクションでは、globパターンを使用して、特定のファイルを対象とする指示を定めます。`fileFilters`を省略するか、空のままにすると、GitLab Duoはマージリクエスト内のすべてのファイルに指示を適用します。
 
    例: 
 
@@ -161,7 +161,7 @@ GitLab Duoがコードレビューを実行すると、トップレベルグル�
 グループのカスタムレビュー指示を設定するには:
 
 1. 上部のバーで**検索または移動先**を選択して、トップレベルグループを見つけます。
-1. 左サイドバーで、**設定** > **一般** > **GitLab Duoの機能**を選択します。
+1. 左側のサイドバーで、**設定** > **一般** > **GitLab Duoの機能**を選択します。
 1. **Customize code review**の下で、グループのレビュー指示を含む`.gitlab/duo/mr-review-instructions.yaml`ファイルを持つプロジェクトを選択します。
 1. **変更を保存**を選択します。
 

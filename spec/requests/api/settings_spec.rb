@@ -194,6 +194,24 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       end
     end
 
+    context 'dynamic_client_registration_enabled setting', feature_category: :system_access do
+      it 'exposes dynamic_client_registration_enabled' do
+        get api('/application/settings', admin)
+
+        expect(json_response).to have_key('dynamic_client_registration_enabled')
+      end
+
+      it 'updates dynamic_client_registration_enabled and enqueues the cleanup worker', :aggregate_failures do
+        expect(Authn::OauthApplications::CleanupDynamicApplicationsWorker).to receive(:perform_async)
+
+        put api('/application/settings', admin), params: { dynamic_client_registration_enabled: false }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['dynamic_client_registration_enabled']).to be(false)
+        expect(ApplicationSetting.current.dynamic_client_registration_enabled?).to be(false)
+      end
+    end
+
     context "custom repository storage type set in the config" do
       before do
         # Add a possible storage to the config

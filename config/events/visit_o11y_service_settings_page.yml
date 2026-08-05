@@ -1,0 +1,16 @@
+---
+description: Tracks when a user views the group Observability service settings page.
+internal_events: true
+action: visit_o11y_service_settings_page
+identifiers:
+- namespace
+- user
+product_group: platform_insights
+product_categories:
+- observability
+milestone: '19.3'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248590
+tiers:
+- free
+- premium
+- ultimate

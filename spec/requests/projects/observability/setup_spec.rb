@@ -41,6 +41,17 @@ RSpec.describe "Projects::Observability::Setup", feature_category: :observabilit
         end
       end
 
+      it 'tracks the visit_observability_setup_page internal event', :clean_gitlab_redis_shared_state do
+        expect { get_setup_page }
+          .to trigger_internal_events('visit_observability_setup_page')
+          .with(user: user, namespace: user_namespace, additional_properties: { label: 'project' },
+            category: 'Projects::Observability::SetupController')
+          .and increment_usage_metrics(
+            'redis_hll_counters.count_distinct_user_id_from_visit_observability_setup_page_monthly',
+            'redis_hll_counters.count_distinct_user_id_from_visit_observability_setup_page_weekly'
+          )
+      end
+
       context 'when project belongs to a group' do
         let_it_be(:group) { create(:group) }
         let_it_be(:group_project) { create(:project, :empty_repo, group: group) }

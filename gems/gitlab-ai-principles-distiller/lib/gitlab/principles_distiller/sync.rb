@@ -324,7 +324,7 @@ module Gitlab
         workflow.validate_config!
 
         banner("\nDistilling #{name}...")
-        affected = { name => { config: config } }
+        affected = { name => { config: config, new_sources: manifest.new_sources_for(name, config) } }
         contents, failed = build_distilled_contents(affected)
 
         record_distill_artifact(name, contents[name], failed)
@@ -612,7 +612,8 @@ module Gitlab
           threads = batch.map do |name, info|
             Thread.new do
               current = read_principles_file(name)
-              updated = distill_principle(name, info[:config], mutex: mutex, rewrite: rewrite)
+              updated = distill_principle(name, info[:config], new_sources: info[:new_sources] || [], mutex: mutex,
+                rewrite: rewrite)
               mutex.synchronize { results[name] = [current, updated] }
             end
           end
@@ -622,7 +623,7 @@ module Gitlab
         results
       end
 
-      def distill_principle(name, config, mutex: nil, rewrite: false)
+      def distill_principle(name, config, new_sources: [], mutex: nil, rewrite: false)
         log = ->(msg) { mutex ? mutex.synchronize { puts msg } : puts(msg) }
         log_warn = ->(msg) { mutex ? mutex.synchronize { warn msg } : warn(msg) }
 
@@ -641,7 +642,7 @@ module Gitlab
           end
 
           log.call("  Triggering Duo Workflow for #{name}#{" (retry #{attempt})" if attempt.positive?}...")
-          result = workflow.distill(name, config)
+          result = workflow.distill(name, config, new_sources: new_sources)
 
           if result&.include?('## Checklist')
             baseline_missing = baseline_drift(config, result)

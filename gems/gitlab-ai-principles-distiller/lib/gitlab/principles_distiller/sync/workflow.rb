@@ -73,9 +73,9 @@ module Gitlab
         # distilled file + SSOT sources directly from source_branch via
         # gitaly. We do NOT inline file contents in the request body to
         # avoid argv/header limits.
-        def distill(name, config)
-          goal = build_goal(name, config)
-          additional_context = build_additional_context(name, config)
+        def distill(name, config, new_sources: [])
+          goal = build_goal(name, config, new_sources: new_sources)
+          additional_context = build_additional_context(name, config, new_sources: new_sources)
 
           workflow_id = start(goal: goal, additional_context: additional_context, principle: name)
           return unless workflow_id
@@ -83,7 +83,7 @@ module Gitlab
           poll(workflow_id, principle: name)
         end
 
-        def build_goal(name, config)
+        def build_goal(name, config, new_sources: [])
           sources = config.fetch('sources', []).map { |s| "- #{s['path']}" }.join("\n")
           baseline_line = config['baseline'] ? "- #{config['baseline']}" : '(none)'
           distilled_path = manifest.principles_path(name)
@@ -137,6 +137,8 @@ module Gitlab
             rule that is neither is a defect — do NOT silently drop it; when it
             sits next to an existing bullet, fold it in.
 
+            #{new_sources_guidance(new_sources)}
+
             Current distilled file (the PRIOR version — reconcile it against the
             SSOT, do not assume it is still complete or correct):
             - #{distilled_path}
@@ -156,15 +158,33 @@ module Gitlab
           GOAL
         end
 
-        def build_additional_context(name, config)
+        def build_additional_context(name, config, new_sources: [])
           payload = {
             principle: name,
             distilled_path: manifest.principles_path(name),
             sources: config.fetch('sources', []).map { |s| s.slice('path', 'url') },
-            baseline_path: config['baseline']
+            baseline_path: config['baseline'],
+            new_sources: new_sources
           }
 
           [{ Category: 'agent_principles_distillation', Content: payload.to_json }]
+        end
+
+        def new_sources_guidance(new_sources)
+          return '' if new_sources.empty?
+
+          paths = new_sources.map { |source| "- #{source['path']}" }.join("\n")
+          <<~GUIDANCE
+            Newly declared SSOT sources this run:
+            #{paths}
+
+            These sources were newly added to the manifest, so their `git diff
+            <distilled_at_sha>..HEAD` is empty by construction. Read each one
+            in full and treat its normative content as this-run additions,
+            exempt from the system prompt rule 18 diff gate. Rules 9, 11, and
+            16d still apply, so a source that is purely conceptual, duplicates
+            another rule, or delegates elsewhere may correctly yield no item.
+          GUIDANCE
         end
 
         # Dumps workflow URL, human-readable status, message-type counts,

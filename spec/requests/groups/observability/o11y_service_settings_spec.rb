@@ -40,6 +40,16 @@ RSpec.describe "Groups::Observability::O11yServiceSettings", feature_category: :
 
         expect(assigns(:settings)).to eq(settings)
       end
+
+      it 'tracks the visit_o11y_service_settings_page internal event', :clean_gitlab_redis_shared_state do
+        expect { edit_request }
+          .to trigger_internal_events('visit_o11y_service_settings_page')
+          .with(user: user, namespace: group, category: 'Groups::Observability::O11yServiceSettingsController')
+          .and increment_usage_metrics(
+            'redis_hll_counters.count_distinct_user_id_from_visit_o11y_service_settings_page_monthly',
+            'redis_hll_counters.count_distinct_user_id_from_visit_o11y_service_settings_page_weekly'
+          )
+      end
     end
 
     context 'without persisted settings' do
@@ -63,6 +73,10 @@ RSpec.describe "Groups::Observability::O11yServiceSettings", feature_category: :
       it 'returns 404' do
         edit_request
         expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'does not track the visit_o11y_service_settings_page internal event' do
+        expect { edit_request }.not_to trigger_internal_events('visit_o11y_service_settings_page')
       end
     end
 
@@ -113,6 +127,22 @@ RSpec.describe "Groups::Observability::O11yServiceSettings", feature_category: :
           expect(response).to redirect_to(edit_group_observability_o11y_service_settings_path(group))
           expect(flash[:notice]).to eq('Observability service settings updated successfully.')
         end
+
+        it 'tracks the update_o11y_service_settings internal event', :clean_gitlab_redis_shared_state do
+          allow_next_instance_of(Observability::GroupO11ySettingsUpdateService) do |service|
+            allow(service).to receive(:execute).and_return(
+              ServiceResponse.success(payload: { settings: settings })
+            )
+          end
+
+          expect { update_request }
+            .to trigger_internal_events('update_o11y_service_settings')
+            .with(user: user, namespace: group, category: 'Groups::Observability::O11yServiceSettingsController')
+            .and increment_usage_metrics(
+              'redis_hll_counters.count_distinct_user_id_from_update_o11y_service_settings_monthly',
+              'redis_hll_counters.count_distinct_user_id_from_update_o11y_service_settings_weekly'
+            )
+        end
       end
 
       context 'with invalid params' do
@@ -151,6 +181,14 @@ RSpec.describe "Groups::Observability::O11yServiceSettings", feature_category: :
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to render_template(:edit)
+        end
+
+        it 'does not track the update_o11y_service_settings internal event' do
+          allow_next_instance_of(Observability::GroupO11ySettingsUpdateService) do |service|
+            allow(service).to receive(:execute).and_return(ServiceResponse.error(message: 'Failed to update settings'))
+          end
+
+          expect { update_request }.not_to trigger_internal_events('update_o11y_service_settings')
         end
       end
     end

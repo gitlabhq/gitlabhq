@@ -3,6 +3,7 @@
 module Projects
   class ObservabilityController < Projects::ApplicationController
     include Gitlab::Utils::StrongMemoize
+    include Gitlab::InternalEventsTracking
 
     before_action :authenticate_user!
     before_action :authorize_read_observability!
@@ -28,6 +29,14 @@ module Projects
         setting_group = observability_setting.group
 
         @data = ::Observability::ObservabilityPresenter.new(setting_group, path, query_params: filtered_query_params)
+
+        track_internal_event(
+          'visit_project_observability_dashboard',
+          user: current_user,
+          project: project,
+          namespace: project.namespace,
+          additional_properties: { label: path }
+        )
 
         respond_to do |format|
           format.html { render }

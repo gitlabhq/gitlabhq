@@ -33,6 +33,31 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Interpolator, feature_category
     end
   end
 
+  context 'when an interpolated value embedded in a string contains backslash sequences' do
+    let(:header) do
+      { spec: { inputs: { arg: nil } } }
+    end
+
+    let(:content) do
+      { test: "printf '%s' $[[ inputs.arg | posix_escape ]] done" }
+    end
+
+    let(:arguments) do
+      { arg: '\;id' }
+    end
+
+    it 'preserves the escaped value instead of reinterpreting the backslashes', :aggregate_failures do
+      subject.interpolate!
+
+      expect(subject).to be_valid
+      # `posix_escape` shell-escapes the value; the surrounding-string
+      # substitution must keep that escaping intact rather than reinterpreting
+      # the backslashes as `gsub` backreferences.
+      escaped = Shellwords.shellescape('\;id')
+      expect(subject.to_hash).to eq({ test: "printf '%s' #{escaped} done" })
+    end
+  end
+
   context 'when input uses array index access' do
     let(:header) do
       { spec: { inputs: { versions: { type: 'array' } } } }

@@ -708,6 +708,7 @@ module ApplicationSettingsHelper
         settings << :nuget_skip_metadata_url_validation
         settings << :helm_max_packages_count
         settings << :mcp_server_enabled
+        settings << :dynamic_client_registration_enabled
       end
     end
   end

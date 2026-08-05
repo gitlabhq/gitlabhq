@@ -816,7 +816,8 @@ class ApplicationSetting < ApplicationRecord
   validates :diff_limits, json_schema: { filename: "application_setting_diff_limits" }
 
   jsonb_accessor :oauth_settings,
-    oauth_access_token_expires_in: [:integer, { default: DEFAULT_OAUTH_ACCESS_TOKEN_EXPIRES_IN }]
+    oauth_access_token_expires_in: [:integer, { default: DEFAULT_OAUTH_ACCESS_TOKEN_EXPIRES_IN }],
+    dynamic_client_registration_enabled: [:boolean, { default: true }]
 
   validates :oauth_settings,
     json_schema: { filename: "application_setting_oauth_settings" }

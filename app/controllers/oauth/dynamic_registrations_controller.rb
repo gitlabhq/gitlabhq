@@ -7,6 +7,7 @@ module Oauth
     skip_before_action :authenticate_user!, only: [:create]
     skip_before_action :verify_authenticity_token, only: [:create]
     before_action :check_rate_limit, only: [:create]
+    before_action :check_dynamic_client_registration_enabled, only: [:create]
 
     RESOURCE_SCOPE_MAP = {
       '/api/v4/orbit/mcp' => Gitlab::Auth::MCP_ORBIT_SCOPE.to_s,
@@ -101,6 +102,16 @@ module Oauth
       return if Rails.env.test? || Rails.env.development?
 
       check_rate_limit!(:oauth_dynamic_registration, scope: request.ip)
+    end
+
+    def check_dynamic_client_registration_enabled
+      return if ::Gitlab::CurrentSettings.dynamic_client_registration_enabled?
+
+      # 403 (not 404) so clients can distinguish "disabled" from "endpoint does not exist" (RFC 7591).
+      render json: {
+        error: "access_denied",
+        error_description: "Dynamic client registration is disabled on this instance"
+      }, status: :forbidden
     end
   end
 end

@@ -335,7 +335,9 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Workflow do
   end
 
   describe '.build_goal' do
-    subject(:goal) { workflow.build_goal('feature-flags', config) }
+    subject(:goal) { workflow.build_goal('feature-flags', config, new_sources: new_sources) }
+
+    let(:new_sources) { [] }
 
     let(:config) do
       {
@@ -371,10 +373,22 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Workflow do
         expect(goal).to include('(none)')
       end
     end
+
+    context 'with newly declared sources' do
+      let(:new_sources) { [{ 'path' => 'doc/development/feature_flags/new_source.md' }] }
+
+      it 'explains their diff is empty by construction' do
+        expect(goal).to include('Newly declared SSOT sources this run:')
+        expect(goal).to include('- doc/development/feature_flags/new_source.md')
+        expect(goal).to include('empty by construction')
+      end
+    end
   end
 
   describe '.build_additional_context' do
-    subject(:context) { workflow.build_additional_context('foo', config) }
+    subject(:context) { workflow.build_additional_context('foo', config, new_sources: new_sources) }
+
+    let(:new_sources) { [{ 'path' => 'doc/new.md' }] }
 
     let(:config) do
       {
@@ -397,6 +411,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync::Workflow do
       expect(payload['principle']).to eq('foo')
       expect(payload['distilled_path']).to eq('.ai/principles/distilled/foo.md')
       expect(payload['sources']).to eq([{ 'path' => 'doc/foo.md', 'url' => 'https://example.com/foo' }])
+      expect(payload['new_sources']).to eq([{ 'path' => 'doc/new.md' }])
       expect(payload['baseline_path']).to eq('.ai/principles/baselines/foo.md')
     end
   end

@@ -47,6 +47,22 @@ RSpec.describe Oauth::DynamicRegistrationsController, :with_current_organization
       post oauth_registration_path, params: request_body.to_json, headers: headers
     end
 
+    context 'when dynamic client registration setting is disabled' do
+      let(:request_body) { valid_request_body }
+
+      before do
+        stub_application_setting(dynamic_client_registration_enabled: false)
+      end
+
+      it 'returns forbidden with access_denied and does not create an application', :aggregate_failures do
+        expect { create_registration }.not_to change { Authn::OauthApplication.count }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(response.parsed_body).to include('error' => 'access_denied')
+        expect(response.parsed_body['error_description']).to be_present
+      end
+    end
+
     context 'when feature flag is enabled' do
       context 'with valid parameters' do
         let(:request_body) { valid_request_body }

@@ -593,6 +593,39 @@ To set a lifetime for OAuth access tokens:
 You can also configure this setting by using the
 [application settings API](../../api/settings.md) with the `oauth_access_token_expires_in` attribute.
 
+### OAuth dynamic client registration
+
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248615) in GitLab 19.3.
+
+{{< /history >}}
+
+OAuth dynamic client registration (DCR) lets OAuth clients, such as MCP clients and AI tools,
+register applications automatically by sending a request to `POST /oauth/register`.
+By default, DCR is enabled.
+
+When DCR is disabled, OAuth clients cannot register applications automatically.
+Clients must use a pre-registered OAuth application instead.
+
+Disabling DCR also deletes all dynamically registered OAuth applications and revokes
+their access tokens and grants, because these applications are created only through DCR.
+
+Prerequisites:
+
+- You must be an administrator.
+
+To turn off OAuth dynamic client registration, use the
+[application settings API](../../api/settings.md) to set the
+`dynamic_client_registration_enabled` attribute to `false`.
+
 ## Disable user profile name changes
 
 {{< details >}}

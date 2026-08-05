@@ -98,6 +98,20 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
       end
     end
 
+    describe ':dynamic_client_registration_enabled' do
+      context 'when self-managed' do
+        it 'is included' do
+          expect(helper.visible_attributes).to include(:dynamic_client_registration_enabled)
+        end
+      end
+
+      context 'when on SaaS', :saas do
+        it 'is not included' do
+          expect(helper.visible_attributes).not_to include(:dynamic_client_registration_enabled)
+        end
+      end
+    end
+
     it 'contains rate limit parameters' do
       expect(helper.visible_attributes).to include(
         *%i[

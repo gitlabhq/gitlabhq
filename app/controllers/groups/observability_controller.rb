@@ -3,6 +3,7 @@
 module Groups
   class ObservabilityController < Groups::ApplicationController
     include Gitlab::Utils::StrongMemoize
+    include Gitlab::InternalEventsTracking
 
     before_action :authenticate_user!
     before_action :authorize_read_observability!
@@ -25,6 +26,13 @@ module Groups
       return render_404 unless ::Observability::ObservabilityPresenter.valid_path?(path)
 
       @data = ::Observability::ObservabilityPresenter.new(group, path, query_params: filtered_query_params)
+
+      track_internal_event(
+        'visit_group_observability_dashboard',
+        user: current_user,
+        namespace: group,
+        additional_properties: { label: path }
+      )
 
       respond_to do |format|
         format.html { render }

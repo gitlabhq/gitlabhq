@@ -25,9 +25,13 @@ class JwksController < Doorkeeper::OpenidConnect::DiscoveryController
     if request.path_info.in?(OAUTH_PATHS)
       expires_in 24.hours, public: true, must_revalidate: true, 'no-transform': true
       response_hash = provider_response
-      response_hash[:registration_endpoint] = Gitlab::Utils.append_path(
-        Gitlab.config.gitlab.url, DYNAMIC_REGISTRATION_PATH
-      )
+
+      if ::Gitlab::CurrentSettings.dynamic_client_registration_enabled?
+        response_hash[:registration_endpoint] = Gitlab::Utils.append_path(
+          Gitlab.config.gitlab.url, DYNAMIC_REGISTRATION_PATH
+        )
+      end
+
       render json: response_hash
 
       return

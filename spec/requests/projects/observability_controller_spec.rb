@@ -79,6 +79,17 @@ RSpec.describe Projects::ObservabilityController, feature_category: :observabili
 
         it_behaves_like 'renders observability iframe'
       end
+
+      it 'tracks the visit_project_observability_dashboard internal event', :clean_gitlab_redis_shared_state do
+        expect { services_page }
+          .to trigger_internal_events('visit_project_observability_dashboard')
+          .with(user: user, project: project, namespace: project.namespace,
+            additional_properties: { label: 'services' }, category: 'Projects::ObservabilityController')
+          .and increment_usage_metrics(
+            'redis_hll_counters.count_distinct_user_id_from_visit_project_observability_dashboard_monthly',
+            'redis_hll_counters.count_distinct_user_id_from_visit_project_observability_dashboard_weekly'
+          )
+      end
     end
 
     context 'when no ancestor group has an observability setting' do
@@ -88,6 +99,10 @@ RSpec.describe Projects::ObservabilityController, feature_category: :observabili
         services_page
 
         expect(response).to redirect_to(group_observability_setup_path(group))
+      end
+
+      it 'does not track the visit_project_observability_dashboard internal event' do
+        expect { services_page }.not_to trigger_internal_events('visit_project_observability_dashboard')
       end
     end
 

@@ -17703,7 +17703,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_9f15ccbe765c"
+              "$ref": "#/components/schemas/RequestBody_9dcd3025609f"
   "/api/v4/service_accounts":
     post:
       operationId: postApiV4ServiceAccounts
@@ -85244,6 +85244,8 @@ components:
           type: string
         mcp_server_enabled:
           type: string
+        dynamic_client_registration_enabled:
+          type: string
         active_context_pause_indexing:
           type: string
         allow_all_integrations:
@@ -99193,7 +99195,7 @@ components:
           description: Scopes available to the application. Separate multiple scopes
             with a space.
           nullable: true
-    RequestBody_9f15ccbe765c:
+    RequestBody_9dcd3025609f:
       type: object
       properties:
         admin_mode:
@@ -101283,6 +101285,9 @@ components:
           type: string
           nullable: true
         mcp_server_enabled:
+          type: string
+          nullable: true
+        dynamic_client_registration_enabled:
           type: string
           nullable: true
         allow_all_integrations:

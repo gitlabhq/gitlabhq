@@ -237,8 +237,7 @@ module AuthenticatesWithTwoFactor
 
     remember_me(user) if passwordless_passkey_params[:remember_me] == '1'
     sign_in(user)
-
-    redirect_to root_path || stored_redirect_uri
+    redirect_to after_sign_in_path_for(user)
   end
 
   def handle_passwordless_auth_with_passkey_failure(method, message)

@@ -120,4 +120,21 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Template, feature_category: :p
       expect(subject.interpolated).to eq({ 'test' => { 'script' => 'echo hello' } })
     end
   end
+
+  context 'when an interpolated value inside a larger string contains backslash sequences' do
+    let(:config) do
+      <<~CFG
+      test:
+        script: 'run $[[ inputs.cmd ]] now'
+      CFG
+    end
+
+    let(:ctx) do
+      { inputs: { cmd: 'sed s/\1/x/' } }
+    end
+
+    it 'inserts the value verbatim without interpreting backreferences' do
+      expect(subject.interpolated).to eq({ 'test' => { 'script' => 'run sed s/\1/x/ now' } })
+    end
+  end
 end

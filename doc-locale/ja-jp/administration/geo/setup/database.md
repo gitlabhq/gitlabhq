@@ -1,9 +1,9 @@
 ---
-stage: Runtime
+stage: Tenant Scale
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: GitLab Geoデータベースのレプリケーションを設定、構成、管理して、プライマリサイトとセカンダリサイトの同期を維持する方法について説明します。要件、レプリケーション方法、トラブルシューティングのガイダンスが含まれています。
-title: GitLab Geoデータベースレプリケーション
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: プライマリおよびセカンダリGeoサイトを同期させるためのGitLab Geoデータベースレプリケーションの設定、構成、および管理方法について、要件、レプリケーション方法、トラブルシューティングのガイダンスを含めて説明します。
+title: Geoデータベースレプリケーション
 ---
 
 {{< details >}}
@@ -13,101 +13,91 @@ title: GitLab Geoデータベースレプリケーション
 
 {{< /details >}}
 
-このドキュメントでは、プライマリGitLabデータベースをセカンダリサイトのデータベースにレプリケートするために必要な最小限の手順について説明します。データベースの設定やサイズなどの属性に基づいて、いくつかの値を変更する必要がある場合があります。
+このドキュメントでは、プライマリGitLabデータベースをセカンダリGeoサイトのデータベースにレプリケートするために必要な最小限のステップを説明します。データベースの設定やサイズなどの属性に基づいて、一部の値を変更する必要がある場合があります。
 
-{{< alert type="note" >}}
+> [!note]
+> お使いのGitLabインストールで外部PostgreSQLインスタンス（Linuxパッケージインストールで管理されていないもの）を使用している場合、ロールは必要な設定ステップをすべて実行できません。この場合、代わりに[外部PostgreSQLインスタンスを使用したGeo](external_database.md)プロセスを使用してください。
 
-GitLabのインスタンスが（Linuxパッケージのインストールによって管理されていない）外部PostgreSQLデータベースのインスタンスを使用している場合、ロールは必要なすべての設定手順を実行できません。この場合、代わりに[外部PostgreSQLデータベースを使用するGeo](external_database.md)プロセスを使用してください。
+セカンダリGeoサイトがプライマリGeoサイトと同じGitLab Enterprise Editionのバージョンを実行していることを確認してください。プライマリGeoサイトに[PremiumまたはUltimateサブスクリプション](https://about.gitlab.com/pricing/)のライセンスが追加されていることを確認してください。
 
-{{< /alert >}}
+テスト本番環境でこれらのステップを実行する前に、すべてを読み、確認してください。
 
-{{< alert type="note" >}}
+> [!note]
+> 設定プロセスの各段階は、ドキュメントに記載されている順序で完了する必要があります。そうでない場合は、続行する前に[すべての以前の段階を完了](_index.md#using-linux-package-installations)してください。
 
-設定プロセスの各ステージは、ドキュメントに記載されている順序で完了する必要があります。そうでない場合は、続行する前に[以前のすべてのステージを完了](_index.md#using-linux-package-installations)してください。
+## データベースパスワードの一貫性要件 {#database-password-consistency-requirements}
 
-{{< /alert >}}
+各データベース関連のパスワードタイプは、すべてのGeoサイト（プライマリおよびセカンダリ）で一致する値を持つ必要があります。これには次のユーザーが含まれます。
 
-**セカンダリ**サイトが、**プライマリ**サイトと同じバージョンのGitLab Enterprise Editionを実行していることを確認してください。**プライマリ**サイトに、[PremiumまたはUltimateプランのサブスクリプション](https://about.gitlab.com/pricing/)のライセンスを追加したことを確認してください。
-
-テスト環境または本番環境でこれらの手順を実行する前に、必ずすべての手順を読み、確認してください。
-
-## データベースパスワードの整合性要件 {#database-password-consistency-requirements}
-
-データベース関連の各パスワード・タイプは、すべてのGeoサイト（プライマリとセカンダリ）で一致する値を持っている必要があります。これには次のユーザーが含まれます:
-
-- `postgresql['sql_replication_password']`（レプリケーションユーザーのパスワード、MD5）
-- `postgresql['sql_user_password']`（GitLabデータベース・ユーザーのパスワード、MD5）
-- `gitlab_rails['db_password']`（GitLabデータベース・ユーザーのパスワード、平文）
-- `patroni['replication_password']`（Patroni設定の場合、平文）
-- `patroni['password']`（Patroni API認証の場合、平文）
+- `postgresql['sql_replication_password']`（レプリケーションユーザーパスワード、MD5）
+- `postgresql['sql_user_password']`（GitLabデータベースユーザーパスワード、MD5）
+- `gitlab_rails['db_password']`（GitLabデータベースユーザーパスワード、プレーンテキスト）
+- `patroni['replication_password']`（Patroni設定用、プレーンテキスト）
+- `patroni['password']`（Patroni API認証用、プレーンテキスト）
 - `postgresql['pgbouncer_user_password']`（PgBouncer使用時、MD5）
 
-たとえば、プライマリサイトで設定された`patroni['password']`の値は、すべてのセカンダリサイトの`patroni['password']`の値と同一である必要があります。
+例えば、プライマリGeoサイトで設定された`patroni['password']`の値は、すべてのセカンダリGeoサイトの`patroni['password']`の値と同一でなければなりません。
 
-これらのパスワードは、プライマリサイトとセカンダリサイト間のデータベース認証とレプリケーションに使用されます。異なるパスワードを使用すると、レプリケーションの失敗が発生し、Geoが正常に機能しなくなります。
+これらのパスワードは、プライマリとセカンダリGeoサイト間のデータベース認証およびレプリケーションに使用されます。異なるパスワードを使用すると、レプリケーションの失敗が発生し、Geoが正しく機能しなくなります。
 
-## 単一インスタンスのデータベースレプリケーション {#single-instance-database-replication}
+## 単一インスタンスデータベースレプリケーション {#single-instance-database-replication}
 
-単一インスタンスのデータベースレプリケーションは、設定が容易で、クラスター化された代替手段と同じGeo機能を提供します。これは、単一のマシンで実行される設定や、将来のクラスター化されたインストールのためにGeoを評価しようとする場合に役立ちます。
+単一インスタンスデータベースレプリケーションは設定が容易であり、クラスター化された代替案と同じGeo機能を提供します。これは、単一マシンで実行されている設定、または将来のクラスター化されたインストールに向けてGeoを評価しようとしている場合に役立ちます。
 
-単一インスタンスは、HAアーキテクチャに推奨されるPatroniを使用して、クラスター化されたバージョンに展開できます。
+単一インスタンスは、Patroniを使用してクラスター化されたバージョンに拡張できます。これは高可用性アーキテクチャに推奨されます。
 
-PostgreSQLレプリケーションを単一インスタンスデータベースとして設定する方法については、以下の手順に従ってください。または、Patroniクラスターを使用したレプリケーションの設定に関する[マルチノードデータベースレプリケーション](#multi-node-database-replication)の指示を参照してください。
+PostgreSQLレプリケーションを単一インスタンスデータベースとして設定する方法について、以下の手順に従ってください。代わりに、Patroniクラスターを使用したレプリケーションの設定に関する[マルチノードデータベースレプリケーション](#multi-node-database-replication)の手順を参照できます。
 
 ### PostgreSQLレプリケーション {#postgresql-replication}
 
-書き込み操作が発生するGitLabの**プライマリ**サイトは、**プライマリ**データベース・サーバーに接続します。**セカンダリ**サイトは、独自のデータベース・サーバー（読み取り専用）に接続します。
+書き込み操作が行われるGitLabプライマリGeoサイトは、プライマリデータベースサーバーに接続します。セカンダリGeoサイトは、独自のデータベースサーバー（読み取り専用）に接続します。
 
-**プライマリ**サイトが**セカンダリ**サイトの復元に必要なすべてのデータを保持するように、[PostgreSQLレプリケーションスロット](https://medium.com/@tk512/replication-slots-in-postgresql-b4b03d277c75)を使用する必要があります。詳細については、下記をご覧ください。
+プライマリGeoサイトがセカンダリGeoサイトの回復に必要なすべてのデータを保持するように、[PostgreSQLのレプリケーションスロット](https://medium.com/@tk512/replication-slots-in-postgresql-b4b03d277c75)を使用する必要があります。詳細については以下を参照してください。
 
-以下のガイドでは、以下を前提としています:
+以下のガイドでは、次のことを前提としています:
 
-- Linuxパッケージ（PostgreSQL 12以降を使用）を使用しており、[`pg_basebackup`ツール](https://www.postgresql.org/docs/16/app-pgbasebackup.html)が含まれています。
-- Linuxパッケージのインストールによって管理されているPostgreSQL（または同等のバージョン）を実行している**プライマリ**サイト（レプリケート元のGitLabサーバー）がすでに設定されており、すべてのサイトで同じ**セカンダリ**サイトが設定され、同じ[バージョンのPostgreSQL](../_index.md#requirements-for-running-geo)、OS、GitLabを使用している。
+- Linuxパッケージを使用しており（したがってPostgreSQL 12以降を使用）、[`pg_basebackup`ツール](https://www.postgresql.org/docs/16/app-pgbasebackup.html)が含まれています。
+- プライマリGeoサイト（レプリケートするGitLabサーバー）がすでに設定されており、Linuxパッケージインストールによって管理されているPostgreSQL（または同等のバージョン）が実行されており、すべてのGeoサイトで同じ[PostgreSQLのバージョン](../_index.md#requirements-for-running-geo)、OS、およびGitLabが設定された新しいセカンダリGeoサイトがあること。
 
-{{< alert type="warning" >}}
+> [!warning]
+> Geoはストリーミングレプリケーションで動作します。論理レプリケーションはサポートされていませんが、[エピック18022](https://gitlab.com/groups/gitlab-org/-/epics/18022)はこの動作を変更することを提案しています。
 
-Geoはストリーミングレプリケーションで動作します。論理レプリケーションはサポートされていませんが、[エピック18022](https://gitlab.com/groups/gitlab-org/-/epics/18022)では、この動作を変更することを提案しています。
+#### ステップ1.プライマリGeoサイトを構成する {#step-1-configure-the-primary-site}
 
-{{< /alert >}}
-
-#### ステップ1: **プライマリ**サイトを設定する {#step-1-configure-the-primary-site}
-
-1. GitLabの**プライマリ**サイトにSSHで接続し、rootとしてサインインします:
+1. あなたのGitLabプライマリGeoサイトにSSHで接続し、rootとしてサインインします:
 
    ```shell
    sudo -i
    ```
 
-1. GitLabのバージョンアップグレード時に意図しないダウンタイムが発生するのを防ぐため、[PostgreSQLの自動バージョンアップグレードをオプトアウト](https://docs.gitlab.com/omnibus/settings/database/#opt-out-of-automatic-postgresql-upgrades)します。既知の[GeoでPostgreSQLをバージョンアップグレードする際の注意点](https://docs.gitlab.com/omnibus/settings/database/#caveats-when-upgrading-postgresql-with-geo)に注意してください。特に大規模な環境では、PostgreSQLのバージョンアップグレードは慎重に計画および実行する必要があります。その結果、今後は、PostgreSQLのバージョンアップグレードが定期的なメンテナンス活動の一部であることを確認してください。
-
-1. `/etc/gitlab/gitlab.rb`を編集して、サイトの**unique**（一意）の名前を追加します:
+1. GitLabのアップグレード時に意図しないダウンタイムを避けるため、[PostgreSQLの自動アップグレードをオプトアウト](https://docs.gitlab.com/omnibus/settings/database/#opt-out-of-automatic-postgresql-upgrades)します。[Geoを使用したPostgreSQLアップグレードに関する既知の注意点](https://docs.gitlab.com/omnibus/settings/database/#caveats-when-upgrading-postgresql-with-geo)に注意してください。特に大規模な環境では、PostgreSQLのアップグレードは慎重に計画し実行する必要があります。結果として、今後もPostgreSQLのアップグレードが定期的なメンテナンス活動の一部であることを確認してください。
+1. `/etc/gitlab/gitlab.rb`を編集し、サイトの**unique**名前を追加します:
 
    ```ruby
    ##
    ## The unique identifier for the Geo site. See
-   ## https://docs.gitlab.com/ee/administration/geo_sites.html#common-settings
+   ## https://docs.gitlab.com/administration/geo_sites/#common-settings
    ##
    gitlab_rails['geo_node_name'] = '<site_name_here>'
    ```
 
-1. 変更を有効にするには、**プライマリ**サイトを再設定します:
+1. 変更を有効にするため、プライマリGeoサイトを再構成します:
 
    ```shell
    gitlab-ctl reconfigure
    ```
 
-1. サイトを**プライマリ**サイトとして定義するには、以下のコマンドを実行します:
+1. サイトをプライマリGeoサイトとして定義するために、以下のコマンドを実行します:
 
    ```shell
    gitlab-ctl set-geo-primary-node
    ```
 
-   このコマンドは、`/etc/gitlab/gitlab.rb`で定義された`external_url`を使用します。
+   このコマンドは、`/etc/gitlab/gitlab.rb`で定義されている`external_url`を使用します。
 
-1. `gitlab`データベース・ユーザーのパスワードを定義します:
+1. `gitlab`データベースユーザーのパスワードを定義します:
 
-   必要なパスワードのMD5ハッシュを生成します:
+   希望するパスワードのMD5ハッシュを生成します:
 
    ```shell
    gitlab-ctl pg-password-md5 gitlab
@@ -116,7 +106,7 @@ Geoはストリーミングレプリケーションで動作します。論理�
    # fca0b89a972d69f00eb3ec98a5838484
    ```
 
-   `/etc/gitlab/gitlab.rb`を編集します: 
+   `/etc/gitlab/gitlab.rb`を編集します:
 
    ```ruby
    # Fill with the hash generated by `gitlab-ctl pg-password-md5 gitlab`
@@ -128,11 +118,11 @@ Geoはストリーミングレプリケーションで動作します。論理�
    gitlab_rails['db_password'] = '<your_db_password_here>'
    ```
 
-1. データベースの[レプリケーションユーザー](https://www.postgresql.org/docs/16/warm-standby.html#STREAMING-REPLICATION)のパスワードを定義します。
+1. データベース[レプリケーションユーザー](https://www.postgresql.org/docs/16/warm-standby.html#STREAMING-REPLICATION)のパスワードを定義します。
 
-   `postgresql['sql_replication_user']`の`/etc/gitlab/gitlab.rb`で定義されているユーザー名を使用します。デフォルト値は`gitlab_replicator`です。ユーザー名を別のものに変更した場合は、以下の手順を調整してください。
+   `postgresql['sql_replication_user']`設定の下にある`/etc/gitlab/gitlab.rb`で定義されたユーザー名を使用します。デフォルト値は`gitlab_replicator`です。ユーザー名を別のものに変更した場合は、以下の手順を適応させてください。
 
-   必要なパスワードのMD5ハッシュを生成します:
+   希望するパスワードのMD5ハッシュを生成します:
 
    ```shell
    gitlab-ctl pg-password-md5 gitlab_replicator
@@ -141,14 +131,14 @@ Geoはストリーミングレプリケーションで動作します。論理�
    # 950233c0dfc2f39c64cf30457c3b7f1e
    ```
 
-   `/etc/gitlab/gitlab.rb`を編集します: 
+   `/etc/gitlab/gitlab.rb`を編集します:
 
    ```ruby
    # Fill with the hash generated by `gitlab-ctl pg-password-md5 gitlab_replicator`
    postgresql['sql_replication_password'] = '<md5_hash_of_your_replication_password>'
    ```
 
-   Linuxパッケージのインストールによって管理されていない外部データベースを使用している場合は、`gitlab_replicator`ユーザーを作成し、そのユーザーのパスワードを手動で定義する必要があります:
+   Linuxパッケージインストールで管理されていない外部データベースを使用している場合は、`gitlab_replicator`ユーザーを作成し、そのユーザーのパスワードを手動で定義する必要があります:
 
    ```sql
    --- Create a new user 'replicator'
@@ -158,32 +148,29 @@ Geoはストリーミングレプリケーションで動作します。論理�
    ALTER USER gitlab_replicator WITH REPLICATION ENCRYPTED PASSWORD '<replication_password>';
    ```
 
-1. `/etc/gitlab/gitlab.rb`を編集し、ロールを`geo_primary_role`に設定します（詳細については、[Geoロール](https://docs.gitlab.com/omnibus/roles/#gitlab-geo-roles)を参照してください）:
+1. `/etc/gitlab/gitlab.rb`を編集し、役割を`geo_primary_role`に設定します（詳細については、[Geoの役割](https://docs.gitlab.com/omnibus/roles/#gitlab-geo-roles)を参照してください）:
 
    ```ruby
    ## Geo Primary role
    roles(['geo_primary_role'])
    ```
 
-1. ネットワーク・インターフェースでリッスンするようにPostgreSQLを設定します:
+1. PostgreSQLがネットワークインターフェースでリッスンするように構成します:
 
-   セキュリティ上の理由から、PostgreSQLはデフォルトではどのネットワーク・インターフェースでもリッスンしません。ただし、Geoでは、**セカンダリ**サイトが**プライマリ**サイトのデータベースに接続できる必要があります。このため、各サイトのIPアドレスが必要です。
+   セキュリティ上の理由から、PostgreSQLはデフォルトではどのネットワークインターフェースでもリッスンしません。しかし、Geoでは、セカンダリGeoサイトがプライマリGeoサイトのデータベースに接続できる必要があります。このため、各GeoサイトのIPアドレスが必要です。
 
-   {{< alert type="note" >}}
+   > [!note]
+   > 外部PostgreSQLインスタンスについては、[追加の手順](external_database.md)を参照してください。
 
-   外部PostgreSQLインスタンスについては、[追加手順](external_database.md)を参照してください。
+   クラウドプロバイダーを使用している場合は、クラウドプロバイダーの管理コンソールを通じて各Geoサイトのアドレスを検索できます。
 
-   {{< /alert >}}
-
-   クラウドプロバイダーを使用している場合は、各Geoサイトのアドレスをクラウドプロバイダーの管理コンソールで確認できます。
-
-   Geoサイトのアドレスを調べるには、GeoサイトにSSHで接続して実行します:
+   各Geoサイトのアドレスを検索するには、GeoサイトにSSHで接続し、実行します:
 
    ```shell
    ##
    ## Private address
    ##
-   ip route get 255.255.255.255 | awk '{print "Private address:", $NF; exit}'
+   ip route get 255.255.255.255 | awk '{for (i=1; i<=NF; i++) if ($i == "src") { print "Private address:", $(i+1); exit }}'
 
    ##
    ## Public address
@@ -191,26 +178,23 @@ Geoはストリーミングレプリケーションで動作します。論理�
    echo "External address: $(curl --silent "ipinfo.io/ip")"
    ```
 
-   ほとんどの場合、以下のアドレスがGitLab Geoの設定に使用されます:
+   ほとんどの場合、GitLab Geoを構成するには、以下のアドレスが使用されます:
 
    | 設定                           | アドレス                                                               |
    |:----------------------------------------|:----------------------------------------------------------------------|
-   | `postgresql['listen_address']`          | **プライマリ**サイトのパブリックまたはVPCプライベート・アドレス。                     |
-   | `postgresql['md5_auth_cidr_addresses']` | **プライマリ**サイトおよび**セカンダリ**サイトのパブリックまたはVPCプライベート・アドレス。 |
+   | `postgresql['listen_address']`          | プライマリGeoサイトのパブリックまたはVPCプライベートアドレス。                     |
+   | `postgresql['md5_auth_cidr_addresses']` | プライマリおよびセカンダリGeoサイトのパブリックまたはVPCプライベートアドレス。 |
 
-   Googleクラウドプロバイダー、SoftLayer、またはVirtual Private Cloud（VPC）を提供するその他のベンダーを使用している場合は、**プライマリ**サイトと**セカンダリ**サイトの「プライベート」または「内部」アドレスを`postgresql['md5_auth_cidr_addresses']`および`postgresql['listen_address']`に使用することをお勧めします。
+   Google Cloud Platform、SoftLayer、またはVPCを提供するその他のベンダーを使用している場合は、`postgresql['md5_auth_cidr_addresses']`および`postgresql['listen_address']`にプライマリおよびセカンダリGeoサイトの「プライベート」または「内部」アドレスを使用することをお勧めします。
 
-   `listen_address`オプションは、指定されたアドレスに対応するインターフェースとのネットワーク接続に対してPostgreSQLを展開します。詳細については、[PostgreSQLのドキュメント](https://www.postgresql.org/docs/16/runtime-config-connection.html)を参照してください。
+   `listen_address`オプションは、指定されたアドレスに対応するインターフェースとのネットワーク接続にPostgreSQLを公開します。詳細については、[PostgreSQLドキュメント](https://www.postgresql.org/docs/16/runtime-config-connection.html)を参照してください。
 
-   {{< alert type="note" >}}
+   > [!note]
+   > `listen_address`として`0.0.0.0`または`*`を使用する必要がある場合は、Railsが`127.0.0.1`を介して接続できるように、`postgresql['md5_auth_cidr_addresses']`設定に`127.0.0.1/32`も追加する必要があります。詳細については、[イシュー5258](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5258)を参照してください。
 
-   `0.0.0.0`または`*`を`listen_address`として使用する必要がある場合は、Railsが`127.0.0.1`経由で接続できるように、`127.0.0.1/32`を`postgresql['md5_auth_cidr_addresses']`設定に追加する必要があります。詳細については、[issue 5258](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5258)を参照してください。
+   ネットワーク構成によっては、提示されたアドレスが正しくない場合があります。プライマリおよびセカンダリGeoサイトがローカルエリアネットワーク、または[Amazon VPC](https://aws.amazon.com/vpc/)や[Google VPC](https://cloud.google.com/vpc/)のようなアベイラビリティゾーンを接続する仮想ネットワークを介して接続する場合、`postgresql['md5_auth_cidr_addresses']`にはセカンダリGeoサイトのプライベートアドレスを使用する必要があります。
 
-   {{< /alert >}}
-
-   ネットワーク設定によっては、推奨されるアドレスが正しくない場合があります。**プライマリ**サイトと**セカンダリ**サイトがローカルエリアネットワーク、または[Amazon VPC](https://aws.amazon.com/vpc/)や[Google VPC](https://cloud.google.com/vpc/)のようなアベイラビリティーゾーンを接続する仮想ネットワーク経由で接続する場合は、`postgresql['md5_auth_cidr_addresses']`に**セカンダリ**サイトのプライベートアドレスを使用する必要があります。
-
-   `/etc/gitlab/gitlab.rb`を編集し、IPアドレスをネットワーク設定に適したアドレスに置き換えて、以下を追加します:
+   `/etc/gitlab/gitlab.rb`を編集し、以下の内容を追加します。IPアドレスはネットワーク構成に適したアドレスに置き換えてください:
 
    ```ruby
    ##
@@ -233,79 +217,77 @@ Geoはストリーミングレプリケーションで動作します。論理�
    # postgresql['wal_keep_segments'] = 10
    ```
 
-1. PostgreSQLが再起動され、プライベートアドレスでリッスンするまで、自動データベース移行を一時的に無効にします。`/etc/gitlab/gitlab.rb`を編集し、設定をfalseに変更します:
+1. PostgreSQLが再起動され、プライベートアドレスでリッスンするまで、自動データベース移行を一時的に無効にします。`/etc/gitlab/gitlab.rb`を編集し、構成をfalseに変更します:
 
    ```ruby
    ## Disable automatic database migrations
    gitlab_rails['auto_migrate'] = false
    ```
 
-1. オプション。別の**セカンダリ**サイトを追加する場合は、関連する設定は次のようになります:
+1. オプション。別のセカンダリGeoサイトを追加したい場合は、関連する設定は次のようになります:
 
    ```ruby
    postgresql['md5_auth_cidr_addresses'] = ['<primary_site_ip>/32', '<secondary_site_ip>/32', '<another_secondary_site_ip>/32']
    ```
 
-   データベースレプリケーション要件に合わせて、`wal_keep_segments`と`max_wal_senders`を編集することもできます。詳細については、[PostgreSQL - レプリケーションに関するドキュメント](https://www.postgresql.org/docs/16/runtime-config-replication.html)を参照してください。
+   データベースレプリケーションの要件に合わせて`wal_keep_segments`と`max_wal_senders`を編集することもできます。詳細については、[PostgreSQL - レプリケーションドキュメント](https://www.postgresql.org/docs/16/runtime-config-replication.html)を参照してください。
 
-1. ファイルを保存し、データベースのリスン変更とレプリケーションスロットの変更が適用されるようにGitLabを再設定します:
+1. ファイルを保存し、データベースのリッスン変更とレプリケーションスロットの変更を適用するためにGitLabを再構成します:
 
    ```shell
    gitlab-ctl reconfigure
    ```
 
-   PostgreSQLを再起動して、変更を有効にします:
+   変更を有効にするため、PostgreSQLを再起動します:
 
    ```shell
    gitlab-ctl restart postgresql
    ```
 
-1. PostgreSQLが再起動され、プライベートアドレスでリッスンするようになったので、移行を再度有効にします。
+1. PostgreSQLが再起動され、プライベートアドレスでリッスンしているため、移行を再度有効にします。
 
-   `/etc/gitlab/gitlab.rb`を編集し、設定を**変更**して`true`にします:
+   `/etc/gitlab/gitlab.rb`を編集し、構成を`true`に**変更**します:
 
    ```ruby
    gitlab_rails['auto_migrate'] = true
    ```
 
-   ファイルを保存して、GitLabを再設定します:
+   ファイルを保存し、GitLabを再設定します:
 
    ```shell
    gitlab-ctl reconfigure
    ```
 
-1. PostgreSQLサーバーがリモート接続を受け入れるように設定されたので、`netstat -plnt | grep 5432`を実行して、PostgreSQLがポート`5432`で**プライマリ**サイトのプライベートアドレスをリッスンしていることを確認します。
-
-1. GitLabを再設定すると、CA証明書が自動的に生成されました。これは、PostgreSQLトラフィックを盗聴者から保護するために自動的に使用されます。アクティブな（「中間者」）攻撃者から保護するには、**セカンダリ**サイトは、証明書に署名した認証局のコピーを必要とします。この自己署名証明書の場合、**プライマリ**サイトでこのコマンドを実行して、PostgreSQLの`server.crt`ファイルのコピーを作成します:
+1. PostgreSQLサーバーがリモート接続を受け入れるように設定されたので、`netstat -plnt | grep 5432`を実行して、PostgreSQLがプライマリGeoサイトのプライベートアドレスへのポート`5432`でリッスンしていることを確認します。
+1. GitLabが再構成されたときに、証明書が自動的に生成されました。これは、PostgreSQLのトラフィックを盗聴者から保護するために自動的に使用されます。アクティブな（「man-in-the-middle」）攻撃者から保護するために、セカンダリGeoサイトには、証明書に署名したCAのコピーが必要です。この自己署名証明書の場合、プライマリGeoサイトで次のコマンドを実行して、PostgreSQLの`server.crt`ファイルをコピーします:
 
    ```shell
    cat ~gitlab-psql/data/server.crt
    ```
 
-   出力をクリップボードまたはローカル・ファイルにコピーします。**セカンダリ**サイトの設定時に必要になります。証明書は機密データではありません。
+   この出力をクリップボードにコピーするか、ローカルファイルに保存します。セカンダリGeoサイトを設定するときに必要になります！この証明書は機密データではありません。
 
-   ただし、この証明書は汎用的な`PostgreSQL`共通名で作成されています。このため、データベースをレプリケートする際に`verify-ca`モードを使用する必要があります。そうしないと、ホスト名の不一致によってエラーが発生します。
+   ただし、この証明書は汎用的な`PostgreSQL`共通名で作成されています。このため、データベースをレプリケートする際には`verify-ca`モードを使用する必要があります。そうしないと、ホスト名の不一致によりエラーが発生します。
 
-1. オプション。生成された証明書を使用する代わりに、独自のSSL証明書を生成し、手動で[PostgreSQLのSSLを設定します](https://docs.gitlab.com/omnibus/settings/database.html#configuring-ssl)。
+1. オプション。生成された証明書を使用する代わりに、独自のSSL証明書を生成し、手動で[PostgreSQLのSSLを構成](https://docs.gitlab.com/omnibus/settings/database/#configuring-ssl)します。
 
-   少なくともSSL証明書とキーが必要です。データベースSSLのドキュメントに従って、`postgresql['ssl_cert_file']`と`postgresql['ssl_key_file']`の値をフルパスに設定します。
+   少なくともSSL証明書とキーが必要です。データベースSSLドキュメントに従って、`postgresql['ssl_cert_file']`と`postgresql['ssl_key_file']`の値をその完全なパスに設定します。
 
-   これにより、データベースをレプリケートする際に`verify-full` SSLモードを使用し、CNの完全なホスト名を検証するという追加のメリットを得ることができます。
+   これにより、データベースをレプリケートする際に`verify-full`SSLモードを使用し、CNで完全なホスト名の検証を行うという追加のメリットを得ることができます。
 
-   今後は、以前に自動生成された自己署名証明書の代わりに、この証明書（`postgresql['ssl_cert_file']`にも設定されている）を使用できます。これにより、CNが一致する場合、レプリケーションエラーなしで`verify-full`を使用できます。
+   今後、以前に自動生成された自己署名証明書の代わりに、この証明書（`postgresql['ssl_cert_file']`にも設定したもの）を使用できます。これにより、CNが一致すればレプリケーションエラーなしで`verify-full`を使用できます。
 
-   プライマリデータベースで、`/etc/gitlab/gitlab.rb`を開き、`postgresql['ssl_ca_file']`（CA証明書）を検索します。後で`server.crt`に貼り付けるクリップボードに値をコピーします。
+   プライマリデータベースで、`/etc/gitlab/gitlab.rb`を開き、`postgresql['ssl_ca_file']`（CA証明書）を検索します。その値をクリップボードにコピーし、後で`server.crt`に貼り付けます。
 
-#### ステップ2: **セカンダリ**サーバーを設定する {#step-2-configure-the-secondary-server}
+#### ステップ2.セカンダリサーバーを構成する {#step-2-configure-the-secondary-server}
 
-1. GitLabの**セカンダリ**サイトにSSHで接続し、rootとしてサインインします:
+1. あなたのGitLabセカンダリGeoサイトにSSHで接続し、rootとしてサインインします:
 
    ```shell
    sudo -i
    ```
 
-1. GitLabのバージョンアップグレード時に意図しないダウンタイムが発生するのを防ぐため、[PostgreSQLの自動バージョンアップグレードをオプトアウト](https://docs.gitlab.com/omnibus/settings/database/#opt-out-of-automatic-postgresql-upgrades)します。既知の[GeoでPostgreSQLをバージョンアップグレードする際の注意点](https://docs.gitlab.com/omnibus/settings/database/#caveats-when-upgrading-postgresql-with-geo)に注意してください。特に大規模な環境では、PostgreSQLのバージョンアップグレードは慎重に計画および実行する必要があります。その結果、今後は、PostgreSQLのバージョンアップグレードが定期的なメンテナンス活動の一部であることを確認してください。
-
+1. GitLabのアップグレード時に意図しないダウンタイムを避けるため、[PostgreSQLの自動アップグレードをオプトアウト](https://docs.gitlab.com/omnibus/settings/database/#opt-out-of-automatic-postgresql-upgrades)します。[Geoを使用したPostgreSQLアップグレードに関する既知の注意点](https://docs.gitlab.com/omnibus/settings/database/#caveats-when-upgrading-postgresql-with-geo)に注意してください。特に大規模な環境では、PostgreSQLのアップグレードは慎重に計画し実行する必要があります。結果として、今後もPostgreSQLのアップグレードが定期的なメンテナンス活動の一部であることを確認してください。
 1. アプリケーションサーバーとSidekiqを停止します:
 
    ```shell
@@ -313,33 +295,27 @@ Geoはストリーミングレプリケーションで動作します。論理�
    gitlab-ctl stop sidekiq
    ```
 
-   {{< alert type="note" >}}
+   > [!note]
+   > このステップは、Geoサイトが完全に構成される前に何も実行しないようにするために重要です。
 
-   この手順は、サイトが完全に設定される前に何かを実行しようとしないようにするために重要です。
-
-   {{< /alert >}}
-
-1. [プライマリ](../../raketasks/maintenance.md)サイトのPostgreSQLサーバーへの**プライマリ**をチェックします:
+1. プライマリGeoサイトのPostgreSQLサーバーへの[TCP接続を確認](../../raketasks/maintenance.md)します:
 
    ```shell
    gitlab-rake gitlab:tcp_check[<primary_site_ip>,5432]
    ```
 
-   {{< alert type="note" >}}
+   > [!note]
+   > このステップが失敗した場合、誤ったIPアドレスを使用しているか、ファイアウォールがGeoサイトへのアクセスを妨げている可能性があります。IPアドレスを確認し、パブリックアドレスとプライベートアドレスの差分に細心の注意を払ってください。ファイアウォールが存在する場合は、セカンダリGeoサイトがポート5432でプライマリGeoサイトに接続することを許可されていることを確認してください。
 
-   この手順が失敗した場合は、間違ったIPアドレスを使用しているか、ファイアウォールがサイトへのアクセスを妨げている可能性があります。IPアドレスを確認し、パブリックアドレスとプライベートアドレスの違いに細心の注意を払ってください。ファイアウォールが存在する場合、**セカンダリ**サイトがポート5432で**プライマリ**サイトに接続することを許可されていることを確認してください。
-
-   {{< /alert >}}
-
-1. **セカンダリ**サイトにファイル`server.crt`を作成します。コンテンツは、**プライマリ**サイトの設定の最後の手順で取得したものです:
+1. セカンダリGeoサイトに`server.crt`ファイルを作成します。内容はプライマリGeoサイトの設定の最後のステップで取得したものです:
 
    ```shell
    editor server.crt
    ```
 
-1. **セカンダリ**サイトでPostgreSQL TLS検証を設定します:
+1. セカンダリGeoサイトでPostgreSQL TLS検証を設定します:
 
-   `server.crt`ファイルをインストールします:
+   `gitlab-psql`ユーザー用に`server.crt`ファイルをインストールします:
 
    ```shell
    install \
@@ -350,9 +326,20 @@ Geoはストリーミングレプリケーションで動作します。論理�
       -T server.crt ~gitlab-psql/.postgresql/root.crt
    ```
 
-   PostgreSQLは、TLS接続を検証する際に、その正確な証明書のみを認識するようになりました。証明書は、**プライマリ**サイトに**only**（のみ）存在する秘密キーへのアクセス権を持つ人のみがレプリケートできます。
+   PostgreSQLは、TLS接続を検証する際に、その正確な証明書のみを認識します。証明書は、プライベートキーにアクセスできる人によってのみレプリケートすることができます。これはプライマリGeoサイトに**only**存在します。
 
-1. `gitlab-psql`ユーザーが**プライマリ**サイトのデータベースに接続できることをテストします（デフォルトのデータベース名はLinuxパッケージのインストールでは`gitlabhq_production`です）:
+   `gitlab-ctl replicate-geo-database`はrootとして実行されるため、rootユーザーにも証明書をインストールします。そうでない場合、レプリケーションコマンドは`could not open certificate file`エラーで失敗します（`sslmode=verify-ca`または`sslmode=verify-full`を使用する場合）:
+
+   ```shell
+   install \
+      -D \
+      -o root \
+      -g root \
+      -m 0400 \
+      -T server.crt /root/.postgresql/root.crt
+   ```
+
+1. `gitlab-psql`ユーザーがプライマリGeoサイトのデータベースに接続できることをテストします（Linuxパッケージインストールでのデフォルトのデータベース名は`gitlabhq_production`です）:
 
    ```shell
    sudo \
@@ -364,17 +351,14 @@ Geoはストリーミングレプリケーションで動作します。論理�
       -h <primary_site_ip>
    ```
 
-   {{< alert type="note" >}}
+   > [!note]
+   > 手動で生成された証明書を使用しており、完全なホスト名の検証から利益を得るために`sslmode=verify-full`を使用したい場合は、コマンド実行時に`verify-ca`を`verify-full`に置き換えてください。
 
-   手動で生成した証明書を使用しており、完全なホスト名の検証を利用するために`sslmode=verify-full`を使用する場合は、コマンドの実行時に`verify-ca`を`verify-full`に置き換えます。
+   プロンプトが表示されたら、最初のステップで`gitlab_replicator`ユーザーに設定したプレーンテキストパスワードを入力します。すべてが正しく機能した場合、プライマリGeoサイトのデータベースのリストが表示されるはずです。
 
-   {{< /alert >}}
+   ここでの接続失敗は、TLS設定が正しくないことを示します。プライマリGeoサイトの`~gitlab-psql/data/server.crt`の内容が、セカンダリGeoサイトの`~gitlab-psql/.postgresql/root.crt`の内容と一致していることを確認してください。
 
-   メッセージが表示されたら、最初のステップで`gitlab_replicator`ユーザー用に設定した平文パスワードを入力します。すべてが正しく機能している場合は、**プライマリ**サイトのデータベースのリストが表示されます。
-
-   ここで接続に失敗した場合は、TLSの設定が正しくないことを示します。**プライマリ**サイトの`~gitlab-psql/data/server.crt`の内容が、**セカンダリ**サイトの`~gitlab-psql/.postgresql/root.crt`の内容と一致していることを確認してください。
-
-1. `/etc/gitlab/gitlab.rb`を編集し、ロールを`geo_secondary_role`に設定します（詳細については、[Geoロール](https://docs.gitlab.com/omnibus/roles/#gitlab-geo-roles)を参照してください）:
+1. `/etc/gitlab/gitlab.rb`を編集し、役割を`geo_secondary_role`に設定します（詳細については、[Geoの役割](https://docs.gitlab.com/omnibus/roles/#gitlab-geo-roles)を参照してください）:
 
    ```ruby
    ##
@@ -384,13 +368,14 @@ Geoはストリーミングレプリケーションで動作します。論理�
    roles(['geo_secondary_role'])
    ```
 
-1. PostgreSQLを設定する:
+1. PostgreSQLを構成します:
 
-   この手順は、**プライマリ**インスタンスを設定した方法と似ています。これは、単一のノードを使用している場合でも、有効にする必要があります。
+   このステップは、プライマリインスタンスを構成した方法と似ています。単一ノードを使用している場合でも、これを有効にする必要があります。
 
-   {{< alert type="warning" >}}各パスワード・タイプは、すべてのGeoサイトで[一致する値](#database-password-consistency-requirements)を持っている必要があります。{{< /alert >}}
+   > [!warning]
+   > 各パスワードタイプは、すべてのGeoサイトで[一致する値](#database-password-consistency-requirements)を持つ必要があります。
 
-   `/etc/gitlab/gitlab.rb`を編集し、IPアドレスをネットワーク設定に適したアドレスに置き換えて、以下を追加します:
+   `/etc/gitlab/gitlab.rb`を編集し、以下の内容を追加します。IPアドレスはネットワーク構成に適したアドレスに置き換えてください:
 
    ```ruby
    ##
@@ -409,55 +394,45 @@ Geoはストリーミングレプリケーションで動作します。論理�
    gitlab_rails['db_password'] = '<your_db_password_here>'
    ```
 
-   外部PostgreSQLインスタンスについては、[追加手順](external_database.md)を参照してください。以前の**プライマリ**サイトをオンラインに戻して**セカンダリ**サイトとして機能させる場合は、`roles(['geo_primary_role'])`または`geo_primary_role['enable'] = true`も削除する必要があります。
+   外部PostgreSQLインスタンスについては、[追加の手順](external_database.md)を参照してください。以前のプライマリGeoサイトをセカンダリGeoサイトとして再稼働させる場合は、`roles(['geo_primary_role'])`または`geo_primary_role['enable'] = true`も削除する必要があります。
 
-1. 変更を有効にするには、GitLabを再構成してください:
+1. 変更を反映するためにGitLabを再設定します:
 
    ```shell
    gitlab-ctl reconfigure
    ```
 
-1. IPの変更を有効にするには、PostgreSQLを再起動します:
+1. IP変更を有効にするため、PostgreSQLを再起動します:
 
    ```shell
    gitlab-ctl restart postgresql
    ```
 
-#### ステップ3: レプリケーションプロセスを開始する {#step-3-initiate-the-replication-process}
+#### ステップ3.レプリケーションプロセスを開始する {#step-3-initiate-the-replication-process}
 
-以下は、**セカンダリ**サイトのデータベースを**プライマリ**サイトのデータベースに接続するスクリプトです。このスクリプトはデータベースをレプリケートし、ストリーミングレプリケーションに必要なファイルを作成します。
+以下は、セカンダリGeoサイトのデータベースをプライマリGeoサイトのデータベースに接続するスクリプトです。このスクリプトはデータベースをレプリケートし、ストリーミングレプリケーションに必要なファイルを作成します。
 
-使用されるディレクトリは、Linuxパッケージのインストールで設定されているデフォルトです。デフォルトを変更した場合は、それに応じてスクリプトを設定してください（ディレクトリとパスを置き換えます）。
+使用されるディレクトリは、Linuxパッケージインストールで設定されたデフォルトです。デフォルトを変更した場合は、それに応じてスクリプトを構成してください（ディレクトリとパスを置き換える）。
 
-{{< alert type="warning" >}}
+> [!warning]
+> これは、`pg_basebackup`を実行する前にPostgreSQLのすべてのデータを削除するため、セカンダリGeoサイトで実行してください。
 
-`pg_basebackup`の実行前にPostgreSQLのすべてのデータを削除するため、必ず**セカンダリ**サイトでこれを実行してください。
-
-{{< /alert >}}
-
-1. GitLabの**セカンダリ**サイトにSSHで接続し、rootとしてサインインします:
+1. あなたのGitLabセカンダリGeoサイトにSSHで接続し、rootとしてサインインします:
 
    ```shell
    sudo -i
    ```
 
-1. レプリケーションスロット名として使用する**セカンダリ**サイトに使用する、[データベースに適した名前](https://www.postgresql.org/docs/16/warm-standby.html#STREAMING-REPLICATION-SLOTS-MANIPULATION)を選択してください。たとえば、ドメインが`secondary.geo.example.com`の場合、以下のコマンドに示すように、スロット名として`secondary_example`を使用します。
+1. セカンダリGeoサイトをレプリケーションスロット名として使用するための[データベースに優しい名前](https://www.postgresql.org/docs/16/warm-standby.html#STREAMING-REPLICATION-SLOTS-MANIPULATION)を選択します。例えば、ドメインが`secondary.geo.example.com`の場合、以下のコマンドに示すように`secondary_example`をスロット名として使用します。
 
-1. 以下のコマンドを実行して、バックアップ／復元するを開始し、レプリケーションを開始します。
+1. 以下のコマンドを実行して、バックアップ/復元を開始し、レプリケーションを開始します。
 
-   {{< alert type="warning" >}}
+   > [!warning]
+   > 各GeoサイトのセカンダリGeoサイトは、独自のレプリケーションスロット名を持つ必要があります。2つのセカンダリ間で同じスロット名を使用すると、PostgreSQLレプリケーションが破損します。
 
-   各GitLab Geoの**セカンダリ**サイトには、独自のユニークなレプリケーションスロット名が必要です。2つのセカンダリ間で同じスロット名を使用すると、PostgreSQLのレプリケーションが中断されます。
+   レプリケーションスロット名には、小文字、数字、アンダースコア文字のみを含める必要があります。
 
-   {{< /alert >}}
-
-   {{< alert type="note" >}}
-
-   レプリケーションスロット名には、小文字の文字、数字、アンダースコア文字のみを含める必要があります。
-
-   {{< /alert >}}
-
-   プロンプ​​トが表示されたら、最初の手順で`gitlab_replicator`ユーザーに設定した平文のパスワードを入力します。
+   プロンプトが表示されたら、最初のステップで`gitlab_replicator`ユーザーに設定したプレーンテキストパスワードを入力します。
 
    ```shell
    gitlab-ctl replicate-geo-database \
@@ -466,53 +441,48 @@ Geoはストリーミングレプリケーションで動作します。論理�
       --sslmode=verify-ca
    ```
 
-   {{< alert type="note" >}}
+   > [!note]
+   > カスタムPostgreSQL証明書を生成している場合、追加のセキュリティのために証明書CN / SANの完全なホスト名の検証から利益を得るには、`--sslmode=verify-full`（または`sslmode`行全体を省略）を使用する必要があります。そうでない場合、自動的に作成された証明書を`verify-full`で使用すると、このコマンドの`--host`値と一致しない汎用的な`PostgreSQL` CNがあるため、失敗します。
 
-   カスタムPostgreSQL証明書を生成した場合は、追加のセキュリティのために証明書CN / SANの完全なホスト名の追加検証を利用するには、`--sslmode=verify-full`（または`sslmode`行を完全に省略）を使用する必要があります。そうでない場合、自動的に作成された証明書を`verify-full`で使用すると、一般的な`PostgreSQL` CNがあり、このコマンドの`--host`値と一致しないため、失敗します。
+   このコマンドは、いくつかの追加オプションも受け入れます。`--help`を使用すると、それらをすべてリストできますが、いくつかのヒントを以下に示します:
 
-   {{< /alert >}}
+   - プライマリGeoサイトが単一ノードの場合、プライマリノードホストを`--host`パラメータとして使用します。
+   - プライマリGeoサイトが外部PostgreSQLデータベースを使用している場合、`--host`パラメータを調整する必要があります:
+     - PgBouncerの設定の場合、PgBouncerアドレスではなく、実際のPostgreSQLデータベースホストを直接ターゲットとします。
+     - Patroniの構成の場合、現在のPatroniリーダーホストをターゲットとします。
+     - ロードバランサー（例えばHAProxy）を使用する場合、ロードバランサーが常にPatroniリーダーにルーティングするように構成されている場合は、ロードバランサーをターゲットとすることができます。そうでない場合は、実際のデータベースホストをターゲットとする必要があります。
+     - 専用PostgreSQLノードを持つ設定の場合、専用データベースホストを直接ターゲットとします。
+   - `--slot-name`を、プライマリデータベースで使用するレプリケーションスロットの名前に変更します。スクリプトは、レプリケーションスロットが存在しない場合、自動的に作成しようとします。
+   - PostgreSQLが非標準のポートでリッスンしている場合は、`--port=`を追加します。
+   - データベースが大きすぎて30分以内に転送できない場合は、タイムアウトを増やす必要があります。例えば、初期レプリケーションが1時間未満で完了すると予想される場合は、`--backup-timeout=3600`を使用します。
+   - PostgreSQL TLS認証を完全にスキップするには`--sslmode=disable`を渡します（例えば、ネットワークパスが安全であることを知っている場合、またはサイト間VPNを使用している場合）。これは公共のインターネット上では安全ではありません！
+   - 各`sslmode`の詳細については、[PostgreSQLドキュメント](https://www.postgresql.org/docs/16/libpq-ssl.html#LIBPQ-SSL-PROTECTION)を参照してください。以前にリストされた手順は、受動的な盗聴者とアクティブな「man-in-the-middle」攻撃者の両方に対する保護を確実にするために慎重に書かれています。
+   - 古いGeoサイトをGeoサイトのセカンダリGeoサイトに再利用している場合、コマンドラインに`--force`を追加する必要があります。
+   - 本番環境マシンではない場合、`--skip-backup`を追加することでバックアップステップを無効にできます（これを確信している場合）。
 
-   このコマンドは、多数の追加オプションも使用します。すべてをリストするには`--help`を使用できますが、以下にいくつかのヒントを示します:
+レプリケーションプロセスが完了しました。
 
-   - プライマリサイトに単一ノードがある場合は、`--host`パラメータとしてプライマリノードホストを使用します。
-   - プライマリサイトが外部PostgreSQLデータベースを使用している場合は、`--host`パラメータを調整する必要があります:
-      - PgBouncerの設定では、PgBouncerのアドレスではなく、実際のPostgreSQLデータベースホストを直接ターゲットにします。
-      - Patroni構成の場合は、現在のPatroniリーダーホストをターゲットにします。
-      - ロードバランサー（たとえば、HAProxy）を使用する場合、ロードバランサーが常にPatroniリーダーにルーティングするように構成されている場合は、ロードバランサーのターゲットにできます。そうでない場合は、実際のデータベースホストをターゲットにする必要があります。
-      - 専用のPostgreSQLノードを使用するセットアップの場合は、専用のデータベースホストを直接ターゲットにします。
-   - `--slot-name`を、**プライマリ**データベースで使用されるレプリケーションスロットの名前に変更します。スクリプトは、レプリケーションスロットが存在しない場合、自動的に作成しようとします。
-   - PostgreSQLが標準以外のポートでリッスンしている場合は、`--port=`を追加します。
-   - データベースが大きすぎて30分で転送できない場合は、タイムアウトを増やす必要があります。たとえば、最初のレプリケーションに1時間未満かかると思われる場合は、`--backup-timeout=3600`を使用します。
-   - `--sslmode=disable`を渡して、PostgreSQL TLS認証を完全にスキップします（たとえば、ネットワークパスが安全であることがわかっているか、サイト間VPNを使用している場合）。公衆インターネット上では安全**not**（ではありません）。
-   - 各`sslmode`の詳細については、[PostgreSQLドキュメント](https://www.postgresql.org/docs/16/libpq-ssl.html#LIBPQ-SSL-PROTECTION)を参照してください。上記の手順は、受動的な盗聴者とアクティブな「man-in-the-middle」攻撃者の両方に対する保護を確保するために、注意深く記述されています。
-   - 古いサイトをGitLab Geoの**セカンダリ**サイトに再利用する場合は、コマンドラインに`--force`を追加する必要があります。
-   - 本番環境マシンにない場合は、`--skip-backup`を追加して、（必要な場合に）バックアップ手順を無効にすることができます。
+> [!note]
+> レプリケーションプロセスは、プライマリGeoサイトのデータベースからセカンダリGeoサイトのデータベースにデータをコピーするだけです。セカンダリGeoサイトの設定を完了するには、[プライマリGeoサイトにセカンダリGeoサイトを追加](../replication/configuration.md#step-3-add-the-secondary-site)します。
 
-レプリケーションプロセスは完了しました。
+### PgBouncerサポート（オプション） {#pgbouncer-support-optional}
 
-{{< alert type="note" >}}
+[PgBouncer](https://www.pgbouncer.org/)はGitLab Geoで使用してPostgreSQL接続をプールでき、単一インスタンスインストールで使用する場合でもパフォーマンスを向上させることができます。
 
-レプリケーションプロセスは、プライマリサイトのデータベースからセカンダリサイトのデータベースにのみデータをコピーします。セカンダリサイトの設定を完了するには、[プライマリサイトにセカンダリサイトを追加](../replication/configuration.md#step-3-add-the-secondary-site)します。
-
-{{< /alert >}}
-
-### PgBouncerのサポート（オプション） {#pgbouncer-support-optional}
-
-[PgBouncer](https://www.pgbouncer.org/)は、GitLab Geoで使用してPostgreSQL接続をプールすることができ、単一インスタンスインストールで使用する場合でもパフォーマンスを向上させることができます。
-
-GitLabを高可用性構成で使用し、Geoの**プライマリ**サイトをサポートするクラスターと、Geoの**セカンダリ**サイトをサポートする他の2つのクラスターを使用する場合は、PgBouncerを使用する必要があります。2つのPgBouncerノードが必要です。メインデータベース用と、追跡データベース用です。詳細については、[関連ドキュメント](../../postgresql/replication_and_failover.md)を参照してください。
+GitLabを、GeoプライマリGeoサイトをサポートするノードのクラスターと、GeoセカンダリGeoサイトをサポートする2つの他のノードのクラスターを備えた高可用性の構成で使用している場合は、PgBouncerを使用する必要があります。2つのPgBouncerノードが必要です。1つはメインデータベース用、もう1つは追跡するデータベース用です。詳細については、[関連ドキュメント](../../postgresql/replication_and_failover.md)を参照してください。
 
 ### レプリケーションパスワードの変更 {#changing-the-replication-password}
 
-{{< alert type="warning" >}}レプリケーションパスワードを変更する場合は、**すべて**のGeoサイト（プライマリとすべてのセカンダリ）で[同じパスワード値](#database-password-consistency-requirements)に更新する必要があります。パスワードの同期を維持できないと、レプリケーションが中断します。{{< /alert >}}
+> [!warning]
+> レプリケーションパスワードを変更するときは、**すべて**のGeoサイト（プライマリおよびすべてのセカンダリ）で[同じパスワード値](#database-password-consistency-requirements)に更新する必要があります。パスワードの同期を維持できないと、レプリケーションが破損します。
 
-Linuxパッケージのインストールによって管理されるPostgreSQLインスタンスを使用する場合に、[レプリケーションユーザー](https://www.postgresql.org/docs/16/warm-standby.html#STREAMING-REPLICATION)のパスワードを変更するには、次の手順を実行します:
+Linuxパッケージインストールによって管理されているPostgreSQLインスタンスを使用している場合に、[レプリケーションユーザー](https://www.postgresql.org/docs/16/warm-standby.html#STREAMING-REPLICATION)のパスワードを変更するには:
 
-GitLab Geoの**プライマリ**サイト:
+GitLab GeoプライマリGeoサイトで:
 
-1. レプリケーションユーザーのデフォルト値は`gitlab_replicator`ですが、`/etc/gitlab/gitlab.rb`の`postgresql['sql_replication_user']`設定でカスタムレプリケーションユーザーを設定した場合は、独自のユーザーに合わせて以下の手順を調整してください。
+1. レプリケーションユーザーのデフォルト値は`gitlab_replicator`ですが、`postgresql['sql_replication_user']`設定の下にある`/etc/gitlab/gitlab.rb`でカスタムレプリケーションユーザーを設定している場合は、以下の手順を自身のユーザーに合わせて調整してください。
 
-   目的のパスワードのMD5ハッシュを生成します:
+   希望するパスワードのMD5ハッシュを生成します:
 
    ```shell
    sudo gitlab-ctl pg-password-md5 gitlab_replicator
@@ -521,48 +491,48 @@ GitLab Geoの**プライマリ**サイト:
    # 950233c0dfc2f39c64cf30457c3b7f1e
    ```
 
-   `/etc/gitlab/gitlab.rb`を編集します: 
+   `/etc/gitlab/gitlab.rb`を編集します:
 
    ```ruby
    # Fill with the hash generated by `gitlab-ctl pg-password-md5 gitlab_replicator`
    postgresql['sql_replication_password'] = '<md5_hash_of_your_replication_password>'
    ```
 
-1. ファイルを保存し、GitLabを再設定して、PostgreSQLでレプリケーションユーザーのパスワードを変更します:
+1. ファイルを保存し、GitLabを再構成して、PostgreSQLでのレプリケーションユーザーのパスワードを変更します:
 
    ```shell
    sudo gitlab-ctl reconfigure
    ```
 
-1. PostgreSQLを再起動して、レプリケーションパスワードの変更を有効にします:
+1. レプリケーションパスワードの変更を有効にするため、PostgreSQLを再起動します:
 
    ```shell
    sudo gitlab-ctl restart postgresql
    ```
 
-パスワードがいずれかの**セカンダリ**サイトで更新されるまで、セカンダリの[PostgreSQLログ](../../logs/_index.md#postgresql-logs)に次のエラーメッセージが表示されます:
+パスワードがセカンダリGeoサイトで更新されるまで、セカンダリの[PostgreSQLログ](../../logs/_index.md#postgresql-logs)は以下のエラーメッセージを報告します:
 
 ```console
 FATAL:  could not connect to the primary server: FATAL:  password authentication failed for user "gitlab_replicator"
 ```
 
-すべてのGitLab Geoの**セカンダリ**サイト:
+すべてのGitLab GeoセカンダリGeoサイトで:
 
-1. ハッシュされた`'sql_replication_password'`がGitLab Geoの**セカンダリ**サイトで使用されていないため、最初のステップは設定の観点からは必要ありません。ただし、**セカンダリ**サイトをGitLab Geoの**プライマリ**にプロモートする必要がある場合は、**セカンダリ**サイトの設定で`'sql_replication_password'`が一致していることを確認してください。
+1. 最初のステップは、ハッシュ化された`'sql_replication_password'`がGitLab GeoセカンダリGeoサイトで使用されないため、設定の観点からは必要ありません。ただし、セカンダリGeoサイトがGitLab Geoプライマリにプロモートされる必要がある場合は、セカンダリGeoサイトの設定で`'sql_replication_password'`を一致させてください。
 
-   `/etc/gitlab/gitlab.rb`を編集します: 
+   `/etc/gitlab/gitlab.rb`を編集します:
 
    ```ruby
    # Fill with the hash generated by `gitlab-ctl pg-password-md5 gitlab_replicator` on the Geo primary
    postgresql['sql_replication_password'] = '<md5_hash_of_your_replication_password>'
    ```
 
-1. 最初のレプリケーションセットアップ中に、`gitlab-ctl replicate-geo-database`コマンドは、レプリケーションユーザーアカウントの平文パスワードを次の2つの場所に書き込みます:
+1. 初期レプリケーション設定中に、`gitlab-ctl replicate-geo-database`コマンドはレプリケーションユーザーアカウントのプレーンテキストパスワードを2つの場所に書き込みます:
 
-   - `gitlab-geo.conf`: PostgreSQLのレプリケーションプロセスで使用され、PostgreSQLデータディレクトリに書き込まれます。デフォルトでは、 `/var/opt/gitlab/postgresql/data/gitlab-geo.conf`にあります。
-   - `.pgpass`: `gitlab-psql`ユーザーによって使用され、デフォルトでは`/var/opt/gitlab/postgresql/.pgpass`にあります。
+   - `gitlab-geo.conf`: PostgreSQLレプリケーションプロセスによって使用され、デフォルトで`/var/opt/gitlab/postgresql/data/gitlab-geo.conf`にPostgreSQLデータディレクトリに書き込まれます。
+   - `.pgpass`: `gitlab-psql`ユーザーによって使用され、デフォルトで`/var/opt/gitlab/postgresql/.pgpass`にあります。
 
-   これらの両方のファイルで平文のパスワードを更新し、PostgreSQLを再起動します:
+   これら両方のファイルでプレーンテキストパスワードを更新し、PostgreSQLを再起動します:
 
    ```shell
    sudo gitlab-ctl restart postgresql
@@ -570,62 +540,61 @@ FATAL:  could not connect to the primary server: FATAL:  password authentication
 
 ## マルチノードデータベースレプリケーション {#multi-node-database-replication}
 
-### PostgreSQLノードをPatroniに移行する {#migrating-a-single-postgresql-node-to-patroni}
+### 単一PostgreSQLノードをPatroniに移行する {#migrating-a-single-postgresql-node-to-patroni}
 
-Patroniが導入される前は、Geoは**セカンダリ**サイトでの高可用性構成用のLinuxパッケージのインストールをサポートしていませんでした。
+Patroniの導入前は、GeoはセカンダリGeoサイトでのHA設定に対するLinuxパッケージインストールをサポートしていませんでした。
 
 Patroniを使用すると、このサポートが可能になりました。既存のPostgreSQLをPatroniに移行するには:
 
-1. **プライマリ**サイトでセットアップした方法と同様に、セカンダリでConsulクラスターセットアップがあることを確認します。
-1. [永続的なレプリケーションスロットを設定します](#step-1-configure-patroni-permanent-replication-slot-on-the-primary-site)。
-1. [内部ロードバランサー](#step-2-configure-the-internal-load-balancer-on-the-primary-site)を設定する
-1. [PgBouncerノードを設定します](#step-3-configure-pgbouncer-nodes-on-the-secondary-site)
-1. その単一ノードマシンで[スタンバイクラスターを設定する](#step-4-configure-a-standby-cluster-on-the-secondary-site)。
+1. セカンダリGeoサイトにConsulクラスターが設定されていることを確認してください（プライマリGeoサイトでの設定方法と同様）。
+1. [永続的なレプリケーションスロットを構成](#step-1-configure-patroni-permanent-replication-slot-on-the-primary-site)します。
+1. [内部ロードバランサーを構成](#step-2-configure-the-internal-load-balancer-on-the-primary-site)します。
+1. [PgBouncerノードを構成](#step-3-configure-pgbouncer-nodes-on-the-secondary-site)
+1. その単一ノードマシン上に[スタンバイクラスターを構成](#step-4-configure-a-standby-cluster-on-the-secondary-site)します。
 
-単一ノードを備えた**Standby Cluster**（スタンバイクラスター）で終了します。これにより、以前にリストされた同じ手順に従って、追加のPatroniノードを追加できます。
+最終的に、単一ノードを持つ**Standby Cluster**になります。これにより、以前にリストされたのと同じ手順に従って、追加のPatroniノードを追加できます。
 
-### Patroniのサポート {#patroni-support}
+### Patroniサポート {#patroni-support}
 
-Patroniは、Geoの公式レプリケーション管理ソリューションです。Patroniを使用すると、**プライマリ**と**セカンダリ** Geoサイトで、可用性の高いクラスターをビルドできます。**セカンダリ**サイトでのPatroniの使用はオプションであり、各Geoサイトで同じ数のノードを使用する必要はありません。
+PatroniはGeoの公式レプリケーション管理ソリューションです。Patroniは、プライマリおよびセカンダリGeoサイトに高可用性クラスターを構築するために使用できます。セカンダリGeoサイトでPatroniを使用することはオプションであり、各Geoサイトで同じ数のノードを使用する必要はありません。
 
-プライマリサイトでPatroniをセットアップする方法については、[関連ドキュメント](../../postgresql/replication_and_failover.md#patroni)を参照してください。
+プライマリGeoサイトでPatroniを設定する方法については、[関連ドキュメント](../../postgresql/replication_and_failover.md#patroni)を参照してください。
 
-#### GeoのセカンダリサイトのPatroniクラスターの設定 {#configuring-patroni-cluster-for-a-geo-secondary-site}
+#### GeoセカンダリGeoサイト用のPatroniクラスターを構成する {#configuring-patroni-cluster-for-a-geo-secondary-site}
 
-Geoのセカンダリサイトでは、メインPostgreSQLデータベースは、プライマリサイトのPostgreSQLデータベースの読み取り専用のレプリカです。
+GeoセカンダリGeoサイトでは、メインのPostgreSQLデータベースはプライマリGeoサイトのPostgreSQLデータベースの読み取り専用レプリカです。
 
-本番環境に対応した安全なセットアップには、少なくとも次のものが必要です:
+本番環境対応で安全な設定には、少なくとも以下が必要です:
 
-- 3つのConsulノード_(プライマリおよびセカンダリサイト)_
-- 2つのPatroniノード_(プライマリおよびセカンダリサイト)_
-- 1つのPgBouncerノード_(プライマリおよびセカンダリサイト)_
-- 1つの内部ロードバランサー_(プライマリサイトのみ)_
+- 3つのConsulノード_（プライマリおよびセカンダリGeoサイト）_
+- 2つのPatroniノード_（プライマリおよびセカンダリGeoサイト）_
+- 1つのPgBouncerノード_（プライマリおよびセカンダリGeoサイト）_
+- 1つの内部ロードバランサー_（プライマリGeoサイトのみ）_
 
-内部ロードバランサーは、新しいリーダーが選択されるたびに、Patroniクラスターのリーダーに接続するためのシングルエンドポイントを提供します。ロードバランサーは、セカンダリサイトからのカスケードレプリケーションを有効にするために必要です。
+内部ロードバランサーは、新しいリーダーが選出されるたびにPatroniクラスターのリーダーに接続するための単一のエンドポイントを提供します。このロードバランサーは、セカンダリGeoサイトからのカスケードレプリケーションを有効にするために必要です。
 
-必ず[パスワード認証情報](../../postgresql/replication_and_failover.md#database-authorization-for-patroni)と、他のデータベースのベストプラクティスを使用してください。
+[パスワード認証情報](../../postgresql/replication_and_failover.md#database-authorization-for-patroni)とその他のデータベースのベストプラクティスを必ず使用してください。
 
-##### ステップ1: プライマリサイトでPatroniの永続的なレプリケーションスロットを設定する {#step-1-configure-patroni-permanent-replication-slot-on-the-primary-site}
+##### ステップ1.プライマリGeoサイトでPatroni永続レプリケーションスロットを構成する {#step-1-configure-patroni-permanent-replication-slot-on-the-primary-site}
 
-プライマリデータベースからセカンダリノードのPatroniクラスターへの継続的なデータレプリケーションを保証するために、プライマリデータベースに永続的なレプリケーションスロットをセットアップします。
+プライマリデータベースからセカンダリノード上のPatroniクラスターへの継続的なデータレプリケーションを確実にするため、プライマリデータベースに永続的なレプリケーションスロットを設定します。
 
 {{< tabs >}}
 
-{{< tab title="Patroniクラスターを備えたプライマリ" >}}
+{{< tab title="Patroniクラスターを持つプライマリ" >}}
 
-セカンダリサイトでPatroniを使用したデータベースレプリケーションをセットアップするには、プライマリサイトのPatroniクラスターに永続的なレプリケーションスロットを設定し、パスワード認証が使用されていることを確認する必要があります。
+セカンダリGeoサイトでPatroniを使用してデータベースレプリケーションを設定するには、プライマリGeoサイトのPatroniクラスターに永続的なレプリケーションスロットを構成し、パスワード認証が使用されていることを確認する必要があります。
 
-プライマリサイトのPatroniインスタンスを実行している各ノードで、**starting on the Patroni Leader instance**（Patroniリーダーインスタンスから開始）します:
+プライマリGeoサイトでPatroniインスタンスを実行している各ノードで、**starting on the Patroni Leader instance**:
 
-1. PatroniインスタンスにSSHで接続し、rootとしてサインインします:
+1. あなたのPatroniインスタンスにSSHで接続し、rootとしてサインインします:
 
    ```shell
    sudo -i
    ```
 
-1. GitLabのバージョンアップグレード時に意図しないダウンタイムが発生するのを防ぐため、[PostgreSQLの自動バージョンアップグレードをオプトアウト](https://docs.gitlab.com/omnibus/settings/database/#opt-out-of-automatic-postgresql-upgrades)します。既知の[GeoでPostgreSQLをバージョンアップグレードする際の注意点](https://docs.gitlab.com/omnibus/settings/database/#caveats-when-upgrading-postgresql-with-geo)に注意してください。特に大規模な環境では、PostgreSQLのバージョンアップグレードは慎重に計画および実行する必要があります。その結果、今後は、PostgreSQLのバージョンアップグレードが定期的なメンテナンス活動の一部であることを確認してください。
-
-1. `/etc/gitlab/gitlab.rb`を編集し、以下を追加します。各パスワードタイプに、すべてのGeoサイトで[一致する値](#database-password-consistency-requirements)があることを確認してください。
+1. GitLabのアップグレード時に意図しないダウンタイムを避けるため、[PostgreSQLの自動アップグレードをオプトアウト](https://docs.gitlab.com/omnibus/settings/database/#opt-out-of-automatic-postgresql-upgrades)します。[Geoを使用したPostgreSQLアップグレードに関する既知の注意点](https://docs.gitlab.com/omnibus/settings/database/#caveats-when-upgrading-postgresql-with-geo)に注意してください。特に大規模な環境では、PostgreSQLのアップグレードは慎重に計画し実行する必要があります。結果として、今後もPostgreSQLのアップグレードが定期的なメンテナンス活動の一部であることを確認してください。
+1. `/etc/gitlab/gitlab.rb`を編集し、以下を追加します。各パスワードタイプが、すべてのGeoサイトで[一致する値](#database-password-consistency-requirements)を持つことを確認してください。
 
    ```ruby
    roles(['patroni_role'])
@@ -669,7 +638,7 @@ Geoのセカンダリサイトでは、メインPostgreSQLデータベースは�
    postgresql['listen_address'] = '0.0.0.0' # You can use a public or VPC address here instead
    ```
 
-1. 変更を有効にするには、GitLabを再構成してください:
+1. 変更を反映するためにGitLabを再設定します:
 
    ```shell
    gitlab-ctl reconfigure
@@ -677,16 +646,15 @@ Geoのセカンダリサイトでは、メインPostgreSQLデータベースは�
 
 {{< /tab >}}
 
-{{< tab title="シングルPostgreSQLインスタンスを備えたプライマリ" >}}
+{{< tab title="単一PostgreSQLインスタンスを持つプライマリ" >}}
 
-1. 単一ノードインスタンスにSSHで接続し、rootとしてサインインします:
+1. あなたの単一ノードインスタンスにSSHで接続し、rootとしてサインインします:
 
    ```shell
    sudo -i
    ```
 
-1. GitLabのバージョンアップグレード時に意図しないダウンタイムが発生するのを防ぐため、[PostgreSQLの自動バージョンアップグレードをオプトアウト](https://docs.gitlab.com/omnibus/settings/database/#opt-out-of-automatic-postgresql-upgrades)します。既知の[GeoでPostgreSQLをバージョンアップグレードする際の注意点](https://docs.gitlab.com/omnibus/settings/database/#caveats-when-upgrading-postgresql-with-geo)に注意してください。特に大規模な環境では、PostgreSQLのバージョンアップグレードは慎重に計画および実行する必要があります。その結果、今後は、PostgreSQLのバージョンアップグレードが定期的なメンテナンス活動の一部であることを確認してください。
-
+1. GitLabのアップグレード時に意図しないダウンタイムを避けるため、[PostgreSQLの自動アップグレードをオプトアウト](https://docs.gitlab.com/omnibus/settings/database/#opt-out-of-automatic-postgresql-upgrades)します。[Geoを使用したPostgreSQLアップグレードに関する既知の注意点](https://docs.gitlab.com/omnibus/settings/database/#caveats-when-upgrading-postgresql-with-geo)に注意してください。特に大規模な環境では、PostgreSQLのアップグレードは慎重に計画し実行する必要があります。結果として、今後もPostgreSQLのアップグレードが定期的なメンテナンス活動の一部であることを確認してください。
 1. `/etc/gitlab/gitlab.rb`を編集し、以下を追加します:
 
    ```ruby
@@ -700,19 +668,19 @@ Geoのセカンダリサイトでは、メインPostgreSQLデータベースは�
    gitlab-ctl reconfigure
    ```
 
-1. PostgreSQLサービスを再起動して、新しい変更を有効にします:
+1. 新しい変更を有効にするためにPostgreSQLサービスを再起動します:
 
    ```shell
    gitlab-ctl restart postgresql
    ```
 
-1. データベースコンソールを起動します
+1. データベースコンソールを開始します
 
    ```shell
    gitlab-psql
    ```
 
-1. プライマリサイトで永続的なレプリケーションスロットを設定します
+1. プライマリGeoサイトで永続レプリケーションスロットを構成します
 
    ```sql
    select pg_create_physical_replication_slot('geo_secondary')
@@ -720,7 +688,7 @@ Geoのセカンダリサイトでは、メインPostgreSQLデータベースは�
 
 1. オプション。プライマリにPgBouncerがないが、セカンダリにある場合:
 
-   プライマリサイトで`pgbouncer`ユーザーを設定し、Linuxパッケージに含まれているPgBouncerに必要な`pg_shadow_lookup`関数を追加します。セカンダリサーバー上のPgBouncerは、セカンダリサイト上のPostgreSQLノードに引き続き接続できる必要があります。
+   プライマリGeoサイトで`pgbouncer`ユーザーを構成し、Linuxパッケージに含まれるPgBouncerに必要な`pg_shadow_lookup`関数を追加します。セカンダリサーバー上のPgBouncerは、引き続きセカンダリGeoサイト上のPostgreSQLノードに接続できるはずです。
 
    ```sql
    --- Create a new user 'pgbouncer'
@@ -745,17 +713,17 @@ Geoのセカンダリサイトでは、メインPostgreSQLデータベースは�
 
 {{< /tabs >}}
 
-##### ステップ2: プライマリサイトで内部ロードバランサーを設定する {#step-2-configure-the-internal-load-balancer-on-the-primary-site}
+##### ステップ2.プライマリGeoサイトで内部ロードバランサーを構成する {#step-2-configure-the-internal-load-balancer-on-the-primary-site}
 
-プライマリサイトで新しいリーダーが選択されるたびに、セカンダリサイトでスタンバイリーダーを再設定することを回避するには、TCP内部ロードバランサーをセットアップする必要があります。このロードバランサーは、Patroniクラスターのリーダーに接続するためのシングルエンドポイントを提供します。
+プライマリGeoサイトで新しいリーダーが選出されるたびにセカンダリGeoサイトでスタンバイリーダーを再構成するのを避けるため、TCP内部ロードバランサーを設定する必要があります。このロードバランサーは、Patroniクラスターのリーダーに接続するための単一のエンドポイントを提供します。
 
-Linuxパッケージにロードバランサーは含まれていません。[HAProxy](https://www.haproxy.org/)を使用してこれを行う方法を次に示します。
+Linuxパッケージにはロードバランサーは含まれていません。ここでは[HAProxy](https://www.haproxy.org/)でそれを行う方法を以下に示します。
 
-以下のIPと名前を例として使用します:
+以下のIPと名前は例として使用されます:
 
-- `10.6.0.21`: HAProxy 1 (`patroni1.internal`)
-- `10.6.0.22`: HAProxy 2 (`patroni2.internal`)
-- `10.6.0.23`: HAProxy 3 (`patroni3.internal`)
+- `10.6.0.21`: Patroni 1（`patroni1.internal`）
+- `10.6.0.22`: Patroni 2（`patroni2.internal`）
+- `10.6.0.23`: Patroni 3（`patroni3.internal`）
 
 ```plaintext
 global
@@ -784,15 +752,15 @@ backend postgresql
     server patroni3.internal 10.6.0.23:5432 maxconn 100 check port 8008
 ```
 
-詳細なガイダンスについては、推奨されるロードバランサーのドキュメントを参照してください。
+さらなるガイダンスについては、お好みのロードバランサーのドキュメントを参照してください。
 
-##### ステップ3: セカンダリサイトでPgBouncerノードを設定する {#step-3-configure-pgbouncer-nodes-on-the-secondary-site}
+##### ステップ3.セカンダリGeoサイトでPgBouncerノードを構成する {#step-3-configure-pgbouncer-nodes-on-the-secondary-site}
 
-本番環境に対応した、可用性の高い設定では、少なくとも3つのConsulノードと最小限1つのPgBouncerノードが必要です。ただし、データベースノードごとに1つのPgBouncerノードを用意することをお勧めします。複数のPgBouncerサービスノードがある場合は、内部ロードバランサー（TCP）が必要です。内部ロードバランサーは、PgBouncerクラスターに接続するためのシングルエンドポイントを提供します。詳細については、[関連ドキュメント](../../postgresql/replication_and_failover.md)を参照してください。
+本番環境対応で高可用性の構成には、少なくとも3つのConsulノードと最低1つのPgBouncerノードが必要です。ただし、データベースノードごとに1つのPgBouncerノードを持つことが推奨されます。複数のPgBouncerサービスノードがある場合は、内部ロードバランサー（TCP）が必要です。内部ロードバランサーは、PgBouncerクラスターに接続するための単一のエンドポイントを提供します。詳細については、[関連ドキュメント](../../postgresql/replication_and_failover.md)を参照してください。
 
-**セカンダリ**サイトでPgBouncerインスタンスを実行している各ノードで:
+セカンダリGeoサイトでPgBouncerインスタンスを実行している各ノードで:
 
-1. PgBouncerノードにSSHで接続し、rootとしてサインインします:
+1. あなたのPgBouncerノードにSSHで接続し、rootとしてサインインします:
 
    ```shell
    sudo -i
@@ -825,13 +793,13 @@ backend postgresql
    consul['monitoring_service_discovery'] =  true
    ```
 
-1. 変更を有効にするには、GitLabを再構成してください:
+1. 変更を反映するためにGitLabを再設定します:
 
    ```shell
    gitlab-ctl reconfigure
    ```
 
-1. `.pgpass`ファイルを作成して、ConsulがPgBouncerを再読み込みできるようにします。プロンプトが表示されたら、`PLAIN_TEXT_PGBOUNCER_PASSWORD`を2回入力します:
+1. `.pgpass`ファイルを作成して、ConsulがPgBouncerを再読み込みできるようにします。要求されたら、`PLAIN_TEXT_PGBOUNCER_PASSWORD`を2回入力します:
 
    ```shell
    gitlab-ctl write-pgpass --host 127.0.0.1 --database pgbouncer --user pgbouncer --hostuser gitlab-consul
@@ -843,27 +811,24 @@ backend postgresql
    gitlab-ctl hup pgbouncer
    ```
 
-##### ステップ4: セカンダリサイトでスタンバイクラスターを設定する {#step-4-configure-a-standby-cluster-on-the-secondary-site}
+##### ステップ4.セカンダリGeoサイトでスタンバイクラスターを構成する {#step-4-configure-a-standby-cluster-on-the-secondary-site}
 
-{{< alert type="note" >}}
+> [!note]
+> 単一のPostgreSQLインスタンスを持つセカンダリGeoサイトをPatroniクラスターに変換する場合、PostgreSQLインスタンスから開始する必要があります。それがPatroniスタンバイリーダーインスタンスとなり、必要に応じて別のレプリカに切り替えることができます。
 
-シングルPostgreSQLインスタンスを備えたセカンダリサイトをPatroniクラスターに変換する場合は、PostgreSQLインスタンスから開始する必要があります。Patroniのスタンバイリーダーインスタンスになり、必要に応じて別のレプリカに切り替えることができます。
+セカンダリGeoサイトでPatroniインスタンスを実行している各ノードで:
 
-{{< /alert >}}
-
-セカンダリサイトでPatroniインスタンスを実行している各ノードの場合:
-
-1. PatroniノードにSSHで接続し、rootとしてサインインします:
+1. あなたのPatroniインスタンスにSSHで接続し、rootとしてサインインします:
 
    ```shell
    sudo -i
    ```
 
-1. GitLabのバージョンアップグレード時に意図しないダウンタイムが発生するのを防ぐため、[PostgreSQLの自動バージョンアップグレードをオプトアウト](https://docs.gitlab.com/omnibus/settings/database/#opt-out-of-automatic-postgresql-upgrades)します。既知の[GeoでPostgreSQLをバージョンアップグレードする際の注意点](https://docs.gitlab.com/omnibus/settings/database/#caveats-when-upgrading-postgresql-with-geo)に注意してください。特に大規模な環境では、PostgreSQLのバージョンアップグレードは慎重に計画および実行する必要があります。その結果、今後は、PostgreSQLのバージョンアップグレードが定期的なメンテナンス活動の一部であることを確認してください。
-
+1. GitLabのアップグレード時に意図しないダウンタイムを避けるため、[PostgreSQLの自動アップグレードをオプトアウト](https://docs.gitlab.com/omnibus/settings/database/#opt-out-of-automatic-postgresql-upgrades)します。[Geoを使用したPostgreSQLアップグレードに関する既知の注意点](https://docs.gitlab.com/omnibus/settings/database/#caveats-when-upgrading-postgresql-with-geo)に注意してください。特に大規模な環境では、PostgreSQLのアップグレードは慎重に計画し実行する必要があります。結果として、今後もPostgreSQLのアップグレードが定期的なメンテナンス活動の一部であることを確認してください。
 1. `/etc/gitlab/gitlab.rb`を編集し、以下を追加します:
 
-   {{< alert type="warning" >}}各パスワード・タイプは、すべてのGeoサイトで[一致する値](#database-password-consistency-requirements)を持っている必要があります。{{< /alert >}}
+   > [!warning]
+   > 各パスワードタイプは、すべてのGeoサイトで[一致する値](#database-password-consistency-requirements)を持つ必要があります。
 
    ```ruby
    roles(['consul_role', 'patroni_role'])
@@ -908,21 +873,21 @@ backend postgresql
    gitlab_rails['auto_migrate'] = false
    ```
 
-   `patroni['standby_cluster']['host']`と`patroni['standby_cluster']['port']`を設定する場合:
-   - `INTERNAL_LOAD_BALANCER_PRIMARY_IP`は、プライマリ内部ロードバランサーのIPを指している必要があります。
-   - `INTERNAL_LOAD_BALANCER_PRIMARY_PORT`は、[プライマリPatroniクラスターリーダー用に設定された](#step-2-configure-the-internal-load-balancer-on-the-primary-site)フロントエンドポートを指している必要があります。PgBouncerフロントエンドポートは**Do not**（使用しないでください）。
+   `patroni['standby_cluster']['host']`と`patroni['standby_cluster']['port']`を構成する際:
+   - `INTERNAL_LOAD_BALANCER_PRIMARY_IP`はプライマリ内部ロードバランサーのIPを指している必要があります。
+   - `INTERNAL_LOAD_BALANCER_PRIMARY_PORT`は、プライマリPatroniクラスターリーダー用に[構成されたフロントエンドポート](#step-2-configure-the-internal-load-balancer-on-the-primary-site)を指している必要があります。PgBouncerフロントエンドポートは**Do not**。
 
-1. 変更を有効にするには、GitLabを再構成してください。この手順は、PostgreSQLユーザーと設定をブートストラップするために必要です。
+1. 変更を有効にするため、GitLabを再構成します。このステップは、PostgreSQLユーザーと設定をブートストラップするために必要です。
 
-   - これがPatroniの新しいインストールの場合は:
+   - これがPatroniの新規インストールである場合:
 
      ```shell
      gitlab-ctl reconfigure
      ```
 
-   - 以前に動作していたPatroniクラスターがあるGeoサイトでPatroniスタンバイクラスターを設定している場合:
+   - 以前に機能していたPatroniクラスターがあったGeoサイトでPatroniスタンバイクラスターを構成している場合:
 
-     1. カスケードレプリカを含め、Patroniによって管理されているすべてのノードでPatroniを停止します:
+     1. カスケードレプリカを含む、Patroniによって管理されているすべてのノードでPatroniを停止します:
 
         ```shell
         gitlab-ctl stop patroni
@@ -936,60 +901,60 @@ backend postgresql
         gitlab-ctl reconfigure
         ```
 
-     1. プライマリPostgreSQLデータベースからのレプリケーションプロセスを開始するには、リーダーPatroniノードでPatroniを開始します:
+     1. リーダーPatroniノードでPatroniを起動し、プライマリデータベースからのレプリケーションプロセスを開始します:
 
         ```shell
         gitlab-ctl start patroni
         ```
 
-     1. Patroniクラスターのステータスを確認します:
+     1. Patroniクラスターのステータスを検証します:
 
         ```shell
         gitlab-ctl patroni members
         ```
 
-        以下を確認します:
+        次の点を確認します。
 
         - 現在のPatroniノードが出力に表示されます。
-        - ロールは`Standby Leader`です。ロールは最初に`Replica`と表示される場合があります。
-        - 状態は`Running`です。状態は最初に`Creating replica`と表示される場合があります。
+        - 役割は`Standby Leader`です。役割は初期には`Replica`と表示される場合があります。
+        - 状態は`Running`です。状態は初期には`Creating replica`と表示される場合があります。
 
-        ノードのロールが`Standby Leader`として安定し、状態が`Running`になるまで待ちます。これには数分かかる場合があります。
+        ノードの役割が`Standby Leader`として安定し、状態が`Running`になるまで待ちます。これには数分かかる場合があります。
 
-     1. リーダーPatroniノードが`Standby Leader`で`Running`の場合、スタンバイクラスター内の他のPatroniノードでPatroniを開始します:
+     1. リーダーPatroniノードが`Standby Leader`で`Running`の場合、スタンバイクラスター内の他のPatroniノードでPatroniを起動します:
 
         ```shell
         gitlab-ctl start patroni
         ```
 
-        他のPatroniノードは、レプリカとして新しいスタンバイクラスターに参加し、リーダーPatroniノードからのレプリケーションを自動的に開始します。
+        他のPatroniノードは、新しいスタンバイクラスターにレプリカとして参加し、リーダーPatroniノードから自動的にレプリケートを開始するはずです。
 
-1. クラスターの状態を確認します:
+1. クラスターのステータスを検証します:
 
    ```shell
    gitlab-ctl patroni members
    ```
 
-   すべてのPatroniノードが`Running`状態でリストされていることを確認します。1つの`Standby Leader`ノードと複数の`Replica`ノードが必要です。
+   すべてのPatroniノードが`Running`状態にリストされていることを確認してください。1つの`Standby Leader`ノードと複数の`Replica`ノードがあるはずです。
 
-### 単一のトラッキングデータベースノードをPatroniに移行する {#migrating-a-single-tracking-database-node-to-patroni}
+### 単一の追跡するデータベースノードをPatroniに移行する {#migrating-a-single-tracking-database-node-to-patroni}
 
-Patroniの導入前は、Geoはセカンダリサイト上の高可用性設定のLinuxパッケージインストールをサポートしていませんでした。
+Patroniの導入前は、GeoはセカンダリGeoサイトでのHA設定に対するLinuxパッケージインストールをサポートしていませんでした。
 
-Patroniを使用すると、高可用性設定をサポートできるようになりました。ただし、Patroniの一部の制限により、同じマシン上で2つの異なるクラスターを管理できません。GeoのセカンダリサイトのPatroniクラスターを[設定する](#configuring-patroni-cluster-for-a-geo-secondary-site)方法を説明する同じ手順に従って、トラッキングデータベースの新しいPatroniクラスターをセットアップする必要があります。
+Patroniを使用すると、HA設定をサポートできるようになりました。ただし、Patroniには、同じマシン上で2つの異なるクラスターを管理することを妨げるいくつかの制限があります。[GeoセカンダリGeoサイト用のPatroniクラスターを構成](#configuring-patroni-cluster-for-a-geo-secondary-site)する方法を説明するのと同じ手順に従って、追跡するデータベース用の新しいPatroniクラスターを設定する必要があります。
 
-セカンダリノードは新しいトラッキングデータベースをバックフィルし、データの同期は必要ありません。
+セカンダリノードが新しい追跡データベースをバックフィルするため、データ同期は必要ありません。
 
-### トラッキングPostgreSQLデータベースのPatroniクラスターの設定 {#configuring-patroni-cluster-for-the-tracking-postgresql-database}
+### 追跡するPostgreSQLデータベース用のPatroniクラスターを構成する {#configuring-patroni-cluster-for-the-tracking-postgresql-database}
 
-**セカンダリ**Geoサイトは、別のPostgreSQLインストールをトラッキングデータベースとして使用して、レプリケーションのステータスを追跡し、潜在的なレプリケーションの問題から自動的に回復します。
+セカンダリGeoサイトは、レプリケーションのステータスを追跡し、潜在的なレプリケーションイシューから自動的に回復するために、追跡するデータベースとして別のPostgreSQLインストールを使用します。
 
-単一のノードでGeoトラッキングデータベースを実行する場合は、[Geoセカンダリサイト](../replication/multiple_servers.md#step-2-configure-the-geo-tracking-database-on-the-geo-secondary-site)でGeoトラッキングデータベースを設定するを参照してください。
+Geo追跡するデータベースを単一ノードで実行したい場合は、[GeoセカンダリGeoサイトでGeo追跡するデータベースを構成](../replication/multiple_servers.md#step-2-configure-the-geo-tracking-database-on-the-geo-secondary-site)を参照してください。
 
-Linuxパッケージは、高可用性設定でのGeoトラッキングデータベースの実行をサポートしていません。特に、フェイルオーバーは正しく機能しません。[機能リクエストイシュー](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7292)を参照してください。
+Linuxパッケージは、Geo追跡するデータベースを高可用性構成で実行することをサポートしていません。特に、フェイルオーバーは正しく機能しません。[機能リクエストイシュー](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7292)を参照してください。
 
-高可用性設定でGeoトラッキングデータベースを実行する場合は、セカンダリサイトをクラウド管理データベースなどの外部PostgreSQLデータベース、または手動で設定された[Patroni](https://patroni.readthedocs.io/en/latest/)クラスター（GitLab Linuxパッケージで管理されていない）に接続できます。[外部PostgreSQLインスタンスを使用したGeo](external_database.md#configure-the-tracking-database)に従ってください。
+Geo追跡するデータベースを高可用性構成で実行したい場合は、セカンダリGeoサイトを、クラウドプロバイダーが管理するデータベースなどの外部PostgreSQLデータベース、または手動で構成された[Patroni](https://patroni.readthedocs.io/en/latest/)クラスター（GitLab Linuxパッケージでは管理されていません）に接続できます。[外部PostgreSQLインスタンスを使用したGeo](external_database.md#configure-the-tracking-database)に従ってください。
 
 ## トラブルシューティング {#troubleshooting}
 
-[トラブルシューティングドキュメント](../replication/troubleshooting/_index.md)をお読みください。
+[トラブルシューティングドキュメント](../replication/troubleshooting/_index.md)を読んでください。

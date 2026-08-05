@@ -243,8 +243,6 @@ module API
         # The matching audit is deferred until the archive is actually transferred.
         check_repository_archive_download!(user_project.repository)
 
-        caching_enabled = Feature.enabled?(:api_repository_archive_cache_headers, user_project)
-
         # Resolve the archive metadata once (with the real storage path) and reuse it
         # for the cache headers, the HEAD content headers, and the archive body, so
         # they all describe the same commit. `#metadata` is lazy, so this is free
@@ -255,12 +253,10 @@ module API
           storage_path: Gitlab.config.gitlab.repository_downloads_path
         )
 
-        if caching_enabled
-          set_repository_archive_cache_headers!(
-            user_project, archive_builder,
-            ref: params[:sha], include_lfs_blobs: params[:include_lfs_blobs], exclude_paths: params[:exclude_paths]
-          )
-        end
+        set_repository_archive_cache_headers!(
+          user_project, archive_builder,
+          ref: params[:sha], include_lfs_blobs: params[:include_lfs_blobs], exclude_paths: params[:exclude_paths]
+        )
 
         # Return early for HEAD requests to avoid generating archives.
         if request.head?
@@ -277,10 +273,10 @@ module API
           send_git_archive user_project.repository, ref: params[:sha], format: params[:format], append_sha: true, path: params[:path], ref_type: params[:ref_type], include_lfs_blobs: params[:include_lfs_blobs], exclude_paths: params[:exclude_paths], metadata: archive_builder.metadata
         end
       rescue Gitlab::Git::CommandError
-        reset_archive_cache_headers! if caching_enabled
+        reset_archive_cache_headers!
         service_unavailable!
       rescue Gitlab::Workhorse::ArchiveNotFoundError
-        reset_archive_cache_headers! if caching_enabled
+        reset_archive_cache_headers!
         not_found!('File')
       end
 

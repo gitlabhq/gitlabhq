@@ -11,7 +11,10 @@ module ApplicationSettings
     def execute
       result = update_settings
 
-      auto_approve_blocked_users if result
+      if result
+        auto_approve_blocked_users
+        cleanup_dynamically_registered_oauth_applications
+      end
 
       result
     end
@@ -156,6 +159,23 @@ module ApplicationSettings
 
     def auto_approve_pending_users?
       Gitlab::Utils.to_boolean(params.fetch(:auto_approve_pending_users, false))
+    end
+
+    # Disabling dynamic client registration means the instance no longer wants the
+    # OAuth applications that were created via the DCR endpoint. Clean them up in the
+    # background, since there can be thousands of them.
+    def cleanup_dynamically_registered_oauth_applications
+      return unless dynamic_client_registration_disabled?
+
+      Authn::OauthApplications::CleanupDynamicApplicationsWorker.perform_async
+    end
+
+    def dynamic_client_registration_disabled?
+      return false unless application_setting.previous_changes.key?(:dynamic_client_registration_enabled)
+
+      enabled_previous, enabled_current = application_setting.previous_changes[:dynamic_client_registration_enabled]
+
+      enabled_previous && !enabled_current
     end
   end
 end

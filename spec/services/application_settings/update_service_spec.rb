@@ -554,4 +554,54 @@ RSpec.describe ApplicationSettings::UpdateService, feature_category: :shared do
       end
     end
   end
+
+  context 'when dynamic_client_registration_enabled changes', feature_category: :system_access do
+    let(:worker) { Authn::OauthApplications::CleanupDynamicApplicationsWorker }
+
+    context 'when it goes from enabled to disabled' do
+      let(:params) { { dynamic_client_registration_enabled: false } }
+
+      it 'enqueues CleanupDynamicApplicationsWorker' do
+        expect(worker).to receive(:perform_async)
+
+        subject.execute
+      end
+
+      context 'when the update fails' do
+        before do
+          allow(application_settings).to receive(:save).and_return(false)
+        end
+
+        it 'does not enqueue CleanupDynamicApplicationsWorker' do
+          expect(worker).not_to receive(:perform_async)
+
+          subject.execute
+        end
+      end
+    end
+
+    context 'when it goes from disabled to enabled' do
+      let(:params) { { dynamic_client_registration_enabled: true } }
+
+      before do
+        application_settings.update!(dynamic_client_registration_enabled: false)
+      end
+
+      it 'does not enqueue CleanupDynamicApplicationsWorker' do
+        expect(worker).not_to receive(:perform_async)
+
+        subject.execute
+      end
+    end
+
+    context 'when it is unchanged' do
+      let(:params) { { dynamic_client_registration_enabled: true } }
+
+      it 'does not enqueue CleanupDynamicApplicationsWorker' do
+        expect(worker).not_to receive(:perform_async)
+
+        subject.execute
+      end
+    end
+  end
 end

@@ -4,6 +4,7 @@ module Groups
   module Observability
     class O11yServiceSettingsController < Groups::ApplicationController
       include Gitlab::Utils::StrongMemoize
+      include Gitlab::InternalEventsTracking
 
       before_action :authenticate_user!
       before_action :authorize_o11y_settings_access!
@@ -15,6 +16,12 @@ module Groups
       def update
         result = ::Observability::GroupO11ySettingsUpdateService.new.execute(settings, settings_params)
         if result.success?
+          track_internal_event(
+            'update_o11y_service_settings',
+            user: current_user,
+            namespace: group
+          )
+
           redirect_to edit_group_observability_o11y_service_settings_path(@group),
             notice: s_('Observability|Observability service settings updated successfully.')
         else
@@ -25,6 +32,12 @@ module Groups
 
       def edit
         settings
+
+        track_internal_event(
+          'visit_o11y_service_settings_page',
+          user: current_user,
+          namespace: group
+        )
       end
 
       def destroy

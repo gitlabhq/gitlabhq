@@ -35,6 +35,17 @@ RSpec.describe "Groups::Observability::Setup", feature_category: :observability 
         end
       end
 
+      it 'tracks the visit_observability_setup_page internal event', :clean_gitlab_redis_shared_state do
+        expect { get_setup_page }
+          .to trigger_internal_events('visit_observability_setup_page')
+          .with(user: user, namespace: group, additional_properties: { label: 'group' },
+            category: 'Groups::Observability::SetupController')
+          .and increment_usage_metrics(
+            'redis_hll_counters.count_distinct_user_id_from_visit_observability_setup_page_monthly',
+            'redis_hll_counters.count_distinct_user_id_from_visit_observability_setup_page_weekly'
+          )
+      end
+
       context 'when group already has observability settings' do
         let_it_be(:o11y_setting) { create(:observability_group_o11y_setting, group: group, created_at: 10.minutes.ago) }
 

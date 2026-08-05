@@ -283,15 +283,16 @@ export default {
         : getGroups({ withProjectAccess: this.groupsWithProjectAccess });
     },
     getCustomRoles() {
-      // TODO: Replace the mocked getMemberRoles with the real API integration
-      // https://gitlab.com/gitlab-org/gitlab/-/issues/600529
       if (!this.customRolesEnabled) {
         return Promise.resolve({ data: [] });
       }
 
       return this.customRoles.length
         ? Promise.resolve({ data: this.customRoles })
-        : getMemberRoles(gon.current_group_id);
+        : getMemberRoles(gon.current_group_id).catch(() => {
+            createAlert({ message: __('Failed to load custom roles.') });
+            return { data: [] };
+          });
     },
     getData({ initial = false } = {}) {
       this.initialLoading = initial;

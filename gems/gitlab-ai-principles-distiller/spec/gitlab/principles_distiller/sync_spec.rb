@@ -347,7 +347,8 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
       let(:distilled) { [{ 'qa' => 'body' }, []] }
 
       before do
-        allow(sync.manifest).to receive_messages(load: nil, principle_config: config)
+        allow(sync.manifest).to receive_messages(load: nil, principle_config: config,
+          new_sources_for: [{ 'path' => 'doc/new.md' }])
         allow(sync).to receive(:build_distilled_contents).and_return(distilled)
       end
 
@@ -356,6 +357,14 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
       end
 
       context 'when the principle distills to new content' do
+        it 'passes newly declared sources to distillation' do
+          sync.distill_one('qa')
+
+          expect(sync).to have_received(:build_distilled_contents).with(
+            'qa' => { config: config, new_sources: [{ 'path' => 'doc/new.md' }] }
+          )
+        end
+
         it 'records an updated status with the assembled content', :aggregate_failures do
           sync.distill_one('qa')
 
@@ -548,9 +557,10 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
     # `distill_principle` is private (it's an internal step of parallel_distill), so specs reach it via `send`.
     # The retry loop is the most failure-prone control flow in the gem: any of the three Duo invocations can return nil,
     # return content missing the required heading, or succeed.
-    subject(:distill) { sync.send(:distill_principle, 'qa', config) }
+    subject(:distill) { sync.send(:distill_principle, 'qa', config, new_sources: new_sources) }
 
     let(:config) { { 'sources' => [{ 'path' => 'doc/qa.md' }] } }
+    let(:new_sources) { [] }
     let(:valid_content) { "# QA Principles\n\n## Checklist\n\n- Do thing\n" }
 
     before do
@@ -573,6 +583,17 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
         expect(distill).to include('## Checklist')
         expect(sync.workflow).to have_received(:distill).once
         expect(sync.workflow).not_to have_received(:sleep_with_heartbeat)
+      end
+
+      context 'with newly declared sources' do
+        let(:new_sources) { [{ 'path' => 'doc/new.md' }] }
+
+        it 'forwards them to the workflow' do
+          distill
+
+          expect(sync.workflow).to have_received(:distill)
+            .with('qa', config, new_sources: new_sources)
+        end
       end
     end
 

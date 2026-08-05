@@ -14,6 +14,10 @@ module Projects
       def project_for_export_variable
         project
       end
+
+      def observability_context_label
+        'project'
+      end
     end
   end
 end

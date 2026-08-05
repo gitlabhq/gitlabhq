@@ -3,10 +3,18 @@
 module Observability
   module SetupActions
     extend ActiveSupport::Concern
+    include Gitlab::InternalEventsTracking
 
     # rubocop:disable Gitlab/ModuleWithInstanceVariables -- view layer requires @namespace, @has_pipelines_since_setup, @export_variable
     def show
       @namespace = observability_namespace
+
+      track_internal_event(
+        'visit_observability_setup_page',
+        user: current_user,
+        namespace: @namespace,
+        additional_properties: { label: observability_context_label }
+      )
 
       if @namespace.observability_group_o11y_setting.present?
         begin
@@ -42,6 +50,12 @@ module Observability
 
     def project_for_export_variable
       nil
+    end
+
+    # Subclasses must define:
+    #   observability_context_label - "group" or "project", used for tracking
+    def observability_context_label
+      raise NotImplementedError
     end
   end
 end

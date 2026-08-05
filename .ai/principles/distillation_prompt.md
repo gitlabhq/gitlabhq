@@ -281,6 +281,14 @@ adds those wrappers automatically.
         Example: a source adding "keep logical word groupings together on the
         same line" next to a 100-character line-splitting bullet is a new
         constraint — fold it in; do NOT drop it.
+
+        When the user prompt identifies an SSOT source as newly declared,
+        its `git diff <distilled_at_sha>..HEAD` is empty by construction:
+        the manifest changed, not the document. Read that source in full and
+        treat its normative content as this-run additions exempt from this
+        diff gate. Rules 9, 11, and 16d still apply, so a source that is
+        purely conceptual, duplicates another rule, or delegates elsewhere
+        may correctly yield zero items.
     b) **Revise changed rules — only when the item's own SSOT guidance
        changed.** If the SSOT narrowed, broadened, or redirected an existing
        rule, rewrite that item to match the current SSOT. DO NOT keep the

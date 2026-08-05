@@ -340,7 +340,8 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         wiki_asciidoc_allow_uri_includes: false,
         wiki_page_max_content_bytes: 5.megabytes,
         pipeline_limit_per_user: 0,
-        oauth_access_token_expires_in: ApplicationSetting::DEFAULT_OAUTH_ACCESS_TOKEN_EXPIRES_IN
+        oauth_access_token_expires_in: ApplicationSetting::DEFAULT_OAUTH_ACCESS_TOKEN_EXPIRES_IN,
+        dynamic_client_registration_enabled: true
       )
     end
   end
@@ -2437,6 +2438,16 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         it { is_expected.not_to allow_value(299).for(:oauth_access_token_expires_in) }
         it { is_expected.not_to allow_value(0).for(:oauth_access_token_expires_in) }
         it { is_expected.not_to allow_value(-1).for(:oauth_access_token_expires_in) }
+      end
+
+      describe '#dynamic_client_registration_enabled' do
+        it 'defaults to true' do
+          expect(setting.dynamic_client_registration_enabled).to be(true)
+        end
+
+        it { is_expected.to allow_value({ dynamic_client_registration_enabled: true }).for(:oauth_settings) }
+        it { is_expected.to allow_value({ dynamic_client_registration_enabled: false }).for(:oauth_settings) }
+        it { is_expected.not_to allow_value({ dynamic_client_registration_enabled: 'yes' }).for(:oauth_settings) }
       end
     end
 

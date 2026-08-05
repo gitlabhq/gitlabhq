@@ -617,32 +617,6 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
 
           expect(response).to have_gitlab_http_status(:ok)
         end
-
-        it 'does not answer a real ETag with 304 once the flag is disabled', :aggregate_failures do
-          get api(route, current_user)
-          etag = response.headers['ETag']
-          expect(etag).to be_present
-
-          stub_feature_flags(api_repository_archive_cache_headers: false)
-          get api(route, current_user), headers: { 'If-None-Match' => etag }
-
-          expect(response).to have_gitlab_http_status(:ok)
-        end
-
-        context 'when the api_repository_archive_cache_headers flag is disabled' do
-          before do
-            stub_feature_flags(api_repository_archive_cache_headers: false)
-          end
-
-          it 'restores the previous behavior', :aggregate_failures do
-            get api(route, current_user)
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(response.headers['Cache-Control']).not_to include('s-maxage', 'stale-while-revalidate')
-            # No custom strong ETag: only Rack's default weak validator (or none) remains.
-            expect(response.headers['ETag']).to be_nil.or(start_with('W/'))
-          end
-        end
       end
     end
 
@@ -718,22 +692,6 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
         expect(response.headers['Cache-Control']).to eq('no-store')
         expect(response.headers['ETag']).to be_nil
       end
-
-      context 'when the api_repository_archive_cache_headers flag is disabled' do
-        before do
-          stub_feature_flags(api_repository_archive_cache_headers: false)
-        end
-
-        it 'returns 503 without resetting to no-store', :aggregate_failures do
-          allow(Gitlab::Workhorse).to receive(:send_git_archive)
-            .and_raise(Gitlab::Git::CommandError, 'Gitaly error')
-
-          get api(route, user)
-
-          expect(response).to have_gitlab_http_status(:service_unavailable)
-          expect(response.headers['Cache-Control']).not_to eq('no-store')
-        end
-      end
     end
 
     context 'when archive is not found' do
@@ -748,19 +706,6 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
         expect(response).to have_gitlab_http_status(:not_found)
         expect(response.headers['Cache-Control']).to eq('no-store')
         expect(response.headers['ETag']).to be_nil
-      end
-
-      context 'when the api_repository_archive_cache_headers flag is disabled' do
-        before do
-          stub_feature_flags(api_repository_archive_cache_headers: false)
-        end
-
-        it 'returns 404 without resetting to no-store', :aggregate_failures do
-          get api(route, user)
-
-          expect(response).to have_gitlab_http_status(:not_found)
-          expect(response.headers['Cache-Control']).not_to eq('no-store')
-        end
       end
     end
 

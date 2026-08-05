@@ -202,14 +202,32 @@ module Gitlab
         def load_frontmatter_data
           Dir.glob(Workspace.safe_join(PRINCIPLES_DIR, '*.md')).each_with_object({}) do |path, data|
             name = File.basename(path, '.md')
-            frontmatter = extract_frontmatter(File.read(path))
+            content = File.read(path)
+            frontmatter = extract_frontmatter(content)
             next unless frontmatter&.key?('source_checksum')
 
             data[name] = {
               checksum: frontmatter['source_checksum'],
-              distilled_at_sha: frontmatter['distilled_at_sha']
+              distilled_at_sha: frontmatter['distilled_at_sha'],
+              source_paths: extract_source_paths(content)
             }
           end
+        end
+
+        # Paths listed in the committed authoritative-sources footer for a
+        # principle's prior distillation. The footer is the durable record of
+        # which manifest sources the agent had already considered.
+        def prior_source_paths(name)
+          path = Workspace.safe_join(principles_path(name))
+          return [] unless File.exist?(path)
+
+          extract_source_paths(File.read(path))
+        end
+
+        def new_sources_for(name, config)
+          prior_sources = prior_source_paths(name)
+
+          reject_known_sources(config.fetch('sources', []), prior_sources)
         end
 
         def extract_frontmatter(content)
@@ -273,29 +291,7 @@ module Gitlab
             if !force && current_checksum == stored_checksum
               puts "  ✅ #{name}: #{Rainbow('up to date').green}"
             else
-              sources = config.fetch('sources', [])
-              distilled_at_sha = stored&.dig(:distilled_at_sha)
-              affected[name] = {
-                config: config,
-                changed_sources: sources,
-                prior_sha: distilled_at_sha
-              }
-
-              reason = if force
-                         'forced'
-                       else
-                         (stored_checksum ? 'sources or docs changed' : 'no previous checksum')
-                       end
-
-              puts "  🔄 #{name}: #{Rainbow('needs update').yellow} (#{reason})"
-
-              if distilled_at_sha
-                source_paths = sources.map { |s| s['path'] }
-                baseline_path = config['baseline']
-                source_paths.unshift(baseline_path) if baseline_path
-                diff_cmd = build_diff_hint(distilled_at_sha, source_paths)
-                puts "     🔍 To see what changed: #{Rainbow(diff_cmd).cyan}"
-              end
+              record_affected_principle(affected, name, config, stored, force)
             end
           end
         end
@@ -558,6 +554,13 @@ module Gitlab
           lines[first...last].join.rstrip
         end
 
+        def extract_source_paths(content)
+          parts = strip_frontmatter(content).split(/^## Authoritative sources[ \t]*$/, 2)
+          return [] if parts.size < 2
+
+          parts.last.lines.filter_map { |line| line[/\A- (.+?)[\r\n]*\z/, 1]&.strip }
+        end
+
         # Idempotent. Updates existing notes if wording changed.
         def inject_prerequisite_notes
           principles.each_key do |name|
@@ -610,6 +613,41 @@ module Gitlab
         end
 
         private
+
+        def record_affected_principle(affected, name, config, stored, force)
+          sources = config.fetch('sources', [])
+          stored_checksum = stored&.dig(:checksum)
+          distilled_at_sha = stored&.dig(:distilled_at_sha)
+          prior_sources = stored&.dig(:source_paths) || []
+          new_sources = reject_known_sources(sources, prior_sources)
+          affected[name] = {
+            config: config,
+            changed_sources: sources,
+            new_sources: new_sources,
+            prior_sha: distilled_at_sha
+          }
+
+          reason = if force
+                     'forced'
+                   else
+                     (stored_checksum ? 'sources or docs changed' : 'no previous checksum')
+                   end
+
+          puts "  🔄 #{name}: #{Rainbow('needs update').yellow} (#{reason})"
+          puts "     🆕 #{new_sources.size} newly declared source(s)" if new_sources.any?
+          print_diff_hint(distilled_at_sha, config, sources) if distilled_at_sha
+        end
+
+        def reject_known_sources(sources, prior_sources)
+          sources.reject { |source| prior_sources.include?(source['path']) }
+        end
+
+        def print_diff_hint(distilled_at_sha, config, sources)
+          source_paths = sources.map { |source| source['path'] }
+          source_paths.unshift(config['baseline']) if config['baseline']
+          diff_cmd = build_diff_hint(distilled_at_sha, source_paths)
+          puts "     🔍 To see what changed: #{Rainbow(diff_cmd).cyan}"
+        end
 
         # The committed distilled content to build a fence from. Returns nil
         # when the file is absent so a not-yet-distilled fence is left

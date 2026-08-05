@@ -8209,13 +8209,19 @@ msgid_plural "AiGovernance|%d audit events"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "AiGovernance|%{change} this month"
+msgstr ""
+
+msgid "AiGovernance|%{change} this week"
+msgstr ""
+
+msgid "AiGovernance|%{change} today"
+msgstr ""
+
 msgid "AiGovernance|AI Governance"
 msgstr ""
 
 msgid "AiGovernance|AI agent inventory"
-msgstr ""
-
-msgid "AiGovernance|AI agent sessions and their status over time."
 msgstr ""
 
 msgid "AiGovernance|AI agents"
@@ -8260,9 +8266,6 @@ msgstr ""
 msgid "AiGovernance|Category"
 msgstr ""
 
-msgid "AiGovernance|Compliance posture"
-msgstr ""
-
 msgid "AiGovernance|Connection"
 msgstr ""
 
@@ -8303,9 +8306,6 @@ msgid "AiGovernance|Failed to update tool rule. Please try again."
 msgstr ""
 
 msgid "AiGovernance|Inherited from group"
-msgstr ""
-
-msgid "AiGovernance|Internal and external AI agents active in this group and its projects."
 msgstr ""
 
 msgid "AiGovernance|Local access"
@@ -33870,6 +33870,9 @@ msgid "Failed to load branches. Please try again."
 msgstr ""
 
 msgid "Failed to load code quality findings. Try reloading the page."
+msgstr ""
+
+msgid "Failed to load custom roles."
 msgstr ""
 
 msgid "Failed to load deploy keys."
@@ -73957,6 +73960,9 @@ msgid "SecurityReports|security scanning prerequisites"
 msgstr ""
 
 msgid "SecurityScanProfile|Default GitLab-recommended profiles are not editable."
+msgstr ""
+
+msgid "SecurityScanProfile|Profile was updated concurrently. Please try again."
 msgstr ""
 
 msgid "SecurityScanProfile|cannot have more than %{count} scan profiles."
