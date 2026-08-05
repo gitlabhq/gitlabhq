@@ -588,13 +588,15 @@ Settings.gitlab_kas['client_timeout_seconds'] ||= 5
 # Settings.gitlab_kas['external_k8s_proxy_url'] ||= 'grpc://localhost:8154' # NOTE: Do not set a default until all distributions have been updated with a correct value
 
 #
-# Knowledge Graph
+# Orbit
 #
 Gitlab.ee do
-  Settings['knowledge_graph'] ||= {}
-  Settings.knowledge_graph['secret_file'] ||= Rails.root.join('.gitlab_knowledge_graph_secret')
-  Settings.knowledge_graph['enabled'] ||= false
-  Settings.knowledge_graph['grpc_endpoint'] ||= ENV.fetch('KNOWLEDGE_GRAPH_GRPC_ENDPOINT', 'localhost:50054')
+  # Keep the knowledge_graph name as a backward-compatible alias for Orbit.
+  Settings['orbit'] ||= Settings['knowledge_graph'] || {}
+  Settings['knowledge_graph'] = Settings.orbit
+  Settings.orbit['secret_file'] ||= Rails.root.join('.gitlab_knowledge_graph_secret')
+  Settings.orbit['enabled'] ||= false
+  Settings.orbit['grpc_endpoint'] ||= ENV.fetch('KNOWLEDGE_GRAPH_GRPC_ENDPOINT', 'localhost:50054')
 end
 
 #

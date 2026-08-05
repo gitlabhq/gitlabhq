@@ -163,6 +163,80 @@ RSpec.describe '1_settings', feature_category: :settings do
     end
   end
 
+  describe 'Orbit configuration', if: Gitlab.ee? do
+    after do
+      Settings['orbit'] = nil
+      Settings['knowledge_graph'] = nil
+      load_settings
+    end
+
+    shared_examples 'Orbit configuration aliases' do
+      it 'uses the configured values under both names' do
+        expect(Gitlab.config.orbit).to equal(Gitlab.config.knowledge_graph)
+        expect(Gitlab.config.orbit.enabled).to be(true)
+        expect(Gitlab.config.orbit.grpc_endpoint).to eq('orbit.example.com:50054')
+        expect(Gitlab.config.orbit.secret_file).to eq('/custom/orbit-secret')
+      end
+    end
+
+    context 'with default configuration' do
+      before do
+        Settings['orbit'] = nil
+        Settings['knowledge_graph'] = nil
+        load_settings
+      end
+
+      it 'uses the defaults under both names' do
+        expect(Gitlab.config.orbit).to equal(Gitlab.config.knowledge_graph)
+        expect(Gitlab.config.orbit.enabled).to be(false)
+        expect(Gitlab.config.orbit.grpc_endpoint).to eq('localhost:50054')
+        expect(Gitlab.config.orbit.secret_file).to eq(Rails.root.join('.gitlab_knowledge_graph_secret'))
+      end
+    end
+
+    context 'when the endpoint environment variable is set' do
+      before do
+        stub_env('KNOWLEDGE_GRAPH_GRPC_ENDPOINT', 'environment.example.com:50054')
+        Settings['orbit'] = nil
+        Settings['knowledge_graph'] = nil
+        load_settings
+      end
+
+      it 'uses the environment endpoint under both names' do
+        expect(Gitlab.config.orbit).to equal(Gitlab.config.knowledge_graph)
+        expect(Gitlab.config.orbit.grpc_endpoint).to eq('environment.example.com:50054')
+      end
+    end
+
+    context 'when Orbit configuration is provided' do
+      before do
+        Settings['orbit'] = {
+          enabled: true,
+          grpc_endpoint: 'orbit.example.com:50054',
+          secret_file: '/custom/orbit-secret'
+        }
+        Settings['knowledge_graph'] = nil
+        load_settings
+      end
+
+      it_behaves_like 'Orbit configuration aliases'
+    end
+
+    context 'when legacy Knowledge Graph configuration is provided' do
+      before do
+        Settings['orbit'] = nil
+        Settings['knowledge_graph'] = {
+          enabled: true,
+          grpc_endpoint: 'orbit.example.com:50054',
+          secret_file: '/custom/orbit-secret'
+        }
+        load_settings
+      end
+
+      it_behaves_like 'Orbit configuration aliases'
+    end
+  end
+
   describe 'Pages custom domains settings' do
     using RSpec::Parameterized::TableSyntax
 

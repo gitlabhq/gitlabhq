@@ -1484,10 +1484,14 @@ production: &base
     # The client timeout in seconds for the KAS API (used by the GitLab backend)
     # client_timeout_seconds: 5
 
-  ## GitLab Knowledge Graph settings
-  knowledge_graph:
+  ## GitLab Orbit settings
+  orbit:
     # enabled: false
     # grpc_endpoint: localhost:50054
+    # Default is '.gitlab_knowledge_graph_secret' relative to Rails.root (i.e. root of the GitLab app).
+    # secret_file: /home/git/gitlab/.gitlab_knowledge_graph_secret
+
+  # The legacy `knowledge_graph` section remains supported as an alias for `orbit`.
 
   ## GitLab Elasticsearch settings
   elasticsearch:
