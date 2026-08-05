@@ -206,12 +206,12 @@ export default {
   },
   emits: [
     'add-child',
-    'attributesUpdated',
+    'attributes-updated',
     'deleteWorkItem',
     'promotedToObjective',
     'work-item-emoji-updated',
     'work-item-updated',
-    'workItemStateUpdated',
+    'work-item-state-updated',
     'work-item-type-changed',
     'workItemUpdated',
   ],
@@ -1006,7 +1006,6 @@ export default {
             @error="updateError = $event"
             @promotedToObjective="$emit('promotedToObjective', iid)"
             @toggleEditMode="enableEditMode"
-            @workItemStateUpdated="$emit('workItemStateUpdated')"
             @toggleReportAbuseModal="toggleReportAbuseModal"
             @todosUpdated="updateWorkItemCurrentTodosWidgetCache"
           >
@@ -1019,7 +1018,7 @@ export default {
                 @toggleWorkItemConfidentiality="toggleConfidentiality"
                 @error="updateError = $event"
                 @promotedToObjective="$emit('promotedToObjective', iid)"
-                @workItemStateUpdated="$emit('workItemStateUpdated')"
+                @work-item-state-updated="$emit('work-item-state-updated')"
                 @work-item-type-changed="workItemTypeChanged"
                 @toggleReportAbuseModal="toggleReportAbuseModal"
                 @work-item-created="handleWorkItemCreated"
@@ -1122,7 +1121,7 @@ export default {
               @toggleWorkItemConfidentiality="toggleConfidentiality"
               @error="updateError = $event"
               @promotedToObjective="$emit('promotedToObjective', iid)"
-              @workItemStateUpdated="$emit('workItemStateUpdated')"
+              @work-item-state-updated="$emit('work-item-state-updated')"
               @work-item-type-changed="workItemTypeChanged"
               @toggleReportAbuseModal="toggleReportAbuseModal"
               @work-item-created="handleWorkItemCreated"
@@ -1184,7 +1183,7 @@ export default {
               :group-path="groupPath"
               :is-group="isGroup"
               @error="updateError = $event"
-              @attributesUpdated="$emit('attributesUpdated', $event)"
+              @attributes-updated="$emit('attributes-updated', $event)"
             />
           </section>
         </template>

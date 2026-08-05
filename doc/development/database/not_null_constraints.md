@@ -76,7 +76,7 @@ The steps required are:
 
       > [!note]
       > Depending on the size of the table, a background migration for cleanup could be required in the next release.
-      > See the [`NOT NULL` constraints on large tables](not_null_constraints.md#not-null-constraints-on-large-tables) section for more information.
+      > See the [`NOT NULL` constraints on large tables](#not-null-constraints-on-large-tables) section for more information.
 
 1. Release `N.M+1` (next release)
 

@@ -74,4 +74,4 @@ To restrict a personal access token to specific resources and permissions, see
 - [Personal access tokens](../../user/profile/personal_access_tokens.md)
 - [Group access tokens](../../user/group/settings/group_access_tokens.md)
 - [Project access tokens](../../user/project/settings/project_access_tokens.md)
-- [Token overview](../../security/tokens/_index.md)
+- [Token overview](_index.md)

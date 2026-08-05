@@ -79,7 +79,7 @@ a base domain of `example.com`, you'd need a DNS entry like:
 ```
 
 In this case, the deployed applications are served from `example.com`, and `10.0.2.2`
-is the IP address of your load balancer, generally NGINX ([see requirements](requirements.md)).
+is the IP address of your load balancer, generally NGINX (see requirements).
 Setting up the DNS record is beyond the scope of this document; check with your
 DNS provider for information.
 

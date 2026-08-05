@@ -360,6 +360,40 @@ RSpec.describe Observability::GroupO11ySetting, feature_category: :observability
     end
   end
 
+  describe 'mcp endpoint' do
+    let(:setting) { build(:observability_group_o11y_setting, group: group) }
+
+    describe '#mcp_address' do
+      it 'returns the mcp subdomain for the service name' do
+        setting.o11y_service_name = 'my-service'
+
+        expect(setting.mcp_address).to eq('my-service.mcp.gitlab-o11y.com')
+      end
+
+      it 'falls back to name_from_url when o11y_service_name is not set explicitly' do
+        setting.o11y_service_name = nil
+        allow(setting).to receive(:name_from_url).and_return('service-from-url')
+
+        expect(setting.mcp_address).to eq('service-from-url.mcp.gitlab-o11y.com')
+      end
+
+      it 'falls back to name_from_group when o11y_service_name and name_from_url are nil' do
+        setting.o11y_service_name = nil
+        allow(setting).to receive_messages(name_from_url: nil, name_from_group: 'group-path')
+
+        expect(setting.mcp_address).to eq('group-path.mcp.gitlab-o11y.com')
+      end
+    end
+
+    describe '#mcp_endpoint' do
+      it 'returns the full mcp endpoint url' do
+        setting.o11y_service_name = 'my-service'
+
+        expect(setting.mcp_endpoint).to eq('https://my-service.mcp.gitlab-o11y.com/mcp')
+      end
+    end
+  end
+
   describe 'factory' do
     it 'creates a valid record' do
       setting = build(:observability_group_o11y_setting)

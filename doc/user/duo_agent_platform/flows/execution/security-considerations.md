@@ -61,8 +61,8 @@ For the full list of exposed variables, see [flow execution variables](execution
 
 To reduce the risk of unauthorized changes to the `.gitlab/duo/agent-config.yml` file:
 
-- [Protect your default branch](../../../../user/project/repository/branches/protected.md) to prevent direct pushes.
-- Use [Code Owners](../../../../user/project/codeowners/_index.md) to require approval from specific
+- [Protect your default branch](../../../project/repository/branches/protected.md) to prevent direct pushes.
+- Use [Code Owners](../../../project/codeowners/_index.md) to require approval from specific
   owners before changes to `.gitlab/duo/agent-config.yml` are merged.
   For example, add the following to your `CODEOWNERS` file:
 
@@ -70,5 +70,5 @@ To reduce the risk of unauthorized changes to the `.gitlab/duo/agent-config.yml`
   .gitlab/duo/agent-config.yml @your-group/security-reviewers
   ```
 
-- Configure [approval rules](../../../../user/project/merge_requests/approvals/rules.md) that require
+- Configure [approval rules](../../../project/merge_requests/approvals/rules.md) that require
   review from trusted maintainers for merge requests that modify this file.

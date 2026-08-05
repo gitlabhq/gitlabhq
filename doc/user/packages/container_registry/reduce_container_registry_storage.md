@@ -428,7 +428,7 @@ There can be different reasons behind this:
 
   To fix this, there are two workarounds:
 
-  - You can [set limits for the cleanup policy](reduce_container_registry_storage.md#set-cleanup-limits-to-conserve-resources).
+  - You can [set limits for the cleanup policy](#set-cleanup-limits-to-conserve-resources).
     This limits the cleanup execution in time, and avoids the expired token error.
 
   - [Extend the expiration delay](../../../administration/packages/container_registry.md#increase-token-duration)

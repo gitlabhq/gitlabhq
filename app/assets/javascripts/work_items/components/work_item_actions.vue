@@ -250,7 +250,7 @@ export default {
     'toggleTruncationEnabled',
     'toggleWorkItemConfidentiality',
     'work-item-created',
-    'workItemStateUpdated',
+    'work-item-state-updated',
     'work-item-type-changed',
   ],
   data() {
@@ -667,7 +667,7 @@ export default {
         :parent-id="parentId"
         show-as-dropdown-item
         @error="emitStateToggleError"
-        @workItemStateUpdated="$emit('workItemStateUpdated')"
+        @work-item-state-updated="$emit('work-item-state-updated')"
       />
 
       <gl-disclosure-dropdown-item

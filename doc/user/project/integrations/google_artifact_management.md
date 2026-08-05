@@ -55,7 +55,7 @@ You should now see a **Google Artifact Registry** entry in the sidebar under **D
 
 Prerequisites:
 
-- The Google Artifact Registry must be [configured](google_artifact_management.md#set-up-the-google-artifact-registry-in-a-gitlab-project) in the project.
+- The Google Artifact Registry must be [configured](#set-up-the-google-artifact-registry-in-a-gitlab-project) in the project.
 
 To view the list of images in the connected Artifact Registry repository in the GitLab UI:
 

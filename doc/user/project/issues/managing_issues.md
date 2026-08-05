@@ -127,7 +127,7 @@ When bulk editing issues, you can edit the following attributes:
 
 - State (open or closed)
 - [Status](../../work_items/status.md)
-- [Assignees](managing_issues.md#assignees)
+- [Assignees](#assignees)
 - [Labels](../labels.md)
 - [Health status](#health-status)
 - [Notification](../../profile/notifications.md) subscription
@@ -675,7 +675,7 @@ To filter the list of issues:
    - Author
    - Confidential
    - [Contact](../../crm/_index.md)
-   - [Health](managing_issues.md#health-status)
+   - [Health](#health-status)
    - Iteration
    - Label
    - Milestone

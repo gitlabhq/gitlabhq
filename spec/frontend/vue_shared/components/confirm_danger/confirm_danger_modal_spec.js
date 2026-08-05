@@ -131,6 +131,20 @@ describe('Confirm Danger Modal', () => {
     });
   });
 
+  describe('when the modal closes', () => {
+    beforeEach(async () => {
+      createComponent();
+
+      await findConfirmationInput().vm.$emit('input', phrase);
+      await findModal().vm.$emit('hidden');
+    });
+
+    it('clears the confirmation phrase, so a reopened modal asks for it again', () => {
+      expect(findConfirmationInput().attributes('value')).toBe('');
+      expect(findPrimaryActionAttributes('disabled')).toBe(true);
+    });
+  });
+
   describe('v-model', () => {
     beforeEach(() => {
       createComponent();

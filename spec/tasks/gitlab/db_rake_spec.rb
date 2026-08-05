@@ -18,6 +18,14 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     allow(Rake::Task['db:schema:load']).to receive(:invoke).and_return(true)
     allow(Rake::Task['db:seed_fu']).to receive(:invoke).and_return(true)
     allow(Rake::Task['gitlab:db:lock_writes']).to receive(:invoke).and_return(true)
+
+    # Prevent rake tasks from modifying `db/structure.sql`.
+    # A modified structure.sql makes `ActiveRecord::Migration.maintain_test_schema!`
+    # silently rebuild all test databases at the boot of the next RSpec
+    # process (the CI failed-spec retry), resetting ID sequences and
+    # colliding with repositories Gitaly still has on disk from the first process.
+    allow(ActiveRecord::Tasks::DatabaseTasks).to receive(:dump_schema)
+
     stub_feature_flags(disallow_database_ddl_feature_flags: false)
   end
 

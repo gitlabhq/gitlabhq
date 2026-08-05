@@ -94,7 +94,7 @@ export default {
       required: true,
     },
   },
-  emits: ['attributesUpdated', 'error'],
+  emits: ['attributes-updated', 'error'],
   data() {
     return {
       workItemParticipants: {},
@@ -233,7 +233,9 @@ export default {
       :work-item-type="workItemType"
       :full-path="fullPath"
       @error="$emit('error', $event)"
-      @statusUpdated="$emit('attributesUpdated', { type: $options.ListType.status, ids: [$event] })"
+      @statusUpdated="
+        $emit('attributes-updated', { type: $options.ListType.status, ids: [$event] })
+      "
     />
     <work-item-assignees
       v-if="workItemAssignees"
@@ -249,7 +251,7 @@ export default {
       :can-invite-members="workItemAssignees.canInviteMembers"
       @error="$emit('error', $event)"
       @assigneesUpdated="
-        $emit('attributesUpdated', { type: $options.ListType.assignee, ids: $event })
+        $emit('attributes-updated', { type: $options.ListType.assignee, ids: $event })
       "
     />
     <work-item-labels
@@ -262,7 +264,7 @@ export default {
       :work-item-iid="workItem.iid"
       :work-item-type="workItemType"
       @error="$emit('error', $event)"
-      @labelsUpdated="$emit('attributesUpdated', { type: $options.ListType.label, ids: $event })"
+      @labelsUpdated="$emit('attributes-updated', { type: $options.ListType.label, ids: $event })"
     />
     <work-item-parent
       v-if="showParent"
@@ -297,7 +299,7 @@ export default {
       :can-update="canUpdateMetadata"
       @error="$emit('error', $event)"
       @milestoneUpdated="
-        $emit('attributesUpdated', { type: $options.ListType.milestone, ids: [$event] })
+        $emit('attributes-updated', { type: $options.ListType.milestone, ids: [$event] })
       "
     />
     <work-item-iteration
@@ -312,7 +314,7 @@ export default {
       :work-item-type="workItemType"
       @error="$emit('error', $event)"
       @iterationUpdated="
-        $emit('attributesUpdated', { type: $options.ListType.iteration, ids: [$event] })
+        $emit('attributes-updated', { type: $options.ListType.iteration, ids: [$event] })
       "
     />
     <work-item-dates

@@ -69,7 +69,7 @@ GitLab skips auto-assignment when:
 > For more information, see the history.
 > This feature is available for testing, but not ready for production use.
 
-When [GitLab Duo Agent Platform](../../../../user/duo_agent_platform/_index.md) is available for
+When [GitLab Duo Agent Platform](../../../duo_agent_platform/_index.md) is available for
 your project, the **Automatic reviewer assignment** section shows a **Reviewer assignment strategy**
 setting in place of the single checkbox. Select one of these options:
 

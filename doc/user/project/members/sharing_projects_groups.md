@@ -70,7 +70,7 @@ When you invite a group to a project, the following members get access to the pr
 
 - Direct group members.
 - Inherited group members.
-- Members of other [groups that are shared](sharing_projects_groups.md#invite-a-group-to-a-group) with the invited group.
+- Members of other [groups that are shared](#invite-a-group-to-a-group) with the invited group.
 
 Each member's access depends on:
 

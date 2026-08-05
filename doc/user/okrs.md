@@ -110,7 +110,7 @@ Prerequisites:
 
 To edit an OKR:
 
-1. [Open the objective](okrs.md#view-an-objective) or [key result](#view-a-key-result) that you want to edit.
+1. [Open the objective](#view-an-objective) or [key result](#view-a-key-result) that you want to edit.
 1. Optional. To edit the title, select it, make your changes, and select any area outside the title
    text box.
 1. Optional. To edit the description, select the edit icon ({{< icon name="pencil" >}}), make your changes, and
@@ -196,7 +196,7 @@ Prerequisites:
 
 To change the assignee on an OKR:
 
-1. [Open the objective](okrs.md#view-an-objective) or [key result](#view-a-key-result) that you want to edit.
+1. [Open the objective](#view-an-objective) or [key result](#view-a-key-result) that you want to edit.
 1. Next to **Assignees**, select **Add assignees**.
 1. From the dropdown list, select the users to add as an assignee.
 1. Select any area outside the dropdown list.
@@ -217,7 +217,7 @@ Use [labels](project/labels.md) to organize OKRs among teams.
 
 To add labels to an OKR:
 
-1. [Open the objective](okrs.md#view-an-objective) or [key result](#view-a-key-result) that you want to edit.
+1. [Open the objective](#view-an-objective) or [key result](#view-a-key-result) that you want to edit.
 1. Next to **Labels**, select **Add labels**.
 1. From the dropdown list, select the labels to add.
 1. Select any area outside the dropdown list.
@@ -239,7 +239,7 @@ Prerequisites:
 
 To add an objective to a milestone:
 
-1. [Open the objective](okrs.md#view-an-objective) that you want to edit.
+1. [Open the objective](#view-an-objective) that you want to edit.
 1. Next to **Milestone**, select **Add to milestone**.
    If an objective already belongs to a milestone, the dropdown list shows the current milestone.
 1. From the dropdown list, select the milestone to be associated with the objective.
@@ -293,7 +293,7 @@ Prerequisites:
 
 To set health status of an OKR:
 
-1. [Open the key result](okrs.md#view-a-key-result) that you want to edit.
+1. [Open the key result](#view-a-key-result) that you want to edit.
 1. Next to **Health status**, select the dropdown list and select the desired health status.
 
 ## Promote a key result to an objective
@@ -398,7 +398,7 @@ Prerequisites:
 
 To close an OKR:
 
-1. [Open the objective](okrs.md#view-an-objective) that you want to edit.
+1. [Open the objective](#view-an-objective) that you want to edit.
 1. Next to **Status**, select **Closed**.
 
 You can reopen a closed OKR the same way.

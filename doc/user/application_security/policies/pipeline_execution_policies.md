@@ -62,9 +62,9 @@ the following sections and tables provide an alternative.
 | `pipeline_config_strategy` | `string` | false | Can be `inject_policy`, `inject_ci` (deprecated), or `override_project_ci`. See [pipeline strategies](#pipeline-configuration-strategies) for more information.                                                                                                                                                                 |
 | `policy_scope` | `object` of [`policy_scope`](_index.md#configure-the-policy-scope) | false | Scopes the policy based on projects, groups, or compliance framework labels you specify.                                                                                                                                                                                                                                        |
 | `suffix` | `string` | false | Can either be `on_conflict` (default), or `never`. Defines the behavior for handling job naming conflicts. `on_conflict` applies a unique suffix to the job names for jobs that would break the uniqueness. `never` causes the pipeline to fail if the job names across the project and all applicable policies are not unique. |
-| `skip_ci` | `object` of [`skip_ci`](pipeline_execution_policies.md#skip_ci-type) | false | Defines whether users can apply the `skip-ci` directive. By default, the use of `skip-ci` is ignored and as a result, pipelines with pipeline execution policies cannot be skipped.                                                                                                                                             |
-| `no_pipeline` | `object` of [`no_pipeline`](pipeline_execution_policies.md#no_pipeline-type) | false | Defines whether users can apply the `no_pipeline` directive. By default, the use of `no_pipeline` is ignored and as a result, pipelines with pipeline execution policies cannot be not created.                                                                                                                                 |
-| `variables_override` | `object` of [`variables_override`](pipeline_execution_policies.md#variables_override-type) | false | Controls whether users can override the behavior of policy variables in the jobs created by the policy. By default, the policy variables are enforced with the highest precedence and users cannot override them.                                                                                                               |
+| `skip_ci` | `object` of [`skip_ci`](#skip_ci-type) | false | Defines whether users can apply the `skip-ci` directive. By default, the use of `skip-ci` is ignored and as a result, pipelines with pipeline execution policies cannot be skipped.                                                                                                                                             |
+| `no_pipeline` | `object` of [`no_pipeline`](#no_pipeline-type) | false | Defines whether users can apply the `no_pipeline` directive. By default, the use of `no_pipeline` is ignored and as a result, pipelines with pipeline execution policies cannot be not created.                                                                                                                                 |
+| `variables_override` | `object` of [`variables_override`](#variables_override-type) | false | Controls whether users can override the behavior of policy variables in the jobs created by the policy. By default, the policy variables are enforced with the highest precedence and users cannot override them.                                                                                                               |
 
 Note the following:
 
@@ -892,7 +892,7 @@ You cannot prefill job-specific variables.
 
 In manually-triggered pipelines, the **New pipeline** page displays all pipeline variables that have a `description` defined in the CI/CD configuration, from all applicable policies.
 
-You must configure the prefilled variables as allowed using [`variables_override`](pipeline_execution_policies.md#variables_override-type),
+You must configure the prefilled variables as allowed using [`variables_override`](#variables_override-type),
 otherwise the values used when manually triggering the pipelines are ignored.
 
 #### Recreate pipeline execution policies

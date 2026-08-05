@@ -292,7 +292,7 @@ Using checklists improves quality in software engineering. This checklist is a s
 
 For further quality guidelines, see [testing](https://handbook.gitlab.com/handbook/engineering/testing/).
 
-1. You have self-reviewed this MR per [code review guidelines](code_review.md).
+1. You have self-reviewed this MR per code review guidelines.
 1. The code follows the [software design guidelines](software_design.md).
 1. Ensure [automated tests](testing_guide/_index.md) exist following the [testing pyramid](testing_guide/testing_levels.md). Add missing tests or create an issue documenting testing gaps.
 1. You have considered the technical impacts on GitLab.com, Dedicated, and self-managed.

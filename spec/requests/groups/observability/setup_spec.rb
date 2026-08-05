@@ -36,7 +36,7 @@ RSpec.describe "Groups::Observability::Setup", feature_category: :observability 
       end
 
       context 'when group already has observability settings' do
-        let_it_be(:o11y_setting) { create(:observability_group_o11y_setting, group: group) }
+        let_it_be(:o11y_setting) { create(:observability_group_o11y_setting, group: group, created_at: 10.minutes.ago) }
 
         it 'returns early without building a new setting' do
           get_setup_page
@@ -166,6 +166,28 @@ RSpec.describe "Groups::Observability::Setup", feature_category: :observability 
               expect(response.body).to include('Non-TLS endpoints and advanced configuration')
               expect(response.body).to include('Firewall configuration')
             end
+          end
+
+          it 'renders the MCP server section with the MCP endpoint on GitLab.com' do
+            allow(Gitlab).to receive(:com?).and_return(true)
+
+            get_setup_page
+
+            setting = group.observability_group_o11y_setting
+
+            aggregate_failures do
+              expect(response.body).to include('MCP server')
+              expect(response.body).to include(setting.mcp_endpoint)
+              expect(response.body).to include('MCP server documentation')
+            end
+          end
+
+          it 'does not render the MCP server section when not on GitLab.com' do
+            allow(Gitlab).to receive(:com?).and_return(false)
+
+            get_setup_page
+
+            expect(response.body).not_to include('MCP server documentation')
           end
 
           it 'renders endpoint details before the CI/CD export settings' do

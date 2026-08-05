@@ -173,7 +173,7 @@ Prerequisites:
    The `attribute-mapping` parameter must include the mapping from OIDC custom
    claims included in the JWT ID token to the corresponding identity attributes
    that are used in Identity and Access Management (IAM) policies to grant access.
-   For more information, see the [supported OIDC custom claims](google_cloud_iam.md#oidc-custom-claims) that you can use
+   For more information, see the [supported OIDC custom claims](#oidc-custom-claims) that you can use
    to [control access to Google Cloud](https://cloud.google.com/docs/gitlab#control-access-google).
 
 To restrict [identity token access](https://cloud.google.com/iam/docs/workload-identity-federation#mapping) to a specific GitLab project or group, use an attribute condition. Use the attribute `assertion.project_id` for a project and the attribute `assertion.namespace_id` for a group.

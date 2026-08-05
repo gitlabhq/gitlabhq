@@ -3559,7 +3559,7 @@ To configure group SAML SSO:
 {{< /tabs >}}
 
 As a multi-tenant solution, group SAML on GitLab Self-Managed is limited compared
-to the recommended [instance-wide SAML](saml.md). Use
+to the recommended instance-wide SAML. Use
 instance-wide SAML to take advantage of:
 
 - [LDAP compatibility](../administration/auth/ldap/_index.md).

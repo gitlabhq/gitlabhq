@@ -385,7 +385,7 @@ In this example:
 - The `variables` sections merge, but `URL: "http://docker-url.internal"` overwrites `URL: "http://my-url.internal"`.
 - `tags: ['docker']` overwrites `tags: ['production']`.
 - `script` does not merge, but `script: ['rake rspec']` overwrites
-  `script: ['echo "Hello world!"']`. You can use [YAML anchors](yaml_optimization.md#anchors) to merge arrays.
+  `script: ['echo "Hello world!"']`. You can use [YAML anchors](#anchors) to merge arrays.
 
 ## `!reference` tags
 

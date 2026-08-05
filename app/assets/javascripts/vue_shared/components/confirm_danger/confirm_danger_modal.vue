@@ -119,6 +119,12 @@ export default {
         this.$refs.confirmInput.focus();
       });
     },
+    // The phrase a user typed is spent once the modal closes, whether they confirmed or
+    // cancelled. Clearing it means the next open asks for the confirmation again rather
+    // than reopening with the danger button already enabled.
+    resetConfirmationPhrase() {
+      this.confirmationPhrase = '';
+    },
   },
   i18n: {
     CONFIRM_DANGER_MODAL_BUTTON,
@@ -139,6 +145,7 @@ export default {
     @primary="$emit('confirm', $event)"
     @change="$emit('change', $event)"
     @shown="focusConfirmInput()"
+    @hidden="resetConfirmationPhrase()"
   >
     <gl-alert
       v-if="confirmDangerMessage"

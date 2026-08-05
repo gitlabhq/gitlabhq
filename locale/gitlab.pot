@@ -52349,6 +52349,9 @@ msgstr ""
 msgid "Observability|Configuring authentication"
 msgstr ""
 
+msgid "Observability|Connect an AI assistant or MCP client to query your observability data using natural language. Point your MCP client at this endpoint and authenticate with an observability API key."
+msgstr ""
+
 msgid "Observability|Connect your application"
 msgstr ""
 
@@ -52362,6 +52365,9 @@ msgid "Observability|Copy HTTP endpoint"
 msgstr ""
 
 msgid "Observability|Copy HTTPS endpoint"
+msgstr ""
+
+msgid "Observability|Copy MCP endpoint"
 msgstr ""
 
 msgid "Observability|Copy curl command"
@@ -52637,6 +52643,12 @@ msgstr ""
 msgid "Observability|Logs"
 msgstr ""
 
+msgid "Observability|MCP endpoint"
+msgstr ""
+
+msgid "Observability|MCP server"
+msgstr ""
+
 msgid "Observability|Manage API keys for observability access"
 msgstr ""
 
@@ -52820,6 +52832,9 @@ msgstr ""
 msgid "Observability|See it in action"
 msgstr ""
 
+msgid "Observability|See the %{mcp_help_link_start}MCP server documentation%{mcp_help_link_end} for supported clients, authentication, and available tools."
+msgstr ""
+
 msgid "Observability|Send a sample trace to verify your endpoint is accessible:"
 msgstr ""
 
@@ -52986,6 +53001,9 @@ msgid "Observability|Your %{owner_label} %{variable_name} variable is set to %{v
 msgstr ""
 
 msgid "Observability|Your CI/CD pipelines are sending telemetry"
+msgstr ""
+
+msgid "Observability|Your MCP endpoint is being provisioned. Once complete, it appears here."
 msgstr ""
 
 msgid "Observability|Your endpoints are being provisioned. Once complete, configure your OTel SDK to send to:"

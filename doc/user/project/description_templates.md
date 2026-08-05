@@ -166,7 +166,7 @@ Prerequisites:
 - You must have the Owner role for the group.
 - The project must be a direct child of the group.
 
-To re-use templates [you've created](description_templates.md#create-a-description-template):
+To re-use templates [you've created](#create-a-description-template):
 
 1. In the top bar, select **Search or go to** and find your group.
 1. In the left sidebar, select **Settings** > **General**.

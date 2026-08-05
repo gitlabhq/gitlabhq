@@ -296,6 +296,6 @@ auto-approves it in merge requests.
 
 ### Minimum approvals
 
-When [defining the number of approvals](advanced.md#require-multiple-approvals-from-code-owners) for a section,
+When [defining the number of approvals](#require-multiple-approvals-from-code-owners) for a section,
 the minimum number of approvals is `1`. Setting the number of approvals to
 `0` results in GitLab requiring one approval.

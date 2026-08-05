@@ -297,7 +297,7 @@ Data usage: When you use this feature, the following data is sent to the large l
 
 - [Control GitLab Duo availability](../../gitlab_duo/turn_on_off.md)
 - [All GitLab Duo features](../../gitlab_duo/_index.md)
-- [Resolve merge conflicts with GitLab Duo](../../project/merge_requests/conflicts.md#resolve-conflicts-with-gitlab-duo)
+- [Resolve merge conflicts with GitLab Duo](conflicts.md#resolve-conflicts-with-gitlab-duo)
 
 ## Troubleshooting
 

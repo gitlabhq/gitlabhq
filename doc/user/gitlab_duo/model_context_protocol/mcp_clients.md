@@ -110,7 +110,7 @@ The GitLab Language Server loads and merges the configuration files.
 
 > [!note]
 > Workspace configuration applies to your IDE workspace folder or current working directory when
-> you use the GitLab Duo CLI. This is separate from [GitLab Workspaces](../../../user/workspace/_index.md),
+> you use the GitLab Duo CLI. This is separate from [GitLab Workspaces](../../workspace/_index.md),
 > which are virtual development environments.
 
 ### Version compatibility

@@ -378,4 +378,4 @@ There are additional vulnerability metrics available in the [value streams dashb
 - [Security center](../security_center/_index.md)
 - [Vulnerability reports](../vulnerability_report/_index.md)
 - [Vulnerability Page](../vulnerabilities/_index.md)
-- [Auto-resolve vulnerabilities](../../application_security/policies/vulnerability_management_policy.md)
+- [Auto-resolve vulnerabilities](../policies/vulnerability_management_policy.md)

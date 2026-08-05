@@ -395,7 +395,6 @@ export default {
           onStateUpdated,
         }"
       >
-        <!-- eslint-disable vue/v-on-event-hyphenation -- work_item_detail_panel is a shared component that emits the camelCase `attributesUpdated` and `workItemStateUpdated` events -->
         <work-item-detail-panel
           :open="Boolean(activeIssuable && activeIssuable.iid)"
           :active-item="activeIssuable"
@@ -409,13 +408,12 @@ export default {
           "
           @work-item-updated="updateBoardCard($event, activeIssuable)"
           @work-item-deleted="onIssuableDeleted(activeIssuable)"
-          @attributesUpdated="onAttributeUpdated"
-          @workItemStateUpdated="onStateUpdated"
+          @attributes-updated="onAttributeUpdated"
+          @work-item-state-updated="onStateUpdated"
           @work-item-type-changed="updateBoardCard($event, activeIssuable)"
           @opened="$emit('drawer-opened')"
           @clicked-outside="$emit('drawer-closed')"
         />
-        <!-- eslint-enable vue/v-on-event-hyphenation -->
       </template>
     </board-drawer-wrapper>
   </div>

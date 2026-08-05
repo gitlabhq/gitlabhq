@@ -85,7 +85,7 @@ export default {
       default: null,
     },
   },
-  emits: ['error', 'submit-comment', 'workItemStateUpdated'],
+  emits: ['error', 'submit-comment', 'work-item-state-updated'],
   data() {
     return {
       updateInProgress: false,
@@ -302,7 +302,7 @@ export default {
       if (this.hasComment) {
         this.$emit('submit-comment');
       }
-      this.$emit('workItemStateUpdated');
+      this.$emit('work-item-state-updated');
 
       this.updateInProgress = false;
     },

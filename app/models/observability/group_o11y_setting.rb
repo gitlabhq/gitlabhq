@@ -143,6 +143,14 @@ module Observability
       end
     end
 
+    def mcp_endpoint
+      "https://#{mcp_address}/mcp"
+    end
+
+    def mcp_address
+      "#{o11y_service_name}.mcp.gitlab-o11y.com"
+    end
+
     private
 
     def within_provisioning_window?

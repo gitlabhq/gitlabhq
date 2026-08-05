@@ -66,7 +66,7 @@ To use Security Review Flow:
 Security Review Flow uses [GitLab Credits](../../../../subscriptions/gitlab_credits.md) each time it
 performs a review. Credit usage scales with diff complexity and the model you select.
 
-The following estimates apply to the [default model](../../../../user/duo_agent_platform/model_selection.md#default-models):
+The following estimates apply to the [default model](../../model_selection.md#default-models):
 
 | Review complexity                        | Approximate LLM calls | Estimated credits |
 |------------------------------------------|-----------------------|-------------------|
@@ -170,7 +170,7 @@ To resolve a finding:
 - To dismiss the finding, select **Resolve thread** if you reviewed the finding and
   determined it is a false positive or accepted risk.
 - To track the vulnerability for future remediation, use the standard GitLab
-  [thread actions](../../../../user/project/merge_requests/_index.md#move-open-threads-to-an-issue)
+  [thread actions](../../../project/merge_requests/_index.md#move-open-threads-to-an-issue)
   to create an issue from the finding.
 - To rate the finding's usefulness, select **thumbs up** or **thumbs down**. This
   feedback helps improve the model. You can also share detailed feedback in

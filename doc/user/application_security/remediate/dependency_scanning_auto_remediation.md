@@ -98,7 +98,7 @@ version bump capability and has its own toggle.
 
 Prerequisites:
 
-- You must have [GitLab Duo](../../../user/gitlab_duo/_index.md) available for the project.
+- You must have [GitLab Duo](../../gitlab_duo/_index.md) available for the project.
 - The `enable_dependency_bump_breaking_changes`
   [feature flag](../../../administration/feature_flags/_index.md) must be enabled for the
   project's root namespace.

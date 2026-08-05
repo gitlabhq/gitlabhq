@@ -120,11 +120,15 @@ git clone https://oauth2:<your_access_token>@gitlab.example.com/gitlab-org/gitla
 ### Use third-party tools and IDE extensions
 
 Tools that integrate with GitLab, such as IDE extensions, CI/CD tools, and automation
-scripts, accept a personal access token for authentication. See the documentation for each tool:
+scripts, accept a personal access token for authentication. Each tool's documentation describes
+the scopes it requires and how to enter your token:
 
-- [GitLab CLI (`glab`)](../../editor_extensions/gitlab_cli/_index.md)
-- [GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/_index.md)
-- [GitLab plugin for JetBrains IDEs](../../editor_extensions/jetbrains_ide/_index.md)
+- [GitLab CLI (`glab`)](https://docs.gitlab.com/cli/#authenticate-with-gitlab)
+- [GitLab for VS Code extension](../../editor_extensions/visual_studio_code/setup.md#authenticate-with-gitlab)
+- [GitLab Duo plugin for JetBrains IDEs](../../editor_extensions/jetbrains_ide/setup.md#authenticate-with-gitlab)
+- [GitLab for Visual Studio extension](../../editor_extensions/visual_studio/setup.md#authenticate-with-gitlab)
+- [GitLab for Eclipse](../../editor_extensions/eclipse/setup.md#authenticate-with-gitlab)
+- [GitLab plugin for Neovim](../../editor_extensions/neovim/setup.md#authenticate-with-gitlab)
 
 For CI/CD pipelines, [CI/CD job tokens](../../ci/jobs/ci_job_token.md) are recommended instead.
 

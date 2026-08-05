@@ -299,7 +299,6 @@ USER gitlab-workspaces
 
 - [Tutorial: Set up the GitLab agent for Kubernetes](set_up_gitlab_agent_and_proxies.md)
 - [Workspace settings](settings.md)
-- [Workspace configuration](configuration.md)
 - [Troubleshooting Workspaces](workspaces_troubleshooting.md)
 - [Quickstart guide for GitLab remote development workspaces](https://go.gitlab.com/AVKFvy)
 - [Set up your infrastructure for on-demand, cloud-based development environments in GitLab](https://go.gitlab.com/dp75xo)
