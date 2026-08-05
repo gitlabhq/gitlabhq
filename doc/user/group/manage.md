@@ -10,7 +10,7 @@ Use groups to manage one or more related projects at the same time.
 > [!note]
 > On GitLab Self-Managed, if you want to see an overview of your entire organization, you should create one top-level group.
 > For more information about efforts to create an organization view of all groups,
-> [see epic 9266](https://gitlab.com/groups/gitlab-org/-/epics/9266).
+> [see epic 9266](https://gitlab.com/groups/gitlab-org/-/work_items/9266).
 > A top-level group offers insights in your entire organization through a complete
 > [Security Dashboard and Center](../application_security/security_dashboard/_index.md),
 > [Vulnerability report](../application_security/vulnerability_report/_index.md),
@@ -766,7 +766,7 @@ To view the merge request approval settings for a group:
 
 Approval settings should not be confused with [approval rules](../project/merge_requests/approvals/rules.md). Support
 for the ability to set merge request approval rules for groups is tracked in
-[epic 4367](https://gitlab.com/groups/gitlab-org/-/epics/4367).
+[epic 4367](https://gitlab.com/groups/gitlab-org/-/work_items/4367).
 
 ## Group activity analytics
 

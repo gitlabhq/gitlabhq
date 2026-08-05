@@ -74,8 +74,7 @@ ai-principles-pipeline-generate:
     # race to mutate the same catalog item.
     - bundle exec bin/gitlab-ai-principles-distiller-provision-flow --workspace "$CI_PROJECT_DIR"
     # Detect drift and emit one distill job per affected principle.
-    - bundle exec bin/gitlab-ai-principles-distiller-sync --workspace "$CI_PROJECT_DIR"
-      --generate-child-pipeline
+    - bundle exec bin/gitlab-ai-principles-distiller-sync --workspace "$CI_PROJECT_DIR" generate-pipeline
   rules:
     - !reference ['.ai-principles-sync:rules:scheduled', rules]
   artifacts:
@@ -152,6 +151,6 @@ ai-principles-reconcile-fences:
   script:
     # Pure projection from master: regenerate the fences and open/update the
     # reconcile MR. Never re-distills.
-    - bundle exec bin/gitlab-ai-principles-distiller-sync --workspace "$CI_PROJECT_DIR" --reconcile-duo-instructions --push
+    - bundle exec bin/gitlab-ai-principles-distiller-sync --workspace "$CI_PROJECT_DIR" reconcile-fences --push
   rules:
     - !reference ['.ai-principles-reconcile:rules:scheduled', rules]

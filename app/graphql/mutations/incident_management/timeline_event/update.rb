@@ -6,6 +6,9 @@ module Mutations
       class Update < Base
         graphql_name 'TimelineEventUpdate'
 
+        authorize_granular_token permissions: :update_timeline_event,
+          boundary_argument: :id, boundary: :project, boundary_type: :project
+
         argument :id, ::Types::GlobalIDType[::IncidentManagement::TimelineEvent],
           required: true,
           description: 'ID of the timeline event to update.'

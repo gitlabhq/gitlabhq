@@ -1,6 +1,6 @@
 <script>
 import { GlCollapsibleListbox, GlButton } from '@gitlab/ui';
-import { isEqual, debounce } from 'lodash-es';
+import { cloneDeep, isEqual, debounce } from 'lodash-es';
 import EMPTY_VARIABLES_SVG from '@gitlab/svgs/dist/illustrations/variables-sm.svg';
 import { s__, __ } from '~/locale';
 import { createAlert } from '~/alert';
@@ -331,7 +331,7 @@ export default {
     },
     initializeInputs(inputs) {
       if (!inputs) return;
-      this.inputs = structuredClone(inputs);
+      this.inputs = cloneDeep(inputs);
 
       this.selectedInputNames = this.inputs
         .filter((input) => input.isSelected && !input.hasRules)

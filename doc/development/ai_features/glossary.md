@@ -269,8 +269,10 @@ A **discrete, deterministic capability** an agent (or flow step) invokes to perf
 actions. Tools can be used to perform these in GitLab or in third-party applications through MCP
 or other protocols.
 
+<!-- vale gitlab_base.OxfordComma = NO -->
 *Examples:* read GitLab issues, clone a repository, commit and push changes, call a REST API.
 Tools expose data or side-effects; they themselves perform **no reasoning**.
+<!-- vale gitlab_base.OxfordComma = YES -->
 
 ### Trigger
 

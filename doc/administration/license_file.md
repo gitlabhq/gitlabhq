@@ -85,7 +85,9 @@ When your license expires, GitLab locks features, like Git pushes
 and issue creation. Your instance becomes read-only, and
 an expiration message displays to all administrators.
 
+<!-- vale gitlab_base.OxfordComma = NO -->
 For example, if a license has a start date of January 1, 2024 and an end date of January 1, 2025:
+<!-- vale gitlab_base.OxfordComma = YES -->
 
 - It expires at 11:59:59 PM server time December 31, 2024.
 - It is considered expired from 12:00:00 AM server time January 1, 2025.

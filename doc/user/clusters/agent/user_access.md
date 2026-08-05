@@ -267,4 +267,4 @@ The configured user can access your cluster with the Kubernetes API.
 ## Related topics
 
 - [Architectural blueprint](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/kubernetes_user_access.md)
-- [Dashboard for Kubernetes](https://gitlab.com/groups/gitlab-org/-/epics/2493)
+- [Dashboard for Kubernetes](https://gitlab.com/groups/gitlab-org/-/work_items/2493)

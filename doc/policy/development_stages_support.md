@@ -89,10 +89,6 @@ Generally available features:
 - Are [fully supported](https://about.gitlab.com/support/statement-of-support/) and documented.
 - Have a complete user experience aligned with GitLab design standards.
 - Must be available on all GitLab offerings (GitLab.com, GitLab.com Cells, GitLab Self-Managed, GitLab Dedicated, GitLab Dedicated for Government).
-- Usage of generally available features in the GitLab Duo Agent Platform consumes GitLab Credits.
-  When a feature becomes generally available in the most recent GitLab version,
-  usage of the feature starts to consume credits on all versions and offerings.
-  Beta features can change to generally available with usage billing at any time.
 
 ## Feature release requirements
 

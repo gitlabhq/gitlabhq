@@ -53354,6 +53354,7 @@ Fields:
 | <a id="pipeline-dastprofile"></a>`dastProfile` | [`DastProfile`](#dastprofile) | DAST profile associated with the pipeline. |
 | <a id="pipeline-detailedstatus"></a>`detailedStatus` | [`DetailedStatus!`](#detailedstatus) | Detailed status of the pipeline. |
 | <a id="pipeline-downstream"></a>`downstream` | [`PipelineConnection`](#pipelineconnection) | Latest pipelines triggered by the pipeline. Pipelines from trigger jobs that have since been retried are excluded. (see [Connections](#connections)) |
+| <a id="pipeline-duoworkflows"></a>`duoWorkflows` {{< icon name="warning-solid" >}} | [`DuoWorkflowConnection`](#duoworkflowconnection) | Introduced in GitLab 19.3. Status: Experiment. Duo Workflow sessions associated with the pipeline. |
 | <a id="pipeline-duration"></a>`duration` | [`Int`](#int) | Duration of the pipeline in seconds. |
 | <a id="pipeline-enabledpartialsecurityscans"></a>`enabledPartialSecurityScans` {{< icon name="warning-solid" >}} | [`EnabledSecurityScans!`](#enabledsecurityscans) | Introduced in GitLab 18.3. Status: Experiment. Partial scans present in the pipeline and its descendents for each report type. |
 | <a id="pipeline-enabledsecurityscans"></a>`enabledSecurityScans` {{< icon name="warning-solid" >}} | [`EnabledSecurityScans!`](#enabledsecurityscans) | Introduced in GitLab 18.3. Status: Experiment. Security scans present in the pipeline and its descendents for each report type. |

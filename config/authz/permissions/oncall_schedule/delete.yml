@@ -1,0 +1,3 @@
+---
+name: delete_oncall_schedule
+description: Grants the ability to delete on-call schedules

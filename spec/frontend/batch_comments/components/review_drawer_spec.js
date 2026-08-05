@@ -1,4 +1,4 @@
-import { GlDrawer } from '@gitlab/ui';
+import { GlDrawer, GlModal } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import { createTestingPinia } from '@pinia/testing';
 import { PiniaVuePlugin } from 'pinia';
@@ -41,7 +41,10 @@ describe('ReviewDrawer', () => {
   const findForm = () => wrapper.findComponentByTestId('submit-gl-form');
   const findPlaceholderField = () => wrapper.findComponentByTestId('placeholder-input-field');
   const findDiscardReviewButton = () => wrapper.findComponentByTestId('discard-review-btn');
-  const findDiscardReviewModal = () => wrapper.findComponentByTestId('discard-review-modal');
+  const findDiscardReviewModal = () =>
+    wrapper
+      .findAllComponents(GlModal)
+      .wrappers.find((modal) => modal.props('modalId') === 'discard-review-modal');
   const findMarkdownField = () => wrapper.findComponent(MarkdownField);
 
   const submitForm = async () => {
@@ -345,7 +348,7 @@ describe('ReviewDrawer', () => {
     it('shows modal when clicking discard button', async () => {
       createComponent();
 
-      expect(findDiscardReviewModal().exists()).toBe(false);
+      expect(findDiscardReviewModal().props('visible')).toBe(false);
 
       findDiscardReviewButton().vm.$emit('click');
 

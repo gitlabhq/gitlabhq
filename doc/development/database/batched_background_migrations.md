@@ -552,7 +552,7 @@ class BackfillNamespaceType < Gitlab::Database::Migration[2.1]
 end
 ```
 
-- In Release N, add a regular migration, to delete the existing batched migration.
+- In Release N, add a post-deployment migration to delete the existing batched migration.
   Delete the existing batched background migration using the `delete_batched_background_migration` method at the
   start of the `#up` method to ensure that any existing runs are cleaned up.
 

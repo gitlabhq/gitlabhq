@@ -30,6 +30,11 @@ RSpec.describe 'Setting the status of an alert', feature_category: :incident_man
 
   let(:mutation_response) { graphql_mutation_response(:update_alert_status) }
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :update_alert do
+    let(:boundary_object) { project }
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   it 'updates the status of the alert' do
     post_graphql_mutation(mutation, current_user: user)
 

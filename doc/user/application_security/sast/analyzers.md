@@ -42,7 +42,9 @@ SAST supports the following official analyzers:
 - [`pmd-apex`](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex), based on PMD with rules for the Apex language.
 - [`semgrep`](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep), based on the Semgrep OSS engine [with GitLab-managed rules](rules.md#semgrep-based-analyzer).
 - [`sobelow`](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow), based on Sobelow.
+<!-- vale gitlab_base.OxfordComma = NO -->
 - [`spotbugs`](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs), based on SpotBugs with the Find Sec Bugs plugin (Ant, Gradle and wrapper, Grails, Maven and wrapper, SBT).
+<!-- vale gitlab_base.OxfordComma = YES -->
 
 ### Supported versions
 

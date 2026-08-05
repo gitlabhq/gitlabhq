@@ -361,7 +361,7 @@ such cases, the team owning the table will need to create the necessary merge re
 
 ### Add column, triggers, indexes, and foreign keys
 
-This is the step where we add the sharding key column, indexes, foreign keys and necessary triggers.
+This is the step where we add the sharding key column, indexes, foreign keys, and necessary triggers.
 
 **1. Steps to set up:**
 

@@ -5,6 +5,8 @@ import js from '@eslint/js';
 import { FlatCompat } from '@eslint/eslintrc';
 import graphqlPlugin from '@graphql-eslint/eslint-plugin';
 import noUnsanitizedPlugin from 'eslint-plugin-no-unsanitized';
+import globals from 'globals';
+import confusingBrowserGlobals from 'confusing-browser-globals';
 import { conditionalIgnores } from './tooling/eslint-config/conditional_ignores.js';
 import * as todoLists from './.eslint_todo/index.mjs';
 import { eslintLocalRules } from './tooling/eslint-config/eslint-local-rules/index.mjs';
@@ -94,6 +96,36 @@ const jestConfig = {
     'local-rules/vue3-find-component-upgrade': 'error',
   },
 };
+
+// ── Restricted Globals ──
+
+const restrictedGlobals = [
+  ...confusingBrowserGlobals,
+  {
+    name: 'isFinite',
+    message:
+      'Use Number.isFinite instead https://github.com/airbnb/javascript#standard-library--isfinite',
+  },
+  {
+    name: 'isNaN',
+    message:
+      'Use Number.isNaN instead https://github.com/airbnb/javascript#standard-library--isnan',
+  },
+  {
+    name: 'escape',
+    message: 'The global `escape` function is deprecated, use `encodeURI` instead.',
+  },
+  {
+    name: 'unescape',
+    message: 'The global `unescape` function is deprecated, use `decodeURI` instead.',
+  },
+  {
+    name: 'structuredClone',
+    message:
+      'Use `cloneDeep` from lodash-es instead. `structuredClone` throws `DataCloneError` on a Proxy, ' +
+      'and Vue 3 reactive state is a Proxy.',
+  },
+];
 
 // ── Restricted Imports ──
 
@@ -418,6 +450,8 @@ export default [
 
       // Restricted syntax, properties, and imports
       'no-restricted-syntax': ['error', ...baseNoRestrictedSyntax],
+
+      'no-restricted-globals': ['error', ...restrictedGlobals],
 
       'no-restricted-properties': [
         'error',
@@ -1020,13 +1054,16 @@ export default [
     files: ['{,ee/}app/assets/javascripts/**/*_worker.js'],
 
     languageOptions: {
-      globals: {
-        self: 'readonly',
-      },
+      globals: globals.worker,
     },
 
     rules: {
-      'no-restricted-globals': 'off',
+      // `no-restricted-globals` still bans the `confusing-browser-globals` list.
+      // The rule options replace instead of merging, so the full list has to be restated.
+      'no-restricted-globals': [
+        'error',
+        ...restrictedGlobals.filter((entry) => !Object.hasOwn(globals.worker, entry.name ?? entry)),
+      ],
     },
   },
 

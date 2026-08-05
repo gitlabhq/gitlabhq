@@ -30,6 +30,11 @@ RSpec.describe 'Creating a todo for the alert', feature_category: :incident_mana
 
   let(:mutation_response) { graphql_mutation_response(:alert_todo_create) }
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :create_todo do
+    let(:boundary_object) { project }
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   it 'creates a todo for the current user' do
     post_graphql_mutation(mutation, current_user: user)
 

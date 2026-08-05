@@ -1,0 +1,10 @@
+---
+name: update_oncall_schedule
+description: Grants the ability to update on-call schedules and their rotations
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - update_oncall_schedule
+  - update_oncall_rotation

@@ -163,9 +163,9 @@ module Gitlab
         # CLAUDE.md, both SKILL.md, CODEOWNERS).
         # These are regenerated in-branch so they never leak into the per-team branches.
         #
-        # The Duo review-instructions fences are NOT part of this MR: they are reconciled from merged-master content by
-        # the separate scheduled reconcile job (see Sync#reconcile_duo_instructions), so a team's distilled MR and the
-        # fence update are independently mergeable with no cross-MR merge-order dependency.
+        # The Duo review-instructions fences are NOT part of this MR: they are reconciled from merged-master content.
+        # The separate scheduled reconcile job (see Sync#reconcile_duo_instructions_fences) keeps a team's distilled
+        # MR and the fence update independently mergeable with no cross-MR merge-order dependency.
         def publish_tooling_branch(ctx)
           branch = tooling_branch_name(ctx.auto_mr_cfg, ctx.date)
 
@@ -211,7 +211,7 @@ module Gitlab
 
         # Builds, pushes, and opens/updates the dedicated reconcile MR carrying ONLY the Duo review-instructions fence
         # update.
-        # Called from Sync#reconcile_duo_instructions.
+        # Called from Sync#reconcile_duo_instructions_fences.
         #
         # The fences are projected AFTER cutting the fresh branch off origin/<default_branch>, so the projection reads
         # exactly the ref the MR targets.

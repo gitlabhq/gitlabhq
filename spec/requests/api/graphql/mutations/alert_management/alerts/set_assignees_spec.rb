@@ -31,6 +31,12 @@ RSpec.describe 'Setting assignees of an alert', feature_category: :incident_mana
 
   let(:mutation_response) { graphql_mutation_response(:alert_set_assignees) }
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :update_alert do
+    let(:user) { current_user }
+    let(:boundary_object) { project }
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   it 'updates the assignee of the alert' do
     post_graphql_mutation(mutation, current_user: current_user)
 

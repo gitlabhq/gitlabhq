@@ -1,6 +1,6 @@
 ---
-source_checksum: 3ac83ddd8eb34472
-distilled_at_sha: f61a71870e300699d0cbf5f4ba05fb6666928907
+source_checksum: f2d87a2527122b97
+distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -74,7 +74,7 @@ distilled_at_sha: f61a71870e300699d0cbf5f4ba05fb6666928907
 
 ### Arguments
 
-- DO NOT use the `loads:` option in argument definitions; accept the Global ID and load the object manually with `authorized_find!`.
+- DO NOT use the `loads:` option in argument definitions; accept the Global ID and load the object manually with `authorized_find!` (enforced by the `Graphql/ForbiddenLoadsArgument` RuboCop cop).
 - Use `required: :nullable` when an argument must be provided but its value can be `null`.
 - Add `validates: { allow_null: false }` for optional arguments where `null` is not a valid value.
 - Use `validates mutually_exclusive:` or `validates exactly_one_of:` for mutually exclusive or exactly-one-of argument groups.

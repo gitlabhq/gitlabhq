@@ -83,8 +83,7 @@ variables:
   before_script:
     - !reference [.ai-principles-setup, before_script]
   script:
-    - bundle exec bin/gitlab-ai-principles-distiller-sync --workspace "$CI_PROJECT_DIR"
-      --distill-one "$AI_PRINCIPLE_NAME"
+    - bundle exec bin/gitlab-ai-principles-distiller-sync --workspace "$CI_PROJECT_DIR" distill-one "$AI_PRINCIPLE_NAME"
   artifacts:
     # `when: always` is load-bearing, not defensive: the collect job reads the `.status` file to distinguish "failed
     # after retries" from "job never ran".
@@ -116,8 +115,7 @@ ai-principles-collect:
   before_script:
     - !reference [.ai-principles-setup, before_script]
   script:
-    - bundle exec bin/gitlab-ai-principles-distiller-sync --workspace "$CI_PROJECT_DIR"
-      --collect "$AI_PRINCIPLES_EXPECTED" --push
+    - bundle exec bin/gitlab-ai-principles-distiller-sync --workspace "$CI_PROJECT_DIR" collect "$AI_PRINCIPLES_EXPECTED" --push
   artifacts:
     when: always
     expire_in: 7d

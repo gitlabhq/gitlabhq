@@ -28,6 +28,11 @@ RSpec.describe 'Resetting a token on an existing Prometheus Integration', featur
 
   let(:mutation_response) { graphql_mutation_response(:prometheus_integration_reset_token) }
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :update_http_integration do
+    let(:boundary_object) { project }
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   it 'updates the token' do
     expect { post_graphql_mutation(mutation, current_user: user) }
       .to change { integration.reload.token }

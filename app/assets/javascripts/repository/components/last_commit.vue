@@ -1,5 +1,6 @@
 <script>
 import { GlTooltipDirective, GlButton, GlButtonGroup } from '@gitlab/ui';
+import { cloneDeep } from 'lodash-es';
 import { InternalEvents } from '~/tracking';
 import { HISTORY_BUTTON_CLICK } from '~/tracking/constants';
 import { logError } from '~/lib/logger';
@@ -94,7 +95,7 @@ export default {
               },
             ) {
               if (ciPipelineStatusUpdated) {
-                const updatedData = structuredClone(previousData);
+                const updatedData = cloneDeep(previousData);
                 const pipeline =
                   updatedData.project?.repository?.paginatedTree?.nodes[0]?.lastCommit?.pipelines
                     ?.edges[0]?.node || {};

@@ -35,6 +35,11 @@ RSpec.describe 'Removing an incident timeline event', feature_category: :inciden
 
   let(:mutation_response) { graphql_mutation_response(:timeline_event_destroy) }
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :delete_timeline_event do
+    let(:boundary_object) { project }
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   it 'removes incident timeline event', :aggregate_failures do
     post_graphql_mutation(mutation, current_user: user)
 

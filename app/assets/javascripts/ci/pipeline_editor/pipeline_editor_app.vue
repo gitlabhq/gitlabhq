@@ -1,6 +1,6 @@
 <script>
 import { GlLoadingIcon, GlModal } from '@gitlab/ui';
-import { debounce } from 'lodash-es';
+import { cloneDeep, debounce } from 'lodash-es';
 import { fetchPolicies } from '~/lib/graphql';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { mergeUrlParams, queryToObject, visitUrl } from '~/lib/utils/url_utility';
@@ -375,7 +375,7 @@ export default {
           },
         });
 
-        const config = structuredClone(data?.ciLint?.config || {});
+        const config = cloneDeep(data?.ciLint?.config || {});
         if (config.stages) {
           config.stages = unwrapStagesFromMutation(config.stages);
         }

@@ -289,7 +289,7 @@ Custom roles may impact [advanced search functionality](../../user/search/advanc
 ### Step 7: Add specs
 
 - Add the ability as a trait in the `MemberRoles` factory, `ee/spec/factories/member_roles.rb`.
-- Add tests to `ee/spec/requests/custom_roles/<ABILITY_NAME>/request_spec.rb` to ensure that once the user has been assigned the custom ability, they can successfully access the controllers, REST API endpoints and GraphQL API endpoints.
+- Add tests to `ee/spec/requests/custom_roles/<ABILITY_NAME>/request_spec.rb` to ensure that once the user has been assigned the custom ability, they can successfully access the controllers, REST API endpoints, and GraphQL API endpoints.
 - Below is an example of the typical setup that is required to test a Rails Controller endpoint.
 
 ```ruby

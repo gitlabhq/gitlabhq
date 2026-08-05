@@ -573,13 +573,73 @@ Grants the ability to create, delete, merge, read, and update topics.
 
 ### Monitoring resources
 
-#### Escalation Policy
+#### Alert
 
-Grants the ability to read escalation policies.
+Grants the ability to update alerts.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
+| Update | Project | Mutation | `AlertSetAssignees` |
+| Update | Project | Mutation | `UpdateAlertStatus` |
+
+#### Escalation Policy
+
+Grants the ability to create, delete, read, and update escalation policies.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `EscalationPolicyCreate` |
+| Delete | Project | Mutation | `EscalationPolicyDestroy` |
 | Read | Project | Type | `EscalationPolicyType` |
+| Update | Project | Mutation | `EscalationPolicyUpdate` |
+
+#### HTTP Integration
+
+Grants the ability to create, delete, and update HTTP integrations.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `HttpIntegrationCreate` |
+| Create | Project | Mutation | `PrometheusIntegrationCreate` |
+| Delete | Project | Mutation | `HttpIntegrationDestroy` |
+| Update | Project | Mutation | `HttpIntegrationResetToken` |
+| Update | Project | Mutation | `HttpIntegrationUpdate` |
+| Update | Project | Mutation | `PrometheusIntegrationResetToken` |
+| Update | Project | Mutation | `PrometheusIntegrationUpdate` |
+
+#### Issuable Resource Link
+
+Grants the ability to create and delete issuable resource links.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `IssuableResourceLinkCreate` |
+| Delete | Project | Mutation | `IssuableResourceLinkDestroy` |
+
+#### On-call Schedule
+
+Grants the ability to create, delete, and update on-call schedules.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `OncallRotationCreate` |
+| Create | Project | Mutation | `OncallScheduleCreate` |
+| Delete | Project | Mutation | `OncallRotationDestroy` |
+| Delete | Project | Mutation | `OncallScheduleDestroy` |
+| Update | Project | Mutation | `OncallRotationUpdate` |
+| Update | Project | Mutation | `OncallScheduleUpdate` |
+
+#### Timeline Event
+
+Grants the ability to create, delete, and update timeline events.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `TimelineEventCreate` |
+| Create | Project | Mutation | `TimelineEventPromoteFromNote` |
+| Create | Project | Mutation | `TimelineEventTagCreate` |
+| Delete | Project | Mutation | `TimelineEventDestroy` |
+| Update | Project | Mutation | `TimelineEventUpdate` |
 
 ### Notifications resources
 
@@ -589,6 +649,7 @@ Grants the ability to create, delete, read, and update todos.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `AlertTodoCreate` |
 | Create | Project | Mutation | `TodoCreate` |
 | Create | Group | Mutation | `TodoCreate` |
 | Delete | User | Mutation | `TodoDeleteAllDone` |
@@ -762,6 +823,7 @@ Grants the ability to create, delete, read, and update work items such as epics 
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
+| Create <sup>1</sup> | Project | Mutation | `CreateAlertIssue` |
 | Create | Project | Mutation | `CreateDiffNote` |
 | Create | Project | Mutation | `CreateDiscussion` |
 | Create | Project | Mutation | `CreateImageDiffNote` |
@@ -829,6 +891,8 @@ Grants the ability to create, delete, read, and update work items such as epics 
 | Update | Group | Mutation | `WorkItemConvert` |
 | Update | Group | Mutation | `WorkItemUpdate` |
 | Update | Group | Mutation | `workItemsReorder` |
+
+<sup>1</sup> Also requires the `Update Alert` permission.
 
 ### Projects resources
 

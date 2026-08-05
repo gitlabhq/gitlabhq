@@ -1,0 +1,9 @@
+---
+name: update_escalation_policy
+description: Grants the ability to update escalation policies
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - update_escalation_policy

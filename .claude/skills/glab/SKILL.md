@@ -1,7 +1,7 @@
 ---
 name: glab
 description: GitLab workflow automation using glab CLI
-version: 1.11.0
+version: 1.11.1
 category: Development Workflow
 license: MIT
 metadata:
@@ -277,7 +277,7 @@ API quirks that are easy to get wrong and not discoverable from `glab <cmd> --he
 14. **Non-origin remotes → `remote_alias`** — if `origin` points at one instance but you want glab to target another remote (e.g. a local GDK added as `gdk`), run `glab config set remote_alias gdk` rather than setting `GITLAB_HOST` per command. See [references/multi-host.md](references/multi-host.md)
 15. **Backticks in messages → write to a file first** — never inline `` ` ``/`$` in `-m "..."` or `--description "..."`; write to a file you name (unique per invocation) using `<< 'EOF'` (single-quoted delimiter, critical), then pass via `$(cat "$FILE")`. See the Message Escaping section above.
 16. **Second same-family remote misroutes `mr create`** — with a `security` mirror alongside `origin`, non-interactive `mr create` (no TTY) silently picks the fork as the head. Fix once per checkout: `git config remote.origin.glab-resolved-head head`; per-command fallback: `-H <owner/repo>` (`-R` does not fix it). See the "Creating Merge Requests" section.
-17. **`glab api -f` serializes bracket keys as flat JSON, not nested objects** — `-f "position[new_line]=72"` sends `{"position[new_line]":"72"}` (literal key); the API ignores it and silently creates a *general* note (HTTP 201, `new_line: null`). Write the nested JSON body to a `/tmp/` file with a single-quoted `<< 'EOF'` heredoc (prevents shell interpolation of backticks/`$` in review bodies) and pass via `--input <file>` with `-H "Content-Type: application/json"` (omitting the header → HTTP 415). Verify inline notes landed before publishing: `GET --paginate .../draft_notes | jq '.[] | {id, new_line: .position.new_line, note: .note[0:40]}'` — a `null` on a note you intended as inline means the position was dropped. See [references/mr-review.md](references/mr-review.md).
+17. **`glab api` note body:** file → `-F "body=@file"`; prose with backticks/`$` → write it literally to a file first. Inline text → `-f`; literal `@here see above` → `-f "body=@here see above"` (never a file). Nested JSON → `--input file -H "Content-Type: application/json"`. Repair: `--method PUT -F "body=@file"`, not `DELETE`. Failures are silent (exit 0, HTTP 201); verify what landed with `| jq '.body | length'`. Details: [references/mr-review.md](references/mr-review.md#5-glab-api-field-flags--f-vs--f).
 
 ## Contributing Improvements
 

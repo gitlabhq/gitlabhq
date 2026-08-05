@@ -6,9 +6,11 @@ description: Change billing account data and payment methods, pay for invoices, 
 title: Manage billing account
 ---
 
+<!-- vale gitlab_base.OxfordComma = NO -->
 Customers Portal is your comprehensive self-service hub for [managing GitLab subscriptions](manage_subscription.md) and billing.
 You can purchase GitLab products, manage your subscriptions throughout the entire subscription lifecycle, view and pay invoices,
 and access your billing details and contact information.
+<!-- vale gitlab_base.OxfordComma = YES -->
 
 If you made your purchase through an authorized reseller, you must contact them directly to make changes to your subscription.
 For more information, see [customers that purchased through a reseller](#subscription-purchased-through-a-reseller).

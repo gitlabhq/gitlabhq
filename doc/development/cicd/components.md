@@ -93,7 +93,7 @@ Follow these guidelines to determine the appropriate version type for your compo
 
 Breaking changes that may not be obvious:
 
-- **Input modifications**: Adding required inputs, removing existing inputs, or making input validation more restrictive (for example, changing a regex pattern, type or options)
+- **Input modifications**: Adding required inputs, removing existing inputs, or making input validation more restrictive (for example, changing a regex pattern, type, or options)
 - **YAML node conflicts**: Adding new YAML nodes (like `before_script`, `after_script`, `variables`) that users might already be overriding in their pipelines
 - **Runner requirements**: Changes that require specific runner configurations or newer GitLab Runner versions
 - **License dependencies**: Adding features that require specific GitLab license tiers

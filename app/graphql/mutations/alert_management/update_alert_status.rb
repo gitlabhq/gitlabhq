@@ -5,6 +5,9 @@ module Mutations
     class UpdateAlertStatus < Base
       graphql_name 'UpdateAlertStatus'
 
+      authorize_granular_token permissions: :update_alert,
+        boundary_argument: :project_path, boundary_type: :project
+
       argument :status, Types::AlertManagement::StatusEnum,
         required: true,
         description: 'Status to set the alert.'

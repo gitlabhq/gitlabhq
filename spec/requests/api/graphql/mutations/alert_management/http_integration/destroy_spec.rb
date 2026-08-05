@@ -32,6 +32,11 @@ RSpec.describe 'Removing an HTTP Integration', feature_category: :incident_manag
 
   let(:mutation_response) { graphql_mutation_response(:http_integration_destroy) }
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :delete_http_integration do
+    let(:boundary_object) { project }
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   it 'removes the integration' do
     post_graphql_mutation(mutation, current_user: user)
 

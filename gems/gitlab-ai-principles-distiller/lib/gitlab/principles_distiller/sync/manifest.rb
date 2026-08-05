@@ -39,7 +39,7 @@ module Gitlab
         #
         # The Duo review-instructions file is intentionally NOT here: its fences
         # are reconciled from merged-master content by a separate scheduled job
-        # (see Sync#reconcile_duo_instructions), decoupled from distillation so
+        # (see Sync#reconcile_duo_instructions_fences), decoupled from distillation so
         # a team's distilled MR and the fence update are independently
         # mergeable.
         TOOLING_PATHS = [
@@ -502,7 +502,7 @@ module Gitlab
         # fence whose manifest entry exists but whose distilled file has not been
         # generated yet), and orphaned (a fence with neither a distilled file nor
         # a manifest entry). Every category is empty when the file is absent.
-        # Read-only; drives the --check-duo-instructions CI guard.
+        # Read-only; drives the check-fences CI guard.
         #
         # `seeded` is the full set of manifest principle keys, so the guard can
         # tell a valid pending seed from a truly orphaned fence.

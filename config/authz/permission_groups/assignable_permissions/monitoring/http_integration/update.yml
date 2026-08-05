@@ -1,0 +1,9 @@
+---
+name: update_http_integration
+description: Grants the ability to update HTTP integrations
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - update_http_integration

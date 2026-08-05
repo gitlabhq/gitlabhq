@@ -353,6 +353,54 @@ For non-batched flows, prefer `glab mr note resolve|reopen <id>`.
 
 ---
 
+## 5. `glab api` field flags: `-f` vs `-F`
+
+Evidence for item 17. To probe any assumption in ~30s, set `GLAB_DEBUG_HTTP=1` and `POST` to a
+nonexistent issue IID: it prints the serialized request body and guarantees nothing lands.
+Verified on **glab 1.110.0 (1797d215)**, re-confirmed on **1.112.0**.
+
+### `-F`/`--field` converts its inline value; `-f`/`--raw-field` never does
+
+| `-F` inline value | sent as |
+|---|---|
+| JSON literal `true`/`false`/`null` | `{"body":true}` — not a string |
+| integer `123`, `007` | `123`, `7` (leading zeros dropped; **only** integers — `12.5`, `1e3`, `" true"` stay strings) |
+| leading `@`, e.g. `@note.md` | the contents of `note.md` |
+| `:repo`/`:namespace`/`:branch`/`:fullpath` | substituted **anywhere in the value** (substring match; they're Ruby symbols too) |
+
+The placeholder row is the trap — it's a substring match:
+
+```
+# remote is <group>/<project>
+-F "body=opts[:namespace] ||= params[:repo]"  → {"body":"opts[<group>] ||= params[<project>]"}  sent, exit 0, no warning
+-f "body=opts[:namespace] ||= params[:repo]"  → unchanged                                       -f has no conversion surface
+```
+
+**Conversions apply to the inline value only** — content read through `@` passes untouched
+(verified for both type inference and placeholders). `-F "body=@$MSG"` also preserves the file's
+trailing newline, has no size ceiling, and **aborts loudly, sending nothing, if the file is
+missing**. One hole: `@-` reads **stdin**, and with nothing piped sends `{"body":""}` silently.
+
+### `-f "body=$(cat "$MSG")"` is the weaker transport for a file (shell limits, not glab)
+
+- **A failed `$(cat …)` sends an empty body, not an error** — even under `set -e`, a failing
+  command substitution inside an argument does not abort. This is why item 17's repair `PUT`
+  uses `-F "body=@$MSG"`: a mistyped path there would replace real content with an empty body.
+- **~128 KiB per argument** (`MAX_ARG_STRLEN`, not `ARG_MAX`): a 131,067-byte body dies with
+  `Argument list too long`, nothing sent. `-F "body=@file"` has no such limit (note bodies
+  allow up to 1,000,000 chars).
+- **`$()` strips trailing newlines and drops NUL bytes**; `-F "body=@file"` preserves both.
+
+Non-UTF-8 bytes become U+FFFD under **both** flags (Go's JSON encoder) — neither is verbatim for
+binary content.
+
+### Nested JSON needs `--input`
+
+Neither flag builds nested objects (see the `draft_notes` gotcha below for the bracket-key
+symptom and `new_line: null` detection). `--input` without `-H "Content-Type: application/json"`
+returns **HTTP 415**. Write the JSON with a single-quoted `<< 'EOF'` heredoc so backticks and `$`
+in review bodies are not interpolated.
+
 ## Gotchas
 
 ### `glab mr note`
@@ -373,10 +421,12 @@ For non-batched flows, prefer `glab mr note resolve|reopen <id>`.
 
 ### `glab api .../draft_notes` (fallback)
 
-- **`-f` for inline notes → silently broken** — `-f`/`--field` builds a flat JSON body, so
-  `-f "position[new_line]=72"` serializes as the literal key `{"position[new_line]":"72"}`
-  instead of a nested `position` object. The API ignores the unknown flat key (HTTP 201,
-  real IDs) and creates a *general* note — only `new_line: null` reveals it. Build a real
+- **Field flags for inline notes → silently broken** — `-f`/`--raw-field` builds a flat JSON
+  body, so `-f "position[new_line]=72"` serializes as the literal key
+  `{"position[new_line]":"72"}` instead of a nested `position` object. The API ignores the
+  unknown flat key (HTTP 201, real IDs) and creates a *general* note — only `new_line: null`
+  reveals it. `-F`/`--field` is a **different flag** and does not help here: it flattens the
+  same way (`{"position[new_line]":72}` — type-inferred, still a literal key). Build a real
   nested JSON body and pipe via `--input -` with `-H "Content-Type: application/json"`.
 - **HTTP 415 on piped JSON** — `glab api --input -` does not set `Content-Type` automatically;
   omitting `-H "Content-Type: application/json"` returns HTTP 415 (Unsupported Media Type).

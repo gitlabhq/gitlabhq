@@ -100,7 +100,9 @@ Guidelines:
 - Notify `#support_gitlab-com` beforehand. So in case if the feature has any side effects on user experience, they can mitigate and disable the feature flag to reduce some impact.
   - Include a brief description of what the feature flag does. You can start by asking GitLab Duo Agentic Chat: `Explain the feature flag <feature-flag-name> in the gitlab-org/gitlab project`.
 - If the feature meets the requirements for creating a [Change Management](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/change-management/#feature-flags-and-the-change-management-process) issue, create a Change Management issue per [criticality guidelines](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/change-management/#change-request-workflows).
+<!-- vale gitlab_base.OxfordComma = NO -->
 - For simple, low-risk, easily reverted features, proceed and [enable the feature in `#production`](#process).
+<!-- vale gitlab_base.OxfordComma = YES -->
 - For support requests to toggle feature flags for specific groups or projects, follow the process outlined in the [support workflows](https://handbook.gitlab.com/handbook/support/workflows/saas_feature_flags/).
 
 #### Guideline for which percentages to choose during the rollout
@@ -200,7 +202,7 @@ The following `/chatops` commands must be performed in the Slack
 
 ##### Percentage of actors roll out
 
-To enable a feature for 25% of actors such as users, projects, groups or the current request or job,
+To enable a feature for 25% of actors such as users, projects, groups, or the current request or job,
 run the following in Slack:
 
 ```shell

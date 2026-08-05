@@ -94,6 +94,10 @@ following for each approver:
 - Local time, based on the time zone in their profile.
 - Most recent activity.
 
+For the default **All Members** rule, which lists no approvers, GitLab Duo Agent Platform chooses
+from the project members who can both approve the merge request and merge into the target branch.
+When no role can merge into the target branch, the candidates are all members who can approve.
+
 GitLab assigns reviewers when the merge request becomes ready, the same as the code owners strategy.
 The recommendation runs in the background, so the reviewers might take a moment to appear. GitLab
 ignores approval rules that require zero approvals.

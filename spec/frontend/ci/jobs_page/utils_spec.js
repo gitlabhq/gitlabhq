@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash-es';
 import { updateJobsNodes } from '~/ci/jobs_page/utils';
 import { mockJobsResponsePaginated } from 'jest/ci/jobs_mock_data';
 
@@ -7,7 +8,7 @@ describe('Jobs utility functions', () => {
       const listWithRunningJobs = mockJobsResponsePaginated;
       listWithRunningJobs.data.project.jobs.nodes[0].detailedStatus.text = 'Running';
 
-      const updatedJob = structuredClone(listWithRunningJobs.data.project.jobs.nodes[0]);
+      const updatedJob = cloneDeep(listWithRunningJobs.data.project.jobs.nodes[0]);
       updatedJob.detailedStatus.text = 'Passed';
 
       const { updatedJobs, processedJobDone } = updateJobsNodes(
@@ -21,7 +22,7 @@ describe('Jobs utility functions', () => {
     });
 
     it('returns processedJobDone as false when the processed job is new', () => {
-      const updatedJob = structuredClone(mockJobsResponsePaginated.data.project.jobs.nodes[0]);
+      const updatedJob = cloneDeep(mockJobsResponsePaginated.data.project.jobs.nodes[0]);
       updatedJob.id = 'gid://gitlab/Ci::Build/100';
 
       const { processedJobDone } = updateJobsNodes(

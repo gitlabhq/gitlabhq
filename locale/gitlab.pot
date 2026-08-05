@@ -11877,6 +11877,9 @@ msgstr ""
 msgid "ArtifactRegistry|Ancestor ID must be a valid UUIDv7."
 msgstr ""
 
+msgid "ArtifactRegistry|Artifact Registry returned an error."
+msgstr ""
+
 msgid "ArtifactRegistry|Artifact registry"
 msgstr ""
 
@@ -11943,6 +11946,9 @@ msgstr ""
 msgid "ArtifactRegistry|Hosted repository"
 msgstr ""
 
+msgid "ArtifactRegistry|Image"
+msgstr ""
+
 msgid "ArtifactRegistry|Last updated"
 msgstr ""
 
@@ -11986,6 +11992,9 @@ msgid "ArtifactRegistry|OCI"
 msgstr ""
 
 msgid "ArtifactRegistry|Organization could not be determined."
+msgstr ""
+
+msgid "ArtifactRegistry|Package"
 msgstr ""
 
 msgid "ArtifactRegistry|Private"
@@ -12048,6 +12057,9 @@ msgstr ""
 msgid "ArtifactRegistry|This organization has no repositories yet."
 msgstr ""
 
+msgid "ArtifactRegistry|This repository has no artifacts."
+msgstr ""
+
 msgid "ArtifactRegistry|Type"
 msgstr ""
 
@@ -12058,6 +12070,9 @@ msgid "ArtifactRegistry|Unknown Artifact Registry role: %{role}."
 msgstr ""
 
 msgid "ArtifactRegistry|Unknown Artifact Registry roles: %{roles}."
+msgstr ""
+
+msgid "ArtifactRegistry|Versions"
 msgstr ""
 
 msgid "ArtifactRegistry|Virtual"

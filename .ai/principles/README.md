@@ -245,7 +245,7 @@ AGENT_PRINCIPLES_CATALOG_PROJECT=gitlab-org/gitlab \
 # Step 2: dry run (show what would change without writing or pushing)
 AGENT_PRINCIPLES_CATALOG_PROJECT=gitlab-org/gitlab \
   bundle exec bin/gitlab-ai-principles-distiller-sync \
-    --workspace "$(git rev-parse --show-toplevel)" --dry-run
+    --workspace "$(git rev-parse --show-toplevel)" distill --dry-run
 
 # Step 3: distill only specific principles
 GITLAB_TOKEN=<token> \
@@ -253,7 +253,7 @@ CI_DEFAULT_BRANCH=master \
 AGENT_PRINCIPLES_CATALOG_PROJECT=gitlab-org/gitlab \
 AGENT_PRINCIPLES_CATALOG_ITEM_CONSUMER_ID=<id> \
   bundle exec bin/gitlab-ai-principles-distiller-sync \
-    --workspace "$(git rev-parse --show-toplevel)" \
+    --workspace "$(git rev-parse --show-toplevel)" distill \
     --only feature-flags,workers
 
 # Force re-distillation (ignore checksum cache)
@@ -262,7 +262,7 @@ CI_DEFAULT_BRANCH=master \
 AGENT_PRINCIPLES_CATALOG_PROJECT=gitlab-org/gitlab \
 AGENT_PRINCIPLES_CATALOG_ITEM_CONSUMER_ID=<id> \
   bundle exec bin/gitlab-ai-principles-distiller-sync \
-    --workspace "$(git rev-parse --show-toplevel)" --force
+    --workspace "$(git rev-parse --show-toplevel)" distill --force
 
 # End-to-end: distill, branch, commit, push, open MR
 GITLAB_TOKEN=<token> \
@@ -272,7 +272,7 @@ CI_PROJECT_ID=278964 \
 AGENT_PRINCIPLES_CATALOG_PROJECT=gitlab-org/gitlab \
 AGENT_PRINCIPLES_CATALOG_ITEM_CONSUMER_ID=<id> \
   bundle exec bin/gitlab-ai-principles-distiller-sync \
-    --workspace "$(git rev-parse --show-toplevel)" --push
+    --workspace "$(git rev-parse --show-toplevel)" distill --push
 ```
 
 The Workflow API runs the agent server-side from the **pushed** state of
@@ -337,7 +337,10 @@ To change a distilled principle's content:
 - Or update the matching `baselines/<name>.md` file for procedural
   knowledge that has no SSOT home.
 
-Then re-run the sync (`--only <name>`) to regenerate `distilled/<name>.md`.
+Then run `distill --only <name>` to regenerate `distilled/<name>.md` when the
+source or baseline change updates its checksum.
+Use `--force` only when you intentionally need to re-distill despite a matching
+checksum.
 
 To change the **distillation rules themselves**, edit
 `distillation_prompt.md` and re-run

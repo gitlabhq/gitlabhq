@@ -406,7 +406,6 @@ export default {
       :action-primary="$options.modal.primaryAction"
       :action-cancel="$options.modal.cancelAction"
       data-testid="discard-review-modal"
-      static
       lazy
       @primary="discardReviews"
     >

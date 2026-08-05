@@ -41,6 +41,11 @@ RSpec.describe 'Create an alert issue from an alert', feature_category: :inciden
       stub_feature_flags(hide_incident_management_features: false)
     end
 
+    it_behaves_like 'authorizing granular token permissions for GraphQL', [:create_issue, :update_alert] do
+      let(:boundary_object) { project }
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
+
     context 'when there is no issue associated with the alert' do
       it 'creates an alert issue' do
         post_graphql_mutation(mutation, current_user: user)

@@ -1,6 +1,6 @@
 ---
-source_checksum: 29cbb8c6517cd27b
-distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
+source_checksum: 4902d9ae179555c2
+distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -13,6 +13,7 @@ distilled_at_sha: 52964caf288c3d9936b8ce4a3d2242c1f92567fa
 - DO NOT change the token resolution order in `AuthFinders` (`lib/gitlab/auth/auth_finders.rb`); deploy tokens, bearer tokens, job tokens, and sessions are checked in a specific priority — reordering can cause one token type to shadow another.
 - DO NOT implement custom API authentication; use `API::APIGuard` (`lib/api/api_guard.rb`).
 - DO NOT hand-roll JWT or token parsing; use `Authn::IamService::JwtValidationService`.
+- DO NOT use `lib/gitlab/auth/request_authenticator.rb` for access control; it is for `Rack::Attack` and logging only.
 - Use `check_rate_limit!` for rate limiting on token creation and verification endpoints.
 
 ### Token Prefixes and Storage
@@ -105,3 +106,4 @@ For the full picture, see:
 
 - doc/development/authentication.md
 - doc/development/ai_features/composite_identity.md
+

@@ -152,8 +152,10 @@ If the actions are not simple links, consider using `PanelActionsPortal` instead
 
 Use `PanelActionsPortal` when one or more of the following are true:
 
+<!-- vale gitlab_base.OxfordComma = NO -->
 - The actions to render in the static panel are not simple links, and require
   client side behavior, for example, buttons or dropdowns.
+<!-- vale gitlab_base.OxfordComma = YES -->
 - The actions are defined deep in the component tree, making it impractical to
   pass them to the `actions` slot of `DynamicPanel`.
 - The application renders in both the static and dynamic panels, for example, work items.

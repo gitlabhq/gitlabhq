@@ -1,4 +1,4 @@
-import { map, groupBy } from 'lodash-es';
+import { cloneDeep, map, groupBy } from 'lodash-es';
 import { queryToObject } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { localeDateFormat, newDate } from '~/lib/utils/datetime_utility';
@@ -181,7 +181,7 @@ export function initializeFilterFromQueryParams() {
     });
   }
 
-  return filterTokens.length > 0 ? filterTokens : structuredClone(DEFAULT_FILTER);
+  return filterTokens.length > 0 ? filterTokens : cloneDeep(DEFAULT_FILTER);
 }
 
 /**
@@ -200,7 +200,7 @@ export function initializeSortFromQueryParams() {
   );
 
   if (!sortOption) {
-    return structuredClone(DEFAULT_SORT);
+    return cloneDeep(DEFAULT_SORT);
   }
 
   return {

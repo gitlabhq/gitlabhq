@@ -32,9 +32,11 @@ Use linked epics to coordinate work between multiple teams and track interdepend
 When teams work together on a large initiative, each team can manage their own epic while maintaining
 visibility into related work.
 
+<!-- vale gitlab_base.OxfordComma = NO -->
 For example, when launching a new feature, development and marketing teams often work in parallel.
 The development team tracks technical implementation in their epic, while the marketing team plans
 promotional activities in a separate epic.
+<!-- vale gitlab_base.OxfordComma = YES -->
 
 By linking these epics:
 

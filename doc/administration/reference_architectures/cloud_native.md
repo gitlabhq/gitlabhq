@@ -113,7 +113,7 @@ Before deploying a Cloud Native architecture, ensure you have:
 - Supported [Kubernetes cluster](https://docs.gitlab.com/charts/installation/cloud/) and other [Charts prerequisites](https://docs.gitlab.com/charts/installation/tools/) in place
 - External PostgreSQL instance with database(s), user(s) and extension(s) configured
 - External Redis instance(s)
-- Object storage service (S3, Google Cloud Storage, Azure Blob Storage or other)
+- Object storage service (S3, Google Cloud Storage, Azure Blob Storage, or other)
 
 For complete requirements including networking, machine types, and cloud provider services, see [reference architecture requirements](_index.md#requirements).
 

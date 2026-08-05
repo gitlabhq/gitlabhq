@@ -35,7 +35,7 @@ For information on how approvals relate to assignees and reviewers, see
 
     > [!note]
     > Support for group merge request approval settings is tracked in
-    > [epic 4367](https://gitlab.com/groups/gitlab-org/-/epics/4367).
+    > [epic 4367](https://gitlab.com/groups/gitlab-org/-/work_items/4367).
 
 ## Configure approval rules
 

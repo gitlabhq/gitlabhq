@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
-require 'digest'
+require 'openssl'
 require 'fileutils'
 require 'json'
 require 'net/http'
-require 'optparse'
 require 'shellwords'
 require 'uri'
 require 'yaml'
@@ -24,6 +23,7 @@ require_relative 'sync/manifest'
 require_relative 'sync/validator'
 require_relative 'sync/artifacts'
 require_relative 'sync/child_pipeline'
+require_relative 'sync/cli'
 
 module Gitlab
   module PrinciplesDistiller
@@ -55,21 +55,10 @@ module Gitlab
       DISTILL_BASELINE_DRIFT_BACKOFF_SECONDS = 5
 
       # Documentation pointer shown on failure so an author who trips the
-      # --check-duo-instructions guard (it also runs on doc/**/*.md changes)
+      # check-fences guard (it also runs on doc/**/*.md changes)
       # knows where to get context. Links the published docs page rather than a
       # repo path, since it renders as a clickable URL in the CI log.
       DUO_INSTRUCTIONS_DOC = 'https://docs.gitlab.com/development/documentation/ai-instruction-files-documentation/'
-
-      # The non-default entry points, in precedence order. These are the flags
-      # that select WHICH mode runs, as opposed to modifiers like --push,
-      # --force, --only and --warn-stale that tune a mode.
-      MODE_OPTIONS = %i[
-        check_duo_instructions
-        reconcile_duo_instructions
-        generate_child_pipeline
-        distill_one
-        collect
-      ].freeze
 
       # Path of the per-run dotenv report consumed by the
       # `ai-principles-report-failure` Slack job, so its message can name
@@ -89,62 +78,12 @@ module Gitlab
       # 15601793108).
       THEMATIC_BREAK = /\A(?:-{3,}|\*{3,}|_{3,})\z/
 
-      def self.run
-        new.run
-      end
-
       def manifest
         @manifest ||= Manifest.new
       end
 
       def workflow
         @workflow ||= Workflow.new(manifest: manifest)
-      end
-
-      def run
-        options = parse_options
-
-        return if run_alternate_mode(options)
-
-        distill_and_publish(options)
-      end
-
-      # The mutually-exclusive non-default entry points. Returns true when one
-      # of them handled the run, so `run` can fall through to the default
-      # distill-and-publish path otherwise.
-      #
-      # Modes are mutually exclusive but OptionParser cannot express that: it
-      # happily accepts `--distill-one x --collect y,z` and this method would
-      # silently run whichever comes first in the chain below, ignoring the
-      # other. That is a plausible copy-paste error in the CI YAML, and the
-      # failure would be near-invisible: a `--collect` that was meant to also
-      # distill just publishes an empty run. Fail fast instead.
-      def run_alternate_mode(options)
-        assert_single_mode!(options)
-
-        if options[:check_duo_instructions]
-          check_duo_instructions(warn_stale: options[:warn_stale])
-        elsif options[:reconcile_duo_instructions]
-          reconcile_duo_instructions(push: options[:push])
-        elsif options[:generate_child_pipeline]
-          generate_child_pipeline(options)
-        elsif options[:distill_one]
-          distill_one(options[:distill_one])
-        elsif options[:collect]
-          collect(options[:collect])
-        else
-          return false
-        end
-
-        true
-      end
-
-      def assert_single_mode!(options)
-        given = MODE_OPTIONS.select { |mode| options[mode] }
-        return if given.size <= 1
-
-        flags = given.map { |mode| "--#{mode.to_s.tr('_', '-')}" }
-        abort Rainbow("ERROR: #{flags.join(' and ')} are mutually exclusive; pass only one").red
       end
 
       # The default, single-job path: scan, distill everything affected in
@@ -206,74 +145,6 @@ module Gitlab
         [results, failed]
       end
 
-      def parse_options
-        options = {}
-        OptionParser.new do |opts|
-          opts.banner = 'Usage: gitlab-ai-principles-distiller-sync [options]'
-
-          opts.on('--workspace PATH', 'Path to the repository workspace ' \
-            '(defaults to $CI_PROJECT_DIR)') do |path|
-            Workspace.path = File.expand_path(path)
-          end
-
-          opts.on('--dry-run', 'Show what would be done without making changes') do
-            options[:dry_run] = true
-          end
-
-          opts.on('--push', 'After distillation, create a branch, commit, push, and open an MR') do
-            options[:push] = true
-          end
-
-          opts.on('--force', 'Force re-distillation of all principles, ignoring checksums') do
-            options[:force] = true
-          end
-
-          opts.on('--only NAMES', 'Comma-separated list of principle names to process') do |names|
-            options[:only] = names.split(',').map(&:strip)
-          end
-
-          opts.on('--rewrite', 'Drop rule 9 (preserve wording) so Duo rewrites all items from scratch') do
-            options[:rewrite] = true
-          end
-
-          opts.on('--check-duo-instructions', 'Report Duo Code Review fences that are stale ' \
-            'relative to their distilled files, then exit (read-only; non-zero on drift)') do
-            options[:check_duo_instructions] = true
-          end
-
-          opts.on('--warn-stale', 'With --check-duo-instructions, treat stale fences as a ' \
-            'non-blocking warning (exit 0); malformed and orphaned fences still fail (exit 1). ' \
-            'Used on refs where fence staleness is expected transient state reconciled by the ' \
-            'daily fence-reconcile job') do
-            options[:warn_stale] = true
-          end
-
-          opts.on('--generate-child-pipeline', 'Scan for drift and write the dynamic child-pipeline ' \
-            "YAML (one distill job per affected principle) to #{CHILD_PIPELINE_PATH}, then exit. " \
-            'Triggers no distillation') do
-            options[:generate_child_pipeline] = true
-          end
-
-          opts.on('--distill-one NAME', 'Distill exactly one principle and write its result to the ' \
-            "artifact directory (#{ARTIFACTS_DIR}) for a later --collect run. Publishes nothing") do |name|
-            options[:distill_one] = name
-          end
-
-          opts.on('--collect NAMES', 'Comma-separated list of principles expected from the distill ' \
-            'jobs. Fans their artifacts in and publishes, without distilling anything itself') do |names|
-            options[:collect] = names.split(',').map(&:strip).reject(&:empty?)
-          end
-
-          opts.on('--reconcile-duo-instructions', 'Regenerate the Duo Code Review fences from the ' \
-            'committed (master) distilled files via pure projection — never re-distilling — then ' \
-            'exit. With --push, open/update a dedicated reconcile MR carrying only the fence update') do
-            options[:reconcile_duo_instructions] = true
-          end
-        end.parse!
-
-        options
-      end
-
       # Read-only guard for the Duo Code Review instruction fences in
       # .gitlab/duo/mr-review-instructions.yaml. Loads the manifest (for
       # sources/filters) but performs no distillation or writes.
@@ -295,7 +166,7 @@ module Gitlab
       # those refs can fix. On the owned-path/reconcile refs the flag is left
       # off, so staleness there still blocks. Malformed and orphaned fences fail
       # regardless of the flag.
-      def check_duo_instructions(warn_stale: false)
+      def check_duo_instructions_fences(warn_stale: false)
         manifest.load
         result = manifest.problematic_duo_review_instructions
 
@@ -383,7 +254,7 @@ module Gitlab
       # Without --push it only rewrites the file on disk from the current
       # working tree (local/dry use). With --push the on-disk projection is
       # deferred to the freshly cut branch, so it is skipped here.
-      def reconcile_duo_instructions(push: false)
+      def reconcile_duo_instructions_fences(push: false)
         banner("Loading manifest from #{Manifest::MANIFEST_PATH}...")
         manifest.load
 
@@ -463,7 +334,7 @@ module Gitlab
       # artifacts and publish. This is the only stage that touches git, so the
       # `git checkout -B` per team in `create_branch_and_mr` still operates on
       # one working tree, unchanged.
-      def collect(expected)
+      def collect(expected, push: false)
         banner("Loading manifest from #{Manifest::MANIFEST_PATH}...")
         manifest.load
 
@@ -481,8 +352,7 @@ module Gitlab
 
         if result.contents.any?
           puts "\n#{Rainbow("#{result.contents.size} principle(s) updated.").green}"
-          create_branch_and_mr(result.contents, affected, manifest.auto_mr_config,
-            failed: result.failed, not_run: result.not_run)
+          publish(result.contents, affected, push: push, failed: result.failed, not_run: result.not_run)
         end
 
         # `not_run` is deliberately NOT fatal: a principle whose job never
@@ -606,13 +476,15 @@ module Gitlab
           'the Slack alert will fall back to a generic message').yellow
       end
 
-      def publish(contents, affected, push:, failed: [])
+      def publish(contents, affected, push:, failed: [], not_run: nil)
         unless push
           puts "\n#{Rainbow('[LOCAL]').cyan} Distillation complete. Pass --push to create a branch and MR."
           return
         end
 
-        create_branch_and_mr(contents, affected, manifest.auto_mr_config, failed: failed)
+        options = { failed: failed }
+        options[:not_run] = not_run if not_run
+        create_branch_and_mr(contents, affected, manifest.auto_mr_config, **options)
       end
 
       def banner(message)
@@ -625,7 +497,7 @@ module Gitlab
       #
       # The Duo Code Review fences are deliberately NOT regenerated in this
       # path: they are reconciled from merged-master content by the separate
-      # scheduled reconcile job (see #reconcile_duo_instructions), so a team's
+      # scheduled reconcile job (see #reconcile_duo_instructions_fences), so a team's
       # distilled MR and the fence update are independently mergeable and a
       # retried, non-deterministic distillation can never leave the fences out
       # of sync with what actually ships.

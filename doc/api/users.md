@@ -78,7 +78,9 @@ Example response:
 ]
 ```
 
+<!-- vale gitlab_base.OxfordComma = NO -->
 This endpoint supports [keyset pagination](rest/_index.md#keyset-based-pagination). In GitLab 17.0 and later, keyset pagination is required for responses of 50,000 and above.
+<!-- vale gitlab_base.OxfordComma = YES -->
 
 You can also use `?search=` to search for users by name, username, or public email. For example, `/users?search=John`. When you search for a:
 

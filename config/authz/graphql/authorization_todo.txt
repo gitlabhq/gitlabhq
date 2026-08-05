@@ -42,8 +42,6 @@ mutation:AiSelfHostedModelConnectionCheck
 mutation:AiSelfHostedModelCreate
 mutation:AiSelfHostedModelDelete
 mutation:AiSelfHostedModelUpdate
-mutation:AlertSetAssignees
-mutation:AlertTodoCreate
 mutation:ArtifactRegistryRoleBulkGrant
 mutation:ArtifactRegistryRoleGrant
 mutation:AscpComponentCreate
@@ -86,7 +84,6 @@ mutation:ContainerVirtualRegistryUpstreamCreate
 mutation:ContainerVirtualRegistryUpstreamDelete
 mutation:ContainerVirtualRegistryUpstreamUpdate
 mutation:CorpusCreate
-mutation:CreateAlertIssue
 mutation:CreateAnnotation
 mutation:CreateBoard
 mutation:CreateComplianceFramework
@@ -154,9 +151,6 @@ mutation:EpicBoardUpdate
 mutation:EpicMoveList
 mutation:EpicSetSubscription
 mutation:EpicTreeReorder
-mutation:EscalationPolicyCreate
-mutation:EscalationPolicyDestroy
-mutation:EscalationPolicyUpdate
 mutation:ExportRequirements
 mutation:GeoRegistriesBulkUpdate
 mutation:GeoRegistriesUpdate
@@ -172,10 +166,6 @@ mutation:GroupSecretsManagerDeprovision
 mutation:GroupSecretsManagerInitialize
 mutation:GroupSecretsPermissionDelete
 mutation:GroupSecretsPermissionUpdate
-mutation:HttpIntegrationCreate
-mutation:HttpIntegrationDestroy
-mutation:HttpIntegrationResetToken
-mutation:HttpIntegrationUpdate
 mutation:ImportSourceUserCancelReassignment
 mutation:ImportSourceUserKeepAllAsPlaceholder
 mutation:ImportSourceUserKeepAsPlaceholder
@@ -187,8 +177,6 @@ mutation:InstanceSecretsManagerEnroll
 mutation:InstanceSecretsManagerUnenroll
 mutation:IntegrationExclusionCreate
 mutation:IntegrationExclusionDelete
-mutation:IssuableResourceLinkCreate
-mutation:IssuableResourceLinkDestroy
 mutation:IssueMoveList
 mutation:IssueSetSubscription
 mutation:JiraImportStart
@@ -229,12 +217,6 @@ mutation:NamespaceSecretsManagerUnenroll
 mutation:NamespaceSettingsUpdate
 mutation:NamespacesRegenerateNewWorkItemEmailAddress
 mutation:NoteConvertToThread
-mutation:OncallRotationCreate
-mutation:OncallRotationDestroy
-mutation:OncallRotationUpdate
-mutation:OncallScheduleCreate
-mutation:OncallScheduleDestroy
-mutation:OncallScheduleUpdate
 mutation:OrbitUpdate
 mutation:OrganizationCreateClusterAgentMapping
 mutation:OrganizationDeleteClusterAgentMapping
@@ -261,9 +243,6 @@ mutation:ProjectSubscriptionDelete
 mutation:ProjectTargetBranchRuleCreate
 mutation:ProjectTargetBranchRuleDestroy
 mutation:ProjectUpdateComplianceFrameworks
-mutation:PrometheusIntegrationCreate
-mutation:PrometheusIntegrationResetToken
-mutation:PrometheusIntegrationUpdate
 mutation:PromoteToEpic
 mutation:RefreshFindingTokenStatus
 mutation:RefreshSecurityFindingTokenStatus
@@ -317,15 +296,9 @@ mutation:SetLicenseScanningForCyclonedx
 mutation:SetPreReceiveSecretDetection
 mutation:SetSecretPushProtection
 mutation:SetValidityChecks
-mutation:TimelineEventCreate
-mutation:TimelineEventDestroy
-mutation:TimelineEventPromoteFromNote
-mutation:TimelineEventTagCreate
-mutation:TimelineEventUpdate
 mutation:TimelogCreate
 mutation:TimelogDelete
 mutation:UnlinkProjectComplianceViolationIssue
-mutation:UpdateAlertStatus
 mutation:UpdateBoard
 mutation:UpdateBoardEpicUserPreferences
 mutation:UpdateBoardList

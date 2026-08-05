@@ -1,0 +1,10 @@
+---
+name: delete_oncall_schedule
+description: Grants the ability to delete on-call schedules and their rotations
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - delete_oncall_schedule
+  - delete_oncall_rotation

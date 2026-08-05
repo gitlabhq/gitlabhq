@@ -172,12 +172,11 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
 
   # Covers the partial-failure ordering: a distillation failure must not discard principles that succeeded in the same
   # run.
-  describe '.run' do
+  describe '.distill_and_publish' do
     let(:affected) { { 'qa' => { config: {} } } }
 
     before do
       Gitlab::PrinciplesDistiller::Workspace.path = tmpdir
-      allow(sync).to receive(:parse_options).and_return(options)
       allow(sync.workflow).to receive(:validate_config!)
       allow(sync.manifest).to receive_messages(load: nil, affected_principles: affected, auto_mr_config: {})
       allow(sync).to receive(:regenerate_static_artifacts)
@@ -199,14 +198,18 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
       # The status is asserted, not just the SystemExit: a bare raise_error(SystemExit) also passes for `exit 0`, which
       # would silently disable the scheduled Slack alert (it fires on a non-zero exit).
       it 'publishes the successful principles and still exits non-zero', :aggregate_failures do
-        expect { sync.run }.to raise_error(SystemExit) { |error| expect(error.status).to eq(1) }
+        expect { sync.distill_and_publish(options) }.to raise_error(SystemExit) { |error|
+          expect(error.status).to eq(1)
+        }
         expect(sync).to have_received(:create_branch_and_mr)
           .with({ 'qa' => 'content' }, affected, anything, failed: ['other'])
       end
 
       # The Slack alert job reads these to name the failed principles instead of posting a generic "the job failed".
       it 'writes the failed principles to the dotenv report', :aggregate_failures do
-        expect { sync.run }.to raise_error(SystemExit) { |error| expect(error.status).to eq(1) }
+        expect { sync.distill_and_publish(options) }.to raise_error(SystemExit) { |error|
+          expect(error.status).to eq(1)
+        }
 
         expect(run_report).to include('AI_PRINCIPLES_FAILED_COUNT=1')
         expect(run_report).to include('AI_PRINCIPLES_FAILED_NAMES=other')
@@ -223,7 +226,9 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
       end
 
       it 'does not publish and still exits non-zero', :aggregate_failures do
-        expect { sync.run }.to raise_error(SystemExit) { |error| expect(error.status).to eq(1) }
+        expect { sync.distill_and_publish(options) }.to raise_error(SystemExit) { |error|
+          expect(error.status).to eq(1)
+        }
         expect(sync).not_to have_received(:create_branch_and_mr)
       end
     end
@@ -237,7 +242,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
       end
 
       it 'publishes and exits zero', :aggregate_failures do
-        expect { sync.run }.not_to raise_error
+        expect { sync.distill_and_publish(options) }.not_to raise_error
         expect(sync).to have_received(:create_branch_and_mr)
           .with({ 'qa' => 'content' }, affected, anything, failed: [])
       end
@@ -245,7 +250,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
       # The report is still written (so the artifact uploader always has a file to pick up), but with no failed names,
       # which is what the Slack job tests, so it never claims a partial failure on a run that had none.
       it 'writes the dotenv report with no failed principles', :aggregate_failures do
-        sync.run
+        sync.distill_and_publish(options)
 
         expect(run_report).to include('AI_PRINCIPLES_FAILED_COUNT=0')
         expect(run_report).to include("AI_PRINCIPLES_FAILED_NAMES=\n")
@@ -260,43 +265,10 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
       # The scheduled job's normal green path returns before distillation, so the report has to be written here too or
       # the uploader logs `no matching files` / `No files to upload` on every clean weekly run.
       it 'writes the dotenv report and exits zero', :aggregate_failures do
-        expect { sync.run }.not_to raise_error
+        expect { sync.distill_and_publish(options) }.not_to raise_error
 
         expect(run_report).to include('AI_PRINCIPLES_FAILED_COUNT=0')
         expect(run_report).to include('AI_PRINCIPLES_PUBLISHED_COUNT=0')
-      end
-    end
-  end
-
-  # OptionParser cannot express mutual exclusion, so without this guard `--distill-one x --collect y` silently runs
-  # whichever the dispatch chain reaches first.
-  # That is a plausible copy-paste error in the CI YAML, and the failure is near-invisible: a `--collect` meant to also
-  # distill just publishes an empty run.
-  describe 'mutually exclusive modes' do
-    before do
-      allow(sync).to receive(:parse_options).and_return(options)
-    end
-
-    context 'when two mode flags are given' do
-      let(:options) { { distill_one: 'qa', collect: %w[qa] } }
-
-      it 'aborts naming both flags' do
-        expect { sync.run }
-          .to raise_error(SystemExit)
-          .and output(/--distill-one and --collect are mutually exclusive/).to_stderr
-      end
-    end
-
-    # Modifiers are not modes: --push, --force, --only and --warn-stale each tune a mode rather than selecting one, so
-    # combining them must stay legal.
-    context 'when one mode flag is combined with modifiers' do
-      let(:options) { { generate_child_pipeline: true, force: true, only: ['qa'] } }
-
-      it 'does not abort' do
-        allow(sync).to receive(:generate_child_pipeline)
-
-        expect { sync.run }.not_to raise_error
-        expect(sync).to have_received(:generate_child_pipeline)
       end
     end
   end
@@ -470,7 +442,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
         # This is the loss the split exists to prevent: alpha publishes even though beta failed and gamma's job never
         # finished.
         it 'publishes what succeeded and exits non-zero', :aggregate_failures do
-          expect { sync.collect(expected) }.to raise_error(SystemExit) { |e| expect(e.status).to eq(1) }
+          expect { sync.collect(expected, push: true) }.to raise_error(SystemExit) { |e| expect(e.status).to eq(1) }
 
           expect(sync).to have_received(:create_branch_and_mr)
             .with({ 'alpha' => 'alpha body' }, affected, anything, failed: ['beta'], not_run: ['gamma'])
@@ -479,7 +451,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
         # Distinct dotenv vars, not overloaded failure ones, so the Slack job can word "Duo could not distill these" and
         # "these jobs never ran" differently.
         it 'reports the two abnormal states separately' do
-          expect { sync.collect(expected) }.to raise_error(SystemExit)
+          expect { sync.collect(expected, push: true) }.to raise_error(SystemExit)
 
           expect(run_report).to include(
             'AI_PRINCIPLES_FAILED_NAMES=beta',
@@ -499,7 +471,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
         end
 
         it 'publishes and exits zero', :aggregate_failures do
-          expect { sync.collect(expected) }.not_to raise_error
+          expect { sync.collect(expected, push: true) }.not_to raise_error
 
           expect(sync).to have_received(:create_branch_and_mr)
             .with({ 'alpha' => 'alpha body' }, affected, anything, failed: [], not_run: ['gamma'])
@@ -512,11 +484,18 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
           write_artifact('alpha', described_class::Artifacts::STATUS_UPDATED, content: 'alpha body')
         end
 
+        it 'does not publish without --push' do
+          expect { sync.collect(expected, push: false) }
+            .to output(/\[LOCAL\].*Pass --push/m).to_stdout
+
+          expect(sync).not_to have_received(:create_branch_and_mr)
+        end
+
         it 'distills nothing' do
           # Stubbed in the example, not a `before`: it is the subject of this assertion rather than shared setup.
           allow(sync).to receive(:build_distilled_contents)
 
-          expect { sync.collect(expected) }.not_to raise_error
+          expect { sync.collect(expected, push: true) }.not_to raise_error
           expect(sync).not_to have_received(:build_distilled_contents)
         end
       end
@@ -529,7 +508,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
         end
 
         it 'opens no MR and exits zero', :aggregate_failures do
-          expect { sync.collect(expected) }.not_to raise_error
+          expect { sync.collect(expected, push: true) }.not_to raise_error
 
           expect(sync).not_to have_received(:create_branch_and_mr)
           expect(run_report).to include('AI_PRINCIPLES_PUBLISHED_COUNT=0')
@@ -1104,53 +1083,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
     end
   end
 
-  describe '.parse_options' do
-    def parse(*args)
-      original_argv = ARGV.dup
-      ARGV.replace(args)
-      sync.parse_options
-    ensure
-      ARGV.replace(original_argv)
-    end
-
-    it 'defaults push to false (absent from result)' do
-      expect(parse[:push]).to be_nil
-    end
-
-    it 'sets push: true when --push is passed' do
-      expect(parse('--push')[:push]).to be true
-    end
-
-    it 'sets force: true when --force is passed' do
-      expect(parse('--force')[:force]).to be true
-    end
-
-    it 'sets dry_run: true when --dry-run is passed' do
-      expect(parse('--dry-run')[:dry_run]).to be true
-    end
-
-    it 'sets only: array when --only is passed' do
-      expect(parse('--only', 'backend,qa')[:only]).to eq(%w[backend qa])
-    end
-
-    it 'sets rewrite: true when --rewrite is passed' do
-      expect(parse('--rewrite')[:rewrite]).to be true
-    end
-
-    it 'sets check_duo_instructions: true when --check-duo-instructions is passed' do
-      expect(parse('--check-duo-instructions')[:check_duo_instructions]).to be true
-    end
-
-    it 'sets reconcile_duo_instructions: true when --reconcile-duo-instructions is passed' do
-      expect(parse('--reconcile-duo-instructions')[:reconcile_duo_instructions]).to be true
-    end
-
-    it 'sets warn_stale: true when --warn-stale is passed' do
-      expect(parse('--check-duo-instructions', '--warn-stale')[:warn_stale]).to be true
-    end
-  end
-
-  describe '.check_duo_instructions' do
+  describe '.check_duo_instructions_fences' do
     let(:result) do
       Gitlab::PrinciplesDistiller::Sync::DuoInstructions::Result.new(
         stale: stale, malformed: malformed, pending: [], orphaned: orphaned
@@ -1173,7 +1106,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
         it 'fails the guard' do
           expect(sync).to receive(:exit).with(1)
 
-          expect { sync.check_duo_instructions }.to output(/Stale: qa/).to_stderr
+          expect { sync.check_duo_instructions_fences }.to output(/Stale: qa/).to_stderr
         end
       end
     end
@@ -1185,7 +1118,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
         it 'warns without failing the guard', :aggregate_failures do
           expect(sync).not_to receive(:exit)
 
-          expect { sync.check_duo_instructions(warn_stale: true) }
+          expect { sync.check_duo_instructions_fences(warn_stale: true) }
             .to output(/stale on this ref: qa.*No action needed/m).to_stderr
         end
       end
@@ -1196,7 +1129,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
         it 'still fails the guard regardless of the flag' do
           expect(sync).to receive(:exit).with(1)
 
-          expect { sync.check_duo_instructions(warn_stale: true) }.to output(/Malformed: qa/).to_stderr
+          expect { sync.check_duo_instructions_fences(warn_stale: true) }.to output(/Malformed: qa/).to_stderr
         end
       end
 
@@ -1206,13 +1139,13 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
         it 'still fails the guard regardless of the flag' do
           expect(sync).to receive(:exit).with(1)
 
-          expect { sync.check_duo_instructions(warn_stale: true) }.to output(/Orphaned: qa/).to_stderr
+          expect { sync.check_duo_instructions_fences(warn_stale: true) }.to output(/Orphaned: qa/).to_stderr
         end
       end
     end
   end
 
-  describe '.reconcile_duo_instructions' do
+  describe '.reconcile_duo_instructions_fences' do
     before do
       allow(sync).to receive(:banner)
       allow(sync.manifest).to receive(:load)
@@ -1225,14 +1158,14 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
       end
 
       # The projection is deferred to the freshly cut branch inside create_reconcile_mr_from_working_tree (which
-      # receives the manifest to regenerate against the branch's base), so reconcile_duo_instructions must NOT
+      # receives the manifest to regenerate against the branch's base), so reconcile_duo_instructions_fences must NOT
       # regenerate on the pipeline-SHA working tree first.
       it 'defers regeneration to the fresh branch and opens the MR', :aggregate_failures do
         expect(sync.manifest).not_to receive(:generate_duo_review_instructions)
         expect(sync).to receive(:create_reconcile_mr_from_working_tree)
           .with({ 'branch_prefix' => 'docs-sync/principles' }, sync.manifest)
 
-        sync.reconcile_duo_instructions(push: true)
+        sync.reconcile_duo_instructions_fences(push: true)
       end
     end
 
@@ -1245,7 +1178,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
         it 'does not open an MR' do
           expect(sync).not_to receive(:create_reconcile_mr_from_working_tree)
 
-          expect { sync.reconcile_duo_instructions(push: false) }
+          expect { sync.reconcile_duo_instructions_fences(push: false) }
             .to output(/already up to date/).to_stdout
         end
       end
@@ -1258,7 +1191,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
         it 'only rewrites on disk (never re-distilling)' do
           expect(sync).not_to receive(:create_reconcile_mr_from_working_tree)
 
-          expect { sync.reconcile_duo_instructions(push: false) }
+          expect { sync.reconcile_duo_instructions_fences(push: false) }
             .to output(/\[LOCAL\].*Pass --push/m).to_stdout
         end
       end

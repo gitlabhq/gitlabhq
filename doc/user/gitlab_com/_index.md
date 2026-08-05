@@ -370,7 +370,7 @@ Settings related to the deletion of projects and groups.
 {{< history >}}
 
 - [Moved](https://gitlab.com/groups/gitlab-org/-/work_items/17208) from GitLab Premium to GitLab Free in 18.0.
-- [Increased deletion period](https://gitlab.com/groups/gitlab-org/-/epics/17375) from seven days to 30 days in 18.0.2.
+- [Increased deletion period](https://gitlab.com/groups/gitlab-org/-/work_items/17375) from seven days to 30 days in 18.0.2.
 
 {{< /history >}}
 
@@ -383,7 +383,7 @@ See how to [view and restore groups marked for deletion](../group/_index.md#rest
 {{< history >}}
 
 - [Moved](https://gitlab.com/groups/gitlab-org/-/work_items/17208) from GitLab Premium to GitLab Free in 18.0.
-- [Increased deletion period](https://gitlab.com/groups/gitlab-org/-/epics/17375) from seven-days to 30 days in 18.0.2.
+- [Increased deletion period](https://gitlab.com/groups/gitlab-org/-/work_items/17375) from seven-days to 30 days in 18.0.2.
 
 {{< /history >}}
 

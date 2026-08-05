@@ -128,7 +128,7 @@ To build and run containers in a workspace, see [configure sudo access for a wor
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14664) in GitLab 17.6.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/14664) in GitLab 17.6.
 
 {{< /history >}}
 
