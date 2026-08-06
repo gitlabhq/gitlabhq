@@ -56,11 +56,11 @@ describe('Sidebar Confidentiality Form', () => {
     findConfidentialToggle().vm.$emit('click', new MouseEvent('click'));
   };
 
-  it('emits a `closeForm` event when Cancel button is clicked', () => {
+  it('emits a `close-form` event when Cancel button is clicked', () => {
     createComponent();
     findCancelButton().vm.$emit('click');
 
-    expect(wrapper.emitted().closeForm).toHaveLength(1);
+    expect(wrapper.emitted()['close-form']).toHaveLength(1);
   });
 
   it('renders a loading state after clicking on turn on/off button', async () => {

@@ -2,10 +2,12 @@
 
 require 'spec_helper'
 require_relative '../../support/tmpdir'
+require_relative '../../support/abort_capture'
 require_relative '../../../lib/gitlab/principles_distiller/provision_flow'
 
 RSpec.describe Gitlab::PrinciplesDistiller::ProvisionFlow do
   include TmpdirHelper
+  include AbortCaptureHelper
 
   let(:tmpdir) { mktmpdir }
   let(:prompt_path) { File.join(tmpdir, '.ai/principles/distillation_prompt.md') }
@@ -73,7 +75,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::ProvisionFlow do
 
       expect(component['type']).to eq('AgentComponent')
       expect(component['prompt_id']).to eq('distiller_prompt')
-      expect(component['toolset']).to match_array(described_class::TOOL_NAMES)
+      expect(component['toolset']).to match_array(Gitlab::PrinciplesDistiller::FlowDefinition::TOOL_NAMES)
     end
 
     it 'declares only the goal input that the template references', :aggregate_failures do
@@ -96,18 +98,30 @@ RSpec.describe Gitlab::PrinciplesDistiller::ProvisionFlow do
     end
   end
 
-  describe 'TOOL_NAMES' do
-    subject(:tool_names) { described_class::TOOL_NAMES }
+  describe '#check_definition_size!' do
+    let(:instance) { described_class.new({ dry_run: true }) }
 
-    it { is_expected.to be_a(Array).and(be_any).and(all(be_a(String))) }
-
-    it 'includes only read-only file-access tools' do
-      expect(tool_names).to include('read_file', 'read_files', 'find_files', 'list_dir', 'grep')
+    it 'passes a definition within budget' do
+      expect { instance.send(:check_definition_size!, instance.send(:build_flow_yaml, 'Short.')) }
+        .not_to raise_error
     end
 
-    it 'does NOT include any write or repository-modifying tools' do
-      expect(tool_names).not_to include('edit_file', 'create_file_with_contents', 'create_commit',
-        'run_command', 'create_merge_request')
+    context 'when the definition exceeds the stored-JSONB limit' do
+      # Under the limit as YAML, over it once the catalog stores the prompt twice.
+      let(:oversized) { instance.send(:build_flow_yaml, 'word ' * 8_000) }
+
+      it 'aborts before any catalog mutation' do
+        expect { instance.send(:check_definition_size!, oversized) }.to raise_error(SystemExit)
+      end
+
+      it 'reports stored bytes rather than only the YAML size' do
+        message = capture_abort_stderr { instance.send(:check_definition_size!, oversized) }
+
+        expect(message).to match(/over the catalog limit/)
+        expect(message).to match(/stored definition \d+ bytes/)
+        expect(message).to match(/counted twice/)
+        expect(message).to match(/591638/)
+      end
     end
   end
 

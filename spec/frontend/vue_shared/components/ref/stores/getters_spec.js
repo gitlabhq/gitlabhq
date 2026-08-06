@@ -1,4 +1,4 @@
-import * as getters from '~/ref/stores/getters';
+import * as getters from '~/vue_shared/components/ref/stores/getters';
 
 describe('Ref selector Vuex store getters', () => {
   describe('isQueryPossiblyASha', () => {

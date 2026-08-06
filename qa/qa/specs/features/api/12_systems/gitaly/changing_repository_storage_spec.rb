@@ -26,8 +26,7 @@ module QA
         end
       end
 
-      context 'when moving from one Gitaly storage to another',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347827' do
+      context 'when moving from one Gitaly storage to another' do
         let(:source_storage) { { type: :gitaly, name: QA::Runtime::Env.non_cluster_repository_storage } }
         let(:destination_storage) { { type: :gitaly, name: QA::Runtime::Env.additional_repository_storage } }
         let(:project) do
@@ -41,8 +40,7 @@ module QA
         it_behaves_like 'repository storage move'
       end
 
-      context 'when moving from Gitaly to Gitaly Cluster',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347828' do
+      context 'when moving from Gitaly to Gitaly Cluster' do
         let(:source_storage) { { type: :gitaly, name: QA::Runtime::Env.non_cluster_repository_storage } }
         let(:destination_storage) { { type: :praefect, name: QA::Runtime::Env.praefect_repository_storage } }
         let(:project) do
@@ -62,8 +60,7 @@ module QA
         it_behaves_like 'repository storage move'
       end
 
-      context 'when moving from Gitaly Cluster to Gitaly',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/369204' do
+      context 'when moving from Gitaly Cluster to Gitaly' do
         let(:source_storage) { { type: :praefect, name: QA::Runtime::Env.praefect_repository_storage } }
         let(:destination_storage) { { type: :gitaly, name: QA::Runtime::Env.non_cluster_repository_storage } }
         let(:project) do

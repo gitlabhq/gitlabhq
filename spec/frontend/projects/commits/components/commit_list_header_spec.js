@@ -5,7 +5,7 @@ import CommitListHeader from '~/projects/commits/components/commit_list_header.v
 import CommitFilteredSearch from '~/projects/commits/components/commit_filtered_search.vue';
 import CommitListBreadcrumb from '~/projects/commits/components/commit_list_breadcrumb.vue';
 import OpenMrBadge from '~/badges/components/open_mr_badge/open_mr_badge.vue';
-import RefSelector from '~/ref/components/ref_selector.vue';
+import RefSelector from '~/vue_shared/components/ref/components/ref_selector.vue';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),

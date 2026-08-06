@@ -2,11 +2,9 @@
 
 module Resolvers
   class IssuesResolver < Issues::BaseResolver
-    extend ::Gitlab::Utils::Override
     prepend ::Issues::LookAheadPreloads
     include ::Issues::SortArguments
-
-    NON_FILTER_ARGUMENTS = %i[sort lookahead include_archived].freeze
+    include ::Issuables::RootArguments
 
     argument :include_archived, GraphQL::Types::Boolean,
       required: false,
@@ -31,14 +29,6 @@ module Resolvers
       [:namespace, :organization]
     end
 
-    def ready?(**args)
-      unless filter_provided?(args)
-        raise Gitlab::Graphql::Errors::ArgumentError, _('You must provide at least one filter argument for this query')
-      end
-
-      super
-    end
-
     def resolve_with_lookahead(**args)
       issues = apply_lookahead(
         IssuesFinder.new(current_user, prepare_finder_params(args)).execute
@@ -51,19 +41,6 @@ module Resolvers
       else
         issues
       end
-    end
-
-    private
-
-    override :prepare_finder_params
-    def prepare_finder_params(args)
-      super.tap do |prepared|
-        prepared[:non_archived] = !prepared.delete(:include_archived)
-      end
-    end
-
-    def filter_provided?(args)
-      args.except(*NON_FILTER_ARGUMENTS).values.any?(&:present?)
     end
   end
 end

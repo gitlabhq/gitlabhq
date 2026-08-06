@@ -37,7 +37,7 @@ export default {
       type: String,
     },
   },
-  emits: ['closeForm'],
+  emits: ['close-form'],
   data() {
     return {
       loading: false,
@@ -113,7 +113,7 @@ export default {
                 message: errors[0],
               });
             } else {
-              this.$emit('closeForm');
+              this.$emit('close-form');
             }
           },
         )
@@ -154,7 +154,7 @@ export default {
           </gl-sprintf>
         </p>
         <div class="sidebar-item-warning-message-actions">
-          <gl-button class="gl-mr-3" data-testid="confidential-cancel" @click="$emit('closeForm')">
+          <gl-button class="gl-mr-3" data-testid="confidential-cancel" @click="$emit('close-form')">
             {{ __('Cancel') }}
           </gl-button>
           <gl-button

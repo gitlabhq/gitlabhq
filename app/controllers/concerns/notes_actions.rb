@@ -26,8 +26,7 @@ module NotesActions
 
   def index
     notes, meta = gather_all_notes
-    notes = prepare_notes_for_rendering(notes)
-    notes = notes.select { |n| n.readable_by?(current_user) }
+    notes = prepare_and_filter_notes(notes)
     notes =
       if use_note_serializer?
         note_serializer.represent(notes)

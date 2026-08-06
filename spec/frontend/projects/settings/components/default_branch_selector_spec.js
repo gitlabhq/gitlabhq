@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import DefaultBranchSelector from '~/projects/settings/components/default_branch_selector.vue';
-import RefSelector from '~/ref/components/ref_selector.vue';
-import { REF_TYPE_BRANCHES } from '~/ref/constants';
+import RefSelector from '~/vue_shared/components/ref/components/ref_selector.vue';
+import { REF_TYPE_BRANCHES } from '~/vue_shared/components/ref/constants';
 
 describe('projects/settings/components/default_branch_selector', () => {
   const disabled = true;

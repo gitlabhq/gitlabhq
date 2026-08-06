@@ -6,7 +6,7 @@ import {
   GlIcon,
 } from '@gitlab/ui';
 import { joinPaths } from '~/lib/utils/url_utility';
-import RefSelector from '~/ref/components/ref_selector.vue';
+import RefSelector from '~/vue_shared/components/ref/components/ref_selector.vue';
 import { __ } from '~/locale';
 import OpenMrBadge from '~/badges/components/open_mr_badge/open_mr_badge.vue';
 import CommitFilteredSearch from './commit_filtered_search.vue';

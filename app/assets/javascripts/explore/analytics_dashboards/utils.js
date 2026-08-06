@@ -21,3 +21,25 @@ export const getDashboardIdFromGraphQLId = (gid) =>
  */
 export const convertToDashboardGraphQLId = (id) =>
   convertToGraphQLId(TYPENAME_ANALYTICS_CUSTOM_DASHBOARD, id);
+
+/**
+ * Builds the document title for a route from its breadcrumb metadata.
+ *
+ * The breadcrumb trail is reversed (deepest segment first) and prepended to the
+ * server-rendered base title, e.g. "Edit · My dashboard · Analytics dashboards · GitLab".
+ * Empty segments are dropped so the base title is used as-is while a dashboard is still loading.
+ *
+ * @param {object} route - The current Vue Router route
+ * @param {string} baseTitle - The server-rendered document title
+ * @returns {string} The composed document title
+ */
+export const buildDocumentTitle = (route, baseTitle) => {
+  if (route.meta.root) return baseTitle;
+
+  // Only the edit route declares parents.
+  const parents = route.meta.getParents?.() ?? [];
+  const name = route.meta.getName?.() ?? '';
+  const segments = [name, ...parents.map(({ text }) => text).reverse()];
+
+  return [...segments, baseTitle].filter(Boolean).join(' · ');
+};

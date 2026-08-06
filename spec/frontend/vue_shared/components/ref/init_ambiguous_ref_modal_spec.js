@@ -1,4 +1,4 @@
-import initAmbiguousRefModal from '~/ref/init_ambiguous_ref_modal';
+import initAmbiguousRefModal from '~/vue_shared/components/ref/init_ambiguous_ref_modal';
 import { setHTMLFixture } from 'helpers/fixtures';
 import setWindowLocation from 'helpers/set_window_location_helper';
 

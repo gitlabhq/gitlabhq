@@ -331,7 +331,7 @@ describe('DesignWidget', () => {
     expect(findAlert().exists()).toBe(true);
     findAlert().vm.$emit('dismiss');
 
-    expect(wrapper.emitted('dismissError')).toHaveLength(1);
+    expect(wrapper.emitted('dismiss-error')).toHaveLength(1);
   });
 
   describe('when user is not logged in', () => {

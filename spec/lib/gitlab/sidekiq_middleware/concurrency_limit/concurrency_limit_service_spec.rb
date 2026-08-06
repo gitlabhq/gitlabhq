@@ -200,6 +200,42 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitServ
     end
   end
 
+  describe '.track_pending_resumed_jobs' do
+    subject(:track_pending_resumed_jobs) { described_class.track_pending_resumed_jobs(worker_class_name, 2) }
+
+    it 'calls an instance method' do
+      expect_next_instance_of(described_class) do |instance|
+        expect(instance).to receive(:track_pending_resumed_jobs).with(2)
+      end
+
+      track_pending_resumed_jobs
+    end
+  end
+
+  describe '.untrack_pending_resumed_job' do
+    subject(:untrack_pending_resumed_job) { described_class.untrack_pending_resumed_job(worker_class_name) }
+
+    it 'calls an instance method' do
+      expect_next_instance_of(described_class) do |instance|
+        expect(instance).to receive(:untrack_pending_resumed_job)
+      end
+
+      untrack_pending_resumed_job
+    end
+  end
+
+  describe '.pending_resumed_jobs_count' do
+    subject(:pending_resumed_jobs_count) { described_class.pending_resumed_jobs_count(worker_class_name) }
+
+    it 'calls an instance method' do
+      expect_next_instance_of(described_class) do |instance|
+        expect(instance).to receive(:pending_resumed_jobs_count)
+      end
+
+      pending_resumed_jobs_count
+    end
+  end
+
   describe '.cleanup_stale_trackers' do
     subject(:cleanup_stale_trackers) { described_class.cleanup_stale_trackers(worker_class_name) }
 

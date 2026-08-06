@@ -1,6 +1,6 @@
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { encodeSaferUrl, joinPaths, visitUrl } from '~/lib/utils/url_utility';
-import RefSelector from '~/ref/components/ref_selector.vue';
+import RefSelector from '~/vue_shared/components/ref/components/ref_selector.vue';
 import AuthorSelectApp from './components/author_select.vue';
 import DateRangeSelectApp from './components/date_range_select.vue';
 

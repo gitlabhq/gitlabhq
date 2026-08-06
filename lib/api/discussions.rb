@@ -308,17 +308,7 @@ module API
           .includes(:noteable)
           .order_created_at_id_asc
 
-        # Without RendersActions#prepare_notes_for_rendering,
-        # Note#system_note_visible_for? will attempt to render
-        # Markdown references mentioned in the note to see whether they
-        # should be redacted. For notes that reference a commit, this
-        # would also incur a Gitaly call to verify the commit exists.
-        #
-        # With prepare_notes_for_rendering, we can avoid Gitaly calls
-        # because notes are redacted if they point to projects that
-        # cannot be accessed by the user.
-        notes = prepare_notes_for_rendering(notes)
-        notes.select { |n| n.readable_by?(current_user) }
+        prepare_and_filter_notes(notes)
       end
       # rubocop: enable CodeReuse/ActiveRecord
     end

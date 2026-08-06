@@ -277,8 +277,7 @@ module QA
       end
 
       it(
-        'imports large Github repo via api',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347668'
+        'imports large Github repo via api'
       ) do
         if only_stats_comparison
           logger.warn("Test is running in lightweight comparison mode, only object counts will be compared!")

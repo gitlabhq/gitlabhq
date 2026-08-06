@@ -206,7 +206,7 @@ pre-push:
       tags: ai-harness documentation
       # Omit --diff-filter=d (unlike sibling hooks): a deleted doc must still trigger the check.
       files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD
-      glob: '{.ai/*.md,.ai/principles/manifest.yml,.ai/principles/baselines/**/*.md,doc/**/*.md}'
+      glob: '{.ai/*.md,.ai/principles/distillation_prompt.md,.ai/principles/manifest.yml,.ai/principles/baselines/**/*.md,doc/**/*.md}'
       run: echo {files} >/dev/null && scripts/lint-ai-principles-manifest.sh
     duo-review-instructions:
       tags: ai-harness documentation
@@ -233,7 +233,7 @@ pre-commit:
       tags: ai-harness documentation
       # Omit --diff-filter=d (unlike sibling hooks): a deleted doc must still trigger the check.
       files: git diff --name-only --staged
-      glob: '{.ai/*.md,.ai/principles/manifest.yml,.ai/principles/baselines/**/*.md,doc/**/*.md}'
+      glob: '{.ai/*.md,.ai/principles/distillation_prompt.md,.ai/principles/manifest.yml,.ai/principles/baselines/**/*.md,doc/**/*.md}'
       run: echo {files} >/dev/null && scripts/lint-ai-principles-manifest.sh
     duo-review-instructions:
       tags: ai-harness documentation

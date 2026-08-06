@@ -156,6 +156,21 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
     it_behaves_like 'query that requires at least one filter'
   end
 
+  context 'when the only filter provided is a boolean set to false' do
+    let(:all_query_params) { { confidential: false } }
+
+    it 'accepts the filter and applies it' do
+      post_query
+
+      expect_graphql_errors_to_be_empty
+
+      issue_ids = graphql_dig_at(graphql_data_at('issues', 'nodes'), :id)
+
+      expect(issue_ids).to include(issue_a.to_gid.to_s)
+      expect(issue_ids).not_to include(issue_c.to_gid.to_s, issue_e.to_gid.to_s)
+    end
+  end
+
   # All new specs should be added to the shared example if the change also
   # affects the `issues` query at the root level of the API.
   # Shared example also used in spec/requests/api/graphql/project/issues_spec.rb

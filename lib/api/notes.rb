@@ -87,8 +87,7 @@ module API
           # mismatch between the pagination headers info and the actual notes
           # array returned, but this is really a edge-case.
           notes = paginate(raw_notes)
-          notes = prepare_notes_for_rendering(notes)
-          notes = notes.select { |note| note.readable_by?(current_user) }
+          notes = prepare_and_filter_notes(notes)
           present_note_collection(notes, noteable, noteable_class)
         end
         # rubocop: enable CodeReuse/ActiveRecord

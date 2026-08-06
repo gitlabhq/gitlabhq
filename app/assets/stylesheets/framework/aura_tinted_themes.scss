@@ -226,11 +226,19 @@
 
     .gl-nav-item.selected::before {
       @apply gl-absolute;
-      @apply -gl-right-[6px];
-      @apply gl-w-1;
-      @apply gl-top-2;
-      @apply gl-bottom-2;
-      @apply gl-rounded-l-default;
+      @apply gl-h-1;
+      @apply gl-left-2;
+      @apply gl-right-2;
+      @apply -gl-bottom-[6px];
+      @apply gl-rounded-t-default;
+      @apply lg:gl-h-auto;
+      @apply lg:gl-w-1;
+      @apply lg:gl-left-auto;
+      @apply lg:-gl-right-[6px];
+      @apply lg:gl-top-2;
+      @apply lg:gl-bottom-2;
+      @apply lg:gl-rounded-l-default;
+      @apply lg:gl-rounded-tr-none;
       content: '';
       background-color: currentColor;
     }

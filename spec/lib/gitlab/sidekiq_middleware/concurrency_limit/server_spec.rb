@@ -66,6 +66,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::Server, feature_cate
         .to receive(:track_execution_end)
       expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
         .to receive(:cleanup_stale_trackers)
+      expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
+        .not_to receive(:untrack_pending_resumed_job)
 
       worker_klass.perform_async('foo')
     end
@@ -99,6 +101,17 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::Server, feature_cate
       end
 
       it_behaves_like 'skip execution tracking'
+
+      it 'still releases the pending resumed slot for a resumed job' do
+        expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
+          .not_to receive(:track_execution_start)
+        expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
+          .to receive(:untrack_pending_resumed_job).with(worker_klass.name)
+
+        Gitlab::ApplicationContext.with_raw_context do
+          TestConcurrencyLimitWorker.concurrency_limit_resume(Time.now.utc.tv_sec).perform_async('foo')
+        end
+      end
     end
 
     context 'when per worker feature flag is enabled' do
@@ -151,6 +164,15 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::Server, feature_cate
           expect(TestConcurrencyLimitWorker).to receive(:work)
           expect(Gitlab::SidekiqLogging::ConcurrencyLimitLogger.instance).not_to receive(:deferred_log)
           expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService).not_to receive(:add_to_queue!)
+
+          Gitlab::ApplicationContext.with_raw_context do
+            TestConcurrencyLimitWorker.concurrency_limit_resume(Time.now.utc.tv_sec).perform_async('foo')
+          end
+        end
+
+        it 'releases the pending resumed slot when the job starts executing' do
+          expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
+            .to receive(:untrack_pending_resumed_job).with(worker_klass.name)
 
           Gitlab::ApplicationContext.with_raw_context do
             TestConcurrencyLimitWorker.concurrency_limit_resume(Time.now.utc.tv_sec).perform_async('foo')

@@ -76,8 +76,7 @@ module QA
               project.change_only_allow_merge_if_pipeline_succeeds(true)
             end
 
-            it 'sets the merge request pipeline as head pipeline',
-              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/605642' do
+            it 'sets the merge request pipeline as head pipeline' do
               mr = create_mr_and_wait(project, source_branch, expected_new: 2)
               mr.wait_for_preparation
 
@@ -145,8 +144,7 @@ module QA
               project.change_only_allow_merge_if_pipeline_succeeds(true)
             end
 
-            it 'sets the merge request pipeline as head pipeline',
-              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/605647' do
+            it 'sets the merge request pipeline as head pipeline' do
               mr = create_mr_and_wait(project, source_branch, expected_new: 1)
               mr.wait_for_preparation
 
@@ -178,8 +176,7 @@ module QA
             project.change_skip_branch_pipelines_for_mrs(true)
           end
 
-          it 'creates no pipeline on push to existing MR',
-            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/605646' do
+          it 'creates no pipeline on push to existing MR' do
             create_mr_and_wait(project, source_branch, expected_new: 1)
             count_before = project.pipelines.size
 
@@ -195,8 +192,7 @@ module QA
               project.change_only_allow_merge_if_pipeline_succeeds(true)
             end
 
-            it 'is not mergeable when only a branch pipeline exists',
-              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/605648' do
+            it 'is not mergeable when only a branch pipeline exists' do
               mr = create_mr_and_wait(project, source_branch, expected_new: 1)
               mr.wait_for_preparation
 

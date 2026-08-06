@@ -1,7 +1,7 @@
-import { X_TOTAL_HEADER, ALL_REF_TYPES } from '~/ref/constants';
-import * as types from '~/ref/stores/mutation_types';
-import mutations from '~/ref/stores/mutations';
-import createState from '~/ref/stores/state';
+import { X_TOTAL_HEADER, ALL_REF_TYPES } from '~/vue_shared/components/ref/constants';
+import * as types from '~/vue_shared/components/ref/stores/mutation_types';
+import mutations from '~/vue_shared/components/ref/stores/mutations';
+import createState from '~/vue_shared/components/ref/stores/state';
 
 describe('Ref selector Vuex store mutations', () => {
   let state;

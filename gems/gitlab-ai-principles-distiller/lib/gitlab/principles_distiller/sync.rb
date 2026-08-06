@@ -11,6 +11,7 @@ require 'yaml'
 require 'rainbow'
 
 require_relative 'env'
+require_relative 'flow_definition'
 require_relative 'graphql_client'
 require_relative 'workspace'
 require_relative 'sync/diff'
@@ -27,55 +28,46 @@ require_relative 'sync/cli'
 
 module Gitlab
   module PrinciplesDistiller
-    # Orchestrates the per-principle distillation pipeline: load the
-    # manifest, decide which principles drifted, drive the Duo Workflow
-    # API to refresh them, and (optionally) open a follow-up MR.
+    # Orchestrates the per-principle distillation pipeline: load the manifest, decide which principles drifted, drive
+    # the Duo Workflow API to refresh them, and (optionally) open a follow-up MR.
     class Sync
       include AutoMr
 
-      # Cap concurrent Duo Workflow invocations to avoid scheduling too many
-      # child CI pipelines at once during a full re-distillation (~23 principles).
+      # Cap concurrent Duo Workflow invocations to avoid scheduling too many child CI pipelines at once during a full
+      # re-distillation (~23 principles).
       MAX_CONCURRENT_DISTILLATIONS = 4
 
       DISTILL_MAX_RETRIES = 3
 
-      # Backoffs are long because the most common failure is transient
-      # Gitaly node overload on the promisor partial-clone fetch; retrying
-      # immediately would hit the same overloaded node.
+      # Backoffs are long because the most common failure is transient Gitaly node overload on the promisor
+      # partial-clone fetch; retrying immediately would hit the same overloaded node.
       DISTILL_RETRY_BACKOFF_SECONDS = [300, 900, 1800].freeze
 
-      # Baseline drift is DETERMINISTIC: the same SSOT sources and baseline
-      # produce the same drift on every attempt, so the long Gitaly-oriented
-      # backoff above is pure waste - the retry re-runs the identical input.
-      # When the prior attempt failed on baseline drift (not a transient
-      # fetch/agent error), retry almost immediately so a systematic baseline
-      # mismatch fails fast (~seconds) instead of consuming ~24 min of
-      # backoff and risking the job-level timeout. A small non-zero wait
-      # still lets genuinely nondeterministic agent output settle.
+      # Baseline drift is DETERMINISTIC: the same SSOT sources and baseline produce the same drift on every attempt, so
+      # the long Gitaly-oriented backoff above is pure waste - the retry re-runs the identical input.
+      # When the prior attempt failed on baseline drift (not a transient fetch/agent error), retry almost immediately so
+      # a systematic baseline mismatch fails fast (~seconds) instead of consuming ~24 min of backoff and risking the
+      # job-level timeout.
+      # A small non-zero wait still lets genuinely nondeterministic agent output settle.
       DISTILL_BASELINE_DRIFT_BACKOFF_SECONDS = 5
 
-      # Documentation pointer shown on failure so an author who trips the
-      # check-fences guard (it also runs on doc/**/*.md changes)
-      # knows where to get context. Links the published docs page rather than a
-      # repo path, since it renders as a clickable URL in the CI log.
+      # Documentation pointer shown on failure so an author who trips the check-fences guard (it also runs on
+      # doc/**/*.md changes) knows where to get context.
+      # Links the published docs page rather than a repo path, since it renders as a clickable URL in the CI log.
       DUO_INSTRUCTIONS_DOC = 'https://docs.gitlab.com/development/documentation/ai-instruction-files-documentation/'
 
-      # Path of the per-run dotenv report consumed by the
-      # `ai-principles-report-failure` Slack job, so its message can name
-      # the failed principles instead of a generic "the job failed".
+      # Path of the per-run dotenv report consumed by the `ai-principles-report-failure` Slack job, so its message can
+      # name the failed principles instead of a generic "the job failed".
       RUN_REPORT_PATH = 'tmp/ai-principles-run.env'
 
-      # Where the generator writes the child-pipeline YAML, and where each
-      # distill job writes its per-principle artifacts for the collect job to
-      # fan back in. Both are under tmp/ so they never pollute a publish diff.
+      # Where the generator writes the child-pipeline YAML, and where each distill job writes its per-principle
+      # artifacts for the collect job to fan back in. Both are under tmp/ so they never pollute a publish diff.
       CHILD_PIPELINE_PATH = 'tmp/ai-principles-child-pipeline.yml'
       ARTIFACTS_DIR = 'tmp/ai-principles-distilled'
 
-      # A thematic break (`---`, `***`, or `___` alone on a line) is Markdown
-      # document scaffolding, not a rule, so `logical_units` treats it as a
-      # unit boundary rather than comparable baseline content (observed with
-      # testing-frontend-testing-hierarchy's `---` divider, job
-      # 15601793108).
+      # A thematic break (`---`, `***`, or `___` alone on a line) is Markdown document scaffolding, not a rule, so
+      # `logical_units` treats it as a unit boundary rather than comparable baseline content (observed with
+      # testing-frontend-testing-hierarchy's `---` divider, job 15601793108).
       THEMATIC_BREAK = /\A(?:-{3,}|\*{3,}|_{3,})\z/
 
       def manifest
@@ -86,19 +78,17 @@ module Gitlab
         @workflow ||= Workflow.new(manifest: manifest)
       end
 
-      # The default, single-job path: scan, distill everything affected in
-      # this process, and publish. Still used for local runs and as the
-      # in-process fallback; scheduled CI now splits these stages across jobs
-      # (see generate_child_pipeline / distill_one / collect).
+      # The default, single-job path: scan, distill everything affected in this process, and publish. Still used for
+      # local runs and as the in-process fallback; scheduled CI now splits these stages across jobs (see
+      # generate_child_pipeline / distill_one / collect).
       def distill_and_publish(options)
         workflow.validate_config! unless options[:dry_run]
 
         banner("Loading manifest from #{Manifest::MANIFEST_PATH}...")
         manifest.load
 
-        # In --push mode the static artifacts (AGENTS.md, CLAUDE.md, both
-        # SKILL.md files) are regenerated inside the dedicated tooling branch
-        # during publish, so they don't leak into the per-team branches.
+        # In --push mode the static artifacts (AGENTS.md, CLAUDE.md, both SKILL.md files) are regenerated inside the
+        # dedicated tooling branch during publish, so they don't leak into the per-team branches.
         # Outside --push we write them straight to the working tree as before.
         regenerate_static_artifacts unless options[:push]
 
@@ -130,10 +120,8 @@ module Gitlab
         abort_on_failures(failed)
       end
 
-      # Writes go straight to the working tree. In --push mode disk writes
-      # are deferred (see build_distilled_contents) until after the publish
-      # branch is checked out, so the resulting MR diff contains ONLY the
-      # distilled files.
+      # Writes go straight to the working tree. In --push mode disk writes are deferred (see build_distilled_contents)
+      # until after the publish branch is checked out, so the resulting MR diff contains ONLY the distilled files.
       def distill_and_write_principles(affected, rewrite: false)
         results, failed = build_distilled_contents(affected, rewrite: rewrite)
         results.each do |name, content|
@@ -145,27 +133,21 @@ module Gitlab
         [results, failed]
       end
 
-      # Read-only guard for the Duo Code Review instruction fences in
-      # .gitlab/duo/mr-review-instructions.yaml. Loads the manifest (for
-      # sources/filters) but performs no distillation or writes.
+      # Read-only guard for the Duo Code Review instruction fences in .gitlab/duo/mr-review-instructions.yaml. Loads the
+      # manifest (for sources/filters) but performs no distillation or writes.
       #
-      # A freshly seeded fence (manifest entry present, distilled file pending)
-      # only warns: seeding a fence before its first distillation is the
-      # documented flow, so it must not fail the pipeline. Malformed and
-      # orphaned fences always fail the guard (exit 1) so real, ref-fixable
-      # breakage cannot land silently. The failure message is self-service: it
-      # names the exact fix per category and links the developer docs, because
-      # this job also runs on doc/**/*.md changes and can surface to authors who
-      # never touched a fence.
+      # A freshly seeded fence (manifest entry present, distilled file pending) only warns: seeding a fence before its
+      # first distillation is the documented flow, so it must not fail the pipeline.
+      # Malformed and orphaned fences always fail the guard (exit 1) so real, ref-fixable breakage cannot land silently.
+      # The failure message is self-service: it names the exact fix per category and links the developer docs, because
+      # this job also runs on doc/**/*.md changes and can surface to authors who never touched a fence.
       #
       # `warn_stale` downgrades STALE drift to a non-blocking warning (exit 0).
-      # Since fence regeneration is decoupled from distillation (a team's
-      # distilled MR merges independently and the daily fence-reconcile job
-      # catches the fence up from merged master afterwards), fence staleness is
-      # expected transient state on ordinary MRs and on master, not something
-      # those refs can fix. On the owned-path/reconcile refs the flag is left
-      # off, so staleness there still blocks. Malformed and orphaned fences fail
-      # regardless of the flag.
+      # Since fence regeneration is decoupled from distillation (a team's distilled MR merges independently and the
+      # daily fence-reconcile job catches the fence up from merged master afterwards), fence staleness is expected
+      # transient state on ordinary MRs and on master, not something those refs can fix.
+      # On the owned-path/reconcile refs the flag is left off, so staleness there still blocks.
+      # Malformed and orphaned fences fail regardless of the flag.
       def check_duo_instructions_fences(warn_stale: false)
         manifest.load
         result = manifest.problematic_duo_review_instructions
@@ -189,22 +171,20 @@ module Gitlab
         # rubocop:enable Rails/Exit
       end
 
-      # Prints the stale fences as a non-blocking warning (used under
-      # --warn-stale, where staleness does not fail the guard). The daily
-      # fence-reconcile job projects these onto master; nothing on the current
-      # ref needs to act.
+      # Prints the stale fences as a non-blocking warning (used under --warn-stale, where staleness does not fail the
+      # guard).
+      # The daily fence-reconcile job projects these onto master; nothing on the current ref needs to act.
       def warn_stale_fences(stale)
         warn Rainbow("Duo review instruction fences are stale on this ref: #{stale.join(', ')}.").yellow
         warn '  This is expected between a distilled MR merging and the daily fence-reconcile'
         warn '  job catching the fences up from master. No action needed on this ref.'
       end
 
-      # Prints per-category guidance for the fences that fail the guard, so the
-      # author knows exactly what to do rather than seeing a bare principle list.
+      # Prints per-category guidance for the fences that fail the guard, so the author knows exactly what to do rather
+      # than seeing a bare principle list.
       #
-      # Under `warn_stale` the stale category is non-blocking, so it is surfaced
-      # as a warning (via warn_stale_fences) rather than a blocking failure and
-      # is omitted from the per-category failure guidance here.
+      # Under `warn_stale` the stale category is non-blocking, so it is surfaced as a warning (via warn_stale_fences)
+      # rather than a blocking failure and is omitted from the per-category failure guidance here.
       def report_failing_fences(result, warn_stale: false)
         warn_stale_fences(result.stale) if warn_stale && result.stale.any?
 
@@ -236,24 +216,20 @@ module Gitlab
         warn "See #{DUO_INSTRUCTIONS_DOC} for how these fences are generated and kept in sync."
       end
 
-      # Reconciles the Duo Code Review instruction fences from the committed
-      # (master) distilled files by pure projection: it regenerates each fence's
-      # directives and body from the on-disk distilled file's frontmatter and
-      # checklist, and NEVER re-runs distillation. This is what keeps the
-      # reconcile idempotent and its own MR guard-green: a fence only changes
-      # when the distilled file it mirrors already changed on master.
+      # Reconciles the Duo Code Review instruction fences from the committed (master) distilled files by pure
+      # projection: it regenerates each fence's directives and body from the on-disk distilled file's frontmatter and
+      # checklist, and NEVER re-runs distillation.
+      # This is what keeps the reconcile idempotent and its own MR guard-green: a fence only changes when the distilled
+      # file it mirrors already changed on master.
       #
-      # Decoupled from the distillation --push path (which no longer touches the
-      # fences at all): a team MR merges its distilled file independently, and
-      # this scheduled job catches the fence up from merged master afterwards.
-      # Because the projection reads the same ref the reconcile MR targets
-      # (the branch is cut from origin/<default_branch> and the fences are
-      # projected afterwards, inside create_reconcile_mr_from_working_tree), a
-      # team MR merging mid-run does not reopen a stale window.
+      # Decoupled from the distillation --push path (which no longer touches the fences at all): a team MR merges its
+      # distilled file independently, and this scheduled job catches the fence up from merged master afterwards.
+      # Because the projection reads the same ref the reconcile MR targets (the branch is cut from
+      # origin/<default_branch> and the fences are projected afterwards, inside create_reconcile_mr_from_working_tree),
+      # a team MR merging mid-run does not reopen a stale window.
       #
-      # Without --push it only rewrites the file on disk from the current
-      # working tree (local/dry use). With --push the on-disk projection is
-      # deferred to the freshly cut branch, so it is skipped here.
+      # Without --push it only rewrites the file on disk from the current working tree (local/dry use). With --push the
+      # on-disk projection is deferred to the freshly cut branch, so it is skipped here.
       def reconcile_duo_instructions_fences(push: false)
         banner("Loading manifest from #{Manifest::MANIFEST_PATH}...")
         manifest.load
@@ -275,18 +251,16 @@ module Gitlab
         create_reconcile_mr_from_working_tree(manifest.auto_mr_config, manifest)
       end
 
-      # Stage 1 of the split pipeline: scan for drift and emit the child
-      # pipeline that will distill each affected principle in its own job.
+      # Stage 1 of the split pipeline: scan for drift and emit the child pipeline that will distill each affected
+      # principle in its own job.
       #
-      # This job triggers no distillation, so it is fast and cheap; the
-      # expensive, timeout-prone work all happens in the generated jobs, each
-      # with its own timeout. That is the whole point of the split: a single
-      # slow or retrying principle can no longer consume a budget shared with
-      # every other principle (see gitlab-org/gitlab#607365).
+      # This job triggers no distillation, so it is fast and cheap; the expensive, timeout-prone work all happens in the
+      # generated jobs, each with its own timeout.
+      # That is the whole point of the split: a single slow or retrying principle can no longer consume a budget shared
+      # with every other principle (see gitlab-org/gitlab#607365).
       #
-      # `validate_config!` runs here rather than only in the distill jobs so a
-      # misconfigured Workflow API fails once, immediately, instead of N times
-      # in parallel after the runners have already spun up.
+      # `validate_config!` runs here rather than only in the distill jobs so a misconfigured Workflow API fails once,
+      # immediately, instead of N times in parallel after the runners have already spun up.
       def generate_child_pipeline(options)
         workflow.validate_config!
 
@@ -305,15 +279,13 @@ module Gitlab
         write_child_pipeline(affected.keys)
       end
 
-      # Stage 2, one CI job per principle: distill exactly this principle and
-      # record the outcome as an artifact. Publishes nothing: the fan-in in
-      # `collect` owns publishing, because building the per-team MRs shares a
-      # single working tree and cannot be parallelized the same way.
+      # Stage 2, one CI job per principle: distill exactly this principle and record the outcome as an artifact.
+      # Publishes nothing: the fan-in in `collect` owns publishing, because building the per-team MRs shares a single
+      # working tree and cannot be parallelized the same way.
       #
-      # A principle absent from the manifest is a hard error: it means the
-      # generated pipeline and the manifest have diverged, and silently
-      # succeeding would let the collect job report the principle as "never
-      # ran" and quietly skip it every week.
+      # A principle absent from the manifest is a hard error: it means the generated pipeline and the manifest have
+      # diverged, and silently succeeding would let the collect job report the principle as "never ran" and quietly skip
+      # it every week.
       def distill_one(name)
         banner("Loading manifest from #{Manifest::MANIFEST_PATH}...")
         manifest.load
@@ -330,10 +302,9 @@ module Gitlab
         record_distill_artifact(name, contents[name], failed)
       end
 
-      # Stage 3, the fan-in: reconstruct the run from the distill jobs'
-      # artifacts and publish. This is the only stage that touches git, so the
-      # `git checkout -B` per team in `create_branch_and_mr` still operates on
-      # one working tree, unchanged.
+      # Stage 3, the fan-in: reconstruct the run from the distill jobs' artifacts and publish. This is the only stage
+      # that touches git, so the `git checkout -B` per team in `create_branch_and_mr` still operates on one working
+      # tree, unchanged.
       def collect(expected, push: false)
         banner("Loading manifest from #{Manifest::MANIFEST_PATH}...")
         manifest.load
@@ -344,10 +315,9 @@ module Gitlab
         report_collected(result)
         write_run_report(result.failed, result.contents.size, not_run: result.not_run)
 
-        # `affected` is rebuilt here (rather than carried through artifacts)
-        # because the MR description needs each principle's prior_sha and
-        # changed_sources, and those come from the same manifest scan the
-        # generator already ran against the same commit.
+        # `affected` is rebuilt here (rather than carried through artifacts) because the MR description needs each
+        # principle's prior_sha and changed_sources, and those come from the same manifest scan the generator already
+        # ran against the same commit.
         affected = manifest.affected_principles(only: expected)
 
         if result.contents.any?
@@ -355,10 +325,9 @@ module Gitlab
           publish(result.contents, affected, push: push, failed: result.failed, not_run: result.not_run)
         end
 
-        # `not_run` is deliberately NOT fatal: a principle whose job never
-        # completed has not been shown to be undistillable, and its checksum is
-        # untouched, so the next scheduled run simply re-attempts it. Only a
-        # genuine post-retry failure exits non-zero.
+        # `not_run` is deliberately NOT fatal: a principle whose job never completed has not been shown to be
+        # undistillable, and its checksum is untouched, so the next scheduled run simply re-attempts it.
+        # Only a genuine post-retry failure exits non-zero.
         abort_on_failures(result.failed)
       end
 
@@ -389,10 +358,9 @@ module Gitlab
           "#{CHILD_PIPELINE_PATH}.").green}"
       end
 
-      # Maps the three outcomes of a single-principle distillation onto the
-      # artifact contract. `unchanged` is distinct from `failed`: the workflow
-      # ran cleanly and produced no meaningful diff, which is a normal, healthy
-      # result and must not reach the Slack alert.
+      # Maps the three outcomes of a single-principle distillation onto the artifact contract.
+      # `unchanged` is distinct from `failed`: the workflow ran cleanly and produced no meaningful diff, which is a
+      # normal, healthy result and must not reach the Slack alert.
       def record_distill_artifact(name, content, failed)
         if failed.include?(name)
           artifacts.write(name, Artifacts::STATUS_FAILED)
@@ -409,9 +377,8 @@ module Gitlab
         puts "\n#{Rainbow("#{name}: distilled.").green}"
       end
 
-      # Surfaces the two abnormal outcomes with distinct wording, so an
-      # operator reading the collect job's log can tell a principle that Duo
-      # could not distill from one whose job never got to run.
+      # Surfaces the two abnormal outcomes with distinct wording, so an operator reading the collect job's log can tell
+      # a principle that Duo could not distill from one whose job never got to run.
       def report_collected(result)
         if result.failed.any?
           warn Rainbow("  #{result.failed.size} principle(s) failed distillation after retries: " \
@@ -439,28 +406,24 @@ module Gitlab
         [contents, failed]
       end
 
-      # Runs after publish (see #run) so a distillation failure still exits
-      # non-zero without discarding principles that succeeded.
+      # Runs after publish (see #run) so a distillation failure still exits non-zero without discarding principles that
+      # succeeded.
       def abort_on_failures(failed)
         return if failed.empty?
 
         abort "\n#{Rainbow("ERROR: #{failed.size} principle(s) failed after retries: #{failed.join(', ')}").red}"
       end
 
-      # Emits the dotenv report read by the `ai-principles-report-failure`
-      # Slack job. Written on every run that reaches distillation, including
-      # clean ones: the artifact is declared unconditionally in CI, so skipping
-      # the write would log `no matching files` / `No files to upload` on each
-      # green weekly run. `AI_PRINCIPLES_FAILED_NAMES` is empty on a clean run,
-      # which is what the Slack job tests to pick its wording.
+      # Emits the dotenv report read by the `ai-principles-report-failure` Slack job.
+      # Written on every run that reaches distillation, including clean ones: the artifact is declared unconditionally
+      # in CI, so skipping the write would log `no matching files` / `No files to upload` on each green weekly run.
+      # `AI_PRINCIPLES_FAILED_NAMES` is empty on a clean run, which is what the Slack job tests to pick its wording.
       #
-      # `not_run` gets its own vars rather than overloading the failure ones,
-      # so the Slack job can word "Duo could not distill these" and "these
-      # jobs never ran" differently. It is empty in the single-job path, where
-      # there are no per-principle jobs that could go missing.
+      # `not_run` gets its own vars rather than overloading the failure ones, so the Slack job can word "Duo could not
+      # distill these" and "these jobs never ran" differently.
+      # It is empty in the single-job path, where there are no per-principle jobs that could go missing.
       #
-      # Best-effort: a write failure must not mask a distillation failure the
-      # caller may be about to abort on.
+      # Best-effort: a write failure must not mask a distillation failure the caller may be about to abort on.
       def write_run_report(failed, published_count, not_run: [])
         path = Workspace.safe_join(RUN_REPORT_PATH)
         FileUtils.mkdir_p(File.dirname(path))
@@ -491,16 +454,13 @@ module Gitlab
         puts Rainbow(message).bold
       end
 
-      # The AGENTS.md/CLAUDE.md/SKILL.md/CODEOWNERS generators are
-      # manifest-driven (they do not read distilled bodies), so they can be
-      # regenerated straight from the manifest here.
+      # The AGENTS.md/CLAUDE.md/SKILL.md/CODEOWNERS generators are manifest-driven (they do not read distilled bodies),
+      # so they can be regenerated straight from the manifest here.
       #
-      # The Duo Code Review fences are deliberately NOT regenerated in this
-      # path: they are reconciled from merged-master content by the separate
-      # scheduled reconcile job (see #reconcile_duo_instructions_fences), so a team's
-      # distilled MR and the fence update are independently mergeable and a
-      # retried, non-deterministic distillation can never leave the fences out
-      # of sync with what actually ships.
+      # The Duo Code Review fences are deliberately NOT regenerated in this path: they are reconciled from merged-master
+      # content by the separate scheduled reconcile job (see #reconcile_duo_instructions_fences), so a team's distilled
+      # MR and the fence update are independently mergeable and a retried, non-deterministic distillation can never
+      # leave the fences out of sync with what actually ships.
       def regenerate_static_artifacts
         banner("\nUpdating AGENTS.md context loading section...")
         manifest.generate_agents_md_context_loading
@@ -515,9 +475,8 @@ module Gitlab
         manifest.inject_prerequisite_notes
       end
 
-      # Returns [{principle_name => fully_assembled_file_content}, [failed_names]]
-      # without writing to disk, so --push mode can defer writes until after
-      # the publish branch is checked out off origin/master.
+      # Returns [{principle_name => fully_assembled_file_content}, [failed_names]] without writing to disk, so --push
+      # mode can defer writes until after the publish branch is checked out off origin/master.
       def build_distilled_contents(affected, rewrite: false)
         header = '<!-- Auto-generated from docs.gitlab.com by ' \
           "gitlab-ai-principles-distiller — do not edit manually -->\n\n"
@@ -539,12 +498,10 @@ module Gitlab
 
           config = manifest.principle_config(name)
 
-          # Assemble the full body (header + prerequisite note + sources
-          # footer) BEFORE the meaningful? gate. `current` is read from disk
-          # with its footer intact (strip_frontmatter removes only the YAML),
-          # so comparing the raw checklist against it always looked
-          # "meaningful" and produced frontmatter-only MRs. Comparing the
-          # fully-assembled body against `current` makes the gate symmetric.
+          # Assemble the full body (header + prerequisite note + sources footer) BEFORE the meaningful? gate.
+          # `current` is read from disk with its footer intact (strip_frontmatter removes only the YAML), so comparing
+          # the raw checklist against it always looked "meaningful" and produced frontmatter-only MRs.
+          # Comparing the fully-assembled body against `current` makes the gate symmetric.
           assembled = assemble_distilled_body(updated, config, name, header)
 
           unless Diff.meaningful?(current, assembled)
@@ -565,11 +522,10 @@ module Gitlab
         [contents, failed]
       end
 
-      # Builds the full distilled body: auto-generated header, optional
-      # prerequisite note, the distilled checklist, and the authoritative
-      # sources footer. Matches what read_principles_file returns for an
-      # already-published file (sans YAML frontmatter), so the result can be
-      # compared against `current` by Diff.meaningful?.
+      # Builds the full distilled body: auto-generated header, optional prerequisite note, the distilled checklist, and
+      # the authoritative sources footer.
+      # Matches what read_principles_file returns for an already-published file (sans YAML frontmatter), so the result
+      # can be compared against `current` by Diff.meaningful?.
       def assemble_distilled_body(updated, config, name, header)
         note = manifest.prerequisite_note(name)
 
@@ -580,10 +536,10 @@ module Gitlab
       end
 
       # Rewrites source-relative Markdown links to absolute docs.gitlab.com URLs.
-      # The agent copies links verbatim from the SSOT docs, where they resolve
-      # correctly; from `.ai/principles/distilled/` the relative base differs, so
-      # we resolve each link against its source directory and emit the canonical
-      # published URL instead. Unresolved relatives are left intact and logged.
+      # The agent copies links verbatim from the SSOT docs, where they resolve correctly; from
+      # `.ai/principles/distilled/` the relative base differs, so we resolve each link against its source directory and
+      # emit the canonical published URL instead.
+      # Unresolved relatives are left intact and logged.
       def absolutize_links(updated, config, name)
         exist = ->(repo_path) { File.exist?(Workspace.safe_join(repo_path)) }
         warn_unresolved = ->(rel_path) do
@@ -676,8 +632,8 @@ module Gitlab
         repair_entity_escapes(Diff.strip_preamble(updated), config, log_warn)
       end
 
-      # Preserve literal entities copied from the SSOT while correcting entities
-      # that appear only in output from the distillation workflow.
+      # Preserve literal entities copied from the SSOT while correcting entities that appear only in output from the
+      # distillation workflow.
       def repair_entity_escapes(content, config, log_warn)
         in_fence = false
         repaired_lines = []
@@ -714,58 +670,45 @@ module Gitlab
         line.strip.sub(/\A[-*+]\s+/, '')
       end
 
-      # Chooses the pre-retry backoff. A deterministic failure (baseline
-      # drift on the prior attempt) uses a short fixed wait since the retry
-      # re-runs identical input; every other failure (transient fetch, agent
-      # crash, invalid content) uses the long Gitaly-oriented backoff, which
-      # gives an overloaded node time to recover. `attempt` is 1-based for
-      # the backoff schedule (attempt 0 never waits).
+      # Chooses the pre-retry backoff. A deterministic failure (baseline drift on the prior attempt) uses a short fixed
+      # wait since the retry re-runs identical input; every other failure (transient fetch, agent crash, invalid
+      # content) uses the long Gitaly-oriented backoff, which gives an overloaded node time to recover.
+      # `attempt` is 1-based for the backoff schedule (attempt 0 never waits).
       def retry_backoff(attempt, deterministic:)
         return DISTILL_BASELINE_DRIFT_BACKOFF_SECONDS if deterministic
 
         DISTILL_RETRY_BACKOFF_SECONDS[attempt - 1]
       end
 
-      # Mechanical guard for distillation prompt rule 15: baseline rules must
-      # be included verbatim. Prompt-only enforcement proved insufficient: a
-      # re-distillation relocated and corrupted a baseline section (duplicated
-      # sentence fragment, broken sub-bullet) despite the verbatim
-      # instruction, so drift here fails the attempt and triggers a retry
-      # instead of publishing corrupted baseline rules.
+      # Mechanical guard for distillation prompt rule 15: baseline rules must be included verbatim. Prompt-only
+      # enforcement proved insufficient: a re-distillation relocated and corrupted a baseline section (duplicated
+      # sentence fragment, broken sub-bullet) despite the verbatim instruction, so drift here fails the attempt and
+      # triggers a retry instead of publishing corrupted baseline rules.
       #
-      # The comparison operates on normalized logical units (one unit per
-      # bullet or paragraph, hard-wrapped continuation lines joined, inner
-      # whitespace collapsed), NOT on physical lines: the agent routinely
-      # re-flows long lines, and a pure re-wrap of identical text is not
-      # corruption. A line-level check rejected such reflows
-      # deterministically, burning every retry on byte-identical text.
-      # Heading lines and blank lines are unit boundaries and exempt, because
-      # the agent may adapt heading levels and placement when integrating
-      # baseline rules into an existing subsection.
+      # The comparison operates on normalized logical units (one unit per bullet or paragraph, hard-wrapped continuation
+      # lines joined, inner whitespace collapsed), NOT on physical lines: the agent routinely re-flows long lines, and a
+      # pure re-wrap of identical text is not corruption.
+      # A line-level check rejected such reflows deterministically, burning every retry on byte-identical text.
+      # Heading lines and blank lines are unit boundaries and exempt, because the agent may adapt heading levels and
+      # placement when integrating baseline rules into an existing subsection.
       #
       # Both sides of the comparison are scoped, not raw:
-      # - `baseline_rules` drops any preamble before the baseline's own
-      #   `## Checklist` heading (title, prerequisite blockquote, framing
-      #   prose, a `---` divider). That preamble is document scaffolding, not
-      #   a rule, and `Workflow#build_goal` explicitly instructs the agent to
-      #   emit "ONLY the checklist content" - comparing the full baseline
-      #   demanded text the prompt forbids producing, an unsatisfiable
-      #   guard (observed with testing-frontend-testing-hierarchy, job
-      #   15601793108). Most baselines have no `## Checklist` heading, so
-      #   this is a no-op for them.
-      # - `checklist_body` drops the `## Authoritative sources` footer that
-      #   `assemble_distilled_body` appends after this guard normally runs.
-      #   `content` here is the raw agent output, but the guard must still
-      #   tolerate a footer if the agent emits one anyway: a baseline path
-      #   that is also `sources:`-listed legitimately appears twice
-      #   otherwise, tripping the exactly-once check on the tool's own
-      #   output (observed with documentation-topics).
+      # - `baseline_rules` drops any preamble before the baseline's own `## Checklist` heading (title, prerequisite
+      #   blockquote, framing prose, a `---` divider).
+      #   That preamble is document scaffolding, not a rule, and `Workflow#build_goal` explicitly instructs the agent to
+      #   emit "ONLY the checklist content" - comparing the full baseline demanded text the prompt forbids producing, an
+      #   unsatisfiable guard (observed with testing-frontend-testing-hierarchy, job 15601793108).
+      #   Most baselines have no `## Checklist` heading, so this is a no-op for them.
+      # - `checklist_body` drops the `## Authoritative sources` footer that `assemble_distilled_body` appends after this
+      #   guard normally runs.
+      #   `content` here is the raw agent output, but the guard must still tolerate a footer if the agent emits one
+      #   anyway: a baseline path that is also `sources:`-listed legitimately appears twice otherwise, tripping the
+      #   exactly-once check on the tool's own output (observed with documentation-topics).
       #
-      # Returns the baseline units that are altered, missing, or duplicated
-      # in `content` (empty when clean, when the principle has no baseline,
-      # or when the baseline file is unreadable). Duplication matters because
-      # the observed corruption emitted a baseline fragment twice: every
-      # baseline rule must appear exactly once.
+      # Returns the baseline units that are altered, missing, or duplicated in `content` (empty when clean, when the
+      # principle has no baseline, or when the baseline file is unreadable).
+      # Duplication matters because the observed corruption emitted a baseline fragment twice: every baseline rule must
+      # appear exactly once.
       def baseline_drift(config, content)
         baseline_path = config['baseline']
         return [] unless baseline_path
@@ -777,45 +720,37 @@ module Gitlab
         logical_units(baseline_rules(baseline)).reject { |unit| occurrences[unit] == 1 }
       end
 
-      # Returns the rule-bearing portion of a baseline file: everything from
-      # its own `## Checklist` heading onward, or the whole file when no such
-      # heading exists (most baselines have none - they are already pure
-      # rule content with no title/prerequisite preamble).
+      # Returns the rule-bearing portion of a baseline file: everything from its own `## Checklist` heading onward, or
+      # the whole file when no such heading exists (most baselines have none - they are already pure rule content with
+      # no title/prerequisite preamble).
       def baseline_rules(baseline)
         heading = baseline.index(/^##\s+Checklist\s*$/)
         heading ? baseline[heading..] : baseline
       end
 
-      # Returns `content` truncated before the `## Authoritative sources`
-      # footer, so a footer-listed path cannot be counted as a duplicate of
-      # the same path appearing in the checklist body.
+      # Returns `content` truncated before the `## Authoritative sources` footer, so a footer-listed path cannot be
+      # counted as a duplicate of the same path appearing in the checklist body.
       def checklist_body(content)
         content.split(/^##\s+Authoritative sources\s*$/, 2).first
       end
 
-      # Splits markdown into logical units: each list item or paragraph is
-      # one unit, with hard-wrapped continuation lines joined and inner
-      # whitespace collapsed. Heading lines and blank lines terminate the
-      # current unit and are excluded from the result.
+      # Splits markdown into logical units: each list item or paragraph is one unit, with hard-wrapped continuation
+      # lines joined and inner whitespace collapsed.
+      # Heading lines and blank lines terminate the current unit and are excluded from the result.
       #
-      # The leading list marker (-, *, +, or an ordered "1." / "1)") is
-      # stripped during normalization so a rule's identity is its TEXT, not
-      # its bullet-vs-paragraph presentation. A baseline may store a rule as
-      # a bare paragraph (e.g. an intro sentence ending in "For example:"
-      # that precedes nested sub-bullets), while every reasonable
-      # distillation renders that same rule as a bullet so the sub-bullets
-      # attach - a legitimate reformat, not corruption. Keeping the marker in
-      # the unit made those two forms compare unequal, so the guard flagged
-      # drift on byte-identical rule text and burned every retry (observed
-      # with the database-fundamentals baseline). Rewording, omission, and
-      # duplication still change the text itself and remain detected.
+      # The leading list marker (-, *, +, or an ordered "1." / "1)") is stripped during normalization so a rule's
+      # identity is its TEXT, not its bullet-vs-paragraph presentation.
+      # A baseline may store a rule as a bare paragraph (e.g. an intro sentence ending in "For example:" that precedes
+      # nested sub-bullets), while every reasonable distillation renders that same rule as a bullet so the sub-bullets
+      # attach - a legitimate reformat, not corruption. Keeping the marker in the unit made those two forms compare
+      # unequal, so the guard flagged drift on byte-identical rule text and burned every retry (observed with the
+      # database-fundamentals baseline).
+      # Rewording, omission, and duplication still change the text itself and remain detected.
       #
-      # A single trailing period is likewise stripped: the agent routinely
-      # appends one while rephrasing a baseline rule into a sentence, and
-      # that punctuation is presentation, not the rule's identity (observed
-      # across several baselines whose committed distilled form differs from
-      # the baseline only by a trailing "."). A reworded or truncated rule
-      # still differs by more than punctuation and remains detected.
+      # A single trailing period is likewise stripped: the agent routinely appends one while rephrasing a baseline rule
+      # into a sentence, and that punctuation is presentation, not the rule's identity (observed across several
+      # baselines whose committed distilled form differs from the baseline only by a trailing ".").
+      # A reworded or truncated rule still differs by more than punctuation and remains detected.
       def logical_units(text)
         units = []
         current = nil

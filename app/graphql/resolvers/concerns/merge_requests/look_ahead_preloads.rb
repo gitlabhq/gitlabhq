@@ -48,7 +48,9 @@ module MergeRequests
         diff_stats: [latest_merge_request_diff: [:merge_request_diff_commits]],
         source_branch_exists: [:source_project, { source_project: [:route] }],
         squash_read_only: { target_project: :project_setting },
-        web_url: { target_project: [:route, { namespace: [:route] }] }
+        web_url: { target_project: [:route, { namespace: [:route] }] },
+        reference: { target_project: [:route, { namespace: [:route] }] },
+        project: { target_project: [:route, { namespace: [:route] }] }
       }
     end
   end

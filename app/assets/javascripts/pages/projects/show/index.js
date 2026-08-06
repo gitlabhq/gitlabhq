@@ -6,7 +6,7 @@ import initClustersDeprecationAlert from '~/projects/clusters_deprecation_alert'
 import leaveByUrl, { NAMESPACE_TYPES } from '~/namespaces/leave_by_url';
 import { initUploadFileTrigger } from '~/projects/upload_file';
 import initReadMore from '~/read_more';
-import initAmbiguousRefModal from '~/ref/init_ambiguous_ref_modal';
+import initAmbiguousRefModal from '~/vue_shared/components/ref/init_ambiguous_ref_modal';
 import EmptyProject from '~/pages/projects/show/empty_project';
 import initHeaderApp from '~/repository/init_header_app';
 import { initWebIdeLink } from '~/pages/projects/shared/web_ide_link/init_web_ide_link';

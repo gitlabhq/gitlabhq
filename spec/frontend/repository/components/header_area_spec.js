@@ -3,7 +3,7 @@ import { RouterLinkStub } from '@vue/test-utils';
 import { createTestingPinia } from '@pinia/testing';
 import { PiniaVuePlugin } from 'pinia';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import RefSelector from '~/ref/components/ref_selector.vue';
+import RefSelector from '~/vue_shared/components/ref/components/ref_selector.vue';
 import HeaderArea from '~/repository/components/header_area.vue';
 import Breadcrumbs from '~/repository/components/header_area/breadcrumbs.vue';
 import AddToTree from '~/repository/components/header_area/add_to_tree.vue';

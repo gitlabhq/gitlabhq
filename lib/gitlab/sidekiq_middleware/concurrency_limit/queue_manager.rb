@@ -235,7 +235,7 @@ module Gitlab
         def num_jobs_to_resume
           limit = worker_limit
           if limit > 0
-            limit - concurrent_worker_count
+            limit - concurrent_worker_count - pending_resumed_jobs_count
           else
             MAX_BATCH_SIZE
           end
@@ -247,6 +247,20 @@ module Gitlab
 
         def concurrent_worker_count
           Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService.concurrent_worker_count(worker_name)
+        end
+
+        def pending_resumed_jobs_count
+          Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService.pending_resumed_jobs_count(worker_name)
+        end
+
+        def track_pending_resumed_jobs(count)
+          Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService.track_pending_resumed_jobs(worker_name,
+            count)
+        end
+
+        def untrack_pending_resumed_job(count)
+          Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService.untrack_pending_resumed_job(worker_name,
+            count)
         end
 
         def with_redis(&)
@@ -272,7 +286,21 @@ module Gitlab
 
           args_list = prepare_and_store_metadata(jobs)
           Gitlab::SidekiqLogging::ConcurrencyLimitLogger.instance.batch_resumed_log(worker_name, args_list.length)
-          worker_klass.bulk_perform_async(args_list) # rubocop:disable Scalability/BulkPerformWithContext -- context is set separately in SidekiqMiddleware::ConcurrencyLimit::Resume
+
+          # Track before enqueuing so the counter is set before any resumed job can be picked
+          # up and reach track_execution_start (which calls untrack_pending_resumed_job). A job
+          # dequeued in the window before this increment would decrement a counter still floored
+          # at zero, losing the decrement and leaving the counter permanently inflated.
+          track_pending_resumed_jobs(args_list.length)
+          begin
+            worker_klass.bulk_perform_async(args_list) # rubocop:disable Scalability/BulkPerformWithContext -- context is set separately in SidekiqMiddleware::ConcurrencyLimit::Resume
+          rescue StandardError
+            # The batch was not enqueued, so release the slots we just reserved. The caller
+            # either retries the jobs individually (re-tracking one per job) or leaves them
+            # buffered; either way these jobs will never reach track_execution_start.
+            untrack_pending_resumed_job(args_list.length)
+            raise
+          end
         end
 
         def prepare_and_store_metadata(jobs)

@@ -12,8 +12,7 @@ module QA
 
       it(
         'is determined based on forward:pipeline_variables condition',
-        :aggregate_failures,
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/360745'
+        :aggregate_failures
       ) do
         start_pipeline_via_api_with_variable
         wait_for_pipelines

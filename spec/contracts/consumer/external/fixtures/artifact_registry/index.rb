@@ -25,7 +25,7 @@ module ArtifactRegistry
           body: Pact.each_like(
             id: Pact::SomethingLike.new('dddddddd-dddd-dddd-dddd-dddddddddddd'),
             name: Pact::SomethingLike.new('my-maven-repo'),
-            format: Pact::Term.new(generate: 'maven', matcher: /^(container|maven|npm)$/),
+            format: Pact::Term.new(generate: 'maven', matcher: /^(docker|oci|maven|npm)$/),
             kind: Pact::Term.new(generate: 'hosted', matcher: /^(hosted|virtual|remote)$/),
             visibility: Pact::Term.new(generate: 'private', matcher: /^(public|private|internal)$/),
             description: Pact::SomethingLike.new('A hosted Maven repository'),

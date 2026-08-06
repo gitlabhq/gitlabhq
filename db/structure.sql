@@ -6901,8 +6901,10 @@ CREATE TABLE p_duo_workflows_checkpoint_headers (
     metadata jsonb NOT NULL,
     thread_ts text NOT NULL,
     parent_ts text,
+    checkpoint_ns text,
     CONSTRAINT check_71babcae59 CHECK ((char_length(thread_ts) <= 255)),
     CONSTRAINT check_8fe91401d3 CHECK ((char_length(parent_ts) <= 255)),
+    CONSTRAINT check_duo_wf_checkpoint_headers_checkpoint_ns_limit CHECK ((char_length(checkpoint_ns) <= 4096)),
     CONSTRAINT check_duo_wf_checkpoint_headers_sharding_key CHECK ((num_nonnulls(namespace_id, project_id) = 1))
 )
 PARTITION BY RANGE (workflow_created_at);
@@ -6923,7 +6925,7 @@ CREATE TABLE p_duo_workflows_checkpoints (
     checkpoint_ns text,
     CONSTRAINT check_70d1d05b50 CHECK ((num_nonnulls(namespace_id, project_id) = 1)),
     CONSTRAINT check_b55c120f3f CHECK ((char_length(thread_ts) <= 255)),
-    CONSTRAINT check_duo_wf_checkpoints_checkpoint_ns_limit CHECK ((char_length(checkpoint_ns) <= 255)),
+    CONSTRAINT check_duo_wf_checkpoints_checkpoint_ns_limit_4k CHECK ((char_length(checkpoint_ns) <= 4096)),
     CONSTRAINT check_e63817afa6 CHECK ((char_length(parent_ts) <= 255))
 )
 PARTITION BY RANGE (created_at);

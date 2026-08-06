@@ -11,7 +11,7 @@ module QA
       let(:title) { "MR push options test #{SecureRandom.hex(8)}" }
       let(:project) { create(:project, :with_readme, name: 'merge-request-push-options') }
 
-      it 'removes the source branch', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347841' do
+      it 'removes the source branch' do
         Resource::Repository::ProjectPush.fabricate! do |push|
           push.project = project
           push.branch_name = branch

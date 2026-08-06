@@ -33,8 +33,7 @@ module QA
         end
 
         it(
-          'successfully imports groups and labels',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347674'
+          'successfully imports groups and labels'
         ) do
           expect_group_import_finished_successfully
 
@@ -60,8 +59,7 @@ module QA
         end
 
         it(
-          'successfully imports group milestones and badges',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347628'
+          'successfully imports group milestones and badges'
         ) do
           expect_group_import_finished_successfully
 

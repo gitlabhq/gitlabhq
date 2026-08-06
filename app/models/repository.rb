@@ -205,7 +205,8 @@ class Repository
     committed_after: nil,
     pagination_params: { page_token: nil, limit: 1000 },
     literal_pathspec: false,
-    first_parent: false
+    first_parent: false,
+    order: nil
   )
     return empty_commit_collection_with_next_cursor unless exists? && has_visible_content? && ref.present?
 
@@ -220,7 +221,8 @@ class Repository
       committed_after: committed_after,
       pagination_params: pagination_params,
       literal_pathspec: literal_pathspec,
-      first_parent: first_parent
+      first_parent: first_parent,
+      order: order
     )
 
     Repositories::CommitCollectionWithNextCursor.new(

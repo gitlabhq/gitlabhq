@@ -724,7 +724,6 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
       end
 
       context 'with an unsupported parameter' do
-        it_behaves_like 'rejects unsupported keyset parameter', { order: 'topo' }
         it_behaves_like 'rejects unsupported keyset parameter', { trailers: true }
         it_behaves_like 'rejects unsupported keyset parameter', { follow: true }
       end
@@ -780,6 +779,46 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
 
           expected = project.repository.commits(project.default_branch, first_parent: true, limit: 4).map(&:id)
           expect(first_page + second_page).to eq(expected)
+        end
+      end
+
+      context 'with order=topo' do
+        it 'returns commits in topological order', :aggregate_failures do
+          get api(route, current_user), params: { pagination: 'keyset', order: 'topo', per_page: 100 }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to be_an(Array)
+          expect(json_response).to be_present
+
+          expected = project.repository.commits(project.default_branch, order: 'topo', limit: 100).map(&:id)
+          expect(json_response.map { |c| c['id'] }).to eq(expected)
+        end
+
+        it 'paginates across pages with stable order', :aggregate_failures do
+          get api(route, current_user), params: { pagination: 'keyset', order: 'topo', per_page: 2 }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          first_page = json_response.map { |c| c['id'] }
+
+          cursor = pagination_params_from_next_url(response)['page_token']
+          expect(cursor).to be_present
+
+          get api(route, current_user), params: { pagination: 'keyset', order: 'topo', per_page: 2, page_token: cursor }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          second_page = json_response.map { |c| c['id'] }
+
+          expected = project.repository.commits(project.default_branch, order: 'topo', limit: 4).map(&:id)
+          expect(first_page + second_page).to eq(expected)
+        end
+      end
+
+      context 'with order=default' do
+        it 'accepts order=default and returns commits', :aggregate_failures do
+          get api(route, current_user), params: { pagination: 'keyset', order: 'default', per_page: 5 }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to be_present
         end
       end
 

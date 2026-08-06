@@ -1,6 +1,6 @@
 <script>
 import { GlAlert, GlButton, GlForm, GlFormGroup, GlFormTextarea } from '@gitlab/ui';
-import RefSelector from '~/ref/components/ref_selector.vue';
+import RefSelector from '~/vue_shared/components/ref/components/ref_selector.vue';
 import { __, s__, sprintf } from '~/locale';
 import createCommitMutation from '../queries/create_commit.graphql';
 import getFileMetaDataQuery from '../queries/get_file_meta.graphql';

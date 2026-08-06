@@ -1068,7 +1068,7 @@ describe('WorkItemDetail component', () => {
         'Error uploading a new design. Please try again.',
       );
 
-      findWorkItemDesigns().vm.$emit('dismissError');
+      findWorkItemDesigns().vm.$emit('dismiss-error');
       await nextTick();
       expect(findWorkItemDesigns().props('uploadError')).toBe(null);
     });

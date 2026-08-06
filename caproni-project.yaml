@@ -76,7 +76,13 @@ reloaders:
           # establish proxy connection for child" and Puma fork-loops forever.
           # Single mode holds one steady layer connection instead, and saves
           # a few GB of RAM locally.
-          command: "bash -c 'WORKER_PROCESSES=0 RAILS_ENV=development RAILS_HOSTS=gitlab-webservice-default.gitlab.svc VITE_ENABLED=true VITE_HMR_HOST=127.0.0.1 bundle exec puma --config config/puma.rb'"
+          #
+          # RAILS_HOSTS: in-cluster callers (e.g. iam-data-access's JWKS fetch)
+          # reach this pod via the Service's *.svc.cluster.local FQDN, not the
+          # short *.svc form. Rails' host authorization does an exact-string
+          # match per entry, so both forms must be listed or it 403s with
+          # "Blocked hosts" before the request reaches the app.
+          command: "bash -c 'WORKER_PROCESSES=0 RAILS_ENV=development RAILS_HOSTS=gitlab-webservice-default.gitlab.svc,gitlab-webservice-default.gitlab.svc.cluster.local VITE_ENABLED=true VITE_HMR_HOST=127.0.0.1 bundle exec puma --config config/puma.rb'"
         vite:
           command: "bash -c 'VITE_RUBY_HOST=127.0.0.1 VITE_RUBY_PORT=3036 bundle exec vite dev'"
           context: local

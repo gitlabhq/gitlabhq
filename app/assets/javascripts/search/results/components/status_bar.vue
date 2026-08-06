@@ -3,7 +3,7 @@ import { GlSprintf, GlLink, GlButton } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
 import { n__ } from '~/locale';
-import RefSelector from '~/ref/components/ref_selector.vue';
+import RefSelector from '~/vue_shared/components/ref/components/ref_selector.vue';
 import { REF_FIELD_NAME } from '~/search/results/constants';
 import { getBaseURL, setUrlParams, visitUrl } from '~/lib/utils/url_utility';
 

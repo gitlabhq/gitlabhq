@@ -35,6 +35,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
     { 'args' => [1, 2], 'jid' => 'def456', 'wal_locations' => { 'main' => '0/D525E3A8', 'ci' => '0/D525E3A8' } }
   end
 
+  let(:concurrency_service) { Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService }
+
   subject(:service) { described_class.new(worker_name: worker_class_name, prefix: 'some_prefix') }
 
   before do
@@ -275,17 +277,14 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
     end
 
     shared_examples 'resumes jobs respecting concurrency limit' do
-      it 'puts jobs back into the queue and respects order' do
+      it 'resumes jobs up to the available capacity and keeps the rest queued', :aggregate_failures do
         expect_next_instance_of(Gitlab::ExclusiveLease) do |el|
           expect(el).to receive(:try_obtain).and_call_original
         end
 
         expect(Gitlab::SidekiqLogging::ConcurrencyLimitLogger.instance)
           .to receive(:batch_resumed_log)
-                .with(worker_class_name, 2).ordered
-        expect(Gitlab::SidekiqLogging::ConcurrencyLimitLogger.instance)
-          .to receive(:batch_resumed_log)
-                .with(worker_class_name, 1).ordered
+                .with(worker_class_name, 2)
         expect(Gitlab::SafeRequestStore).to receive(:write).with(
           metadata_key,
           kind_of(Queue)
@@ -296,20 +295,14 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
           expect(job2).to match(expected_metadata.merge({ "index" => 2 }))
         end
 
-        expect(Gitlab::SafeRequestStore).to receive(:write).with(
-          metadata_key,
-          kind_of(Queue)
-        ) do |_key, queue|
-          job3 = queue.pop
-          expect(job3).to match(expected_metadata.merge({ "index" => 3 }))
-        end
-
         expect(worker_class).to receive(:bulk_perform_async).with([[1], [2]])
-        expect(worker_class).to receive(:bulk_perform_async).with([[3]])
 
         resumed = service.resume_processing!
 
-        expect(resumed).to eq(3)
+        # The two resumed jobs have not started executing yet, so they occupy the whole
+        # limit as pending. The third job stays queued until one of them begins executing.
+        expect(resumed).to eq(2)
+        expect(service.queue_size).to eq(1)
       end
     end
 
@@ -328,15 +321,37 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
       end
     end
 
-    it 'drops a set after execution' do
+    it 'drops resumed jobs from the queue' do
       expect_next_instance_of(Gitlab::ExclusiveLease) do |el|
         expect(el).to receive(:try_obtain).and_call_original
       end
 
       expect(worker_class).to receive(:bulk_perform_async).with([[1], [2]])
-      expect(worker_class).to receive(:bulk_perform_async).with([[3]])
+
       expect { service.resume_processing! }
-        .to change { service.has_jobs_in_queue? }.from(true).to(false)
+        .to change { service.queue_size }.from(3).to(1)
+    end
+
+    it 'resumes further jobs once pending resumed jobs start executing, preserving order', :aggregate_failures do
+      expect(worker_class).to receive(:bulk_perform_async).with([[1], [2]]).ordered
+      expect(worker_class).to receive(:bulk_perform_async).with([[3]]).ordered
+
+      expect(service.resume_processing!).to eq(2)
+      expect(service.queue_size).to eq(1)
+
+      # Simulate the two resumed jobs starting execution: they leave the pending counter
+      # but now count towards concurrent_worker_count, so still no capacity to resume.
+      2.times { concurrency_service.untrack_pending_resumed_job(worker_class_name) }
+      allow(concurrency_service).to receive(:concurrent_worker_count).with(worker_class_name).and_return(2)
+
+      expect(service.resume_processing!).to eq(0)
+      expect(service.queue_size).to eq(1)
+
+      # Once one of them finishes, a slot frees up and the last job is resumed.
+      allow(concurrency_service).to receive(:concurrent_worker_count).with(worker_class_name).and_return(1)
+
+      expect(service.resume_processing!).to eq(1)
+      expect(service.queue_size).to eq(0)
     end
 
     context 'when processing longer than deadline' do
@@ -442,6 +457,19 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
           expect(service.queue_size).to eq(0)
         end
 
+        it 'counts only the enqueued jobs as pending, not the dropped or retried ones' do
+          expect_next_instance_of(Gitlab::ExclusiveLease) do |el|
+            expect(el).to receive(:try_obtain).and_call_original
+          end
+
+          service.resume_processing!
+
+          # Jobs [1] and [3] were enqueued (one pending slot each); the poison job [2] was
+          # rolled back and dropped. Anything other than 2 means the batch-level rollback and
+          # the per-job re-tracking did not net out (double-count or a counted dropped job).
+          expect(concurrency_service.pending_resumed_jobs_count(worker_class_name)).to eq(2)
+        end
+
         it 'increments the dropped_jobs metric for poison jobs', :aggregate_failures do
           expect_next_instance_of(Gitlab::ExclusiveLease) do |el|
             expect(el).to receive(:try_obtain).and_call_original
@@ -489,6 +517,9 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
         expect { service.resume_processing! }.to raise_error(Redis::ConnectionError)
 
         expect(service.queue_size).to eq(3)
+        # The batch was never enqueued, so the slots reserved before bulk_perform_async must
+        # be rolled back rather than left inflating the counter until the TTL expires.
+        expect(concurrency_service.pending_resumed_jobs_count(worker_class_name)).to eq(0)
       end
     end
 
@@ -503,13 +534,12 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
         allow(Gitlab::ExclusiveLease).to receive(:new).and_return(lease_instance)
 
         expect(worker_class).to receive(:bulk_perform_async).with([[1], [2]])
-        expect(worker_class).to receive(:bulk_perform_async).with([[3]])
 
-        # Verify that renew is called before each iteration of the loop
-        # With 3 jobs and concurrency limit of 2: first iteration resumes 2 jobs,
-        # second iteration resumes 1 job, third iteration finds no jobs and breaks.
-        # So renew is called 3 times (before each iteration).
-        expect(lease_instance).to receive(:renew).exactly(3).times
+        # Verify that renew is called before each iteration of the loop.
+        # With 3 jobs and concurrency limit of 2: the first iteration resumes 2 jobs which
+        # then occupy the limit as pending, so the second iteration finds no capacity and
+        # breaks. So renew is called twice (before each iteration).
+        expect(lease_instance).to receive(:renew).twice
 
         service.resume_processing!
       end

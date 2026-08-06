@@ -1,6 +1,6 @@
 import { GlFormInputGroup, GlCollapsibleListbox, GlFormInput, GlButton } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import RefSearchForm from '~/ref/components/ref_search_form.vue';
+import RefSearchForm from '~/vue_shared/components/ref/components/ref_search_form.vue';
 import * as urlUtility from '~/lib/utils/url_utility';
 import setWindowLocation from 'helpers/set_window_location_helper';
 

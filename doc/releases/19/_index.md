@@ -1,7 +1,7 @@
 ---
 stage: Release Notes
 group: Monthly Release
-title: GitLab 19.0 release notes
+title: GitLab 19 release notes
 ---
 
 {{< cards >}}

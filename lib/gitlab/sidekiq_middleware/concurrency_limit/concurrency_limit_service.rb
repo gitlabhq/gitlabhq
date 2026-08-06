@@ -10,7 +10,8 @@ module Gitlab
           to: :@queue_manager
 
         delegate :track_execution_start, :track_execution_end, :cleanup_stale_trackers,
-          :concurrent_worker_count, to: :@worker_execution_tracker
+          :concurrent_worker_count, :track_pending_resumed_jobs, :untrack_pending_resumed_job,
+          :pending_resumed_jobs_count, to: :@worker_execution_tracker
 
         delegate :current_limit, :set_current_limit!, to: :@limit_manager
 
@@ -85,6 +86,18 @@ module Gitlab
 
           def concurrent_worker_count(worker_name)
             new(worker_name).concurrent_worker_count
+          end
+
+          def track_pending_resumed_jobs(worker_name, count)
+            new(worker_name).track_pending_resumed_jobs(count)
+          end
+
+          def untrack_pending_resumed_job(worker_name, count = 1)
+            new(worker_name).untrack_pending_resumed_job(count)
+          end
+
+          def pending_resumed_jobs_count(worker_name)
+            new(worker_name).pending_resumed_jobs_count
           end
 
           def current_limit(worker_name)

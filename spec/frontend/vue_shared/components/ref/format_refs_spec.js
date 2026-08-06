@@ -1,5 +1,5 @@
-import { formatListBoxItems, formatErrors } from '~/ref/format_refs';
-import { DEFAULT_I18N } from '~/ref/constants';
+import { formatListBoxItems, formatErrors } from '~/vue_shared/components/ref/format_refs';
+import { DEFAULT_I18N } from '~/vue_shared/components/ref/constants';
 import {
   MOCK_BRANCHES,
   MOCK_COMMITS,

@@ -1,8 +1,13 @@
 import testAction from 'helpers/vuex_action_helper';
-import { ALL_REF_TYPES, REF_TYPE_BRANCHES, REF_TYPE_TAGS, REF_TYPE_COMMITS } from '~/ref/constants';
-import * as actions from '~/ref/stores/actions';
-import * as types from '~/ref/stores/mutation_types';
-import createState from '~/ref/stores/state';
+import {
+  ALL_REF_TYPES,
+  REF_TYPE_BRANCHES,
+  REF_TYPE_TAGS,
+  REF_TYPE_COMMITS,
+} from '~/vue_shared/components/ref/constants';
+import * as actions from '~/vue_shared/components/ref/stores/actions';
+import * as types from '~/vue_shared/components/ref/stores/mutation_types';
+import createState from '~/vue_shared/components/ref/stores/state';
 
 let mockBranchesReturnValue;
 let mockTagsReturnValue;

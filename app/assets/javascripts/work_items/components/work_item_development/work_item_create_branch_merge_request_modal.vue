@@ -3,7 +3,7 @@ import { GlForm, GlFormInputGroup, GlFormGroup, GlModal } from '@gitlab/ui';
 import { debounce } from 'lodash-es';
 import axios from '~/lib/utils/axios_utils';
 import { createAlert } from '~/alert';
-import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/ref/constants';
+import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/vue_shared/components/ref/constants';
 
 import { visitUrl } from '~/lib/utils/url_utility';
 import { newProjectForkPath } from '~/lib/utils/path_helpers/project';
@@ -14,7 +14,7 @@ import {
   humanizeBranchValidationErrors,
 } from '~/lib/utils/text_utility';
 import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
-import RefSelector from '~/ref/components/ref_selector.vue';
+import RefSelector from '~/vue_shared/components/ref/components/ref_selector.vue';
 import getProjectRootRef from '~/work_items/graphql/get_project_root_ref.query.graphql';
 import { s__, __, sprintf } from '~/locale';
 import confidentialMergeRequestState from '~/confidential_merge_request/state';
@@ -80,7 +80,7 @@ export default {
       default: false,
     },
   },
-  emits: ['error', 'fetchedPermissions', 'hide-modal'],
+  emits: ['error', 'fetched-permissions', 'hide-modal'],
   data() {
     return {
       isLoading: false,
@@ -206,7 +206,7 @@ export default {
       /** Can be changed when we migrate the response to graphql */
       /* eslint-disable camelcase */
       this.canCreateBranch = can_create_branch;
-      this.$emit('fetchedPermissions', can_create_branch);
+      this.$emit('fetched-permissions', can_create_branch);
 
       if (this.canCreateBranch) {
         this.branchName = suggested_branch_name;

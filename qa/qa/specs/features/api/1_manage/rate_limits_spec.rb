@@ -9,8 +9,7 @@ module QA
       let(:api_client) { rate_limited_user.api_client }
       let!(:request) { Runtime::API::Request.new(api_client, '/users') }
 
-      it 'throttles authenticated api requests by user',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347881' do
+      it 'throttles authenticated api requests by user' do
         with_application_settings(
           throttle_authenticated_api_requests_per_period: 100,
           throttle_authenticated_api_period_in_seconds: 7200,

@@ -3,8 +3,8 @@ import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { visitUrl, joinPaths } from '~/lib/utils/url_utility';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ShortcutsNetwork from '~/behaviors/shortcuts/shortcuts_network';
-import RefSelector from '~/ref/components/ref_selector.vue';
-import RefSearchForm from '~/ref/components/ref_search_form.vue';
+import RefSelector from '~/vue_shared/components/ref/components/ref_selector.vue';
+import RefSearchForm from '~/vue_shared/components/ref/components/ref_search_form.vue';
 
 import Network from './network';
 

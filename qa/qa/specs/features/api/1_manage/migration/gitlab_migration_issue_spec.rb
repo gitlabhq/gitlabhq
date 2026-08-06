@@ -34,8 +34,7 @@ module QA
         let(:imported_comments) { imported_issue.comments }
 
         it(
-          'successfully imports issue',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347608'
+          'successfully imports issue'
         ) do
           expect_project_import_finished_successfully
           expect(imported_issues.count).to eq(1)
@@ -57,8 +56,7 @@ module QA
         end
 
         it(
-          'preserves related merge request',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386305'
+          'preserves related merge request'
         ) do
           expect_project_import_finished_successfully
           expect(imported_related_mrs).to eq([source_mr.iid])
@@ -78,8 +76,7 @@ module QA
         end
 
         it(
-          'successfully imports design',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/366449'
+          'successfully imports design'
         ) do
           expect_project_import_finished_successfully
           expect(imported_issues.count).to eq(1)

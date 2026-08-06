@@ -4,10 +4,10 @@ import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import axios from '~/lib/utils/axios_utils';
 import TagCreate from '~/releases/components/tag_create.vue';
-import RefSelector from '~/ref/components/ref_selector.vue';
+import RefSelector from '~/vue_shared/components/ref/components/ref_selector.vue';
 import createStore from '~/releases/stores';
 import createEditNewModule from '~/releases/stores/modules/edit_new';
-import { createRefModule } from '~/ref/stores';
+import { createRefModule } from '~/vue_shared/components/ref/stores';
 
 const TEST_PROJECT_ID = '1234';
 

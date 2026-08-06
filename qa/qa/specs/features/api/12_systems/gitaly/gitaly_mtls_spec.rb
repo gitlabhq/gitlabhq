@@ -17,7 +17,7 @@ module QA
         QA::Service::Shellout.shell("docker exec gitaly bash -c 'ls -al /etc/gitlab/ssl'")
       end
 
-      it 'pushes to gitaly', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347677' do
+      it 'pushes to gitaly' do
         project = Resource::Project.fabricate! do |project|
           project.name = "mTLS"
           project.initialize_with_readme = true

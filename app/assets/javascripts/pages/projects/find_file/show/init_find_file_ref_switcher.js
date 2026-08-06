@@ -2,7 +2,7 @@ import Vue from 'vue';
 import { s__ } from '~/locale';
 import Translate from '~/vue_shared/translate';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
-import RefSelector from '~/ref/components/ref_selector.vue';
+import RefSelector from '~/vue_shared/components/ref/components/ref_selector.vue';
 import { joinPaths, visitUrl } from '~/lib/utils/url_utility';
 import { generateRefDestinationPath } from './ref_switcher_utils';
 

@@ -9,7 +9,7 @@ import TagCreate from '~/releases/components/tag_create.vue';
 import createStore from '~/releases/stores';
 import createEditNewModule from '~/releases/stores/modules/edit_new';
 import { CREATE } from '~/releases/stores/modules/edit_new/constants';
-import { createRefModule } from '~/ref/stores';
+import { createRefModule } from '~/vue_shared/components/ref/stores';
 import { i18n } from '~/releases/constants';
 import setWindowLocation from 'helpers/set_window_location_helper';
 

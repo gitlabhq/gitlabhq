@@ -115,7 +115,7 @@ export default {
       default: false,
     },
   },
-  emits: ['dismissError', 'error', 'upload'],
+  emits: ['dismiss-error', 'error', 'upload'],
   apollo: {
     designCollection: {
       query: getWorkItemDesignListQuery,
@@ -281,7 +281,7 @@ export default {
   methods: {
     dismissError() {
       this.error = undefined;
-      this.$emit('dismissError');
+      this.$emit('dismiss-error');
     },
     isDesignSelected(filename) {
       return this.selectedDesigns.includes(filename);

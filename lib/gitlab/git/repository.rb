@@ -1179,7 +1179,8 @@ module Gitlab
         committed_after: nil,
         pagination_params: { page_token: nil, limit: 1000 },
         literal_pathspec: false,
-        first_parent: false
+        first_parent: false,
+        order: nil
       )
         # rubocop:enable Metrics/ParameterLists
         pagination_params[:limit] ||= 1000
@@ -1196,7 +1197,8 @@ module Gitlab
             reverse: false,
             pagination_params: pagination_params,
             literal_pathspec: literal_pathspec,
-            first_parent: first_parent
+            first_parent: first_parent,
+            order: order
           )
         end
       end

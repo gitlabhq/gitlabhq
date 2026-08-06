@@ -16,7 +16,7 @@ module QA
         runner.remove_via_api!
       end
 
-      it 'sets merge when pipeline succeeds', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347843',
+      it 'sets merge when pipeline succeeds',
         quarantine: {
           only: {
             job: /praefect|gitaly-reftables-backend/
@@ -61,7 +61,6 @@ module QA
 
       it(
         'merges when pipeline succeeds',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347842',
         quarantine: {
           type: :flaky,
           issue: "https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24013"

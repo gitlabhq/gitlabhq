@@ -349,6 +349,43 @@ the catalog flow.
 
 ## Known limitations
 
+### Prompt size budget
+
+`distillation_prompt.md` competes for a hard 64 KiB budget, and the prompt is
+counted **twice** against it.
+
+The AI Catalog validates the stored `definition` JSONB column against 64 KiB
+(`Ai::Catalog::ItemVersion`), but it does not store the YAML the provisioner
+submits. It stores the parsed structure merged with the raw YAML string under
+`yaml_definition`, so the prompt appears once in
+`prompt_template.system` and again in `yaml_definition` — and only the second
+copy carries the YAML block-scalar indentation. With JSON escaping on top, one
+byte of prompt Markdown costs roughly **2.2 stored bytes**.
+
+The practical effect is that ~30 KiB of Markdown exhausts a 64 KiB budget. The
+YAML size the provisioner prints is therefore not the number that matters; a
+definition can look like it has 30 KiB to spare and still be rejected with
+`Latest version definition is too large`.
+
+Two guards enforce this:
+
+- `gitlab-ai-principles-distiller-validate` fails at commit/MR time (lefthook
+  pre-commit and pre-push, plus the `ai-principles-manifest` CI job).
+- The provisioner aborts before mutating the catalog, reporting stored bytes,
+  the overage, and how much Markdown to remove.
+
+When trimming to fit, prefer removing duplicated instructions and shortening
+worked examples over dropping normative rules. Do **not** renumber the rules:
+the prompt cross-references its own rule numbers (`rule 16a`, `rules 8/10`) in
+about 30 places, so a renumber silently invalidates all of them.
+
+The duplicate storage is deliberate upstream (it preserves the original YAML
+for audit and display fidelity). Moving `yaml_definition` to object storage is
+tracked in [issue 591638](https://gitlab.com/gitlab-org/gitlab/-/issues/591638);
+once it ships, this budget roughly doubles. See
+[issue 608440](https://gitlab.com/gitlab-org/gitlab/-/issues/608440)
+for the byte census.
+
 ### Transient Gitaly load failures
 
 The Duo Workflow runtime fetches files from the repository via Git's

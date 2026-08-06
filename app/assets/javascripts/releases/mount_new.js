@@ -4,7 +4,7 @@ import Vuex from 'vuex';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 
 import { createMilestoneComboboxModule } from '~/milestones/stores';
-import { createRefModule } from '../ref/stores';
+import { createRefModule } from '~/vue_shared/components/ref/stores';
 import ReleaseEditNewApp from './components/app_edit_new.vue';
 import createStore from './stores';
 import createEditNewModule from './stores/modules/edit_new';

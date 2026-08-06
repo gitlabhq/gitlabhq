@@ -1211,7 +1211,7 @@ export default {
             :can-update-design="canUpdateDesign"
             :can-paste-design="canPasteDesign"
             @upload="onUploadDesign"
-            @dismissError="designUploadError = null"
+            @dismiss-error="designUploadError = null"
           >
             <template #empty-state>
               <design-dropzone

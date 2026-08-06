@@ -1,4 +1,4 @@
-import RefSelector from '~/ref/components/ref_selector.vue';
+import RefSelector from '~/vue_shared/components/ref/components/ref_selector.vue';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { generateRefDestinationPath } from './utils';

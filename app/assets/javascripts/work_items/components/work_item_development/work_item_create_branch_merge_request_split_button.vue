@@ -164,7 +164,7 @@ export default {
       :is-confidential-work-item="isConfidentialWorkItem"
       :project-id="projectId"
       @hide-modal="toggleCreateModal(false)"
-      @fetchedPermissions="updatePermissions"
+      @fetched-permissions="updatePermissions"
     />
   </div>
 </template>

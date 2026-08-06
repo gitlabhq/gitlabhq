@@ -240,6 +240,48 @@ RSpec.describe Repositories::CommitsFinder, feature_category: :source_code_manag
         end
       end
 
+      context 'when order is topo' do
+        let(:params) { { order: 'topo' } }
+
+        it 'passes order: topo to list_commits' do
+          expect(project.repository).to receive(:list_commits).with(
+            hash_including(order: 'topo')
+          ).and_call_original
+
+          commits
+        end
+
+        it 'returns commits' do
+          expect(commits).to be_present
+        end
+
+        it 'matches offset pagination for the same order filter' do
+          offset_commits = described_class.new(project, { order: 'topo', per_page: 100 })
+            .execute(gitaly_pagination: false)
+
+          keyset_commits = described_class.new(project, { order: 'topo', per_page: 100 })
+            .execute(gitaly_pagination: true)
+
+          expect(keyset_commits.map(&:id)).to eq(offset_commits.map(&:id))
+        end
+      end
+
+      context 'when order is default' do
+        let(:params) { { order: 'default' } }
+
+        it 'does not forward a meaningful order to list_commits' do
+          expect(project.repository).to receive(:list_commits).with(
+            hash_including(order: nil)
+          ).and_call_original
+
+          commits
+        end
+
+        it 'returns commits' do
+          expect(commits).to be_present
+        end
+      end
+
       context 'when path is specified' do
         let(:params) { { path: 'files/ruby/popen.rb' } }
 
@@ -349,7 +391,6 @@ RSpec.describe Repositories::CommitsFinder, feature_category: :source_code_manag
         using RSpec::Parameterized::TableSyntax
 
         where(:param_name, :param_value) do
-          'order'        | 'topo'
           'trailers'     | true
           'follow'       | true
         end

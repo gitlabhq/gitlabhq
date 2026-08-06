@@ -836,6 +836,33 @@ RSpec.describe SessionsController, feature_category: :system_access do
         end
       end
 
+      context 'when rendering the two-factor layout' do
+        before do
+          # Scope the flag to the user rather than enabling it globally. Flags are enabled by
+          # default in specs, so a global stub passes even when the layout is chosen from an
+          # actor that is nil during the two-factor prompt.
+          stub_feature_flags(two_factor_vue: user)
+        end
+
+        it 'renders the devise_empty layout' do
+          authenticate_2fa(login: user.username, password: user.password)
+
+          expect(response).to render_template(layout: 'layouts/devise_empty')
+        end
+
+        context 'when two_factor_vue is disabled' do
+          before do
+            stub_feature_flags(two_factor_vue: false)
+          end
+
+          it 'renders the devise layout' do
+            authenticate_2fa(login: user.username, password: user.password)
+
+            expect(response).to render_template(layout: 'layouts/devise')
+          end
+        end
+      end
+
       it_behaves_like '2FA sign-in with passkeys'
     end
 

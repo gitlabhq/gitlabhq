@@ -1942,6 +1942,69 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="query-mergerequest-id"></a>`id` | [`MergeRequestID!`](#mergerequestid) | Global ID of the merge request. |
 
+### `Query.mergeRequests`
+
+{{< details >}}
+
+- Introduced in GitLab 19.3.
+- Status: Experiment.
+
+{{< /details >}}
+
+Find merge requests visible to the current user. At least one filter must be provided.
+
+Returns [`MergeRequestConnection`](#mergerequestconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="query-mergerequests-approvedby"></a>`approvedBy` | [`[String!]`](#string) | Usernames of the approvers. |
+| <a id="query-mergerequests-approver"></a>`approver` | [`[String!]`](#string) | Usernames of possible approvers. |
+| <a id="query-mergerequests-assigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
+| <a id="query-mergerequests-assigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the merge request. |
+| <a id="query-mergerequests-assigneewildcardid"></a>`assigneeWildcardId` | [`AssigneeWildcardId`](#assigneewildcardid) | Filter by assignee presence. Incompatible with assigneeUsernames and assigneeUsername. |
+| <a id="query-mergerequests-authorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
+| <a id="query-mergerequests-blobpath"></a>`blobPath` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 17.7. Status: Experiment. Path of the blob changed in merge request. Requires state, targetBranches, and createdAfter arguments. |
+| <a id="query-mergerequests-closedafter"></a>`closedAfter` | [`Time`](#time) | Merge requests closed after the date. |
+| <a id="query-mergerequests-closedbefore"></a>`closedBefore` | [`Time`](#time) | Merge requests closed before the date. |
+| <a id="query-mergerequests-createdafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
+| <a id="query-mergerequests-createdbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
+| <a id="query-mergerequests-deployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
+| <a id="query-mergerequests-deployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before the timestamp. |
+| <a id="query-mergerequests-deploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
+| <a id="query-mergerequests-draft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
+| <a id="query-mergerequests-environmentname"></a>`environmentName` | [`String`](#string) | Environment merge requests have been deployed to. |
+| <a id="query-mergerequests-ignoredreviewerusername"></a>`ignoredReviewerUsername` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 18.0. Status: Experiment. Username of the reviewer to ignore when searching by reviewer state. |
+| <a id="query-mergerequests-iids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
+| <a id="query-mergerequests-includearchived"></a>`includeArchived` | [`Boolean`](#boolean) | Whether to include merge requests from archived projects. Defaults to `false`. |
+| <a id="query-mergerequests-labelname"></a>`labelName` | [`[String]`](#string) | Labels applied to the merge request. |
+| <a id="query-mergerequests-labels"></a>`labels` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | Deprecated in GitLab 17.1. Use `labelName`. |
+| <a id="query-mergerequests-mergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after the date. |
+| <a id="query-mergerequests-mergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before the date. |
+| <a id="query-mergerequests-mergedby"></a>`mergedBy` | [`String`](#string) | Username of the merger. |
+| <a id="query-mergerequests-milestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. Incompatible with milestoneWildcardId. |
+| <a id="query-mergerequests-milestonewildcardid"></a>`milestoneWildcardId` | [`MilestoneWildcardId`](#milestonewildcardid) | Filter issues by milestone ID wildcard. Incompatible with milestoneTitle. |
+| <a id="query-mergerequests-myreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by your reaction emoji. |
+| <a id="query-mergerequests-not"></a>`not` | [`MergeRequestsResolverNegatedParams`](#mergerequestsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
+| <a id="query-mergerequests-or"></a>`or` | [`UnionedMergeRequestFilterInput`](#unionedmergerequestfilterinput) | List of arguments with inclusive OR. |
+| <a id="query-mergerequests-releasetag"></a>`releaseTag` | [`String`](#string) | Filter by release tag. |
+| <a id="query-mergerequests-reviewstate"></a>`reviewState` {{< icon name="warning-solid" >}} | [`MergeRequestReviewState`](#mergerequestreviewstate) | Introduced in GitLab 17.0. Status: Experiment. Reviewer state of the merge request. |
+| <a id="query-mergerequests-reviewstates"></a>`reviewStates` {{< icon name="warning-solid" >}} | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | Introduced in GitLab 17.0. Status: Experiment. Reviewer states of the merge request. |
+| <a id="query-mergerequests-reviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
+| <a id="query-mergerequests-reviewerwildcardid"></a>`reviewerWildcardId` | [`ReviewerWildcardId`](#reviewerwildcardid) | Filter by reviewer presence. Incompatible with reviewerUsername. |
+| <a id="query-mergerequests-sort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by the criteria. |
+| <a id="query-mergerequests-sourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
+| <a id="query-mergerequests-state"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have the state. |
+| <a id="query-mergerequests-subscribed"></a>`subscribed` | [`SubscriptionStatus`](#subscriptionstatus) | Merge requests the current user is subscribed to. |
+| <a id="query-mergerequests-targetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
+| <a id="query-mergerequests-updatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after the timestamp. |
+| <a id="query-mergerequests-updatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before the timestamp. |
+
 ### `Query.metadata`
 
 Metadata about GitLab.
@@ -21534,6 +21597,29 @@ Fields:
 | <a id="approvalprojectruleedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="approvalprojectruleedge-node"></a>`node` | [`ApprovalProjectRule`](#approvalprojectrule) | The item at the end of the edge. |
 
+#### `ArtifactRegistryRepositoryConnection`
+
+The connection type for [`ArtifactRegistryRepository`](#artifactregistryrepository).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistryrepositoryconnection-edges"></a>`edges` | [`[ArtifactRegistryRepositoryEdge]`](#artifactregistryrepositoryedge) | A list of edges. |
+| <a id="artifactregistryrepositoryconnection-nodes"></a>`nodes` | [`[ArtifactRegistryRepository]`](#artifactregistryrepository) | A list of nodes. |
+| <a id="artifactregistryrepositoryconnection-pageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ArtifactRegistryRepositoryEdge`
+
+The edge type for [`ArtifactRegistryRepository`](#artifactregistryrepository).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistryrepositoryedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="artifactregistryrepositoryedge-node"></a>`node` | [`ArtifactRegistryRepository`](#artifactregistryrepository) | The item at the end of the edge. |
+
 #### `ArtifactRegistryRoleAssignmentConnection`
 
 The connection type for [`ArtifactRegistryRoleAssignment`](#artifactregistryroleassignment).
@@ -34548,6 +34634,22 @@ Fields:
 | <a id="approvalscanresultpolicy-approvalsrequired"></a>`approvalsRequired` | [`Int!`](#int) | Represents the required approvals defined in the policy. |
 | <a id="approvalscanresultpolicy-name"></a>`name` | [`String!`](#string) | Represents the name of the policy. |
 | <a id="approvalscanresultpolicy-reporttype"></a>`reportType` | [`ApprovalReportType!`](#approvalreporttype) | Represents the report_type of the approval rule. |
+
+### `ArtifactRegistryRepository`
+
+Repository in Artifact Registry.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistryrepository-downloadscount"></a>`downloadsCount` {{< icon name="warning-solid" >}} | [`BigInt!`](#bigint) | Introduced in GitLab 19.3. Status: Experiment. Number of artifact downloads from the repository. Buffered, so it can lag. |
+| <a id="artifactregistryrepository-format"></a>`format` {{< icon name="warning-solid" >}} | [`ArtifactRegistryRepositoryFormat!`](#artifactregistryrepositoryformat) | Introduced in GitLab 19.3. Status: Experiment. Package format the repository holds. |
+| <a id="artifactregistryrepository-kind"></a>`kind` {{< icon name="warning-solid" >}} | [`ArtifactRegistryRepositoryKind!`](#artifactregistryrepositorykind) | Introduced in GitLab 19.3. Status: Experiment. How the repository sources its artifacts. |
+| <a id="artifactregistryrepository-lastupdatedat"></a>`lastUpdatedAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.3. Status: Experiment. Time the repository content last changed. Null when the content never changed. |
+| <a id="artifactregistryrepository-name"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.3. Status: Experiment. Name of the repository, unique within its namespace. |
+| <a id="artifactregistryrepository-sizebytes"></a>`sizeBytes` {{< icon name="warning-solid" >}} | [`BigInt!`](#bigint) | Introduced in GitLab 19.3. Status: Experiment. Storage the repository occupies, in bytes. Buffered, so it can lag. |
+| <a id="artifactregistryrepository-visibility"></a>`visibility` {{< icon name="warning-solid" >}} | [`ArtifactRegistryRepositoryVisibility!`](#artifactregistryrepositoryvisibility) | Introduced in GitLab 19.3. Status: Experiment. Who can read the repository. |
 
 ### `ArtifactRegistryRoleAssignment`
 
@@ -52293,6 +52395,30 @@ Fields:
 
 #### Fields with arguments
 
+##### `Organization.artifactRegistryRepositories`
+
+{{< details >}}
+
+- Introduced in GitLab 19.3.
+- Status: Experiment.
+
+{{< /details >}}
+
+Artifact Registry repositories in the organization. Returns `null` when the `artifact_registry_ui` feature flag is disabled.
+
+Returns [`ArtifactRegistryRepositoryConnection`](#artifactregistryrepositoryconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="organization-artifactregistryrepositories-format"></a>`format` {{< icon name="warning-solid" >}} | [`ArtifactRegistryRepositoryFormat`](#artifactregistryrepositoryformat) | Introduced in GitLab 19.3. Status: Experiment. Return only repositories holding the given package format. |
+| <a id="organization-artifactregistryrepositories-kind"></a>`kind` {{< icon name="warning-solid" >}} | [`ArtifactRegistryRepositoryKind`](#artifactregistryrepositorykind) | Introduced in GitLab 19.3. Status: Experiment. Return only repositories sourcing their artifacts the given way. |
+
 ##### `Organization.cdApplication`
 
 {{< details >}}
@@ -65283,6 +65409,37 @@ The kind of an approval rule.
 | <a id="approvalruletype-code_owner"></a>`CODE_OWNER` | A `code_owner` approval rule. |
 | <a id="approvalruletype-regular"></a>`REGULAR` | A `regular` approval rule. |
 | <a id="approvalruletype-report_approver"></a>`REPORT_APPROVER` | A `report_approver` approval rule. |
+
+### `ArtifactRegistryRepositoryFormat`
+
+Package format an Artifact Registry repository holds.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="artifactregistryrepositoryformat-docker"></a>`DOCKER` | Docker images. |
+| <a id="artifactregistryrepositoryformat-maven"></a>`MAVEN` | Maven packages. |
+| <a id="artifactregistryrepositoryformat-npm"></a>`NPM` | npm packages. |
+| <a id="artifactregistryrepositoryformat-oci"></a>`OCI` | OCI artifacts. |
+
+### `ArtifactRegistryRepositoryKind`
+
+How an Artifact Registry repository sources its artifacts.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="artifactregistryrepositorykind-hosted"></a>`HOSTED` | Stores artifacts published to GitLab. |
+| <a id="artifactregistryrepositorykind-remote"></a>`REMOTE` | Proxies and caches an upstream registry. |
+| <a id="artifactregistryrepositorykind-virtual"></a>`VIRTUAL` | Serves other repositories through a single endpoint. |
+
+### `ArtifactRegistryRepositoryVisibility`
+
+Who can read an Artifact Registry repository.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="artifactregistryrepositoryvisibility-internal"></a>`INTERNAL` | Readable by any authenticated user. |
+| <a id="artifactregistryrepositoryvisibility-private"></a>`PRIVATE` | Readable only by users holding an Artifact Registry role. |
+| <a id="artifactregistryrepositoryvisibility-public"></a>`PUBLIC` | Readable by anyone. |
 
 ### `ArtifactRegistryRole`
 

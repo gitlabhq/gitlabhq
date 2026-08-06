@@ -23,8 +23,7 @@ module QA
       end
 
       it(
-        'can be used to create a file via the project API', :smoke,
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/367064'
+        'can be used to create a file via the project API', :smoke
       ) do
         expect do
           create(:file,
@@ -38,8 +37,7 @@ module QA
       end
 
       it(
-        'can be used to commit via the API', :smoke,
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/367067'
+        'can be used to commit via the API', :smoke
       ) do
         expect do
           create(:commit,

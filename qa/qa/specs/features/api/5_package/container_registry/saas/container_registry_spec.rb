@@ -67,8 +67,7 @@ module QA
         runner.remove_via_api!
       end
 
-      it 'pushes, pulls image to the registry and deletes tag',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348001' do
+      it 'pushes, pulls image to the registry and deletes tag' do
         create(:commit, commit_message: 'Add .gitlab-ci.yml', project: project, actions: [
           { action: 'create', file_path: '.gitlab-ci.yml', content: gitlab_ci_yaml }
         ])

@@ -26,8 +26,7 @@ module QA
         quarantine: {
           issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24287',
           type: :investigating
-        },
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347829' do
+        } do
         # We want to fill the replication queue with 10 `in_progress` jobs,
         # while a lock has been acquired, which is when the problem occurred
         # as reported in https://gitlab.com/gitlab-org/gitaly/-/issues/2801

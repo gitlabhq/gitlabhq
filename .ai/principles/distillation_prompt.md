@@ -101,23 +101,15 @@ adds those wrappers automatically.
     (Use, Prefer, Ensure, Include, Add, Set, Follow, Freeze, Pass, Wrap,
     etc.). DO NOT write descriptive or passive statements.
 
-    Category examples:
-    a) Anti-patterns with nouns — restructure to "DO NOT `<verb>` `<noun>`":
-       - BAD: "No business logic in controllers"
-       - GOOD: "DO NOT put business logic in controllers"
-       - BAD: "No HTML in translation strings"
-       - GOOD: "DO NOT include HTML in translation strings"
-    b) Anti-patterns with "Avoid" — convert to "DO NOT `<verb>`":
-       - BAD: "Avoid deep nesting beyond two levels"
-       - GOOD: "DO NOT nest beyond two levels of method calls"
-    c) Passive/descriptive — convert to imperative:
+    Category examples (rule 8 mandates the "No " and "Avoid " rewrites):
+    a) Passive/descriptive — convert to imperative:
        - BAD: "Method naming follows Ruby conventions"
        - GOOD: "Follow Ruby naming conventions for methods"
        - BAD: "Errors propagated appropriately"
        - GOOD: "Propagate errors appropriately (DO NOT silently swallow them)"
        - BAD: "Constants are frozen"
        - GOOD: "Freeze constants (`CONSTANT = 'value'.freeze`)"
-    d) Descriptive defaults — convert to prohibition:
+    b) Descriptive defaults — convert to prohibition:
        - BAD: "Feature flags are enabled by default in tests"
        - GOOD: "DO NOT stub feature flags to `true` — they are enabled by
          default in the test environment"
@@ -137,46 +129,19 @@ adds those wrappers automatically.
     every bullet against every other bullet across ALL subsections. Two
     bullets are duplicates when they mandate or prohibit the same
     underlying behavior, even when their wording, examples, subsection, or
-    surface subject differ. Keep the bullet in the most relevant
-    subsection; if the other location genuinely needs the pointer, replace
-    the duplicate with a short cross-reference ("generate payloads via the
-    RSpec fixture job — see Test Fixtures") instead of restating the rule.
-    Example:
-    - BAD (same directive stated twice under different subsections):
-      - Under "Test Fixtures": "Generate API fixtures by running
-        `bundle exec rspec spec/frontend/fixtures/foo.rb`; DO NOT
-        hand-write JSON fixture files"
-      - Under "Mocking": "Generate MSW handler response payloads via the
-        RSpec fixture job; DO NOT write the JSON by hand"
-     - GOOD (one canonical rule, cross-reference at the other site):
-       - Under "Test Fixtures": "Generate API fixtures (including MSW
-         handler payloads) by running
-         `bundle exec rspec spec/frontend/fixtures/foo.rb`; DO NOT
-         hand-write JSON fixture files"
-       - Under "Mocking": "Use MSW (Mock Service Worker) to mock network
-         requests (generate handler payloads via the RSpec fixture job —
-         see Test Fixtures)"
-
-     Two bullets are still duplicates when they state the SAME requirement
-     at DIFFERENT levels of specificity in different subsections. Keep the
-     MOST specific bullet and replace the other with a cross-reference (or
-     trim it to only the point unique to its section). DO NOT keep both.
-     Example:
-     - BAD (same requirement, two specificity levels, two sections):
-       - Under "Cells Compatibility": "Expose every new plan limit column
-         through the admin Plan Limits API (`PUT /application/plan_limits`)"
-       - Under "Application Limits": "Expose every new plan limit column
-         through the admin Plan Limits API by adding it as an `optional`
-         parameter on `PUT /application/plan_limits` and to the response
-         entity in `lib/api/entities/plan_limit.rb`"
-     - GOOD (keep the specific one; cross-reference from the other):
-       - Under "Cells Compatibility": "`plan_limits` is cell-local
-         configuration; expose new plan limit columns through the admin
-         Plan Limits API (see Application Limits)"
-       - Under "Application Limits": "Expose every new plan limit column
-         through the admin Plan Limits API by adding it as an `optional`
-         parameter on `PUT /application/plan_limits` and to the response
-         entity in `lib/api/entities/plan_limit.rb`"
+    surface subject differ — including when they state the SAME requirement
+    at DIFFERENT levels of specificity. Keep the MOST specific bullet in the
+    most relevant subsection; if the other location genuinely needs the
+    pointer, replace the duplicate with a short cross-reference instead of
+    restating the rule. DO NOT keep both. Example:
+    - BAD: "Generate API fixtures by running
+      `bundle exec rspec spec/frontend/fixtures/foo.rb`" under "Test
+      Fixtures", and "Generate MSW handler payloads via the RSpec fixture
+      job" under "Mocking" — the same directive stated twice.
+    - GOOD: keep the canonical rule under "Test Fixtures" (widened to cover
+      MSW payloads), and under "Mocking" write "Use MSW to mock network
+      requests (generate handler payloads via the RSpec fixture job — see
+      Test Fixtures)".
 12. **Precedence between rules.** When SSOT presents two related rules
     with a precedence relationship ("use X unless Y", "prefer X but use Z
     when W"), emit a single bullet using "Exception:", "Except when", or
@@ -385,29 +350,17 @@ adds those wrappers automatically.
       extension is an optional local aid"
 
     More broadly, DO NOT emit checklist items for actions an automated
-    reviewer cannot perform on the change under review. These include:
-    - ongoing production oversight (continuous monitoring, observability
-      dashboards, SLO/alerting, on-call review) — operational activities,
-      not MR actions;
-    - human support or escalation channels (e.g. "comment `@gitlab-bot
-      help`", "ask in the Community Discord/Slack", "open a support
-      ticket") — directing a human to a help channel;
-    - other human-only actions ("ask your EM/maintainer", request a manual
-      sign-off, schedule a meeting, "reach out to the team").
-    If the SSOT lists such a step in a workflow or tool-selection matrix,
-    omit it; emit only steps the reviewer can perform on the change itself.
-    Examples:
+    reviewer cannot perform on the change under review: ongoing production
+    oversight (monitoring, dashboards, SLO/alerting, on-call review), human
+    support or escalation channels ("comment `@gitlab-bot help`", "ask in
+    the Community Discord/Slack"), and other human-only actions (a manual
+    sign-off, "ask your EM/maintainer", scheduling a meeting). If the SSOT
+    lists such a step in a workflow or tool-selection matrix, omit it; emit
+    only steps the reviewer can perform on the change itself. Example:
     - BAD: "For complete pages: apply feature tests + browser extension +
       monitoring" (monitoring is a continuous production setup, not an MR
       action)
     - GOOD: "For complete pages: apply feature tests + browser extension"
-    - BAD: "Use `@gitlab-bot help` on the MR or the Community Discord
-      `contribute` channel for pipeline help" (a human support channel)
-    - GOOD: keep the actionable troubleshooting rules instead, e.g. "For an
-      unrelated failure that also fails on the default branch, wait for the
-      broken-master fix before re-running" and "For a failed
-      `danger-review` job with more than 20 commits, rebase and squash;
-      otherwise re-run the job"
 18. **Diff discipline.** Beyond the required reconciliation work (rule 16)
     and the mandatory imperative rewrite (rules 8/10), keep the diff
     against the prior checklist minimal:
@@ -424,31 +377,13 @@ adds those wrappers automatically.
     - Specifically, DO NOT rewrite an already-accurate item just because the
       full SSOT could support a more precise or more complete phrasing when
       that precision was NOT itself added or changed by the SSOT this run.
-      Enriching a correct item with pre-existing source detail (a threshold
-      like "more than 1h", extra class-name mappings, additional examples)
-      is churn, not reconciliation, and is forbidden here — even though the
-      detail is grounded. Leave the item exactly as it was.
-
-      Worked examples of FORBIDDEN grounded enrichment (illustrative,
-      fictional). In each, the run was triggered by an UNRELATED source
-      change and the item's own governing text did NOT change this run:
-      - Enriching an item with a pre-existing threshold and an extra clause
-        the source already documented:
-        - Prior item: "After deploying a `Foo::Bar` change, notify the
-          release DRI in `#example-channel`."
-        - FORBIDDEN: "After deploying a `Foo::Bar` change (larger than 500
-          records on the staging clone), follow the steps to batch it and
-          notify the release DRI in `#example-channel`."
-        - CORRECT: leave the prior item byte-for-byte unchanged.
-      - Expanding a deliberate trailing "etc." with pre-existing enumerated
-        values:
-        - Prior item: "Register each handler with the correct adapter
-          (`AlphaAdapter` for `alpha`, `BetaAdapter` for `beta`, etc.)."
-        - FORBIDDEN: "… `BetaAdapter` for `beta`, `GammaAdapter` for `gamma`,
-          `DeltaAdapter` for `delta`, `EpsilonAdapter` for `epsilon`)."
-        - CORRECT: leave the prior item unchanged. A trailing "etc." is a
-          deliberate, sufficient summary — it is NOT an invitation to
-          enumerate every value the source lists.
+      Enriching a correct item with pre-existing source detail is churn, not
+      reconciliation, and is forbidden here — even though the detail is
+      grounded. Leave the item exactly as it was. This covers adding a
+      threshold the source already documented, appending extra class-name
+      mappings, and expanding a deliberate trailing "etc." into every value
+      the source enumerates: a trailing "etc." is a sufficient summary, NOT
+      an invitation to enumerate.
     - DO NOT add items for SSOT content that the prior checklist already
       covers, or that rule 9 excludes (universal best practices).
 

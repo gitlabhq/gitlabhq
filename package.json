@@ -64,7 +64,7 @@
     "@babel/preset-env": "^7.23.7",
     "@csstools/postcss-global-data": "^2.1.1",
     "@cubejs-client/core": "^1.0.0",
-    "@floating-ui/dom": "^1.7.6",
+    "@floating-ui/dom": "^1.8.0",
     "@gitlab/at.js": "1.5.9",
     "@gitlab/cluster-client": "^3.0.0",
     "@gitlab/duo-ui": "^15.41.0",

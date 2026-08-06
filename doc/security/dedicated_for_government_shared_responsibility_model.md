@@ -36,7 +36,7 @@ documentation.
 
 ## Authorization boundary
 
-![GitLab-managed and customer-managed resources on each side of the boundary.](img/gdg_boundary_diagram_v19_3.png)
+![Authorization boundary diagram](img/gdg_boundary_diagram_v19_3.png)
 
 ## Responsibility overview
 
@@ -47,6 +47,9 @@ The following sections are intended to help federal agencies understand the broa
 1. Federal agency identity provider - GitLab supports the use of SAML and OpenID Connect (OIDC) providers for Single Sign-On. In order to support PIV/CAC authentication, customers must bring their own identity provider.
 1. [Enhanced network connectivity](../subscriptions/gitlab_dedicated/_index.md#secure-networking) - Customers may elect to configure IP Allowlists with the assistance of GitLab engineers, either through application configurations or infrastructure settings. Private connectivity is supported via PrivateLink for inbound and outbound connections.
 1. [Customer-managed encryption](../administration/dedicated/encryption.md#customer-managed-encryption) - Customers may elect to provide their own encryption keys.
+1. [Public visibility](#public-visibility-and-open-source-code-sharing) - Customers turn on public
+   visibility for the instance, then configure visibility for specific groups or projects.
+1. [GitLab Duo](../subscriptions/gitlab_dedicated_for_government/_index.md#gitlab-duo) and [GitLab Duo Agent Platform](../user/duo_agent_platform/_index.md) - Customers can connect a self-hosted AI Gateway to their tenant to enable GitLab Duo and Agent Platform AI features. Customers must enable only the GitLab Duo and Agent Platform capabilities that have received FedRAMP authorization for Dedicated for Government: [Duo Classic features](../subscriptions/gitlab_dedicated_for_government/_index.md#gitlab-duo), [Agentic Chat](../user/gitlab_duo_chat/agentic_chat.md), and [foundational agents](../user/duo_agent_platform/agents/foundational_agents/_index.md).
 
 ### Infrastructure management
 
@@ -97,8 +100,7 @@ Optional features and customizations that may affect customer responsibilities:
   Provide your own encryption keys.
 - [Public visibility](#public-visibility-and-open-source-code-sharing): Turn on public
   visibility for the instance, then configure visibility for specific groups or projects.
-- [GitLab Duo](#gitlab-duo-and-the-ai-gateway): Requires GitLab Duo Self-Hosted. You install
-  and maintain the AI Gateway.
+- [GitLab Duo](../subscriptions/gitlab_dedicated_for_government/_index.md#gitlab-duo) and [GitLab Duo Agent Platform](../user/duo_agent_platform/_index.md): Connect a self-hosted AI Gateway to your GitLab Dedicated for Government tenant to enable GitLab Duo and Agent Platform AI features. GitLab Duo Agent Platform capabilities, such as Agentic Chat and foundational agents, use this same AI Gateway. You must enable only the GitLab Duo and Agent Platform capabilities that have received FedRAMP authorization for use within Dedicated for Government.
 
 ### Infrastructure management
 
@@ -147,6 +149,27 @@ Customers are responsible for the following:
 - Configuring the GitLab application, including CI/CD and group and project-level settings.
 - Pulling the latest GitLab-provided containers, which may run in customer-managed workloads.
 
+### GitLab Duo and GitLab Duo Agent Platform
+
+Customers must enable only the GitLab Duo Agent Platform capabilities GitLab has confirmed are authorized for use within Dedicated for Government: [Duo Classic features](../subscriptions/gitlab_dedicated_for_government/_index.md#gitlab-duo), [Agentic Chat](../user/gitlab_duo_chat/agentic_chat.md), and [foundational agents](../user/duo_agent_platform/agents/foundational_agents/_index.md). GitLab Duo Agent Platform flows and external agents require self-managed CI/CD runners and are not authorized for use within Dedicated for Government.
+
+GitLab is responsible for the following:
+
+- Developing and maintaining GitLab Duo and GitLab Duo Agent Platform application features, including foundational agents such as Planner, Security Analyst, Data Analyst, CI Expert, and Permissions Assistant.
+- Providing a FIPS-validated AI Gateway container image, which bundles the AI Gateway and Agent Platform orchestration services used by GitLab Duo Agentic Chat.
+- Scanning and patching the GitLab-provided AI Gateway container image, which you pull from GitLab and run in your own infrastructure.
+- Submitting a significant change request and completing the applicable FedRAMP authorization process before making new GitLab Duo and GitLab Duo Agent Platform capabilities available for use within Dedicated for Government.
+- Enabling network connectivity between your instance and your self-hosted AI Gateway after you request access.
+
+Customers are responsible for the following:
+
+- Deploying and operating the AI Gateway, including the bundled Agent Platform orchestration service, within your own FedRAMP-authorized environment. The AI Gateway runs outside the Dedicated for Government authorization boundary.
+- Pulling and running the most recent FIPS-validated AI Gateway container image released by GitLab.
+- Selecting AI model providers for GitLab Duo and GitLab Duo Agent Platform that meet your organization's security and FedRAMP requirements.
+- Configuring network access between the AI Gateway, your instance, and the selected AI models.
+- Enabling only the GitLab Duo Agent Platform capabilities confirmed as authorized for Dedicated for Government. Do not enable GitLab Duo Agent Platform flows or external agents until GitLab has notified you that they are authorized.
+- Consuming and monitoring GitLab Duo Agent Platform audit events from your GitLab instance, consistent with your application log responsibilities described under Monitoring. GitLab Duo Agentic Chat and foundational agents act using the identity and permissions of the human user who initiates the session. GitLab does not create a separate service account for these capabilities.
+
 ### Monitoring
 
 GitLab is responsible for the following:
@@ -187,6 +210,7 @@ GitLab is responsible for the scanning and patching of the following:
   - GitLab Secrets Detection image
   - GitLab Runner and Runner Helper images
   - GitLab Dependency Scanning image
+  - GitLab Duo AI Gateway image
 - Infrastructure. GitLab scans all VMs and AMIs in use within the Dedicated for Government
   authorization boundary.
 
@@ -266,21 +290,3 @@ Customers are responsible for the following:
   registry, and pipelines, to members only when needed. See
   [change project visibility](../user/public_access.md#change-project-visibility) and
   [change the visibility of individual features in a project](../user/public_access.md#change-the-visibility-of-individual-features-in-a-project).
-
-### GitLab Duo and the AI Gateway
-
-GitLab Dedicated for Government requires a
-[self-hosted AI Gateway](../administration/gitlab_duo/configure/gitlab_dedicated_for_government.md)
-instead of the GitLab-managed AI Gateway and models.
-
-GitLab is responsible for the following:
-
-- Enabling network connectivity between your instance and your self-hosted AI Gateway after
-  you request access.
-
-Customers are responsible for the following:
-
-- Installing and maintaining the [AI Gateway](../install/install_ai_gateway.md) in your
-  AWS GovCloud environment, including applying security updates and verifying images.
-- Selecting, hosting, and maintaining the large language models used with GitLab Duo.
-- Configuring network access between the AI Gateway, your instance, and the selected models.

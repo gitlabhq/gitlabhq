@@ -173,7 +173,7 @@ module QA
         )
       end
 
-      it "migrates large gitlab group via api", testcase: "https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/358842" do
+      it "migrates large gitlab group via api" do
         @start = Time.now
 
         # trigger import and log imported group path

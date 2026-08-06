@@ -16,7 +16,7 @@ import {
   HTTP_STATUS_OK,
 } from '~/lib/utils/http_status';
 import { sprintf } from '~/locale';
-import RefSelector from '~/ref/components/ref_selector.vue';
+import RefSelector from '~/vue_shared/components/ref/components/ref_selector.vue';
 import toast from '~/vue_shared/plugins/global_toast';
 import {
   X_TOTAL_HEADER,
@@ -26,8 +26,8 @@ import {
   REF_TYPE_COMMITS,
   BRANCH_REF_TYPE_ICON,
   TAG_REF_TYPE_ICON,
-} from '~/ref/constants';
-import createStore from '~/ref/stores/';
+} from '~/vue_shared/components/ref/constants';
+import createStore from '~/vue_shared/components/ref/stores/';
 
 Vue.use(Vuex);
 jest.mock('~/vue_shared/plugins/global_toast');
@@ -816,7 +816,7 @@ describe('Ref selector component', () => {
 
   describe('badges', () => {
     beforeEach(async () => {
-      const formatRefsModule = await import('~/ref/format_refs');
+      const formatRefsModule = await import('~/vue_shared/components/ref/format_refs');
       jest.spyOn(formatRefsModule, 'formatListBoxItems').mockReturnValue([
         { text: DEFAULT_I18N.selected, options: [{ text: 'feature' }] },
         { text: DEFAULT_I18N.branches, options: [{ text: 'main' }, { text: 'dev' }] },

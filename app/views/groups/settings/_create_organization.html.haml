@@ -11,7 +11,7 @@
       - alert.with_body do
         %h5.gl-heading-5= s_('GroupSettings|This will:')
         %ul.gl-pl-5
-          %li= s_('GroupSettings|Transfer all your groups, projects, and members to the organization.')
-          %li= s_('GroupSettings|Keep your data separate from other organizations.')
-    %p= safe_format(s_('GroupSettings|Create an organization to manage your top-level group and its data. %{link_start}How do organizations work?%{link_end}.'), tag_pair(organization_docs_url, :link_start, :link_end))
+          %li= s_('GroupSettings|Move your groups and projects into the organization.')
+          %li= s_('GroupSettings|Retain group and project access for members.')
+    %p= safe_format(s_('GroupSettings|Create an organization to manage your top-level group and its data. %{link_start}How do organizations work?%{link_end}'), tag_pair(organization_docs_url, :link_start, :link_end))
     #js-group-settings-create-organization

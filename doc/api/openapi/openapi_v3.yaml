@@ -1542,7 +1542,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_c3a5d8790936"
+              "$ref": "#/components/schemas/RequestBody_ae660d4bfe67"
     get:
       operationId: getApiV4AiDuoWorkflowsWorkflowsIdCheckpoints
       summary: List all workflow checkpoints
@@ -1579,7 +1579,7 @@ paths:
         schema:
           type: string
           nullable: true
-          maxLength: 255
+          maxLength: 4096
         in: query
   "/api/v4/ai/duo_workflows/workflows/{id}/checkpoints/{checkpoint_id}":
     get:
@@ -1866,7 +1866,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_6bc874fddbf3"
+              "$ref": "#/components/schemas/RequestBody_96013d8cf931"
       x-gitlab-lifecycle: experiment
   "/api/v4/ai/duo_workflows/workflows/agent_privileges":
     get:
@@ -94625,7 +94625,7 @@ components:
           nullable: true
       required:
       - status_event
-    RequestBody_c3a5d8790936:
+    RequestBody_ae660d4bfe67:
       type: object
       properties:
         thread_ts:
@@ -94643,7 +94643,7 @@ components:
             to LangGraph's namespace string for one nested subgraph invocation, e.g.
             a delegated subagent dispatched by DelegationNode.
           nullable: true
-          maxLength: 255
+          maxLength: 4096
         checkpoint:
           type: object
           description: Checkpoint content
@@ -94812,7 +94812,7 @@ components:
           description: The ID or path of the project
           example: '1'
           nullable: true
-    RequestBody_6bc874fddbf3:
+    RequestBody_96013d8cf931:
       type: object
       properties:
         project_id:
@@ -94939,9 +94939,9 @@ components:
           - merge_request_dependency_bump
           - merge_request_fix_pipeline
           - merge_request_resolve_discussion
-          - work_item_to_mr
+          - work_item_to_merge_request
           - fix_pipeline
-          - convert_plateform_ci_pipeline
+          - convert_platform_ci_pipeline
           description: Where the session was triggered from
           nullable: true
     RequestBody_7139042d9372:

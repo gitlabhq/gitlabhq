@@ -4,7 +4,7 @@ import { GlButton, GlFormGroup, GlFormInput, GlFormTextarea } from '@gitlab/ui';
 import { mapState, mapActions } from 'vuex';
 import { uniqueId } from 'lodash-es';
 import { __, s__ } from '~/locale';
-import RefSelector from '~/ref/components/ref_selector.vue';
+import RefSelector from '~/vue_shared/components/ref/components/ref_selector.vue';
 
 export default {
   name: 'TagCreate',

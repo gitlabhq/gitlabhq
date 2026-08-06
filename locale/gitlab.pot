@@ -22827,6 +22827,11 @@ msgstr ""
 msgid "Continuous Vulnerability Scanning for Dependency Scanning"
 msgstr ""
 
+msgid "ContinuousDeployment|%d service"
+msgid_plural "ContinuousDeployment|%d services"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "ContinuousDeployment|%{environmentsCount} of %{totalEnvironmentsCount} environments"
 msgstr ""
 
@@ -38869,7 +38874,7 @@ msgstr ""
 msgid "GroupSettings|Create an organization"
 msgstr ""
 
-msgid "GroupSettings|Create an organization to manage your top-level group and its data. %{link_start}How do organizations work?%{link_end}."
+msgid "GroupSettings|Create an organization to manage your top-level group and its data. %{link_start}How do organizations work?%{link_end}"
 msgstr ""
 
 msgid "GroupSettings|Create organization…"
@@ -39019,13 +39024,13 @@ msgstr ""
 msgid "GroupSettings|Include diff previews"
 msgstr ""
 
-msgid "GroupSettings|Keep your data separate from other organizations."
-msgstr ""
-
 msgid "GroupSettings|MCP client access"
 msgstr ""
 
 msgid "GroupSettings|Members cannot invite groups outside of %{group} and its subgroups"
+msgstr ""
+
+msgid "GroupSettings|Move your groups and projects into the organization."
 msgstr ""
 
 msgid "GroupSettings|Namespace setting"
@@ -39047,6 +39052,9 @@ msgid "GroupSettings|Projects in %{group} cannot be shared with other groups"
 msgstr ""
 
 msgid "GroupSettings|Reporting"
+msgstr ""
+
+msgid "GroupSettings|Retain group and project access for members."
 msgstr ""
 
 msgid "GroupSettings|Retry"
@@ -39131,9 +39139,6 @@ msgid "GroupSettings|This setting is applied on %{ancestor_group}. You can overr
 msgstr ""
 
 msgid "GroupSettings|This will:"
-msgstr ""
-
-msgid "GroupSettings|Transfer all your groups, projects, and members to the organization."
 msgstr ""
 
 msgid "GroupSettings|Transfer group"

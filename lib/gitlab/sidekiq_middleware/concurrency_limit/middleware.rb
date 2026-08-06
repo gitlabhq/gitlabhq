@@ -73,6 +73,10 @@ module Gitlab
         end
 
         def track_execution_start
+          # A resumed job transitions from pending to executing here, so release its slot in
+          # the pending counter tracked at enqueue time in QueueManager.
+          concurrency_service.untrack_pending_resumed_job(worker_name) if resumed?
+
           return if Feature.disabled?(:sidekiq_concurrency_limit_middleware, Feature.current_request, type: :ops)
 
           concurrency_service.track_execution_start(worker_name)

@@ -23,8 +23,7 @@ module QA
         Support::Waiter.wait_until { !pipeline_schedule[:id].nil? && pipeline_schedule[:active] == true }
       end
 
-      it 'pipeline schedule is canceled',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347999' do
+      it 'pipeline schedule is canceled' do
         admin_user.block!(user.id)
 
         # Schedule deactivation happens asynchronously via Users::DropPipelinesForBlockedUserWorker

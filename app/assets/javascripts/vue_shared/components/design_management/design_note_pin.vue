@@ -55,7 +55,7 @@ export default {
       default: true,
     },
   },
-  emits: ['click'],
+  emits: ['click', 'mousedown', 'mouseup'],
   computed: {
     isNewNote() {
       return this.label === null;
@@ -93,6 +93,8 @@ export default {
     class="gl-z-1 gl-flex gl-items-center gl-justify-center gl-rounded-full gl-border-0 gl-text-sm gl-font-bold gl-text-neutral-0"
     :type="clickable ? 'button' : undefined"
     @click="clickable && $emit('click', $event)"
+    @mousedown="$emit('mousedown', $event)"
+    @mouseup="$emit('mouseup', $event)"
   >
     <gl-icon
       v-if="isNewNote"

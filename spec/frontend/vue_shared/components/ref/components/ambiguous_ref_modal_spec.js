@@ -1,5 +1,5 @@
 import { GlModal, GlSprintf } from '@gitlab/ui';
-import AmbiguousRefModal from '~/ref/components/ambiguous_ref_modal.vue';
+import AmbiguousRefModal from '~/vue_shared/components/ref/components/ambiguous_ref_modal.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
 import { visitUrl } from '~/lib/utils/url_utility';

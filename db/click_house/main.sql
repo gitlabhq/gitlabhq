@@ -3042,6 +3042,30 @@ SETTINGS index_granularity = 2048, deduplicate_merge_projection_mode = 'rebuild'
 CREATE TABLE siphon_work_item_parent_links
 (
     `id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `work_item_id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `work_item_parent_id` Int64,
+    `relative_position` Nullable(Int64),
+    `created_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `updated_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `namespace_id` Int64,
+    `traversal_path` String DEFAULT multiIf(coalesce(namespace_id, 0) != 0, dictGetOrDefault('namespace_traversal_paths_dict', 'traversal_path', namespace_id, '0/'), '0/') CODEC(ZSTD(3)),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1)),
+    `_siphon_watermark` DateTime64(6, 'UTC') DEFAULT now64(6, 'UTC') CODEC(ZSTD(1)),
+    PROJECTION pg_pkey_ordered
+    (
+        SELECT *
+        ORDER BY id
+    )
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (traversal_path, work_item_id, id)
+ORDER BY (traversal_path, work_item_id, id)
+SETTINGS index_granularity = 2048, deduplicate_merge_projection_mode = 'rebuild';
+
+CREATE TABLE siphon_work_item_parent_links_tmp
+(
+    `id` Int64 CODEC(DoubleDelta, ZSTD(1)),
     `work_item_id` Int64,
     `work_item_parent_id` Int64 CODEC(DoubleDelta, ZSTD(1)),
     `relative_position` Nullable(Int64),

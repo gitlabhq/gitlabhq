@@ -1,5 +1,5 @@
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
-import RefSelector from '~/ref/components/ref_selector.vue';
+import RefSelector from '~/vue_shared/components/ref/components/ref_selector.vue';
 
 export default function initNewBranchRefSelector() {
   const el = document.querySelector('.js-new-branch-ref-selector');

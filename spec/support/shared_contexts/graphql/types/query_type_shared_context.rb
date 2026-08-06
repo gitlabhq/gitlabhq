@@ -25,6 +25,7 @@ RSpec.shared_context 'with FOSS query type fields' do
       :issues,
       :jobs,
       :merge_request,
+      :merge_requests,
       :metadata,
       :milestone,
       :namespace,

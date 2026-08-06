@@ -33,7 +33,7 @@ module QA
         end
       end
 
-      it 'sets merge request details', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347839' do
+      it 'sets merge request details' do
         merge_request = project.merge_request_with_title(title)
 
         aggregate_failures do
@@ -45,8 +45,7 @@ module QA
         end
       end
 
-      it 'removes labels on subsequent push',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347840' do
+      it 'removes labels on subsequent push' do
         Resource::Repository::ProjectPush.fabricate! do |push|
           push.project = project
           push.file_content = "Unlabel test #{SecureRandom.hex(8)}"

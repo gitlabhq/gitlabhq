@@ -115,6 +115,13 @@ module Types
       argument :id, ::Types::GlobalIDType[::MergeRequest], required: true,
         description: 'Global ID of the merge request.'
     end
+    field :merge_requests,
+      null: true,
+      max_page_size: 20,
+      experiment: { milestone: '19.3' },
+      resolver: Resolvers::MergeRequests::RootResolver,
+      description: 'Find merge requests visible to the current user. ' \
+        'At least one filter must be provided.'
     field :metadata, Types::AppConfig::InstanceMetadataType,
       null: true,
       resolver: Resolvers::AppConfig::InstanceMetadataResolver,

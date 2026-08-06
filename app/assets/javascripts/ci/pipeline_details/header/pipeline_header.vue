@@ -406,6 +406,7 @@ export default {
     },
   },
   FIX_PIPELINE_AGENT_PRIVILEGES,
+  SOURCE: 'fix_pipeline',
 };
 </script>
 
@@ -534,6 +535,7 @@ export default {
           :source-branch="sourceBranch"
           :agent-privileges="$options.FIX_PIPELINE_AGENT_PRIVILEGES"
           :additional-context="getAdditionalContext"
+          :source="$options.SOURCE"
         >
           {{ __('Fix pipeline with Duo') }}
         </duo-workflow-action>
