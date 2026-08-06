@@ -5,6 +5,10 @@
 #
 baseline_path: scripts/lint/keela_baseline.yml
 
+# Exclusions file for false positives (methods called dynamically, via metaprogramming, etc.)
+# TODO: Rename to scripts/lint/keela_excluded.yml once unused_methods.rb is removed
+excluded_path: scripts/lint/excluded_methods.yml
+
 directory_patterns:
   - "{ee/,}app/**/*.%<ext>s"
   - "config/**/*.%<ext>s"

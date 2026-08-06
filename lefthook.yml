@@ -182,11 +182,18 @@ pre-push:
       files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD
       glob: '{config/authz/{,**/}*,lib/tasks/gitlab/permissions/{,**/}*.rb,{,ee/}app/policies/{,**/}*.rb,{,ee/}app/graphql/{,**/}*.rb,{,ee/}lib/{,**/}api/{,**/}*.rb,doc/auth/tokens/fine_grained_access_tokens_{rest,graphql}.md,tooling/authz/permissions/docs/templates/*}'
       run: bundle exec rake gitlab:permissions:validate
-    unused-methods-linter:
+    unused-code-linter:
       tags: backend
       files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD
-      glob: '*.{haml,rb,erb}'
-      run: scripts/lint/unused_methods.rb {files}
+      glob: '*.{haml,rb,erb,builder}'
+      # Detects unused methods, scopes, constants, delegations, and attributes
+      # Set UNUSED_CODE_LINTER=keela to use Keela instead of the legacy script
+      run: |
+        if [ "$UNUSED_CODE_LINTER" = "keela" ]; then
+          bundle exec keela --quiet
+        else
+          scripts/lint/unused_methods.rb {files}
+        fi
     validate-fast-spec-helper:
       tags: backend test
       files: git diff --name-only --diff-filter=A $(git merge-base origin/master HEAD)..HEAD

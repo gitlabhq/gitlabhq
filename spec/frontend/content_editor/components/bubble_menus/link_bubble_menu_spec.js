@@ -280,6 +280,42 @@ describe('content_editor/components/bubble_menus/link_bubble_menu', () => {
       });
     });
 
+    describe('when a document-sync event arrives before clicking apply', () => {
+      const editedUrl = 'https://google.com';
+
+      const applyEditedLink = async () => {
+        expect(tiptapEditor.getHTML()).not.toContain(`href="${editedUrl}"`);
+
+        contentEditor.resolveUrl.mockResolvedValue(editedUrl);
+
+        await wrapper.findComponent(GlForm).vm.$emit('submit', createFakeEvent());
+      };
+
+      beforeEach(() => {
+        linkHrefInput.setValue(editedUrl);
+      });
+
+      describe('via a selection update', () => {
+        beforeEach(async () => {
+          findEditorStateObserver().vm.$emit('selection-update');
+
+          await applyEditedLink();
+        });
+
+        it('applies the edited URL instead of the one still in the document', () => {
+          const link = wrapper.findComponent(GlLink);
+          expect(link.attributes()).toEqual(
+            expect.objectContaining({
+              href: editedUrl,
+              'aria-label': editedUrl,
+              target: '_blank',
+            }),
+          );
+          expect(link.text()).toBe(editedUrl);
+        });
+      });
+    });
+
     describe('after making changes in the form and clicking cancel', () => {
       beforeEach(async () => {
         linkHrefInput.setValue('https://google.com');

@@ -1,125 +1,53 @@
 ---
-stage: Create
-group: Editor Extensions
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: VS Code用GitLab Workflow拡張機能のトラブルシューティング
+stage: AI Clients
+group: Developer Clients
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+title: GitLab for VS Code拡張機能のトラブルシューティング
 ---
 
-GitLab Workflow拡張機能（VS Code用）で問題が発生した場合、または機能リクエストがある場合は、以下をお試しください:
+GitLab for VS Codeを使用する場合、次のイシューが発生する可能性があります。
 
-1. 既知のイシューと解決策については、[拡張機能のドキュメント](_index.md)を確認してください。
-1. バグの報告や機能のリクエストは、[`gitlab-vscode-extension`イシュートラッカー](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues)で行ってください。[サポートに必要な情報](#required-information-for-support)を提供してください。
+問題が以下に記載されていない場合は、[サポートに必要な情報](#required-information-for-support)を収集し、[`gitlab-vscode-extension`イシュートラッカー](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues)でバグを報告してください。
 
-VS Code向けGitLab Duoコード提案のトラブルシューティングについては、[VS Code向けコード提案のトラブルシューティング](../../user/project/repository/code_suggestions/troubleshooting.md#vs-code-troubleshooting)を参照してください。
+## ログ {#logs}
 
-## デバッグログを有効にする {#enable-debug-logs}
+GitLab for VS Code拡張機能と、この拡張機能を強化するGitLab言語サーバーの両方が、トラブルシューティングを行うのに役立つログを提供します。
 
-VS Code拡張機能とGitLab言語サーバーはどちらも、トラブルシューティングに役立つログファイルを提供します。デバッグログを有効にするには、次の手順に従います:
+### デバッグログを有効にする {#enable-debug-logs}
 
-1. VS Codeで、上部のバーにある**コード** > **設定** > **設定**に移動します。
-1. 右上隅で、**Open Settings (JSON)**（設定を開く（JSON））を選択して、`settings.json`ファイルを編集します。
-1. この行を追加するか、すでに存在する場合は編集します:
+デバッグロギングを有効にするには:
 
-   ```json
-   "gitlab.debug": true,
-   ```
+1. VS Codeで、設定エディタを開きます:
+   - macOSでは、<kbd>Command</kbd>+<kbd>,</kbd>を押します。
+   - WindowsまたはLinuxでは、<kbd>Control</kbd>+<kbd>,</kbd>を押します。
+1. **Extensions** > **GitLab** > **その他**を選択します。
+1. **GitLab: Debug**で、チェックボックスを選択してデバッグモードをオンにします。
+1. ウィンドウをリロードして拡張機能を再起動します。
+   1. コマンドパレットを開きます。
+      - macOSの場合は、<kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>キーを押します。
+      - WindowsまたはLinuxの場合、<kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>を押します。
+   1. `Developer: Reload Window`と入力して<kbd>Enter</kbd>キーを押します。
 
-1. 変更を保存します。
+### デバッグログを表示する {#view-debug-logs}
 
-### ログファイルを表示する {#view-log-files}
+デバッグログを表示するには:
 
-VS Code拡張機能またはGitLab言語サーバーからデバッグログを表示するには:
+1. VS Codeで、**View** > **Output**を選択します。
+1. 出力パネルの右上隅にあるドロップダウンリストで、**GitLab**または**GitLab Language Server**ログをフィルターします。
+1. エラー、警告、接続の問題、または認証の問題がないか確認します。
 
-1. コマンド`GitLab: Show Extension Logs`を使用して、出力パネルを表示します。
-1. 出力パネルの右上隅にあるドロップダウンリストから、**GitLab Workflow**（GitLab Workflow）または**GitLab Language Server**（GitLab言語サーバー）のいずれかを選択します。
+## 認証 {#authentication}
 
-## エラー: プロキシを使用した`407 Access Denied`の失敗 {#error-407-access-denied-failure-with-a-proxy}
+次の認証エラーが発生する可能性があります。
 
-認証済みプロキシを使用している場合は、`407 Access Denied (authentication_failed)`のようなエラーが発生する可能性があります:
+### エラー: `...can't access the OS Keychain` {#error-cant-access-the-os-keychain}
 
-```plaintext
-Request failed: Can't add GitLab account for https://gitlab.com. Check your instance URL and network connection.
-Fetching resource from https://gitlab.com/api/v4/personal_access_tokens/self failed
-```
+macOSおよびUbuntuでは、拡張機能がOSキーチェーンにアクセスして認証することができない場合にエラーが発生することがあります。
 
-GitLab言語サーバーの[プロキシ認証を有効にする](../language_server/_index.md#enable-proxy-authentication)必要があります。
-
-## 自己署名証明書の設定 {#configure-self-signed-certificates}
-
-自己署名認証局を使用してGitLabインスタンスに接続するには、これらの設定を使用して設定します。GitLabチームはパブリック認証局を使用しているため、これらの設定はコミュニティのコントリビュートです。どのフィールドも必須ではありません。
-
-前提要件: 
-
-- VS Codeで[`http.proxy`設定](https://code.visualstudio.com/docs/setup/network#_legacy-proxy-server-support)を使用していません。詳細については、[issue 314](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/314)を参照してください。
-
-| 設定名 | デフォルト | 情報 |
-| ------------ | :-----: | ----------- |
-| `gitlab.ca`  | null    | 非推奨。自己署名認証局を設定する方法の詳細については、[SSL設定ガイド](ssl.md)を参照してください。 |
-| `gitlab.cert`| null    | サポートされていません。[エピック6244](https://gitlab.com/groups/gitlab-org/-/epics/6244)を参照してください。GitLab Self-Managedでカスタム証明書またはキーペアが必要な場合は、証明書ファイルを指すようにこのオプションを設定します。`gitlab.certKey`を参照してください。 |
-| `gitlab.certKey`| null    | サポートされていません。[エピック6244](https://gitlab.com/groups/gitlab-org/-/epics/6244)を参照してください。GitLab Self-Managedでカスタム証明書またはキーペアが必要な場合は、証明書キーファイルを指すようにこのオプションを設定します。`gitlab.cert`を参照してください。 |
-| `gitlab.ignoreCertificateErrors` | いいえ   | サポートされていません。[エピック6244](https://gitlab.com/groups/gitlab-org/-/epics/6244)を参照してください。SSL証明書なしでGitLab Self-Managedを使用する場合、または拡張機能の使用を妨げる証明書の問題がある場合は、このオプションを`true`に設定して証明書エラーを無視します。 |
-
-## SSL証明書の期限切れ {#expired-ssl-certificate}
-
-場合によっては、証明書が誤って期限切れとして分類されることがあります。これにより、エラー`API request failed - Error: certificate has expired`が発生する可能性があります。この問題が発生した場合は、システム証明書のVS Codeサポートを無効にできます。
-
-システム証明書を無効にするには:
-
-1. VS Codeで、上部のバーにある**コード** > **設定** > **設定**に移動します。
-1. **ユーザー**設定タブで、**Application**（アプリケーション） > **Proxy**（プロキシ）を選択します。
-1. **Proxy Strict SSL**（プロキシ厳密SSL）と**System Certificates**（システム証明書）の設定を無効にします。
-
-## HTTPSプロジェクトのクローン作成は機能するが、SSHのクローン作成は失敗する {#https-project-cloning-works-but-ssh-cloning-fails}
-
-この問題は、SSH URLのホストまたはパスがHTTPSパスと異なる場合にVS Codeで発生します。GitLab Workflow拡張機能では、以下を使用します:
-
-- 設定したアカウントと一致するホスト。
-- ネームスペースとプロジェクト名を取得するパス。
-
-たとえば、VS Code拡張機能のURLは次のとおりです:
-
-- SSH: `git@gitlab.com:gitlab-org/gitlab-vscode-extension.git`
-- HTTPS: `https://gitlab.com/gitlab-org/gitlab-vscode-extension.git`
-
-どちらも`gitlab.com`と`gitlab-org/gitlab-vscode-extension`のパスを持ちます。
-
-この問題を解決するには、SSH URLが別のホスト上にあるかどうか、またはパスに追加のセグメントがあるかどうかを確認してください。どちらかが当てはまる場合は、GitリポジトリをGitLabプロジェクトに手動で割り当てできます:
-
-1. VS Codeの左側のサイドバーで、**GitLab Workflow**（GitLab Workflow）（{{< icon name="tanuki" >}}）を選択します。
-1. `(no GitLab project)`とマークされたプロジェクトを選択し、**Manually assign GitLab project**（GitLabプロジェクトを手動で割り当て）を選択します: ![GitLabプロジェクトを手動で割り当て](img/manually_assign_v15_3.png)
-1. リストから正しいプロジェクトを選択します。
-
-このプロセスを簡素化する方法の詳細については、`gitlab-vscode-extension`プロジェクトの[イシュー577](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/577)を参照してください。
-
-## 既知のイシュー: リモート環境でGitLab Duoチャットが初期化に失敗する {#known-issue-gitlab-duo-chat-fails-to-initialize-in-remote-environments}
-
-リモート開発環境（ブラウザベースのVS CodeやリモートSSH接続など）でGitLab Duoチャットを使用すると、次のような初期化の失敗が発生する可能性があります:
-
-- 空白またはロードされないチャットパネル。
-- ログファイルのエラー: `The webview didn't initialize in 10000ms`。
-- 拡張機能がアクセスできないローカルURLに接続しようとしています。
-
-これらの問題を解決するには:
-
-1. VS Codeで、上部のバーにある**コード** > **設定** > **設定**に移動します。
-1. 右上隅で、**Open Settings (JSON)**（設定を開く（JSON））を選択して、`settings.json`ファイルを編集します。
-   - または、<kbd>F1</kbd>キーを押し、**環境設定を入力します: 設定を開く（JSON）**を選択します。
-1. この設定を追加または変更します:
-
-   ```json
-   "gitlab.featureFlags.languageServerWebviews": false
-   ```
-
-1. 変更を保存して、VS Codeをリロードします。
-
-恒久的な解決策の更新については、[イシュー #1944](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/1944)と[イシュー #1943](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/1943)を参照してください
-
-## エラー: `can't access the OS Keychain` {#error-cant-access-the-os-keychain}
-
-このようなエラーメッセージは、macOSとUbuntuの両方で発生する可能性があります:
+例: 
 
 ```plaintext
-GitLab Workflow can't access the OS Keychain.
+The GitLab extension can't access the OS Keychain.
 If you use Ubuntu, see this existing issue.
 ```
 
@@ -128,78 +56,340 @@ Error: Cannot get password
 at I.$getPassword (vscode-file://vscode-app/snap/code/97/usr/share/code/resources/app/out/vs/workbench/workbench.desktop.main.js:1712:49592)
 ```
 
-これらのエラーの詳細については、以下を参照してください:
+お使いのオペレーティングシステムに合わせて、以下の回避策を実行してください。
 
-- [拡張機能のイシュー580](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/580)
+このエラーの詳細については、以下を参照してください:
+
+- [拡張イシュー580](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/580)
 - [アップストリーム`microsoft/vscode`イシュー147515](https://github.com/microsoft/vscode/issues/147515)
 
-### macOS回避策 {#macos-workaround}
+#### macOSの回避策 {#macos-workaround}
 
-macOSの回避策が存在します:
+macOSでこのエラーを回避するには:
 
-1. マシンで、**Keychain Access**（キーチェーンアクセス）を開き、`vscodegitlab.gitlab-workflow`を検索します。
+1. お使いのコンピューターで**Keychain Access**を開き、`vscodegitlab.gitlab-workflow`を検索します。
 1. キーチェーンから`vscodegitlab.gitlab-workflow`を削除します。
-1. `GitLab: Remove Account from VS Code`コマンドを使用して、破損したアカウントをVS Codeから削除します。
-1. アカウントを再度追加するには、`Gitlab: Add Account to VS Code`または`GitLab: Authenticate to GitLab.com`を実行します。
+1. <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>を押してコマンドパレットを開きます。
+1. `GitLab: Remove Account from VS Code`と入力し、<kbd>Enter</kbd>を押して破損したアカウントをVS Codeから削除します。
+1. 再度コマンドパレットを開き、`GitLab: Authenticate`を実行してアカウントを再度追加します。
 
-### Ubuntu回避策 {#ubuntu-workaround}
+#### Ubuntuの回避策 {#ubuntu-workaround}
 
-Ubuntu 20.04および22.04で`snap`を使用してVS Codeをインストールすると、VS CodeはOSキーチェーンからパスワードを読み取ることができません。拡張機能バージョン3.44.0以降では、安全なトークンストレージにOSキーチェーンを使用します。VS Codeのバージョン1.68.0より前のバージョンを使用するUbuntuユーザーには、回避策が存在します:
+Ubuntu 20.04および22.04で`snap`を使用してVS Codeをインストールする場合、VS CodeはOSキーチェーンからパスワードを読み取ることができません。拡張機能バージョン3.44.0以降では、安全なトークンストレージにOSキーチェーンを使用します。
 
-- GitLab Workflow拡張機能をバージョン3.43.1にダウングレードできます。
-- `snap`ではなく、`.deb`パッケージからVS Codeをインストールできます:
+VS Codeバージョン1.68.0以前を使用している場合は、次のいずれかの回避策を試してください:
+
+- GitLab for VS Code拡張機能をバージョン3.43.1にダウングレードします。
+- `snap`ではなく、`.deb`パッケージからVS Codeをインストールします:
   1. `snap` VS Codeをアンインストールします。
   1. [`.deb`パッケージ](https://code.visualstudio.com/Download)からVS Codeをインストールします。
-  1. Ubuntuの**Password & Keys**（パスワードとキー）に移動し、`vscodegitlab.workflow/gitlab-tokens`エントリを見つけて削除します。
-  1. VS Codeで、`Gitlab: Remove Your Account`を実行して、認証情報がないアカウントを削除します。
-  1. アカウントを再度追加するには、`GitLab: Authenticate`を実行します。
+  1. Ubuntuの**Password & Keys**に移動し、`vscodegitlab.workflow/gitlab-tokens`エントリを見つけて削除します。
+  1. VS Codeで、<kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>を押してコマンドパレットを開きます。
+  1. `Gitlab: Remove Your Account`と入力し、<kbd>Enter</kbd>を押して、不足している認証情報を持つアカウントを削除します。
+  1. 再度コマンドパレットを開き、`GitLab: Authenticate`を実行してアカウントを再度追加します。
 
-VS Codeバージョン1.68.0以降を使用している場合、再インストールはできない可能性があります。ただし、最後の3つの手順を実行して再度認証することができます。
+VS Codeバージョン1.68.0以降を使用している場合は、再認証を試してください:
 
-## 環境変数でトークンを設定する {#set-token-with-environment-variables}
+1. Ubuntuの**Password & Keys**に移動し、`vscodegitlab.workflow/gitlab-tokens`エントリを見つけて削除します。
+1. VS Codeで、<kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>を押してコマンドパレットを開きます。
+1. `Gitlab: Remove Your Account`と入力し、<kbd>Enter</kbd>を押して、不足している認証情報を持つアカウントを削除します。
+1. 再度コマンドパレットを開き、`GitLab: Authenticate`を実行してアカウントを再度追加します。
 
-Gitpodコンテナなど、VS Codeストレージを頻繁に削除する場合は、VS Codeを起動する前に環境変数を設定します。[VS Code環境変数](https://code.visualstudio.com/docs/editor/variables-reference#_environment-variables)でトークンを設定すると、VS Codeストレージを削除するたびにパーソナルアクセストークンを設定する必要はありません。これらの変数を設定します:
+### GDK使用時の接続および認可エラー {#connection-and-authorization-error-when-using-gdk}
 
-- `GITLAB_WORKFLOW_INSTANCE_URL`: `https://gitlab.com`のようなGitLabインスタンスのURL。
-- `GITLAB_WORKFLOW_TOKEN`: [GitLabで認証するとき](setup.md#authenticate-with-gitlab)に作成したパーソナルアクセストークン。
+VS CodeをGDKとともに使用している場合、システムがlocalhostで実行されているGitLabインスタンスへの安全なTLS接続を確立できないというエラーが表示されることがあります。
 
-環境変数で設定されたトークンは、拡張機能で同じGitLabインスタンスのトークンを設定するとオーバーライドされます。
-
-### GDKの使用時の接続と認可のエラー {#connection-and-authorization-error-when-using-gdk}
-
-VS CodeをGDKで使用する場合、localhostで実行されているGitLabインスタンスへの安全なTLS接続をシステムが確立できないというエラーが発生する可能性があります。
-
-たとえば、GitLabサーバーとして`127.0.0.1:3000`を使用している場合:
+例えば、`127.0.0.1:3000`をGitLabサーバーとして使用している場合:
 
 ```plaintext
 Request to https://127.0.0.1:3000/api/v4/version failed, reason: Client network
 socket disconnected before secure TLS connection was established
 ```
 
-この問題は、`http`でGDKを実行していて、GitLabインスタンスが`https`でホストされている場合に発生します。
+このイシューは、GDKを`http`で実行しており、GitLabインスタンスが`https`でホストされている場合に発生します。
 
-これを解決するには、`GitLab: Authenticate`コマンドを実行するときに、インスタンスの`http` URLを手動で入力します。
+これを解決するには:
+
+1. コマンドパレットを開きます。
+   - macOSの場合は、<kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>キーを押します。
+   - WindowsまたはLinuxの場合、<kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>を押します。
+1. `GitLab: Authenticate`と入力して<kbd>Enter</kbd>キーを押します。
+1. 手動でインスタンスの`http` URLを入力するオプションを選択し、<kbd>Enter</kbd>を押します。
+1. 残りのプロンプトに従って認証してください。
+
+## プロジェクト設定 {#project-configuration}
+
+次のプロジェクト設定エラーが発生する可能性があります。
+
+### アカウントとプロジェクトの設定エラー {#account-and-project-configuration-errors}
+
+VS Codeでプロジェクトを開くと、**GitLab**（{{< icon name="tanuki" >}}）タブのプロジェクト名の横にエラーメッセージが表示されることがあります。または、ステータスバーに複数のアカウントまたはプロジェクトに関する警告メッセージが表示される場合があります。
+
+これらのメッセージは、拡張機能が使用するリポジトリ、アカウント、またはプロジェクトを特定できない場合に表示されます。
+
+これらのエラーを解決するには:
+
+- リモートが定義されていないか、複数のリモートが設定されている場合は、[あなたのリポジトリに接続する](setup.md#connect-to-your-repository)を参照してください。
+- ステータスバーに**Multiple GitLab Accounts**が表示される場合は、[アカウントを切り替える](setup.md#switch-accounts)を選択します。
+- ステータスバーに **（multiple projects）** が表示される場合は、[プロジェクトを選択する](setup.md#select-a-project)を選択します。
+
+VS CodeでGitを初めて使用する場合は、[VS Codeのソース管理](https://code.visualstudio.com/docs/sourcecontrol/overview)を参照して、リポジトリとVS Codeワークスペースの初期化に関する情報を確認してください。これらはGitLab拡張機能の外部で実行されます。
+
+#### SSHカスタムエイリアスを使用したGitリモート {#git-remote-with-ssh-custom-alias}
+
+リポジトリのリモートがSSHカスタムエイリアスを使用している場合、拡張機能がリポジトリをGitLabプロジェクトに正しく照合できない可能性があります。例えば、リモートが`git@gitlab.com:group/project.git`の代わりに`git@my-work-gitlab:group/project.git`を使用している場合です。
+
+この問題を解決するには、次の操作を実行します:
+
+- リモートをHTTPを使用するように変更するか、カスタムエイリアスなしでSSHを使用するように変更します。
+- 拡張機能でデフォルトのGitLab Duoネームスペースを設定します。
+
+デフォルトのネームスペースを設定するには:
+
+1. [プロジェクトが属するネームスペースを特定します](../../user/namespace/_index.md#determine-which-type-of-namespace-youre-in)。
+1. VS Codeで、設定エディタを開きます:
+   - macOSでは、<kbd>Command</kbd>+<kbd>,</kbd>を押します。
+   - WindowsまたはLinuxでは、<kbd>Control</kbd>+<kbd>,</kbd>を押します。
+1. **Extensions** > **GitLab** > **GitLab Duo**を選択します。
+1. **GitLab › Duo Agent Platform: デフォルトネームスペース**に、ネームスペースを入力します。
+
+### HTTPSプロジェクトのクローンは機能するが、SSHクローンは失敗する {#https-project-cloning-works-but-ssh-cloning-fails}
+
+HTTPSクローンは機能するのに、SSHクローンエラーが発生することがあります。これは、SSH URLホストまたはパスがHTTPSパスと異なる場合に発生します。
+
+GitLab for VS Code拡張機能は以下を使用します:
+
+- 設定したアカウントに一致するホスト。
+- ネームスペースとプロジェクト名を取得するためのパス。
+
+例えば、VS Code拡張機能プロジェクトのURLは次のとおりです:
+
+- SSH: `git@gitlab.com:gitlab-org/gitlab-vscode-extension.git`
+- HTTPS: `https://gitlab.com/gitlab-org/gitlab-vscode-extension.git`
+
+両方とも`gitlab.com`ホストと`gitlab-org/gitlab-vscode-extension`パスを持っています。
+
+このエラーを解決するには:
+
+1. お使いのSSH URLが別のホストにあるか、パスに余分なセグメントが含まれているかを確認します。
+1. どちらかに該当する場合は、GitリポジトリをGitLabプロジェクトに手動で割り当てます:
+   1. VS Codeの左サイドバーで、**GitLab**（{{< icon name="tanuki" >}}）を選択します。
+   1. `(no GitLab project)`とマークされたプロジェクトを選択し、**Manually assign GitLab project**を選択します: ![GitLabプロジェクトを手動で割り当てる](img/manually_assign_v15_3.png)
+   1. リストから正しいプロジェクトを選択します。
+
+このプロセスを簡素化する方法の詳細については、`gitlab-vscode-extension`プロジェクトの[イシュー577](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/577)を参照してください。
+
+## ネットワークと接続性 {#network-and-connectivity}
+
+次のネットワークおよび接続エラーが発生する可能性があります。
+
+### エラー: プロキシによる`407 Access Denied`失敗 {#error-407-access-denied-failure-with-a-proxy}
+
+認証済みプロキシを使用している場合、`407 Access Denied (authentication_failed)`エラーが発生することがあります。
+
+例: 
+
+```plaintext
+Request failed: Can't add GitLab account for https://gitlab.com. Check your instance URL and network connection.
+Fetching resource from https://gitlab.com/api/v4/personal_access_tokens/self failed
+```
+
+このエラーを解決するには、GitLab言語サーバーの[プロキシ認証を有効にします](../language_server/_index.md#enable-proxy-authentication)。
+
+### カスタム証明書に関するエラー {#errors-with-custom-certificates}
+
+自己署名証明書など、カスタム証明書を使用してGitLabインスタンスに接続する場合、エラーが発生することがあります。
+
+これらのエラーは、証明書が次の設定を使用している場合に発生することがあります:
+
+| 設定名                     | 情報 |
+|----------------------------------|-------------|
+| `gitlab.ca`                      | 非推奨。自己署名CAのセットアップ方法の詳細については、[SSLセットアップガイド](ssl.md)を参照してください。|
+| `gitlab.cert`                    | サポートされていません。[エピック6244](https://gitlab.com/groups/gitlab-org/-/epics/6244)を参照してください。 |
+| `gitlab.certKey`                 | サポートされていません。[エピック6244](https://gitlab.com/groups/gitlab-org/-/epics/6244)を参照してください。 |
+| `gitlab.ignoreCertificateErrors` | サポートされていません。[エピック6244](https://gitlab.com/groups/gitlab-org/-/epics/6244)を参照してください。 |
+
+解決するには、[カスタム認証局向けに拡張機能を設定する](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/docs/user/custom-certificates.md)を参照してください。
+
+### 期限切れのSSL証明書 {#expired-ssl-certificate}
+
+誤った期限切れのSSL証明書エラーが発生することがあります。例: 
+
+`API request failed - Error: certificate has expired`。
+
+このエラーを解決するには、システム証明書を無効にします:
+
+1. VS Codeで、設定エディタを開きます:
+   - macOSでは、<kbd>Command</kbd>+<kbd>,</kbd>を押します。
+   - WindowsまたはLinuxでは、<kbd>Control</kbd>+<kbd>,</kbd>を押します。
+1. **ユーザー**設定タブで、**アプリケーション** > **Proxy**を選択します。
+1. **Proxy Strict SSL**および**System Certificates**の設定を無効にします。
+
+## GitLab Duo {#gitlab-duo}
+
+VS CodeでGitLab Duoを使用すると、次のイシューが発生することがあります。
+
+### GitLab Duo機能が利用できない {#gitlab-duo-features-are-unavailable}
+
+VS CodeでのGitLab Duoエラーをトラブルシューティングを行うには:
+
+1. [前提条件](setup.md#configure-gitlab-duo)を満たし、必要な設定がオンになっていることを確認してください。
+1. [管理者モードが無効になっている](../../administration/settings/sign_in_restrictions.md#turn-off-admin-mode-for-your-session)ことを確認してください。
+1. 診断出力を確認します:
+   1. VS Codeでコマンドパレットを開きます。
+      - macOSの場合、<kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>を押します
+      - WindowsまたはLinuxの場合、<kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>を押します
+   1. `GitLab: Diagnostics`コマンドを実行し、失敗したチェックがないか出力を確認します。
+1. 診断で機能がオンになっていないと示されている場合:
+   1. VS Codeで、設定エディタを開きます:
+      - macOSでは、<kbd>Command</kbd>+<kbd>,</kbd>を押します。
+      - WindowsまたはLinuxでは、<kbd>Control</kbd>+<kbd>,</kbd>を押します。
+   1. **Extensions** > **GitLab** > **GitLab Duo**を選択します。
+   1. 不足している機能の**GitLab** › セクションを見つけ、チェックボックスを選択してオンにします。
+1. 診断でAgentic Chatが現在のプロジェクトでサポートされていないと示されている場合は、[デフォルトのGitLab Duoネームスペース](../../user/profile/preferences.md#namespace-resolution-in-your-local-environment)を設定します。
+1. 診断で、すべてのAgentic Chatのチェックがパスしているにもかかわらずパネルが表示されない場合は、[カスタムVS Codeレイアウト](https://code.visualstudio.com/docs/configure/custom-layout)に隠されている可能性があります。
+   1. VS Codeでコマンドパレットを開きます。
+      - macOSの場合、<kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>を押します
+      - WindowsまたはLinuxの場合、<kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>を押します
+   1. `View: Show GitLab Duo Agent Platform`または`View: Toggle GitLab Duo Agent Platform`コマンドを実行します。
+
+コード提案のサポートについては、[コード提案のトラブルシューティング](../../user/project/repository/code_suggestions/troubleshooting.md#vs-code-troubleshooting)を参照してください。
+
+### GitLab DuoがWebSocketエンドポイントの代わりに`HTTP/1.1`応答を返す {#gitlab-duo-returns-http11-responses-instead-of-websocket-endpoints}
+
+ログにGitLab Duoからの`HTTP/1.1`応答が`/-/cable` WebSocketエンドポイントの代わりに表示されることがあります。
+
+これは、GitLabインスタンスがWebSocket接続をブロックする場合に発生します。
+
+このエラーを解決するには、ネットワーク管理者にGitLabインスタンスを変更して、[IDEクライアントからの受信WebSocket接続を許可する](../../administration/gitlab_duo/configure/_index.md#allow-inbound-connections-from-clients-to-the-gitlab-instance)ように依頼してください。
+
+GitLab Duo Agent Platformへの接続がWebSocketエラー`1006`または`404`で失敗した場合は、[WebSocketエラー`1006`または`404`で接続が失敗する](../../user/duo_agent_platform/troubleshooting.md#connection-fails-with-websocket-error-1006-or-404)を参照してください。
+
+### GitLab Duo Chatがリモート環境で初期化に失敗する {#gitlab-duo-chat-fails-to-initialize-in-remote-environments}
+
+リモート開発環境（ブラウザベースのVS CodeやリモートSSH接続など）でGitLab Duo Chatを使用している場合、次のような初期化の失敗が発生することがあります:
+
+- 空白または読み込まれないチャットパネル。
+- ログ内のエラー。例えば`The webview didn't initialize in 10000ms`。
+- 拡張機能がアクセスできないローカルURLに接続しようとします。
+
+これらのエラーを解決するには:
+
+1. VS Codeで、設定エディタを開きます:
+   - macOSでは、<kbd>Command</kbd>+<kbd>,</kbd>を押します。
+   - WindowsまたはLinuxでは、<kbd>Control</kbd>+<kbd>,</kbd>を押します。
+1. 右上隅で **Open Settings（JSON）** を選択して、`settings.json`ファイルを編集します。
+1. この設定を追加または変更します:
+
+   ```json
+   "gitlab.featureFlags.languageServerWebviews": false
+   ```
+
+1. 変更を保存し、ウィンドウをリロードします:
+   1. コマンドパレットを開きます。
+      - macOSの場合は、<kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>キーを押します。
+      - WindowsまたはLinuxの場合、<kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>を押します。
+   1. `Developer: Reload Window`と入力して<kbd>Enter</kbd>キーを押します。
+
+永続的な解決策の更新については、[イシュー #1944](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/1944)および[イシュー #1943](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/1943)を参照してください。
+
+### GitLab Duoコマンドが失敗するか、無期限に実行される {#gitlab-duo-commands-fail-or-run-indefinitely}
+
+IDEでGitLab Duo Agentic Chatまたはソフトウェア開発フローを使用すると、GitLab Duoがループにはまったり、コマンドの実行に問題が発生したりする可能性があります。
+
+このイシューは、`Oh My ZSH!`や`powerlevel10k`などのShellテーマまたはインテグレーションを使用している場合に発生する可能性があります。GitLab Duoエージェントがターミナルを作成すると、Shellテーマまたはインテグレーションによってコマンドが正しく実行されないことがあります。
+
+回避策として、以下に示す手順に従って、エージェントによって送信されるコマンドにシンプルなテーマを使用してください。
+
+修正の詳細については、[イシュー2116](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/work_items/2116)を参照してください。
+
+#### `.zshrc`ファイルを編集する {#edit-your-zshrc-file}
+
+VS Codeで、`Oh My ZSH!`または`powerlevel10k`を設定して、エージェントによって送信されるコマンドにシンプルなテーマを使用するようにします。IDEによって公開された環境変数を使用して、これらの値を設定できます。
+
+`~/.zshrc`ファイルを編集し、次のコードを追加します:
+
+```shell
+# ~/.zshrc
+
+# Path to your oh-my-zsh installation
+export ZSH="$HOME/.oh-my-zsh"
+
+# ...
+
+# Decide whether to load a full terminal environment,
+# or keep it minimal for agentic AI in IDEs
+if [[ "$TERM_PROGRAM" == "vscode" ]]; then
+  echo "IDE agentic environment detected, not loading full shell integrations"
+else
+  # Oh My ZSH
+  source $ZSH/oh-my-zsh.sh
+  # Theme: Powerlevel10k
+  [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+  # Other integrations like syntax highlighting
+fi
+
+# Other setup, like PATH variables
+```
+
+#### Bash Shellを編集する {#edit-your-bash-shell}
+
+VS Codeで、Bashの高度なプロンプトをオフにすることができます。
+
+`~/.bashrc`ファイルまたは`~/.bash_profile`ファイルを編集し、次のコードを追加します:
+
+```shell
+# ~/.bashrc or ~/.bash_profile
+
+# Decide whether to load a full terminal environment,
+# or keep it minimal for Agentic AI in IDEs
+if [[ "$TERM_PROGRAM" == "vscode" ]]; then
+  echo "IDE agentic environment detected, not loading full shell integrations"
+
+  # Keep only essential settings for agents
+  export PS1='\$ '  # Minimal prompt
+
+else
+  # Load full Bash environment
+
+  # Custom prompt (e.g., Starship, custom PS1)
+  if command -v starship &> /dev/null; then
+    eval "$(starship init bash)"
+  else
+    # ... Add your own PS1 variable
+  fi
+
+  # Load additional integrations
+fi
+
+# Always load essential environment variables and aliases
+```
 
 ## サポートに必要な情報 {#required-information-for-support}
 
-サポートに問い合わせる前に、最新のGitLab Workflow拡張機能がインストールされていることを確認してください。すべてのリリースは、[VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)の**Version History**（バージョン履歴）タブにあります。
+サポートに連絡する前に、最新のGitLab for VS Code拡張機能がインストールされていることを確認してください。
 
-影響を受けるユーザーからこの情報を収集し、バグレポートで提供してください:
+最新のリリースは、[VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)の**Version History**タブで確認できます。
 
-1. ユーザーに表示されるエラーメッセージ。
-1. ワークフローと言語サーバーのログファイル:
-   1. [デバッグログを有効にする](#enable-debug-logs)。
-   1. 拡張機能と言語サーバーの[ログファイルを取得する](#view-log-files)。
+影響を受けるユーザーから次の情報を収集し、バグレポートに含めてください:
+
+1. ユーザーに表示されたエラーメッセージ。
+1. **GitLab**と**GitLab Language Server**の[ログ](#logs)。
 1. 診断出力。
-   1. <kbd>コマンド</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>または<kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>を使用してコマンドパレットを開きます
-   1. コマンド`GitLab: Diagnostics`を実行し、拡張機能のバージョンをメモします。
+   1. コマンドパレットを開きます。
+      - macOSの場合は、<kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>キーを押します。
+      - WindowsまたはLinuxの場合、<kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>を押します。
+   1. `GitLab: Diagnostics`と入力して<kbd>Enter</kbd>キーを押します。
+   1. 拡張機能のバージョンをメモします。
 1. システム詳細:
-   - VS Codeで、**コード** > **About Visual Studio Code**（Visual Studio Codeについて）に移動し、**OS**を見つけます。
-   - マシンの仕様（CPU、RAM）: マシンからこれらを提供します。これらはWeb IDEではアクセスできません。
-1. 影響のスコープを記述します。影響を受けるユーザーの数は？
-1. エラーの再現方法を説明します。可能であれば、画面録画を含めます。
-1. 他のGitLab Duo機能がどのように影響を受けているかを記述します:
-   - GitLabクイックチャットは機能していますか？
+   - VS Codeで、**OS**の詳細:
+     - macOSの場合、**コード** > **About Visual Studio Code**に移動し、**OS**を見つけます。
+     - WindowsまたはLinuxの場合、**ヘルプ** > **GitLabについて**に移動し、**OS**を見つけます。
+   - マシン仕様（CPU, RAM）: これらはお使いのマシンから提供してください。これらはIDEからはアクセスできません。
+1. 影響のスコープを説明してください。何人のユーザーが影響を受けていますか？
+1. エラーを再現する方法を説明してください。可能であれば、画面録画を含めてください。
+1. 他のGitLab Duo機能がどのように影響を受けているか説明してください:
+   - GitLab Quick Chatは機能していますか？
    - コード提案は機能していますか？
-   - Web IDE Duoチャットは応答を返しますか？
-1. [GitLab Workflow拡張機能分離ガイド](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/814#step-2-extension-isolation-testing)の説明に従って、拡張機能の分離テストを実行します。他のすべての拡張機能を無効にする（またはアンインストールする）ことを試して、別の拡張機能が問題の原因になっているかどうかを判断します。これにより、問題が当社の拡張機能にあるのか、外部ソースからのものなのかを判断できます。
+   - Web IDEのGitLab Duo Chatは応答を返しますか？
+1. [GitLab for VS Code拡張機能の分離ガイド](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/814#step-2-extension-isolation-testing)で説明されているように、拡張機能の分離テストを実行します。他のすべての拡張機能を無効にする（またはアンインストールする）ことで、別の拡張機能がこのイシューを引き起こしているかどうかを判断してください。

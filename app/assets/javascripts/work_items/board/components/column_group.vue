@@ -91,8 +91,30 @@ export default {
       required: false,
       default: true,
     },
+    reorderable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    canMoveLeft: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    canMoveRight: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
-  emits: ['card-move', 'set-active-item', 'toggle-collapse', 'drag-start', 'check-board-params'],
+  emits: [
+    'card-move',
+    'set-active-item',
+    'toggle-collapse',
+    'drag-start',
+    'check-board-params',
+    'move-column',
+  ],
   data() {
     return {
       workItemsConnection: { nodes: [], pageInfo: {} },
@@ -132,9 +154,11 @@ export default {
       return this.strategy.headerDecoration(this.value);
     },
     groupConfig() {
-      // Shared group so cards drag between columns; `put: false` makes THIS column
-      // reject incoming drops (a status the dragged type can't take) while others accept.
-      return { name: BOARD_DND_GROUP, put: !this.dropDisabled };
+      // Shared group so cards drag between columns. `put` is an allowlist of the
+      // card group (not `true`, which in sortablejs accepts *any* group — that let
+      // a dragged column drop into a card list). `false` makes THIS column reject
+      // incoming drops (a status the dragged type can't take) while others accept.
+      return { name: BOARD_DND_GROUP, put: this.dropDisabled ? false : [BOARD_DND_GROUP] };
     },
     countQueryVariables() {
       return boardColumnCountVariables({
@@ -267,7 +291,11 @@ export default {
       :count="totalCount"
       :collapsed="collapsed"
       :controls-id="columnBodyId"
+      :reorderable="reorderable"
+      :can-move-left="canMoveLeft"
+      :can-move-right="canMoveRight"
       @toggle-collapse="$emit('toggle-collapse')"
+      @move-column="$emit('move-column', $event)"
     />
     <div
       v-show="!collapsed"
@@ -281,9 +309,11 @@ export default {
       >
         {{ error }}
       </p>
-      <!-- Always rendered (outside the error state) so an empty column stays a drop target. -->
+      <!-- Rendered whenever expanded (outside the error state) so an empty column stays a drop
+      target. Skipped while collapsed so retained cards aren't surfaced when the column is dragged;
+      the body div (and its id) stays in the DOM via v-show so the header's aria-controls resolves. -->
       <draggable-compat
-        v-else
+        v-else-if="!collapsed"
         :value="workItems"
         item-key="id"
         tag="ul"

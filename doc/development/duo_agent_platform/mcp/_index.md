@@ -149,9 +149,11 @@ class:
 - `delete_` for actual delete operations. These should never be folded into `save_` to allow for better governance handling.
 - `add_` or other deviations from the pattern are reserved for objects that do not have a typical CRUD shape, such as commits or sessions (for example `add_commit`).
 
-**Resource identification:** every project-scoped tool identifies its target the same way, inherited
-from the shared input base classes (`ProjectResourceInput` supplies `url`, `project_id`, and the
-resource's internal ID). A caller provides either:
+**Resource identification:** every project-scoped tool identifies its target the same way.
+Each tool declares `url`, `project_id`, and the resource's internal ID in its own input schema.
+To resolve those parameters, include the `Mcp::Tools::Concerns::UrlParser` and
+`Mcp::Tools::Concerns::ResourceFinder` concerns.
+A caller provides either:
 
 - `url` — a full GitLab URL that encodes the whole path (for example
   `https://gitlab.com/group/project/-/merge_requests/1`), or
@@ -165,12 +167,18 @@ single `id`. They are different values (`iid`/`sha` is scoped to a project and i
 and IDs are supplied they are cross-validated and a mismatch raises an error. Work-item tools accept
 `group_id` or `project_id` in the same group.
 
+**Optional parameters:** `Base::BaseService` treats an explicit `null` or `""` value for an
+optional parameter the same as an omitted key, so a caller that fills in every schema property
+still passes validation for an optional `enum` parameter.
+
 **Reads (single vs. collection):**
 
 - Facets scoped to one parent object fold into that object's `get_` tool through an `include`
-  parameter that takes a single facet name (for example `get_merge_request` with `include: diffs`
-  rather than separate `list_*` tools). Valid values are `diffs`, `commits`, `notes`, `pipelines`,
-  and `conflicts`.
+  parameter rather than separate `list_*` tools (for example `get_merge_request` with
+  `include: ["diffs"]`). Valid values are `diffs`, `commits`, `notes`, `pipelines`, and
+  `discussions`. Declare `include` as an array of enum values even when only one facet per call is
+  supported, and bound it with `maxItems`. Raising that cap later is additive, whereas changing the
+  parameter from a string to an array breaks existing callers.
 - Independent collections that can be queried on their own get their own `list_` tool (for example
   `list_merge_requests`, `list_pipelines`).
 - Facet-scoped pagination lives on the `get_` reader and applies only to the relevant `include`
@@ -219,14 +227,14 @@ This [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20183
 Adding the following `route_setting` to an API route definition:
 
 ```ruby
-route_setting :mcp, tool_name: :get_merge_request, params: [:id, :merge_request_iid], resource_name: "merge request"
+route_setting :mcp, tool_name: :get_issue, params: [:id, :issue_iid], resource_name: "issue"
 ```
 
-- Adds a `get_merge_request` tool to the list of tools and enables its execution
+- Adds a `get_issue` tool to the list of tools and enables its execution
 - The tool and parameters description is taken from the OpenAPI route definition
-- The accepted parameters are filtered by the `params` argument. For example, only `id` and `merge_request_iid` are advertised and accepted
+- The accepted parameters are filtered by the `params` argument. For example, only `id` and `issue_iid` are advertised and accepted
 - When the tool is called, the route code is executed directly with the passed parameters
-- The optional `resource_name` field provides a resource-specific 404 error message (for example, `"404 Merge request Not Found"` instead of a generic `"404 Not Found"`). Use a lowercase string such as `"issue"` or `"merge request"`. The first letter is capitalized in the rendered message.
+- The optional `resource_name` field provides a resource-specific 404 error message (for example, `"404 Issue Not Found"` instead of a generic `"404 Not Found"`). Use a lowercase string such as `"issue"` or `"merge request"`. The first letter is capitalized in the rendered message.
 
 This [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203055) provides more examples.
 
@@ -452,8 +460,8 @@ API tools automatically default to version `0.1.0`. The version can be specified
 setting if needed:
 
 ```ruby
-route_setting :mcp, tool_name: :get_merge_request,
-  params: [:id, :merge_request_iid],
+route_setting :mcp, tool_name: :get_issue,
+  params: [:id, :issue_iid],
   version: '1.0.0'
 ```
 

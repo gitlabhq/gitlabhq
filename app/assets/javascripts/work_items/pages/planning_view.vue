@@ -972,6 +972,9 @@ export default {
     collapsedGroups() {
       return this.namespacePreferences.collapsedGroups ?? [];
     },
+    groupOrder() {
+      return this.namespacePreferences.groupOrder ?? [];
+    },
     visibleGroups() {
       return this.namespacePreferences.visibleGroups ?? null;
     },
@@ -1739,6 +1742,16 @@ export default {
 
       this.persistNamespaceDisplaySettings(newSettings);
     },
+    handleReorderGroups(groupOrder) {
+      const newSettings = { ...this.namespacePreferences, groupOrder };
+
+      if (this.isSavedView) {
+        this.handleLocalDisplayPreferencesUpdate(newSettings);
+        return;
+      }
+
+      this.persistNamespaceDisplaySettings(newSettings);
+    },
     async persistNamespaceDisplaySettings(displaySettings) {
       if (!this.isLoggedIn) {
         return;
@@ -2303,6 +2316,8 @@ export default {
       :root-page-full-path="rootPageFullPath"
       :query-variables="queryVariables"
       :collapsed-groups="collapsedGroups"
+      :group-order="groupOrder"
+      :can-reorder="isLoggedIn"
       :hidden-metadata-keys="hiddenMetadataKeys"
       :active-item="activeItem"
       :detail-panel-enabled="workItemDetailPanelEnabled"
@@ -2310,6 +2325,7 @@ export default {
       @set-error="($evt) => (error = $evt)"
       @set-active-item="handleSetActiveItem"
       @toggle-collapse="handleToggleGroupCollapse"
+      @reorder-groups="handleReorderGroups"
     />
     <work-item-display-settings-drawer
       :open="isDisplayDrawerOpen"

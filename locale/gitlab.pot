@@ -22889,6 +22889,12 @@ msgstr ""
 msgid "ContinuousDeployment|Approval needed"
 msgstr ""
 
+msgid "ContinuousDeployment|Artifact URL"
+msgstr ""
+
+msgid "ContinuousDeployment|Artifact name"
+msgstr ""
+
 msgid "ContinuousDeployment|Artifact source"
 msgstr ""
 
@@ -23274,6 +23280,9 @@ msgid "ContinuousDeployment|e.g. acme-platform"
 msgstr ""
 
 msgid "ContinuousDeployment|e.g. api-gateway"
+msgstr ""
+
+msgid "ContinuousDeployment|e.g. registry.example.com/acme/api-gateway"
 msgstr ""
 
 msgid "Contribute to GitLab"
@@ -71020,6 +71029,12 @@ msgstr ""
 msgid "SecurityOrchestration|For any merge request that matches this policy's rules, no action is applied. Users are warned about project approval settings that could have been overridden, if the policy were enforced rather than in warn mode, through a bot message. No additional approvals are required."
 msgstr ""
 
+msgid "SecurityOrchestration|For each tracked branch, if %{scanners} finds %{severity_level} vulnerabilities that are no longer detected."
+msgstr ""
+
+msgid "SecurityOrchestration|For each tracked branch, if vulnerabilities are found under the following criteria:"
+msgstr ""
+
 msgid "SecurityOrchestration|For large groups, there may be a significant delay in applying policy changes to pre-existing merge requests. Policy changes typically apply almost immediately for newly created merge requests."
 msgstr ""
 
@@ -71068,9 +71083,6 @@ msgstr ""
 msgid "SecurityOrchestration|ISO27001"
 msgstr ""
 
-msgid "SecurityOrchestration|If %{scanners} of the default branch finds %{severity_level} vulnerabilities are no longer detected."
-msgstr ""
-
 msgid "SecurityOrchestration|If any of the following occur:"
 msgstr ""
 
@@ -71081,9 +71093,6 @@ msgid "SecurityOrchestration|If any scanner finds a %{strongStart}vulnerability%
 msgstr ""
 
 msgid "SecurityOrchestration|If one or more %{securityPoliciesPathStart}security policies%{securityPoliciesPathEnd} become enforced, you can't unprotect this branch. %{linkStart}Learn more%{linkEnd}."
-msgstr ""
-
-msgid "SecurityOrchestration|If vulnerabilities are found under the following criteria:"
 msgstr ""
 
 msgid "SecurityOrchestration|Impact estimate"
@@ -71674,7 +71683,7 @@ msgstr ""
 msgid "SecurityOrchestration|Requires no approvals if any of the following occur:"
 msgstr ""
 
-msgid "SecurityOrchestration|Resolve the following vulnerabilities that are no longer detected on the default branch:"
+msgid "SecurityOrchestration|Resolve the following vulnerabilities that are no longer detected:"
 msgstr ""
 
 msgid "SecurityOrchestration|Resolved"
@@ -89350,6 +89359,15 @@ msgid "WorkItemBoard|An error occurred while fetching more work items."
 msgstr ""
 
 msgid "WorkItemBoard|An error occurred while fetching work items for this column."
+msgstr ""
+
+msgid "WorkItemBoard|Column actions"
+msgstr ""
+
+msgid "WorkItemBoard|Move left"
+msgstr ""
+
+msgid "WorkItemBoard|Move right"
 msgstr ""
 
 msgid "WorkItemBoard|No items"

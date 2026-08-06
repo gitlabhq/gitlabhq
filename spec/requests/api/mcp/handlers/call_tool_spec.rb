@@ -180,11 +180,14 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
 
     describe '#get_merge_request' do
       let(:tool_params) do
-        { name: 'get_merge_request', arguments: { id: project.full_path, merge_request_iid: merge_request.iid } }
+        {
+          name: 'get_merge_request',
+          arguments: { project_id: project.full_path, merge_request_iid: merge_request.iid }
+        }
       end
 
       it 'returns success response' do
-        post api('/mcp', user, oauth_access_token: access_token), params: params
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['result']['content'].first['text']).to include(merge_request.title)

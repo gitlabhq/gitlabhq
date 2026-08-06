@@ -26,7 +26,7 @@ module Mcp
         end
 
         def execute(request: nil, params: nil) # rubocop: disable Lint/UnusedMethodArgument -- request param to match Mcp::Tools::Base::ApiTool
-          args = params[:arguments]
+          args = reject_omitted_arguments(params[:arguments])
           validate_arguments!(args)
           perform(args)
         rescue ArgumentError => e
@@ -76,6 +76,13 @@ module Mcp
         private
 
         attr_reader :name, :current_user, :access_token
+
+        # `null`/`""` should behave like an omitted key, not a present value.
+        def reject_omitted_arguments(arguments)
+          return arguments unless arguments.respond_to?(:reject)
+
+          arguments.reject { |_, value| value.nil? || value == '' }
+        end
 
         def validate_arguments!(arguments)
           schemer = JSONSchemer.schema(input_schema)

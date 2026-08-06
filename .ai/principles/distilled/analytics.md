@@ -1,6 +1,6 @@
 ---
-source_checksum: 9fd9f0dd24d08709
-distilled_at_sha: a12edd3cd641812cf27868b59ce605d439d981b5
+source_checksum: 348ad3d1d84c3842
+distilled_at_sha: 4f780f45c07b4907c1d264bf0115130fb68c0c80
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -69,6 +69,7 @@ distilled_at_sha: a12edd3cd641812cf27868b59ce605d439d981b5
 - Use `useMockInternalEventsTracking` / `bindInternalEventDocument` helpers to assert `trackEvent` calls in JavaScript and Vue component tests.
 - Use the `trigger_internal_events` matcher with `.on_click` or `.on_load` chain methods to assert Haml data-attribute tracking in view and ViewComponent specs.
 - Apply the `:clean_gitlab_redis_shared_state` trait when tests fail due to metrics not being incremented, to clear the Redis cache between examples.
+- Use the `not_trigger_internal_events` matcher (or `not_to trigger_internal_events`) to assert that a specific event was NOT triggered; DO NOT pass message chain methods to `not_trigger_internal_events`.
 
 ### Internal Events CLI Changes
 

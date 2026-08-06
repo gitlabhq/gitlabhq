@@ -131,6 +131,33 @@ describe('SpaBreadcrumbs', () => {
 
       expect(findGlBreadcrumb().props('items')).toMatchObject(expectedCrumbs);
     });
+
+    it('uses route param reference as breadcrumb text when meta useId is true', () => {
+      createWrapper(
+        {},
+        {
+          params: { reference: 'my-reference' },
+          matched: [
+            {
+              path: '/projects/:reference',
+              parent: true,
+              meta: {
+                useId: true,
+                defaultRoute: 'project-detail',
+              },
+            },
+          ],
+        },
+      );
+
+      const expectedCrumbs = [
+        { text: 'Home', href: '/' },
+        { text: 'Projects', href: '/projects' },
+        { text: 'my-reference', to: { name: 'project-detail' } },
+      ];
+
+      expect(findGlBreadcrumb().props('items')).toMatchObject(expectedCrumbs);
+    });
   });
 
   describe('when route has mixed matched routes', () => {

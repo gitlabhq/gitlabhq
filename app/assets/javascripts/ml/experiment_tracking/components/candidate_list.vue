@@ -151,9 +151,9 @@ export default {
       :filters="filters"
       :sorting="sorting"
       :sortable-fields="sortableFields"
-      @sorting:changed="updateSortingAndEmitUpdate"
-      @filter:changed="updateFilters"
-      @filter:submit="submitFilters"
+      @sorting-changed="updateSortingAndEmitUpdate"
+      @filter-changed="updateFilters"
+      @filter-submit="submitFilters"
       @filter:clear="filters = []"
     />
 

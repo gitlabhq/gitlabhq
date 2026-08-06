@@ -169,6 +169,14 @@ Grants the ability to create and delete vulnerability merge request links.
 
 ### CI/CD resources
 
+#### Catalog Bundled Resource
+
+Grants the ability to read bundled CI catalog resources.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Read | Instance | Type | `CiCatalogBundledResource` |
+
 #### Catalog Resource
 
 Grants the ability to create and delete CI catalog resources.

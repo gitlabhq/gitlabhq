@@ -138,9 +138,9 @@ export default {
       :sorting="sorting"
       :sortable-fields="sortableFields"
       class="!gl-mt-3"
-      @sorting:changed="updateSortingAndEmitUpdate"
-      @filter:changed="updateFilters"
-      @filter:submit="submitFilters"
+      @sorting-changed="updateSortingAndEmitUpdate"
+      @filter-changed="updateFilters"
+      @filter-submit="submitFilters"
       @filter:clear="filters = []"
     />
     <load-or-error-or-show :is-loading="isLoading" :error-message="errorMessage">

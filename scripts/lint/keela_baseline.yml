@@ -212,8 +212,6 @@ constants:
   - DEV_PROMPT
   ee/lib/gitlab/llm/anthropic/response_modifiers/tanuki_bot.rb:
   - CONTENT_ID_REGEX
-  ee/lib/gitlab/llm/chain/concerns/anthropic_prompt.rb:
-  - ROLE_NAMES
   ee/lib/gitlab/llm/chain/requests/anthropic.rb:
   - PROMPT_SIZE
   ee/lib/gitlab/llm/chat_storage/postgresql.rb:
@@ -348,6 +346,9 @@ constants:
   - DEFAULT_TIMESTAMP_COLUMN
   lib/gitlab/utils/usage_data.rb:
   - DISTRIBUTED_HLL_FALLBACK
+  lib/gitlab/vue3_migration.rb:
+  - VUE3_MIGRATION_ALLOWED_STATUSES
+  - VUE3_MIGRATION_ALLOWED_KEYS
   lib/gitlab/web_hooks.rb:
   - GITLAB_INSTANCE_HEADER
   - GITLAB_UUID_HEADER
@@ -388,25 +389,14 @@ delegations:
   - scanner_name
 methods:
   app/helpers/routing/groups/members_helper.rb:
-  - request_access_group_members_path
-  - approve_access_request_group_member_path
   - resend_invite_group_member_path
-  app/helpers/routing/pipeline_schedules_helper.rb:
-  - play_pipeline_schedule_path
   app/helpers/routing/projects/members_helper.rb:
   - request_access_project_members_path
   - leave_project_members_path
   - approve_access_request_project_member_path
   - resend_invite_project_member_path
-  app/helpers/routing/snippets_helper.rb:
-  - toggle_award_emoji_personal_snippet_path
-  - toggle_award_emoji_project_project_snippet_path
-  - toggle_award_emoji_project_project_snippet_url
   app/models/application_setting_implementation.rb:
   - ensure_key_restrictions!
-  app/models/chat_name.rb:
-  - duo_privacy_notice_acknowledged?
-  - acknowledge_duo_privacy_notice!
   app/models/ci/job_token/allowlist.rb:
   - project_link_traversal_ids
   - group_link_traversal_ids
@@ -423,8 +413,6 @@ methods:
   - updateable?
   app/models/clusters/concerns/application_version.rb:
   - update_available?
-  app/models/commit_signatures/x509_commit_signature.rb:
-  - x509_commit
   app/models/concerns/ci/metadatable.rb:
   - degenerate!
   app/models/concerns/forced_email_confirmation.rb:
@@ -434,18 +422,11 @@ methods:
   app/models/concerns/integrations/base/harbor.rb:
   - supported_event_actions
   app/models/concerns/integrations/base/integration.rb:
-  - "#{arg}?"
   - instance_exists_for?
   app/models/concerns/mentionable.rb:
   - referenced_group_users
-  app/models/concerns/milestoneish.rb:
-  - total_merge_requests_count
-  - elapsed_days
   app/models/concerns/namespaces/stateful/state_querying.rb:
   - effective_state
-  app/models/concerns/organizations/isolatable.rb:
-  - not_isolated?
-  - mark_as_isolated!
   app/models/concerns/partitioned_table.rb:
   - _returning_columns_for_insert
   app/models/concerns/prometheus_adapter.rb:
@@ -464,16 +445,12 @@ methods:
   - load_schema!
   app/models/concerns/timebox.rb:
   - safe_title
-  app/models/concerns/transactions.rb:
-  - reset_open_transactions_baseline
   app/models/concerns/use_sql_function_for_primary_key_lookups.rb:
   - _query_by_sql
   app/models/concerns/user_mention_behaviour.rb:
   - has_mentions?
   - mentioned_groups
   - mentioned_projects
-  app/models/event.rb:
-  - find_sti_class
   app/models/group.rb:
   - get_ids_by_ids_or_paths
   - blocked_owners
@@ -484,61 +461,20 @@ methods:
   app/models/issue.rb:
   - previous_updated_at
   - email_participants_emails
-  app/models/merge_request_diff.rb:
-  - migrate_files_to_database!
   app/models/namespace.rb:
   - any_project_with_pages_deployed?
   - saved_change_to_parent?
   - saved_change_to_path_or_parent?
-  app/models/note.rb:
-  - attribute_names_for_serialization
-  app/models/organizations/isolation_record.rb:
-  - not_isolated?
   app/models/project.rb:
   - import_scheduled?
   - updating_remote_mirror?
   - issue_exists?
   - enable_ci
   - valid_runners_token?
-  app/models/project_statistics.rb:
-  - update_wiki_size
-  - update_snippets_size
-  - update_lfs_objects_size
-  - update_uploads_size
-  - update_container_registry_size
-  app/models/project_team.rb:
-  - planner?
-  - developer?
-  app/models/user.rb:
-  - inactive_message
-  - reset_password_by_token
-  - unlock_access_by_token
-  - will_save_change_to_login?
-  app/models/work_item.rb:
-  - descendant_ids_for
-  ee/app/helpers/ee/gitlab_routing_helper.rb:
-  - user_group_saml_omniauth_metadata_path
   ee/app/models/ai/duo_code_review.rb:
   - classic?
-  ee/app/models/cd/application_flow_definition.rb:
-  - revert_to_previous_version
-  ee/app/models/ci/secrets/integration.rb:
-  - gcp_secret_manager?
-  - azure_key_vault?
-  - hashicorp_vault?
-  - gitlab_secrets_manager?
-  ee/app/models/cloud_connector/keys.rb:
-  - create_new_key!
-  - trim!
-  - truncated_pem
   ee/app/models/concerns/ai/user_authorizable.rb:
   - any_group_with_ai_available?
-  ee/app/models/concerns/geo/blob_replicator_strategy.rb:
-  - consume_event_deleted
-  ee/app/models/concerns/geo/repository_replicator_strategy.rb:
-  - consume_event_deleted
-  ee/app/models/concerns/geo/verifiable_replicator.rb:
-  - consume_event_checksum_succeeded
   ee/app/models/concerns/security/pipeline_execution_schedule_policy.rb:
   - active_pipeline_execution_schedule_policies
   ee/app/models/concerns/security/scan_result_policy.rb:
@@ -567,16 +503,11 @@ methods:
   - premium_trial_plan?
   ee/app/models/ee/namespace_statistics.rb:
   - update_wiki_size
-  ee/app/models/ee/organizations/organization_setting.rb:
-  - security_tracked_context_quota_with_default
-  - security_tracked_context_quota_explicitly_set?
   ee/app/models/ee/project.rb:
   - mirror_last_update_failed?
   - search_by_visibility
   - group_ldap_synced?
   - upstream_projects_count
-  ee/app/models/ee/user.rb:
-  - security_policy_bot_project
   ee/app/models/ee/user_preference.rb:
   - distinct_eligible_duo_add_on_assignments
   - no_eligible_duo_add_on_assignments?
@@ -663,9 +594,6 @@ scopes:
   - exclude_experiments_for_models
   app/models/ml/model_version.rb:
   - order_by_model_id_id_desc
-  app/models/note.rb:
-  - new_diff_notes
-  - with_note
   app/models/packages/build_info.rb:
   - pluck_pipeline_ids
   app/models/packages/composer/metadatum.rb:
@@ -700,8 +628,6 @@ scopes:
   - with_provisioning_project
   app/models/user_detail.rb:
   - project_provisioned
-  app/models/zoom_meeting.rb:
-  - removed_from_issue
   ee/app/models/ai/duo_workflows/event.rb:
   - with_correlation_id
   ee/app/models/ai/tool_rule.rb:

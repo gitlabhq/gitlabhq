@@ -80,31 +80,31 @@ describe('Infrastructure Search', () => {
     });
   });
 
-  it('on sorting:changed emits update event and calls setSorting', () => {
+  it('on sorting-changed emits update event and calls setSorting', () => {
     const payload = { sort: 'foo' };
 
     mountComponent();
 
-    findRegistrySearch().vm.$emit('sorting:changed', payload);
+    findRegistrySearch().vm.$emit('sorting-changed', payload);
 
     expect(store.setSorting).toHaveBeenCalledWith(payload);
     expect(wrapper.emitted('update')).toEqual([[]]);
   });
 
-  it('on filter:changed calls setFilter', () => {
+  it('on filter-changed calls setFilter', () => {
     const payload = ['foo'];
 
     mountComponent();
 
-    findRegistrySearch().vm.$emit('filter:changed', payload);
+    findRegistrySearch().vm.$emit('filter-changed', payload);
 
     expect(store.setFilter).toHaveBeenCalledWith(payload);
   });
 
-  it('on filter:submit emits update event', () => {
+  it('on filter-submit emits update event', () => {
     mountComponent();
 
-    findRegistrySearch().vm.$emit('filter:submit');
+    findRegistrySearch().vm.$emit('filter-submit');
 
     expect(wrapper.emitted('update')).toEqual([[]]);
   });
@@ -115,12 +115,12 @@ describe('Infrastructure Search', () => {
     expect(findUrlSync().exists()).toBe(true);
   });
 
-  it('on query:changed calls updateQuery from UrlSync', () => {
+  it('on query-changed calls updateQuery from UrlSync', () => {
     jest.spyOn(UrlSync.methods, 'updateQuery').mockImplementation(() => {});
 
     mountComponent();
 
-    findRegistrySearch().vm.$emit('query:changed');
+    findRegistrySearch().vm.$emit('query-changed');
 
     expect(UrlSync.methods.updateQuery).toHaveBeenCalled();
   });

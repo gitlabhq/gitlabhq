@@ -1,0 +1,3 @@
+---
+name: read_catalog_bundled_resource
+description: Grants the ability to read a bundled CI catalog resource

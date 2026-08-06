@@ -478,7 +478,6 @@ module API
         ]
         tags %w[merge_requests]
       end
-      route_setting :mcp, tool_name: :get_merge_request, params: [:id, :merge_request_iid], resource_name: "merge request"
       route_setting :authentication, job_token_allowed: true
       route_setting :authorization, permissions: :read_merge_request,
         boundary_type: :project,

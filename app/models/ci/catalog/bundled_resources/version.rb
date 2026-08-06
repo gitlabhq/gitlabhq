@@ -14,6 +14,10 @@ module Ci
           foreign_key: :catalog_bundled_version_id, inverse_of: :version
 
         validates :semver_prerelease, length: { maximum: 255 }
+
+        scope :for_bundled_resources, ->(bundled_resource_ids) {
+          where(catalog_bundled_resource_id: bundled_resource_ids)
+        }
       end
     end
   end

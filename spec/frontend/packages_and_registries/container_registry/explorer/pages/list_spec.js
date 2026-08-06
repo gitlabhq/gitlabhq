@@ -512,7 +512,7 @@ describe('List Page', () => {
           filters: [{ type: FILTERED_SEARCH_TERM, value: { data: 'centos6' } }],
         });
 
-        findPersistedSearch().vm.$emit('filter:submit');
+        findPersistedSearch().vm.$emit('filter-submit');
 
         await waitForPromises();
       };

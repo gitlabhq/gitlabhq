@@ -1,5 +1,0 @@
----
-# Cop supports --autocorrect.
-Style/TrailingCommaInArguments:
-  Exclude:
-    - 'lib/banzai/pipeline/pre_process_pipeline.rb'

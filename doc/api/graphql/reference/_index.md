@@ -944,6 +944,23 @@ CI related settings that apply to the entire instance.
 
 Returns [`CiApplicationSettings`](#ciapplicationsettings).
 
+### `Query.ciCatalogBundledResources`
+
+{{< details >}}
+
+- Introduced in GitLab 19.3.
+- Status: Experiment.
+
+{{< /details >}}
+
+GitLab-maintained bundled CI/CD Catalog resources available on the current cell.
+
+Returns [`CiCatalogBundledResourceConnection`](#cicatalogbundledresourceconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
 ### `Query.ciCatalogResource`
 
 {{< details >}}
@@ -22622,6 +22639,43 @@ Fields:
 | <a id="cibuildneededge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="cibuildneededge-node"></a>`node` | [`CiBuildNeed`](#cibuildneed) | The item at the end of the edge. |
 
+#### `CiCatalogBundledResourceConnection`
+
+The connection type for [`CiCatalogBundledResource`](#cicatalogbundledresource).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cicatalogbundledresourceconnection-edges"></a>`edges` | [`[CiCatalogBundledResourceEdge]`](#cicatalogbundledresourceedge) | A list of edges. |
+| <a id="cicatalogbundledresourceconnection-nodes"></a>`nodes` | [`[CiCatalogBundledResource]`](#cicatalogbundledresource) | A list of nodes. |
+| <a id="cicatalogbundledresourceconnection-pageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `CiCatalogBundledResourceConnection.count`
+
+Total count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cicatalogbundledresourceconnection-count-limit"></a>`limit` | [`Int`](#int) | Limit applied to the count query, returns limit + 1. When not provided, returns the exact count. |
+
+#### `CiCatalogBundledResourceEdge`
+
+The edge type for [`CiCatalogBundledResource`](#cicatalogbundledresource).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cicatalogbundledresourceedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="cicatalogbundledresourceedge-node"></a>`node` | [`CiCatalogBundledResource`](#cicatalogbundledresource) | The item at the end of the edge. |
+
 #### `CiCatalogResourceComponentConnection`
 
 The connection type for [`CiCatalogResourceComponent`](#cicatalogresourcecomponent).
@@ -36345,6 +36399,22 @@ Fields:
 | <a id="cibuildneed-id"></a>`id` | [`ID!`](#id) | ID of the BuildNeed. |
 | <a id="cibuildneed-name"></a>`name` | [`String`](#string) | Name of the job we need to complete. |
 
+### `CiCatalogBundledResource`
+
+A GitLab-maintained bundled CI/CD catalog resource on the current cell.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cicatalogbundledresource-description"></a>`description` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.3. Status: Experiment. Description of the bundled catalog resource. |
+| <a id="cicatalogbundledresource-fullpath"></a>`fullPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | Introduced in GitLab 19.3. Status: Experiment. Full path of the bundled catalog resource (for example, `components/sast`). |
+| <a id="cicatalogbundledresource-id"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | Introduced in GitLab 19.3. Status: Experiment. ID of the bundled catalog resource. |
+| <a id="cicatalogbundledresource-latestreleasedat"></a>`latestReleasedAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.3. Status: Experiment. Release date of the bundled catalog resource's latest version. |
+| <a id="cicatalogbundledresource-latestversionname"></a>`latestVersionName` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.3. Status: Experiment. Name of the latest version of the bundled catalog resource (for example, `v1.2.3`). |
+| <a id="cicatalogbundledresource-name"></a>`name` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.3. Status: Experiment. Name of the bundled catalog resource. |
+| <a id="cicatalogbundledresource-serverfqdn"></a>`serverFqdn` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.3. Status: Experiment. FQDN of the GitLab instance that maintains the bundled catalog resource. |
+
 ### `CiCatalogResource`
 
 Fields:
@@ -41710,7 +41780,7 @@ Fields:
 | <a id="duoworkflowsessionartifact-downloadpath"></a>`downloadPath` | [`String`](#string) | Path to download the session artifact as a JSON file. |
 | <a id="duoworkflowsessionartifact-id"></a>`id` | [`ID!`](#id) | Global ID of the session, as an `Ai::DuoWorkflows::Workflow`. |
 | <a id="duoworkflowsessionartifact-project"></a>`project` | [`Project`](#project) | Project the session belongs to. |
-| <a id="duoworkflowsessionartifact-user"></a>`user` | [`UserCore`](#usercore) | User who initiated the session. |
+| <a id="duoworkflowsessionartifact-triggeredby"></a>`triggeredBy` | [`UserCore`](#usercore) | User who initiated the session. |
 | <a id="duoworkflowsessionartifact-webpath"></a>`webPath` | [`String`](#string) | Path of the session. |
 | <a id="duoworkflowsessionartifact-workflowcreatedat"></a>`workflowCreatedAt` | [`Time!`](#time) | Timestamp of when the session was created. |
 | <a id="duoworkflowsessionartifact-workflowdefinition"></a>`workflowDefinition` | [`String!`](#string) | Workflow definition type of the session. |
@@ -45071,6 +45141,7 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="group-duoworkflowsessionartifacts-not"></a>`not` | [`DuoWorkflowSessionArtifactNegatedFilterInput`](#duoworkflowsessionartifactnegatedfilterinput) | Negated filter conditions. |
 | <a id="group-duoworkflowsessionartifacts-projectpath"></a>`projectPath` | [`String`](#string) | Filter by project full path. |
+| <a id="group-duoworkflowsessionartifacts-triggeredbyuserid"></a>`triggeredByUserId` | [`UserID`](#userid) | Filter to sessions triggered by the user with the given global ID. |
 | <a id="group-duoworkflowsessionartifacts-workflowcreatedafter"></a>`workflowCreatedAfter` | [`Time`](#time) | Return sessions created after the timestamp. |
 | <a id="group-duoworkflowsessionartifacts-workflowcreatedbefore"></a>`workflowCreatedBefore` | [`Time`](#time) | Return sessions created before the timestamp. |
 | <a id="group-duoworkflowsessionartifacts-workflowdefinition"></a>`workflowDefinition` | [`String`](#string) | Filter by workflow definition. |
@@ -55494,6 +55565,7 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="project-duoworkflowsessionartifacts-not"></a>`not` | [`DuoWorkflowSessionArtifactNegatedFilterInput`](#duoworkflowsessionartifactnegatedfilterinput) | Negated filter conditions. |
+| <a id="project-duoworkflowsessionartifacts-triggeredbyuserid"></a>`triggeredByUserId` | [`UserID`](#userid) | Filter to sessions triggered by the user with the given global ID. |
 | <a id="project-duoworkflowsessionartifacts-workflowcreatedafter"></a>`workflowCreatedAfter` | [`Time`](#time) | Return sessions created after the timestamp. |
 | <a id="project-duoworkflowsessionartifacts-workflowcreatedbefore"></a>`workflowCreatedBefore` | [`Time`](#time) | Return sessions created before the timestamp. |
 | <a id="project-duoworkflowsessionartifacts-workflowdefinition"></a>`workflowDefinition` | [`String`](#string) | Filter by workflow definition. |
@@ -75172,6 +75244,7 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="duoworkflowsessionartifactnegatedfilterinput-projectpath"></a>`projectPath` | [`String`](#string) | Exclude session artifacts belonging to the project full path. |
+| <a id="duoworkflowsessionartifactnegatedfilterinput-triggeredbyuserid"></a>`triggeredByUserId` | [`UserID`](#userid) | Exclude session artifacts triggered by the user with the given global ID. |
 | <a id="duoworkflowsessionartifactnegatedfilterinput-workflowdefinition"></a>`workflowDefinition` | [`String`](#string) | Exclude session artifacts with the workflow definition. |
 
 ### `EpicFilters`

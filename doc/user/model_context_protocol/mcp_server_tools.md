@@ -121,20 +121,29 @@ from branch "fix/specs-broken" into "master" and enable squash
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201838) in GitLab 18.4.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/605878) to accept `url` and return associated data facets in GitLab 19.3.
 
 {{< /history >}}
 
-Retrieves detailed information about a specific GitLab merge request.
+Retrieves a merge request and, optionally, its diffs, commits, notes, pipelines, or discussions.
+Only the base merge request is returned unless you request associated data with the `include` parameter.
 
 | Parameter           | Type    | Required | Description |
 |---------------------|---------|----------|-------------|
-| `id`                | string  | Yes      | ID or URL-encoded path of the project. |
-| `merge_request_iid` | integer | Yes      | Internal ID of the merge request. |
+| `url`               | string  | No       | GitLab URL of the merge request. Provide this, or `project_id` and `merge_request_iid`. |
+| `project_id`        | string  | No       | ID or URL-encoded path of the project. Required if `url` is missing. |
+| `merge_request_iid` | integer | No       | Internal ID of the merge request. Required if `url` is missing. |
+| `include`           | array   | No       | Associated facets to return with the merge request. One of `diffs`, `commits`, `notes`, `pipelines`, or `discussions`. Limited to one facet per call. |
+| `notes_after`       | string  | No       | Cursor for forward pagination of notes. Applies only when `include` is `["notes"]`. |
+| `notes_first`       | integer | No       | Number of notes to return after the cursor, up to 100. Applies only when `include` is `["notes"]`. |
+
+The `diffs` facet returns change statistics only: overall totals and per-file additions and
+deletions. To get patch text, use `get_merge_request_diffs`.
 
 Example:
 
 ```plaintext
-Get details for merge request 15 in project gitlab-org/gitlab
+Get merge request 15 in project gitlab-org/gitlab with its commits
 ```
 
 ## `list_merge_requests`

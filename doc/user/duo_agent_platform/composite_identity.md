@@ -18,8 +18,10 @@ title: Composite identity
 
 Composite identity is an authentication and authorization mechanism that combines two identities into a single token:
 
-- A service account. The machine user that performs the actual actions.
+- A service account. The agent that performs the actual actions.
 - A human user. The person who initiated the request.
+
+All service accounts have a composite identity because every action they perform is initiated by a human user.
 
 Composite identity is automatically included in GitLab Duo Agent Platform.
 

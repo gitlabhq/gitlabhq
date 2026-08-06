@@ -7,7 +7,7 @@ module Banzai
         FilterArray[
           Filter::NormalizeSourceFilter,
           Filter::TruncateSourceFilter,
-          Filter::FrontMatterFilter,
+          Filter::FrontMatterFilter
         ]
       end
 

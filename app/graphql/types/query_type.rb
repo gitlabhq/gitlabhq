@@ -54,6 +54,13 @@ module Types
       description: 'A single CI/CD Catalog resource visible to an authorized user',
       resolver: ::Resolvers::Ci::Catalog::ResourceResolver
 
+    field :ci_catalog_bundled_resources,
+      ::Types::Ci::Catalog::BundledResourceType.connection_type,
+      null: true,
+      experiment: { milestone: '19.3' },
+      description: 'GitLab-maintained bundled CI/CD Catalog resources available on the current cell.',
+      resolver: ::Resolvers::Ci::Catalog::BundledResourcesResolver
+
     field :ci_variables,
       Types::Ci::InstanceVariableType.connection_type,
       null: true,

@@ -67,7 +67,6 @@ export default {
     'app/assets/javascripts/vue_shared/components/markdown/suggestion_diff.vue',
     'app/assets/javascripts/vue_shared/components/markdown/suggestion_diff_header.vue',
     'app/assets/javascripts/vue_shared/components/project_selector/project_selector.vue',
-    'app/assets/javascripts/vue_shared/components/registry/registry_search.vue',
     'app/assets/javascripts/vue_shared/components/user_callout_dismisser.vue',
     'app/assets/javascripts/work_items/components/create_work_item.vue',
     'app/assets/javascripts/work_items/components/create_work_item_cancel_confirmation_modal.vue',

@@ -44,6 +44,7 @@ module Mcp
       GRAPHQL_TOOLS = {
         'create_merge_request_note' => ::Mcp::Tools::MergeRequests::CreateMergeRequestNoteService,
         'create_workitem_note' => ::Mcp::Tools::WorkItems::CreateWorkItemNoteService,
+        'get_merge_request' => ::Mcp::Tools::MergeRequests::GetMergeRequestService,
         'get_merge_request_notes' => ::Mcp::Tools::MergeRequests::GetMergeRequestNotesService,
         'get_saved_view_work_items' => ::Mcp::Tools::WorkItems::GetSavedViewWorkItemsService,
         'get_workitem_notes' => ::Mcp::Tools::WorkItems::GetWorkItemNotesService,

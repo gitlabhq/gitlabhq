@@ -109,7 +109,6 @@ RSpec/NamedSubject:
     - 'ee/spec/graphql/types/project_type_spec.rb'
     - 'ee/spec/graphql/types/vulnerability_evidence_source_type_spec.rb'
     - 'ee/spec/graphql/types/vulnerability_evidence_supporting_message_type_spec.rb'
-    - 'ee/spec/graphql/types/vulnerability_evidence_type_spec.rb'
     - 'ee/spec/graphql/types/vulnerability_location/coverage_fuzzing_type_spec.rb'
     - 'ee/spec/graphql/types/vulnerability_location_type_spec.rb'
     - 'ee/spec/graphql/types/vulnerability_request_response_header_type_spec.rb'

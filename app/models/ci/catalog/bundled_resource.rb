@@ -15,6 +15,16 @@ module Ci
       validates :full_path, presence: true, length: { maximum: 1024 },
         uniqueness: { scope: :server_fqdn, case_sensitive: false }
       validates :description, length: { maximum: 1024 }
+
+      scope :ordered_by_id, -> { order(id: :asc) }
+
+      def latest_version
+        versions.order_by_semantic_version_desc.first
+      end
+
+      def latest_version_name
+        latest_version&.semver&.to_s
+      end
     end
   end
 end

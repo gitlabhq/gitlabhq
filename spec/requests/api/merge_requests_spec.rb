@@ -1826,13 +1826,6 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
   describe "GET /projects/:id/merge_requests/:merge_request_iid" do
     let(:merge_request) { create(:merge_request, :simple, author: user, assignees: [user], milestone: milestone, source_project: project, source_branch: 'markdown', title: "Test") }
 
-    describe 'mcp route setting' do
-      subject { get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user) }
-
-      it_behaves_like 'an endpoint with mcp route setting', :get_merge_request,
-        expected_params: [:id, :merge_request_iid]
-    end
-
     it_behaves_like 'enforcing job token policies', :read_merge_requests,
       allow_public_access_for_enabled_project_features: [:repository, :merge_requests] do
       let(:request) do

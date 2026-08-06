@@ -2817,6 +2817,8 @@ describe('planning-view', () => {
         'rootPageFullPath',
         'queryVariables',
         'collapsedGroups',
+        'groupOrder',
+        'canReorder',
         'activeItem',
         'detailPanelEnabled',
       ],
@@ -3388,6 +3390,148 @@ describe('planning-view', () => {
           expect(saveSavedView).toHaveBeenCalledWith(
             expect.objectContaining({
               displaySettings: expect.objectContaining({ collapsedGroups: [collapsedId] }),
+            }),
+          );
+        });
+      });
+    });
+
+    describe('column reorder', () => {
+      const groupOrder = [
+        'status:gid://gitlab/WorkItems::Statuses::Custom::Status/2',
+        'status:gid://gitlab/WorkItems::Statuses::Custom::Status/1',
+      ];
+
+      const mountAllItemsBoard = async (options = {}) => {
+        await mountComponent({
+          provide: {
+            glFeatures: { planningViewBoards: true, workItemListDisplaySettingsDrawer: true },
+          },
+          stubs: {
+            WorkItemsSavedViewsSelectors: savedViewsSelectorsStub,
+            BoardView: boardViewStub,
+          },
+          ...options,
+        });
+        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+        await waitForPromises();
+      };
+
+      const mountSavedViewBoard = async (displaySettings = {}) => {
+        const savedView = {
+          ...singleSavedView[0],
+          displaySettings: { viewMode: VIEW_MODE_BOARD, ...displaySettings },
+        };
+        await mountComponent({
+          provide: {
+            glFeatures: { planningViewBoards: true, workItemListDisplaySettingsDrawer: true },
+          },
+          savedViewHandler: jest
+            .fn()
+            .mockResolvedValue(savedViewResponseFactory({ savedViews: [savedView] })),
+          stubs: {
+            WorkItemsSavedViewsSelectors: savedViewsSelectorsStub,
+            BoardView: boardViewStub,
+          },
+          route: { name: 'savedView', params: { type: 'work_items', view_id: '3' } },
+        });
+        await waitForPromises();
+      };
+
+      describe('on All Items', () => {
+        it('passes the persisted group order to the board view', async () => {
+          await mountAllItemsBoard({
+            mockPreferencesHandler: preferencesHandlerWith({ groupOrder }),
+          });
+
+          expect(findBoardView().props('groupOrder')).toEqual(groupOrder);
+        });
+
+        it('lets signed-in users reorder', async () => {
+          await mountAllItemsBoard();
+
+          expect(findBoardView().props('canReorder')).toBe(true);
+        });
+
+        it('does not offer reordering to signed-out users', async () => {
+          await mountAllItemsBoard({ isLoggedInValue: false });
+
+          expect(findBoardView().props('canReorder')).toBe(false);
+        });
+
+        it('persists a reorder, merged with existing display settings', async () => {
+          const mutationHandler = userPrefUpdateHandlerWith({
+            hiddenMetadataKeys: ['labels'],
+            groupOrder,
+          });
+          await mountAllItemsBoard({
+            mockPreferencesHandler: preferencesHandlerWith({ hiddenMetadataKeys: ['labels'] }),
+            userPreferenceMutationResponse: mutationHandler,
+          });
+
+          findBoardView().vm.$emit('reorder-groups', groupOrder);
+          await waitForPromises();
+
+          expect(mutationHandler).toHaveBeenCalledWith({
+            namespace: 'full/path',
+            displaySettings: { hiddenMetadataKeys: ['labels'], groupOrder },
+          });
+        });
+
+        it('does not call the mutation when signed out', async () => {
+          await mountAllItemsBoard({ isLoggedInValue: false });
+
+          findBoardView().vm.$emit('reorder-groups', groupOrder);
+          await waitForPromises();
+
+          expect(userPreferenceMutationHandler).not.toHaveBeenCalled();
+        });
+
+        it('shows an alert when persisting the reorder fails', async () => {
+          await mountAllItemsBoard({
+            userPreferenceMutationResponse: jest.fn().mockRejectedValue(new Error('boom')),
+          });
+
+          findBoardView().vm.$emit('reorder-groups', groupOrder);
+          await waitForPromises();
+
+          expect(createAlert).toHaveBeenCalledWith({
+            message: 'Something went wrong while saving the preference.',
+            captureError: true,
+            error: expect.any(Error),
+          });
+        });
+      });
+
+      describe('on a saved view', () => {
+        it('writes the reorder to the localStorage draft without calling the mutation', async () => {
+          await mountSavedViewBoard();
+
+          findBoardView().vm.$emit('reorder-groups', groupOrder);
+          await nextTick();
+
+          expect(localStorage.setItem).toHaveBeenCalledWith(
+            'full/path-saved-view-3',
+            expect.stringContaining(groupOrder[0]),
+          );
+          expect(userPreferenceMutationHandler).not.toHaveBeenCalled();
+          expect(findUpdateViewButton().exists()).toBe(true);
+        });
+
+        it('includes the group order in the payload when the view is saved', async () => {
+          saveSavedView.mockResolvedValue({
+            data: { workItemSavedViewUpdate: { errors: [], savedView: singleSavedView[0] } },
+          });
+          await mountSavedViewBoard();
+
+          findBoardView().vm.$emit('reorder-groups', groupOrder);
+          await nextTick();
+          await findUpdateViewButton().vm.$emit('click');
+          await waitForPromises();
+
+          expect(saveSavedView).toHaveBeenCalledWith(
+            expect.objectContaining({
+              displaySettings: expect.objectContaining({ groupOrder }),
             }),
           );
         });

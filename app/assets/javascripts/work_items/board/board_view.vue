@@ -4,6 +4,8 @@ import { s__ } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { getParameterByName } from '~/lib/utils/url_utility';
+import DraggableCompat from '~/lib/utils/vue3compat/draggable_compat.vue';
+import { defaultSortableOptions, DRAG_DELAY } from '~/sortable/constants';
 import { DETAIL_VIEW_QUERY_PARAM_NAME } from '~/work_items/constants';
 import { RELATIVE_POSITION_ASC } from '~/work_items/list/constants';
 
@@ -12,6 +14,7 @@ import { findDetailPanelWorkItem } from '../utils';
 import updateBoardWorkItemMutation from './graphql/update_board_work_item.mutation.graphql';
 import { DEFAULT_GROUP_BY, groupingStrategyFor } from './grouping';
 import { SHOW_ALL_GROUPS, isGroupVisible } from './grouping/visibility';
+import { orderGroups, reorderGroupIds } from './grouping/ordering';
 import workItemsGroupByVisibleGroupsQuery from './grouping/graphql/client/visible_groups.query.graphql';
 import {
   boardColumnQuery,
@@ -27,7 +30,14 @@ import {
   readWorkItemsFromColumn,
   removeWorkItemFromColumn,
 } from './graphql/cache_updates';
-import { I18N_MOVE_ERROR, MOVE_IN_PROGRESS_INDICATOR_DELAY } from './constants';
+import {
+  I18N_MOVE_ERROR,
+  MOVE_IN_PROGRESS_INDICATOR_DELAY,
+  BOARD_COLUMN_DND_GROUP,
+  BOARD_COLUMN_CLASS,
+  BOARD_COLUMN_DRAG_HANDLE_CLASS,
+  BOARD_COLUMN_NO_DRAG_CLASS,
+} from './constants';
 import ColumnGroup from './components/column_group.vue';
 
 export default {
@@ -35,6 +45,18 @@ export default {
   components: {
     GlLoadingIcon,
     ColumnGroup,
+    DraggableCompat,
+  },
+  columnClass: BOARD_COLUMN_CLASS,
+  columnDndGroup: { name: BOARD_COLUMN_DND_GROUP },
+  columnSortableOptions: {
+    ...defaultSortableOptions,
+    draggable: `.${BOARD_COLUMN_CLASS}`,
+    handle: `.${BOARD_COLUMN_DRAG_HANDLE_CLASS}`,
+    filter: `.${BOARD_COLUMN_NO_DRAG_CLASS}`,
+    preventOnFilter: false,
+    delay: DRAG_DELAY,
+    delayOnTouchOnly: true,
   },
   mixins: [glFeatureFlagMixin()],
   props: {
@@ -50,6 +72,16 @@ export default {
       type: Array,
       required: false,
       default: () => [],
+    },
+    groupOrder: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    canReorder: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     hiddenMetadataKeys: {
       type: Array,
@@ -72,11 +104,12 @@ export default {
       default: null,
     },
   },
-  emits: ['set-error', 'set-active-item', 'toggle-collapse'],
+  emits: ['set-error', 'set-active-item', 'toggle-collapse', 'reorder-groups'],
   data() {
     return {
       groupByValues: [],
       gateData: null,
+      renderedColumns: [],
       workItemsGroupByVisibleGroups: SHOW_ALL_GROUPS,
       // Column value ids the in-flight dragged item may not be dropped into.
       invalidValueIds: [],
@@ -112,10 +145,29 @@ export default {
         isGroupVisible(this.workItemsGroupByVisibleGroups, this.groupBy, value),
       );
     },
+    // Applies the persisted column order, reconciling on read: unknown/new groups
+    // fall to the end in default order, stale ids are ignored (see grouping/ordering).
+    orderedGroupByValues() {
+      return orderGroups({
+        groupOrder: this.groupOrder,
+        groupBy: this.groupBy,
+        values: this.visibleGroupByValues,
+      });
+    },
+    // Reordering needs a user who can persist it and more than one column to move.
+    canReorderColumns() {
+      return this.canReorder && this.orderedGroupByValues.length > 1;
+    },
   },
   watch: {
     updatedWorkItem(workItem) {
       this.moveCardToMatchingColumn(workItem);
+    },
+    orderedGroupByValues: {
+      immediate: true,
+      handler(values) {
+        this.renderedColumns = values;
+      },
     },
   },
   apollo: {
@@ -198,8 +250,7 @@ export default {
       return boardColumnCountVariables({
         rootPageFullPath: this.rootPageFullPath,
         baseQueryVariables: this.queryVariables,
-        groupProperty: this.groupBy.property,
-        value,
+        columnFilter: this.strategy.columnFilter(value),
       });
     },
     // Shared method to move the card and adjust the work item count
@@ -289,6 +340,44 @@ export default {
       this.invalidValueIds = this.groupByValues
         .filter((value) => !this.isDropAllowed({ item: workItem, value }))
         .map((value) => value.id);
+    },
+    moveColumn(oldIndex, newIndex) {
+      if (
+        oldIndex == null ||
+        newIndex == null ||
+        oldIndex === newIndex ||
+        newIndex < 0 ||
+        newIndex >= this.renderedColumns.length
+      ) {
+        return;
+      }
+
+      const reordered = [...this.renderedColumns];
+      const [moved] = reordered.splice(oldIndex, 1);
+      reordered.splice(newIndex, 0, moved);
+      this.renderedColumns = reordered;
+
+      this.$emit(
+        'reorder-groups',
+        reorderGroupIds({
+          visibleValues: this.renderedColumns,
+          allValues: this.groupByValues,
+          groupBy: this.groupBy,
+          currentOrder: this.groupOrder,
+        }),
+      );
+    },
+    onColumnMove({ oldIndex, newIndex }) {
+      this.moveColumn(oldIndex, newIndex);
+    },
+    // `delta` is how many positions to shift by (-1 left, +1 right). moveColumn
+    // ignores an out-of-range target, so edge columns are safe.
+    onColumnShift({ value, delta }) {
+      const oldIndex = this.renderedColumns.findIndex((column) => column.id === value.id);
+      if (oldIndex === -1) {
+        return;
+      }
+      this.moveColumn(oldIndex, oldIndex + delta);
     },
     isDropAllowed({ item, value }) {
       return this.strategy?.isDropAllowed?.({ item, value, gateData: this.gateData }) ?? true;
@@ -407,29 +496,46 @@ export default {
 
 <template>
   <div
-    class="gl-flex gl-w-full gl-gap-3 gl-overflow-x-auto gl-py-5"
+    class="gl-flex gl-w-full gl-overflow-x-auto gl-py-5"
     style="height: calc(100dvh - 220px - 2rem)"
   >
     <gl-loading-icon v-if="isLoading && groupByValues.length === 0" size="lg" class="gl-m-auto" />
-    <column-group
-      v-for="value in visibleGroupByValues"
-      :key="value.id"
-      :value="value"
-      :strategy="strategy"
-      :root-page-full-path="rootPageFullPath"
-      :base-query-variables="queryVariables"
-      :drag-disabled="moveInProgress"
-      :show-busy-indicator="showMoveInProgressIndicator"
-      :drop-disabled="invalidValueIds.includes(value.id)"
-      :collapsed="isColumnCollapsed(value)"
-      :hidden-metadata-keys="hiddenMetadataKeys"
-      :active-item="activeItem"
-      :detail-panel-enabled="detailPanelEnabled"
-      @drag-start="onDragStart"
-      @card-move="onCardMove"
-      @set-active-item="$emit('set-active-item', $event)"
-      @check-board-params="checkDetailPanelParams"
-      @toggle-collapse="$emit('toggle-collapse', groupId(value))"
-    />
+    <draggable-compat
+      v-else
+      :value="renderedColumns"
+      item-key="id"
+      tag="div"
+      class="gl-flex gl-h-full gl-w-full gl-gap-3"
+      v-bind="$options.columnSortableOptions"
+      :group="$options.columnDndGroup"
+      :disabled="!canReorderColumns"
+      @end="onColumnMove"
+    >
+      <column-group
+        v-for="(value, index) in renderedColumns"
+        :key="value.id"
+        :class="$options.columnClass"
+        :value="value"
+        :strategy="strategy"
+        :root-page-full-path="rootPageFullPath"
+        :base-query-variables="queryVariables"
+        :drag-disabled="moveInProgress"
+        :show-busy-indicator="showMoveInProgressIndicator"
+        :drop-disabled="invalidValueIds.includes(value.id)"
+        :collapsed="isColumnCollapsed(value)"
+        :reorderable="canReorderColumns"
+        :can-move-left="index > 0"
+        :can-move-right="index < renderedColumns.length - 1"
+        :hidden-metadata-keys="hiddenMetadataKeys"
+        :active-item="activeItem"
+        :detail-panel-enabled="detailPanelEnabled"
+        @drag-start="onDragStart"
+        @card-move="onCardMove"
+        @move-column="onColumnShift({ value, delta: $event })"
+        @set-active-item="$emit('set-active-item', $event)"
+        @check-board-params="checkDetailPanelParams"
+        @toggle-collapse="$emit('toggle-collapse', groupId(value))"
+      />
+    </draggable-compat>
   </div>
 </template>

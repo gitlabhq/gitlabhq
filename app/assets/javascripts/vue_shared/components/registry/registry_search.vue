@@ -31,14 +31,14 @@ export default {
       required: true,
     },
   },
-  emits: ['filter:changed', 'filter:submit', 'query:changed', 'sorting:changed'],
+  emits: ['filter-changed', 'filter-submit', 'query-changed', 'sorting-changed'],
   computed: {
     internalFilter: {
       get() {
         return this.filters;
       },
       set(value) {
-        this.$emit('filter:changed', value);
+        this.$emit('filter-changed', value);
       },
     },
     sortText() {
@@ -95,33 +95,33 @@ export default {
         sorting: { ...this.sorting, sort },
         filter: this.filters,
       });
-      this.$emit('sorting:changed', { sort });
-      this.$emit('query:changed', newQueryString);
+      this.$emit('sorting-changed', { sort });
+      this.$emit('query-changed', newQueryString);
     },
     onSortItemClick(item) {
       const newQueryString = this.generateQueryData({
         sorting: { ...this.sorting, orderBy: item },
         filter: this.filters,
       });
-      this.$emit('sorting:changed', { orderBy: item });
-      this.$emit('query:changed', newQueryString);
+      this.$emit('sorting-changed', { orderBy: item });
+      this.$emit('query-changed', newQueryString);
     },
     submitSearch() {
       const newQueryString = this.generateQueryData({
         sorting: this.sorting,
         filter: this.filters,
       });
-      this.$emit('filter:submit');
-      this.$emit('query:changed', newQueryString);
+      this.$emit('filter-submit');
+      this.$emit('query-changed', newQueryString);
     },
     clearSearch() {
       const newQueryString = this.generateQueryData({
         sorting: this.sorting,
       });
 
-      this.$emit('filter:changed', []);
-      this.$emit('filter:submit');
-      this.$emit('query:changed', newQueryString);
+      this.$emit('filter-changed', []);
+      this.$emit('filter-submit');
+      this.$emit('query-changed', newQueryString);
     },
   },
 };

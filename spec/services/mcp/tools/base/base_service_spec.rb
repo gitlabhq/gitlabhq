@@ -256,5 +256,74 @@ RSpec.describe Mcp::Tools::Base::BaseService, feature_category: :mcp_server do
         expect(result[:content].first[:text]).to include('required_field is missing')
       end
     end
+
+    context 'when an optional argument is sent as nil or an empty string' do
+      let(:echo_service_class) do
+        Class.new(described_class) do
+          def description
+            'Echoes the arguments it received'
+          end
+
+          def input_schema
+            {
+              type: 'object',
+              properties: {
+                required_field: { type: 'string' },
+                optional_field: { type: 'integer' },
+                enum_field: { type: 'string', enum: %w[option_a option_b option_c] },
+                flag_field: { type: 'boolean' },
+                list_field: { type: 'array', items: { type: 'string' } }
+              },
+              required: ['required_field']
+            }
+          end
+
+          def version
+            '1.0.0'
+          end
+
+          protected
+
+          def perform(arguments, _query = {})
+            Mcp::Tools::Base::Response.success([{ type: 'text', text: 'ok' }], arguments)
+          end
+        end
+      end
+
+      let(:echo_service) { echo_service_class.new(name: service_name) }
+
+      def execute_with(args)
+        echo_service.execute(request: nil, params: { arguments: args })
+      end
+
+      it 'treats them as omitted instead of rejecting them', :aggregate_failures do
+        result = execute_with({ required_field: 'test', optional_field: nil, enum_field: '' })
+
+        expect(result[:isError]).to be false
+        expect(result[:structuredContent]).to eq({ required_field: 'test' })
+      end
+
+      it 'preserves false and empty collections', :aggregate_failures do
+        result = execute_with({ required_field: 'test', flag_field: false, list_field: [] })
+
+        expect(result[:isError]).to be false
+        expect(result[:structuredContent]).to eq({ required_field: 'test', flag_field: false, list_field: [] })
+      end
+
+      it 'still rejects a value that is present but not allowed', :aggregate_failures do
+        result = execute_with({ required_field: 'test', enum_field: 'nope' })
+
+        expect(result[:isError]).to be true
+        expect(result[:content].first[:text])
+          .to include("Invalid enum_field: 'nope'. Must be one of: option_a, option_b, option_c")
+      end
+
+      it 'reports a required field sent as nil as missing', :aggregate_failures do
+        result = execute_with({ required_field: nil })
+
+        expect(result[:isError]).to be true
+        expect(result[:content].first[:text]).to include('required_field is missing')
+      end
+    end
   end
 end

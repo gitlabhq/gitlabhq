@@ -145,13 +145,14 @@ describe('ColumnGroup', () => {
       expect(wrapper.classes()).toEqual(expect.arrayContaining(['gl-h-full', 'gl-w-48']));
     });
 
-    it('renders a narrow, content-height strip and hides the card list when collapsed', async () => {
+    it('renders a narrow, content-height strip and drops the card list when collapsed', async () => {
       createComponent({ props: { collapsed: true } });
       await waitForPromises();
 
       expect(findColumnHeader().props('collapsed')).toBe(true);
-      // The card list stays in the DOM (so aria-controls stays valid) but is hidden.
-      expect(findDraggable().isVisible()).toBe(false);
+      // The card list is not rendered while collapsed, so retained cards can't be surfaced
+      // when the column is dragged. The body div (its id) stays in the DOM for aria-controls.
+      expect(findDraggable().exists()).toBe(false);
       expect(wrapper.classes()).toEqual(expect.arrayContaining(['gl-w-8', 'gl-self-start']));
       expect(wrapper.classes()).not.toContain('gl-h-full');
     });
@@ -275,7 +276,10 @@ describe('ColumnGroup', () => {
     it('binds the work items to a shared draggable group keyed by id', () => {
       expect(findDraggable().props('value')).toEqual(nodes);
       expect(findDraggable().props('itemKey')).toBe('id');
-      expect(findDraggable().vm.$attrs.group).toEqual({ name: 'work-item-board', put: true });
+      expect(findDraggable().vm.$attrs.group).toEqual({
+        name: 'work-item-board',
+        put: ['work-item-board'],
+      });
       expect(findDraggable().attributes('tag')).toBe('ul');
       expect(findDraggable().attributes('data-group-value-id')).toBe(mockStatus.id);
     });
@@ -333,7 +337,10 @@ describe('ColumnGroup', () => {
       createComponent();
       await waitForPromises();
 
-      expect(findDraggable().vm.$attrs.group).toEqual({ name: 'work-item-board', put: true });
+      expect(findDraggable().vm.$attrs.group).toEqual({
+        name: 'work-item-board',
+        put: ['work-item-board'],
+      });
       expect(wrapper.classes()).not.toContain('gl-opacity-5');
     });
 
