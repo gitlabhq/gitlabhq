@@ -1,6 +1,6 @@
 - breadcrumb_title _('Repository')
 - add_page_specific_style 'page_bundles/tree'
-- @force_fluid_layout = true
+- @content_class = "repository-max-width"
 
 - if @gitaly_unavailable
   = render 'shared/errors/gitaly_unavailable', reason: s_('Blob|Unable to load file content')

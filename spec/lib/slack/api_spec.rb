@@ -204,6 +204,35 @@ RSpec.describe Slack::API, feature_category: :integrations do
     end
   end
 
+  describe '#open_view' do
+    it_behaves_like 'a Slack API method' do
+      let(:action) { 'views.open' }
+      let(:response_body) { { ok: true } }
+      let(:payload) { { trigger_id: 'trigger-123', view: { type: 'modal' } } }
+      let(:expected_log_payload) { { message: 'Slack API: opening view' } }
+      let(:expected_error_message) { 'Slack API error when opening view' }
+
+      subject { api.open_view(**payload) }
+    end
+
+    context 'when an HTTP error is raised' do
+      let(:slack_installation) { build(:slack_integration) }
+      let(:api) { described_class.new(slack_installation) }
+      let(:api_url) { "#{described_class::BASE_URL}/views.open" }
+
+      before do
+        stub_request(:post, api_url).to_raise(Errno::ECONNREFUSED.new('error'))
+      end
+
+      it 'returns an error response without raising' do
+        expect(Gitlab::IntegrationsLogger).to receive(:error)
+          .with(hash_including(message: 'Slack API error when opening view'))
+
+        expect(api.open_view(trigger_id: 'trigger-123', view: { type: 'modal' })['ok']).to be(false)
+      end
+    end
+  end
+
   describe '#conversation_info' do
     let(:slack_installation) { build(:slack_integration) }
     let(:api) { described_class.new(slack_installation) }

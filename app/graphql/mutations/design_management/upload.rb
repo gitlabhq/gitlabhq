@@ -10,6 +10,8 @@ module Mutations
         description: "Files to upload."
 
       authorize :create_design
+      authorize_granular_token permissions: :create_design,
+        boundary_argument: :project_path, boundary_type: :project
 
       field :designs, [Types::DesignManagement::DesignType],
         null: false,

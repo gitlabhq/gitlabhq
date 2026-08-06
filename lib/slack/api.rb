@@ -132,6 +132,15 @@ module Slack
       handle_http_error(e, 'Slack API error when setting status', channel)
     end
 
+    def open_view(trigger_id:, view:)
+      Gitlab::IntegrationsLogger.info(message: 'Slack API: opening view')
+      response = post('views.open', trigger_id: trigger_id, view: view)
+      log_error('Slack API error when opening view', response, nil) unless response['ok']
+      response
+    rescue *Gitlab::HTTP::HTTP_ERRORS => e
+      handle_http_error(e, 'Slack API error when opening view', nil)
+    end
+
     # Fetches metadata about a conversation (channel, private channel, DM, or
     # group DM). Requires the matching read scope for the conversation type
     # (channels:read, groups:read, im:read, or mpim:read).

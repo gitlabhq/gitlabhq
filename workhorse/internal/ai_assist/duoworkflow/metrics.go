@@ -55,10 +55,10 @@ var (
 
 	// httpActionErrorsTotal counts HTTP actions that could not be completed
 	// due to a transport-level error (timeout, aborted, size limit exceeded,
-	// or other), labeled by error type. HTTP 4xx/5xx responses are not errors
-	// at this layer and are counted only in httpActionsTotal.
+	// or other), labeled by HTTP method and error type. HTTP 4xx/5xx responses
+	// are not errors at this layer and are counted only in httpActionsTotal.
 	httpActionErrorsTotal = promauto.NewCounterVec(prometheus.CounterOpts{
 		Name: "gitlab_workhorse_duo_workflow_http_action_errors_total",
-		Help: "Total number of Duo Workflow HTTP actions that failed due to a transport-level error, by error type.",
-	}, []string{"error_type"})
+		Help: "Total number of Duo Workflow HTTP actions that failed due to a transport-level error, by method and error type.",
+	}, []string{"method", "error_type"})
 )

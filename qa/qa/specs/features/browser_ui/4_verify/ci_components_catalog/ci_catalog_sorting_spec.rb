@@ -18,16 +18,16 @@ module QA
       let(:tag) { '1.0.0' }
       let(:test_project_names) { catalog_project_list.map(&:name) }
 
-      shared_examples 'descending order by default' do |testcase|
-        it 'displays from last to first', testcase: testcase do
+      shared_examples 'descending order by default' do
+        it 'displays from last to first' do
           Page::Explore::CiCdCatalog.perform do |catalog|
             expect(top_projects_from_ui(catalog)).to eql(test_project_names.reverse)
           end
         end
       end
 
-      shared_examples 'ascending order' do |testcase|
-        it 'displays from first to last', testcase: testcase do
+      shared_examples 'ascending order' do
+        it 'displays from first to last' do
           Page::Explore::CiCdCatalog.perform do |catalog|
             catalog.sort_in_ascending_order
             expect(bottom_projects_from_ui(catalog)).to eql(test_project_names)
@@ -58,11 +58,9 @@ module QA
             issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24021'
           }
         ) do
-          it_behaves_like 'descending order by default',
-            'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/441478'
+          it_behaves_like 'descending order by default'
 
-          it_behaves_like 'ascending order',
-            'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/441477'
+          it_behaves_like 'ascending order'
         end
       end
 

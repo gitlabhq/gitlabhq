@@ -11437,7 +11437,7 @@
             },
             {
               "name": "public",
-              "description": "Whether the item is publicly visible in the catalog.",
+              "description": "Whether the item is publicly visible in the catalog. Deprecated in GitLab 19.3: Use `visibility`.",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -11448,8 +11448,8 @@
                   "ofType": null
                 }
               },
-              "isDeprecated": false,
-              "deprecationReason": null
+              "isDeprecated": true,
+              "deprecationReason": "Use `visibility`. Deprecated in GitLab 19.3."
             },
             {
               "name": "softDeleted",
@@ -11724,7 +11724,7 @@
             },
             {
               "name": "visibility",
-              "description": "Visibility of the agent in the catalog. Only available when the `ai_catalog_internal_visibility` feature flag is enabled. Introduced in GitLab 19.2: Status: Experiment.",
+              "description": "Visibility of the agent in the catalog. Introduced in GitLab 19.2: Status: Experiment.",
               "type": {
                 "kind": "ENUM",
                 "name": "AiCatalogItemVisibility",
@@ -12084,7 +12084,7 @@
             },
             {
               "name": "visibility",
-              "description": "Visibility of the agent in the catalog. Only available when the `ai_catalog_internal_visibility` feature flag is enabled. Introduced in GitLab 19.2: Status: Experiment.",
+              "description": "Visibility of the agent in the catalog. Introduced in GitLab 19.2: Status: Experiment.",
               "type": {
                 "kind": "ENUM",
                 "name": "AiCatalogItemVisibility",
@@ -13200,7 +13200,7 @@
             },
             {
               "name": "public",
-              "description": "Whether the item is publicly visible in the catalog.",
+              "description": "Whether the item is publicly visible in the catalog. Deprecated in GitLab 19.3: Use `visibility`.",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -13211,8 +13211,8 @@
                   "ofType": null
                 }
               },
-              "isDeprecated": false,
-              "deprecationReason": null
+              "isDeprecated": true,
+              "deprecationReason": "Use `visibility`. Deprecated in GitLab 19.3."
             },
             {
               "name": "softDeleted",
@@ -13504,7 +13504,7 @@
             },
             {
               "name": "visibility",
-              "description": "Visibility of the flow in the catalog. Only available when the `ai_catalog_internal_visibility` feature flag is enabled. Introduced in GitLab 19.2: Status: Experiment.",
+              "description": "Visibility of the flow in the catalog. Introduced in GitLab 19.2: Status: Experiment.",
               "type": {
                 "kind": "ENUM",
                 "name": "AiCatalogItemVisibility",
@@ -13788,7 +13788,7 @@
             },
             {
               "name": "visibility",
-              "description": "Visibility of the flow in the catalog. Only available when the `ai_catalog_internal_visibility` feature flag is enabled. Introduced in GitLab 19.2: Status: Experiment.",
+              "description": "Visibility of the flow in the catalog. Introduced in GitLab 19.2: Status: Experiment.",
               "type": {
                 "kind": "ENUM",
                 "name": "AiCatalogItemVisibility",
@@ -14362,7 +14362,7 @@
             },
             {
               "name": "public",
-              "description": "Whether the item is publicly visible in the catalog.",
+              "description": "Whether the item is publicly visible in the catalog. Deprecated in GitLab 19.3: Use `visibility`.",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -14373,8 +14373,8 @@
                   "ofType": null
                 }
               },
-              "isDeprecated": false,
-              "deprecationReason": null
+              "isDeprecated": true,
+              "deprecationReason": "Use `visibility`. Deprecated in GitLab 19.3."
             },
             {
               "name": "softDeleted",
@@ -18043,7 +18043,7 @@
             },
             {
               "name": "public",
-              "description": "Whether the item is publicly visible in the catalog.",
+              "description": "Whether the item is publicly visible in the catalog. Deprecated in GitLab 19.3: Use `visibility`.",
               "args": [],
               "type": {
                 "kind": "NON_NULL",
@@ -18054,8 +18054,8 @@
                   "ofType": null
                 }
               },
-              "isDeprecated": false,
-              "deprecationReason": null
+              "isDeprecated": true,
+              "deprecationReason": "Use `visibility`. Deprecated in GitLab 19.3."
             },
             {
               "name": "softDeleted",
@@ -18330,7 +18330,7 @@
             },
             {
               "name": "visibility",
-              "description": "Visibility of the Flow in the catalog. Only available when the `ai_catalog_internal_visibility` feature flag is enabled. Introduced in GitLab 19.2: Status: Experiment.",
+              "description": "Visibility of the Flow in the catalog. Introduced in GitLab 19.2: Status: Experiment.",
               "type": {
                 "kind": "ENUM",
                 "name": "AiCatalogItemVisibility",
@@ -18618,7 +18618,7 @@
             },
             {
               "name": "visibility",
-              "description": "Visibility of the Flow in the catalog. Only available when the `ai_catalog_internal_visibility` feature flag is enabled. Introduced in GitLab 19.2: Status: Experiment.",
+              "description": "Visibility of the Flow in the catalog. Introduced in GitLab 19.2: Status: Experiment.",
               "type": {
                 "kind": "ENUM",
                 "name": "AiCatalogItemVisibility",
@@ -57312,6 +57312,22 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.2."
             },
             {
+              "name": "suggestedNextVersionSetName",
+              "description": "Suggested name for the application's next version set, derived from its latest release. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "CdSemVer",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
               "name": "updatedAt",
               "description": "Timestamp of when the application was last updated.",
               "args": [],
@@ -63070,6 +63086,16 @@
           "possibleTypes": null
         },
         {
+          "kind": "SCALAR",
+          "name": "CdSemVer",
+          "description": "Semantic version string, optionally prefixed with `v`.\n\nFor example: `1.2.3` or `v1.2.3-rc.1`.\n",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
           "kind": "OBJECT",
           "name": "CdService",
           "description": "Continuous deployment service.",
@@ -64810,7 +64836,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "String",
+                  "name": "CdSemVer",
                   "ofType": null
                 }
               },

@@ -114,6 +114,7 @@ RSpec.describe 'Database schema',
       deploy_keys_projects: %w[deploy_key_id],
       deployments: %w[deployable_id user_id],
       draft_notes: %w[discussion_id commit_id],
+      duo_workflows_workflows: %w[trigger_flow_trigger_id], # No FK to preserve attribution when the trigger is deleted
       epics: %w[updated_by_id last_edited_by_id state_id],
       events: %w[target_id],
       forked_project_links: %w[forked_from_project_id],

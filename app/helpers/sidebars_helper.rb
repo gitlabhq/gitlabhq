@@ -78,8 +78,6 @@ module SidebarsHelper
       },
       compare_plans_url: compare_plans_url(user: user, project: project, group: group),
       create_new_menu_groups: create_new_menu_groups(group: group, project: project),
-      projects_path: dashboard_projects_path,
-      groups_path: dashboard_groups_path,
       gitlab_com_and_canary: Gitlab.com_and_canary?,
       current_context: super_sidebar_current_context(project: project, group: group),
       pinned_items: pinned_items(user, panel_type, group: group),

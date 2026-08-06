@@ -63,15 +63,6 @@ class DropTmpBigintIndexesAndFkForDeploymentsPhaseTwo < Gitlab::Database::Migrat
     INDEXES.each do |index|
       remove_concurrent_index_by_name(TABLE_NAME, bigint_index_name(index[:name]))
     end
-
-    with_lock_retries(raise_on_exhaustion: true) do
-      remove_foreign_key_if_exists(
-        :deployments,
-        :projects,
-        name: :fk_b9a3851b82_tmp,
-        reverse_lock_order: true
-      )
-    end
   end
 
   # Restores what `up` dropped, so that the column swap performed in
@@ -87,19 +78,6 @@ class DropTmpBigintIndexesAndFkForDeploymentsPhaseTwo < Gitlab::Database::Migrat
       options = index[:options] || {}
       add_concurrent_index(TABLE_NAME, index[:columns], name: bigint_index_name(index[:name]), **options)
     end
-
-    # Recreated as NOT VALID, matching how AddBigintFkForDeploymentsPhaseTwo
-    # first added it.
-    add_concurrent_foreign_key(
-      :deployments,
-      :projects,
-      column: :project_id_convert_to_bigint,
-      target_column: :id,
-      name: :fk_b9a3851b82_tmp,
-      on_delete: :cascade,
-      validate: false,
-      reverse_lock_order: true
-    )
   end
 
   private

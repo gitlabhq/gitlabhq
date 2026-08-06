@@ -1,0 +1,9 @@
+---
+name: create_design
+description: Grants the ability to create designs
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - create_design

@@ -17,6 +17,10 @@ setup_script:
   # from being staged by git add -A.
   - bundle config set --local path vendor/bundle
   - bundle config set --local frozen true
+  # Override BUNDLE_WITHOUT from .gitlab-ci.yml (which excludes the
+  # :development group). lefthook lives in :development and is required
+  # for the pre-push hooks installed below, so we must include it.
+  - bundle config unset --local without
   - bundle install --jobs 4 --retry 3
 
   # Node deps — --ignore-scripts avoids arbitrary postinstall network calls.

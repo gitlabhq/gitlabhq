@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.shared_examples 'streamed events' do |event_type, entity_type, testcase|
-    it 'the external server receives the event', testcase: testcase do
+  RSpec.shared_examples 'streamed events' do |event_type, entity_type|
+    it 'the external server receives the event' do
       entity_path # Call to trigger the event before we can check it was received
       event_record = mock_service.wait_for_event(event_type, entity_type, entity_path)
       verify_response = mock_service.verify

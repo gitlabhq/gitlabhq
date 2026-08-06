@@ -1186,11 +1186,11 @@
   - "ee/{lib/,spec/}tasks/gitlab/custom_roles/*"
 
 .permissions-patterns: &permissions-patterns
-  - "config/authz/**/*"
-  - "lib/tasks/gitlab/permissions/**/*.rb"
-  - "{,ee/}app/policies/**/*.rb"
-  - "{,ee/}app/graphql/**/*.rb"
-  - "{,ee/}lib/api/**/*.rb"
+  - "config/authz/{,**/}*"
+  - "lib/tasks/gitlab/permissions/{,**/}*.rb"
+  - "{,ee/}app/policies/{,**/}*.rb"
+  - "{,ee/}app/graphql/{,**/}*.rb"
+  - "{,ee/}lib/{,**/}api/{,**/}*.rb"
   - "doc/auth/tokens/fine_grained_access_tokens_{rest,graphql}.md"
   - "tooling/authz/permissions/docs/templates/*"
 

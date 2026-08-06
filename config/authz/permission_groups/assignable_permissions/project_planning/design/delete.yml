@@ -1,0 +1,9 @@
+---
+name: delete_design
+description: Grants the ability to delete designs
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - delete_design

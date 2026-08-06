@@ -119,36 +119,38 @@ describe('Repository router spec', () => {
       document.body.innerHTML = '';
     });
 
-    it('removes container-limited when navigating to a tree route', async () => {
+    it('adds repository-max-width when navigating to a tree route', async () => {
       const containerEl = setupContainer('container-fluid container-limited');
       const router = createRouter(projectPath, 'main');
 
       await router.push('/-/tree/main/app');
 
-      expect(containerEl.classList.contains('container-limited')).toBe(false);
+      expect(containerEl.classList.contains('repository-max-width')).toBe(true);
+      expect(containerEl.classList.contains('container-limited')).toBe(true);
     });
 
-    it('removes container-limited when navigating to a blob route', async () => {
+    it('adds repository-max-width when navigating to a blob route', async () => {
       const containerEl = setupContainer('container-fluid container-limited');
       const router = createRouter(projectPath, 'main');
 
       await router.push('/-/blob/main/file.md');
 
-      expect(containerEl.classList.contains('container-limited')).toBe(false);
+      expect(containerEl.classList.contains('repository-max-width')).toBe(true);
     });
 
-    it('restores container-limited when returning to project root from a fluid route', async () => {
-      const containerEl = setupContainer('container-fluid container-limited');
+    it('removes repository-max-width when returning to project root from a tree route', async () => {
+      const containerEl = setupContainer('container-fluid container-limited repository-max-width');
       const router = createRouter(projectPath, 'main');
 
       await router.push('/-/tree/main/app');
-      expect(containerEl.classList.contains('container-limited')).toBe(false);
+      expect(containerEl.classList.contains('repository-max-width')).toBe(true);
 
       await router.push('/');
+      expect(containerEl.classList.contains('repository-max-width')).toBe(false);
       expect(containerEl.classList.contains('container-limited')).toBe(true);
     });
 
-    it('preserves a Fluid layout preference when navigating to project root', async () => {
+    it('does not alter a Fluid layout container when navigating between routes', async () => {
       const containerEl = setupContainer('container-fluid');
       const router = createRouter(projectPath, 'main');
 
@@ -157,6 +159,7 @@ describe('Repository router spec', () => {
 
       await router.push('/');
       expect(containerEl.classList.contains('container-limited')).toBe(false);
+      expect(containerEl.classList.contains('repository-max-width')).toBe(false);
     });
 
     it('does not throw when #content-body is absent from the DOM', async () => {

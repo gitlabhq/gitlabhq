@@ -1607,13 +1607,10 @@ class MergeRequest < ApplicationRecord
       ::AutoMergeService::STRATEGY_ADD_TO_MERGE_TRAIN_WHEN_CHECKS_PASS
     ])
 
-    skip_conflict_check = merge_when_checks_pass_strat &&
-      (recheck_merge_status? || Feature.enabled?(:auto_merge_skip_conflict_check, project))
-
     {
       skip_ci_check: merge_when_checks_pass_strat,
       skip_approved_check: merge_when_checks_pass_strat,
-      skip_conflict_check: skip_conflict_check,
+      skip_conflict_check: merge_when_checks_pass_strat,
       skip_draft_check: merge_when_checks_pass_strat,
       skip_blocked_check: merge_when_checks_pass_strat,
       skip_discussions_check: merge_when_checks_pass_strat,
@@ -3108,6 +3105,21 @@ class MergeRequest < ApplicationRecord
   strong_memoize_attr :committer_emails_from_diff
 
   def uncached_committer_emails_from_diff
+    # The direct SQL extraction below has a history of load incidents on the
+    # read replicas. Keep approval_committer_emails_from_diff as a rollback
+    # lever: when it is disabled we resolve committer emails from the loaded
+    # diff commits instead. Both paths sit behind committer_emails_from_diff's
+    # per-diff cache, so the fallback no longer reintroduces the original call
+    # rate that motivated the SQL path.
+    if Feature.enabled?(:approval_committer_emails_from_diff, target_project)
+      committer_emails_from_diff_via_sql
+    else
+      preload_commits_metadata
+      commits.committer_emails(with_merge_commits: true, include_author_when_signed: true)
+    end
+  end
+
+  def committer_emails_from_diff_via_sql
     committer_emails_query =
       if read_new_commits_table?
         committer_emails_via_metadata_query

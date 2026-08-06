@@ -1,0 +1,9 @@
+---
+name: create_path_lock
+description: Grants the ability to create path locks
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - create_path_lock

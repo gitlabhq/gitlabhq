@@ -35,6 +35,22 @@ RSpec.describe "updating designs", feature_category: :design_management do
     enable_design_management
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :update_design do
+    let(:user) { developer }
+    let(:boundary_object) { issue.project }
+    let(:request) do
+      input = {
+        id: design.to_global_id.to_s,
+        description: description
+      }
+
+      post_graphql_mutation(
+        graphql_mutation(:design_management_update, input, 'errors'),
+        token: { personal_access_token: pat }
+      )
+    end
+  end
+
   it 'updates design' do
     update_design
 

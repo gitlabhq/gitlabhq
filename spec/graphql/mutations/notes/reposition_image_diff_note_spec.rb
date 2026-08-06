@@ -7,13 +7,14 @@ RSpec.describe Mutations::Notes::RepositionImageDiffNote do
 
   describe '#resolve' do
     subject do
-      mutation.resolve(note: note, position: new_position)
+      mutation.resolve(id: note_id, position: new_position)
     end
 
     let_it_be(:noteable) { create(:merge_request) }
     let_it_be(:project) { noteable.project }
 
     let(:note) { create(:image_diff_note_on_merge_request, noteable: noteable, project: project) }
+    let(:note_id) { note.to_global_id }
 
     let(:mutation) do
       described_class.new(object: nil, context: query_context, field: nil)
@@ -53,6 +54,17 @@ RSpec.describe Mutations::Notes::RepositionImageDiffNote do
           expect { subject }.to raise_error(
             Gitlab::Graphql::Errors::ResourceNotAvailable,
             'Resource is not an ImageDiffNote'
+          )
+        end
+      end
+
+      context 'when the note does not exist' do
+        let(:note_id) { GlobalID.parse("gid://gitlab/DiffNote/#{non_existing_record_id}") }
+
+        it 'raises an execution error with the loads-style message' do
+          expect { subject }.to raise_error(
+            GraphQL::ExecutionError,
+            "No object found for `id: #{note_id.to_s.inspect}`"
           )
         end
       end

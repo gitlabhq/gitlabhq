@@ -12,11 +12,17 @@ module Users
     idempotent!
 
     def perform
-      return if Feature.enabled?(:split_ghost_user_migration_queue_into_human_and_non_human, :instance)
-
       in_lock(self.class.name.underscore, ttl: Gitlab::Utils::ExecutionTracker::MAX_RUNTIME, retries: 0) do
-        Users::MigrateUserTypeRecordsToGhostUserInBatchesService.new(user_type: :any).execute
+        Users::MigrateRecordsToGhostUserInBatchesService.new(user_types: user_types_for_processing).execute
       end
+    end
+
+    private
+
+    def user_types_for_processing
+      HasUserType::USER_TYPES.keys - [
+        'human' # Processed separately by Users::MigrateHumanRecordsToGhostUserInBatchesWorker
+      ]
     end
   end
 end

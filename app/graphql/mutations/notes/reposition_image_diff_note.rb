@@ -10,11 +10,11 @@ module Mutations
       description 'Repositions a DiffNote on an image (a `Note` where the `position.positionType` is `"image"`)'
 
       authorize :reposition_note
+      authorize_granular_token permissions: :update_note,
+        boundary_argument: :id, boundary: :resource_parent, boundary_type: :project
 
-      argument :id, # rubocop:disable Graphql/ForbiddenLoadsArgument -- pre-existing code; removing `loads:` would be a breaking change
+      argument :id,
         Types::GlobalIDType[DiffNote],
-        loads: Types::Notes::NoteType,
-        as: :note,
         required: true,
         description: 'Global ID of the DiffNote to update.'
 
@@ -23,7 +23,8 @@ module Mutations
         required: true,
         description: copy_field_description(Types::Notes::NoteType, :position)
 
-      def resolve(note:, position:)
+      def resolve(id:, position:)
+        note = load_note(id)
         authorize!(note)
 
         position = position.to_h.compact

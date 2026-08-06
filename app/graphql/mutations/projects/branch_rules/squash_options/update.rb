@@ -9,6 +9,8 @@ module Mutations
           description 'Update a squash option for a branch rule'
 
           authorize :update_squash_option
+          authorize_granular_token permissions: :update_squash_option,
+            boundary_argument: :branch_rule_id, boundary: :project, boundary_type: :project
 
           argument :branch_rule_id, ::Types::GlobalIDType[::Projects::BranchRule],
             required: true,

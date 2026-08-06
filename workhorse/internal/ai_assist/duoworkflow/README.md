@@ -311,7 +311,7 @@ histogram_quantile(0.95, sum(rate(gitlab_workhorse_duo_workflow_http_action_dura
 
 ### `gitlab_workhorse_duo_workflow_http_action_errors_total`
 
-Incremented when an HTTP action fails with a transport-level error, labelled by `error_type`:
+Incremented when an HTTP action fails with a transport-level error, labelled by `method` and `error_type`:
 
 | `error_type`          | Trigger                                                                                    |
 | --------------------- | ------------------------------------------------------------------------------------------ |
@@ -325,7 +325,7 @@ HTTP 4xx and 5xx responses are not errors at this layer: the backend answered, s
 Example query:
 
 ```promql
-sum(rate(gitlab_workhorse_duo_workflow_http_action_errors_total[5m])) by (error_type)
+sum(rate(gitlab_workhorse_duo_workflow_http_action_errors_total[5m])) by (method, error_type)
 ```
 
 ## Configuration

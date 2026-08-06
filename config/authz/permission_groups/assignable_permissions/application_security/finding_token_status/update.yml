@@ -1,0 +1,9 @@
+---
+name: update_finding_token_status
+description: Grants the ability to refresh the token status of security findings
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - update_finding_token_status

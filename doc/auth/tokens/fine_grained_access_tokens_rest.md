@@ -106,7 +106,7 @@ Grants the ability to read and update security settings.
 
 #### Vulnerability
 
-Grants the ability to create, read, and update vulnerabilities.
+Grants the ability to archive, create, read, and update vulnerabilities.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -642,7 +642,7 @@ Grants the ability to read audit events.
 
 #### External Status Check
 
-Grants the ability to read, retry, and update external status checks.
+Grants the ability to create, delete, read, retry, and update external status checks.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -3591,7 +3591,7 @@ Grants the ability to read and run batched background operations.
 
 #### Wiki
 
-Grants the ability to create, delete, read, and update wikis.
+Grants the ability to create, delete, read, subscribe, and update wikis.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |

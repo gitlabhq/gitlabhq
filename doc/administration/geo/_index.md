@@ -149,7 +149,7 @@ Keep in mind that:
 
 The following diagram illustrates the underlying architecture of Geo.
 
-![Geo architecture](img/geo_architecture_v13_8.png)
+![Architecture diagram of Geo showing database replication through PostgreSQL streaming and file replication through Git HTTP and private APIs between the primary and secondary sites.](img/geo_architecture_v13_8.png)
 
 In this diagram:
 

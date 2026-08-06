@@ -424,6 +424,10 @@ gem 'gitlab-bitbucket-server', path: 'gems/gitlab-bitbucket-server',
   require: 'bitbucket_server', feature_category: :importers
 gem 'gitlab-deploy-driver-argo-rollouts', path: 'gems/gitlab-deploy-driver-argo-rollouts', require: false,
   feature_category: :continuous_delivery
+# Do not add lib/gitlab/cd/** or ee/lib/gitlab/cd/**: Zeitwerk would try to claim the
+# Gitlab::Cd namespace this gem already defines. New CD app code goes under Cd::.
+gem 'gitlab-cd-driver-orchestration', path: 'gems/gitlab-cd-driver-orchestration',
+  require: 'gitlab/cd/driver/orchestration', feature_category: :continuous_delivery
 gem 'gitlab-policy-store', path: 'gems/gitlab-policy-store',
   require: 'gitlab/policy_store', feature_category: :security_policy_management
 

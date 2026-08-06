@@ -31,8 +31,7 @@ module QA
           Runtime::ApplicationSettings.set_application_settings(enforce_ci_inbound_job_token_scope_enabled: false)
         end
 
-        it "pushes and pulls a helm chart",
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/565066' do
+        it "pushes and pulls a helm chart" do
           helm_upload_yaml = ERB.new(read_fixture('package_managers/helm',
             'helm_upload_package.yaml.erb')).result(binding)
           helm_chart_yaml = ERB.new(read_fixture('package_managers/helm', 'Chart.yaml.erb')).result(binding)
@@ -113,8 +112,8 @@ module QA
           end
         end
 
-        shared_examples 'using a docker container' do |testcase|
-          it 'pushes and pulls a helm chart', testcase: testcase do
+        shared_examples 'using a docker container' do
+          it 'pushes and pulls a helm chart' do
             package_project.visit!
 
             Page::Project::Menu.perform(&:go_to_package_registry)
@@ -130,14 +129,14 @@ module QA
           let(:username) { Runtime::User::Store.test_user.username }
           let(:token) { Runtime::User::Store.default_api_client.personal_access_token }
 
-          it_behaves_like 'using a docker container', 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/565067'
+          it_behaves_like 'using a docker container'
         end
 
         context 'with a project deploy token' do
           let(:username) { project_deploy_token.username }
           let(:token) { project_deploy_token.token }
 
-          it_behaves_like 'using a docker container', 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/565068'
+          it_behaves_like 'using a docker container'
         end
       end
     end

@@ -115,3 +115,9 @@ columns:
   type: Bool
   default_kind: DEFAULT
   default_expression: 'false'
+- name: trigger_source
+  type: Int16
+  default_kind: DEFAULT
+  default_expression: '0'
+- name: trigger_flow_trigger_id
+  type: Nullable(Int64)

@@ -1,5 +1,11 @@
 import { cloneDeep } from 'lodash-es';
-import { WIDGET_TYPE_HIERARCHY, WIDGET_TYPE_STATUS, STATE_CLOSED } from '~/work_items/constants';
+import {
+  WIDGET_TYPE_HIERARCHY,
+  WIDGET_TYPE_ITERATION,
+  WIDGET_TYPE_STATUS,
+  WIDGET_TYPE_WEIGHT,
+  STATE_CLOSED,
+} from '~/work_items/constants';
 import {
   addHierarchyChild,
   removeHierarchyChild,
@@ -474,6 +480,56 @@ describe('work items graphql cache utils', () => {
       expect(features.weight.rolledUpCompletedWeight).toBeNull();
       expect(features.healthStatus.rolledUpHealthStatus).toBeNull();
       expect(features.customFields.customFieldValues).toBeDefined();
+    });
+  });
+
+  // Regression guard for https://gitlab.com/gitlab-org/gitlab/-/work_items/608244
+  // An empty feature object is truthy, so the create form renders it as an empty Status dropdown.
+  describe('unsupported attributes for getNewWorkItemSharedCache', () => {
+    const fullPath = 'gitlab-org';
+    const context = 'list-route';
+
+    const callForSupportedWidgetTypes = (supportedWidgetTypes) =>
+      getNewWorkItemSharedCache({
+        workItemAttributesWrapperOrder: [
+          WIDGET_TYPE_STATUS,
+          WIDGET_TYPE_ITERATION,
+          WIDGET_TYPE_WEIGHT,
+        ],
+        fullPath,
+        context,
+        workItemType: 'Epic',
+        relatedItemId: null,
+        isValidWorkItemDescription: false,
+        workItemDescription: '',
+        widgetDefinitions: supportedWidgetTypes.map((type) => ({ type })),
+      });
+
+    beforeEach(() => {
+      localStorage.clear();
+    });
+
+    it('nulls the attributes the work item type does not support', () => {
+      const { features } = callForSupportedWidgetTypes([WIDGET_TYPE_WEIGHT]);
+
+      expect(features.status).toBeNull();
+      expect(features.iteration).toBeNull();
+    });
+
+    it('keeps the attributes the work item type supports', () => {
+      const { features } = callForSupportedWidgetTypes([WIDGET_TYPE_WEIGHT]);
+
+      expect(features.weight).toMatchObject({
+        __typename: 'WorkItemWidgetWeight',
+        weight: null,
+      });
+    });
+
+    // Nulled rather than removed, or Apollo throws "Missing field 'X' while writing result".
+    it('keeps every feature key present so the WorkItemFeatures selection set stays satisfied', () => {
+      const { features } = callForSupportedWidgetTypes([WIDGET_TYPE_WEIGHT]);
+
+      expect(Object.keys(features)).toEqual(expect.arrayContaining(['status', 'iteration']));
     });
   });
 

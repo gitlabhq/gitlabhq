@@ -163,6 +163,7 @@ If a secret is already present in a file and not part of the changes, it is not 
 - Secret push protection is skipped because a push [changes too many lines](#push-size-threshold).
 - Secret push protection scan timeout occurs and GitLab accepts the push.
 - Secret push protection encounters a ruleset parse or compile error.
+- Secret push protection is skipped because the scan received invalid input.
 
 ## Push size threshold
 

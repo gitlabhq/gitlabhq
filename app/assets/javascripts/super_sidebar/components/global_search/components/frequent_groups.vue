@@ -1,5 +1,6 @@
 <script>
 import { s__ } from '~/locale';
+import { dashboardGroupsPath } from '~/lib/utils/path_helpers/dashboard';
 import currentUserFrecentGroupsQuery from '~/super_sidebar/graphql/queries/current_user_frecent_groups.query.graphql';
 import { FREQUENTLY_VISITED_GROUPS_HANDLE } from '~/super_sidebar/components/global_search/command_palette/constants';
 import FrequentItems from './frequent_items.vue';
@@ -9,7 +10,6 @@ export default {
   components: {
     FrequentItems,
   },
-  inject: ['groupsPath'],
   emits: ['action', 'nothing-to-render'],
   apollo: {
     // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
@@ -32,6 +32,9 @@ export default {
     items() {
       return this.frecentGroups || [];
     },
+    viewAllItemsPath() {
+      return dashboardGroupsPath();
+    },
   },
   created() {
     if (!this.isLoggedIn) {
@@ -51,7 +54,7 @@ export default {
     :items="items"
     view-all-items-icon="group"
     :view-all-items-text="$options.i18n.viewAllText"
-    :view-all-items-path="groupsPath"
+    :view-all-items-path="viewAllItemsPath"
     v-bind="$attrs"
     v-on="$listeners"
     @action="$emit('action', $options.FREQUENTLY_VISITED_GROUPS_HANDLE)"

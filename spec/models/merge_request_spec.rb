@@ -3885,11 +3885,35 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   end
 
   describe '#committer_emails_from_diff' do
-    it 'routes the query to a replica to keep it off the primary' do
-      expect(::Gitlab::Database::LoadBalancing::SessionMap)
-        .to receive(:use_replica_if_available).and_yield
+    context 'when approval_committer_emails_from_diff is enabled' do
+      before do
+        stub_feature_flags(approval_committer_emails_from_diff: true)
+      end
 
-      subject.send(:committer_emails_from_diff)
+      it 'routes the query to a replica to keep it off the primary' do
+        expect(::Gitlab::Database::LoadBalancing::SessionMap)
+          .to receive(:use_replica_if_available).and_yield
+
+        subject.send(:committer_emails_from_diff)
+      end
+    end
+
+    context 'when approval_committer_emails_from_diff is disabled' do
+      before do
+        stub_feature_flags(approval_committer_emails_from_diff: false)
+      end
+
+      it 'resolves committer emails from the loaded diff commits' do
+        expected = subject.commits.committer_emails(with_merge_commits: true, include_author_when_signed: true)
+
+        expect(subject.send(:committer_emails_from_diff)).to match_array(expected)
+      end
+
+      it 'does not run the replica committer-email query' do
+        expect(::Gitlab::Database::LoadBalancing::SessionMap).not_to receive(:use_replica_if_available)
+
+        subject.send(:committer_emails_from_diff)
+      end
     end
   end
 
@@ -6235,72 +6259,16 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     context 'when auto_merge_strategy is STRATEGY_MERGE_WHEN_CHECKS_PASS' do
       let(:auto_merge_strategy) { AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS }
 
-      it 'skips all the checks except skip_rebase_check and skip_conflict_check' do
-        expect(subject.except(:skip_rebase_check, :skip_conflict_check).values).to all(be_truthy)
-      end
-
-      context 'when recheck_merge_status? is true' do
-        before do
-          allow(merge_request).to receive(:recheck_merge_status?).and_return(true)
-        end
-
-        it 'sets skip_conflict_check to true' do
-          expect(subject[:skip_conflict_check]).to be_truthy
-        end
-      end
-
-      context 'when recheck_merge_status? is false' do
-        before do
-          allow(merge_request).to receive(:recheck_merge_status?).and_return(false)
-        end
-
-        it 'skips the conflict check while the auto_merge_skip_conflict_check flag is enabled' do
-          expect(subject[:skip_conflict_check]).to be_truthy
-        end
-
-        context 'when the auto_merge_skip_conflict_check feature flag is disabled' do
-          before do
-            stub_feature_flags(auto_merge_skip_conflict_check: false)
-          end
-
-          it 'sets skip_conflict_check to false' do
-            expect(subject[:skip_conflict_check]).to be_falsy
-          end
-        end
+      it 'skips all the checks except skip_rebase_check' do
+        expect(subject.except(:skip_rebase_check).values).to all(be_truthy)
       end
     end
 
     context 'when auto_merge_strategy is STRATEGY_ADD_TO_MERGE_TRAIN_WHEN_CHECKS_PASS' do
       let(:auto_merge_strategy) { AutoMergeService::STRATEGY_ADD_TO_MERGE_TRAIN_WHEN_CHECKS_PASS }
 
-      context 'when recheck_merge_status? is true' do
-        before do
-          allow(merge_request).to receive(:recheck_merge_status?).and_return(true)
-        end
-
-        it 'sets skip_conflict_check to true' do
-          expect(subject[:skip_conflict_check]).to be_truthy
-        end
-      end
-
-      context 'when recheck_merge_status? is false' do
-        before do
-          allow(merge_request).to receive(:recheck_merge_status?).and_return(false)
-        end
-
-        it 'skips the conflict check while the auto_merge_skip_conflict_check flag is enabled' do
-          expect(subject[:skip_conflict_check]).to be_truthy
-        end
-
-        context 'when the auto_merge_skip_conflict_check feature flag is disabled' do
-          before do
-            stub_feature_flags(auto_merge_skip_conflict_check: false)
-          end
-
-          it 'sets skip_conflict_check to false' do
-            expect(subject[:skip_conflict_check]).to be_falsy
-          end
-        end
+      it 'skips the conflict check' do
+        expect(subject[:skip_conflict_check]).to be_truthy
       end
     end
   end

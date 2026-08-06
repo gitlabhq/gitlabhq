@@ -6,6 +6,8 @@ module Mutations
       graphql_name "DesignManagementUpdate"
 
       authorize :update_design
+      authorize_granular_token permissions: :update_design,
+        boundary_argument: :id, boundary: :project, boundary_type: :project
 
       argument :id, ::Types::GlobalIDType[::DesignManagement::Design],
         required: true,

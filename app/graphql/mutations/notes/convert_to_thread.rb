@@ -10,15 +10,16 @@ module Mutations
       # change the note body. Any user that can resolve notes can convert the note
       # to a thread.
       authorize :resolve_note
+      authorize_granular_token permissions: :update_note,
+        boundary_argument: :id, boundary: :resource_parent, boundary_type: :project
 
-      argument :id, # rubocop:disable Graphql/ForbiddenLoadsArgument -- pre-existing code; removing `loads:` would be a breaking change
+      argument :id,
         Types::GlobalIDType[Note],
-        loads: Types::Notes::NoteType,
-        as: :note,
         required: true,
         description: 'Global ID of the Note to convert.'
 
-      def resolve(note:)
+      def resolve(id:)
+        note = load_note(id)
         authorize!(note)
 
         discussion = note.to_discussion

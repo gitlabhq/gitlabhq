@@ -18,6 +18,17 @@ RSpec.describe 'Toggling the resolve status of a discussion', feature_category: 
 
   let(:mutation_response) { graphql_mutation_response(:discussion_toggle_resolve) }
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :update_note do
+    let(:user) { create(:user, developer_of: project) }
+    let(:boundary_object) { project }
+    let(:request) do
+      post_graphql_mutation(
+        graphql_mutation(:discussion_toggle_resolve, { id: discussion.to_global_id.to_s, resolve: true }, 'errors'),
+        token: { personal_access_token: pat }
+      )
+    end
+  end
+
   context 'when the user does not have permission' do
     let_it_be(:current_user) { create(:user) }
 

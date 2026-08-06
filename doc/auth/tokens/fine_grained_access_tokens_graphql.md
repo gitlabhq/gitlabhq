@@ -47,6 +47,15 @@ Grants the ability to read dependencies.
 | Read | Project | Type | `DependencyLocation` |
 | Read | Project | Type | `DependencyTrackedRef` |
 
+#### Finding Token Status
+
+Grants the ability to update finding token statuses.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Update | Project | Mutation | `RefreshFindingTokenStatus` |
+| Update | Project | Mutation | `RefreshVulnerabilityFindingTokenStatus` |
+
 #### Pipeline Execution Project Schedule
 
 Grants the ability to read pipeline execution project schedules.
@@ -66,6 +75,15 @@ Grants the ability to read secrets managers.
 | Read | Group | Type | `SecretsManagerEntitlement` |
 | Read | Group | Mutation | `SecretsManagerStartTrial` |
 
+#### Security Dashboard
+
+Grants the ability to update security dashboards.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Update | Project | Mutation | `AddProjectToSecurityDashboard` |
+| Update | Project | Mutation | `RemoveProjectFromSecurityDashboard` |
+
 #### Security Scan Profiles
 
 Grants the ability to create and update security scan profiles.
@@ -77,15 +95,17 @@ Grants the ability to create and update security scan profiles.
 
 #### Vulnerability
 
-Grants the ability to create, read, and update vulnerabilities.
+Grants the ability to archive, create, read, and update vulnerabilities.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
+| Archive | Project | Mutation | `VulnerabilitiesArchive` |
 | Create | Project | Mutation | `VulnerabilityCreate` |
 | Read | Project | Type | `CountableVulnerability` |
 | Read | Project | Type | `Vulnerability` |
 | Read | Project | Type | `VulnerabilityScanner` |
 | Read | Project | Field | `MergeRequest.findingReportsComparer` |
+| Update | Project | Mutation | `BulkSetVulnerabilityFindingsDueDates` |
 | Update | Project | Mutation | `VulnerabilityAutoRemediation` |
 | Update | Project | Mutation | `VulnerabilityConfirm` |
 | Update | Project | Mutation | `VulnerabilityDismiss` |
@@ -101,6 +121,37 @@ Grants the ability to execute vulnerability duo workflows.
 | Execute | Project | Mutation | `CancelVulnerabilityWorkflow` |
 | Execute | Project | Mutation | `StartVulnerabilityWorkflow` |
 | Execute | Project | Field | `Project.vulnerabilityWorkflowExecution` |
+
+#### Vulnerability Flag
+
+Grants the ability to update vulnerability flags.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Update | Project | Mutation | `VulnerabilityDismissFalsePositiveFlag` |
+
+#### Vulnerability Issue Link
+
+Grants the ability to create, delete, and read vulnerability issue links.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `SecurityFindingCreateIssue` |
+| Create | Project | Mutation | `SecurityFindingExternalIssueLinkCreate` |
+| Create | Project | Mutation | `SecurityFindingJiraIssueFormUrlCreate` |
+| Create | Project | Mutation | `VulnerabilitiesCreateIssue` |
+| Create | Project | Mutation | `VulnerabilityExternalIssueLinkCreate` |
+| Create | Project | Mutation | `VulnerabilityIssueLinkCreate` |
+| Delete | Project | Mutation | `VulnerabilityExternalIssueLinkDestroy` |
+
+#### Vulnerability Merge Request Link
+
+Grants the ability to create and delete vulnerability merge request links.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `VulnerabilityLinkMergeRequest` |
+| Delete | Project | Mutation | `VulnerabilityUnlinkMergeRequest` |
 
 ### CI/CD resources
 
@@ -309,6 +360,14 @@ Grants the ability to delete, read, and update job artifacts.
 | Delete | Project | Mutation | `JobArtifactsDestroy` |
 | Read | Project | Type | `CiJobArtifact` |
 
+#### Merge Train Car
+
+Grants the ability to delete merge train cars.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Delete | Project | Mutation | `MergeTrainsDeleteCar` |
+
 #### Pipeline
 
 Grants the ability to create, delete, read, and update pipelines.
@@ -453,6 +512,16 @@ Grants the ability to create, delete, and update audit event streaming destinati
 | Update | Instance | Mutation | `InstanceAuditEventStreamingDestinationsUpdate` |
 | Update | Instance | Mutation | `InstanceExternalAuditEventDestinationUpdate` |
 | Update | Instance | Mutation | `InstanceGoogleCloudLoggingConfigurationUpdate` |
+
+#### External Status Check
+
+Grants the ability to create, delete, read, retry, and update external status checks.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `BranchRuleExternalStatusCheckCreate` |
+| Delete | Project | Mutation | `BranchRuleExternalStatusCheckDestroy` |
+| Update | Project | Mutation | `BranchRuleExternalStatusCheckUpdate` |
 
 ### Duo resources
 
@@ -634,6 +703,15 @@ Grants the ability to create and delete integration exclusions.
 | ------ | ------ | ---- | ---- |
 | Create | Instance | Mutation | `IntegrationExclusionCreate` |
 | Delete | Instance | Mutation | `IntegrationExclusionDelete` |
+
+#### Jira Import
+
+Grants the ability to create Jira imports.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `JiraImportStart` |
+| Create | Project | Mutation | `JiraImportUsers` |
 
 ### Monitoring resources
 
@@ -858,6 +936,15 @@ Grants the ability to create, delete, read, and update releases.
 | Delete | Project | Mutation | `ReleaseDelete` |
 | Update | Project | Mutation | `ReleaseUpdate` |
 
+#### Release Link
+
+Grants the ability to create, delete, read, and update release links.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Delete | Project | Mutation | `ReleaseAssetLinkDelete` |
+| Update | Project | Mutation | `ReleaseAssetLinkUpdate` |
+
 #### Snippet
 
 Grants the ability to create, delete, read, and update snippets.
@@ -895,6 +982,17 @@ Grants the ability to delete, read, and update custom attributes.
 | Delete | Group | Mutation | `DeleteGroupCustomAttribute` |
 | Update | Project | Mutation | `ProjectCustomAttributeSet` |
 | Update | Group | Mutation | `SetGroupCustomAttribute` |
+
+#### Design
+
+Grants the ability to create, delete, and update designs.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `DesignManagementUpload` |
+| Delete | Project | Mutation | `DesignManagementDelete` |
+| Update | Project | Mutation | `DesignManagementMove` |
+| Update | Project | Mutation | `DesignManagementUpdate` |
 
 #### Label
 
@@ -953,6 +1051,7 @@ Grants the ability to create, delete, read, and update work items such as epics 
 | Read | Group | Type | `Milestone` |
 | Read | Group | Type | `Note` |
 | Read | Group | Type | `WorkItemMoveTarget` |
+| Update | Project | Mutation | `DiscussionToggleResolve` |
 | Update | Project | Mutation | `IssueLinkAlerts` |
 | Update | Project | Mutation | `IssueMove` |
 | Update | Project | Mutation | `IssueSetAssignees` |
@@ -967,6 +1066,8 @@ Grants the ability to create, delete, read, and update work items such as epics 
 | Update | Project | Mutation | `IssueSetSeverity` |
 | Update | Project | Mutation | `IssueSetWeight` |
 | Update | Project | Mutation | `IssueUnlinkAlert` |
+| Update | Project | Mutation | `NoteConvertToThread` |
+| Update | Project | Mutation | `RepositionImageDiffNote` |
 | Update | Project | Mutation | `UpdateImageDiffNote` |
 | Update | Project | Mutation | `UpdateIssue` |
 | Update | Project | Mutation | `UpdateNote` |
@@ -1051,11 +1152,14 @@ Grants the ability to create, delete, protect, and read branches.
 
 #### Branch Rule
 
-Grants the ability to create and update branch rules.
+Grants the ability to create, delete, and update branch rules.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
 | Create | Project | Mutation | `BranchRuleCreate` |
+| Delete | Project | Mutation | `BranchRuleDelete` |
+| Delete | Project | Mutation | `BranchRuleSquashOptionDelete` |
+| Update | Project | Mutation | `BranchRuleSquashOptionUpdate` |
 | Update | Project | Mutation | `BranchRuleUpdate` |
 
 #### Code
@@ -1080,6 +1184,7 @@ Grants the ability to approve, create, delete, merge, read, subscribe, and updat
 | Read | Project | Type | `MergeRequest` |
 | Read | Project | Type | `MergeRequestApprovalState` |
 | Read | Project | Type | `MergeRequestWorkItemRelation` |
+| Subscribe | Project | Mutation | `MergeRequestSetSubscription` |
 | Update | Project | Mutation | `DismissPolicyViolations` |
 | Update | Project | Mutation | `MergeRequestBypassSecurityPolicy` |
 | Update | Project | Mutation | `MergeRequestCreateWorkItemRelations` |
@@ -1087,6 +1192,7 @@ Grants the ability to approve, create, delete, merge, read, subscribe, and updat
 | Update | Project | Mutation | `MergeRequestDestroyWorkItemRelations` |
 | Update | Project | Mutation | `MergeRequestRequestChanges` |
 | Update | Project | Mutation | `MergeRequestResyncSecurityPolicies` |
+| Update | Project | Mutation | `MergeRequestReviewerRereview` |
 | Update | Project | Mutation | `MergeRequestSetAssignees` |
 | Update | Project | Mutation | `MergeRequestSetBlockingMergeRequests` |
 | Update | Project | Mutation | `MergeRequestSetDraft` |
@@ -1095,6 +1201,14 @@ Grants the ability to approve, create, delete, merge, read, subscribe, and updat
 | Update | Project | Mutation | `MergeRequestSetMilestone` |
 | Update | Project | Mutation | `MergeRequestSetReviewers` |
 | Update | Project | Mutation | `MergeRequestUpdate` |
+
+#### Path Lock
+
+Grants the ability to create path locks.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `ProjectSetLocked` |
 
 #### Push Rule
 
@@ -1114,6 +1228,15 @@ Grants the ability to create, delete, read, and update repositories.
 | Read | Project | Type | `RepositoryBlob` |
 | Read | Project | Type | `Tree` |
 
+#### Repository History
+
+Grants the ability to rewrite repository histories.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Rewrite | Project | Mutation | `projectBlobsRemove` |
+| Rewrite | Project | Mutation | `projectTextReplace` |
+
 #### Repository Tag
 
 Grants the ability to create, delete, and read repository tags.
@@ -1123,6 +1246,15 @@ Grants the ability to create, delete, and read repository tags.
 | Create | Project | Mutation | `TagCreate` |
 | Delete | Project | Mutation | `TagDelete` |
 | Read | Project | Type | `Tag` |
+
+#### Target Branch Rule
+
+Grants the ability to create and delete target branch rules.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `ProjectTargetBranchRuleCreate` |
+| Delete | Project | Mutation | `ProjectTargetBranchRuleDestroy` |
 
 ### Subscription and Licensing resources
 
@@ -1257,6 +1389,16 @@ Grants the ability to create, delete, and update value streams.
 | Delete | Group | Mutation | `ValueStreamDestroy` |
 | Update | Project | Mutation | `ValueStreamUpdate` |
 | Update | Group | Mutation | `ValueStreamUpdate` |
+
+### Wiki resources
+
+#### Wiki
+
+Grants the ability to create, delete, read, subscribe, and update wikis.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Subscribe | Project | Mutation | `WikiPageSubscribe` |
 
 ### Workspace resources
 

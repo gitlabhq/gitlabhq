@@ -8,6 +8,9 @@ module Mutations
       include ResolvesSubscription
       include Mutations::ResolvesIssuable
 
+      authorize_granular_token permissions: :subscribe_merge_request,
+        boundary_argument: :project_path, boundary_type: :project
+
       argument :project_path, GraphQL::Types::ID,
         required: true,
         description: "Project the merge request to mutate is in."

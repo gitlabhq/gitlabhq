@@ -7,12 +7,19 @@ RSpec.describe Users::MigrateHumanRecordsToGhostUserInBatchesWorker, feature_cat
 
   let(:worker) { described_class.new }
 
+  let_it_be(:expected_user_types_for_processing) do
+    ['human']
+  end
+
   describe '#perform', :clean_gitlab_redis_shared_state do
     it 'executes service with lease' do
       lease_key = described_class.name.underscore
 
       expect_to_obtain_exclusive_lease(lease_key, 'uuid')
-      expect_next_instance_of(Users::MigrateUserTypeRecordsToGhostUserInBatchesService, user_type: :human) do |service|
+      expect_next_instance_of(
+        Users::MigrateRecordsToGhostUserInBatchesService,
+        user_types: expected_user_types_for_processing
+      ) do |service|
         expect(service).to receive(:execute).and_return(true)
       end
 
@@ -25,7 +32,7 @@ RSpec.describe Users::MigrateHumanRecordsToGhostUserInBatchesWorker, feature_cat
       end
 
       it 'is no-op' do
-        expect(Users::MigrateUserTypeRecordsToGhostUserInBatchesService).not_to receive(:new)
+        expect(Users::MigrateRecordsToGhostUserInBatchesService).not_to receive(:new)
 
         worker.perform
       end
@@ -33,7 +40,7 @@ RSpec.describe Users::MigrateHumanRecordsToGhostUserInBatchesWorker, feature_cat
   end
 
   it_behaves_like 'an idempotent worker' do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user) { create(:user, user_type: expected_user_types_for_processing.sample) }
     let_it_be(:project) { create(:project, namespace: create(:group)) }
     let_it_be(:ghost_user) { Users::Internal.in_organization(project.organization).ghost }
 

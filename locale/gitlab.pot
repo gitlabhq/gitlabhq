@@ -3691,7 +3691,7 @@ msgstr ""
 msgid "AICatalog|Your bulk enablement of %{link_start}%{item_name}%{link_end} did not complete successfully."
 msgstr ""
 
-msgid "AICatalog|`visibility` argument is not available"
+msgid "AICatalog|`restricted` visibility is not available"
 msgstr ""
 
 msgid "AICatalog|agent"
@@ -31088,16 +31088,34 @@ msgstr ""
 msgid "DuoSecretDetection|Use false positive detection for Secret Detection vulnerabilities on the default branch"
 msgstr ""
 
+msgid "DuoSlack|*Feedback submitted.* Thanks for helping us improve GitLab Duo."
+msgstr ""
+
+msgid "DuoSlack|Cancel"
+msgstr ""
+
 msgid "DuoSlack|Could not set up the service account for the Duo Developer flow. Contact your group owner."
 msgstr ""
 
 msgid "DuoSlack|Could not set up the workspace project. Check that you have access to the namespace and permission to create projects."
 msgstr ""
 
+msgid "DuoSlack|Didn't do what I asked"
+msgstr ""
+
+msgid "DuoSlack|Done"
+msgstr ""
+
 msgid "DuoSlack|Failed to start the Duo Developer workflow. Try again."
 msgstr ""
 
 msgid "DuoSlack|Helpful"
+msgstr ""
+
+msgid "DuoSlack|Incomplete"
+msgstr ""
+
+msgid "DuoSlack|Incorrect or misleading"
 msgstr ""
 
 msgid "DuoSlack|Mark this response as helpful"
@@ -31109,10 +31127,16 @@ msgstr ""
 msgid "DuoSlack|Not helpful"
 msgstr ""
 
+msgid "DuoSlack|Other"
+msgstr ""
+
 msgid "DuoSlack|Plan"
 msgstr ""
 
 msgid "DuoSlack|Set your default Duo namespace in your GitLab preferences (%{preferences_url}) to use Duo from Slack."
+msgstr ""
+
+msgid "DuoSlack|Share feedback"
 msgstr ""
 
 msgid "DuoSlack|Something went wrong while running the task. Try again."
@@ -31121,13 +31145,31 @@ msgstr ""
 msgid "DuoSlack|Something went wrong. Try again."
 msgstr ""
 
+msgid "DuoSlack|Submit"
+msgstr ""
+
+msgid "DuoSlack|Tell us more"
+msgstr ""
+
+msgid "DuoSlack|Tell us what went wrong."
+msgstr ""
+
 msgid "DuoSlack|The Duo Developer flow is not enabled for your namespace. Ask a group owner to enable it in the Duo Agent Platform settings."
 msgstr ""
 
 msgid "DuoSlack|The task completed but the agent didn't produce a response. Check the CI job logs for details."
 msgstr ""
 
+msgid "DuoSlack|This feedback helps us improve Duo. We'll share your feedback and the related session with GitLab."
+msgstr ""
+
 msgid "DuoSlack|View session in GitLab"
+msgstr ""
+
+msgid "DuoSlack|What did you expect to happen?"
+msgstr ""
+
+msgid "DuoSlack|What went wrong?"
 msgstr ""
 
 msgid "DuoSlack|Your message is too long for me to process (the limit is about %{limit} characters). Shorten it and mention me again."
@@ -63724,16 +63766,19 @@ msgstr ""
 msgid "ReleaseCreation|Version"
 msgstr ""
 
+msgid "ReleaseCreation|Version must be a valid SemVer, e.g. 1.2.3 or v1.2.3."
+msgstr ""
+
 msgid "ReleaseCreation|Version name cannot exceed %{maxLength} characters."
+msgstr ""
+
+msgid "ReleaseCreation|e.g. 1.2.3"
 msgstr ""
 
 msgid "ReleaseCreation|e.g. May production release"
 msgstr ""
 
 msgid "ReleaseCreation|e.g. eu-west-1-prod"
-msgstr ""
-
-msgid "ReleaseCreation|e.g. v 2_5_1"
 msgstr ""
 
 msgid "Released"
@@ -68157,6 +68202,9 @@ msgid "Secret push protection encountered a ruleset parse or compile error."
 msgstr ""
 
 msgid "Secret push protection scan timed out. The push was accepted."
+msgstr ""
+
+msgid "Secret push protection skipped due to invalid input."
 msgstr ""
 
 msgid "Secret push protection skipped via"

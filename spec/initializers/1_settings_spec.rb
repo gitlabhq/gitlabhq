@@ -502,7 +502,6 @@ RSpec.describe '1_settings', feature_category: :settings do
         users_deactivate_dormant_users_worker
         users_migrate_records_to_ghost_user_in_batches_worker
         users_migrate_human_records_to_ghost_user_in_batches_worker
-        users_migrate_non_human_records_to_ghost_user_in_batches_worker
         user_status_cleanup_batch_worker
         version_version_check_cron
         work_items_traversal_ids_healing_cron_worker

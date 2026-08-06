@@ -117,15 +117,13 @@ module QA
         context 'with a personal access token' do
           let(:token) { Runtime::User::Store.test_user.current_personal_access_token }
 
-          it_behaves_like 'using a docker container',
-            'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/565150'
+          it_behaves_like 'using a docker container'
         end
 
         context 'with a project deploy token' do
           let(:token) { project_deploy_token.token }
 
-          it_behaves_like 'using a docker container',
-            'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/565148'
+          it_behaves_like 'using a docker container'
         end
       end
     end

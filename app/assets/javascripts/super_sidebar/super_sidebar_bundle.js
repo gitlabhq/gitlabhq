@@ -56,8 +56,6 @@ export const getSuperSidebarData = () => {
   const searchData = convertObjectPropsToCamelCase(sidebarData.search);
   const { searchContext } = searchData;
   const currentPath = sidebarData?.current_context?.item?.fullPath;
-  const projectsPath = sidebarData.projects_path;
-  const groupsPath = sidebarData.groups_path;
   const commandPaletteData = JSON.parse(commandPalette);
   const projectFilesPath = commandPaletteData.project_files_url;
   const projectBlobPath = commandPaletteData.project_blob_url;
@@ -72,8 +70,6 @@ export const getSuperSidebarData = () => {
     isSaas,
     sidebarData,
     searchContext,
-    projectsPath,
-    groupsPath,
     projectFilesPath,
     projectBlobPath,
     commandPaletteCommands,
@@ -89,8 +85,6 @@ export const initSuperSidebar = ({
   isSaas,
   sidebarData,
   searchContext,
-  projectsPath,
-  groupsPath,
   projectFilesPath,
   projectBlobPath,
   commandPaletteCommands,
@@ -116,9 +110,6 @@ export const initSuperSidebar = ({
       searchContext,
       projectFilesPath,
       projectBlobPath,
-      projectsPath,
-      groupsPath,
-      groupPath: groupsPath,
       resourceId: sidebarData.current_context?.item?.id,
       aiSearchAvailable: parseBoolean(sidebarData.ai_search_available),
       fullPath: sidebarData.work_items?.full_path,
@@ -147,8 +138,6 @@ export const initSuperSidebar = ({
 export const initSuperTopbar = ({
   sidebarData,
   searchContext,
-  projectsPath,
-  groupsPath,
   projectFilesPath,
   projectBlobPath,
   commandPaletteCommands,
@@ -171,9 +160,6 @@ export const initSuperTopbar = ({
       searchContext,
       projectFilesPath,
       projectBlobPath,
-      projectsPath,
-      groupsPath,
-      groupPath: groupsPath,
       resourceId: sidebarData.current_context?.item?.id,
       aiSearchAvailable: parseBoolean(sidebarData.ai_search_available),
       fullPath: sidebarData.work_items?.full_path,

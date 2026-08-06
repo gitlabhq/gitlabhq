@@ -1,0 +1,9 @@
+---
+name: delete_target_branch_rule
+description: Grants the ability to delete target branch rules
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - delete_target_branch_rule

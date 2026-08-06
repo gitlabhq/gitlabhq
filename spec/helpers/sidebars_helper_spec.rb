@@ -127,8 +127,6 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
           todos: 3,
           last_update: 1609459200000
         },
-        projects_path: dashboard_projects_path,
-        groups_path: dashboard_groups_path,
         gitlab_com_and_canary: Gitlab.com_and_canary?,
         pinned_items: %w[foo bar],
         shortcut_links: global_shortcut_links,

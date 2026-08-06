@@ -12,6 +12,8 @@ module Mutations
       ERROR
 
       authorize :rewrite_repository_history
+      authorize_granular_token permissions: :rewrite_repository_history,
+        boundary_argument: :project_path, boundary_type: :project
 
       argument :project_path, GraphQL::Types::ID,
         required: true,

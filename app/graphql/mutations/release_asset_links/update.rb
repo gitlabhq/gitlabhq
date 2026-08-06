@@ -6,6 +6,8 @@ module Mutations
       graphql_name 'ReleaseAssetLinkUpdate'
 
       authorize :update_release
+      authorize_granular_token permissions: :update_release_link,
+        boundary_argument: :id, boundary: :project, boundary_type: :project
 
       ReleaseAssetLinkID = ::Types::GlobalIDType[::Releases::Link]
 

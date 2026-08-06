@@ -32,8 +32,8 @@ module QA
       end
     end
 
-    shared_examples 'using a docker container' do |testcase|
-      it 'push and pull a npm package', testcase: testcase do
+    shared_examples 'using a docker container' do
+      it 'push and pull a npm package' do
         project.visit!
 
         Page::Project::Menu.perform(&:go_to_package_registry)

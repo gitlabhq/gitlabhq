@@ -6,7 +6,9 @@ product_categories:
 - importers
 performance_indicator_type: []
 value_type: number
-status: active
+status: removed
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248237
+milestone_removed: '19.3'
 milestone: '19.3'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245668
 time_frame: 7d

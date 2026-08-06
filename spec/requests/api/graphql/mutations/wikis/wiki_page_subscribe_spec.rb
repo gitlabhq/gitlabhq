@@ -28,6 +28,17 @@ RSpec.describe 'Subscribe to a wiki page', feature_category: :wiki do
     it_behaves_like 'a mutation that returns a top-level access error'
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :subscribe_wiki do
+    let(:user) { guest }
+    let(:boundary_object) { project }
+    let(:request) do
+      post_graphql_mutation(
+        graphql_mutation(:wiki_page_subscribe, { id: wiki_page_meta.to_global_id.to_s, subscribed: true }, 'errors'),
+        token: { personal_access_token: pat }
+      )
+    end
+  end
+
   shared_examples 'sets the subscription to the wiki pages notifications', :aggregate_failures do |setting|
     it 'successfully adds the subscription' do
       expect { post_graphql_mutation(mutation, current_user: current_user) }

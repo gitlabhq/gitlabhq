@@ -451,10 +451,6 @@ users_migrate_human_records_to_ghost_user_in_batches_worker:
   class: Users::MigrateHumanRecordsToGhostUserInBatchesWorker
   cron: "*/2 * * * *"
 
-users_migrate_non_human_records_to_ghost_user_in_batches_worker:
-  class: Users::MigrateNonHumanRecordsToGhostUserInBatchesWorker
-  cron: "*/2 * * * *"
-
 version_version_check_cron:
   class: Gitlab::Scheduling::ScheduleWithinWorker
   cron: "0 0 * * * UTC"

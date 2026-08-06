@@ -25,26 +25,6 @@ RSpec.describe Users::GhostUserMigration do
 
       it { is_expected.to eq([ghost_user_migration_2, ghost_user_migration_1]) }
     end
-
-    describe '.for_humans' do
-      let_it_be(:human_migration) { create(:ghost_user_migration, user: create(:user)) }
-      let_it_be(:bot_migration) { create(:ghost_user_migration, user: create(:user, :project_bot)) }
-      let_it_be(:service_account_migration) { create(:ghost_user_migration, user: create(:user, :service_account)) }
-
-      it 'returns only migrations for human users' do
-        expect(described_class.for_humans).to contain_exactly(human_migration)
-      end
-    end
-
-    describe '.for_non_humans' do
-      let_it_be(:human_migration) { create(:ghost_user_migration, user: create(:user)) }
-      let_it_be(:bot_migration) { create(:ghost_user_migration, user: create(:user, :project_bot)) }
-      let_it_be(:service_account_migration) { create(:ghost_user_migration, user: create(:user, :service_account)) }
-
-      it 'returns migrations for all non-human users' do
-        expect(described_class.for_non_humans).to contain_exactly(bot_migration, service_account_migration)
-      end
-    end
   end
 
   describe 'before_create' do

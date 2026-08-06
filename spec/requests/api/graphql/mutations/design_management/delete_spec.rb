@@ -119,6 +119,21 @@ RSpec.describe "deleting designs", feature_category: :design_management do
     end
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :delete_design do
+    let(:user) { reporter }
+    let(:boundary_object) { project }
+    let(:request) do
+      post_graphql_mutation(
+        graphql_mutation(
+          :design_management_delete,
+          { project_path: project.full_path, iid: issue.iid, filenames: designs.map(&:filename) },
+          'errors'
+        ),
+        token: { personal_access_token: pat }
+      )
+    end
+  end
+
   private
 
   def create_designs(how_many = 2)

@@ -2,19 +2,16 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::MigrateUserTypeRecordsToGhostUserInBatchesService, feature_category: :user_management do
-  describe '#initialize' do
-    it 'raises ArgumentError when user_type is unknown' do
-      expect { described_class.new(user_type: :other) }.to raise_error(ArgumentError, /Unknown user_type/)
-    end
-  end
-
+RSpec.describe Users::MigrateRecordsToGhostUserInBatchesService, feature_category: :user_management do
   describe '#execute' do
     let_it_be_with_reload(:human_migration) { create(:ghost_user_migration, user: create(:user)) }
-    let_it_be_with_reload(:bot_migration) { create(:ghost_user_migration, user: create(:user, :project_bot)) }
+    let_it_be_with_reload(:project_bot_migration) { create(:ghost_user_migration, user: create(:user, :project_bot)) }
+    let_it_be_with_reload(:service_account_migration) do
+      create(:ghost_user_migration, user: create(:user, :service_account))
+    end
 
-    context 'with user_type: :human' do
-      let(:service) { described_class.new(user_type: :human) }
+    context 'with user_types: [:human]' do
+      let(:service) { described_class.new(user_types: [:human]) }
 
       it 'processes only human migrations' do
         expect(Users::MigrateRecordsToGhostUserService).to(
@@ -26,7 +23,11 @@ RSpec.describe Users::MigrateUserTypeRecordsToGhostUserInBatchesService, feature
 
       it 'does not process non-human migrations' do
         expect(Users::MigrateRecordsToGhostUserService).not_to(
-          receive(:new).with(bot_migration.user, anything, anything)
+          receive(:new).with(project_bot_migration.user, anything, anything)
+        )
+
+        expect(Users::MigrateRecordsToGhostUserService).not_to(
+          receive(:new).with(service_account_migration.user, anything, anything)
         )
 
         service.execute
@@ -83,12 +84,16 @@ RSpec.describe Users::MigrateUserTypeRecordsToGhostUserInBatchesService, feature
       end
     end
 
-    context 'with user_type: :non_human' do
-      let(:service) { described_class.new(user_type: :non_human) }
+    context 'with user_types: [:project_bot, :service_account]' do
+      let(:service) { described_class.new(user_types: [:project_bot, :service_account]) }
 
-      it 'processes only non-human migrations' do
+      it 'processes only project_bot and service_account migrations' do
         expect(Users::MigrateRecordsToGhostUserService).to(
-          receive(:new).with(bot_migration.user, bot_migration.initiator_user, any_args)
+          receive(:new).with(project_bot_migration.user, project_bot_migration.initiator_user, any_args)
+        ).and_call_original
+
+        expect(Users::MigrateRecordsToGhostUserService).to(
+          receive(:new).with(service_account_migration.user, service_account_migration.initiator_user, any_args)
         ).and_call_original
 
         service.execute
@@ -113,7 +118,7 @@ RSpec.describe Users::MigrateUserTypeRecordsToGhostUserInBatchesService, feature
       end
 
       it 'process jobs ordered by the consume_after timestamp' do
-        older_bot_migration = create(
+        older_project_bot_migration = create(
           :ghost_user_migration,
           user: create(:user, :project_bot),
           consume_after: 5.minutes.ago
@@ -125,7 +130,7 @@ RSpec.describe Users::MigrateUserTypeRecordsToGhostUserInBatchesService, feature
         end
 
         expect(Users::MigrateRecordsToGhostUserService).to(
-          receive(:new).with(older_bot_migration.user, older_bot_migration.initiator_user, any_args)
+          receive(:new).with(older_project_bot_migration.user, older_project_bot_migration.initiator_user, any_args)
         ).and_call_original
 
         service.execute
@@ -137,19 +142,51 @@ RSpec.describe Users::MigrateUserTypeRecordsToGhostUserInBatchesService, feature
         end
         expect(Gitlab::ErrorTracking).to receive(:track_exception)
 
+        expect_next_instance_of(Users::MigrateRecordsToGhostUserService) do |migrate_service|
+          expect(migrate_service).to(receive(:execute)).and_call_original
+        end
+
         expect { service.execute }.to(
-          change { bot_migration.reload.consume_after }.to(30.minutes.from_now))
+          change { project_bot_migration.reload.consume_after }.to(30.minutes.from_now))
       end
 
       it 'defers job to the back of the queue when the execution time limit is reached', :freeze_time do
-        bot_migration.update!(consume_after: 1.hour.from_now)
+        service_account_migration.update!(consume_after: 1.hour.from_now)
 
+        # setup execution tracker to only allow a single job to be processed
+        allow_next_instance_of(::Gitlab::Utils::ExecutionTracker) do |tracker|
+          allow(tracker).to receive(:over_limit?).and_return(false, true)
+        end
         expect_next_instance_of(Users::MigrateRecordsToGhostUserService) do |migrate_service|
           expect(migrate_service).to(receive(:execute)).and_raise(::Gitlab::Utils::ExecutionTracker::ExecutionTimeOutError)
         end
 
         expect { service.execute }.to(
-          change { bot_migration.reload.consume_after }.to(1.hour.from_now + 30.seconds))
+          change { project_bot_migration.reload.consume_after }.to(1.hour.from_now + 30.seconds))
+      end
+    end
+
+    context 'when split_ghost_user_migration_queue_into_human_and_non_human FF is disabled' do
+      let(:service) { described_class.new(user_types: [:human, :service_account]) }
+
+      before do
+        stub_feature_flags(split_ghost_user_migration_queue_into_human_and_non_human: false)
+      end
+
+      it 'processes all migrations regardless user_types passed' do
+        expect(Users::MigrateRecordsToGhostUserService).to(
+          receive(:new).with(human_migration.user, human_migration.initiator_user, any_args)
+        ).and_call_original
+
+        expect(Users::MigrateRecordsToGhostUserService).to(
+          receive(:new).with(project_bot_migration.user, project_bot_migration.initiator_user, any_args)
+        ).and_call_original
+
+        expect(Users::MigrateRecordsToGhostUserService).to(
+          receive(:new).with(service_account_migration.user, service_account_migration.initiator_user, any_args)
+        ).and_call_original
+
+        service.execute
       end
     end
   end

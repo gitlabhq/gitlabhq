@@ -10,8 +10,6 @@ import { frecentGroupsMock } from '../../../mock_data';
 
 Vue.use(VueApollo);
 
-const TEST_GROUPS_PATH = '/mock/group/path';
-
 describe('FrequentlyVisitedGroups', () => {
   /** @type {import('@vue/test-utils').Wrapper} */
   let wrapper;
@@ -25,9 +23,6 @@ describe('FrequentlyVisitedGroups', () => {
 
     wrapper = shallowMount(FrequentGroups, {
       apolloProvider: mockApollo,
-      provide: {
-        groupsPath: TEST_GROUPS_PATH,
-      },
       ...options,
     });
   };
@@ -55,7 +50,7 @@ describe('FrequentlyVisitedGroups', () => {
       groupName: 'Frequently visited groups',
       viewAllItemsIcon: 'group',
       viewAllItemsText: 'View all my groups',
-      viewAllItemsPath: TEST_GROUPS_PATH,
+      viewAllItemsPath: '/dashboard/groups',
     });
   });
 

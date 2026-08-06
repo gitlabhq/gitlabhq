@@ -178,7 +178,7 @@ func (a *runHTTPActionHandler) Execute(ctx context.Context, action *pb.Action) (
 	httpActionDurationSeconds.WithLabelValues(method).Observe(time.Since(start).Seconds())
 
 	if err != nil {
-		httpActionErrorsTotal.WithLabelValues(httpActionErrorType(err)).Inc()
+		httpActionErrorsTotal.WithLabelValues(method, httpActionErrorType(err)).Inc()
 		httpActionsTotal.WithLabelValues(method, "0").Inc()
 	} else {
 		httpActionsTotal.WithLabelValues(method, strconv.Itoa(nrw.status)).Inc()

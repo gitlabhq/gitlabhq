@@ -133,4 +133,21 @@ RSpec.describe 'Importing Jira Users', feature_category: :importers do
       end
     end
   end
+
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :create_jira_import do
+    let(:user) { create(:user, maintainer_of: project) }
+    let(:boundary_object) { project }
+
+    before do
+      users = [{ jira_account_id: '12a', jira_display_name: 'user 1' }]
+      allow(JiraImport::UsersImporter).to receive(:new)
+        .and_return(instance_double(JiraImport::UsersImporter, execute: ServiceResponse.success(payload: users)))
+    end
+
+    let(:mutation) do
+      graphql_mutation(:jira_import_users, { project_path: project.full_path, start_at: 7 }, 'errors')
+    end
+
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
 end

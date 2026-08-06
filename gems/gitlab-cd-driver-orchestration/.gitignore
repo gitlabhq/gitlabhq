@@ -1,0 +1,13 @@
+/.bundle/
+/.yardoc
+/_yardoc/
+/coverage/
+/doc/
+/pkg/
+/spec/reports/
+/tmp/
+# Where the Ruby CI jobs install the bundle (BUNDLE_PATH), so they can cache it.
+/vendor/
+
+# rspec failure tracking
+.rspec_status

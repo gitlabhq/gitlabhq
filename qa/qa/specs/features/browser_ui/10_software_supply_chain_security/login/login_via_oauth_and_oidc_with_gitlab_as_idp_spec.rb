@@ -50,8 +50,8 @@ module QA
       end
     end
 
-    shared_examples 'Instance OAuth Application' do |app_type, testcase|
-      it "creates #{app_type} application and uses it to login", testcase: testcase do
+    shared_examples 'Instance OAuth Application' do |app_type|
+      it "creates #{app_type} application and uses it to login" do
         instance_oauth_app
 
         Page::Main::Menu.perform(&:sign_out_if_signed_in)
@@ -125,7 +125,7 @@ module QA
       # be created here.
       # GitLab instance stood up in docker with address gitlab-oidc-consumer.test (or gitlab-oidc-consumer.bridge) is
       # the consumer - The GitLab OIDC Login button will be displayed here.
-      it_behaves_like 'Instance OAuth Application', :oidc, 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/405137'
+      it_behaves_like 'Instance OAuth Application', :oidc
     end
 
     describe 'OAuth' do
@@ -160,7 +160,7 @@ module QA
       # be created here.
       # GitLab instance stood up in docker with address gitlab-oauth-consumer.test (or gitlab-oauth-consumer.bridge) is
       # the consumer - The GitLab OAuth Login button will be displayed here.
-      it_behaves_like 'Instance OAuth Application', :oauth, 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/412111'
+      it_behaves_like 'Instance OAuth Application', :oauth
     end
   end
 end

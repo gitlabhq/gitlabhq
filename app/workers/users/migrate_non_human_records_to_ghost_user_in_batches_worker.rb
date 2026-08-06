@@ -12,11 +12,9 @@ module Users
     idempotent!
 
     def perform
-      return unless Feature.enabled?(:split_ghost_user_migration_queue_into_human_and_non_human, :instance)
-
-      in_lock(self.class.name.underscore, ttl: Gitlab::Utils::ExecutionTracker::MAX_RUNTIME, retries: 0) do
-        Users::MigrateUserTypeRecordsToGhostUserInBatchesService.new(user_type: :non_human).execute
-      end
+      # no-op in favor of Users::MigrateRecordsToGhostUserInBatchesWorker
+      #
+      # The worker is scheduled for removal by https://gitlab.com/gitlab-org/gitlab/-/work_items/607137
     end
   end
 end

@@ -108,9 +108,8 @@ RSpec.describe Import::Offline::Exports::CreateService, :aggregate_failures, fea
         .with(user: current_user, additional_properties: { label: 'aws' })
         .and increment_usage_metrics(
           'redis_hll_counters.count_distinct_user_id_from_start_offline_transfer_export_monthly',
-          'redis_hll_counters.count_distinct_user_id_from_start_offline_transfer_export_weekly',
-          'counts.count_total_start_offline_transfer_export_monthly',
-          'counts.count_total_start_offline_transfer_export'
+          'counts.count_total_start_offline_transfer_export',
+          'counts.count_total_start_offline_transfer_export_monthly'
         )
     end
 

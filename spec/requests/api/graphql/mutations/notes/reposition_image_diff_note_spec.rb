@@ -34,6 +34,17 @@ RSpec.describe 'Repositioning an ImageDiffNote', feature_category: :code_review_
     graphql_mutation_response(:reposition_image_diff_note)
   end
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :update_note do
+    let(:user) { project.creator }
+    let(:boundary_object) { project }
+    let(:request) do
+      post_graphql_mutation(
+        graphql_mutation(:reposition_image_diff_note, { id: global_id_of(note), position: { x: 10 } }, 'errors'),
+        token: { personal_access_token: pat }
+      )
+    end
+  end
+
   it 'updates the note', :aggregate_failures do
     expect do
       post_graphql_mutation(mutation, current_user: current_user)

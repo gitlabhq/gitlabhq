@@ -580,6 +580,74 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
         expect(batched_migration.status_name).to be :active
       end
     end
+
+    context 'when the failed job is still retryable' do
+      let!(:retryable_job) do
+        create(:batched_background_migration_job, :failed,
+          batched_migration: batched_migration, attempts: 2)
+      end
+
+      it 'does not split the job or reset its attempts' do
+        expect { retry_failed_jobs }
+          .to not_change { retryable_job.reload.attempts }
+          .and not_change { batched_migration.batched_jobs.count }
+      end
+
+      it 'moves the status of the migration to active' do
+        retry_failed_jobs
+
+        expect(batched_migration.status_name).to be :active
+      end
+    end
+
+    context 'when the migration is cursor based' do
+      let(:cursor_job_class) do
+        stub_const('Gitlab::BackgroundMigration::TestCursorJob',
+          Class.new(Gitlab::BackgroundMigration::BatchedMigrationJob) do
+            cursor :id
+          end
+        )
+      end
+
+      let(:batched_migration) do
+        create(:batched_background_migration, :failed,
+          job_class_name: cursor_job_class.name.demodulize)
+      end
+
+      let!(:failed_job) do
+        create(:batched_background_migration_job, :failed,
+          batched_migration: batched_migration,
+          min_cursor: [1],
+          max_cursor: [100],
+          attempts: 3)
+      end
+
+      it 'resets attempts to 0 for failed jobs' do
+        retry_failed_jobs
+
+        expect(failed_job.reload.attempts).to be_zero
+      end
+
+      it 'moves the status of the migration to active' do
+        retry_failed_jobs
+
+        expect(batched_migration.status_name).to be :active
+      end
+
+      context 'when the failed job is still retryable' do
+        let!(:retryable_job) do
+          create(:batched_background_migration_job, :failed,
+            batched_migration: batched_migration,
+            min_cursor: [101],
+            max_cursor: [200],
+            attempts: 2)
+        end
+
+        it 'does not reset its attempts' do
+          expect { retry_failed_jobs }.not_to change { retryable_job.reload.attempts }
+        end
+      end
+    end
   end
 
   describe '#should_stop?' do

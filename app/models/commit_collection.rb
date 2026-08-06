@@ -40,6 +40,13 @@ class CommitCollection
     )
   end
 
+  def committer_emails(with_merge_commits: false, include_author_when_signed: false)
+    committers_emails(
+      with_merge_commits: with_merge_commits,
+      include_author_when_signed: include_author_when_signed
+    )
+  end
+
   def committers_lazy(with_merge_commits: false, include_author_when_signed: false)
     emails = committers_emails(
       with_merge_commits: with_merge_commits,

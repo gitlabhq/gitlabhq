@@ -7,7 +7,7 @@ module QA
       let!(:owner_api_client) { owner.api_client }
       let!(:maintainer) { create(:user) }
 
-      shared_examples 'adds user as owner' do |project_type, testcase|
+      shared_examples 'adds user as owner' do |project_type|
         let!(:issue) do
           create(:issue, title: 'Test Owner Deletes Issue', project: project, api_client: owner_api_client)
         end
@@ -17,7 +17,7 @@ module QA
           Flow::Login.sign_in(as: owner)
         end
 
-        it "has owner role and permissions", testcase: testcase do
+        it "has owner role and permissions" do
           Page::Main::Menu.perform(&:go_to_projects)
           Page::Dashboard::Projects.perform do |projects|
             projects.click_member_tab
@@ -34,7 +34,7 @@ module QA
         end
       end
 
-      shared_examples 'adds user as maintainer' do |testcase|
+      shared_examples 'adds user as maintainer' do
         let!(:issue) do
           create(:issue, title: 'Test Maintainer Deletes Issue', project: project, api_client: owner_api_client)
         end
@@ -44,7 +44,7 @@ module QA
           Flow::Login.sign_in(as: maintainer)
         end
 
-        it "has maintainer role without owner permissions", testcase: testcase do
+        it "has maintainer role without owner permissions" do
           Page::Main::Menu.perform(&:go_to_projects)
           Page::Dashboard::Projects.perform do |projects|
             projects.click_member_tab
@@ -62,16 +62,16 @@ module QA
       context 'for personal projects' do
         let!(:project) { create(:project, name: 'qa-owner-personal-project', personal_namespace: owner.username) }
 
-        it_behaves_like 'adds user as owner', :personal_project, 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/352542'
-        it_behaves_like 'adds user as maintainer', 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/352607'
+        it_behaves_like 'adds user as owner', :personal_project
+        it_behaves_like 'adds user as maintainer'
       end
 
       context 'for group projects' do
         let!(:group) { create(:group) }
         let!(:project) { create(:project, name: 'qa-owner-group-project', group: group) }
 
-        it_behaves_like 'adds user as owner', :group_project, 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/366436'
-        it_behaves_like 'adds user as maintainer', 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/366435'
+        it_behaves_like 'adds user as owner', :group_project
+        it_behaves_like 'adds user as maintainer'
       end
     end
   end
