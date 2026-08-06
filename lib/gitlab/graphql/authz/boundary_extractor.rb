@@ -53,12 +53,15 @@ module Gitlab
 
           record = locate(@arguments[directive.arguments[:boundary_argument].to_sym])
           return unless record
-          return record if record.is_a?(::Project) || record.is_a?(::Group)
 
+          # When a boundary method is declared, always resolve through it, even
+          # for a Project/Group argument. This lets a directive normalize the
+          # argument to the namespace the object is actually created on
+          # (e.g. `boundary: :root_ancestor`), keeping the boundary and object aligned.
           method_name = boundary_method(directive)
-          return unless method_name
+          return record.try(method_name) if method_name
 
-          record.try(method_name)
+          record if record.is_a?(::Project) || record.is_a?(::Group)
         end
 
         def resource_from_object(directive)

@@ -1,0 +1,12 @@
+---
+name: update_compliance_framework
+description: Grants the ability to update compliance frameworks
+boundaries:
+  - group
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - update_compliance_framework
+  - update_compliance_requirement
+  - update_compliance_requirements_control

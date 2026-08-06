@@ -16,11 +16,10 @@ module CustomAttributes
       validate_resource_type!
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord -- Custom attribute CRUD is simple enough to not need a separate abstraction
     def execute
       return ServiceResponse.error(message: 'unauthorized', reason: :unauthorized) unless authorized?
 
-      custom_attribute = resource.custom_attributes.find_or_initialize_by(key: key)
+      custom_attribute = resource.custom_attributes.find_or_initialize_by_key(key)
       custom_attribute.value = value
 
       if custom_attribute.save
@@ -29,7 +28,6 @@ module CustomAttributes
         ServiceResponse.error(message: custom_attribute.errors.full_messages)
       end
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     private
 

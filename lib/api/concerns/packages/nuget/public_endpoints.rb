@@ -61,7 +61,7 @@ module API
                   { code: 404, message: 'Not Found' }
                 ]
                 headers Symbolchecksum: {
-                  type: String,
+                  type: 'String',
                   desc: 'The SHA256 checksums of the symbol file',
                   required: true
                 }

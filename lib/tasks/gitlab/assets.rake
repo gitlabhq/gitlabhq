@@ -34,18 +34,18 @@ namespace :gitlab do
 
         log_path = ENV['WEBPACK_COMPILE_LOG_PATH']
 
-        cmd = 'yarn webpack'
+        cmd = 'yarn build'
         cmd += " > #{log_path} 2>&1" if log_path
 
         log_path_message = ""
 
         if log_path
-          puts "Compiling frontend assets with webpack, running: #{cmd}"
+          puts "Compiling frontend assets, running: #{cmd}"
 
-          log_path_message += "\nWritten webpack log written to #{log_path}"
+          log_path_message += "\nBuild log written to #{log_path}"
 
           if ENV['CI_JOB_URL']
-            log_path_message += "\nYou can inspect the webpack full log here:"
+            log_path_message += "\nYou can inspect the full build log here:"
             log_path_message += "#{ENV['CI_JOB_URL']}/artifacts/file/#{log_path}"
           end
         end
@@ -66,10 +66,10 @@ namespace :gitlab do
         ENV['SIDEKIQ_ASSETS_DEST_PATH'] = File.join(AssetsSha::PUBLIC_ASSETS_DIR, "sidekiq")
 
         unless system(cmd)
-          puts Rainbow('Error: Unable to compile webpack production bundle.').red
+          puts Rainbow('Error: Unable to compile production assets.').red
 
           if log_path
-            puts "Last 100 line of webpack log:"
+            puts "Last 100 lines of the build log:"
             system("tail -n 100 #{log_path}")
           end
 

@@ -1,0 +1,9 @@
+---
+name: update_compliance_violations_report
+description: Grants the ability to update compliance violations report
+boundaries:
+  - project
+available_for:
+  - granular_access_token
+permissions:
+  - update_compliance_violations_report

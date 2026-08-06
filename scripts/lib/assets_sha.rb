@@ -12,7 +12,7 @@ module AssetsSha
   # In the new caching strategy, we check the assets hash sum *before* compiling
   # the app/assets/javascripts/locale/**/app.js files. That means the hash sum
   # must depend on locale/**/gitlab.po.
-  JS_ASSET_PATTERNS = %w[*.js config/**/*.js scripts/frontend/*.{mjs,js} locale/**/gitlab.po].freeze
+  JS_ASSET_PATTERNS = %w[*.js config/**/*.{js,mjs} scripts/frontend/*.{mjs,js} locale/**/gitlab.po].freeze
 
   JS_ASSET_FILES = %w[
     package.json
@@ -46,10 +46,16 @@ module AssetsSha
     def sha256_of_assets_impacting_compilation
       assets_sha256 = assets_impacting_compilation.map { |asset_file| Digest::SHA256.file(asset_file).hexdigest }.join
 
+      assets_sha256 += bundler_name
+
       Digest::SHA256.hexdigest(assets_sha256)
     end
 
     private
+
+    def bundler_name
+      ENV['ENABLE_RSPACK'] == 'true' ? 'rspack' : 'webpack'
+    end
 
     # Files listed here should match the list in:
     # .assets-compilation-patterns in .gitlab/ci/rules.gitlab-ci.yml

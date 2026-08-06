@@ -49,7 +49,7 @@ RSpec.shared_examples 'rich text editor - common' do
       type_in_content_editor :enter
       type_in_content_editor "list item 2"
 
-      wait_until_hidden_field_is_updated(/list item/)
+      wait_until_hidden_field_is_updated(/list item 2/)
 
       switch_to_markdown_editor
 

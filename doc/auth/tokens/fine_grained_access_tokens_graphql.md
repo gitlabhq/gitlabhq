@@ -75,6 +75,20 @@ Grants the ability to read secrets managers.
 | Read | Group | Type | `SecretsManagerEntitlement` |
 | Read | Group | Mutation | `SecretsManagerStartTrial` |
 
+#### Security Attribute
+
+Grants the ability to create, delete, and update security attributes.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Group | Mutation | `SecurityAttributeCreate` |
+| Create | Group | Mutation | `SecurityCategoryCreate` |
+| Delete | Group | Mutation | `SecurityAttributeDestroy` |
+| Delete | Group | Mutation | `SecurityCategoryDestroy` |
+| Update | Project | Mutation | `SecurityAttributeProjectUpdate` |
+| Update | Group | Mutation | `SecurityAttributeUpdate` |
+| Update | Group | Mutation | `SecurityCategoryUpdate` |
+
 #### Security Dashboard
 
 Grants the ability to update security dashboards.
@@ -513,6 +527,43 @@ Grants the ability to create, delete, and update audit event streaming destinati
 | Update | Instance | Mutation | `InstanceExternalAuditEventDestinationUpdate` |
 | Update | Instance | Mutation | `InstanceGoogleCloudLoggingConfigurationUpdate` |
 
+#### Compliance Dashboard
+
+Grants the ability to read compliance dashboards.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Read | Group | Mutation | `RefreshStandardsAdherenceChecks` |
+
+#### Compliance Framework
+
+Grants the ability to create, delete, and update compliance frameworks.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Group | Mutation | `CreateComplianceFramework` |
+| Create | Group | Mutation | `CreateComplianceFrameworkFromTemplate` |
+| Create | Group | Mutation | `CreateComplianceRequirement` |
+| Create | Group | Mutation | `CreateComplianceRequirementsControl` |
+| Delete | Group | Mutation | `DestroyComplianceFramework` |
+| Delete | Group | Mutation | `DestroyComplianceRequirement` |
+| Delete | Group | Mutation | `DestroyComplianceRequirementsControl` |
+| Update | Project | Mutation | `ProjectSetComplianceFramework` |
+| Update | Project | Mutation | `ProjectUpdateComplianceFrameworks` |
+| Update | Group | Mutation | `UpdateComplianceFramework` |
+| Update | Group | Mutation | `UpdateComplianceRequirement` |
+| Update | Group | Mutation | `UpdateComplianceRequirementsControl` |
+
+#### Compliance Violations Report
+
+Grants the ability to update compliance violations reports.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Update | Project | Mutation | `LinkProjectComplianceViolationIssue` |
+| Update | Project | Mutation | `UnlinkProjectComplianceViolationIssue` |
+| Update | Project | Mutation | `UpdateProjectComplianceViolation` |
+
 #### External Status Check
 
 Grants the ability to create, delete, read, retry, and update external status checks.
@@ -653,12 +704,17 @@ Grants the ability to create, delete, and read LDAP admin role links
 
 #### Member Role
 
-Grants the ability to create, delete, and read member roles.
+Grants the ability to assign, create, delete, read, and update member roles.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
+| Assign | Instance | Mutation | `MemberRoleToUserAssign` |
 | Create | Group | Mutation | `MemberRoleCreate` |
 | Create | Instance | Mutation | `MemberRoleCreate` |
+| Delete | Group | Mutation | `MemberRoleDelete` |
+| Delete | Instance | Mutation | `MemberRoleDelete` |
+| Update | Group | Mutation | `MemberRoleUpdate` |
+| Update | Instance | Mutation | `MemberRoleUpdate` |
 
 #### Namespace
 
@@ -1337,6 +1393,7 @@ Grants the ability to create, delete, read, and update members.
 | ------ | ------ | ---- | ---- |
 | Read | Project | Type | `ProjectMember` |
 | Read | Group | Type | `GroupMember` |
+| Read | Group | Mutation | `GroupMembersExport` |
 | Update | Project | Mutation | `ProjectMemberBulkUpdate` |
 | Update | Group | Mutation | `GroupMemberBulkUpdate` |
 

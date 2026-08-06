@@ -685,7 +685,10 @@ webpack-dev-server:
     - .default-utils-before_script
     - .yarn-cache
     - .repo-from-artifacts
-    - .frontend:rules:default-frontend-jobs
+  rules:
+    - if: '$ENABLE_RSPACK == "true"'
+      when: never
+    - !reference [".frontend:rules:default-frontend-jobs", rules]
   stage: test-frontend
   variables:
     WEBPACK_MEMORY_TEST: "true"
@@ -767,7 +770,10 @@ bundle-size-review:
     - .default-retry
     - .default-before_script
     - .assets-compile-cache-pull
-    - .frontend:rules:bundle-size-review
+  rules:
+    - if: '$ENABLE_RSPACK == "true"'
+      when: never
+    - !reference [".frontend:rules:bundle-size-review", rules]
   stage: test-frontend
   needs:
     - job: compile-fe-islands

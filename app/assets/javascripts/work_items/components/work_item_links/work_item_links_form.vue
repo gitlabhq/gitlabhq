@@ -514,6 +514,7 @@ export default {
         variant="confirm"
         size="small"
         type="submit"
+        class="js-no-auto-disable"
         :disabled="!canSubmitForm"
         :loading="submitInProgress"
         data-testid="add-child-form-button"

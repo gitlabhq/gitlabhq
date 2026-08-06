@@ -39,6 +39,22 @@ RSpec.describe WebpackHelper, feature_category: :tooling do
     end
   end
 
+  describe '#bundler_manifest_filename' do
+    it 'uses the Webpack manifest by default' do
+      expect(helper.bundler_manifest_filename).to eq(Gitlab.config.webpack.manifest_filename)
+    end
+
+    context 'when ENABLE_RSPACK is set' do
+      before do
+        stub_env('ENABLE_RSPACK', 'true')
+      end
+
+      it 'uses the Rspack manifest' do
+        expect(helper.bundler_manifest_filename).to eq('manifest.rspack.json')
+      end
+    end
+  end
+
   context 'when vite enabled' do
     let(:bundle) { 'bundle.js' }
 

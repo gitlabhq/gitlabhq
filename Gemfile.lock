@@ -989,15 +989,15 @@ GEM
       rspec-parameterized (>= 1.0, < 3.0)
       table_print (= 1.5.7)
       zeitwerk (>= 2, < 3)
-    gitlab_query_language (0.31.0)
+    gitlab_query_language (0.33.0)
       rb_sys (~> 0.9.91)
-    gitlab_query_language (0.31.0-aarch64-linux-gnu)
+    gitlab_query_language (0.33.0-aarch64-linux-gnu)
       rb_sys (~> 0.9.91)
-    gitlab_query_language (0.31.0-arm64-darwin)
+    gitlab_query_language (0.33.0-arm64-darwin)
       rb_sys (~> 0.9.91)
-    gitlab_query_language (0.31.0-x86_64-darwin)
+    gitlab_query_language (0.33.0-x86_64-darwin)
       rb_sys (~> 0.9.91)
-    gitlab_query_language (0.31.0-x86_64-linux-gnu)
+    gitlab_query_language (0.33.0-x86_64-linux-gnu)
       rb_sys (~> 0.9.91)
     globalid (1.1.0)
       activesupport (>= 5.0)
@@ -1126,9 +1126,8 @@ GEM
       grape (>= 2.0, < 4)
       rake (> 12)
       ruby2_keywords (~> 0.0.2)
-    grape-swagger (2.1.2)
-      grape (>= 1.7, < 3.0)
-      rack-test (~> 2)
+    grape-swagger (2.1.4)
+      grape (>= 1.7, < 4.0)
     grape-swagger-entity (0.7.1)
       grape-entity (~> 1)
       grape-swagger (~> 2)
@@ -2566,7 +2565,7 @@ DEPENDENCIES
   gitlab_chronic_duration (~> 0.12)
   gitlab_omniauth-ldap (~> 2.3.0)
   gitlab_quality-test_tooling (~> 3.20.2)
-  gitlab_query_language (~> 0.31.0)
+  gitlab_query_language (~> 0.33.0)
   gon (~> 6.5.0)
   google-apis-androidpublisher_v3 (~> 0.92.0)
   google-apis-cloudbilling_v1 (~> 0.22.0)
@@ -2588,7 +2587,7 @@ DEPENDENCIES
   grape (~> 2.4)
   grape-entity (~> 1.1.0)
   grape-path-helpers (~> 2.1)
-  grape-swagger (~> 2.1.2)
+  grape-swagger (~> 2.1.4)
   grape-swagger-entity (~> 0.7.0)
   grape_logging (~> 3.0)
   graphlyte (~> 1.0.0)
@@ -3086,11 +3085,11 @@ CHECKSUMS
   gitlab_chronic_duration (0.12.0) sha256=0d766944d415b5c831f176871ee8625783fc0c5bfbef2d79a3a616f207ffc16d
   gitlab_omniauth-ldap (2.3.0) sha256=167036fe37c2711f2e1d2047260766e4c9b31ac37dfc873b101bcd4ea2a3a3b4
   gitlab_quality-test_tooling (3.20.2) sha256=2f1074fc3a1d5fc2904856cb7991227e3cf72c8ad088afaab28cad35a0f5e8b1
-  gitlab_query_language (0.31.0) sha256=7967485a12355b08d626fae4c23646cae5a342f9dda29e583f5419605a441489
-  gitlab_query_language (0.31.0-aarch64-linux-gnu) sha256=19ac82da9bd271472953e085053fa2772a20cccbc64cedd98973e79af4218c7f
-  gitlab_query_language (0.31.0-arm64-darwin) sha256=192a27affade3ac64aa95dde4d9518139e4e0cd3f31e15ff812e1eef2269cdab
-  gitlab_query_language (0.31.0-x86_64-darwin) sha256=452679b6a5a3422cdc22d7a37135b4c4c9f13c4f93c9b60d87ce7f3cbe51595c
-  gitlab_query_language (0.31.0-x86_64-linux-gnu) sha256=5651a56044a3fef50bb44435ad1d704dd13164f1f6ffd88f14558f4c894d7178
+  gitlab_query_language (0.33.0) sha256=76b84235a7bd6e786844173b78dc9fa1f11ccfbe08ef97f6dad1ca6928bee5a3
+  gitlab_query_language (0.33.0-aarch64-linux-gnu) sha256=5dd8e040423f07bedf62dc7f39d1c26e579b53e482cdf081f2ffbf76c74ee671
+  gitlab_query_language (0.33.0-arm64-darwin) sha256=d5036e9b7c25bd91e16af992392036e073cfd1ee5ce7f42a72154044baa95cd4
+  gitlab_query_language (0.33.0-x86_64-darwin) sha256=156c04ac7793d32213943b474f79ae6eaf2df581a3bbee07cd9a2fa8655be902
+  gitlab_query_language (0.33.0-x86_64-linux-gnu) sha256=42feed8c1eabf2a6ad912f9d094aa2a63100f778f1b381593c386fe5d35787c9
   globalid (1.1.0) sha256=b337e1746f0c8cb0a6c918234b03a1ddeb4966206ce288fbb57779f59b2d154f
   gon (6.5.0) sha256=2226e3c921f26bde69b4586660bb67e3252b3a8a3caaa955a77212188a5d81ab
   google-apis-androidpublisher_v3 (0.92.0) sha256=e700dea8608494ff70fd9c9ed10c3caa8323b9a15eea85098db65d1178e79035
@@ -3132,7 +3131,7 @@ CHECKSUMS
   grape (2.4.0) sha256=3d59673e80f11d49ba86270b78344e5348dc057b318c2bbc1c01f3532f9b6aec
   grape-entity (1.1.0) sha256=ab6a1004e57791834e8497d5e85a3c101b72144d8ca31462a26e6d0a380c3d89
   grape-path-helpers (2.1.0) sha256=908155cdc6e33fbca28bd44b4e1467d904fe36b45ef61bee62b7bfa28f5c7726
-  grape-swagger (2.1.2) sha256=8ad7bd53c8baee704575808875dba8c08d269c457db3cf8f1b8a2a1dbf827294
+  grape-swagger (2.1.4) sha256=3279351bebafbca24e0331b9f7c6dbfefb262042a1f3d224ed41cf2be4aee35b
   grape-swagger-entity (0.7.1) sha256=082144811cdd14c15b9d9f0a27a4e3ff9c27c7081130d334a3de59953769b37d
   grape_logging (3.0.0) sha256=7b62d984ce96df15d120508668debe307e6a59ac1c511f1d9b5f3b4bea793e13
   graphlyte (1.0.0) sha256=b5af4ab67dde6e961f00ea1c18f159f73b52ed11395bb4ece297fe628fa1804d

@@ -392,7 +392,6 @@ read_cluster_environments
 read_commit_committer_check
 read_commit_committer_name_check
 read_compliance_adherence_report
-read_compliance_dashboard
 read_compliance_framework
 read_compliance_violations_report
 read_component

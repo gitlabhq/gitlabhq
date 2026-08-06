@@ -1636,7 +1636,10 @@ msgstr ""
 msgid "%{strong_start}%{human_size}%{strong_end} Project Storage"
 msgstr ""
 
-msgid "%{strong_start}%{model_name}%{strong_end} (deprecated %{strong_start}%{deprecation_date}%{strong_end} - Removes in: %{strong_start}%{removal_version}%{strong_end})"
+msgid "%{strong_start}%{model_name}%{strong_end} (deprecated for %{strong_start}%{feature_title}%{strong_end} on %{strong_start}%{deprecation_date}%{strong_end} - Removal scheduled for: %{strong_start}%{removal_version}%{strong_end})"
+msgstr ""
+
+msgid "%{strong_start}%{model_name}%{strong_end} (deprecated on %{strong_start}%{deprecation_date}%{strong_end} - Removal scheduled for: %{strong_start}%{removal_version}%{strong_end})"
 msgstr ""
 
 msgid "%{strong_start}%{release_count}%{strong_end} Release"
@@ -3296,6 +3299,9 @@ msgid "AICatalog|Other"
 msgstr ""
 
 msgid "AICatalog|Pending approval"
+msgstr ""
+
+msgid "AICatalog|Pinned version must resolve to a released version of the agent or flow."
 msgstr ""
 
 msgid "AICatalog|Please describe below."
@@ -8503,7 +8509,7 @@ msgstr ""
 msgid "AiModelDeprecation|Change model"
 msgstr ""
 
-msgid "AiModelDeprecation|The following models have been deprecated for all AI-powered features and will stop working after GitLab removes them. Please change to an alternative model before the removal version to avoid disruption."
+msgid "AiModelDeprecation|The following models have been deprecated and will stop working after GitLab removes them. Please change to an alternative model before the removal version to avoid disruption."
 msgstr ""
 
 msgid "AiPowered|%{word} by %{source} — subgroups cannot opt in."
@@ -23101,6 +23107,9 @@ msgid "ContinuousDeployment|No deployments available."
 msgstr ""
 
 msgid "ContinuousDeployment|No deployments match your filter."
+msgstr ""
+
+msgid "ContinuousDeployment|No environments match your filters"
 msgstr ""
 
 msgid "ContinuousDeployment|No releases available."

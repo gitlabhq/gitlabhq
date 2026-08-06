@@ -1,0 +1,11 @@
+---
+name: create_compliance_framework
+description: Grants the ability to create compliance frameworks
+boundaries:
+  - group
+available_for:
+  - granular_access_token
+permissions:
+  - create_compliance_framework
+  - create_compliance_requirement
+  - create_compliance_requirements_control

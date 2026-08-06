@@ -968,7 +968,7 @@ Grants the ability to archive, create, delete, read, share, transfer, and update
 
 #### Member Role
 
-Grants the ability to create, delete, and read member roles.
+Grants the ability to assign, create, delete, read, and update member roles.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |

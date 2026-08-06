@@ -9,7 +9,7 @@ function toStringMessages(list) {
 
 function slimManifest() {
   return new StatsWriterPlugin({
-    filename: 'manifest.json',
+    filename: 'manifest.rspack.json',
     transform(data, opts) {
       const stats = opts.compiler.getStats().toJson({
         assets: true,

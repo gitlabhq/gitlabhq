@@ -217,16 +217,26 @@ image: registry.gitlab.com/gitlab-org/duo-workflow/default-docker-image/workflow
 
 ### Image contents
 
-| Component           | Version                           |
-|---------------------|-----------------------------------|
-| Base image          | Red Hat UBI 9 Minimal             |
-| `git`               | UBI 9 stock                       |
-| `git-lfs`           | UBI 9 stock                       |
-| Node.js             | 20 (UBI 9 module stream)          |
-| `npm`               | Bundled with Node.js 20           |
-| `@gitlab/duo-cli`   | Pre-installed                     |
-| `glab` (GitLab CLI) | Pre-installed                     |
-| Runtime user        | Non-root, UID 1001 (`duo-runner`) |
+For the authoritative and up-to-date list of all components and pinned versions,
+see the runtime inventory in the `default-docker-image` [README](https://gitlab.com/gitlab-org/duo-workflow/default-docker-image/-/blob/main/README.md#runtime-inventory).
+
+The following table lists the current pinned versions:
+
+| Component                             | Version or source                                        |
+|---------------------------------------|----------------------------------------------------------|
+| Base image                            | Red Hat UBI 9 Minimal (`ubi9-minimal:9.7-1776833838`)    |
+| `git`                                 | 2.47.x (UBI 9 stock)                                     |
+| `git-lfs`                             | UBI 9 stock                                              |
+| Node.js                               | 20 (UBI 9 module stream `nodejs:20`)                     |
+| `npm`                                 | Bundled with Node.js 20                                  |
+| `@gitlab/duo-cli`                     | 8.109.0                                                  |
+| `glab` (GitLab CLI)                   | 1.107.0                                                  |
+| `@anthropic-ai/sandbox-runtime` (SRT) | 0.0.20 (via npm)                                         |
+| `bwrap` (bubblewrap)                  | AlmaLinux 9 EPEL (plain binary, userns-based sandboxing) |
+| `socat`                               | AlmaLinux 9 EPEL                                         |
+| `rg` (ripgrep)                        | AlmaLinux 9 EPEL                                         |
+| `unshare`                             | UBI 9 (`util-linux-core`)                                |
+| Runtime user                          | Non-root, UID 1001 (`duo-runner`)                        |
 
 The image includes `@gitlab/duo-cli` and `glab`. Outbound access to `registry.npmjs.org` or `registry.gitlab.com`
 is not needed at flow execution time.

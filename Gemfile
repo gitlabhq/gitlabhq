@@ -163,7 +163,7 @@ gem 'net-ldap', '~> 0.20.0', feature_category: :system_access
 # API
 gem 'grape', '~> 2.4', feature_category: :api
 gem 'grape-entity', '~> 1.1.0', feature_category: :api
-gem 'grape-swagger', '~> 2.1.2', group: [:development, :test], feature_category: :api
+gem 'grape-swagger', '~> 2.1.4', group: [:development, :test], feature_category: :api
 gem 'grape-swagger-entity', '~> 0.7.0', group: [:development, :test], feature_category: :api
 gem 'grape-path-helpers', '~> 2.1', feature_category: :api
 gem 'gitlab-grape-openapi', '~> 0.2.3', feature_category: :api
@@ -801,7 +801,7 @@ gem "gitlab-cloud-connector", "~> 1.52", require: 'gitlab/cloud_connector', feat
 
 gem "gvltools", "~> 0.4.0", feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
-gem 'gitlab_query_language', '~> 0.31.0', feature_category: :integrations
+gem 'gitlab_query_language', '~> 0.33.0', feature_category: :integrations
 
 # standard Gem, version increase to resolve vulnerabilities
 gem "zlib", "~> 3.2", ">= 3.2.3", feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/work_items/596593

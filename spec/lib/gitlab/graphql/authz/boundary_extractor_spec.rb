@@ -112,6 +112,20 @@ RSpec.describe Gitlab::Graphql::Authz::BoundaryExtractor, feature_category: :per
         end
       end
 
+      context 'when the argument resolves to a group and a boundary method is declared' do
+        let_it_be(:subgroup) { create(:group, parent: group) }
+
+        let(:directives) do
+          [create_directive(boundary_argument: 'namespace_id', boundary: 'root_ancestor', boundary_type: 'group')]
+        end
+
+        let(:arguments) { { namespace_id: subgroup.to_global_id } }
+
+        it 'resolves the boundary through the declared method' do
+          expect(extracted).to contain_exactly(group)
+        end
+      end
+
       context 'when the located record is neither a project nor a group' do
         let(:directives) do
           [create_directive(boundary_argument: 'id', boundary: 'project', boundary_type: 'project')]

@@ -26,7 +26,7 @@ module WebpackHelper
   def webpack_preload_asset_tag(asset, options = {})
     return if vite_enabled?
 
-    path = Gitlab::Webpack::Manifest.asset_paths(asset).first
+    path = Gitlab::Webpack::Manifest.asset_paths(asset, manifest_filename: bundler_manifest_filename).first
 
     if options.delete(:prefetch)
       prefetch_link_tag(path)
@@ -79,7 +79,7 @@ module WebpackHelper
   def webpack_entrypoint_paths(source, extension: nil, exclude_duplicates: true)
     return "" unless source.present?
 
-    paths = Gitlab::Webpack::Manifest.entrypoint_paths(source)
+    paths = Gitlab::Webpack::Manifest.entrypoint_paths(source, manifest_filename: bundler_manifest_filename)
     paths.select! { |p| p.ends_with? ".#{extension}" } if extension
 
     force_host = webpack_public_host
@@ -98,6 +98,14 @@ module WebpackHelper
   def webpack_public_host
     # We proxy webpack output in 'test' and 'dev' environment, so we can just use asset_host
     ActionController::Base.asset_host.try(:chomp, '/')
+  end
+
+  def rspack_enabled?
+    Gitlab::Utils.to_boolean(ENV['ENABLE_RSPACK'], default: false)
+  end
+
+  def bundler_manifest_filename
+    rspack_enabled? ? Gitlab::Webpack::Manifest::RSPACK_MANIFEST_FILENAME : Gitlab.config.webpack.manifest_filename
   end
 
   def webpack_public_path

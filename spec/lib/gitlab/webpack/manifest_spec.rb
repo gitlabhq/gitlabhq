@@ -109,6 +109,29 @@ RSpec.describe Gitlab::Webpack::Manifest do
         stub_file_read(::Rails.root.join("manifest_output/broken.json"), error: Errno::ENOENT)
         expect { described_class.asset_paths("entry1") }.to raise_error(Gitlab::Webpack::Manifest::ManifestLoadError)
       end
+
+      it "reads the manifest passed via manifest_filename instead of the default" do
+        stub_file_read(::Rails.root.join("manifest_output/manifest.rspack.json"), content: manifest)
+
+        expect(described_class.asset_paths("entry2", manifest_filename: "manifest.rspack.json"))
+          .to eq(["/public_path/entry2.js"])
+      end
+
+      it "memoizes each manifest independently, keyed by filename" do
+        rspack_manifest = <<-JSON
+          {
+            "errors": [],
+            "assetsByChunkName": { "entry2": "entry2.rspack.js" }
+          }
+        JSON
+        stub_file_read(::Rails.root.join("manifest_output/manifest.rspack.json"), content: rspack_manifest)
+
+        expect(described_class.asset_paths("entry2")).to eq(["/public_path/entry2.js"])
+        expect(described_class.asset_paths("entry2", manifest_filename: "manifest.rspack.json"))
+          .to eq(["/public_path/entry2.rspack.js"])
+        # The default manifest keeps its own cached value rather than the Rspack one.
+        expect(described_class.asset_paths("entry2")).to eq(["/public_path/entry2.js"])
+      end
     end
   end
 end
