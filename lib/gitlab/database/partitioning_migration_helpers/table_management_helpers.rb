@@ -474,8 +474,7 @@ module Gitlab
           source_table_name, partitioning_type, partitioned_table_name, partition_column, primary_keys,
           create_partitioned_table_fn = nil
         )
-
-          if table_exists?(partitioned_table_name)
+          if table_exists?(partitioned_table_name) # rubocop:disable Cop/LineBreakAroundConditionalBlock -- Avoid conflict with Layout/EmptyLinesAroundMethodBody
             Gitlab::AppLogger.warn "Partitioned table not created because it already exists " \
               "(this may be due to an aborted migration or similar): table_name: #{partitioned_table_name} "
             return

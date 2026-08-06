@@ -12,7 +12,7 @@ title: Testing PHP projects
 
 {{< /details >}}
 
-This guide covers basic building instructions for PHP projects.
+Build PHP projects with GitLab CI/CD using these basic instructions.
 
 Two testing scenarios are covered: using the Docker executor and
 using the Shell executor.

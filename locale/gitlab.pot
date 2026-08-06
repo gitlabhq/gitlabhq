@@ -11898,6 +11898,9 @@ msgstr ""
 msgid "ArtifactRegistry|At least one assignment is required."
 msgstr ""
 
+msgid "ArtifactRegistry|Copy repository URL"
+msgstr ""
+
 msgid "ArtifactRegistry|Could not authenticate with the Artifact Registry service."
 msgstr ""
 
@@ -12010,6 +12013,9 @@ msgid "ArtifactRegistry|Repositories"
 msgstr ""
 
 msgid "ArtifactRegistry|Repositories list updated."
+msgstr ""
+
+msgid "ArtifactRegistry|Repository URL copied to clipboard."
 msgstr ""
 
 msgid "ArtifactRegistry|Repository not found."

@@ -255,7 +255,7 @@ when manually passing inputs for:
 {{< /history >}}
 
 You can define a list of options to restrict the allowed values for array inputs.
-When you run a pipeline manually, the UI displays a multi-select dropdown
+When you run a pipeline manually, the UI displays a multi-select dropdown list
 instead of a text field. For example:
 
 ```yaml

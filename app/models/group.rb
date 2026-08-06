@@ -846,12 +846,7 @@ class Group < Namespace
     priority: UserProjectAccessChangedService::HIGH_PRIORITY,
     direct_members_only: false
   )
-
-    user_ids = if direct_members_only
-                 users_ids_of_direct_members
-               else
-                 user_ids_for_project_authorizations
-               end
+    user_ids = direct_members_only ? users_ids_of_direct_members : user_ids_for_project_authorizations
 
     UserProjectAccessChangedService
       .new(user_ids)

@@ -704,7 +704,9 @@ Audit event types belong to the following product categories.
 | [`security_category_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209118) | A security category is deleted | {{< yes >}} | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/568959) | Group |
 | [`security_category_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209118) | A security category is updated | {{< yes >}} | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/568959) | Group |
 | [`security_scan_profile_attached_to_project`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219378) | A security scan profile is attached to a project | {{< yes >}} | GitLab [18.9](https://gitlab.com/gitlab-org/gitlab/-/issues/582824) | Project |
+| [`security_scan_profile_create`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248106) | A security scan profile is created | {{< yes >}} | GitLab [19.3](https://gitlab.com/gitlab-org/gitlab/-/work_items/606347) | Group |
 | [`security_scan_profile_detached_from_project`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219378) | A security scan profile is detached from a project | {{< yes >}} | GitLab [18.9](https://gitlab.com/gitlab-org/gitlab/-/issues/582824) | Project |
+| [`security_scan_profile_update`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248106) | A security scan profile is updated | {{< yes >}} | GitLab [19.3](https://gitlab.com/gitlab-org/gitlab/-/work_items/606347) | Group |
 
 ### Security testing configuration
 

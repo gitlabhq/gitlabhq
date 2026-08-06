@@ -105,7 +105,7 @@ To retry a manual job with previously-specified variables:
 - With the same variables:
   - From the job details page, select **Retry** ({{< icon name="retry" >}}).
 - With updated variables:
-  - From the job details page, select **Retry job with modified values** in the dropdown.
+  - From the job details page, select **Retry job with modified values** in the dropdown list.
   - The variables that were specified in the previous run are prefilled in the form.
     You can add, modify, or delete CI/CD variables from this form.
   - Select **Run job again**.

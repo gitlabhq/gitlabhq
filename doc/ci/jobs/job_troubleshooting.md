@@ -222,7 +222,7 @@ If the error persists, inspect the job in the
 
 ## `You are not authorized to run this manual job` message
 
-You can receive this message and have a disabled **Run** button when trying to run a manual job if:
+You might get this message with **Run** disabled when trying to run a manual job if:
 
 - The target environment is a [protected environment](../environments/protected_environments.md)
   and your account is not included in the **Allowed to deploy** list.

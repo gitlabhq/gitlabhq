@@ -28,8 +28,7 @@ module Gitlab
       def initialize( # rubocop:disable Metrics/ParameterLists -- we need all these parameters
         project:, sha:, custom_content: nil, pipeline_source: nil, pipeline_source_bridge: nil,
         triggered_for_branch: nil, ref: nil, source_branch: nil, pipeline_policy_context: nil, inputs: nil)
-
-        unless pipeline_policy_context&.pipeline_execution_context&.applying_config_override?
+        unless pipeline_policy_context&.pipeline_execution_context&.applying_config_override? # rubocop:disable Cop/LineBreakAroundConditionalBlock -- Avoid conflict with Layout/EmptyLinesAroundMethodBody
           @config = find_source(project: project,
             sha: sha,
             custom_content: custom_content,

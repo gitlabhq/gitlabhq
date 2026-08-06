@@ -1,9 +1,0 @@
----
-# Cop supports --autocorrect.
-Layout/EmptyLinesAroundMethodBody:
-  Exclude:
-    - 'app/models/group.rb'
-    - 'lib/gitlab/ci/project_config.rb'
-    - 'lib/gitlab/database/partitioning_migration_helpers/table_management_helpers.rb'
-    - 'lib/gitlab/import/import_failure_service.rb'
-    - 'tooling/lib/tooling/find_changes.rb'

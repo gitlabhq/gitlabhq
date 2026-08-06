@@ -688,7 +688,6 @@ gem 'toml-rb', '~> 4.1', feature_category: :shared # rubocop:todo Gemfile/Missin
 gem 'flipper', '~> 1.3.6', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 gem 'flipper-active_record', '~> 1.3.6', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 gem 'flipper-active_support_cache_store', '~> 1.3.6', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
-gem 'unleash', '~> 3.2.2', feature_category: :feature_flags # https://docs.gitlab.com/operations/feature_flags/
 gem 'gitlab-experiment', '~> 2.0.0', feature_category: :acquisition
 
 # Structured logging
