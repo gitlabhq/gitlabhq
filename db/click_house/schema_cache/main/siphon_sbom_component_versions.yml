@@ -2,9 +2,10 @@
 name: siphon_sbom_component_versions
 engine: ReplacingMergeTree
 engine_full: ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted) PRIMARY KEY
-  id ORDER BY id SETTINGS index_granularity = 2048
-primary_key: id
-sorting_key: id
+  (traversal_path, id) ORDER BY (traversal_path, id) SETTINGS index_granularity =
+  2048
+primary_key: traversal_path, id
+sorting_key: traversal_path, id
 settings:
   index_granularity: '2048'
 columns:
@@ -24,9 +25,17 @@ columns:
 - name: version
   type: String
 - name: source_package_name
-  type: Nullable(String)
+  type: String
 - name: organization_id
   type: Int64
+- name: traversal_path
+  type: String
+  default_kind: DEFAULT
+  default_expression: multiIf(coalesce(organization_id, 0) != 0, dictGetOrDefault('organization_traversal_paths_dict',
+    'traversal_path', organization_id, '0/'), '0/')
+  compression_codec: CODEC(ZSTD(3))
+  is_in_sorting_key: true
+  is_in_primary_key: true
 - name: _siphon_replicated_at
   type: DateTime64(6, 'UTC')
   default_kind: DEFAULT

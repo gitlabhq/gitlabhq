@@ -6,3 +6,8 @@ replication_targets:
   target: siphon_sbom_component_versions
   dedup_by:
   - id
+  dedup_by_columns_lookup_table: siphon_sbom_component_versions_pg_pkey_ordered
+  reconcile:
+    column: traversal_path
+    expression_key_columns:
+    - organization_id
