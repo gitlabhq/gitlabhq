@@ -137,20 +137,6 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
           expect(jobs.map { |job| job.association(:project).target }).to all(be(pipeline.project))
           expect(jobs.map { |job| job.project.association(:namespace).target }).to all(be(pipeline.project.namespace))
         end
-
-        context 'when ci_atomic_processing_preload_available_records is disabled' do
-          before do
-            stub_feature_flags(ci_atomic_processing_preload_available_records: false)
-          end
-
-          it 'preloads project and namespace without sharing in-memory records', :aggregate_failures do
-            jobs = service.send(:load_jobs, pipeline.all_jobs.ids)
-
-            expect(jobs).not_to be_empty
-            expect(jobs.map { |job| job.association(:project) }).to all(be_loaded)
-            expect(jobs.map { |job| job.project.association(:namespace) }).to all(be_loaded)
-          end
-        end
       end
     end
 

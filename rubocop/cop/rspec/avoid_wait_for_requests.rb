@@ -24,7 +24,7 @@ module RuboCop
       class AvoidWaitForRequests < RuboCop::Cop::Base
         MESSAGE = 'Avoid `%{method}` in feature specs. ' \
           'Instead, assert on a UI change to ensure the request has completed. ' \
-          'See https://docs.gitlab.com/development/testing_guide/frontend_testing/#assertions.'
+          'See https://docs.gitlab.com/development/testing_guide/best_practices/#never-use-wait_for_requests-or-wait_for_all_requests.'
 
         RESTRICT_ON_SEND = %i[wait_for_requests wait_for_all_requests].freeze
 

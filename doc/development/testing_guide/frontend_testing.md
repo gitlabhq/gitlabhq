@@ -2316,7 +2316,9 @@ You can also create a sub-block to look into, to:
 
 You can find a more comprehensive list of matchers in the [feature tests matchers](best_practices.md#matchers) documentation.
 
-Before asserting on any backend attributes, assert on a visible element first to confirm the operation has completed. Avoid using `wait_for_requests`, as race conditions can occur when the wait is called before the request is made.
+Before asserting on any backend attributes, assert on a visible element first to
+confirm the operation has completed. Do not use `wait_for_requests` or
+`wait_for_all_requests`. For the reasons and alternatives, see [Never use `wait_for_requests` or `wait_for_all_requests`](best_practices.md#never-use-wait_for_requests-or-wait_for_all_requests).
 
 ```ruby
   click_button 'Leave project'

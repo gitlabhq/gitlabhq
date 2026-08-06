@@ -9,7 +9,7 @@ RSpec.describe RuboCop::Cop::RSpec::AvoidWaitForRequests, feature_category: :too
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         wait_for_requests
-        ^^^^^^^^^^^^^^^^^ Avoid `wait_for_requests` in feature specs. Instead, assert on a UI change to ensure the request has completed. See https://docs.gitlab.com/development/testing_guide/frontend_testing/#assertions.
+        ^^^^^^^^^^^^^^^^^ Avoid `wait_for_requests` in feature specs. Instead, assert on a UI change to ensure the request has completed. See https://docs.gitlab.com/development/testing_guide/best_practices/#never-use-wait_for_requests-or-wait_for_all_requests.
       RUBY
     end
   end
@@ -18,7 +18,7 @@ RSpec.describe RuboCop::Cop::RSpec::AvoidWaitForRequests, feature_category: :too
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         wait_for_all_requests
-        ^^^^^^^^^^^^^^^^^^^^^ Avoid `wait_for_all_requests` in feature specs. Instead, assert on a UI change to ensure the request has completed. See https://docs.gitlab.com/development/testing_guide/frontend_testing/#assertions.
+        ^^^^^^^^^^^^^^^^^^^^^ Avoid `wait_for_all_requests` in feature specs. Instead, assert on a UI change to ensure the request has completed. See https://docs.gitlab.com/development/testing_guide/best_practices/#never-use-wait_for_requests-or-wait_for_all_requests.
       RUBY
     end
   end

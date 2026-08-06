@@ -85,11 +85,17 @@ Axe provides the custom matcher `be_axe_clean`, which can be used like the follo
 it 'passes axe automated accessibility testing', :js do
   visit_settings_page
 
-  wait_for_requests # ensures page is fully loaded
+  # Wait for an element that appears only when this page is ready to scan.
+  expect(page).to have_selector('#content-body')
 
   expect(page).to be_axe_clean
 end
 ```
+
+Do not use `wait_for_requests` to prepare a page for an accessibility scan. It
+can return before asynchronous rendering completes, and the scan is incomplete.
+Instead, wait for a page-specific element that represents the rendered
+state. See [Never use `wait_for_requests` or `wait_for_all_requests`](../../testing_guide/best_practices.md#never-use-wait_for_requests-or-wait_for_all_requests).
 
 If needed, you can scope testing to a specific area of the page by using `within`.
 

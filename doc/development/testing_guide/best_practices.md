@@ -614,6 +614,23 @@ performance gains.
 When combining tests, consider using `:aggregate_failures`, so that the full
 results are available, and not just the first failure.
 
+#### Never use `wait_for_requests` or `wait_for_all_requests`
+
+Do not use `wait_for_requests` or `wait_for_all_requests` in feature specs.
+The [`RSpec/AvoidWaitForRequests`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/cop/rspec/avoid_wait_for_requests.rb)
+cop prohibits both helpers.
+
+These helpers wait only until there are no tracked requests in flight, not for
+the outcome the spec needs. A request can trigger another request. If the poll
+runs between the two, the helper returns before the page has reached its
+expected state. They also do not wait for Vue re-renders, redirects,
+asynchronous follow-up writes, or browser-initiated downloads.
+
+Do not add exclusions to `.rubocop_todo/rspec/avoid_wait_for_requests.yml` or
+disable the cop inline. Replace the helper with a page-specific waiting matcher
+or, when no visible outcome exists, a narrowly targeted `wait_for` condition.
+For guidance on the alternatives, see [Avoid waiting for elements you expect to be absent](#avoid-waiting-for-elements-you-expect-to-be-absent), [Assert on a stable end-state, not on a transient control](#assert-on-a-stable-end-state-not-on-a-transient-control), and [Poll for browser side-effects with `wait_for`](#poll-for-browser-side-effects-with-wait_for).
+
 #### Avoid waiting for elements you expect to be absent
 
 Capybara's query methods either return immediately when their condition is
@@ -641,12 +658,8 @@ expect(page).to have_no_link('Edit')           # then check absence
 
 Confirm the page has reached the expected state with a positive matcher before
 the next interaction or assertion - not only before absence checks, but also
-before reading database or model state and before navigating. `wait_for_requests`
-is not sufficient on its own: it waits for in-flight AJAX requests tracked by the
-test harness to settle, but not for Vue re-render, redirect completion, async
-follow-up writes, or browser-initiated downloads (which are not tracked XHR or
-fetch requests). Prefer asserting the expected visible outcome (`have_content`,
-`have_current_path`, `have_css`).
+before reading database or model state and before navigating. Prefer asserting
+the expected visible outcome (`have_content`, `have_current_path`, `have_css`).
 
 Use `wait: 0` to skip the wait in conditional logic. **Note:** Only use it
 when you can't avoid conditional logic, and only inside a region you have
@@ -694,6 +707,19 @@ click_button 'Resume'
 expect(page).not_to have_text 'Paused'
 ```
 
+Wait for a modal or another animated container to finish its open transition
+before you interact with controls inside it. Components can disable their
+controls while they transition. For example, wait for a visible modal before you
+click its close button:
+
+```ruby
+expect(page).to have_css('.modal.show')
+
+within('.modal') { click_button 'Close' }
+```
+
+See [Interacting with modals](#interacting-with-modals) for modal helpers.
+
 #### Poll for browser side-effects with `wait_for`
 
 Always prefer asserting on a visible UI outcome (`have_content`,
@@ -709,6 +735,17 @@ have no visible signal:
 
 (Do not reach for `wait_for_requests` here either: it is deprecated and should
 not be used in new specs.)
+
+`wait_for` polls every 0.01 seconds by default. To avoid excess load on a
+database-backed condition, use a longer `polling_interval`. Increase
+`max_wait_time` only when the operation genuinely needs more time:
+
+```ruby
+wait_for('issues sort preference to be saved',
+  max_wait_time: 2 * Capybara.default_max_wait_time, polling_interval: 0.1) do
+  user.reload.user_preference.issues_sort == 'updated_desc'
+end
+```
 
 ```ruby
 # Bad: click_link triggers a browser-initiated download and returns before the
@@ -751,11 +788,11 @@ end
 #### Prefer waiting matchers over reading element values
 
 Reading a value, text, or count directly from an element (`find(...).value`,
-`find(...).text`, `all(...).count`) captures the state at that exact moment. If
-the page is still rendering an asynchronous update, you read the old value and
-the test fails or passes for the wrong reason. The `have_*` matchers instead
-retry until the expectation holds (or the wait times out), so they synchronize
-with the UI rather than racing it.
+`find(...).text`, `all(...).count`), or from the page (`page.current_url`)
+captures the state at that exact moment. If the page is still rendering an
+asynchronous update, you read the old value and the test fails or passes for the
+wrong reason. The `have_*` matchers instead retry until the expectation holds
+(or the wait times out), so they synchronize with the UI rather than racing it.
 
 Assert with a waiting matcher rather than reading a value and comparing it:
 
@@ -784,6 +821,63 @@ within_testid("user-project-count-#{admin.id}") do
   expect(page).to have_content('1')
 end
 ```
+
+Do not assert `expect(find(selector).visible?).to be(true)`: `find` already
+waits for a visible element, so the assertion cannot verify a later update. Use
+a waiting matcher for the state you need:
+
+```ruby
+# Bad: reads text immediately after finding the element.
+expect(find('.event-title').text).to eq('joined project GitLab')
+
+# Good: waits for the expected exact text.
+expect(page).to have_selector('.event-title', exact_text: 'joined project GitLab')
+```
+
+Wait for the page state before you read `page.current_url` or other non-waiting
+session values. For example, assert a page-specific element before you read the
+URL:
+
+```ruby
+expect(page).to have_testid('board-card')
+expect(CGI.unescape(page.current_url)).to include(CGI.unescape(board_path))
+```
+
+#### Scripts do not wait
+
+`evaluate_script` and `execute_script` read or modify the browser at one point
+in time. They do not wait for an asynchronous update. Assert a visible outcome
+or use `wait_for` before you read state with a script.
+
+When related script values must describe the same browser state, retrieve them
+with one `evaluate_script` call instead of separate calls:
+
+```ruby
+wait_for('note to be scrolled into view') do
+  page.evaluate_script("document.querySelector('.js-static-panel-inner').scrollTop") > 0
+end
+
+panel_scroll_top, note_position_top = page.evaluate_script(<<~JS)
+  const panel = document.querySelector('.js-static-panel-inner');
+  const note = document.querySelector('#note_1');
+  [panel.scrollTop, note.getBoundingClientRect().top + panel.scrollTop]
+JS
+```
+
+#### Gate readiness in shared examples
+
+When several specs use the same page or component, put its readiness assertion
+in the shared example instead of repeating it in every caller. The assertion
+then becomes the synchronization contract for all consumers. For example, Rapid
+Diffs uses the `diff-file-mounted` sentinel to wait until all diff files mount:
+
+```ruby
+before do
+  page.assert_selector('diff-file-mounted', count: diffs.diff_files.size, visible: :all)
+end
+```
+
+For details about the sentinel, see [Rapid Diffs](../fe_guide/rapid_diffs.md).
 
 #### Enter admin mode with metadata, not the UI
 
@@ -2092,10 +2186,10 @@ expect(violation.reload.merged_at).to be_within(0.00001.seconds).of(merge_reques
 #### `have_gitlab_http_status`
 
 Prefer `have_gitlab_http_status` over `have_http_status` and
-`expect(response.status).to` because the former
-could also show the response body whenever the status mismatched. This would
-be very useful whenever some tests start breaking and we would love to know
-why without editing the source and rerun the tests.
+`expect(response.status).to` because the former could also show the response
+body whenever the status mismatched. This would be very useful whenever some
+tests start breaking and we would love to know why without editing the source
+and rerun the tests.
 
 This is especially useful whenever it's showing 500 internal server error.
 
@@ -2106,6 +2200,13 @@ Example:
 
 ```ruby
 expect(response).to have_gitlab_http_status(:ok)
+```
+
+The matcher also accepts a `Capybara::Session` in a feature spec and checks its
+`status_code`:
+
+```ruby
+expect(page).to have_gitlab_http_status(:not_found)
 ```
 
 #### `match_schema` and `match_response_schema`

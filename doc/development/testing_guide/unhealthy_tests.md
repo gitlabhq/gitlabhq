@@ -222,7 +222,8 @@ element on a page that is not yet rendered, or in unit tests by failing to wait 
 **Resolution**: In the end-to-end test suite (`qa/`), use [an eventually matcher](end_to_end/best_practices/_index.md#use-eventually_-matchers-for-expectations-that-require-waiting).
 In feature (`:js`) specs, prefer waiting matchers over reading a value, text, or
 count directly, and use the `wait_for` helper only as a last resort to poll for
-browser side-effects. See
+browser side-effects. Do not use `wait_for_requests` or `wait_for_all_requests`.
+See [Never use `wait_for_requests` or `wait_for_all_requests`](best_practices.md#never-use-wait_for_requests-or-wait_for_all_requests),
 [Prefer waiting matchers over reading element values](best_practices.md#prefer-waiting-matchers-over-reading-element-values)
 and [Poll for browser side-effects with `wait_for`](best_practices.md#poll-for-browser-side-effects-with-wait_for).
 

@@ -14,6 +14,23 @@ listed below.
 > [!note]
 > You can run ESLint locally by running `yarn run lint:eslint:all` or `yarn run lint:eslint $PATH_TO_FILE`.
 
+## Readiness signals
+
+Prefer an observable user-facing outcome when a feature test needs to wait for
+JavaScript initialization. Add a readiness signal only when the page has no
+suitable UI state to assert.
+
+Use an accurately scoped `data-*` attribute, set when the relevant initializer
+has completed:
+
+```javascript
+document.body.dataset.rightSidebarInitialized = 'true';
+```
+
+Do not use a timer-based class, such as `page-initialised`, as a completion
+signal. A timeout does not prove initialization has completed. For feature-test
+synchronization patterns, see [Never use `wait_for_requests` or `wait_for_all_requests`](../../testing_guide/best_practices.md#never-use-wait_for_requests-or-wait_for_all_requests).
+
 ## Avoid `forEach`
 
 Avoid `forEach` when mutating data. Use `map`, `reduce`, or `filter` instead of `forEach`

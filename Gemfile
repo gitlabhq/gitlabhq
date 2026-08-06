@@ -165,7 +165,7 @@ gem 'grape', '~> 2.4', feature_category: :api
 gem 'grape-entity', '~> 1.1.0', feature_category: :api
 gem 'grape-swagger', '~> 2.1.2', group: [:development, :test], feature_category: :api
 gem 'grape-swagger-entity', '~> 0.7.0', group: [:development, :test], feature_category: :api
-gem 'grape-path-helpers', '~> 2.0.1', feature_category: :api
+gem 'grape-path-helpers', '~> 2.1', feature_category: :api
 gem 'gitlab-grape-openapi', '~> 0.2.3', feature_category: :api
 gem 'rack-cors', '~> 2.0.1', require: 'rack/cors', feature_category: :api
 
