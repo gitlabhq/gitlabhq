@@ -26,8 +26,6 @@ RSpec.describe 'Global search', :js, :with_current_organization, feature_categor
       find('body').native.send_key('s')
 
       expect(page).to have_selector(search_selector)
-
-      wait_for_requests
     end
   end
 

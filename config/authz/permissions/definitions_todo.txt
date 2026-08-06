@@ -220,7 +220,6 @@ create_virtual_registry
 create_vulnerability_feedback
 create_vulnerability_state_transition
 create_web_ide_terminal
-create_workspace
 daily_statistics
 decline_terms
 delete_admin_role
@@ -662,7 +661,6 @@ update_virtual_registry
 update_vulnerability
 update_vulnerability_feedback
 update_web_ide_terminal
-update_workspace
 upload_alert_management_metric_image
 upload_file
 upload_issuable_metric_image

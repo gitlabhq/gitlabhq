@@ -1,0 +1,9 @@
+---
+name: delete_namespace_ban
+description: Grants the ability to remove a namespace ban.
+boundaries:
+  - group
+available_for:
+  - granular_access_token
+permissions:
+  - delete_namespace_ban

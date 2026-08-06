@@ -1,0 +1,9 @@
+---
+name: create_integration_exclusion
+description: Grants the ability to create an integration exclusion.
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - create_integration_exclusion

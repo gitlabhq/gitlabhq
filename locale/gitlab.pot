@@ -11862,6 +11862,9 @@ msgstr ""
 msgid "Artifact was successfully deleted."
 msgstr ""
 
+msgid "ArtifactRegistry|%{date} by %{user}"
+msgstr ""
+
 msgid "ArtifactRegistry|A hosted repository directly hosts artifacts. You can publish artifacts to and pull them from a hosted repository."
 msgstr ""
 
@@ -11910,6 +11913,9 @@ msgstr ""
 msgid "ArtifactRegistry|Create repository"
 msgstr ""
 
+msgid "ArtifactRegistry|Created on"
+msgstr ""
+
 msgid "ArtifactRegistry|Delete repository"
 msgstr ""
 
@@ -11924,6 +11930,11 @@ msgstr ""
 
 msgid "ArtifactRegistry|Docker"
 msgstr ""
+
+msgid "ArtifactRegistry|Download"
+msgid_plural "ArtifactRegistry|Downloads"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "ArtifactRegistry|Downloads"
 msgstr ""
@@ -11953,7 +11964,9 @@ msgid "ArtifactRegistry|Hosted repository"
 msgstr ""
 
 msgid "ArtifactRegistry|Image"
-msgstr ""
+msgid_plural "ArtifactRegistry|Images"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "ArtifactRegistry|Last updated"
 msgstr ""
@@ -12001,7 +12014,9 @@ msgid "ArtifactRegistry|Organization could not be determined."
 msgstr ""
 
 msgid "ArtifactRegistry|Package"
-msgstr ""
+msgid_plural "ArtifactRegistry|Packages"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "ArtifactRegistry|Private"
 msgstr ""
@@ -12016,6 +12031,9 @@ msgid "ArtifactRegistry|Repositories list updated."
 msgstr ""
 
 msgid "ArtifactRegistry|Repository URL copied to clipboard."
+msgstr ""
+
+msgid "ArtifactRegistry|Repository details"
 msgstr ""
 
 msgid "ArtifactRegistry|Repository not found."

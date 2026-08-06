@@ -1,0 +1,9 @@
+---
+name: update_geo_registry
+description: Grants the ability to update a Geo registry.
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - update_geo_registry

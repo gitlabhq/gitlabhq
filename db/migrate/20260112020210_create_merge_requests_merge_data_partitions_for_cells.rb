@@ -23,7 +23,9 @@ class CreateMergeRequestsMergeDataPartitionsForCells < Gitlab::Database::Migrati
       end
     end
 
+    # rubocop:disable Database/AvoidIntRangePartitioning -- legacy usage
     create_int_range_partitions(TABLE_NAME, PARTITION_SIZE, min_id, max_id)
+    # rubocop:enable Database/AvoidIntRangePartitioning
   end
 
   def down

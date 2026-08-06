@@ -13,7 +13,6 @@ RSpec.describe 'Merge request > User sees check out branch modal', :js, feature_
   before do
     sign_in(user)
     visit project_merge_request_path(project, merge_request)
-    wait_for_requests
 
     page.within 'main' do
       click_button 'Code'

@@ -78,6 +78,17 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
       end
     end
 
+    it 'stores no size-limiter compression markers for an uncompressed job' do
+      add_to_queue!
+
+      Gitlab::Redis::SharedState.with do |r|
+        stored_job = service.send(:deserialize, r.lrange(service.redis_key, 0, -1).first)
+
+        # `Compressor.compressed?` keys off `has_key?`, so a nil-valued marker looks compressed.
+        expect(Gitlab::SidekiqMiddleware::SizeLimiter::Compressor).not_to be_compressed(stored_job)
+      end
+    end
+
     context 'with wal locations' do
       subject(:add_to_queue!) { service.add_to_queue!(job_with_wal_locations, worker_context) }
 
@@ -501,6 +512,44 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
         expect(lease_instance).to receive(:renew).exactly(3).times
 
         service.resume_processing!
+      end
+    end
+
+    # Sidekiq's scheduler re-pushes already-compressed scheduled/retried jobs
+    # through the client chain, so a buffered job can arrive compressed.
+    context 'when a buffered job carries a size-limiter compressed payload' do
+      let(:compressor) { Gitlab::SidekiqMiddleware::SizeLimiter::Compressor }
+      let(:original_args) { [1, 'a' * 200] }
+      let(:compressed_job) do
+        { 'args' => original_args, 'jid' => 'jid1', 'wal_locations' => wal_locations }.tap do |job|
+          compressor.compress(job, Sidekiq.dump_json(original_args))
+        end
+      end
+
+      let(:jobs) { [compressed_job] }
+
+      it 'resumes a job that decompresses back to the original arguments', :aggregate_failures do
+        expect_next_instance_of(Gitlab::ExclusiveLease) do |el|
+          expect(el).to receive(:try_obtain).and_call_original
+        end
+
+        captured_metadata = nil
+        allow(Gitlab::SafeRequestStore).to receive(:write).and_call_original
+        allow(Gitlab::SafeRequestStore).to receive(:write).with(metadata_key, kind_of(Queue)) do |_key, queue|
+          captured_metadata = queue.pop
+        end
+
+        resumed_args = nil
+        expect(worker_class).to receive(:bulk_perform_async) { |args_list| resumed_args = args_list.first }
+
+        service.resume_processing!
+
+        # Rebuild as ConcurrencyLimit::Resume does, then run server-side decompression.
+        resumed_job = { 'class' => worker_class_name, 'args' => resumed_args }.merge(captured_metadata)
+        expect(compressor).to be_compressed(resumed_job)
+
+        compressor.decompress(resumed_job)
+        expect(resumed_job['args']).to eq(original_args)
       end
     end
   end

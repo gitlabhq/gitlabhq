@@ -16,6 +16,8 @@ module Mutations
         description: 'Namespace after regenerating the new work item email address.'
 
       authorize :read_namespace
+      authorize_granular_token permissions: :read_namespace, boundary_argument: :full_path,
+        boundary_type: :project
 
       def resolve(full_path:)
         namespace = authorized_find!(full_path)

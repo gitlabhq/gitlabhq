@@ -79,8 +79,6 @@ RSpec.describe 'Milestone', feature_category: :team_planning do
 
       visit project_milestone_path(project, milestone)
 
-      wait_for_requests
-
       expand_right_sidebar
 
       page.within('.right-sidebar.right-sidebar-expanded') do
@@ -100,8 +98,6 @@ RSpec.describe 'Milestone', feature_category: :team_planning do
       issue2.save!
 
       visit project_milestone_path(project, milestone)
-
-      wait_for_requests
 
       expand_right_sidebar
 
@@ -157,12 +153,9 @@ RSpec.describe 'Milestone', feature_category: :team_planning do
   private
 
   # Forces the right sidebar into the expanded state via JavaScript so
-  # assertions run against a known, stable layout. The sidebar may be
-  # auto-collapsed by JS after page load, making click-based expansion
-  # unreliable.
+  # assertions run against a known, stable layout.
   def expand_right_sidebar
-    # Wait up to 1s to detect any post-load auto-collapse before forcing state.
-    page.has_css?('aside.right-sidebar.right-sidebar-collapsed', wait: 1)
+    expect(page).to have_css('body[data-right-sidebar-initialized]')
 
     execute_script(<<~JS)
       const sidebar = document.querySelector('aside.right-sidebar');

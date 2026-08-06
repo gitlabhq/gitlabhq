@@ -20,8 +20,6 @@ RSpec.describe 'Issuables Close/Reopen/Report toggle', feature_category: :code_r
     context 'when user has permission to update', :js do
       before do
         visit project_merge_request_path(project, issuable)
-
-        wait_for_requests
       end
 
       context 'close/reopen/report toggle' do

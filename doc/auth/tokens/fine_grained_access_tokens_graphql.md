@@ -214,6 +214,14 @@ Grants the ability to read and validate CI/CD configuration.
 | ------ | ------ | ---- | ---- |
 | Validate | Project | Mutation | `CiLint` |
 
+#### CI Namespace Settings
+
+Grants the ability to update CI namespace settings.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Update | Group | Mutation | `NamespaceSettingsUpdate` |
+
 #### CI/CD Setting
 
 Grants the ability to update CI/CD settings.
@@ -383,6 +391,14 @@ Grants the ability to create, delete, read, and update triggers.
 | Read | Project | Type | `PipelineTrigger` |
 | Update | Project | Mutation | `PipelineTriggerUpdate` |
 
+#### Verified Namespace
+
+Grants the ability to create verified namespaces.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Instance | Mutation | `VerifiedNamespaceCreate` |
+
 ### Compliance resources
 
 #### Audit Event Streaming Destination
@@ -511,6 +527,27 @@ Grants the ability to read and update model selection allowlists.
 | Update | Group | Mutation | `AiModelSelectionNamespaceModelAllowlistUpdate` |
 | Update | Instance | Mutation | `AiFeatureSettingModelAllowlistUpdate` |
 
+### Geo resources
+
+#### Geo Registry
+
+Grants the ability to update Geo registries.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Update | Instance | Mutation | `GeoRegistriesBulkUpdate` |
+| Update | Instance | Mutation | `GeoRegistriesUpdate` |
+
+### GitLab Orbit resources
+
+#### Knowledge Graph Setting
+
+Grants the ability to update knowledge graph settings.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Update | Group | Mutation | `OrbitUpdate` |
+
 ### Groups resources
 
 #### Admin Member Role
@@ -554,6 +591,22 @@ Grants the ability to create, delete, and read member roles.
 | Create | Group | Mutation | `MemberRoleCreate` |
 | Create | Instance | Mutation | `MemberRoleCreate` |
 
+#### Namespace
+
+Grants the ability to read and update namespaces.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Read | Project | Mutation | `NamespacesRegenerateNewWorkItemEmailAddress` |
+
+#### Namespace Ban
+
+Grants the ability to delete namespace bans.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Delete | Group | Mutation | `NamespaceBanDestroy` |
+
 #### Preference
 
 Grants the ability to read and update preferences.
@@ -570,6 +623,17 @@ Grants the ability to create, delete, merge, read, and update topics.
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
 | Read | Instance | Type | `Topic` |
+
+### Integrations resources
+
+#### Integration Exclusion
+
+Grants the ability to create and delete integration exclusions.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Instance | Mutation | `IntegrationExclusionCreate` |
+| Delete | Instance | Mutation | `IntegrationExclusionDelete` |
 
 ### Monitoring resources
 
@@ -628,6 +692,14 @@ Grants the ability to create, delete, and update on-call schedules.
 | Delete | Project | Mutation | `OncallScheduleDestroy` |
 | Update | Project | Mutation | `OncallRotationUpdate` |
 | Update | Project | Mutation | `OncallScheduleUpdate` |
+
+#### Sidekiq Job
+
+Grants the ability to drop Sidekiq jobs.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Drop | Instance | Mutation | `AdminSidekiqQueuesDeleteJobs` |
 
 #### Timeline Event
 
@@ -735,6 +807,26 @@ Grants the ability to create, delete, read, and update packages.
 | Delete | Project | Mutation | `DestroyPackageFiles` |
 | Update | Project | Mutation | `UpdatePackagesCleanupPolicy` |
 | Update | Project | Mutation | `UpdatePackagesProtectionRule` |
+
+### Product Analytics resources
+
+#### Custom Dashboard
+
+Grants the ability to create, delete, and update custom dashboards.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Instance | Mutation | `CreateCustomDashboard` |
+| Delete | Instance | Mutation | `DeleteCustomDashboard` |
+| Update | Instance | Mutation | `UpdateCustomDashboard` |
+
+#### DevOps Adoption
+
+Grants the ability to enable DevOps adoption for namespaces.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Enable | Group | Mutation | `EnableDevopsAdoptionNamespace` |
 
 ### Project Features resources
 
@@ -1032,6 +1124,50 @@ Grants the ability to create, delete, and read repository tags.
 | Delete | Project | Mutation | `TagDelete` |
 | Read | Project | Type | `Tag` |
 
+### Subscription and Licensing resources
+
+#### Add On Assignment
+
+Grants the ability to create and delete add on assignments.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Group | Mutation | `UserAddOnAssignmentBulkCreate` |
+| Create | Group | Mutation | `UserAddOnAssignmentCreate` |
+| Create | Instance | Mutation | `UserAddOnAssignmentBulkCreate` |
+| Create | Instance | Mutation | `UserAddOnAssignmentCreate` |
+| Delete | Group | Mutation | `UserAddOnAssignmentBulkRemove` |
+| Delete | Group | Mutation | `UserAddOnAssignmentRemove` |
+| Delete | Instance | Mutation | `UserAddOnAssignmentBulkRemove` |
+| Delete | Instance | Mutation | `UserAddOnAssignmentRemove` |
+
+#### GitLab Subscription
+
+Grants the ability to create, read, and update GitLab subscriptions.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Update | Instance | Mutation | `GitlabSubscriptionActivate` |
+
+#### Member Approval
+
+Grants the ability to update member approvals.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Update | Instance | Mutation | `ProcessUserBillablePromotionRequest` |
+
+#### Subscription Usage Cap
+
+Grants the ability to update subscription usage caps.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Update | Group | Mutation | `UpsertFlatUserCap` |
+| Update | Group | Mutation | `UpsertUserBudgetCapOverrides` |
+| Update | Instance | Mutation | `UpsertFlatUserCap` |
+| Update | Instance | Mutation | `UpsertUserBudgetCapOverrides` |
+
 ### System Access resources
 
 #### Email
@@ -1106,3 +1242,40 @@ Grants the ability to activate, approve, ban, block, create, deactivate, delete,
 | Read | User | Type | `MergeRequestParticipant` |
 | Read | User | Type | `MergeRequestReviewer` |
 | Read | User | Type | `UserCore` |
+
+### Value Stream resources
+
+#### Value Stream
+
+Grants the ability to create, delete, and update value streams.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `ValueStreamCreate` |
+| Create | Group | Mutation | `ValueStreamCreate` |
+| Delete | Project | Mutation | `ValueStreamDestroy` |
+| Delete | Group | Mutation | `ValueStreamDestroy` |
+| Update | Project | Mutation | `ValueStreamUpdate` |
+| Update | Group | Mutation | `ValueStreamUpdate` |
+
+### Workspace resources
+
+#### Cluster Agent Mapping
+
+Grants the ability to create and delete cluster agent mappings.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Group | Mutation | `NamespaceCreateRemoteDevelopmentClusterAgentMapping` |
+| Create | Instance | Mutation | `OrganizationCreateClusterAgentMapping` |
+| Delete | Group | Mutation | `NamespaceDeleteRemoteDevelopmentClusterAgentMapping` |
+| Delete | Instance | Mutation | `OrganizationDeleteClusterAgentMapping` |
+
+#### Workspace
+
+Grants the ability to create and update workspaces.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Create | Project | Mutation | `WorkspaceCreate` |
+| Update | Project | Mutation | `WorkspaceUpdate` |

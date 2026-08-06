@@ -153,8 +153,6 @@ RSpec.describe 'Dashboard > User filters todos', :js, feature_category: :notific
       find('li', text: value).click
       find_by_testid('search-button').click
     end
-
-    wait_for_requests
   end
 
   def expect_filter_values(filter, expected_values)

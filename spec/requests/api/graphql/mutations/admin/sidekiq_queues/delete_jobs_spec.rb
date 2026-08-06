@@ -60,6 +60,16 @@ RSpec.describe 'Deleting Sidekiq jobs', :clean_gitlab_redis_queues, feature_cate
         expect(mutation_response['errors']).to be_empty
         expect(mutation_response['result']).to eq('completed' => true, 'deletedJobs' => 2, 'queueSize' => 1)
       end
+
+      it_behaves_like 'authorizing granular token permissions for GraphQL', :drop_sidekiq_job do
+        let(:user) { admin }
+        let(:boundary_object) { :instance }
+        let(:mutation) { graphql_mutation(:admin_sidekiq_queues_delete_jobs, variables, 'errors') }
+        let(:request) do
+          add_job(admin, [1]) # the mutation returns an error when the queue does not exist
+          post_graphql_mutation(mutation, token: { personal_access_token: pat })
+        end
+      end
     end
 
     context 'when no required params are provided' do

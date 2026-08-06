@@ -505,7 +505,9 @@ RSpec.describe Gitlab::Database::Partitioning::IntRangeStrategy, feature_categor
         self.table_name = '_test_partitioned_test'
         self.primary_key = :merge_request_diff_id
 
+        # rubocop:disable Database/AvoidIntRangePartitioning -- these are the specs for the strategy
         partitioned_by :merge_request_diff_id, strategy: :int_range, partition_size: 2
+        # rubocop:enable Database/AvoidIntRangePartitioning
       end
     end
 

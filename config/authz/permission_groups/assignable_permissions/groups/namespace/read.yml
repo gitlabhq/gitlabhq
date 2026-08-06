@@ -3,6 +3,7 @@ name: read_namespace
 description: Grants the ability to read namespaces.
 boundaries:
   - user
+  - project
 available_for:
   - granular_access_token
 permissions:

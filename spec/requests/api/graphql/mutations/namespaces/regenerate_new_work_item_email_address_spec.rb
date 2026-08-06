@@ -94,6 +94,19 @@ RSpec.describe 'NamespacesRegenerateNewWorkItemEmailAddress', feature_category: 
         end
 
         it_behaves_like 'successful regeneration'
+
+        it_behaves_like 'authorizing granular token permissions for GraphQL', :read_namespace do
+          let(:boundary_object) { project }
+          let(:mutation) do
+            graphql_mutation(
+              :namespaces_regenerate_new_work_item_email_address,
+              { full_path: namespace.full_path },
+              'errors'
+            )
+          end
+
+          let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+        end
       end
 
       context 'when user does not have access to namespace' do

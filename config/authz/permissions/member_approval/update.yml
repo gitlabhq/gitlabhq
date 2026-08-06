@@ -1,0 +1,3 @@
+---
+name: update_member_approval
+description: Grants the ability to approve or deny billable member promotion requests.

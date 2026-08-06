@@ -1,0 +1,9 @@
+---
+name: update_custom_dashboard
+description: Grants the ability to update custom dashboards.
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - update_custom_dashboard

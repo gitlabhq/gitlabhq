@@ -3141,6 +3141,10 @@ entry.
 - [Fix non-auto-correctable Naming/HeredocDelimiterNaming offenses](https://gitlab.com/gitlab-org/gitlab/-/commit/4eae66671a6afc78181cb1f0e0690e0ab3ed55cb) by @JonstonChan ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230057))
 - [Fix non-auto-correctable API/DescriptionSummary offenses](https://gitlab.com/gitlab-org/gitlab/-/commit/b3eaf6e2b0537ed21ff2332896b45a760a0a9142) by @JonstonChan ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224288))
 
+## 18.11.9 (2026-08-06)
+
+No changes.
+
 ## 18.11.8 (2026-08-03)
 
 ### Fixed (4 changes)

@@ -1754,6 +1754,9 @@ Database/AvoidScopeTo:
 Database/NoOnDemandCellLocalBackgroundOperation:
   Enabled: true
 
+Database/AvoidIntRangePartitioning:
+  Enabled: true
+
 RSpec/RedundantMetatagType:
   Include:
     - '{,ee/,jh/}spec/**/*_spec.rb'

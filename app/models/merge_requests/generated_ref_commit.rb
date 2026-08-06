@@ -9,7 +9,9 @@ module MergeRequests
     self.primary_key = :id
     PARTITION_SIZE = 2_000_000
 
+    # rubocop:disable Database/AvoidIntRangePartitioning -- legacy usage
     partitioned_by :project_id, strategy: :int_range, partition_size: PARTITION_SIZE
+    # rubocop:enable Database/AvoidIntRangePartitioning
 
     sha_attribute :commit_sha
 

@@ -512,7 +512,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_catego
     end
 
     before do
-      # set up the load balancer to point to the test postgres instance with three seperate conections
+      # set up the load balancer to point to the test postgres instance with three separate connections
       allow(service).to receive(:addresses_from_dns)
                           .and_return([Gitlab::Database::LoadBalancing::Resolver::FAR_FUTURE_TTL,
                             [database_address, database_address, database_address]])

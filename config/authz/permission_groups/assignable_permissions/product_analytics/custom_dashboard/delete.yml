@@ -1,0 +1,9 @@
+---
+name: delete_custom_dashboard
+description: Grants the ability to delete custom dashboards.
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - delete_custom_dashboard

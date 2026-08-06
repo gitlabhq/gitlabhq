@@ -1,0 +1,9 @@
+---
+name: update_member_approval
+description: Grants the ability to approve or deny billable member promotion requests.
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - update_member_approval

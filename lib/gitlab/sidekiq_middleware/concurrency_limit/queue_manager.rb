@@ -18,6 +18,13 @@ module Gitlab
           JSON::ParserError
         ].freeze
 
+        # Size-limiter compression markers replayed onto the resumed job so the
+        # server-side middleware decompresses its still-compressed `args`.
+        PRESERVED_JOB_KEYS = [
+          ::Gitlab::SidekiqMiddleware::SizeLimiter::Compressor::COMPRESSED_KEY,
+          ::Gitlab::SidekiqMiddleware::SizeLimiter::Compressor::ORIGINAL_SIZE_KEY
+        ].freeze
+
         attr_reader :redis_key, :metadata_key, :worker_name
 
         def initialize(worker_name:, prefix:)
@@ -253,7 +260,7 @@ module Gitlab
             context: context,
             buffered_at: Time.now.utc.to_f,
             wal_locations: job['wal_locations']
-          }.to_json
+          }.merge(job.slice(*PRESERVED_JOB_KEYS)).to_json
         end
 
         def deserialize(json)
@@ -290,7 +297,7 @@ module Gitlab
             'concurrency_limit_buffered_at' => job['buffered_at'],
             'concurrency_limit_resume' => true,
             'wal_locations' => job['wal_locations']
-          }.merge(job['context'])
+          }.merge(job['context']).merge(job.slice(*PRESERVED_JOB_KEYS))
         end
 
         def worker_klass

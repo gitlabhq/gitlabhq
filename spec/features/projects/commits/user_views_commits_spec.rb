@@ -137,8 +137,6 @@ RSpec.describe 'Commit > User views commits', feature_category: :source_code_man
 
       before do
         visit project_commit_path(project, sha)
-
-        wait_for_requests
       end
 
       it_behaves_like 'Rapid Diffs application'

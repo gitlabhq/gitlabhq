@@ -80,8 +80,5 @@ RSpec.describe 'Dashboard shortcuts', :js, feature_category: :navigation do
 
   def check_page_title(title)
     expect(find_by_testid('page-heading')).to have_content(title)
-
-    # Ensure pages are loaded before doing the next check
-    wait_for_requests
   end
 end

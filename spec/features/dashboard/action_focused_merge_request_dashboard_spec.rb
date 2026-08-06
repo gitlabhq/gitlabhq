@@ -38,8 +38,6 @@ RSpec.describe 'Action focused merge request dashboard', :js, feature_category: 
     sign_in(current_user)
 
     visit merge_requests_dashboard_path
-
-    wait_for_requests
   end
 
   it 'passes axe automated accessibility testing' do

@@ -69,7 +69,9 @@ module Gitlab
 
           with_lock_retries do
             create_range_id_partitioned_copy(table_name, partitioned_table_name, partition_column, primary_key_objects)
+            # rubocop:disable Database/AvoidIntRangePartitioning -- this is the helper implementation
             create_int_range_partitions(partitioned_table_name, partition_size, MIN_ID, max_id)
+            # rubocop:enable Database/AvoidIntRangePartitioning
             create_trigger_to_sync_tables(table_name, partitioned_table_name, current_primary_key)
           end
         end

@@ -23,6 +23,13 @@ RSpec.describe 'NamespaceSettingsUpdate', feature_category: :pipeline_compositio
 
   subject(:request) { post_graphql_mutation(mutation, current_user: user) }
 
+  it_behaves_like 'authorizing granular token permissions for GraphQL', :update_ci_namespace_settings do
+    let(:user) { create(:user).tap { |u| namespace.add_owner(u) } }
+    let(:boundary_object) { namespace }
+    let(:mutation) { graphql_mutation(:namespace_settings_update, variables, 'errors') }
+    let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+  end
+
   context 'when unauthorized' do
     let_it_be(:user) { create(:user) }
 

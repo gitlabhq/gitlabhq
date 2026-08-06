@@ -353,7 +353,6 @@ RSpec.describe 'Group settings > Advanced', :with_current_organization, feature_
     within_testid('transfer-locations-dropdown') do
       click_button s_('NamespaceTransfer|Select namespace')
       fill_in _('Search'), with: destination&.name || ''
-      wait_for_requests # rubocop:disable RSpec/AvoidWaitForRequests -- pre-existing violation
       click_button(destination&.name || 'No parent group')
     end
 

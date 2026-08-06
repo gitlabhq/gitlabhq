@@ -79,7 +79,9 @@ module Gitlab
           end_id = are_partitions_syncronized? ? max_id : max_id + (HEADROOM * partition_size) # Adds 6 new partitions
           end_id = [end_id, max_value].min if max_value
 
+          # rubocop:disable Database/AvoidIntRangePartitioning -- this is the strategy implementation
           create_int_range_partitions(min_id, end_id)
+          # rubocop:enable Database/AvoidIntRangePartitioning
         end
 
         def create_int_range_partitions(start_id, end_id)

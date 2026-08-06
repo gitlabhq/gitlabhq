@@ -145,8 +145,6 @@ app/models/project.rb:
   - issue_exists?
   - enable_ci
   - valid_runners_token?
-ee/app/models/ai/duo_code_review.rb:
-  - classic?
 ee/app/models/concerns/ai/user_authorizable.rb:
   - any_group_with_ai_available?
 

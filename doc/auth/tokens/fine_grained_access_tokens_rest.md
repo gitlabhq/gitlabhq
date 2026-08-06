@@ -3982,6 +3982,7 @@ incompatible with personal access tokens.
 | `POST` | `/internal/gitlab_subscriptions/namespaces/:id/minutes` | Subscription portal JWT |
 | `PATCH` | `/internal/gitlab_subscriptions/namespaces/:id/minutes/move/:target_id` | Subscription portal JWT |
 | `GET` | `/internal/gitlab_subscriptions/namespaces/:id/owners` | Subscription portal JWT |
+| `GET` | `/internal/gitlab_subscriptions/namespaces/:id/projects` | Subscription portal JWT |
 | `POST` | `/internal/gitlab_subscriptions/namespaces/:id/provision` | Subscription portal JWT |
 | `POST` | `/internal/gitlab_subscriptions/namespaces/:id/subscription_add_on_purchases` | Subscription portal JWT |
 | `GET` | `/internal/gitlab_subscriptions/namespaces/:id/subscription_add_on_purchases/:add_on_name` | Subscription portal JWT |

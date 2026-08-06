@@ -284,6 +284,17 @@ RSpec.describe Gitlab::SidekiqMiddleware, feature_category: :shared do
           .in(middlewares)
       end
     end
+
+    context 'ConcurrencyLimit::Client' do
+      # Because it buffers before the payload is compressed - but Sidekiq's scheduler
+      # re-pushes already-compressed scheduled and retried jobs through this chain, so a
+      # buffered payload can be compressed and QueueManager has to preserve the markers.
+      it 'comes before SizeLimiter::Client' do
+        expect(::Gitlab::SidekiqMiddleware::ConcurrencyLimit::Client)
+          .to come_before(::Gitlab::SidekiqMiddleware::SizeLimiter::Client)
+          .in(middlewares)
+      end
+    end
   end
 
   describe 'Server.middlewares' do

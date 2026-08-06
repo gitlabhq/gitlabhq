@@ -130,6 +130,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
     end
   end
 
+  # rubocop:disable Database/AvoidIntRangePartitioning -- these are the specs for the helper
   describe '#partition_table_by_int_range' do
     let(:old_primary_key) { 'id' }
     let(:new_primary_key) { ['id', partition_column2] }
@@ -315,6 +316,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
       end
     end
   end
+  # rubocop:enable Database/AvoidIntRangePartitioning
 
   describe '#partition_table_by_date' do
     let(:partition_column) { 'created_at' }

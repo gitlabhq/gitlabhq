@@ -192,6 +192,7 @@ Jobs in `test` stage:
 - `cng-relative-url` runs the smoke suite, `Test::Instance::Smoke`, but with a relative URL set for CNG
 - `cng-oauth` runs e2e spec for authentication between GitHub and GitLab with OmniAuth enabled.
 - `cng-secrets-manager` runs the Secrets Manager scenario `Test::Integration::SecretsManager` against CNG deployed with OpenBao enabled
+- `cng-vue3-rollout` runs the Vue 3 rollout scenario `Test::Instance::Vue3Rollout` against CNG deployed with the `vue3_migrate_jobs` feature flag enabled
 
 ##### report
 

@@ -177,6 +177,18 @@ cng-secrets-manager:
     QA_FEATURE_FLAGS: "secrets_manager=enabled,group_secrets_manager=enabled,secrets_manager_namespace_enrollment=enabled,secrets_manager_instance_enrollment=enabled"
     DEPLOY_TIMEOUT: 15m
 
+# Canary for the Vue 3 rollout mechanism. The flag is set once before the
+# suite rather than inside the spec, so the test never races with the
+# per-process feature flag cache.
+cng-vue3-rollout:
+  extends:
+    - .cng-test
+  variables:
+    QA_SCENARIO: Test::Instance::Vue3Rollout
+    QA_RSPEC_TAGS: --tag vue3_rollout
+    QA_RUN_IN_PARALLEL: "false"
+    QA_FEATURE_FLAGS: "vue3_migrate_jobs=enabled"
+
 cng-relative-url:
   extends:
     - cng-instance

@@ -107,6 +107,9 @@ function initRightSidebar() {
       $layoutPage.removeClass('right-sidebar-expanded right-sidebar-collapsed');
     }
   }
+
+  // Signal for specs to wait on to know the right sidebar is done setting up.
+  document.body.dataset.rightSidebarInitialized = 'true';
 }
 
 // Put all initialisations here that can also wait after everything is rendered and ready

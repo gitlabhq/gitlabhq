@@ -16,8 +16,6 @@ RSpec.describe 'Markdown keyboard shortcuts', :js, feature_category: :team_plann
     sign_in(user)
 
     visit path_to_visit
-
-    wait_for_requests
   end
 
   shared_examples 'keyboard shortcuts' do

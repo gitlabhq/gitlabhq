@@ -37,19 +37,18 @@ RSpec.describe 'Single origin fallback callout', :do_not_mock_admin_mode_setting
       end
 
       context 'when callout is dismissed', :js do
-        before do
+        it 'does not display callout' do
           visit root_path
 
           within('body.page-initialised') do
             find_by_testid('close-single-origin-fallback-callout').click
           end
 
-          wait_for_requests
+          expect(page).not_to have_content callout_title
 
           visit root_path
-        end
 
-        it 'does not display callout' do
+          expect(page).to have_title _('Projects')
           expect(page).not_to have_content callout_title
         end
       end

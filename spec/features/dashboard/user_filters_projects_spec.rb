@@ -51,7 +51,6 @@ RSpec.describe 'Dashboard > User filters projects', :js, :with_current_organizat
   it 'searches for projects' do
     project2.add_developer(user)
     visit member_dashboard_projects_path
-    wait_for_requests
 
     expect(page).to have_content(project.name)
     expect(page).to have_content(project2.name)

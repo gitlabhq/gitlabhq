@@ -380,6 +380,25 @@ continuous-vulnerabiity-scanning:
   rules:
     - when: never
 
+# ========== vue3-rollout ===========
+
+# Canary verifying that the Vue 3 rollout mechanism survives Omnibus
+# packaging: the compiled `vue3_migration.json` manifest and the `.vue3`
+# chunks must both ship, or pages silently fall back to Vue 2.
+vue3-rollout:
+  extends:
+    - .omnibus-e2e
+  variables:
+    # `gitlab-qa` resolves QA_SCENARIO against its own scenario namespace, which
+    # has no Vue3Rollout, so use its generic image scenario and select the spec
+    # by tag instead. Same shape as the `health-check` job above.
+    QA_SCENARIO: Test::Instance::Image
+    QA_RSPEC_TAGS: --tag vue3_rollout
+    QA_FEATURE_FLAGS: "vue3_migrate_jobs=enabled"
+  rules:
+    - !reference [.rules:test:omnibus-base, rules]
+    - if: $QA_SUITES =~ /Test::Instance::Vue3Rollout/
+
 # ------------------------------------------
 # Update jobs
 # ------------------------------------------

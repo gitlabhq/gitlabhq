@@ -32,8 +32,6 @@ RSpec.describe 'Import/Export - Connect to another instance', :js, feature_categ
         expect(page).to have_content 'stub-group'
 
         visit '/'
-
-        wait_for_all_requests
       end
     end
 

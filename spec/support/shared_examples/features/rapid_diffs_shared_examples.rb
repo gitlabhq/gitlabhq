@@ -3,6 +3,10 @@
 RSpec.shared_examples 'Rapid Diffs application' do
   include RapidDiffsHelpers
 
+  before do
+    page.assert_selector('diff-file-mounted', count: diffs.diff_files.size, visible: :all)
+  end
+
   describe 'diffs list' do
     it 'shows all diffs' do
       diffs.diff_files.each do |diff_file|

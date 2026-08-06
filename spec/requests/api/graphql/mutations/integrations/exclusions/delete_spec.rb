@@ -36,6 +36,13 @@ RSpec.describe Mutations::Integrations::Exclusions::Delete, feature_category: :i
   context 'when the user is authorized' do
     let(:current_user) { admin_user }
 
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :delete_integration_exclusion do
+      let(:user) { admin_user }
+      let(:boundary_object) { :instance }
+      let(:mutation) { graphql_mutation(:integration_exclusion_delete, args, 'errors') }
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
+
     it 'returns an empty array' do
       resolve_mutation
       expect(graphql_data['integrationExclusionDelete']['exclusions']).to eq([])

@@ -55,6 +55,13 @@ RSpec.describe Mutations::Integrations::Exclusions::Create, feature_category: :i
   context 'when the user is authorized' do
     let(:current_user) { admin_user }
 
+    it_behaves_like 'authorizing granular token permissions for GraphQL', :create_integration_exclusion do
+      let(:user) { admin_user }
+      let(:boundary_object) { :instance }
+      let(:mutation) { graphql_mutation(:integration_exclusion_create, args, 'errors') }
+      let(:request) { post_graphql_mutation(mutation, token: { personal_access_token: pat }) }
+    end
+
     it 'creates inactive integrations for the projects' do
       expect { resolve_mutation }.to change { Integration.count }.from(0).to(1)
     end

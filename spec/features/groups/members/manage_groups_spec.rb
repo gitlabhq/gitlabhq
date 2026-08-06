@@ -79,8 +79,6 @@ RSpec.describe 'Groups > Members > Manage groups', :js, feature_category: :group
       page.within(first_row) do
         select_from_listbox('Maintainer', from: 'Developer')
 
-        wait_for_requests
-
         expect(page).to have_button('Maintainer')
       end
     end
@@ -91,8 +89,6 @@ RSpec.describe 'Groups > Members > Manage groups', :js, feature_category: :group
       page.within first_row do
         fill_in 'Expiration date', with: expiration_date
         find_field('Expiration date').native.send_keys :enter
-
-        wait_for_requests
 
         expect(page).to have_field('Expiration date', with: expiration_date)
       end
@@ -108,8 +104,6 @@ RSpec.describe 'Groups > Members > Manage groups', :js, feature_category: :group
           expect(page).to have_field('Expiration date', with: expiration_date)
 
           find_by_testid('clear-button').click
-
-          wait_for_requests
 
           expect(page).to have_field('Expiration date', with: '')
         end

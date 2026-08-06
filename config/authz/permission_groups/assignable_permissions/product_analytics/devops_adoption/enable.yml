@@ -1,0 +1,9 @@
+---
+name: enable_devops_adoption
+description: Grants the ability to enable DevOps adoption for a namespace.
+boundaries:
+  - group
+available_for:
+  - granular_access_token
+permissions:
+  - enable_devops_adoption

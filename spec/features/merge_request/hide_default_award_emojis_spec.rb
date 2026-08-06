@@ -11,8 +11,10 @@ RSpec.describe 'Merge request > User does not see default award emoji', :js, fea
     sign_in(user)
 
     visit project_merge_request_path(project, merge_request)
-    wait_for_requests
   end
 
-  it { expect(page).not_to have_selector('[data-testid="award-button"]') }
+  it 'does not show the default award emoji' do
+    expect(page).to have_testid('emoji-picker')
+    expect(page).not_to have_testid('award-button')
+  end
 end

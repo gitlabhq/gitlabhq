@@ -1,0 +1,10 @@
+---
+name: update_subscription_usage_cap
+description: Grants the ability to update subscription usage budget caps.
+boundaries:
+  - group
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - update_subscription_usage_cap

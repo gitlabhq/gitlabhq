@@ -12,8 +12,6 @@ RSpec.describe 'User views rapid diffs', :js, feature_category: :code_review_wor
 
   before do
     visit(diffs_project_merge_request_path(project, merge_request, rapid_diffs: true))
-
-    wait_for_requests
   end
 
   it_behaves_like 'Rapid Diffs application'

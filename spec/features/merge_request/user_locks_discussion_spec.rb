@@ -28,8 +28,6 @@ RSpec.describe 'Merge request > User locks discussion', :js, feature_category: :
           click_button 'Comment'
         end
 
-        wait_for_requests
-
         expect(find('.issuable-discussion #notes')).to have_content('Some new comment')
       end
     end
