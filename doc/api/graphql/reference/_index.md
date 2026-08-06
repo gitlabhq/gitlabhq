@@ -18450,13 +18450,6 @@ Fields:
 
 ### `Mutation.upsertFlatUserCap`
 
-{{< details >}}
-
-- Introduced in GitLab 18.11.
-- Status: Experiment.
-
-{{< /details >}}
-
 Update the flat per-user budget cap for a subscription.
 
 Input type: `UpsertFlatUserCapInput`
@@ -18480,13 +18473,6 @@ Fields:
 | <a id="mutation-upsertflatusercap-flatusercapenabled"></a>`flatUserCapEnabled` | [`Boolean`](#boolean) | Whether the flat per-user budget cap is enabled. |
 
 ### `Mutation.upsertUserBudgetCapOverrides`
-
-{{< details >}}
-
-- Introduced in GitLab 18.11.
-- Status: Experiment.
-
-{{< /details >}}
 
 Bulk upsert per-user budget cap overrides.
 

@@ -24,29 +24,11 @@ RSpec.describe Groups::GroupLinks::DestroyService, '#execute', feature_category:
         expect { subject.execute(link) }.to change { shared_group.shared_with_group_links.count }.from(1).to(0)
       end
 
-      context 'with skip_group_share_unlink_auth_refresh feature flag disabled' do
-        before do
-          stub_feature_flags(skip_group_share_unlink_auth_refresh: false)
-        end
+      it 'revokes project authorization', :sidekiq_inline do
+        group.add_developer(user)
 
-        it 'revokes project authorization', :sidekiq_inline do
-          group.add_developer(user)
-
-          expect { subject.execute(link) }.to(
-            change { Ability.allowed?(user, :read_project, project) }.from(true).to(false))
-        end
-      end
-
-      context 'with skip_group_share_unlink_auth_refresh feature flag enabled' do
-        before do
-          stub_feature_flags(skip_group_share_unlink_auth_refresh: true)
-        end
-
-        it 'maintains project authorization', :sidekiq_inline do
-          group.add_developer(user)
-
-          expect(Ability.allowed?(user, :read_project, project)).to be_truthy
-        end
+        expect { subject.execute(link) }.to(
+          change { Ability.allowed?(user, :read_project, project) }.from(true).to(false))
       end
     end
 
@@ -63,50 +45,22 @@ RSpec.describe Groups::GroupLinks::DestroyService, '#execute', feature_category:
         ]
       end
 
-      context 'with skip_group_share_unlink_auth_refresh feature flag disabled' do
-        before do
-          stub_feature_flags(skip_group_share_unlink_auth_refresh: false)
-        end
+      it 'schedules worker once per group' do
+        expect(GroupGroupLink).to receive(:delete).and_call_original
 
-        it 'schedules worker once per group' do
-          expect(GroupGroupLink).to receive(:delete).and_call_original
+        expect(AuthorizedProjectUpdate::EnqueueGroupMembersRefreshAuthorizedProjectsWorker)
+          .to receive(:perform_async).with(
+            group.id,
+            { 'priority' => UserProjectAccessChangedService::MEDIUM_PRIORITY.to_s, 'direct_members_only' => true }
+          ).once
 
-          expect(AuthorizedProjectUpdate::EnqueueGroupMembersRefreshAuthorizedProjectsWorker)
-            .to receive(:perform_async).with(
-              group.id,
-              { 'priority' => UserProjectAccessChangedService::MEDIUM_PRIORITY.to_s, 'direct_members_only' => true }
-            ).once
+        expect(AuthorizedProjectUpdate::EnqueueGroupMembersRefreshAuthorizedProjectsWorker)
+          .to receive(:perform_async).with(
+            another_group.id,
+            { 'priority' => UserProjectAccessChangedService::MEDIUM_PRIORITY.to_s, 'direct_members_only' => true }
+          ).once
 
-          expect(AuthorizedProjectUpdate::EnqueueGroupMembersRefreshAuthorizedProjectsWorker)
-            .to receive(:perform_async).with(
-              another_group.id,
-              { 'priority' => UserProjectAccessChangedService::MEDIUM_PRIORITY.to_s, 'direct_members_only' => true }
-            ).once
-
-          subject.execute(links)
-        end
-      end
-
-      context 'with skip_group_share_unlink_auth_refresh feature flag enabled' do
-        before do
-          stub_feature_flags(skip_group_share_unlink_auth_refresh: true)
-        end
-
-        it 'does not update project authorization once per group' do
-          expect(GroupGroupLink).to receive(:delete).and_call_original
-          expect(group).not_to receive(:refresh_members_authorized_projects)
-          expect(another_group).not_to receive(:refresh_members_authorized_projects)
-
-          subject.execute(links)
-        end
-
-        it 'does not schedule worker once per group' do
-          expect(GroupGroupLink).to receive(:delete).and_call_original
-          expect(AuthorizedProjectUpdate::EnqueueGroupMembersRefreshAuthorizedProjectsWorker)
-            .not_to receive(:perform_async)
-
-          subject.execute(links)
-        end
+        subject.execute(links)
       end
     end
   end

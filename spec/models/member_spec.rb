@@ -1622,6 +1622,61 @@ RSpec.describe Member, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#authorized_projects_refresh_priority' do
+    # Not let_it_be: the priority is a transient attribute, so a shared instance
+    # would leak it between examples.
+    let(:member) { build(:group_member) }
+
+    subject(:priority) { member.send(:authorized_projects_refresh_priority) }
+
+    context 'when no priority has been set' do
+      it { is_expected.to eq(UserProjectAccessChangedService::HIGH_PRIORITY) }
+    end
+
+    context 'when a priority has been set' do
+      before do
+        member.authorized_projects_refresh_priority = UserProjectAccessChangedService::MEDIUM_PRIORITY
+      end
+
+      it { is_expected.to eq(UserProjectAccessChangedService::MEDIUM_PRIORITY) }
+    end
+  end
+
+  describe '#refresh_member_authorized_projects' do
+    let_it_be(:member) { create(:group_member) }
+
+    let(:service) { instance_double(UserProjectAccessChangedService) }
+
+    # StubbedMember::Member is prepended to Member for the whole suite (see
+    # spec/spec_helper.rb) and replaces this method so that the refresh runs
+    # inline, without calling super. Walk past it to Member's own definition, so
+    # that the real implementation runs and the priority it passes on is
+    # observable. The loop terminates immediately if the stub is ever removed.
+    subject(:refresh) do
+      method = described_class.instance_method(:refresh_member_authorized_projects)
+      method = method.super_method until method.owner == described_class
+      method.bind_call(member)
+    end
+
+    before do
+      allow(UserProjectAccessChangedService).to receive(:new).with(member.user_id).and_return(service)
+    end
+
+    it 'refreshes with high priority by default' do
+      expect(service).to receive(:execute).with(priority: UserProjectAccessChangedService::HIGH_PRIORITY)
+
+      refresh
+    end
+
+    it 'refreshes with the priority set on the member' do
+      member.authorized_projects_refresh_priority = UserProjectAccessChangedService::MEDIUM_PRIORITY
+
+      expect(service).to receive(:execute).with(priority: UserProjectAccessChangedService::MEDIUM_PRIORITY)
+
+      refresh
+    end
+  end
+
   describe 'destroying a record', :delete, :sidekiq_inline do
     it "refreshes user's authorized projects" do
       project = create(:project, :private)

@@ -25,12 +25,16 @@ RSpec.describe API::Internal::Coverage, feature_category: :code_testing do
     end
 
     context 'when user is admin' do
+      # Coverband stores one array slot per source line, nil for non-executable lines
       let(:coverage_hash) do
         { "./lib/gitlab/database/load_balancing/load_balancer.rb" =>
-           { "1" => "5", "2" => "10", "3" => "0" } }
+           { "first_updated_at" => 1764105503, "last_updated_at" => 1764105891,
+             "file_hash" => "d41d8cd98f00b204e9800998ecf8427e", "data" => [nil, 5, 10, 0, nil] } }
       end
 
-      let(:resp) { coverage_hash }
+      let(:resp) do
+        { "./lib/gitlab/database/load_balancing/load_balancer.rb" => { "2" => 5, "3" => 10, "4" => 0 } }
+      end
 
       before do
         stub_const('Coverband', Class.new)

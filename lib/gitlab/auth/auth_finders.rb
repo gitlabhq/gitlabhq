@@ -133,7 +133,9 @@ module Gitlab
       # It is also used by GraphQL/API requests.
       # And to allow accessing /archive programatically as it was a big pain point
       # for users https://gitlab.com/gitlab-org/gitlab/-/issues/28978.
-      # Used for release downloading as well
+      # Used for release downloading as well, and for design management
+      # images, which have no API equivalent and would otherwise only be
+      # accessible to session-authenticated (browser) requests.
       def find_user_from_web_access_token(request_format, scopes: [:api])
         return unless access_token && valid_web_access_format?(request_format)
 
@@ -541,6 +543,8 @@ module Gitlab
           archive_request?
         when :download
           download_request?
+        when :design
+          design_request?
         end
       end
 
@@ -594,6 +598,10 @@ module Gitlab
 
       def download_request?
         current_request.path.include?('/downloads/')
+      end
+
+      def design_request?
+        current_request.path.include?('/-/design_management/designs/')
       end
 
       def blob_request?

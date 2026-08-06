@@ -56,4 +56,69 @@ RSpec.describe Ci::Queue::BuildQueueService, feature_category: :continuous_integ
       end
     end
   end
+
+  describe 'execute' do
+    let_it_be(:runner) { create(:ci_runner, :group, groups: [group]) }
+
+    subject(:execute) { described_class.new(runner).execute(::Ci::PendingBuild.all) }
+
+    it 'plucks build_id, partition_id and project_id' do
+      expect(execute).to match_array(
+        [[pending_build_1.build_id, pending_build_1.partition_id, pending_build_1.project_id]]
+      )
+    end
+
+    context 'when ci_pending_builds_runner_machine_id_filter is disabled' do
+      before do
+        stub_feature_flags(ci_pending_builds_runner_machine_id_filter: false)
+      end
+
+      it 'plucks only build_id and partition_id' do
+        expect(execute).to match_array(
+          [[pending_build_1.build_id, pending_build_1.partition_id]]
+        )
+      end
+    end
+  end
+
+  describe 'runner_manager threading' do
+    let_it_be(:runner) { create(:ci_runner, :group, groups: [group]) }
+    let_it_be(:runner_manager) { create(:ci_runner_machine, runner: runner) }
+    let_it_be(:other_runner_manager) { create(:ci_runner_machine, runner: runner) }
+
+    let_it_be(:routed_build) { create(:ci_build, :created, pipeline: pipeline) }
+    let_it_be(:routed_pending_build) do
+      create(:ci_pending_build, build: routed_build, project: project, runner_machine_id: runner_manager.id)
+    end
+
+    it 'includes routed builds when the matching runner_manager is passed' do
+      candidates = described_class.new(runner, runner_manager).build_candidates
+
+      expect(candidates).to include(routed_pending_build)
+    end
+
+    it 'excludes routed builds when a different runner_manager is passed' do
+      candidates = described_class.new(runner, other_runner_manager).build_candidates
+
+      expect(candidates).not_to include(routed_pending_build)
+    end
+
+    it 'excludes routed builds when no runner_manager is passed' do
+      candidates = described_class.new(runner).build_candidates
+
+      expect(candidates).not_to include(routed_pending_build)
+    end
+
+    context 'when ci_pending_builds_runner_machine_id_filter is disabled' do
+      before do
+        stub_feature_flags(ci_pending_builds_runner_machine_id_filter: false)
+      end
+
+      it 'ignores runner_machine_id entirely, including for already-routed rows' do
+        candidates = described_class.new(runner, other_runner_manager).build_candidates
+
+        expect(candidates).to include(routed_pending_build)
+      end
+    end
+  end
 end

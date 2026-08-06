@@ -84,10 +84,6 @@ describe('Sidebar Confidentiality Widget', () => {
       expect(findConfidentialityForm().props('confidential')).toBe(true);
       expect(findConfidentialityContent().props('confidential')).toBe(true);
     });
-
-    it('emits `confidentialityUpdated` event with a `false` payload', () => {
-      expect(wrapper.emitted('confidentialityUpdated')).toEqual([[false]]);
-    });
   });
 
   describe('when issue is confidential', () => {
@@ -112,10 +108,6 @@ describe('Sidebar Confidentiality Widget', () => {
       await waitForPromises();
       expect(findConfidentialityForm().props('confidential')).toBe(false);
       expect(findConfidentialityContent().props('confidential')).toBe(false);
-    });
-
-    it('emits `confidentialityUpdated` event with a `true` payload', () => {
-      expect(wrapper.emitted('confidentialityUpdated')).toEqual([[true]]);
     });
   });
 

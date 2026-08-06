@@ -10,6 +10,7 @@ module GranularTokenAuthorization
     ics: :read_work_item,
     archive: :download_code,
     download: :read_release,
+    design: :read_design,
     editor_extension: :create_editor_telemetry
   }.freeze
 

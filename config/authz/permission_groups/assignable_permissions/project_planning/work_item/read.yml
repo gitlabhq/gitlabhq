@@ -10,6 +10,7 @@ available_for:
   - granular_access_token
 permissions:
   - read_work_item
+  - read_design
   - read_epic
   - read_epic_award_emoji
   - read_epic_board

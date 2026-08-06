@@ -3010,7 +3010,7 @@ deploy:
 **Additional details**:
 
 - Environments created from this job definition are assigned a [tier](../environments/_index.md#deployment-tier-of-environments) based on this value.
-- Existing environments don't have their tier updated if this value is added later. Existing environments must have their tier updated via the [Environments API](../../api/environments.md#update-an-existing-environment).
+- Existing environments don't have their tier updated if this value is added later. Existing environments must have their tier updated by using the [Environments API](../../api/environments.md#update-an-existing-environment).
 
 **Related topics**:
 

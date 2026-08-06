@@ -414,7 +414,6 @@ read_custom_field
 read_customizable_dashboards
 read_dedicated_hosted_runner_usage
 read_deploy_board
-read_design
 read_design_activity
 read_dora4_analytics
 read_duo_core_settings

@@ -682,6 +682,17 @@ p_ci_job_messages:
   - table: projects
     column: project_id
     on_delete: async_delete
+p_ci_job_runtime_environments:
+  - table: p_ci_builds
+    column: build_id
+    on_delete: async_delete
+    worker_class: LooseForeignKeys::CiPipelinesBuildsCleanupCronWorker
+  - table: ci_runner_machines
+    column: runner_machine_id
+    on_delete: async_nullify
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 p_ci_pipeline_artifact_states:
   - table: ci_pipeline_artifacts
     column: pipeline_artifact_id

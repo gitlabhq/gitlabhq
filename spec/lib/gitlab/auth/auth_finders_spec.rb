@@ -753,7 +753,7 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
         expect { find_user_from_access_token }.to raise_error(Gitlab::Auth::UnauthorizedError)
       end
 
-      context 'no feed, API, archive or download requests' do
+      context 'no feed, API, archive, download or design requests' do
         it 'returns nil if the request is not RSS' do
           expect(find_user_from_web_access_token(:rss)).to be_nil
         end
@@ -772,6 +772,10 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
 
         it 'returns nil if the request is not DOWNLOAD' do
           expect(find_user_from_web_access_token(:download)).to be_nil
+        end
+
+        it 'returns nil if the request is not DESIGN' do
+          expect(find_user_from_web_access_token(:design)).to be_nil
         end
       end
 
@@ -797,6 +801,12 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
         set_header('SCRIPT_NAME', '/-/1.0.0/downloads/main.zip')
 
         expect(find_user_from_web_access_token(:download)).to eq(user)
+      end
+
+      it 'returns the user for DESIGN requests' do
+        set_header('SCRIPT_NAME', '/group/project/-/design_management/designs/1/sha/raw_image')
+
+        expect(find_user_from_web_access_token(:design)).to eq(user)
       end
 
       context 'for API requests' do

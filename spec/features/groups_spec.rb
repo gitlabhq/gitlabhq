@@ -351,13 +351,13 @@ RSpec.describe 'Group', :with_current_organization, feature_category: :groups_an
     it 'saves new settings' do
       within_testid('general-settings') do
         # Have to reset it to '' so it overwrites rather than appends
-        fill_in('group_name', with: '')
-        fill_in 'group_name', with: new_name
+        fill_in('group_name_edit', with: '')
+        fill_in 'group_name_edit', with: new_name
         click_button 'Save changes'
       end
 
       expect(page).to have_content 'successfully updated'
-      expect(find('#group_name').value).to eq(new_name)
+      expect(find('#group_name_edit').value).to eq(new_name)
 
       within_testid "breadcrumb-links" do
         expect(page).to have_content new_name

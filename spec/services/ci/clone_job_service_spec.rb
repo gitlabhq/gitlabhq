@@ -86,7 +86,7 @@ RSpec.describe Ci::CloneJobService, feature_category: :continuous_integration do
         runner_id taggings tags tag_list trigger trigger_id
         user_id auto_canceled_by_id retried failure_reason
         sourced_pipelines sourced_pipeline artifacts_file_store artifacts_metadata_store
-        runner_manager_build runner_manager build_runtime_environment runner_session trace_chunks
+        runner_manager_build runner_manager job_runtime_environment runner_session trace_chunks
         upstream_pipeline_id upstream_pipeline_partition_id
         artifacts_file artifacts_metadata artifacts_size commands
         resource resource_group_id processed security_scans security_report_artifacts author

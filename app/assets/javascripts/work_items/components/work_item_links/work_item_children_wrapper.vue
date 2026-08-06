@@ -649,7 +649,7 @@ export default {
       @mouseout="clearPrefetching"
       @remove-child="removeChild"
       @error="$emit('error', $event)"
-      @toggleDrawer="onClick($event, child)"
+      @toggle-drawer="onClick($event, child)"
     />
   </component>
 </template>

@@ -205,7 +205,7 @@ In order of highest priority first, the component version can be:
   must be tagged with a [semantic version](#semantic-versioning).
 - A branch name, for example `main`. If a branch and tag exist with the same name,
   the tag takes precedence over the branch.
-- `~latest` or a partial semantic version, which selects the latest version within the specified pattern
+- `~latest` or a partial semantic version, which selects the latest version in the specified pattern
   published in the CI/CD Catalog. Use `~latest` only if you want to use the absolute
   latest version at all times, which could include breaking changes. `~latest`
   does not include pre-releases, for example `1.0.1-rc`, which are not considered
@@ -442,7 +442,7 @@ Ensure that the component and its testing pipeline work also [on GitLab Self-Man
 While some API resources of public projects on GitLab.com could be accessed with unauthenticated requests,
 on a GitLab Self-Managed instance a component project could be mirrored as private or internal project.
 
-It's important that an access token can optionally be provided via inputs or variables to
+It's important that an access token can optionally be provided through inputs or variables to
 authenticate requests on GitLab Self-Managed instances.
 
 ### Avoid using global keywords

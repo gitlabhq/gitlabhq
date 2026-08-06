@@ -37,6 +37,15 @@ class Member < ApplicationRecord
   attr_accessor :skip_authorized_projects_refresh
   alias_method :skip_authorized_projects_refresh?, :skip_authorized_projects_refresh
 
+  # Transient UserProjectAccessChangedService priority, set by callers
+  # that destroy a member as part of destroying its user. Currently only
+  # set by Users::DestroyService, and only for project bots as part of
+  # the nightly bulk deletion of inactive resource access token (behind
+  # the
+  # deprioritize_destroyed_project_bot_user_project_authorizations_refresh
+  # feature flag).
+  attr_writer :authorized_projects_refresh_priority
+
   belongs_to :created_by, class_name: "User"
   belongs_to :user
   belongs_to :source, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
@@ -797,7 +806,11 @@ class Member < ApplicationRecord
 
   # This method is overridden in the test environment, see stubbed_member.rb
   def refresh_member_authorized_projects
-    UserProjectAccessChangedService.new(user_id).execute
+    UserProjectAccessChangedService.new(user_id).execute(priority: authorized_projects_refresh_priority)
+  end
+
+  def authorized_projects_refresh_priority
+    @authorized_projects_refresh_priority || UserProjectAccessChangedService::HIGH_PRIORITY
   end
   # rubocop: enable CodeReuse/ServiceClass
 

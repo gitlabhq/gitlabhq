@@ -5,11 +5,13 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import WorkItemDetailPanel from '~/work_items/components/work_item_detail_panel.vue';
 import MRRelatedWorkItems from '~/sidebar/components/related_work_items/related_work_items.vue';
 import RelatedWorkItemsAddForm from '~/sidebar/components/related_work_items/related_work_items_add_form.vue';
 import mergeRequestRelatedWorkItemsQuery from '~/sidebar/queries/merge_request_related_work_items.query.graphql';
 import createMergeRequestWorkItemRelationMutation from '~/sidebar/queries/create_merge_request_work_item_relation.mutation.graphql';
+import destroyMergeRequestWorkItemRelationMutation from '~/sidebar/queries/destroy_merge_request_work_item_relation.mutation.graphql';
 import { getParameterByName, removeParams, updateHistory } from '~/lib/utils/url_utility';
 
 jest.mock('~/alert');
@@ -41,12 +43,12 @@ const mockLinkedItem = ({ title, linkType }) => {
   };
 };
 
-const mockRelationItem = ({ title, linkType }) => {
+const mockRelationItem = ({ title, linkType, fromMrDescription = true }) => {
   const { workItem } = mockLinkedItem({ title, linkType });
   return {
     id: `gid://gitlab/MergeRequestsClosingIssues/${workItemCounter}`,
     linkType,
-    fromMrDescription: true,
+    fromMrDescription,
     workItem,
     __typename: 'MergeRequestWorkItemRelation',
   };
@@ -99,6 +101,16 @@ const buildCreateMutationResponse = (workItemRelations = [], errors = []) => ({
   },
 });
 
+const buildDestroyMutationResponse = (removedRelationIds = [], errors = []) => ({
+  data: {
+    mergeRequestDestroyWorkItemRelations: {
+      errors,
+      removedRelationIds,
+      __typename: 'MergeRequestDestroyWorkItemRelationsPayload',
+    },
+  },
+});
+
 describe('MRRelatedWorkItems', () => {
   let wrapper;
   const showToast = jest.fn();
@@ -113,6 +125,12 @@ describe('MRRelatedWorkItems', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findAddButton = () => wrapper.findComponentByTestId('add-work-item-button');
   const findAddForm = () => wrapper.findComponent(RelatedWorkItemsAddForm);
+  const findRemoveButton = (workItem) =>
+    wrapper.findComponentByTestId(`remove-work-item-${getIdFromGraphQLId(workItem.id)}`);
+  const findFromDescriptionIndicator = (workItem) =>
+    wrapper.findByTestId(`from-description-indicator-${getIdFromGraphQLId(workItem.id)}`);
+  const findActionSlots = () => wrapper.findAllByTestId('relation-action-slot');
+  const findRelationRows = () => wrapper.findAll('li');
 
   const createComponent = ({
     queryHandler = jest.fn().mockResolvedValue(buildQueryResponse()),
@@ -728,6 +746,243 @@ describe('MRRelatedWorkItems', () => {
       await waitForPromises();
 
       expect(mutationHandler).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('removing a related work item', () => {
+    const removableRelation = mockRelationItem({
+      title: 'Manually linked item',
+      linkType: 'RELATED',
+      fromMrDescription: false,
+    });
+    let destroyHandler;
+
+    const createWithDestroy = ({
+      relations = [removableRelation],
+      linkedWorkItems = [],
+      destroyResponse = buildDestroyMutationResponse([removableRelation.id]),
+      adminMergeRequest = true,
+      glFeatures = { explicitMrWorkItemRelations: true },
+    } = {}) => {
+      destroyHandler = jest.fn().mockResolvedValue(destroyResponse);
+      wrapper = shallowMountExtended(MRRelatedWorkItems, {
+        apolloProvider: createMockApollo([
+          [
+            mergeRequestRelatedWorkItemsQuery,
+            jest.fn().mockResolvedValue(
+              buildQueryResponse(linkedWorkItems, {
+                adminMergeRequest,
+                workItemRelations: relations,
+              }),
+            ),
+          ],
+          [destroyMergeRequestWorkItemRelationMutation, destroyHandler],
+        ]),
+        provide: {
+          fullPath: 'group/project',
+          id: '1',
+          glFeatures,
+        },
+        mocks: {
+          $toast: { show: showToast },
+        },
+        stubs: { GlCollapse },
+      });
+    };
+
+    it('renders a remove button for user-created relations', async () => {
+      createWithDestroy();
+      await waitForPromises();
+
+      expect(findRemoveButton(removableRelation.workItem).exists()).toBe(true);
+    });
+
+    it('does not render a remove button for relations derived from the MR description', async () => {
+      const fromDescription = mockRelationItem({
+        title: 'Closes #1',
+        linkType: 'CLOSES',
+        fromMrDescription: true,
+      });
+      createWithDestroy({ relations: [fromDescription] });
+      await waitForPromises();
+
+      expect(findRemoveButton(fromDescription.workItem).exists()).toBe(false);
+    });
+
+    it('does not render a remove button when the user cannot administer the merge request', async () => {
+      createWithDestroy({ adminMergeRequest: false });
+      await waitForPromises();
+
+      expect(findRemoveButton(removableRelation.workItem).exists()).toBe(false);
+    });
+
+    it('does not render a remove button when the feature flag is disabled', async () => {
+      createWithDestroy({
+        relations: [],
+        linkedWorkItems: [{ linkType: 'RELATED', workItem: removableRelation.workItem }],
+        glFeatures: { explicitMrWorkItemRelations: false },
+      });
+      await waitForPromises();
+
+      expect(findAllLinks().at(0).text()).toBe('Manually linked item');
+      expect(findRemoveButton(removableRelation.workItem).exists()).toBe(false);
+    });
+
+    it('reserves one action slot per row so the indicator and remove button share a column', async () => {
+      const fromDescription = mockRelationItem({
+        title: 'Closes #1',
+        linkType: 'CLOSES',
+        fromMrDescription: true,
+      });
+      createWithDestroy({ relations: [removableRelation, fromDescription] });
+      await waitForPromises();
+
+      expect(findActionSlots()).toHaveLength(2);
+    });
+
+    it('reveals the action slot on row hover and on focus, without dropping it from the tab order', async () => {
+      createWithDestroy();
+      await waitForPromises();
+
+      const slotClasses = findActionSlots().at(0).classes();
+
+      // Faded rather than hidden, so the button stays focusable.
+      expect(slotClasses).toContain('gl-opacity-0');
+      expect(slotClasses).toContain('group-hover:gl-opacity-10');
+      expect(slotClasses).toContain('focus-within:gl-opacity-10');
+      expect(findRelationRows().at(0).classes()).toContain('gl-group');
+    });
+
+    it('does not reserve action slots when the user cannot remove anything', async () => {
+      createWithDestroy({ adminMergeRequest: false });
+      await waitForPromises();
+
+      expect(findActionSlots()).toHaveLength(0);
+    });
+
+    it('calls the destroy mutation with the relation id as soon as remove is clicked', async () => {
+      createWithDestroy();
+      await waitForPromises();
+
+      findRemoveButton(removableRelation.workItem).vm.$emit('click');
+      await waitForPromises();
+
+      expect(destroyHandler).toHaveBeenCalledWith({
+        projectPath: 'group/project',
+        iid: MOCK_MERGE_REQUEST_IID,
+        ids: [removableRelation.id],
+      });
+    });
+
+    it('removes the relation from the rendered list on success', async () => {
+      createWithDestroy();
+      await waitForPromises();
+      expect(findAllLinks().at(0).text()).toBe('Manually linked item');
+
+      findRemoveButton(removableRelation.workItem).vm.$emit('click');
+      await waitForPromises();
+
+      expect(findNoneText().exists()).toBe(true);
+    });
+
+    it('shows a toast after a successful removal', async () => {
+      createWithDestroy();
+      await waitForPromises();
+
+      findRemoveButton(removableRelation.workItem).vm.$emit('click');
+      await waitForPromises();
+
+      expect(showToast).toHaveBeenCalledWith('Linked item removed');
+    });
+
+    it('shows an alert and keeps the item when the mutation returns errors', async () => {
+      createWithDestroy({
+        destroyResponse: buildDestroyMutationResponse([], ['Relation could not be removed.']),
+      });
+      await waitForPromises();
+
+      findRemoveButton(removableRelation.workItem).vm.$emit('click');
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'Relation could not be removed.',
+      });
+      expect(showToast).not.toHaveBeenCalled();
+      expect(findAllLinks().at(0).text()).toBe('Manually linked item');
+    });
+
+    it('shows an alert when the mutation request fails', async () => {
+      createWithDestroy();
+      destroyHandler.mockRejectedValueOnce(new Error('Network error'));
+      await waitForPromises();
+
+      findRemoveButton(removableRelation.workItem).vm.$emit('click');
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'Something went wrong while removing the work item.',
+        error: expect.any(Error),
+        captureError: true,
+      });
+    });
+
+    describe('relations derived from the MR description', () => {
+      const fromDescription = mockRelationItem({
+        title: 'Closes #1',
+        linkType: 'CLOSES',
+        fromMrDescription: true,
+      });
+
+      it('explains why the relation cannot be removed', async () => {
+        createWithDestroy({ relations: [fromDescription] });
+        await waitForPromises();
+
+        const indicator = findFromDescriptionIndicator(fromDescription.workItem);
+
+        expect(indicator.exists()).toBe(true);
+        expect(indicator.attributes('title')).toBe(
+          'This link comes from the merge request description. Edit the description to remove it.',
+        );
+        expect(indicator.attributes('aria-label')).toBe(
+          'This link comes from the merge request description. Edit the description to remove it.',
+        );
+      });
+
+      it('renders as a button so it is reachable by keyboard and the tooltip can be read', async () => {
+        createWithDestroy({ relations: [fromDescription] });
+        await waitForPromises();
+
+        const indicator = findFromDescriptionIndicator(fromDescription.workItem);
+
+        expect(indicator.attributes('icon')).toBe('information-o');
+        expect(indicator.attributes('category')).toBe('tertiary');
+      });
+
+      it('does not explain anything for user-created relations', async () => {
+        createWithDestroy();
+        await waitForPromises();
+
+        expect(findFromDescriptionIndicator(removableRelation.workItem).exists()).toBe(false);
+      });
+
+      it('does not explain anything when the user cannot administer the merge request', async () => {
+        createWithDestroy({ relations: [fromDescription], adminMergeRequest: false });
+        await waitForPromises();
+
+        expect(findFromDescriptionIndicator(fromDescription.workItem).exists()).toBe(false);
+      });
+
+      it('does not explain anything when the feature flag is disabled', async () => {
+        createWithDestroy({
+          relations: [],
+          linkedWorkItems: [{ linkType: 'CLOSES', workItem: fromDescription.workItem }],
+          glFeatures: { explicitMrWorkItemRelations: false },
+        });
+        await waitForPromises();
+
+        expect(findAllLinks().at(0).text()).toBe('Closes #1');
+        expect(findFromDescriptionIndicator(fromDescription.workItem).exists()).toBe(false);
+      });
     });
   });
 });

@@ -470,7 +470,7 @@ builds:
 - error_job_messages
 - runner_manager
 - runner_manager_build
-- build_runtime_environment
+- job_runtime_environment
 - runner_session
 - trace_metadata
 - terraform_state_versions

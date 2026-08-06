@@ -48,7 +48,7 @@ export default {
       type: String,
     },
   },
-  emits: ['closeForm', 'confidentialityUpdated', 'expand-sidebar'],
+  emits: ['closeForm', 'expand-sidebar'],
   data() {
     return {
       confidential: false,
@@ -70,12 +70,6 @@ export default {
       },
       skip() {
         return !this.iid;
-      },
-      result({ data }) {
-        if (!data) {
-          return;
-        }
-        this.$emit('confidentialityUpdated', data.namespace?.issuable?.confidential);
       },
       error() {
         createAlert({

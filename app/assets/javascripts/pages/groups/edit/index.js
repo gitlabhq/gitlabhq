@@ -15,6 +15,7 @@ import { initGroupSettingsReadme } from '~/groups/settings/init_group_settings_r
 import initArchiveSettings from '~/groups_projects/archive';
 import initUnarchiveSettings from '~/groups_projects/unarchive';
 import { initGroupDeleteButton } from '~/groups/group_delete_button';
+import { initGroupNameValidation } from '~/groups/group_name_validation';
 import { initGroupSettingsCreateOrganizations } from '~/groups/settings/create_organization';
 
 initFilePickers();
@@ -45,4 +46,5 @@ initGroupSettingsReadme();
 initArchiveSettings();
 initUnarchiveSettings();
 initGroupDeleteButton();
+initGroupNameValidation();
 initGroupSettingsCreateOrganizations();

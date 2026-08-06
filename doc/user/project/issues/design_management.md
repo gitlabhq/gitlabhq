@@ -112,6 +112,61 @@ You can explore a design in more detail by zooming in and out of the image:
 
 To move around the image while zoomed in, drag the image.
 
+## Download a design image with an access token
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/246866) in GitLab 19.3.
+
+{{< /history >}}
+
+Use an access token to download design images from API clients such as mobile apps,
+integrations, and exporters, where no browser session is available.
+
+Prerequisites:
+
+- You must have one of the following tokens:
+  - A [personal access token](../../profile/personal_access_tokens.md) or
+    [OAuth 2.0 token](../../../api/oauth2.md) with the `api` or `read_api` scope.
+  - A [fine-grained personal access token](../../../auth/tokens/fine_grained_access_tokens.md)
+    with the **Work Item: Read** permission for the project.
+- You must have permission to [view the design](#view-a-design).
+
+You cannot use project access tokens, group access tokens, or service account tokens
+to download design images.
+
+To download a design image:
+
+1. Get the image URL from the GraphQL API. For a preview no larger than 432x230 pixels,
+   use the `imageV432x230` field instead of `image`:
+
+   ```graphql
+   query {
+     project(fullPath: "my-group/my-project") {
+       issue(iid: "1") {
+         designCollection {
+           designs {
+             nodes {
+               filename
+               image
+             }
+           }
+         }
+       }
+     }
+   }
+   ```
+
+1. Request the image URL and pass the token in the `PRIVATE-TOKEN` header:
+
+   ```shell
+   curl --output design.png --header "PRIVATE-TOKEN: <your_access_token>" "<image_url>"
+   ```
+
+   For OAuth 2.0 tokens, use the `Authorization: Bearer <oauth_token>` header instead.
+   You must send the token in a request header. Tokens in query string parameters,
+   such as `private_token`, are not accepted.
+
 ## Add a design to an issue
 
 {{< history >}}

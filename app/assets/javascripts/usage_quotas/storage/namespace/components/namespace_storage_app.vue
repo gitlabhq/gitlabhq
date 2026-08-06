@@ -190,7 +190,7 @@ export default {
         :is-loading="$apollo.queries.projects.loading"
         :help-links="helpLinks"
         :sort-by="initialSortBy"
-        @sortChanged="onSortChanged"
+        @sort-changed="onSortChanged"
       />
       <div class="gl-mt-5 gl-flex gl-justify-center">
         <gl-keyset-pagination

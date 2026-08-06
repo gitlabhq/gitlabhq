@@ -455,7 +455,7 @@ To configure access for `<aws_account_id>.dkr.ecr.<region>.amazonaws.com`, follo
      specific repository.
 
 1. You can now use any private image from `<aws_account_id>.dkr.ecr.<region>.amazonaws.com` defined in
-   `image` and/or `services` in your `.gitlab-ci.yml` file:
+   `image`, `services`, or both, in your `.gitlab-ci.yml` file:
 
    ```yaml
    image: <aws_account_id>.dkr.ecr.<region>.amazonaws.com/private/image:latest

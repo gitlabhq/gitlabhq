@@ -52,6 +52,7 @@ describe('CreateWorkItemModal', () => {
     mergeRequestLinkType = null,
     mergeRequestTitle = '',
     mergeRequestReference = '',
+    allowAnyNamespace = false,
   } = {}) => {
     wrapper = shallowMount(CreateWorkItemModal, {
       propsData: {
@@ -66,6 +67,7 @@ describe('CreateWorkItemModal', () => {
         mergeRequestLinkType,
         mergeRequestTitle,
         mergeRequestReference,
+        allowAnyNamespace,
       },
       mocks: {
         $toast: {
@@ -85,6 +87,20 @@ describe('CreateWorkItemModal', () => {
 
   afterEach(() => {
     localStorage.clear();
+  });
+
+  describe('namespace selection', () => {
+    it('limits the form to the current namespace by default', () => {
+      createComponent();
+
+      expect(findForm().props('allowAnyNamespace')).toBe(false);
+    });
+
+    it('lets the form select any namespace when allowAnyNamespace is set', () => {
+      createComponent({ allowAnyNamespace: true });
+
+      expect(findForm().props('allowAnyNamespace')).toBe(true);
+    });
   });
 
   describe('merge request relationship note', () => {

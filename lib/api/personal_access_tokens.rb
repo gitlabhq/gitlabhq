@@ -33,8 +33,10 @@ module API
       route_setting :authorization, permissions: :read_personal_access_token, boundary_type: :user
       get do
         tokens = PersonalAccessTokensFinder.new(finder_params(current_user), current_user)
-          .execute.preload_users.preload_granular_scopes
-        tokens = tokens.preload_last_used_ips if Feature.enabled?(:expose_last_used_ips_for_access_tokens, current_user)
+          .execute
+          .preload_users
+          .preload_granular_scopes
+          .preload_last_used_ips
 
         paginated_tokens = paginate(tokens)
 

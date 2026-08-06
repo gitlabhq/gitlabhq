@@ -137,10 +137,6 @@ export const expandAllDiscussions = ({ dispatch, state }) =>
       dispatch('expandDiscussion', { discussionId: draft.discussion_id }, { root: true });
     });
 
-export const toggleResolveDiscussion = ({ commit }, draftId) => {
-  commit(types.TOGGLE_RESOLVE_DISCUSSION, draftId);
-};
-
 export const clearDrafts = ({ commit }) => commit(types.CLEAR_DRAFTS);
 
 export const discardDrafts = ({ getters, commit }) => {

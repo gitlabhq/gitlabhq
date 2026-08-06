@@ -52,7 +52,7 @@ For the full list of supported filtering types, see [Connect to cloud services](
 
 On GitLab.com, AWS supports [additional condition keys](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_iam-condition-keys.html#condition-keys-wif) for the `gitlab.com` OIDC identity provider, including `namespace_id` and `project_id`. Include conditions on these stable, unique identifiers in your role trust policies. Because these identifiers are independent of paths, trust policies that reference them are not affected by changes to paths, such as group or project renames.
 
-These additional condition keys are available only for the `gitlab.com` OIDC identity provider. For GitLab Self-Managed and GitLab Dedicated, only the `sub` and `aud` claims are currently supported as AWS condition keys. For those deployments, scope your trust policy using `sub` (for example, `gitlab.example.com:sub`), optionally combined with `aud`.
+These additional condition keys are available only for the `gitlab.com` OIDC identity provider. For GitLab Self-Managed and GitLab Dedicated, only the `sub` and `aud` claims are supported as AWS condition keys. For those deployments, scope your trust policy using `sub` (for example, `gitlab.example.com:sub`), optionally combined with `aud`.
 
 AWS supports the following claims as condition keys:
 

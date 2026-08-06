@@ -219,7 +219,7 @@ describe('NamespaceStorageApp', () => {
         'when sorting changed to $sortBy and sortDesc is $sortDesc',
         ({ sortBy, sortDesc, sortKey }) => {
           it('forms correct sorting order string', async () => {
-            findProjectList().vm.$emit('sortChanged', { sortBy, sortDesc });
+            findProjectList().vm.$emit('sort-changed', { sortBy, sortDesc });
 
             await waitForPromises();
 

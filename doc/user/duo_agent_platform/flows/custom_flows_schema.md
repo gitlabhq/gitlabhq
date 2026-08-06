@@ -26,6 +26,9 @@ including fields like `version`, `environment`, `components`,
 Some fields in the v1 specification are restricted in custom flows.
 For more information, see [restricted fields](#restricted-fields).
 
+The YAML configuration also has a maximum size. For more information, see
+[configuration size limits](../ai_catalog.md#configuration-size-limits).
+
 ## Goal values by trigger type
 
 When you design a custom flow, the goal value depends on which

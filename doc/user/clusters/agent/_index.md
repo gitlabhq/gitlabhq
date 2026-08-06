@@ -46,9 +46,9 @@ GitLab in a Kubernetes cluster, you might need a different version of Kubernetes
 You can upgrade your
 Kubernetes version to a supported version at any time:
 
+- 1.36 (support ends when GitLab version 20.2 is released or when 1.39 becomes supported)
 - 1.35 (support ends when GitLab version 19.10 is released or when 1.38 becomes supported)
 - 1.34 (support ends when GitLab version 19.7 is released or when 1.37 becomes supported)
-- 1.33 (support ends when GitLab version 19.2 is released or when 1.36 becomes supported)
 
 GitLab aims to support a new minor Kubernetes version three months after its initial release. GitLab supports at least three production-ready Kubernetes minor
 versions at any given time.

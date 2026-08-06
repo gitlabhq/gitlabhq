@@ -127,7 +127,7 @@ export default {
       hide-button
       :is-group="isGroup"
       :visible="isCreateWorkItemModalVisible"
-      from-global-menu
+      allow-any-namespace
       data-testid="new-work-item-modal"
       :create-source="$options.WORK_ITEM_CREATE_SOURCES.GLOBAL_NAV"
       @hide-modal="isCreateWorkItemModalVisible = false"

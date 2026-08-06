@@ -113,8 +113,8 @@ module Ci
       partition_foreign_key: :partition_id,
       autosave: true
     has_one :runner_manager, foreign_key: :runner_machine_id, through: :runner_manager_build, class_name: 'Ci::RunnerManager'
-    has_one :build_runtime_environment,
-      class_name: 'Ci::BuildRuntimeEnvironment',
+    has_one :job_runtime_environment,
+      class_name: 'Ci::JobRuntimeEnvironment',
       foreign_key: [:build_id, :partition_id],
       inverse_of: :build
 

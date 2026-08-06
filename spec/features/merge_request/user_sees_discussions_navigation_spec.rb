@@ -1,11 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-RSpec.describe 'Merge request > User sees discussions navigation', :js, feature_category: :code_review_workflow,
-  quarantine: {
-    issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/43816',
-    type: :bug
-  } do
+RSpec.describe 'Merge request > User sees discussions navigation', :js, feature_category: :code_review_workflow do
   let_it_be(:project, freeze: false) { create(:project, :public, :repository) }
   let_it_be(:user) { project.creator }
   let_it_be(:merge_request, freeze: false) { create(:merge_request, source_project: project) }
@@ -98,7 +94,10 @@ RSpec.describe 'Merge request > User sees discussions navigation', :js, feature_
       end
     end
 
-    describe "Changes page discussions navigation" do
+    describe "Changes page discussions navigation", quarantine: {
+      issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/43816',
+      type: :bug
+    } do
       before do
         visit diffs_project_merge_request_path(project, merge_request)
       end

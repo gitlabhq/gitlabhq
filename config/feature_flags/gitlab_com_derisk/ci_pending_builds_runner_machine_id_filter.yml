@@ -1,0 +1,12 @@
+---
+name: ci_pending_builds_runner_machine_id_filter
+description: Gates the runner_machine_id filter predicate in Ci::Queue::PendingBuildsStrategy#new_builds,
+  independent of ci_suspendable_environment_runner_routing, to de-risk the query change
+  itself before the routing feature is rolled out
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/596841
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244035
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/605974
+milestone: '19.3'
+group: group::runner core
+type: gitlab_com_derisk
+default_enabled: false

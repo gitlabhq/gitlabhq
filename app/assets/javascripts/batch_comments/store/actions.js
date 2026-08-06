@@ -179,10 +179,6 @@ export function expandAllDiscussions() {
     });
 }
 
-export function toggleResolveDiscussion(draftId) {
-  this[types.TOGGLE_RESOLVE_DISCUSSION](draftId);
-}
-
 export function clearDrafts() {
   return this[types.CLEAR_DRAFTS]();
 }

@@ -48,7 +48,7 @@ export default {
       default: null,
     },
   },
-  emits: ['sortChanged'],
+  emits: ['sort-changed'],
   created() {
     this.fields = [
       { key: 'name', label: __('Project') },
@@ -118,7 +118,7 @@ export default {
     :sort-by="sortBy"
     sort-desc
     no-local-sorting
-    @sort-changed="$emit('sortChanged', $event)"
+    @sort-changed="$emit('sort-changed', $event)"
   >
     <template v-for="field in fields" #[getHeaderSlotName(field.key)]>
       <div :key="field.key" :data-testid="'th-' + field.key">

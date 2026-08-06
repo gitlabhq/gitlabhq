@@ -430,6 +430,62 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator, feature_category: :system_acc
       end
     end
 
+    context 'with :design format' do
+      let_it_be(:design_user) { create(:user) }
+      # `freeze: false`: authenticating updates the token's last_used_at.
+      let_it_be(:design_access_token, freeze: false) { create(:personal_access_token, user: design_user) }
+
+      before do
+        env['SCRIPT_NAME'] = '/group/project/-/design_management/designs/1/sha/raw_image'
+      end
+
+      it 'returns the user from a web access token' do
+        env['HTTP_PRIVATE_TOKEN'] = design_access_token.token
+
+        expect(request_authenticator.find_sessionless_user(:design)).to eq design_user
+      end
+
+      it 'does not authenticate a token passed as a query parameter' do
+        env['QUERY_STRING'] = "private_token=#{design_access_token.token}"
+
+        expect(request_authenticator.find_sessionless_user(:design)).to be_nil
+      end
+
+      it 'does not authenticate an OAuth token passed as a query parameter' do
+        env['QUERY_STRING'] = "access_token=#{design_access_token.token}"
+
+        expect(request_authenticator.find_sessionless_user(:design)).to be_nil
+      end
+
+      it 'fails closed when a query parameter token accompanies a valid header token' do
+        env['HTTP_PRIVATE_TOKEN'] = design_access_token.token
+        env['QUERY_STRING'] = 'private_token=irrelevant'
+
+        expect(request_authenticator.find_sessionless_user(:design)).to be_nil
+      end
+
+      it 'does not consult the other sessionless authentication methods' do
+        allow(request_authenticator)
+          .to receive(:find_user_from_dependency_proxy_token)
+          .and_return(dependency_proxy_user)
+        allow(request_authenticator).to receive(:find_user_from_feed_token).and_return(feed_token_user)
+        allow(request_authenticator)
+          .to receive(:find_user_from_static_object_token)
+          .and_return(static_object_token_user)
+        allow(request_authenticator).to receive(:find_user_from_job_token).and_return(job_token_user)
+        allow(request_authenticator)
+          .to receive(:find_user_from_personal_access_token_for_api_or_git)
+          .and_return(basic_auth_access_token_user)
+        allow(request_authenticator).to receive(:find_user_for_git_or_lfs_request).and_return(lfs_token_user)
+
+        expect(request_authenticator.find_sessionless_user(:design)).to be_nil
+      end
+
+      it 'returns nil if no token provided' do
+        expect(request_authenticator.find_sessionless_user(:design)).to be_nil
+      end
+    end
+
     context 'dependency proxy' do
       let_it_be(:dependency_proxy_user) { create(:user) }
 

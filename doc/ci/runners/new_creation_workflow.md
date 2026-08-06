@@ -2,6 +2,7 @@
 stage: Verify
 group: Runner Core
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Learn about the new GitLab Runner creation workflow that uses the runner authentication tokens instead of legacy registration tokens to improve CI/CD runner security.
 title: Migrating to the new runner registration workflow
 ---
 

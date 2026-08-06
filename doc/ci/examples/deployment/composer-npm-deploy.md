@@ -2,7 +2,7 @@
 stage: Verify
 group: Runner Core
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: Running Composer and npm scripts with deployment via SCP in GitLab CI/CD
+title: Running Composer and npm scripts with deployment through SCP in GitLab CI/CD
 ---
 
 {{< details >}}

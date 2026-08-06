@@ -96,8 +96,6 @@ export default {
     'app/assets/javascripts/work_items/components/work_item_development/work_item_development.vue',
     'app/assets/javascripts/work_items/components/work_item_labels.vue',
     'app/assets/javascripts/work_items/components/work_item_links/work_item_actions_split_button.vue',
-    'app/assets/javascripts/work_items/components/work_item_links/work_item_children_wrapper.vue',
-    'app/assets/javascripts/work_items/components/work_item_links/work_item_link_child.vue',
     'app/assets/javascripts/work_items/components/work_item_links/work_item_links.vue',
     'app/assets/javascripts/work_items/components/work_item_milestone.vue',
     'app/assets/javascripts/work_items/components/work_item_notes.vue',

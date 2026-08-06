@@ -195,6 +195,16 @@ describe('RelatedWorkItemsAddForm', () => {
       expect(findCreateModal().props('creationContext')).toBe('related-item');
     });
 
+    it('lets the user pick any work item type and any project', () => {
+      createComponent();
+
+      expect(findCreateModal().props()).toMatchObject({
+        alwaysShowWorkItemTypeSelect: true,
+        allowAnyNamespace: true,
+        allowProjectsOnly: true,
+      });
+    });
+
     it('passes the merge request id and selected relationship type to the create modal', async () => {
       createComponent({ propsData: { mergeRequestId: 'gid://gitlab/MergeRequest/7' } });
       await findRelationshipListbox().vm.$emit('select', 'RELATED');

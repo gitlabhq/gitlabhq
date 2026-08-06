@@ -49,7 +49,7 @@ To complete this tutorial:
 - **Description**: Optional. A description of the pool.
 - **Enabled Pool**: Ensure this option is `true`.
 
-We recommend creating a single pool per GitLab installation per Google Cloud project. If you have multiple GitLab repositories and CI/CD jobs on the same GitLab instance, they can authenticate using different providers against the same pool.
+Create a single pool per GitLab installation per Google Cloud project. If you have multiple repositories and CI/CD jobs on the same GitLab instance, they can authenticate using different providers against the same pool.
 
 ## Create a workload identity provider
 
@@ -103,7 +103,7 @@ To grant your GitLab CI/CD job permissions on Google Cloud, you must:
    project and resources you want your GitLab CI/CD job to be able to use. For example, if you needed to upload a file to a Google Cloud Storage bucket in your GitLab CI/CD job, you would grant this Service Account the `roles/storage.objectCreator` role on your Cloud Storage bucket.
 1. [Grant the external identity permissions](https://cloud.google.com/iam/docs/workload-identity-federation-with-other-clouds#impersonate)
    to impersonate that Service Account. This step enables a GitLab CI/CD job to authorize
-   to Google Cloud, via Service Account impersonation. This step grants an IAM permission
+   to Google Cloud by using Service Account impersonation. This step grants an IAM permission
    on the Service Account itself, giving the external identity permissions to act as that
    service account. External identities are expressed using the `principalSet://` protocol.
 

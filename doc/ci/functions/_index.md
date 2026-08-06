@@ -300,7 +300,7 @@ my-job:
 ```
 
 To authenticate to private OCI repositories, set the `DOCKER_AUTH_CONFIG` environment variable with a value
-in Docker config file format. For a working example of authentication as a function, see the
+in Docker configuration file format. For a working example of authentication as a function, see the
 [Docker Auth](https://gitlab.com/gitlab-org/ci-cd/runner-tools/gitlab-functions-examples/docker-auth) function.
 
 #### Load from the file system

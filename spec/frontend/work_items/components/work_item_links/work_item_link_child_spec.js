@@ -206,7 +206,7 @@ describe('WorkItemLinkChild', () => {
 
       findTreeChildren().vm.$emit('click', 'event');
 
-      expect(wrapper.emitted('toggleDrawer')).toEqual([['event']]);
+      expect(wrapper.emitted('toggle-drawer')).toEqual([['event']]);
     });
 
     describe('renders WorkItemLinkChildContents', () => {

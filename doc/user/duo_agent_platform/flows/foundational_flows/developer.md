@@ -40,6 +40,10 @@ You can use the Developer Flow to:
 - [Configure push rules to allow a service account](../../troubleshooting.md#configure-push-rules-to-allow-a-service-account).
 - [Configure your own runners](../execution/_index.md#configure-runners-to-execute-flows) or turn on [GitLab hosted runners](../../../../ci/runners/hosted_runners/_index.md) for your project.
 
+To ensure the best results, before you use the Developer Flow for the first time,
+[set up your project](#set-up-your-project). Configure the `AGENTS.md` and `agent-config.yml`
+file to significantly improve the quality and reliability of the Developer Flow's results.
+
 ## Set up your project
 
 To help the Developer Flow produce better results, you should configure your project with the following optional settings:
@@ -50,9 +54,14 @@ To help the Developer Flow produce better results, you should configure your pro
   For more information, see [AGENTS.md customization files](../../customize/agents_md.md).
 - Configure the execution environment: If your project requires specific tooling
   (for example, Go, Python, or Node.js), configure the agent environment with an `agent-config.yml` file.
-  With a properly configured environment, the Developer Flow can run tests and verify
-  its own changes before committing.
-  For more information, see [Configure flow execution](../execution.md).
+  Without this, the Developer Flow cannot install dependencies or run tests, and is more likely
+  to produce changes that don't build or pass. With a properly configured environment, the
+  Developer Flow can run tests and verify its own changes before committing.
+  For more information, see [Configure flow execution](../execution/_index.md).
+- Choose a model: The Developer Flow uses the GitLab default model, tuned for a balance of
+  cost and performance. For focused tasks, a faster model reduces iteration time; for complex,
+  multi-step tasks, a more capable model reduces the risk of an incomplete plan.
+  For more information, see [GitLab Duo AI models](../../model_selection.md).
 
 ## Use the flow
 

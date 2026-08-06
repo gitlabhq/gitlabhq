@@ -29,7 +29,7 @@ so quoted and unquoted variables might be parsed differently. For example:
 - `VAR1: 012345` is interpreted as an octal value, so the value becomes `5349`.
 - `VAR1: "012345"` is parsed as a string with a value of `012345`.
 - `VAR1: 019` is parsed as the string `"019"` and not as octal, because `9` is not a valid
-  octal digit. Octal parsing only applies when all digits are 0–7.
+  octal digit. Octal parsing only applies when all digits are 0-7.
 
 For more information about advanced use of GitLab CI/CD, see [7 advanced GitLab CI workflow hacks](https://about.gitlab.com/webcast/7cicd-hacks/) shared by GitLab engineers.
 
@@ -564,9 +564,9 @@ To limit the use of pipeline variables to only the Maintainer role and higher:
 - Under **Minimum role to use pipeline variables**, select one of:
   - `no_one_allowed`: No pipelines can run with pipeline variables.
     Default for new projects in new namespaces on GitLab.com.
-    Once the setting is at this value, only the Owner role can change it.
+    After the setting is at this value, only the Owner role can change it.
   - `owner`: Only users with the Owner role can run pipelines with pipeline variables.
-    Once the setting is at this value, only the Owner role can change it.
+    After the setting is at this value, only the Owner role can change it.
   - `maintainer`: Only users with the Maintainer or Owner role can run pipelines with pipeline variables.
     Default when not specified on GitLab Self-Managed and GitLab Dedicated.
   - `developer`: Only users with the Developer, Maintainer, or Owner role can run pipelines with pipeline variables.
@@ -589,7 +589,7 @@ by this setting.
 {{< /history >}}
 
 For groups with many projects, you can disable pipeline variables
-in all projects that don't currently use them. This option sets the
+in all projects that don't use them. This option sets the
 **Minimum role to use pipeline variables** setting to `no_one_allowed` for projects
 that have never used pipeline variables.
 

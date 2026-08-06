@@ -666,4 +666,4 @@ can cause the rate limit to be reached and cause the error. You should avoid hos
 CI/CD configuration files on a GitLab Pages site.
 
 When possible, use [`include:project`](_index.md#includeproject) to fetch configuration
-files from other projects within the GitLab instance without making external HTTP(S) requests.
+files from other projects in the GitLab instance without making external HTTP(S) requests.

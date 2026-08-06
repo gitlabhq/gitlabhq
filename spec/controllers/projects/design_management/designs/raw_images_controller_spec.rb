@@ -155,4 +155,33 @@ RSpec.describe Projects::DesignManagement::Designs::RawImagesController do
       let(:filepath) { design.full_path }
     end
   end
+
+  describe 'GET #show (token authentication)' do
+    let_it_be(:design) { create(:design, :with_file, issue: issue, versions_count: 1) }
+
+    let(:personal_access_token) { create(:personal_access_token, user: viewer) }
+    let(:token_headers) { { 'PRIVATE-TOKEN' => personal_access_token.token } }
+    let(:token_params) { {} }
+
+    subject(:show_design) do
+      request.headers.merge!(token_headers)
+
+      get(:show,
+        params: {
+          namespace_id: project.namespace,
+          project_id: project,
+          design_id: design_id,
+          sha: sha
+        }.merge(token_params))
+    end
+
+    it 'serves the file to the token user without a session' do
+      show_design
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with('git-blob:')
+    end
+
+    it_behaves_like 'design image accessible with token authentication'
+  end
 end

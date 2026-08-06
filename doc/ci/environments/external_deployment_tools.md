@@ -13,7 +13,7 @@ title: Track deployments of an external deployment tool
 {{< /details >}}
 
 While GitLab offers a [built-in deployment solution](_index.md), you might prefer to use an external deployment tool, such as Heroku or ArgoCD.
-GitLab can receive deployment events from these external tools and allows you to track the deployments within GitLab.
+GitLab can receive deployment events from these external tools and lets you track them directly.
 For example, the following features are available by setting up tracking:
 
 - [See when a merge request has been deployed, and to which environment](../../user/project/merge_requests/widgets.md#post-merge-pipeline-status).

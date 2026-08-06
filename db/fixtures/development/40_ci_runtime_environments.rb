@@ -3,10 +3,10 @@
 # Usage:
 #
 # For every existing build that doesn't already have one, creates a
-# Ci::BuildRuntimeEnvironment linked to a Ci::RuntimeEnvironment on the same
+# Ci::JobRuntimeEnvironment linked to a Ci::RuntimeEnvironment on the same
 # project. Then tops up standalone (unlinked) Ci::RuntimeEnvironment rows, up
 # to COUNT total, for query-plan volume testing. Safe to re-run: builds that
-# already have a Ci::BuildRuntimeEnvironment are skipped, and RuntimeEnvironment
+# already have a Ci::JobRuntimeEnvironment are skipped, and RuntimeEnvironment
 # top-up only creates the delta needed to reach COUNT.
 #
 # FILTER=40_ci_runtime_environments bundle exec rake db:seed_fu
@@ -23,13 +23,13 @@ Gitlab::Seeder.quiet do
   if projects.empty?
     puts "\nNo Project records found, run the 03_project seed first.\n"
   else
-    # Ci::BuildRuntimeEnvironment is 1:1 per build (primary key is [build_id, partition_id]),
+    # Ci::JobRuntimeEnvironment is 1:1 per build (primary key is [build_id, partition_id]),
     # so only seed builds that don't already have one, to stay idempotent across reruns.
     # The linked Ci::RuntimeEnvironment must belong to the same project as the build,
     # matching the sharding_key: project_id invariant declared in db/docs for both tables.
     builds_without_runtime_environment =
-      Ci::Build.left_joins(:build_runtime_environment)
-        .where(ci_build_runtime_environments: { build_id: nil })
+      Ci::Build.left_joins(:job_runtime_environment)
+        .where(p_ci_job_runtime_environments: { build_id: nil })
         .limit(count)
 
     builds_without_runtime_environment.each do |build|
@@ -42,7 +42,7 @@ Gitlab::Seeder.quiet do
         updated_at: created_at
       )
 
-      Ci::BuildRuntimeEnvironment.create!(
+      Ci::JobRuntimeEnvironment.create!(
         build: build,
         project_id: build.project_id,
         runtime_environment: runtime_environment

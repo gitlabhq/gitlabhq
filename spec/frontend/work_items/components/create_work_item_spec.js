@@ -398,16 +398,17 @@ describe('Create work item component', () => {
     });
 
     it.each`
-      scenario                 | isGroup  | fromGlobalMenu | hasEpicsFeature | expected
-      ${'group list page'}     | ${true}  | ${false}       | ${true}         | ${true}
-      ${'project global menu'} | ${false} | ${true}        | ${false}        | ${true}
-      ${'EE with epics'}       | ${true}  | ${false}       | ${true}         | ${true}
-      ${'CE group no epics'}   | ${true}  | ${false}       | ${false}        | ${false}
+      scenario                   | isGroup  | allowAnyNamespace | hasEpicsFeature | expected
+      ${'group list page'}       | ${true}  | ${false}          | ${true}         | ${true}
+      ${'any namespace allowed'} | ${false} | ${true}           | ${false}        | ${true}
+      ${'EE with epics'}         | ${true}  | ${false}          | ${true}         | ${true}
+      ${'CE group no epics'}     | ${true}  | ${false}          | ${false}        | ${false}
+      ${'CE project, no epics'}  | ${false} | ${false}          | ${false}        | ${false}
     `(
       '$scenario shows selector: $expected',
-      async ({ isGroup, fromGlobalMenu, hasEpicsFeature, expected }) => {
+      async ({ isGroup, allowAnyNamespace, hasEpicsFeature, expected }) => {
         createComponent({
-          props: { isGroup, fromGlobalMenu },
+          props: { isGroup, allowAnyNamespace },
           provide: { hasEpicsFeature },
         });
 
@@ -415,6 +416,42 @@ describe('Create work item component', () => {
         expect(findGroupProjectSelector().exists()).toBe(expected);
       },
     );
+
+    it.each`
+      scenario                   | props                          | provide                      | limitToCurrentNamespace
+      ${'any namespace allowed'} | ${{ allowAnyNamespace: true }} | ${{}}                        | ${false}
+      ${'on a group list page'}  | ${{ isGroup: true }}           | ${{ hasEpicsFeature: true }} | ${true}
+    `(
+      '$scenario passes limitToCurrentNamespace: $limitToCurrentNamespace',
+      async ({ props, provide, limitToCurrentNamespace }) => {
+        createComponent({ props, provide });
+        await resolveAll();
+
+        expect(findGroupProjectSelector().props('limitToCurrentNamespace')).toBe(
+          limitToCurrentNamespace,
+        );
+      },
+    );
+
+    describe('when only projects can be selected', () => {
+      const findSelectorFormGroup = () => wrapper.findByTestId('work-item-namespace-form-group');
+
+      it('restricts the selector to projects and labels it Project', async () => {
+        createComponent({ props: { allowAnyNamespace: true, allowProjectsOnly: true } });
+        await resolveAll();
+
+        expect(findGroupProjectSelector().props('projectsOnly')).toBe(true);
+        expect(findSelectorFormGroup().attributes('label')).toBe('Project');
+      });
+
+      it('offers groups and projects under the Group/project label by default', async () => {
+        createComponent({ props: { allowAnyNamespace: true } });
+        await resolveAll();
+
+        expect(findGroupProjectSelector().props('projectsOnly')).toBe(false);
+        expect(findSelectorFormGroup().attributes('label')).toBe('Group/project');
+      });
+    });
 
     it('updates available work item types when new namespace is selected', async () => {
       createComponent({

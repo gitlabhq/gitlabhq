@@ -101,6 +101,31 @@ RSpec.describe API::PersonalAccessTokens, :aggregate_failures, feature_category:
         )
       end
 
+      # Only makes sense while expose_last_used_ips_for_access_tokens is rolled out per-actor.
+      # Delete this whole context when the flag is removed - there's no more current_user-vs-token-owner
+      # mismatch to guard against once everyone is on the same (unconditional) code path.
+      context 'when the flag differs between current_user and a token owner' do
+        it 'avoids N+1 queries' do
+          user_with_flag = create(:user)
+          # Enables the flag only for this user, not globally.
+          stub_feature_flags(expose_last_used_ips_for_access_tokens: user_with_flag)
+
+          token = create(:personal_access_token, user: user_with_flag)
+          token.last_used_ips.create!(organization: token.organization, ip_address: '192.0.2.30')
+
+          # current_user (the admin) never gets the feature flag, since it was only enabled for user_with_flag above.
+          # admin_mode is required, so the list returns every user's tokens, not just current_user's own.
+          get api(path, current_user, admin_mode: true) # warm-up
+
+          control = ActiveRecord::QueryRecorder.new(skip_cached: false) { get api(path, current_user, admin_mode: true) }
+
+          extra_token = create(:personal_access_token, user: user_with_flag)
+          extra_token.last_used_ips.create!(organization: extra_token.organization, ip_address: '192.0.2.31')
+
+          expect { get api(path, current_user, admin_mode: true) }.not_to exceed_all_query_limit(control)
+        end
+      end
+
       context 'filtered with user_id parameter' do
         let_it_be(:token) { create(:personal_access_token) }
         let_it_be(:token_impersonated) { create(:personal_access_token, impersonation: true, user: token.user) }
@@ -565,6 +590,19 @@ RSpec.describe API::PersonalAccessTokens, :aggregate_failures, feature_category:
         get api(invalid_path, admin_user)
 
         expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'avoids N+1 queries when rendering last_used_ips' do
+        stub_feature_flags(expose_last_used_ips_for_access_tokens: true)
+        admin_token.last_used_ips.create!(organization: admin_token.organization, ip_address: '192.0.2.1')
+
+        get api(admin_path, admin_user) # warm-up
+
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) { get api(admin_path, admin_user) }
+
+        admin_token.last_used_ips.create!(organization: admin_token.organization, ip_address: '192.0.2.2')
+
+        expect { get api(admin_path, admin_user) }.not_to exceed_all_query_limit(control)
       end
     end
 

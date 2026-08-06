@@ -3655,6 +3655,9 @@ msgstr ""
 msgid "AICatalog|YAML configuration"
 msgstr ""
 
+msgid "AICatalog|YAML is too large. Maximum size is %{size}"
+msgstr ""
+
 msgid "AICatalog|You are an expert in [domain]. Your communication style is [style]. When helping users, you should always... Your key strengths include... You approach problems by..."
 msgstr ""
 
@@ -3709,12 +3712,6 @@ msgstr ""
 msgid "AICatalog|can't be changed because it is released"
 msgstr ""
 
-msgid "AICatalog|can't be made private because it is enabled in a project or group"
-msgstr ""
-
-msgid "AICatalog|can't be made private because it is used by at least one flow"
-msgstr ""
-
 msgid "AICatalog|can't be made private because this item is enabled outside its owning project"
 msgstr ""
 
@@ -3755,9 +3752,6 @@ msgid "AICatalog|must be the same service account as the top-level group"
 msgstr ""
 
 msgid "AICatalog|must belong to this project's top-level group"
-msgstr ""
-
-msgid "AICatalog|public and visibility must be consistent"
 msgstr ""
 
 msgid "AICatalog|unable to validate definition"
@@ -90503,6 +90497,9 @@ msgstr ""
 msgid "WorkItem|Remove status"
 msgstr ""
 
+msgid "WorkItem|Remove work item"
+msgstr ""
+
 msgid "WorkItem|Reopen %{workItemType}"
 msgstr ""
 
@@ -90734,6 +90731,9 @@ msgstr ""
 msgid "WorkItem|Something went wrong while removing child."
 msgstr ""
 
+msgid "WorkItem|Something went wrong while removing the work item."
+msgstr ""
+
 msgid "WorkItem|Something went wrong while saving the view"
 msgstr ""
 
@@ -90825,6 +90825,9 @@ msgid "WorkItem|This is a system type that cannot be renamed, disabled, or delet
 msgstr ""
 
 msgid "WorkItem|This item is hidden because its author has been banned."
+msgstr ""
+
+msgid "WorkItem|This link comes from the merge request description. Edit the description to remove it."
 msgstr ""
 
 msgid "WorkItem|This status is set as the %{state} default. Select a new %{state} default to remove this status."

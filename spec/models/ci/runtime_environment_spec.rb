@@ -4,11 +4,33 @@ require 'spec_helper'
 
 RSpec.describe Ci::RuntimeEnvironment, feature_category: :runner_core do
   it { is_expected.to belong_to(:project) }
-  it { is_expected.to have_many(:build_runtime_environments).class_name('Ci::BuildRuntimeEnvironment') }
+  it { is_expected.to have_many(:job_runtime_environments).class_name('Ci::JobRuntimeEnvironment') }
 
   it { is_expected.to validate_presence_of(:environment_key) }
   it { is_expected.to validate_length_of(:environment_key).is_at_most(512) }
   it { is_expected.to validate_presence_of(:project) }
+
+  describe '.find_by_key_and_project' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:other_project) { create(:project) }
+    let_it_be(:runtime_environment) do
+      create(:ci_runtime_environment, project: project, environment_key: 'runner-1/system-1/data')
+    end
+
+    it 'returns the matching runtime environment for the project' do
+      expect(described_class.find_by_key_and_project(runtime_environment.environment_key, project.id))
+        .to eq(runtime_environment)
+    end
+
+    it 'returns nil when the key matches but the project does not' do
+      expect(described_class.find_by_key_and_project(runtime_environment.environment_key, other_project.id))
+        .to be_nil
+    end
+
+    it 'returns nil when no runtime environment matches the key' do
+      expect(described_class.find_by_key_and_project('does-not-exist', project.id)).to be_nil
+    end
+  end
 
   describe 'partitioning' do
     it 'uses the sliding_list strategy on the partition column' do

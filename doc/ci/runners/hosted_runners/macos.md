@@ -2,6 +2,7 @@
 stage: Production Engineering
 group: Runners Platform
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Learn how to use hosted runners on macOS for GitLab.com to run CI/CD jobs, build macOS and iOS applications, and configure pre-installed build tools for your apps.
 title: Hosted runners on macOS
 ---
 

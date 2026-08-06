@@ -84,8 +84,11 @@ RSpec.describe 'Database schema',
       ci_unit_test_failures: %w[project_id],
       ci_resources: %w[project_id],
       p_ci_pipelines: %w[partition_id trigger_id],
-      ci_build_runtime_environments: %w[partition_id runtime_environment_id], # runtime_environment_id is a bare pointer that may dangle after the runtime env partition is dropped
+      # Table is unused and awaiting removal in a later milestone
+      ci_build_runtime_environments: %w[build_id partition_id runtime_environment_id runner_machine_id project_id],
+      p_ci_job_runtime_environments: %w[partition_id runtime_environment_id], # runtime_environment_id is a bare pointer that may dangle after the runtime env partition is dropped
       p_ci_runner_machine_builds: %w[project_id],
+      ci_pending_builds: %w[runner_machine_id], # runner_machine_id has no FK: ci_runner_machines is gitlab_ci_cell_local, a different schema from gitlab_ci; cross-schema FKs are disallowed
       ci_runner_taggings: %w[runner_id organization_id], # The organization_id value is meant to populate the partitioned table, no other usage.
       ci_runner_taggings_instance_type: %w[tag_id organization_id], # organization_id is always NULL in this partition, tag_id is handled on ci_runner_taggings.
       ci_runner_taggings_group_type: %w[tag_id organization_id], # tag_id is handled on ci_runner_taggings.

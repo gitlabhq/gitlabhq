@@ -181,8 +181,8 @@ the duration specified by `apiCiLongPollingDuration`.
 
 If a user triggers a new pipeline or job to run, a background task in
 Sidekiq will update the `last_update` value for all runners available to
-the job. Runners can be registered for the project, group, and/or
-instance.
+the job. Runners can be registered for the project, group, instance, or
+any combination of these.
 
 This "tick" in steps 10 and 11 releases the job request from the
 Workhorse long poll queue, and the request gets sent to Rails (step

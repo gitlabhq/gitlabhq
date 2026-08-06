@@ -243,6 +243,9 @@ export default {
       :full-path="fullPath"
       :visible="isCreateModalVisible"
       :creation-context="$options.creationContext"
+      always-show-work-item-type-select
+      allow-any-namespace
+      allow-projects-only
       :merge-request-id="mergeRequestId"
       :merge-request-title="mergeRequestTitle"
       :merge-request-reference="mergeRequestReference"

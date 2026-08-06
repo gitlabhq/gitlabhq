@@ -34,10 +34,7 @@ module API
             .new(declared(params, include_missing: false).merge({ user: resource.bots, impersonation: false }))
             .execute
             .preload_users
-
-          if Feature.enabled?(:expose_last_used_ips_for_access_tokens, current_user)
-            tokens = tokens.preload_last_used_ips
-          end
+            .preload_last_used_ips
 
           tokens = if source_type == 'project'
                      tokens.preload_bot_user_associations_for_project

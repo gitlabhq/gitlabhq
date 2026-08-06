@@ -5,10 +5,11 @@
   %fieldset
     .row
       .form-group.gl-col-md-5
-        = f.label :name, s_('Groups|Group name'), class: 'label-bold'
-        = f.text_field :name, class: 'form-control', data: { testid: 'group-name-field' }
-        %span.form-text.gl-text-subtle
+        = f.label :name, s_('Groups|Group name'), class: 'label-bold', for: 'group_name_edit'
+        = f.text_field :name, class: 'form-control gl-field-error-ignore', id: 'group_name_edit', maxlength: 255, required: true, data: { testid: 'group-name-field' }, aria: { invalid: false }
+        %span.form-text.gl-text-subtle#js-group-name-edit-description
           = s_('Groups|Start with a letter, digit, basic emoji, or underscore.')
+        #js-group-name-edit-error.gl-field-error.gl-mt-2.gl-hidden{ role: 'alert' }
 
       .form-group.gl-col-md-4
         = f.label :id, s_('Groups|Group ID'), class: 'label-bold'

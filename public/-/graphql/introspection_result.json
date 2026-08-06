@@ -266255,7 +266255,7 @@
             },
             {
               "name": "upsertFlatUserCap",
-              "description": "Update the flat per-user budget cap for a subscription. Introduced in GitLab 18.11: Status: Experiment.",
+              "description": "Update the flat per-user budget cap for a subscription.",
               "args": [
                 {
                   "name": "input",
@@ -266279,12 +266279,12 @@
                 "name": "UpsertFlatUserCapPayload",
                 "ofType": null
               },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 18.11."
+              "isDeprecated": false,
+              "deprecationReason": null
             },
             {
               "name": "upsertUserBudgetCapOverrides",
-              "description": "Bulk upsert per-user budget cap overrides. Introduced in GitLab 18.11: Status: Experiment.",
+              "description": "Bulk upsert per-user budget cap overrides.",
               "args": [
                 {
                   "name": "input",
@@ -266308,8 +266308,8 @@
                 "name": "UpsertUserBudgetCapOverridesPayload",
                 "ofType": null
               },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 18.11."
+              "isDeprecated": false,
+              "deprecationReason": null
             },
             {
               "name": "userAchievementPrioritiesUpdate",

@@ -62,12 +62,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(useBatchComments, [
-      'deleteDraft',
-      'updateDraft',
-      'scrollToDraft',
-      'toggleResolveDiscussion',
-    ]),
+    ...mapActions(useBatchComments, ['deleteDraft', 'updateDraft', 'scrollToDraft']),
     ...mapActions(useBatchComments, {
       setDraftEditing: types.SET_DRAFT_EDITING,
     }),
@@ -128,7 +123,6 @@ export default {
     @updateSuccess="handleNotEditing"
     @handleDeleteNote="deleteDraft"
     @handleUpdateNote="update"
-    @toggleResolveStatus="toggleResolveDiscussion(draft.id)"
     @mouseenter.native="handleMouseEnter(draft)"
     @mouseleave.native="handleMouseLeave(draft)"
   >

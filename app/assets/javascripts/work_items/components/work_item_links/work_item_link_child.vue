@@ -97,7 +97,7 @@ export default {
       default: false,
     },
   },
-  emits: ['drag', 'drop', 'error', 'mouseout', 'mouseover', 'remove-child', 'toggleDrawer'],
+  emits: ['drag', 'drop', 'error', 'mouseout', 'mouseover', 'remove-child', 'toggle-drawer'],
   data() {
     return {
       isExpanded: false,
@@ -295,7 +295,7 @@ export default {
           :contextual-view-enabled="contextualViewEnabled"
           @mouseover="$emit('mouseover')"
           @mouseout="$emit('mouseout')"
-          @click="$emit('toggleDrawer', $event)"
+          @click="$emit('toggle-drawer', $event)"
           @remove-child="$emit('remove-child', childItem)"
         />
       </div>
@@ -322,7 +322,7 @@ export default {
         @drag="$emit('drag', $event)"
         @drop="$emit('drop')"
         @error="$emit('error', $event)"
-        @click="$emit('toggleDrawer', $event)"
+        @click="$emit('toggle-drawer', $event)"
       />
       <work-item-children-load-more
         v-if="hasNextPage && isExpanded"

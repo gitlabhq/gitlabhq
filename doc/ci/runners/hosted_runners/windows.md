@@ -142,8 +142,8 @@ The `script` section of your `.gitlab-ci.yml` file therefore requires PowerShell
 
 ## Elevated permissions
 
-Hosted runners on Windows for GitLab.com run CI/CD jobs as an elevated admin 
-process. This process lets you install additional software or configure the OS 
+Hosted runners on Windows for GitLab.com run CI/CD jobs as an elevated admin
+process. This process lets you install additional software or configure the OS
 before job execution.
 This permission level is acceptable because the runner creates a new VM for each individual
 job and discards it after the job completes. This process is essentially the same

@@ -497,21 +497,12 @@ and [instances](../administration/settings/visibility_and_access_controls.md#dis
 
 ### Usage caps
 
-{{< details >}}
-
-- Status: Beta
-
-{{< /details >}}
-
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/19881) in GitLab 18.11 [with a feature flag](../administration/feature_flags/_index.md) named `budget_caps_graphql_api`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/607551) in GitLab 19.3. Feature flag `budget_caps_graphql_api` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 You can set a monthly GitLab Credits cap at the subscription and user level to prevent
 unexpected overage charges. When credit consumption reaches the configured cap,

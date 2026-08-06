@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::BuildRuntimeEnvironment, feature_category: :runner_core do
+RSpec.describe Ci::JobRuntimeEnvironment, feature_category: :runner_core do
   describe 'associations' do
     it { is_expected.to belong_to(:build).class_name('Ci::Build') }
     it { is_expected.to belong_to(:runtime_environment).class_name('Ci::RuntimeEnvironment').optional }
@@ -16,13 +16,13 @@ RSpec.describe Ci::BuildRuntimeEnvironment, feature_category: :runner_core do
 
   describe 'suspension triggers' do
     it 'default to false' do
-      expect(build(:ci_build_runtime_environment))
+      expect(build(:ci_job_runtime_environment))
         .to have_attributes(suspend_on_success: false, suspend_on_failure: false)
     end
   end
 
   describe 'composite foreign key on :build' do
-    let_it_be(:record) { create(:ci_build_runtime_environment) }
+    let_it_be(:record) { create(:ci_job_runtime_environment) }
 
     it 'joins the build on both build_id and partition_id' do
       expect(described_class.reflect_on_association(:build).foreign_key)
@@ -37,13 +37,13 @@ RSpec.describe Ci::BuildRuntimeEnvironment, feature_category: :runner_core do
     end
 
     it 'is reachable from the build via the has_one inverse' do
-      expect(record.build.build_runtime_environment).to eq(record)
+      expect(record.build.job_runtime_environment).to eq(record)
     end
   end
 
   describe '#ensure_project_id' do
     it 'derives project_id from the build when not set' do
-      record = build(:ci_build_runtime_environment, project_id: nil)
+      record = build(:ci_job_runtime_environment, project_id: nil)
 
       record.valid?
 
@@ -52,7 +52,7 @@ RSpec.describe Ci::BuildRuntimeEnvironment, feature_category: :runner_core do
 
     it 'does not override an explicitly set project_id' do
       other_project_id = non_existing_record_id
-      record = build(:ci_build_runtime_environment, project_id: other_project_id)
+      record = build(:ci_job_runtime_environment, project_id: other_project_id)
 
       record.valid?
 
@@ -61,7 +61,7 @@ RSpec.describe Ci::BuildRuntimeEnvironment, feature_category: :runner_core do
   end
 
   describe 'when the runtime_environment is removed' do
-    let_it_be(:record) { create(:ci_build_runtime_environment) }
+    let_it_be(:record) { create(:ci_job_runtime_environment) }
 
     it 'keeps the mapping row and leaves runtime_environment_id dangling' do
       runtime_environment = record.runtime_environment
@@ -71,6 +71,36 @@ RSpec.describe Ci::BuildRuntimeEnvironment, feature_category: :runner_core do
         .from(true)
 
       expect(record.reload.runtime_environment_id).to eq(runtime_environment.id)
+    end
+  end
+
+  describe '.runner_machine_id_for' do
+    let_it_be(:runtime_environment) { create(:ci_runtime_environment) }
+    let_it_be(:runner_manager) { create(:ci_runner_machine) }
+
+    context 'when a row for the runtime environment has a runner machine recorded' do
+      let_it_be(:record) do
+        create(:ci_job_runtime_environment, runtime_environment: runtime_environment,
+          runner_machine_id: runner_manager.id)
+      end
+
+      it 'returns that runner machine id' do
+        expect(described_class.runner_machine_id_for(runtime_environment.id)).to eq(runner_manager.id)
+      end
+    end
+
+    context 'when no row for the runtime environment has a runner machine recorded yet' do
+      let_it_be(:record) { create(:ci_job_runtime_environment, runtime_environment: runtime_environment) }
+
+      it 'returns nil' do
+        expect(described_class.runner_machine_id_for(runtime_environment.id)).to be_nil
+      end
+    end
+
+    context 'when no row references the runtime environment at all' do
+      it 'returns nil' do
+        expect(described_class.runner_machine_id_for(non_existing_record_id)).to be_nil
+      end
     end
   end
 end

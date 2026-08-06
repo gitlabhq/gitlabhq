@@ -74,7 +74,7 @@ except-pull-requests:
 ### Pipeline execution for external pull requests
 
 When a repository is imported from GitHub, GitLab subscribes to webhooks
-for `push` and `pull_request` events. Once a `pull_request` event is received,
+for `push` and `pull_request` events. After a `pull_request` event is received,
 the Pull Request data is stored and kept as a reference. If the Pull Request
 has just been created, GitLab immediately creates a pipeline for the external
 pull request.
@@ -106,7 +106,7 @@ This feature does not support:
 
 Given that GitLab creates two pipelines, if changes are pushed to a remote branch that
 references an open Pull Request, both contribute to the status of the Pull Request
-via GitHub integration. If you want to exclusively run pipelines on external pull
+through GitHub integration. If you want to exclusively run pipelines on external pull
 requests and not on branches you can add `except: [branches]` to the job specs.
 [Read more](https://gitlab.com/gitlab-org/gitlab/-/issues/24089#workaround).
 

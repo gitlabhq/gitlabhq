@@ -165,4 +165,32 @@ RSpec.describe Projects::DesignManagement::Designs::ResizedImageController, feat
       end
     end
   end
+
+  describe 'GET #show (token authentication)' do
+    let(:personal_access_token) { create(:personal_access_token, user: viewer) }
+    let(:token_headers) { { 'PRIVATE-TOKEN' => personal_access_token.token } }
+    let(:token_params) { {} }
+
+    subject(:show_design) do
+      request.headers.merge!(token_headers)
+
+      get(:show,
+        params: {
+          namespace_id: project.namespace,
+          project_id: project,
+          design_id: design_id,
+          sha: sha,
+          id: size
+        }.merge(token_params)
+      )
+    end
+
+    it 'serves the image to the token user without a session' do
+      show_design
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    it_behaves_like 'design image accessible with token authentication'
+  end
 end

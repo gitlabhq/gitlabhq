@@ -19,13 +19,17 @@ module Ci
 
     belongs_to :project
 
-    has_many :build_runtime_environments, class_name: 'Ci::BuildRuntimeEnvironment',
+    has_many :job_runtime_environments, class_name: 'Ci::JobRuntimeEnvironment',
       inverse_of: :runtime_environment
 
     validates :environment_key, presence: true, length: { maximum: 512 }
     validates :project, presence: true
 
     scope :for_partition, ->(partition) { where(partition: partition) }
+
+    def self.find_by_key_and_project(environment_key, project_id)
+      find_by(environment_key: environment_key, project_id: project_id)
+    end
 
     partitioned_by :partition, strategy: :sliding_list,
       next_partition_if: ->(active_partition) { oldest_record_older_than?(active_partition, PARTITION_DURATION) },

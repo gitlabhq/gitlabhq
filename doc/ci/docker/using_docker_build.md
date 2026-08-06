@@ -244,7 +244,7 @@ For more information, see [Windows Containers](https://learn.microsoft.com/en-us
 
 Because Windows containers do [not support the Docker-in-Docker](https://github.com/docker-library/docker/issues/49)
 approach, you cannot run a nested Docker Engine inside a container.
-To build or manage Docker images from within a Windows container, use
+To build or manage Docker images from inside a Windows container, use
 Docker pipe binding (also known as Docker-outside-of-Docker or DooD).
 
 > [!warning]

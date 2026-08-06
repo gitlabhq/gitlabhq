@@ -64,7 +64,7 @@ module Users
       # Load the project_bot user resource. It is unavailable after membership is destroyed.
       options[:project_bot_resource] ||= user.resource_bot_resource
 
-      user.members.each_batch { |batch| batch.destroy_all } # rubocop:disable Cop/DestroyAll
+      destroy_memberships(user)
 
       solo_owned_groups.each do |group|
         Groups::DestroyService.new(group, current_user).unsafe_execute
@@ -85,6 +85,24 @@ module Users
     private
 
     attr_reader :scheduled_records_gauge, :lag_gauge
+
+    def destroy_memberships(user)
+      refresh_priority = authorized_projects_refresh_priority_for(user)
+
+      user.members.each_batch do |batch|
+        batch.each do |member|
+          member.authorized_projects_refresh_priority = refresh_priority
+          member.destroy
+        end
+      end
+    end
+
+    def authorized_projects_refresh_priority_for(user)
+      return unless user.project_bot?
+      return unless Feature.enabled?(:deprioritize_destroyed_project_bot_user_project_authorizations_refresh, user)
+
+      UserProjectAccessChangedService::MEDIUM_PRIORITY
+    end
 
     def create_ghost_user(user, options)
       hard_delete = options.fetch(:hard_delete, false)

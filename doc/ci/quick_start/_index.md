@@ -83,7 +83,7 @@ To create a `.gitlab-ci.yml` file in your project:
 1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Repository**.
 1. Above the file list, select the branch you want to commit to.
-   If you're not sure, leave `master` or `main`.
+   If you're not sure, leave the default branch selected.
    Then, in the upper-right corner, select the plus icon ({{< icon name="plus" >}}) and **New file**:
 
    ![The new file button to create a file in the current folder.](img/new_file_v18_11.png)
@@ -128,7 +128,7 @@ The pipeline starts and runs the jobs you defined in the `.gitlab-ci.yml` file.
 
 ## View the status of your pipeline and jobs
 
-Now take a look at your pipeline and the jobs within.
+Now take a look at your pipeline and its jobs.
 
 1. Go to **Build** > **Pipelines**. A pipeline with three stages should be displayed:
 

@@ -131,7 +131,12 @@ export default {
       required: false,
       default: false,
     },
-    fromGlobalMenu: {
+    allowAnyNamespace: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    allowProjectsOnly: {
       type: Boolean,
       required: false,
       default: false,
@@ -423,7 +428,8 @@ export default {
         :namespace-full-name="namespaceFullName"
         :is-modal="true"
         :is-epics-list="isEpicsList"
-        :from-global-menu="fromGlobalMenu"
+        :allow-any-namespace="allowAnyNamespace"
+        :allow-projects-only="allowProjectsOnly"
         :create-source="createSource"
         @changeType="selectedWorkItemTypeName = $event"
         @confirmCancel="handleConfirmCancellation"

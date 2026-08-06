@@ -543,6 +543,9 @@ To create an external agent:
 
 The external agent appears in the AI Catalog.
 
+The YAML configuration has a maximum size. For more information, see
+[configuration size limits](../ai_catalog.md#configuration-size-limits).
+
 ### Create an external agent manually
 
 If you prefer to not follow the UI flow, you can create an external agent manually:

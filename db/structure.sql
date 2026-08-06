@@ -1420,8 +1420,21 @@ IF (TG_OP = 'INSERT' OR TG_OP = 'UPDATE') THEN
   RETURN NEW;
 
 ELSIF (TG_OP = 'DELETE') THEN
+  WITH remaining AS (
+    SELECT project_id, user_id, MIN(access_level)::smallint AS access_level
+    FROM project_authorizations
+    WHERE project_id = OLD.project_id AND user_id = OLD.user_id
+    GROUP BY project_id, user_id
+  ), upsert AS (
+    INSERT INTO project_authorizations_for_migration (project_id, user_id, access_level)
+    SELECT project_id, user_id, access_level
+    FROM remaining
+    ON CONFLICT (project_id, user_id) DO UPDATE
+      SET access_level = EXCLUDED.access_level
+  )
   DELETE FROM project_authorizations_for_migration
-  WHERE project_id = OLD.project_id AND user_id = OLD.user_id;
+  WHERE project_id = OLD.project_id AND user_id = OLD.user_id
+    AND NOT EXISTS (SELECT 1 FROM remaining);
   RETURN OLD;
 END IF;
 
@@ -6435,6 +6448,17 @@ CREATE TABLE p_ci_job_messages (
     severity smallint DEFAULT 0 NOT NULL,
     content text,
     CONSTRAINT check_6b838ff738 CHECK ((char_length(content) <= 10000))
+)
+PARTITION BY LIST (partition_id);
+
+CREATE TABLE p_ci_job_runtime_environments (
+    build_id bigint NOT NULL,
+    partition_id bigint NOT NULL,
+    runtime_environment_id bigint,
+    runner_machine_id bigint,
+    project_id bigint NOT NULL,
+    suspend_on_success boolean DEFAULT false NOT NULL,
+    suspend_on_failure boolean DEFAULT false NOT NULL
 )
 PARTITION BY LIST (partition_id);
 
@@ -17376,7 +17400,8 @@ CREATE TABLE ci_pending_builds (
     namespace_traversal_ids bigint[] DEFAULT '{}'::bigint[],
     partition_id bigint NOT NULL,
     plan_id bigint,
-    plan_name_uid smallint
+    plan_name_uid smallint,
+    runner_machine_id bigint
 );
 
 CREATE SEQUENCE ci_pending_builds_id_seq
@@ -40871,6 +40896,9 @@ ALTER TABLE ONLY p_ci_job_inputs
 ALTER TABLE ONLY p_ci_job_messages
     ADD CONSTRAINT p_ci_job_messages_pkey PRIMARY KEY (id, partition_id);
 
+ALTER TABLE ONLY p_ci_job_runtime_environments
+    ADD CONSTRAINT p_ci_job_runtime_environments_pkey PRIMARY KEY (build_id, partition_id);
+
 ALTER TABLE ONLY p_ci_pipeline_artifact_states
     ADD CONSTRAINT p_ci_pipeline_artifact_states_pkey PRIMARY KEY (pipeline_artifact_id, partition_id);
 
@@ -45269,6 +45297,14 @@ CREATE INDEX idx_p_ai_active_context_code_repositories_enabled_namespace_id ON O
 
 CREATE INDEX idx_p_ci_finished_pipeline_ch_sync_evts_on_project_namespace_id ON ONLY p_ci_finished_pipeline_ch_sync_events USING btree (project_namespace_id);
 
+CREATE INDEX idx_p_ci_job_runtime_envs_on_project_id ON ONLY p_ci_job_runtime_environments USING btree (project_id);
+
+CREATE INDEX idx_p_ci_job_runtime_envs_on_runner_machine_id ON ONLY p_ci_job_runtime_environments USING btree (runner_machine_id);
+
+CREATE INDEX idx_p_ci_job_runtime_envs_on_runtime_environment_id ON ONLY p_ci_job_runtime_environments USING btree (runtime_environment_id, build_id, runner_machine_id);
+
+CREATE INDEX idx_p_ci_runtime_environments_on_project_id_environment_key ON ONLY p_ci_runtime_environments USING btree (project_id, environment_key);
+
 CREATE INDEX idx_p_project_daily_statistics_on_date_and_id ON ONLY project_daily_statistics USING btree (date, id);
 
 CREATE UNIQUE INDEX idx_p_project_daily_statistics_on_project_id_and_date ON ONLY project_daily_statistics USING btree (project_id, date DESC);
@@ -45982,6 +46018,8 @@ CREATE INDEX index_ai_catalog_items_on_project_id ON ai_catalog_items USING btre
 CREATE INDEX index_ai_catalog_items_on_public ON ai_catalog_items USING btree (public);
 
 CREATE INDEX index_ai_catalog_items_on_verification_level ON ai_catalog_items USING btree (verification_level);
+
+CREATE INDEX index_ai_catalog_items_on_visibility_public_and_restricted ON ai_catalog_items USING btree (visibility) WHERE (visibility = ANY (ARRAY[1, 2]));
 
 CREATE INDEX index_ai_catalog_items_where_deleted_at_is_null ON ai_catalog_items USING btree (deleted_at) WHERE (deleted_at IS NULL);
 
@@ -49106,8 +49144,6 @@ CREATE INDEX index_p_ci_pipeline_variables_on_project_id ON ONLY p_ci_pipeline_v
 CREATE INDEX index_p_ci_runner_machine_builds_on_project_id ON ONLY p_ci_runner_machine_builds USING btree (project_id);
 
 CREATE INDEX index_p_ci_runner_machine_builds_on_runner_machine_id ON ONLY p_ci_runner_machine_builds USING btree (runner_machine_id);
-
-CREATE INDEX index_p_ci_runtime_environments_on_project_id ON ONLY p_ci_runtime_environments USING btree (project_id);
 
 CREATE INDEX index_p_ci_workload_variable_inclusions_on_project_id ON ONLY p_ci_workload_variable_inclusions USING btree (project_id);
 

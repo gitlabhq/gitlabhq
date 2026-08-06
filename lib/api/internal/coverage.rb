@@ -24,9 +24,16 @@ module API
           route_setting :authorization, skip_granular_token_authorization: :internal_testing
           get do
             # Fetch runtime coverage data which is tracked during E2E spec execution
-            # Returns full line-level coverage data: { "file.rb" => { "1" => "5", "2" => "3" } }
             # skip hash check due to hash mismatch on some environments which results in empty coverage data
-            ::Coverband.configuration.store.coverage(::Coverband::RUNTIME_TYPE, skip_hash_check: true)
+            coverage = ::Coverband.configuration.store.coverage(::Coverband::RUNTIME_TYPE, skip_hash_check: true)
+
+            # Coverband pads non-executable lines with nil. Drop those and return { "file.rb" => { "5" => 2 } }.
+            # Zero-hit lines are kept because they are executable and LCOV needs them for the coverage denominator.
+            coverage.transform_values do |file_data|
+              file_data['data'].to_a.each_with_index
+                .filter_map { |hits, index| [(index + 1).to_s, hits] unless hits.nil? }
+                .to_h
+            end
           end
 
           route_setting :authorization, skip_granular_token_authorization: :internal_testing

@@ -102,5 +102,6 @@ the following permissions:
 
 | Operation                                     | Resource         | Permission | Access         |
 | --------------------------------------------- | ---------------- | ---------- | -------------- |
+| Download a design management image            | Work Item        | Read       | Project        |
 | Forward editor extension telemetry events     | Editor Telemetry | Create     | User           |
 | Receive live comment updates over WebSocket   | Work Item        | Read       | Project, Group |

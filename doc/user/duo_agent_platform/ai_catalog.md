@@ -165,6 +165,29 @@ To make your group or project use the latest version of an agent or flow:
 1. Select the agent or flow you want to update.
 1. Review the latest version carefully. To update, select **View latest version** > **Update to `<x.y.z>`**.
 
+## Configuration size limits
+
+{{< history >}}
+
+- Separate size limit for flow and external agent YAML [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/247313) in GitLab 19.3.
+
+{{< /history >}}
+
+The configuration of an AI Catalog item cannot exceed a maximum size:
+
+| Item type      | Maximum size | Measured against                             |
+|----------------|--------------|----------------------------------------------|
+| Custom agent   | 80 KiB       | The stored configuration                     |
+| Flow           | 40 KiB       | The YAML configuration you enter             |
+| External agent | 40 KiB       | The YAML configuration you enter             |
+
+Flows and external agents have a lower limit. GitLab stores both the YAML you enter and the
+structured configuration that GitLab generates from it. Together, these are about twice the size
+of the YAML.
+
+If your configuration exceeds the limit, GitLab displays an error and does not save the item.
+To resolve the error, reduce the size of your configuration.
+
 ## Restrict the AI Catalog to a group hierarchy
 
 {{< details >}}

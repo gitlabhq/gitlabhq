@@ -53,6 +53,16 @@ module Gitlab
           find_user_for_graphql_api_request
         when :api, :git, :rss, :ics, :blob, :download, :archive, nil
           find_user_from_any_authentication_method(request_format)
+        when :design
+          # Deliberately narrower than find_user_from_any_authentication_method:
+          # design images must only ever accept PAT/OAuth tokens with api or
+          # read_api scope, never feed, static object, or CI job tokens.
+          # Tokens must arrive in a header (PRIVATE-TOKEN or Authorization:
+          # Bearer): query string tokens leak into logs and browser history.
+          # Requests carrying one fail closed rather than falling back to a
+          # header, because extract_personal_access_token prefers the query
+          # parameter over the header.
+          find_user_from_web_access_token(:design, scopes: [:api, :read_api]) unless token_in_query_string?
         when :editor_extension
           find_user_from_access_token
         else
@@ -112,6 +122,15 @@ module Gitlab
           find_user_from_job_token ||
           find_user_from_personal_access_token_for_api_or_git ||
           find_user_for_git_or_lfs_request
+      end
+
+      # Every query parameter the token finders would read: private_token
+      # for PATs (extract_personal_access_token), access_token and
+      # bearer_token for OAuth (Doorkeeper#access_token_methods).
+      def token_in_query_string?
+        [PRIVATE_TOKEN_PARAM.to_s, 'access_token', 'bearer_token'].any? do |key|
+          current_request.query_parameters[key].present?
+        end
       end
 
       def access_token

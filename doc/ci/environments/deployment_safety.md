@@ -143,7 +143,7 @@ are only passed to pipelines running on [protected branches](../../user/project/
 or [protected tags](../../user/project/protected_tags.md).
 The other pipelines don't get the protected variable. You can also
 [scope variables to specific environments](../variables/where_variables_can_be_used.md#variables-with-an-environment-scope).
-We recommend that you use protected variables on protected environments to make sure that the
+Use protected variables on protected environments to make sure that the
 secrets aren't exposed unintentionally. You can also define production secrets on the
 [runner side](../runners/configure_runners.md#prevent-runners-from-revealing-sensitive-information).
 This prevents other users with the Maintainer role from reading the secrets and makes sure

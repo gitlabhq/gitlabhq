@@ -78,7 +78,7 @@ To use inline caching in your pipeline:
    - The first command tries to pull the image from the registry to use as a cache source.
      Any image used with `--cache-from` must be pulled with `docker pull` before it can be used.
    - The second command builds a Docker image using the pulled image as a cache
-     (via `--cache-from $CI_REGISTRY_IMAGE:latest`), then tags it.
+     (by using `--cache-from $CI_REGISTRY_IMAGE:latest`), then tags it.
      The `--build-arg BUILDKIT_INLINE_CACHE=1` flag embeds the build cache into the image.
    - The last two commands push both tagged images to the container registry so they can be
      used as cache in future builds.

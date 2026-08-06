@@ -68,7 +68,7 @@ There are two places defined variables can be used. On the:
 | `runners.kubernetes.pod_labels`      | yes              | The variable expansion is made by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism) |
 | `runners.kubernetes.pod_annotations` | yes              | The variable expansion is made by GitLab Runner's [internal variable expansion mechanism](#gitlab-runner-internal-variable-expansion-mechanism) |
 
-You can read more about `config.toml` in the [GitLab Runner docs](https://docs.gitlab.com/runner/configuration/advanced-configuration/).
+For more information about `config.toml`, see [advanced configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration/).
 
 ## Expansion mechanisms
 
@@ -140,7 +140,7 @@ Supported:
 
 In the case of `after_script` scripts, they can:
 
-- Only use variables defined before the script within the same `after_script`
+- Only use variables defined before the script in the same `after_script`
   section.
 - Not use variables defined in `before_script` and `script`.
 

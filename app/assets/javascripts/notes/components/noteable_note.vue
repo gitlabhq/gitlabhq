@@ -520,7 +520,7 @@ export default {
           :can-delete="canEdit"
           :can-report-as-abuse="canReportAsAbuse"
           :can-resolve="canResolve"
-          :resolvable="note.resolvable || note.isDraft"
+          :resolvable="note.resolvable"
           :is-resolved="note.resolved || note.resolve_discussion"
           :is-resolving="isResolving"
           :resolved-by="note.resolved_by"

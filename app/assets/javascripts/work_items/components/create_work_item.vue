@@ -257,7 +257,20 @@ export default {
       required: false,
       default: '',
     },
-    fromGlobalMenu: {
+    /**
+     * Shows the group/project selector and lets the user create the item in any
+     * namespace they have access to, instead of being limited to the current one.
+     */
+    allowAnyNamespace: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    /**
+     * Restricts the namespace selector to projects. Use for callers that can
+     * only create work item types which do not exist at the group level.
+     */
+    allowProjectsOnly: {
       type: Boolean,
       required: false,
       default: false,
@@ -705,7 +718,10 @@ export default {
         : this.groupPath;
     },
     shouldShowNamespaceSelector() {
-      return this.fromGlobalMenu || (this.isGroup && this.hasEpicsFeature);
+      return this.allowAnyNamespace || (this.isGroup && this.hasEpicsFeature);
+    },
+    namespaceSelectorLabel() {
+      return this.allowProjectsOnly ? __('Project') : __('Group/project');
     },
     workItemWidgetsAutoSaveKey() {
       return getNewWorkItemWidgetsAutoSaveKey({
@@ -1238,12 +1254,19 @@ export default {
 
         <div class="gl-flex gl-items-center gl-gap-4">
           <template v-if="shouldShowNamespaceSelector">
-            <gl-form-group class="gl-mr-4 gl-max-w-26 gl-flex-grow" :label="__('Group/project')">
+            <gl-form-group
+              class="gl-mr-4 gl-max-w-26 gl-flex-grow"
+              :label="namespaceSelectorLabel"
+              label-for="create-work-item-namespace"
+              data-testid="work-item-namespace-form-group"
+            >
               <work-item-namespace-listbox
                 v-model="selectedNamespacePath"
                 :full-path="fullPath"
                 :is-group="isGroup"
-                :limit-to-current-namespace="!fromGlobalMenu"
+                :limit-to-current-namespace="!allowAnyNamespace"
+                :projects-only="allowProjectsOnly"
+                toggle-id="create-work-item-namespace"
                 @selectNamespace="handleNamespaceSelect"
               />
             </gl-form-group>

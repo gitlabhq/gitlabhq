@@ -9,6 +9,10 @@ RSpec.describe MergeRequests::KeepAroundRefsWorker, feature_category: :code_revi
 
   let(:worker) { described_class.new }
 
+  it 'deduplicates identical jobs until they have executed' do
+    expect(described_class.get_deduplicate_strategy).to eq(:until_executed)
+  end
+
   describe '#perform' do
     let(:project_ids) { [project.id] }
     let(:shas) { [merge_request_diff.start_commit_sha, merge_request_diff.head_commit_sha] }
