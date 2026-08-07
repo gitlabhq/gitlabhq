@@ -29,12 +29,10 @@ module Gitlab
         project.repository.tag_exists?(tag_name)
       end
 
-      # If a commit is created from Web and signed by GitLab, we can skip the committer check because it's equal to
-      # GitLab <noreply@gitlab.com>
       def signed_by_gitlab?(commit)
-        return false unless updated_from_web? && commit.has_signature?
+        return false unless commit.has_signature?
 
-        commit_signatures[commit.id][:signer] == :SIGNER_SYSTEM
+        commit_signatures.dig(commit.id, :signer) == :SIGNER_SYSTEM
       end
 
       def commit_signatures

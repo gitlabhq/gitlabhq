@@ -165,10 +165,6 @@ module MergeRequestsHelper
     end
   end
 
-  def can_use_description_composer(_user, _merge_request)
-    false
-  end
-
   # Overridden in EE
   def summarize_new_merge_request_disabled_reason(_merge_request); end
 
@@ -271,7 +267,8 @@ module MergeRequestsHelper
       can_bulk_update: can?(current_user, :admin_merge_request, project).to_s,
       environment_names_path: unfoldered_environment_names_project_path(project, :json),
       initial_email: can?(current_user, :create_merge_request_in, project) &&
-        project.new_issuable_address(current_user, 'merge_request')
+        project.new_issuable_address(current_user, 'merge_request'),
+      reset_path: new_issuable_address_project_path(project, issuable_type: 'merge_request')
     })
   end
 

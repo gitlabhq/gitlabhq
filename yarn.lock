@@ -1441,7 +1441,7 @@
     "@floating-ui/core" "^1.7.5"
     "@floating-ui/utils" "^0.2.11"
 
-"@floating-ui/dom@^1.0.0", "@floating-ui/dom@^1.8.0":
+"@floating-ui/dom@1.8.0", "@floating-ui/dom@^1.0.0", "@floating-ui/dom@^1.8.0":
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/@floating-ui/dom/-/dom-1.8.0.tgz#8a20e6facbe2456afdbeb6c8b968a72df689cf63"
   integrity sha512-yXSrzeHZBTZadLOlfyhCkJHNeLJnHRnRInwdZ40L7ZiaAtrBwoYlsDrX3v5zB1Utk7CLfzcOVnVVWoXEky7Ceg==
@@ -1553,12 +1553,12 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.163.0.tgz#617a04c1d583deb5a473dcad2792a880201771bb"
   integrity sha512-u2fQ3TLMT7RJaHVCS+3C/pv/frI/SAKc6EVCi+4yLOHV2azwDr2zylcQ9EMJ7nHfVPFs+zCr9RLNS5+UALrGCA==
 
-"@gitlab/ui@135.0.0":
-  version "135.0.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-135.0.0.tgz#fb52c7cd13f8cb45496a52d74d4758450de197f7"
-  integrity sha512-5c9zQbMHBXtKNuLpPAvSCXo/bmfNq0XPtxyh6MT57Njd2CSs2P1+pcz+o5YEtckh9idPzEBr7lmUIBdO+Ny9+g==
+"@gitlab/ui@136.1.0":
+  version "136.1.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-136.1.0.tgz#c8290466945945dca88aef435d4359c03a3de425"
+  integrity sha512-c23zP+rOIf6njXTP6KCknTqQ5GIEHXbfmDNg4kSC4YUistg5uz1kiqxee648RAtaWwI0QOzrGi3kCNOSl1bTJw==
   dependencies:
-    "@floating-ui/dom" "1.7.6"
+    "@floating-ui/dom" "1.8.0"
     echarts "^5.6.0"
     gridstack "^12.6.0"
     iframe-resizer "^4.4.5"

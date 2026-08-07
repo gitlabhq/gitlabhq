@@ -1131,6 +1131,40 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
+  describe 'update_feature_flags_minimum_role_setting' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:user_role, :minimum_role, :allowed) do
+      :guest      | :developer      | false
+      :planner    | :developer      | false
+      :reporter   | :developer      | false
+      :developer  | :developer      | false
+      :maintainer | :developer      | true
+      :maintainer | :maintainer     | true
+      :maintainer | :no_one_allowed | false
+      :owner      | :no_one_allowed | true
+      :owner      | :owner          | true
+      :developer  | :owner          | false
+      :maintainer | :owner          | false
+    end
+
+    with_them do
+      let(:current_user) { public_send(user_role) }
+
+      before do
+        project.project_setting.update!(feature_flags_minimum_role: minimum_role)
+      end
+
+      it 'allows/disallows update_feature_flags_minimum_role_setting based on the privileged state' do
+        if allowed
+          is_expected.to be_allowed(:update_feature_flags_minimum_role_setting)
+        else
+          is_expected.to be_disallowed(:update_feature_flags_minimum_role_setting)
+        end
+      end
+    end
+  end
+
   describe 'set_pipeline_variables' do
     context 'when `pipeline_variables_minimum_override_role` is defined' do
       using RSpec::Parameterized::TableSyntax
@@ -2172,6 +2206,95 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
       context 'when repository is available' do
         it { is_expected.to be_disallowed(:read_feature_flag) }
+      end
+    end
+  end
+
+  describe 'managing feature flags with a minimum role' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject { described_class.new(current_user, project) }
+
+    context 'when the feature_flag_management_permissions feature flag is disabled' do
+      let(:current_user) { developer }
+
+      before do
+        stub_feature_flags(feature_flag_management_permissions: false)
+        project.project_setting.update!(feature_flags_minimum_role: :owner)
+      end
+
+      it 'ignores the minimum role and keeps the role-based default' do
+        is_expected.to be_allowed(:update_feature_flag)
+        is_expected.to be_allowed(:create_feature_flag)
+        is_expected.to be_allowed(:admin_feature_flag)
+        is_expected.to be_allowed(:destroy_feature_flag)
+        is_expected.to be_allowed(:admin_feature_flags_user_lists)
+      end
+    end
+
+    context 'when the feature_flag_management_permissions feature flag is enabled' do
+      before do
+        project.project_setting.update!(feature_flags_minimum_role: minimum_role)
+      end
+
+      where(:user_role, :minimum_role, :allowed) do
+        :developer  | :developer      | true
+        :maintainer | :developer      | true
+        :owner      | :developer      | true
+        :developer  | :maintainer     | false
+        :maintainer | :maintainer     | true
+        :owner      | :maintainer     | true
+        :developer  | :owner          | false
+        :maintainer | :owner          | false
+        :owner      | :owner          | true
+        :developer  | :no_one_allowed | false
+        :maintainer | :no_one_allowed | false
+        :owner      | :no_one_allowed | false
+      end
+
+      with_them do
+        let(:current_user) { public_send(user_role) }
+
+        it 'allows/disallows managing feature flags based on the minimum role' do
+          if allowed
+            is_expected.to be_allowed(:update_feature_flag)
+            is_expected.to be_allowed(:create_feature_flag)
+            is_expected.to be_allowed(:admin_feature_flag)
+            is_expected.to be_allowed(:destroy_feature_flag)
+            is_expected.to be_allowed(:admin_feature_flags_user_lists)
+          else
+            is_expected.to be_disallowed(:update_feature_flag)
+            is_expected.to be_disallowed(:create_feature_flag)
+            is_expected.to be_disallowed(:admin_feature_flag)
+            is_expected.to be_disallowed(:destroy_feature_flag)
+            is_expected.to be_disallowed(:admin_feature_flags_user_lists)
+          end
+        end
+      end
+
+      context 'when a below-threshold user reads feature flags' do
+        let(:current_user) { developer }
+        let(:minimum_role) { :owner }
+
+        it 'still allows reading feature flags' do
+          is_expected.to be_allowed(:read_feature_flag)
+        end
+      end
+
+      context 'when an admin is in admin mode', :enable_admin_mode do
+        let(:current_user) { admin }
+
+        context 'with a role threshold' do
+          let(:minimum_role) { :owner }
+
+          it { is_expected.to be_allowed(:update_feature_flag) }
+        end
+
+        context 'with no_one_allowed' do
+          let(:minimum_role) { :no_one_allowed }
+
+          it { is_expected.to be_disallowed(:update_feature_flag) }
+        end
       end
     end
   end

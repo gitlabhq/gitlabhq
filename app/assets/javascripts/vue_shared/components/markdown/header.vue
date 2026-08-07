@@ -68,7 +68,6 @@ export default {
     mrGeneratedContent: { default: null },
     canSummarizeChanges: { default: false },
     summarizeDisabledReason: { default: null },
-    canUseComposer: { default: false },
     legacyEditorAiActions: { default: () => [] },
   },
   props: {
@@ -958,7 +957,7 @@ export default {
             />
             <toolbar-more-dropdown />
           </div>
-          <template v-if="!previewMarkdown && canSummarizeChanges && !canUseComposer">
+          <template v-if="!previewMarkdown && canSummarizeChanges">
             <header-divider />
             <summarize-code-changes :disabled-reason="summarizeDisabledReason" />
           </template>

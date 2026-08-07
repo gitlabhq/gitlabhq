@@ -34,6 +34,14 @@ class CustomEnvironment extends TestEnvironment {
         // @vue/compat's wording of the "unknown property accessed during render" warning.
         /^\[Vue warn\]: Property .* was accessed during render but is not defined on instance/,
 
+        // Since @gitlab/ui 136.1.0 the toast plugin applies one shared mixin
+        // object, so a second `Vue.use(GlToastPlugin)` on a page warns. Around
+        // 76 modules still install the plugin, and any two of them loaded by
+        // the same spec collide.
+        // TODO: Remove once every component declares GlToastMixin instead.
+        // https://gitlab.com/gitlab-org/gitlab/-/issues/608169
+        /^\[Vue warn\]: Mixin has already been applied to target app/,
+
         // TODO: Implement robust vue-demi switching logic.
         // https://gitlab.com/groups/gitlab-org/-/epics/15340
         /^\[Vue warn\]: \(deprecation GLOBAL_PRIVATE_UTIL\)/,

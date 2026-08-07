@@ -224,6 +224,7 @@ project_setting:
     - ai_audit_events_storage_enabled
     - dap_session_tracking_enabled
     - tool_approval_for_session_enabled
+    - feature_flags_minimum_role
 build_service_desk_setting: # service_desk_setting
   unexposed_attributes:
     - project_id

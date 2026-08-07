@@ -294,7 +294,7 @@ export default {
         :aria-label="$options.i18n.help"
         data-testid="inherit-date-popover"
       />
-      <gl-popover :target="epicDatePopoverEl" triggers="focus" placement="left" boundary="viewport">
+      <gl-popover :target="epicDatePopoverEl" placement="left" boundary="viewport">
         <p>{{ $options.i18n.dateHelpValidMessage }}</p>
         <gl-link :href="$options.dateHelpUrl" target="_blank">{{
           $options.i18n.learnMore

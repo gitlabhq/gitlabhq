@@ -1,0 +1,10 @@
+---
+name: feature_flag_management_permissions
+description: Enables the project setting that restricts which minimum role can manage feature flags
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/8239
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244222
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/607744
+milestone: '19.3'
+group: group::environments
+type: gitlab_com_derisk
+default_enabled: false

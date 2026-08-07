@@ -1,0 +1,17 @@
+---
+description: Tracks clicks on the "Email a new merge request to this project" link on the project merge requests list.
+internal_events: true
+action: click_email_merge_request_project_merge_requests_list_page
+identifiers:
+  - project
+  - namespace
+  - user
+product_group: activation
+product_categories:
+  - code_review_workflow
+milestone: '19.3'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248548
+tiers:
+  - free
+  - premium
+  - ultimate

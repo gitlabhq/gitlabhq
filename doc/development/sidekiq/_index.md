@@ -228,6 +228,14 @@ Sidekiq workers are deferred by two ways,
    with `gitlab_schema`, `tables` (used by the autovacuum database indicator), and `delay_by`
    (time to delay, 5 seconds by default) as its parameters.
 
+   The first deferral delays the job by `delay_by`.
+   While the stop signal persists, each consecutive deferral doubles the delay,
+   up to a hard maximum of 30 minutes.
+   A small random jitter (up to 10%) is subtracted from the doubled delay
+   so that jobs deferred together do not retry at the same time.
+   The incremental delay is behind the `incremental_database_health_defer_delay` feature flag
+   (disabled by default).
+
    **Example**:
 
    ```ruby
@@ -280,6 +288,7 @@ For deferred jobs, logs contain the following to indicate the source:
 
 - `job_status`: `deferred`
 - `job_deferred_by`: `feature_flag` or `database_health_check`
+- `deferred_count`: the number of times the job has been deferred
 
 ## Sidekiq Queues
 

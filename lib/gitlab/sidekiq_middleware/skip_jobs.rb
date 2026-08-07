@@ -7,6 +7,13 @@ module Gitlab
       RUN_FEATURE_FLAG_PREFIX = "run_sidekiq_jobs"
       DROP_FEATURE_FLAG_PREFIX = "drop_sidekiq_jobs"
 
+      DATABASE_HEALTH_BACKOFF_FACTOR = 2
+      # delay_by * 2**16 exceeds DATABASE_HEALTH_MAX_DELAY for every delay_by in use (the smallest
+      # is the 5-second DEFAULT_DEFER_DELAY), so clamping the exponent changes nothing observable;
+      # it only keeps the power cheap for unbounded counts.
+      DATABASE_HEALTH_MAX_BACKOFF_EXPONENT = 16
+      DATABASE_HEALTH_MAX_DELAY = 30.minutes
+
       DatabaseHealthStatusChecker = Struct.new(:id, :job_class_name)
 
       COUNTER = :sidekiq_jobs_skipped_total
@@ -30,7 +37,9 @@ module Gitlab
       # 1. When run_sidekiq_jobs_#{worker_name} FF is disabled. This FF is enabled by default
       #    for all workers.
       # 2. Gitlab::Database::HealthStatus, on evaluating the db health status if it returns any indicator
-      #    with stop signal, the jobs will be delayed by 'x' seconds (set in worker).
+      #    with stop signal, the jobs will be delayed by 'x' seconds (set in worker). Consecutive deferrals
+      #    back off exponentially from that delay, capped at DATABASE_HEALTH_MAX_DELAY (behind the
+      #    :incremental_database_health_defer_delay feature flag).
       #
       # Dropping jobs takes higher priority over deferring jobs. For example, when `drop_sidekiq_jobs` is enabled and
       # `run_sidekiq_jobs` is disabled, it results to jobs being dropped.
@@ -128,13 +137,31 @@ module Gitlab
         job['deferred_count'] ||= 0
         job['deferred_count'] += 1
 
-        worker.class.deferred(job['deferred_count'], @deferred_by).set(jid: job['jid']).perform_in(@delay, *job['args'])
+        worker.class.deferred(job['deferred_count'], @deferred_by)
+              .set(jid: job['jid'])
+              .perform_in(deferral_delay(job), *job['args'])
         @metrics.fetch(COUNTER).increment({
           worker: worker.class.name,
           action: "deferred",
           reason: @deferred_by.to_s,
           feature_category: worker.class.get_feature_category.to_s
         })
+      end
+
+      def deferral_delay(job)
+        count = job['deferred_count']
+        return @delay unless @deferred_by == :database_health_check && count > 1
+        return @delay if Feature.disabled?(:incremental_database_health_defer_delay, Feature.current_request)
+
+        # Backing off avoids cycling the job through Redis at a fixed interval for as long as the
+        # stop signal lasts (autovacuum alone can run for hours). The cap is a hard ceiling on how
+        # long a job can sleep past the signal clearing; jitter is subtracted, never added, so the
+        # ceiling holds while jobs deferred together still avoid re-checking the health signal in
+        # lockstep, including once they reach the cap.
+        exponent = [count - 1, DATABASE_HEALTH_MAX_BACKOFF_EXPONENT].min
+        backoff = @delay.to_i * (DATABASE_HEALTH_BACKOFF_FACTOR**exponent)
+        capped = [backoff, DATABASE_HEALTH_MAX_DELAY.to_i].min
+        capped - rand((capped / 10) + 1)
       end
 
       def init_metrics

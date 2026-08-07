@@ -91,6 +91,7 @@ import MergeRequestReviewers from './merge_request_reviewers.vue';
 import MergeRequestStatistics from './merge_request_statistics.vue';
 import MergeRequestMoreActionsDropdown from './more_actions_dropdown.vue';
 import EmptyState from './empty_state.vue';
+import MergeRequestByEmail from './merge_request_by_email.vue';
 import DiscussionsBadge from './discussions_badge.vue';
 
 const UserToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/user_token.vue');
@@ -129,6 +130,7 @@ export default {
     EmptyState,
     IssuableMilestone,
     DiscussionsBadge,
+    MergeRequestByEmail,
     NewResourceDropdown: defineAsyncComponent(
       () => import('~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue'),
     ),
@@ -147,6 +149,7 @@ export default {
     isPublicVisibilityRestricted: { default: false },
     isSignedIn: { default: false },
     newMergeRequestPath: { default: '' },
+    initialEmail: { default: '' },
     releasesEndpoint: { default: '' },
     canBulkUpdate: { default: false },
     environmentNamesPath: { default: '' },
@@ -1010,5 +1013,9 @@ export default {
       </template>
     </issuable-list>
     <empty-state v-else :has-merge-requests="false" />
+    <merge-request-by-email
+      v-if="initialEmail && hasAnyMergeRequests"
+      class="gl-pb-7 gl-pt-5 gl-text-center"
+    />
   </div>
 </template>

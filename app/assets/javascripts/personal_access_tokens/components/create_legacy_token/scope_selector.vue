@@ -141,7 +141,6 @@ export default {
           />
           <gl-popover
             :target="getScopeId(scope.value)"
-            triggers="focus"
             :title="scope.value"
             placement="auto"
             :show-close-button="true"

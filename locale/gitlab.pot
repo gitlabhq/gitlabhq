@@ -3775,9 +3775,6 @@ msgstr ""
 msgid "AI|AI vulnerability management"
 msgstr ""
 
-msgid "AI|Accept & Insert"
-msgstr ""
-
 msgid "AI|Apply AI-generated description"
 msgstr ""
 
@@ -3799,9 +3796,6 @@ msgstr ""
 msgid "AI|Description is required"
 msgstr ""
 
-msgid "AI|Discard suggestion"
-msgstr ""
-
 msgid "AI|Enable Auto Review"
 msgstr ""
 
@@ -3818,9 +3812,6 @@ msgid "AI|Explain with AI"
 msgstr ""
 
 msgid "AI|For example: Organizations should be able to forecast into the future by using value stream analytics charts. This feature would help them understand how their metrics are trending."
-msgstr ""
-
-msgid "AI|Generate"
 msgstr ""
 
 msgid "AI|Generate issue description"
@@ -3869,9 +3860,6 @@ msgid "AI|I'm sorry, I couldn't respond in time. Please try a more specific requ
 msgstr ""
 
 msgid "AI|Populate issue description"
-msgstr ""
-
-msgid "AI|Regenerate"
 msgstr ""
 
 msgid "AI|Replace the existing description with an AI-generated description? Any changes you have made will be lost."
@@ -3941,9 +3929,6 @@ msgid "AI|Write a brief description and have AI fill in the details."
 msgstr ""
 
 msgid "AI|Write a summary to fill out the selected issue template"
-msgstr ""
-
-msgid "AI|Write with GitLab Duo"
 msgstr ""
 
 msgid "AI|Your request does not seem to contain code to %{action}. To %{human_name} select the lines of code in your %{platform} and then type the command %{command_name} in the chat. You may add additional instructions after this command. If you have no code to select, you can also simply add the code after the command."
@@ -12320,9 +12305,6 @@ msgid "AsanaService|User personal access token. User must have access to the tas
 msgstr ""
 
 msgid "Ascending"
-msgstr ""
-
-msgid "Ask GitLab Duo to help you write descriptions, rewrite existing text and more..."
 msgstr ""
 
 msgid "Ask a maintainer to check the import status for more details."
@@ -23282,6 +23264,9 @@ msgstr ""
 msgid "ContinuousDeployment|Search by name or description"
 msgstr ""
 
+msgid "ContinuousDeployment|Select a GitLab Agent."
+msgstr ""
+
 msgid "ContinuousDeployment|Select an agent"
 msgstr ""
 
@@ -24276,6 +24261,9 @@ msgid "Create new emoji"
 msgstr ""
 
 msgid "Create new label"
+msgstr ""
+
+msgid "Create new merge request by email"
 msgstr ""
 
 msgid "Create new…"
@@ -28050,9 +28038,6 @@ msgstr ""
 msgid "Describe the goal of the changes and what reviewers should be aware of."
 msgstr ""
 
-msgid "Describe what you want to write"
-msgstr ""
-
 msgid "Description"
 msgstr ""
 
@@ -29312,10 +29297,22 @@ msgstr ""
 msgid "DuoAgentPlatform|Foundational GitLab Duo Flows"
 msgstr ""
 
+msgid "DuoAgentPlatform|Get the extension"
+msgstr ""
+
+msgid "DuoAgentPlatform|GitLab CLI (glab)"
+msgstr ""
+
 msgid "DuoAgentPlatform|GitLab Duo Agent session"
 msgstr ""
 
+msgid "DuoAgentPlatform|GitLab Duo CLI"
+msgstr ""
+
 msgid "DuoAgentPlatform|Group settings"
+msgstr ""
+
+msgid "DuoAgentPlatform|IDE extensions"
 msgstr ""
 
 msgid "DuoAgentPlatform|Image registry"
@@ -29330,7 +29327,19 @@ msgstr ""
 msgid "DuoAgentPlatform|Implement work item with GitLab Duo"
 msgstr ""
 
+msgid "DuoAgentPlatform|Install GitLab Duo CLI"
+msgstr ""
+
+msgid "DuoAgentPlatform|Install glab"
+msgstr ""
+
 msgid "DuoAgentPlatform|Job IDs"
+msgstr ""
+
+msgid "DuoAgentPlatform|Local setup"
+msgstr ""
+
+msgid "DuoAgentPlatform|Manage merge requests, issues, and pipelines, and run Orbit Local from the terminal."
 msgstr ""
 
 msgid "DuoAgentPlatform|No GitLab Credits remain for this billing period. %{linkStart}Learn more.%{linkEnd}"
@@ -29384,6 +29393,9 @@ msgstr ""
 msgid "DuoAgentPlatform|Run GitLab Duo agents on this project"
 msgstr ""
 
+msgid "DuoAgentPlatform|Run flows and agentic chat from the terminal."
+msgstr ""
+
 msgid "DuoAgentPlatform|Running"
 msgstr ""
 
@@ -29435,6 +29447,9 @@ msgstr ""
 msgid "DuoAgentPlatform|This session started but failed before completing."
 msgstr ""
 
+msgid "DuoAgentPlatform|Tools you can install to use GitLab Duo."
+msgstr ""
+
 msgid "DuoAgentPlatform|Track GitLab Duo Agent Platform sessions in commits"
 msgstr ""
 
@@ -29442,6 +29457,9 @@ msgid "DuoAgentPlatform|Usage billing is not available for this account. To cont
 msgstr ""
 
 msgid "DuoAgentPlatform|User messaged agent"
+msgstr ""
+
+msgid "DuoAgentPlatform|VS Code · JetBrains · Visual Studio"
 msgstr ""
 
 msgid "DuoAgentPlatform|View"
@@ -31719,6 +31737,9 @@ msgstr ""
 msgid "Email OTP:"
 msgstr ""
 
+msgid "Email a new merge request to this project"
+msgstr ""
+
 msgid "Email address copied"
 msgstr ""
 
@@ -32284,6 +32305,12 @@ msgid "Enter the following to confirm:"
 msgstr ""
 
 msgid "Enter the following to confirm: %{phrase}"
+msgstr ""
+
+msgid "Enter the merge request description"
+msgstr ""
+
+msgid "Enter the merge request title"
 msgstr ""
 
 msgid "Enter the password for password-protected Elasticsearch or OpenSearch servers."
@@ -74913,6 +74940,9 @@ msgstr ""
 msgid "Send a single email notification to Owners and Maintainers for new alerts."
 msgstr ""
 
+msgid "Send email"
+msgstr ""
+
 msgid "Send email in multipart format (HTML and plain text). Uncheck to send email messages in plain text only."
 msgstr ""
 
@@ -79873,6 +79903,9 @@ msgstr ""
 msgid "The subdomain setting."
 msgstr ""
 
+msgid "The subject is used as the title of the new merge request, and the message is the description. %{quickActionsLinkStart}Quick actions%{quickActionsLinkEnd} and styling with %{markdownLinkStart}Markdown%{markdownLinkEnd} are supported."
+msgstr ""
+
 msgid "The tag name can't be changed for an existing release."
 msgstr ""
 
@@ -80269,6 +80302,9 @@ msgstr ""
 msgid "There was an error updating your show drafts preference."
 msgstr ""
 
+msgid "There was an error when resetting email token."
+msgstr ""
+
 msgid "There was an error when subscribing to this label."
 msgstr ""
 
@@ -80633,6 +80669,9 @@ msgid "This invitation was sent to %{mail_to_invite_email}, but you are signed i
 msgstr ""
 
 msgid "This is a \"Ghost User\", created to hold all issues authored by users that have since been deleted. This user cannot be removed."
+msgstr ""
+
+msgid "This is a %{emailsHelpLinkStart}private email address%{emailsHelpLinkEnd} generated just for you. Anyone who has it can create merge requests as if they were you. If that happens, %{resetLinkStart}reset this token%{resetLinkEnd}."
 msgstr ""
 
 msgid "This is a %{role_type} role."
@@ -91881,6 +91920,9 @@ msgid "You can create a new %{link}."
 msgstr ""
 
 msgid "You can create a new SSH key by visiting %{link}"
+msgstr ""
+
+msgid "You can create a new merge request inside this project by sending an email to the following email address:"
 msgstr ""
 
 msgid "You can create a new one or check them in your %{link_start}access tokens%{link_end} settings."

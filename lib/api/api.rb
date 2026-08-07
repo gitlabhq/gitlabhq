@@ -355,6 +355,7 @@ module API
         mount ::API::MergeRequestDiffs
         mount ::API::Metadata
         mount ::API::MlModelPackages
+        mount ::API::MobilePushSubscriptions
         mount ::API::Namespaces
         mount ::API::NpmGroupPackages
         mount ::API::NpmInstancePackages

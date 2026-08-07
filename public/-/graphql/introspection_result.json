@@ -10405,18 +10405,6 @@
               "deprecationReason": null
             },
             {
-              "name": "descriptionComposer",
-              "description": "Input for description_composer AI action.",
-              "type": {
-                "kind": "INPUT_OBJECT",
-                "name": "AiDescriptionComposerInput",
-                "ofType": null
-              },
-              "defaultValue": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "chat",
               "description": "Input for chat AI action.",
               "type": {
@@ -19671,129 +19659,6 @@
           "possibleTypes": null
         },
         {
-          "kind": "INPUT_OBJECT",
-          "name": "AiDescriptionComposerInput",
-          "description": null,
-          "fields": null,
-          "inputFields": [
-            {
-              "name": "resourceId",
-              "description": "Global ID of the resource to mutate.",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "AiModelID",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "sourceProjectId",
-              "description": "ID of the project where the changes are from.",
-              "type": {
-                "kind": "SCALAR",
-                "name": "ID",
-                "ofType": null
-              },
-              "defaultValue": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "sourceBranch",
-              "description": "Source branch of the changes.",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "targetBranch",
-              "description": "Target branch of where the changes will be merged into.",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "description",
-              "description": "Current description.",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "title",
-              "description": "Current merge request title.",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "userPrompt",
-              "description": "Prompt from user.",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "defaultValue": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "previousResponse",
-              "description": "Previously AI-generated description content used for context in iterative refinements or follow-up prompts.\n",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              },
-              "defaultValue": null,
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
           "kind": "ENUM",
           "name": "AiDomainSettingAction",
           "description": "Action to perform on a domain setting list for AI features.",
@@ -27161,12 +27026,6 @@
               "deprecationReason": null
             },
             {
-              "name": "COMPOSE_MERGE_REQUEST_DESCRIPTION",
-              "description": "A merge request description was composed with GitLab Duo.",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "RESOLVE_FEATURE_DISCOVERY_SEARCH",
               "description": "Feature discovery search was resolved.",
               "isDeprecated": false,
@@ -27251,18 +27110,6 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Use `codeSuggestions.codeSuggestionAcceptedInIdeEventCount` instead. Deprecated in GitLab 18.7."
-            },
-            {
-              "name": "composeMergeRequestDescription",
-              "description": "Compose Merge Request Description metrics for the user.",
-              "args": [],
-              "type": {
-                "kind": "OBJECT",
-                "name": "composeMergeRequestDescriptionUserMetrics",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
             },
             {
               "name": "duoChatInteractionsCount",
@@ -28201,30 +28048,6 @@
             {
               "name": "EXPLAIN_VULNERABILITY_ASC",
               "description": "Explain Vulnerability event count in ascending order.",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "COMPOSE_MERGE_REQUEST_DESCRIPTION_TOTAL_COUNT_DESC",
-              "description": "Compose Merge Request Description total event count in descending order.",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "COMPOSE_MERGE_REQUEST_DESCRIPTION_TOTAL_COUNT_ASC",
-              "description": "Compose Merge Request Description total event count in ascending order.",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "COMPOSE_MERGE_REQUEST_DESCRIPTION_DESC",
-              "description": "Compose Merge Request Description event count in descending order.",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "COMPOSE_MERGE_REQUEST_DESCRIPTION_ASC",
-              "description": "Compose Merge Request Description event count in ascending order.",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -59033,6 +58856,41 @@
           "inputFields": null,
           "interfaces": [],
           "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "CdApplicationStatus",
+          "description": "Status used to filter the continuous deployment applications list. An application can match more than one status.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "HEALTHY",
+              "description": "Worst service health across the application is healthy.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "DEGRADED",
+              "description": "Worst service health across the application is degraded.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "DEPLOYING",
+              "description": "Application has a rollout in progress.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "AWAITING_APPROVAL",
+              "description": "Application has a rollout waiting on an approval. Not recorded on the backend yet, so this always matches no applications for now.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
           "possibleTypes": null
         },
         {
@@ -210655,12 +210513,6 @@
               "deprecationReason": null
             },
             {
-              "name": "DESCRIPTION_COMPOSER",
-              "description": "Description composer feature.",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "ENVIRONMENT_ALERTS",
               "description": "Environment alerts feature.",
               "isDeprecated": false,
@@ -281601,6 +281453,26 @@
                     "kind": "SCALAR",
                     "name": "String",
                     "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "statuses",
+                  "description": "Filter applications by status. An application can match more than one status.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "ENUM",
+                        "name": "CdApplicationStatus",
+                        "ofType": null
+                      }
+                    }
                   },
                   "defaultValue": null,
                   "isDeprecated": false,
@@ -451013,53 +450885,6 @@
             {
               "name": "totalEventCount",
               "description": "Total count of all Code Suggestions events for the user.",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "composeMergeRequestDescriptionUserMetrics",
-          "description": "Compose Merge Request Description user metrics for a user. Requires ClickHouse. Premium and Ultimate with GitLab Duo Enterprise only.",
-          "fields": [
-            {
-              "name": "composeMergeRequestDescriptionEventCount",
-              "description": "Total count of `compose_merge_request_description` event.",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "lastDuoActivityOn",
-              "description": "Date of the last Compose Merge Request Description activity for the user.",
-              "args": [],
-              "type": {
-                "kind": "SCALAR",
-                "name": "Date",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "totalEventCount",
-              "description": "Total count of all Compose Merge Request Description events for the user.",
               "args": [],
               "type": {
                 "kind": "SCALAR",

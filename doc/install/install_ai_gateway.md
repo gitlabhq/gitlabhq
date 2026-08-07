@@ -598,7 +598,7 @@ For a Docker deployment, use the same method. The only difference is that, to mo
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/6084) in GitLab 19.3.
+- [Introduced](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/6084) in GitLab 19.2.
 
 {{< /history >}}
 

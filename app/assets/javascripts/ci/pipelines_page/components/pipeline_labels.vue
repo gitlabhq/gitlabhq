@@ -176,7 +176,7 @@ export default {
           {{ __('Auto DevOps') }}
         </gl-badge>
       </gl-link>
-      <gl-popover :target="autoDevopsTagId" triggers="focus" placement="top">
+      <gl-popover :target="autoDevopsTagId" placement="top">
         <template #title>
           <div class="gl-font-normal gl-leading-normal">
             <gl-sprintf

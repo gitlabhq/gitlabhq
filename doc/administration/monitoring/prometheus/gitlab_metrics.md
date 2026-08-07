@@ -849,20 +849,59 @@ and the metrics all have these labels:
 | Metric                                              | Type  | Since | Description |
 |:----------------------------------------------------|:------|:------|:------------|
 | `gitlab_database_connection_pool_size`              | Gauge | 13.0  | Total connection pool capacity |
-| `gitlab_database_connection_pool_connections`       | Gauge | 13.0  | Current connections in the pool (= idle + busy + dead) |
+| `gitlab_database_connection_pool_connections`       | Gauge | 13.0  | Number of connections that have been created in the pool. <sup>1</sup> |
 | `gitlab_database_connection_pool_busy`              | Gauge | 13.0  | Connections in use where the owner is still alive |
 | `gitlab_database_connection_pool_dead`              | Gauge | 13.0  | Connections in use where the owner is not alive |
 | `gitlab_database_connection_pool_idle`              | Gauge | 13.0  | Connections created, but not currently in use |
 | `gitlab_database_connection_pool_waiting`           | Gauge | 13.0  | Threads currently waiting on this queue |
-| `gitlab_database_extended_connection_pool_busy`     | Gauge | 17.11 | Connections in use where the owner is still alive, per thread |
-| `gitlab_database_extended_connection_pool_dead`     | Gauge | 17.11 | Connections in use where the owner is not alive, per thread |
+| `gitlab_database_extended_connection_pool_busy`     | Gauge | 18.11 | Connections in use where the owner is still alive, per thread |
+| `gitlab_database_extended_connection_pool_dead`     | Gauge | 18.11 | Connections in use where the owner is not alive, per thread |
+
+**Footnotes**:
+
+1. Because `idle` counts only initialized connections that are not in use, the total of `busy`, `dead`, and `idle` connections can be less than or equal to the total number of connections.
+
+In GitLab 18.11 and later, the default connection pool gauges are
+aggregated across Puma worker processes, so a single time series is
+emitted per pod (rather than one per worker).
+
+The aggregation uses the [`multiprocess_mode`](https://github.com/prometheus/client_ruby#aggregation-settings-for-multi-process-stores)
+setting supported by the [`prometheus-client-mmap`](https://gitlab.com/gitlab-org/ruby/gems/prometheus-client-mmap)
+client used by GitLab:
+
+- `gitlab_database_connection_pool_size` uses `min`. Because Puma
+  workers are forked with the same configuration, this value is the
+  same for every worker in a pod, so `min` just surfaces that shared
+  value.
+- `gitlab_database_connection_pool_connections`, `gitlab_database_connection_pool_busy`,
+  `gitlab_database_connection_pool_dead`, `gitlab_database_connection_pool_idle`, and
+  `gitlab_database_connection_pool_waiting` use `max` (the worst-case worker).
+
+Because these values are per-pod worst-case instead of sums across
+workers, dashboards or alerts that summed per-worker series in GitLab 18.10 and earlier
+(for example, `sum(gitlab_database_connection_pool_busy)`) now under-report the total.
+
+Do not try to reconstruct the previous sum by multiplying by the number
+of Puma workers. A sum across a pod does not reflect utilization on
+that pod or across the fleet, and monitoring should target the
+worst-case worker.
+
+If a single worker process saturates its pool, that worker cannot
+handle requests, regardless of what the other workers on the same pod
+are doing.
+
+For connection pool saturation monitoring, use `busy` plus `dead` instead of `connections` minus `idle`.
 
 The `gitlab_database_extended_connection_pool_busy` and
 `gitlab_database_extended_connection_pool_dead` metrics include a
-`thread_name` label for per-thread granularity. These metrics are
-disabled by default due to high cardinality. To enable them for a
-percentage of pods, use the `per_thread_db_connection_pool_metrics`
+`thread_name` label for per-thread granularity.
+These metrics are disabled by default due to high cardinality.
+To enable them for a percentage of pods, use the
+`per_thread_db_connection_pool_metrics`
 [ops feature flag](../../../development/feature_flags/_index.md).
+The flag is scoped to `Feature.current_pod`, so it can be turned on
+for a percentage of pods without emitting the high-cardinality series
+fleet-wide.
 
 ## Ruby metrics
 

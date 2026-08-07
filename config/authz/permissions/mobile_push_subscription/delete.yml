@@ -1,0 +1,3 @@
+---
+name: delete_mobile_push_subscription
+description: Grants the ability to unregister a mobile device from push notifications

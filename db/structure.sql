@@ -28994,6 +28994,7 @@ CREATE TABLE project_settings (
     duo_dependency_bump_breaking_changes_enabled boolean DEFAULT false NOT NULL,
     ai_audit_events_storage_enabled boolean DEFAULT false NOT NULL,
     duo_dependency_bump_breaking_changes_enabled_by_id bigint,
+    feature_flags_minimum_role smallint DEFAULT 2 NOT NULL,
     CONSTRAINT check_1a30456322 CHECK ((char_length(pages_unique_domain) <= 63)),
     CONSTRAINT check_237486989c CHECK ((char_length(merge_request_title_regex_description) <= 255)),
     CONSTRAINT check_3a03e7557a CHECK ((char_length(previous_default_branch) <= 4096)),

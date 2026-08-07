@@ -180,6 +180,7 @@ project:
   - update_cvs_for_dependency_scanning
   - update_duo_setting
   - update_external_status_check
+  - update_feature_flags_minimum_role_setting
   - update_freeze_period
   - update_pages
   - update_pipeline_variable_override_setting

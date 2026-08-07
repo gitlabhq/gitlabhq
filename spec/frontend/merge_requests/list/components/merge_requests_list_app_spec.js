@@ -49,6 +49,7 @@ import getMergeRequestsCountsQuery from 'ee_else_ce/merge_requests/list/queries/
 import getMergeRequestsApprovalsQuery from 'ee_else_ce/merge_requests/list/queries/group/get_merge_requests_approvals.query.graphql';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import MergeRequestReviewers from '~/merge_requests/list/components/merge_request_reviewers.vue';
+import MergeRequestByEmail from '~/merge_requests/list/components/merge_request_by_email.vue';
 import issuableEventHub from '~/merge_requests/list/eventhub';
 
 jest.mock('~/merge_requests/list', () => ({ initBulkUpdateSidebar: jest.fn() }));
@@ -63,6 +64,7 @@ let getCountsQueryResponseMock;
 
 const findIssuableList = () => wrapper.findComponent(IssuableList);
 const findNewMrButton = () => wrapper.findByTestId('new-merge-request-button');
+const findMergeRequestByEmail = () => wrapper.findComponent(MergeRequestByEmail);
 const findBulkEditButton = () => wrapper.findComponentByTestId('bulk-edit');
 
 const sourceBranchPath = 'source-branches';
@@ -181,6 +183,33 @@ describe('Merge requests list app', () => {
     createComponent({ provide: { newMergeRequestPath: '/new-mr-path' } });
 
     expect(findNewMrButton().exists()).toBe(true);
+  });
+
+  describe('email a new merge request', () => {
+    it('renders when initialEmail is provided', () => {
+      createComponent({
+        provide: { initialEmail: 'incoming+project-123-token-merge-request@example.com' },
+      });
+
+      expect(findMergeRequestByEmail().exists()).toBe(true);
+    });
+
+    it('does not render when initialEmail is absent', () => {
+      createComponent({ provide: { initialEmail: '' } });
+
+      expect(findMergeRequestByEmail().exists()).toBe(false);
+    });
+
+    it('does not render when there are no merge requests', () => {
+      createComponent({
+        provide: {
+          hasAnyMergeRequests: false,
+          initialEmail: 'incoming+project-123-token-merge-request@example.com',
+        },
+      });
+
+      expect(findMergeRequestByEmail().exists()).toBe(false);
+    });
   });
 
   it('renders issuable list', async () => {

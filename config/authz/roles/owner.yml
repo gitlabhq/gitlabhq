@@ -10,6 +10,7 @@ project:
   permissions: []
   raw_permissions:
   - _delete_incident_work_item
+  - _update_privileged_feature_flags_minimum_role_setting
   - _update_privileged_pipeline_variable_override_setting
   - add_catalog_resource
   - admin_namespace_cluster_agent_mapping

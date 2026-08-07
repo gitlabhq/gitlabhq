@@ -3558,6 +3558,14 @@ class Project < ApplicationRecord
     ci_cd_settings.override_pipeline_variables_allowed?(access_level, user)
   end
 
+  def feature_flags_management_allowed?(access_level, user)
+    project_setting.feature_flags_management_allowed?(access_level, user)
+  end
+
+  def feature_flags_minimum_role_privileged?
+    project_setting.feature_flags_minimum_role_privileged?
+  end
+
   def ci_push_repository_for_job_token_allowed?
     return false unless ci_cd_settings
 

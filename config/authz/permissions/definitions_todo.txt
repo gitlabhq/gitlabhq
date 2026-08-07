@@ -5,7 +5,6 @@ access_advanced_vulnerability_management
 access_ai_review_mr
 access_api
 access_code_suggestions
-access_description_composer
 access_duo_agentic_chat
 access_duo_classic_chat
 access_duo_features

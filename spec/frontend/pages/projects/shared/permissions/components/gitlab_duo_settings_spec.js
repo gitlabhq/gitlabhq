@@ -2,6 +2,7 @@ import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import GitlabDuoSettings from '~/pages/projects/shared/permissions/components/gitlab_duo_settings.vue';
 import ExclusionSettings from '~/pages/projects/shared/permissions/components/exclusion_settings.vue';
+import DuoLocalSetupSection from '~/pages/projects/shared/permissions/components/duo_local_setup_section.vue';
 import { ALL_SETTINGS } from '~/pages/projects/shared/permissions/constants';
 import { parseBoolean } from '~/lib/utils/common_utils';
 
@@ -52,6 +53,7 @@ describe('GitlabDuoSettings', () => {
   const findSaveButton = () => wrapper.findComponentByTestId('gitlab-duo-save-button');
   const findDuoSettings = () => wrapper.findComponentByTestId('duo-settings');
   const findReadinessBlock = () => wrapper.findByTestId('duo-readiness-block');
+  const findLocalSetupSection = () => wrapper.findComponent(DuoLocalSetupSection);
   const findDuoRow = () => wrapper.findComponentByTestId('duo-row');
   const findFlowExecutionRow = () => wrapper.findComponentByTestId('flow-execution-row');
   const findFoundationalFlowsRow = () => wrapper.findComponentByTestId('foundational-flows-row');
@@ -131,6 +133,10 @@ describe('GitlabDuoSettings', () => {
     it('does not group the remaining settings under a heading', () => {
       expect(wrapper.text()).not.toContain('Other Duo settings');
     });
+
+    it('hides the local setup section', () => {
+      expect(findLocalSetupSection().exists()).toBe(false);
+    });
   });
 
   describe('when the readiness card is on', () => {
@@ -161,6 +167,13 @@ describe('GitlabDuoSettings', () => {
       expect(findDuoFeaturesEnabledToggle().props('disabled')).toBe(true);
       expect(findDuoRemoteFlowsToggle().props('disabled')).toBe(true);
       expect(findDuoFoundationalFlowsToggle().props('disabled')).toBe(true);
+    });
+  });
+
+  describe('local setup section', () => {
+    it('renders inside the readiness card', () => {
+      expect(findReadinessBlock().exists()).toBe(true);
+      expect(findLocalSetupSection().exists()).toBe(true);
     });
   });
 

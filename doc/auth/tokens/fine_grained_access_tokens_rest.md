@@ -1521,6 +1521,15 @@ Grants the ability to create, delete, and update broadcast messages.
 | Delete | Instance | `DELETE` | `/broadcast_messages/:id` |
 | Update | Instance | `PUT` | `/broadcast_messages/:id` |
 
+#### Mobile Push Subscription
+
+Grants the ability to create and delete mobile push subscriptions.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Create | User | `POST` | `/user/push_subscriptions` |
+| Delete | User | `DELETE` | `/user/push_subscriptions` |
+
 #### Todo
 
 Grants the ability to create, delete, read, and update todos.

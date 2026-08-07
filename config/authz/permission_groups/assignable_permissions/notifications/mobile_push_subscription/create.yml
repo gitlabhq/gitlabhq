@@ -1,0 +1,9 @@
+---
+name: create_mobile_push_subscription
+description: Grants the ability to register a mobile device for push notifications
+boundaries:
+  - user
+available_for:
+  - granular_access_token
+permissions:
+  - create_mobile_push_subscription

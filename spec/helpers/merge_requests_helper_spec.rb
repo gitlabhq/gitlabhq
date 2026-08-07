@@ -381,7 +381,8 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
         rss_url: '/rss-url',
         releases_endpoint: project_releases_path(project, format: :json),
         can_bulk_update: 'true',
-        environment_names_path: unfoldered_environment_names_project_path(project, format: :json)
+        environment_names_path: unfoldered_environment_names_project_path(project, format: :json),
+        reset_path: new_issuable_address_project_path(project, issuable_type: 'merge_request')
       }
 
       expect(subject).to include(expected_data)

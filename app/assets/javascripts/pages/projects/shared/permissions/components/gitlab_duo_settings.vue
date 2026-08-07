@@ -19,6 +19,7 @@ import {
 import ProjectSettingRow from './project_setting_row.vue';
 import ExclusionSettings from './exclusion_settings.vue';
 import DuoReadinessRow, { STATUS_DONE, STATUS_TODO, STATUS_BLOCKED } from './duo_readiness_row.vue';
+import DuoLocalSetupSection from './duo_local_setup_section.vue';
 
 const AUTO_REMEDIATION_PROFILE_SCAN_TYPE = 'DEPENDENCY_SCANNING_POST_PROCESSING';
 const AUTO_REMEDIATION_PROFILE_VIRTUAL_ID =
@@ -38,6 +39,7 @@ export default {
     DuoDependencyBumpProfileModal,
     DuoReadinessRow,
     DuoReadinessPlatformRow,
+    DuoLocalSetupSection,
   },
   mixins: [glFeatureFlagMixin()],
   props: {
@@ -514,6 +516,8 @@ export default {
           />
         </duo-readiness-row>
       </div>
+
+      <duo-local-setup-section class="gl-mt-5" />
     </div>
     <project-setting-row
       v-if="duoEnabledSetting && !showReadinessCard"

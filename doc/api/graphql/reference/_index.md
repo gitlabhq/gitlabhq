@@ -3564,7 +3564,6 @@ Arguments:
 | <a id="mutation-aiaction-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-aiaction-clientsubscriptionid"></a>`clientSubscriptionId` | [`String`](#string) | Client generated ID that can be subscribed to, to receive a response for the mutation. |
 | <a id="mutation-aiaction-conversationtype"></a>`conversationType` | [`AiConversationsThreadsConversationType`](#aiconversationsthreadsconversationtype) | Conversation type of the thread. |
-| <a id="mutation-aiaction-descriptioncomposer"></a>`descriptionComposer` | [`AiDescriptionComposerInput`](#aidescriptioncomposerinput) | Input for description_composer AI action. |
 | <a id="mutation-aiaction-explainvulnerability"></a>`explainVulnerability` | [`AiExplainVulnerabilityInput`](#aiexplainvulnerabilityinput) | Input for explain_vulnerability AI action. |
 | <a id="mutation-aiaction-generatecommitmessage"></a>`generateCommitMessage` | [`AiGenerateCommitMessageInput`](#aigeneratecommitmessageinput) | Input for generate_commit_message AI action. |
 | <a id="mutation-aiaction-generatedescription"></a>`generateDescription` | [`AiGenerateDescriptionInput`](#aigeneratedescriptioninput) | Input for generate_description AI action. |
@@ -34064,7 +34063,6 @@ Fields:
 | <a id="aiusermetrics-codereview"></a>`codeReview` | [`codeReviewUserMetrics`](#codereviewusermetrics) | Code Review metrics for the user. |
 | <a id="aiusermetrics-codesuggestions"></a>`codeSuggestions` | [`codeSuggestionsUserMetrics`](#codesuggestionsusermetrics) | Code Suggestions metrics for the user. |
 | <a id="aiusermetrics-codesuggestionsacceptedcount"></a>`codeSuggestionsAcceptedCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | Deprecated in GitLab 18.7. Use `codeSuggestions.codeSuggestionAcceptedInIdeEventCount` instead. |
-| <a id="aiusermetrics-composemergerequestdescription"></a>`composeMergeRequestDescription` | [`composeMergeRequestDescriptionUserMetrics`](#composemergerequestdescriptionusermetrics) | Compose Merge Request Description metrics for the user. |
 | <a id="aiusermetrics-duochatinteractionscount"></a>`duoChatInteractionsCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | Deprecated in GitLab 18.7. Use `chat.requestDuoChatResponseEventCount` instead. |
 | <a id="aiusermetrics-duomessaging"></a>`duoMessaging` | [`duoMessagingUserMetrics`](#duomessagingusermetrics) | Duo Messaging metrics for the user. |
 | <a id="aiusermetrics-duoworkflow"></a>`duoWorkflow` | [`duoWorkflowUserMetrics`](#duoworkflowusermetrics) | Duo Workflow metrics for the user. |
@@ -52532,6 +52530,7 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="organization-cdapplications-search"></a>`search` | [`String`](#string) | Search applications by name or description. |
+| <a id="organization-cdapplications-statuses"></a>`statuses` | [`[CdApplicationStatus!]`](#cdapplicationstatus) | Filter applications by status. An application can match more than one status. |
 
 ##### `Organization.cdEnvironment`
 
@@ -64473,18 +64472,6 @@ Fields:
 | <a id="codesuggestionsusermetrics-lastduoactivityon"></a>`lastDuoActivityOn` | [`Date`](#date) | Date of the last Code Suggestions activity for the user. |
 | <a id="codesuggestionsusermetrics-totaleventcount"></a>`totalEventCount` | [`Int`](#int) | Total count of all Code Suggestions events for the user. |
 
-### `composeMergeRequestDescriptionUserMetrics`
-
-Compose Merge Request Description user metrics for a user. Requires ClickHouse. Premium and Ultimate with GitLab Duo Enterprise only.
-
-Fields:
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="composemergerequestdescriptionusermetrics-composemergerequestdescriptioneventcount"></a>`composeMergeRequestDescriptionEventCount` | [`Int`](#int) | Total count of `compose_merge_request_description` event. |
-| <a id="composemergerequestdescriptionusermetrics-lastduoactivityon"></a>`lastDuoActivityOn` | [`Date`](#date) | Date of the last Compose Merge Request Description activity for the user. |
-| <a id="composemergerequestdescriptionusermetrics-totaleventcount"></a>`totalEventCount` | [`Int`](#int) | Total count of all Compose Merge Request Description events for the user. |
-
 ### `duoChatMetrics`
 
 Requires ClickHouse. Premium and Ultimate only.
@@ -65128,7 +65115,6 @@ Type of AI usage event.
 | <a id="aiusageeventtype-code_suggestion_direct_access_token_refresh"></a>`CODE_SUGGESTION_DIRECT_ACCESS_TOKEN_REFRESH` | Code Suggestion token was refreshed. Old data only. |
 | <a id="aiusageeventtype-code_suggestion_rejected_in_ide"></a>`CODE_SUGGESTION_REJECTED_IN_IDE` | Code Suggestion was rejected in IDE. |
 | <a id="aiusageeventtype-code_suggestion_shown_in_ide"></a>`CODE_SUGGESTION_SHOWN_IN_IDE` | Code Suggestion was shown in IDE. |
-| <a id="aiusageeventtype-compose_merge_request_description"></a>`COMPOSE_MERGE_REQUEST_DESCRIPTION` | A merge request description was composed with GitLab Duo. |
 | <a id="aiusageeventtype-duo_workflow_workload_completed"></a>`DUO_WORKFLOW_WORKLOAD_COMPLETED` | Duo Workflow workload was completed. |
 | <a id="aiusageeventtype-encounter_duo_code_review_error_during_review"></a>`ENCOUNTER_DUO_CODE_REVIEW_ERROR_DURING_REVIEW` | Duo Code Review encountered an error. |
 | <a id="aiusageeventtype-excluded_files_from_duo_code_review"></a>`EXCLUDED_FILES_FROM_DUO_CODE_REVIEW` | Files were excluded from Duo Code Review. |
@@ -65199,10 +65185,6 @@ Values for sorting AI user metrics.
 | <a id="aiusermetricssort-code_suggestion_rejected_in_ide_desc"></a>`CODE_SUGGESTION_REJECTED_IN_IDE_DESC` | Code Suggestion Rejected In Ide event count in descending order. |
 | <a id="aiusermetricssort-code_suggestion_shown_in_ide_asc"></a>`CODE_SUGGESTION_SHOWN_IN_IDE_ASC` | Code Suggestion Shown In Ide event count in ascending order. |
 | <a id="aiusermetricssort-code_suggestion_shown_in_ide_desc"></a>`CODE_SUGGESTION_SHOWN_IN_IDE_DESC` | Code Suggestion Shown In Ide event count in descending order. |
-| <a id="aiusermetricssort-compose_merge_request_description_asc"></a>`COMPOSE_MERGE_REQUEST_DESCRIPTION_ASC` | Compose Merge Request Description event count in ascending order. |
-| <a id="aiusermetricssort-compose_merge_request_description_desc"></a>`COMPOSE_MERGE_REQUEST_DESCRIPTION_DESC` | Compose Merge Request Description event count in descending order. |
-| <a id="aiusermetricssort-compose_merge_request_description_total_count_asc"></a>`COMPOSE_MERGE_REQUEST_DESCRIPTION_TOTAL_COUNT_ASC` | Compose Merge Request Description total event count in ascending order. |
-| <a id="aiusermetricssort-compose_merge_request_description_total_count_desc"></a>`COMPOSE_MERGE_REQUEST_DESCRIPTION_TOTAL_COUNT_DESC` | Compose Merge Request Description total event count in descending order. |
 | <a id="aiusermetricssort-duo_messaging_total_count_asc"></a>`DUO_MESSAGING_TOTAL_COUNT_ASC` | Duo Messaging total event count in ascending order. |
 | <a id="aiusermetricssort-duo_messaging_total_count_desc"></a>`DUO_MESSAGING_TOTAL_COUNT_DESC` | Duo Messaging total event count in descending order. |
 | <a id="aiusermetricssort-duo_workflow_total_count_asc"></a>`DUO_WORKFLOW_TOTAL_COUNT_ASC` | Duo Workflow total event count in ascending order. |
@@ -65652,6 +65634,17 @@ Type of a continuous deployment application link.
 | <a id="cdapplicationlinktype-other"></a>`OTHER` | Other link. |
 | <a id="cdapplicationlinktype-repository"></a>`REPOSITORY` | Repository link. |
 | <a id="cdapplicationlinktype-runbook"></a>`RUNBOOK` | Runbook link. |
+
+### `CdApplicationStatus`
+
+Status used to filter the continuous deployment applications list. An application can match more than one status.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="cdapplicationstatus-awaiting_approval"></a>`AWAITING_APPROVAL` | Application has a rollout waiting on an approval. Not recorded on the backend yet, so this always matches no applications for now. |
+| <a id="cdapplicationstatus-degraded"></a>`DEGRADED` | Worst service health across the application is degraded. |
+| <a id="cdapplicationstatus-deploying"></a>`DEPLOYING` | Application has a rollout in progress. |
+| <a id="cdapplicationstatus-healthy"></a>`HEALTHY` | Worst service health across the application is healthy. |
 
 ### `CdDeploymentState`
 
@@ -67786,7 +67779,6 @@ Licensed features that can be checked for availability on a namespace or project
 | <a id="licensedfeature-dependency_firewall"></a>`DEPENDENCY_FIREWALL` | Dependency firewall feature. |
 | <a id="licensedfeature-dependency_proxy_for_packages"></a>`DEPENDENCY_PROXY_FOR_PACKAGES` | Dependency proxy for packages feature. |
 | <a id="licensedfeature-dependency_scanning"></a>`DEPENDENCY_SCANNING` | Dependency scanning feature. |
-| <a id="licensedfeature-description_composer"></a>`DESCRIPTION_COMPOSER` | Description composer feature. |
 | <a id="licensedfeature-description_diffs"></a>`DESCRIPTION_DIFFS` | Description diffs feature. |
 | <a id="licensedfeature-devops_adoption"></a>`DEVOPS_ADOPTION` | Devops adoption feature. |
 | <a id="licensedfeature-disable_deleting_account_for_users"></a>`DISABLE_DELETING_ACCOUNT_FOR_USERS` | Disable deleting account for users feature. |
@@ -74555,21 +74547,6 @@ Arguments:
 | <a id="aicurrentfileinput-contentbelowcursor"></a>`contentBelowCursor` | [`String`](#string) | Content below cursor. |
 | <a id="aicurrentfileinput-filename"></a>`fileName` | [`String!`](#string) | File name. |
 | <a id="aicurrentfileinput-selectedtext"></a>`selectedText` | [`String!`](#string) | Selected text. |
-
-### `AiDescriptionComposerInput`
-
-Arguments:
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="aidescriptioncomposerinput-description"></a>`description` | [`String!`](#string) | Current description. |
-| <a id="aidescriptioncomposerinput-previousresponse"></a>`previousResponse` | [`String`](#string) | Previously AI-generated description content used for context in iterative refinements or follow-up prompts. |
-| <a id="aidescriptioncomposerinput-resourceid"></a>`resourceId` | [`AiModelID!`](#aimodelid) | Global ID of the resource to mutate. |
-| <a id="aidescriptioncomposerinput-sourcebranch"></a>`sourceBranch` | [`String`](#string) | Source branch of the changes. |
-| <a id="aidescriptioncomposerinput-sourceprojectid"></a>`sourceProjectId` | [`ID`](#id) | ID of the project where the changes are from. |
-| <a id="aidescriptioncomposerinput-targetbranch"></a>`targetBranch` | [`String`](#string) | Target branch of where the changes will be merged into. |
-| <a id="aidescriptioncomposerinput-title"></a>`title` | [`String!`](#string) | Current merge request title. |
-| <a id="aidescriptioncomposerinput-userprompt"></a>`userPrompt` | [`String!`](#string) | Prompt from user. |
 
 ### `AiExplainVulnerabilityInput`
 

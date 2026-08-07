@@ -39,34 +39,16 @@ module Notifications
 
     scope :with_device_token, ->(device_token) { where(device_token: device_token) }
 
+    # A device registration is identified by (device_token, apns_environment):
+    # the same physical device holds different tokens per environment.
+    def self.find_or_initialize_for_device(device_token, apns_environment)
+      find_or_initialize_by(device_token: device_token, apns_environment: apns_environment)
+    end
+
     # Subscriptions whose device has not re-registered since the cutoff.
     # last_seen_at is written on every registration and defaults to the row's
     # creation time, so it is never NULL.
     scope :stale, ->(cutoff) { where(last_seen_at: ...cutoff) }
-
-    # Idempotent registration keyed on (device_token, apns_environment). A token
-    # already registered by another user is reassigned to the new user: the
-    # device changed hands, and APNs tokens identify the device, not the account.
-    # Concurrent registrations of the same token race on the unique index; the
-    # loser retries and updates the winner's row. Hand-rolled instead of
-    # safe_find_or_create_by because that relies on a subtransaction
-    # (Performance/ActiveRecordSubtransactionMethods).
-    def self.register(user:, device_token:, apns_environment:, attributes: {})
-      attributes = attributes.merge(user: user, last_seen_at: Time.current)
-      attempts = 0
-
-      begin
-        subscription = find_or_initialize_by(device_token: device_token, apns_environment: apns_environment)
-        subscription.assign_attributes(attributes)
-        subscription.save
-
-        subscription
-      rescue ActiveRecord::RecordNotUnique
-        raise if (attempts += 1) > 1
-
-        retry
-      end
-    end
 
     private
 

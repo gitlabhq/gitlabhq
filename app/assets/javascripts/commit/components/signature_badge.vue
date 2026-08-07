@@ -56,7 +56,7 @@ export default {
         {{ statusConfig.label }}
       </gl-badge>
     </button>
-    <gl-popover target="signature" triggers="focus">
+    <gl-popover target="signature">
       <template #title>
         {{ statusConfig.title }}
       </template>
