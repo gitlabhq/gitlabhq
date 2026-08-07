@@ -1,5 +1,6 @@
 <script>
 import { GlFilteredSearchToken, GlFilteredSearchSuggestion } from '@gitlab/ui';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import { getVerificationLevelOptions } from '../../constants';
 
 export default {
@@ -8,6 +9,7 @@ export default {
     GlFilteredSearchToken,
     GlFilteredSearchSuggestion,
   },
+  mixins: [glListenersMixin],
   props: {
     config: {
       type: Object,
@@ -27,7 +29,7 @@ export default {
 </script>
 
 <template>
-  <gl-filtered-search-token v-bind="{ ...$props, ...$attrs }" v-on="$listeners">
+  <gl-filtered-search-token v-bind="{ ...$props, ...$attrs }" v-on="glListeners()">
     <template #suggestions>
       <gl-filtered-search-suggestion v-for="level in levels" :key="level.value" :value="level.text">
         {{ level.text }}

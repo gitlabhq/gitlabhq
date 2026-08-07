@@ -1,6 +1,7 @@
 <script>
 import { __ } from '~/locale';
 import Api from '~/api';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import searchTodosProjectsQuery from '../queries/search_todos_projects.query.graphql';
 import AsyncToken from './async_token.vue';
 
@@ -12,6 +13,7 @@ export default {
   components: {
     AsyncToken,
   },
+  mixins: [glListenersMixin],
   methods: {
     fetchProjects(search = '') {
       return this.$apollo
@@ -37,7 +39,7 @@ export default {
     :suggestions-fetch-error="$options.i18n.suggestionsFetchError"
     :fetch-active-token-value="fetchProject"
     v-bind="$attrs"
-    v-on="$listeners"
+    v-on="glListeners()"
   >
     <template #token-value="{ inputValue, activeTokenValue }">
       {{ activeTokenValue ? displayValue(activeTokenValue) : inputValue }}

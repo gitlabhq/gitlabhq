@@ -1,6 +1,7 @@
 <script>
 import { GlFilteredSearchToken, GlFilteredSearchSuggestion } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 
 export default {
   name: 'JobKindToken',
@@ -8,6 +9,7 @@ export default {
     GlFilteredSearchToken,
     GlFilteredSearchSuggestion,
   },
+  mixins: [glListenersMixin],
   props: {
     config: {
       type: Object,
@@ -39,7 +41,7 @@ export default {
 </script>
 
 <template>
-  <gl-filtered-search-token v-bind="{ ...$props, ...$attrs }" v-on="$listeners">
+  <gl-filtered-search-token v-bind="{ ...$props, ...$attrs }" v-on="glListeners()">
     <template #view>
       <div class="gl-flex gl-items-center">
         <span data-testid="job-kind-text">{{ activeJobKind.text }}</span>

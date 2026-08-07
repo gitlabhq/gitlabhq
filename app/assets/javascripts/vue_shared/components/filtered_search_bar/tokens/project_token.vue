@@ -6,6 +6,7 @@ import projectsAutocompleteQuery from '~/graphql_shared/queries/projects_autocom
 
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 
 export default {
   name: 'ProjectToken',
@@ -14,6 +15,7 @@ export default {
     BaseToken,
     GlFilteredSearchSuggestion,
   },
+  mixins: [glListenersMixin],
   props: {
     config: {
       type: Object,
@@ -89,7 +91,7 @@ export default {
     :value-identifier="getValue"
     v-bind="$attrs"
     @fetch-suggestions="fetchProjectsBySearchTerm"
-    v-on="$listeners"
+    v-on="glListeners()"
   >
     <template #view="{ viewTokenProps: { inputValue, activeTokenValue } }">
       {{ activeTokenValue ? displayValue(activeTokenValue) : inputValue }}

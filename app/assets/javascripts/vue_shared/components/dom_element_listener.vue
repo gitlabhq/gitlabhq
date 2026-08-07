@@ -1,5 +1,6 @@
 <script>
 import { getSlotFunction, normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 
 /**
  * A utility component that attaches event listeners to DOM elements matching a CSS selector.
@@ -21,6 +22,12 @@ import { getSlotFunction, normalizeRender } from '~/lib/utils/vue3compat/normali
  * />
  */
 export default normalizeRender({
+  mixins: [glListenersMixin],
+  // This component renders only its slot (possibly nothing), so attribute
+  // and listener fallthrough has no element to land on. Without this flag,
+  // plain Vue 3 warns about extraneous non-emits event listeners on
+  // fragment/text roots — the listeners are consumed manually in mounted().
+  inheritAttrs: false,
   props: {
     /**
      * CSS selector string to target DOM elements.
@@ -53,7 +60,7 @@ export default normalizeRender({
        * Event delegation mode: Attach listeners to document root.
        * This handles cases where target elements don't exist yet or are added dynamically.
        */
-      this.disposables = Object.entries(this.$listeners).map(([eventType, handler]) => {
+      this.disposables = Object.entries(this.glListeners()).map(([eventType, handler]) => {
         const delegatedHandler = (event) => {
           // Check if clicked element matches selector or is inside matching element
           const target = event.target.closest(this.selector);
@@ -76,7 +83,7 @@ export default normalizeRender({
        * This is the original behavior and works well when elements exist at mount time.
        */
       this.disposables = Array.from(document.querySelectorAll(this.selector)).flatMap((button) => {
-        return Object.entries(this.$listeners).map(([key, value]) => {
+        return Object.entries(this.glListeners()).map(([key, value]) => {
           button.addEventListener(key, value);
           return () => {
             button.removeEventListener(key, value);

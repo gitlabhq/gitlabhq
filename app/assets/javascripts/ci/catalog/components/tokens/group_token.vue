@@ -7,6 +7,7 @@ import { TYPENAME_GROUP } from '~/graphql_shared/constants';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 import groupsAutocompleteQuery from '~/graphql_shared/queries/groups_autocomplete.query.graphql';
 import getGroupNamesByIdsQuery from '~/ci/catalog/graphql/queries/get_groups_by_ids.query.graphql';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 
 export default {
   name: 'GroupToken',
@@ -15,6 +16,7 @@ export default {
     GlFilteredSearchSuggestion,
     GlIcon,
   },
+  mixins: [glListenersMixin],
   props: {
     config: {
       type: Object,
@@ -127,7 +129,7 @@ export default {
     :suggestions="suggestions"
     :suggestions-loading="loading"
     :get-active-token-value="getActiveTokenValue"
-    v-on="$listeners"
+    v-on="glListeners()"
     @fetch-suggestions="searchTerm = $event"
   >
     <template #view="{ viewTokenProps: { selectedTokens } }">

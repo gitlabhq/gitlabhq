@@ -3,6 +3,7 @@ import { GlDrawer, GlButton, GlFormRadioGroup, GlFormRadio } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import { findSelectedOptionValueByLabel } from './utils';
 import {
   SQUASH_SETTING_DEFAULT,
@@ -46,6 +47,7 @@ export default {
     },
   ],
   components: { GlDrawer, GlFormRadioGroup, GlButton, GlFormRadio },
+  mixins: [glListenersMixin],
   props: {
     isOpen: {
       type: Boolean,
@@ -118,7 +120,7 @@ export default {
     :z-index="$options.DRAWER_Z_INDEX"
     :open="isOpen"
     @ok="submit"
-    v-on="$listeners"
+    v-on="glListeners()"
   >
     <template #title>
       <h2 class="gl-my-0 gl-text-size-h2">{{ $options.i18n.title }}</h2>

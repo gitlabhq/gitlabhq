@@ -1,11 +1,12 @@
 <script>
 import Draggable from 'vuedraggable';
 import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 
 export default {
   name: 'DraggableCompat',
   components: { Draggable },
-  mixins: [glSlotsMixin],
+  mixins: [glSlotsMixin, glListenersMixin],
   props: {
     modelValue: {
       type: Array,
@@ -73,7 +74,7 @@ export default {
 
 <template>
   <!-- Vue 2 mode: render default slot (user v-for) -->
-  <draggable v-if="!isVue3" v-bind="props" v-on="$listeners">
+  <draggable v-if="!isVue3" v-bind="props" v-on="glListeners()">
     <template #default>
       <slot></slot>
     </template>

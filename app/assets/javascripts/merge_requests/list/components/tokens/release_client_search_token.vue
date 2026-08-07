@@ -4,6 +4,7 @@ import axios from '~/lib/utils/axios_utils';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 
 export default {
   name: 'ReleaseToken',
@@ -11,6 +12,7 @@ export default {
     BaseToken,
     GlFilteredSearchSuggestion,
   },
+  mixins: [glListenersMixin],
   props: {
     active: {
       type: Boolean,
@@ -77,7 +79,7 @@ export default {
     :get-active-token-value="getActiveRelease"
     v-bind="$attrs"
     @fetch-suggestions="fetchReleases"
-    v-on="$listeners"
+    v-on="glListeners()"
   >
     <template #view="{ viewTokenProps: { inputValue, activeTokenValue } }">
       {{ activeTokenValue ? activeTokenValue.tag : inputValue }}

@@ -10,6 +10,7 @@ import {
 import { debounce, last } from 'lodash-es';
 
 import { stripQuotes } from '~/lib/utils/text_utility';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import {
   DEBOUNCE_DELAY,
   FILTERS_NONE_ANY_ME,
@@ -29,6 +30,7 @@ export default {
     GlDropdownText,
     GlLoadingIcon,
   },
+  mixins: [glListenersMixin],
   props: {
     config: {
       type: Object,
@@ -288,7 +290,7 @@ export default {
     :active="active"
     :multi-select-values="selectedTokens"
     v-bind="$attrs"
-    v-on="$listeners"
+    v-on="glListeners()"
     @input="handleInput"
     @select="handleTokenValueSelected"
   >

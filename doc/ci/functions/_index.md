@@ -244,7 +244,7 @@ using `env` are set in the shell. Script steps use the `bash` shell, falling bac
 [Expressions](#expressions) can be used in the `script` value, and the keys and values of `env`.
 Script steps run in the `CI_PROJECT_DIR` directory.
 
-Use the script step when you need something custom and simple alongside functions. Internally,
+Use the script step when you need something custom alongside functions. Internally,
 functions converts the script to a function invocation and passes the script as an input.
 
 For example, the following script step prints the message `Hi Sally!` to the job log:

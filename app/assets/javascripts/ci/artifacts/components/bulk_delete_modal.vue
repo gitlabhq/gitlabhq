@@ -1,5 +1,6 @@
 <script>
 import { GlModal, GlSprintf } from '@gitlab/ui';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import {
   I18N_BULK_DELETE_MODAL_TITLE,
   I18N_BULK_DELETE_BODY,
@@ -14,6 +15,7 @@ export default {
     GlModal,
     GlSprintf,
   },
+  mixins: [glListenersMixin],
   props: {
     visible: {
       type: Boolean,
@@ -67,7 +69,7 @@ export default {
     :action-cancel="modalActionCancel"
     data-testid="artifacts-bulk-delete-modal"
     v-bind="$attrs"
-    v-on="$listeners"
+    v-on="glListeners()"
   >
     <gl-sprintf :message="$options.i18n.modalBody(checkedCount)" />
   </gl-modal>

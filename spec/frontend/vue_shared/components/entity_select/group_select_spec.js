@@ -141,7 +141,7 @@ describe('GroupSelect', () => {
     expect(findAlert().text()).toBe(FETCH_GROUPS_ERROR);
   });
 
-  it('forwards events to the parent scope via `v-on="$listeners"`', () => {
+  it('forwards events to the parent scope via `v-on="glListeners()"`', () => {
     createComponent();
     findEntitySelect().vm.$emit('input');
 

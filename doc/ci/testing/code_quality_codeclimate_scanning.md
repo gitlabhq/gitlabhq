@@ -124,7 +124,7 @@ Code Quality can be customized by defining available CI/CD variables:
 |---------------------------------|-------------|
 | `CODECLIMATE_DEBUG`             | Set to enable [Code Climate debug mode](https://github.com/codeclimate/codeclimate#environment-variables). |
 | `CODECLIMATE_DEV`               | Set to enable `--dev` mode which lets you run engines not known to the CLI. |
-| `CODECLIMATE_PREFIX`            | Set a prefix to use with all `docker pull` commands in CodeClimate engines. Useful for [offline scanning](https://github.com/codeclimate/codeclimate/pull/948). For more information, see [Use a private container registry](#use-a-private-container-image-registry). |
+| `CODECLIMATE_PREFIX`            | Set a prefix to use with all `docker pull` commands in CodeClimate engines. Use this variable for [offline scanning](https://github.com/codeclimate/codeclimate/pull/948). For more information, see [use a private container image registry](#use-a-private-container-image-registry). |
 | `CODECLIMATE_REGISTRY_USERNAME` | Set to specify the username for the registry domain parsed from `CODECLIMATE_PREFIX`. |
 | `CODECLIMATE_REGISTRY_PASSWORD` | Set to specify the password for the registry domain parsed from `CODECLIMATE_PREFIX`. |
 | `CODE_QUALITY_DISABLED`         | Prevents the Code Quality job from running. |

@@ -16,6 +16,7 @@ import {
   ACCESS_LEVEL_ADMIN_INTEGER,
   ACCESS_LEVEL_NO_ACCESS_INTEGER,
 } from '~/access_level/constants';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import ItemsSelector from './items_selector.vue';
 import { projectUsersOptions, accessLevelsConfig } from './constants';
 
@@ -42,6 +43,7 @@ export default {
     GlFormCheckbox,
     ItemsSelector,
   },
+  mixins: [glListenersMixin],
   inject: {
     showEnterpriseAccessLevels: { default: false },
   },
@@ -199,7 +201,7 @@ export default {
     :z-index="$options.DRAWER_Z_INDEX"
     :open="isOpen"
     @ok="editRule()"
-    v-on="$listeners"
+    v-on="glListeners()"
   >
     <template #title>
       <h2 class="gl-my-0 gl-text-size-h2">{{ title }}</h2>

@@ -23,6 +23,7 @@ import {
   CLIPBOARD_ERROR_EVENT,
   I18N_ERROR_MESSAGE,
 } from '~/behaviors/copy_to_clipboard';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 
 export default {
   name: 'ClipboardButton',
@@ -38,6 +39,7 @@ export default {
   components: {
     GlButton,
   },
+  mixins: [glListenersMixin],
   props: {
     text: {
       type: String,
@@ -154,7 +156,7 @@ export default {
     aria-live="polite"
     @[$options.CLIPBOARD_SUCCESS_EVENT]="updateTooltip($options.i18n.copied)"
     @[$options.CLIPBOARD_ERROR_EVENT]="updateTooltip($options.i18n.error)"
-    v-on="$listeners"
+    v-on="glListeners()"
   >
     <slot></slot>
   </gl-button>

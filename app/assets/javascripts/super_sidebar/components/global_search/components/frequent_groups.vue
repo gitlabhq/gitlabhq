@@ -3,6 +3,7 @@ import { s__ } from '~/locale';
 import { dashboardGroupsPath } from '~/lib/utils/path_helpers/dashboard';
 import currentUserFrecentGroupsQuery from '~/super_sidebar/graphql/queries/current_user_frecent_groups.query.graphql';
 import { FREQUENTLY_VISITED_GROUPS_HANDLE } from '~/super_sidebar/components/global_search/command_palette/constants';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import FrequentItems from './frequent_items.vue';
 
 export default {
@@ -10,6 +11,7 @@ export default {
   components: {
     FrequentItems,
   },
+  mixins: [glListenersMixin],
   emits: ['action', 'nothing-to-render'],
   apollo: {
     // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
@@ -56,7 +58,7 @@ export default {
     :view-all-items-text="$options.i18n.viewAllText"
     :view-all-items-path="viewAllItemsPath"
     v-bind="$attrs"
-    v-on="$listeners"
+    v-on="glListeners()"
     @action="$emit('action', $options.FREQUENTLY_VISITED_GROUPS_HANDLE)"
   />
 </template>

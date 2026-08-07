@@ -1,5 +1,6 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import FrequentItem from '~/super_sidebar/components/global_search/components/frequent_item.vue';
 import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
 import { stubComponent } from 'helpers/stub_component';
@@ -22,7 +23,8 @@ describe('FrequentlyVisitedItem', () => {
       },
       stubs: {
         GlButton: stubComponent(GlButton, {
-          template: '<button type="button" v-on="$listeners"></button>',
+          mixins: [glListenersMixin],
+          template: '<button type="button" v-on="glListeners()"></button>',
         }),
       },
     });

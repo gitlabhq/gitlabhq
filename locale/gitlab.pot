@@ -8341,6 +8341,9 @@ msgstr ""
 msgid "AiGovernance|Read"
 msgstr ""
 
+msgid "AiGovernance|Runner access"
+msgstr ""
+
 msgid "AiGovernance|Search or filter tool rules..."
 msgstr ""
 
@@ -11877,6 +11880,27 @@ msgstr ""
 msgid "ArtifactRegistry|Activation"
 msgstr ""
 
+msgid "ArtifactRegistry|Add the dependency to your %{codeStart}build.gradle%{codeEnd} file:"
+msgstr ""
+
+msgid "ArtifactRegistry|Add the dependency to your %{codeStart}build.gradle.kts%{codeEnd} file:"
+msgstr ""
+
+msgid "ArtifactRegistry|Add the repository to your %{codeStart}build.gradle%{codeEnd} file:"
+msgstr ""
+
+msgid "ArtifactRegistry|Add the repository to your %{codeStart}build.gradle.kts%{codeEnd} file:"
+msgstr ""
+
+msgid "ArtifactRegistry|Add this to your %{codeStart}.npmrc%{codeEnd} file:"
+msgstr ""
+
+msgid "ArtifactRegistry|Add this to your %{codeStart}.yarnrc.yml%{codeEnd} file:"
+msgstr ""
+
+msgid "ArtifactRegistry|Add this to your %{codeStart}pom.xml%{codeEnd} %{codeStart}distributionManagement%{codeEnd} block:"
+msgstr ""
+
 msgid "ArtifactRegistry|All formats"
 msgstr ""
 
@@ -11901,7 +11925,46 @@ msgstr ""
 msgid "ArtifactRegistry|At least one assignment is required."
 msgstr ""
 
+msgid "ArtifactRegistry|Authenticate with a token in your %{codeStart}settings.xml%{codeEnd} file:"
+msgstr ""
+
+msgid "ArtifactRegistry|Build tool"
+msgstr ""
+
+msgid "ArtifactRegistry|Copy and paste this inside your %{codeStart}pom.xml%{codeEnd} %{codeStart}dependencies%{codeEnd} block:"
+msgstr ""
+
 msgid "ArtifactRegistry|Copy repository URL"
+msgstr ""
+
+msgid "ArtifactRegistry|Copy the authentication configuration"
+msgstr ""
+
+msgid "ArtifactRegistry|Copy the dependency declaration"
+msgstr ""
+
+msgid "ArtifactRegistry|Copy the distribution management configuration"
+msgstr ""
+
+msgid "ArtifactRegistry|Copy the install command"
+msgstr ""
+
+msgid "ArtifactRegistry|Copy the publish command"
+msgstr ""
+
+msgid "ArtifactRegistry|Copy the pull command"
+msgstr ""
+
+msgid "ArtifactRegistry|Copy the push command"
+msgstr ""
+
+msgid "ArtifactRegistry|Copy the registry configuration"
+msgstr ""
+
+msgid "ArtifactRegistry|Copy the repository configuration"
+msgstr ""
+
+msgid "ArtifactRegistry|Copy the sign-in command"
 msgstr ""
 
 msgid "ArtifactRegistry|Could not authenticate with the Artifact Registry service."
@@ -11931,6 +11994,9 @@ msgstr ""
 msgid "ArtifactRegistry|Docker"
 msgstr ""
 
+msgid "ArtifactRegistry|Docker CLI"
+msgstr ""
+
 msgid "ArtifactRegistry|Download"
 msgid_plural "ArtifactRegistry|Downloads"
 msgstr[0] ""
@@ -11957,16 +12023,28 @@ msgstr ""
 msgid "ArtifactRegistry|Format"
 msgstr ""
 
+msgid "ArtifactRegistry|Gradle (Groovy)"
+msgstr ""
+
+msgid "ArtifactRegistry|Gradle (Kotlin)"
+msgstr ""
+
 msgid "ArtifactRegistry|Hosted"
 msgstr ""
 
 msgid "ArtifactRegistry|Hosted repository"
 msgstr ""
 
+msgid "ArtifactRegistry|If you haven't already, add the configuration below to your %{codeStart}pom.xml%{codeEnd} file:"
+msgstr ""
+
 msgid "ArtifactRegistry|Image"
 msgid_plural "ArtifactRegistry|Images"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "ArtifactRegistry|Install command:"
+msgstr ""
 
 msgid "ArtifactRegistry|Last updated"
 msgstr ""
@@ -12018,7 +12096,22 @@ msgid_plural "ArtifactRegistry|Packages"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "ArtifactRegistry|Podman"
+msgstr ""
+
 msgid "ArtifactRegistry|Private"
+msgstr ""
+
+msgid "ArtifactRegistry|Publish command:"
+msgstr ""
+
+msgid "ArtifactRegistry|Pull an image:"
+msgstr ""
+
+msgid "ArtifactRegistry|Push an image:"
+msgstr ""
+
+msgid "ArtifactRegistry|Registry setup"
 msgstr ""
 
 msgid "ArtifactRegistry|Remote"
@@ -12039,6 +12132,9 @@ msgstr ""
 msgid "ArtifactRegistry|Repository not found."
 msgstr ""
 
+msgid "ArtifactRegistry|Repository setup"
+msgstr ""
+
 msgid "ArtifactRegistry|Repository was successfully created."
 msgstr ""
 
@@ -12049,6 +12145,9 @@ msgid "ArtifactRegistry|Repository was successfully updated."
 msgstr ""
 
 msgid "ArtifactRegistry|Resource ID must be a valid UUIDv7."
+msgstr ""
+
+msgid "ArtifactRegistry|Sign in to the registry:"
 msgstr ""
 
 msgid "ArtifactRegistry|Size"
@@ -12124,6 +12223,12 @@ msgid "ArtifactRegistry|You must be signed in to read role assignments."
 msgstr ""
 
 msgid "ArtifactRegistry|npm"
+msgstr ""
+
+msgid "ArtifactRegistry|pnpm"
+msgstr ""
+
+msgid "ArtifactRegistry|yarn"
 msgstr ""
 
 msgid "Artifacts"
@@ -20440,25 +20545,10 @@ msgstr ""
 msgid "ComplianceManagement|Requirement"
 msgstr ""
 
-msgid "ComplianceReport|%{count} projects are not covered by %{framework}"
+msgid "ComplianceReport|%{coveredCount}/%{totalProjects} projects covered"
 msgstr ""
 
-msgid "ComplianceReport|%{count} projects have at least one framework"
-msgstr ""
-
-msgid "ComplianceReport|%{count} projects have framework: %{framework}"
-msgstr ""
-
-msgid "ComplianceReport|%{count} projects have no framework at all"
-msgstr ""
-
-msgid "ComplianceReport|%{percent}%% coverage"
-msgstr ""
-
-msgid "ComplianceReport|%{percent}%% coverage for %{framework}"
-msgstr ""
-
-msgid "ComplianceReport|%{title} (CSP)"
+msgid "ComplianceReport|(CSP)"
 msgstr ""
 
 msgid "ComplianceReport|, and more"
@@ -20468,9 +20558,6 @@ msgid "ComplianceReport|Action"
 msgstr ""
 
 msgid "ComplianceReport|Activity"
-msgstr ""
-
-msgid "ComplianceReport|All frameworks"
 msgstr ""
 
 msgid "ComplianceReport|Apply frameworks to selected projects"
@@ -20495,9 +20582,6 @@ msgid "ComplianceReport|Change status"
 msgstr ""
 
 msgid "ComplianceReport|Choose one bulk action"
-msgstr ""
-
-msgid "ComplianceReport|Click to check all projects"
 msgstr ""
 
 msgid "ComplianceReport|Compliance framework"
@@ -20563,6 +20647,9 @@ msgstr ""
 msgid "ComplianceReport|For more information, see %{linkStart}how to migrate from compliance pipelines to pipeline execution policy actions%{linkEnd}."
 msgstr ""
 
+msgid "ComplianceReport|Framework"
+msgstr ""
+
 msgid "ComplianceReport|Frameworks have been successfully updated."
 msgstr ""
 
@@ -20620,16 +20707,16 @@ msgstr ""
 msgid "ComplianceReport|Pending"
 msgstr ""
 
+msgid "ComplianceReport|Percentage of projects in this group that are covered by at least one compliance framework."
+msgstr ""
+
 msgid "ComplianceReport|Please remove the compliance pipeline configuration from the compliance framework so that the new pipeline execution policy can take precedence."
 msgstr ""
 
 msgid "ComplianceReport|Project"
 msgstr ""
 
-msgid "ComplianceReport|Projects covered by frameworks"
-msgstr ""
-
-msgid "ComplianceReport|Projects not covered by frameworks"
+msgid "ComplianceReport|Project coverage (%%)"
 msgstr ""
 
 msgid "ComplianceReport|Remove frameworks from selected projects"
@@ -20675,6 +20762,9 @@ msgid "ComplianceReport|There was a problem fetching compliance frameworks."
 msgstr ""
 
 msgid "ComplianceReport|This compliance framework's compliance pipeline has been migrated to a pipeline execution policy."
+msgstr ""
+
+msgid "ComplianceReport|Total framework coverage"
 msgstr ""
 
 msgid "ComplianceReport|Track requirement status across your projects with the compliance status report, available with GitLab Ultimate."
@@ -68255,6 +68345,9 @@ msgid "Secret push protection"
 msgstr ""
 
 msgid "Secret push protection encountered a ruleset parse or compile error."
+msgstr ""
+
+msgid "Secret push protection encountered an unexpected scan error."
 msgstr ""
 
 msgid "Secret push protection scan timed out. The push was accepted."

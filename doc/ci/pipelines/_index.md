@@ -386,7 +386,7 @@ Each job is represented as a `Period`, which consists of:
 - `Period#first` (when the job started).
 - `Period#last` (when the job finished).
 
-A simple example is:
+For example:
 
 - A (0, 2)
 - A' (2, 4)
@@ -550,7 +550,7 @@ This table lists the refspecs injected for each pipeline type:
 The refs `refs/heads/<name>` and `refs/tags/<name>` exist in your
 project repository. GitLab generates the special ref `refs/pipelines/<id>` during a
 running pipeline job. This ref can be created even after the associated branch or tag has been
-deleted. It's therefore useful in some features such as [automatically stopping an environment](../environments/_index.md#stopping-an-environment),
+deleted. You can use it in some features such as [automatically stopping an environment](../environments/_index.md#stopping-an-environment),
 and [merge trains](merge_trains.md) that might run pipelines after branch deletion.
 
 ## Troubleshooting

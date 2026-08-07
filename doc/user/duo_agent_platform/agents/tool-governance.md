@@ -139,9 +139,11 @@ To configure tool governance rules for a project:
 
 ## Known issues
 
-- The background category supports only Always Allow and Always Deny. Always Ask does not apply,
-  because no user is present to respond to an approval prompt in a background flow. A tool with no
-  configured background rule defaults to Always Allow.
+- The governance UI has three access categories: Web (browser-based sessions),
+  Local (IDE and CLI), and Runner (background flows that run in CI/CD runners).
+  Runner access supports only Always Allow and Always Deny. Always Ask does not apply,
+  because no user is present to respond to an approval prompt in a background flow.
+  A tool with no configured runner rule defaults to Always Allow.
 
 ## Related topics
 

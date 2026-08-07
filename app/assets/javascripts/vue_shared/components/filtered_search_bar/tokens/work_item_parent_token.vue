@@ -9,6 +9,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 import { WIDGET_TYPE_HIERARCHY } from '~/work_items/constants';
 import allowedParentTypesQuery from '~/work_items/graphql/allowed_parent_types.query.graphql';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import searchWorkItemParentQuery from '../queries/search_work_item_parent.query.graphql';
 import { OPTIONS_NONE_ANY } from '../constants';
 
@@ -18,6 +19,7 @@ export default {
     BaseToken,
     GlFilteredSearchSuggestion,
   },
+  mixins: [glListenersMixin],
   props: {
     config: {
       type: Object,
@@ -162,7 +164,7 @@ export default {
     :value-identifier="getValue"
     v-bind="$attrs"
     @fetch-suggestions="fetchWorkItemsBySearchTerm"
-    v-on="$listeners"
+    v-on="glListeners()"
   >
     <template #view="{ viewTokenProps: { inputValue, activeTokenValue } }">
       {{ displayValue(activeTokenValue, inputValue) }}

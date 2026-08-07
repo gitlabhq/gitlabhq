@@ -272,7 +272,7 @@ In this example:
   and therefore uses `my-tool:1.0.3`.
 - If you include it with `@~latest`, it uses the latest released version.
 - The `component.reference` field shows the exact reference you specified, like `1.0`, `~latest`, or a SHA.
-  The reference could be useful for logging or debugging.
+  You can use the reference for logging or debugging.
 
 ## CI/CD component migration examples
 

@@ -4,6 +4,7 @@ import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 import searchProjectTopics from '~/graphql_shared/queries/project_topics_search.query.graphql';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 
 export default {
   name: 'TopicToken',
@@ -12,6 +13,7 @@ export default {
     GlFilteredSearchSuggestion,
     GlIcon,
   },
+  mixins: [glListenersMixin],
   props: {
     config: {
       type: Object,
@@ -66,7 +68,7 @@ export default {
     :suggestions="topics"
     :suggestions-loading="loading"
     :get-active-token-value="getActiveTokenValue"
-    v-on="$listeners"
+    v-on="glListeners()"
     @fetch-suggestions="fetchTopics"
   >
     <template #view="{ viewTokenProps: { activeTokenValue, selectedTokens } }">

@@ -6,6 +6,7 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 import { sprintf, __ } from '~/locale';
 import ProtectedBadge from '~/vue_shared/components/badges/protected_badge.vue';
 import toast from '~/vue_shared/plugins/global_toast';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import {
   ALL_REF_TYPES,
   SEARCH_DEBOUNCE_MS,
@@ -30,6 +31,7 @@ export default {
     ProtectedBadge,
   },
   directives: { GlTooltip: GlTooltipDirective },
+  mixins: [glListenersMixin],
   inheritAttrs: false,
   props: {
     disabled: {
@@ -317,7 +319,7 @@ export default {
       :icon="dropdownIcon"
       :disabled="disabled"
       v-bind="$attrs"
-      v-on="$listeners"
+      v-on="glListeners()"
       @hidden="$emit('hide')"
       @search="onSearchBoxInput"
       @select="selectRef"

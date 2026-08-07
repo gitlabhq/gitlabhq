@@ -2,6 +2,7 @@ import { GlModal, GlSearchBoxByType } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import { Mousetrap } from '~/lib/mousetrap';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective } from 'helpers/vue_mock_directive';
@@ -286,13 +287,14 @@ describe('GlobalSearchModal', () => {
                     default: '',
                   },
                 },
+                mixins: [glListenersMixin],
                 template: `
                   <div>
                     <input
                       v-bind="$attrs"
                       :value="value"
                       ref="input"
-                      v-on="$listeners"
+                      v-on="glListeners()"
                       data-testid="search-input-field"
                       @input="$emit('input', $event.target.value)"
                     />
@@ -637,7 +639,8 @@ describe('GlobalSearchModal', () => {
         stubs: {
           GlSearchBoxByType: {
             inheritAttrs: false,
-            template: '<div><input v-bind="$attrs" v-on="$listeners"></div>',
+            mixins: [glListenersMixin],
+            template: '<div><input v-bind="$attrs" v-on="glListeners()"></div>',
           },
           GlobalSearchDefaultItems: {
             template: `

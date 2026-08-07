@@ -1,6 +1,7 @@
 <script>
 import { __, s__, sprintf } from '~/locale';
 import Tracking from '~/tracking';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import {
   COMMIT_ACTION_CREATE,
   COMMIT_ACTION_UPDATE,
@@ -29,7 +30,7 @@ export default {
   components: {
     CommitForm,
   },
-  mixins: [Tracking.mixin()],
+  mixins: [Tracking.mixin(), glListenersMixin],
   inject: ['projectFullPath', 'ciConfigPath'],
   props: {
     ciFileContent: {
@@ -167,7 +168,7 @@ export default {
     :has-unsaved-changes="hasUnsavedChanges"
     :is-new-ci-config-file="isNewCiConfigFile"
     :is-saving="isSaving"
-    v-on="$listeners"
+    v-on="glListeners()"
     @submit="onCommitSubmit"
   />
 </template>

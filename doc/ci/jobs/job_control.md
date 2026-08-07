@@ -348,7 +348,7 @@ Only the jobs where `SKIP` is `"false"` are included in the pipeline.
 
 Use matrix variables in [`rules:changes`](../yaml/_index.md#ruleschanges)
 paths to include a matrix job only when files relevant to that job have changed.
-This pattern is useful in monorepos where each matrix value corresponds to a
+Use this pattern in monorepos where each matrix value corresponds to a
 component or service with its own directory.
 
 For example, to run a test job only for the component whose files changed:

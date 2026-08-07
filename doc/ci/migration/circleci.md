@@ -15,7 +15,7 @@ title: Migrate from CircleCI
 If you are using CircleCI, you can migrate your CI/CD pipelines to [GitLab CI/CD](../_index.md),
 and start making use of all its powerful features.
 
-We have collected several resources that you may find useful before starting to migrate.
+Review the following resources before you migrate.
 
 The [Quick Start Guide](../quick_start/_index.md) is a good overview of how GitLab CI/CD works. You may also be interested in [Auto DevOps](../../topics/autodevops/_index.md) which can be used to build, test, and deploy your applications with little to no configuration needed at all.
 
@@ -143,7 +143,9 @@ job4:
 
 #### Scheduled run
 
-GitLab CI/CD has an easy to use UI to [schedule pipelines](../pipelines/schedules.md). Also, [rules](../yaml/_index.md#rules) can be used to determine if jobs should be included or excluded from a scheduled pipeline.
+You can [schedule pipelines](../pipelines/schedules.md) to run on a cron schedule in the GitLab
+UI. You can also use [rules](../yaml/_index.md#rules) to include or exclude jobs from a scheduled
+pipeline.
 
 CircleCI example of a scheduled workflow:
 

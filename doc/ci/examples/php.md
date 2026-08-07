@@ -107,8 +107,8 @@ test:app:
 
 ### Test against different PHP versions in Docker builds
 
-Testing against multiple versions of PHP is super easy. Just add another job
-with a different Docker image version and the runner does the rest:
+To test against multiple versions of PHP, add another job
+with a different Docker image version. The runner does the rest:
 
 ```yaml
 default:
@@ -168,7 +168,7 @@ Finally, push to GitLab and let the tests begin!
 ### Test against different PHP versions in Shell builds
 
 The [phpenv](https://github.com/phpenv/phpenv) project allows you to manage different versions of PHP
-each with its own configuration. This is especially useful when testing PHP projects
+each with its own configuration. Use phpenv when testing PHP projects
 with the Shell executor.
 
 You have to install it on your build machine under the `gitlab-runner`

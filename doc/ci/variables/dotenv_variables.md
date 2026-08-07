@@ -177,8 +177,8 @@ test:
 
 ## Set a dynamic environment URL
 
-You can use dotenv variables to set a dynamic environment URL after a deployment job finishes.
-This is useful when an external hosting platform generates a URL dynamically for each deployment.
+If an external hosting platform generates a URL dynamically for each deployment, you can use
+dotenv variables to set that URL as the environment URL after the deployment job finishes.
 
 For more information, see [set a dynamic environment URL](../environments/_index.md#set-a-dynamic-environment-url).
 

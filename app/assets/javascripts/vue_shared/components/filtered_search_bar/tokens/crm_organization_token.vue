@@ -7,6 +7,7 @@ import { createAlert } from '~/alert';
 import { NAMESPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { __ } from '~/locale';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import searchCrmOrganizationsQuery from '../queries/search_crm_organizations.query.graphql';
 
 import BaseToken from './base_token.vue';
@@ -17,6 +18,7 @@ export default {
     BaseToken,
     GlFilteredSearchSuggestion,
   },
+  mixins: [glListenersMixin],
   props: {
     config: {
       type: Object,
@@ -107,7 +109,7 @@ export default {
     :default-suggestions="defaultOrganizations"
     v-bind="$attrs"
     @fetch-suggestions="fetchOrganizations"
-    v-on="$listeners"
+    v-on="glListeners()"
   >
     <template #view="{ viewTokenProps: { inputValue, activeTokenValue } }">
       {{ activeTokenValue ? activeTokenValue.name : inputValue }}

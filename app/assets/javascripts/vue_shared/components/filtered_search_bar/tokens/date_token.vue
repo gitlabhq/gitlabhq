@@ -2,6 +2,7 @@
 import { GlDatepicker, GlFilteredSearchToken } from '@gitlab/ui';
 import { toISODateFormat } from '~/lib/utils/datetime_utility';
 import { BACKSPACE_KEY, TAB_KEY, ENTER_KEY } from '~/lib/utils/keys';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 
 const DATEPICKER_INPUT_ID = 'glfs-datepicker';
 const SEGMENT_INPUT_CLASS = 'gl-filtered-search-token-segment-input';
@@ -12,11 +13,17 @@ export default {
     GlDatepicker,
     GlFilteredSearchToken,
   },
+  mixins: [glListenersMixin],
   props: {
     active: { type: Boolean, required: true },
     config: { type: Object, required: true },
     value: { type: Object, required: true },
   },
+  // `deactivate` is deliberately never forwarded (see handle() below). The
+  // declaration keeps it out of $attrs on plain Vue 3, where the template's
+  // `v-bind="{ ...$props, ...$attrs }"` would otherwise re-attach the
+  // parent's handler and defeat the deletion; Vue 2 ignores the option.
+  emits: ['deactivate'],
   data() {
     return {
       selectedDate: null,
@@ -81,7 +88,7 @@ export default {
       this.close(submitValue);
     },
     handle() {
-      const listeners = { ...this.$listeners };
+      const listeners = { ...this.glListeners() };
       // If we don't remove this, clicking the month/year in the datepicker will deactivate
       delete listeners.deactivate;
       return listeners;

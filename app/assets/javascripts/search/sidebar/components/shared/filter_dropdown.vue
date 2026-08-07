@@ -4,6 +4,7 @@ import { debounce } from 'lodash-es';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { s__ } from '~/locale';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 
 export default {
   name: 'FilterDropdown',
@@ -12,6 +13,7 @@ export default {
     GlCollapsibleListbox,
     GlAvatar,
   },
+  mixins: [glListenersMixin],
   props: {
     listData: {
       type: Array,
@@ -125,7 +127,7 @@ export default {
     :reset-button-label="s__('GlobalSearch|Reset')"
     :is-check-centered="true"
     v-bind="$attrs"
-    v-on="$listeners"
+    v-on="glListeners()"
     @hidden="onHide"
     @search="onSearchBoxInput"
     @select="selectRef"

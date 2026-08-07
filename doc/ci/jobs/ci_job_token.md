@@ -275,8 +275,8 @@ the [projects API](../../api/projects.md#update-a-project).
 {{< /history >}}
 
 You can allow CI/CD job tokens from allowlisted projects to push to your project repository.
-This is useful for GitOps workflows, submodule tagging, and cross-repository CI/CD pipelines
-without long-lived access tokens.
+A cross-project push avoids long-lived access tokens for GitOps workflows, submodule tagging,
+and cross-repository CI/CD pipelines.
 
 When a job token push succeeds, no CI/CD pipelines are triggered in the target project.
 

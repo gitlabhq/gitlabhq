@@ -6,6 +6,7 @@ import { NAMESPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';
 import { sortMilestonesByDueDate } from '~/milestones/utils';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 import { stripQuotes } from '~/lib/utils/text_utility';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import { DEFAULT_MILESTONES } from '../constants';
 import searchMilestonesQuery from '../queries/search_milestones.query.graphql';
 
@@ -15,6 +16,7 @@ export default {
     BaseToken,
     GlFilteredSearchSuggestion,
   },
+  mixins: [glListenersMixin],
   props: {
     active: {
       type: Boolean,
@@ -119,7 +121,7 @@ export default {
     :value-identifier="getMilestoneTitle"
     v-bind="$attrs"
     @fetch-suggestions="fetchMilestones"
-    v-on="$listeners"
+    v-on="glListeners()"
   >
     <template #view="{ viewTokenProps: { inputValue, activeTokenValue } }">
       %{{ activeTokenValue ? getMilestoneTitle(activeTokenValue) : inputValue }}

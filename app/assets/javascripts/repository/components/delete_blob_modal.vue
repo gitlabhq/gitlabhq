@@ -4,6 +4,7 @@ import { visitUrl } from '~/lib/utils/url_utility';
 import { logError } from '~/lib/logger';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import CommitChangesModal from './commit_changes_modal.vue';
 
 export default {
@@ -11,6 +12,7 @@ export default {
   components: {
     CommitChangesModal,
   },
+  mixins: [glListenersMixin],
   props: {
     deletePath: {
       type: String,
@@ -55,7 +57,7 @@ export default {
     ref="modal"
     :loading="loading"
     v-bind="$attrs"
-    v-on="$listeners"
+    v-on="glListeners()"
     @submit-form="handleBlobDelete"
   >
     <template #form-fields>

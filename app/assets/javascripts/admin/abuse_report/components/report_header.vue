@@ -1,5 +1,6 @@
 <script>
 import { GlBadge, GlAvatar, GlButton, GlLink } from '@gitlab/ui';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import { REPORT_HEADER_I18N, STATUS_OPEN, STATUS_CLOSED } from '../constants';
 import ReportActions from './report_actions.vue';
 
@@ -12,6 +13,7 @@ export default {
     GlLink,
     ReportActions,
   },
+  mixins: [glListenersMixin],
   props: {
     user: {
       type: Object,
@@ -73,7 +75,7 @@ export default {
         :report="report"
         class="gl-mt-3 @sm/panel:gl-ml-3 @sm/panel:gl-mt-0"
         @close-report="closeReport"
-        v-on="$listeners"
+        v-on="glListeners()"
       />
     </nav>
   </header>

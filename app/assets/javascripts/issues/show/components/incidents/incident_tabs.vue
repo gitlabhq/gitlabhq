@@ -6,6 +6,7 @@ import { trackIncidentDetailsViewsOptions } from '~/incidents/constants';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
 import AlertDetailsTable from '~/vue_shared/components/alert_details_table.vue';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import DescriptionComponent from '../description.vue';
 import getAlert from './graphql/queries/get_alert.graphql';
 import HighlightBar from './highlight_bar.vue';
@@ -42,6 +43,7 @@ export default {
           ),
         }),
   },
+  mixins: [glListenersMixin],
   inject: ['fullPath', 'iid', 'hasLinkedAlerts', 'uploadMetricsFeatureAvailable'],
   i18n: incidentTabsI18n,
   apollo: {
@@ -162,7 +164,7 @@ export default {
     >
       <gl-tab :title="$options.i18n.summaryTitle" data-testid="summary-tab">
         <highlight-bar :alert="alert" />
-        <description-component v-bind="$attrs" v-on="$listeners" />
+        <description-component v-bind="$attrs" v-on="glListeners()" />
       </gl-tab>
       <gl-tab
         v-if="uploadMetricsFeatureAvailable && showIncidentManagementFeatures"

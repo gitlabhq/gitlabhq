@@ -2,6 +2,7 @@
 import { memoize } from 'lodash-es';
 import { parseData } from '~/ci/pipeline_details/utils/parsing_utils';
 import LinksInner from '~/ci/pipeline_details/graph/components/links_inner.vue';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 
 const parseForLinksBare = (pipeline) => {
   const arrayOfJobs = pipeline.flatMap(({ groups }) => groups);
@@ -15,6 +16,7 @@ export default {
   components: {
     LinksInner,
   },
+  mixins: [glListenersMixin],
   props: {
     containerMeasurements: {
       type: Object,
@@ -59,7 +61,7 @@ export default {
     :links-data="getLinksData"
     :pipeline-data="pipelineData"
     v-bind="$attrs"
-    v-on="$listeners"
+    v-on="glListeners()"
   >
     <slot></slot>
   </links-inner>

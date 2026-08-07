@@ -2,6 +2,7 @@
 import { GlLink } from '@gitlab/ui';
 import { PROMO_URL } from '~/constants';
 import { joinPaths } from '~/lib/utils/url_utility';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 
 /**
  * Component to link to GitLab website.
@@ -16,6 +17,7 @@ export default {
   components: {
     GlLink,
   },
+  mixins: [glListenersMixin],
   props: {
     path: {
       type: String,
@@ -34,7 +36,7 @@ export default {
 };
 </script>
 <template>
-  <gl-link v-bind="attributes" :href="compiledHref" v-on="$listeners">
+  <gl-link v-bind="attributes" :href="compiledHref" v-on="glListeners()">
     <slot></slot>
   </gl-link>
 </template>

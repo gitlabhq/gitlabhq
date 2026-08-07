@@ -2,6 +2,7 @@
 import { GlCard, GlModal, GlSprintf, GlLink, GlLoadingIcon, GlToggle } from '@gitlab/ui';
 import { sortBy } from 'lodash-es';
 import Api from '~/api';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import { i18n } from '../constants';
 
 export default {
@@ -14,6 +15,7 @@ export default {
     GlLoadingIcon,
     GlToggle,
   },
+  mixins: [glListenersMixin],
   inject: {
     projectId: {
       default: null,
@@ -111,7 +113,7 @@ export default {
     hide-footer
     :title="$options.i18n.customNotificationsModal.title"
     @show="onOpen"
-    v-on="$listeners"
+    v-on="glListeners()"
   >
     <gl-sprintf :message="$options.i18n.customNotificationsModal.bodyMessage">
       <template #notificationLink="{ content }">

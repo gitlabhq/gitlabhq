@@ -3,6 +3,7 @@ import { GlFilteredSearchSuggestion } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 
 export default {
   name: 'AsyncToken',
@@ -10,6 +11,7 @@ export default {
     BaseToken,
     GlFilteredSearchSuggestion,
   },
+  mixins: [glListenersMixin],
   props: {
     /**
      * A function that receives the search query as its only parameter, and returns a promise
@@ -100,7 +102,7 @@ export default {
     :value-identifier="getValueIdentifier"
     :value="value"
     v-bind="$attrs"
-    v-on="$listeners"
+    v-on="glListeners()"
     @fetch-suggestions="fetchSuggestionsBySearchTerm"
   >
     <template #view="{ viewTokenProps: { inputValue, activeTokenValue } }">

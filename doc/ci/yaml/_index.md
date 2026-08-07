@@ -17,7 +17,7 @@ This document lists the configuration options for the GitLab `.gitlab-ci.yml` fi
 This file is where you define the CI/CD jobs that make up your pipeline.
 
 - If you are already familiar with [basic CI/CD concepts](../_index.md), try creating
-  your own `.gitlab-ci.yml` file by following a tutorial that demonstrates a [simple](../quick_start/_index.md)
+  your own `.gitlab-ci.yml` file by following a tutorial that demonstrates a [basic](../quick_start/_index.md)
   or [complex](../quick_start/tutorial.md) pipeline.
 - For a collection of examples, see [GitLab CI/CD examples](../examples/_index.md).
 - To view a large `.gitlab-ci.yml` file used in an enterprise, see the
@@ -740,7 +740,7 @@ All pipelines are assigned the defined name. Any leading or trailing spaces in t
 
 **Examples of `workflow:name`**:
 
-A simple pipeline name with a predefined variable:
+A pipeline name with a predefined variable:
 
 ```yaml
 workflow:

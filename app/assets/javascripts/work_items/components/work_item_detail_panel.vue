@@ -21,6 +21,7 @@ import {
   getBaseURL,
 } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import { makeDetailPanelItemFullPath, makeDetailPanelUrlParam, canRouterNav } from '../utils';
 import WorkItemMetadataProvider from './work_item_metadata_provider.vue';
 
@@ -38,7 +39,7 @@ export default {
     ),
     WorkItemMetadataProvider,
   },
-  mixins: [glFeatureFlagMixin()],
+  mixins: [glFeatureFlagMixin(), glListenersMixin],
   inject: {
     preventRouterNav: {
       default: false,
@@ -319,7 +320,7 @@ export default {
           @deleteWorkItem="deleteWorkItem"
           @work-item-updated="handleWorkItemUpdated"
           @work-item-type-changed="$emit('work-item-type-changed', $event)"
-          v-on="$listeners"
+          v-on="glListeners()"
         />
         <!-- eslint-enable vue/custom-event-name-casing, vue/v-on-event-hyphenation -->
       </work-item-metadata-provider>

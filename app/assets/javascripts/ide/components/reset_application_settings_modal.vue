@@ -2,6 +2,7 @@
 import { GlAlert, GlModal } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 
 export const I18N_RESET_APPLICATION_SETTINGS_MODAL = {
   errorMessage: s__(
@@ -21,6 +22,7 @@ export default {
     GlAlert,
     GlModal,
   },
+  mixins: [glListenersMixin],
   props: {
     visible: {
       type: Boolean,
@@ -90,7 +92,7 @@ export default {
     :action-primary="modalActionPrimary"
     :action-secondary="modalActionSecondary"
     v-bind="$attrs"
-    v-on="$listeners"
+    v-on="glListeners()"
     @primary="handlePrimaryButtonClick"
   >
     <div>

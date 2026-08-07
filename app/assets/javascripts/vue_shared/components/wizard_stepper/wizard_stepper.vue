@@ -2,10 +2,12 @@
 import { GlIcon } from '@gitlab/ui';
 import { uniqueId } from 'lodash-es';
 import { s__ } from '~/locale';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 
 export default {
   name: 'WizardStepper',
   components: { GlIcon },
+  mixins: [glListenersMixin],
   i18n: {
     defaultErrorMessage: s__('WizardStepper|Step has validation errors'),
   },
@@ -27,7 +29,7 @@ export default {
   },
   computed: {
     isInteractive() {
-      return Boolean(this.$listeners['step-click']);
+      return Boolean(this.glListener('step-click'));
     },
     stepTag() {
       return this.isInteractive ? 'button' : 'div';

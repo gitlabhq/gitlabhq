@@ -30,6 +30,7 @@ import {
   EVENT_EXPAND_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE,
 } from '~/repository/constants';
 import { InternalEvents } from '~/tracking';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 
 export default {
   name: 'RepositoryHeaderArea',
@@ -62,7 +63,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [InternalEvents.mixin(), glAbilitiesMixin()],
+  mixins: [InternalEvents.mixin(), glAbilitiesMixin(), glListenersMixin],
   inject: [
     'canCollaborate',
     'canEditTree',
@@ -405,7 +406,7 @@ export default {
           :user-profile-enable-gitpod-path="userProfileEnableGitpodPath"
           :git-ref="currentRef"
           disable-fork-modal
-          v-on="$listeners"
+          v-on="glListeners()"
         />
         <!-- code + mobile panel -->
         <div class="project-code-holder gl-w-full @md/panel:gl-w-auto">

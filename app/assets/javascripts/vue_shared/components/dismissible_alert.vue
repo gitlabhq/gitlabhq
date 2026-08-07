@@ -1,6 +1,7 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 
 export default {
   name: 'DismissibleAlert',
@@ -10,6 +11,7 @@ export default {
   directives: {
     SafeHtml,
   },
+  mixins: [glListenersMixin],
   props: {
     html: {
       type: String,
@@ -31,7 +33,7 @@ export default {
 </script>
 
 <template>
-  <gl-alert v-if="!isDismissed" v-bind="$attrs" @dismiss="dismiss" v-on="$listeners">
+  <gl-alert v-if="!isDismissed" v-bind="$attrs" @dismiss="dismiss" v-on="glListeners()">
     <div v-safe-html="html"></div>
   </gl-alert>
 </template>

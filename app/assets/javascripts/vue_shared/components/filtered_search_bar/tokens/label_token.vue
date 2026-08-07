@@ -5,6 +5,7 @@ import { isScopedLabel } from '~/lib/utils/common_utils';
 import { stripQuotes } from '~/lib/utils/text_utility';
 import { __ } from '~/locale';
 
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import { OPTIONS_NONE_ANY } from '../constants';
 
 import BaseToken from './base_token.vue';
@@ -18,6 +19,7 @@ export default {
     GlIntersperse,
     GlLabel,
   },
+  mixins: [glListenersMixin],
   inject: ['hasScopedLabelsFeature'],
   props: {
     config: {
@@ -156,7 +158,7 @@ export default {
     :value-identifier="getLabelName"
     v-bind="$attrs"
     @fetch-suggestions="fetchLabels"
-    v-on="$listeners"
+    v-on="glListeners()"
   >
     <template #view="{ viewTokenProps: { inputValue, activeTokenValue, selectedTokens } }">
       <gl-intersperse v-if="selectedTokens.length > 0" separator=", ">

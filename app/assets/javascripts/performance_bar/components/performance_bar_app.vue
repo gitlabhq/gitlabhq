@@ -3,6 +3,7 @@ import { GlLink, GlTooltipDirective } from '@gitlab/ui';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 
 import { s__ } from '~/locale';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import AddRequest from './add_request.vue';
 import DetailedMetric from './detailed_metric.vue';
 import InfoApp from './info_modal/info_app.vue';
@@ -20,6 +21,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glListenersMixin],
   props: {
     store: {
       type: Object,
@@ -269,7 +271,7 @@ export default {
           :requests="requests"
           @change-current-request="changeCurrentRequest"
         />
-        <add-request v-on="$listeners" />
+        <add-request v-on="glListeners()" />
       </div>
     </div>
   </div>

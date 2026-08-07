@@ -599,6 +599,12 @@ export default [
 
       // Vue 3 deprecated features
       'vue/no-deprecated-data-object-declaration': 'error',
+      // $listeners reads are converted to the dual-runtime glListeners()
+      // mixin (lib/utils/vue3compat/gl_listeners_mixin.js): Vue 3 removed
+      // $listeners, and on Vue 2 $attrs never contains listeners, so
+      // neither spelling works alone on both runtimes.
+      // Batch-fix with `scripts/frontend/codemods/vue3_gl_listeners.mjs`.
+      'vue/no-deprecated-dollar-listeners-api': 'error',
       'vue/no-deprecated-html-element-is': 'error',
       'vue/no-deprecated-inline-template': 'error',
       'vue/no-deprecated-props-default-this': 'error',
@@ -724,6 +730,7 @@ export default [
     rules: {
       'local-rules/vue3-gl-slots': 'error',
       'local-rules/vue3-gl-slots-mixin-pairing': 'error',
+      'local-rules/vue3-gl-listeners-mixin-pairing': 'error',
     },
   },
   // Storybook stories

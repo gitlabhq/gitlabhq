@@ -6,6 +6,7 @@ import { s__ } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import workItemTypesConfigurationQuery from '~/work_items/graphql/work_item_types_configuration.query.graphql';
+import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import BaseToken from './base_token.vue';
 
 export default {
@@ -17,6 +18,7 @@ export default {
     GlFilteredSearchSuggestion,
     WorkItemTypeIcon,
   },
+  mixins: [glListenersMixin],
   props: {
     active: {
       type: Boolean,
@@ -101,7 +103,7 @@ export default {
     :value-identifier="getTypeValue"
     v-bind="$attrs"
     @fetch-suggestions="fetchSuggestions"
-    v-on="$listeners"
+    v-on="glListeners()"
   >
     <template #view="{ viewTokenProps: { inputValue, activeTokenValue, selectedTokens } }">
       <gl-intersperse v-if="selectedTokens.length > 0" separator=", ">

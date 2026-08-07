@@ -14,6 +14,8 @@ import { vue3FindComponentUpgrade } from './vue3_find_component_upgrade.mjs';
 import { vue3GlSlots } from './vue3_gl_slots.mjs';
 import { vue3GlSlotsMixinPairing } from './vue3_gl_slots_mixin_pairing.mjs';
 import { vue3InitVueApp } from './vue3_init_vue_app.mjs';
+import { vue3GlListeners } from './vue3_gl_listeners.mjs';
+import { vue3GlListenersMixinPairing } from './vue3_gl_listeners_mixin_pairing.mjs';
 
 export const eslintLocalRules = {
   rules: {
@@ -33,5 +35,7 @@ export const eslintLocalRules = {
     'vue3-gl-slots': vue3GlSlots,
     'vue3-gl-slots-mixin-pairing': vue3GlSlotsMixinPairing,
     'vue3-init-vue-app': vue3InitVueApp,
+    'vue3-gl-listeners': vue3GlListeners,
+    'vue3-gl-listeners-mixin-pairing': vue3GlListenersMixinPairing,
   },
 };
