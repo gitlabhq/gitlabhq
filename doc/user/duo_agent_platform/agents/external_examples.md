@@ -153,7 +153,7 @@ commands:
     echo "Headers: $header_str"
 
     codex exec \
-      --config 'model="gpt-5.1-codex"' \
+      --config 'model="gpt-5.3-codex"' \
       --config 'model_provider="gitlab"' \
       --config 'model_providers.gitlab.name="GitLab Managed Codex"' \
       --config 'model_providers.gitlab.base_url="https://cloud.gitlab.com/ai/v1/proxy/openai/v1"' \
