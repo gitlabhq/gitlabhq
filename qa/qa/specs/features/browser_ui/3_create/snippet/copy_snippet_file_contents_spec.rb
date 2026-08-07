@@ -33,8 +33,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it "copies a multi-file project snippet to a comment and verifies them",
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347848' do
+      it "copies a multi-file project snippet to a comment and verifies them" do
         project_snippet.visit!
 
         files.each do |files|

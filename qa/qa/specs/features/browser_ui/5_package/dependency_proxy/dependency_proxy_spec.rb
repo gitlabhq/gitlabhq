@@ -41,20 +41,17 @@ module QA
           'using docker:24.0.1 and a personal access token' => {
             docker_client_version: 'docker:24.0.1',
             authentication_token_type: :personal_access_token,
-            token_name: 'Personal access token',
-            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/412820'
+            token_name: 'Personal access token'
           },
           'using docker:24.0.1 and a group deploy token' => {
             docker_client_version: 'docker:24.0.1',
             authentication_token_type: :group_deploy_token,
-            token_name: 'Deploy Token',
-            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/412821'
+            token_name: 'Deploy Token'
           },
           'using docker:24.0.1 and a ci job token' => {
             docker_client_version: 'docker:24.0.1',
             authentication_token_type: :ci_job_token,
-            token_name: 'Job Token',
-            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/412822'
+            token_name: 'Job Token'
           }
         }
       end
@@ -86,7 +83,7 @@ module QA
           end
         end
 
-        it "pulls an image using the dependency proxy", testcase: params[:testcase] do
+        it "pulls an image using the dependency proxy" do
           Page::Group::Menu.perform(&:go_to_package_settings)
           Page::Group::Settings::PackageRegistries.perform do |index|
             expect(index).to have_dependency_proxy_enabled

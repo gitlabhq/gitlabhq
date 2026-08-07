@@ -39,8 +39,7 @@ module QA
             )
           end
 
-          it 'unlocks job artifacts from previous successful pipeline family', :aggregate_failures,
-            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/395516' do
+          it 'unlocks job artifacts from previous successful pipeline family', :aggregate_failures do
             project.visit_job('parent_2')
             expect_job_to_have_locked_artifact
 
@@ -64,8 +63,7 @@ module QA
             )
           end
 
-          it 'locks job artifacts from previous successful pipeline family', :aggregate_failures,
-            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/396243' do
+          it 'locks job artifacts from previous successful pipeline family', :aggregate_failures do
             project.visit_job('parent_2')
             expect_job_to_have_locked_artifact
 
@@ -89,8 +87,7 @@ module QA
             )
           end
 
-          it 'unlocks job artifacts from previous successful pipeline family', :aggregate_failures,
-            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/396244' do
+          it 'unlocks job artifacts from previous successful pipeline family', :aggregate_failures do
             project.visit_job('parent_2')
             expect_job_to_have_locked_artifact
 
@@ -125,8 +122,7 @@ module QA
             )
           end
 
-          it 'unlocks job artifacts from previous successful pipeline family', :aggregate_failures,
-            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/396245' do
+          it 'unlocks job artifacts from previous successful pipeline family', :aggregate_failures do
             project.visit_job('parent_2')
             expect_job_to_have_locked_artifact
 
@@ -150,8 +146,7 @@ module QA
             )
           end
 
-          it 'locks job artifacts from previous successful pipeline family', :aggregate_failures,
-            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/396246' do
+          it 'locks job artifacts from previous successful pipeline family', :aggregate_failures do
             project.visit_job('parent_2')
             expect_job_to_have_locked_artifact
 
@@ -175,8 +170,7 @@ module QA
             )
           end
 
-          it 'locks job artifacts from previous successful pipeline family', :aggregate_failures,
-            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/396248' do
+          it 'locks job artifacts from previous successful pipeline family', :aggregate_failures do
             project.visit_job('parent_2')
             expect_job_to_have_locked_artifact
 

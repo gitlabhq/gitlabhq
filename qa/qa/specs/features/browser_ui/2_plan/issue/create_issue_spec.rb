@@ -21,8 +21,7 @@ module QA
 
       it(
         'creates an issue',
-        :mobile,
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347989'
+        :mobile
       ) do
         created_issue = Resource::WorkItem.fabricate_via_browser_ui! { |issue| issue.project = project }
 
@@ -35,8 +34,7 @@ module QA
 
       it(
         'closes an issue',
-        :mobile,
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347967'
+        :mobile
       ) do
         issue.visit!
 
@@ -59,8 +57,7 @@ module QA
 
       # See https://gitlab.com/gitlab-org/gitlab/-/issues/526755
       it(
-        'creates an issue and updates the description',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/533855'
+        'creates an issue and updates the description'
       ) do
         updated_description = "Updated issue description"
 
@@ -78,8 +75,7 @@ module QA
         let(:file_to_attach) { Runtime::Path.fixture('designs', png_file_name) }
 
         it(
-          'comments on an issue with an attachment',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347946'
+          'comments on an issue with an attachment'
         ) do
           issue.visit!
 

@@ -18,7 +18,7 @@ module QA
         ])
       end
 
-      it 'creates an issue via custom template', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347945' do
+      it 'creates an issue via custom template' do
         template_project.visit!
         Page::Project::Menu.perform(&:go_to_new_issue)
 

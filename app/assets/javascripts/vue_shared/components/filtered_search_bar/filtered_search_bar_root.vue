@@ -1,5 +1,6 @@
 <script>
 import { GlFilteredSearch, GlSorting, GlFormCheckbox, GlTooltipDirective } from '@gitlab/ui';
+import { isEqual } from 'lodash-es';
 
 import RecentSearchesStorageKeys from 'ee_else_ce/filtered_search/recent_searches_storage_keys';
 import RecentSearchesService from '~/filtered_search/services/recent_searches_service';
@@ -188,8 +189,10 @@ export default {
     },
   },
   watch: {
-    initialFilterValue(newValue) {
-      if (this.syncFilterAndSort) {
+    // Parents commonly rebuild this array on every render, so only sync when the filters
+    // themselves changed. Syncing otherwise discards the token the user is typing.
+    initialFilterValue(newValue, oldValue) {
+      if (this.syncFilterAndSort && !isEqual(newValue, oldValue)) {
         this.filterValue = newValue;
       }
     },

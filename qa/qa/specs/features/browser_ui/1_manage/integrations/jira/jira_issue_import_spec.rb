@@ -10,7 +10,7 @@ module QA
       let(:jira_issue_label_2) { "QA" }
       let(:project) { create(:project, name: "jira_issue_import") }
 
-      it 'imports issues from Jira', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347966' do
+      it 'imports issues from Jira' do
         set_up_jira_integration
         import_jira_issues
 

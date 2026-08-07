@@ -54,8 +54,7 @@ module QA
         project.visit!
       end
 
-      it 'pushes project image to the container registry and deletes tag',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/412806' do
+      it 'pushes project image to the container registry and deletes tag' do
         Flow::Pipeline.wait_for_pipeline_creation_via_api(project: project)
         project.visit_job('test')
         Page::Project::Job::Show.perform do |job|

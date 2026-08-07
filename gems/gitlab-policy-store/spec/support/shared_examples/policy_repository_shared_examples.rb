@@ -8,6 +8,7 @@
 # Requires the including context to define:
 #   - `repository`        the adapter under test
 #   - `organization_id`   a valid organization id
+#   - `namespace_id`      a valid namespace id (top-level group)
 RSpec.shared_examples 'a policy repository' do
   let(:non_existing_id) { -1 }
   let(:other_organization_id) { organization_id + 1 }
@@ -15,8 +16,10 @@ RSpec.shared_examples 'a policy repository' do
   let(:attributes) do
     {
       organization_id: organization_id,
+      namespace_id: namespace_id,
       name: 'My approval policy',
-      trigger_id: 'merge_request',
+      description: 'Requires approval for merge requests with findings',
+      trigger_type: 'merge_request',
       rules: { 'rules' => [{ 'type' => 'scan_finding' }] },
       actions: [{ 'type' => 'require_approval' }],
       policy_scope: { 'compliance_frameworks' => [] },
@@ -29,8 +32,9 @@ RSpec.shared_examples 'a policy repository' do
   let(:minimal_attributes) do
     {
       organization_id: organization_id,
+      namespace_id: namespace_id,
       name: 'Minimal policy',
-      trigger_id: 'merge_request'
+      trigger_type: 'merge_request'
     }
   end
 
@@ -42,8 +46,10 @@ RSpec.shared_examples 'a policy repository' do
       expect(policy).to have_attributes(
         id: be_truthy,
         organization_id: organization_id,
+        namespace_id: namespace_id,
         name: 'My approval policy',
-        trigger_id: 'merge_request',
+        description: 'Requires approval for merge requests with findings',
+        trigger_type: 'merge_request',
         rules: { 'rules' => [{ 'type' => 'scan_finding' }] },
         actions: [{ 'type' => 'require_approval' }],
         scope_rego: 'package gitlab.scope',
@@ -57,18 +63,22 @@ RSpec.shared_examples 'a policy repository' do
 
       expect(policy).to have_attributes(
         version: 1,
+        description: nil,
         rules: {},
         actions: [],
         mode: 'enforce',
-        lifecycle_state: 'active'
+        lifecycle_state: 'active',
+        created_at: nil,
+        updated_at: nil
       )
     end
 
     it 'accepts string keys for attributes', :aggregate_failures do
       string_key_attributes = {
         'organization_id' => organization_id,
+        'namespace_id' => namespace_id,
         'name' => 'String key policy',
-        'trigger_id' => 'merge_request'
+        'trigger_type' => 'merge_request'
       }
 
       policy = repository.create(string_key_attributes)
@@ -76,6 +86,7 @@ RSpec.shared_examples 'a policy repository' do
       expect(policy).to be_a(Gitlab::PolicyStore::Policy)
       expect(policy.name).to eq('String key policy')
       expect(policy.organization_id).to eq(organization_id)
+      expect(policy.namespace_id).to eq(namespace_id)
     end
 
     it 'compiles scope_rego from policy_scope when none is supplied' do
@@ -118,11 +129,18 @@ RSpec.shared_examples 'a policy repository' do
         .to raise_error(Gitlab::PolicyStore::ValidationError, /name/)
     end
 
-    it 'raises ValidationError when trigger_id is missing' do
-      invalid_attributes = attributes.merge(trigger_id: nil)
+    it 'raises ValidationError when namespace_id is missing' do
+      invalid_attributes = attributes.merge(namespace_id: nil)
 
       expect { repository.create(invalid_attributes) }
-        .to raise_error(Gitlab::PolicyStore::ValidationError, /trigger_id/)
+        .to raise_error(Gitlab::PolicyStore::ValidationError, /namespace_id/)
+    end
+
+    it 'raises ValidationError when trigger_type is missing' do
+      invalid_attributes = attributes.merge(trigger_type: nil)
+
+      expect { repository.create(invalid_attributes) }
+        .to raise_error(Gitlab::PolicyStore::ValidationError, /trigger_type/)
     end
 
     it 'raises ValidationError when name is an empty string' do
@@ -130,6 +148,33 @@ RSpec.shared_examples 'a policy repository' do
 
       expect { repository.create(invalid_attributes) }
         .to raise_error(Gitlab::PolicyStore::ValidationError, /name/)
+    end
+
+    it 'raises ValidationError when name exceeds 255 characters' do
+      invalid_attributes = attributes.merge(name: 'a' * 256)
+
+      expect { repository.create(invalid_attributes) }
+        .to raise_error(Gitlab::PolicyStore::ValidationError, /name exceeds maximum length of 255/)
+    end
+
+    it 'raises ValidationError when description exceeds 4096 characters' do
+      invalid_attributes = attributes.merge(description: 'a' * 4097)
+
+      expect { repository.create(invalid_attributes) }
+        .to raise_error(Gitlab::PolicyStore::ValidationError, /description exceeds maximum length of 4096/)
+    end
+
+    it 'raises ValidationError when scope_rego exceeds 4096 characters' do
+      invalid_attributes = attributes.merge(scope_rego: 'a' * 4097)
+
+      expect { repository.create(invalid_attributes) }
+        .to raise_error(Gitlab::PolicyStore::ValidationError, /scope_rego exceeds maximum length of 4096/)
+    end
+
+    it 'allows nil description without raising ValidationError' do
+      valid_attributes = minimal_attributes.merge(description: nil)
+
+      expect { repository.create(valid_attributes) }.not_to raise_error
     end
   end
 

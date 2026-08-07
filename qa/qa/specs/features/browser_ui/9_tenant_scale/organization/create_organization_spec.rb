@@ -24,7 +24,7 @@ module QA
         Runtime::Feature.disable(:ui_for_organizations)
       end
 
-      it 'is created', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/436587' do
+      it 'is created' do
         Flow::Login.sign_in
 
         Page::Main::Menu.perform(&:go_to_create_organization)

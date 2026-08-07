@@ -53,8 +53,7 @@ module QA
       end
 
       context 'when at the project level' do
-        it 'publishes and installs a pypi package',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/565069' do
+        it 'publishes and installs a pypi package' do
           project.visit_job('run')
           Page::Project::Job::Show.perform do |job|
             expect(job).to be_successful(timeout: 800)
@@ -75,7 +74,6 @@ module QA
 
       context 'with Geo', :orchestrated, :geo do
         it 'a published pypi package is accessible on a secondary Geo site',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348090',
           quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24027',
                         type: :investigating } do
           QA::Runtime::Logger.debug('Visiting the secondary Geo site')

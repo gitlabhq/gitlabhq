@@ -36,8 +36,7 @@ module QA
           Flow::Login.sign_in(as: user)
         end
 
-        it 'reassigns placeholder users in issues and merge requests after reassignment',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/504548' do
+        it 'reassigns placeholder users in issues and merge requests after reassignment' do
           expect_project_import_finished_successfully
 
           page.visit imported_issue[:web_url]

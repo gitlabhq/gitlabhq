@@ -6,7 +6,6 @@ module QA
       let(:user) { Runtime::User::Store.test_user }
 
       it('configures and syncs a (push) mirrored repository',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347741',
         quarantine: {
           only: { condition: -> { ENV['QA_RUN_TYPE'] == 'e2e-test-on-omnibus-ce' } },
           issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/412611',

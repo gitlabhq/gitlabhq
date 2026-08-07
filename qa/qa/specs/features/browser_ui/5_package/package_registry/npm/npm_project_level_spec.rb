@@ -47,8 +47,7 @@ module QA
           runner.remove_via_api!
         end
 
-        it 'push and pull a npm package via CI', :smoke,
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/485904' do
+        it 'push and pull a npm package via CI', :smoke do
           npm_upload_install_yaml = ERB.new(read_fixture('package_managers/npm',
             'npm_upload_install_package_project.yaml.erb')).result(binding)
           package_json = ERB.new(read_fixture('package_managers/npm', 'package.json.erb')).result(binding)

@@ -20,8 +20,7 @@ module QA
         quarantine: {
           issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/41032',
           type: :stale
-        },
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347810' do
+        } do
         wiki.visit!
 
         Page::Project::Wiki::Show.perform(&:click_edit)
@@ -44,8 +43,7 @@ module QA
         quarantine: {
           issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/41031',
           type: :stale
-        },
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/442390' do
+        } do
         Resource::Repository::WikiPush.fabricate! do |push|
           push.file_name = "#{new_wiki_page_with_spaces_in_the_path}.md"
           push.file_content = new_wiki_page_with_spaces_in_the_path_content
@@ -70,8 +68,7 @@ module QA
         end
       end
 
-      it 'by manipulating content on the page using git push',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347811' do
+      it 'by manipulating content on the page using git push' do
         Resource::Repository::WikiPush.fabricate! do |push|
           push.file_content = new_wiki_content
           push.commit_message = commit_message

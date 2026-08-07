@@ -49,8 +49,7 @@ module QA
         Page::Project::Pipeline::Index.perform(&:click_run_pipeline_button)
       end
 
-      it 'shows only variables with description as prefill variables on the run pipeline page',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/378977' do
+      it 'shows only variables with description as prefill variables on the run pipeline page' do
         Page::Project::Pipeline::New.perform do |new|
           new.wait_until(reload: false) { new.has_text?('Variable type') }
 
@@ -72,8 +71,7 @@ module QA
         end
       end
 
-      it 'shows dropdown for variables with description, value, and options defined',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/383820' do
+      it 'shows dropdown for variables with description, value, and options defined' do
         Page::Project::Pipeline::New.perform do |new|
           new.wait_until(reload: false) { new.has_text?('Variable type') }
 

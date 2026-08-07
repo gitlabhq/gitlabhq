@@ -32,8 +32,7 @@ module QA
         edit_ci_file_content_and_create_merge_request
       end
 
-      it 'creates new pipelines, target branch, and merge request',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349005' do
+      it 'creates new pipelines, target branch, and merge request' do
         # Verify a new MR is created from the update
         Page::MergeRequest::Show.perform do |show|
           expect(show).to have_title('Update .gitlab-ci.yml file')

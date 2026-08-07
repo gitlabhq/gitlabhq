@@ -9,8 +9,7 @@ module QA
         create(:merge_request, title: 'This is a merge request', description: 'Great feature', project: project)
       end
 
-      it 'user submits a non-diff review',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347777' do
+      it 'user submits a non-diff review' do
         Flow::Login.sign_in
 
         merge_request.visit!
@@ -26,8 +25,7 @@ module QA
         end
       end
 
-      it 'user submits a diff review',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347778' do
+      it 'user submits a diff review' do
         Flow::Login.sign_in
 
         merge_request.visit!

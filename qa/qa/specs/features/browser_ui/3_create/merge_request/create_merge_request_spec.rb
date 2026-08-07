@@ -18,8 +18,7 @@ module QA
           only: { job: 'update-ee-to-ce' },
           issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/412361',
           type: :investigating
-        },
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347738'
+        }
       ) do
         Resource::MergeRequest.fabricate_via_browser_ui! do |merge_request|
           merge_request.project = project
@@ -42,8 +41,7 @@ module QA
             'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9285'
           ],
           type: :flaky
-        },
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347762'
+        }
       ) do
         gitlab_account_user_name = Runtime::User::Store.test_user.name
 

@@ -9,7 +9,6 @@ module QA
       end
 
       it 'pulls an image from an existing repository',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/412799',
         quarantine: {
           type: :test_environment,
           issue: "https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24026"

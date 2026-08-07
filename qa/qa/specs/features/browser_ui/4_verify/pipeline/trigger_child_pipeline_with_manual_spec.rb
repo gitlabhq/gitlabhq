@@ -22,8 +22,7 @@ module QA
           only: { job: 'gdk-instance' },
           issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/461957',
           type: :test_environment
-        },
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348086' do
+        } do
         Page::Project::Pipeline::Show.perform do |parent_pipeline|
           expect(parent_pipeline).not_to have_child_pipeline
 

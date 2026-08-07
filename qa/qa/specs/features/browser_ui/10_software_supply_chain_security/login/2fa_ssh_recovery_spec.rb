@@ -21,8 +21,7 @@ module QA
       end
 
       it(
-        'allows 2FA code recovery via ssh',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347938'
+        'allows 2FA code recovery via ssh'
       ) do
         recovery_code = Support::SSH.perform do |ssh|
           ssh.key = ssh_key

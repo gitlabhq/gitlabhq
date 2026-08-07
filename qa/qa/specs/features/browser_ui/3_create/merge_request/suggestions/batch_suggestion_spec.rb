@@ -36,7 +36,7 @@ module QA
         merge_request.visit!
       end
 
-      it 'applies multiple suggestions', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347682' do
+      it 'applies multiple suggestions' do
         Page::MergeRequest::Show.perform do |merge_request|
           merge_request.click_diffs_tab
           4.times { merge_request.add_suggestion_to_batch }

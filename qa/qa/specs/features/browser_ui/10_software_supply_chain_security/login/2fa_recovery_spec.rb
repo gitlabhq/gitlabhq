@@ -23,8 +23,7 @@ module QA
       end
 
       it(
-        'allows using 2FA recovery code once only',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347937'
+        'allows using 2FA recovery code once only'
       ) do
         recovery_code = enable_2fa_for_user_and_fetch_recovery_code(developer_user)
 

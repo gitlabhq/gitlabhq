@@ -38,8 +38,7 @@ module QA
       end
 
       it(
-        'publishes a composer package and deletes it',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/565065'
+        'publishes a composer package and deletes it'
       ) do
         project.visit_job('publish')
         Page::Project::Job::Show.perform do |job|

@@ -37,26 +37,22 @@ module QA
             'with [always] policy' => {
               pull_policies: %w[always],
               pull_image: true,
-              message: 'Pulling docker image ruby:latest',
-              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/367154'
+              message: 'Pulling docker image ruby:latest'
             },
             'with [always if-not-present] policies' => {
               pull_policies: %w[always if-not-present],
               pull_image: true,
-              message: 'Pulling docker image ruby:latest',
-              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/368857'
+              message: 'Pulling docker image ruby:latest'
             },
             'with [if-not-present] policy' => {
               pull_policies: %w[if-not-present],
               pull_image: true,
-              message: 'Using locally found image version due to "if-not-present" pull policy',
-              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/368858'
+              message: 'Using locally found image version due to "if-not-present" pull policy'
             },
             'with [never] policy' => {
               pull_policies: %w[never],
               pull_image: false,
-              message: 'Pulling docker image ruby:latest',
-              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/368859'
+              message: 'Pulling docker image ruby:latest'
             }
           }
         end
@@ -87,7 +83,6 @@ module QA
 
         it(
           'fails job with policy not allowed message', :smoke,
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/368853',
           quarantine: {
             type: :flaky,
             issue: "https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24025"

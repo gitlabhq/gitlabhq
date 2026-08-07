@@ -75,6 +75,8 @@ import {
   TOKEN_TITLE_PARENT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 
+import usersAutocompleteQuery from '~/graphql_shared/queries/users_autocomplete.query.graphql';
+import searchMilestonesQuery from '~/vue_shared/components/filtered_search_bar/queries/search_milestones.query.graphql';
 import searchLabelsQuery from '~/work_items/list/graphql/search_labels.query.graphql';
 import getWorkItemsCountOnlyQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_count_only.query.graphql';
 import hasWorkItemsQuery from '~/work_items/list/graphql/has_work_items.query.graphql';
@@ -691,6 +693,7 @@ export default {
           operators: OPERATORS_IS_NOT_OR,
           fullPath: this.rootPageFullPath,
           isProject: !this.isGroup,
+          fetchUsers: this.fetchUsers,
           recentSuggestionsStorageKey: `${this.rootPageFullPath}-issues-recent-tokens-assignee`,
           preloadedUsers,
           defaultUsers: this.isLoggedIn ? OPTIONS_NONE_ANY_ME : OPTIONS_NONE_ANY,
@@ -708,6 +711,7 @@ export default {
           operators: OPERATORS_IS_NOT_OR,
           fullPath: this.rootPageFullPath,
           isProject: !this.isGroup,
+          fetchUsers: this.fetchUsers,
           recentSuggestionsStorageKey: `${this.rootPageFullPath}-issues-recent-tokens-author`,
           preloadedUsers,
           multiSelect: true,
@@ -734,6 +738,7 @@ export default {
           shouldSkipSort: true,
           fullPath: this.rootPageFullPath,
           isProject: !this.isGroup,
+          fetchMilestones: this.fetchMilestones,
         },
         {
           order: 16,
@@ -1174,9 +1179,14 @@ export default {
       }
 
       // TODO remove when we no longer need to convert old type[]=ISSUE params to new type[]=1 params
+      // The types load async, so only filter when the conversion actually changed a token.
+      // Filtering unconditionally re-renders the filtered-search bar as the types resolve,
+      // which discards a token the user is in the middle of building.
       if (this.filterTokens.some((token) => token.type === TOKEN_TYPE_TYPE)) {
         const tokens = convertOldTypeTokenEnumToGid(this.filterTokens, workItemTypesConfiguration);
-        this.handleFilter(tokens);
+        if (!isEqual(tokens, this.filterTokens)) {
+          this.handleFilter(tokens);
+        }
       }
     },
     hasCustomFieldsFeature(hasCustomFieldsFeature) {
@@ -1623,7 +1633,9 @@ export default {
       this.sortKey = sortKey;
       this.state = state || STATUS_OPEN;
     },
-    fetchReleases(search) {
+    async fetchReleases(search) {
+      await this.waitForMetadata();
+
       if (this.areReleasesFetched) {
         const data = search
           ? fuzzaldrinPlus.filter(this.releasesCache, search, { key: 'tag' })
@@ -1643,7 +1655,9 @@ export default {
           return [];
         });
     },
-    fetchEmojis(search) {
+    async fetchEmojis(search) {
+      await this.waitForMetadata();
+
       return this.autocompleteCache.fetch({
         url: this.autocompleteAwardEmojisPath,
         cacheName: 'emojis',
@@ -1651,19 +1665,45 @@ export default {
         search,
       });
     },
-    async fetchLabelsWithFetchPolicy(search, fetchPolicy = fetchPolicies.CACHE_FIRST) {
-      // Wait for metadata to load so isGroup has the correct value.
-      // Without this, the query may fire with the wrong namespace type.
-      if (this.metadataLoading) {
-        await new Promise((resolve) => {
-          const unwatch = this.$watch('metadataLoading', (loading) => {
-            if (!loading) {
-              unwatch();
-              resolve();
-            }
-          });
-        });
+    // Token suggestions are fetched using values from the metadata query (isGroup and the
+    // autocomplete paths), so wait for it. Without this, a fetch can fire against the wrong
+    // namespace type or an undefined path and come back empty, with no retry.
+    waitForMetadata() {
+      if (!this.metadataLoading) {
+        return Promise.resolve();
       }
+
+      return new Promise((resolve) => {
+        const unwatch = this.$watch('metadataLoading', (loading) => {
+          if (!loading) {
+            unwatch();
+            resolve();
+          }
+        });
+      });
+    },
+    async fetchUsers(search) {
+      await this.waitForMetadata();
+
+      const { data } = await this.$apollo.query({
+        query: usersAutocompleteQuery,
+        variables: { fullPath: this.rootPageFullPath, search, isProject: !this.isGroup },
+      });
+
+      return data[this.namespace]?.autocompleteUsers;
+    },
+    async fetchMilestones(search) {
+      await this.waitForMetadata();
+
+      const { data } = await this.$apollo.query({
+        query: searchMilestonesQuery,
+        variables: { fullPath: this.rootPageFullPath, search, isProject: !this.isGroup },
+      });
+
+      return data[this.namespace]?.milestones?.nodes;
+    },
+    async fetchLabelsWithFetchPolicy(search, fetchPolicy = fetchPolicies.CACHE_FIRST) {
+      await this.waitForMetadata();
 
       return this.$apollo
         .query({

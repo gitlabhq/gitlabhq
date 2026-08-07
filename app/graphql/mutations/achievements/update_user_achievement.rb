@@ -20,8 +20,14 @@ module Mutations
 
       argument :show_on_profile,
         GraphQL::Types::Boolean,
-        required: true,
+        required: false,
         description: 'Indicates whether or not the user achievement is visible on the profile.'
+
+      argument :award_message,
+        GraphQL::Types::String,
+        required: false,
+        validates: { length: { maximum: 200 } },
+        description: 'Message to associate with the awarded achievement.'
 
       authorize :update_user_achievement
 

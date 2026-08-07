@@ -63,7 +63,7 @@ list being sorted by creation date, in descending order.
 
 You can view a requirement from the list by selecting it.
 
-![requirement view](img/requirement_view_v13_5.png)
+![An example of a selected requirement](img/requirement_view_v13_5.png)
 
 To edit a requirement while viewing it, select the **Edit** icon ({{< icon name="pencil" >}})
 next to the requirement title.

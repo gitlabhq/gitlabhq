@@ -27,17 +27,11 @@ module QA
     end
 
     describe 'Check for broken images', :requires_admin do
-      context(
-        'when a new user logs in',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347885'
-      ) do
+      context 'when a new user logs in' do
         it_behaves_like 'loads all images', false
       end
 
-      context(
-        'when a new admin logs in',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347884'
-      ) do
+      context 'when a new admin logs in' do
         it_behaves_like 'loads all images', true
       end
     end

@@ -18,8 +18,8 @@ module QA
           issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/41029',
           type: :stale,
           only: { subdomain: :staging }
-        },
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347815') do
+        }
+      ) do
         initial_wiki.visit!
 
         Page::Project::Wiki::Show.perform(&:delete_page)
@@ -34,8 +34,8 @@ module QA
         quarantine: {
           issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/41030',
           type: :stale
-        },
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/442389') do
+        }
+      ) do
         Resource::Repository::WikiPush.fabricate! do |push|
           push.file_name = "#{new_wiki_page_with_spaces_in_the_path}.md"
           push.file_content = new_wiki_page_with_spaces_in_the_path_content

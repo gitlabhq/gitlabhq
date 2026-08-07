@@ -272,6 +272,8 @@ group:
   - update_protected_branch
   - update_secret_detection_validity_check
   - update_security_scan_profiles
+  - update_user_achievement
+  - update_user_achievement_award_message
   - update_virtual_registry
   - update_work_item_setting
   - update_work_item_type

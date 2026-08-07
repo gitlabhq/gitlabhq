@@ -90,6 +90,52 @@ The following events can include this field:
 Use this field to identify GitLab Duo Agent Platform activity in your Security Information and
 Event Management (SIEM) tool or other external tools, instead of service account naming patterns.
 
+### Events created with a composite identity
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240418) in GitLab 19.3.
+
+{{< /history >}}
+
+When a service account performs an action on behalf of a human user with a
+[composite identity](../duo_agent_platform/composite_identity.md), the audit event is attributed
+to the service account:
+
+- `author_id` contains the user ID of the service account.
+- `author_name` contains `<service account name> on behalf of @<human username>`, truncated to
+  255 characters. This value appears in the **Author** column on audit event pages and in CSV exports.
+
+The `details` object records the human user who authorized the action:
+
+| Field                   | Description                     |
+|-------------------------|---------------------------------|
+| `human_author_id`       | User ID of the human user       |
+| `human_author_name`     | Name of the human user          |
+| `human_author_username` | Username of the human user      |
+
+These fields are included in streamed audit events and in the `details` object returned by the
+[audit events API](../../api/audit_events.md).
+
+For these events, the `author_class` field in the `details` object contains
+`Gitlab::Audit::CompositeIdentityAuthor`. Use this value to identify composite identity events
+in your SIEM or other external tools.
+
+AI agent session events, such as `ai_agent_session_started` and `ai_tool_invoked`, also record
+the `human_author_*` fields but do not use this `author_class` value. To match both kinds of
+events, filter on the presence of `human_author_id` instead.
+
+When a human user performs the action and a service account only participates in the action, for example
+when the human user assigns a service account as a merge request reviewer, the audit event is
+attributed to the human user and the `human_author_*` fields are not added.
+
 ### Headers
 
 Headers are formatted as follows:

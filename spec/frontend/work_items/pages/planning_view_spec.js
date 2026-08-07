@@ -75,6 +75,8 @@ import {
 } from '~/work_items/constants';
 
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
+import usersAutocompleteQuery from '~/graphql_shared/queries/users_autocomplete.query.graphql';
+import searchMilestonesQuery from '~/vue_shared/components/filtered_search_bar/queries/search_milestones.query.graphql';
 import searchLabelsQuery from '~/work_items/list/graphql/search_labels.query.graphql';
 import hasWorkItemsQuery from '~/work_items/list/graphql/has_work_items.query.graphql';
 import getWorkItemsCountOnlyQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_count_only.query.graphql';
@@ -830,6 +832,47 @@ describe('planning-view', () => {
 
         expect(typeToken.operators).toEqual(OPERATORS_IS_NOT_OR);
       });
+
+      describe('when the work item types resolve', () => {
+        const mountWithLateTypes = async (typeParam) => {
+          setWindowLocation(`?type[]=${typeParam}`);
+
+          const workItemTypesConfiguration = ref([]);
+          await mountComponent({
+            provide: {
+              workItemTypesConfiguration: computed(() => workItemTypesConfiguration.value),
+            },
+          });
+
+          return workItemTypesConfiguration;
+        };
+
+        it('keeps the filter value the search bar already has when the type needs no conversion', async () => {
+          const workItemTypesConfiguration = await mountWithLateTypes('8');
+          const filterValue = findFilteredSearchBar().props('initialFilterValue');
+
+          workItemTypesConfiguration.value = [
+            { id: 'gid://gitlab/WorkItems::Type/8', name: 'Epic', isGroupWorkItemType: true },
+          ];
+          await nextTick();
+
+          expect(findFilteredSearchBar().props('initialFilterValue')).toBe(filterValue);
+        });
+
+        it('converts an old enum type param to its gid', async () => {
+          const workItemTypesConfiguration = await mountWithLateTypes('epic');
+
+          workItemTypesConfiguration.value = [
+            { id: 'gid://gitlab/WorkItems::Type/8', name: 'Epic', isGroupWorkItemType: true },
+          ];
+          await nextTick();
+
+          expect(findFilteredSearchBar().props('initialFilterValue')).toContainEqual({
+            type: TOKEN_TYPE_TYPE,
+            value: { operator: OPERATOR_IS, data: '8' },
+          });
+        });
+      });
     });
 
     describe('release token', () => {
@@ -859,6 +902,24 @@ describe('planning-view', () => {
           const result = await releaseToken.fetchReleases();
 
           expect(result).toEqual(mockReleases);
+        });
+
+        it('waits for metadata to finish loading before requesting releases', async () => {
+          mockAxios.onGet(RELEASES_ENDPOINT).reply(HTTP_STATUS_OK, mockReleases);
+          const metadataLoading = ref(true);
+          await mountComponent({
+            provide: { isGroup: false, metadataLoading: computed(() => metadataLoading.value) },
+          });
+
+          const fetchReleasesPromise = getReleaseToken().fetchReleases();
+          await waitForPromises();
+
+          expect(mockAxios.history.get).toHaveLength(0);
+
+          metadataLoading.value = false;
+          await fetchReleasesPromise;
+
+          expect(mockAxios.history.get).toHaveLength(1);
         });
 
         it('returns cached releases when cache is populated', async () => {
@@ -1593,6 +1654,110 @@ describe('planning-view', () => {
       await getLabelToken().fetchLabels('test');
 
       expect(searchLabelsHandler).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('milestone token fetchMilestones', () => {
+    const searchMilestonesResponse = {
+      data: {
+        group: {
+          __typename: 'Group',
+          id: 'gid://gitlab/Group/1',
+          milestones: { __typename: 'MilestoneConnection', nodes: [] },
+        },
+      },
+    };
+    const searchMilestonesHandler = jest.fn().mockResolvedValue(searchMilestonesResponse);
+
+    const getMilestoneToken = () =>
+      findFilteredSearchBar()
+        .props('tokens')
+        .find((token) => token.type === TOKEN_TYPE_MILESTONE);
+
+    beforeEach(() => {
+      searchMilestonesHandler.mockClear();
+    });
+
+    it('waits for metadata to finish loading before firing searchMilestones query', async () => {
+      const metadataLoading = ref(true);
+
+      await mountComponent({
+        provide: { metadataLoading: computed(() => metadataLoading.value) },
+        additionalHandlers: [[searchMilestonesQuery, searchMilestonesHandler]],
+      });
+
+      const fetchMilestonesPromise = getMilestoneToken().fetchMilestones('test');
+      await waitForPromises();
+
+      expect(searchMilestonesHandler).not.toHaveBeenCalled();
+
+      metadataLoading.value = false;
+      await fetchMilestonesPromise;
+
+      expect(searchMilestonesHandler).toHaveBeenCalledTimes(1);
+    });
+
+    it('fires searchMilestones query immediately when metadata is already loaded', async () => {
+      await mountComponent({
+        provide: { metadataLoading: false },
+        additionalHandlers: [[searchMilestonesQuery, searchMilestonesHandler]],
+      });
+
+      await getMilestoneToken().fetchMilestones('test');
+
+      expect(searchMilestonesHandler).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe.each([TOKEN_TYPE_AUTHOR, TOKEN_TYPE_ASSIGNEE])('%s token fetchUsers', (tokenType) => {
+    const usersAutocompleteResponse = {
+      data: {
+        group: {
+          __typename: 'Group',
+          id: 'gid://gitlab/Group/1',
+          autocompleteUsers: [],
+        },
+      },
+    };
+    const usersAutocompleteHandler = jest.fn().mockResolvedValue(usersAutocompleteResponse);
+
+    const getUserToken = () =>
+      findFilteredSearchBar()
+        .props('tokens')
+        .find((token) => token.type === tokenType);
+
+    beforeEach(() => {
+      usersAutocompleteHandler.mockClear();
+    });
+
+    it('waits for metadata to finish loading before firing usersAutocomplete query', async () => {
+      const metadataLoading = ref(true);
+
+      await mountComponent({
+        provide: { metadataLoading: computed(() => metadataLoading.value) },
+        additionalHandlers: [[usersAutocompleteQuery, usersAutocompleteHandler]],
+      });
+
+      const fetchUsersPromise = getUserToken().fetchUsers('test');
+      await waitForPromises();
+
+      expect(usersAutocompleteHandler).not.toHaveBeenCalled();
+
+      metadataLoading.value = false;
+      await fetchUsersPromise;
+
+      expect(usersAutocompleteHandler).toHaveBeenCalledTimes(1);
+    });
+
+    it('fires usersAutocomplete query immediately when metadata is already loaded', async () => {
+      await mountComponent({
+        provide: { metadataLoading: false },
+        additionalHandlers: [[usersAutocompleteQuery, usersAutocompleteHandler]],
+      });
+
+      await getUserToken().fetchUsers('test');
+
+      expect(usersAutocompleteHandler).toHaveBeenCalledTimes(1);
     });
   });
 

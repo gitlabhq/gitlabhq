@@ -513,6 +513,18 @@ describe('FilteredSearchBarRoot', () => {
       expect(findGlFilteredSearch().props('value')).toEqual([tokenValue]);
     });
 
+    it('keeps the token being typed when the parent passes an equal filter value', async () => {
+      await wrapper.setProps({ initialFilterValue: [tokenValue], syncFilterAndSort: true });
+
+      const typedToken = { id: 'id-2', type: 'label', value: { data: 'bug', operator: '=' } };
+      findGlFilteredSearch().vm.$emit('input', [tokenValue, typedToken]);
+      await nextTick();
+
+      await wrapper.setProps({ initialFilterValue: [{ ...tokenValue }] });
+
+      expect(findGlFilteredSearch().props('value')).toEqual([tokenValue, typedToken]);
+    });
+
     it('does not sync filter value when syncFilterAndSort=false', async () => {
       await wrapper.setProps({ initialFilterValue: [tokenValue], syncFilterAndSort: false });
 

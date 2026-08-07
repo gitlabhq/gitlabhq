@@ -104,7 +104,16 @@ The method returns the correct actor for the situation:
 
 You never need to call this method differently depending on the scenario — the identity system records the context when the request is authenticated, and `resolve_composite_identity_actor` uses it automatically.
 
-Reference: MR [!204010](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/204010), MR [!223788](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/223788)
+Audit events follow the same attribution rules (GitLab 19.3 and later):
+
+- In the `:authentication` context, `author_id` points to the service account, and `author_name` is
+  stored as `<service account name> on behalf of @<human username>`, truncated to 255 characters.
+  The human user is recorded in the event `details` as `human_author_id`, `human_author_name`, and
+  `human_author_username`. These keys flow to streaming destinations and the audit events REST API.
+- In the `:permission_check` context, the human user remains the audit event author and no
+  `human_author_*` keys are added.
+
+Reference: MR [!204010](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/204010), MR [!223788](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/223788), MR [!240418](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240418)
 
 ## Verify your setup quickly
 

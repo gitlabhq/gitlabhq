@@ -6,7 +6,12 @@ RSpec.describe Mutations::Achievements::UpdateUserAchievement, feature_category:
   include GraphqlHelpers
 
   let_it_be(:owner) { create(:user) }
-  let_it_be(:user_achievement) { create(:user_achievement, user: owner, show_on_profile: true) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:maintainer) { create(:user, maintainer_of: [group]) }
+  let_it_be(:achievement) { create(:achievement, namespace: group) }
+  let_it_be(:user_achievement) do
+    create(:user_achievement, achievement: achievement, user: owner, show_on_profile: true)
+  end
 
   let(:mutation) { graphql_mutation(:user_achievements_update, params) }
   let(:user_achievement_id) { user_achievement&.to_global_id }
@@ -48,17 +53,64 @@ RSpec.describe Mutations::Achievements::UpdateUserAchievement, feature_category:
       end
     end
 
-    context 'when everything is ok' do
-      it 'updates an user achievement' do
-        expect { mutate! }.to change { user_achievement.reload.show_on_profile }.from(true).to(false)
+    context 'when user tries to update a not allowed field' do
+      context 'when user is achievement owner' do
+        let(:current_user) { owner }
+        let(:params) { { user_achievement_id: user_achievement_id, award_message: 'test' } }
+
+        it 'returns the unmodified user achievement' do
+          expect { mutate! }.not_to change { user_achievement.reload.award_message }
+
+          expect(graphql_data_at(:user_achievements_update, :user_achievement, :id))
+            .to eq(user_achievement.to_global_id.to_s)
+          expect(graphql_data_at(:user_achievements_update, :user_achievement, :award_message)).to be_nil
+        end
       end
 
-      it 'returns the updated user achievement' do
-        mutate!
+      context 'when user is achievement awarder' do
+        let(:current_user) { maintainer }
+        let(:params) { { user_achievement_id: user_achievement_id, show_on_profile: false } }
 
-        expect(graphql_data_at(:user_achievements_update, :user_achievement, :id))
-          .to eq(user_achievement.to_global_id.to_s)
-        expect(graphql_data_at(:user_achievements_update, :user_achievement, :show_on_profile)).to be(false)
+        it 'returns the unmodified user achievement' do
+          expect { mutate! }.not_to change { user_achievement.reload.show_on_profile }
+
+          expect(graphql_data_at(:user_achievements_update, :user_achievement, :id))
+            .to eq(user_achievement.to_global_id.to_s)
+          expect(graphql_data_at(:user_achievements_update, :user_achievement, :show_on_profile)).to be(true)
+        end
+      end
+    end
+
+    context 'when everything is ok' do
+      context 'when user is achievement owner' do
+        it 'updates a user achievement' do
+          expect { mutate! }.to change { user_achievement.reload.show_on_profile }.from(true).to(false)
+        end
+
+        it 'returns the updated user achievement' do
+          mutate!
+
+          expect(graphql_data_at(:user_achievements_update, :user_achievement, :id))
+            .to eq(user_achievement.to_global_id.to_s)
+          expect(graphql_data_at(:user_achievements_update, :user_achievement, :show_on_profile)).to be(false)
+        end
+      end
+
+      context 'when user is group maintainer' do
+        let(:current_user) { maintainer }
+        let(:params) { { user_achievement_id: user_achievement_id, award_message: 'test' } }
+
+        it 'updates a user achievement' do
+          expect { mutate! }.to change { user_achievement.reload.award_message }.from(nil).to('test')
+        end
+
+        it 'returns the updated user achievement' do
+          mutate!
+
+          expect(graphql_data_at(:user_achievements_update, :user_achievement, :id))
+            .to eq(user_achievement.to_global_id.to_s)
+          expect(graphql_data_at(:user_achievements_update, :user_achievement, :award_message)).to eq('test')
+        end
       end
     end
   end

@@ -3,8 +3,7 @@
 module QA
   RSpec.describe 'Software Supply Chain Security', :skip_signup_disabled, :requires_admin,
     feature_category: :system_access do
-    describe 'while LDAP is enabled', :orchestrated, :ldap_no_tls,
-      testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347934' do
+    describe 'while LDAP is enabled', :orchestrated, :ldap_no_tls do
       it 'allows the user to register and login' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
 
@@ -30,8 +29,7 @@ module QA
           with_application_settings(require_admin_approval_after_user_signup: false) { example.run }
         end
 
-        context "with basic registration",
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347867' do
+        context "with basic registration" do
           it 'allows the user to register and login' do
             Runtime::Browser.visit(:gitlab, Page::Main::Login)
 
@@ -50,8 +48,7 @@ module QA
           # which lets the recreation test reliably reuse the same credentials. See gitlab-org/gitlab#594514.
           let(:user) { create(:user, :hard_delete) }
 
-          it "allows to delete user account",
-            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/500258' do
+          it "allows to delete user account" do
             Flow::Login.sign_in(as: user)
             Page::Main::Menu.perform(&:click_edit_profile_link)
             Page::Profile::Menu.perform(&:click_account)
@@ -73,8 +70,7 @@ module QA
               "Expected page to show 'Account scheduled for removal.' after deleting the account"
           end
 
-          it "allows to recreate deleted user with same credentials",
-            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/500257' do
+          it "allows to recreate deleted user with same credentials" do
             user.remove_via_api!
             # make sure user is deleted - async deletion can exceed two minutes under CI load
             Support::Waiter.wait_until(max_duration: 180, sleep_interval: 3) { !user.exists? }
@@ -95,8 +91,7 @@ module QA
         end
       end
 
-      context 'when admin approval is required', :external_api_calls,
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347871' do
+      context 'when admin approval is required', :external_api_calls do
         let(:signed_up_waiting_approval_text) do
           'You have signed up successfully. However, we could not sign you in because your account ' \
             'is awaiting approval from your GitLab administrator.'

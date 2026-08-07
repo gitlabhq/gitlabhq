@@ -13,7 +13,6 @@ module QA
       end
 
       it 'creates a 2nd fork after moving the parent project',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347787',
         quarantine: {
           type: :flaky,
           issue: "https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/18791"

@@ -38,8 +38,7 @@ module QA
             project: project)
         end
 
-        it 'pushes and pulls a maven package via gradle, using a pipeline',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/562424' do
+        it 'pushes and pulls a maven package via gradle, using a pipeline' do
           gradle_publish_install_yaml = ERB.new(read_fixture('package_managers/maven/gradle',
             'gradle_upload_install_package.yaml.erb')).result(binding)
           build_gradle = ERB.new(read_fixture('package_managers/maven/gradle', 'build.gradle.erb')).result(binding)

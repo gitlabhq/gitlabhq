@@ -9,7 +9,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'can be reverted', :smoke, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347709',
+      it 'can be reverted', :smoke,
         quarantine: {
           issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/36477',
           type: 'flaky'

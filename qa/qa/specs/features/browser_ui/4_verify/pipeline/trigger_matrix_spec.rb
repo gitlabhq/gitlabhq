@@ -17,7 +17,7 @@ module QA
         runner.remove_via_api!
       end
 
-      it 'creates 2 trigger jobs and passes corresponding matrix variables', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348000' do
+      it 'creates 2 trigger jobs and passes corresponding matrix variables' do
         Page::Project::Pipeline::Show.perform do |parent_pipeline|
           parent_pipeline.close_dap_panel_if_exists
           trigger_title1 = 'deploy: [ovh, monitoring]'

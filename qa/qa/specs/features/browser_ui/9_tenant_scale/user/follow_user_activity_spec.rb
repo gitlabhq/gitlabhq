@@ -44,8 +44,7 @@ module QA
         Runtime::Feature.disable(:vue_profile_activity_calendar)
       end
 
-      it 'can be followed and their activity seen',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347678' do
+      it 'can be followed and their activity seen' do
         Flow::Login.sign_in(as: following_user)
         page.visit Runtime::Scenario.gitlab_address + "/#{followed_user.username}"
         Page::User::Show.perform(&:click_follow_user_link)

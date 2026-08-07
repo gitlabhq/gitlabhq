@@ -18642,8 +18642,9 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mutation-userachievementsupdate-awardmessage"></a>`awardMessage` | [`String`](#string) | Message to associate with the awarded achievement. |
 | <a id="mutation-userachievementsupdate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutation-userachievementsupdate-showonprofile"></a>`showOnProfile` | [`Boolean!`](#boolean) | Indicates whether or not the user achievement is visible on the profile. |
+| <a id="mutation-userachievementsupdate-showonprofile"></a>`showOnProfile` | [`Boolean`](#boolean) | Indicates whether or not the user achievement is visible on the profile. |
 | <a id="mutation-userachievementsupdate-userachievementid"></a>`userAchievementId` | [`AchievementsUserAchievementID!`](#achievementsuserachievementid) | Global ID of the user achievement being updated. |
 
 Fields:

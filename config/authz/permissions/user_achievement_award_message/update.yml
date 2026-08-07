@@ -1,0 +1,3 @@
+---
+name: update_user_achievement_award_message
+description: Grants the ability to update the award_message field of a user achievement

@@ -47,13 +47,13 @@ module QA
         )
       end
 
-      it 'is enabled by default', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/508735' do
+      it 'is enabled by default' do
         Page::Project::WebIDE::SettingsSync.perform do |settings_sync|
           expect(settings_sync.enabled?).to be(true)
         end
       end
 
-      it 'loads remote synced data', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/508736' do
+      it 'loads remote synced data' do
         Page::Project::WebIDE::SettingsSync.perform do |settings_sync|
           settings_sync_data.each do |data|
             setting_type = data[:setting_type]
@@ -63,8 +63,7 @@ module QA
         end
       end
 
-      it 'loads correct extensions settings based on settings context hash',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/508737' do
+      it 'loads correct extensions settings based on settings context hash' do
         Page::Project::WebIDE::SettingsSync.perform do |settings_sync|
           settings_sync.open_remote_synced_data('extensions')
           expect(settings_sync.has_opened_synced_data_item?('extensions')).to be(true)

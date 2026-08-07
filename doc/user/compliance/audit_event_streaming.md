@@ -2,6 +2,7 @@
 stage: Software Supply Chain Security
 group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Learn how to configure and manage audit event streaming in GitLab to export audit logs to external destinations for compliance monitoring.
 title: Audit event streaming for top-level groups
 ---
 

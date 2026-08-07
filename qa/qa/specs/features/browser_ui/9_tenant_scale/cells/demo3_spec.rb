@@ -36,7 +36,6 @@ module QA
       end
 
       it('walkthrough',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/434422',
         only: { condition: -> { !Runtime::Env.running_in_ci? } }
       ) do
         Runtime::Scenario.define(:gitlab_address, cell1_url)

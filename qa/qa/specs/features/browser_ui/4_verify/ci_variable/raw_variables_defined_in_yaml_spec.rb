@@ -71,8 +71,7 @@ module QA
 
       it(
         'expands variables according to expand: true/false', :smoke,
-        :aggregate_failures,
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/381487'
+        :aggregate_failures
       ) do
         Page::Project::Job::Show.perform do |show|
           expect(show.output).to have_content("VAR1 is JOBID-#{job_id}")

@@ -15,7 +15,7 @@ module QA
         Page::Profile::SSHKeys.perform { |ssh_keys| ssh_keys.remove_key(key.title) } if key
       end
 
-      it 'user can add an SSH key', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347819' do
+      it 'user can add an SSH key' do
         key = Resource::SSHKey.fabricate_via_browser_ui! do |resource|
           resource.title = key_title
         end

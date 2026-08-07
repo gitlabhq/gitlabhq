@@ -16,7 +16,7 @@ module QA
         commit.visit!
       end
 
-      it 'creates a merge request', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347716' do
+      it 'creates a merge request' do
         Page::Project::Commit::Show.perform(&:revert_commit)
         Page::MergeRequest::New.perform(&:create_merge_request)
 

@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Tenant Scale', :smoke, feature_category: :organization do
     describe 'Project Member' do
-      it 'adds a project member', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347887' do
+      it 'adds a project member' do
         Flow::Login.sign_in
 
         user = Runtime::User::Store.additional_test_user

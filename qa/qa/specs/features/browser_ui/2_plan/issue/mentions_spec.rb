@@ -38,8 +38,7 @@ module QA
         end
       end
 
-      it 'mentions another user in an issue',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347988' do
+      it 'mentions another user in an issue' do
         Page::Project::WorkItem::Show.perform do |show|
           at_username = "@#{user.username}"
 

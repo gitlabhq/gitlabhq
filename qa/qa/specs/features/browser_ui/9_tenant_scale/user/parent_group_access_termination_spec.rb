@@ -27,8 +27,7 @@ module QA
           end
         end
 
-        it 'can not edit the project files',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347866' do
+        it 'can not edit the project files' do
           Flow::Login.sign_in(as: user)
           project.visit!
 

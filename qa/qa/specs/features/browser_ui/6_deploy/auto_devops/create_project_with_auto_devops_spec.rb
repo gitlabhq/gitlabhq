@@ -22,7 +22,7 @@ module QA
         cluster&.remove!
       end
 
-      it 'runs auto devops', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348061' do
+      it 'runs auto devops' do
         Flow::Login.sign_in
 
         app_project.visit!

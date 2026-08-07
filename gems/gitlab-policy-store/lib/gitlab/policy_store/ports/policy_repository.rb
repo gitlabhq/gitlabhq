@@ -7,11 +7,18 @@ module Gitlab
       # implements it today; a future remote (e.g. gRPC) adapter would implement
       # the same interface, keeping the facade and callers unchanged.
       class PolicyRepository
-        REQUIRED_ATTRIBUTES = [:organization_id, :name, :trigger_id].freeze
+        REQUIRED_ATTRIBUTES = [:organization_id, :namespace_id, :name, :trigger_type].freeze
+
+        # Text length limits matching database constraints
+        TEXT_LIMITS = {
+          name: 255,
+          description: 4096,
+          scope_rego: 4096
+        }.freeze
 
         # @param _attributes [Hash] the policy attributes
         # @return [Gitlab::PolicyStore::Policy] the created policy
-        # @raise [Gitlab::PolicyStore::ValidationError] if required attributes are missing
+        # @raise [Gitlab::PolicyStore::ValidationError] if required attributes are missing or text limits exceeded
         def create(_attributes)
           raise NotImplementedError
         end
@@ -48,6 +55,18 @@ module Gitlab
 
           raise PolicyStore::ValidationError,
             "Missing required attributes: #{missing.join(', ')}"
+        end
+
+        def validate_text_limits!(attributes)
+          TEXT_LIMITS.each do |attr, limit|
+            value = attributes[attr]
+            next if value.nil?
+
+            if value.to_s.length > limit
+              raise PolicyStore::ValidationError,
+                "#{attr} exceeds maximum length of #{limit} characters"
+            end
+          end
         end
 
         def blank?(value)

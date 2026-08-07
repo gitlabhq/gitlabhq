@@ -30,8 +30,7 @@ module QA
           end
         end
 
-        it 'successfully delete them',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/425725' do
+        it 'successfully delete them' do
           Page::Project::Artifacts::Index.perform do |index|
             index.delete_selected_artifacts
 

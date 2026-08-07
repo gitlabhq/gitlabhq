@@ -25,7 +25,12 @@ RSpec.describe Gitlab::PolicyStore do
     end
 
     it 'discards policies held by the in-memory adapter' do
-      policy = described_class.create(organization_id: 1, name: 'policy', trigger_id: 'deployment_requested')
+      policy = described_class.create(
+        organization_id: 1,
+        namespace_id: 10,
+        name: 'policy',
+        trigger_type: 'deployment_requested'
+      )
 
       described_class.reset_configuration!
 
