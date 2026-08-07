@@ -835,11 +835,11 @@ export default {
           :show-whitespace="showWhitespace"
           :view-diffs-file-by-file="viewDiffsFileByFile"
           :diff-view-type="diffViewType"
-          @expandAllFiles="expandAllFiles"
-          @collapseAllFiles="collapseAllFiles"
-          @updateDiffViewType="setDiffViewType"
-          @toggleWhitespace="toggleWhitespace"
-          @toggleFileByFile="toggleFileByFile"
+          @expand-all-files="expandAllFiles"
+          @collapse-all-files="collapseAllFiles"
+          @update-diff-view-type="setDiffViewType"
+          @toggle-whitespace="toggleWhitespace"
+          @toggle-file-by-file="toggleFileByFile"
         />
       </div>
 

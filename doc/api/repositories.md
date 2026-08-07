@@ -17,6 +17,12 @@ Use this API to manage [Git repositories](../user/project/repository/_index.md).
 
 ## List all repository trees in a project
 
+{{< history >}}
+
+- `with_last_commit` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/234455) in GitLab 19.3.
+
+{{< /history >}}
+
 Lists all repository files and directories in a specified project. This endpoint can
 be accessed without authentication if the repository is publicly accessible.
 
@@ -47,8 +53,12 @@ Supported attributes:
 | `per_page`   | integer           | No       | Number of results to show per page. If not specified, defaults to `20`. For more information, see [pagination](rest/_index.md#pagination). |
 | `recursive`  | boolean           | No       | If `true`, get a recursive tree. Default is `false`. |
 | `ref`        | string            | No       | Name of a repository branch or tag. If not specified, uses the default branch. |
+| `with_last_commit` | boolean     | No       | If `true`, include the last commit for each tree entry. Cannot be combined with `recursive`. Default is `false`. |
 
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and an array of tree objects.
+When `with_last_commit` is `true`, each tree object includes a `last_commit` object with
+the details of the most recent commit that changed the entry. The `last_commit` object uses
+the same attributes as the [commits API](commits.md).
 
 Example request:
 
@@ -109,6 +119,46 @@ Example response:
     "type": "blob",
     "path": "files/whitespace",
     "mode": "100644"
+  }
+]
+```
+
+Example request with `with_last_commit`:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/13083/repository/tree?with_last_commit=true"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": "a1e8f8d745cc87e3a9248358d9352bb7f9a0aeba",
+    "name": "html",
+    "type": "tree",
+    "path": "files/html",
+    "mode": "040000",
+    "last_commit": {
+      "id": "913c66a37b4a45b9769037c55c2d238bd0942d2e",
+      "short_id": "913c66a3",
+      "created_at": "2014-02-27T10:14:56.000+02:00",
+      "parent_ids": [
+        "cfe32cf61b73a0d5e9f13e774abde7ff789b1660"
+      ],
+      "title": "Files, encoding and much more",
+      "message": "Files, encoding and much more\n",
+      "author_name": "Dmitriy Zaporozhets",
+      "author_email": "dmitriy.zaporozhets@gmail.com",
+      "authored_date": "2014-02-27T10:14:56.000+02:00",
+      "committer_name": "Dmitriy Zaporozhets",
+      "committer_email": "dmitriy.zaporozhets@gmail.com",
+      "committed_date": "2014-02-27T10:14:56.000+02:00",
+      "trailers": {},
+      "extended_trailers": {},
+      "web_url": "https://gitlab.example.com/example-group/example-project/-/commit/913c66a37b4a45b9769037c55c2d238bd0942d2e"
+    }
   }
 ]
 ```

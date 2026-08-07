@@ -33,7 +33,7 @@ export default {
       default: true,
     },
   },
-  emits: ['toggleFileByFile', 'toggleWhitespace', 'updateDiffViewType'],
+  emits: ['toggle-file-by-file', 'toggle-whitespace', 'update-diff-view-type'],
   methods: {
     tooltipTarget() {
       return document.querySelector(`.${this.$options.toggleId}`);
@@ -64,7 +64,7 @@ export default {
       :header-text="__('Compare changes')"
       :items="$options.diffViewTypeOptions"
       placement="bottom-end"
-      @select="$emit('updateDiffViewType', $event)"
+      @select="$emit('update-diff-view-type', $event)"
     >
       <template #footer>
         <div class="gl-border-t gl-px-4 gl-pb-2 gl-pt-4">
@@ -72,7 +72,7 @@ export default {
             data-testid="show-whitespace"
             class="gl-mb-2"
             :checked="showWhitespace"
-            @input="$emit('toggleWhitespace', $event)"
+            @input="$emit('toggle-whitespace', $event)"
           >
             {{ $options.i18n.whitespace }}
           </gl-form-checkbox>
@@ -81,7 +81,7 @@ export default {
             data-testid="file-by-file"
             class="gl-mb-0"
             :checked="viewDiffsFileByFile"
-            @input="$emit('toggleFileByFile', $event)"
+            @input="$emit('toggle-file-by-file', $event)"
           >
             {{ $options.i18n.fileByFile }}
           </gl-form-checkbox>

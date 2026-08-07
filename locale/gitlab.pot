@@ -23378,6 +23378,9 @@ msgstr ""
 msgid "Contribution Analytics"
 msgstr ""
 
+msgid "Contribution activity calendar"
+msgstr ""
+
 msgid "Contribution analytics"
 msgstr ""
 
@@ -60681,9 +60684,6 @@ msgid "Project '%{project_name}' was successfully created."
 msgstr ""
 
 msgid "Project '%{project_name}' was successfully updated."
-msgstr ""
-
-msgid "Project Badges"
 msgstr ""
 
 msgid "Project CI/CD variables"

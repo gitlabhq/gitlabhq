@@ -152,6 +152,40 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
           end
         end
       end
+
+      context 'with with_last_commit=true' do
+        it 'includes the last commit for each tree entry' do
+          get api(route, current_user), params: { with_last_commit: true }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to be_an(Array)
+
+          expect(json_response).to be_present
+          expect(json_response).to all(include('last_commit'))
+          json_response.each do |entry|
+            expect(entry['last_commit']['id']).to be_present
+            expect(entry['last_commit']['message']).to be_present
+          end
+        end
+
+        it 'does not scale the number of queries with the number of entries' do
+          control = ActiveRecord::QueryRecorder.new do
+            get api(route, current_user), params: { with_last_commit: true, per_page: 5 }
+          end
+
+          expect do
+            get api(route, current_user), params: { with_last_commit: true, per_page: 20 }
+          end.not_to exceed_query_limit(control)
+        end
+
+        it 'returns 400 when combined with recursive' do
+          get api(route, current_user), params: { with_last_commit: true, recursive: true }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['error'])
+            .to eq('recursive cannot be "true" when "with_last_commit" is "true"')
+        end
+      end
     end
 
     context 'when unauthenticated', 'and project is public' do

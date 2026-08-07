@@ -1004,6 +1004,12 @@ lib/api/entities/work_items/features/award_emoji.rb:
   - downvotes
   - new_custom_emoji_path
   - upvotes
+lib/api/entities/work_items/features/closing_merge_request.rb:
+  usage_radius: 18
+  fields:
+  - from_mr_description
+  - id
+  - merge_request
 lib/api/entities/work_items/features/description.rb:
   usage_radius: 18
   fields:

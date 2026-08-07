@@ -7406,31 +7406,6 @@ export const coverageProjectBadgesPath = /*#__PURE__*/ (projectFullPath, ...args
 /**
  * Generates the Rails route:
  *
- * - href: `/:project_full_path/badges(.:format)`
- * - Path helper: `project_badges_path`
- * - URL helper: `project_badges_url`
- * - controller#action: `projects/badges#index`
- *
- * @param {string} projectFullPath
- * @param {object | undefined} options
- * @returns {string} route path
- */
-export const projectBadgesPath = /*#__PURE__*/ (projectFullPath, ...args) => {
-  const _organizationNamespaceProjectBadgesPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"namespace_id":{"r":true},"project_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"badges"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
-  const _namespaceProjectBadgesPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"badges"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
-
-  const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
-
-  if (hasOrganizationScopedPaths()) {
-    return _organizationNamespaceProjectBadgesPath(gon.current_organization.path, namespacePath, projectPath, ...args);
-  }
-
-  return _namespaceProjectBadgesPath(namespacePath, projectPath, ...args);
-};
-
-/**
- * Generates the Rails route:
- *
  * - href: `/:project_full_path/ide_terminals/:id/cancel(.:format)`
  * - Path helper: `cancel_project_web_ide_terminal_path`
  * - URL helper: `cancel_project_web_ide_terminal_url`

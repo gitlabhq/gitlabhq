@@ -6,7 +6,7 @@ module Gitlab
       include Gitlab::EncodingHelper
       extend Gitlab::Git::WrapsGitalyErrors
 
-      attr_accessor :id, :type, :mode, :commit_id, :submodule_url, :ref_type
+      attr_accessor :id, :type, :mode, :commit_id, :submodule_url, :ref_type, :last_commit
       attr_writer :name, :path, :flat_path
 
       class << self
@@ -19,13 +19,15 @@ module Gitlab
           recursive: false,
           skip_flat_paths: true,
           rescue_not_found:  true,
-          pagination_params: nil
+          pagination_params: nil,
+          with_last_commit: false
         )
           path = nil if path == '' || path == '/'
 
           wrapped_gitaly_errors do
             repository.gitaly_commit_client.tree_entries(
-              repository, sha, path, recursive, skip_flat_paths, pagination_params)
+              repository, sha, path, recursive, skip_flat_paths, pagination_params,
+              with_last_commit: with_last_commit)
           end
 
         # Incorrect revision or path could lead to index error.

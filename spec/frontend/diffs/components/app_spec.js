@@ -532,31 +532,31 @@ describe('diffs/components/app', () => {
 
     it('collapses all files', async () => {
       createComponent();
-      await wrapper.findComponent(DiffAppControls).vm.$emit('collapseAllFiles');
+      await wrapper.findComponent(DiffAppControls).vm.$emit('collapse-all-files');
       expect(store.collapseAllFiles).toHaveBeenCalled();
     });
 
     it('expands all files', async () => {
       createComponent();
-      await wrapper.findComponent(DiffAppControls).vm.$emit('expandAllFiles');
+      await wrapper.findComponent(DiffAppControls).vm.$emit('expand-all-files');
       expect(store.expandAllFiles).toHaveBeenCalled();
     });
 
     it('switches whitespace mode', async () => {
       createComponent();
-      await wrapper.findComponent(DiffAppControls).vm.$emit('toggleWhitespace', false);
+      await wrapper.findComponent(DiffAppControls).vm.$emit('toggle-whitespace', false);
       expect(store.setShowWhitespace).toHaveBeenCalledWith({ showWhitespace: false });
     });
 
     it('switches view mode', async () => {
       createComponent();
-      await wrapper.findComponent(DiffAppControls).vm.$emit('updateDiffViewType', 'parallel');
+      await wrapper.findComponent(DiffAppControls).vm.$emit('update-diff-view-type', 'parallel');
       expect(store.setDiffViewType).toHaveBeenCalledWith('parallel');
     });
 
     it('enables file by file mode', async () => {
       createComponent();
-      await wrapper.findComponent(DiffAppControls).vm.$emit('toggleFileByFile');
+      await wrapper.findComponent(DiffAppControls).vm.$emit('toggle-file-by-file');
       expect(store.setFileByFile).toHaveBeenCalledWith({ fileByFile: true });
     });
 

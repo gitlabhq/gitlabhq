@@ -13,6 +13,8 @@ module API
         filemode = "0" + filemode if filemode.length < 6
         filemode
       end
+
+      expose :last_commit, using: ::API::Entities::Commit, if: ->(obj, _) { obj.last_commit }
     end
   end
 end

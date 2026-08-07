@@ -717,4 +717,23 @@ RSpec.describe UsersHelper, feature_category: :user_management do
       it_behaves_like 'user cannot report'
     end
   end
+
+  describe '#user_activity_calendar_data' do
+    let_it_be(:user) { create(:user, timezone: 'America/New_York') }
+
+    subject(:data) { helper.user_activity_calendar_data(user) }
+
+    it 'returns the username' do
+      expect(data[:username]).to eq(user.username)
+    end
+
+    it 'returns the utc offset for the user timezone', time_travel_to: '2020-01-01 00:00:00 +0000' do
+      expect(data[:utc_offset]).to eq(-5.hours.to_i)
+    end
+
+    it 'falls back to the instance timezone when the user has none' do
+      expect(helper.user_activity_calendar_data(build(:user, timezone: nil))[:utc_offset])
+        .to eq(Time.zone.now.utc_offset)
+    end
+  end
 end

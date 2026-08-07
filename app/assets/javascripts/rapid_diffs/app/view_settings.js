@@ -48,11 +48,11 @@ const initSettingsApp = (el, pinia) => {
           hideOnNarrowScreen: false,
         },
         on: {
-          updateDiffViewType: this.updateViewType,
-          toggleWhitespace: this.updateShowWhitespace,
-          toggleFileByFile: this.toggleFileByFile,
-          expandAllFiles,
-          collapseAllFiles,
+          'update-diff-view-type': this.updateViewType,
+          'toggle-whitespace': this.updateShowWhitespace,
+          'toggle-file-by-file': this.toggleFileByFile,
+          'expand-all-files': expandAllFiles,
+          'collapse-all-files': collapseAllFiles,
         },
       });
     },

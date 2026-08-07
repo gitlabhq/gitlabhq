@@ -113,7 +113,7 @@ describe('View settings', () => {
     const trigger = jest.fn();
     jest.spyOn(DiffFile, 'getAll').mockReturnValue([{ trigger }]);
     init();
-    getVueInstance().$emit('collapseAllFiles');
+    getVueInstance().$emit('collapse-all-files');
     expect(trigger).toHaveBeenCalledWith(COLLAPSE_FILE);
   });
 
@@ -121,25 +121,25 @@ describe('View settings', () => {
     const trigger = jest.fn();
     jest.spyOn(DiffFile, 'getAll').mockReturnValue([{ trigger }]);
     init();
-    getVueInstance().$emit('expandAllFiles');
+    getVueInstance().$emit('expand-all-files');
     expect(trigger).toHaveBeenCalledWith(EXPAND_FILE);
   });
 
   it('updates view type', async () => {
     init();
-    await getVueInstance().$emit('updateDiffViewType', 'inline');
+    await getVueInstance().$emit('update-diff-view-type', 'inline');
     expect(useDiffsView().updateViewType).toHaveBeenCalledWith('inline');
   });
 
   it('toggles whitespace', async () => {
     init();
-    await getVueInstance().$emit('toggleWhitespace', false);
+    await getVueInstance().$emit('toggle-whitespace', false);
     expect(useDiffsView().updateShowWhitespace).toHaveBeenCalledWith(false);
   });
 
   it('toggles file by file', async () => {
     init();
-    await getVueInstance().$emit('toggleFileByFile', true);
+    await getVueInstance().$emit('toggle-file-by-file', true);
     expect(useDiffsView().toggleFileByFile).toHaveBeenCalledWith(true);
   });
 });

@@ -87,10 +87,8 @@ module API
         # then per-record :read_work_item policy filters the response in Ruby. A page may therefore present fewer items
         # than per_page when some records are not readable, but cursor advancement stays correct.
         def render_paginated_work_items_for(parent_work_item, entity:)
-          check_work_item_rest_api_feature_flag!
+          authorize_work_item_feature!(parent_work_item)
           check_pagination_param!(params)
-
-          authorize! :read_work_item, parent_work_item
 
           resource_parent = parent_work_item.resource_parent
           field_keys = requested_field_keys(params[:fields])
@@ -192,6 +190,16 @@ module API
           return if Feature.enabled?(:work_item_rest_api, current_user)
 
           forbidden!('work_item_rest_api feature flag is disabled for this user')
+        end
+
+        # Invariant prologue for every work-item-scoped read path: gate on the REST API feature flag,
+        # then authorize reading the parent work item. Used by render_paginated_work_items_for
+        # (children, linked items) and by the development widget sub-endpoints (closing_merge_requests,
+        # related_merge_requests, related_branches, feature_flags), so the gate and the authorization
+        # check can't drift apart between them.
+        def authorize_work_item_feature!(parent_work_item)
+          check_work_item_rest_api_feature_flag!
+          authorize! :read_work_item, parent_work_item
         end
 
         def filter_requested_keys(requested_param, available_keys)

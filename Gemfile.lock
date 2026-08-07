@@ -836,7 +836,7 @@ GEM
     git (1.19.1)
       addressable (~> 2.8)
       rchardet (~> 1.8)
-    gitaly (19.0.0)
+    gitaly (19.2.0)
       grpc (~> 1.0)
     gitlab (4.19.0)
       httparty (~> 0.20)
@@ -1102,8 +1102,8 @@ GEM
       google-protobuf (>= 3.18, < 5.a)
       googleapis-common-protos-types (~> 1.7)
       grpc (~> 1.41)
-    googleapis-common-protos-types (1.20.0)
-      google-protobuf (>= 3.18, < 5.a)
+    googleapis-common-protos-types (1.23.0)
+      google-protobuf (~> 4.26)
     googleauth (1.14.0)
       faraday (>= 1.0, < 3.a)
       google-cloud-env (~> 2.2)
@@ -2519,7 +2519,7 @@ DEPENDENCIES
   gettext (~> 3.5, >= 3.5.1)
   gettext_i18n_rails (~> 1.13.0)
   git (~> 1.8)
-  gitaly (~> 19.0)
+  gitaly (~> 19.2)
   gitlab-active-context!
   gitlab-backup-cli!
   gitlab-bitbucket!
@@ -3030,7 +3030,7 @@ CHECKSUMS
   gettext (3.5.2) sha256=ada02c59aa7e9f56bd2522faedaed16421dd2f3ddb5fe28628c0be5abcbf3c74
   gettext_i18n_rails (1.13.0) sha256=d4a4739d928b6ce52a2d694d33a831dcb06c7c8e197b3172fc73dfaa20ac8ee6
   git (1.19.1) sha256=b0a422d9f6517353c48a330d6114de4db9e0c82dbe7202964a1d9f1fbc827d70
-  gitaly (19.0.0) sha256=b908390020e4c3bcc101dd8651da65b998190912201a1821194283866a6c5d6a
+  gitaly (19.2.0) sha256=5291ff0847f8f26cad65a6d14720d9d5296f44459876624ef2643813fc80ee61
   gitlab (4.19.0) sha256=3f645e3e195dbc24f0834fbf83e8ccfb2056d8e9712b01a640aad418a6949679
   gitlab-active-context (0.0.1)
   gitlab-backup-cli (0.0.1)
@@ -3126,7 +3126,7 @@ CHECKSUMS
   google-protobuf (4.35.1-x86_64-darwin) sha256=66b62b4df00931018a692806df66393efa960d6d2b7da69735187249f950d3ee
   google-protobuf (4.35.1-x86_64-linux-gnu) sha256=c786439087512a3fbd199e9897d265b855f951d4027e218ea55e858d45969edd
   googleapis-common-protos (1.7.0) sha256=b684c0b9e1800c6bb89ad64e0dcabb377a01a31ff7aec1bfebd26c183b2c9241
-  googleapis-common-protos-types (1.20.0) sha256=5e374b06bcfc7e13556e7c0d87b99f1fa3d42de6396a1de3d8fc13aefb4dd07f
+  googleapis-common-protos-types (1.23.0) sha256=992e740a523794d9fc5f29a504465d8fc737aaa16c930fe7228e3346860faf0a
   googleauth (1.14.0) sha256=62e7de11791890c3d3dc70582dfd9ab5516530e4e4f56d96451fd62c76475149
   gpgme (2.0.26) sha256=1aebfd2eb83b745341e6f416f318597568af5ad4d7d1f55bfab4f1078123abaa
   grape (2.4.0) sha256=3d59673e80f11d49ba86270b78344e5348dc057b318c2bbc1c01f3532f9b6aec

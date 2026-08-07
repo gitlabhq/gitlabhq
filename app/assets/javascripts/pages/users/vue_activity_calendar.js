@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import ActivityCalendar from '~/profile/components/activity_calendar.vue';
 
 export const initVueActivityCalendar = () => {
   const el = document.getElementById('js-vue-activity-calendar');
@@ -7,12 +8,17 @@ export const initVueActivityCalendar = () => {
     return null;
   }
 
+  const { username, utcOffset } = el.dataset;
+
   return new Vue({
     el,
     name: 'VueActivityCalendarRoot',
+    provide: {
+      username,
+      utcOffset,
+    },
     render(createElement) {
-      // eslint-disable-next-line @gitlab/require-i18n-strings
-      return createElement('div', { class: 'new-activities-block' }, 'Temporary placeholder');
+      return createElement(ActivityCalendar);
     },
   });
 };

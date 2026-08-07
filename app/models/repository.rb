@@ -772,7 +772,7 @@ class Repository
     @head_tree ||= Tree.new(self, root_ref, nil, skip_flat_paths: skip_flat_paths, ref_type: 'heads')
   end
 
-  def tree(sha = :head, path = nil, recursive: false, skip_flat_paths: true, pagination_params: nil, ref_type: nil, rescue_not_found: true)
+  def tree(sha = :head, path = nil, recursive: false, skip_flat_paths: true, pagination_params: nil, ref_type: nil, rescue_not_found: true, with_last_commit: false)
     if sha == :head
       return if empty? || root_ref.nil?
 
@@ -784,7 +784,7 @@ class Repository
       end
     end
 
-    Tree.new(self, sha, path, recursive: recursive, skip_flat_paths: skip_flat_paths, pagination_params: pagination_params, ref_type: ref_type, rescue_not_found: rescue_not_found)
+    Tree.new(self, sha, path, recursive: recursive, skip_flat_paths: skip_flat_paths, pagination_params: pagination_params, ref_type: ref_type, rescue_not_found: rescue_not_found, with_last_commit: with_last_commit)
   end
 
   def blob_at_branch(branch_name, path)

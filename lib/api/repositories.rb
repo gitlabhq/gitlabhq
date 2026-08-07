@@ -119,16 +119,20 @@ module API
       desc 'List all repository trees in a project' do
         detail 'Lists all repository files and directories in a specified project. This endpoint can be accessed ' \
           'without authentication if the repository is publicly accessible. This command provides essentially the ' \
-          'same features as the `git ls-tree` command.'
-        success Entities::TreeObject
+          'same features as the `git ls-tree` command. Use `with_last_commit` to include the last commit that ' \
+          'changed each entry. `with_last_commit` cannot be combined with `recursive`.'
+        success [Entities::TreeObject]
+        failure [{ code: 400, message: 'Bad Request' }, { code: 404, message: '404 Project Not Found' }]
         tags ['repositories']
       end
       params do
-        optional :ref, type: String,
+        optional :ref, type: String, limit: 1024,
           desc: 'The name of a repository branch or tag, if not given the default branch is used',
           documentation: { example: 'main' }
-        optional :path, type: String, desc: 'The path of the tree', documentation: { example: 'files/html' }
+        optional :path, type: String, limit: 1024, desc: 'The path of the tree', documentation: { example: 'files/html' }
         optional :recursive, type: Boolean, default: false, desc: 'Used to get a recursive tree'
+        optional :with_last_commit, type: Boolean, default: false,
+          desc: 'Include the last commit for each tree entry. Cannot be combined with "recursive"'
 
         use :pagination
         optional :pagination, type: String, values: %w[legacy keyset none], default: 'legacy', desc: 'Specify the pagination method ("none" is only valid if "recursive" is true)'
@@ -143,6 +147,10 @@ module API
           given recursive: ->(value) { value == false } do
             validates([:pagination], except_values: { value: 'none', message: 'cannot be "none" unless "recursive" is true' })
           end
+        end
+
+        given with_last_commit: ->(value) { value == true } do
+          validates([:recursive], except_values: { value: [true], message: 'cannot be "true" when "with_last_commit" is "true"' })
         end
       end
       route_setting :authorization, permissions: :read_repository_tree, boundary_type: :project

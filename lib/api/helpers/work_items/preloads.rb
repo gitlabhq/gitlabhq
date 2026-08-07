@@ -126,6 +126,23 @@ module API
           ).execute.first
         end
 
+        # Resolves the work item for a `namespaces/:id/-/work_items/:iid` route: user namespaces are
+        # rejected, project namespaces resolve to their project, group namespaces are used directly.
+        def work_item_for_namespace!(namespace_id, work_item_iid)
+          namespace = find_namespace_by_path!(namespace_id.to_s, allow_project_namespaces: true)
+          not_found!('Namespace') if namespace.is_a?(::Namespaces::UserNamespace)
+
+          resource_parent = namespace.is_a?(::Namespaces::ProjectNamespace) ? namespace.project : namespace
+          work_item_for!(resource_parent, work_item_iid)
+        end
+
+        # Resolves the work item for a project- or group-scoped route. 404s if not found or not readable.
+        def work_item_for!(resource_parent, work_item_iid)
+          find_work_item_by_iid(resource_parent, work_item_iid).tap do |work_item|
+            not_found!('Work Item') unless work_item
+          end
+        end
+
         def count_preloads_for(work_items, field_keys, feature_keys)
           preloads = {}
           if field_keys.include?(:user_discussions_count)

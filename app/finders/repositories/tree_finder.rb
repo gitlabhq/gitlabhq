@@ -16,7 +16,7 @@ module Repositories
     def execute(gitaly_pagination: false)
       raise CommitMissingError unless commit_exists?
 
-      request_params = { recursive: recursive, rescue_not_found: rescue_not_found }
+      request_params = { recursive: recursive, rescue_not_found: rescue_not_found, with_last_commit: with_last_commit }
       request_params[:pagination_params] = pagination_params if gitaly_pagination
 
       tree = repository.tree(commit.id, path, **request_params)
@@ -60,6 +60,10 @@ module Repositories
 
     def rescue_not_found
       params[:rescue_not_found]
+    end
+
+    def with_last_commit
+      params.fetch(:with_last_commit, false)
     end
 
     def pagination_params

@@ -622,7 +622,7 @@ constraints(Projects::ProjectUrlConstraint.new) do
       end
 
       resources :runner_projects, only: [:create, :destroy] # rubocop: disable Cop/PutProjectRoutesUnderScope
-      resources :badges, only: [:index] do # rubocop: disable Cop/PutProjectRoutesUnderScope
+      resources :badges, only: [] do # rubocop: disable Cop/PutProjectRoutesUnderScope
         collection do
           scope '*ref', constraints: { ref: Gitlab::PathRegex.git_reference_regex } do
             constraints format: /svg/ do

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module UsersHelper
+  include TimeZoneHelper
+
   def admin_users_data_attributes(users)
     {
       users: Admin::UserSerializer.new.represent(users, { current_user: current_user }).to_json,
@@ -241,6 +243,13 @@ module UsersHelper
       reported_user_id: user.id,
       reported_from_url: user_url(user)
     )
+  end
+
+  def user_activity_calendar_data(user)
+    {
+      username: user.username,
+      utc_offset: local_timezone_instance(user.timezone).now.utc_offset
+    }
   end
 
   def email_verification_token_expired?(email_sent_at:)

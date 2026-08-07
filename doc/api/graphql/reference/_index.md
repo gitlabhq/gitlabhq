@@ -53379,6 +53379,7 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="pathlock-createdat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the path was locked. |
 | <a id="pathlock-id"></a>`id` | [`PathLockID!`](#pathlockid) | ID of the path lock. |
 | <a id="pathlock-path"></a>`path` | [`String`](#string) | Locked path. |
 | <a id="pathlock-user"></a>`user` | [`UserCore`](#usercore) | User that has locked the path. |

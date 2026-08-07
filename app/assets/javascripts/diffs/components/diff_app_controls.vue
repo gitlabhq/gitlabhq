@@ -67,11 +67,11 @@ export default {
     },
   },
   emits: [
-    'collapseAllFiles',
-    'expandAllFiles',
-    'toggleFileByFile',
-    'toggleWhitespace',
-    'updateDiffViewType',
+    'collapse-all-files',
+    'expand-all-files',
+    'toggle-file-by-file',
+    'toggle-whitespace',
+    'update-diff-view-type',
   ],
   computed: {
     expandButtonInfo() {
@@ -102,11 +102,11 @@ export default {
   methods: {
     expandAllFiles() {
       if (this.isLoading) return;
-      this.$emit('expandAllFiles');
+      this.$emit('expand-all-files');
     },
     collapseAllFiles() {
       if (this.isLoading) return;
-      this.$emit('collapseAllFiles');
+      this.$emit('collapse-all-files');
     },
   },
 };
@@ -134,7 +134,7 @@ export default {
           :aria-label="expandButtonInfo.title"
           :aria-keyshortcuts="expandButtonInfo.keys[0]"
           :disabled="isLoading"
-          @click="$emit('expandAllFiles')"
+          @click="$emit('expand-all-files')"
         />
         <gl-button
           v-gl-tooltip.html="collapseButtonInfo.tooltip"
@@ -143,7 +143,7 @@ export default {
           :aria-label="collapseButtonInfo.title"
           :aria-keyshortcuts="collapseButtonInfo.keys[0]"
           :disabled="isLoading"
-          @click="$emit('collapseAllFiles')"
+          @click="$emit('collapse-all-files')"
         />
       </gl-button-group>
       <settings-dropdown
@@ -151,9 +151,9 @@ export default {
         :view-diffs-file-by-file="viewDiffsFileByFile"
         :diff-view-type="diffViewType"
         :file-by-file-supported="fileByFileSupported"
-        @updateDiffViewType="$emit('updateDiffViewType', $event)"
-        @toggleWhitespace="$emit('toggleWhitespace', $event)"
-        @toggleFileByFile="$emit('toggleFileByFile', $event)"
+        @update-diff-view-type="$emit('update-diff-view-type', $event)"
+        @toggle-whitespace="$emit('toggle-whitespace', $event)"
+        @toggle-file-by-file="$emit('toggle-file-by-file', $event)"
       />
     </div>
   </div>

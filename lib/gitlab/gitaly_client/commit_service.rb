@@ -110,7 +110,7 @@ module Gitlab
         nil
       end
 
-      def tree_entries(repository, revision, path, recursive, skip_flat_paths, pagination_params)
+      def tree_entries(repository, revision, path, recursive, skip_flat_paths, pagination_params, with_last_commit: false) # rubocop:disable Metrics/CyclomaticComplexity -- existing complexity, adding one parameter and a last_commit guard
         unless pagination_params.nil? && recursive
           pagination_params ||= {}
           pagination_params[:limit] ||= TREE_ENTRIES_DEFAULT_LIMIT
@@ -122,7 +122,8 @@ module Gitlab
           path: path.present? ? encode_binary(path) : '.',
           recursive: recursive,
           skip_flat_paths: skip_flat_paths,
-          pagination_params: pagination_params
+          pagination_params: pagination_params,
+          with_last_commit: with_last_commit
         )
         request.sort = Gitaly::GetTreeEntriesRequest::SortBy::TREES_FIRST if pagination_params
 
@@ -134,7 +135,7 @@ module Gitlab
           cursor = message.pagination_cursor if message.pagination_cursor
 
           message.entries.map do |gitaly_tree_entry|
-            Gitlab::Git::Tree.new(
+            tree_entry = Gitlab::Git::Tree.new(
               id: gitaly_tree_entry.oid,
               type: gitaly_tree_entry.type.downcase,
               mode: gitaly_tree_entry.mode.to_i.to_s(8),
@@ -143,6 +144,12 @@ module Gitlab
               flat_path: encode_binary(gitaly_tree_entry.flat_path),
               commit_id: gitaly_tree_entry.commit_oid
             )
+
+            if gitaly_tree_entry.last_commit&.id.present?
+              tree_entry.last_commit = Gitlab::Git::Commit.new(@repository, gitaly_tree_entry.last_commit)
+            end
+
+            tree_entry
           end
         end
 

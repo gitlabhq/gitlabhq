@@ -29515,7 +29515,8 @@ paths:
       description: Lists all repository files and directories in a specified project.
         This endpoint can be accessed without authentication if the repository is
         publicly accessible. This command provides essentially the same features as
-        the `git ls-tree` command.
+        the `git ls-tree` command. Use `with_last_commit` to include the last commit
+        that changed each entry. `with_last_commit` cannot be combined with `recursive`.
       tags:
       - Repositories
       responses:
@@ -29525,10 +29526,10 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/APIEntitiesTreeObject"
-        '404':
-          description: Not Found
         '400':
           description: Bad Request
+        '404':
+          description: 404 Project Not Found
       parameters:
       - name: id
         required: true
@@ -29546,6 +29547,7 @@ paths:
         schema:
           type: string
           nullable: true
+          maxLength: 1024
         in: query
         example: main
       - name: path
@@ -29554,11 +29556,20 @@ paths:
         schema:
           type: string
           nullable: true
+          maxLength: 1024
         in: query
         example: files/html
       - name: recursive
         required: false
         description: Used to get a recursive tree
+        schema:
+          type: boolean
+          nullable: true
+        in: query
+      - name: with_last_commit
+        required: false
+        description: Include the last commit for each tree entry. Cannot be combined
+          with "recursive"
         schema:
           type: boolean
           nullable: true
@@ -86946,6 +86957,8 @@ components:
         mode:
           type: string
           example: '040000'
+        last_commit:
+          "$ref": "#/components/schemas/APIEntitiesCommit"
     APIEntitiesDiff:
       type: object
       properties:
