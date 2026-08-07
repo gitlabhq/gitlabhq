@@ -180,6 +180,78 @@ RSpec.describe PagesDeployment, feature_category: :pages do
 
       expect(described_class.count_versioned_deployments_for(project, 10)).to eq(3)
     end
+
+    context 'with namespace domain filtering' do
+      let_it_be(:namespace_domain_project) do
+        create(:project).tap do |project|
+          project.project_setting.update!(pages_unique_domain_enabled: false)
+        end
+      end
+
+      let_it_be(:unique_domain_project) do
+        create(:project).tap do |project|
+          project.project_setting.update!(
+            pages_unique_domain_enabled: true,
+            pages_unique_domain: 'unique.example.com'
+          )
+        end
+      end
+
+      let_it_be(:namespace_domain_deployment) do
+        create(:pages_deployment, project: namespace_domain_project, path_prefix: 'v1')
+      end
+
+      let_it_be(:unique_domain_deployment) do
+        create(:pages_deployment, project: unique_domain_project, path_prefix: 'v1')
+      end
+
+      describe '.for_namespace_domain_projects' do
+        it 'returns deployments for projects using the namespace domain' do
+          expect(described_class.for_namespace_domain_projects).to contain_exactly(namespace_domain_deployment)
+        end
+      end
+
+      it 'counts only namespace-domain deployments when requested' do
+        count = described_class.count_versioned_deployments_for(
+          [namespace_domain_project, unique_domain_project],
+          10,
+          namespace_domain_only: true
+        )
+
+        expect(count).to eq(1)
+      end
+
+      it 'counts deployments for all domain settings by default' do
+        count = described_class.count_versioned_deployments_for(
+          [namespace_domain_project, unique_domain_project],
+          10
+        )
+
+        expect(count).to eq(2)
+      end
+
+      it 'limits grouped counts to namespace-domain projects', :aggregate_failures do
+        additional_namespace_domain_projects = create_list(:project, 2)
+        additional_namespace_domain_projects.each do |project|
+          project.project_setting.update!(pages_unique_domain_enabled: false)
+          create(:pages_deployment, project: project, path_prefix: 'v1')
+        end
+        namespace_domain_projects = [namespace_domain_project] + additional_namespace_domain_projects
+
+        counts = described_class.count_versioned_deployments_for(
+          namespace_domain_projects + [unique_domain_project],
+          2,
+          group_by_project: true,
+          namespace_domain_only: true
+        )
+
+        expect(counts).to be_a(Hash)
+        expect(counts.keys).to all(be_in(namespace_domain_projects.map(&:id)))
+        expect(counts).not_to have_key(unique_domain_project.id)
+        expect(counts.values).to all(eq(1))
+        expect(counts.size).to eq(2)
+      end
+    end
   end
 
   describe 'default for file_store' do

@@ -131,16 +131,14 @@ test:7.0:
 
 ### Custom PHP configuration in Docker builds
 
-There are times where you need to customize your PHP environment by
-putting your `.ini` file into `/usr/local/etc/php/conf.d/`. For that purpose
-add a `before_script` action:
+To customize your PHP environment, copy your `.ini` file into `/usr/local/etc/php/conf.d/`
+with a `before_script` action. The `.ini` file (`my_php.ini` in this example) must be in the
+root directory of your repository:
 
 ```yaml
 before_script:
   - cp my_php.ini /usr/local/etc/php/conf.d/test.ini
 ```
-
-Of course, `my_php.ini` must be present in the root directory of your repository.
 
 ## Test PHP projects using the Shell executor
 

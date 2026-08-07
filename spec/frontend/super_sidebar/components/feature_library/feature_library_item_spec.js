@@ -25,6 +25,7 @@ describe('FeatureLibraryItem', () => {
     wrapper = mountExtended(FeatureLibraryItem, {
       propsData: { item, pinned, solidBackground, supportsPins },
       directives: { GlTooltip: createMockDirective('gl-tooltip') },
+      attachTo: document.body,
     });
   };
 
@@ -101,6 +102,23 @@ describe('FeatureLibraryItem', () => {
     it('keeps the pin action outside the stretched link click target', () => {
       createWrapper({ item: { ...baseItem, link: '/-/repository' } });
       expect(findContent().findComponent(GlButton).exists()).toBe(false);
+    });
+  });
+
+  describe('focus()', () => {
+    it('moves keyboard focus to the title link when the item has a link', () => {
+      createWrapper({ item: { ...baseItem, link: '/-/repository' } });
+
+      wrapper.vm.focus();
+
+      expect(document.activeElement).toBe(findTitleLink().element);
+    });
+
+    it('does nothing when the item has no link', () => {
+      createWrapper();
+
+      expect(() => wrapper.vm.focus()).not.toThrow();
+      expect(document.activeElement).not.toBe(findTitle().element);
     });
   });
 

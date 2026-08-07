@@ -1511,7 +1511,14 @@ module Ci
     end
 
     def complete_and_has_self_or_descendant_reports?(reports_scope)
-      complete? && latest_report_builds_in_self_and_project_descendants(reports_scope).exists?
+      return false unless complete?
+
+      hierarchy_builds = builds_in_self_and_project_descendants
+
+      reports_scope
+        .where(job_id: hierarchy_builds.select(:id))
+        .in_partition(hierarchy_builds.where_values_hash['partition_id'] || self)
+        .exists?
     end
 
     def complete_or_manual_and_has_reports?(reports_scope)

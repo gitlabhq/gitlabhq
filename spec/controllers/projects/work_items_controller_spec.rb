@@ -40,6 +40,59 @@ RSpec.describe Projects::WorkItemsController, feature_category: :team_planning d
   describe 'GET #new' do
     it_behaves_like 'issue building actions',
       assigned_name: :work_item
+
+    context 'when the project is public and the user is not signed in' do
+      let_it_be(:public_project) { create(:project, :public) }
+
+      subject { get(:new, params: { namespace_id: public_project.namespace, project_id: public_project }) }
+
+      it_behaves_like 'redirects to new session path'
+    end
+
+    context 'when the user is signed in but cannot create work items' do
+      let_it_be(:user) { create(:user) }
+
+      shared_examples 'renders not found' do
+        it 'renders a not found message' do
+          get(:new, params: { namespace_id: unauthorized_project.namespace, project_id: unauthorized_project })
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      before do
+        sign_in(user)
+      end
+
+      context 'when the project is archived' do
+        let_it_be(:unauthorized_project) { create(:project, :public, :archived, owners: user) }
+
+        it_behaves_like 'renders not found'
+      end
+
+      context 'when issues are visible to project members only' do
+        let_it_be(:unauthorized_project) { create(:project, :public, :issues_private) }
+
+        it_behaves_like 'renders not found'
+      end
+
+      context 'when issues are disabled' do
+        let_it_be(:unauthorized_project) { create(:project, :public, :issues_disabled, owners: user) }
+
+        it_behaves_like 'renders not found'
+      end
+    end
+  end
+
+  describe 'Redirect after sign in', type: :request do
+    let_it_be(:public_project) { create(:project, :public) }
+
+    it 'stores the create form path so the user returns to it after signing in' do
+      get new_project_work_item_path(public_project, type: 'Issue')
+
+      expect(response).to redirect_to(new_user_session_path)
+      expect(session['user_return_to']).to eq(new_project_work_item_path(public_project, type: 'Issue'))
+    end
   end
 
   describe 'POST authorize' do

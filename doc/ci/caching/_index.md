@@ -387,7 +387,7 @@ Runners use [cache](../yaml/_index.md#cache) to speed up the execution
 of your jobs by reusing existing data. This can sometimes lead to
 inconsistent behavior.
 
-There are two ways to start with a fresh copy of the cache.
+To start with a fresh copy of the cache, change `cache:key` or clear it manually.
 
 ### Clear the cache by changing `cache:key`
 

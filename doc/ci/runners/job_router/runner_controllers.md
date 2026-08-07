@@ -75,7 +75,7 @@ Runner controllers can be in one of three states:
 
 | State | Description |
 |-------|-------------|
-| `disabled` | The runner controller does not receive admission requests. This is the default state. |
+| `disabled` | Default state. The runner controller does not receive admission requests. |
 | `enabled` | The runner controller receives admission requests and its decisions affect job execution. |
 | `dry_run` | The runner controller receives admission requests. Job router logs the decisions, but decisions are not enforced. Use this state for strategic rollouts to validate controller behavior and de-risk deployments before you enable enforcement. |
 

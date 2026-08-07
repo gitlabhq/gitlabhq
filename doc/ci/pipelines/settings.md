@@ -239,7 +239,7 @@ You can choose how your repository is fetched from GitLab when a job runs.
    - `git clone` is slower because it clones the repository from scratch
      for every job. However, the local working copy is always pristine.
    - `git fetch` is faster because it re-uses the local working copy (and falls
-     back to clone if it doesn't exist). This is recommended, especially for
+     back to clone if it doesn't exist). Use this command, especially for
      [large repositories](../../user/project/repository/monorepos/_index.md#use-git-fetch-in-cicd-operations).
 
 The configured Git strategy can be overridden by the [`GIT_STRATEGY` variable](../runners/configure_runners.md#git-strategy)

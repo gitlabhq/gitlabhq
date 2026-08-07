@@ -15,7 +15,7 @@ title: Advanced SAST Swift and Objective-C configuration
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16318) as a [beta](../../../policy/development_stages_support.md#beta) in GitLab 19.3.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/16318) as a [beta](../../../policy/development_stages_support.md#beta) in GitLab 19.3.
 
 {{< /history >}}
 

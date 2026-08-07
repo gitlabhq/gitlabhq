@@ -927,8 +927,6 @@ class ProjectPolicy < BasePolicy
     prevent :create_on_demand_dast_scan
     prevent :edit_on_demand_dast_scan
     prevent :update_on_demand_dast_scan
-    prevent :_create_dast_pipeline
-    prevent :_run_dast_pipeline
     prevent :admin_vulnerability_external_issue_link
     prevent :admin_vulnerability_issue_link
     prevent :create_vulnerability_export

@@ -103,7 +103,7 @@ For API-based creation, see [Create a compliance framework from a template](../.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16499) in GitLab 17.11.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/16499) in GitLab 17.11.
 
 {{< /history >}}
 
@@ -228,7 +228,7 @@ To remove a compliance framework from one or multiple project in a group, remove
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16499) in GitLab 17.11.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/16499) in GitLab 17.11.
 
 {{< /history >}}
 

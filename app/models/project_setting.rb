@@ -66,6 +66,7 @@ class ProjectSetting < ApplicationRecord
 
   scope :for_projects, ->(projects) { where(project_id: projects) }
   scope :with_namespace, -> { joins(project: :namespace) }
+  scope :with_pages_namespace_domain, -> { where(pages_unique_domain_enabled: false) }
 
   cascading_attr :web_based_commit_signing_enabled
 

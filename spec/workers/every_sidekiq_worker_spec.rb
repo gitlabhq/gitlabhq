@@ -532,6 +532,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :sidekiq do
         'Ci::DestroyOldPipelinesWorker' => 0,
         'AuditEvents::AuditEventStreamingWorker' => 3,
         'AuditEvents::AiAuditEventStreamingWorker' => 3,
+        'Ai::DuoWorkflows::ProcessAuditEventsWorker' => 9,
         'Vulnerabilities::TriggerFalsePositiveDetectionWorkflowWorker' => 10,
         'Vulnerabilities::TriggerResolutionWorkflowWorker' => 10,
         'Vulnerabilities::TriggerSecretDetectionFalsePositiveDetectionWorkflowWorker' => 10,

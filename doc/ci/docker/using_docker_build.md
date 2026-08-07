@@ -88,7 +88,7 @@ executor uses a [container image of Docker](https://hub.docker.com/_/docker/) to
 your CI/CD jobs.
 
 Each job gets its own isolated Docker daemon, so concurrent jobs do not conflict.
-This is the recommended approach when your runner supports `privileged` mode.
+Use this approach when your runner supports `privileged` mode.
 
 For setup instructions, see [Use Docker-in-Docker](docker_in_docker.md).
 

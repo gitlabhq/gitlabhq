@@ -9246,6 +9246,27 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '.with_namespace_domain_pages' do
+    let_it_be(:namespace_domain_project) do
+      create(:project).tap do |project|
+        project.project_setting.update!(pages_unique_domain_enabled: false)
+      end
+    end
+
+    let_it_be(:unique_domain_project) do
+      create(:project).tap do |project|
+        project.project_setting.update!(
+          pages_unique_domain_enabled: true,
+          pages_unique_domain: 'unique.example.com'
+        )
+      end
+    end
+
+    it 'returns only projects using the namespace domain' do
+      expect(described_class.with_namespace_domain_pages).to contain_exactly(namespace_domain_project)
+    end
+  end
+
   describe '.pages_metadata_not_migrated' do
     it 'returns only projects that have pages deployed' do
       _project_with_pages_metadata_migrated = create(:project)

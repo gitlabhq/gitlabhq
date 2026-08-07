@@ -21,10 +21,10 @@ This document describes where and how the different types of variables can be us
 
 ## Variables usage
 
-There are two places defined variables can be used. On the:
+You can use defined variables in the following files:
 
-1. GitLab side, in the `.gitlab-ci.yml` file.
-1. The GitLab Runner side, in `config.toml`.
+- In GitLab, with `.gitlab-ci.yml`
+- In GitLab Runner, with `config.toml`
 
 ### `.gitlab-ci.yml` file
 
@@ -72,11 +72,11 @@ For more information about `config.toml`, see [advanced configuration](https://d
 
 ## Expansion mechanisms
 
-There are three expansion mechanisms:
+Variables can be expanded through the following:
 
-- GitLab
-- GitLab Runner
-- Execution shell environment
+- In GitLab, before a runner receives the job
+- In GitLab Runner, when it processes the job
+- In the execution shell environment, during script execution
 
 ### GitLab internal variable expansion mechanism
 
@@ -119,7 +119,7 @@ expansion instead of Go's `os.Expand()` because `mvdan.cc/sh/v3/expand` supports
 
 ### Execution shell environment
 
-This is an expansion phase that takes place during the `script` execution.
+The execution shell environment is an expansion phase that takes place during the `script` execution.
 Its behavior depends on the shell used (`bash`, `sh`, `cmd`, PowerShell). For example, if the job's
 `script` contains a line `echo $MY_VARIABLE-${MY_VARIABLE_2}`, it should be properly handled
 by bash/sh (leaving empty strings or some values depending whether the variables were

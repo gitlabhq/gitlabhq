@@ -358,12 +358,12 @@ To help avoid abuse, by default, users are rate limited to:
 
 {{< history >}}
 
-- [Deprecated](https://gitlab.com/groups/gitlab-org/-/epics/4619) in GitLab 14.6.
+- [Deprecated](https://gitlab.com/groups/gitlab-org/-/work_items/4619) in GitLab 14.6.
 
 {{< /history >}}
 
 > [!warning]
-> This feature was [deprecated](https://gitlab.com/groups/gitlab-org/-/epics/4619) in GitLab 14.6 and replaced by
+> This feature was [deprecated](https://gitlab.com/groups/gitlab-org/-/work_items/4619) in GitLab 14.6 and replaced by
 > [migrating groups by direct transfer](../../group/import/_index.md). However, this feature is still recommended
 > for migrations in [offline environments](../../application_security/offline_deployments/_index.md). Support for migration between offline instances is proposed in
 > [epic 8985](https://gitlab.com/groups/gitlab-org/-/epics/8985).

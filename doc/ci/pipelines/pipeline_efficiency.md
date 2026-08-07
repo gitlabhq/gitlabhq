@@ -189,7 +189,7 @@ shouldn't run, saving pipeline resources.
 ### `needs` keyword
 
 In a basic configuration, jobs always wait for all other jobs in earlier stages to complete
-before running. This is the simplest configuration, but it's also the slowest in most
+before running. This configuration is the simplest, but it's also the slowest in most
 cases. [Pipelines with the `needs` keyword](../yaml/needs.md) and
 [parent/child pipelines](downstream_pipelines.md#parent-child-pipelines) are more flexible and can
 be more efficient, but can also make pipelines harder to understand and analyze.

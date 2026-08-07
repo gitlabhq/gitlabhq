@@ -21295,7 +21295,7 @@ ALTER SEQUENCE gitlab_subscriptions_id_seq OWNED BY gitlab_subscriptions.id;
 CREATE TABLE govern_policies (
     id bigint NOT NULL,
     organization_id bigint NOT NULL,
-    namespace_id bigint NOT NULL,
+    namespace_id bigint,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     version integer DEFAULT 1 NOT NULL,
@@ -47829,6 +47829,8 @@ CREATE INDEX index_gitlab_subscriptions_on_trial_and_trial_starts_on ON gitlab_s
 
 CREATE INDEX index_govern_policies_on_namespace_id ON govern_policies USING btree (namespace_id);
 
+CREATE INDEX index_govern_policies_on_org_trigger_lifecycle_and_id ON govern_policies USING btree (organization_id, trigger_type, lifecycle_state, id);
+
 CREATE INDEX index_govern_policy_enforcements_on_govern_policy_id ON govern_policy_enforcements USING btree (govern_policy_id);
 
 CREATE INDEX index_govern_policy_enforcements_on_organization_id ON govern_policy_enforcements USING btree (organization_id);
@@ -51941,7 +51943,9 @@ CREATE UNIQUE INDEX unique_external_audit_event_destination_namespace_id_and_nam
 
 CREATE UNIQUE INDEX unique_google_cloud_logging_configurations_on_namespace_id ON audit_events_google_cloud_logging_configurations USING btree (namespace_id, google_project_id_name, log_id_name);
 
-CREATE UNIQUE INDEX unique_govern_policies_organization_id_namespace_id_and_name ON govern_policies USING btree (organization_id, namespace_id, name);
+CREATE UNIQUE INDEX unique_govern_policies_org_and_name_without_namespace ON govern_policies USING btree (organization_id, name) WHERE (namespace_id IS NULL);
+
+CREATE UNIQUE INDEX unique_govern_policies_org_namespace_and_name ON govern_policies USING btree (organization_id, namespace_id, name) WHERE (namespace_id IS NOT NULL);
 
 CREATE UNIQUE INDEX unique_govern_policy_enforcements_org_policy_and_project ON govern_policy_enforcements USING btree (organization_id, govern_policy_id, project_id) WHERE (project_id IS NOT NULL);
 

@@ -26,7 +26,7 @@ To transition your instance to the Agent Platform, complete the following steps:
 ## Features available after transition
 
 The following table lists the GitLab Duo non-agentic features and
-the agentic version that your users can access after moving to the Agent Platform. For a complete list of features in the Agent Platform, see [Generally available features](../../../user/duo_agent_platform/_index.md#generally-available-features) and [Beta and experiment features](../../../user/duo_agent_platform/_index.md#beta-and-experiment-features).
+the agentic version that your users can access after moving to the Agent Platform. For a complete list of features in the Agent Platform, see [Generally available features](../../../user/duo_agent_platform/_index.md#generally-available-features) and [Beta and experimental features](../../../user/duo_agent_platform/_index.md#beta-and-experimental-features-that-dont-consume-credits).
 
 | Non-agentic feature | Agent Platform |
 |---------------------|----------------|

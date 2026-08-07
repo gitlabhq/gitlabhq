@@ -118,6 +118,7 @@ describe('FeatureLibraryModal', () => {
 
   const focusInput = jest.fn();
   const hideModal = jest.fn();
+  const focusItem = jest.fn();
 
   const createWrapper = ({
     currentPinnedIds = [],
@@ -144,6 +145,7 @@ describe('FeatureLibraryModal', () => {
           template: '<div v-if="visible"><slot></slot></div>',
           props: ['visible'],
         }),
+        FeatureLibraryItem: stubComponent(FeatureLibraryItem, { methods: { focus: focusItem } }),
       },
     });
   };
@@ -168,6 +170,7 @@ describe('FeatureLibraryModal', () => {
   const findGeminiEmptyState = () => wrapper.findByTestId('gemini-empty-state');
   const findGeminiLoading = () => wrapper.findByTestId('gemini-loading');
   const findGeminiError = () => wrapper.findByTestId('gemini-error');
+  const findGeminiStatusRegion = () => wrapper.findByTestId('gemini-status-region');
   const findGeminiItems = () =>
     findGeminiSection().exists()
       ? findGeminiSection().findAllComponents(FeatureLibraryItem)
@@ -186,6 +189,15 @@ describe('FeatureLibraryModal', () => {
   const clickGeminiSearch = async () => {
     await findGeminiButton().vm.$emit('click');
     await waitForPromises();
+  };
+
+  // Runs the main search, waits for it to settle, then triggers the Gemini
+  // search from the resulting button. Bundles the repeated setup sequence
+  // used across Gemini describe blocks.
+  const runGeminiSearch = async (query) => {
+    await emitSearch(query);
+    await waitForPromises();
+    await clickGeminiSearch();
   };
 
   describe('rendering', () => {
@@ -781,6 +793,76 @@ describe('FeatureLibraryModal', () => {
     });
   });
 
+  describe('Gemini section top border', () => {
+    const findGeminiSectionWrapper = () => wrapper.findByTestId('gemini-section');
+
+    beforeEach(() => {
+      mockSearch();
+      createWrapper({ aiSearchAvailable: true, resourceId: 1 });
+    });
+
+    describe('while Gemini is searching', () => {
+      beforeEach(async () => {
+        mockAxios.onGet(AI_SEARCH_URL).reply(() => new Promise(() => {}));
+        await emitSearch('re');
+        await waitForPromises();
+        await findGeminiButton().vm.$emit('click');
+        await nextTick();
+      });
+
+      it('is hidden', () => {
+        expect(findGeminiSectionWrapper().classes()).not.toContain('gl-border-t');
+      });
+    });
+
+    describe('once Gemini returns results', () => {
+      beforeEach(async () => {
+        mockAiSearch({ ids: ['boards'], ai_search_available: true });
+        await runGeminiSearch('re');
+      });
+
+      it('is shown', () => {
+        expect(findGeminiSectionWrapper().classes()).toContain('gl-border-t');
+      });
+    });
+
+    describe('on the Gemini empty state', () => {
+      beforeEach(async () => {
+        mockAiSearch();
+        await runGeminiSearch('zzznomatch');
+      });
+
+      it('is hidden', () => {
+        expect(findGeminiEmptyState().exists()).toBe(true);
+        expect(findGeminiSectionWrapper().classes()).not.toContain('gl-border-t');
+      });
+    });
+
+    describe('when Gemini returns an error', () => {
+      beforeEach(async () => {
+        mockAxios.onGet(AI_SEARCH_URL).reply(HTTP_STATUS_TOO_MANY_REQUESTS);
+        await runGeminiSearch('re');
+      });
+
+      it('is shown', () => {
+        expect(findGeminiSectionWrapper().classes()).toContain('gl-border-t');
+      });
+    });
+  });
+
+  describe('Gemini status live region mount timing', () => {
+    // Some screen readers only announce *changes* to a live region already
+    // present in the DOM; content that exists the moment the region is first
+    // inserted can be silently skipped. The region must therefore be mounted
+    // before showGeminiSection becomes true, not gated behind it.
+    it('is present in the DOM even when the Gemini section is not shown', () => {
+      createWrapper();
+
+      expect(findGeminiStatusRegion().exists()).toBe(true);
+      expect(findGeminiStatusRegion().text()).toBe('');
+    });
+  });
+
   describe('Gemini search', () => {
     const RESOURCE_ID = 42;
 
@@ -813,6 +895,16 @@ describe('FeatureLibraryModal', () => {
       it('does not render the generic empty state, even though the main search has no matches', () => {
         expect(findEmptyState().exists()).toBe(false);
       });
+
+      it('returns keyboard focus to the search input, since the button unmounts', () => {
+        expect(focusInput).toHaveBeenCalled();
+      });
+
+      it('announces the searching state via the status live region', () => {
+        expect(findGeminiStatusRegion().attributes('aria-live')).toBe('polite');
+        expect(findGeminiStatusRegion().attributes('aria-atomic')).toBe('true');
+        expect(findGeminiStatusRegion().text()).toBe('Searching with Gemini …');
+      });
     });
 
     describe('when the request resolves with results', () => {
@@ -833,6 +925,10 @@ describe('FeatureLibraryModal', () => {
         expect(findGeminiSection().exists()).toBe(true);
         expect(findHideGeminiButton().exists()).toBe(true);
       });
+
+      it('announces that matching features were found via the status live region', () => {
+        expect(findGeminiStatusRegion().text()).toBe('Gemini found matching features.');
+      });
     });
 
     describe('when the request resolves empty', () => {
@@ -847,6 +943,12 @@ describe('FeatureLibraryModal', () => {
       it('hides the loading state', () => {
         expect(findGeminiLoading().exists()).toBe(false);
         expect(findGeminiEmptyState().exists()).toBe(true);
+      });
+
+      it('announces the empty state via the status live region', () => {
+        expect(findGeminiStatusRegion().text()).toBe(
+          "Gemini couldn't find a matching feature. Try different keywords.",
+        );
       });
     });
 
@@ -952,6 +1054,17 @@ describe('FeatureLibraryModal', () => {
         expect(Sentry.captureException).not.toHaveBeenCalled();
       });
 
+      it('announces the error via the status live region', async () => {
+        mockAxios.onGet(AI_SEARCH_URL).reply(HTTP_STATUS_TOO_MANY_REQUESTS, {
+          error: 'This endpoint has been requested too many times. Try again later.',
+        });
+        await runGeminiSearch('re');
+
+        expect(findGeminiStatusRegion().text()).toBe(
+          'This endpoint has been requested too many times. Try again later.',
+        );
+      });
+
       it('falls back to a generic rate limit message when the server does not provide one', async () => {
         mockAxios.onGet(AI_SEARCH_URL).reply(HTTP_STATUS_TOO_MANY_REQUESTS);
         await emitSearch('re');
@@ -1024,6 +1137,17 @@ describe('FeatureLibraryModal', () => {
       it('dismisses the Gemini section when clicked', async () => {
         await findHideGeminiButton().vm.$emit('click');
         expect(findGeminiSection().exists()).toBe(false);
+      });
+
+      it('clears the status live region instead of leaving stale text', async () => {
+        await findHideGeminiButton().vm.$emit('click');
+        expect(findGeminiStatusRegion().text()).toBe('');
+      });
+
+      it('returns keyboard focus to the search input, since the Hide button unmounts', async () => {
+        focusInput.mockClear();
+        await findHideGeminiButton().vm.$emit('click');
+        expect(focusInput).toHaveBeenCalled();
       });
 
       it('re-offers the search CTA after Hide is clicked, without changing the query', async () => {
@@ -1221,8 +1345,9 @@ describe('FeatureLibraryModal', () => {
   });
 
   describe('keyboard-first navigation', () => {
-    const pressEnter = () =>
+    const pressEnter = () => {
       findSearch().vm.$emit('keydown', new KeyboardEvent('keydown', { key: 'Enter' }));
+    };
 
     describe('when the modal is shown', () => {
       beforeEach(() => {
@@ -1243,16 +1368,17 @@ describe('FeatureLibraryModal', () => {
         await waitForPromises();
       });
 
-      it('navigates to the first displayed result on Enter', () => {
+      it('focuses the first displayed result on Enter, without navigating or closing the modal', () => {
         pressEnter();
 
-        expect(visitUrl).toHaveBeenCalledWith('/group/project/-/boards');
-      });
-
-      it('closes the modal before navigating on Enter', () => {
-        pressEnter();
-
-        expect(hideModal).toHaveBeenCalled();
+        // Assert identity, not just that some item was focused: focusItem is
+        // one shared mock across every stubbed item, and $refs.searchResultItems[0]
+        // (Vue 2 v-for ref array registration order) isn't guaranteed to track
+        // the current filteredItems order, so this also guards the ref-ordering fix.
+        expect(focusItem).toHaveBeenCalled();
+        expect(focusItem.mock.contexts[0].item.id).toBe('boards');
+        expect(visitUrl).not.toHaveBeenCalled();
+        expect(hideModal).not.toHaveBeenCalled();
       });
     });
 
@@ -1267,10 +1393,10 @@ describe('FeatureLibraryModal', () => {
         findModal().vm.$emit('shown');
       });
 
-      it('does not navigate on Enter', () => {
+      it('does not focus a result on Enter', () => {
         pressEnter();
 
-        expect(visitUrl).not.toHaveBeenCalled();
+        expect(focusItem).not.toHaveBeenCalled();
       });
     });
 
@@ -1282,10 +1408,11 @@ describe('FeatureLibraryModal', () => {
         await waitForPromises();
       });
 
-      it('navigates to the backend-ranked first result on Enter', () => {
+      it('focuses the backend-ranked first result on Enter', () => {
         pressEnter();
 
-        expect(visitUrl).toHaveBeenCalledWith('/group/project/-/project_members');
+        expect(focusItem).toHaveBeenCalled();
+        expect(focusItem.mock.contexts[0].item.id).toBe('members');
       });
     });
 
@@ -1297,7 +1424,7 @@ describe('FeatureLibraryModal', () => {
       it('does nothing on Enter', () => {
         pressEnter();
 
-        expect(visitUrl).not.toHaveBeenCalled();
+        expect(focusItem).not.toHaveBeenCalled();
       });
     });
 
@@ -1311,22 +1438,7 @@ describe('FeatureLibraryModal', () => {
       it('does nothing on Enter', () => {
         pressEnter();
 
-        expect(visitUrl).not.toHaveBeenCalled();
-      });
-    });
-
-    describe('when the first result has no link', () => {
-      beforeEach(async () => {
-        mockAxios.onGet(SEARCH_URL).reply(HTTP_STATUS_OK, { ids: [] });
-        createWrapper();
-        await emitSearch('milestones');
-        await waitForPromises();
-      });
-
-      it('does nothing on Enter', () => {
-        pressEnter();
-
-        expect(visitUrl).not.toHaveBeenCalled();
+        expect(focusItem).not.toHaveBeenCalled();
       });
     });
 
@@ -1341,7 +1453,29 @@ describe('FeatureLibraryModal', () => {
       it('does nothing on Enter', () => {
         pressEnter();
 
+        expect(focusItem).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when the first displayed result has no link', () => {
+      beforeEach(async () => {
+        mockAxios.onGet(SEARCH_URL).reply(HTTP_STATUS_OK, { ids: [] });
+        createWrapper();
+        // 'milestones' has no link in defaultSections and is the only match.
+        await emitSearch('milestones');
+        await waitForPromises();
+      });
+
+      it('delegates to focus(), which intentionally no-ops for link-less items, rather than navigating', () => {
+        // The no-op here is intentional: a link-less item isn't navigable, so
+        // there's nothing to focus into for that row. The modal itself
+        // doesn't special-case this — FeatureLibraryItem#focus() is a no-op
+        // when there's no title link to focus (see feature_library_item_spec.js).
+        pressEnter();
+
+        expect(focusItem).toHaveBeenCalled();
         expect(visitUrl).not.toHaveBeenCalled();
+        expect(hideModal).not.toHaveBeenCalled();
       });
     });
   });
@@ -1433,7 +1567,7 @@ describe('FeatureLibraryModal', () => {
       );
     });
 
-    it('tracks navigating via Enter in the search box, labelled with the item id', async () => {
+    it('does not track a navigate event on Enter in the search box, since it only focuses the first result', async () => {
       mockAxios.onGet(SEARCH_URL).reply(HTTP_STATUS_OK, { ids: [] });
       await emitSearch('board');
       await waitForPromises();
@@ -1441,9 +1575,9 @@ describe('FeatureLibraryModal', () => {
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
       findSearch().vm.$emit('keydown', new KeyboardEvent('keydown', { key: 'Enter' }));
 
-      expect(trackEventSpy).toHaveBeenCalledWith(
+      expect(trackEventSpy).not.toHaveBeenCalledWith(
         EVENT_NAVIGATE_TO_FEATURE_FROM_FEATURE_LIBRARY_MODAL,
-        { label: 'boards' },
+        expect.anything(),
         CATEGORY,
       );
     });

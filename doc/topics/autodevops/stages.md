@@ -546,7 +546,7 @@ code navigation features common to integrated development environments (IDEs),
 including type signatures, symbol documentation, and go-to definition. It's powered by
 [LSIF](https://lsif.dev/) and available for Auto DevOps projects using Go language only.
 GitLab plans to add support for more languages as more LSIF indexers become available.
-You can follow the [code intelligence epic](https://gitlab.com/groups/gitlab-org/-/epics/4212)
+You can follow the [code intelligence epic](https://gitlab.com/groups/gitlab-org/-/work_items/4212)
 for updates.
 
 This stage is enabled by default. You can disable it by adding the

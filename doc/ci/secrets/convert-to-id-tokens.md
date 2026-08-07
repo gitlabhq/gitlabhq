@@ -240,7 +240,7 @@ if preferred.
 
 ### KV Secrets Engine v2
 
-There are two formats you can use for the v2 engine.
+You can use two formats for the v2 engine.
 
 Long format:
 
@@ -264,7 +264,7 @@ job:
       file: false
 ```
 
-This is the same as the example for the v1 engine but `secrets:vault:engine:name:` is set to `kv-v2` to match the engine.
+This long format is the same as the example for the v1 engine, but `secrets:vault:engine:name:` is set to `kv-v2` to match the engine.
 
 You can also use a short format:
 

@@ -22,7 +22,8 @@ This table lists the default model for each feature in the Agent Platform.
 | Feature | Model |
 |-------|--------------|
 | GitLab Duo Agentic Chat | Claude Sonnet 4.6 Gemini Enterprise Agent Platform |
-| Code Review Flow and Security Review Flow | Claude Sonnet 4.6 Gemini Enterprise Agent Platform |
+| Code Review Flow | Claude Sonnet 5 Gemini Enterprise Agent Platform |
+| Security Review Flow | Claude Sonnet 4.6 Gemini Enterprise Agent Platform |
 | All other agents | Claude Sonnet 4.6 Gemini Enterprise Agent Platform |
 
 ## Supported models
@@ -30,33 +31,33 @@ This table lists the default model for each feature in the Agent Platform.
 This table lists the models you can select for features
 in the Agent Platform.
 
-| Model                       | GitLab Duo Agentic Chat | Code Review Flow and Security Review Flow | All other agents |
-|-----------------------------|-------------------------|--------------------------------------------|------------------|
-| Claude Fable 5 <sup>1</sup> | {{< yes >}}             | {{< no >}}                                 | {{< yes >}}      |
-| Claude Sonnet 4.5           | {{< yes >}}             | {{< yes >}}                                | {{< yes >}}      |
-| Claude Sonnet 4.6           | {{< yes >}}             | {{< yes >}}                                | {{< yes >}}      |
-| Claude Sonnet 5             | {{< yes >}}             | {{< no >}}                                 | {{< yes >}}      |
-| Claude Haiku 4.5            | {{< yes >}}             | {{< no >}}                                 | {{< yes >}}      |
-| Claude Opus 4.5             | {{< yes >}}             | {{< no >}}                                 | {{< yes >}}      |
-| Claude Opus 4.6             | {{< yes >}}             | {{< no >}}                                 | {{< yes >}}      |
-| Claude Opus 4.7             | {{< yes >}}             | {{< no >}}                                 | {{< yes >}}      |
-| Claude Opus 4.8             | {{< yes >}}             | {{< no >}}                                 | {{< yes >}}      |
-| Claude Opus 5               | {{< yes >}}             | {{< no >}}                                 | {{< yes >}}      |
-| Gemini 3.5 Flash            | {{< yes >}}             | {{< no >}}                                 | {{< yes >}}      |
-| Gemini 3.6 Flash            | {{< yes >}}             | {{< no >}}                                 | {{< yes >}}      |
-| GPT-5                       | {{< yes >}}             | {{< no >}}                                 | {{< yes >}}      |
-| GPT-5.1                     | {{< yes >}}             | {{< no >}}                                 | {{< yes >}}      |
-| GPT-5.2                     | {{< yes >}}             | {{< yes >}}                                | {{< yes >}}      |
-| GPT-5 Codex                 | {{< yes >}}             | {{< no >}}                                 | {{< yes >}}      |
-| GPT-5.2 Codex               | {{< yes >}}             | {{< no >}}                                 | {{< yes >}}      |
-| GPT-5.3 Codex               | {{< yes >}}             | {{< yes >}}                                | {{< yes >}}      |
-| GPT-5 Mini                  | {{< yes >}}             | {{< no >}}                                 | {{< yes >}}      |
-| GPT-5.4 Mini                | {{< yes >}}             | {{< no >}}                                 | {{< yes >}}      |
-| GPT-5.4 Nano                | {{< yes >}}             | {{< no >}}                                 | {{< yes >}}      |
-| GPT-5.5 <sup>1</sup>        | {{< yes >}}             | {{< no >}}                                 | {{< yes >}}      |
-| GPT-5.6 Sol <sup>1</sup>    | {{< yes >}}             | {{< no >}}                                 | {{< yes >}}      |
-| GPT-5.6 Terra <sup>1</sup>  | {{< yes >}}             | {{< no >}}                                 | {{< yes >}}      |
-| GPT-5.6 Luna <sup>1</sup>   | {{< yes >}}             | {{< no >}}                                 | {{< yes >}}      |
+| Model                       | GitLab Duo Agentic Chat | Code Review Flow | Security Review Flow | All other agents |
+|-----------------------------|-------------------------|------------------|----------------------|------------------|
+| Claude Fable 5 <sup>1</sup> | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| Claude Sonnet 4.5           | {{< yes >}}             | {{< yes >}}      | {{< yes >}}          | {{< yes >}}      |
+| Claude Sonnet 4.6           | {{< yes >}}             | {{< yes >}}      | {{< yes >}}          | {{< yes >}}      |
+| Claude Sonnet 5             | {{< yes >}}             | {{< yes >}}      | {{< no >}}           | {{< yes >}}      |
+| Claude Haiku 4.5            | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| Claude Opus 4.5             | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| Claude Opus 4.6             | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| Claude Opus 4.7             | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| Claude Opus 4.8             | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| Claude Opus 5               | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| Gemini 3.5 Flash            | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| Gemini 3.6 Flash            | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| GPT-5                       | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| GPT-5.1                     | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| GPT-5.2                     | {{< yes >}}             | {{< yes >}}      | {{< yes >}}          | {{< yes >}}      |
+| GPT-5 Codex                 | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| GPT-5.2 Codex               | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| GPT-5.3 Codex               | {{< yes >}}             | {{< yes >}}      | {{< yes >}}          | {{< yes >}}      |
+| GPT-5 Mini                  | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| GPT-5.4 Mini                | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| GPT-5.4 Nano                | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| GPT-5.5 <sup>1</sup>        | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| GPT-5.6 Sol <sup>1</sup>    | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| GPT-5.6 Terra <sup>1</sup>  | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
+| GPT-5.6 Luna <sup>1</sup>   | {{< yes >}}             | {{< no >}}       | {{< no >}}           | {{< yes >}}      |
 
 **Footnotes**:
 
@@ -85,6 +86,8 @@ in the Agent Platform.
 - GPT-5.2 and GPT-5.3 Codex [added](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/5652) as selectable models for Code Review Flow in GitLab 19.1.
 - Ability to restrict GitLab Duo Agentic Chat to specific models [added](https://gitlab.com/groups/gitlab-org/-/work_items/22028) in GitLab 19.1.
 - Security Review Flow [added](https://gitlab.com/gitlab-org/gitlab/-/issues/603981) to model selection in GitLab 19.2.
+- Claude Sonnet 5 [added](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/6383) as a selectable model for Code Review Flow in GitLab 19.3.
+- LLM [updated](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/6422) to Claude Sonnet 5 Gemini Enterprise Agent Platform for Code Review Flow in GitLab 19.3.
 
 {{< /history >}}
 

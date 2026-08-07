@@ -110,8 +110,8 @@ Enable long polling with the `gitlab.webservice.workhorse.extraArgs` setting.
 When long polling is enabled, GitLab Workhorse subscribes to Redis
 PubSub channels and awaits notifications. A job request is released
 from a long poll when its runner key is changed, or when
-`apiCiLongPollingDuration` has been reached. There are a number of
-Prometheus metrics that you can monitor:
+`apiCiLongPollingDuration` has been reached. You can monitor the following
+Prometheus metrics:
 
 | Metric | Type | Description | Labels |
 | -----  | ---- | ----------- | ------ |

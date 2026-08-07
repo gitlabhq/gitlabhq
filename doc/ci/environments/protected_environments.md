@@ -55,7 +55,7 @@ To protect an environment:
 1. From the **Environment** list, select the environment you want to protect.
 1. In the **Allowed to deploy** list, select the role, users, or groups you
    want to give deploy access to. Keep in mind that:
-   - There are two roles to choose from:
+   - You can choose from two roles:
      - **Maintainers**: Allows access to all of the project's users with the Maintainer role.
      - **Developers**: Allows access to all of the project's users with the Maintainer and Developer roles.
    - You can also select groups that are already [invited](../../user/project/members/sharing_projects_groups.md#invite-a-group-to-a-project) to the project. Invited groups added to the project with the Reporter role appear in the dropdown list for [deployment-only access](#deployment-only-access-to-protected-environments).
@@ -64,7 +64,7 @@ To protect an environment:
 1. In the **Approvers** list, select the role, users, or groups you
    want to give deploy access to. Keep in mind that:
 
-   - There are two roles to choose from:
+   - You can choose from two roles:
      - **Maintainers**: Allows access to all of the project's users with the Maintainer role.
      - **Developers**: Allows access to all of the project's users with the Maintainer and Developer roles.
    - You can only select groups that are already [invited](../../user/project/members/sharing_projects_groups.md#invite-a-group-to-a-project) to the project.
@@ -290,6 +290,8 @@ Protected environments can also be used to require manual approvals before deplo
 
 ### Reporter can't run a trigger job that deploys to a protected environment in downstream pipeline
 
-A user who has [deployment-only access to protected environments](#deployment-only-access-to-protected-environments) might not be able to run a job if it's with a [`trigger`](../yaml/_index.md#trigger) keyword. This is because the job is missing the [`environment`](../yaml/_index.md#environment) keyword definition to associate the job with the protected environment, therefore the job is recognized as a standard job that uses [regular CI/CD permission model](../../user/permissions.md#project-cicd).
+You might not be able to run a job that uses the [`trigger`](../yaml/_index.md#trigger) keyword, even with [deployment-only access to protected environments](#deployment-only-access-to-protected-environments).
 
-See [this issue](https://gitlab.com/groups/gitlab-org/-/epics/8483) for more information about supporting `environment` keyword with `trigger` keyword.
+This issue occurs when the trigger job doesn't have the [`environment`](../yaml/_index.md#environment) keyword set. Without it, GitLab can't associate the job with the protected environment, so the job falls back to the [regular CI/CD permission model](../../user/permissions.md#project-cicd), which doesn't grant the user's deployment-only role access to run it.
+
+To resolve this issue, add the `environment` keyword directly to the trigger job.

@@ -72,9 +72,9 @@ cluster_providers_aws: supported
 cluster_providers_gcp: supported
 clusters: supported
 clusters_kubernetes_namespaces: supported
-custom_dashboard_search_data: todo
+custom_dashboard_search_data: supported
 custom_dashboard_versions: supported
-custom_dashboards: todo
+custom_dashboards: supported
 dependency_list_export_part_upload_states: todo
 dependency_list_export_part_uploads: todo
 dependency_list_export_parts: todo

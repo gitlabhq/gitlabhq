@@ -19,7 +19,7 @@ When using job rules, learn how to [avoid duplicate pipelines](job_rules.md#avoi
 
 ## Create a job that must be run manually
 
-You can require that a job doesn't run unless a user starts it. This is called a **manual job**.
+You can require that a job doesn't run unless a user starts it. This type of job is called a **manual job**.
 You might want to use a manual job for something like deploying to production.
 
 To specify a job as manual, add [`when: manual`](../yaml/_index.md#when) to the job

@@ -14,7 +14,6 @@ import { s__ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { HTTP_STATUS_TOO_MANY_REQUESTS } from '~/lib/utils/http_status';
-import { visitUrl } from '~/lib/utils/url_utility';
 import {
   onboardingFeatureLibrarySearchPath,
   onboardingFeatureLibraryAiSearchPath,
@@ -58,6 +57,12 @@ export default {
   modalId: MODAL_ID,
   DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
   FEEDBACK_ISSUE_URL,
+  i18n: {
+    geminiSearching: s__('FeatureLibrary|Searching with Gemini …'),
+    geminiEmptyState: s__(
+      "FeatureLibrary|Gemini couldn't find a matching feature. Try different keywords.",
+    ),
+  },
   inject: {
     panelType: { default: '' },
     resourceId: { default: null },
@@ -244,6 +249,34 @@ export default {
     emptyStateTitle() {
       return s__('FeatureLibrary|No features match your search');
     },
+    showGeminiTopBorder() {
+      // showEmptyState already requires !showGeminiEmptyState, so the two are
+      // mutually exclusive: no need to check showEmptyState separately here.
+      return !this.isGeminiSearching && !this.showGeminiEmptyState;
+    },
+    geminiStatusMessage() {
+      if (!this.showGeminiSection) {
+        return '';
+      }
+
+      if (this.isGeminiSearching) {
+        return this.$options.i18n.geminiSearching;
+      }
+
+      if (this.geminiErrorMessage) {
+        return this.geminiErrorMessage;
+      }
+
+      if (this.showGeminiEmptyState) {
+        return this.$options.i18n.geminiEmptyState;
+      }
+
+      if (this.geminiItems.length > 0) {
+        return s__('FeatureLibrary|Gemini found matching features.');
+      }
+
+      return '';
+    },
   },
   beforeUnmount() {
     this.cancelReveal();
@@ -268,14 +301,20 @@ export default {
       this.trackEvent(EVENT_OPEN_FEATURE_LIBRARY_MODAL);
     },
     onSearchEnter() {
-      if (!this.trimmedQuery || this.isSearching) return;
+      if (!this.trimmedQuery || this.isSearching || !this.filteredItems.length) return;
 
-      const [firstItem] = this.filteredItems;
-      if (!firstItem?.link) return;
-
-      this.onNavigate(firstItem.id);
-      this.$refs.modal.hide();
-      visitUrl(firstItem.link);
+      // Move focus into the results instead of navigating away: focusing the
+      // first result lets keyboard users continue from there
+      // (e.g. Tab to its pin action, or Enter again to open it).
+      //
+      // Match by id rather than taking $refs.searchResultItems[0]: Vue 2's
+      // v-for ref arrays reflect registration order, which isn't guaranteed
+      // to track the current (re-ranked) filteredItems order.
+      const [firstDisplayedItem] = this.filteredItems;
+      const firstResultComponent = (this.$refs.searchResultItems || []).find(
+        (component) => component.item.id === firstDisplayedItem.id,
+      );
+      firstResultComponent?.focus();
     },
     revealRemainingItems() {
       if (this.renderLimit >= this.catalog.length) return;
@@ -373,6 +412,11 @@ export default {
       this.isGeminiSearching = true;
       this.geminiErrorMessage = null;
 
+      // The "Search with Gemini" button unmounts once searching starts, which would
+      // otherwise silently drop keyboard focus to <body>. Return focus to the search
+      // input, which remains mounted throughout.
+      this.$refs.searchBox?.focusInput?.();
+
       try {
         const { data } = await axios.get(onboardingFeatureLibraryAiSearchPath(), {
           params: { query, panel: this.panelType, resource_id: this.resourceId },
@@ -405,6 +449,9 @@ export default {
     },
     hideGeminiSection() {
       this.geminiHidden = true;
+
+      // Re-focusing as the Hide button unmounts along with the rest of the Gemini section
+      this.$refs.searchBox?.focusInput?.();
     },
   },
 };
@@ -412,7 +459,6 @@ export default {
 
 <template>
   <gl-modal
-    ref="modal"
     :modal-id="$options.modalId"
     :aria-label="s__('FeatureLibrary|GitLab features')"
     :hide-footer="!showFooter"
@@ -447,6 +493,7 @@ export default {
           <feature-library-item
             v-for="item in filteredItems"
             :key="item.id"
+            ref="searchResultItems"
             :supports-pins="supportsPins"
             :item="item"
             :pinned="isPinned(item.id)"
@@ -509,15 +556,21 @@ export default {
           :title="emptyStateTitle"
           :description="s__('FeatureLibrary|Try a different search term.')"
         />
+        <!-- Always present in the DOM (not gated by showGeminiSection) so screen
+             readers pick up the *first* content change: a live region that enters
+             the DOM with content already set is not reliably announced. -->
+        <div
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+          data-testid="gemini-status-region"
+          class="gl-sr-only"
+        >
+          {{ geminiStatusMessage }}
+        </div>
         <template v-if="showGeminiSection">
-          <div
-            :class="[
-              'gl-p-4',
-              'gl-pt-3',
-              { 'gl-border-t': !isGeminiSearching && !(showGeminiEmptyState && !showEmptyState) },
-            ]"
-          >
-            <div v-if="showGeminiHeader" class="gl-flex gl-items-center gl-justify-between gl-py-2">
+          <div data-testid="gemini-section" :class="{ 'gl-border-t': showGeminiTopBorder }">
+            <div v-if="showGeminiHeader" class="gl-flex gl-items-center gl-justify-between gl-py-4">
               <h3 class="gl-m-0 gl-text-base gl-font-bold">
                 <gl-icon name="tanuki-ai" :size="16" class="gl-mr-2" />
                 {{ s__('FeatureLibrary|Suggested by Gemini') }}
@@ -536,18 +589,14 @@ export default {
               class="gl-flex gl-items-center gl-justify-center gl-gap-3 gl-py-5 gl-text-subtle"
             >
               <template v-if="isGeminiSearching">
-                <gl-loading-icon size="sm" data-testid="gemini-loading" />
-                <span>{{ s__('FeatureLibrary|Searching with Gemini …') }}</span>
+                <gl-loading-icon size="sm" aria-hidden="true" data-testid="gemini-loading" />
+                <span aria-hidden="true">{{ $options.i18n.geminiSearching }}</span>
               </template>
-              <span v-else-if="geminiErrorMessage" data-testid="gemini-error">
+              <span v-else-if="geminiErrorMessage" aria-hidden="true" data-testid="gemini-error">
                 {{ geminiErrorMessage }}
               </span>
-              <span v-else data-testid="gemini-empty-state">
-                {{
-                  s__(
-                    "FeatureLibrary|Gemini couldn't find a matching feature. Try different keywords.",
-                  )
-                }}
+              <span v-else aria-hidden="true" data-testid="gemini-empty-state">
+                {{ $options.i18n.geminiEmptyState }}
               </span>
             </div>
             <ul

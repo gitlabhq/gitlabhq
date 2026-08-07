@@ -66,6 +66,10 @@ export default {
     onNavigate() {
       this.$emit('navigate', this.item.id);
     },
+    // eslint-disable-next-line vue/no-unused-properties -- invoked externally via this.$refs.searchResultItems in feature_library_modal.vue
+    focus() {
+      this.$refs.titleLink?.$el?.focus();
+    },
   },
 };
 </script>
@@ -89,6 +93,7 @@ export default {
           <!-- eslint-disable tailwindcss/no-arbitrary-value -->
           <gl-link
             v-if="item.link"
+            ref="titleLink"
             variant="meta"
             :href="item.link"
             class="after:gl-absolute after:gl-inset-0 after:gl-content-['']"

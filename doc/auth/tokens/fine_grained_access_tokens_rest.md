@@ -4101,6 +4101,7 @@ incompatible with personal access tokens.
 | `POST` | `/projects/:id/uploads/authorize` | Workhorse pre-authorization |
 | `POST` | `/projects/import-relation/authorize` | Workhorse pre-authorization |
 | `POST` | `/projects/import/authorize` | Workhorse pre-authorization |
+| `POST` | `/rollouts/:id` | CD rollout deploy driver callback token |
 | `POST` | `/runners` | Runner token |
 | `DELETE` | `/runners` | Runner token |
 | `DELETE` | `/runners/managers` | Runner token |

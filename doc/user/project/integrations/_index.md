@@ -66,7 +66,7 @@ If [instance settings](../../../administration/settings/project_integration_mana
 have also been configured for the same integration, projects in the group inherit settings from the group.
 
 Only the entire settings for an integration can be inherited. Per-field inheritance
-is proposed in [epic 2137](https://gitlab.com/groups/gitlab-org/-/epics/2137).
+is proposed in [epic 2137](https://gitlab.com/groups/gitlab-org/-/work_items/2137).
 
 ### Remove a group default setting
 

@@ -68,8 +68,8 @@ Unknown Ruby version 2.7 found in `.ruby-version`. (RuboCop::ValidationError)
 Supported versions: 2.1, 2.2, 2.3, 2.4, 2.5
 ```
 
-This is caused by the default version of RuboCop used by the check engine not covering
-support for the Ruby version in use.
+The default RuboCop version in the check engine doesn't support the Ruby version
+in use.
 
 To use a custom version of RuboCop that
 [supports the version of Ruby used by the project](https://docs.rubocop.org/rubocop/compatibility.html#support-matrix),

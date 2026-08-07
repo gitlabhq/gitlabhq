@@ -390,7 +390,7 @@ For example:
 
 - A (0, 2)
 - A' (2, 4)
-  - This is retrying A
+  - A' retries A
 - B (1, 3)
 - C (6, 7)
 

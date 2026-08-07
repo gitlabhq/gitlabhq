@@ -7,9 +7,7 @@ project:
   permissions: []
   raw_permissions:
   - _contribute_security_policy_project
-  - _create_dast_pipeline
   - _read_security_report_job_artifact
-  - _run_dast_pipeline
   - access_security_and_compliance
   - admin_security_attributes
   - admin_vulnerability

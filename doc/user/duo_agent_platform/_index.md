@@ -92,16 +92,24 @@ Features available on the Free tier require the purchase of [GitLab Credits](../
 
 1. MCP clients do not consume credits directly. However, any Agent Platform usage, such as model requests made through an MCP client, might consume credits.
 
-## Beta and experiment features
+## Beta features that consume credits
 
-These features are either beta or experiment and do not consume GitLab Credits.
+These features are in beta and their usage consumes GitLab Credits.
 
-For [users on the Free](../../subscriptions/gitlab_credits.md#for-the-free-tier) tier, beta and experimental features do not consume credits,
+| Feature | Free | Premium | Ultimate |
+|---------|---|---|---|
+| [Security Review Flow](flows/foundational_flows/security_review.md) <br /> Detects business logic vulnerabilities in merge requests. | {{< no >}} | {{< no >}} | {{< yes >}} |
+
+## Beta and experimental features that don't consume credits
+
+These features are either beta or experimental and do not consume GitLab Credits.
+
+For [users on the Free](../../subscriptions/gitlab_credits.md#for-the-free-tier) tier, these beta and experimental features do not consume credits,
 but you require credits in your Monthly Commitment Pool to access them.
 
 > [!warning]
 > When a feature becomes generally available, usage of the feature starts to consume GitLab Credits on all GitLab versions and on all offerings.
-> Beta features can change to generally available with usage billing at any time.
+> Beta features that don't consume credits can change to generally available with usage billing at any time.
 
 | Feature | Free | Premium | Ultimate |
 |---------|---|---|---|

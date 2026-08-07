@@ -52,6 +52,18 @@ RSpec.describe Types::Namespaces::Metadata::ProjectNamespaceMetadataType, featur
       end
     end
 
+    context 'when user is signed in but not a member of a public project' do
+      let_it_be(:non_member) { create(:user) }
+
+      before do
+        project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+      end
+
+      it 'returns true' do
+        expect(resolve_field(:show_new_work_item, namespace, current_user: non_member)).to be(true)
+      end
+    end
+
     context 'when user can create work items' do
       let_it_be(:developer) { create(:user) }
 

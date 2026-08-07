@@ -6331,6 +6331,35 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       pipeline.complete_and_has_self_or_descendant_reports?(Ci::JobArtifact.of_report_type(:test))
     end
 
+    let_it_be_with_reload(:pipeline) { create(:ci_pipeline, :success) }
+
+    it 'checks artifacts using a build subquery with partition pruning' do
+      create(:ci_build, pipeline: pipeline)
+      child_pipeline = create(:ci_pipeline, :success, partition_id: 101, child_of: pipeline)
+      create(:ci_build, :test_reports, pipeline: child_pipeline)
+
+      recorder = ActiveRecord::QueryRecorder.new do
+        complete_and_has_self_or_descendant_reports?
+      end
+
+      artifact_existence_query = recorder.log.find do |query|
+        query.include?('SELECT 1 AS one FROM "p_ci_job_artifacts"')
+      end
+
+      expect(artifact_existence_query).to be_present
+
+      aggregate_failures do
+        expect(recorder.log).not_to include(
+          a_string_matching(/SELECT "p_ci_builds"."id", "p_ci_builds"."partition_id"/)
+        )
+        expect(artifact_existence_query).to include(
+          '"p_ci_job_artifacts"."job_id" IN (SELECT "p_ci_builds"."id"'
+        )
+          .and include('"p_ci_job_artifacts"."partition_id"')
+          .and include('"p_ci_builds"."partition_id"')
+      end
+    end
+
     context 'when the pipeline has reports' do
       let_it_be_with_reload(:pipeline) { create(:ci_pipeline, :with_test_reports, :success) }
 
@@ -6372,6 +6401,14 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       context 'with a nested child pipeline that has reports' do
         let_it_be(:child_pipeline) { create(:ci_pipeline, :success, child_of: pipeline) }
         let_it_be(:nested_child_pipeline) { create(:ci_pipeline, :with_test_reports, :success, child_of: child_pipeline) }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when the child pipeline is in another partition' do
+        let_it_be(:child_pipeline) do
+          create(:ci_pipeline, :with_test_reports, :success, partition_id: 101, child_of: pipeline)
+        end
 
         it { is_expected.to be_truthy }
       end

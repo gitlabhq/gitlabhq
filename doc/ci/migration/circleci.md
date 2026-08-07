@@ -70,7 +70,7 @@ job1:
 
 ### Workflows
 
-CircleCI determines the run order for jobs with `workflows`. This is also used to determine concurrent, sequential, scheduled, or manual runs. The equivalent function in GitLab CI/CD is called [stages](../yaml/_index.md#stages). Jobs on the same stage run in parallel, and only run after previous stages complete. Execution of the next stage is skipped when a job fails by default, but this can be allowed to continue even [after a failed job](../yaml/_index.md#allow_failure).
+CircleCI uses `workflows` to determine the run order for jobs, and whether runs are concurrent, sequential, scheduled, or manual. The equivalent function in GitLab CI/CD is called [stages](../yaml/_index.md#stages). Jobs on the same stage run in parallel, and only run after previous stages complete. Execution of the next stage is skipped when a job fails by default, but this can be allowed to continue even [after a failed job](../yaml/_index.md#allow_failure).
 
 See [the Pipeline Architecture Overview](../pipelines/pipeline_architectures.md) for guidance on different types of pipelines that you can use. Pipelines can be tailored to meet your needs, such as for a large complex project or a monorepo with independent defined components.
 
@@ -272,10 +272,10 @@ CircleCI provides [Contexts](https://circleci.com/docs/contexts/) to securely pa
 
 ## Orbs
 
-There are two GitLab issues open addressing CircleCI Orbs and how GitLab can achieve similar functionality.
+The following GitLab issues address CircleCI Orbs and how GitLab can achieve similar functionality:
 
-- [issue #1151](https://gitlab.com/gitlab-com/Product/-/issues/1151)
-- [issue #195173](https://gitlab.com/gitlab-org/gitlab/-/issues/195173)
+- [issue 1151](https://gitlab.com/gitlab-com/Product/-/issues/1151)
+- [issue 195173](https://gitlab.com/gitlab-org/gitlab/-/issues/195173)
 
 ## Build environments
 

@@ -452,7 +452,7 @@ For more information, see the [issue 891](https://github.com/semantic-release/gi
 
 ### JWT format job token errors
 
-There are some known issues with the JWT format for CI/CD job tokens.
+The JWT format for CI/CD job tokens has the following known issues.
 
 #### `Error when persisting the task ARN.` error with EC2 Fargate Runner custom executor
 

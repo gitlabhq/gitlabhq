@@ -30,7 +30,7 @@ Prerequisites:
 
 - In a private project, you must have the Reporter, Developer, Maintainer, or Owner role. See [Environment permissions](#environment-permissions).
 
-There are a few ways to view a list of environments for a given project:
+You can view a list of environments for a given project in a few ways:
 
 - On the project's overview page, if at least one environment is available (that is, not stopped).
 

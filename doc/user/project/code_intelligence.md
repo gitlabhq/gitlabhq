@@ -37,7 +37,7 @@ indexes generated with SCIP tooling into a LSIF-compatible file. For discussions
 SCIP support, see [issue 412981](https://gitlab.com/gitlab-org/gitlab/-/issues/412981).
 
 For progress on upcoming code intelligence enhancements, see
-[epic 4212](https://gitlab.com/groups/gitlab-org/-/epics/4212).
+[epic 4212](https://gitlab.com/groups/gitlab-org/-/work_items/4212).
 
 ## Configure code intelligence
 

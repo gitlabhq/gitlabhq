@@ -14,7 +14,7 @@ title: Code Review Flow
 
 {{< collapsible title="Model information" >}}
 
-- LLM: Anthropic Claude Sonnet 4.6 Vertex
+- LLM: Anthropic Claude Sonnet 5 Vertex
 - [Select a different model](../../model_selection.md) using the **Agentic Code Review** setting.
 - Available on [GitLab Duo with self-hosted models](../../../../administration/gitlab_duo_self_hosted/_index.md)
 
@@ -26,6 +26,7 @@ title: Code Review Flow
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8. Feature flag `duo_code_review_on_agent_platform` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217209).
 - Available on the Free tier on GitLab.com with GitLab Credits in GitLab 18.10.
 - LLM [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236876) to Claude Sonnet 4.6 Vertex in GitLab 19.1.
+- LLM [updated](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/6422) to Claude Sonnet 5 Vertex in GitLab 19.3.
 
 {{< /history >}}
 

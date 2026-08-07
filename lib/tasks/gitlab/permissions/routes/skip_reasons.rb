@@ -8,6 +8,7 @@ module Tasks
           REASON_LABELS = {
             ai_workflows_oauth_auth: 'AI workflows OAuth token',
             catch_all: 'Catch-all fallback',
+            cd_rollout_workflow_event: 'CD rollout deploy driver callback token',
             compliance_external_auth: 'Compliance external control token',
             container_registry_event_auth: 'Container registry event token',
             deprecated_endpoint: 'Deprecated endpoint',

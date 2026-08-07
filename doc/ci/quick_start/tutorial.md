@@ -98,7 +98,7 @@ in the project and runners are available to run jobs.
 
 This step introduces:
 
-- [Jobs](../jobs/_index.md): These are self-contained parts of a pipeline that run your commands.
+- [Jobs](../jobs/_index.md): Jobs are self-contained parts of a pipeline that run your commands.
   Jobs run on [runners](../runners/_index.md), separate from the GitLab instance.
 - [`script`](../yaml/_index.md#script): This section of a job's configuration is
   where you define the commands for jobs. If there are multiple commands (in an array),

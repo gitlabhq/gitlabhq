@@ -27257,7 +27257,13 @@ msgstr ""
 msgid "DependencyFirewall|By %{name}"
 msgstr ""
 
+msgid "DependencyFirewall|Charges may be incurred at the end of beta"
+msgstr ""
+
 msgid "DependencyFirewall|Dependency Firewall"
+msgstr ""
+
+msgid "DependencyFirewall|Dependency Firewall is free during the beta period. Once generally available, it will be a paid feature billed through %{linkStart}GitLab Credits%{linkEnd}. You'll need to opt in before anything is charged, and we'll give you advance notice ahead of general availability."
 msgstr ""
 
 msgid "DependencyFirewall|Dependency Firewall settings were successfully updated."
@@ -27279,6 +27285,12 @@ msgid "DependencyFirewall|Failed to load dependency firewall activity."
 msgstr ""
 
 msgid "DependencyFirewall|Failed to update the Dependency Firewall settings."
+msgstr ""
+
+msgid "DependencyFirewall|Last 30 days"
+msgstr ""
+
+msgid "DependencyFirewall|Last 7 days"
 msgstr ""
 
 msgid "DependencyFirewall|Last modified"
@@ -27306,6 +27318,9 @@ msgid "DependencyFirewall|Policies"
 msgstr ""
 
 msgid "DependencyFirewall|Rule"
+msgstr ""
+
+msgid "DependencyFirewall|Time period"
 msgstr ""
 
 msgid "DependencyFirewall|Total triggers"
@@ -34614,6 +34629,9 @@ msgid "FeatureLibrary|Can't find what you're looking for? Search with AI"
 msgstr ""
 
 msgid "FeatureLibrary|Gemini couldn't find a matching feature. Try different keywords."
+msgstr ""
+
+msgid "FeatureLibrary|Gemini found matching features."
 msgstr ""
 
 msgid "FeatureLibrary|GitLab features"
@@ -83434,6 +83452,9 @@ msgid "Unable to parse JSON"
 msgstr ""
 
 msgid "Unable to parse the vulnerability report's options."
+msgstr ""
+
+msgid "Unable to process rollout workflow event."
 msgstr ""
 
 msgid "Unable to remove a reviewer at the moment, try again later"

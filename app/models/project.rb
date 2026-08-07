@@ -1016,7 +1016,7 @@ class Project < ApplicationRecord
 
   scope :with_namespace_domain_pages, -> do
     joins(:project_setting)
-      .where(project_setting: { pages_unique_domain_enabled: false })
+      .merge(ProjectSetting.with_pages_namespace_domain)
   end
 
   scope :with_group_child_entity_associations, -> {

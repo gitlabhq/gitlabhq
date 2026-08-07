@@ -4,9 +4,10 @@ FIPS_MODE ?= 0
 PKG := gitlab.com/gitlab-org/gitlab/workhorse
 BUILD_DIR ?= $(CURDIR)
 TARGET_DIR ?= $(BUILD_DIR)/_build
-VERSION_STRING := $(shell git describe)
+VERSION_STRING := $(shell git describe --tags --exact-match --match 'v*' 2>/dev/null)
 ifeq ($(strip $(VERSION_STRING)),)
-VERSION_STRING := v$(shell cat VERSION)
+GIT_COMMIT := $(shell git rev-parse --short HEAD 2>/dev/null)
+VERSION_STRING := v$(shell cat VERSION)$(if $(GIT_COMMIT),-g$(GIT_COMMIT))
 endif
 DATE_FMT = +%Y%m%d.%H%M%S
 ifdef SOURCE_DATE_EPOCH

@@ -20,10 +20,17 @@ RSpec.describe ProjectSetting, type: :model, feature_category: :groups_and_proje
     let_it_be(:project_1) { create(:project) }
     let_it_be(:project_2) { create(:project) }
     let_it_be(:project_setting_1) { create(:project_setting, project: project_1) }
-    let_it_be(:project_setting_2) { create(:project_setting, project: project_2) }
+    let_it_be(:project_setting_2) do
+      create(:project_setting, project: project_2, pages_unique_domain_enabled: true,
+        pages_unique_domain: 'unique.example.com')
+    end
 
     it 'returns project setting for the given projects' do
       expect(described_class.for_projects(project_1)).to contain_exactly(project_setting_1)
+    end
+
+    it 'returns project settings using the namespace domain' do
+      expect(described_class.with_pages_namespace_domain).to contain_exactly(project_setting_1)
     end
   end
 

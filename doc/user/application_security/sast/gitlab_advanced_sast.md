@@ -22,8 +22,8 @@ title: GitLab Advanced SAST
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/474094) in GitLab 17.3.
 - Support for Java Server Pages (JSP) added in GitLab 17.4.
 - Support for PHP [added](https://gitlab.com/groups/gitlab-org/-/epics/14273) in GitLab 18.1.
-- Support for C/C++ [added](https://gitlab.com/groups/gitlab-org/-/epics/14271) in GitLab 18.6.
-- Support for Swift and Objective-C [added](https://gitlab.com/groups/gitlab-org/-/epics/16318) in GitLab 19.3 as a [beta](../../../policy/development_stages_support.md#beta).
+- Support for C/C++ [added](https://gitlab.com/groups/gitlab-org/-/work_items/14271) in GitLab 18.6.
+- Support for Swift and Objective-C [added](https://gitlab.com/groups/gitlab-org/-/work_items/16318) in GitLab 19.3 as a [beta](../../../policy/development_stages_support.md#beta).
 
 {{< /history >}}
 

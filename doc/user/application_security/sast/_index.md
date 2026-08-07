@@ -388,7 +388,7 @@ For more information about language support plans in SAST, see the [category dir
 
 {{< history >}}
 
-- Support for C/C++ [introduced](https://gitlab.com/groups/gitlab-org/-/epics/14271) in GitLab 18.6.
+- Support for C/C++ [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/14271) in GitLab 18.6.
 
 {{< /history >}}
 

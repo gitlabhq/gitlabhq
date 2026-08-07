@@ -46,7 +46,7 @@ you can set up [protected environments](protected_environments.md).
 
 Pipeline jobs in GitLab CI/CD run in parallel, so it's possible that two deployment
 jobs in two different pipelines attempt to deploy to the same environment at the same
-time. This is not desired behavior as deployments should happen sequentially.
+time. Deployments should happen sequentially, so this behavior is not desirable.
 
 You can ensure only one deployment job runs at a time with the [`resource_group` keyword](../yaml/_index.md#resource_group) in your `.gitlab-ci.yml`.
 
@@ -127,8 +127,7 @@ The improved pipeline flow with the setting enabled:
 
 If you want to prevent deployments for a particular period, for example during a planned
 vacation period when most employees are out, you can set up a [Deploy Freeze](../../user/project/releases/_index.md#prevent-unintentional-releases-by-setting-a-deploy-freeze).
-During a deploy freeze period, no deployment can be executed. This is helpful to
-ensure that deployments do not happen unexpectedly.
+During a deploy freeze period, GitLab blocks all deployments so they do not happen unexpectedly.
 
 The next configured deploy freeze is displayed at the top of the
 [environment deployments list](_index.md#view-environments-and-deployments)

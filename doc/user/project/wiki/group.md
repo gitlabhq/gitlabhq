@@ -21,7 +21,7 @@ Group wikis are similar to [project wikis](_index.md), with a few limitations:
 - [Git LFS](../../../topics/git/lfs/_index.md) is not supported.
 - Changes to group wikis don't show up in the [group's activity feed](../../group/manage.md#group-activity-analytics).
 
-For updates, follow [the epic that tracks feature parity with project wikis](https://gitlab.com/groups/gitlab-org/-/epics/2782).
+For updates, follow [the epic that tracks feature parity with project wikis](https://gitlab.com/groups/gitlab-org/-/work_items/2782).
 
 Similar to project wikis, group members with the Developer, Maintainer, or Owner role
 can edit group wikis. Group wiki repositories can be moved using the
@@ -121,4 +121,4 @@ All data from the wiki has been cleared, and the wiki is ready for use.
 - [Group repository storage moves API](../../../api/group_repository_storage_moves.md)
 - [Group wikis API](../../../api/group_wikis.md)
 - [Wiki keyboard shortcuts](../../shortcuts.md#wiki-pages)
-- [Epic: Feature parity with project wikis](https://gitlab.com/groups/gitlab-org/-/epics/2782)
+- [Epic: Feature parity with project wikis](https://gitlab.com/groups/gitlab-org/-/work_items/2782)

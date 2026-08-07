@@ -308,6 +308,8 @@ tags:
   description: Operations related to resource events.
 - name: Resource subscriptions
   description: Operations related to resource subscriptions.
+- name: Rollouts
+  description: Operations related to rollouts.
 - name: Runner controller tokens
   description: Operations related to runner controller tokens.
 - name: Runner controllers
@@ -692,6 +694,43 @@ paths:
         required: true
         schema: {}
         in: path
+  "/api/v4/rollouts/{id}":
+    post:
+      operationId: postApiV4RolloutsId
+      summary: Ingest a rollout workflow event
+      description: Reports flow-graph progress from the CD orchestrator (a Starlark
+        workflow run by AutoFlow).
+      tags:
+      - Rollouts
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesCdRollout"
+        '401':
+          description: Unauthorized
+        '422':
+          description: Unprocessable entity
+        '404':
+          description: Not Found
+        '400':
+          description: Bad Request
+      parameters:
+      - name: id
+        required: true
+        description: The ID of the rollout
+        schema:
+          type: integer
+        in: path
+        example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/RequestBody_523117c79970"
   "/api/v4/jobs/{id}/sbom_scans/authorize":
     post:
       operationId: postApiV4JobsIdSbomScansAuthorize
@@ -76362,6 +76401,29 @@ components:
           type: boolean
         license:
           "$ref": "#/components/schemas/APIEntitiesLicenseBasic"
+    APIEntitiesCdRollout:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        iid:
+          type: integer
+          example: 1
+        state:
+          type: string
+          example: in_progress
+        workflow_ref:
+          type: string
+          example: cd-rollout-1
+        started_at:
+          type: string
+          format: date-time
+          example: '2026-07-22T11:37:00Z'
+        finished_at:
+          type: string
+          format: date-time
+          example: '2026-07-22T11:42:00Z'
     APIEntitiesSecurityVulnerabilityScanningSbomScan:
       type: object
       properties:
@@ -94142,6 +94204,58 @@ components:
       required:
       - started_on
       - expires_on
+    RequestBody_523117c79970:
+      type: object
+      properties:
+        topic:
+          type: string
+          enum:
+          - com.gitlab.cd.deployment
+          description: The event topic
+          minLength: 1
+        type:
+          type: string
+          enum:
+          - com.gitlab.cd.stage_started
+          - com.gitlab.cd.stage_succeeded
+          - com.gitlab.cd.step_started
+          - com.gitlab.cd.step_succeeded
+          - com.gitlab.cd.step_failed
+          description: The event type
+          minLength: 1
+        data:
+          type: object
+          description: The event payload
+          properties:
+            position:
+              type: array
+              items:
+                type: integer
+              description: Zero-based path to the stage/step in the flow definition
+              nullable: true
+            stage_name:
+              type: string
+              description: Name of the enclosing stage (a GitLab environment name);
+                absent for a step outside any stage
+              nullable: true
+              maxLength: 255
+            step_type:
+              type: string
+              description: The step type, present on step_* events
+              nullable: true
+              maxLength: 255
+            error:
+              type: string
+              description: Failure detail, present on step_failed
+              nullable: true
+              maxLength: 2000
+          required:
+          - position
+          nullable: true
+      required:
+      - topic
+      - type
+      - data
     RequestBody_c172efdc6039:
       type: object
       properties:
