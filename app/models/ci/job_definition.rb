@@ -31,7 +31,7 @@ module Ci
     validates :project, presence: true
     validates :config, json_schema: {
       filename: 'ci_job_definition_config',
-      size_limit: 1.megabyte,
+      size_limit: -> { Gitlab::CurrentSettings.ci_max_total_yaml_size_bytes },
       detail_errors: true
     }
 

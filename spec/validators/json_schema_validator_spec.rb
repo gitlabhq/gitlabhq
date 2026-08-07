@@ -251,6 +251,33 @@ RSpec.describe JsonSchemaValidator, feature_category: :shared do
         end
       end
     end
+
+    context 'when size_limit is a callable' do
+      let(:size_limit) { 10.kilobytes }
+      let(:validator) do
+        described_class.new(attributes: [:data], filename: "build_report_result_data", size_limit: -> { size_limit })
+      end
+
+      it 'resolves the limit at validation time' do
+        build_report_result.data = { large_field: 'x' * 15000 }
+
+        subject
+
+        expect(build_report_result.errors.size).to eq(1)
+        expect(build_report_result.errors.full_messages.first).to include("is too large")
+        expect(build_report_result.errors.full_messages.first).to include("10 KiB")
+      end
+
+      context 'when the resolved limit allows the data' do
+        let(:size_limit) { 1.megabyte }
+
+        it 'validates schema normally' do
+          subject
+
+          expect(build_report_result.errors).to be_empty
+        end
+      end
+    end
   end
 
   describe '#schema' do

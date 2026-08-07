@@ -725,6 +725,9 @@ update `ci_max_total_yaml_size_bytes` with the new value. For example, to set it
 ApplicationSetting.update(ci_max_total_yaml_size_bytes: 20.megabytes)
 ```
 
+This limit also bounds the compiled configuration stored for a single CI/CD job when a pipeline is created.
+A single job's configuration is always a subset of the entire pipeline configuration, so it cannot exceed this limit.
+
 ### Limit CI/CD job annotations
 
 {{< history >}}

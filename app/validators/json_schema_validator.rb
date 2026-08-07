@@ -29,8 +29,9 @@ class JsonSchemaValidator < ActiveModel::EachValidator
     value = Gitlab::Json.parse(Gitlab::Json.dump(value)) if options[:hash_conversion] == true
     value = Gitlab::Json.parse(value.to_s) if options[:parse_json] == true && !value.nil?
 
-    if size_limit && !valid_size?(value)
-      record.errors.add(attribute, size_error_message)
+    resolved_size_limit = resolve(size_limit)
+    if resolved_size_limit && !valid_size?(value, resolved_size_limit)
+      record.errors.add(attribute, size_error_message(resolved_size_limit))
       return
     end
 
@@ -52,7 +53,7 @@ class JsonSchemaValidator < ActiveModel::EachValidator
 
   attr_reader :base_directory, :size_limit
 
-  def valid_size?(value)
+  def valid_size?(value, size_limit)
     json_size(value) <= size_limit
   end
 
@@ -60,7 +61,11 @@ class JsonSchemaValidator < ActiveModel::EachValidator
     Gitlab::Json.dump(value).bytesize
   end
 
-  def size_error_message
+  def resolve(size_limit)
+    size_limit.respond_to?(:call) ? size_limit.call : size_limit
+  end
+
+  def size_error_message(size_limit)
     human_size = ActiveSupport::NumberHelper.number_to_human_size(size_limit)
     format(_("is too large. Maximum size allowed is %{size}"), size: human_size)
   end
