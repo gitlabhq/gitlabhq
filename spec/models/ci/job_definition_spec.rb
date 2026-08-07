@@ -189,6 +189,29 @@ RSpec.describe Ci::JobDefinition, feature_category: :continuous_integration do
         end
       end
 
+      context 'when the size limit is derived from ci_max_total_yaml_size_bytes' do
+        let(:config) { { yaml_variables: [{ key: 'LARGE', value: 'x' * 2.megabytes }] } }
+
+        context 'when the config is within the limit' do
+          before do
+            stub_application_setting(ci_max_total_yaml_size_bytes: 5.megabytes)
+          end
+
+          it { is_expected.to be_valid }
+        end
+
+        context 'when the config exceeds the limit' do
+          before do
+            stub_application_setting(ci_max_total_yaml_size_bytes: 10)
+          end
+
+          it 'is invalid' do
+            expect(job_definition).not_to be_valid
+            expect(job_definition.errors[:config].join).to include('is too large')
+          end
+        end
+      end
+
       context 'when config is nil' do
         let(:config) { nil }
 
