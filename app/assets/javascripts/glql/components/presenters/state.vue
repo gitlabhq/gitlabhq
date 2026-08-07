@@ -1,5 +1,6 @@
 <script>
 import { GlBadge } from '@gitlab/ui';
+import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { __ } from '~/locale';
 
 const badgeVariants = {
@@ -7,7 +8,12 @@ const badgeVariants = {
   default: { opened: 'success', closed: 'info' },
 };
 const badgeLabels = {
-  MergeRequest: { opened: __('Open'), closed: __('Closed'), merged: __('Merged') },
+  MergeRequest: {
+    opened: __('Open'),
+    closed: __('Closed'),
+    merged: __('Merged'),
+    locked: __('Locked'),
+  },
   default: { opened: __('Open'), closed: __('Closed') },
 };
 const badgeIcons = {
@@ -24,8 +30,15 @@ const normalizeState = (state) => {
   return state.toLowerCase();
 };
 
+// Typenames whose state values follow another source's shape, e.g. the MR
+// analytics dimension emits issuable-style states (opened/closed/merged).
+const sourceAliases = {
+  MergeRequestsAggregationResponseDimensions: 'MergeRequest',
+};
+
 const normalizeSource = (source) => {
-  if (source in badgeVariants) return source;
+  const aliased = sourceAliases[source] ?? source;
+  if (aliased in badgeVariants) return aliased;
   return 'default';
 };
 
@@ -48,9 +61,11 @@ export default {
     const state = normalizeState(this.data);
     // eslint-disable-next-line no-underscore-dangle
     const source = normalizeSource(this.item?.__typename);
-    const badgeVariant = badgeVariants[source][state];
-    const badgeLabel = badgeLabels[source][state];
-    const badgeIcon = badgeIcons[source][state];
+    // Fall back to a neutral badge with the normalized state for unmapped
+    // states, instead of rendering an empty badge.
+    const badgeVariant = badgeVariants[source][state] ?? 'neutral';
+    const badgeLabel = badgeLabels[source][state] ?? capitalizeFirstCharacter(state);
+    const badgeIcon = badgeIcons[source][state] ?? null;
 
     return { badgeVariant, badgeLabel, badgeIcon };
   },

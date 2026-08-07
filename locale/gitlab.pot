@@ -16385,6 +16385,9 @@ msgstr ""
 msgid "Cancel editing"
 msgstr ""
 
+msgid "Cancel editing the comment line range"
+msgstr ""
+
 msgid "Cancel pipeline"
 msgstr ""
 
@@ -29093,6 +29096,12 @@ msgstr ""
 msgid "Draft: %{filename}"
 msgstr ""
 
+msgid "Drag to change the first line of the comment"
+msgstr ""
+
+msgid "Drag to change the last line of the comment"
+msgstr ""
+
 msgid "Drag to reorder prioritized labels and change their relative priority."
 msgstr ""
 
@@ -31687,6 +31696,9 @@ msgid "Edited %{timeago} by %{author}"
 msgstr ""
 
 msgid "Editing"
+msgstr ""
+
+msgid "Editing the comment line range. Use the Up and Down arrow keys to adjust the selection, press Enter to confirm, or Escape to cancel."
 msgstr ""
 
 msgid "Editor Extensions"
@@ -38320,6 +38332,9 @@ msgid "GooglePlay|Use GitLab to build and release an app in Google Play."
 msgstr ""
 
 msgid "Got it"
+msgstr ""
+
+msgid "Governance"
 msgstr ""
 
 msgid "GpgKeys|Manage GPG keys"
@@ -58955,6 +58970,9 @@ msgstr ""
 msgid "PolicyStore|Create new policy"
 msgstr ""
 
+msgid "PolicyStore|Custom"
+msgstr ""
+
 msgid "PolicyStore|Custom Rule (Rego)"
 msgstr ""
 
@@ -59085,6 +59103,9 @@ msgid "PolicyStore|Recurring"
 msgstr ""
 
 msgid "PolicyStore|Rego policy definition"
+msgstr ""
+
+msgid "PolicyStore|Remove %{label}"
 msgstr ""
 
 msgid "PolicyStore|Require additional approvals before proceeding"
@@ -63343,6 +63364,9 @@ msgid_plural "RapidDiffs|%{count} threads hidden."
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "RapidDiffs|Add a comment to line %{line}"
+msgstr ""
+
 msgid "RapidDiffs|Add comment"
 msgstr ""
 
@@ -63370,6 +63394,9 @@ msgid "RapidDiffs|Diff line"
 msgstr ""
 
 msgid "RapidDiffs|Diff line number"
+msgstr ""
+
+msgid "RapidDiffs|Edit line range"
 msgstr ""
 
 msgid "RapidDiffs|Failed to expand lines, please try again."
@@ -63945,13 +63972,13 @@ msgstr ""
 msgid "ReleaseCreation|Version name cannot exceed %{maxLength} characters."
 msgstr ""
 
-msgid "ReleaseCreation|e.g. 1.2.3"
-msgstr ""
-
 msgid "ReleaseCreation|e.g. May production release"
 msgstr ""
 
 msgid "ReleaseCreation|e.g. eu-west-1-prod"
+msgstr ""
+
+msgid "ReleaseCreation|e.g. v1.2.3"
 msgstr ""
 
 msgid "Released"
@@ -73465,6 +73492,9 @@ msgstr ""
 msgid "SecurityReports|90 days"
 msgstr ""
 
+msgid "SecurityReports|A Vulnerability Resolution is already in progress for this project. Wait for it to finish before starting a new one."
+msgstr ""
+
 msgid "SecurityReports|A comment is required when changing the severity."
 msgstr ""
 
@@ -73607,6 +73637,9 @@ msgid "SecurityReports|Create Jira issue"
 msgstr ""
 
 msgid "SecurityReports|Create a merge request that updates the dependency to a fixed version."
+msgstr ""
+
+msgid "SecurityReports|Create an MR with Vulnerability Resolution"
 msgstr ""
 
 msgid "SecurityReports|Create issue"
@@ -73962,7 +73995,13 @@ msgstr ""
 msgid "SecurityReports|Report type"
 msgstr ""
 
+msgid "SecurityReports|Resolve vulnerabilities with AI"
+msgstr ""
+
 msgid "SecurityReports|Resolve vulnerability"
+msgstr ""
+
+msgid "SecurityReports|Resolve with AI"
 msgstr ""
 
 msgid "SecurityReports|Results show vulnerability findings from the latest successful %{helpPageLinkStart}pipeline%{helpPageLinkEnd}."
@@ -74029,6 +74068,11 @@ msgstr ""
 
 msgid "SecurityReports|Sorry, your filter produced no results"
 msgstr ""
+
+msgid "SecurityReports|Started Vulnerability Resolution for %{count} vulnerability."
+msgid_plural "SecurityReports|Started Vulnerability Resolution for %{count} vulnerabilities."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "SecurityReports|Starting 2025-05-15, we will gradually migrate vulnerabilities that have not been updated in the last 12 months to the vulnerability archive. Archived vulnerabilities are stored for 3 years before deletion. To access the archive, on the left sidebar, select Secure &gt; Security Configuration &gt; Vulnerability Management."
 msgstr ""
@@ -74102,6 +74146,9 @@ msgstr ""
 msgid "SecurityReports|This project has reached the maximum number of vulnerabilities it can contain. New vulnerabilities will not be created."
 msgstr ""
 
+msgid "SecurityReports|This project is public. GitLab Duo will generate merge requests with suggested fixes that may be visible to anyone."
+msgstr ""
+
 msgid "SecurityReports|This project is reaching the maximum number of vulnerabilities it can contain."
 msgstr ""
 
@@ -74109,6 +74156,9 @@ msgid "SecurityReports|This selection is required."
 msgstr ""
 
 msgid "SecurityReports|Time period"
+msgstr ""
+
+msgid "SecurityReports|To create the MR privately, see %{linkStart}Resolving a vulnerability privately%{linkEnd}."
 msgstr ""
 
 msgid "SecurityReports|To learn more about this CWE, view the %{linkStart}MITRE definition.%{linkEnd}"

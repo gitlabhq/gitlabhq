@@ -14,13 +14,6 @@ module BulkImports
       Gitlab::Database::GitlabSchema.tables_to_schema[association.table_name]
     end
 
-    def db_table
-      return unless relation
-      return unless association
-
-      association.table_name
-    end
-
     private
 
     attr_reader :pipeline_class, :portable_class

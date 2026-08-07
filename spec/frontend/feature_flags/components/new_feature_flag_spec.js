@@ -12,9 +12,6 @@ import BaseLayout from '~/vue_shared/components/base_layout.vue';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import { allUsersStrategy } from '../mock_data';
 
-const userCalloutId = 'feature_flags_new_version';
-const userCalloutsPath = `${TEST_HOST}/user_callouts`;
-
 Vue.use(Vuex);
 
 describe('New feature flag form', () => {
@@ -29,9 +26,6 @@ describe('New feature flag form', () => {
     wrapper = shallowMount(NewFeatureFlag, {
       store,
       provide: {
-        showUserCallout: true,
-        userCalloutId,
-        userCalloutsPath,
         environmentsEndpoint: 'environments.json',
         projectId: '8',
         ...opts,

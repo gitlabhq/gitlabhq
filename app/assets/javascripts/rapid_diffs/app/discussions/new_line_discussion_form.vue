@@ -1,5 +1,6 @@
 <script>
-import { __, sprintf } from '~/locale';
+import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { __, s__, sprintf } from '~/locale';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_action';
 import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
 import { clearDraft } from '~/lib/utils/autosave';
@@ -10,9 +11,16 @@ import NoteForm from './note_form.vue';
 
 export default {
   name: 'NewLineDiscussionForm',
+  i18n: {
+    editLineRange: s__('RapidDiffs|Edit line range'),
+  },
   components: {
+    GlButton,
     LineRangeHeadline,
     NoteForm,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   inject: {
     store: { type: Object },
@@ -53,6 +61,9 @@ export default {
       const line = oldLine === newLine ? oldLine : [oldLine, newLine].join('-');
       return `${window.location.pathname}-${[path, line].join('-')}`;
     },
+    canEditLineRange() {
+      return Boolean(this.store.startLineRangeEditing);
+    },
     lineRange() {
       return this.discussion.position?.line_range;
     },
@@ -86,6 +97,9 @@ export default {
       clearDraft(this.autosaveKey);
       this.store.removeNewLineDiscussionForm(this.discussion);
     }),
+    editLineRange() {
+      this.store.startLineRangeEditing(this.discussion);
+    },
     async saveNote(noteBody) {
       try {
         await this.store.createLineDiscussion({
@@ -132,7 +146,19 @@ export default {
     class="gl-rounded-[var(--content-border-radius)] gl-bg-subtle gl-px-4 gl-py-4"
     :data-discussion-id="discussion.id"
   >
-    <line-range-headline :line-range="lineRange" class="gl-mb-3 gl-text-sm gl-text-subtle" />
+    <line-range-headline :line-range="lineRange" class="gl-mb-3 gl-text-sm gl-text-subtle">
+      <gl-button
+        v-if="canEditLineRange"
+        v-gl-tooltip
+        size="small"
+        category="tertiary"
+        icon="pencil"
+        :title="$options.i18n.editLineRange"
+        :aria-label="$options.i18n.editLineRange"
+        data-testid="edit-line-range-button"
+        @click="editLineRange"
+      />
+    </line-range-headline>
     <note-form
       :autosave-key="autosaveKey"
       :autofocus="discussion.shouldFocus"

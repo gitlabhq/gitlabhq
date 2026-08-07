@@ -30,12 +30,10 @@ module Organizations
             "Authz::AdminRole",
             "Authz::GranularScope",
             "Authz::PersonalAccessTokenGranularScope",
-            # BulkImports::Export is scoped to a project or group, and its organization_id is
-            # derived from that parent via the `bulk_import_exports_sharding_key` trigger. It must
-            # not follow the user to a new organization, otherwise it would diverge from its
-            # project/group. The model declares no organization association today, so it is already
-            # excluded; this entry makes the intent explicit and guards against a future
-            # `belongs_to :organization` silently enabling the transfer.
+            # BulkImports::Export is scoped to a project or group, so it must not follow the user
+            # to a new organization, otherwise it would diverge from its project/group. The model
+            # declares no organization association today, so it is already excluded; this entry
+            # makes the intent explicit.
             "BulkImports::Export",
             "Clusters::Cluster",
             # Dependencies::DependencyListExport is scoped to one of project/group/pipeline per

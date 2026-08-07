@@ -266,6 +266,8 @@ tags:
   description: Operations related to pipelines.
 - name: Plan limits
   description: Operations related to plan limits.
+- name: Policy store
+  description: Operations related to policy store.
 - name: Project Google Cloud integration
   description: Operations related to project Google Cloud integration.
 - name: Project alias

@@ -185,6 +185,7 @@ class Projects::BlobController < Projects::ApplicationController
 
   def blob
     return unless commit
+    return if @path.end_with?('/')
 
     @blob = @repository.blob_at(commit.id, @path)
   end

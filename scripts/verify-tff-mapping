@@ -647,13 +647,6 @@ tests = [
     changed_file: 'ee/app/controllers/registrations/company_controller.rb',
     expected: %w[
       ee/spec/features/registrations/saas/invite_flow_spec.rb
-      ee/spec/features/registrations/saas/sso_signin_standard_flow_company_creating_project_spec.rb
-      ee/spec/features/registrations/saas/standard_flow_company_creating_project_spec.rb
-      ee/spec/features/registrations/saas/standard_flow_company_joining_project_spec.rb
-      ee/spec/features/registrations/saas/standard_flow_just_me_creating_project_spec.rb
-      ee/spec/features/registrations/saas/standard_flow_just_me_importing_project_spec.rb
-      ee/spec/features/registrations/saas/standard_flow_just_me_joining_project_spec.rb
-      ee/spec/features/registrations/saas/standard_flow_with_2fa_spec.rb
       ee/spec/features/registrations/saas/subscription_flow_company_paid_plan_spec.rb
       ee/spec/features/registrations/saas/subscription_flow_just_me_paid_plan_spec.rb
       ee/spec/features/registrations/saas/subscription_flow_spec.rb

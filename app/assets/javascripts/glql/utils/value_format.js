@@ -25,6 +25,12 @@ export const formatDuration = (seconds) => timeIntervalInWords(seconds, { abbrev
 export const formatDurationCompact = (seconds) =>
   humanizeTimeInterval(seconds, { abbreviated: true });
 
+// Millisecond variants for metrics the backend emits in milliseconds
+// (e.g. `timeToMergeQuantile`, derived from ClickHouse merge_duration_ms).
+export const formatDurationMs = (milliseconds) => formatDuration(milliseconds / 1000);
+
+export const formatDurationMsCompact = (milliseconds) => formatDurationCompact(milliseconds / 1000);
+
 const rawString = (value) => (value == null ? '' : String(value));
 
 // Each unit owns its cell and axis formatters. Rates render the same in both
@@ -33,6 +39,7 @@ const UNITS = {
   count: { cell: formatCount, axis: formatCountCompact },
   rate: { cell: formatRate, axis: formatRate },
   duration: { cell: formatDuration, axis: formatDurationCompact },
+  durationMs: { cell: formatDurationMs, axis: formatDurationMsCompact },
 };
 
 const unitByFieldKey = {
@@ -47,9 +54,14 @@ const unitByFieldKey = {
   totalCount: 'count',
   usersCount: 'count',
   suggestionSizeSum: 'count',
+  throughputCount: 'count',
+  featuresCount: 'count',
+  returningUsersCount: 'count',
+  previousPeriodUsersCount: 'count',
   duration: 'duration',
   queuedDuration: 'duration',
   durationQuantile: 'duration',
+  timeToMergeQuantile: 'durationMs',
 };
 
 export const unitFor = (fieldKey) => unitByFieldKey[fieldKey] ?? null;
@@ -62,6 +74,7 @@ const UNIT_LABELS = {
   count: () => __('Count'),
   rate: () => __('Percentage'),
   duration: () => __('Duration'),
+  durationMs: () => __('Duration'),
 };
 
 /**

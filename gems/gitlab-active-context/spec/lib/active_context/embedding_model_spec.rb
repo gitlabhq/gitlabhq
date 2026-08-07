@@ -71,10 +71,8 @@ RSpec.describe ActiveContext::EmbeddingModel do
     end
 
     subject(:generate_embeddings) do
-      embedding_model.generate_embeddings(content, user: user)
+      embedding_model.generate_embeddings(content)
     end
-
-    let(:user) { double("User") }
 
     let(:content) { %w[one two three] }
 
@@ -87,7 +85,10 @@ RSpec.describe ActiveContext::EmbeddingModel do
         expected_args = expected_extra_args
         expected_args[:dimensions] = expected_dimensions_arg if expected_dimensions_arg
         expect(llm_class).to receive(:new).with(
-          contents_for_llm, user: user, **expected_args
+          contents_for_llm,
+          user: expected_user_arg,
+          root_namespace_id: expected_root_namespace_id_arg,
+          **expected_args
         )
 
         embeddings = generate_embeddings
@@ -117,8 +118,42 @@ RSpec.describe ActiveContext::EmbeddingModel do
 
     it_behaves_like 'generates embeddings successfully' do
       let(:contents_for_llm) { content }
+      let(:expected_user_arg) { nil }
+      let(:expected_root_namespace_id_arg) { nil }
       let(:expected_extra_args) { {} }
       let(:expected_dimensions_arg) { nil }
+    end
+
+    context 'when user is given' do
+      subject(:generate_embeddings) do
+        embedding_model.generate_embeddings(content, user: user)
+      end
+
+      let(:user) { double("User") }
+
+      it_behaves_like 'generates embeddings successfully' do
+        let(:contents_for_llm) { content }
+        let(:expected_user_arg) { user }
+        let(:expected_root_namespace_id_arg) { nil }
+        let(:expected_extra_args) { {} }
+        let(:expected_dimensions_arg) { nil }
+      end
+    end
+
+    context 'when root_namespace_id is given' do
+      subject(:generate_embeddings) do
+        embedding_model.generate_embeddings(content, root_namespace_id: root_namespace_id)
+      end
+
+      let(:root_namespace_id) { 123 }
+
+      it_behaves_like 'generates embeddings successfully' do
+        let(:contents_for_llm) { content }
+        let(:expected_user_arg) { nil }
+        let(:expected_root_namespace_id_arg) { root_namespace_id }
+        let(:expected_extra_args) { {} }
+        let(:expected_dimensions_arg) { nil }
+      end
     end
 
     context 'with a single content param' do
@@ -127,6 +162,8 @@ RSpec.describe ActiveContext::EmbeddingModel do
 
       it_behaves_like 'generates embeddings successfully' do
         let(:contents_for_llm) { [content] }
+        let(:expected_user_arg) { nil }
+        let(:expected_root_namespace_id_arg) { nil }
         let(:expected_extra_args) { {} }
         let(:expected_dimensions_arg) { nil }
       end
@@ -146,6 +183,8 @@ RSpec.describe ActiveContext::EmbeddingModel do
 
       it_behaves_like 'generates embeddings successfully' do
         let(:contents_for_llm) { content }
+        let(:expected_user_arg) { nil }
+        let(:expected_root_namespace_id_arg) { nil }
         let(:expected_extra_args) { {} }
         let(:expected_dimensions_arg) { dimensions }
       end
@@ -184,6 +223,8 @@ RSpec.describe ActiveContext::EmbeddingModel do
 
       it_behaves_like 'generates embeddings successfully' do
         let(:contents_for_llm) { content }
+        let(:expected_user_arg) { nil }
+        let(:expected_root_namespace_id_arg) { nil }
         let(:expected_extra_args) { llm_params }
         let(:expected_dimensions_arg) { nil }
       end
@@ -204,7 +245,7 @@ RSpec.describe ActiveContext::EmbeddingModel do
     context 'when llm class does not respond to `execute`' do
       let(:llm_class) do
         Class.new do
-          def initialize(contents, user:, dimensions: nil, abc: nil); end
+          def initialize(contents, user:, root_namespace_id: nil, dimensions: nil, abc: nil); end
         end
       end
 

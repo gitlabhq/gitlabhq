@@ -3,9 +3,9 @@ title: Always on availability mode for GitLab Duo
 offering: [ gitlab_com, self_managed, gitlab_dedicated, gitlab_dedicated_for_government ]
 tier: [ Premium, Ultimate ]
 stage: software_supply_chain_security
-documentation_link: "../../../user/gitlab_duo/turn_on_off/#lock-gitlab-duo-on-for-all-users"
+documentation_link: "../../../user/gitlab_duo/turn_on_off/#lock-gitlab-duo-on"
 work_item: https://gitlab.com/groups/gitlab-org/-/work_items/22382
-categories: [ AI Abstraction Layer ]
+categories: [ Settings ]
 level: primary
 ---
 

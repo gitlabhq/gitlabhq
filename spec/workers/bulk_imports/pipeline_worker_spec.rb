@@ -206,15 +206,38 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
       described_class.perform_async(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
     end
 
-    it 'lazy evaluates schema and tables', :aggregate_failures do
+    it 'lazy evaluates schema but always disables the autovacuum indicator', :aggregate_failures do
       block = described_class.database_health_check_attrs[:block]
 
       job_args = [pipeline_tracker.id, pipeline_tracker.stage, entity.id]
 
-      schema, table = block.call([job_args])
+      schema, tables = block.call(job_args, :gitlab_main, [:labels])
 
       expect(schema).to eq(:gitlab_main_org)
-      expect(table).to eq(['labels'])
+      expect(tables).to eq([])
+    end
+
+    context 'when pipeline tracker is not found' do
+      let(:non_existent_tracker_id) { non_existing_record_id }
+
+      it 'logs a warning and returns default schema and tables' do
+        block = described_class.database_health_check_attrs[:block]
+
+        expect_next_instance_of(BulkImports::Logger) do |logger|
+          expect(logger).to receive(:warn).with(
+            class: described_class.name,
+            pipeline_tracker_id: non_existent_tracker_id,
+            message: 'BulkImports::Tracker not found'
+          )
+        end
+
+        job_args = [non_existent_tracker_id, pipeline_tracker.stage, entity.id]
+
+        schema, tables = block.call(job_args, :gitlab_main, [])
+
+        expect(schema).to eq(:gitlab_main)
+        expect(tables).to eq([])
+      end
     end
 
     context 'when `bulk_import_deferred_workers` feature flag is disabled' do

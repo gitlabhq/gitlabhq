@@ -5,7 +5,6 @@ module Users
     GKE_CLUSTER_INTEGRATION = 'gke_cluster_integration'
     SUGGEST_POPOVER_DISMISSED = 'suggest_popover_dismissed'
     TABS_POSITION_HIGHLIGHT = 'tabs_position_highlight'
-    FEATURE_FLAGS_NEW_VERSION = 'feature_flags_new_version'
     OPENSSL_CALLOUT = 'openssl_callout'
     UNFINISHED_TAG_CLEANUP_CALLOUT = 'unfinished_tag_cleanup_callout'
     PAGES_MOVED_CALLOUT = 'pages_moved_callout'
@@ -29,10 +28,6 @@ module Users
 
     def show_suggest_popover?
       !user_dismissed?(SUGGEST_POPOVER_DISMISSED)
-    end
-
-    def show_feature_flags_new_version?
-      !user_dismissed?(FEATURE_FLAGS_NEW_VERSION)
     end
 
     def show_unfinished_tag_cleanup_callout?

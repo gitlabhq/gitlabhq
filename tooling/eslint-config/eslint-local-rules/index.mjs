@@ -16,6 +16,7 @@ import { vue3GlSlotsMixinPairing } from './vue3_gl_slots_mixin_pairing.mjs';
 import { vue3InitVueApp } from './vue3_init_vue_app.mjs';
 import { vue3GlListeners } from './vue3_gl_listeners.mjs';
 import { vue3GlListenersMixinPairing } from './vue3_gl_listeners_mixin_pairing.mjs';
+import { glToastMixinRule } from './gl_toast_mixin.mjs';
 
 export const eslintLocalRules = {
   rules: {
@@ -37,5 +38,6 @@ export const eslintLocalRules = {
     'vue3-init-vue-app': vue3InitVueApp,
     'vue3-gl-listeners': vue3GlListeners,
     'vue3-gl-listeners-mixin-pairing': vue3GlListenersMixinPairing,
+    'gl-toast-mixin': glToastMixinRule,
   },
 };

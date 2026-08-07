@@ -14,6 +14,7 @@ import { initCommitWidget } from '~/rapid_diffs/app/init_commit_widget';
 import { initCompareVersions } from '~/rapid_diffs/app/init_compare_versions';
 import { initNewDiscussionToggle } from '~/rapid_diffs/app/init_new_discussions_toggle';
 import { initLineRangeSelection } from '~/rapid_diffs/app/init_line_range_selection';
+import { initLineRangeEditing } from '~/rapid_diffs/app/init_line_range_editing';
 import { initHotkeys } from '~/rapid_diffs/app/init_hotkeys';
 import { initFileFinder } from '~/rapid_diffs/app/init_file_finder';
 
@@ -30,6 +31,7 @@ export class MergeRequestRapidDiffsApp extends RapidDiffsFacade {
     await this.#initDiscussions();
     initNewDiscussionToggle(this.root, { allowExpandedLines: true });
     initLineRangeSelection(this.root);
+    initLineRangeEditing(this.root);
     initHotkeys();
     initFileFinder();
   }

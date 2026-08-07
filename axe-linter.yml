@@ -22,7 +22,7 @@ global-components:
     element: button
     attributes:
     - aria-*
-    # gives false results for listobx without toggle text but wih v-model providing an initial value
+    # gives false results for listobx without toggle text but with v-model providing an initial value
     - toggle-text: aria-label
     - toggle-aria-labelled-by: aria-labelledby
     - list-aria-labelled-by: aria-labelledby

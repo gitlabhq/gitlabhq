@@ -15,6 +15,7 @@ import CiItemPresenter from './ci_item.vue';
 import CiStatusPresenter from './ci_status.vue';
 import CodePresenter from './code.vue';
 import DurationPresenter from './duration.vue';
+import DurationMsPresenter from './duration_ms.vue';
 import NamedTextPresenter from './named_text.vue';
 import NullPresenter from './null.vue';
 import BoolPresenter from './bool.vue';
@@ -98,6 +99,7 @@ export const presentersByFieldKey = {
   type: TypePresenter,
   user: {
     DuoCodeSuggestionsAggregationResponseDimensions: UserAvatarPresenter,
+    DuoUsageEventsAggregationResponseDimensions: UserAvatarPresenter,
     default: UserPresenter,
     compact: UserPresenter,
   },
@@ -112,7 +114,13 @@ export const presentersByFieldKey = {
   totalCount: NumberPresenter,
   usersCount: NumberPresenter,
   suggestionSizeSum: NumberPresenter,
+  throughputCount: NumberPresenter,
+  featuresCount: NumberPresenter,
+  returningUsersCount: NumberPresenter,
+  previousPeriodUsersCount: NumberPresenter,
   durationQuantile: DurationPresenter,
+  // timeToMergeQuantile arrives in milliseconds, unlike durationQuantile (seconds)
+  timeToMergeQuantile: DurationMsPresenter,
 };
 
 // Returns the field key that holds the title for the given __typename,

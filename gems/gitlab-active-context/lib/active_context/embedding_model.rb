@@ -18,14 +18,14 @@ module ActiveContext
       @llm_params[:dimensions] = @dimensions if @dimensions
     end
 
-    def generate_embeddings(content, user: nil)
+    def generate_embeddings(content, user: nil, root_namespace_id: nil)
       validate_llm_params
 
       log_embeddings_generation do
         contents = content.is_a?(Array) ? content : [content].compact
 
         embedding_llm = validate_respond_to_execute(
-          build_embedding_llm(contents, user)
+          build_embedding_llm(contents, user, root_namespace_id)
         )
         embedding_llm.execute
       end
@@ -37,8 +37,8 @@ module ActiveContext
 
     private
 
-    def build_embedding_llm(contents, user)
-      llm_class.new(contents, user: user, **llm_params)
+    def build_embedding_llm(contents, user, root_namespace_id)
+      llm_class.new(contents, user: user, root_namespace_id: root_namespace_id, **llm_params)
     rescue StandardError => e
       raise(Error, "Error initializing #{llm_class}: #{e.class} - #{e.message}")
     end

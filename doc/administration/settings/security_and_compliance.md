@@ -55,3 +55,28 @@ The buckets can be read by anyone, but only authorized GitLab maintainers have w
 GitLab continuously ingests data from a secured PostgreSQL database and exports it by using a private service using OIDC authentication.
 GitLab instances sync data from the public buckets, perform schema validation,
 and then upsert the validated data into the GitLab database.
+
+## Security scans
+
+Configure how GitLab stores and retains security scan data.
+
+### Security scan retention period
+
+Security scan records and the
+[findings](../../user/application_security/detect/security_scanning_results.md) associated with
+them are purged after a retention period. After a scan is purged, its findings are no longer
+shown in the pipeline's **Security** tab. To reproduce them, re-run the pipeline.
+
+The default retention period is 90 days.
+
+Prerequisites:
+
+- You must have administrator access.
+
+To change the retention period:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **Security and compliance**.
+1. Expand **Security scans**.
+1. In **Security scan retention period (days)**, enter a value from `7` to `90`.
+1. Select **Save changes**.

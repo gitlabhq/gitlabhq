@@ -7,6 +7,7 @@ import CiStatusPresenter from '~/glql/components/presenters/ci_status.vue';
 import CodePresenter from '~/glql/components/presenters/code.vue';
 import CollectionPresenter from '~/glql/components/presenters/collection.vue';
 import DurationPresenter from '~/glql/components/presenters/duration.vue';
+import DurationMsPresenter from '~/glql/components/presenters/duration_ms.vue';
 import HtmlPresenter from '~/glql/components/presenters/html.vue';
 import IssuablePresenter from '~/glql/components/presenters/issuable.vue';
 import LabelPresenter from '~/glql/components/presenters/label.vue';
@@ -35,6 +36,7 @@ import {
   MOCK_ASSIGNEES,
   MOCK_CI_STAGE,
   MOCK_DIMENSIONS,
+  MOCK_DUO_USAGE_EVENTS_DIMENSIONS,
   MOCK_EPIC,
   MOCK_GROUP,
   MOCK_ISSUE,
@@ -95,30 +97,35 @@ describe('presenter_registry', () => {
 
     describe('field-key dispatch', () => {
       it.each`
-        fieldKey               | field            | presenter
-        ${'user'}              | ${MOCK_USER}     | ${UserPresenter}
-        ${'health'}            | ${'onTrack'}     | ${HealthPresenter}
-        ${'healthStatus'}      | ${'onTrack'}     | ${HealthPresenter}
-        ${'state'}             | ${'opened'}      | ${StatePresenter}
-        ${'lastComment'}       | ${'lastComment'} | ${HtmlPresenter}
-        ${'type'}              | ${'TASK'}        | ${TypePresenter}
-        ${'duration'}          | ${3600}          | ${DurationPresenter}
-        ${'webPath'}           | ${'/foo'}        | ${UrlPresenter}
-        ${'shortSha'}          | ${'abc123'}      | ${CodePresenter}
-        ${'refName'}           | ${'main'}        | ${CodePresenter}
-        ${'acceptanceRate'}    | ${0.75}          | ${PercentagePresenter}
-        ${'successRate'}       | ${0.95}          | ${PercentagePresenter}
-        ${'failureRate'}       | ${0.04}          | ${PercentagePresenter}
-        ${'canceledRate'}      | ${0.005}         | ${PercentagePresenter}
-        ${'skippedRate'}       | ${0.001}         | ${PercentagePresenter}
-        ${'acceptedCount'}     | ${1234}          | ${NumberPresenter}
-        ${'rejectedCount'}     | ${567}           | ${NumberPresenter}
-        ${'shownCount'}        | ${1801}          | ${NumberPresenter}
-        ${'totalCount'}        | ${10000}         | ${NumberPresenter}
-        ${'usersCount'}        | ${42}            | ${NumberPresenter}
-        ${'suggestionSizeSum'} | ${500000}        | ${NumberPresenter}
-        ${'durationQuantile'}  | ${3661}          | ${DurationPresenter}
-        ${'queuedDuration'}    | ${90}            | ${DurationPresenter}
+        fieldKey                      | field            | presenter
+        ${'user'}                     | ${MOCK_USER}     | ${UserPresenter}
+        ${'health'}                   | ${'onTrack'}     | ${HealthPresenter}
+        ${'healthStatus'}             | ${'onTrack'}     | ${HealthPresenter}
+        ${'state'}                    | ${'opened'}      | ${StatePresenter}
+        ${'lastComment'}              | ${'lastComment'} | ${HtmlPresenter}
+        ${'type'}                     | ${'TASK'}        | ${TypePresenter}
+        ${'duration'}                 | ${3600}          | ${DurationPresenter}
+        ${'webPath'}                  | ${'/foo'}        | ${UrlPresenter}
+        ${'shortSha'}                 | ${'abc123'}      | ${CodePresenter}
+        ${'refName'}                  | ${'main'}        | ${CodePresenter}
+        ${'acceptanceRate'}           | ${0.75}          | ${PercentagePresenter}
+        ${'successRate'}              | ${0.95}          | ${PercentagePresenter}
+        ${'failureRate'}              | ${0.04}          | ${PercentagePresenter}
+        ${'canceledRate'}             | ${0.005}         | ${PercentagePresenter}
+        ${'skippedRate'}              | ${0.001}         | ${PercentagePresenter}
+        ${'acceptedCount'}            | ${1234}          | ${NumberPresenter}
+        ${'rejectedCount'}            | ${567}           | ${NumberPresenter}
+        ${'shownCount'}               | ${1801}          | ${NumberPresenter}
+        ${'totalCount'}               | ${10000}         | ${NumberPresenter}
+        ${'usersCount'}               | ${42}            | ${NumberPresenter}
+        ${'suggestionSizeSum'}        | ${500000}        | ${NumberPresenter}
+        ${'throughputCount'}          | ${25}            | ${NumberPresenter}
+        ${'featuresCount'}            | ${3}             | ${NumberPresenter}
+        ${'returningUsersCount'}      | ${12}            | ${NumberPresenter}
+        ${'previousPeriodUsersCount'} | ${8}             | ${NumberPresenter}
+        ${'durationQuantile'}         | ${3661}          | ${DurationPresenter}
+        ${'timeToMergeQuantile'}      | ${250000}        | ${DurationMsPresenter}
+        ${'queuedDuration'}           | ${90}            | ${DurationPresenter}
       `(
         'resolves field key $fieldKey to the matching presenter',
         ({ fieldKey, field, presenter }) => {
@@ -159,6 +166,10 @@ describe('presenter_registry', () => {
         expect(presenterFor({ ...MOCK_DIMENSIONS, user: MOCK_USER }, 'user')).toBe(
           UserAvatarPresenter,
         );
+      });
+
+      it('resolves user on Duo usage events dimensions to UserAvatarPresenter', () => {
+        expect(presenterFor(MOCK_DUO_USAGE_EVENTS_DIMENSIONS, 'user')).toBe(UserAvatarPresenter);
       });
 
       it('resolves user on other typenames to UserPresenter', () => {

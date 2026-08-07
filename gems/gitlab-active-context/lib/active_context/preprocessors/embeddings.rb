@@ -8,8 +8,55 @@ module ActiveContext
       IndexingError = Class.new(StandardError)
 
       class_methods do
+        def apply_embeddings_by_root_namespace(
+          refs:,
+          queue_name: nil,
+          content_field: :content,
+          content_method: nil,
+          remove_content: false,
+          next_model_only: false,
+          infinite_retry_error_types: []
+        )
+          grouped_processing_result(refs.group_by(&:root_namespace_id)) do |root_namespace_id, namespace_refs|
+            generate_and_apply_embeddings_for_root_namespace(
+              refs: namespace_refs,
+              root_namespace_id: root_namespace_id,
+              queue_name: queue_name,
+              content_field: content_field,
+              content_method: content_method,
+              remove_content: remove_content,
+              next_model_only: next_model_only,
+              infinite_retry_error_types: infinite_retry_error_types
+            )
+          end
+        end
+
         def apply_embeddings(
           refs:,
+          queue_name: nil,
+          content_field: :content,
+          content_method: nil,
+          remove_content: false,
+          next_model_only: false,
+          infinite_retry_error_types: []
+        )
+          generate_and_apply_embeddings_for_root_namespace(
+            refs: refs,
+            root_namespace_id: nil,
+            queue_name: queue_name,
+            content_field: content_field,
+            content_method: content_method,
+            remove_content: remove_content,
+            next_model_only: next_model_only,
+            infinite_retry_error_types: infinite_retry_error_types
+          )
+        end
+
+        private
+
+        def generate_and_apply_embeddings_for_root_namespace(
+          refs:,
+          root_namespace_id:,
           queue_name: nil,
           content_field: :content,
           content_method: nil,
@@ -47,7 +94,9 @@ module ActiveContext
               models = items.first[:models]
               contents = items.map { |item| item[:doc][content_field] }
 
-              embeddings_by_model = generate_embeddings_for_each_model(models: models, contents: contents)
+              embeddings_by_model = generate_embeddings_for_each_model(
+                models: models, contents: contents, root_namespace_id: root_namespace_id
+              )
 
               # Apply the generated embeddings back to each document
               items.each.with_index do |item, index|
@@ -63,8 +112,6 @@ module ActiveContext
           end
         end
 
-        private
-
         # Initializes the documents for a reference if they don't exist
         # and populates the content field if a content_method is provided
         def initialize_documents!(ref, content_method, content_field)
@@ -79,9 +126,9 @@ module ActiveContext
           end
         end
 
-        def generate_embeddings_for_each_model(models:, contents:)
+        def generate_embeddings_for_each_model(models:, contents:, root_namespace_id: nil)
           models.each_with_object({}) do |model, embeddings_by_model|
-            embedding = model.generate_embeddings(contents)
+            embedding = model.generate_embeddings(contents, root_namespace_id: root_namespace_id)
             embeddings_by_model[model.field] = embedding
           end
         end

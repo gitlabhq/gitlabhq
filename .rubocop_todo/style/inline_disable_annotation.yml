@@ -1392,8 +1392,6 @@ Style/InlineDisableAnnotation:
     - 'ee/spec/features/dependency_proxy/packages/maven_spec.rb'
     - 'ee/spec/features/groups/group_settings_spec.rb'
     - 'ee/spec/features/merge_request/draft_comments_spec.rb'
-    - 'ee/spec/features/registrations/combined_registration_spec.rb'
-    - 'ee/spec/features/registrations/saas/standard_flow_with_2fa_spec.rb'
     - 'ee/spec/finders/ee/group_members_finder_spec.rb'
     - 'ee/spec/helpers/analytics/analytics_dashboards_helper_spec.rb'
     - 'ee/spec/helpers/ee/dashboard_helper_spec.rb'

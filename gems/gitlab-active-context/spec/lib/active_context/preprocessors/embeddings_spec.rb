@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe ActiveContext::Preprocessors::Embeddings do
+RSpec.describe "ActiveContext::Preprocessors::Embeddings#apply_embeddings", :aggregate_failures do
   let(:mock_reference_class) do
     Class.new(Test::References::MockWithDatabaseRecord) do
       add_preprocessor :embeddings do |refs|
@@ -89,6 +89,7 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
       expect(Test::MockLlmClass).to receive(:new).with(
         [expected_content],
         user: nil,
+        root_namespace_id: nil,
         abc: "extra-params"
       ).and_call_original
 
@@ -103,6 +104,7 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
       expect(Test::MockLlmClass).to receive(:new).with(
         [expected_content],
         user: nil,
+        root_namespace_id: nil,
         abc: "extra-params"
       ).and_call_original
 

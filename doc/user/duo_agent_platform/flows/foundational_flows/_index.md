@@ -47,7 +47,7 @@ You can configure the environment where flows use CI/CD to execute.
 For example, on GitLab Self-Managed, administrators can configure a custom container registry
 for foundational flow images.
 
-For more information, see [Configure flow execution](../execution.md).
+For more information, see [Configure flow execution](../execution/_index.md).
 
 ## Security for foundational flows
 

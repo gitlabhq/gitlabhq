@@ -62,28 +62,6 @@ RSpec.describe Users::CalloutsHelper, feature_category: :navigation do
     end
   end
 
-  describe '.show_feature_flags_new_version?' do
-    subject { helper.show_feature_flags_new_version? }
-
-    let(:user) { create(:user) }
-
-    before do
-      allow(helper).to receive(:current_user).and_return(user)
-    end
-
-    context 'when the feature flags new version info has not been dismissed' do
-      it { is_expected.to be_truthy }
-    end
-
-    context 'when the feature flags new version has been dismissed' do
-      before do
-        create(:callout, user: user, feature_name: described_class::FEATURE_FLAGS_NEW_VERSION)
-      end
-
-      it { is_expected.to be_falsy }
-    end
-  end
-
   describe '.show_registration_enabled_user_callout?', :do_not_mock_admin_mode_setting do
     let_it_be(:admin) { create(:user, :admin) }
 

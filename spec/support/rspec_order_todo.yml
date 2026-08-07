@@ -203,7 +203,6 @@
 - './ee/spec/features/protected_branches_spec.rb'
 - './ee/spec/features/protected_tags_spec.rb'
 - './ee/spec/features/read_only_spec.rb'
-- './ee/spec/features/registrations/combined_registration_spec.rb'
 - './ee/spec/features/registrations/one_trust_spec.rb'
 - './ee/spec/features/search/elastic/global_search_spec.rb'
 - './ee/spec/features/search/elastic/snippet_search_spec.rb'

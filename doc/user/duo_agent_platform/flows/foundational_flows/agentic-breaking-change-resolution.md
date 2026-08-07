@@ -45,7 +45,7 @@ Results are based on AI analysis and should be reviewed before merging.
 - Turn on **Allow foundational flows** and **Resolve Dependency Bump Breaking Changes**
   [for the top-level group](_index.md#turn-foundational-flows-on-or-off).
 - [Configure push rules to allow a service account](../../troubleshooting.md#configure-push-rules-to-allow-a-service-account).
-- [Configure your own runners](../execution.md) or turn on
+- [Configure your own runners](../execution/_index.md) or turn on
   [GitLab hosted runners](../../../../ci/runners/hosted_runners/_index.md) for your project.
 - Turn on the feature for the project. See
   [Enable agentic breaking change resolution](../../../application_security/dependency_scanning/agentic-breaking-change-resolution.md#enable-agentic-breaking-change-resolution).

@@ -55,6 +55,9 @@ RSpec.describe 'Database schema',
         stage_event_hash_id state_id sprint_id],
       analytics_cycle_analytics_stage_aggregations: %w[last_issues_id last_merge_requests_id],
       audit_events: %w[author_id entity_id target_id],
+      # organization_id FK dropped in gitlab-org/gitlab#604997 (unnecessary sharding key).
+      # Column removal follows in https://gitlab.com/gitlab-org/gitlab/-/issues/606167
+      bulk_import_exports: %w[organization_id],
       user_audit_events: %w[author_id user_id target_id],
       group_audit_events: %w[author_id group_id target_id],
       project_audit_events: %w[author_id project_id target_id],
@@ -293,6 +296,7 @@ RSpec.describe 'Database schema',
       virtual_registries_packages_maven_local_upstreams: %w[local_group_id local_project_id], # local upstreams need asynchronous deletion
       # system_defined_status_id reference to fixed items model which is stored in code
       work_item_current_statuses: %w[system_defined_status_id],
+      work_item_positions: %w[relative_positioning_namespace_id], # denormalized positioning root; row lifecycle is tied to work_item_id (cascade), so no FK needed
       # we can't use a foreign key reference because we want to preserve namespace_id  for asynchronous deletion
       p_knowledge_graph_replicas: %w[namespace_id],
       # temp entry, removing FK on source_type_id and target_type_id until table is dropped in follow up MR

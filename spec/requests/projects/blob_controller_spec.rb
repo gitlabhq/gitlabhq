@@ -3,11 +3,39 @@
 require 'spec_helper'
 
 RSpec.describe 'Projects blob controller', feature_category: :code_review_workflow do
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:user) { create(:user, maintainer_of: project) }
+  let_it_be(:user) { create(:user, :with_namespace, maintainer_of: project) }
 
   before do
     sign_in(user)
+  end
+
+  describe 'GET show' do
+    let(:blob_path) { project_blob_path(project, 'master/README.md') }
+
+    where(:path_suffix) do
+      [
+        [''],
+        ['/']
+      ]
+    end
+
+    with_them do
+      it 'renders the blob' do
+        get "#{blob_path}#{path_suffix}"
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
+    it 'redirects an encoded extra trailing slash through the missing path flow', :aggregate_failures do
+      get "#{blob_path}/%2F"
+
+      expect(response).to redirect_to(project_tree_path(project, 'master'))
+      expect(flash[:notice]).to eq('"README.md/" did not exist on "master"')
+    end
   end
 
   describe 'GET diff_lines' do

@@ -119,6 +119,19 @@ module ActiveContext
           { successful: [], failed: refs, retryable: [] }
         end
       end
+
+      private
+
+      def grouped_processing_result(grouped_refs)
+        initial_result = { successful: [], failed: [], retryable: [] }
+        grouped_refs.each_with_object(initial_result) do |(group_key, refs_in_group), result|
+          group_result = yield(group_key, refs_in_group)
+
+          result[:successful] += group_result[:successful]
+          result[:failed] += group_result[:failed]
+          result[:retryable] += group_result[:retryable]
+        end
+      end
     end
   end
 end

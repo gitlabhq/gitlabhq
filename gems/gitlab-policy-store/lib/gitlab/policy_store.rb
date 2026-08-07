@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "policy_store/version"
+require_relative "policy_store/triggers"
 require_relative "policy_store/policy"
 require_relative "policy_store/scope_transpiler"
 require_relative "policy_store/ports/policy_repository"

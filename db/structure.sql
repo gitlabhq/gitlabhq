@@ -220,28 +220,6 @@ BEGIN
 END
 $$;
 
-CREATE FUNCTION bulk_import_exports_sharding_key() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  IF NEW."organization_id" IS NULL THEN
-    IF NEW."project_id" IS NOT NULL THEN
-      SELECT "organization_id"
-      INTO NEW."organization_id"
-      FROM "projects"
-      WHERE "projects"."id" = NEW."project_id";
-    ELSIF NEW."group_id" IS NOT NULL THEN
-      SELECT "organization_id"
-      INTO NEW."organization_id"
-      FROM "namespaces"
-      WHERE "namespaces"."id" = NEW."group_id";
-    END IF;
-  END IF;
-
-  RETURN NEW;
-END
-$$;
-
 CREATE FUNCTION bulk_import_trackers_sharding_key() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -1509,6 +1487,7 @@ BEGIN
 INSERT INTO work_item_positions (
   work_item_id,
   namespace_id,
+  relative_positioning_namespace_id,
   relative_position,
   created_at,
   updated_at
@@ -1516,6 +1495,15 @@ INSERT INTO work_item_positions (
 VALUES (
   NEW.id,
   NEW.namespace_id,
+  (
+    SELECT CASE
+      WHEN p.type = 'User' OR p.type IS NULL THEN n.id
+      ELSE COALESCE(n.traversal_ids[1], n.id)
+    END
+    FROM namespaces n
+    LEFT JOIN namespaces p ON p.id = n.parent_id
+    WHERE n.id = NEW.namespace_id
+  ),
   NEW.relative_position,
   NOW(),
   NOW()
@@ -1524,6 +1512,7 @@ ON CONFLICT (work_item_id)
 DO UPDATE SET
   relative_position = EXCLUDED.relative_position,
   namespace_id = EXCLUDED.namespace_id,
+  relative_positioning_namespace_id = EXCLUDED.relative_positioning_namespace_id,
   updated_at = NOW();
 RETURN NULL;
 
@@ -34741,7 +34730,8 @@ CREATE TABLE work_item_positions (
     namespace_id bigint NOT NULL,
     relative_position bigint,
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
+    updated_at timestamp with time zone NOT NULL,
+    relative_positioning_namespace_id bigint
 );
 
 CREATE TABLE work_item_progresses (
@@ -44929,8 +44919,6 @@ CREATE UNIQUE INDEX idx_bulk_import_batch_trackers_on_tracker_batch_org_uniq ON 
 
 CREATE UNIQUE INDEX idx_bulk_import_exports_on_group_relation_offline_export ON bulk_import_exports USING btree (group_id, relation, offline_export_id) WHERE ((group_id IS NOT NULL) AND (offline_export_id IS NOT NULL));
 
-CREATE INDEX idx_bulk_import_exports_on_organization_id ON bulk_import_exports USING btree (organization_id);
-
 CREATE UNIQUE INDEX idx_bulk_import_exports_on_project_relation_offline_export ON bulk_import_exports USING btree (project_id, relation, offline_export_id) WHERE ((project_id IS NOT NULL) AND (offline_export_id IS NOT NULL));
 
 CREATE INDEX idx_catalog_bundled_components_on_bundled_resource_id ON catalog_bundled_resource_components USING btree (catalog_bundled_resource_id);
@@ -51273,6 +51261,8 @@ CREATE INDEX index_webauthn_registrations_on_user_id ON webauthn_registrations U
 
 CREATE INDEX index_webauthn_registrations_where_authn_mode_is_one ON webauthn_registrations USING btree (authentication_mode) WHERE (authentication_mode = 1);
 
+CREATE INDEX index_wi_positions_on_positioning_ns_id_and_relative_position ON work_item_positions USING btree (relative_positioning_namespace_id, relative_position);
+
 CREATE UNIQUE INDEX index_wiki_meta_user_mentions_on_wiki_page_meta_id_and_note_id ON wiki_page_meta_user_mentions USING btree (wiki_page_meta_id, note_id);
 
 CREATE INDEX index_wiki_page_meta_on_namespace_id ON wiki_page_meta USING btree (namespace_id);
@@ -56081,8 +56071,6 @@ CREATE TRIGGER trigger_b8eecea7f351 BEFORE INSERT OR UPDATE ON dependency_proxy_
 
 CREATE TRIGGER trigger_bulk_import_batch_trackers_sharding_key BEFORE INSERT OR UPDATE ON bulk_import_batch_trackers FOR EACH ROW EXECUTE FUNCTION bulk_import_batch_trackers_sharding_key();
 
-CREATE TRIGGER trigger_bulk_import_exports_sharding_key BEFORE INSERT OR UPDATE ON bulk_import_exports FOR EACH ROW EXECUTE FUNCTION bulk_import_exports_sharding_key();
-
 CREATE TRIGGER trigger_bulk_import_trackers_sharding_key BEFORE INSERT OR UPDATE ON bulk_import_trackers FOR EACH ROW EXECUTE FUNCTION bulk_import_trackers_sharding_key();
 
 CREATE TRIGGER trigger_c17a166692a2 BEFORE INSERT OR UPDATE ON audit_events_streaming_headers FOR EACH ROW EXECUTE FUNCTION trigger_c17a166692a2();
@@ -58753,9 +58741,6 @@ ALTER TABLE ONLY workspaces
 
 ALTER TABLE ONLY project_settings
     ADD CONSTRAINT fk_bdc8715f08 FOREIGN KEY (duo_dependency_bump_breaking_changes_enabled_by_id) REFERENCES users(id) ON DELETE SET NULL;
-
-ALTER TABLE ONLY bulk_import_exports
-    ADD CONSTRAINT fk_bde1337d10 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY ascp_security_guidelines
     ADD CONSTRAINT fk_be2c636993 FOREIGN KEY (security_context_id) REFERENCES ascp_security_contexts(id) ON DELETE CASCADE;

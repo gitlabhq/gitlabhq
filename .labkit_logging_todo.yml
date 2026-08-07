@@ -1031,10 +1031,6 @@ offenses:
   deprecated_field: user_id
   standard_field: Labkit::Fields::GL_USER_ID
 - logger_class: Gitlab::AppJsonLogger
-  callsite: ee/app/services/users/signup_service.rb
-  deprecated_field: user_id
-  standard_field: Labkit::Fields::GL_USER_ID
-- logger_class: Gitlab::AppJsonLogger
   callsite: ee/app/services/vulnerabilities/auto_dismiss_service.rb
   deprecated_field: class
   standard_field: Labkit::Fields::CLASS_NAME

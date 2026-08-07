@@ -175,6 +175,14 @@ describe('initNewDiscussionToggle', () => {
       expect(toggle.parentElement).toBe(cell);
     });
 
+    it('labels the toggle with the line it comments on', () => {
+      appElement
+        .querySelector('[data-position="new"]')
+        .dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
+
+      expect(toggle.getAttribute('aria-label')).toBe('Add a comment to line 5');
+    });
+
     it('hides toggle when not hovering', () => {
       const cell = appElement.querySelector('[data-position]');
 

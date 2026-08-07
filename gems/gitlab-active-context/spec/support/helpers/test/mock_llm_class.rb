@@ -5,13 +5,14 @@ module Test
     DEFAULT_DIMENSIONS = 4
     NIL_CONTENTS_ERROR_MESSAGE = 'The text content is empty.'
 
-    def self.generate_embeddings(contents, model: nil, user: nil, dimensions: nil, abc: nil)
-      new(contents, user: user, model: model, dimensions: dimensions, abc: abc).execute
+    def self.mock_vectors(dimensions = DEFAULT_DIMENSIONS)
+      (1..dimensions).map(&:to_f)
     end
 
-    def initialize(contents, user: nil, dimensions: nil, abc: nil)
+    def initialize(contents, user: nil, root_namespace_id: nil, dimensions: nil, abc: nil)
       @contents = contents
       @user = user
+      @root_namespace_id = root_namespace_id
       @dimensions = dimensions || DEFAULT_DIMENSIONS
       @abc = abc
     end
@@ -20,14 +21,10 @@ module Test
       # simulate error returned by vertex
       raise nil_contents_error if @contents.any?(&:nil?)
 
-      Array.new(@contents.length, mock_vectors)
+      Array.new(@contents.length, self.class.mock_vectors(@dimensions))
     end
 
     private
-
-    def mock_vectors
-      (1..@dimensions).map(&:to_f)
-    end
 
     def nil_contents_error
       StandardError.new(NIL_CONTENTS_ERROR_MESSAGE)

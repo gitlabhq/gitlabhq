@@ -1,5 +1,6 @@
 import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
 import { pinia } from '~/pinia/instance';
+import { sprintf, s__ } from '~/locale';
 import { moveToggle } from '~/rapid_diffs/utils/new_discussion_toggle';
 
 export function initNewDiscussionToggle(appElement, { allowExpandedLines = false } = {}) {
@@ -57,6 +58,13 @@ export function initNewDiscussionToggle(appElement, { allowExpandedLines = false
     if (change === 'removed') type = 'old';
     const position = { old_line: oldLine, new_line: newLine, type };
     toggle.lineRange = { start: position, end: position };
+    const line = newLine ?? oldLine;
+    if (line != null) {
+      toggle.setAttribute(
+        'aria-label',
+        sprintf(s__('RapidDiffs|Add a comment to line %{line}'), { line }),
+      );
+    }
   }
 
   function moveTo(target) {

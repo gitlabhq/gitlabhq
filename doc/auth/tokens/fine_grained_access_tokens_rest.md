@@ -3639,6 +3639,7 @@ Fine-grained token scope checks are not applied to these endpoints.
 | `GET` | `/projects/:project_id/packages/nuget/v2/FindPackagesById\(\)` |
 | `GET` | `/projects/:project_id/packages/nuget/v2/Packages\(Id='*package_name',Version='*package_version'\)` |
 | `GET` | `/projects/:project_id/packages/nuget/v2/Packages\(\)` |
+| `GET` | `/security/policy_store/triggers` |
 | `GET` | `/templates/dockerfiles` |
 | `GET` | `/templates/dockerfiles/:name` |
 | `GET` | `/templates/gitignores` |
