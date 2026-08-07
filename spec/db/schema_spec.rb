@@ -59,6 +59,7 @@ RSpec.describe 'Database schema',
       group_audit_events: %w[author_id group_id target_id],
       project_audit_events: %w[author_id project_id target_id],
       iam_outbox: %w[entity_id], # generic source-row id (entity_type, entity_id), not a single-table FK
+      govern_policy_enforcements: %w[project_id], # No FK: the Policy Store owns its integrity so it can be extracted, per GOVERN-008
       instance_audit_events: %w[author_id target_id],
       project_compliance_violations: %w[audit_event_id], # audit_events table doesn't have id as the primary key instead the primary key is btree (id, created_at)
       award_emoji: %w[awardable_id user_id],

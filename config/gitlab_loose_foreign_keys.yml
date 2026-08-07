@@ -504,6 +504,17 @@ geo_node_organization_links:
   - table: organizations
     column: organization_id
     on_delete: async_delete
+govern_policies:
+  - table: organizations
+    column: organization_id
+    on_delete: async_delete
+  - table: namespaces
+    column: namespace_id
+    on_delete: async_delete
+govern_policy_enforcements:
+  - table: organizations
+    column: organization_id
+    on_delete: async_delete
 group_push_rules:
   - table: namespaces
     column: group_id

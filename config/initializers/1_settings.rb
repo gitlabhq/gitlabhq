@@ -313,6 +313,13 @@ Settings.ai_catalog['storage_path'] = Settings.absolute(Settings.ai_catalog['sto
 Settings.ai_catalog['object_store'] = ObjectStoreSettings.legacy_parse(Settings.ai_catalog['object_store'], 'ai_catalog')
 
 #
+# CI catalog bundles
+#
+Settings['ci_catalog_bundles'] ||= {}
+Settings.ci_catalog_bundles['storage_path'] = Settings.absolute(Settings.ci_catalog_bundles['storage_path'] || File.join(Settings.shared['path'], "ci_catalog_bundles"))
+Settings.ci_catalog_bundles['object_store'] = ObjectStoreSettings.legacy_parse(Settings.ci_catalog_bundles['object_store'], 'ci_catalog_bundles')
+
+#
 # Reply by email
 #
 Settings['incoming_email'] ||= {}

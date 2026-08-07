@@ -34,7 +34,9 @@ export const calculateDatesFromRelativeDays = (days) => {
 
 export const formatPipelineCountPercentage = (a, b) => {
   const percent = calculatePipelineCountPercentage(a, b);
-  return percent !== undefined ? getFormatter(SUPPORTED_FORMATS.percentHundred)(percent, 0) : '-';
+  return percent !== undefined
+    ? { value: getFormatter(SUPPORTED_FORMATS.number)(percent, 0), unit: '%' }
+    : { value: '-' };
 };
 
 // Returns BigInt(successCount) + BigInt(failedCount) as a string. Canceled/skipped

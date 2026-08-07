@@ -74,31 +74,31 @@ describe('Stats formatting utilities', () => {
   describe('formatPipelineCountPercentage', () => {
     it.each`
       input                                | output
-      ${['0', '100']}                      | ${'0%'}
-      ${['33', '100']}                     | ${'33%'}
-      ${['50', '100']}                     | ${'50%'}
-      ${['66', '100']}                     | ${'66%'}
-      ${['99', '100']}                     | ${'99%'}
-      ${['10', '0']}                       | ${'-'}
-      ${[largeNumber, largeNumber]}        | ${'100%'}
-      ${[largeNumber, `${largeNumber}00`]} | ${'1%'}
-      ${['not-a-number', '1000']}          | ${'-'}
-      ${['50', 'not-a-number']}            | ${'-'}
-      ${[null, '100']}                     | ${'-'}
-      ${['50', null]}                      | ${'-'}
+      ${['0', '100']}                      | ${{ value: '0', unit: '%' }}
+      ${['33', '100']}                     | ${{ value: '33', unit: '%' }}
+      ${['50', '100']}                     | ${{ value: '50', unit: '%' }}
+      ${['66', '100']}                     | ${{ value: '66', unit: '%' }}
+      ${['99', '100']}                     | ${{ value: '99', unit: '%' }}
+      ${['10', '0']}                       | ${{ value: '-' }}
+      ${[largeNumber, largeNumber]}        | ${{ value: '100', unit: '%' }}
+      ${[largeNumber, `${largeNumber}00`]} | ${{ value: '1', unit: '%' }}
+      ${['not-a-number', '1000']}          | ${{ value: '-' }}
+      ${['50', 'not-a-number']}            | ${{ value: '-' }}
+      ${[null, '100']}                     | ${{ value: '-' }}
+      ${['50', null]}                      | ${{ value: '-' }}
     `('formats $input.0 / $input.1 to "$output"', ({ input, output }) => {
       const [a, b] = input;
-      expect(formatPipelineCountPercentage(a, b)).toBe(output);
+      expect(formatPipelineCountPercentage(a, b)).toEqual(output);
     });
 
     it.each`
       input              | output
-      ${['666', '1000']} | ${'67%'}
-      ${['888', '1000']} | ${'89%'}
-      ${['999', '1000']} | ${'100%'}
+      ${['666', '1000']} | ${{ value: '67', unit: '%' }}
+      ${['888', '1000']} | ${{ value: '89', unit: '%' }}
+      ${['999', '1000']} | ${{ value: '100', unit: '%' }}
     `('formats by rounding $input.0 / $input.1 to "$output"', ({ input, output }) => {
       const [a, b] = input;
-      expect(formatPipelineCountPercentage(a, b)).toBe(output);
+      expect(formatPipelineCountPercentage(a, b)).toEqual(output);
     });
   });
 

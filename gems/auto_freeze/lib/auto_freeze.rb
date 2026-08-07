@@ -29,9 +29,9 @@ module AutoFreeze
                          end
 
       exclude_patterns = excluded_gems.map do |gem_name|
-        full_gem_name = Gem::Specification.find_by_name(gem_name).full_name
+        gem_directory = Gem::Specification.find_by_name(gem_name).full_gem_path
 
-        File.join("**", full_gem_name, "**")
+        File.join(gem_directory, "*.rb")
       rescue Gem::MissingSpecError => e
         raise GemError, "Could not find '#{gem_name}'", cause: e
       end

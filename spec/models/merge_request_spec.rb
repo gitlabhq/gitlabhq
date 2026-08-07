@@ -2144,7 +2144,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     let_it_be(:issue_referenced_in_internal_mr_note) { create(:issue) }
     let_it_be(:confidential_issue_in_mr_desc) { create(:issue, :confidential) }
 
-    let_it_be(:merge_request) do
+    let_it_be_with_reload(:merge_request) do
       create(
         :merge_request,
         title: "MR for #{issue_referenced_in_mr_title.to_reference}",
@@ -2191,6 +2191,57 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
           issue_referenced_in_internal_mr_note,
           issue_referenced_in_mr_commit_msg
         )
+      end
+    end
+
+    context 'when the referenced issue type cannot be resolved' do
+      let_it_be(:user) { create(:user, guest_of: project) }
+
+      it 'uses the default issue type' do
+        issue = build_stubbed(:issue, work_item_type: nil)
+        extractor = instance_double(Gitlab::ReferenceExtractor, analyze: nil, issues_and_work_items: [issue])
+        allow(Gitlab::ReferenceExtractor).to receive(:new).and_return(extractor)
+
+        expect(related_issues).to contain_exactly(issue)
+      end
+    end
+
+    context 'when work items are referenced by URLs' do
+      let_it_be(:user) { create(:user, guest_of: project) }
+      let_it_be(:issue) { create(:issue, project: project) }
+      let_it_be(:confidential_issue) { create(:issue, :confidential, project: project) }
+
+      before do
+        stub_licensed_features(requirements: true)
+        allow(merge_request).to receive(:commits).and_return([])
+      end
+
+      where(:work_item_type) do
+        %i[issue task incident ticket test_case requirement]
+      end
+
+      with_them do
+        it 'returns issue-like work items' do
+          work_item = create(:work_item, work_item_type, project: project)
+          work_item_url = Gitlab::Routing.url_helpers.project_work_item_url(project, work_item)
+          merge_request.update!(description: "See #{work_item_url}")
+
+          expect(related_issues).to include(work_item)
+        end
+      end
+
+      it 'returns an issue only once when referenced by IID and URL' do
+        merge_request.update!(
+          description: "See #{issue.to_reference} and #{Gitlab::UrlBuilder.build(issue)}"
+        )
+
+        expect(related_issues.count { |related_issue| related_issue.id == issue.id }).to eq(1)
+      end
+
+      it 'excludes confidential issues the user cannot read' do
+        merge_request.update!(description: "See #{Gitlab::UrlBuilder.build(confidential_issue)}")
+
+        expect(related_issues).not_to include(confidential_issue)
       end
     end
   end
@@ -3244,6 +3295,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   describe '#issues_mentioned_but_not_closing' do
     let(:closing_issue) { create :issue, project: subject.project }
     let(:mentioned_issue) { create :issue, project: subject.project }
+    let(:mentioned_task) { create(:work_item, :task, project: subject.project) }
     let(:commit) { double('commit', safe_message: "Fixes #{closing_issue.to_reference}") }
 
     it 'detects issues mentioned in description but not closed' do
@@ -3256,6 +3308,32 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       subject.persist_merge_request_issues!
 
       expect(subject.issues_mentioned_but_not_closing(subject.author)).to match_array([mentioned_issue])
+    end
+
+    it 'detects work item URLs' do
+      subject.project.add_developer(subject.author)
+      subject.description = "Is related to #{Gitlab::UrlBuilder.build(mentioned_issue)} and " \
+        "#{Gitlab::UrlBuilder.build(mentioned_task)}"
+
+      allow(subject).to receive(:commits).and_return([])
+      allow(subject.project).to receive(:default_branch)
+        .and_return(subject.target_branch)
+
+      expect(subject.issues_mentioned_but_not_closing(subject.author)).to match_array([mentioned_issue, mentioned_task])
+    end
+
+    context 'when the same records are loaded as WorkItem and Issue' do
+      let(:referenced_work_items) { (1..17).map { |id| WorkItem.new(id: id) } }
+      let(:closing_issues) { (1..17).map { |id| Issue.new(id: id) } }
+
+      before do
+        allow(subject).to receive(:referenced_issues_in_description).and_return(referenced_work_items)
+        allow(subject).to receive(:visible_closing_issues_for).and_return(closing_issues)
+      end
+
+      it 'excludes the closing records by ID' do
+        expect(subject.issues_mentioned_but_not_closing(subject.author)).to be_empty
+      end
     end
 
     context 'when the project has an external issue tracker' do

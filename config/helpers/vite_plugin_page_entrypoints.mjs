@@ -71,7 +71,22 @@ export function PageEntrypointsPlugin() {
       if (!id.startsWith('pages.')) {
         return undefined;
       }
-      return entrypoints[id]?.virtual ?? `/* doesn't exist */`;
+
+      if (entrypoints[id]) {
+        return entrypoints[id].virtual;
+      }
+
+      // Rails asks for every ancestor route segment, so most misses are
+      // expected. A `.vue3` miss is not: Rails only asks for one when the
+      // page's feature flag is on, and an empty module would leave the page
+      // with no Vue app and nothing in the console to say why.
+      if (id.endsWith('.vue3.js')) {
+        return `${comment}throw new Error(${JSON.stringify(
+          `No Vue 3 entrypoint was built for ${id}. Restart the Vite dev server to pick up vue3_migration.yml changes.`,
+        )});\n`;
+      }
+
+      return `/* doesn't exist */`;
     },
     resolveId(source) {
       if (!source.startsWith(`${entrypointsDir}pages.`)) {

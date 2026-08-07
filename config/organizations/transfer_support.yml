@@ -83,6 +83,8 @@ dependency_list_export_uploads: no_work_needed
 dependency_list_exports: no_work_needed
 enabled_foundational_flow_check_results: no_work_needed
 fork_networks: supported
+govern_policies: todo
+govern_policy_enforcements: todo
 granular_scopes: supported
 group_type_ci_runner_machines: supported
 group_type_ci_runners: supported

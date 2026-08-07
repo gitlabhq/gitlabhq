@@ -29135,6 +29135,12 @@ msgstr ""
 msgid "DuoAgentPlatform|Add a session URL to commits authored by GitLab Duo Agent Platform, so reviewers can trace AI-assisted changes back to the originating session."
 msgstr ""
 
+msgid "DuoAgentPlatform|Admin settings"
+msgstr ""
+
+msgid "DuoAgentPlatform|Agent Platform"
+msgstr ""
+
 msgid "DuoAgentPlatform|Agent reasoning"
 msgstr ""
 
@@ -29216,6 +29222,9 @@ msgstr ""
 msgid "DuoAgentPlatform|GitLab Duo Agent session"
 msgstr ""
 
+msgid "DuoAgentPlatform|Group settings"
+msgstr ""
+
 msgid "DuoAgentPlatform|Image registry"
 msgstr ""
 
@@ -29234,7 +29243,25 @@ msgstr ""
 msgid "DuoAgentPlatform|No GitLab Credits remain for this billing period. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
+msgid "DuoAgentPlatform|Off for this group. Only a Group Owner can turn it on."
+msgstr ""
+
+msgid "DuoAgentPlatform|Off for this instance. Only an administrator can turn it on."
+msgstr ""
+
+msgid "DuoAgentPlatform|On for this group. Group Owners control it."
+msgstr ""
+
+msgid "DuoAgentPlatform|On for this instance. Administrators control it."
+msgstr ""
+
+msgid "DuoAgentPlatform|Other Duo settings"
+msgstr ""
+
 msgid "DuoAgentPlatform|Paused"
+msgstr ""
+
+msgid "DuoAgentPlatform|Project-wide behavior, unrelated to readiness."
 msgstr ""
 
 msgid "DuoAgentPlatform|Remote GitLab Duo Flows"
@@ -29322,6 +29349,9 @@ msgid "DuoAgentPlatform|Usage billing is not available for this account. To cont
 msgstr ""
 
 msgid "DuoAgentPlatform|User messaged agent"
+msgstr ""
+
+msgid "DuoAgentPlatform|View"
 msgstr ""
 
 msgid "DuoAgentPlatform|View all sessions"

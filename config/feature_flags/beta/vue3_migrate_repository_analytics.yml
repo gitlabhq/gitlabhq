@@ -1,0 +1,10 @@
+---
+name: vue3_migrate_repository_analytics
+description: Enables Vue 3 in compatibility mode for the group and project repository analytics pages
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/607830
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248660
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/608143
+milestone: '19.3'
+group: group::optimize
+type: beta
+default_enabled: false

@@ -32,7 +32,7 @@ export default {
   },
   computed: {
     statistics() {
-      const formatPercent = getFormatter(SUPPORTED_FORMATS.percentHundred);
+      const formatRate = getFormatter(SUPPORTED_FORMATS.number);
 
       const statistics = [
         {
@@ -43,13 +43,15 @@ export default {
         {
           label: s__('PipelineCharts|Failure rate'),
           identifier: 'failure-ratio',
-          value: formatPercent(this.counts.failureRatio, defaultPrecision),
+          value: formatRate(this.counts.failureRatio, defaultPrecision),
+          unit: '%',
           link: this.failedPipelinesLink,
         },
         {
           label: s__('PipelineCharts|Success rate'),
           identifier: 'success-ratio',
-          value: formatPercent(this.counts.successRatio, defaultPrecision),
+          value: formatRate(this.counts.successRatio, defaultPrecision),
+          unit: '%',
         },
       ];
 

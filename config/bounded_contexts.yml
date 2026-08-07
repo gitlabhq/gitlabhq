@@ -190,6 +190,11 @@ domains:
       - subscription_management
       - add-on_provisioning
 
+  Govern:
+    description: SDLC governance policies and the Policy Store (Policies v2)
+    feature_categories:
+      - security_policy_management # Also in Security
+
   Import:
     description:
     feature_categories:

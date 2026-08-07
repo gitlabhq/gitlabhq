@@ -1,12 +1,12 @@
 <script>
 import { GlToggle, GlLink, GlButton, GlCard, GlSprintf } from '@gitlab/ui';
 import DuoDependencyBumpProfileModal from 'ee_component/pages/projects/shared/permissions/components/duo_dependency_bump_profile_modal.vue';
+import DuoReadinessPlatformRow from 'ee_component/pages/projects/shared/permissions/components/duo_readiness_platform_row.vue';
 import projectAutoRemediationProfileQuery from 'ee_else_ce/pages/projects/shared/permissions/graphql/project_auto_remediation_profile.query.graphql';
 import attachProfileMutation from 'ee_else_ce/pages/projects/shared/permissions/graphql/auto_remediation_profile_attach.mutation.graphql';
 import CascadingLockIcon from '~/namespaces/cascading_settings/components/cascading_lock_icon.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __, s__ } from '~/locale';
-
 import {
   amazonQHelpPath,
   duoFlowHelpPath,
@@ -37,6 +37,7 @@ export default {
     ExclusionSettings,
     DuoDependencyBumpProfileModal,
     DuoReadinessRow,
+    DuoReadinessPlatformRow,
   },
   mixins: [glFeatureFlagMixin()],
   props: {
@@ -171,6 +172,11 @@ export default {
       required: false,
       default: false,
     },
+    duoReadiness: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
     duoReadinessAvailable: {
       type: Boolean,
       required: false,
@@ -264,16 +270,25 @@ export default {
         !this.amazonQAvailable
       );
     },
+    // The design's blocked cascade: with the Agent Platform off above the project, nothing
+    // below its row is actionable, so every row reads blocked and its control is disabled.
+    platformEnabled() {
+      return Boolean(this.duoReadiness.platformEnabled);
+    },
     duoRowStatus() {
+      if (!this.platformEnabled) return STATUS_BLOCKED;
+
       return this.duoEnabled ? STATUS_DONE : STATUS_TODO;
     },
     flowExecutionRowStatus() {
-      if (!this.duoEnabled) return STATUS_BLOCKED;
+      if (!this.platformEnabled || !this.duoEnabled) return STATUS_BLOCKED;
 
       return this.duoRemoteFlowsAvailability ? STATUS_DONE : STATUS_TODO;
     },
     foundationalFlowsRowStatus() {
-      if (!this.duoEnabled || !this.duoRemoteFlowsAvailability) return STATUS_BLOCKED;
+      if (!this.platformEnabled || !this.duoEnabled || !this.duoRemoteFlowsAvailability) {
+        return STATUS_BLOCKED;
+      }
 
       return this.duoFoundationalFlowsAvailability ? STATUS_DONE : STATUS_TODO;
     },
@@ -372,6 +387,8 @@ export default {
     requiredSubtitle: s__(
       'DuoAgentPlatform|Agents cannot run here until everything below is in place.',
     ),
+    otherSettingsHeading: s__('DuoAgentPlatform|Other Duo settings'),
+    otherSettingsSubtitle: s__('DuoAgentPlatform|Project-wide behavior, unrelated to readiness.'),
     saveChanges: __('Save changes'),
     saveChangesAriaLabel: __('Save changes for GitLab Duo'),
     governanceTitle: s__('AiPowered|Governance'),
@@ -394,6 +411,8 @@ export default {
       </div>
 
       <div class="gl-border gl-overflow-hidden gl-rounded-lg">
+        <duo-readiness-platform-row :readiness="duoReadiness" />
+
         <duo-readiness-row
           :title="duoEnabledSetting.label"
           :description="duoEnabledSetting.helpText"
@@ -414,7 +433,7 @@ export default {
           </template>
           <gl-toggle
             v-model="duoEnabled"
-            :disabled="duoFeaturesLocked"
+            :disabled="!platformEnabled || duoFeaturesLocked"
             :label="duoEnabledSetting.label"
             label-position="hidden"
             name="project[project_setting_attributes][duo_features_enabled]"
@@ -449,7 +468,7 @@ export default {
           </template>
           <gl-toggle
             v-model="duoRemoteFlowsAvailability"
-            :disabled="!duoEnabled || showRemoteFlowsCascadingLock"
+            :disabled="!platformEnabled || !duoEnabled || showRemoteFlowsCascadingLock"
             :label="s__('DuoAgentPlatform|Remote GitLab Duo Flows')"
             label-position="hidden"
             name="project[project_setting_attributes][duo_remote_flows_enabled]"
@@ -482,7 +501,12 @@ export default {
           </template>
           <gl-toggle
             v-model="duoFoundationalFlowsAvailability"
-            :disabled="!duoEnabled || !duoRemoteFlowsAvailability || areFoundationalFlowsLocked"
+            :disabled="
+              !platformEnabled ||
+              !duoEnabled ||
+              !duoRemoteFlowsAvailability ||
+              areFoundationalFlowsLocked
+            "
             :label="s__('DuoAgentPlatform|Foundational GitLab Duo Flows')"
             label-position="hidden"
             name="project[project_setting_attributes][duo_foundational_flows_enabled]"
@@ -545,6 +569,16 @@ export default {
         </project-setting-row>
       </div>
     </project-setting-row>
+
+    <!-- Everything below the card is project-wide behaviour rather than readiness, so the
+         design separates it under its own heading. Only shown alongside the card; without it
+         the page keeps its existing ungrouped layout. -->
+    <div v-if="showReadinessCard" class="gl-border-t gl-mb-5 gl-pt-5">
+      <div class="gl-flex gl-flex-wrap gl-items-baseline gl-gap-3">
+        <span class="gl-font-bold">{{ $options.i18n.otherSettingsHeading }}</span>
+        <span class="gl-text-sm gl-text-subtle">{{ $options.i18n.otherSettingsSubtitle }}</span>
+      </div>
+    </div>
 
     <div
       v-if="duoEnabled && !amazonQAvailable"

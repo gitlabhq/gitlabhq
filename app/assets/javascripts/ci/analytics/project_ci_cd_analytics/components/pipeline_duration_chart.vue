@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlDashboardPanel } from '@gitlab/ui';
 import { GlLineChart } from '@gitlab/ui/src/charts';
 import { s__ } from '~/locale';
 import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
@@ -8,7 +8,7 @@ import { formatPipelineDuration, formatPipelineDurationForAxis } from '../../uti
 export default {
   name: 'PipelineDurationChart',
   components: {
-    GlLoadingIcon,
+    GlDashboardPanel,
     GlLineChart,
   },
   props: {
@@ -67,21 +67,20 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-border gl-border-default gl-p-5">
-    <h3 class="gl-heading-4">{{ s__('Pipeline|Duration') }}</h3>
-    <gl-loading-icon v-if="loading" size="xl" class="gl-mb-5" />
-    <gl-line-chart
-      v-else
-      :data="data"
-      :option="$options.lineChartOptions"
-      :include-legend-avg-max="false"
-    >
-      <template #tooltip-title="{ params }">
-        <template v-if="params && params.value">{{ formatDate(params.value) }}</template>
-      </template>
-      <template #tooltip-value="{ value }">
-        {{ formatPipelineDuration(value) }}
-      </template>
-    </gl-line-chart>
-  </div>
+  <gl-dashboard-panel :title="s__('Pipeline|Duration')" :loading="loading">
+    <template #body>
+      <gl-line-chart
+        :data="data"
+        :option="$options.lineChartOptions"
+        :include-legend-avg-max="false"
+      >
+        <template #tooltip-title="{ params }">
+          <template v-if="params && params.value">{{ formatDate(params.value) }}</template>
+        </template>
+        <template #tooltip-value="{ value }">
+          {{ formatPipelineDuration(value) }}
+        </template>
+      </gl-line-chart>
+    </template>
+  </gl-dashboard-panel>
 </template>

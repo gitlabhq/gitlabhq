@@ -1,4 +1,4 @@
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlDashboardPanel } from '@gitlab/ui';
 import { GlStackedColumnChart } from '@gitlab/ui/src/charts';
 import { shallowMount } from '@vue/test-utils';
 import PipelineStatusChart from '~/ci/analytics/project_ci_cd_analytics/components/pipeline_status_chart.vue';
@@ -8,7 +8,7 @@ describe('PipelineStatusChart', () => {
   let wrapper;
 
   const findStackedColumnChart = () => wrapper.findComponent(GlStackedColumnChart);
-  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findDashboardPanel = () => wrapper.findComponent(GlDashboardPanel);
 
   const createComponent = ({ props, ...options } = {}) => {
     wrapper = shallowMount(PipelineStatusChart, {
@@ -23,10 +23,14 @@ describe('PipelineStatusChart', () => {
     createComponent();
   });
 
+  it('displays title in a dashboard panel', () => {
+    expect(findDashboardPanel().props('title')).toBe('Status');
+  });
+
   it('displays loading state', () => {
     createComponent({ props: { loading: true } });
 
-    expect(findLoadingIcon().exists()).toBe(true);
+    expect(findDashboardPanel().props('loading')).toBe(true);
   });
 
   it('displays chart', () => {

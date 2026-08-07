@@ -34,9 +34,10 @@ module Authn
       # Maps the gRPC statuses the IAM Relationships API returns to a
       # machine-readable reason for the caller to translate. Keyed by the
       # integer gRPC status code (GRPC::BadStatus#code); unlisted statuses fall
-      # back to :unknown. NOT_FOUND only arises on the read path (an
-      # unresolvable subject or a scope the caller cannot see); mapping it here
-      # is harmless for the write path, which never returns it.
+      # back to :unknown. NOT_FOUND arises on the read path (an unresolvable
+      # subject or a scope the caller cannot see) and on delete (a key whose
+      # subject IAM has never seen fails the whole batch). The write path never
+      # returns it, since writing resolves or creates the subject.
       STATUS_REASONS = {
         GRPC::Core::StatusCodes::NOT_FOUND => :not_found,
         GRPC::Core::StatusCodes::PERMISSION_DENIED => :permission_denied,

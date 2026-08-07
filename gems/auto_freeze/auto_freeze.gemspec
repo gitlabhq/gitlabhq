@@ -18,7 +18,13 @@ Gem::Specification.new do |spec|
   spec.files = Dir['lib/**/*.rb', "README.md"]
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "freezolite", "~> 0.7"
+  spec.add_dependency "freezolite", "~> 0.6.0"
+  # Pinned to 0.2.x: require-hooks 0.4.x redirects Bootsnap's ISeq cache directory, which
+  # discards the cache precompiled into our container images. Every process then recompiles
+  # the whole application on boot, which took production p95 boot time from ~80s to ~150s.
+  # freezolite's own constraint is `~> 0.2`, which permits 0.4.x, so the pin must be
+  # declared here. See https://gitlab.com/gitlab-org/gitlab/-/issues/608847
+  spec.add_dependency "require-hooks", "~> 0.2.3"
 
   spec.add_development_dependency "gitlab-styles", "~> 14.0"
   spec.add_development_dependency "pry-byebug", "~> 3.12"

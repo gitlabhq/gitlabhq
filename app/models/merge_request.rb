@@ -1915,7 +1915,9 @@ class MergeRequest < ApplicationRecord
   end
 
   def issues_mentioned_but_not_closing(current_user)
-    referenced_issues_in_description(current_user) - visible_closing_issues_for(current_user)
+    closing_issue_ids = visible_closing_issues_for(current_user).map(&:id).to_set
+
+    referenced_issues_in_description(current_user).reject { |issue| closing_issue_ids.include?(issue.id) }
   end
 
   def related_issues(user)
@@ -1927,7 +1929,7 @@ class MergeRequest < ApplicationRecord
     ext = Gitlab::ReferenceExtractor.new(project, user)
     ext.analyze(messages.join("\n"))
 
-    ext.issues
+    issues_from(ext)
   end
 
   def target_project_path
@@ -3188,7 +3190,15 @@ class MergeRequest < ApplicationRecord
     strong_memoize_with(:referenced_issues_in_description, current_user&.id) do
       ext = Gitlab::ReferenceExtractor.new(project, current_user)
       ext.analyze("#{title}\n#{description}")
-      ext.issues
+
+      issues_from(ext)
+    end
+  end
+
+  def issues_from(extractor)
+    extractor.issues_and_work_items.select do |issue|
+      !issue.is_a?(Issue) ||
+        WorkItems::TypesFramework::Provider.unfiltered_base_types_for_issues.include?(issue.issue_type)
     end
   end
 

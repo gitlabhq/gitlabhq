@@ -15,6 +15,12 @@ RSpec.describe Ci::Catalog::BundledResources::Component, feature_category: :pipe
     it { is_expected.to validate_length_of(:name).is_at_most(255) }
     it { is_expected.to validate_uniqueness_of(:name).scoped_to(:catalog_bundled_version_id) }
 
+    it { is_expected.to allow_values('deploy', 'deploy-v2', 'deploy_v2', 'deploy.v2').for(:name) }
+
+    it 'rejects names that would not compose into a single object-storage path segment' do
+      expect(component).not_to allow_values('deploy/v2', '../deploy', 'deploy v2', "deploy\nv2").for(:name)
+    end
+
     it 'accepts a spec matching the component spec json schema' do
       component.spec = { inputs: { website: { type: 'string' } } }
 

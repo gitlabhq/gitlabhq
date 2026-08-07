@@ -10,6 +10,7 @@ const defaultProps = {
   projectFullPath: 'namespace/project',
   duoFeaturesEnabled: true,
   duoReadinessAvailable: true,
+  duoReadiness: { platformEnabled: true },
   amazonQAvailable: false,
   amazonQAutoReviewEnabled: false,
   duoFeaturesLocked: false,
@@ -125,6 +126,41 @@ describe('GitlabDuoSettings', () => {
       expect(findDuoRemoteFlowsToggle().exists()).toBe(true);
       expect(findDuoFoundationalFlowsToggle().exists()).toBe(true);
       expect(findDuoRemoteFlowsHiddenInput().exists()).toBe(true);
+    });
+
+    it('does not group the remaining settings under a heading', () => {
+      expect(wrapper.text()).not.toContain('Other Duo settings');
+    });
+  });
+
+  describe('when the readiness card is on', () => {
+    it('groups the remaining settings under a heading', () => {
+      expect(findReadinessBlock().exists()).toBe(true);
+      expect(wrapper.text()).toContain('Other Duo settings');
+    });
+  });
+
+  // The design's blocked state: the platform switch lives above the project, so the card
+  // stays, the platform row carries the warning, and every row below is blocked and disabled.
+  describe('when the Agent Platform is off above the project', () => {
+    beforeEach(() => {
+      wrapper = createWrapper({ duoReadiness: { platformEnabled: false } });
+    });
+
+    it('keeps the card rendered', () => {
+      expect(findReadinessBlock().exists()).toBe(true);
+    });
+
+    it('blocks every row below the platform row', () => {
+      expect(findDuoRow().props('status')).toBe('blocked');
+      expect(findFlowExecutionRow().props('status')).toBe('blocked');
+      expect(findFoundationalFlowsRow().props('status')).toBe('blocked');
+    });
+
+    it('disables every toggle below the platform row', () => {
+      expect(findDuoFeaturesEnabledToggle().props('disabled')).toBe(true);
+      expect(findDuoRemoteFlowsToggle().props('disabled')).toBe(true);
+      expect(findDuoFoundationalFlowsToggle().props('disabled')).toBe(true);
     });
   });
 

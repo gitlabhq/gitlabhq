@@ -92,8 +92,8 @@ describe('PipelinesStats', () => {
     it('renders stats data', () => {
       expect(findStatById('total-pipeline-runs').props('value')).toBe('200');
       expect(findStatById('median-duration').props('value')).toBe('3h 3m');
-      expect(findStatById('success-ratio').props('value')).toBe('75%');
-      expect(findStatById('failure-ratio').props('value')).toBe('25%');
+      expect(findStatById('success-ratio').props()).toMatchObject({ value: '75', unit: '%' });
+      expect(findStatById('failure-ratio').props()).toMatchObject({ value: '25', unit: '%' });
     });
 
     it('renders the failed pipelines link when failed count is greater than zero', () => {

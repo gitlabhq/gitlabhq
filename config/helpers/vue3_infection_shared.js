@@ -96,7 +96,10 @@ function loadScannerData() {
 
 /**
  * Run the infection scanner script synchronously.
- * Logs a warning on failure but does not throw.
+ *
+ * On failure:
+ * - For production and CI: throws to avoid stale data.
+ * - For development environments: Logs a warning but does not throw.
  */
 function runInfectionScanner() {
   const scriptPath = path.join(
@@ -110,6 +113,10 @@ function runInfectionScanner() {
     env: process.env,
   });
   if (res.status !== 0) {
+    if (process.env.NODE_ENV === 'production' || process.env.CI) {
+      throw new Error(`[vue3-infection] Infection scanner failed (code ${res.status}).`);
+    }
+
     console.warn(
       `[vue3-infection] Infection scanner failed (code ${res.status}). Continuing with stale data if available.`,
     );

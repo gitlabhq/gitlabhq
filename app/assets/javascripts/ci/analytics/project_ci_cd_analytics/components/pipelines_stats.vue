@@ -67,14 +67,14 @@ export default {
         {
           label: s__('PipelineCharts|Failure rate'),
           identifier: 'failure-ratio',
-          value: formatPipelineCountPercentage(failedCount, rateDenominator),
+          ...formatPipelineCountPercentage(failedCount, rateDenominator),
           path: this.failureRatioPath,
           popover: this.$options.failureRatePopover,
         },
         {
           label: s__('PipelineCharts|Success rate'),
           identifier: 'success-ratio',
-          value: formatPipelineCountPercentage(successCount, rateDenominator),
+          ...formatPipelineCountPercentage(successCount, rateDenominator),
         },
       ];
     },
@@ -96,6 +96,7 @@ export default {
             :id="stat.identifier"
             :value="stat.value"
             :title="stat.label"
+            :unit="stat.unit || ''"
             :aria-busy="loading"
             should-animate
           />

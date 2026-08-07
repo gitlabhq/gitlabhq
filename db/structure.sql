@@ -16330,6 +16330,9 @@ CREATE TABLE catalog_bundled_resource_components (
     created_at timestamp with time zone NOT NULL,
     name text NOT NULL,
     spec jsonb DEFAULT '{}'::jsonb NOT NULL,
+    file_store smallint DEFAULT 1 NOT NULL,
+    file text,
+    CONSTRAINT check_79dda5d4b6 CHECK ((char_length(file) <= 1024)),
     CONSTRAINT check_da609233da CHECK ((char_length(name) <= 255))
 );
 
@@ -21299,6 +21302,56 @@ CREATE SEQUENCE gitlab_subscriptions_id_seq
     CACHE 1;
 
 ALTER SEQUENCE gitlab_subscriptions_id_seq OWNED BY gitlab_subscriptions.id;
+
+CREATE TABLE govern_policies (
+    id bigint NOT NULL,
+    organization_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    version integer DEFAULT 1 NOT NULL,
+    trigger_type smallint NOT NULL,
+    mode smallint DEFAULT 2 NOT NULL,
+    lifecycle_state smallint DEFAULT 0 NOT NULL,
+    name text NOT NULL,
+    description text,
+    scope_rego text,
+    policy_scope jsonb,
+    rules jsonb DEFAULT '[]'::jsonb NOT NULL,
+    actions jsonb DEFAULT '[]'::jsonb NOT NULL,
+    CONSTRAINT check_26b266355c CHECK ((char_length(description) <= 4096)),
+    CONSTRAINT check_6ed8686a5b CHECK ((char_length(scope_rego) <= 4096)),
+    CONSTRAINT check_dc911ab262 CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE govern_policies_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE govern_policies_id_seq OWNED BY govern_policies.id;
+
+CREATE TABLE govern_policy_enforcements (
+    id bigint NOT NULL,
+    organization_id bigint NOT NULL,
+    govern_policy_id bigint NOT NULL,
+    project_id bigint,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    last_evaluated_at timestamp with time zone,
+    state smallint DEFAULT 0 NOT NULL
+);
+
+CREATE SEQUENCE govern_policy_enforcements_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE govern_policy_enforcements_id_seq OWNED BY govern_policy_enforcements.id;
 
 CREATE TABLE gpg_key_subkeys (
     id bigint NOT NULL,
@@ -36723,6 +36776,10 @@ ALTER TABLE ONLY gitlab_subscription_histories ALTER COLUMN id SET DEFAULT nextv
 
 ALTER TABLE ONLY gitlab_subscriptions ALTER COLUMN id SET DEFAULT nextval('gitlab_subscriptions_id_seq'::regclass);
 
+ALTER TABLE ONLY govern_policies ALTER COLUMN id SET DEFAULT nextval('govern_policies_id_seq'::regclass);
+
+ALTER TABLE ONLY govern_policy_enforcements ALTER COLUMN id SET DEFAULT nextval('govern_policy_enforcements_id_seq'::regclass);
+
 ALTER TABLE ONLY gpg_key_subkeys ALTER COLUMN id SET DEFAULT nextval('gpg_key_subkeys_id_seq'::regclass);
 
 ALTER TABLE ONLY gpg_keys ALTER COLUMN id SET DEFAULT nextval('gpg_keys_id_seq'::regclass);
@@ -40191,6 +40248,12 @@ ALTER TABLE ONLY gitlab_subscription_histories
 
 ALTER TABLE ONLY gitlab_subscriptions
     ADD CONSTRAINT gitlab_subscriptions_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY govern_policies
+    ADD CONSTRAINT govern_policies_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY govern_policy_enforcements
+    ADD CONSTRAINT govern_policy_enforcements_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY gpg_key_subkeys
     ADD CONSTRAINT gpg_key_subkeys_pkey PRIMARY KEY (id);
@@ -47775,6 +47838,14 @@ CREATE UNIQUE INDEX index_gitlab_subscriptions_on_namespace_id ON gitlab_subscri
 
 CREATE INDEX index_gitlab_subscriptions_on_trial_and_trial_starts_on ON gitlab_subscriptions USING btree (trial, trial_starts_on);
 
+CREATE INDEX index_govern_policies_on_namespace_id ON govern_policies USING btree (namespace_id);
+
+CREATE INDEX index_govern_policy_enforcements_on_govern_policy_id ON govern_policy_enforcements USING btree (govern_policy_id);
+
+CREATE INDEX index_govern_policy_enforcements_on_organization_id ON govern_policy_enforcements USING btree (organization_id);
+
+CREATE INDEX index_govern_policy_enforcements_on_project_id ON govern_policy_enforcements USING btree (project_id);
+
 CREATE UNIQUE INDEX index_gpg_key_subkeys_on_fingerprint ON gpg_key_subkeys USING btree (fingerprint);
 
 CREATE INDEX index_gpg_key_subkeys_on_gpg_key_id ON gpg_key_subkeys USING btree (gpg_key_id);
@@ -51878,6 +51949,10 @@ CREATE UNIQUE INDEX unique_compliance_security_policies_security_policy_id ON co
 CREATE UNIQUE INDEX unique_external_audit_event_destination_namespace_id_and_name ON audit_events_external_audit_event_destinations USING btree (namespace_id, name);
 
 CREATE UNIQUE INDEX unique_google_cloud_logging_configurations_on_namespace_id ON audit_events_google_cloud_logging_configurations USING btree (namespace_id, google_project_id_name, log_id_name);
+
+CREATE UNIQUE INDEX unique_govern_policies_organization_id_namespace_id_and_name ON govern_policies USING btree (organization_id, namespace_id, name);
+
+CREATE UNIQUE INDEX unique_govern_policy_enforcements_org_policy_and_project ON govern_policy_enforcements USING btree (organization_id, govern_policy_id, project_id) WHERE (project_id IS NOT NULL);
 
 CREATE UNIQUE INDEX unique_idx_ai_catalog_items_on_org_id_identifier_item_type ON ai_catalog_items USING btree (organization_id, identifier, item_type);
 
@@ -60672,6 +60747,9 @@ ALTER TABLE ONLY work_item_date_field_values
 
 ALTER TABLE ONLY scan_execution_policy_rules
     ADD CONSTRAINT fk_rails_7be2571ecf FOREIGN KEY (security_policy_id) REFERENCES security_policies(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY govern_policy_enforcements
+    ADD CONSTRAINT fk_rails_7c42c73888 FOREIGN KEY (govern_policy_id) REFERENCES govern_policies(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY resource_state_events
     ADD CONSTRAINT fk_rails_7ddc5f7457 FOREIGN KEY (source_merge_request_id) REFERENCES merge_requests(id) ON DELETE SET NULL;

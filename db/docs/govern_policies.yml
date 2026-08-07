@@ -1,0 +1,16 @@
+---
+table_name: govern_policies
+classes:
+- Govern::Policy
+feature_categories:
+- security_policy_management
+description: Policy Store (Policies v2) experimental table storing governance policies
+  owned by a top-level group, including authored rules and actions and the compiled
+  scope Rego. Sharded by organization for cells; owned by namespace for the 19.4
+  experiment.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/247753
+milestone: '19.3'
+gitlab_schema: gitlab_sec
+sharding_key:
+  organization_id: organizations
+table_size: small

@@ -2,7 +2,8 @@ PATH
   remote: .
   specs:
     auto_freeze (0.3.0)
-      freezolite (~> 0.7)
+      freezolite (~> 0.6.0)
+      require-hooks (~> 0.2.3)
 
 GEM
   remote: https://rubygems.org/
@@ -32,8 +33,8 @@ GEM
     diff-lcs (1.6.2)
     drb (2.2.3)
     erb (6.0.3)
-    freezolite (0.7.0)
-      require-hooks (~> 0.4)
+    freezolite (0.6.0)
+      require-hooks (~> 0.2)
     gitlab-styles (14.0.0)
       rubocop (= 1.81.7)
       rubocop-capybara (= 2.21.0)
@@ -88,7 +89,7 @@ GEM
     regexp_parser (2.12.0)
     reline (0.6.3)
       io-console (~> 0.5)
-    require-hooks (0.4.0)
+    require-hooks (0.2.3)
     rspec (3.13.2)
       rspec-core (~> 3.13.0)
       rspec-expectations (~> 3.13.0)
@@ -178,7 +179,7 @@ CHECKSUMS
   diff-lcs (1.6.2) sha256=9ae0d2cba7d4df3075fe8cd8602a8604993efc0dfa934cff568969efb1909962
   drb (2.2.3) sha256=0b00d6fdb50995fe4a45dea13663493c841112e4068656854646f418fda13373
   erb (6.0.3) sha256=e43685a8a0a0ea6a924871b2162e8953ef73147ce46b75b36d1f6774fd286e91
-  freezolite (0.7.0) sha256=bc665ea47406ce4971a1cea4debde1675f467132f545d17b12ea7039acd19d3c
+  freezolite (0.6.0) sha256=a1305e324738633a30904b50f085bebe7b43c64ebc1e23ce848ee0eeaf3b1dfd
   gitlab-styles (14.0.0) sha256=68b18899d795f70b67d6f190871c18cf194833cb57b4ea4c3070548464565783
   i18n (1.14.8) sha256=285778639134865c5e0f6269e0b818256017e8cde89993fdfcbfb64d088824a5
   io-console (0.8.2) sha256=d6e3ae7a7cc7574f4b8893b4fca2162e57a825b223a177b7afa236c5ef9814cc
@@ -204,7 +205,7 @@ CHECKSUMS
   rdoc (7.2.0) sha256=8650f76cd4009c3b54955eb5d7e3a075c60a57276766ebf36f9085e8c9f23192
   regexp_parser (2.12.0) sha256=35a916a1d63190ab5c9009457136ae5f3c0c7512d60291d0d1378ba18ce08ebb
   reline (0.6.3) sha256=1198b04973565b36ec0f11542ab3f5cfeeec34823f4e54cebde90968092b1835
-  require-hooks (0.4.0) sha256=005f4c6435b4edae73e358cdbaba48370a4121f9ce893d5d2a3c66fce855677d
+  require-hooks (0.2.3) sha256=224be5b4be0fd2a47cb73286c500da366704a54ec195b6627366380c950efac8
   rspec (3.13.2) sha256=206284a08ad798e61f86d7ca3e376718d52c0bc944626b2349266f239f820587
   rspec-core (3.13.6) sha256=a8823c6411667b60a8bca135364351dda34cd55e44ff94c4be4633b37d828b2d
   rspec-expectations (3.13.5) sha256=33a4d3a1d95060aea4c94e9f237030a8f9eae5615e9bd85718fe3a09e4b58836

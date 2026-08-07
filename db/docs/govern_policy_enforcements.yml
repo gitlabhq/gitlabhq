@@ -1,0 +1,16 @@
+---
+table_name: govern_policy_enforcements
+classes:
+- Govern::PolicyEnforcement
+feature_categories:
+- security_policy_management
+description: Policy Store (Policies v2) experimental table tracking enforcement state
+  per governance policy and project, used for trigger routing and reconciliation. project_id
+  intentionally carries no foreign key, per GOVERN-008, so the store can be extracted
+  as a standalone service; integrity is enforced at the application level.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/247753
+milestone: '19.3'
+gitlab_schema: gitlab_sec
+sharding_key:
+  organization_id: organizations
+table_size: small

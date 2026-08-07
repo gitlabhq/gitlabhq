@@ -5,12 +5,17 @@ require 'spec_helper'
 RSpec.describe Authn::IamService::UpdateRelationshipsClient, feature_category: :system_access do
   subject(:client) { described_class.new }
 
-  describe '#assign_roles' do
-    let(:organization_uuid) { Gitlab::Utils.uuid_v7 }
-    let(:resource_id) { '019ed9d4-0000-7000-8000-000000000000' }
-    let(:other_resource_id) { '019ed9d4-0000-7000-8000-000000000001' }
+  let(:organization_uuid) { Gitlab::Utils.uuid_v7 }
+  let(:resource_id) { '019ed9d4-0000-7000-8000-000000000000' }
+  let(:other_resource_id) { '019ed9d4-0000-7000-8000-000000000001' }
+  let(:user_token) { 'user-token' }
+  let(:iam_secret) { 'test-service-token' }
+  let(:update_stub) { instance_double(::Gitlab::Iam::Update::V1::UpdateService::Stub) }
+  let(:write_response) { ::Gitlab::Iam::Update::V1::WriteRelationshipsResponse.new }
+  let(:delete_response) { ::Gitlab::Iam::Update::V1::DeleteRelationshipsResponse.new }
+
+  describe '#grant_roles' do
     let(:role_id) { Gitlab::Utils.uuid_v7 }
-    let(:user_token) { 'user-token' }
     let(:assignments) do
       [
         { assignee_id: 2, resource_id: resource_id, role_id: role_id },
@@ -29,18 +34,40 @@ RSpec.describe Authn::IamService::UpdateRelationshipsClient, feature_category: :
         expect(inputs.map(&:kind)).to all(eq(:KIND_ASSIGNMENT))
         expect(inputs.map { |i| i.role.id }).to all(eq(role_id))
 
-        ::Gitlab::Iam::Update::V1::WriteRelationshipsResponse.new
+        write_response
       end
 
-      client.assign_roles(assignments, organization_uuid: organization_uuid, token: user_token)
+      client.grant_roles(assignments, organization_uuid: organization_uuid, token: user_token)
     end
   end
 
-  describe '#write_relationships' do
-    let(:user_token) { 'user-token' }
-    let(:iam_secret) { 'test-service-token' }
-    let(:update_stub) { instance_double(::Gitlab::Iam::Update::V1::UpdateService::Stub) }
-    let(:response) { ::Gitlab::Iam::Update::V1::WriteRelationshipsResponse.new }
+  describe '#revoke_roles' do
+    let(:keys) do
+      [
+        { assignee_id: 2, resource_id: resource_id },
+        { assignee_id: 3, resource_id: other_resource_id }
+      ]
+    end
+
+    it 'deletes one ASSIGNMENT key per entry, all scoped to the org', :aggregate_failures do
+      expect(client).to receive(:delete_relationships) do |inputs, token:|
+        expect(token).to eq(user_token)
+        expect(inputs.size).to eq(2)
+        expect(inputs.map { |i| i.subject.identity.origin }).to all(eq(:ORIGIN_ORGANIZATION))
+        expect(inputs.map { |i| i.subject.identity.origin_id }).to all(eq(organization_uuid))
+        expect(inputs.map { |i| [i.subject.identity.local_id, i.object.id] })
+          .to match_array([['2', resource_id], ['3', other_resource_id]])
+        expect(inputs.map(&:kind)).to all(eq(:KIND_ASSIGNMENT))
+
+        delete_response
+      end
+
+      client.revoke_roles(keys, organization_uuid: organization_uuid, token: user_token)
+    end
+  end
+
+  describe '#grant_roles request metadata and error handling' do
+    subject(:grant) { client.grant_roles([], organization_uuid: organization_uuid, token: user_token) }
 
     before do
       allow(Authn::IamDataAccessService).to receive_messages(
@@ -54,9 +81,9 @@ RSpec.describe Authn::IamService::UpdateRelationshipsClient, feature_category: :
       expect(update_stub).to receive(:write_relationships).with(
         an_instance_of(::Gitlab::Iam::Update::V1::WriteRelationshipsRequest),
         metadata: { 'authorization' => "Bearer #{user_token}" }
-      ).and_return(response)
+      ).and_return(write_response)
 
-      client.write_relationships([], token: user_token)
+      grant
     end
 
     context 'when the IAM write fails with a gRPC status' do
@@ -72,7 +99,7 @@ RSpec.describe Authn::IamService::UpdateRelationshipsClient, feature_category: :
         it "raises a RequestError with reason #{reason} for #{error_class}" do
           allow(update_stub).to receive(:write_relationships).and_raise(error_class.new)
 
-          expect { client.write_relationships([], token: user_token) }
+          expect { grant }
             .to raise_error(described_class::RequestError, /write failed/) { |e| expect(e.reason).to eq(reason) }
         end
       end
@@ -80,7 +107,7 @@ RSpec.describe Authn::IamService::UpdateRelationshipsClient, feature_category: :
       it 'falls back to the :unknown reason for an unmapped status' do
         allow(update_stub).to receive(:write_relationships).and_raise(GRPC::Internal.new)
 
-        expect { client.write_relationships([], token: user_token) }
+        expect { grant }
           .to raise_error(described_class::RequestError) { |e| expect(e.reason).to eq(:unknown) }
       end
 
@@ -90,8 +117,7 @@ RSpec.describe Authn::IamService::UpdateRelationshipsClient, feature_category: :
 
         expect(Gitlab::ErrorTracking).to receive(:track_exception).with(error)
 
-        expect { client.write_relationships([], token: user_token) }
-          .to raise_error(described_class::RequestError)
+        expect { grant }.to raise_error(described_class::RequestError)
       end
     end
 
@@ -100,7 +126,7 @@ RSpec.describe Authn::IamService::UpdateRelationshipsClient, feature_category: :
         allow(Authn::IamDataAccessService).to receive(:grpc_address)
           .and_raise(Authn::IamDataAccessService::ConfigurationError)
 
-        expect { client.write_relationships([], token: user_token) }
+        expect { grant }
           .to raise_error(described_class::RequestError) { |e| expect(e.reason).to eq(:unavailable) }
       end
 
@@ -110,8 +136,7 @@ RSpec.describe Authn::IamService::UpdateRelationshipsClient, feature_category: :
 
         expect(Gitlab::ErrorTracking).to receive(:track_exception).with(error)
 
-        expect { client.write_relationships([], token: user_token) }
-          .to raise_error(described_class::RequestError)
+        expect { grant }.to raise_error(described_class::RequestError)
       end
     end
 
@@ -132,10 +157,10 @@ RSpec.describe Authn::IamService::UpdateRelationshipsClient, feature_category: :
         received_metadata = nil
         allow(fake_active_call).to receive(:request_response) do |_request, metadata:|
           received_metadata = metadata
-          response
+          write_response
         end
 
-        client.write_relationships([], token: user_token)
+        grant
 
         # a_hash_including, not eq: the real interceptor chain also carries
         # Labkit's correlation-id interceptor, which adds its own header.
@@ -147,12 +172,69 @@ RSpec.describe Authn::IamService::UpdateRelationshipsClient, feature_category: :
     end
   end
 
+  describe '#revoke_roles request metadata and error handling' do
+    subject(:revoke) { client.revoke_roles([], organization_uuid: organization_uuid, token: user_token) }
+
+    before do
+      allow(Authn::IamDataAccessService).to receive_messages(
+        grpc_address: 'localhost:5005',
+        secret: iam_secret
+      )
+      allow(::Gitlab::Iam::Update::V1::UpdateService::Stub).to receive(:new).and_return(update_stub)
+    end
+
+    it 'sends the caller bearer token as metadata' do
+      expect(update_stub).to receive(:delete_relationships).with(
+        an_instance_of(::Gitlab::Iam::Update::V1::DeleteRelationshipsRequest),
+        metadata: { 'authorization' => "Bearer #{user_token}" }
+      ).and_return(delete_response)
+
+      revoke
+    end
+
+    context 'when the IAM delete fails with a gRPC status' do
+      {
+        GRPC::PermissionDenied => :permission_denied,
+        GRPC::Unauthenticated => :unauthenticated,
+        GRPC::InvalidArgument => :invalid_request,
+        GRPC::Unavailable => :unavailable,
+        GRPC::DeadlineExceeded => :timeout
+      }.each do |error_class, reason|
+        it "raises a RequestError with reason #{reason} for #{error_class}" do
+          allow(update_stub).to receive(:delete_relationships).and_raise(error_class.new)
+
+          expect { revoke }
+            .to raise_error(described_class::RequestError, /delete failed/) { |e| expect(e.reason).to eq(reason) }
+        end
+      end
+
+      it 'tracks the underlying gRPC exception' do
+        error = GRPC::PermissionDenied.new
+        allow(update_stub).to receive(:delete_relationships).and_raise(error)
+
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(error)
+
+        expect { revoke }.to raise_error(described_class::RequestError)
+      end
+    end
+
+    context 'when the data access service is misconfigured' do
+      it 'raises a RequestError with the :unavailable reason' do
+        allow(Authn::IamDataAccessService).to receive(:grpc_address)
+          .and_raise(Authn::IamDataAccessService::ConfigurationError)
+
+        expect { revoke }
+          .to raise_error(described_class::RequestError) { |e| expect(e.reason).to eq(:unavailable) }
+      end
+    end
+  end
+
   describe 'insecure channel guard' do
     it 'refuses an insecure channel outside development and test' do
       allow(Gitlab).to receive(:dev_or_test_env?).and_return(false)
       allow(Authn::IamDataAccessService).to receive(:grpc_address).and_return('localhost:5005')
 
-      expect { client.write_relationships([], token: 'tok') }
+      expect { client.grant_roles([], organization_uuid: organization_uuid, token: 'tok') }
         .to raise_error(Authn::IamService::BaseClient::InsecureChannelError)
     end
   end

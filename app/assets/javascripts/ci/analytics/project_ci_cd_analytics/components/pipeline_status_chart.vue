@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlDashboardPanel } from '@gitlab/ui';
 import { GlStackedColumnChart } from '@gitlab/ui/src/charts';
 import {
   DATA_VIZ_GREEN_500,
@@ -12,7 +12,7 @@ import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
 export default {
   name: 'PipelineStatusChart',
   components: {
-    GlLoadingIcon,
+    GlDashboardPanel,
     GlStackedColumnChart,
   },
   props: {
@@ -66,22 +66,21 @@ export default {
 </script>
 
 <template>
-  <div class="gl-border gl-border-default gl-p-5">
-    <h3 class="gl-heading-4">{{ s__('Pipeline|Status') }}</h3>
-    <gl-loading-icon v-if="loading" size="xl" class="gl-mb-5" />
-    <gl-stacked-column-chart
-      v-else
-      x-axis-type="category"
-      :x-axis-title="s__('Pipelines|Time')"
-      :y-axis-title="s__('Pipelines|Number of Pipelines')"
-      :custom-palette="$options.palette"
-      :group-by="groupBy"
-      :bars="bars"
-      :include-legend-avg-max="false"
-    >
-      <template #tooltip-title="{ params }">
-        <template v-if="params">{{ formatDate(params.value) }}</template>
-      </template>
-    </gl-stacked-column-chart>
-  </div>
+  <gl-dashboard-panel :title="s__('Pipeline|Status')" :loading="loading">
+    <template #body>
+      <gl-stacked-column-chart
+        x-axis-type="category"
+        :x-axis-title="s__('Pipelines|Time')"
+        :y-axis-title="s__('Pipelines|Number of Pipelines')"
+        :custom-palette="$options.palette"
+        :group-by="groupBy"
+        :bars="bars"
+        :include-legend-avg-max="false"
+      >
+        <template #tooltip-title="{ params }">
+          <template v-if="params">{{ formatDate(params.value) }}</template>
+        </template>
+      </gl-stacked-column-chart>
+    </template>
+  </gl-dashboard-panel>
 </template>

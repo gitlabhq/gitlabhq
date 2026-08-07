@@ -10,7 +10,6 @@ RSpec.describe 'devise/registrations/new', feature_category: :system_access do
   subject { render && rendered }
 
   before do
-    stub_feature_flags(subscription_sm_unification: false)
     allow(view).to receive(:onboarding_status_presenter).and_return(onboarding_status_presenter)
     allow(view).to receive(:resource).and_return(resource)
     allow(view).to receive(:resource_name).and_return(:user)
