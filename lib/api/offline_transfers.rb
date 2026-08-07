@@ -91,7 +91,8 @@ module API
       end
 
       desc 'Start a new offline transfer export' do
-        detail 'Initiates a new offline transfer export'
+        detail 'Initiates a new offline transfer export. For more information, see ' \
+          'https://docs.gitlab.com/user/group/import/offline_transfer_migrations/'
         tags ['offline_transfers']
       end
       params do
@@ -126,7 +127,8 @@ module API
       end
 
       desc 'List all offline transfer exports' do
-        detail 'Lists all offline transfer exports'
+        detail 'Lists all offline transfer exports. For more information, see ' \
+          'https://docs.gitlab.com/user/group/import/offline_transfer_migrations/'
         tags ['offline_transfers']
       end
       params do
@@ -142,7 +144,8 @@ module API
       end
 
       desc 'Get offline transfer export details' do
-        detail 'Retrieves details of an offline transfer export'
+        detail 'Retrieves details of an offline transfer export. For more information, see ' \
+          'https://docs.gitlab.com/user/group/import/offline_transfer_migrations/'
         tags ['offline_transfers']
       end
       params do
@@ -161,7 +164,8 @@ module API
       end
 
       desc 'Start a new offline transfer import' do
-        detail 'Initiates a new offline transfer import from object storage'
+        detail 'Initiates a new offline transfer import from object storage. For more information, see ' \
+          'https://docs.gitlab.com/user/group/import/offline_transfer_migrations/'
         success code: 201, model: Entities::BulkImport
         failure [
           { code: 400, message: 'Bad request' },

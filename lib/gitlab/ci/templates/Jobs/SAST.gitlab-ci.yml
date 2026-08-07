@@ -399,8 +399,16 @@ gitlab-advanced-sast-cpp:
       exists: !reference [.gitlab-advanced-sast-cpp-exist-rules, exists]
 
 .gitlab-advanced-sast-ext-exist-rules:
+  # Use separate extension globs instead of a single brace pattern
+  # (`**/{*.swift,*.m,*.mm}`). GitLab classifies the brace form as a `pattern`
+  # glob, which short-circuits to a match once the file-count limit is exceeded
+  # (50,000 files), so the job would run even in large repositories with no
+  # Swift/Objective-C files. Extension globs are evaluated directly, without
+  # that limit.
   exists:
-    - '**/{*.swift,*.m,*.mm}'
+    - '**/*.swift'
+    - '**/*.m'
+    - '**/*.mm'
 
 gitlab-advanced-sast-ext:
   extends: .sast-analyzer

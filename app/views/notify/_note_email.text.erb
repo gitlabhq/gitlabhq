@@ -5,6 +5,9 @@
 <% discussion = local_assigns.fetch(:discussion) { note.discussion } if note.part_of_discussion? -%>
 <% project = local_assigns.fetch(:project, @project) -%>
 
+<% if note.noteable.respond_to?(:confidential?) && note.noteable.confidential? -%>
+<%= _('[Confidential work item]') %>
+<% end -%>
 <% if note.internal? -%>
 [<%= s_('Notify|Internal note') %>]
 

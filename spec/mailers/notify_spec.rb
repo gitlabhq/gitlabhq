@@ -1848,6 +1848,11 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
             end
           end
 
+          it 'does not include a confidential work item indicator', :aggregate_failures do
+            expect(subject.html_part.body.decoded).not_to include('Confidential work item')
+            expect(subject.text_part.body.decoded).not_to include('[Confidential work item]')
+          end
+
           context 'when noteable is confidential' do
             before_all do
               note.noteable.update_attribute(:confidential, "true")
@@ -1861,6 +1866,14 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
               expect(subject.header['X-GitLab-ConfidentialIssue'].value).to eq('true')
             end
 
+            it 'includes a confidential work item indicator in the HTML part' do
+              expect(subject.html_part.body.decoded).to include('Confidential work item')
+            end
+
+            it 'includes a confidential work item indicator in the text part' do
+              expect(subject.text_part.body.decoded).to include('[Confidential work item]')
+            end
+
             it 'has In-Reply-To header pointing to the issue' do
               expect(subject.header['In-Reply-To'].message_ids).to eq(["issue_#{note.noteable.id}@#{host}"])
             end
@@ -1872,7 +1885,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
             context 'with private references accessible to the recipient' do
               let_it_be(:private_project) { create(:project, :private, guests: recipient) }
               let_it_be(:private_issue) { create(:issue, :closed, project: private_project) }
-              let(:html_part) { subject.body.parts.last.to_s }
+              let(:html_part) { subject.body.parts.last.decoded }
 
               before_all do
                 note.update!(note: private_issue.to_reference(full: true).to_s)

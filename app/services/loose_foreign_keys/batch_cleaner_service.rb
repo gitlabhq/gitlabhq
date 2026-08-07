@@ -163,17 +163,12 @@ module LooseForeignKeys
 
     # File-backed tables (e.g. p_ci_job_artifacts) declare a `cleaner_class` so
     # their files are cleaned up instead of being orphaned by a bulk `DELETE`.
-    # Gated behind a flag so the behaviour can be rolled out and disabled safely.
     def cleaner_class_for(loose_foreign_key_definition, table_partitioned)
       custom_cleaner = loose_foreign_key_definition.options[:cleaner_class]
 
-      return custom_cleaner if custom_cleaner && job_artifact_cleaner_enabled?
+      return custom_cleaner if custom_cleaner
 
       table_partitioned ? PartitionCleanerService : CleanerService
-    end
-
-    def job_artifact_cleaner_enabled?
-      Feature.enabled?(:loose_foreign_keys_clean_job_artifact_files, :instance, type: :ops)
     end
   end
 end

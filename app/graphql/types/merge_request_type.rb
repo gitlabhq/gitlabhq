@@ -201,7 +201,8 @@ module Types
       null: true,
       description: 'Other open merge requests in the same stack as this merge request, ' \
         'ordered from the top of the stack to the bottom. ' \
-        'Returns null if this merge request is not part of a stack.',
+        'Returns null if this merge request is not part of a stack, or if the stack contains ' \
+        "more than #{::MergeRequests::StackFinder::MAX_STACK_SIZE} merge requests.",
       resolver: Resolvers::MergeRequests::StackResolver
 
     field :assignees,

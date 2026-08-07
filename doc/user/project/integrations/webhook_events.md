@@ -1203,6 +1203,59 @@ The following example shows re-request review changes (partial payload):
 }
 ```
 
+### Submit review events
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/592358) in GitLab 19.3.
+
+{{< /history >}}
+
+When a reviewer submits a review, GitLab triggers a webhook with `action: "update"` that reflects the reviewer's new state.
+This applies whether the reviewer requests changes, marks the review as reviewed, approves, or unapproves.
+The `changes` object contains the reviewer's previous state in the first array and the updated state in the second array.
+For example, a reviewer who requests changes transitions from `review_started` to `requested_changes`.
+
+The `re_requested` field is `false` in both arrays because a submitted review is not a re-request.
+
+The following example shows submit review changes (partial payload):
+
+```json
+{
+  "object_kind": "merge_request",
+  "event_type": "merge_request",
+  "object_attributes": {
+    "action": "update"
+  },
+  "changes": {
+    "reviewers": [
+      [
+        {
+          "id": 6,
+          "name": "User1",
+          "username": "user1",
+          "state": "review_started",
+          "re_requested": false,
+          "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+          "email": "user1@example.com"
+        }
+      ],
+      [
+        {
+          "id": 6,
+          "name": "User1",
+          "username": "user1",
+          "state": "requested_changes",
+          "re_requested": false,
+          "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+          "email": "user1@example.com"
+        }
+      ]
+    ]
+  }
+}
+```
+
 ### Complete payload example
 
 Request header:

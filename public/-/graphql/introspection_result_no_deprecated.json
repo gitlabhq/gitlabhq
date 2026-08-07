@@ -107521,7 +107521,7 @@
             },
             {
               "name": "stack",
-              "description": "Other open merge requests in the same stack as this merge request, ordered from the top of the stack to the bottom. Returns null if this merge request is not part of a stack.",
+              "description": "Other open merge requests in the same stack as this merge request, ordered from the top of the stack to the bottom. Returns null if this merge request is not part of a stack, or if the stack contains more than 20 merge requests.",
               "args": [],
               "type": {
                 "kind": "LIST",

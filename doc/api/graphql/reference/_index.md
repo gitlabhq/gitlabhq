@@ -48684,7 +48684,7 @@ Fields:
 | <a id="mergerequest-squash"></a>`squash` | [`Boolean!`](#boolean) | Indicates if the merge request is set to be squashed when merged. [Project settings](https://docs.gitlab.com/user/project/merge_requests/squash_and_merge/#configure-squash-options-for-a-project) may override this value. Use `squash_on_merge` instead to take project squash options into account. |
 | <a id="mergerequest-squashonmerge"></a>`squashOnMerge` | [`Boolean!`](#boolean) | Indicates if the merge request will be squashed when merged. |
 | <a id="mergerequest-squashreadonly"></a>`squashReadOnly` | [`Boolean!`](#boolean) | Indicates if `squashReadOnly` is enabled. |
-| <a id="mergerequest-stack"></a>`stack` | [`[MergeRequest!]`](#mergerequest) | Other open merge requests in the same stack as this merge request, ordered from the top of the stack to the bottom. Returns null if this merge request is not part of a stack. |
+| <a id="mergerequest-stack"></a>`stack` | [`[MergeRequest!]`](#mergerequest) | Other open merge requests in the same stack as this merge request, ordered from the top of the stack to the bottom. Returns null if this merge request is not part of a stack, or if the stack contains more than 20 merge requests. |
 | <a id="mergerequest-state"></a>`state` | [`MergeRequestState!`](#mergerequeststate) | State of the merge request. |
 | <a id="mergerequest-subscribed"></a>`subscribed` | [`Boolean!`](#boolean) | Indicates if the currently logged in user is subscribed to the merge request. |
 | <a id="mergerequest-suggestedreviewers"></a>`suggestedReviewers` | [`SuggestedReviewersType`](#suggestedreviewerstype) | Suggested reviewers for merge request. |

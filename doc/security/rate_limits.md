@@ -213,6 +213,19 @@ There is a rate limit for triggering project imports from FogBugz.
 
 The rate limit is 1 triggered import per minute per user.
 
+### Offline transfer exports and imports
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209344) in GitLab 19.3.
+
+{{< /history >}}
+
+[Offline transfer](../user/import/gitlab_instances/offline-transfer-migrations.md) exports and
+imports have separate rate limits.
+
+Each rate limit is 6 requests per minute per user.
+
 ### Commit diff files
 
 This is a rate limit for expanded commit diff files (`/[group]/[project]/-/commit/[:sha]/diff_files?expanded=1`),

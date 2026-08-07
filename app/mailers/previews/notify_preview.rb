@@ -56,6 +56,14 @@ class NotifyPreview < ActionMailer::Preview
     end
   end
 
+  def note_issue_email_for_confidential_work_item
+    note_email(:note_issue_email) do
+      issue.update!(confidential: true)
+
+      create_note(noteable_type: 'Issue', noteable_id: issue.id, note: 'This is a note on a confidential work item.')
+    end
+  end
+
   def new_user_email
     Notify.new_user_email(user.id).message
   end

@@ -31,7 +31,8 @@ Use stacks to:
 
 GitLab detects a stack automatically. A merge request joins a stack when it targets another open
 merge request's source branch, or when another open merge request targets its source branch. A
-stack can contain up to 10 merge requests.
+stack can contain up to 20 merge requests. If a stack contains more than 20 merge requests, GitLab
+does not show the stack control.
 
 To create stacked merge requests from the command line, use
 [stacked diffs](../stacked_diffs.md) in the GitLab CLI.

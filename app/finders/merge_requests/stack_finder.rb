@@ -25,13 +25,18 @@ module MergeRequests
   # same target, the one with the lowest id (oldest) is followed; sibling
   # forks are not surfaced.
   class StackFinder
-    MAX_STACK_SIZE = 10
+    MAX_STACK_SIZE = 20
 
     # Two unidirectional recursive CTEs.
     #
     # A single bidirectional CTE causes exponential path explosion: each worktable
     # row spawns up to 2 new rows (one parent, one child), so row count doubles per
-    # level. Splitting into two linear CTEs keeps total rows at most 2 x MAX_STACK_SIZE.
+    # level. Splitting into two linear CTEs keeps total rows at most
+    # 2 x probe_size.
+    #
+    # Each CTE traverses one extra row so that stacks larger than MAX_STACK_SIZE
+    # can be detected. Oversized stacks return MergeRequest.none rather than a
+    # partial result.
     #
     # The up_chain lateral uses the composite (target_project_id, source_branch) index.
     # The down_chain lateral uses a BitmapAnd on (target_branch) + (target_project_id,
@@ -122,6 +127,7 @@ module MergeRequests
       return MergeRequest.none unless adjacent_merge_request_exists?
 
       rows = stack_rows
+      return MergeRequest.none if rows.size > MAX_STACK_SIZE
       return MergeRequest.none if rows.size <= 1
 
       ordered_ids = sort_by_chain(rows).map(&:id)
@@ -131,6 +137,12 @@ module MergeRequests
     private
 
     attr_reader :current_user, :merge_request, :project
+
+    # One more than MAX_STACK_SIZE, so oversized stacks are detected rather than
+    # silently truncated to a partial result.
+    def probe_size
+      MAX_STACK_SIZE + 1
+    end
 
     def adjacent_merge_request_exists?
       base = MergeRequest.of_projects(project.id).opened.id_not_in(merge_request.id)
@@ -147,7 +159,7 @@ module MergeRequests
         {
           merge_request_id: merge_request.id,
           project_id: project.id,
-          max_size: MAX_STACK_SIZE,
+          max_size: probe_size,
           default_branch: project.default_branch
         }
       ])

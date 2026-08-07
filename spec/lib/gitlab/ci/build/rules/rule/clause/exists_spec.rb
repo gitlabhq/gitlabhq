@@ -206,6 +206,41 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Exists, feature_category:
         end
       end
 
+      context 'when the repository has more files than the pattern comparison limit' do
+        let_it_be(:project) do
+          create(:project, :small_repo, files: { 'main.tf' => '', 'README.txt' => '', 'docs/guide.txt' => '' })
+        end
+
+        before do
+          stub_const('Gitlab::Ci::Build::Rules::Rule::Clause::Exists::MAX_PATTERN_COMPARISONS', 2)
+        end
+
+        # A brace glob is a pattern glob, so it assumes a match once the limit
+        # is exceeded, even when no matching file exists. Equivalent
+        # per-extension globs have no comparison limit and are still evaluated.
+        context 'with a single brace pattern glob' do
+          let(:globs) { ['**/{*.swift,*.m,*.mm}'] }
+
+          it 'assumes a match without evaluating the glob' do
+            is_expected.to be_truthy
+          end
+        end
+
+        context 'with equivalent separate extension globs' do
+          let(:globs) { ['**/*.swift', '**/*.m', '**/*.mm'] }
+
+          it { is_expected.to be_falsey }
+
+          context 'when a matching file exists' do
+            let_it_be(:project) do
+              create(:project, :small_repo, files: { 'app.swift' => '', 'README.txt' => '', 'docs/guide.txt' => '' })
+            end
+
+            it { is_expected.to be_truthy }
+          end
+        end
+      end
+
       context 'when rules:exists:project is provided' do
         let(:globs) { ['file.txt'] }
         let(:project_path) { other_project.full_path }

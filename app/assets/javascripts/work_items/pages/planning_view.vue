@@ -614,6 +614,9 @@ export default {
       return n__('WorkItem|%d item', 'WorkItem|%d items', formatNumber(this.workItemsCount));
     },
     allowBulkEditing() {
+      if (this.isBoardView) {
+        return false;
+      }
       if (this.isEpicsList) {
         return this.canBulkAdminEpic;
       }

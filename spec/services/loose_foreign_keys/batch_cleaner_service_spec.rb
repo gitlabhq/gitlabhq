@@ -720,24 +720,10 @@ RSpec.describe LooseForeignKeys::BatchCleanerService, feature_category: :databas
         )
       end
 
-      context 'when cleaner_class is set and the feature flag is enabled' do
+      context 'when cleaner_class is set' do
         it 'returns the custom cleaner regardless of partitioning' do
           expect(build_service.send(:cleaner_class_for, definition_with_custom_cleaner, false)).to eq(custom_cleaner)
           expect(build_service.send(:cleaner_class_for, definition_with_custom_cleaner, true)).to eq(custom_cleaner)
-        end
-      end
-
-      context 'when cleaner_class is set but the feature flag is disabled' do
-        before do
-          stub_feature_flags(loose_foreign_keys_clean_job_artifact_files: false)
-        end
-
-        it 'falls back to CleanerService for non-partitioned tables' do
-          expect(build_service.send(:cleaner_class_for, definition_with_custom_cleaner, false)).to eq(LooseForeignKeys::CleanerService)
-        end
-
-        it 'falls back to PartitionCleanerService for partitioned tables' do
-          expect(build_service.send(:cleaner_class_for, definition_with_custom_cleaner, true)).to eq(LooseForeignKeys::PartitionCleanerService)
         end
       end
 

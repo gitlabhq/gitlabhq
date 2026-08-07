@@ -78,6 +78,84 @@ The same setting
 [is available](../../api/settings.md#available-settings) in the API as the
 `bulk_import_enabled` attribute.
 
+## Allow S3-compatible object storage for offline transfer
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/579705) in GitLab 18.9
+  [with a feature flag](../../administration/feature_flags/_index.md) named `offline_transfer_exports`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+Prerequisites:
+
+- You must be an administrator.
+
+By default, [offline transfer](../../user/import/gitlab_instances/offline-transfer-migrations.md) supports
+only AWS S3 and Google Cloud Storage. Turn on this setting to also allow S3-compatible providers,
+such as MinIO.
+
+> [!warning]
+> When you enable this setting, users who can perform offline transfers can supply an arbitrary
+> `endpoint` URL in the offline transfer object storage configuration. GitLab then sends requests
+> to that endpoint. Enable this setting only if you trust the users who can perform offline transfers.
+
+To allow S3-compatible object storage for offline transfer:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **General**.
+1. Expand the **Import and export settings** section.
+1. Scroll to **Allow S3 compatible object storage for offline transfer**.
+1. Select the **Enabled** checkbox.
+1. Select **Save changes**.
+
+## Allow application default credentials for offline transfer
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8985) as an [experiment](../../policy/development_stages_support.md#experiment) in GitLab 19.3 [with feature flags](../../administration/feature_flags/_index.md) named `offline_transfer_exports`, `offline_transfer_imports`, and `offline_transfer_ui`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+Turn on this setting to allow [offline transfer](../../user/import/gitlab_instances/offline-transfer-migrations.md)
+to authenticate with Google Cloud Storage by using application default credentials.
+
+Prerequisites:
+
+- You must be an administrator.
+
+> [!warning]
+> When you enable this setting, offline transfers authenticate with the credentials available in the
+> instance environment instead of user-supplied credentials. Enable this setting only if you trust
+> the users who can perform offline transfers.
+
+Even after you enable this setting, only users with administrator access can select
+application default credentials for an offline transfer export or import.
+
+When this setting is enabled, the Google Cloud Storage bucket name must begin with
+`gitlab-offline-transfer-`.
+
+To allow application default credentials for offline transfer:
+
+1. In the upper-right corner, select **Admin**.
+1. In the left sidebar, select **Settings** > **General**.
+1. Expand the **Import and export settings** section.
+1. Scroll to **Allow application default credentials for offline transfer**.
+1. Select the **Enabled** checkbox.
+1. Select **Save changes**.
+
+The same setting
+[is available](../../api/settings.md#available-settings) in the API as the
+`allow_application_default_credentials_for_offline_transfer` attribute.
+
 ## Enable silent admin exports
 
 {{< history >}}

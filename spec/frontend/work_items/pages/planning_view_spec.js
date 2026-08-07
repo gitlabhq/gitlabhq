@@ -2522,6 +2522,18 @@ describe('planning-view', () => {
         });
       });
     });
+
+    describe('when board view is active', () => {
+      it('hides the bulk edit button', async () => {
+        await mountComponent({
+          provide: { glFeatures: { planningViewBoards: true } },
+        });
+        findDisplaySettingsDrawer().vm.$emit('toggle-view-mode', VIEW_MODE_BOARD);
+        await waitForPromises();
+
+        expect(findBulkEditStartButton().exists()).toBe(false);
+      });
+    });
   });
 
   describe('when service desk list', () => {

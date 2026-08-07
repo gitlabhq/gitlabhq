@@ -21819,6 +21819,9 @@ msgstr ""
 msgid "Confidential note"
 msgstr ""
 
+msgid "Confidential work item"
+msgstr ""
+
 msgid "Confidentiality"
 msgstr ""
 
@@ -93023,6 +93026,9 @@ msgid "Zoom meeting removed"
 msgstr ""
 
 msgid "Zoom out"
+msgstr ""
+
+msgid "[Confidential work item]"
 msgstr ""
 
 msgid "[REDACTED]"
