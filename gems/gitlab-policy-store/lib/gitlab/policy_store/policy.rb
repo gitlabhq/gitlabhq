@@ -10,7 +10,7 @@ module Gitlab
       # rubocop:disable Metrics/ParameterLists -- value object; one keyword per field
       def initialize(
         id:, organization_id:, name:, trigger_type:, namespace_id: nil, version: 1,
-        description: nil, rules: {}, actions: [], policy_scope: nil, scope_rego: nil,
+        description: nil, rules: [], actions: [], policy_scope: nil, scope_rego: nil,
         mode: 'enforce', lifecycle_state: 'active', created_at: nil, updated_at: nil)
         # rubocop:enable Metrics/ParameterLists
         @id = id

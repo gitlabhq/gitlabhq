@@ -8093,6 +8093,12 @@ msgstr ""
 msgid "AgentPlan|Are you sure you want to delete this workplan? This action cannot be undone."
 msgstr ""
 
+msgid "AgentPlan|Confidence"
+msgstr ""
+
+msgid "AgentPlan|Confidence: %{level}"
+msgstr ""
+
 msgid "AgentPlan|Create a workplan"
 msgstr ""
 
@@ -8106,6 +8112,15 @@ msgid "AgentPlan|Edit"
 msgstr ""
 
 msgid "AgentPlan|Generate"
+msgstr ""
+
+msgid "AgentPlan|High"
+msgstr ""
+
+msgid "AgentPlan|Low"
+msgstr ""
+
+msgid "AgentPlan|Medium"
 msgstr ""
 
 msgid "AgentPlan|More options"
@@ -8126,7 +8141,16 @@ msgstr ""
 msgid "AgentPlan|Regenerate workplan"
 msgstr ""
 
+msgid "AgentPlan|Score: %{score} / 100"
+msgstr ""
+
+msgid "AgentPlan|Shows how ready this workplan is for an agent to run. To raise the score, add more detail to the workplan steps. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
 msgid "AgentPlan|What is a workplan?"
+msgstr ""
+
+msgid "AgentPlan|What is the confidence score?"
 msgstr ""
 
 msgid "AgentPlan|Workplan"

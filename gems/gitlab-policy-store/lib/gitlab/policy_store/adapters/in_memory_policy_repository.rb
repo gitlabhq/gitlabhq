@@ -48,7 +48,7 @@ module Gitlab
             description: attributes[:description],
             version: attributes.fetch(:version, 1),
             trigger_type: attributes[:trigger_type],
-            rules: attributes.fetch(:rules, {}),
+            rules: attributes.fetch(:rules, []),
             actions: attributes.fetch(:actions, []),
             policy_scope: attributes[:policy_scope],
             scope_rego: attributes[:scope_rego],

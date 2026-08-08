@@ -162,6 +162,29 @@ To delete a workplan:
 
 This action cannot be undone.
 
+## Confidence score
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248374) in GitLab 19.3 [with a feature flag](../../administration/feature_flags/_index.md) named `workplan_score`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
+
+The confidence score shows how ready a workplan is for an agent to run.
+GitLab Duo scores the workplan on how complete, clear, and well scoped it is, then
+maps the score to a confidence level.
+
+In the **Workplan** widget on the work item, the confidence level appears as
+**Low**, **Medium**, or **High**.
+
+To raise the score, add more detail to the workplan steps, such as requirements,
+acceptance criteria, and constraints.
+
 ## Implement a workplan with GitLab Duo
 
 When a workplan exists, GitLab Duo can implement it in a merge request. GitLab Duo treats
