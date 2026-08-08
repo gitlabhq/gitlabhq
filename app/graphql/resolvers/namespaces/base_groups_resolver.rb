@@ -73,6 +73,10 @@ module Resolvers
           'When `true`, returns only groups that are not pending deletion. ' \
           'When `false`, only returns groups that are pending deletion.'
 
+      argument :aimed_for_deletion, GraphQL::Types::Boolean,
+        required: false,
+        description: 'Filter groups that are marked for deletion.'
+
       private
 
       def resolve_groups(parent_path: nil, **args)

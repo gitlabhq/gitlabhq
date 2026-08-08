@@ -149,5 +149,31 @@ RSpec.describe Resolvers::GroupsResolver, feature_category: :groups_and_projects
         it { is_expected.to be_empty }
       end
     end
+
+    context 'with aimed_for_deletion filter' do
+      let_it_be(:group_aimed_for_deletion) do
+        create(:group_with_deletion_schedule, owners: user)
+      end
+
+      let_it_be(:regular_group) do
+        create(:group, owners: user)
+      end
+
+      context 'when aimed_for_deletion is true' do
+        let(:params) { { aimed_for_deletion: true } }
+
+        it 'returns only groups aimed for deletion' do
+          expect(subject).to contain_exactly(group_aimed_for_deletion)
+        end
+      end
+
+      context 'when aimed_for_deletion is false' do
+        let(:params) { { aimed_for_deletion: false } }
+
+        it 'returns only groups not aimed for deletion' do
+          expect(subject).to contain_exactly(public_group, regular_group)
+        end
+      end
+    end
   end
 end

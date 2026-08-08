@@ -480,8 +480,8 @@ GEM
     bindata (2.5.1)
     binding_of_caller (1.0.0)
       debug_inspector (>= 0.0.1)
-    bootsnap (1.24.6)
-      msgpack (~> 1.2)
+    bootsnap (1.25.0)
+      msgpack (~> 1.5)
     browser (5.3.1)
     builder (3.3.0)
     bullet (8.0.8)
@@ -1395,7 +1395,7 @@ GEM
     mixlib-shellout (3.3.9)
       chef-utils
     mize (0.6.1)
-    msgpack (1.5.4)
+    msgpack (1.8.4)
     multi_json (1.17.0)
     multi_xml (0.6.0)
     multipart-post (2.2.3)
@@ -2452,7 +2452,7 @@ DEPENDENCIES
   bcrypt (~> 3.1, >= 3.1.14)
   benchmark-ips (~> 2.14.0)
   benchmark-memory (~> 0.1)
-  bootsnap (~> 1.24.0)
+  bootsnap (~> 1.25.0)
   browser (~> 5.3.1)
   bullet (~> 8.0.0)
   bundler-checksum (~> 0.1.0)!
@@ -2881,7 +2881,7 @@ CHECKSUMS
   bigdecimal (3.3.1) sha256=eaa01e228be54c4f9f53bf3cc34fe3d5e845c31963e7fcc5bedb05a4e7d52218
   bindata (2.5.1) sha256=53186a1ec2da943d4cb413583d680644eb810aacbf8902497aac8f191fad9e58
   binding_of_caller (1.0.0) sha256=3aad25d1d538fc6e7972978f9bf512ccd992784009947c81633bea776713161d
-  bootsnap (1.24.6) sha256=c60bab88c70332290f0a2636a288f675299eb4f804a02a3c085b42eca9da164a
+  bootsnap (1.25.0) sha256=41059e7d0f9cb4023a33465d095f64b913fc9d1b808d6524c307da945fbcffcf
   browser (5.3.1) sha256=62745301701ff2c6c5d32d077bb12532b20be261929dcb52c6781ed0d5658b3c
   builder (3.3.0) sha256=497918d2f9dca528fdca4b88d84e4ef4387256d984b8154e9d5d3fe5a9c8835f
   bullet (8.0.8) sha256=b4b9905eb6b803d9a0ba620944ed79c8bb27ff3ca90ef8f8e39ff21db5b7c542
@@ -3239,7 +3239,7 @@ CHECKSUMS
   mixlib-log (3.2.3) sha256=2a1d3fa83522a320edd493827c901b773fb5d185fac7efd81d028d8e1166a768
   mixlib-shellout (3.3.9) sha256=0edf5ee3b07526de8eb5219af051752fb8df2691dc030ce233e248dedf4fd388
   mize (0.6.1) sha256=4031558979ff5426fda24c75a149b4e4c0faf4cacf2fae8938f83866ab94b780
-  msgpack (1.5.4) sha256=a53db320fba40f58c07c5b66ed9fd4d73cbe8eba4cb28fe9e3218444341a4e09
+  msgpack (1.8.4) sha256=4411c22d350dd1c20250f7eada3cca2695438c2f769cf0782f0cd065d90a3e7b
   multi_json (1.17.0) sha256=76581f6c96aebf2e85f8a8b9854829e0988f335e8671cd1a56a1036eb75e4a1b
   multi_xml (0.6.0) sha256=d24393cf958adb226db884b976b007914a89c53ad88718e25679d7008823ad52
   multipart-post (2.2.3) sha256=462979de2971b8df33c2ee797fd497731617241f9dcd93960cc3caccb2dd13d8

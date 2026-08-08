@@ -288,4 +288,24 @@ RSpec.shared_examples 'groups query' do
       end
     end
   end
+
+  describe 'aimedForDeletion argument' do
+    let_it_be(:group_aimed_for_deletion, freeze: false) do
+      create(:group_with_deletion_schedule, owners: user)
+    end
+
+    let_it_be(:regular_group, freeze: false) do
+      create(:group, :public, owners: user)
+    end
+
+    let(:filters) { { aimedForDeletion: true } }
+
+    it 'returns groups aimed for deletion' do
+      subject
+
+      expect(groups_graphql_data).to match_array(
+        [a_graphql_entity_for(group_aimed_for_deletion)]
+      )
+    end
+  end
 end

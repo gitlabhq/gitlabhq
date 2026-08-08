@@ -177695,6 +177695,16 @@
                   "defaultValue": "null"
                 },
                 {
+                  "name": "aimedForDeletion",
+                  "description": "Filter groups that are marked for deletion.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
                   "type": {

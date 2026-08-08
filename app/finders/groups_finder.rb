@@ -122,6 +122,7 @@ class GroupsFinder < UnionFinder
     groups = top_level_only(groups)
     groups = marked_for_deletion_on(groups)
     groups = by_archived(groups)
+    groups = by_aimed_for_deletion(groups)
     by_search(groups)
   end
 
@@ -213,6 +214,16 @@ class GroupsFinder < UnionFinder
     return false unless visibility_levels.present?
 
     (visibility_levels - [Gitlab::VisibilityLevel::PUBLIC, Gitlab::VisibilityLevel::INTERNAL]).empty?
+  end
+
+  def by_aimed_for_deletion(groups)
+    return groups if params[:aimed_for_deletion].nil?
+
+    if params[:aimed_for_deletion]
+      groups.self_or_ancestors_aimed_for_deletion
+    else
+      groups.self_and_ancestors_not_aimed_for_deletion
+    end
   end
 end
 

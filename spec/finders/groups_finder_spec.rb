@@ -530,6 +530,78 @@ RSpec.describe GroupsFinder, feature_category: :groups_and_projects do
       end
     end
 
+    context 'with aimed_for_deletion' do
+      let_it_be(:group_aimed_for_deletion) do
+        create(:group_with_deletion_schedule, :public)
+      end
+
+      let_it_be(:group_not_aimed_for_deletion) do
+        create(:group, :public)
+      end
+
+      subject(:groups) { described_class.new(nil, params).execute.to_a }
+
+      context 'when true' do
+        let(:params) { { aimed_for_deletion: true } }
+
+        it 'returns only groups aimed for deletion' do
+          expect(groups).to contain_exactly(group_aimed_for_deletion)
+        end
+      end
+
+      context 'when false' do
+        let(:params) { { aimed_for_deletion: false } }
+
+        it 'returns only groups not aimed for deletion' do
+          expect(groups).to contain_exactly(group_not_aimed_for_deletion)
+        end
+      end
+
+      context 'when nil' do
+        let(:params) { {} }
+
+        it 'returns all groups' do
+          expect(groups).to contain_exactly(group_aimed_for_deletion, group_not_aimed_for_deletion)
+        end
+      end
+
+      context 'return subgroup' do
+        let_it_be(:parent_group) do
+          create(:group_with_deletion_schedule, :public)
+        end
+
+        let_it_be(:subgroup) do
+          create(:group, :public, parent: parent_group)
+        end
+
+        subject(:result) do
+          described_class.new(nil, aimed_for_deletion: true).execute
+        end
+
+        it 'return subgroups of groups' do
+          expect(result).to include(subgroup)
+        end
+      end
+
+      context 'not return subgroup' do
+        let_it_be(:parent_group) do
+          create(:group_with_deletion_schedule, :public)
+        end
+
+        let_it_be(:subgroup) do
+          create(:group, :public, parent: parent_group)
+        end
+
+        subject(:result) do
+          described_class.new(nil, aimed_for_deletion: false).execute
+        end
+
+        it 'does not return subgroups of groups aimed for deletion' do
+          expect(result).not_to include(subgroup)
+        end
+      end
+    end
+
     describe 'group sorting' do
       let_it_be(:all_groups) { create_list(:group, 3, :public) }
 
