@@ -145,6 +145,14 @@
     },
     "yaml_definition": {
       "type": "string"
+    },
+    "coding_environment": {
+      "type": "string",
+      "enum": [
+        "full",
+        "none"
+      ],
+      "description": "Declares what kind of coding environment the flow needs at workload start. \"full\" (default when absent) provides a full blobless clone, setup scripts, git hooks, and dependency cache. \"none\" skips all of these and is suitable for API-only flows that need no repository checkout."
     }
   },
   "definitions": {

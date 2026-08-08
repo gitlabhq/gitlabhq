@@ -103,6 +103,52 @@ When a pipeline event triggers the flow, the full
 [pipeline event webhook payload](../../project/integrations/webhook_events.md#pipeline-events)
 is passed as the goal.
 
+## Optional top-level properties
+
+### `coding_environment`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/606480) in GitLab 19.3.
+
+{{< /history >}}
+
+The optional `coding_environment` property declares what kind of coding
+environment the flow needs when a workload starts.
+
+| Value | Description |
+|-------|-------------|
+| `full` | Default when not provided. A repository clone, setup scripts, Git hooks, and the dependency cache. Use this for flows that read or write repository files. |
+| `none` | No repository clone. Setup scripts and the dependency cache are skipped. The Duo session Git hook is still installed, so a flow that clones the repository itself keeps its commits attributed to Duo. Use this for API-only flows that interact only with GitLab APIs and need no local repository. Agent tools that read or write repository files have nothing to act on. The `none` value does not block repository access. A flow that has the `run_command` tool can still clone the repository itself. The property controls only what GitLab prepares before the flow starts. |
+
+Use the `full` value when the flow needs a checkout, so
+that the clone happens once, up front, instead of during the run.
+
+If you add a value other than `full` or `none` the schema validation fails
+and the flow does not run.
+
+If you don't add the `coding_environment` property, the flow receives the full
+environment and still has repository access.
+
+Example:
+
+```yaml
+version: v1
+environment: ambient
+coding_environment: none
+components:
+  - name: "api_agent"
+    type: AgentComponent
+    prompt_id: "my_api_prompt"
+    inputs:
+      - "context:goal"
+routers:
+  - from: "api_agent"
+    to: end
+flow:
+  entry_point: "api_agent"
+```
+
 ## Restricted fields
 
 Some fields and features in the v1 specification are restricted

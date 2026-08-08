@@ -481,7 +481,6 @@ methods:
   - applicable_scan_result_policies_with_real_index
   ee/app/models/ee/ci/build.rb:
   - has_artifact?
-  - collect_license_scanning_reports!
   ee/app/models/ee/ci/pipeline.rb:
   - latest_merged_result_pipeline?
   - license_scan_completed?
