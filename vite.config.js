@@ -227,10 +227,14 @@ export default defineConfig({
             '@vue/apollo-option',
             'pinia',
             'vue-demi',
+            '@tiptap/vue-2',
             '@gitlab/vuedraggable-vue3',
           ]
         : []),
     ],
+    // CJS sub-dependency of the excluded @tiptap/vue-2: excluded deps are served as
+    // source, so their CJS imports must still be pre-bundled to get ESM interop.
+    include: !USE_VUE3 ? ['vue-ts-types'] : [],
   },
   css: {
     lightningcss: {

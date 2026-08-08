@@ -632,6 +632,10 @@ Convert an issue into a Service Desk ticket.
 
 **Additional details**:
 
+- This quick action is available only when [Service Desk is set up](service_desk/configure.md)
+  for the project.
+  On GitLab Self-Managed, the instance must also have
+  [incoming email](../../administration/incoming_email.md) configured with email sub-addressing or a catch-all mailbox.
 - For more information, see [convert a regular issue to a Service Desk ticket](service_desk/using_service_desk.md#convert-a-regular-issue-to-a-service-desk-ticket).
 
 ### `copy_metadata`

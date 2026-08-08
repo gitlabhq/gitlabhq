@@ -157,6 +157,18 @@ RSpec.describe Import::Offline::Export, feature_category: :importers do
             )
         end
       end
+
+      describe 'when the export fails' do
+        it 'tracks a fail event' do
+          expect { export.fail_op }
+            .to trigger_internal_events('fail_offline_transfer_export')
+            .with(user: export.user)
+            .and increment_usage_metrics(
+              'counts.count_total_fail_offline_transfer_export',
+              'counts.count_total_fail_offline_transfer_export_monthly'
+            )
+        end
+      end
     end
   end
 

@@ -30,7 +30,11 @@ import downstreamPipelineStatusUpdatedSubscription from '../graphql/subscription
 import pipelineCreationRequestsUpdatedSubscription from '../graphql/subscriptions/pipeline_creation_requests_updated.subscription.graphql';
 
 import { createSubscriptionsCollection } from '../utils';
-import { MR_PIPELINE_TYPE_DETACHED, MR_PIPELINE_TYPE_MERGED_RESULT } from '../constants';
+import {
+  MR_PIPELINE_TYPE_DETACHED,
+  MR_PIPELINE_TYPE_MERGED_RESULT,
+  MR_PIPELINE_TYPE_MERGE_TRAIN,
+} from '../constants';
 
 const MAX_DOWNSTREAM_SUBSCRIPTIONS = 3;
 const POLL_INTERVAL_MS = 60 * 1000;
@@ -291,14 +295,15 @@ export default {
     },
     /**
      * The "Run pipeline" button is rendered when the latest pipeline is a
-     * merge request pipeline (detached or merged-results). When the latest
-     * pipeline is sourced from a push/branch, we hide the button to avoid
-     * suggesting an action the project's CI config may not support.
+     * merge request pipeline (detached, merged-results, or merge train).
+     * When the latest pipeline is sourced from a push/branch, we hide the
+     * button to avoid suggesting an action the project's CI config may not
+     * support.
      *
      * @returns {Boolean}
      */
     canRenderPipelineButton() {
-      return this.isLatestPipelineDetachedOrMergeResultPipeline;
+      return this.isLatestPipelineMergeRequestEventPipeline;
     },
     isForkMergeRequest() {
       return this.sourceProjectFullPath !== this.targetProjectFullPath;
@@ -314,15 +319,17 @@ export default {
       );
     },
     /**
-     * Checks if the latest pipeline is a detached merge request pipeline
-     * or a merged-results pipeline.
+     * Checks if the latest pipeline is a merge request pipeline: detached,
+     * merged-results, or merge train.
      *
      * @returns {Boolean}
      */
-    isLatestPipelineDetachedOrMergeResultPipeline() {
+    isLatestPipelineMergeRequestEventPipeline() {
       const eventType = this.latestPipeline?.mergeRequestEventType;
       return (
-        eventType === MR_PIPELINE_TYPE_DETACHED || eventType === MR_PIPELINE_TYPE_MERGED_RESULT
+        eventType === MR_PIPELINE_TYPE_DETACHED ||
+        eventType === MR_PIPELINE_TYPE_MERGED_RESULT ||
+        eventType === MR_PIPELINE_TYPE_MERGE_TRAIN
       );
     },
     showPagination() {

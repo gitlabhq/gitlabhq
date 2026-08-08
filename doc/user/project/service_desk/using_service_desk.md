@@ -46,6 +46,13 @@ For more information, see [external participants](external_participants.md) and 
 
 ### Create a Service Desk ticket in GitLab UI
 
+Prerequisites:
+
+- Service Desk must be [set up for the project](configure.md).
+  On GitLab Self-Managed, this includes [incoming email](../../../administration/incoming_email.md#set-it-up)
+  configured with email sub-addressing or a catch-all mailbox.
+  Without incoming email, the `/convert_to_ticket` quick action is not available.
+
 To create a Service Desk ticket from the UI:
 
 1. [Create an issue](../issues/create_issues.md)
@@ -146,6 +153,10 @@ If a comment contains any attachments and their total size is less than or equal
 attachments are sent as part of the email. In other cases, the email contains links to the attachments.
 
 ## Convert a regular issue to a Service Desk ticket
+
+Prerequisites:
+
+- Service Desk must be [set up for the project](configure.md).
 
 Use the quick action `/convert_to_ticket external-ticket-author@example.com` to convert any regular issue
 into a Service Desk ticket. This assigns the provided email address as the external author of the ticket

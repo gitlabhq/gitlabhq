@@ -61,6 +61,8 @@ module Import
         after_transition any => :failed do |export|
           export.run_after_commit do
             Notify.offline_export_failed(export.user_id, export.id).deliver_later
+
+            export.track_internal_event('fail_offline_transfer_export', user: export.user)
           end
         end
       end

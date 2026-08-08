@@ -23,6 +23,8 @@ Prerequisites:
   [email sub-addressing](../../../administration/incoming_email.md#email-sub-addressing),
   but you can also use [catch-all mailboxes](../../../administration/incoming_email.md#catch-all-mailbox).
   To do this, you must have administrator access.
+  Without incoming email that supports email sub-addressing or a catch-all mailbox,
+  the **Service Desk** section is not displayed in the project settings.
 - You must have enabled [issue](../settings/_index.md#configure-project-features-and-permissions)
   tracker for the project.
 

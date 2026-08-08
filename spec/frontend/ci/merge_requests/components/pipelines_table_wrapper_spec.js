@@ -18,6 +18,7 @@ import RunPipelineButton from '~/ci/common/run_pipeline_button.vue';
 import {
   MR_PIPELINE_TYPE_DETACHED,
   MR_PIPELINE_TYPE_MERGED_RESULT,
+  MR_PIPELINE_TYPE_MERGE_TRAIN,
 } from '~/ci/merge_requests/constants';
 import getMergeRequestsPipelines from '~/ci/merge_requests/graphql/queries/get_merge_request_pipelines.query.graphql';
 import getPipelinesDownstream from '~/ci/merge_requests/graphql/queries/get_pipelines_downstream.query.graphql';
@@ -313,6 +314,7 @@ describe('PipelinesTableWrapper component', () => {
     eventType                         | description
     ${MR_PIPELINE_TYPE_DETACHED}      | ${'detached merge request pipeline'}
     ${MR_PIPELINE_TYPE_MERGED_RESULT} | ${'merged-results pipeline'}
+    ${MR_PIPELINE_TYPE_MERGE_TRAIN}   | ${'merge train pipeline'}
   `('when latest pipeline is a $description', ({ eventType }) => {
     beforeEach(async () => {
       const response = generateMRPipelinesResponse({
