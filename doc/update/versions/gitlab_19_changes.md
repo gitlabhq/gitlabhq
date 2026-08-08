@@ -258,6 +258,32 @@ default). To repair affected repositories immediately,
 
 For more information, see [issue 600486](https://gitlab.com/gitlab-org/gitlab/-/work_items/600486).
 
+### Geo verification concurrency limit applied as a global total
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+
+{{< /details >}}
+
+- Affects: Geo
+- Affected versions: 19.3.0
+
+The **Verification concurrency limit** Geo site setting is now applied as a single global
+limit on the number of verification jobs that run concurrently on a site, across all data
+types combined. Previously, the configured value was divided by the number of data types
+before being applied, so the effective concurrency was lower and changed as data types were
+added or consolidated.
+
+To preserve the effective concurrency in use and avoid a spike in verification load, GitLab
+19.3 automatically rescales each site's stored **Verification concurrency limit** to
+`max(1, floor(previous_value / number_of_data_types))`. As a result, the value shown in the
+Admin UI and returned by the API decreases. Review and re-tune the setting after upgrading.
+If you manage this setting through the API or infrastructure-as-code, update your stored
+value to match.
+
+For more information, see [issue 596579](https://gitlab.com/gitlab-org/gitlab/-/work_items/596579).
+
 ### Linux package support for Ubuntu 20.04 discontinued
 
 - Affects: Linux package

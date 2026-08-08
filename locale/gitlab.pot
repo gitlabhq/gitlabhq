@@ -22940,6 +22940,9 @@ msgstr ""
 msgid "ContinuousDeployment|Add application"
 msgstr ""
 
+msgid "ContinuousDeployment|Add at least one service."
+msgstr ""
+
 msgid "ContinuousDeployment|Add service"
 msgstr ""
 
@@ -22958,6 +22961,9 @@ msgstr ""
 msgid "ContinuousDeployment|Application name"
 msgstr ""
 
+msgid "ContinuousDeployment|Application name is required."
+msgstr ""
+
 msgid "ContinuousDeployment|Application not found"
 msgstr ""
 
@@ -22970,7 +22976,13 @@ msgstr ""
 msgid "ContinuousDeployment|Artifact URL"
 msgstr ""
 
+msgid "ContinuousDeployment|Artifact URL is required."
+msgstr ""
+
 msgid "ContinuousDeployment|Artifact name"
+msgstr ""
+
+msgid "ContinuousDeployment|Artifact name is required."
 msgstr ""
 
 msgid "ContinuousDeployment|Artifact source"
@@ -23277,6 +23289,9 @@ msgid "ContinuousDeployment|Service"
 msgstr ""
 
 msgid "ContinuousDeployment|Service name"
+msgstr ""
+
+msgid "ContinuousDeployment|Service name is required."
 msgstr ""
 
 msgid "ContinuousDeployment|Service not found"

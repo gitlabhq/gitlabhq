@@ -7,7 +7,7 @@ module Gitlab
       # implements it today; a future remote (e.g. gRPC) adapter would implement
       # the same interface, keeping the facade and callers unchanged.
       class PolicyRepository
-        REQUIRED_ATTRIBUTES = [:organization_id, :namespace_id, :name, :trigger_type].freeze
+        REQUIRED_ATTRIBUTES = [:organization_id, :name, :trigger_type].freeze
 
         # Text length limits matching database constraints
         TEXT_LIMITS = {

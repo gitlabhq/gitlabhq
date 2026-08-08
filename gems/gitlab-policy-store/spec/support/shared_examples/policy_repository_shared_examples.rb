@@ -32,7 +32,6 @@ RSpec.shared_examples 'a policy repository' do
   let(:minimal_attributes) do
     {
       organization_id: organization_id,
-      namespace_id: namespace_id,
       name: 'Minimal policy',
       trigger_type: 'merge_request'
     }
@@ -63,6 +62,7 @@ RSpec.shared_examples 'a policy repository' do
 
       expect(policy).to have_attributes(
         version: 1,
+        namespace_id: nil,
         description: nil,
         rules: {},
         actions: [],
@@ -129,11 +129,13 @@ RSpec.shared_examples 'a policy repository' do
         .to raise_error(Gitlab::PolicyStore::ValidationError, /name/)
     end
 
-    it 'raises ValidationError when namespace_id is missing' do
-      invalid_attributes = attributes.merge(namespace_id: nil)
+    it 'accepts a policy with no namespace_id' do
+      organization_owned = attributes.merge(namespace_id: nil)
 
-      expect { repository.create(invalid_attributes) }
-        .to raise_error(Gitlab::PolicyStore::ValidationError, /namespace_id/)
+      expect(repository.create(organization_owned)).to have_attributes(
+        namespace_id: nil,
+        organization_id: organization_id
+      )
     end
 
     it 'raises ValidationError when trigger_type is missing' do
