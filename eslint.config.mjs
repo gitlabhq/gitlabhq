@@ -264,8 +264,15 @@ export default [
   ...compat.plugins('no-jquery'),
   // Native flat config plugins
   noUnsanitizedPlugin.configs.recommended,
-  // Global rule overrides
+  // Registered here with no `files` key so it applies to every linted file:
+  // flat config merges the `plugins` of all matching objects before resolving
+  // rule names, so rules need not be co-located with their plugin.
+  // https://eslint.org/docs/latest/use/configure/configuration-files
   {
+    plugins: {
+      'local-rules': eslintLocalRules,
+    },
+
     rules: {
       'no-unused-vars': [
         'error',
@@ -284,10 +291,6 @@ export default [
   // Main application code rules
   {
     files: ['**/*.{js,vue}'],
-
-    plugins: {
-      'local-rules': eslintLocalRules,
-    },
 
     languageOptions: {
       globals: {
@@ -585,6 +588,8 @@ export default [
           groups: ['props', 'data', 'computed', 'methods', 'setup'],
         },
       ],
+      // Mirrors `vue/no-unused-properties` for `inject` declarations
+      'local-rules/vue-no-unused-injects': 'error',
       'vue/no-undef-components': [
         'error',
         {
@@ -626,19 +631,16 @@ export default [
             'Renderless components must be wrapped in normalizeRender(...) to ensure Vue.js 3 compatibility, e.g. export default normalizeRender({ ... }).',
         },
       ],
+
+      // Vue 3 components slots mixin
+      'local-rules/vue3-gl-slots': 'error',
+      'local-rules/vue3-gl-slots-mixin-pairing': 'error',
+      'local-rules/vue3-gl-listeners-mixin-pairing': 'error',
     },
   },
   // Spec files (unit tests)
   {
     files: ['{,ee/,jh/}spec/frontend*/**/*'],
-
-    // Co-located because this block enables `local-rules/no-apollo-mock` as an
-    // error; flat config only resolves a plugin for rules in the same object,
-    // and this glob also matches `.mjs` specs that the `**/*.{js,vue}` block
-    // registering the plugin does not.
-    plugins: {
-      'local-rules': eslintLocalRules,
-    },
 
     rules: {
       ...relaxedUrlAndI18nRules,
@@ -700,39 +702,7 @@ export default [
       ],
     },
   },
-  // Flag unused `inject` declarations in Vue components, mirroring
-  // `vue/no-unused-properties` for props/data/computed/methods/setup. Scoped to
-  // `*.vue` (the `local-rules` plugin must be co-located with the non-`off` rule
-  // in flat config). Existing offenders are grandfathered in
-  // `.eslint_todo/local-rules-vue-no-unused-injects.mjs` and surfaced non-blocking
-  // by the `eslint-todo` CI job (REVEAL_ESLINT_TODO=true).
-  {
-    files: ['*.vue', '**/*.vue'],
-    plugins: {
-      'local-rules': eslintLocalRules,
-    },
-    rules: {
-      'local-rules/vue-no-unused-injects': 'error',
-    },
-  },
-  // $scopedSlots is Vue-2-only (Vue 3 removed it); components must use the
-  // dual-runtime glSlots() mixin method — or getSlotFunction from
-  // ~/lib/utils/vue3compat/normalize_render in hand-written render
-  // functions — so the same code serves both runtimes. Scoped to app code
-  // (the `local-rules` plugin must be co-located with the non-`off` rule in
-  // flat config; spec fixtures may exercise $scopedSlots deliberately).
-  // Batch-fix with `scripts/frontend/codemods/vue3_gl_slots.mjs`.
-  {
-    files: ['{,ee/,jh/}app/assets/javascripts/**/*.vue'],
-    plugins: {
-      'local-rules': eslintLocalRules,
-    },
-    rules: {
-      'local-rules/vue3-gl-slots': 'error',
-      'local-rules/vue3-gl-slots-mixin-pairing': 'error',
-      'local-rules/vue3-gl-listeners-mixin-pairing': 'error',
-    },
-  },
+
   // Storybook stories
   {
     files: ['**/*.stories.js'],
@@ -766,7 +736,6 @@ export default [
 
     plugins: {
       '@graphql-eslint': graphqlPlugin,
-      'local-rules': eslintLocalRules,
     },
 
     rules: {
