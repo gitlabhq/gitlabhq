@@ -313,5 +313,38 @@ primary site reverification cycle detects a checksum mismatch.
 For more information about the reverification interval, see
 [repository re-verification](../disaster_recovery/background_verification.md#repository-re-verification).
 
-To force an immediate resync instead of waiting for reverification,
-see [manually retry replication or verification](troubleshooting/synchronization_verification.md#manually-retry-replication-or-verification).
+If replication was disabled with the `geo_container_repository_replication` feature flag,
+but registry notifications and force-primary-checksumming remained enabled, the primary site
+still recalculated the checksum of each container repository that was pushed to while
+replication was disabled, even though no replication events were sent to secondary sites.
+The verification timestamp (`verified_at`) of these repositories therefore identifies which
+repositories changed during the downtime, and reverifying only those repositories is enough
+to trigger resyncs for them. To mark for reverification the repositories that the primary
+site verified in the last N days, run the following command on the primary site:
+
+```shell
+sudo gitlab-rake "gitlab:geo:reverify_container_repositories_since[7]"
+```
+
+The argument is the number of days to look back and defaults to `7`. The task reports how many
+repositories were marked, and the periodic verification workers then recalculate their
+checksums. Secondary sites detect the resulting checksum mismatches and resync the affected
+repositories. If the task is interrupted, it is safe to run it again: repositories that were
+already marked are skipped.
+
+To preview how many container repositories would be marked without changing anything,
+set `DRY_RUN=true`:
+
+```shell
+sudo DRY_RUN=true gitlab-rake "gitlab:geo:reverify_container_repositories_since[7]"
+```
+
+This targeted recovery requires registry notifications to have reached the primary site during
+the outage and `geo_container_repository_force_primary_checksumming` to have remained enabled.
+
+If registry notifications were misconfigured for a period of time, for example due to user
+error, tag pushes during that period are not recorded, so Geo has no way to determine which
+container repositories changed. In this situation, the recommended action is to
+[reverify all container repositories on the primary site](troubleshooting/synchronization_verification.md#reverify-one-component-on-all-sites).
+The primary site recalculates all checksums, and secondary sites then resync only the
+repositories whose content changed.
