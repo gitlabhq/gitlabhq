@@ -40,7 +40,7 @@ in GitLab, so that they can be used to securely sign apps in CI/CD builds:
 - Signing certificates
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
-For an overview, see [Project-level secure files demo](https://youtu.be/O7FbJu3H2YM).
+For an overview, see [Project-level secure files demo](https://www.youtube.com/watch?v=O7FbJu3H2YM).
 
 ## Distribution
 

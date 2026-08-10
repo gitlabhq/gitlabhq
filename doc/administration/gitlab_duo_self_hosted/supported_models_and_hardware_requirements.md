@@ -83,7 +83,7 @@ depending on the specific model and feature combination.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18556) in GitLab 18.3 as a [beta](../../policy/development_stages_support.md#beta).
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/18556) in GitLab 18.3 as a [beta](../../policy/development_stages_support.md#beta).
 
 {{< /history >}}
 

@@ -7,7 +7,7 @@ title: Geo self-service framework
 
 > [!note]
 > This document is subject to change as we continue to implement and iterate on the framework.
-> Follow the progress in the [epic](https://gitlab.com/groups/gitlab-org/-/epics/2161).
+> Follow the progress in the [epic](https://gitlab.com/groups/gitlab-org/-/work_items/2161).
 > If you need to replicate a new data type, reach out to the Geo
 > team to discuss the options. You can contact them in `#g_geo` on Slack
 > or mention `@geo-team` in the issue or merge request.

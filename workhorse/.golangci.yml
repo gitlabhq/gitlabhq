@@ -161,6 +161,7 @@ linters:
             - golang.org/x/image/draw
             - golang.org/x/image/tiff
             - golang.org/x/oauth2/google
+            - golang.org/x/net/html
             # Additional test and utility libraries
             - github.com/dlclark/regexp2
             - go.uber.org/goleak

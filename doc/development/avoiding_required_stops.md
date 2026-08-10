@@ -201,4 +201,4 @@ it might affect one of the following projects:
 - [Issue: Brainstorm ways for background migrations to be finalized without introducing a required upgrade step](https://gitlab.com/gitlab-org/gitlab/-/issues/357561)
 - [Issue: Scheduled required paths for GitLab upgrades to improve UX](https://gitlab.com/gitlab-org/gitlab/-/issues/358417)
 - [Issue: Automate upgrade stop planning process](https://gitlab.com/gitlab-org/gitlab/-/issues/438921)
-- [Epic: GitLab Releases and Maintenance policies](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/988)
+- [Epic: GitLab Releases and Maintenance policies](https://gitlab.com/groups/gitlab-com/gl-infra/-/work_items/988)

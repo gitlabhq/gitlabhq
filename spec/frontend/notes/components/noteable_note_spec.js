@@ -377,16 +377,16 @@ describe('issue_note', () => {
       createWrapper();
     });
 
-    it('emits handleUpdateNote', async () => {
+    it('emits handle-update-note', async () => {
       const updatedNote = { ...note, note_html: `<p dir="auto">${params.noteText}</p>\n` };
 
       findNoteBody().vm.$emit('handleFormUpdate', params);
       await nextTick();
       await waitForPromises();
 
-      expect(wrapper.emitted('handleUpdateNote')).toHaveLength(1);
+      expect(wrapper.emitted('handle-update-note')).toHaveLength(1);
 
-      expect(wrapper.emitted('handleUpdateNote')[0]).toEqual([
+      expect(wrapper.emitted('handle-update-note')[0]).toEqual([
         {
           note: updatedNote,
           noteText: params.noteText,

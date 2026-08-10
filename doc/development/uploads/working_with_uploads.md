@@ -76,7 +76,7 @@ where to make a pre-authorization request. For that you need the
 routing rule.
 
 A note to those of us who remember,
-[Workhorse used to be a separate project](https://gitlab.com/groups/gitlab-org/-/epics/4826):
+[Workhorse used to be a separate project](https://gitlab.com/groups/gitlab-org/-/work_items/4826):
 it is not necessary anymore to break these two steps into separate merge
 requests. In fact it is probably easier to do both in one merge
 request.

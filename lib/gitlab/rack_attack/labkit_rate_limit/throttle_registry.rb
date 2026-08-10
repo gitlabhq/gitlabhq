@@ -161,6 +161,30 @@ module Gitlab
             "rack_cohort_#{cohort}"
           end
 
+          # Determines whether a single cohort's shadow flag is on
+          def shadow_enabled?(cohort)
+            # rubocop:disable Gitlab/FeatureFlagKeyDynamic -- bases enumerated in ThrottleRegistry, with matching YAMLs in config/feature_flags/wip/
+            ::Feature.enabled?(
+              :"rate_limiter_use_labkit_#{flag_basis(cohort)}", ::Feature.current_request, type: :wip
+            )
+            # rubocop:enable Gitlab/FeatureFlagKeyDynamic
+          end
+
+          # Determines whether a single cohort's enforce flag is on
+          def enforce_enabled?(cohort)
+            # rubocop:disable Gitlab/FeatureFlagKeyDynamic -- bases enumerated in ThrottleRegistry, with matching YAMLs in config/feature_flags/wip/
+            ::Feature.enabled?(
+              :"rate_limiter_use_labkit_#{flag_basis(cohort)}_enforce", ::Feature.current_request, type: :wip
+            )
+            # rubocop:enable Gitlab/FeatureFlagKeyDynamic
+          end
+
+          # True once every cohort both shadows AND enforces
+          # Gitlab::RackAttack safelists every request on this so it stops re-running throttles Labkit already decided
+          def fully_enforced?
+            cohorts.present? && cohorts.all? { |cohort| shadow_enabled?(cohort) && enforce_enabled?(cohort) }
+          end
+
           # Labkit rule and limiter names must match /\A[a-z0-9_]+\z/. Throttle
           # names already satisfy this once the redundant `throttle_` prefix is
           # dropped (the limiter name already conveys these are request throttles).

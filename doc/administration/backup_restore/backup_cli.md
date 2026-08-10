@@ -16,7 +16,7 @@ title: Back up and Restore GitLab with `gitlab-backup-cli`
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11908) in GitLab 17.0. This feature is an [experiment](../../policy/development_stages_support.md) and subject to the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/11908) in GitLab 17.0. This feature is an [experiment](../../policy/development_stages_support.md) and subject to the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
 
 {{< /history >}}
 

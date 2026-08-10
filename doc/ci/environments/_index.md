@@ -202,7 +202,7 @@ You can also combine a static prefix with the variable, for example
 result is `https://example.com`.
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
-For an overview, see [set dynamic URLs after a job finished](https://youtu.be/70jDXtOf4Ig).
+For an overview, see [set dynamic URLs after a job finished](https://www.youtube.com/watch?v=70jDXtOf4Ig).
 
 In the following example a review app creates a new environment for each merge request:
 

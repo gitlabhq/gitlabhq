@@ -280,8 +280,8 @@ If your diff starts to exceed reviewable size prefer the multi-step migration.
 
 A walkthrough is available in the two part video series:
 
-1. [Migrating the store (part 1)](https://youtu.be/aWVYvhktYfM)
-1. [Migrating the components (part 2)](https://youtu.be/9G7h4YmoHRw)
+1. [Migrating the store (part 1)](https://www.youtube.com/watch?v=aWVYvhktYfM)
+1. [Migrating the components (part 2)](https://www.youtube.com/watch?v=9G7h4YmoHRw)
 
 Follow these steps to iterate over the migration process and split the work onto smaller merge requests:
 

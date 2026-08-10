@@ -23,6 +23,7 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/forwardheaders"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/fail"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/htmlstream"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/jsonstream"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/senddata"
@@ -50,13 +51,33 @@ type entryParams struct {
 }
 
 // transformConfig, when set, rewrites string values found at the given object
-// Key in a streamed 2xx JSON response, replacing the From prefix with the To
-// prefix. It is used to rewrite npm packument tarball URLs so downloads route
-// back through GitLab.
+// Key in a streamed 2xx response, replacing the From prefix with the To prefix.
+// It is used to rewrite npm packument tarball URLs (JSON format) and PyPI
+// simple-index file URLs (HTML format) so downloads route back through GitLab.
 type transformConfig struct {
-	Key  string
-	From string
-	To   string
+	Format string
+	Key    string
+	From   string
+	To     string
+}
+
+// prefixes returns the prefixes to match. An https From also matches its http
+// spelling, so the scheme cannot be used to slip an entry past the rewrite: an
+// upstream index entry served over http would otherwise reach the client
+// untouched and be fetched directly, with no GitLab-side policy applied.
+//
+// The insecure variant is derived from From rather than hardcoded, so it stays
+// scoped to whatever the caller matches on -- "https://" for PyPI, but
+// "https://registry.npmjs.org/" for npm, where a bare "http://" would wrongly
+// capture unrelated hosts. Callers cannot currently ask for anything else;
+// parameterising this is tracked in
+// https://gitlab.com/gitlab-org/gitlab/-/work_items/609164.
+func (c *transformConfig) prefixes() []string {
+	if rest, found := strings.CutPrefix(c.From, "https://"); found {
+		return []string{c.From, "http://" + rest}
+	}
+
+	return []string{c.From}
 }
 
 type cacheKey struct {
@@ -209,8 +230,16 @@ func (e *entry) createNewRequest(w http.ResponseWriter, r *http.Request, params 
 	}
 	newReq = newReq.WithContext(r.Context())
 
-	for _, header := range rangeHeaderKeys {
-		newReq.Header[header] = r.Header[header]
+	// A transform rewrites the document as a whole, so a partial upstream
+	// response would reach the parser as if it were complete: htmlstream would
+	// re-serialize a truncated fragment and jsonstream would error out with a
+	// 2xx and part of a body already on the wire. Request the full document
+	// instead -- answering a Range request with 200 is allowed, whereas skipping
+	// the transform on a 206 would hand back an unrewritten index.
+	if params.TransformConfig == nil {
+		for _, header := range rangeHeaderKeys {
+			newReq.Header[header] = r.Header[header]
+		}
 	}
 
 	for key, values := range params.Header {
@@ -243,11 +272,19 @@ func (e *entry) streamResponse(w http.ResponseWriter, body io.Reader, cfg *trans
 	fw := newFlushingResponseWriter(w)
 
 	if cfg != nil {
-		// jsontext writes one token at a time; buffer so the flushing writer
-		// flushes in chunks rather than once per token on large packuments.
+		// jsontext/html write one token at a time; buffer so the flushing
+		// writer flushes in chunks rather than once per token on large indexes.
 		bw := bufio.NewWriter(fw)
 		cw := &countingWriter{writer: bw}
-		err := jsonstream.Transform(body, cw, cfg.Key, cfg.From, cfg.To)
+
+		var err error
+		switch cfg.Format {
+		case "html":
+			err = htmlstream.Transform(body, cw, cfg.Key, cfg.prefixes(), cfg.To)
+		default:
+			err = jsonstream.Transform(body, cw, cfg.Key, cfg.prefixes(), cfg.To)
+		}
+
 		flushErr := bw.Flush()
 		sendURLBytes.Add(float64(cw.written))
 		return errors.Join(err, flushErr)

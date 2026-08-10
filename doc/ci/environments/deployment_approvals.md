@@ -154,4 +154,4 @@ The `status` field indicates whether a deployment is blocked.
 
 ## Related topics
 
-- [Deployment approvals feature epic](https://gitlab.com/groups/gitlab-org/-/epics/6832)
+- [Deployment approvals feature epic](https://gitlab.com/groups/gitlab-org/-/work_items/6832)

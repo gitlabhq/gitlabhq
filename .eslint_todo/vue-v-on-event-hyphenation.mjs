@@ -4,7 +4,6 @@
 export default {
   files: [
     'app/assets/javascripts/analytics/cycle_analytics/components/filter_bar.vue',
-    'app/assets/javascripts/batch_comments/components/draft_note.vue',
     'app/assets/javascripts/ci/catalog/components/list/catalog_search.vue',
     'app/assets/javascripts/ci/pipeline_new/components/pipeline_new_form.vue',
     'app/assets/javascripts/credentials/components/credentials_filter_sort_app.vue',
@@ -19,7 +18,6 @@ export default {
     'app/assets/javascripts/members/components/filter_sort/members_filtered_search_bar.vue',
     'app/assets/javascripts/members/components/filter_sort/sort_dropdown.vue',
     'app/assets/javascripts/members/placeholders/components/app.vue',
-    'app/assets/javascripts/notes/components/discussion_notes.vue',
     'app/assets/javascripts/notes/components/note_body.vue',
     'app/assets/javascripts/notes/components/noteable_discussion.vue',
     'app/assets/javascripts/notes/components/noteable_note.vue',

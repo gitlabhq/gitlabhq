@@ -9,7 +9,13 @@ RSpec.describe 'Project wikis', feature_category: :wiki do
   let(:project) { create(:project, namespace: user.namespace, creator: user) }
 
   describe 'JS-driven flows', :js do
-    it_behaves_like 'User creates wiki page'
+    describe 'User creates wiki page', quarantine: {
+      issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/43850',
+      type: :test_environment
+    } do
+      it_behaves_like 'User creates wiki page'
+    end
+
     it_behaves_like 'User deletes wiki page'
     it_behaves_like 'User previews wiki changes'
     it_behaves_like 'User updates wiki page'

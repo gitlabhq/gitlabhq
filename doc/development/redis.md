@@ -55,7 +55,7 @@ the entry, instead of relying on the key changing.
 
 ### Multi-key commands
 
-GitLab supports Redis Cluster for [cache-related workloads](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/redis/cache.rb) type, introduced in [epic 878](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/878).
+GitLab supports Redis Cluster for [cache-related workloads](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/redis/cache.rb) type, introduced in [epic 878](https://gitlab.com/groups/gitlab-com/gl-infra/-/work_items/878).
 
 This imposes an additional constraint on naming: where GitLab is performing
 operations that require several keys to be held on the same Redis server - for

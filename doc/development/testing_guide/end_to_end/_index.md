@@ -93,7 +93,7 @@ To limit the number of tests executed in a merge request, dynamic selection of w
 - This mapping is used for selecting tests in `backend` MRs.
 
 Mapping based selective test execution is currently in use for `test-on-gdk` pipeline. For more information, see
-[epic 47](https://gitlab.com/groups/gitlab-org/quality/quality-engineering/-/epics/47).
+[epic 47](https://gitlab.com/groups/gitlab-org/quality/quality-engineering/-/work_items/47).
 
 #### Overriding selective test execution
 

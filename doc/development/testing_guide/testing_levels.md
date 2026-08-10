@@ -321,7 +321,7 @@ graph RL
 
 ### About controller tests
 
-GitLab is [transitioning from controller specs to request specs](https://gitlab.com/groups/gitlab-org/-/epics/5076).
+GitLab is [transitioning from controller specs to request specs](https://gitlab.com/groups/gitlab-org/-/work_items/5076).
 
 In an ideal world, controllers should be thin. However, when this is not the
 case, it's acceptable to write a system or feature test without JavaScript instead

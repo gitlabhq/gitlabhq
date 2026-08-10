@@ -86,7 +86,7 @@ For reference filters for new objects, use a format following the pattern
 1. Suitable single-character prefixes are limited and no longer allowed for new references.
 1. Following a consistent pattern allows users to infer the existence of new features.
 
-The [Extensible reference filters](https://gitlab.com/groups/gitlab-org/-/epics/7563)
+The [Extensible reference filters](https://gitlab.com/groups/gitlab-org/-/work_items/7563)
 epic discusses the use of this format.
 
 To add a reference prefix for a new object `apple`, which has both a name and ID,

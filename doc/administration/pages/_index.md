@@ -236,7 +236,7 @@ To configure GitLab Pages to use wildcard domains:
 The resulting URL scheme is `http://<namespace>.example.io/<project_slug>`.
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
-For an overview, see the [enable GitLab Pages for GitLab CE and EE](https://youtu.be/dD8c7WNcc6s) video.
+For an overview, see the [enable GitLab Pages for GitLab CE and EE](https://www.youtube.com/watch?v=dD8c7WNcc6s) video.
 <!-- Video published on 2017-02-22 -->
 
 ### Single-domain sites

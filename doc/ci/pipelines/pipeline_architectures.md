@@ -23,7 +23,7 @@ own advantages. These methods can be mixed and matched if needed:
 - [Parent-child pipelines](#parent-child-pipelines): Good for monorepos and projects with lots of independently defined components.
 
   <i class="fa-youtube-play" aria-hidden="true"></i>
-  For an overview, see the [Parent-Child Pipelines feature demo](https://youtu.be/n8KpBSqZNbk).
+  For an overview, see the [Parent-Child Pipelines feature demo](https://www.youtube.com/watch?v=n8KpBSqZNbk).
 
 - [Multi-project pipelines](downstream_pipelines.md#multi-project-pipelines): Good for larger products that require cross-project interdependencies,
   like those with a [microservices architecture](https://about.gitlab.com/blog/trends-in-version-control-land-microservices/).

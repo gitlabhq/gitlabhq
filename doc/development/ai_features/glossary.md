@@ -99,7 +99,7 @@ A LLM that is managed by GitLab. Currently all [GitLab Managed Models](https://g
 
 ### Golden questions
 
-A small subset of the types of questions we think a user should be able to ask GitLab Duo Chat. Used to generate data for Chat evaluation. [Questions for Chat Beta](https://gitlab.com/groups/gitlab-org/-/epics/10550#what-the-user-can-ask).
+A small subset of the types of questions we think a user should be able to ask GitLab Duo Chat. Used to generate data for Chat evaluation. [Questions for Chat Beta](https://gitlab.com/groups/gitlab-org/-/work_items/10550#what-the-user-can-ask).
 
 ### Ground truth
 
@@ -107,7 +107,7 @@ Data that is determined to be the true output for a given input, representing th
 
 ### Local model
 
-A LLM running on a user's workstation. [More information](https://gitlab.com/groups/gitlab-org/-/epics/12907).
+A LLM running on a user's workstation. [More information](https://gitlab.com/groups/gitlab-org/-/work_items/12907).
 
 ### LLM
 

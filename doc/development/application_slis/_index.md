@@ -178,7 +178,7 @@ To pass extra selectors and override properties of the SLI, see the
 SLIs with statically defined feature categories can already receive
 alerts about the SLI in specified Slack channels. For more information, read the
 [alert routing documentation](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/uncategorized/alert-routing.md).
-In [this project](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/614)
+In [this project](https://gitlab.com/groups/gitlab-com/gl-infra/-/work_items/614)
 we are extending this so alerts for SLIs with a `feature_category`
 label in the source metrics can also be routed.
 

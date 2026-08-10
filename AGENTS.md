@@ -22,6 +22,8 @@ Load the following instruction files based on your current task:
 These apply to every task without needing a trigger:
 
 - **Minimal fix** — apply the smallest change that solves the problem; do not expand scope across layers unless each layer is genuinely load-bearing
+- **Comment discipline** — cap comments at 1-3 lines and only add one when the why is non-obvious, like an invariant, a gotcha, or a tradeoff; delete comments that just restate the code, by default, not only when asked to trim
+- **Prose via subagent** — on a high-capability model, write human-facing prose (comments, MR/issue text, docs) via a mid-tier model subagent instead of typing it inline, since high-capability models tend to produce dense, jargon-heavy prose; brief it with the facts and constraints, then check its output for accuracy; on a mid-tier model, just write it directly
 
 ## Project Notes
 

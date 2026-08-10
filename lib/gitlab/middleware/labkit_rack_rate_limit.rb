@@ -95,7 +95,7 @@ module Gitlab
           next false unless blocked?(result)
 
           entry = entry_for_rule(result.rule.name)
-          entry && enforce_enabled?(entry.cohort)
+          entry && registry.enforce_enabled?(entry.cohort)
         end
         return unless blocked
 
@@ -152,28 +152,7 @@ module Gitlab
       end
 
       def active_cohorts
-        registry.cohorts.select { |cohort| shadow_enabled?(cohort) }.to_set
-      end
-
-      # The flag symbol is built inline (not assigned to a local first) so the
-      # MarkUsedFeatureFlags cop sees a dynamic-symbol literal and optimistically
-      # marks every flag with this prefix used; a local variable would read as an
-      # lvar and the cop would report the flags unused. Mirrors the Stage 2a
-      # adapter (Gitlab::ApplicationRateLimiter::LabkitAdapter).
-      def shadow_enabled?(cohort)
-        # rubocop:disable Gitlab/FeatureFlagKeyDynamic -- bases enumerated in ThrottleRegistry, with matching YAMLs in config/feature_flags/wip/
-        ::Feature.enabled?(
-          :"rate_limiter_use_labkit_#{registry.flag_basis(cohort)}", ::Feature.current_request, type: :wip
-        )
-        # rubocop:enable Gitlab/FeatureFlagKeyDynamic
-      end
-
-      def enforce_enabled?(cohort)
-        # rubocop:disable Gitlab/FeatureFlagKeyDynamic -- bases enumerated in ThrottleRegistry, with matching YAMLs in config/feature_flags/wip/
-        ::Feature.enabled?(
-          :"rate_limiter_use_labkit_#{registry.flag_basis(cohort)}_enforce", ::Feature.current_request, type: :wip
-        )
-        # rubocop:enable Gitlab/FeatureFlagKeyDynamic
+        registry.cohorts.select { |cohort| registry.shadow_enabled?(cohort) }.to_set
       end
 
       # The request that classifies itself for labkit, built from a dup of the env

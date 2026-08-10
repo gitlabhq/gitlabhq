@@ -16,7 +16,7 @@ description: "Migrate GitLab groups and projects through object storage."
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8985) as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.3 [with feature flags](../../../administration/feature_flags/_index.md) named `offline_transfer_exports`, `offline_transfer_imports`, and `offline_transfer_ui`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/8985) as an [experiment](../../../policy/development_stages_support.md#experiment) in GitLab 19.3 [with feature flags](../../../administration/feature_flags/_index.md) named `offline_transfer_exports`, `offline_transfer_imports`, and `offline_transfer_ui`. Disabled by default.
 
 {{< /history >}}
 

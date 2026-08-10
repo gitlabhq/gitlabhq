@@ -20,7 +20,7 @@ Design documents:
 - (Latest) [Feature Flags usage in GitLab development and operations](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/feature_flags_usage_in_dev_and_ops/)
 - [Development Feature Flags Architecture](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/feature_flags_development/)
 
-This document is the subject of continued work as part of an epic to [improve internal usage of feature flags](https://gitlab.com/groups/gitlab-org/-/epics/3551). Raise any suggestions as new issues and attach them to the epic.
+This document is the subject of continued work as part of an epic to [improve internal usage of feature flags](https://gitlab.com/groups/gitlab-org/-/work_items/3551). Raise any suggestions as new issues and attach them to the epic.
 
 For an [overview of the feature flag lifecycle](https://handbook.gitlab.com/handbook/product-development/how-we-work/product-development-flow/feature-flag-lifecycle/#feature-flag-lifecycle),
 or if you need help deciding [if you should use a feature flag](https://handbook.gitlab.com/handbook/product-development/how-we-work/product-development-flow/feature-flag-lifecycle/#when-to-use-feature-flags)

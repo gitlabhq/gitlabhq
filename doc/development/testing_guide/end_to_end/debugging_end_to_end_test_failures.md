@@ -25,7 +25,7 @@ and to view an uncompressed version of the following image:
 
 ![Pipeline Reorder](img/deployment_pipeline_and_e2e_tests_v18_0.png)
 
-Note the diagram has been updated as part of increasing rollback availability by removing the [blocking nature of post-deployment migrations](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/585).
+Note the diagram has been updated as part of increasing rollback availability by removing the [blocking nature of post-deployment migrations](https://gitlab.com/groups/gitlab-com/gl-infra/-/work_items/585).
 
 ### Staging Ref
 

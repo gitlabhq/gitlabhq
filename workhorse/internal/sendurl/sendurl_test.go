@@ -318,6 +318,49 @@ func TestErrorWithCustomStatusCode(t *testing.T) {
 	testhelper.AssertMetrics(t, request)
 }
 
+// ErrorResponseStatus and TimeoutResponseStatus only apply when the request
+// itself fails, i.e. when http.Client.Do returns an error (see
+// handleRequestError). A response that completed is proxied with its own status,
+// so a real upstream 5xx or 429 reaches the client unchanged rather than being
+// collapsed into the configured status. The npm packument and PyPI Simple-index
+// forwards both set ErrorResponseStatus, so pin the distinction here.
+func TestCompletedNonSuccessStatusIsNotReplacedByErrorResponseStatus(t *testing.T) {
+	for _, status := range []int{
+		http.StatusInternalServerError,
+		http.StatusServiceUnavailable,
+		http.StatusTooManyRequests,
+	} {
+		t.Run(http.StatusText(status), func(t *testing.T) {
+			const upstreamBody = "upstream error page"
+
+			upstream := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+				w.WriteHeader(status)
+				_, _ = io.WriteString(w, upstreamBody)
+			}))
+			defer upstream.Close()
+
+			sendData := map[string]interface{}{
+				"URL":                   upstream.URL,
+				"ErrorResponseStatus":   http.StatusBadGateway,
+				"TimeoutResponseStatus": http.StatusBadGateway,
+			}
+			jsonParams, err := json.Marshal(sendData)
+			require.NoError(t, err)
+			data := base64.URLEncoding.EncodeToString(jsonParams)
+
+			response := httptest.NewRecorder()
+			request := testhelper.RequestWithMetrics(t, httptest.NewRequest("GET", "/target", nil))
+
+			SendURL.Inject(response, request, data)
+			testhelper.AssertMetrics(t, request)
+
+			require.Equal(t, status, response.Code,
+				"a completed upstream response must keep its own status, not ErrorResponseStatus")
+			assert.Equal(t, upstreamBody, response.Body.String())
+		})
+	}
+}
+
 func TestHttpClientReuse(t *testing.T) {
 	expectedKey := cacheKey{
 		requestTimeout:  0,
@@ -479,4 +522,178 @@ func TestSendURLTransformMalformedUpstreamBody(t *testing.T) {
 
 	require.Equal(t, http.StatusOK, response.Code)
 	assert.NotContains(t, response.Body.String(), "gdk.test")
+}
+
+func TestSendURLWithHTMLTransform(t *testing.T) {
+	const (
+		pypiFile   = "https://files.pythonhosted.org/packages/aa/requests-2.31.0.tar.gz"
+		gitlabFile = "https://gitlab.example.com/api/v4/projects/7/packages/pypi/forward/requests/packages/aa/requests-2.31.0.tar.gz"
+	)
+	body := `<a href="` + pypiFile + `#sha256=abc">requests-2.31.0.tar.gz</a>`
+
+	upstream := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "text/html")
+		w.WriteHeader(http.StatusOK)
+		_, _ = io.WriteString(w, body)
+	}))
+	defer upstream.Close()
+
+	sendData := map[string]interface{}{
+		"URL": upstream.URL,
+		"TransformConfig": map[string]interface{}{
+			"Format": "html",
+			"Key":    "href",
+			"From":   "https://files.pythonhosted.org/",
+			"To":     "https://gitlab.example.com/api/v4/projects/7/packages/pypi/forward/requests/",
+		},
+	}
+	jsonParams, err := json.Marshal(sendData)
+	require.NoError(t, err)
+	data := base64.URLEncoding.EncodeToString(jsonParams)
+
+	response := httptest.NewRecorder()
+	request := httptest.NewRequest("GET", "/target", nil)
+	request = testhelper.RequestWithMetrics(t, request)
+
+	SendURL.Inject(response, request, data)
+	testhelper.AssertMetrics(t, request)
+
+	require.Equal(t, http.StatusOK, response.Code)
+	assert.Contains(t, response.Body.String(), gitlabFile)
+	assert.Contains(t, response.Body.String(), "#sha256=abc")
+	assert.NotContains(t, response.Body.String(), "https://files.pythonhosted.org/")
+}
+
+// A transform rewrites the document as a whole, so the upstream request must
+// ask for all of it. Forwarding the client's Range would yield a 206 whose
+// partial body reaches the parser as if it were complete.
+func TestRangeHeadersAreDroppedWhenTransforming(t *testing.T) {
+	const body = `{"dist":{"tarball":"https://registry.npmjs.org/a/-/a-1.0.0.tgz"}}`
+
+	for _, tt := range []struct {
+		name          string
+		transform     map[string]interface{}
+		wantUpstream  string
+		wantStatus    int
+		wantRewritten bool
+	}{
+		{
+			name: "with a transform the range is not forwarded",
+			transform: map[string]interface{}{
+				"Key": "tarball", "From": "https://registry.npmjs.org/", "To": "https://gitlab.example.com/npm/",
+			},
+			wantUpstream: "", wantStatus: http.StatusOK, wantRewritten: true,
+		},
+		{
+			name:      "without a transform the range is forwarded as before",
+			transform: nil, wantUpstream: "bytes=0-9", wantStatus: http.StatusPartialContent,
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			var gotRange string
+			upstream := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				gotRange = r.Header.Get("Range")
+				if gotRange != "" {
+					w.Header().Set("Content-Range", "bytes 0-9/64")
+					w.WriteHeader(http.StatusPartialContent)
+					_, _ = io.WriteString(w, body[:10])
+					return
+				}
+				w.WriteHeader(http.StatusOK)
+				_, _ = io.WriteString(w, body)
+			}))
+			defer upstream.Close()
+
+			sendData := map[string]interface{}{"URL": upstream.URL}
+			if tt.transform != nil {
+				sendData["TransformConfig"] = tt.transform
+			}
+			jsonParams, err := json.Marshal(sendData)
+			require.NoError(t, err)
+
+			response := httptest.NewRecorder()
+			request := httptest.NewRequest("GET", "/target", nil)
+			request.Header.Set("Range", "bytes=0-9")
+			request = testhelper.RequestWithMetrics(t, request)
+
+			SendURL.Inject(response, request, base64.URLEncoding.EncodeToString(jsonParams))
+			testhelper.AssertMetrics(t, request)
+
+			assert.Equal(t, tt.wantUpstream, gotRange, "Range seen by upstream")
+			require.Equal(t, tt.wantStatus, response.Code)
+			if tt.wantRewritten {
+				assert.Contains(t, response.Body.String(), "https://gitlab.example.com/npm/a/-/a-1.0.0.tgz")
+			}
+		})
+	}
+}
+
+// An https From also matches its http spelling, so an upstream entry served over
+// http cannot slip past the rewrite and be fetched directly. Derived from From
+// rather than hardcoded, so it stays scoped to each caller's own prefix.
+func TestTransformAlsoMatchesInsecureScheme(t *testing.T) {
+	const (
+		valueKey   = "url"
+		cfgField   = "TransformConfig"
+		npmFrom    = "https://registry.npmjs.org/"
+		npmTo      = "https://gitlab.example.com/npm/"
+		pypiFrom   = "https://"
+		pypiTo     = "https://gitlab.example.com/pypi/forward/pkg/"
+		unrelated  = "http://evil.example.com/a-1.0.0.tgz"
+		npmTarball = "a/-/a-1.0.0.tgz"
+	)
+
+	for _, tt := range []struct {
+		name     string
+		from     string
+		to       string
+		body     string
+		want     string
+		unwanted string
+	}{
+		{
+			name: "pypi matches on scheme alone",
+			from: pypiFrom, to: pypiTo,
+			body: `{"url":"http://files.pythonhosted.org/p/pkg-1.0.tar.gz"}`,
+			want: pypiTo + "files.pythonhosted.org/p/pkg-1.0.tar.gz",
+		},
+		{
+			name: "npm keeps its host scoping",
+			from: npmFrom, to: npmTo,
+			body: `{"url":"http://registry.npmjs.org/` + npmTarball + `"}`,
+			want: npmTo + npmTarball,
+		},
+		{
+			name: "npm does not capture an unrelated http host",
+			from: npmFrom, to: npmTo,
+			body:     `{"url":"` + unrelated + `"}`,
+			want:     unrelated,
+			unwanted: npmTo + "a-1.0.0.tgz",
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			upstream := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+				w.Header().Set("Content-Type", "application/json")
+				_, _ = io.WriteString(w, tt.body)
+			}))
+			defer upstream.Close()
+
+			sendData := map[string]interface{}{
+				"URL":    upstream.URL,
+				cfgField: map[string]interface{}{"Key": valueKey, "From": tt.from, "To": tt.to},
+			}
+			jsonParams, err := json.Marshal(sendData)
+			require.NoError(t, err)
+
+			response := httptest.NewRecorder()
+			request := testhelper.RequestWithMetrics(t, httptest.NewRequest("GET", "/target", nil))
+			SendURL.Inject(response, request, base64.URLEncoding.EncodeToString(jsonParams))
+			testhelper.AssertMetrics(t, request)
+
+			assert.Contains(t, response.Body.String(), tt.want)
+			if tt.unwanted != "" {
+				assert.NotContains(t, response.Body.String(), tt.unwanted)
+			}
+		})
+	}
 }

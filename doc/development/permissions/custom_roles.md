@@ -148,7 +148,7 @@ There might be features that require additional abilities but try to minimize th
 This is also where your work should begin. Take all the abilities for the feature you work on, and consolidate those abilities into `read_`, `admin_`, or additional abilities if necessary.
 
 Many abilities in the `GroupPolicy` and `ProjectPolicy` classes have many
-redundant policies. There is an [epic for consolidating these Policy classes](https://gitlab.com/groups/gitlab-org/-/epics/6689).
+redundant policies. There is an [epic for consolidating these Policy classes](https://gitlab.com/groups/gitlab-org/-/work_items/6689).
 If you encounter similar permissions in these classes, consider refactoring so
 that they have the same name.
 

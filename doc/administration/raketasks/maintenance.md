@@ -397,7 +397,7 @@ order that conforms to the GitLab release cadence.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42705) in GitLab 13.5 [with a feature flag](../feature_flags/_index.md) named `database_reindexing`. Disabled by default.
-- [Enabled on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/3989) in GitLab 13.9.
+- [Enabled on GitLab.com](https://gitlab.com/groups/gitlab-org/-/work_items/3989) in GitLab 13.9.
 - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/188548) in GitLab 18.0.
 
 {{< /history >}}
@@ -543,7 +543,7 @@ gitlab-rake gitlab:db:schema_checker:run
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-com/-/epics/2456) in GitLab 17.11.
+- [Introduced](https://gitlab.com/groups/gitlab-com/-/work_items/2456) in GitLab 17.11.
 
 {{< /history >}}
 

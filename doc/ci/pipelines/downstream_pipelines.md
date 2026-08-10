@@ -53,7 +53,7 @@ A parent pipeline can trigger many child pipelines, and these child pipelines ca
 their own child pipelines. You cannot trigger another level of child pipelines.
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
-For an overview, see [Nested Dynamic Pipelines](https://youtu.be/C5j3ju9je2M).
+For an overview, see [Nested Dynamic Pipelines](https://www.youtube.com/watch?v=C5j3ju9je2M).
 
 ## Multi-project pipelines
 
@@ -196,7 +196,7 @@ targeting content that changed or to build a matrix of targets and architectures
 The artifact containing the generated YAML file must be within [instance limits](../../administration/cicd/limits.md#maximum-size-of-the-ci-artifacts-archive).
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
-For an overview, see [Create child pipelines using dynamically generated configurations](https://youtu.be/nMdfus2JWHM).
+For an overview, see [Create child pipelines using dynamically generated configurations](https://www.youtube.com/watch?v=nMdfus2JWHM).
 
 For an example project that generates a dynamic child pipeline, see
 [Dynamic Child Pipelines with Jsonnet](https://gitlab.com/gitlab-org/project-templates/jsonnet).

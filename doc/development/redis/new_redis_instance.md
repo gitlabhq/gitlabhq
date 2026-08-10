@@ -16,8 +16,8 @@ cache or shared state. This document describes an approach
 for adding a new Redis instance that handles existing data, based on
 prior examples:
 
-- [Dedicated Redis instance for Trace Chunk storage](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/462).
-- [Create dedicated Redis instance for Rate Limiting data](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/526).
+- [Dedicated Redis instance for Trace Chunk storage](https://gitlab.com/groups/gitlab-com/gl-infra/-/work_items/462).
+- [Create dedicated Redis instance for Rate Limiting data](https://gitlab.com/groups/gitlab-com/gl-infra/-/work_items/526).
 
 This document does not cover the operational side of preparing and configuring
 the new Redis instance in detail, but the example epics do contain information
@@ -129,7 +129,7 @@ We read from the new instance, but we need to fall back to the old instance when
 We need to log any issues or exceptions with a new instance, but still fall back to the old instance.
 
 The proposed migration strategy is to implement and use the [MultiStore](https://gitlab.com/gitlab-org/gitlab/-/blob/fcc42e80ed261a862ee6ca46b182eee293ae60b6/lib/gitlab/redis/multi_store.rb).
-We used this approach with [adding new dedicated Redis instance for session keys](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/579).
+We used this approach with [adding new dedicated Redis instance for session keys](https://gitlab.com/groups/gitlab-com/gl-infra/-/work_items/579).
 Also MultiStore comes with corresponding [specs](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/lib/gitlab/redis/multi_store_spec.rb).
 
 The MultiStore looks like a `redis-rb ::Redis` instance.

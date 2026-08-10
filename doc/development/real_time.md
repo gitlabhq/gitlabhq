@@ -402,7 +402,7 @@ On GitLab.com, WebSocket connections are served from dedicated infrastructure,
 entirely separate from the regular Web fleet and deployed with Kubernetes. This
 limits risk to nodes handling requests but not to shared services. For more
 information on the WebSockets Kubernetes deployment see
-[this epic](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/355).
+[this epic](https://gitlab.com/groups/gitlab-com/gl-infra/-/work_items/355).
 
 ## The GitLab real-time stack in depth
 

@@ -212,6 +212,91 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::ThrottleRegistry, feature_ca
     end
   end
 
+  describe '.shadow_enabled?' do
+    it 'is disabled by default in the test suite' do
+      expect(described_class.shadow_enabled?(2)).to be(false)
+    end
+
+    it 'reflects the cohort-specific shadow flag when enabled' do
+      stub_feature_flags(rate_limiter_use_labkit_rack_cohort_2: true)
+
+      expect(described_class.shadow_enabled?(2)).to be(true)
+    end
+
+    it 'does not conflate an enabled cohort with a different cohort' do
+      stub_feature_flags(rate_limiter_use_labkit_rack_cohort_2: true)
+
+      expect(described_class.shadow_enabled?(3)).to be(false)
+    end
+  end
+
+  describe '.enforce_enabled?' do
+    it 'is disabled by default in the test suite' do
+      expect(described_class.enforce_enabled?(2)).to be(false)
+    end
+
+    it 'reflects the cohort-specific enforce flag when enabled' do
+      stub_feature_flags(rate_limiter_use_labkit_rack_cohort_2_enforce: true)
+
+      expect(described_class.enforce_enabled?(2)).to be(true)
+    end
+
+    it 'does not conflate an enabled cohort with a different cohort' do
+      stub_feature_flags(rate_limiter_use_labkit_rack_cohort_2_enforce: true)
+
+      expect(described_class.enforce_enabled?(3)).to be(false)
+    end
+  end
+
+  describe '.fully_enforced?' do
+    def stub_shadow_and_enforce(cohort, shadow:, enforce:)
+      stub_feature_flags(
+        "rate_limiter_use_labkit_rack_cohort_#{cohort}": shadow,
+        "rate_limiter_use_labkit_rack_cohort_#{cohort}_enforce": enforce
+      )
+    end
+
+    it 'is false by default in the test suite' do
+      expect(described_class.fully_enforced?).to be(false)
+    end
+
+    it 'is true only when every cohort both shadows and enforces' do
+      described_class.cohorts.each { |cohort| stub_shadow_and_enforce(cohort, shadow: true, enforce: true) }
+
+      expect(described_class.fully_enforced?).to be(true)
+    end
+
+    it 'is false when any single cohort does not enforce' do
+      described_class.cohorts.each { |cohort| stub_shadow_and_enforce(cohort, shadow: true, enforce: true) }
+      stub_shadow_and_enforce(2, shadow: true, enforce: false)
+
+      expect(described_class.fully_enforced?).to be(false)
+    end
+
+    # Regression guard: enforce alone is not enough. The middleware's own
+    # run(env) never executes unless shadow is on for at least one cohort (see
+    # active_cohorts), so if every enforce flag were ever on while every shadow
+    # flag was off, Labkit would do nothing while this safelist waved
+    # Rack::Attack through - leaving the request completely unthrottled.
+    it 'is false when every cohort enforces but none shadow' do
+      described_class.cohorts.each { |cohort| stub_shadow_and_enforce(cohort, shadow: false, enforce: true) }
+
+      expect(described_class.fully_enforced?).to be(false)
+    end
+
+    # Regression guard: #all? over an empty list is vacuously true, so an empty
+    # registry (no entries, hence no cohorts) would report full enforcement while
+    # Labkit has no rules at all - and the safelist would wave Rack::Attack
+    # through, leaving every request unthrottled. The cohorts.present? gate makes
+    # "nothing is enforcing" false, not true.
+    it 'is false when the registry declares no cohorts' do
+      allow(described_class).to receive(:meta).and_return({})
+
+      expect(described_class.cohorts).to be_empty
+      expect(described_class.fully_enforced?).to be(false)
+    end
+  end
+
   describe 'feature flags' do
     it 'has a shadow and enforce wip flag for every cohort' do
       described_class.cohorts.each do |cohort|

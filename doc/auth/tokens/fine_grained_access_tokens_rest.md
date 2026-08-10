@@ -1752,6 +1752,7 @@ Grants the ability to create, delete, read, and update packages.
 | Read | Project | `GET` | `/projects/:id/packages/nuget/query` |
 | Read | Project | `GET` | `/projects/:id/packages/protection/rules` |
 | Read | Project | `GET` | `/projects/:id/packages/pypi/files/:sha256/*file_identifier` |
+| Read | Project | `GET` | `/projects/:id/packages/pypi/forward/:package_name/*upstream_path` |
 | Read | Project | `GET` | `/projects/:id/packages/pypi/simple` |
 | Read | Project | `GET` | `/projects/:id/packages/pypi/simple/*package_name` |
 | Read | Project | `GET` | `/projects/:id/packages/rpm/*package_file_id/*file_name` |
@@ -3851,6 +3852,7 @@ feature is enabled.
 | Package: Read | `GET` | `/projects/:id/packages/nuget/metadata/*package_name/*package_version` |
 | Package: Read | `GET` | `/projects/:id/packages/nuget/metadata/*package_name/index` |
 | Package: Read | `GET` | `/projects/:id/packages/pypi/files/:sha256/*file_identifier` |
+| Package: Read | `GET` | `/projects/:id/packages/pypi/forward/:package_name/*upstream_path` |
 | Package: Read | `GET` | `/projects/:id/packages/pypi/simple` |
 | Package: Read | `GET` | `/projects/:id/packages/pypi/simple/*package_name` |
 | Pipeline: Read | `GET` | `/projects/:id/pipelines` |

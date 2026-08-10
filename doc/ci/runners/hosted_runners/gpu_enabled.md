@@ -52,7 +52,7 @@ gpu-job:
 If you don't want to install larger libraries such as TensorFlow or XGBoost each time you run a job, you can create your own image with all the required components pre-installed.
 Watch this demo to learn how to leverage GPU-enabled hosted runners to train an XGBoost model:
 <div class="video-fallback">
-  Video demonstration of GitLab GPU-enabled hosted runners: <a href="https://youtu.be/tElegG4NCZ0">Train XGboost models with GitLab</a>.
+  Video demonstration of GitLab GPU-enabled hosted runners: <a href="https://www.youtube.com/watch?v=tElegG4NCZ0">Train XGboost models with GitLab</a>.
 </div>
 <figure class="video-container">
   <iframe src="https://www.youtube-nocookie.com/embed/tElegG4NCZ0" frameborder="0" allowfullscreen> </iframe>

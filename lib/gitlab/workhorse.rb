@@ -17,6 +17,9 @@ module Gitlab
     NOTIFICATION_PREFIX = 'workhorse:notifications:'
     ALLOWED_GIT_HTTP_ACTIONS = %w[git_receive_pack git_upload_pack info_refs].freeze
     DETECT_HEADER = 'Gitlab-Workhorse-Detect-Content-Type'
+    # Body formats the send-url streaming rewrite understands. Must stay in step
+    # with the switch in workhorse/internal/sendurl/sendurl.go.
+    TRANSFORM_FORMATS = %i[json html].freeze
     ARCHIVE_FORMATS = %w[zip tar.gz tar.bz2 tar].freeze
 
     # Maximum age of the Gitlab-Workhorse-Api-Request JWT accepted by
@@ -291,16 +294,7 @@ module Gitlab
           end
         end
 
-        if transform_config.present?
-          raise ArgumentError, "transform_config requires :key, :from, and :to" \
-            unless transform_config[:key].present? && transform_config[:from].present? && transform_config[:to].present?
-
-          params['TransformConfig'] = {
-            'Key' => transform_config[:key],
-            'From' => transform_config[:from],
-            'To' => transform_config[:to]
-          }
-        end
+        params['TransformConfig'] = transform_config_params(transform_config) if transform_config.present?
 
         [
           SEND_DATA_HEADER,
@@ -512,6 +506,25 @@ module Gitlab
               exclude: exclude_paths.map { |exclude_path| Gitlab::EncodingHelper.encode_binary(exclude_path) }
             ).to_proto
           )
+        }
+      end
+
+      def transform_config_params(transform_config)
+        raise ArgumentError, "transform_config requires :key, :from, and :to" \
+          unless transform_config[:key].present? && transform_config[:from].present? && transform_config[:to].present?
+
+        # Workhorse routes any format it does not recognise to the JSON transform,
+        # so an unknown or misspelled value would rewrite an HTML document as if it
+        # were JSON rather than fail.
+        format = transform_config.fetch(:format, :json)
+        raise ArgumentError, "transform_config :format must be one of #{TRANSFORM_FORMATS.join(', ')}" \
+          unless TRANSFORM_FORMATS.include?(format)
+
+        {
+          'Format' => format.to_s,
+          'Key' => transform_config[:key],
+          'From' => transform_config[:from],
+          'To' => transform_config[:to]
         }
       end
 

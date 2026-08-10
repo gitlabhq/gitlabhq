@@ -598,7 +598,7 @@ The S3 storage driver integrates with Amazon S3 or any S3-compatible object stor
 
 The `s3_v2` driver (in Beta) uses AWS SDK v2 and only supports Signature Version 4 for authentication.
 This driver improves performance and reliability while ensuring compatibility with AWS authentication requirements,
-as support for older signature methods is deprecated. For more information, see [epic 16272](https://gitlab.com/groups/gitlab-org/-/epics/16272).
+as support for older signature methods is deprecated. For more information, see [epic 16272](https://gitlab.com/groups/gitlab-org/-/work_items/16272).
 
 For a complete list of configuration parameters for each driver, see [`s3_v1`](https://gitlab.com/gitlab-org/container-registry/-/blob/f4ece8cdba4413b968c8a3fd20497a8186f23d26/docs/storage-drivers/s3_v1.md) and [`s3_v2`](https://gitlab.com/gitlab-org/container-registry/-/blob/f4ece8cdba4413b968c8a3fd20497a8186f23d26/docs/storage-drivers/s3_v2.md).
 

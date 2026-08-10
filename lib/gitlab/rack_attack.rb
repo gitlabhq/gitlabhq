@@ -109,6 +109,14 @@ module Gitlab
         Gitlab::Throttle.bypass_header.present? &&
           req.get_header(Gitlab::Throttle.bypass_header) == '1'
       end
+
+      # Once every Labkit cohort enforces, Labkit fully owns rate limiting and
+      # Rack::Attack has nothing left to independently throttle: safelisting
+      # every request here stops it from re-running (and possibly re-blocking)
+      # a request Labkit already decided.
+      rack_attack.safelist('labkit_fully_enforced') do |_req|
+        LabkitRateLimit::ThrottleRegistry.fully_enforced?
+      end
     end
 
     # The complete set of CE throttle definitions: the REGULAR_THROTTLES

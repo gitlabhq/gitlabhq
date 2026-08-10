@@ -898,6 +898,7 @@ RSpec.describe Gitlab::Workhorse, feature_category: :gitaly do
     context 'when `transform_config` is set' do
       let(:expected_params) do
         super().merge('TransformConfig' => {
+          'Format' => 'json',
           'Key' => 'tarball',
           'From' => 'https://registry.npmjs.org/',
           'To' => "https://#{Gitlab.config.gitlab.host}/api/v4/projects/7/packages/npm/"
@@ -923,6 +924,39 @@ RSpec.describe Gitlab::Workhorse, feature_category: :gitaly do
         expect do
           described_class.send_url(url, transform_config: { key: 'tarball', from: 'https://registry.npmjs.org/' })
         end.to raise_error(ArgumentError, 'transform_config requires :key, :from, and :to')
+      end
+
+      # Workhorse routes any unrecognised format to the JSON transform, so an
+      # unvalidated typo would rewrite an HTML index as JSON instead of failing.
+      context 'with an unsupported transform_config format' do
+        where(:format) { [:xml, 'html', nil, :HTML] }
+
+        with_them do
+          it 'raises ArgumentError rather than silently falling back to JSON' do
+            expect do
+              described_class.send_url(url, transform_config: {
+                format: format, key: 'href', from: 'https://', to: 'https://gitlab.example.com/'
+              })
+            end.to raise_error(ArgumentError, 'transform_config :format must be one of json, html')
+          end
+        end
+      end
+
+      context 'with an explicit html format' do
+        it 'serializes the format' do
+          _, _, params = decode_workhorse_header(described_class.send_url(
+            url,
+            transform_config: {
+              format: :html,
+              key: 'href',
+              from: 'https://files.pythonhosted.org/',
+              to: "https://#{Gitlab.config.gitlab.host}/api/v4/projects/7/packages/pypi/forward/requests/"
+            }
+          ))
+
+          expect(params.dig('TransformConfig', 'Format')).to eq('html')
+          expect(params.dig('TransformConfig', 'Key')).to eq('href')
+        end
       end
     end
   end

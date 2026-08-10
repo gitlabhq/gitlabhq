@@ -11886,6 +11886,12 @@ msgstr ""
 msgid "ArtifactRegistry|A hosted repository directly hosts artifacts. You can publish artifacts to and pull them from a hosted repository."
 msgstr ""
 
+msgid "ArtifactRegistry|A permanent, unique identifier used across every Artifact Registry URL and client config file."
+msgstr ""
+
+msgid "ArtifactRegistry|A unified registry for artifacts across all projects and groups in your organization. To get started, choose a registry handle."
+msgstr ""
+
 msgid "ArtifactRegistry|A user can hold only one Artifact Registry role per resource. The following are listed more than once."
 msgstr ""
 
@@ -11928,6 +11934,9 @@ msgstr ""
 msgid "ArtifactRegistry|Artifact registry"
 msgstr ""
 
+msgid "ArtifactRegistry|Artifact registry set up successfully"
+msgstr ""
+
 msgid "ArtifactRegistry|Artifact registry settings"
 msgstr ""
 
@@ -11944,6 +11953,12 @@ msgid "ArtifactRegistry|Authenticate with a token in your %{codeStart}settings.x
 msgstr ""
 
 msgid "ArtifactRegistry|Build tool"
+msgstr ""
+
+msgid "ArtifactRegistry|CI/CD pipelines (.gitlab-ci.yml)"
+msgstr ""
+
+msgid "ArtifactRegistry|Client configuration files"
 msgstr ""
 
 msgid "ArtifactRegistry|Copy and paste this inside your %{codeStart}pom.xml%{codeEnd} %{codeStart}dependencies%{codeEnd} block:"
@@ -11991,6 +12006,9 @@ msgstr ""
 msgid "ArtifactRegistry|Create repository"
 msgstr ""
 
+msgid "ArtifactRegistry|Create your first repository to start publishing and pulling artifacts."
+msgstr ""
+
 msgid "ArtifactRegistry|Created on"
 msgstr ""
 
@@ -12010,6 +12028,9 @@ msgid "ArtifactRegistry|Docker"
 msgstr ""
 
 msgid "ArtifactRegistry|Docker CLI"
+msgstr ""
+
+msgid "ArtifactRegistry|Dockerfiles"
 msgstr ""
 
 msgid "ArtifactRegistry|Download"
@@ -12032,16 +12053,25 @@ msgstr ""
 msgid "ArtifactRegistry|Enable Artifact Registry for this organization. All projects and groups will have access to a unified registry once enabled."
 msgstr ""
 
+msgid "ArtifactRegistry|Enable Artifact registry"
+msgstr ""
+
 msgid "ArtifactRegistry|Filter repositories"
 msgstr ""
 
 msgid "ArtifactRegistry|Format"
 msgstr ""
 
+msgid "ArtifactRegistry|GitLab UI"
+msgstr ""
+
 msgid "ArtifactRegistry|Gradle (Groovy)"
 msgstr ""
 
 msgid "ArtifactRegistry|Gradle (Kotlin)"
+msgstr ""
+
+msgid "ArtifactRegistry|Handle has already been taken."
 msgstr ""
 
 msgid "ArtifactRegistry|Hosted"
@@ -12076,7 +12106,19 @@ msgstr ""
 msgid "ArtifactRegistry|Maven"
 msgstr ""
 
+msgid "ArtifactRegistry|Maven (settings.xml):"
+msgstr ""
+
 msgid "ArtifactRegistry|More actions for %{name}"
+msgstr ""
+
+msgid "ArtifactRegistry|Must be between %{min} and %{max} characters."
+msgstr ""
+
+msgid "ArtifactRegistry|Must not contain consecutive hyphens (--)."
+msgstr ""
+
+msgid "ArtifactRegistry|Must start and end with an alphanumeric character."
 msgstr ""
 
 msgid "ArtifactRegistry|Name"
@@ -12106,7 +12148,16 @@ msgstr ""
 msgid "ArtifactRegistry|OCI"
 msgstr ""
 
+msgid "ArtifactRegistry|Only lowercase letters, digits and hyphens (-) are allowed. Must start and end with an alphanumeric character."
+msgstr ""
+
+msgid "ArtifactRegistry|Only lowercase letters, digits and hyphens (-) are allowed. Remove any spaces or special characters."
+msgstr ""
+
 msgid "ArtifactRegistry|Organization could not be determined."
+msgstr ""
+
+msgid "ArtifactRegistry|Our internal packages are hosted at %{url}"
 msgstr ""
 
 msgid "ArtifactRegistry|Package"
@@ -12130,6 +12181,15 @@ msgid "ArtifactRegistry|Pull an image:"
 msgstr ""
 
 msgid "ArtifactRegistry|Push an image:"
+msgstr ""
+
+msgid "ArtifactRegistry|Registry handle"
+msgstr ""
+
+msgid "ArtifactRegistry|Registry handle is permanent and globally reserved"
+msgstr ""
+
+msgid "ArtifactRegistry|Registry handle is required."
 msgstr ""
 
 msgid "ArtifactRegistry|Registry setup"
@@ -12168,6 +12228,9 @@ msgstr ""
 msgid "ArtifactRegistry|Resource ID must be a valid UUIDv7."
 msgstr ""
 
+msgid "ArtifactRegistry|Set up Artifact registry"
+msgstr ""
+
 msgid "ArtifactRegistry|Setup instructions"
 msgstr ""
 
@@ -12177,6 +12240,9 @@ msgstr ""
 msgid "ArtifactRegistry|Size"
 msgstr ""
 
+msgid "ArtifactRegistry|Team documentation / READMEs:"
+msgstr ""
+
 msgid "ArtifactRegistry|The Artifact Registry service did not respond in time."
 msgstr ""
 
@@ -12184,6 +12250,9 @@ msgid "ArtifactRegistry|The Artifact Registry service is unavailable."
 msgstr ""
 
 msgid "ArtifactRegistry|The format cannot be changed after the repository is created."
+msgstr ""
+
+msgid "ArtifactRegistry|The registry handle will appear in the following areas:"
 msgstr ""
 
 msgid "ArtifactRegistry|The requested resources could not be found."
@@ -12204,6 +12273,9 @@ msgstr ""
 msgid "ArtifactRegistry|This action permanently deletes the repository and all of its artifacts. If this repository is connected to a virtual repository, the virtual repository loses access to this repository and its artifacts."
 msgstr ""
 
+msgid "ArtifactRegistry|This cannot be changed once claimed, even if Artifact Registry is disabled later. Choose something that represents your organization long-term."
+msgstr ""
+
 msgid "ArtifactRegistry|This organization has no repositories yet."
 msgstr ""
 
@@ -12214,6 +12286,9 @@ msgid "ArtifactRegistry|Type"
 msgstr ""
 
 msgid "ArtifactRegistry|Type the repository name below to confirm: %{phrase}"
+msgstr ""
+
+msgid "ArtifactRegistry|URL:"
 msgstr ""
 
 msgid "ArtifactRegistry|Unknown Artifact Registry role: %{role}."
@@ -12234,6 +12309,9 @@ msgstr ""
 msgid "ArtifactRegistry|Visibility level"
 msgstr ""
 
+msgid "ArtifactRegistry|Where the registry handle appears"
+msgstr ""
+
 msgid "ArtifactRegistry|You are not authorized to grant this role on this resource."
 msgstr ""
 
@@ -12250,6 +12328,9 @@ msgid "ArtifactRegistry|You must be signed in to read role assignments."
 msgstr ""
 
 msgid "ArtifactRegistry|npm"
+msgstr ""
+
+msgid "ArtifactRegistry|npm (.npmrc):"
 msgstr ""
 
 msgid "ArtifactRegistry|pnpm"

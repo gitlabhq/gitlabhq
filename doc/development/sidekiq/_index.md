@@ -307,7 +307,7 @@ to regenerate `app/workers/all_queues.yml` or `ee/app/workers/all_queues.yml` so
 it can be picked up by
 [`sidekiq-cluster`](../../administration/sidekiq/extra_sidekiq_processes.md)
 in installations that don't use routing rules. For more information about potential changes,
-see [epic 596](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/596).
+see [epic 596](https://gitlab.com/groups/gitlab-com/gl-infra/-/work_items/596).
 
 Additionally, run
 `bin/rake gitlab:sidekiq:sidekiq_queues_yml:generate` to regenerate

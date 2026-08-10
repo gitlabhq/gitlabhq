@@ -64,10 +64,9 @@ RSpec.describe 'Secure Files', :js, feature_category: :secrets_management do
 
     within '#js-secure-files' do
       expect(page).to have_content('There are no secure files yet.')
+      expect(page).to have_button('Upload File')
 
-      page.attach_file('spec/fixtures/ci_secure_files/upload-keystore.jks') do
-        click_button 'Upload File'
-      end
+      attach_file('file-upload', 'spec/fixtures/ci_secure_files/upload-keystore.jks', make_visible: true)
 
       expect(page).to have_content('upload-keystore.jks')
     end
@@ -79,10 +78,9 @@ RSpec.describe 'Secure Files', :js, feature_category: :secrets_management do
 
     within '#js-secure-files' do
       expect(page).to have_content('upload-keystore.jks')
+      expect(page).to have_button('Upload File')
 
-      page.attach_file('spec/fixtures/ci_secure_files/upload-keystore.jks') do
-        click_button 'Upload File'
-      end
+      attach_file('file-upload', 'spec/fixtures/ci_secure_files/upload-keystore.jks', make_visible: true)
 
       expect(page).to have_content('A file with this name already exists.')
     end

@@ -554,7 +554,7 @@ In the next minor release (M.1):
 ## Ongoing migrations and refactorings
 
 Developers should be aware that the Integrations team is in the process of
-[unifying the way integration properties are defined](https://gitlab.com/groups/gitlab-org/-/epics/3955).
+[unifying the way integration properties are defined](https://gitlab.com/groups/gitlab-org/-/work_items/3955).
 
 ## Integration examples
 

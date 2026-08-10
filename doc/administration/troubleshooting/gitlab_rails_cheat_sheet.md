@@ -15,7 +15,7 @@ title: GitLab Rails Console Cheat Sheet
 This was the GitLab Support Team's collection of information regarding the GitLab Rails
 console, for use while troubleshooting. It is listed here for posterity,
 as most content has been moved to feature-specific troubleshooting pages and sections,
-see epic [&8147](https://gitlab.com/groups/gitlab-org/-/epics/8147#tree).
+see epic [&8147](https://gitlab.com/groups/gitlab-org/-/work_items/8147).
 You may want to update your bookmarks accordingly.
 
 > [!warning]

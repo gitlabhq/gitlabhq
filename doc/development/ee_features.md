@@ -343,7 +343,7 @@ version of the product:
    1. Scroll to **Permissions and group features**. For **Plan**, select `Ultimate`.
    1. Select **Save changes**.
 
-Here's a [📺 video](https://youtu.be/DHkaqXw_Tmc) demonstrating how to do the steps above.
+Here's a [📺 video](https://www.youtube.com/watch?v=DHkaqXw_Tmc) demonstrating how to do the steps above.
 
 <figure class="video-container">
   <iframe src="https://www.youtube-nocookie.com/embed/DHkaqXw_Tmc" frameborder="0" allowfullscreen> </iframe>

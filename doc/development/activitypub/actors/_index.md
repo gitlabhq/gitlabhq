@@ -55,7 +55,7 @@ The actors we've implemented for the social features:
 
 - [Releases](releases.md)
 
-For more information on planned actors, see [epic 11247](https://gitlab.com/groups/gitlab-org/-/epics/11247).
+For more information on planned actors, see [epic 11247](https://gitlab.com/groups/gitlab-org/-/work_items/11247).
 
 ## Profile page
 

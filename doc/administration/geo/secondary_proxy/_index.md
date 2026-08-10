@@ -233,7 +233,7 @@ In this context, accelerated reads refer to read requests served from the second
 | Dependency Proxy                                    | {{< icon name="dotted-circle" >}} No | Read requests to a Geo secondary site's Dependency Proxy are always proxied to the primary site. |
 | All other data                                      | {{< icon name="dotted-circle" >}} No | Read requests for components not listed in this table are always automatically forwarded to the primary site. |
 
-To request acceleration of a feature, check if an issue already exists in [epic 8239](https://gitlab.com/groups/gitlab-org/-/epics/8239) and upvote or comment on it to indicate your interest or ask your GitLab representative to do so on your behalf. If an applicable issue doesn't exist, open one and mention it in the epic.
+To request acceleration of a feature, check if an issue already exists in [epic 8239](https://gitlab.com/groups/gitlab-org/-/work_items/8239) and upvote or comment on it to indicate your interest or ask your GitLab representative to do so on your behalf. If an applicable issue doesn't exist, open one and mention it in the epic.
 
 ## Disable secondary site HTTP proxying
 

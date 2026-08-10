@@ -503,7 +503,7 @@ Sometimes a test needs to wait for something to happen in the application before
 You should try to avoid:
 
 - [`setTimeout`](https://developer.mozilla.org/en-US/docs/Web/API/setTimeout) because it makes the reason for waiting unclear. Additionally, it is faked in our tests so its usage is tricky.
-- [`setImmediate`](https://developer.mozilla.org/en-US/docs/Web/API/Window/setImmediate) because it is no longer supported in Jest 27 and later. See [this epic](https://gitlab.com/groups/gitlab-org/-/epics/7002) for details.
+- [`setImmediate`](https://developer.mozilla.org/en-US/docs/Web/API/Window/setImmediate) because it is no longer supported in Jest 27 and later. See [this epic](https://gitlab.com/groups/gitlab-org/-/work_items/7002) for details.
 
 #### Promises and Ajax calls
 

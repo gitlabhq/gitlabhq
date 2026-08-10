@@ -716,7 +716,7 @@ Use **compute minutes** instead of these (or similar) terms:
 - **CI pipeline minutes**
 - **pipeline minutes**
 
-For more information, see [epic 2150](https://gitlab.com/groups/gitlab-com/-/epics/2150).
+For more information, see [epic 2150](https://gitlab.com/groups/gitlab-com/-/work_items/2150).
 
 ## configuration
 

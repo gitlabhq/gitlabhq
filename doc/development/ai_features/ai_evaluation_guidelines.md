@@ -121,5 +121,5 @@ Similar to the [AI feature development process](ai_feature_development_playbook.
   walkthroughs.
 - [GitLab Duo Chat Documentation](duo_chat.md):
   Comprehensive guide on setting up and using LangSmith for chat evaluations.
-- [Prompt and AI Feature Evaluation Setup and Workflow](https://gitlab.com/groups/gitlab-org/-/epics/13952):
+- [Prompt and AI Feature Evaluation Setup and Workflow](https://gitlab.com/groups/gitlab-org/-/work_items/13952):
   Details on the overall workflow and setup for evaluations.

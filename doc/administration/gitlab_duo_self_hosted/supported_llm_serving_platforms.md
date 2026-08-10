@@ -433,7 +433,7 @@ For more information, see [Amazon Bedrock Guardrails](https://docs.aws.amazon.co
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/22787) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 19.3.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/22787) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 19.3.
 
 {{< /history >}}
 

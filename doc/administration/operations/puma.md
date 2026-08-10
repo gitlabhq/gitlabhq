@@ -194,7 +194,7 @@ When running Puma in single mode, some features are not supported:
 - [Phased restart](https://gitlab.com/gitlab-org/gitlab/-/issues/300665)
 - [Memory killers](#tuning-memory-use)
 
-For more information, see [epic 5303](https://gitlab.com/groups/gitlab-org/-/epics/5303).
+For more information, see [epic 5303](https://gitlab.com/groups/gitlab-org/-/work_items/5303).
 
 ## Configuring Puma to listen over SSL
 

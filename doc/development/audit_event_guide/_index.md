@@ -254,7 +254,7 @@ All events where the entity is a `Group` or `Project` are recorded in the audit 
 You can add streaming-only events that are not stored in the GitLab database. Streaming-only events are primarily intended to be used for actions that generate
 a large amount of data. See [this merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76719/diffs#d56e47632f0384722d411ed3ab5b15e947bd2265_26_36)
 for an example.
-This feature is under heavy development. Follow the [parent epic](https://gitlab.com/groups/gitlab-org/-/epics/5925) for updates on feature
+This feature is under heavy development. Follow the [parent epic](https://gitlab.com/groups/gitlab-org/-/work_items/5925) for updates on feature
 development.
 
 ### I18N and the audit event `:message` attribute

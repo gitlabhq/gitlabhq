@@ -82,7 +82,7 @@ By default, these actions are performed asynchronously via a Sidekiq
 job to prevent long-running requests in Puma. It should be used for
 non-latency sensitive actions due to the added latency by Sidekiq.
 
-At the time of writing, the Abstraction Layer still directly calls the AI providers. [Epic 11484](https://gitlab.com/groups/gitlab-org/-/epics/11484) proposes to change this.
+At the time of writing, the Abstraction Layer still directly calls the AI providers. [Epic 11484](https://gitlab.com/groups/gitlab-org/-/work_items/11484) proposes to change this.
 
 When a certain action is latency sensitive, we can decide to call the
 AI-gateway directly. This avoids the latency added by Sidekiq.
@@ -137,7 +137,7 @@ The following table documents functionality that Code Suggestions offers today, 
 
 ### Self-managed support
 
-Code Suggestions for GitLab Self-Managed was introduced as part of the [Cloud Connector MVC](https://gitlab.com/groups/gitlab-org/-/epics/10516).
+Code Suggestions for GitLab Self-Managed was introduced as part of the [Cloud Connector MVC](https://gitlab.com/groups/gitlab-org/-/work_items/10516).
 
 For more information on the technical solution for this project see the [Cloud Connector architecture documentation](cloud_connector/architecture.md).
 
@@ -153,5 +153,5 @@ See our discussions [in issue 418955](https://gitlab.com/gitlab-org/gitlab/-/iss
 
 ## Future changes to the architecture
 
-- We plan on deploying [AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist) in different regions to improve latency (see the ed epic [Multi-region support for AI Gateway](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/1206)).
+- We plan on deploying [AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist) in different regions to improve latency (see the ed epic [Multi-region support for AI Gateway](https://gitlab.com/groups/gitlab-com/gl-infra/-/work_items/1206)).
 - We would like to centralize telemetry. However, centralizing AI (or, Cloud Connector) telemetry is a difficult and unsolved problem as of now.

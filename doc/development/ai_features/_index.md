@@ -126,7 +126,7 @@ Apply the following feature flags to any AI feature work:
 - A general flag (`ai_global_switch`) that applies to all other AI features. It's enabled by default.
 - A flag specific to that feature. The feature flag name [must be different](../feature_flags/_index.md#feature-flags-for-licensed-features) than the licensed feature name.
 
-See the [feature flag tracker epic](https://gitlab.com/groups/gitlab-org/-/epics/10524) for the list of all feature flags and how to use them.
+See the [feature flag tracker epic](https://gitlab.com/groups/gitlab-org/-/work_items/10524) for the list of all feature flags and how to use them.
 
 ### Push feature flags to AI Gateway
 

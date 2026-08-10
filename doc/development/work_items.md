@@ -93,7 +93,7 @@ column. There are `issue`, `incident`, and `test_case` issue types. To extend th
 so that in future we can allow users to define custom WITs, we will
 move the `issue_type` to a separate table: `work_item_types`. The migration process of `issue_type`
 to `work_item_types` will involve creating the set of WITs for all root-level groups as described in
-[this epic](https://gitlab.com/groups/gitlab-org/-/epics/6536).
+[this epic](https://gitlab.com/groups/gitlab-org/-/work_items/6536).
 
 > [!note]
 > At first, defining a WIT will only be possible at the root-level group, which would then be inherited by subgroups.

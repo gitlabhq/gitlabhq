@@ -113,11 +113,11 @@ export default {
   },
   emits: [
     'cancel-form',
-    'handleDeleteNote',
-    'handleEdit',
-    'handleUpdateNote',
+    'handle-delete-note',
+    'handle-edit',
+    'handle-update-note',
     'start-replying',
-    'updateSuccess',
+    'update-success',
   ],
   data() {
     return {
@@ -140,7 +140,7 @@ export default {
       set(value) {
         this.isEditingLocal = value;
         if (value) {
-          this.$emit('handleEdit');
+          this.$emit('handle-edit');
         } else {
           this.$emit('cancel-form');
         }
@@ -308,7 +308,7 @@ export default {
 
       if (confirmed) {
         this.isDeleting = true;
-        this.$emit('handleDeleteNote', this.note);
+        this.$emit('handle-delete-note', this.note);
 
         if (this.note.isDraft) return;
 
@@ -329,10 +329,10 @@ export default {
       this.isRequesting = false;
       this.oldContent = null;
       renderGFM(this.$refs.noteBody.$el);
-      this.$emit('updateSuccess');
+      this.$emit('update-success');
     },
     async formUpdateHandler({ noteText, callback, resolveDiscussion }) {
-      this.$emit('handleUpdateNote', {
+      this.$emit('handle-update-note', {
         note: this.note,
         noteText,
         resolveDiscussion,

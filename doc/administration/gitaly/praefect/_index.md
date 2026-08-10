@@ -67,7 +67,7 @@ The availability objectives for Gitaly Cluster (Praefect) assuming a single node
   second. Failover requires ten consecutive failed health checks on each
   Praefect node.
 
-Improvements to RPO and RTO are proposed in epic [8903](https://gitlab.com/groups/gitlab-org/-/epics/8903).
+Improvements to RPO and RTO are proposed in epic [8903](https://gitlab.com/groups/gitlab-org/-/work_items/8903).
 
 > [!warning]
 > If complete cluster failure occurs, disaster recovery plans should be executed. These can affect the
@@ -161,7 +161,7 @@ The number of repository replicas can be configured using a
 It can
 be uneconomical to have the same replication factor for all repositories.
 To provide greater flexibility for extremely large GitLab instances,
-variable replication factor is tracked in [this issue](https://gitlab.com/groups/gitlab-org/-/epics/3372).
+variable replication factor is tracked in [this issue](https://gitlab.com/groups/gitlab-org/-/work_items/3372).
 
 As with standard Gitaly storages, virtual storages can be sharded.
 
@@ -409,8 +409,8 @@ Gitaly Cluster (Praefect) provides the following features:
   primary Gitaly node to secondary Gitaly nodes.
 - Reporting of possible [data loss](recovery.md#check-for-data-loss) if replication queue isn't empty.
 
-Follow the [epic 1489](https://gitlab.com/groups/gitlab-org/-/epics/1489) for proposed improvements
-including [horizontally distributing reads](https://gitlab.com/groups/gitlab-org/-/epics/2013).
+Follow the [epic 1489](https://gitlab.com/groups/gitlab-org/-/work_items/1489) for proposed improvements
+including [horizontally distributing reads](https://gitlab.com/groups/gitlab-org/-/work_items/2013).
 
 ### Distributed reads
 
@@ -442,7 +442,7 @@ replica is outdated or unhealthy at the time of the transaction, the write is as
 
 Strong consistency is the primary replication method. A subset of operations still use replication jobs
 (eventual consistency) instead of strong consistency. Refer to the
-[strong consistency epic](https://gitlab.com/groups/gitlab-org/-/epics/1189) for more information.
+[strong consistency epic](https://gitlab.com/groups/gitlab-org/-/work_items/1189) for more information.
 
 If strong consistency is unavailable, Gitaly Cluster (Praefect) guarantees eventual consistency. In this case,
 Gitaly Cluster (Praefect) replicates all writes to secondary Gitaly nodes after the write to the primary Gitaly node has occurred.

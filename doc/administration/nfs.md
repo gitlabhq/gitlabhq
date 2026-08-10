@@ -38,7 +38,7 @@ NFS increases latency, so fast lookup is recommended if `/var/opt/gitlab`
 is moved to NFS.
 
 We are investigating the use of
-[fast lookup as the default](https://gitlab.com/groups/gitlab-org/-/epics/3104).
+[fast lookup as the default](https://gitlab.com/groups/gitlab-org/-/work_items/3104).
 
 ## NFS server
 
@@ -336,7 +336,7 @@ there because this also affects performance. We recommend that the log files be
 stored on a local volume.
 
 For more details on the experience of using a cloud-based file systems with GitLab,
-see this [Commit Brooklyn 2019 video](https://youtu.be/K6OS8WodRBQ?t=313).
+see this [Commit Brooklyn 2019 video](https://www.youtube.com/watch?v=K6OS8WodRBQ&t=313).
 
 ### Avoid using CephFS and GlusterFS
 

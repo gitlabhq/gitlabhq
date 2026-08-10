@@ -268,7 +268,7 @@ out as CSV.
 
 ## An example of investigating performance issues
 
-The Pipeline Authoring team has worked on solving [the pipeline creation performance issues](https://gitlab.com/groups/gitlab-org/-/epics/7290)
+The Pipeline Authoring team has worked on solving [the pipeline creation performance issues](https://gitlab.com/groups/gitlab-org/-/work_items/7290)
 and used both the existing profiling methods such as [stackprof flamegraphs](#speedscope-flamegraphs) and [`memory_profiler`](performance.md#using-memory-profiler)
 and a new method [`ruby-prof`](https://ruby-prof.github.io/).
 
