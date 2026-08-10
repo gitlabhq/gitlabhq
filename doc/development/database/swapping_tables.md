@@ -9,6 +9,13 @@ Sometimes you need to replace one table with another. For example, when
 migrating data in a very large table it's often better to create a copy of the
 table and insert & migrate the data into this new table in the background.
 
+> [!note]
+> First, verify whether the table is replicated to ClickHouse with Siphon. The table is replicated
+> when a configuration file for it exists in
+> [`db/siphon/tables`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/db/siphon/tables).
+> Logical replication does not capture the rename, so in that case also follow
+> [Renaming or swapping tables](clickhouse/clickhouse_within_gitlab.md#renaming-or-swapping-tables).
+
 For example, to swap a table called `events` with another table called `events_for_migration`, you would need to:
 
 1. Rename `events` to `events_temporary`

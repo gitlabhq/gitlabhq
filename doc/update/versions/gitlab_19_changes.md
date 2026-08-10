@@ -334,7 +334,7 @@ RuntimeError: Removed configurations found in gitlab.rb. Aborting reconfigure.
 >   removed from `gitlab.rb`. The block is a false positive caused by stale Mattermost secrets
 >   that GitLab generated unconditionally in the node cache.
 >   To unblock the upgrade, use one of the following options:
->   - Upgrade to a later version of 18.11.x (when available) before upgrading to 19.0.
+>   - Upgrade to 18.11.9 or later before upgrading to 19.0.
 >   - Apply the [manual workaround](https://gitlab.com/gitlab-org/omnibus-gitlab/-/work_items/10001#workaround).
 
 ### Linux package support for SUSE distributions discontinued

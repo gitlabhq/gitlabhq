@@ -1,5 +1,23 @@
 # frozen_string_literal: true
 
+module SiphonTableDefinitions
+  def self.table_names_by_reference
+    @table_names_by_reference ||= Dir[Rails.root.join('db/siphon/tables/*.yml')]
+      .each_with_object({}) do |file, references|
+        content = YAML.safe_load_file(file)
+        names = [content['table'], content['renamed_table_name']].compact
+
+        names.each { |name| references[name] = names }
+      end
+  end
+
+  def self.pg_table_for(reference)
+    Array(table_names_by_reference[reference]).find do |name|
+      ApplicationRecord.connection.table_exists?(name)
+    end
+  end
+end
+
 RSpec::Matchers.define :be_a_siphon_of do |pg_table|
   match do |ch_table|
     matching_field_names_and_type?(pg_table, ch_table)
@@ -82,7 +100,7 @@ RSpec::Matchers.define :ignore_sensitive_and_encrypted_columns do |table_config,
   end
 end
 
-RSpec::Matchers.define :have_correct_reconcile_config do
+RSpec::Matchers.define :have_correct_reconcile_config do |table_config|
   match do |content|
     @errors = []
 
@@ -91,23 +109,16 @@ RSpec::Matchers.define :have_correct_reconcile_config do
 
     reconcile = target['reconcile']
 
-    doc_path = Rails.root.join('db', 'docs', "#{content['table']}.yml")
-    unless File.exist?(doc_path)
-      @errors << "db/docs/#{content['table']}.yml not found for reconcile validation"
-      next false
-    end
-
-    doc = YAML.safe_load_file(doc_path)
-    sharding_keys = doc['sharding_key'] || doc['desired_sharding_key']
-    expected_columns = sharding_keys.keys&.sort || []
+    sharding_keys = table_config['sharding_key'] || table_config['desired_sharding_key']
+    expected_columns = sharding_keys&.keys&.sort || []
 
     if expected_columns.empty?
-      @errors << "no sharding_key found in db/docs/#{content['table']}.yml"
+      @errors << "no sharding_key found in db/docs/#{table_config['table_name']}.yml"
     else
       actual_columns = Array(reconcile['expression_key_columns'])
       if actual_columns != expected_columns
         @errors << "expression_key_columns [#{actual_columns.join(', ')}] does not match " \
-          "sharding_key columns [#{expected_columns.join(', ')}] from db/docs/#{content['table']}.yml"
+          "sharding_key columns [#{expected_columns.join(', ')}] from db/docs/#{table_config['table_name']}.yml"
       end
     end
 
@@ -119,7 +130,7 @@ RSpec::Matchers.define :have_correct_reconcile_config do
   end
 end
 
-RSpec::Matchers.define :have_correct_replication_target do |clickhouse_table_names|
+RSpec::Matchers.define :have_correct_replication_target do |clickhouse_table_names, pg_table|
   # `ch_primary_keys` and `ch_column_names` are provided by the including example group
   # (delegated via the matcher's method_missing), backed by the ClickHouse schema cache.
   def unique_index_prefix?(table, target_keys)
@@ -159,7 +170,7 @@ RSpec::Matchers.define :have_correct_replication_target do |clickhouse_table_nam
     # If dedup_by_table config is present, we must inspect that table for matching primary keys
     clickhouse_table = target['dedup_by_table'] || target['target']
 
-    postgresql_primary_keys = ApplicationRecord.connection.primary_keys(content['table'])
+    postgresql_primary_keys = ApplicationRecord.connection.primary_keys(pg_table)
     clickhouse_primary_keys = ch_primary_keys(clickhouse_table)
     if target['dedup_by']
       dedup_cols = target['dedup_by'].join(', ')
@@ -198,15 +209,17 @@ RSpec::Matchers.define :have_correct_replication_target do |clickhouse_table_nam
 
     Array(target['refresh_on_change']).each do |roc|
       target_identifier = roc['target_stream_identifier']
-      target_path = Rails.root.join('db', 'siphon', 'tables', "#{target_identifier}.yml")
-      if roc['target_stream_identifier'].empty? || !File.exist?(target_path)
-        @errors << "target table/stream (#{target_path}) is not configured"
+      target_pg_table = SiphonTableDefinitions.pg_table_for(target_identifier)
+      unless target_pg_table
+        @errors << "target table/stream (#{target_identifier}) is not configured in db/siphon/tables, " \
+          "or none of its names exist in PostgreSQL"
+        next
       end
 
       target_keys = Array(roc['target_keys'])
 
-      target_postgresql_pks = ApplicationRecord.connection.primary_keys(roc['target_stream_identifier'])
-      unless target_postgresql_pks == target_keys || unique_index_prefix?(roc['target_stream_identifier'], target_keys)
+      target_postgresql_pks = ApplicationRecord.connection.primary_keys(target_pg_table)
+      unless target_postgresql_pks == target_keys || unique_index_prefix?(target_pg_table, target_keys)
         @errors << "refresh_on_change.target_keys must match with the PostgreSQL primary keys of " \
           "#{target_identifier}, or be a prefix of a unique index on #{target_identifier}"
       end
@@ -224,12 +237,12 @@ RSpec::Matchers.define :have_correct_replication_target do |clickhouse_table_nam
         end
       end
 
-      pg_column_names = ApplicationRecord.connection.columns(content['table']).map(&:name)
+      pg_column_names = ApplicationRecord.connection.columns(pg_table).map(&:name)
       Array(roc['filters']).each do |filter|
         column = filter['column']
         unless pg_column_names.include?(column)
           @errors << "refresh_on_change.filters column '#{column}' does not exist in the " \
-            "PostgreSQL table '#{content['table']}'"
+            "PostgreSQL table '#{pg_table}'"
         end
 
         model = filter['value'].to_s.safe_constantize

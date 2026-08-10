@@ -1,5 +1,7 @@
 ---
 table: merge_request_diff_files_99208b8fac
+renamed_table_name: merge_request_diff_files
+original_table_name: merge_request_diff_files_99208b8fac
 database: main
 replication_targets:
   - name: clickhouse_main
