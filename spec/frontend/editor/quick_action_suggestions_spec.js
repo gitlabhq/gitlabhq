@@ -8,22 +8,17 @@ import {
 } from '~/editor/quick_action_suggestions';
 
 describe('quick_action_suggestions', () => {
-  const originalPerformance = global.performance;
-
   beforeEach(() => {
     jest.spyOn(AccessorUtilities, 'canUseLocalStorage').mockReturnValue(true);
     jest.spyOn(LocalStorage, 'getStorageValue').mockReturnValue({ exists: false });
     jest.spyOn(LocalStorage, 'saveStorageValue').mockImplementation(() => {});
 
-    // Provide a deterministic performance.now for guard tests
-    global.performance = {
-      now: () => 100,
-    };
+    // Pin performance.now so the frame-bucket guard is deterministic
+    jest.spyOn(performance, 'now').mockReturnValue(100);
   });
 
   afterEach(() => {
     jest.restoreAllMocks();
-    global.performance = originalPerformance;
   });
 
   describe('sortCommandsAlphaSafe', () => {
