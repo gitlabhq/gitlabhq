@@ -125,6 +125,10 @@ export class CopyAsGFM {
   }
 
   static transformCodeSelection(documentFragment, target) {
+    // Strip ignored presentational overlays (coverage and code quality indicators,
+    // or the blob viewer's inert syntax-highlight overlay) before extracting lines.
+    [...documentFragment.querySelectorAll('[data-gfm-ignore]')].forEach((el) => el.remove());
+
     let lineSelector = '.line';
 
     if (target) {

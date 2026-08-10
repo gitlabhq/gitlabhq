@@ -245,6 +245,11 @@ describe('Chunk component', () => {
         expect(findHighlightOverlay().attributes('inert')).toBeDefined();
       });
 
+      it('marks the highlighted overlay with data-gfm-ignore so CopyAsGFM excludes it from copied selections', () => {
+        createComponent({ ...CHUNK_2, isHighlighted: true });
+        expect(findHighlightOverlay().attributes('data-gfm-ignore')).toBeDefined();
+      });
+
       it('positions the highlighted overlay absolutely so it overlays the raw layer', () => {
         createComponent({ ...CHUNK_2, isHighlighted: true });
         expect(findHighlightOverlay().classes()).toContain('gl-absolute');

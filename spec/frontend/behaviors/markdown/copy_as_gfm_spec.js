@@ -178,6 +178,68 @@ describe('CopyAsGFM', () => {
     });
   });
 
+  describe('transformCodeSelection', () => {
+    it('serializes each selected line followed by a newline', () => {
+      const fragment = createFragment(
+        `<div class="line">const a = 1;</div><div class="line">const b = 2;</div>`,
+      );
+
+      const result = CopyAsGFM.transformCodeSelection(fragment, null);
+
+      expect(result.textContent).toBe('const a = 1;\nconst b = 2;\n');
+    });
+
+    it('returns the raw fragment content when it contains no line elements', () => {
+      const fragment = createFragment('partially selected text');
+
+      const result = CopyAsGFM.transformCodeSelection(fragment, null);
+
+      expect(result.textContent).toBe('partially selected text');
+    });
+
+    it('excludes line elements inside data-gfm-ignore overlays', () => {
+      const fragment = createFragment(
+        `<pre>
+          <code class="line">line 65
+line 70</code>
+          <code data-gfm-ignore inert>
+            <div class="line">line 1</div>
+            <div class="line">line 70</div>
+          </code>
+        </pre>
+        <pre>
+          <code class="line">line 71
+line 75</code>
+        </pre>`,
+      );
+
+      const result = CopyAsGFM.transformCodeSelection(fragment, null);
+
+      expect(result.textContent).toBe('line 65\nline 70\nline 71\nline 75\n');
+    });
+
+    it('strips coverage and code quality overlays from a copied Rapid Diffs line', () => {
+      // In parallel view the cell carries `data-position`, so the line selector is
+      // scoped to that side. A single-line selection clones the cell's children
+      // without the `[data-position]` wrapper, so the selector misses and the raw
+      // fragment is used verbatim. The `data-gfm-ignore` overlays must still be
+      // stripped so a block-level overlay does not serialize to extra blank lines.
+      const overlays =
+        '<span class="has-tooltip" data-line-coverage="1" data-gfm-ignore="true"></span>' +
+        '<div data-line-codequality="1" data-gfm-ignore="true"></div>' +
+        '<pre class="rd-line-text"><span class="line">code line</span></pre>';
+      setHTMLFixture(
+        `<diff-file><table><tbody><tr><td class="rd-line-content" data-position="new" data-gfm-source="true">${overlays}</td></tr></tbody></table></diff-file>`,
+      );
+      const target = document.querySelector('.rd-line-content');
+
+      const el = CopyAsGFM.transformCodeSelection(createFragment(overlays), target);
+
+      expect(el.querySelector('[data-gfm-ignore]')).toBe(null);
+      expect(el.textContent).toContain('code line');
+    });
+  });
+
   describe('selectionToGfm', () => {
     it('returns empty string for empty selection', async () => {
       jest.spyOn(commonUtils, 'getSelectedFragment').mockReturnValueOnce(null);
