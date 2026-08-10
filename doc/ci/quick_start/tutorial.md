@@ -20,7 +20,7 @@ a documentation site.
 When you finish this tutorial, you will have a new project on GitLab.com and a working documentation site
 using [Docusaurus](https://docusaurus.io/).
 
-To complete this tutorial, you will:
+To complete this tutorial:
 
 1. Create a project to hold the Docusaurus files
 1. Create the initial pipeline configuration file
@@ -179,7 +179,7 @@ This step introduces:
   while jobs in later stages wait for jobs in earlier stages to complete. If a job fails,
   the whole stage is considered failed and jobs in later stages do not start running.
 - [GitLab Pages](../../user/project/pages/_index.md): To host your static site, you
-  will use GitLab Pages.
+  use GitLab Pages.
 
 In this step:
 

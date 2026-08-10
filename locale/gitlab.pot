@@ -8087,6 +8087,9 @@ msgstr ""
 msgid "AgentArtifacts|Tool arguments"
 msgstr ""
 
+msgid "AgentArtifacts|Triggered by"
+msgstr ""
+
 msgid "AgentArtifacts|View full session details"
 msgstr ""
 
@@ -29336,12 +29339,6 @@ msgstr ""
 msgid "DuoAgentPlatform|%{completed} of %{total}"
 msgstr ""
 
-msgid "DuoAgentPlatform|%{component} did not produce an answer"
-msgstr ""
-
-msgid "DuoAgentPlatform|%{component} returned —"
-msgstr ""
-
 msgid "DuoAgentPlatform|%{count} Duo agent session. Activate to view."
 msgid_plural "DuoAgentPlatform|%{count} Duo agent sessions. Activate to view."
 msgstr[0] ""
@@ -29361,9 +29358,6 @@ msgid "DuoAgentPlatform|%{linkStart}What are flows%{linkEnd}?"
 msgstr ""
 
 msgid "DuoAgentPlatform|%{linkStart}What are flows?%{linkEnd}"
-msgstr ""
-
-msgid "DuoAgentPlatform|%{name} session %{id}"
 msgstr ""
 
 msgid "DuoAgentPlatform|%{text} by %{name}"
@@ -29433,9 +29427,6 @@ msgid "DuoAgentPlatform|Creating session"
 msgstr ""
 
 msgid "DuoAgentPlatform|Default model"
-msgstr ""
-
-msgid "DuoAgentPlatform|Delegated to %{target} —"
 msgstr ""
 
 msgid "DuoAgentPlatform|Delegated to subagent"
@@ -29534,16 +29525,10 @@ msgstr ""
 msgid "DuoAgentPlatform|Remote GitLab Duo Flows"
 msgstr ""
 
-msgid "DuoAgentPlatform|Request"
-msgstr ""
-
 msgid "DuoAgentPlatform|Required"
 msgstr ""
 
 msgid "DuoAgentPlatform|Resolve with GitLab Duo"
-msgstr ""
-
-msgid "DuoAgentPlatform|Response"
 msgstr ""
 
 msgid "DuoAgentPlatform|Retry"
@@ -29576,13 +29561,7 @@ msgstr ""
 msgid "DuoAgentPlatform|Session information"
 msgstr ""
 
-msgid "DuoAgentPlatform|Session triggered"
-msgstr ""
-
 msgid "DuoAgentPlatform|Sessions"
-msgstr ""
-
-msgid "DuoAgentPlatform|Show tool details"
 msgstr ""
 
 msgid "DuoAgentPlatform|Showing most recent %{count}"
@@ -29592,9 +29571,6 @@ msgid "DuoAgentPlatform|Something went wrong saving Duo Agent Platform settings"
 msgstr ""
 
 msgid "DuoAgentPlatform|Starting job"
-msgstr ""
-
-msgid "DuoAgentPlatform|Subagent"
 msgstr ""
 
 msgid "DuoAgentPlatform|Subagent did not produce an answer"
@@ -30012,9 +29988,6 @@ msgstr ""
 msgid "DuoAgentsPlatform|Complete multi-step tasks with flows"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Concise view"
-msgstr ""
-
 msgid "DuoAgentsPlatform|Config Path"
 msgstr ""
 
@@ -30148,9 +30121,6 @@ msgid "DuoAgentsPlatform|Flows can't run yet"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Frequency"
-msgstr ""
-
-msgid "DuoAgentsPlatform|Full view"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Generate"

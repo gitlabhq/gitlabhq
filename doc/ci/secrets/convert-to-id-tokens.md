@@ -283,6 +283,6 @@ job:
         file: false
 ```
 
-After you commit the updated CI/CD configuration, your jobs will be fetching secrets with ID Tokens, congratulations!
+After you commit the updated CI/CD configuration, your jobs fetch secrets with ID Tokens, congratulations!
 
 If you have migrated all projects to fetch secrets with ID Tokens and used method B for the migration, it is now possible to move the `iss` claim validation back to the auth method configuration if you desire.

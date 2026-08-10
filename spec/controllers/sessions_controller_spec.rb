@@ -369,10 +369,10 @@ RSpec.describe SessionsController, feature_category: :system_access do
         end
 
         it 'creates audit event records' do
-          expect { post(:create, params: { user: user_params }) }.to change { AuditEvent.count }.by(1)
+          expect { post(:create, params: { user: user_params }) }.to change { AuditEventReader.count }.by(1)
           .and change { AuditEvents::UserAuditEvent.count }.by(1)
 
-          audit_event = AuditEvent.last
+          audit_event = AuditEventReader.last
           expect(audit_event.details[:with]).to eq('standard')
           expect(audit_event.details[:event_name]).to eq('authenticated_with_password')
 
@@ -803,10 +803,10 @@ RSpec.describe SessionsController, feature_category: :system_access do
       end
 
       it 'creates audit event records' do
-        expect { authenticate_2fa(login: user.username, otp_attempt: user.current_otp) }.to change { AuditEvent.count }.by(1)
+        expect { authenticate_2fa(login: user.username, otp_attempt: user.current_otp) }.to change { AuditEventReader.count }.by(1)
         .and change { AuditEvents::UserAuditEvent.count }.by(1)
 
-        audit_event = AuditEvent.last
+        audit_event = AuditEventReader.last
         expect(audit_event.details[:with]).to eq('two-factor')
         expect(audit_event.details[:event_name]).to eq('authenticated_with_two_factor')
 
@@ -912,10 +912,10 @@ RSpec.describe SessionsController, feature_category: :system_access do
           )
         end
 
-        expect { authenticate_2fa(login: user.username, device_response: "{}") }.to change { AuditEvent.count }.by(1)
+        expect { authenticate_2fa(login: user.username, device_response: "{}") }.to change { AuditEventReader.count }.by(1)
         .and change { AuditEvents::UserAuditEvent.count }.by(1)
 
-        audit_event = AuditEvent.last
+        audit_event = AuditEventReader.last
         expect(audit_event.details[:with]).to eq('two-factor-via-webauthn-device')
         expect(audit_event.details[:event_name]).to eq('authenticated_with_webauthn')
 

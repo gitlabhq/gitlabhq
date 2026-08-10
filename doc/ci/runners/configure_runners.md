@@ -784,7 +784,7 @@ git submodule update --init --depth 20 --recursive --remote --jobs 4
 
 The behavior of `--remote` depends on your Git version.
 If the branch specified in your superproject's `.gitmodules` file is different from the
-default branch of the submodule repository, some Git versions will fail with this error:
+default branch of the submodule repository, some Git versions fail with this error:
 
 `fatal: Unable to find refs/remotes/origin/<branch> revision in submodule path '<submodule-path>'`
 

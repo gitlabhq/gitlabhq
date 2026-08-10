@@ -743,10 +743,10 @@ This gives you access to environment-scoped variables, and can be used to protec
 it's effective to avoid the [prevent outdated deployment jobs](deployment_safety.md#prevent-outdated-deployment-jobs) feature.
 
 If an environment is configured to stop after a certain time period, jobs with the `access` or `prepare`
-action will reset the scheduled stop time. The [`environment:auto_stop_in`](../yaml/_index.md#environmentauto_stop_in)
+action resets the scheduled stop time. The [`environment:auto_stop_in`](../yaml/_index.md#environmentauto_stop_in)
 from the most recent successful deployment job to the environment is used when resetting the scheduled time.
 For example, if the most recent deployment used `auto_stop_in: 1 week` and is later accessed by a job with
-`action: access`, the environment will be rescheduled to stop one week from the completion of the accessing job.
+`action: access`, the environment is rescheduled to stop one week from the completion of the accessing job.
 
 To access an environment without changing the scheduled stop time, use the `verify` action.
 

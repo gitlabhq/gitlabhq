@@ -16,6 +16,7 @@ description: Vulnerability details, status, resolution, and linking issues.
 {{< history >}}
 
 - Redesigned vulnerability page [introduced](https://gitlab.com/groups/gitlab-org/-/epics/21907) in GitLab 19.0 as a [beta](../../../policy/development_stages_support.md#beta) feature [with a feature flag](../../../administration/feature_flags/_index.md) named `vulnerability_details_enrichment`. Disabled by default.
+- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/work_items/606953) in GitLab 19.3.
 
 {{< /history >}}
 

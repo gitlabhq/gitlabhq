@@ -9,6 +9,14 @@ module AuditEvents
     validates :project_id, presence: true
 
     scope :by_project, ->(project_id) { where(project_id: project_id) }
+
+    def entity_id
+      project_id
+    end
+
+    def entity_type
+      'Project'
+    end
   end
 end
 

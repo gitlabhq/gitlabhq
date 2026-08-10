@@ -280,7 +280,7 @@ include:
 
 To use DAST on the default branch:
 
-1. Set up a new [service](#create-an-ecs-service). This service will be used to deploy a temporary
+1. Set up a new [service](#create-an-ecs-service). This service is used to deploy a temporary
    DAST environment.
 1. Use the `CI_AWS_ECS_SERVICE` variable to set the name.
 1. Set the scope to the `dast-default` environment.

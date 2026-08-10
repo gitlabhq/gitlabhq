@@ -1092,8 +1092,8 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
     end
   end
 
-  describe '.repair_entity_escapes' do
-    subject(:repair) { sync.send(:repair_entity_escapes, content, config, log_warn) }
+  describe '.repair_escape_artifacts' do
+    subject(:repair) { sync.send(:repair_escape_artifacts, content, config, log_warn) }
 
     let(:log_warn) { instance_double(Proc) }
     let(:source_content) { '' }
@@ -1111,7 +1111,7 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
       end
 
       it 'repairs the content and warns with the affected line number' do
-        expect(log_warn).to receive(:call).with('  WARNING: repaired HTML entity escapes on line(s) 3')
+        expect(log_warn).to receive(:call).with('  WARNING: repaired escape artifacts on line(s) 3')
 
         expect(repair).to eq("# Principles\n\n- Run `tool <argument>` & inspect `\"output\"`'s value.\n")
       end
@@ -1143,6 +1143,75 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do
         expect(log_warn).not_to receive(:call)
 
         expect(repair).to eq(content)
+      end
+    end
+
+    context 'with backslash escapes outside fenced code blocks' do
+      let(:content) { "# Principles\n\n- Add the `~\\\"coach will finish\\\"` label for `\\'name\\'`, `\\<tag\\>`.\n" }
+
+      it 'repairs the content and warns with the affected line number' do
+        expect(log_warn).to receive(:call).with('  WARNING: repaired escape artifacts on line(s) 3')
+
+        expect(repair).to eq("# Principles\n\n- Add the `~\"coach will finish\"` label for `'name'`, `<tag>`.\n")
+      end
+    end
+
+    context 'with backslash escapes in a fenced code block' do
+      let(:content) do
+        <<~MARKDOWN
+          # Principles
+
+          ```markdown
+          Add the `~\\"coach will finish\\"` label.
+          ```
+        MARKDOWN
+      end
+
+      it 'preserves the example without warning' do
+        expect(log_warn).not_to receive(:call)
+
+        expect(repair).to eq(content)
+      end
+    end
+
+    context 'with a backslash escape copied from the SSOT' do
+      let(:content) { "# Principles\n\n- Use `\\<placeholder\\>` in documentation.\n" }
+      let(:source_content) { 'Use `\<placeholder\>` in documentation.' }
+
+      it 'preserves the SSOT content without warning' do
+        expect(log_warn).not_to receive(:call)
+
+        expect(repair).to eq(content)
+      end
+    end
+
+    context 'with escaped backticks in a nested inline-code span' do
+      let(:content) { "# Principles\n\n- Use `Use \\`otherFieldName\\`` as the deprecation reason.\n" }
+
+      it 'leaves the nested span unchanged without warning' do
+        expect(log_warn).not_to receive(:call)
+
+        expect(repair).to eq(content)
+      end
+    end
+
+    context 'with legitimate Markdown escapes' do
+      let(:content) { "# Principles\n\n- Preserve \\*, \\_, \\|, and \\` in prose.\n" }
+
+      it 'leaves the escapes unchanged without warning' do
+        expect(log_warn).not_to receive(:call)
+
+        expect(repair).to eq(content)
+      end
+    end
+
+    context 'with entity and backslash escapes on one line' do
+      let(:content) { "# Principles\n\n- Run `tool &lt;argument&gt;` with `\\\"quoted\\\"` output.\n" }
+
+      it 'repairs the content and lists the line once' do
+        expect(log_warn).to receive(:call).with('  WARNING: repaired escape artifacts on line(s) 3')
+
+        expect(repair).to eq("# Principles\n\n- Run `tool <argument>` with `\"quoted\"` output.\n")
       end
     end
 

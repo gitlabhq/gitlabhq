@@ -18,7 +18,7 @@ RSpec.describe Ldap::OmniauthCallbacksController, type: :controller, feature_cat
 
   it 'creates an authentication audit event' do
     expect { post provider }.to change {
-      AuditEvent.where("details LIKE '%authenticated_with_ldap%'").count
+      AuditEventReader.where("details LIKE '%authenticated_with_ldap%'").count
     }.by(1)
   end
 

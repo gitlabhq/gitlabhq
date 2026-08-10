@@ -81,19 +81,8 @@ RSpec.describe Gitlab::Audit::Auditor, feature_category: :audit_events do
         expect(authentication_event.provider).to eq(provider)
       end
 
-      it 'logs audit events to database', :aggregate_failures do
-        freeze_time do
-          audit!
-
-          audit_event = AuditEvent.last
-
-          expect(audit_event.author_id).to eq(author.id)
-          expect(audit_event.entity_id).to eq(group.id)
-          expect(audit_event.entity_type).to eq(group.class.name)
-          expect(audit_event.created_at).to eq(Time.zone.now)
-          expect(audit_event.details[:target_id]).to eq(group.id)
-          expect(audit_event.details[:target_type]).to eq(group.class.name)
-        end
+      it 'does not write to the legacy AuditEvent table' do
+        expect { audit! }.not_to change { AuditEvent.count }
       end
 
       it 'logs audit events to file' do
@@ -103,7 +92,7 @@ RSpec.describe Gitlab::Audit::Auditor, feature_category: :audit_events do
 
         expect(logger).to have_received(:info).with(
           hash_including(
-            'id' => AuditEvent.last.id,
+            'id' => AuditEvents::GroupAuditEvent.last.id,
             'author_id' => author.id,
             'author_name' => author.name,
             'entity_id' => group.id,
@@ -126,21 +115,6 @@ RSpec.describe Gitlab::Audit::Auditor, feature_category: :audit_events do
             message: "Signed in using standard authentication" }
         end
 
-        it 'logs audit events to database', :aggregate_failures do
-          freeze_time do
-            audit!
-
-            audit_event = AuditEvent.last
-
-            expect(audit_event.author_id).to eq(author.id)
-            expect(audit_event.entity_id).to eq(group.id)
-            expect(audit_event.entity_type).to eq(group.class.name)
-            expect(audit_event.created_at).to eq(3.weeks.ago)
-            expect(audit_event.details[:target_id]).to eq(group.id)
-            expect(audit_event.details[:target_type]).to eq(group.class.name)
-          end
-        end
-
         it 'logs audit events to file' do
           freeze_time do
             expect(::Gitlab::AuditJsonLogger).to receive(:build).and_return(logger)
@@ -149,7 +123,7 @@ RSpec.describe Gitlab::Audit::Auditor, feature_category: :audit_events do
 
             expect(logger).to have_received(:info).with(
               hash_including(
-                'id' => AuditEvent.last.id,
+                'id' => AuditEvents::GroupAuditEvent.last.id,
                 'author_id' => author.id,
                 'author_name' => author.name,
                 'entity_id' => group.id,
@@ -175,15 +149,6 @@ RSpec.describe Gitlab::Audit::Auditor, feature_category: :audit_events do
             organization: organization,
             authentication_provider: provider,
             message: "Signed in using standard authentication" }
-        end
-
-        it 'logs audit events to database' do
-          freeze_time do
-            audit!
-
-            expected_details = { action: :custom, from: false, to: true, event_name: name }
-            expect(AuditEvent.last.details).to include(expected_details)
-          end
         end
 
         it 'logs audit events to file' do
@@ -226,16 +191,6 @@ RSpec.describe Gitlab::Audit::Auditor, feature_category: :audit_events do
           }
         end
 
-        it 'logs audit events to database' do
-          freeze_time do
-            audit!
-
-            audit_event = AuditEvent.last
-            expect(audit_event.details).to include({ target_details: target_details })
-            expect(audit_event.target_details).to eq(target_details)
-          end
-        end
-
         it 'logs audit events to file' do
           freeze_time do
             expect(::Gitlab::AuditJsonLogger).to receive(:build).and_return(logger)
@@ -269,16 +224,8 @@ RSpec.describe Gitlab::Audit::Auditor, feature_category: :audit_events do
           context "with #{target_type}" do
             let(:target) { build_stubbed factory_name }
 
-            it 'logs audit events to database', :aggregate_failures, :freeze_time do
-              audit!
-              audit_event = AuditEvent.last
-
-              expect(audit_event.author_id).to eq(author.id)
-              expect(audit_event.entity_id).to eq(group.id)
-              expect(audit_event.entity_type).to eq(group.class.name)
-              expect(audit_event.created_at).to eq(Time.zone.now)
-              expect(audit_event.details[:target_id]).to eq(target.id)
-              expect(audit_event.details[:target_type]).to eq(target.class.name)
+            it 'does not write to the legacy AuditEvent table', :freeze_time do
+              expect { audit! }.not_to change { AuditEvent.count }
             end
           end
         end
@@ -315,7 +262,6 @@ RSpec.describe Gitlab::Audit::Auditor, feature_category: :audit_events do
       it 'tracks error' do
         audit!
 
-        # Error is tracked for both legacy and new table writes when both fail
         expect(Gitlab::ErrorTracking).to have_received(:track_exception).with(
           kind_of(ActiveRecord::RecordInvalid),
           { audit_operation: name }
@@ -324,70 +270,6 @@ RSpec.describe Gitlab::Audit::Auditor, feature_category: :audit_events do
 
       it 'does not throw exception' do
         expect { auditor.audit(context) }.not_to raise_exception
-      end
-    end
-
-    context 'when audit event is not saved in database due to some database infra issue' do
-      let(:audit!) { auditor.audit(context) }
-
-      before do
-        allow_any_instance_of(auditor) do |auditor_instance|
-          allow(auditor_instance).to receive(:log_to_database).and_return(nil)
-        end
-      end
-
-      it 'calls log_to_file_and_stream with in memory events' do
-        audit!
-
-        expect_any_instance_of(auditor) do |auditor_instance|
-          expect(auditor_instance).to receive(:log_to_file_and_stream).with(include(kind_of(AuditEvent)))
-        end
-      end
-
-      it 'does not throw exception' do
-        expect { auditor.audit(context) }.not_to raise_exception
-      end
-    end
-
-    context 'when stop_legacy_audit_event_writes feature flag is enabled' do
-      before do
-        stub_feature_flags(stop_legacy_audit_event_writes: true)
-      end
-
-      it 'does not write to the legacy AuditEvent table' do
-        expect { audit! }.not_to change { AuditEvent.count }
-      end
-
-      it 'still writes to the scoped audit event tables' do
-        expect { audit! }.to change { AuditEvents::GroupAuditEvent.count }.by(1)
-      end
-
-      it 'still logs to file' do
-        expect(::Gitlab::AuditJsonLogger).to receive(:build).and_return(logger)
-
-        audit!
-
-        expect(logger).to have_received(:info).with(
-          hash_including(
-            'author_id' => author.id,
-            'entity_id' => group.id,
-            'entity_type' => group.class.name
-          )
-        )
-      end
-
-      context 'when the flag is disabled (rollback behavior)' do
-        before do
-          stub_feature_flags(stop_legacy_audit_event_writes: false)
-        end
-
-        it 'resumes writing to the legacy AuditEvent table' do
-          expect { audit! }.to change { AuditEvent.count }.by(1)
-        end
-
-        it 'still writes to the scoped audit event tables' do
-          expect { audit! }.to change { AuditEvents::GroupAuditEvent.count }.by(1)
-        end
       end
     end
   end

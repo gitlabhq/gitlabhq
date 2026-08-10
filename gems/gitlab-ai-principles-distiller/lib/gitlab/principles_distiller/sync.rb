@@ -629,18 +629,19 @@ module Gitlab
           return
         end
 
-        repair_entity_escapes(Diff.strip_preamble(updated), config, log_warn)
+        repair_escape_artifacts(Diff.strip_preamble(updated), config, log_warn)
       end
 
-      # Preserve literal entities copied from the SSOT while correcting entities that appear only in output from the
-      # distillation workflow.
-      def repair_entity_escapes(content, config, log_warn)
+      # Preserve literal escape artifacts copied from the SSOT while correcting entities and escaped quotes or brackets
+      # that appear only in output from the distillation workflow.
+      # Backslash-escaped backticks remain untouched because they delimit nested inline-code spans.
+      def repair_escape_artifacts(content, config, log_warn)
         in_fence = false
         repaired_lines = []
         source_lines = manifest.config_source_paths(config)
           .filter_map { |path| manifest.read_repo_file(path) }
           .flat_map(&:lines)
-          .map { |line| normalize_entity_escape_line(line) }
+          .map { |line| normalize_escape_artifact_line(line) }
 
         repaired = content.lines.map.with_index do |line, index|
           if line.match?(/^[ \t]*(?:`{3,}|~{3,})/)
@@ -649,24 +650,25 @@ module Gitlab
           end
 
           next line if in_fence
-          next line if source_lines.include?(normalize_entity_escape_line(line))
+          next line if source_lines.include?(normalize_escape_artifact_line(line))
 
           unescaped = line.gsub(/&(lt|gt|amp|quot|#39);/) do
             { 'lt' => '<', 'gt' => '>', 'amp' => '&', 'quot' => '"', '#39' => "'" }.fetch(Regexp.last_match(1))
           end
+          unescaped = unescaped.gsub(/\\(["'<>])/, '\\1')
 
           repaired_lines << (index + 1) if unescaped != line
           unescaped
         end
 
         if repaired_lines.any?
-          log_warn.call("  WARNING: repaired HTML entity escapes on line(s) #{repaired_lines.join(', ')}")
+          log_warn.call("  WARNING: repaired escape artifacts on line(s) #{repaired_lines.join(', ')}")
         end
 
         repaired.join
       end
 
-      def normalize_entity_escape_line(line)
+      def normalize_escape_artifact_line(line)
         line.strip.sub(/\A[-*+]\s+/, '')
       end
 

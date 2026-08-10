@@ -19,7 +19,7 @@ on an OpenShift cluster.
 This guide is an adaptation of [using Buildah to build images in a rootless OpenShift container](https://github.com/containers/buildah/blob/main/docs/tutorials/05-openshift-rootless-build.md)
 documentation for GitLab Runner Operator.
 
-To complete this tutorial, you will:
+To complete this tutorial:
 
 1. Configure the Buildah image.
 1. Configure the service account.

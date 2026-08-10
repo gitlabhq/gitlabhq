@@ -177,12 +177,22 @@ RSpec.shared_examples 'includes ::AuditEvents::CommonModel concern' do
         expect(subject['ip_address']).to eq('192.168.1.1')
       end
     end
+
+    context 'for entity attributes' do
+      let(:event) { build(audit_event_symbol) }
+
+      subject { event.as_json }
+
+      it 'surfaces entity_type, which is not a column on the scoped tables' do
+        expect(subject['entity_type']).to eq(event.entity_type)
+      end
+    end
   end
 
   describe '#author_name' do
     context 'when user exists' do
       let(:user) { create(:user, name: 'John Doe') }
-      let(:event) { build(:audit_events_user_audit_event, user: user) }
+      let(:event) { build(:audit_events_user_audit_event, author: user) }
 
       it 'returns user name' do
         expect(event.author_name).to eq('John Doe')
@@ -192,7 +202,7 @@ RSpec.shared_examples 'includes ::AuditEvents::CommonModel concern' do
     context 'when the event was authored by a composite identity' do
       let(:user) { create(:user, name: 'John Doe') }
       let(:event) do
-        build(:audit_events_user_audit_event, :composite_identity_author, user: user)
+        build(:audit_events_user_audit_event, :composite_identity_author, author: user)
       end
 
       it 'returns the stored composite author name' do
@@ -203,7 +213,7 @@ RSpec.shared_examples 'includes ::AuditEvents::CommonModel concern' do
     context 'when user exists and database contains a different author_name' do
       let(:user) { create(:user, name: 'John Doe') }
       let(:event) do
-        build(:audit_events_user_audit_event, user: user, author_name: 'Old Name')
+        build(:audit_events_user_audit_event, author: user, author_name: 'Old Name')
       end
 
       it 'returns the current author name' do

@@ -819,18 +819,8 @@ module Gitlab
           mentions = authors.map { |author| "@#{author[:username]}" }
           reviewer_ids = authors.filter_map { |author| author[:id] }
           fallback_reviewer = reviewer_resolver.owner_team_reviewer(team) if reviewer_ids.empty?
-          ping_line = if mentions.any? && fallback_reviewer
-                        "Recent SSOT changes here were authored by #{mentions.join(' ')} — please review. " \
-                          "Reviewer assignment routed to @#{fallback_reviewer[:username]} from " \
-                          "**#{manifest.team_display(team)}**."
-                      elsif fallback_reviewer
-                        "No SSOT author resolved; routing to @#{fallback_reviewer[:username]} from " \
-                          "**#{manifest.team_display(team)}**."
-                      elsif mentions.empty?
-                        "Please review: **#{manifest.team_display(team)}**."
-                      else
-                        "Recent SSOT changes here were authored by #{mentions.join(' ')} — please review."
-                      end
+          outcome = ping_outcome(mentions, fallback_reviewer)
+          ping_line = ping_line_for(outcome, mentions, fallback_reviewer, team)
 
           description = <<~DESC
         ## Summary
@@ -839,6 +829,7 @@ module Gitlab
         development documentation (SSOT). #{ping_line} It is one of several
         team-scoped MRs from this run; the global routing tables (AGENTS.md,
         CLAUDE.md, SKILL.md) are updated in a separate tooling MR.
+        #{why_you_were_pinged_section(outcome)}
         #{review_request_section(changed_principles.keys, team)}
         #{failed_principles_section(ctx.failed)}
         #{not_run_principles_section(ctx.not_run)}
@@ -947,6 +938,86 @@ module Gitlab
             > distill job did not complete: #{not_run.join(', ')}. This is not a distillation
             > failure: they will be re-attempted on the next scheduled run.
           SECTION
+        end
+
+        # Which of the four ping paths `ping_line_for` took. Named so the "why you were pinged" prose can describe
+        # what actually happened rather than asserting one path for every MR.
+        def ping_outcome(mentions, fallback_reviewer)
+          if mentions.any?
+            fallback_reviewer ? :authors_with_fallback : :authors
+          else
+            fallback_reviewer ? :fallback : :team_only
+          end
+        end
+
+        # Names *who* is being asked to review. Four outcomes, because an author may resolve without being assignable
+        # (no user ID), and the owning team may yield no assignable member at all (see owner_team_reviewer, which
+        # returns nil for an unresolvable group).
+        def ping_line_for(outcome, mentions, fallback_reviewer, team)
+          case outcome
+          when :authors_with_fallback
+            "Recent SSOT changes here were authored by #{mentions.join(' ')} — please review. " \
+              "Reviewer assignment routed to @#{fallback_reviewer[:username]} from " \
+              "**#{manifest.team_display(team)}**."
+          when :fallback
+            "No SSOT author resolved; routing to @#{fallback_reviewer[:username]} from " \
+              "**#{manifest.team_display(team)}**."
+          when :team_only
+            "Please review: **#{manifest.team_display(team)}**."
+          else
+            "Recent SSOT changes here were authored by #{mentions.join(' ')} — please review."
+          end
+        end
+
+        # Explains why the recipient was pinged and why merging (not just reviewing) matters.
+        #
+        # The ping line above names *who* is being asked; this says *why they specifically* got it, because the paths
+        # look identical from the recipient's side. Someone reached through a fallback has no obvious connection to the
+        # change and can reasonably assume the ping was a mistake.
+        #
+        # The opening sentence is per-outcome: asserting "you changed the SSOT documentation" is false on the fallback
+        # paths, and on :team_only nobody was individually pinged at all. The merging paragraph is unconditional: it
+        # matters most on :team_only, where the MR looks unowned and is likeliest to stall.
+        #
+        # Collapsed so it does not push the diffs further down for readers who already know the process.
+        def why_you_were_pinged_section(outcome)
+          <<~SECTION
+
+            <details><summary>Why you were pinged, and why this needs merging</summary>
+
+            #{why_you_were_pinged_reason(outcome)}
+
+            These MRs need to be **reviewed and merged**, not just reviewed: the
+            distilled principles only reach the `gitlab-coding-principles` that
+            AI agents load once this is merged. An unmerged MR is re-distilled
+            and reopened on the next weekly run, so the improvement stays
+            unavailable to agents until someone merges it.
+
+            </details>
+          SECTION
+        end
+
+        # :team_only covers both team_display forms: the raw handle (which group-pings) and the non-mention slug used
+        # when fallback_ping_team is false, so the wording must not claim anyone was mentioned.
+        def why_you_were_pinged_reason(outcome)
+          case outcome
+          when :authors_with_fallback
+            'You were pinged because you changed the SSOT documentation these ' \
+              'principles are distilled from. Because none of you could be ' \
+              'assigned automatically, a member of the owning team was assigned ' \
+              'as reviewer.'
+          when :fallback
+            'No documentation author could be resolved for these changes, so ' \
+              'review was routed to the least-loaded available member of the ' \
+              'owning team.'
+          when :team_only
+            'No individual could be resolved for these changes, so this merge ' \
+              'request is routed to the owning team, which approves through ' \
+              'CODEOWNERS.'
+          else
+            'You were pinged because you changed the SSOT documentation these ' \
+              'principles are distilled from.'
+          end
         end
 
         # Renders the "Request a review from" section listing secondary teams for the principles in this MR whose SSOT

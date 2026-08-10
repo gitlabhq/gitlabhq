@@ -1,6 +1,6 @@
 ---
-source_checksum: 7d96259c52a8d3b6
-distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
+source_checksum: ac608e77a4e44110
+distilled_at_sha: 18bec1426aecafc1e6f6e47896f845e2690b2bf8
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -31,6 +31,7 @@ distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 - DO NOT supply the `:each` argument to hooks — it's the default.
 - Prefer `before`/`after` hooks scoped to `:context` over `:all`.
 - Use a Capybara matcher such as `find('.js-foo')` before calling `evaluate_script` or `execute_script` on an element, to ensure the element exists.
+- Treat `evaluate_script` and `execute_script` as point-in-time reads that do not wait: assert a visible outcome or use `wait_for` before reading state with a script, and retrieve related values in a single `evaluate_script` call so they describe the same browser state.
 - Use `focus: true` to isolate parts of the specs you want to run.
 - Use `:aggregate_failures` when there is more than one expectation in a test.
 - Use `specify` rather than `it do` for empty test description blocks that are self-explanatory.
@@ -102,7 +103,9 @@ distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 - Test a happy path and one less-happy path — test all other paths with unit or integration tests.
 - Test what is displayed on the page, not the internals of ActiveRecord models (for example, assert attributes appear on the page rather than checking `Model.count`).
 - When a test must assert backend or model state after a UI action, first wait for a visible success indicator (`have_content`, `have_current_path`, `have_css`) and only then call `model.reload` — reading model state immediately after a Capybara action races the request.
-- Confirm the page has reached the expected state with a positive matcher before the next interaction, assertion, database read, or navigation — DO NOT rely solely on `wait_for_requests` (it does not account for Vue re-render, redirect completion, async follow-up writes, or browser-initiated downloads).
+- Confirm the page has reached the expected state with a positive matcher before the next interaction, assertion, database read, or navigation.
+- NEVER use `wait_for_requests` or `wait_for_all_requests` in feature specs — the `RSpec/AvoidWaitForRequests` cop prohibits both; they wait only until no tracked request is in flight (a request can trigger another and the poll can run between the two) and they do not wait for Vue re-renders, redirects, async follow-up writes, or browser-initiated downloads.
+- DO NOT add exclusions to `.rubocop_todo/rspec/avoid_wait_for_requests.yml` or disable the `RSpec/AvoidWaitForRequests` cop inline; replace the helper with a page-specific waiting matcher, or a narrowly targeted `wait_for` condition when no visible outcome exists.
 - Use `have_no_link` / `have_no_*` (negative Capybara matchers) for absence checks — they return immediately when the element is absent; DO NOT use `expect(page.has_link?(...)).to be(false)` which waits the full timeout.
 - Use `have_no_testid('<id>')` (not `not_to have_testid`) to assert a `data-testid` element is absent.
 - Always confirm the page is loaded with a positive matcher before checking for absence.
@@ -113,13 +116,17 @@ distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 - DO NOT use `all()` with `.first` or block iteration to filter elements — use `find()` or a CSS child selector with `.ancestor()` instead.
 - Use specific Capybara matchers (`have_button`, `have_link`, `have_field`, `have_select`, `have_text`, `have_current_path`, `have_title`) rather than generic `have_css` where possible.
 - Use `within_modal` helper to interact with GitLab UI modals; use `accept_gl_confirm` for confirmation modals that only need to be accepted.
+- Wait for a modal or other animated container to finish its open transition (for example `expect(page).to have_css('.modal.show')`) before interacting with controls inside it — components can disable their controls while transitioning.
 - Use `be_axe_clean` matcher to run automated accessibility testing in feature tests.
 - Call the same externalizing method (for example, `_('...')`) in RSpec expectations against externalized content
 - Assert on a stable end-state (such as a status text or alert message) after an asynchronous mutation — DO NOT assert on a button's label or `disabled` state to synchronize, as controls pass through transient loading states before settling.
-- Use the `wait_for` helper (from `spec/support/helpers/wait_helpers.rb`) only as a last resort when there is no visible UI outcome to assert on (for example, browser-initiated downloads or interactions that must be retried); DO NOT use the deprecated `wait_for_requests` in new specs.
-- Assert with a waiting Capybara matcher (`have_field`, `have_selector`, `have_content`) rather than reading a value directly from an element (`find(...).value`, `find(...).text`, `all(...).count`) — direct reads capture state at that exact moment and race asynchronous updates.
+- Use the `wait_for` helper (from `spec/support/helpers/wait_helpers.rb`) only as a last resort when there is no visible UI outcome to assert on (for example, browser-initiated downloads or interactions that must be retried).
+- Pass a longer `polling_interval` to `wait_for` for database-backed conditions (it polls every 0.01 seconds by default) and raise `max_wait_time` only when the operation genuinely needs more time.
+- Assert with a waiting Capybara matcher (`have_field`, `have_selector`, `have_content`) rather than reading a value directly from an element (`find(...).value`, `find(...).text`, `all(...).count`) or from the session (`page.current_url`) — direct reads capture state at that exact moment and race asynchronous updates; assert a page-specific element before reading `page.current_url`.
+- DO NOT assert `expect(find(selector).visible?).to be(true)` — `find` already waits for a visible element, so the assertion cannot verify a later update; use a waiting matcher such as `have_selector(..., exact_text: ...)` for the state you need.
 - Use the `:enable_admin_mode` RSpec metadata tag to activate admin mode in specs; DO NOT use `enable_admin_mode!(admin, use_ui: true)` — it is slow and race-prone.
 - Wrap both the triggering UI action and the assertion on its visible outcome inside `perform_enqueued_jobs` when testing delayed mail delivery — wrapping only the click can end the block before the AJAX request enqueues the job.
+- Put a page or component readiness assertion in the shared example rather than repeating it in every caller, so it becomes the synchronization contract for all consumers.
 
 ### View Specs
 
@@ -202,7 +209,7 @@ distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 ### Feature Flags in Tests
 
 - All feature flags are enabled by default in the test environment (regardless of the `default_enabled:` value in the YAML definition), so DO NOT stub a flag to `true` to reach its enabled path — the only exception is a flag explicitly disabled in `spec/spec_helper.rb`, where stubbing to `true` is warranted
-- Only use `stub_feature_flags(flag: false)` to test the disabled code path.
+- Use `stub_feature_flags(flag: false)` to test the disabled code path
 
 ### Spec File Paths
 
@@ -230,3 +237,5 @@ For the full picture, see:
 - doc/development/testing_guide/best_practices.md
 - doc/development/testing_guide/testing_levels.md
 - doc/development/testing_guide/testing_rake_tasks.md
+- doc/development/testing_guide/unhealthy_tests.md
+

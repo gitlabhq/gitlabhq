@@ -181,7 +181,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
 
         it 'creates an authentication audit event' do
           expect { post provider }.to change {
-            AuditEvent.where("details LIKE '%authenticated_with_oauth%'").count
+            AuditEventReader.where("details LIKE '%authenticated_with_oauth%'").count
           }.by(1)
         end
 
@@ -1367,7 +1367,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
 
           it 'creates an audit event' do
             expect { reauthenticate_and_check_admin_mode(expected_admin_mode: true) }
-              .to change { AuditEvent.count }.by(1)
+              .to change { AuditEventReader.count }.by(1)
           end
         end
 
@@ -1417,7 +1417,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
 
           it 'does not create an audit event' do
             expect { reauthenticate_and_check_admin_mode(expected_admin_mode: false) }
-              .not_to change { AuditEvent.count }
+              .not_to change { AuditEventReader.count }
           end
         end
 

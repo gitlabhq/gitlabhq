@@ -2,13 +2,19 @@ import { GlTabs } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ExploreAnalyticsDashboardsList from '~/explore/analytics_dashboards/pages/list.vue';
 import DashboardListTab from '~/explore/analytics_dashboards/components/dashboard_list_tab.vue';
+import IndexLayout from '~/vue_shared/components/index_layout.vue';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 
 describe('ExploreAnalyticsDashboardsList', () => {
   let wrapper;
 
   const createComponent = () => {
-    wrapper = shallowMountExtended(ExploreAnalyticsDashboardsList);
+    wrapper = shallowMountExtended(ExploreAnalyticsDashboardsList, {
+      stubs: {
+        IndexLayout,
+        PageHeading,
+      },
+    });
   };
 
   const findTabs = () => wrapper.findComponent(GlTabs);

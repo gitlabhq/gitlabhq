@@ -75,6 +75,39 @@ RSpec.describe Gitlab::EventStore::CloudEvent, feature_category: :code_suggestio
         expect { cloud_event }.to raise_error(Gitlab::EventStore::InvalidEvent)
       end
     end
+
+    context 'when user fields are not present' do
+      before do
+        event_data.delete(:gitlab_user_id)
+        event_data.delete(:gitlab_user_username)
+      end
+
+      it 'creates a valid event' do
+        expect(cloud_event).to be_a(described_class)
+      end
+    end
+
+    context 'when organization field is not present' do
+      before do
+        event_data.delete(:gitlab_organization_id)
+      end
+
+      it 'creates a valid event' do
+        expect(cloud_event).to be_a(described_class)
+      end
+    end
+
+    context 'when both user and organization fields are not present' do
+      before do
+        event_data.delete(:gitlab_user_id)
+        event_data.delete(:gitlab_user_username)
+        event_data.delete(:gitlab_organization_id)
+      end
+
+      it 'creates a valid event' do
+        expect(cloud_event).to be_a(described_class)
+      end
+    end
   end
 
   describe '#id' do
@@ -93,6 +126,17 @@ RSpec.describe Gitlab::EventStore::CloudEvent, feature_category: :code_suggestio
 
       2.times { cloud_event.current_user }
     end
+
+    context 'when gitlab_user_id and gitlab_user_username are not present' do
+      before do
+        event_data.delete(:gitlab_user_id)
+        event_data.delete(:gitlab_user_username)
+      end
+
+      it 'returns nil' do
+        expect(cloud_event.current_user).to be_nil
+      end
+    end
   end
 
   describe '#organization' do
@@ -104,6 +148,16 @@ RSpec.describe Gitlab::EventStore::CloudEvent, feature_category: :code_suggestio
       expect(Organizations::Organization).to receive(:find_by_id).once.and_call_original
 
       2.times { cloud_event.organization }
+    end
+
+    context 'when gitlab_organization_id is not present' do
+      before do
+        event_data.delete(:gitlab_organization_id)
+      end
+
+      it 'returns nil' do
+        expect(cloud_event.organization).to be_nil
+      end
     end
   end
 
@@ -136,10 +190,15 @@ RSpec.describe Gitlab::EventStore::CloudEvent, feature_category: :code_suggestio
     end
 
     it 'includes all required fields' do
-      required_fields = %w[specversion type source id time datacontenttype dataschema subject data
-        gitlab_user_id gitlab_user_username gitlab_organization_id]
+      required_fields = %w[specversion type source id time datacontenttype dataschema subject data]
 
       expect(cloud_event.schema['required']).to match_array(required_fields)
+    end
+
+    it 'does not require user or organization fields' do
+      expect(cloud_event.schema['required']).not_to include(
+        'gitlab_user_id', 'gitlab_user_username', 'gitlab_organization_id'
+      )
     end
 
     it 'defines properties for all required fields' do
@@ -332,6 +391,74 @@ RSpec.describe Gitlab::EventStore::CloudEvent, feature_category: :code_suggestio
 
       expect(cloud_event.event_data).to eq({})
     end
+
+    context 'without current_user' do
+      it 'builds a valid cloud event without user fields', :aggregate_failures do
+        test_class = Class.new(described_class) do
+          def data_schema
+            {}
+          end
+        end
+        test_class.event_category('merge_requests')
+        test_class.event_type('assigned_reviewers')
+
+        cloud_event = test_class.build_cloud_event(
+          source: source,
+          subject: subject_path,
+          organization: organization
+        )
+        data = cloud_event.data
+
+        expect(data[:gitlab_user_id]).to be_nil
+        expect(data[:gitlab_user_username]).to be_nil
+        expect(data[:gitlab_organization_id]).to eq(organization.id)
+      end
+    end
+
+    context 'without organization' do
+      it 'builds a valid cloud event without organization field', :aggregate_failures do
+        test_class = Class.new(described_class) do
+          def data_schema
+            {}
+          end
+        end
+        test_class.event_category('merge_requests')
+        test_class.event_type('assigned_reviewers')
+
+        cloud_event = test_class.build_cloud_event(
+          source: source,
+          subject: subject_path,
+          current_user: user
+        )
+        data = cloud_event.data
+
+        expect(data[:gitlab_user_id]).to eq(user.id)
+        expect(data[:gitlab_user_username]).to eq(user.username)
+        expect(data[:gitlab_organization_id]).to be_nil
+      end
+    end
+
+    context 'without current_user and organization' do
+      it 'builds a valid cloud event without user or organization fields', :aggregate_failures do
+        test_class = Class.new(described_class) do
+          def data_schema
+            {}
+          end
+        end
+        test_class.event_category('merge_requests')
+        test_class.event_type('assigned_reviewers')
+
+        cloud_event = test_class.build_cloud_event(
+          source: source,
+          subject: subject_path
+        )
+        data = cloud_event.data
+
+        expect(data[:gitlab_user_id]).to be_nil
+        expect(data[:gitlab_user_username]).to be_nil
+        expect(data[:gitlab_organization_id]).to be_nil
+      end
+    end
   end
 
   describe '#to_proto' do
@@ -361,6 +488,20 @@ RSpec.describe Gitlab::EventStore::CloudEvent, feature_category: :code_suggestio
     it 'maps integer attributes into the attributes map as ce_integer values', :aggregate_failures do
       expect(proto.attributes['gitlab_user_id'].ce_integer).to eq(event_data[:gitlab_user_id])
       expect(proto.attributes['gitlab_organization_id'].ce_integer).to eq(event_data[:gitlab_organization_id])
+    end
+
+    context 'when user and organization are not present' do
+      before do
+        event_data.delete(:gitlab_user_id)
+        event_data.delete(:gitlab_user_username)
+        event_data.delete(:gitlab_organization_id)
+      end
+
+      it 'omits absent attributes from the attributes map', :aggregate_failures do
+        expect(proto.attributes).not_to have_key('gitlab_user_id')
+        expect(proto.attributes).not_to have_key('gitlab_user_username')
+        expect(proto.attributes).not_to have_key('gitlab_organization_id')
+      end
     end
 
     it 'round-trips through protobuf serialization', :aggregate_failures do
@@ -564,6 +705,24 @@ RSpec.describe Gitlab::EventStore::CloudEvent, feature_category: :code_suggestio
         ].each do |key|
           expect(round_tripped.data[key]).to eq(cloud_event.data[key])
         end
+      end
+    end
+
+    context 'when round-tripping a user-less and org-less event' do
+      before do
+        event_data.delete(:gitlab_user_id)
+        event_data.delete(:gitlab_user_username)
+        event_data.delete(:gitlab_organization_id)
+      end
+
+      subject(:round_tripped) { described_class.from_proto(cloud_event.to_proto) }
+
+      it 'reconstructs an equivalent event without user or organization', :aggregate_failures do
+        expect(round_tripped).to be_a(test_cloud_event_class)
+        expect(round_tripped.event_data).to eq(cloud_event.event_data)
+        expect(round_tripped.data[:gitlab_user_id]).to be_nil
+        expect(round_tripped.data[:gitlab_user_username]).to be_nil
+        expect(round_tripped.data[:gitlab_organization_id]).to be_nil
       end
     end
   end

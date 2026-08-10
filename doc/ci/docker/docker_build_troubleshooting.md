@@ -133,7 +133,7 @@ There is a known incompatibility introduced by Docker Engine 20.10.
 When the host uses Docker Engine 20.10 or later, then the `docker:dind` service in a version older than 20.10 does
 not work as expected.
 
-While the service itself will start without problems, trying to build the container image results in the error:
+While the service itself starts without problems, trying to build the container image results in the error:
 
 ```plaintext
 cgroups: cgroup mountpoint does not exist: unknown
@@ -165,7 +165,7 @@ use two separate containers:
 
 When your organization uses custom certificates, both containers need these certificates.
 Without proper certificate configuration in both containers, Docker operations that connect to external
-registries or services will fail with certificate errors.
+registries or services fail with certificate errors.
 
 To resolve this issue:
 

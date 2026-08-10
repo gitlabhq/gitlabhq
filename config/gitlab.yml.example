@@ -564,6 +564,15 @@ production: &base
         # aws_signature_version: 4 # For creation of signed URLs. Set to 2 if provider does not support v4.
         # path_style: true # Use 'host/bucket_name/object' instead of 'bucket_name.host/object'
 
+  ## Micro-frontends (MFE)
+  # Versioned micro-frontend apps are baked into release assets at build time
+  # and can be switched to newer registry-published versions at runtime.
+  # Disabled by default; also requires the `mfe_enabled` feature flag.
+  mfe:
+    enabled: false
+    # Base URL of the MFE registry (static, CORS-enabled host).
+    registry_url: https://mfe.gitlab.com
+
   ## Agent Plan Content (object storage for work item agent plan markdown)
   agent_plan_content:
     # storage_path: shared/agent_plan_content

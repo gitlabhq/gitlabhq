@@ -183,7 +183,7 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
             end
 
             it 'does not log any audit event' do
-              expect { subject }.not_to change { AuditEvent.count }
+              expect { subject }.not_to change { AuditEventReader.count }
             end
           end
         end

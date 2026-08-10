@@ -1376,7 +1376,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       end
 
       it 'does not log an audit event' do
-        expect { delete api("/projects/#{project.id}/pipelines/#{pipeline.id}", owner) }.not_to change { AuditEvent.count }
+        expect { delete api("/projects/#{project.id}/pipelines/#{pipeline.id}", owner) }.not_to change { AuditEventReader.count }
       end
 
       context 'when the pipeline has jobs' do

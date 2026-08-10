@@ -66,7 +66,7 @@ If you don't have a runner:
 1. [Register the runner](https://docs.gitlab.com/runner/register/) for your project.
    Choose the `shell` executor.
 
-When your CI/CD jobs run, in a later step, they will run on your local machine.
+When your CI/CD jobs run, in a later step, they run on your local machine.
 
 ## Create a `.gitlab-ci.yml` file
 

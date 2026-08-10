@@ -107,18 +107,11 @@ module Gitlab
 
       def log_events_and_stream(events)
         log_authentication_event
-        saved_events = log_to_database(events)
+        new_audit_events = log_to_new_tables(events, @name)
 
-        # When legacy writes are skipped (saved_events is nil), pass original events to log_to_new_tables.
-        # The new tables will generate their own IDs using the shared sequence.
-        events_for_new_tables = saved_events.presence || events
-        log_to_new_tables(events_for_new_tables, @name)
-
-        # we only want to override events with saved_events when it successfully saves into database.
-        # we are doing so to ensure events in memory reflects events saved in database and have id column.
-        events = saved_events if saved_events.present?
-
-        log_to_file_and_stream(events)
+        # Prefer the persisted scoped events so the file log carries the id column.
+        # Falls back to the in-memory events when the scoped write failed.
+        log_to_file_and_stream(new_audit_events.presence || events)
       end
 
       def log_to_file_and_stream(events)
@@ -193,22 +186,6 @@ module Gitlab
         AuditEvents::BuildService.new(**params).execute
       end
 
-      def log_to_database(events)
-        return if Feature.enabled?(:stop_legacy_audit_event_writes, feature_flag_actor)
-
-        if events.one?
-          events.first.save!
-          events
-        else
-          event_ids = AuditEvent.bulk_insert!(events, returns: :ids)
-          AuditEvent.id_in(event_ids)
-        end
-      rescue ActiveRecord::RecordInvalid => e
-        ::Gitlab::ErrorTracking.track_exception(e, audit_operation: @name)
-
-        nil
-      end
-
       def log_to_file(events)
         file_logger = ::Gitlab::AuditJsonLogger.build
 
@@ -256,14 +233,6 @@ module Gitlab
 
       def formatted_details(details)
         details.merge(details.slice(:from, :to).transform_values(&:to_s))
-      end
-
-      def feature_flag_actor
-        if defined?(::Gitlab::Audit::InstanceScope) && @scope.is_a?(::Gitlab::Audit::InstanceScope)
-          :instance
-        else
-          @scope
-        end
       end
     end
   end

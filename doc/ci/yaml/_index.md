@@ -4976,7 +4976,7 @@ test_advanced:
     exit_codes: 137
 ```
 
-`test_advanced` will be retried up to 2 times if the exit code is `137` or if it had
+`test_advanced` is retried up to 2 times if the exit code is `137` or if it had
 a runner system failure.
 
 ---
@@ -6155,7 +6155,7 @@ job:
 
 **Additional details**:
 
-- When the `token` keyword is not set and there is only one token defined, the defined token will automatically be used.
+- When the `token` keyword is not set and there is only one token defined, the defined token is automatically used.
 - If there is more than one token defined, you should specify which token to use by setting the `token` keyword.
   If you do not specify which token to use, it is not possible to predict which token is used each time the job runs.
 

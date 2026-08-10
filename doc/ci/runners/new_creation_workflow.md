@@ -56,7 +56,7 @@ To continue using registration tokens after GitLab 17.0:
 
 ## Impact on existing runners
 
-Existing runners will continue to work as usual after upgrading to GitLab 17.0. This change only affects registration of new runners.
+Existing runners continue to work as usual after upgrading to GitLab 17.0. This change only affects registration of new runners.
 
 The [GitLab Runner Helm chart](https://docs.gitlab.com/runner/install/kubernetes/) generates new runner pods every time a job is executed.
 For these runners, [enable legacy runner registration](#using-registration-tokens-after-gitlab-170) to use registration tokens.

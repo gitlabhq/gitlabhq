@@ -701,6 +701,20 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
       expect(sync.workflow).to have_received(:post_json).twice
     end
 
+    it 'omits the ping explanation from the tooling MR' do
+      # The tooling MR carries only generated routing tables and routes to the
+      # broad `/.ai/` owners, so it has no SSOT author to explain the ping to.
+      captured = nil
+      allow(sync.workflow).to receive(:post_json) do |_url, body:, **|
+        captured = body if body[:title].to_s.start_with?('tooling: ')
+        mock_response
+      end
+
+      create_branch_and_mr
+
+      expect(captured[:description]).not_to include('Why you were pinged')
+    end
+
     context 'when some principles failed distillation' do
       let(:failed) { %w[other-principle] }
 
@@ -968,6 +982,16 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
         # when authors resolved.
         expect(body[:description]).not_to include('Please review: **')
       end
+
+      it 'attributes the ping to the SSOT change', :aggregate_failures do
+        body = capture_post_body
+
+        expect(body[:description]).to include('you changed the SSOT documentation')
+        # No fallback was needed, so the description must not describe one.
+        expect(body[:description]).not_to include('a member of the owning team was assigned')
+        expect(body[:description]).not_to include('resolved')
+        expect(body[:description]).to include('reviewed and merged')
+      end
     end
 
     context 'when no SSOT author resolves but an owner-team member is available' do
@@ -980,6 +1004,17 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
 
         expect(body[:description]).to include('routing to @ada')
         expect(body[:reviewer_ids]).to eq([1])
+      end
+
+      it 'explains that review was routed to an individual, not a group', :aggregate_failures do
+        body = capture_post_body
+
+        # owner_team_reviewer picks one least-loaded member, so describing this
+        # as a group ping would misstate what happened.
+        expect(body[:description]).to include('No documentation author could be resolved')
+        expect(body[:description]).to include('least-loaded available member')
+        expect(body[:description]).not_to include('you changed the SSOT documentation')
+        expect(body[:description]).to include('reviewed and merged')
       end
     end
 
@@ -997,6 +1032,14 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
         expect(body[:description]).to include('authored by @ada')
         expect(body[:description]).to include('Reviewer assignment routed to @grace')
         expect(body[:reviewer_ids]).to eq([2])
+      end
+
+      it 'explains both the SSOT attribution and the reviewer fallback', :aggregate_failures do
+        body = capture_post_body
+
+        expect(body[:description]).to include('you changed the SSOT documentation')
+        expect(body[:description]).to include('a member of the owning team was assigned')
+        expect(body[:description]).to include('reviewed and merged')
       end
     end
 
@@ -1192,6 +1235,16 @@ RSpec.describe Gitlab::PrinciplesDistiller::Sync do # rubocop:disable RSpec/Spec
         expect(received_body[:description]).to include('SSOT diff since previous distillation')
         expect(received_body[:description]).to include('````diff')
       end
+    end
+
+    it 'explains the team-only ping and why merging matters', :aggregate_failures do
+      # The default stub resolves neither an author nor an owner-team member, so
+      # nobody is individually pinged: the description must not claim otherwise.
+      expect(received_body[:description]).to include('Why you were pinged, and why this needs merging')
+      expect(received_body[:description]).to include('No individual could be resolved')
+      expect(received_body[:description]).to include('approves through')
+      expect(received_body[:description]).not_to include('you changed the SSOT documentation')
+      expect(received_body[:description]).to include('reviewed and merged')
     end
 
     it 'links the manifest and the CI job YAML in the "How this works" section', :aggregate_failures do

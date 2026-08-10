@@ -1294,6 +1294,7 @@ instructions:
       - "locale/gitlab.pot"
     instructions: |
       1. Flag any msgid entry that starts with a lowercase letter - this indicates a split sentence that will be hard to translate
+      2. Flag any msgid that reads like an unfinished sentence or a sentence fragment (for example, a string that begins or ends mid-clause, or that looks designed to be joined with another string) as a translatability risk. This usually means a sentence was split across several strings, which does not hold up across languages. See the "Splitting sentences" and "Avoid splitting sentences when adding links" guidance in https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/i18n/externalization.md.
 
   - name: Translated documentation (doc-locale)
     fileFilters:

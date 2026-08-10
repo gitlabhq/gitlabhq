@@ -15,7 +15,7 @@ RSpec.describe FeatureFlags::DestroyService, feature_category: :feature_flags do
   describe '#execute' do
     subject { described_class.new(project, user, params).execute(feature_flag) }
 
-    let(:audit_event_details) { AuditEvent.last.details }
+    let(:audit_event_details) { AuditEventReader.last.details }
     let(:audit_event_message) { audit_event_details[:custom_message] }
     let(:params) { {} }
 
@@ -28,7 +28,7 @@ RSpec.describe FeatureFlags::DestroyService, feature_category: :feature_flags do
     end
 
     it 'creates audit log', :with_license do
-      expect { subject }.to change { AuditEvent.count }.by(1)
+      expect { subject }.to change { AuditEventReader.count }.by(1)
       expect(audit_event_message).to eq("Deleted feature flag #{feature_flag.name}.")
     end
 
@@ -53,7 +53,7 @@ RSpec.describe FeatureFlags::DestroyService, feature_category: :feature_flags do
       end
 
       it 'does not create audit log' do
-        expect { subject }.not_to change { AuditEvent.count }
+        expect { subject }.not_to change { AuditEventReader.count }
       end
 
       it_behaves_like 'does not update feature flag client'

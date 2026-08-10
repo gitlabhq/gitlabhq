@@ -222,7 +222,7 @@ To gain insight into the errors, you can execute a GraphQL query using the follo
 ## No report artifact is created
 
 With certain Runner configurations, the Code Quality scanning job may not have access to your source code.
-If this happens, the `gl-code-quality-report.json` artifact won't be created.
+If this happens, the `gl-code-quality-report.json` artifact isn't created.
 
 To resolve this issue, either:
 

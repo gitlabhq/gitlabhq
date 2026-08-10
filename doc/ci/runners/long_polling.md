@@ -180,7 +180,7 @@ has changed. If it has not, Workhorse holds onto the request for up to
 the duration specified by `apiCiLongPollingDuration`.
 
 If a user triggers a new pipeline or job to run, a background task in
-Sidekiq will update the `last_update` value for all runners available to
+Sidekiq updates the `last_update` value for all runners available to
 the job. Runners can be registered for the project, group, instance, or
 any combination of these.
 

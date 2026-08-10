@@ -493,6 +493,13 @@ Settings.terraform_state['storage_path'] = Settings.absolute(Settings.terraform_
 Settings.terraform_state['object_store'] = ObjectStoreSettings.legacy_parse(Settings.terraform_state['object_store'], 'terraform_state')
 
 #
+# Micro-frontends (MFE) delivery
+#
+Settings['mfe'] ||= {}
+Settings.mfe['enabled'] = false if Settings.mfe['enabled'].nil?
+Settings.mfe['registry_url'] ||= Gitlab::Mfe::DEFAULT_REGISTRY_URL
+
+#
 # Mattermost
 #
 Settings['mattermost'] ||= {}

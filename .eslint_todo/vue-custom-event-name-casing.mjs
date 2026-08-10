@@ -99,8 +99,6 @@ export default {
     'ee/app/assets/javascripts/groups/settings/work_items/custom_status/status_form.vue',
     'ee/app/assets/javascripts/hand_raise_leads/hand_raise_lead/components/hand_raise_lead_button.vue',
     'ee/app/assets/javascripts/pages/admin/application_settings/general/components/seat_control_section.vue',
-    'ee/app/assets/javascripts/roadmap/components/epics_list_section.vue',
-    'ee/app/assets/javascripts/roadmap/components/milestones_list_section.vue',
     'ee/app/assets/javascripts/roadmap/components/roadmap_shell.vue',
     'ee/app/assets/javascripts/roles_and_permissions/components/role_selector.vue',
     'ee/app/assets/javascripts/security_configuration/secret_detection/components/empty_state.vue',

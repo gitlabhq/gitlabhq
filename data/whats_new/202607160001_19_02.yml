@@ -1,0 +1,90 @@
+- name: "GitLab Dependency Scanning Auto-Remediation (Beta)"
+  description: |
+    When dependency scanning finds a vulnerable package, you get a merge request that
+    updates it and fixes the build-breaking changes for you. Every change runs through
+    your existing review and approval process, so your team clears security debt without
+    diverting developers.
+
+    Automated dependency version bumps open merge requests to update vulnerable
+    dependencies to their safe versions. When a version bump causes a pipeline failure,
+    Agentic Breaking Change Resolution analyzes the errors and commits fixes to the
+    same merge request until the pipeline passes.
+  stage: software_supply_chain_security
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/user/application_security/remediate/dependency_scanning_auto_remediation/
+  published_at: 2026-07-16
+  release: "19.2"
+
+- name: Security Review Flow (beta)
+  description: |
+    Security Review Flow detects business logic vulnerabilities directly in merge requests. Unlike static analysis tools that scan for known patterns,
+    Security Review Flow reasons about the intent of your code and identifies authorization bypasses, data exposure, and logic errors that pattern-based scanners
+    routinely miss.
+
+    To request a review, assign the Duo Security Review service account as a reviewer on your merge request. The flow analyzes the diff and posts findings as threaded comments at the exact lines where vulnerabilities occur, each with a Common Weakness Enumeration (CWE) classification, severity rating, and where possible, an inline suggested fix you can apply without leaving the merge request.
+
+    Each review consumes GitLab Credits based on the complexity of the merge request diff.
+  stage: ai-powered
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/user/duo_agent_platform/flows/foundational_flows/security_review/
+  published_at: 2026-07-16
+  release: "19.2"
+
+- name: "GitLab Duo custom flows are now generally available"
+  description: |
+    Custom flows are AI-powered workflows you create and configure to automate complex,
+    multi-step tasks across your GitLab projects. They let teams define workflow steps,
+    components, and triggers so repetitive development and operational work can run
+    automatically in response to GitLab events. In the GitLab UI, flows run directly in
+    GitLab CI/CD, helping teams automate common tasks without leaving GitLab.
+
+    Key features include YAML-defined reusable workflows, multi-agent orchestration,
+    human-in-the-loop checkpoints, native GitLab triggers, flow creation from projects
+    or the AI Catalog, and secure execution using service accounts and composite identity.
+  stage: create
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/duo_agent_platform/flows/
+  published_at: 2026-07-16
+  release: "19.2"
+
+- name: "GitLab Duo CLI is now generally available"
+  description: |
+    GitLab Duo CLI brings the GitLab Duo Agent Platform directly to your terminal.
+    Use the CLI to ask complex questions about your codebase and to autonomously
+    perform actions on your behalf. Unlike external tools, the CLI has context about
+    your GitLab project, pipelines, and agent configurations.
+
+    Key features include interactive chat mode and headless mode for CI/CD,
+    administrator on/off control for GitLab Self-Managed and GitLab Dedicated,
+    model selection and shared sessions, tool approvals, Model Context Protocol (MCP)
+    connections, slash commands, and support for skills and AGENTS.md customization files.
+  stage: create
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/gitlab_duo_cli/
+  published_at: 2026-07-16
+  release: "19.2"
+
+- name: "Scheduled Pipeline Execution Policies (GA)"
+  description: |
+    Scheduled pipeline execution policies are now generally available. Define a schedule
+    once in a security policy project and enforce it across every project in scope, without
+    editing each project's .gitlab-ci.yml. If requirements change, update the policy in one
+    place instead of coordinating changes across many CI/CD configuration files.
+
+    Use scheduled policies to run compliance scripts, security scans, or other custom CI/CD
+    jobs on a daily, weekly, or monthly cadence, independent of commit activity.
+  stage: security_risk_management
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/user/application_security/policies/scheduled_pipeline_execution_policies/
+  published_at: 2026-07-16
+  release: "19.2"

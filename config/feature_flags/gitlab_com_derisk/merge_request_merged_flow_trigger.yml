@@ -1,0 +1,11 @@
+---
+name: merge_request_merged_flow_trigger
+description: Scoped to the Project level. If enabled, the merged merge request trigger
+  event is available and Developer flow runs start when a merge request is merged.
+feature_issue_url: https://gitlab.com/groups/gitlab-org/modelops/applied-ml/code-suggestions/-/work_items/50
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249082
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/608484
+milestone: '19.3'
+group: group::agent developer
+type: gitlab_com_derisk
+default_enabled: false

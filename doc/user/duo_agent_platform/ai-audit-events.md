@@ -58,6 +58,7 @@ You can filter the session list to narrow results:
 
 - **Project**: Filter by project path, or exclude a specific project.
 - **Date range**: Filter sessions created after or before a specific date.
+- **Triggered by**: Filter by the user who triggered the session, or exclude a specific user.
 
 ## View session details
 

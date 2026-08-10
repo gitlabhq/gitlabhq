@@ -345,13 +345,6 @@ RSpec.configure do |config|
       # This feature is wip and should not be enabled in tests by default
       stub_feature_flags(iam_svc_login: false)
 
-      # When enabled, audit events are written only to the new scoped tables and not to the legacy
-      # AuditEvent table. The flag is being rolled out gradually; many existing specs assert on
-      # AuditEvent.count, so keep legacy writes enabled in tests by default. Specs that need to
-      # exercise the new behavior should stub this explicitly.
-      # See https://gitlab.com/gitlab-org/gitlab/-/issues/591414
-      stub_feature_flags(stop_legacy_audit_event_writes: false)
-
       # accessible_disabled_button switches GlButton from the native `disabled` attribute
       # to `aria-disabled`, which breaks Capybara `disabled:` button matchers suite-wide.
       # Default off in tests during rollout; see

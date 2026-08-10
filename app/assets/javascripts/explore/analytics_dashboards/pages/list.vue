@@ -1,6 +1,6 @@
 <script>
 import { GlTabs } from '@gitlab/ui';
-import PageHeading from '~/vue_shared/components/page_heading.vue';
+import IndexLayout from '~/vue_shared/components/index_layout.vue';
 import DashboardListTab from '../components/dashboard_list_tab.vue';
 
 export default {
@@ -8,19 +8,17 @@ export default {
   components: {
     DashboardListTab,
     GlTabs,
-    PageHeading,
+    IndexLayout,
   },
 };
 </script>
 <template>
-  <div>
-    <page-heading :heading="__('Analytics dashboards')">
-      <template #description>
-        {{
-          s__('AnalyticsDashboards|Keep your teams aligned around the metrics that matter most.')
-        }}
-      </template>
-    </page-heading>
+  <index-layout
+    :heading="__('Analytics dashboards')"
+    :description="
+      s__('AnalyticsDashboards|Keep your teams aligned around the metrics that matter most.')
+    "
+  >
     <gl-tabs content-class="gl-p-0">
       <dashboard-list-tab
         :title="s__('AnalyticsDashboards|Created by GitLab')"
@@ -28,5 +26,5 @@ export default {
         scope="GITLAB"
       />
     </gl-tabs>
-  </div>
+  </index-layout>
 </template>

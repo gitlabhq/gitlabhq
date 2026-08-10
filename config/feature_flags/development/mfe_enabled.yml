@@ -1,0 +1,8 @@
+---
+name: mfe_enabled
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/246732
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/605799
+milestone: '19.3'
+type: development
+group: group::compliance
+default_enabled: false

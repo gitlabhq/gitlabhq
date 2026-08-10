@@ -57,6 +57,8 @@
   - 1
 - - ai_catalog_flows_execute_merge_request_approved_workflow_triggers
   - 1
+- - ai_catalog_flows_execute_merge_request_merged_workflow_triggers
+  - 1
 - - ai_catalog_flows_execute_merge_request_ready_workflow_triggers
   - 1
 - - ai_catalog_flows_execute_work_item_created_workflow_triggers

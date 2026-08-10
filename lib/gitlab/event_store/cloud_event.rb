@@ -45,23 +45,27 @@ module Gitlab
           get_class_attribute(:event_type) || raise(NotImplementedError)
         end
 
-        def build_cloud_event(source:, subject:, current_user:, organization:, event_data: {})
-          new(
-            data: {
-              specversion: '1.0',
-              type: "com.gitlab.#{get_event_category}.#{get_event_type}",
-              dataschema: "https://gitlab.com/schemas/#{get_event_category}/#{get_event_type}/v1.0",
-              id: SecureRandom.uuid,
-              datacontenttype: 'application/json',
-              time: Time.current.iso8601,
-              source: source,
-              subject: subject,
-              gitlab_user_id: current_user.id,
-              gitlab_user_username: current_user.username,
-              gitlab_organization_id: organization.id,
-              data: event_data
-            }
-          )
+        def build_cloud_event(source:, subject:, current_user: nil, organization: nil, event_data: {})
+          attrs = {
+            specversion: '1.0',
+            type: "com.gitlab.#{get_event_category}.#{get_event_type}",
+            dataschema: "https://gitlab.com/schemas/#{get_event_category}/#{get_event_type}/v1.0",
+            id: SecureRandom.uuid,
+            datacontenttype: 'application/json',
+            time: Time.current.iso8601,
+            source: source,
+            subject: subject,
+            data: event_data
+          }
+
+          if current_user
+            attrs[:gitlab_user_id] = current_user.id
+            attrs[:gitlab_user_username] = current_user.username
+          end
+
+          attrs[:gitlab_organization_id] = organization.id if organization
+
+          new(data: attrs)
         end
 
         def register(type, klass)
@@ -186,9 +190,6 @@ module Gitlab
       end
 
       def schema
-        required_fields = %w[specversion type source id time datacontenttype dataschema subject data
-          gitlab_user_id gitlab_user_username gitlab_organization_id]
-
         {
           'type' => 'object',
           'properties' => {
@@ -205,7 +206,7 @@ module Gitlab
             'subject' => { 'type' => 'string' },
             'data' => { 'type' => 'object' } # This is validated in the data_schema
           },
-          'required' => required_fields
+          'required' => %w[specversion type source id time datacontenttype dataschema subject data]
         }
       end
 
@@ -229,7 +230,10 @@ module Gitlab
 
       def attributes
         ATTRIBUTES.each_with_object({}) do |key, attrs|
-          attrs[key.to_s] = build_attribute_value(data[key])
+          value = data[key]
+          next if value.nil?
+
+          attrs[key.to_s] = build_attribute_value(value)
         end
       end
 
