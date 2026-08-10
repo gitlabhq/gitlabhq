@@ -3667,12 +3667,6 @@ msgstr ""
 msgid "AICatalog|You are an expert in [domain]. Your communication style is [style]. When helping users, you should always... Your key strengths include... You approach problems by..."
 msgstr ""
 
-msgid "AICatalog|You must have the Maintainer or Owner role to enable a flow in a project."
-msgstr ""
-
-msgid "AICatalog|You must have the Maintainer or Owner role to enable an agent in a project."
-msgstr ""
-
 msgid "AICatalog|You must provide a source version."
 msgstr ""
 
@@ -6524,6 +6518,9 @@ msgstr ""
 msgid "AdminSettings|Allow contribution mapping to administrators %{allow_contribution_mapping_to_admins_link_start}%{icon}%{allow_contribution_mapping_to_admins_link_end}"
 msgstr ""
 
+msgid "AdminSettings|Allow dynamic client registration"
+msgstr ""
+
 msgid "AdminSettings|Allow exporting GitLab groups and projects by offline transfer"
 msgstr ""
 
@@ -6869,6 +6866,9 @@ msgstr ""
 msgid "AdminSettings|None (disabled)"
 msgstr ""
 
+msgid "AdminSettings|OAuth dynamic client registration"
+msgstr ""
+
 msgid "AdminSettings|Only enable search after installing the plugin, enabling indexing, and recreating the index."
 msgstr ""
 
@@ -7085,6 +7085,9 @@ msgstr ""
 msgid "AdminSettings|Turn on indexing for advanced search"
 msgstr ""
 
+msgid "AdminSettings|Turning off this setting will delete all dynamically registered OAuth applications and revoke their access tokens."
+msgstr ""
+
 msgid "AdminSettings|Use AWS OpenSearch Service with IAM credentials"
 msgstr ""
 
@@ -7116,6 +7119,9 @@ msgid "AdminSettings|When to delete dormant projects"
 msgstr ""
 
 msgid "AdminSettings|When upgrading to v%{target}, the following field names will change:"
+msgstr ""
+
+msgid "AdminSettings|When you turn off this setting, OAuth clients cannot register applications automatically and must be pre-registered as OAuth applications. Dynamic client registration is primarily used by MCP clients, such as AI tools, to register OAuth applications automatically."
 msgstr ""
 
 msgid "AdminSettings|When you turn on this setting, the GitLab Duo Agent Platform and external applications can access your data through MCP clients."

@@ -1,6 +1,0 @@
-#!/usr/bin/env ruby
-
-require 'bundler-checksum'
-require 'bundler_checksum/command'
-
-BundlerChecksum::Command.execute(ARGV)

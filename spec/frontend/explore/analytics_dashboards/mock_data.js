@@ -4,6 +4,12 @@ export const mockEmptyDashboardsListResponse = {
   },
 };
 
+// Shape returned when the query is unauthorized, e.g. the `custom_dashboard_storage`
+// feature flag is disabled: the field resolves to null rather than an empty list.
+export const mockNullDashboardsListResponse = {
+  customDashboards: null,
+};
+
 export const mockCustomDashboard = {
   id: 'gid://gitlab/Analytics::CustomDashboards::Dashboard/3',
   name: 'Fake trends',

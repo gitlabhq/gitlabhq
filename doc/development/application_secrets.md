@@ -41,7 +41,7 @@ end
 ```
 
 Until recently, we used `attr_encrypted` instead of `ActiveRecord::Encryption`. We are in the process of
-migrating all columns to use the new Rails-native encryption framework (see [epic 15420](https://gitlab.com/groups/gitlab-org/-/epics/15420)).
+migrating all columns to use the new Rails-native encryption framework (see [epic 15420](https://gitlab.com/groups/gitlab-org/-/work_items/15420)).
 For guidance on migrating existing `attr_encrypted` attributes, see [Migrating from `attr_encrypted` to `ActiveRecord::Encryption`](#migrating-from-attr_encrypted-to-activerecordencryption).
 
 Despite there being precedent, application secrets should not be stored as an `ApplicationSetting`.
@@ -219,7 +219,6 @@ See the complete implementation example in:
 
 - [MR !191926](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191926): Introduction of the `migrate_to_encrypts` method
 - [MR !189940](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/189940): Example usage migrating `ApplicationSetting.asset_proxy_secret_key`
-- [Epic &15420](https://gitlab.com/groups/gitlab-org/-/epics/15420): Overall migration project tracking 104+ attributes
 
 ## Operational secrets
 

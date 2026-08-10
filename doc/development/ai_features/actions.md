@@ -215,7 +215,7 @@ definition file to remove the pre-release suffix, and remove the `prompt_version
 ## How to migrate an existing action to the AI Gateway
 
 AI actions were initially implemented inside the GitLab monolith. As part of our
-[AI Gateway as the Sole Access Point for Monolith to Access Models Epic](https://gitlab.com/groups/gitlab-org/-/epics/13024)
+[AI Gateway as the Sole Access Point for Monolith to Access Models Epic](https://gitlab.com/groups/gitlab-org/-/work_items/13024)
 we're migrating prompts, model selection and model parameters into the AI Gateway. This will increase the speed at which
 we can deliver improvements to users on GitLab Self-Managed, by decoupling prompt and model changes from monolith releases. To
 migrate an existing action:

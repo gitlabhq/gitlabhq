@@ -69,7 +69,7 @@ component can have two indicators:
   services, that threshold is **5 seconds** when not opted in to the
   [`rails_request` SLI](../application_slis/rails_request.md).
 
-  We've made this target configurable in [this project](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/525).
+  We've made this target configurable in [this project](https://gitlab.com/groups/gitlab-com/gl-infra/-/work_items/525).
   To customize the request Apdex, see
   [Rails request SLIs](../application_slis/rails_request.md).
   This new Apdex measurement is not part of the error budget until you

@@ -110,11 +110,11 @@ to build the list of tags to destroy.
 Lastly, the cleanup tags service and delete tags service work using facades.
 The actual implementation depends on the type of container registry connected.
 If the GitLab container registry is connected, several improvements are available
-and used during cleanup policies execution, such as [better use of the container registry API](https://gitlab.com/groups/gitlab-org/-/epics/8379).
+and used during cleanup policies execution, such as [better use of the container registry API](https://gitlab.com/groups/gitlab-org/-/work_items/8379).
 
 ### Historic reference links
 
 - [First iteration](https://gitlab.com/gitlab-org/gitlab/-/issues/15398)
 - [Throttling policy executions](https://gitlab.com/gitlab-org/gitlab/-/issues/208193)
 - [Adding caching](https://gitlab.com/gitlab-org/gitlab/-/issues/339129)
-- [Further improvements](https://gitlab.com/groups/gitlab-org/-/epics/8379)
+- [Further improvements](https://gitlab.com/groups/gitlab-org/-/work_items/8379)

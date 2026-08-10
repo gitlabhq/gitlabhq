@@ -26,7 +26,7 @@ description: Visualize metrics about DevSecOps and AI features for your projects
 
 Analytics dashboards help you visualize collected data on built-in dashboards.
 
-An enhanced dashboard experience is proposed in [epic 13801](https://gitlab.com/groups/gitlab-org/-/epics/13801) and [epic 19430](https://gitlab.com/groups/gitlab-org/-/work_items/19430).
+An enhanced dashboard experience is proposed in [epic 13801](https://gitlab.com/groups/gitlab-org/-/work_items/13801) and [epic 19430](https://gitlab.com/groups/gitlab-org/-/work_items/19430).
 
 ## Data sources
 

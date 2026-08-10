@@ -29,6 +29,7 @@ project:
   - cancel_build
   - cancel_pipeline
   - create_ai_agent_identity
+  - create_ai_agent_session
   - create_build
   - create_commit_status
   - create_container_image
@@ -68,6 +69,7 @@ project:
   - publish_catalog_version
   - publish_status_page
   - push_code
+  - read_ai_agent_session
   - read_ai_catalog_flow
   - read_ai_catalog_third_party_flow
   - read_ai_flow_triggers
@@ -110,6 +112,7 @@ project:
   - trigger_ai_flow
   - trigger_amazon_q
   - unschedule_job
+  - update_ai_agent_session
   - update_alert_management_alert
   - update_build
   - update_container_image

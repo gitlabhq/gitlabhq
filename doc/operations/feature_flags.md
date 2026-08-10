@@ -406,7 +406,7 @@ For more information, see [using feature flags](#using-feature-flags).
 
 ### Maximum supported clients in application nodes
 
-GitLab accepts as many client requests as possible until it hits the [rate limit](../security/rate_limits.md).
+GitLab accepts as many client requests as possible until it hits the [rate limit](../rate_limits/_index.md).
 The feature flag API is considered **Unauthenticated traffic (from a given IP address)**. For GitLab.com, see the [GitLab.com specific limits](../user/gitlab_com/_index.md).
 
 The polling rate is configurable in SDKs. Provided that all clients are requesting from the same IP:

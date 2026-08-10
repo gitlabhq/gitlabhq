@@ -15,8 +15,6 @@ end
 
 extend ignore_feature_category
 
-# Deprecated
-gem 'bundler-checksum', '~> 0.1.0', path: 'gems/bundler-checksum', require: false, feature_category: :rails_platform
 gem 'auto_freeze', path: 'gems/auto_freeze', feature_category: :rails_platform
 
 # See https://docs.gitlab.com/ee/development/gemfile.html#upgrade-rails for guidelines when upgrading Rails

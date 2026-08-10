@@ -35,7 +35,7 @@ Standalone service used to give access to AI features to non-SaaS GitLab users. 
 
 ### AI Gateway prompt
 
-An encapsulation of prompt templates, model selection, and model parameters. As part of the [AI Gateway as the Sole Access Point for Monolith to Access Models](https://gitlab.com/groups/gitlab-org/-/epics/13024) effort we're migrating these components from the GitLab Rails monolith into [the `prompts` package in the AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/tree/main/ai_gateway/prompts).
+An encapsulation of prompt templates, model selection, and model parameters. As part of the [AI Gateway as the Sole Access Point for Monolith to Access Models](https://gitlab.com/groups/gitlab-org/-/work_items/13024) effort we're migrating these components from the GitLab Rails monolith into [the `prompts` package in the AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/tree/main/ai_gateway/prompts).
 
 ### AI Gateway prompt registry
 

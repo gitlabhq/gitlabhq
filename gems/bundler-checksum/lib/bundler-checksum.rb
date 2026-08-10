@@ -1,1 +1,0 @@
-require 'bundler_checksum'

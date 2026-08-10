@@ -214,7 +214,7 @@ For example, you can select code and ask Chat, `Can you simplify this?`.
 
 {{< history >}}
 
-- Introduced as [generally available](https://gitlab.com/groups/gitlab-org/-/epics/15218) in the GitLab for VS Code extension 5.15.0.
+- Introduced as [generally available](https://gitlab.com/groups/gitlab-org/-/work_items/15218) in the GitLab for VS Code extension 5.15.0.
 - Insert Snippet [added](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/merge_requests/2150) in the GitLab for VS Code extension 5.25.0.
 
 {{< /history >}}
@@ -312,7 +312,7 @@ After GitLab Duo Chat opens:
 
 {{< history >}}
 
-- Introduced as generally available in the [GitLab Duo plugin for JetBrains 3.0.0](https://gitlab.com/groups/gitlab-org/editor-extensions/-/epics/80) and [GitLab for VS Code extension 5.14.0](https://gitlab.com/groups/gitlab-org/-/epics/15218).
+- Introduced as generally available in the [GitLab Duo plugin for JetBrains 3.0.0](https://gitlab.com/groups/gitlab-org/editor-extensions/-/epics/80) and [GitLab for VS Code extension 5.14.0](https://gitlab.com/groups/gitlab-org/-/work_items/15218).
 
 {{< /history >}}
 

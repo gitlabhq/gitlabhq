@@ -17,7 +17,7 @@ title: Rate limits on Repository files API
 The [Repository files API](../../api/repository_files.md) enables you to
 fetch, create, update, and delete files in your repository. To improve the security
 and durability of your web application, you can enforce
-[rate limits](../../security/rate_limits.md) on this API. Any rate limits you
+[rate limits](../../rate_limits/_index.md) on this API. Any rate limits you
 create for the Files API override the [general user and IP rate limits](user_and_ip_rate_limits.md).
 
 ## Define Files API rate limits
@@ -49,6 +49,6 @@ To override the general user and IP rate limits for requests to the Repository f
 
 ## Related topics
 
-- [Rate limits](../../security/rate_limits.md)
+- [Rate limits](../../rate_limits/_index.md)
 - [Repository files API](../../api/repository_files.md)
 - [User and IP rate limits](user_and_ip_rate_limits.md)

@@ -75,6 +75,18 @@
       = f.gitlab_ui_checkbox_component :user_oauth_applications, _('Allow users to register any application to use GitLab as an OAuth provider. This setting does not affect group-level OAuth applications.')
 
     .form-group
+      = f.label :dynamic_client_registration_enabled, s_('AdminSettings|OAuth dynamic client registration'), class: 'label-bold'
+      = f.gitlab_ui_checkbox_component :dynamic_client_registration_enabled,
+          s_('AdminSettings|Allow dynamic client registration'),
+          checkbox_options: { class: 'js-dcr-enabled' },
+          help_text: s_('AdminSettings|When you turn off this setting, OAuth clients cannot register applications automatically and must be pre-registered as OAuth applications. Dynamic client registration is primarily used by MCP clients, such as AI tools, to register OAuth applications automatically.')
+      = render Pajamas::AlertComponent.new(variant: :warning,
+          dismissible: false,
+          alert_options: { class: 'gl-mt-3 js-dcr-disabled-warning gl-hidden' }) do |c|
+        - c.with_body do
+          = s_('AdminSettings|Turning off this setting will delete all dynamically registered OAuth applications and revoke their access tokens.')
+
+    .form-group
       = f.label :user_default_external, _('External users'), class: 'label-bold'
       = f.gitlab_ui_checkbox_component :user_default_external, _('Make new users external by default')
       .gl-mt-3

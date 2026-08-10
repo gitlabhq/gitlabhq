@@ -14,7 +14,7 @@ title: Protected paths
 {{< /details >}}
 
 Rate limiting is a technique that improves the security and durability of a web
-application. For more details, see [Rate limits](../../security/rate_limits.md).
+application. For more details, see [Rate limits](../../rate_limits/_index.md).
 
 You can rate limit (protect) specified paths. For these paths, GitLab responds with HTTP status
 code `429` to POST requests that exceed 10 requests per minute per IP address and GET requests that exceed 10 requests per minute per IP address at protected paths.

@@ -14,7 +14,7 @@ title: User and IP rate limits
 
 Rate limiting is a common technique used to improve the security and durability
 of a web application. For more details, see
-[Rate limits](../../security/rate_limits.md).
+[Rate limits](../../rate_limits/_index.md).
 
 The following limits are disabled by default:
 
@@ -105,7 +105,7 @@ To use a custom response:
 
 ## Maximum authenticated requests to `project/:id/jobs` per minute
 
-To reduce timeouts, the `project/:id/jobs` endpoint has a default [rate limit](../../security/rate_limits.md#project-jobs-api-endpoint) of 600 calls per authenticated user.
+To reduce timeouts, the `project/:id/jobs` endpoint has a default [rate limit](../../rate_limits/_index.md#project-jobs-api-endpoint) of 600 calls per authenticated user.
 
 To modify the maximum number of requests:
 

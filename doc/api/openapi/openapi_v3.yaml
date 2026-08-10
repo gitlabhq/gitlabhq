@@ -36,6 +36,8 @@ tags:
   description: Operations related to agents.
 - name: Ai agent identities
   description: Operations related to ai agent identities.
+- name: Ai agent sessions
+  description: Operations related to ai agent sessions.
 - name: Alert management
   description: Operations related to alert management.
 - name: Analytics
@@ -1212,6 +1214,230 @@ paths:
         '400':
           description: Bad Request
       x-gitlab-lifecycle: experiment
+  "/api/v4/projects/{id}/ai_agent/sessions":
+    post:
+      operationId: postApiV4ProjectsIdAiAgentSessions
+      summary: Create an external agent session.
+      description: Creates a new external agent session for the current user and project.
+        Returns an existing record if an idempotency_key is provided and a matching
+        session already exists.
+      tags:
+      - Projects
+      - Ai agent sessions
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesAiExternalAgentsSession"
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+        '429':
+          description: Too many requests
+      parameters:
+      - name: id
+        required: true
+        description: The ID or URL-encoded path of the project
+        schema:
+          oneOf:
+          - type: string
+          - type: integer
+        in: path
+        example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/RequestBody_9fed56308dd0"
+      x-gitlab-lifecycle: experiment
+    get:
+      operationId: getApiV4ProjectsIdAiAgentSessions
+      summary: List external agent sessions for a project.
+      description: Returns a paginated list of external agent sessions for the project.
+      tags:
+      - Projects
+      - Ai agent sessions
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesAiExternalAgentsSession"
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+        '400':
+          description: Bad Request
+      parameters:
+      - name: agent_type
+        required: false
+        description: Filter by agent type.
+        schema:
+          type: string
+          enum:
+          - claude-code
+          - opencode
+          nullable: true
+        in: query
+      - name: status
+        required: false
+        description: Filter by status.
+        schema:
+          type: string
+          enum:
+          - created
+          - running
+          - finished
+          - failed
+          - stopped
+          nullable: true
+        in: query
+      - name: created_after
+        required: false
+        description: Filter sessions created after this time.
+        schema:
+          type: string
+          format: date-time
+          nullable: true
+        in: query
+      - name: created_before
+        required: false
+        description: Filter sessions created before this time.
+        schema:
+          type: string
+          format: date-time
+          nullable: true
+        in: query
+      - name: page
+        required: false
+        description: Current page number
+        schema:
+          type: integer
+          default: 1
+          nullable: true
+        in: query
+        example: 1
+      - name: per_page
+        required: false
+        description: Number of items per page
+        schema:
+          type: integer
+          default: 20
+          nullable: true
+        in: query
+        example: 20
+      - name: id
+        required: true
+        description: The ID or URL-encoded path of the project
+        schema:
+          oneOf:
+          - type: string
+          - type: integer
+        in: path
+        example: 1
+      x-gitlab-lifecycle: experiment
+  "/api/v4/projects/{id}/ai_agent/sessions/{session_id}":
+    patch:
+      operationId: patchApiV4ProjectsIdAiAgentSessionsSessionId
+      summary: Complete or fail an external agent session.
+      description: Marks a session as completed or failed. The authenticated user
+        must be the creator of the session. Returns the existing record unchanged
+        if jsonl_sha256 matches the stored value.
+      tags:
+      - Projects
+      - Ai agent sessions
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesAiExternalAgentsSession"
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+      parameters:
+      - name: session_id
+        required: true
+        description: The session ID.
+        schema:
+          type: integer
+        in: path
+      - name: id
+        required: true
+        description: The ID or URL-encoded path of the project
+        schema:
+          oneOf:
+          - type: string
+          - type: integer
+        in: path
+        example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/RequestBody_2bd45a9e85d9"
+      x-gitlab-lifecycle: experiment
+  "/api/v4/projects/{id}/ai_agent/identities":
+    post:
+      operationId: postApiV4ProjectsIdAiAgentIdentities
+      summary: Register an external agent identity.
+      description: Registers a new agent identity for the current user, project, agent
+        type, and machine fingerprint combination. Returns an existing record if one
+        already exists. Returns 403 if the identity has been revoked.
+      tags:
+      - Projects
+      - Ai agent identities
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesAiExternalAgentsIdentity"
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+      parameters:
+      - name: id
+        required: true
+        description: The ID or URL-encoded path of the project
+        schema:
+          oneOf:
+          - type: string
+          - type: integer
+        in: path
+        example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/RequestBody_80c272d831b7"
+      x-gitlab-lifecycle: experiment
   "/api/v4/ai/duo_workflows/flow_callbacks":
     get:
       operationId: getApiV4AiDuoWorkflowsFlowCallbacks
@@ -1332,48 +1558,6 @@ paths:
         schema:
           type: integer
         in: path
-  "/api/v4/projects/{id}/ai_agent/identities":
-    post:
-      operationId: postApiV4ProjectsIdAiAgentIdentities
-      summary: Register an external agent identity.
-      description: Registers a new agent identity for the current user, project, agent
-        type, and machine fingerprint combination. Returns an existing record if one
-        already exists. Returns 403 if the identity has been revoked.
-      tags:
-      - Projects
-      - Ai agent identities
-      responses:
-        '201':
-          description: Created
-          content:
-            application/json:
-              schema:
-                "$ref": "#/components/schemas/APIEntitiesAiExternalAgentsIdentity"
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not found
-      parameters:
-      - name: id
-        required: true
-        description: The ID or URL-encoded path of the project
-        schema:
-          oneOf:
-          - type: string
-          - type: integer
-        in: path
-        example: 1
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              "$ref": "#/components/schemas/RequestBody_80c272d831b7"
-      x-gitlab-lifecycle: experiment
   "/api/v4/ai/duo_workflows/workflows/{id}/audit_events":
     post:
       operationId: postApiV4AiDuoWorkflowsWorkflowsIdAuditEvents
@@ -1484,7 +1668,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_752e903252d0"
+              "$ref": "#/components/schemas/RequestBody_d98ff4ec17a4"
       x-gitlab-lifecycle: experiment
   "/api/v4/ai/duo_workflows/revoke_token":
     post:
@@ -1909,7 +2093,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_96013d8cf931"
+              "$ref": "#/components/schemas/RequestBody_0b3b859426ba"
       x-gitlab-lifecycle: experiment
   "/api/v4/ai/duo_workflows/workflows/agent_privileges":
     get:
@@ -76496,6 +76680,50 @@ components:
           type: array
           items:
             "$ref": "#/components/schemas/APIEntitiesAiSemanticCodeGroupedResult"
+    APIEntitiesAiExternalAgentsSession:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        agent_type:
+          type: string
+          example: claude-code
+        agent_identity_id:
+          type: integer
+          example: 1
+        user_id:
+          type: integer
+          example: 1
+        sync_type:
+          type: string
+          example: hook
+        status:
+          type: string
+          example: running
+        goal:
+          type: string
+          example: Implement the login feature
+        created_at:
+          type: string
+          example: '2026-06-17T00:00:00.000Z'
+        updated_at:
+          type: string
+          example: '2026-06-17T00:00:00.000Z'
+    APIEntitiesAiExternalAgentsIdentity:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        agent_type:
+          type: string
+          example: claude-code
+        revoked_at:
+          type: string
+        created_at:
+          type: string
+          example: '2026-06-17T00:00:00.000Z'
     APIEntitiesAiDuoWorkflowsFlowCallbackHook:
       type: object
       properties:
@@ -76518,20 +76746,6 @@ components:
           type: string
           format: date-time
           example: '2026-07-22T11:37:00Z'
-    APIEntitiesAiExternalAgentsIdentity:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 1
-        agent_type:
-          type: string
-          example: claude-code
-        revoked_at:
-          type: string
-        created_at:
-          type: string
-          example: '2026-06-17T00:00:00.000Z'
     APIEntitiesCustomAttribute:
       type: object
       properties:
@@ -94587,6 +94801,82 @@ components:
           nullable: true
       required:
       - project_path
+    RequestBody_9fed56308dd0:
+      type: object
+      properties:
+        agent_type:
+          type: string
+          enum:
+          - claude-code
+          - opencode
+          description: The type of agent.
+          minLength: 1
+        agent_identity_id:
+          type: integer
+          description: ID of the registered agent identity.
+          nullable: true
+        sync_type:
+          type: string
+          enum:
+          - hook
+          - fallback
+          - manual
+          description: How the session was synced.
+          minLength: 1
+        goal:
+          type: string
+          description: User-provided session description.
+          nullable: true
+        started_at:
+          type: string
+          format: date-time
+          description: Session start time, supports backfill.
+          nullable: true
+        idempotency_key:
+          type: string
+          description: Client-generated UUID for retry safety.
+          nullable: true
+          maxLength: 255
+      required:
+      - agent_type
+      - agent_identity_id
+      - sync_type
+    RequestBody_2bd45a9e85d9:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - completed
+          - failed
+          description: Terminal status.
+          minLength: 1
+        jsonl_sha256:
+          type: string
+          description: SHA-256 of the transcript file.
+          pattern: "^\\p{AHex}{64}$"
+          nullable: true
+          maxLength: 64
+      required:
+      - status
+    RequestBody_80c272d831b7:
+      type: object
+      properties:
+        agent_type:
+          type: string
+          enum:
+          - claude-code
+          - opencode
+          description: The type of agent being registered.
+          minLength: 1
+        machine_fingerprint:
+          type: string
+          description: SHA-256 hash of the machine identifier.
+          nullable: true
+          maxLength: 64
+      required:
+      - agent_type
+      - machine_fingerprint
     RequestBody_3bf1a359c145:
       type: object
       properties:
@@ -94616,24 +94906,6 @@ components:
           maxLength: 8192
       required:
       - url
-    RequestBody_80c272d831b7:
-      type: object
-      properties:
-        agent_type:
-          type: string
-          enum:
-          - claude-code
-          - opencode
-          description: The type of agent being registered.
-          minLength: 1
-        machine_fingerprint:
-          type: string
-          description: SHA-256 hash of the machine identifier.
-          nullable: true
-          maxLength: 64
-      required:
-      - agent_type
-      - machine_fingerprint
     RequestBody_8129788813d5:
       type: object
       properties:
@@ -94695,7 +94967,7 @@ components:
       - project_id
       - merge_request_iid
       - review_output
-    RequestBody_752e903252d0:
+    RequestBody_d98ff4ec17a4:
       type: object
       properties:
         project_id:
@@ -94757,6 +95029,7 @@ components:
           - chat_partial
           - chat
           - ambient
+          - external
           description: Environment for the workflow.
           nullable: true
         ai_catalog_item_version_id:
@@ -95009,7 +95282,7 @@ components:
           description: The ID or path of the project
           example: '1'
           nullable: true
-    RequestBody_96013d8cf931:
+    RequestBody_0b3b859426ba:
       type: object
       properties:
         project_id:
@@ -95083,6 +95356,7 @@ components:
           - chat_partial
           - chat
           - ambient
+          - external
           description: Environment for the workflow.
           nullable: true
         ai_catalog_item_version_id:

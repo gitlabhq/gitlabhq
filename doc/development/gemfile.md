@@ -12,13 +12,8 @@ attention to the following rules.
 
 In [GitLab 19.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230459),
 we have now switched to native Bundler checksum verification.
-
-The old bundler-checksum gem is now deprecated.
-Please remove any usages of :
-
-- `BUNDLER_CHECKSUM_VERIFICATION_OPT_IN`
-- `bundle exec bundler-checksum init`
-- `bundle exec bundler-checksum lint`
+Since [GitLab 19.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249260),
+the old `bundler-checksum` gem has been removed.
 
 ### Updating the checksum file
 

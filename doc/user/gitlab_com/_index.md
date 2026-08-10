@@ -421,7 +421,7 @@ GitLab.com uses the default of 60 seconds for [Puma request timeouts](../../admi
 ## Rate limits on GitLab.com
 
 > [!note]
-> See [Rate limits](../../security/rate_limits.md) for administrator
+> See [Rate limits](../../rate_limits/_index.md) for administrator
 > documentation.
 
 When a request is rate limited, GitLab responds with a `429` status
@@ -536,7 +536,7 @@ To resolve this issue, use [SSH keys to communicate with GitLab](../ssh.md).
 ### Non-configurable limits
 
 For more information about non-configurable rate limits used on GitLab.com, see
-[non-configurable limits](../../security/rate_limits.md#non-configurable-limits)
+[non-configurable limits](../../rate_limits/_index.md#non-configurable-limits)
 
 ### Pagination response headers
 

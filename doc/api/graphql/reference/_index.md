@@ -70662,6 +70662,7 @@ The environment of a workflow.
 | <a id="workflowenvironment-ambient"></a>`AMBIENT` | Ambient environment. |
 | <a id="workflowenvironment-chat"></a>`CHAT` | Chat environment. |
 | <a id="workflowenvironment-chat_partial"></a>`CHAT_PARTIAL` | Chat Partial environment. |
+| <a id="workflowenvironment-external"></a>`EXTERNAL` | External environment. |
 | <a id="workflowenvironment-ide"></a>`IDE` {{< icon name="warning-solid" >}} | Deprecated in GitLab 18.6. Renamed. Use `CHAT` instead. |
 | <a id="workflowenvironment-web"></a>`WEB` {{< icon name="warning-solid" >}} | Deprecated in GitLab 18.6. Renamed. Use `AMBIENT` instead. |
 

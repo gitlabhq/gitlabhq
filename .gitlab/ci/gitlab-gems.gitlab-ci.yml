@@ -10,9 +10,6 @@ include:
       gem_name: "auto_freeze"
   - local: .gitlab/ci/templates/gem.gitlab-ci.yml
     inputs:
-      gem_name: "bundler-checksum"
-  - local: .gitlab/ci/templates/gem.gitlab-ci.yml
-    inputs:
       gem_name: "gitlab-email_handler"
   - local: .gitlab/ci/templates/gem.gitlab-ci.yml
     inputs:

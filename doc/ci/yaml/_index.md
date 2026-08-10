@@ -1429,7 +1429,7 @@ The following topics explain how to use keywords to configure CI/CD pipelines.
 
 {{< history >}}
 
-- Running `after_script` commands for canceled jobs [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10158) in GitLab 17.0.
+- Running `after_script` commands for canceled jobs [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/10158) in GitLab 17.0.
 
 {{< /history >}}
 

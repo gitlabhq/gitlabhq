@@ -46,7 +46,7 @@ you can visit <https://gitlab.com/help/instance_configuration>.
 
 Rate limits can be used to improve the security and durability of GitLab.
 
-Read more about [configuring rate limits](../security/rate_limits.md).
+Read more about [configuring rate limits](../rate_limits/_index.md).
 
 ### Issue creation
 

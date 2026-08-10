@@ -62,7 +62,7 @@ You can find all those directories listed in the [Linux package configuration do
 ### Platform usage and settings
 
 - [Review GitLab token type and usages](tokens/_index.md).
-- [How to configure rate limits to improve security and availability](rate_limits.md).
+- [How to configure rate limits to improve security and availability](../rate_limits/_index.md).
 - [How to filter outbound webhook requests](webhooks.md).
 - [How to configure import and export limits and timeouts](../administration/settings/import_and_export_settings.md).
 - [Review Runner security considerations and recommendations](https://docs.gitlab.com/runner/security/).
@@ -90,4 +90,4 @@ GitLab Self-Managed customers and administrators are responsible for the securit
 
 ## Rate limits
 
-For information about rate limits, see [Rate limits](rate_limits.md).
+For information about rate limits, see [Rate limits](../rate_limits/_index.md).

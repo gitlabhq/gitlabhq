@@ -139,7 +139,7 @@ To migrate a group or project:
 
 ## Rate limits
 
-See [offline transfer rate limits](../../../security/rate_limits.md#offline-transfer-exports-and-imports).
+See [offline transfer rate limits](../../../rate_limits/_index.md#offline-transfer-exports-and-imports).
 
 ## Related topics
 

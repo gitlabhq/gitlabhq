@@ -6,7 +6,7 @@ title: Navigation sidebar
 ---
 
 Follow these guidelines when contributing additions or changes to the
-[redesigned](https://gitlab.com/groups/gitlab-org/-/epics/9044) navigation
+[redesigned](https://gitlab.com/groups/gitlab-org/-/work_items/9044) navigation
 sidebar.
 
 These guidelines reflect the current state of the navigation sidebar. However,

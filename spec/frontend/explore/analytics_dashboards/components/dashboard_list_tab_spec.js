@@ -10,7 +10,11 @@ import DashboardsList from '~/vue_shared/components/dashboards_list/dashboards_l
 import EmptyState from '~/vue_shared/components/dashboards_list/empty_state.vue';
 import DashboardListTab from '~/explore/analytics_dashboards/components/dashboard_list_tab.vue';
 import getDashboardsQuery from '~/explore/analytics_dashboards/graphql/get_dashboards.query.graphql';
-import { mockDashboardsListResponse, mockEmptyDashboardsListResponse } from '../mock_data';
+import {
+  mockDashboardsListResponse,
+  mockEmptyDashboardsListResponse,
+  mockNullDashboardsListResponse,
+} from '../mock_data';
 
 Vue.use(VueApollo);
 
@@ -72,6 +76,23 @@ describe('DashboardListTab', () => {
 
     it('renders the empty state', () => {
       expect(findEmptyState().exists()).toBe(true);
+    });
+  });
+
+  describe('empty state renders when the dashboards query is unauthorized', () => {
+    beforeEach(async () => {
+      createComponent({ requestHandlers: mockResolvedQuery(mockNullDashboardsListResponse) });
+
+      await waitForPromises();
+    });
+
+    it('renders the empty state', () => {
+      expect(findEmptyState().exists()).toBe(true);
+    });
+
+    it('does not render the dashboards list or an alert', () => {
+      expect(findDashboardsList().exists()).toBe(false);
+      expect(findAlert().exists()).toBe(false);
     });
   });
 

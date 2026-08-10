@@ -81,5 +81,5 @@ On GitLab.com, Git HTTP requests are subject to
 
 ## Related topics
 
-- [Rate limiting](../../security/rate_limits.md)
+- [Rate limiting](../../rate_limits/_index.md)
 - [User and IP rate limits](user_and_ip_rate_limits.md)

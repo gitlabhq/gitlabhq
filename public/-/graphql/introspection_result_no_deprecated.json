@@ -236244,6 +236244,12 @@
               "description": "Ambient environment",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "EXTERNAL",
+              "description": "External environment",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null

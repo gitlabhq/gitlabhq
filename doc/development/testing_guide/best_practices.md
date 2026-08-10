@@ -1854,7 +1854,7 @@ And if you need more specific control, the DNS blocking is implemented in
 
 #### Rate Limiting
 
-[Rate limiting](../../security/rate_limits.md) is enabled in the test suite. Rate limits
+[Rate limiting](../../rate_limits/_index.md) is enabled in the test suite. Rate limits
 may be triggered in feature specs that use the `:js` trait. In most cases, triggering rate
 limiting can be avoided by marking the spec with the `:clean_gitlab_redis_rate_limiting`
 trait. This trait clears the rate limiting data stored in Redis cache between specs. If
