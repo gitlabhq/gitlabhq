@@ -1,0 +1,9 @@
+fragment Group on Group {
+  id
+  fullName
+  avatarUrl
+  groupMembersCount
+  projectsCount
+  descendantGroupsCount
+  visibility
+}

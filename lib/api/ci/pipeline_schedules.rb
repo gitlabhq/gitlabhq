@@ -14,7 +14,7 @@ module API
         requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project',
           documentation: { example: 18 }
       end
-      resource :projects, requirements: ::API::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc 'List all pipeline schedules' do
           detail 'Lists all pipeline schedules for a project.'
           success code: 200, model: Entities::Ci::PipelineSchedule

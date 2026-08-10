@@ -66,7 +66,7 @@ module API
             skip_granular_token_authorization: :external_registry_redirect
           get '*package_name',
             requirements: ::API::Helpers::Packages::Npm::NPM_ENDPOINT_REQUIREMENTS
-              .merge(API::NO_FORMAT_SUFFIX_REQUIREMENT) do
+              .merge(::API::NO_FORMAT_SUFFIX_REQUIREMENT) do
             package_name = declared_params[:package_name]
             packages =
               if Feature.enabled?(:npm_allow_packages_in_multiple_projects, group_or_namespace)

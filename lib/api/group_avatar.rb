@@ -9,7 +9,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of the group'
     end
-    resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :groups, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Download a group avatar' do
         detail 'Downloads a group avatar image.'
         tags %w[avatars]

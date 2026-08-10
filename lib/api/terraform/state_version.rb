@@ -17,7 +17,7 @@ module API
         requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
       end
 
-      resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         params do
           requires :name, type: String, desc: 'The name of a Terraform state'
           requires :serial, type: Integer, desc: 'The version number of the state'

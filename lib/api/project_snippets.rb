@@ -14,7 +14,7 @@ module API
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       helpers Helpers::SnippetsHelpers
       helpers SpammableActions::CaptchaCheck::RestApiActionsSupport
       helpers do
@@ -231,7 +231,7 @@ module API
         use :raw_file_params
       end
       route_setting :authorization, permissions: :read_snippet, boundary_type: :project
-      get ":id/snippets/:snippet_id/files/:ref/:file_path/raw", requirements: { file_path: API::NO_SLASH_URL_PART_REGEX } do
+      get ":id/snippets/:snippet_id/files/:ref/:file_path/raw", requirements: { file_path: ::API::NO_SLASH_URL_PART_REGEX } do
         snippet = snippets_for_current_user.find_by(id: params[:snippet_id])
         not_found!('Snippet') unless snippet&.repo_exists?
 

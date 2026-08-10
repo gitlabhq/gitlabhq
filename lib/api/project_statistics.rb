@@ -12,7 +12,7 @@ module API
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Retrieve the statistics of the last 30 days' do
         detail 'Retrieves the clone and pull statistics for the last 30 days from a specified project.'
         success Entities::ProjectDailyStatistics

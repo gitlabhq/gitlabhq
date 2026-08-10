@@ -1009,23 +1009,6 @@ Use:
 
 Do not use Latin abbreviations. Use **for example**, **such as**, **for instance**, or **like** instead. ([Vale](../testing/vale.md) rule: [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/LatinTerms.yml))
 
-## ellipsis, ellipses
-
-Avoid ellipses when you can. If you must include them, for example as part of a code block or other CLI response,
-use three periods with no space (`...`) instead of the `&hellip;` HTML entity or the `&#8230;` HTML code.
-
-For more information, see [code blocks](_index.md#code-blocks).
-
-Do not include any ellipses when documenting UI text. For example, use:
-
-- **Search or go to**
-
-Instead of:
-
-- **Search or go to...**
-
-For more information, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/punctuation/ellipses).
-
 ## email
 
 Do not use **e-mail** with a hyphen. When plural, use **emails** or **email messages**. ([Vale](../testing/vale.md) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/SubstitutionWarning.yml))

@@ -7,7 +7,7 @@ module API
 
     allow_access_with_scope :ai_workflows, if: ->(request) { request.get? || request.head? }
 
-    TAG_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(tag_name: API::NO_SLASH_URL_PART_REGEX)
+    TAG_ENDPOINT_REQUIREMENTS = ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(tag_name: ::API::NO_SLASH_URL_PART_REGEX)
 
     before do
       authorize_read_code!
@@ -26,7 +26,7 @@ module API
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'List all project repository tags' do
         detail 'Lists all repository tags from a project, sorted by update date and time in descending order.'
         is_array true

@@ -13,7 +13,7 @@ module API
     helpers ::API::Helpers::PersonalAccessTokensHelpers
 
     %w[project group].each do |source_type|
-      resource source_type.pluralize, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      resource source_type.pluralize, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc "List all #{source_type} access tokens" do
           detail "Lists all #{source_type} access tokens for a specified #{source_type}."
           is_array true

@@ -140,7 +140,7 @@ module API
       route_setting :authorization, permissions: :download_npm_package, boundary_type: :project,
         job_token_policies: :read_packages,
         allow_public_access_for_enabled_project_features: :package_registry
-      get '*package_name/-/*file_name', requirements: API::NO_FORMAT_SUFFIX_REQUIREMENT do
+      get '*package_name/-/*file_name', requirements: ::API::NO_FORMAT_SUFFIX_REQUIREMENT do
         authorize_read_package!(project)
 
         package = package_or_nil
@@ -253,7 +253,7 @@ module API
         allow_public_access_for_enabled_project_features: :package_registry
       get '*package_name',
         requirements: ::API::Helpers::Packages::Npm::NPM_ENDPOINT_REQUIREMENTS
-          .merge(API::NO_FORMAT_SUFFIX_REQUIREMENT) do
+          .merge(::API::NO_FORMAT_SUFFIX_REQUIREMENT) do
         package_name = declared_params[:package_name]
         packages = ::Packages::Npm::PackageFinder.new(project: project_or_nil, params: { package_name: package_name }).execute
 

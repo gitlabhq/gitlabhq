@@ -3,7 +3,9 @@ import { GlButton, GlModal, GlSprintf } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import { createAlert } from '~/alert';
 import { isDefaultOrganization } from '~/organizations/shared/utils';
-import organizationsForReconciliationQuery from '../graphql/queries/organizations_for_reconciliation.query.graphql';
+import { DEFAULT_ORGANIZATION_GID } from '~/organizations/shared/constants';
+import groupsQuery from '../graphql/queries/groups.query.graphql';
+import { NEW_ORGANIZATION_GID } from '../constants';
 import SkeletonLoader from './skeleton_loader.vue';
 import Step1 from './steps/step_1.vue';
 import Step2 from './steps/step_2.vue';
@@ -32,6 +34,14 @@ export default {
       required: false,
       default: false,
     },
+    groupFullPath: {
+      type: String,
+      required: true,
+    },
+    groupGid: {
+      type: String,
+      required: true,
+    },
   },
   emits: ['change'],
   data() {
@@ -43,15 +53,34 @@ export default {
   },
   apollo: {
     organizations: {
-      query: organizationsForReconciliationQuery,
+      query: groupsQuery,
+      variables() {
+        return {
+          defaultOrganizationGid: DEFAULT_ORGANIZATION_GID,
+          groupFullPath: this.groupFullPath,
+          groupGid: this.groupGid,
+        };
+      },
       skip() {
         return !this.visible || this.organizations.length > 0;
       },
       update(data) {
-        const nodes = data?.organizations?.nodes || [];
-        this.setInitialDefaultOrgGroups(nodes);
+        const { group, defaultOrganization } = data;
 
-        return nodes;
+        this.setInitialDefaultOrgGroups(defaultOrganization.groups.nodes);
+
+        return [
+          {
+            id: NEW_ORGANIZATION_GID,
+            name: group.fullName,
+            visibility: group.visibility,
+            avatarUrl: group.avatarUrl,
+            groups: {
+              nodes: [group],
+            },
+          },
+          defaultOrganization,
+        ];
       },
       error(error) {
         createAlert({ message: this.$options.i18n.errorMessage, error, captureError: true });
@@ -92,12 +121,8 @@ export default {
     },
   },
   methods: {
-    setInitialDefaultOrgGroups(nodes) {
-      const defaultOrg = nodes.find(isDefaultOrganization);
-
-      if (defaultOrg) {
-        this.initialDefaultOrgGroupIds = defaultOrg.groups.nodes.map((group) => group.id);
-      }
+    setInitialDefaultOrgGroups(defaultOrgGroups) {
+      this.initialDefaultOrgGroupIds = defaultOrgGroups.map((group) => group.id);
     },
     updateModalVisibility(value) {
       this.$emit('change', value);

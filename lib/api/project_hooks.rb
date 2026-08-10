@@ -59,7 +59,7 @@ module API
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       namespace ':id/hooks' do
         mount ::API::Hooks::UrlVariables, with: { boundary_type: :project }
         mount ::API::Hooks::CustomHeaders, with: { boundary_type: :project }

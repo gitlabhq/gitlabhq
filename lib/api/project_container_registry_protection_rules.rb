@@ -12,7 +12,7 @@ module API
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       resource ':id/registry/protection/repository/rules' do
         desc 'List all container repository protection rules' do
           detail 'Lists all container repository protection rules for a specified project.'

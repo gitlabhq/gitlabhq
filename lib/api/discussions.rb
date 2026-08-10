@@ -41,7 +41,7 @@ module API
       params do
         requires :id, type: String, desc: "The ID of a #{parent_type}"
       end
-      resource parent_type.pluralize.to_sym, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      resource parent_type.pluralize.to_sym, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc "List all discussions for #{notable_article} #{notable_name}" do
           detail "Lists all discussions for a specified #{notable_name}."
           success Entities::Discussion

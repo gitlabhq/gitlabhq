@@ -15,7 +15,7 @@ module API
       requires :id, types: [String, Integer],
         desc: 'The ID or URL-encoded path of the group owned by the authenticated user'
     end
-    resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :groups, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Purge the dependency proxy for a group' do
         detail 'Purges the dependency proxy for a specified group and schedules the cached manifests and blobs ' \
           'for deletion. This endpoint requires the Owner role for the group.'

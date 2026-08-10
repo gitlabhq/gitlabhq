@@ -8,8 +8,8 @@ module API
     allow_access_with_scope :ai_workflows, if: ->(request) { request.get? || request.head? }
 
     releases_tags = %w[releases]
-    RELEASE_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS
-      .merge(tag_name: API::NO_SLASH_URL_PART_REGEX)
+    RELEASE_ENDPOINT_REQUIREMENTS = ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS
+      .merge(tag_name: ::API::NO_SLASH_URL_PART_REGEX)
     RELEASE_CLI_USER_AGENT = 'GitLab-release-cli'
 
     feature_category :release_orchestration
@@ -18,7 +18,7 @@ module API
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the group'
     end
-    resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :groups, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       before { authorize_read_group_releases! }
 
       desc 'List all releases in a group' do
@@ -66,7 +66,7 @@ module API
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       before { authorize_read_releases! }
 
       after { track_release_event }
@@ -173,7 +173,7 @@ module API
         job_token_policies: :read_releases,
         allow_public_access_for_enabled_project_features: [:repository, :releases]
       get ':id/releases/:tag_name/downloads/*direct_asset_path',
-        requirements: RELEASE_ENDPOINT_REQUIREMENTS.merge(API::NO_FORMAT_SUFFIX_REQUIREMENT) do
+        requirements: RELEASE_ENDPOINT_REQUIREMENTS.merge(::API::NO_FORMAT_SUFFIX_REQUIREMENT) do
         authorize_read_code!
 
         not_found! unless release
@@ -205,7 +205,7 @@ module API
         job_token_policies: :read_releases,
         allow_public_access_for_enabled_project_features: [:repository, :releases]
       get ':id/releases/permalink/latest(/)(*suffix_path)',
-        requirements: RELEASE_ENDPOINT_REQUIREMENTS.merge(API::NO_FORMAT_SUFFIX_REQUIREMENT) do
+        requirements: RELEASE_ENDPOINT_REQUIREMENTS.merge(::API::NO_FORMAT_SUFFIX_REQUIREMENT) do
         authorize_read_code!
 
         # Try to find the latest release

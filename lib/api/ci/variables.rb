@@ -16,7 +16,7 @@ module API
         requires :id, types: [String, Integer], desc: 'The ID of a project or URL-encoded NAMESPACE/PROJECT_NAME of the project owned by the authenticated user'
       end
 
-      resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc 'List all project variables' do
           detail 'Lists all variables for a project. Use the `page` and `per_page` pagination parameters to control ' \
             'the pagination of results.'

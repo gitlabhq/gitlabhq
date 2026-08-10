@@ -231,7 +231,7 @@ To create a user-level skill:
    {{< tab title="glab" >}}
 
    ```shell
-   glab duo cli --enable-global-skills
+   glab duo cli --enable-global-skills true
    ```
 
    {{< /tab >}}
@@ -239,7 +239,7 @@ To create a user-level skill:
    {{< tab title="duo" >}}
 
    ```shell
-   duo --enable-global-skills
+   duo --enable-global-skills true
    ```
 
    {{< /tab >}}

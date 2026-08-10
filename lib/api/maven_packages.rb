@@ -3,7 +3,7 @@
 module API
   class MavenPackages < ::API::Base
     MAVEN_ENDPOINT_REQUIREMENTS = {
-      file_name: API::NO_SLASH_URL_PART_REGEX
+      file_name: ::API::NO_SLASH_URL_PART_REGEX
     }.freeze
 
     feature_category :package_registry
@@ -194,7 +194,7 @@ module API
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the group'
     end
-    resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :groups, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       params do
         requires :file_name, type: String, desc: 'The package file name'
         use :path_and_file_name
@@ -226,7 +226,7 @@ module API
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Download the maven package file at a project level' do
         detail 'This feature was introduced in GitLab 11.3'
         success [

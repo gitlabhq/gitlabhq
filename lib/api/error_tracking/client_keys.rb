@@ -13,7 +13,7 @@ module API
         desc: 'The ID or URL-encoded path of the project owned by the authenticated user'
     end
 
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       segment ':id/error_tracking' do
         before do
           authorize! :admin_operations, user_project

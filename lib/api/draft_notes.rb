@@ -119,7 +119,7 @@ module API
       end
     end
 
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'List all merge request draft notes' do
         detail 'Lists all merge request draft notes.'
         success Entities::DraftNote

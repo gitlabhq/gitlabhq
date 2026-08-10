@@ -20,7 +20,7 @@ module API
       params do
         requires :id, type: String, desc: 'The project ID or URL-encoded path', documentation: { example: '11' }
       end
-      resource :projects, requirements: ::API::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc 'List all project pipelines' do
           detail 'Lists all pipelines in a project. By default, child pipelines are not included in the results. To ' \
             'return child pipelines, set `source` to `parent_pipeline`.'

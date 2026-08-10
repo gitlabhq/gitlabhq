@@ -139056,6 +139056,55 @@
               "deprecationReason": null
             },
             {
+              "name": "toolCallApprovalMatch",
+              "description": "Approval match details for the specified tool call. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [
+                {
+                  "name": "toolCallArgs",
+                  "description": "JSON-serialized arguments for the tool call.",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "toolName",
+                  "description": "Name of the tool to check.",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "DuoWorkflowToolCallApprovalMatch",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
               "name": "toolCallApprovals",
               "description": "Tools approval per session policy.",
               "args": [],
@@ -140900,6 +140949,115 @@
               "description": "Flow sessions with a status group of canceled.",
               "isDeprecated": false,
               "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "DuoWorkflowToolCallApprovalMatch",
+          "description": "Approval match details for a Duo Workflow tool call.",
+          "fields": [
+            {
+              "name": "matchType",
+              "description": "Mechanism that produced the match, null when unmatched.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "DuoWorkflowToolCallApprovalMatchType",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "matched",
+              "description": "Indicates the tool call matches a stored approval.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "matchedPattern",
+              "description": "Glob pattern that produced the match, present only for pattern matches.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "DuoWorkflowToolCallApprovalMatchType",
+          "description": "Mechanism that resolved a stored Duo Workflow tool call approval.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "EXACT_HASH",
+              "description": "Tool call matched a previously approved call by exact argument hash. Introduced in GitLab 19.3: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
+              "name": "PATTERN",
+              "description": "Tool call matched a stored glob pattern. Introduced in GitLab 19.3: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "DuoWorkflowToolCallApprovalSource",
+          "description": "Source of a Duo Workflow tool call approval decision, as reported by the client. Identifies the mechanism the client reports as having made the decision, not the policy that was evaluated or its author.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "USER_EXPLICIT",
+              "description": "Explicit approval by a user action. Introduced in GitLab 19.3: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
+              "name": "PRETOOLUSE_HOOK",
+              "description": "Approval granted automatically by a PreToolUse hook. Introduced in GitLab 19.3: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
+              "name": "AUTO_MODE",
+              "description": "Approval granted automatically by auto-mode. Introduced in GitLab 19.3: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
+              "name": "PREAPPROVED_CONFIG",
+              "description": "Approval granted through a pre-approved tool or pattern configuration. Introduced in GitLab 19.3: Status: Experiment.",
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
             }
           ],
           "possibleTypes": null
@@ -395192,6 +395350,18 @@
               "defaultValue": null,
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "approvalSource",
+              "description": "Source of the approval decision, for audit purposes. Introduced in GitLab 19.3: Status: Experiment.",
+              "type": {
+                "kind": "ENUM",
+                "name": "DuoWorkflowToolCallApprovalSource",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
             }
           ],
           "interfaces": null,

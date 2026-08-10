@@ -429,7 +429,7 @@ class Note < ApplicationRecord
   end
 
   def group_level_issue?
-    (for_issue? || for_work_item?) && noteable&.project_id.blank?
+    (for_issue? || for_work_item?) && noteable.present? && noteable.project_id.blank?
   end
 
   def for_design?
@@ -833,24 +833,64 @@ class Note < ApplicationRecord
   end
 
   def ensure_organization_id
-    return if organization_id.present? && !noteable_changed? && !project_changed?
+    return unless for_personal_snippet? || for_abuse_report?
 
     self.organization_id = noteable&.organization_id if for_personal_snippet?
+
+    # Organization-scoped notes carry only organization_id; clear any stray
+    # project_id/namespace_id (e.g. a factory or caller default) in preparation
+    # for the single-key invariant. See https://gitlab.com/gitlab-org/gitlab/-/issues/601435
+    self.project_id = nil
+    self.namespace_id = nil
+  end
+
+  # Markdown cache refresh writes via update_columns, bypassing the
+  # ensure_namespace_id callback. Fold the sharding-key repair into the same
+  # write so legacy dual-key rows are ready for the future single-key invariant.
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/601435
+  def save_markdown(updates)
+    return super unless sharding_key_resolvable?
+
+    if group_level_noteable?
+      updates['namespace_id'] = noteable&.namespace_id
+      updates['project_id'] = nil
+    elsif project_id.present?
+      updates['namespace_id'] = nil
+    end
+
+    super
   end
 
   def ensure_namespace_id
-    return if namespace_id.present? && !noteable_changed? && !project_changed?
+    # Recomputed on every validation (create and update) so existing rows with
+    # both namespace_id and project_id are repaired to a single sharding key when
+    # next saved, a prerequisite for tightening the notes NOT NULL constraint to
+    # num_nonnulls(...) = 1. See https://gitlab.com/gitlab-org/gitlab/-/issues/601435
+    return unless sharding_key_resolvable?
 
-    # Group-level noteables (no project_id) use namespace_id as their sharding
-    # key. Wiki page notes also retain namespace_id because their cascading
-    # user-mention trigger does not have a project_id fallback.
-    # Other project-scoped notes are keyed solely by project_id.
-    # See https://gitlab.com/gitlab-org/gitlab/-/issues/601435
-    self.namespace_id = if group_level_issue?
-                          noteable&.namespace_id
-                        elsif for_wiki_page?
-                          noteable&.namespace_id || project&.project_namespace_id
-                        end
+    if group_level_noteable?
+      self.namespace_id = noteable&.namespace_id
+      self.project_id = nil
+    elsif project_id.present?
+      self.namespace_id = nil
+    end
+  end
+
+  # Group-level noteables (epics, group-level issues/work items, group wiki
+  # pages) are keyed by namespace_id; every other project-scoped noteable is
+  # keyed by project_id. Guarded by sharding_key_resolvable? so a note whose
+  # noteable is not yet loaded never has its project_id cleared by mistake.
+  def group_level_noteable?
+    group_level_issue? || (for_wiki_page? && noteable.present? && noteable.project_id.blank?)
+  end
+
+  # Only normalize the sharding key once we can positively classify the note.
+  # Personal snippet and abuse-report notes are organization-keyed and handled
+  # by ensure_organization_id, so they are left untouched here.
+  def sharding_key_resolvable?
+    return false if for_personal_snippet? || for_abuse_report?
+
+    project_id.present? || noteable.present?
   end
 
   def nullify_blank_type

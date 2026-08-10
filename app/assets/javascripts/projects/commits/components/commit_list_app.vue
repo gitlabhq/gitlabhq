@@ -383,6 +383,7 @@ export default {
       >
         <gl-keyset-pagination
           v-if="showPagination"
+          data-testid="commits-pagination"
           :has-previous-page="hasPreviousPage"
           :has-next-page="pageInfo.hasNextPage"
           @prev="prevPage"

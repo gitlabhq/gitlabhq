@@ -32,7 +32,7 @@ module API
       params do
         requires :id, type: String, desc: "The #{source_type} ID"
       end
-      resource source_type.pluralize, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      resource source_type.pluralize, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc "Add a member to a #{source_type}" do
           detail "Adds a member to a #{source_type}. You can specify a user ID or invite a user by email."
           success Entities::Invitation

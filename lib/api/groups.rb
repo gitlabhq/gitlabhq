@@ -354,7 +354,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a group'
     end
-    resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :groups, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Update group attributes' do
         detail 'Updates the attributes for a specified group. You must be an administrator or have ' \
           'the Owner role for the group.'

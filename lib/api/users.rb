@@ -309,7 +309,7 @@ module API
         requires :user_id, type: String, desc: 'The ID or username of the user'
       end
       route_setting :authorization, permissions: :read_user_status, boundary_type: :user
-      get ":user_id/status", requirements: API::USER_REQUIREMENTS, feature_category: :user_profile, urgency: :default do
+      get ":user_id/status", requirements: ::API::USER_REQUIREMENTS, feature_category: :user_profile, urgency: :default do
         check_rate_limit_by_user_or_ip!(:user_status)
 
         user = find_user(params[:user_id])
@@ -577,7 +577,7 @@ module API
         use :pagination
       end
       route_setting :authorization, permissions: :read_user_project_deploy_key, boundary_type: :user
-      get ':user_id/project_deploy_keys', requirements: API::USER_REQUIREMENTS, feature_category: :continuous_delivery do
+      get ':user_id/project_deploy_keys', requirements: ::API::USER_REQUIREMENTS, feature_category: :continuous_delivery do
         user = find_user(params[:user_id])
         not_found!('User') unless user && can?(current_user, :read_user, user)
 
@@ -636,7 +636,7 @@ module API
         use :pagination
       end
       route_setting :authorization, permissions: :read_user_ssh_key, boundary_type: :user
-      get ':user_id/keys', requirements: API::USER_REQUIREMENTS, feature_category: :system_access do
+      get ':user_id/keys', requirements: ::API::USER_REQUIREMENTS, feature_category: :system_access do
         check_rate_limit_by_user_or_ip!(:user_ssh_keys)
 
         user = find_user(params[:user_id])
@@ -656,7 +656,7 @@ module API
         requires :key_id, type: Integer, desc: 'The ID of the SSH key'
       end
       route_setting :authorization, permissions: :read_user_ssh_key, boundary_type: :user
-      get ':id/keys/:key_id', requirements: API::USER_REQUIREMENTS, feature_category: :system_access do
+      get ':id/keys/:key_id', requirements: ::API::USER_REQUIREMENTS, feature_category: :system_access do
         check_rate_limit_by_user_or_ip!(:user_ssh_key)
 
         user = find_user(params[:id])

@@ -31,7 +31,7 @@ module API
         params do
           requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
         end
-        resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+        resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
           desc 'API to interface with MLFlow Client, REST API version 2.16.0' do
             detail 'MLflow compatible API'
             tags ['mlops']

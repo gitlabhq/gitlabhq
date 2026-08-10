@@ -527,6 +527,24 @@ Do not use these punctuation characters:
 - `–` (en dash) or `—` (em dash): Use separate sentences, or commas, instead.
 - `“` `”` `‘` `’`: Double or single typographer's ("curly") quotation marks. Use straight quotes instead. (Tested in [`NonStandardQuotes.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/NonStandardQuotes.yml).)
 
+### Ellipses
+
+Avoid using ellipses. If you must use them, for example, in a [code block](#code-blocks) or CLI response,
+use three periods with no space (`...`).
+
+Do not use the `&hellip;` HTML entity or the `&#8230;` HTML code because these
+cause issues with how code blocks render.
+
+Do not include any ellipses when documenting UI text. For example, use:
+
+- **Search or go to**
+
+Instead of:
+
+- **Search or go to...**
+
+For more information, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/punctuation/ellipses).
+
 ### Placeholder text
 
 In a code block, you might want to provide a command or configuration that
@@ -658,7 +676,7 @@ When you use code blocks:
   which has triple backticks already. The example above uses quadruple backticks internally
   to illustrate the code block format.
 
-To represent missing information in a code block, use a comment or an [ellipsis](word_list.md#ellipsis-ellipses). For example:
+To represent missing information in a code block, use a comment or an [ellipsis](#ellipses). For example:
 
 - `# Removed for readability`
 - `// ...`

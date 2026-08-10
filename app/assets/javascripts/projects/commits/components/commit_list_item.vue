@@ -178,6 +178,7 @@ export default {
               v-if="hasParsableAuthoredDate"
               :time="commit.authoredDate"
               tooltip-placement="bottom"
+              data-testid="commit-authored-date"
             />
             <span v-else data-testid="commit-authored-date-fallback">{{
               commit.authoredDate

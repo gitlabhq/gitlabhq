@@ -18,7 +18,7 @@ module API
         render_api_error!(e.message, 422)
       end
 
-      STATE_NAME_URI_REQUIREMENTS = { name: API::NO_SLASH_URL_PART_REGEX }.freeze
+      STATE_NAME_URI_REQUIREMENTS = { name: ::API::NO_SLASH_URL_PART_REGEX }.freeze
 
       before do
         if request.path_info.end_with?('/authorize')
@@ -47,7 +47,7 @@ module API
         requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
       end
 
-      resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         params do
           requires :name, type: String, limit: 255, desc: 'The name of a Terraform state'
         end

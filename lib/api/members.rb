@@ -19,7 +19,7 @@ module API
       params do
         requires :id, type: String, desc: "The #{source_type} ID"
       end
-      resource source_type.pluralize, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      resource source_type.pluralize, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc "List all direct members of a #{source_type}" do
           detail "Lists all direct members of a specified #{source_type} viewable by the authenticated user. Does " \
             "not return inherited members from ancestor groups or invited groups."

@@ -33,7 +33,7 @@ module API
       end
     end
 
-    resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :groups, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Workhorse authorize the group import upload' do
         detail 'This feature was introduced in GitLab 12.8'
         tags ['group_import_and_export']

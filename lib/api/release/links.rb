@@ -6,8 +6,8 @@ module API
       include PaginationParams
 
       release_links_tags = %w[releases]
-      RELEASE_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS
-        .merge(tag_name: API::NO_SLASH_URL_PART_REGEX)
+      RELEASE_ENDPOINT_REQUIREMENTS = ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS
+        .merge(tag_name: ::API::NO_SLASH_URL_PART_REGEX)
 
       after_validation { authorize! :read_release, user_project }
 
@@ -17,7 +17,7 @@ module API
       params do
         requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
       end
-      resource 'projects/:id', requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      resource 'projects/:id', requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         params do
           requires :tag_name, type: String, desc: 'The tag associated with the release'
         end

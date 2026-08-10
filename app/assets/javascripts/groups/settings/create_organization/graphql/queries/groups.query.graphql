@@ -1,0 +1,23 @@
+#import "../fragments/group.fragment.graphql"
+# @feature_category: organization
+
+query groups(
+  $defaultOrganizationGid: OrganizationsOrganizationID
+  $groupFullPath: ID!
+  $groupGid: GroupID!
+) {
+  group(fullPath: $groupFullPath) {
+    ...Group
+  }
+  defaultOrganization: organization(id: $defaultOrganizationGid) {
+    id
+    name
+    avatarUrl
+    visibility
+    groups(topLevelOnly: true, ownedOnly: true, not: { ids: [$groupGid] }) {
+      nodes {
+        ...Group
+      }
+    }
+  }
+}

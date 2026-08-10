@@ -20,9 +20,6 @@ export default {
     retainedOrganizations() {
       return this.organizations.filter((org) => org.groups.nodes.length > 0);
     },
-    deletedOrganizations() {
-      return this.organizations.filter((org) => org.groups.nodes.length === 0);
-    },
   },
 };
 </script>
@@ -55,17 +52,6 @@ export default {
             />
           </div>
         </organization-card>
-      </div>
-    </div>
-
-    <div v-if="deletedOrganizations.length" data-testid="deleted-organizations-section">
-      <h5 class="gl-heading-5">{{ s__('Organization|These Organizations will be deleted') }}</h5>
-      <div class="gl-flex gl-flex-col gl-gap-4">
-        <organization-card
-          v-for="organization in deletedOrganizations"
-          :key="organization.id"
-          :organization="organization"
-        />
       </div>
     </div>
   </base-step>

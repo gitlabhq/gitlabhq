@@ -8,6 +8,16 @@ export default {
     GlButton,
     ReconciliationModal,
   },
+  props: {
+    groupFullPath: {
+      type: String,
+      required: true,
+    },
+    groupGid: {
+      type: String,
+      required: true,
+    },
+  },
   data() {
     return {
       showReconciliationModal: false,
@@ -29,6 +39,10 @@ export default {
       @click="openReconciliationModal"
       >{{ s__('GroupSettings|Create organization…') }}</gl-button
     >
-    <reconciliation-modal v-model="showReconciliationModal" />
+    <reconciliation-modal
+      v-model="showReconciliationModal"
+      :group-full-path="groupFullPath"
+      :group-gid="groupGid"
+    />
   </div>
 </template>

@@ -20,7 +20,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID or URL-encoded path of the project owned by the authenticated user'
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       ISSUABLE_TYPES.each do |type, finder|
         type_id_str = :"#{type.singularize}_iid"
 

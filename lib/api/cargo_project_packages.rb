@@ -7,8 +7,8 @@ module API
     include ::API::Helpers::Authentication
 
     DOWNLOAD_REQUIREMENTS = {
-      package_name: API::NO_SLASH_URL_PART_REGEX,
-      package_version: API::NO_SLASH_URL_PART_REGEX
+      package_name: ::API::NO_SLASH_URL_PART_REGEX,
+      package_version: ::API::NO_SLASH_URL_PART_REGEX
     }.freeze
 
     # Constrain prefix segments to two normalized-name characters so the
@@ -18,7 +18,7 @@ module API
       prefix_1: /[a-z0-9_-]{2}/,
       prefix_2: /[a-z0-9_-]{2}/,
       first_char: /[a-z0-9-]/,
-      package_name: API::NO_SLASH_URL_PART_REGEX
+      package_name: ::API::NO_SLASH_URL_PART_REGEX
     }.freeze
 
     feature_category :package_registry
@@ -34,7 +34,7 @@ module API
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
 
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       helpers do
         def project
           authorized_user_project(action: :read_package)

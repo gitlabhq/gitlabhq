@@ -55,7 +55,7 @@ module API
       end
     end
 
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Workhorse authorize the project import upload' do
         detail 'This feature was introduced in GitLab 12.9'
         tags ['project_import']

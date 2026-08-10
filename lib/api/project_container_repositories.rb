@@ -7,8 +7,8 @@ module API
 
     helpers ::API::Helpers::PackagesHelpers
 
-    REPOSITORY_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(
-      tag_name: API::NO_SLASH_URL_PART_REGEX)
+    REPOSITORY_ENDPOINT_REQUIREMENTS = ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(
+      tag_name: ::API::NO_SLASH_URL_PART_REGEX)
     DEFAULT_PAGE_COUNT = 20
 
     before do
@@ -23,7 +23,7 @@ module API
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
     route_setting :authentication, job_token_allowed: true, job_token_scope: :project
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'List all registry repositories for a project' do
         detail 'Lists all registry repositories for a specified project. Responses are paginated and return 20 ' \
           'results by default.'

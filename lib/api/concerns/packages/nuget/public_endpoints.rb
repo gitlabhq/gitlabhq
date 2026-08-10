@@ -69,9 +69,9 @@ module API
               end
               params do
                 requires :file_name, allow_blank: false, type: String, desc: 'The symbol file name',
-                  regexp: API::NO_SLASH_URL_PART_REGEX, documentation: { example: 'mynugetpkg.pdb' }
+                  regexp: ::API::NO_SLASH_URL_PART_REGEX, documentation: { example: 'mynugetpkg.pdb' }
                 requires :signature, allow_blank: false, type: String, desc: 'The symbol file signature',
-                  regexp: API::NO_SLASH_URL_PART_REGEX,
+                  regexp: ::API::NO_SLASH_URL_PART_REGEX,
                   documentation: { example: 'k813f89485474661234z7109cve5709eFFFFFFFF' }
                 requires :same_file_name, same_as: :file_name, allow_blank: false, type: String,
                   desc: "The symbol file name. Must match the 'file_name' parameter"
@@ -79,7 +79,7 @@ module API
               route_setting :authorization, skip_granular_token_authorization: :public_endpoint
               get '*file_name/*signature/*same_file_name',
                 urgency: :low,
-                requirements: API::NO_FORMAT_SUFFIX_REQUIREMENT do
+                requirements: ::API::NO_FORMAT_SUFFIX_REQUIREMENT do
                 bad_request!('Missing checksum header') if headers['Symbolchecksum'].blank?
 
                 project_ids = if project_or_group_without_auth.is_a?(::Project)

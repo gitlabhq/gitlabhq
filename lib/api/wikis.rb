@@ -24,7 +24,7 @@ module API
       end
     end
 
-    WIKI_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(slug: API::NO_SLASH_URL_PART_REGEX)
+    WIKI_ENDPOINT_REQUIREMENTS = ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(slug: ::API::NO_SLASH_URL_PART_REGEX)
 
     ::API::Helpers::WikisHelpers.wiki_resource_kinds.each do |container_resource|
       boundary_type = case container_resource

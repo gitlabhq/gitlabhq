@@ -51,6 +51,10 @@ export default {
     HeaderBadges,
     TimeAgoTooltip,
     DuoWorkflowAction,
+    PipelineAgentSessions: defineAsyncComponent(
+      () =>
+        import('ee_component/ci/pipeline_details/header/components/pipeline_agent_sessions.vue'),
+    ),
     PipelineAccountVerificationAlert: defineAsyncComponent(
       () => import('ee_component/vue_shared/components/pipeline_account_verification_alert.vue'),
     ),
@@ -553,6 +557,7 @@ export default {
       </template>
     </page-heading>
 
+    <pipeline-agent-sessions v-if="pipeline" class="gl-mt-4" />
     <pipeline-account-verification-alert class="gl-mt-4" />
   </div>
 </template>

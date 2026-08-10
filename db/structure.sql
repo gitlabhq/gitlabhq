@@ -2538,9 +2538,10 @@ CREATE FUNCTION trigger_2cb7e7147818() RETURNS trigger
     AS $$
 BEGIN
 IF NEW."namespace_id" IS NULL THEN
-  SELECT "namespace_id"
+  SELECT COALESCE("notes"."namespace_id", "projects"."project_namespace_id")
   INTO NEW."namespace_id"
   FROM "notes"
+  LEFT JOIN "projects" ON "projects"."id" = "notes"."project_id"
   WHERE "notes"."id" = NEW."note_id";
 END IF;
 
@@ -51820,6 +51821,8 @@ CREATE INDEX tmp_idx_vulnerability_occurrences_on_project_id_id ON vulnerability
 CREATE INDEX tmp_index_for_project_namespace_id_migration_on_routes ON routes USING btree (id) WHERE ((namespace_id IS NULL) AND ((source_type)::text = 'Project'::text));
 
 CREATE INDEX tmp_index_namespace_settings_on_experiment_features_enabled ON namespace_settings USING btree (namespace_id) WHERE (experiment_features_enabled IS TRUE);
+
+CREATE INDEX tmp_index_notes_on_id_with_namespace_and_project ON notes USING btree (id) WHERE ((namespace_id IS NOT NULL) AND (project_id IS NOT NULL));
 
 CREATE INDEX tmp_index_project_statistics_cont_registry_size ON project_statistics USING btree (project_id) WHERE (container_registry_size = 0);
 

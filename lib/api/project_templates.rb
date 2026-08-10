@@ -8,7 +8,7 @@ module API
     # The regex is needed to ensure a period (e.g. agpl-3.0)
     # isn't confused with a format type. We also need to allow encoded
     # values (e.g. C%2B%2B for C++), so allow % and + as well.
-    TEMPLATE_NAMES_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(name: /[\w()%.+-]+/)
+    TEMPLATE_NAMES_ENDPOINT_REQUIREMENTS = ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(name: /[\w()%.+-]+/)
 
     before { authenticate_non_get! }
 
@@ -26,7 +26,7 @@ module API
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
       requires :type, type: String, values: TEMPLATE_TYPES, desc: 'The type (dockerfiles|gitignores|gitlab_ci_ymls|licenses|issues|merge_requests) of the template'
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'List all templates of a particular type' do
         detail 'Lists all templates of a specified type for a project.'
         is_array true

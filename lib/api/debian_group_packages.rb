@@ -10,7 +10,7 @@ module API
       :group
     end
 
-    resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :groups, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       helpers do
         def project_or_group
           find_authorized_group!

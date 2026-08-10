@@ -118,7 +118,9 @@ module Projects
       # rubocop: enable CodeReuse/ActiveRecord
 
       def fetch_protected_branches(project)
-        project.protected_branches.sorted_by_name.page(pagination_params[:page])
+        project.protected_branches
+          .sorted_by_name_with_default_first(project.default_branch)
+          .page(pagination_params[:page])
       end
 
       def remote_mirror

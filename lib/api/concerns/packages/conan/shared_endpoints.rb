@@ -16,14 +16,14 @@ module API
           extend ActiveSupport::Concern
 
           PACKAGE_REQUIREMENTS = {
-            package_name: ::Gitlab::Regex::NO_SLASH_URL_PART_REGEX,
-            package_version: ::Gitlab::Regex::NO_SLASH_URL_PART_REGEX,
-            package_username: ::Gitlab::Regex::NO_SLASH_URL_PART_REGEX,
-            package_channel: ::Gitlab::Regex::NO_SLASH_URL_PART_REGEX
+            package_name: ::API::NO_SLASH_URL_PART_REGEX,
+            package_version: ::API::NO_SLASH_URL_PART_REGEX,
+            package_username: ::API::NO_SLASH_URL_PART_REGEX,
+            package_channel: ::API::NO_SLASH_URL_PART_REGEX
           }.freeze
 
           FILE_NAME_REQUIREMENTS = {
-            file_name: ::Gitlab::Regex::NO_SLASH_URL_PART_REGEX
+            file_name: ::API::NO_SLASH_URL_PART_REGEX
           }.freeze
 
           PACKAGE_COMPONENT_REGEX = Gitlab::Regex.conan_recipe_component_regex

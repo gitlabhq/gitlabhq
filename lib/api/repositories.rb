@@ -69,7 +69,7 @@ module API
         desc: 'The ID or URL-encoded path of the project',
         documentation: { example: 1 }
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       helpers do
         include Gitlab::RepositoryArchiveRateLimiter
 

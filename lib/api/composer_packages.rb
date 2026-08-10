@@ -15,7 +15,7 @@ module API
     default_format :json
 
     COMPOSER_ENDPOINT_REQUIREMENTS = {
-      package_name: API::NO_SLASH_URL_PART_REGEX
+      package_name: ::API::NO_SLASH_URL_PART_REGEX
     }.freeze
 
     default_format :json
@@ -65,7 +65,7 @@ module API
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of a group'
     end
 
-    resource :group, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :group, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       after_validation do
         find_authorized_group!
       end
@@ -149,7 +149,7 @@ module API
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of a project'
     end
 
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       namespace ':id/packages/composer' do
         route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
         route_setting :authorization, job_token_policies: :admin_packages, permissions: :publish_composer_package,

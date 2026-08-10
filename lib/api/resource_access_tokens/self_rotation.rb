@@ -16,7 +16,7 @@ module API
       before { authenticate! }
 
       %w[project group].each do |source_type|
-        resource source_type.pluralize, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+        resource source_type.pluralize, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
           desc "Rotate a #{source_type} access token" do
             detail "Rotates a #{source_type} access token by passing it to the API in a header."
             success code: 200, model: Entities::ResourceAccessTokenWithToken

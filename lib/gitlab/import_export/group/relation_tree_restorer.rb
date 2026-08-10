@@ -260,7 +260,7 @@ module Gitlab
 
           relation = persist_relation(**relation_factory_params(relation_key, relation_index, data_hash))
 
-          if relation && !relation.valid?
+          if relation && validate_built_relation?(relation) && !relation.valid?
             @shared.logger.warn(
               message: "[Project/Group Import] Invalid object relation built",
               relation_key: relation_key,
@@ -271,6 +271,14 @@ module Gitlab
           end
 
           relation
+        end
+
+        def validate_built_relation?(relation)
+          !relation.is_a?(::Note) && !relation_has_notes?(relation)
+        end
+
+        def relation_has_notes?(relation)
+          relation.class.reflect_on_association(:notes) && relation.association(:notes).loaded?
         end
 
         # Since we update the data hash in place as we restore relation items,

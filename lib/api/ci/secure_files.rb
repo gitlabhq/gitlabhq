@@ -21,7 +21,7 @@ module API
         authenticated user'
       end
 
-      resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc 'List all secure files for a project' do
           detail 'Lists all secure files for a specified project.'
           success Entities::Ci::SecureFile

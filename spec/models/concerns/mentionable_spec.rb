@@ -258,8 +258,11 @@ RSpec.describe Commit, 'Mentionable', feature_category: :source_code_management 
 
       context 'with user mention creation' do
         it 'syncs value with notes column namespace_id' do
-          note.update_column(:namespace_id, project.project_namespace_id)
           note.update!(note: note_desc)
+          # Set namespace_id after the save: ensure_namespace_id clears it for a
+          # project-scoped note, so update_column reinstates the dual-key state
+          # this example exercises without re-triggering the callback.
+          note.update_column(:namespace_id, project.project_namespace_id)
           # delete user mentions created when saving the note
           mentionable.user_mentions.delete_all
 
@@ -282,8 +285,9 @@ RSpec.describe Commit, 'Mentionable', feature_category: :source_code_management 
         let(:note) { create(:note_on_commit, commit_id: commit.id, project: project) }
 
         it 'syncs value with notes column namespace_id' do
-          note.update_column(:namespace_id, project.project_namespace_id)
           note.update!(note: note_desc)
+          # See note above: reinstate namespace_id after the callback clears it.
+          note.update_column(:namespace_id, project.project_namespace_id)
           mentionable.user_mentions.last.update_column(:namespace_id, nil)
 
           # updates user mention created when saving the note

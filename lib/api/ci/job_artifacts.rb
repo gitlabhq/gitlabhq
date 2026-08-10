@@ -35,7 +35,7 @@ module API
       params do
         requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
       end
-      resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc 'Retrieve job artifacts' do
           detail 'Retrieves the artifacts archive for the latest successful job on a specified branch or tag.'
           failure [
@@ -110,7 +110,7 @@ module API
           permissions: :download_job_artifact, boundary_type: :project
         get ':id/jobs/artifacts/:ref_name/raw/*artifact_path',
           urgency: :low,
-          requirements: { ref_name: /.+/ }.merge(API::NO_FORMAT_SUFFIX_REQUIREMENT) do
+          requirements: { ref_name: /.+/ }.merge(::API::NO_FORMAT_SUFFIX_REQUIREMENT) do
           authorize_download_artifacts!
 
           if params[:search_recent_successful_pipelines]
@@ -230,7 +230,7 @@ module API
           permissions: :download_job_artifact, boundary_type: :project
         get ':id/jobs/:job_id/artifacts/*artifact_path',
           urgency: :low,
-          requirements: API::NO_FORMAT_SUFFIX_REQUIREMENT do
+          requirements: ::API::NO_FORMAT_SUFFIX_REQUIREMENT do
           authorize_download_artifacts!
 
           build = find_build!(params[:job_id])

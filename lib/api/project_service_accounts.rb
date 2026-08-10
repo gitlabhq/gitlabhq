@@ -27,7 +27,7 @@ module API
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
 
-    resource 'projects/:id', requirements: ::API::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource 'projects/:id', requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       resource :service_accounts do
         desc 'Create a project service account' do
           detail 'Creates a service account in a specified project.'

@@ -5,8 +5,8 @@ module API
     include PaginationParams
 
     feature_flags_tags = %w[feature_flags]
-    FEATURE_FLAG_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS
-        .merge(name: API::NO_SLASH_URL_PART_REGEX)
+    FEATURE_FLAG_ENDPOINT_REQUIREMENTS = ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS
+        .merge(name: ::API::NO_SLASH_URL_PART_REGEX)
 
     feature_category :feature_flags
     urgency :low
@@ -18,7 +18,7 @@ module API
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
-    resource 'projects/:id', requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource 'projects/:id', requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       resource :feature_flags do
         desc 'List all feature flags for a project' do
           detail 'Lists all feature flags of the requested project. Use the `page` and `per_page` pagination ' \

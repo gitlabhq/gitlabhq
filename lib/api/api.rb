@@ -9,14 +9,6 @@ module API
 
     LOG_FILENAME = Rails.root.join("log", "api_json.log")
 
-    NO_SLASH_URL_PART_REGEX = ::Gitlab::Regex::NO_SLASH_URL_PART_REGEX
-    NAMESPACE_OR_PROJECT_REQUIREMENTS = { id: NO_SLASH_URL_PART_REGEX }.freeze
-    COMMIT_ENDPOINT_REQUIREMENTS = NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(sha: NO_SLASH_URL_PART_REGEX).freeze
-    USER_REQUIREMENTS = { user_id: NO_SLASH_URL_PART_REGEX }.freeze
-    # Grape 2.4+ no longer honors route-level `format: false`; this never-matching `:format`
-    # requirement re-suppresses the implicit `(.:format)` suffix so a trailing extension or
-    # dot stays inside the wildcard/param instead of being parsed off as a response format.
-    NO_FORMAT_SUFFIX_REQUIREMENT = { format: /(?!)/ }.freeze
     # Origin of the catch-all `route :any, '*path'` that handles requests mapping to no real
     # endpoint (unknown paths and unmatched API versions).
     UNMATCHED_ROUTE_ORIGIN = '/api/:version/*path'

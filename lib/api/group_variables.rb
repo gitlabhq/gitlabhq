@@ -15,7 +15,7 @@ module API
       user'
     end
 
-    resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :groups, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'List all group variables' do
         detail 'Lists all variables for a specified group. Use the `page` and `per_page` pagination parameters to ' \
           'control the pagination of results.'

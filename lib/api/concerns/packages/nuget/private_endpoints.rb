@@ -25,7 +25,7 @@ module API
             # https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource
             params do
               requires :package_name, type: String, desc: 'The NuGet package name',
-                regexp: API::NO_SLASH_URL_PART_REGEX, documentation: { example: 'MyNuGetPkg' }
+                regexp: ::API::NO_SLASH_URL_PART_REGEX, documentation: { example: 'MyNuGetPkg' }
             end
             namespace '/metadata/*package_name' do
               after_validation do
@@ -60,7 +60,7 @@ module API
               end
               params do
                 requires :package_version, type: String, desc: 'The NuGet package version',
-                  regexp: API::NO_SLASH_URL_PART_REGEX, documentation: { example: '1.0.0' }
+                  regexp: ::API::NO_SLASH_URL_PART_REGEX, documentation: { example: '1.0.0' }
               end
               route_setting :authorization, permissions: :read_nuget_package, boundary_type: boundary_type
               get '*package_version', format: :json, urgency: :low do

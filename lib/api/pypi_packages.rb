@@ -177,7 +177,7 @@ module API
     params do
       requires :id, types: [Integer, String], desc: 'The ID or full path of the group.'
     end
-    resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :groups, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       after_validation do
         ensure_group!
       end
@@ -263,7 +263,7 @@ module API
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
 
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       namespace ':id/packages/pypi' do
         desc 'The PyPi package download endpoint' do
           detail 'This feature was introduced in GitLab 12.10'
@@ -330,7 +330,7 @@ module API
         route_setting :authorization, permissions: :download_pypi_package, boundary_type: :project,
           job_token_policies: :read_packages,
           allow_public_access_for_enabled_project_features: :package_registry
-        get 'forward/:package_name/*upstream_path', requirements: API::NO_FORMAT_SUFFIX_REQUIREMENT do
+        get 'forward/:package_name/*upstream_path', requirements: ::API::NO_FORMAT_SUFFIX_REQUIREMENT do
           project = project!
           authorize_job_token_policies!(project)
 

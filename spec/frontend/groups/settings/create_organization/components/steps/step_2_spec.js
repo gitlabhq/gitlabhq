@@ -7,16 +7,7 @@ import Step2 from '~/groups/settings/create_organization/components/steps/step_2
 import BaseStep from '~/groups/settings/create_organization/components/steps/base_step.vue';
 import OrganizationCard from '~/groups/settings/create_organization/components/organization_card.vue';
 import OrganizationGroupCard from '~/groups/settings/create_organization/components/organization_group_card.vue';
-import {
-  mockOrganizations,
-  mockGroup,
-  defaultOrgWithGroups,
-  defaultOrgWithoutGroups,
-  organizationWithGroupsIndex,
-  organizationWithGroups,
-  organizationWithoutGroupsIndex,
-  organizationWithoutGroups,
-} from '../mock_data';
+import { mockOrganizations, mockNewOrganization, mockDefaultOrganization } from '../mock_data';
 
 describe('ReconciliationStep2', () => {
   let wrapper;
@@ -69,12 +60,12 @@ describe('ReconciliationStep2', () => {
   });
 
   describe('when organization has groups', () => {
-    const groups = organizationWithGroups.groups.nodes;
+    const groups = mockDefaultOrganization.groups.nodes;
 
     it('renders group cards', () => {
       createComponent();
 
-      const card = findCardAt(organizationWithGroupsIndex);
+      const card = findCardAt(1);
       const groupCards = findAllGroupCards(card);
 
       expect(groupCards).toHaveLength(groups.length);
@@ -83,26 +74,43 @@ describe('ReconciliationStep2', () => {
     it('passes group prop to organization group card', () => {
       createComponent();
 
-      const card = findCardAt(organizationWithGroupsIndex);
+      const card = findCardAt(1);
       expect(findAllGroupCards(card).at(0).props('group')).toEqual(groups[0]);
     });
 
     it('passes organization visibility to organization group card', () => {
       createComponent();
 
-      const card = findCardAt(organizationWithGroupsIndex);
+      const card = findCardAt(1);
       expect(findAllGroupCards(card).at(0).props('organizationVisibility')).toBe(
-        organizationWithGroups.visibility,
+        mockDefaultOrganization.visibility,
       );
     });
   });
 
   describe('drag and drop', () => {
     const findAllDraggableComponents = () => wrapper.findAllComponents(Draggable);
-    const findDraggableWithGroups = () =>
-      findAllDraggableComponents().at(organizationWithGroupsIndex);
-    const findDraggableWithoutGroups = () =>
-      findAllDraggableComponents().at(organizationWithoutGroupsIndex);
+    const findDraggable1 = () => findAllDraggableComponents().at(0);
+    const findDraggable2 = () => findAllDraggableComponents().at(1);
+
+    const groupToMove = mockDefaultOrganization.groups.nodes[0];
+
+    const updatedOrganizations = [
+      {
+        ...mockNewOrganization,
+        groups: {
+          ...mockNewOrganization.groups,
+          nodes: [...mockNewOrganization.groups.nodes, groupToMove],
+        },
+      },
+      {
+        ...mockDefaultOrganization,
+        groups: {
+          ...mockDefaultOrganization.groups,
+          nodes: [],
+        },
+      },
+    ];
 
     it('renders a draggable for each organization', () => {
       createComponent();
@@ -148,7 +156,7 @@ describe('ReconciliationStep2', () => {
       beforeEach(() => {
         createComponent();
 
-        findDraggableWithGroups().vm.$emit('choose');
+        findDraggable1().vm.$emit('choose');
       });
 
       it('adds organizations-reconciliation-draggable-dragging CSS class to body', () => {
@@ -157,7 +165,7 @@ describe('ReconciliationStep2', () => {
 
       describe('when item is unchosen', () => {
         it('removes organizations-reconciliation-draggable-dragging CSS class from body', () => {
-          findDraggableWithGroups().vm.$emit('unchoose');
+          findDraggable1().vm.$emit('unchoose');
 
           expect(document.body.classList.contains(DRAGGING_CSS_CLASS)).toBe(false);
         });
@@ -176,46 +184,25 @@ describe('ReconciliationStep2', () => {
       it('emits update event once with updated organization structure', async () => {
         createComponent();
 
-        const draggableWithGroups = findDraggableWithGroups();
-        const draggableWithoutGroups = findDraggableWithoutGroups();
-        const groupToMoveIndex = 0;
-        const groupToMove = organizationWithGroups.groups.nodes[groupToMoveIndex];
+        const draggable1 = findDraggable1();
+        const draggable2 = findDraggable2();
 
-        draggableWithGroups.vm.$emit(
-          'input',
-          organizationWithGroups.groups.nodes.toSpliced(groupToMoveIndex, 1),
-        );
-        draggableWithoutGroups.vm.$emit('input', [groupToMove]);
-        draggableWithoutGroups.vm.$emit('end');
+        draggable1.vm.$emit('input', [...mockNewOrganization.groups.nodes, groupToMove]);
+        draggable2.vm.$emit('input', []);
+        draggable2.vm.$emit('end');
 
         await nextTick();
 
-        const expectedOrganizations = mockOrganizations
-          .toSpliced(organizationWithGroupsIndex, 1, {
-            ...organizationWithGroups,
-            groups: {
-              ...organizationWithGroups.groups,
-              nodes: organizationWithGroups.groups.nodes.toSpliced(groupToMoveIndex, 1),
-            },
-          })
-          .toSpliced(organizationWithoutGroupsIndex, 1, {
-            ...organizationWithoutGroups,
-            groups: {
-              ...organizationWithoutGroups.groups,
-              nodes: [groupToMove],
-            },
-          });
-
-        expect(wrapper.emitted('update')).toEqual([[expectedOrganizations]]);
+        expect(wrapper.emitted('update')).toEqual([[updatedOrganizations]]);
       });
     });
 
     describe('default organization drop zone', () => {
-      const DEFAULT_ORG_INDEX = 0;
-      const OTHER_ORG_INDEX = 1;
+      const OTHER_ORG_INDEX = 0;
+      const DEFAULT_ORG_INDEX = 1;
 
       const startDragFromOrg = async (orgIndex) => {
-        findAllDraggableComponents().at(orgIndex).vm.$emit('start', { oldIndex: 0 });
+        findAllDraggableComponents().at(orgIndex).vm.$emit('start', { oldIndex: 1 });
         await nextTick();
       };
 
@@ -223,8 +210,10 @@ describe('ReconciliationStep2', () => {
         beforeEach(() => {
           createComponent({
             props: {
-              organizations: [defaultOrgWithGroups, organizationWithoutGroups],
-              initialDefaultOrgGroupIds: [mockGroup.id],
+              organizations: mockOrganizations,
+              initialDefaultOrgGroupIds: mockDefaultOrganization.groups.nodes.map(
+                (group) => group.id,
+              ),
             },
           });
         });
@@ -242,8 +231,10 @@ describe('ReconciliationStep2', () => {
         beforeEach(() => {
           createComponent({
             props: {
-              organizations: [defaultOrgWithoutGroups, organizationWithGroups],
-              initialDefaultOrgGroupIds: [mockGroup.id],
+              organizations: updatedOrganizations,
+              initialDefaultOrgGroupIds: mockDefaultOrganization.groups.nodes.map(
+                (group) => group.id,
+              ),
             },
           });
         });
@@ -257,8 +248,10 @@ describe('ReconciliationStep2', () => {
         beforeEach(async () => {
           createComponent({
             props: {
-              organizations: [defaultOrgWithoutGroups, organizationWithGroups],
-              initialDefaultOrgGroupIds: [mockGroup.id],
+              organizations: updatedOrganizations,
+              initialDefaultOrgGroupIds: mockDefaultOrganization.groups.nodes.map(
+                (group) => group.id,
+              ),
             },
           });
           await startDragFromOrg(OTHER_ORG_INDEX);
@@ -280,7 +273,7 @@ describe('ReconciliationStep2', () => {
         beforeEach(async () => {
           createComponent({
             props: {
-              organizations: [defaultOrgWithoutGroups, organizationWithGroups],
+              organizations: updatedOrganizations,
               initialDefaultOrgGroupIds: [],
             },
           });

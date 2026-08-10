@@ -339,7 +339,7 @@ RSpec.describe 'Database schema',
       members: 20, # Decrement by 1 after the removal of a temporary index https://gitlab.com/gitlab-org/gitlab/-/merge_requests/235857
       merge_requests: 29,
       namespaces: 23,
-      notes: 16,
+      notes: 17, # Increased by one for the temporary cleanup BBM index https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238033
       p_ci_builds: 23,
       p_ci_pipelines: 25,
       packages_package_files: 16,

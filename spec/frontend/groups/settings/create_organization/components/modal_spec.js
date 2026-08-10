@@ -2,27 +2,24 @@ import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlButton, GlSprintf, GlModal } from '@gitlab/ui';
-import organizationsForReconciliationResponse from 'test_fixtures/graphql/organizations/organizations_for_reconciliation.query.graphql.json';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
 import { createAlert } from '~/alert';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { TYPENAME_GROUP } from '~/graphql_shared/constants';
+import { DEFAULT_ORGANIZATION_GID } from '~/organizations/shared/constants';
 import ReconciliationModal from '~/groups/settings/create_organization/components/modal.vue';
 import SkeletonLoader from '~/groups/settings/create_organization/components/skeleton_loader.vue';
-import organizationsForReconciliationQuery from '~/groups/settings/create_organization/graphql/queries/organizations_for_reconciliation.query.graphql';
+import groupsQuery from '~/groups/settings/create_organization/graphql/queries/groups.query.graphql';
 import Step1 from '~/groups/settings/create_organization/components/steps/step_1.vue';
 import Step2 from '~/groups/settings/create_organization/components/steps/step_2.vue';
 import Step3 from '~/groups/settings/create_organization/components/steps/step_3.vue';
-import { mockDefaultOrganization } from 'jest/organizations/shared/mock_data';
 import {
+  groupsQueryResponse,
+  mockDefaultOrganization,
+  mockNewOrganization,
   mockOrganizations,
-  mockGroup,
-  organizationWithGroupsIndex,
-  organizationWithGroups,
-  organizationWithoutGroupsIndex,
-  organizationWithoutGroups,
-  defaultOrgWithGroups,
-  organizationsWithDefault,
 } from './mock_data';
 
 jest.mock('~/alert');
@@ -33,11 +30,12 @@ describe('OrganizationReconciliationModal', () => {
   let wrapper;
   let mockApollo;
 
-  const responseWithDefault = {
-    data: { organizations: { nodes: organizationsWithDefault } },
+  const defaultPropsData = {
+    groupFullPath: 'mock-group',
+    groupGid: convertToGraphQLId(TYPENAME_GROUP, 1),
   };
 
-  const successHandler = jest.fn().mockResolvedValue(organizationsForReconciliationResponse);
+  const successHandler = jest.fn().mockResolvedValue(groupsQueryResponse);
   const GlModalStub = stubComponent(GlModal, { template: RENDER_ALL_SLOTS_TEMPLATE });
 
   const hideAndShowModal = async () => {
@@ -47,11 +45,12 @@ describe('OrganizationReconciliationModal', () => {
   };
 
   const createComponent = ({ props = {}, handler = successHandler } = {}) => {
-    mockApollo = createMockApollo([[organizationsForReconciliationQuery, handler]]);
+    mockApollo = createMockApollo([[groupsQuery, handler]]);
 
     wrapper = shallowMount(ReconciliationModal, {
       apolloProvider: mockApollo,
       propsData: {
+        ...defaultPropsData,
         ...props,
       },
       stubs: {
@@ -105,7 +104,7 @@ describe('OrganizationReconciliationModal', () => {
         createComponent();
       });
 
-      it('does not fetch organizations', () => {
+      it('does not fetch groups', () => {
         expect(successHandler).not.toHaveBeenCalled();
       });
 
@@ -140,8 +139,12 @@ describe('OrganizationReconciliationModal', () => {
           await waitForPromises();
         });
 
-        it('fetches organizations', () => {
-          expect(successHandler).toHaveBeenCalled();
+        it('fetches the group and the default organization, excluding the group', () => {
+          expect(successHandler).toHaveBeenCalledWith({
+            defaultOrganizationGid: DEFAULT_ORGANIZATION_GID,
+            groupFullPath: defaultPropsData.groupFullPath,
+            groupGid: defaultPropsData.groupGid,
+          });
         });
 
         it('does not render skeleton loader', () => {
@@ -152,11 +155,11 @@ describe('OrganizationReconciliationModal', () => {
           expect(findModal().attributes('hide-footer')).toBeUndefined();
         });
 
-        it('passes organizations to step component', () => {
-          expect(findStep1().props('organizations')).toEqual(mockOrganizations);
+        it('passes the organization to be created to step component', () => {
+          expect(findStep1().props('organizations')).toEqual([mockNewOrganization]);
         });
 
-        it('does not refetch organizations when modal is closed and reopened', async () => {
+        it('does not refetch when modal is closed and reopened', async () => {
           expect(successHandler).toHaveBeenCalledTimes(1);
 
           await hideAndShowModal();
@@ -208,6 +211,25 @@ describe('OrganizationReconciliationModal', () => {
   });
 
   describe('step components', () => {
+    const groupToMoveIndex = 0;
+    const groupToMove = mockDefaultOrganization.groups.nodes[groupToMoveIndex];
+
+    const updatedOrganizations = [
+      {
+        ...mockNewOrganization,
+        groups: {
+          ...mockNewOrganization.groups,
+          nodes: [...mockNewOrganization.groups.nodes, groupToMove],
+        },
+      },
+      {
+        ...mockDefaultOrganization,
+        groups: {
+          ...mockDefaultOrganization.groups,
+          nodes: [],
+        },
+      },
+    ];
     describe('step 1', () => {
       beforeEach(() => {
         createComponent();
@@ -273,25 +295,6 @@ describe('OrganizationReconciliationModal', () => {
       });
 
       describe('when update event is fired', () => {
-        const groupToMoveIndex = 0;
-        const groupToMove = organizationWithGroups.groups.nodes[groupToMoveIndex];
-
-        const updatedOrganizations = mockOrganizations
-          .toSpliced(organizationWithGroupsIndex, 1, {
-            ...organizationWithGroups,
-            groups: {
-              ...organizationWithGroups.groups,
-              nodes: organizationWithGroups.groups.nodes.toSpliced(groupToMoveIndex, 1),
-            },
-          })
-          .toSpliced(organizationWithoutGroupsIndex, 1, {
-            ...organizationWithoutGroups,
-            groups: {
-              ...organizationWithoutGroups.groups,
-              nodes: [groupToMove],
-            },
-          });
-
         it('updates organizations prop', async () => {
           expect(findStep2().props('organizations')).toEqual(mockOrganizations);
           findStep2().vm.$emit('update', updatedOrganizations);
@@ -355,10 +358,8 @@ describe('OrganizationReconciliationModal', () => {
     });
 
     describe('default organization exclusion', () => {
-      const handlerWithDefault = jest.fn().mockResolvedValue(responseWithDefault);
-
       beforeEach(async () => {
-        createComponent({ props: { visible: true }, handler: handlerWithDefault });
+        createComponent({ props: { visible: true } });
 
         await waitForPromises();
       });
@@ -398,10 +399,12 @@ describe('OrganizationReconciliationModal', () => {
     });
 
     describe('initialDefaultOrgGroupIds persistence', () => {
-      const handlerWithDefault = jest.fn().mockResolvedValue(responseWithDefault);
+      const expectedInitialDefaultOrgGroupIds = mockDefaultOrganization.groups.nodes.map(
+        (group) => group.id,
+      );
 
       beforeEach(async () => {
-        createComponent({ props: { visible: true }, handler: handlerWithDefault });
+        createComponent({ props: { visible: true } });
         await waitForPromises();
 
         findNextButton().vm.$emit('click');
@@ -409,25 +412,12 @@ describe('OrganizationReconciliationModal', () => {
       });
 
       it('passes initial default organization group IDs to step 2', () => {
-        expect(findStep2().props('initialDefaultOrgGroupIds')).toEqual([mockGroup.id]);
+        expect(findStep2().props('initialDefaultOrgGroupIds')).toEqual(
+          expectedInitialDefaultOrgGroupIds,
+        );
       });
 
       it('retains initial default organization group IDs after moving a group and navigating to step 3 and back', async () => {
-        const defaultOrgIndex = 0;
-        const targetOrgIndex = organizationsWithDefault.findIndex(
-          (org) => org.id === organizationWithoutGroups.id,
-        );
-
-        const updatedOrganizations = organizationsWithDefault
-          .toSpliced(defaultOrgIndex, 1, {
-            ...defaultOrgWithGroups,
-            groups: { ...defaultOrgWithGroups.groups, nodes: [] },
-          })
-          .toSpliced(targetOrgIndex, 1, {
-            ...organizationWithoutGroups,
-            groups: { ...organizationWithoutGroups.groups, nodes: [mockGroup] },
-          });
-
         findStep2().vm.$emit('update', updatedOrganizations);
         await nextTick();
 
@@ -440,7 +430,9 @@ describe('OrganizationReconciliationModal', () => {
         await nextTick();
 
         expect(findStep2().props('organizations')).toEqual(updatedOrganizations);
-        expect(findStep2().props('initialDefaultOrgGroupIds')).toEqual([mockGroup.id]);
+        expect(findStep2().props('initialDefaultOrgGroupIds')).toEqual(
+          expectedInitialDefaultOrgGroupIds,
+        );
       });
     });
   });

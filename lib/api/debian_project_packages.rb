@@ -3,22 +3,22 @@
 module API
   class DebianProjectPackages < ::API::Base
     PACKAGE_FILE_REQUIREMENTS = {
-      id: API::NO_SLASH_URL_PART_REGEX,
+      id: ::API::NO_SLASH_URL_PART_REGEX,
       distribution: ::Packages::Debian::DISTRIBUTION_REGEX,
       letter: ::Packages::Debian::LETTER_REGEX,
-      package_name: API::NO_SLASH_URL_PART_REGEX,
-      package_version: API::NO_SLASH_URL_PART_REGEX,
-      file_name: API::NO_SLASH_URL_PART_REGEX
+      package_name: ::API::NO_SLASH_URL_PART_REGEX,
+      package_version: ::API::NO_SLASH_URL_PART_REGEX,
+      file_name: ::API::NO_SLASH_URL_PART_REGEX
     }.freeze
     FILE_NAME_REQUIREMENTS = {
-      file_name: API::NO_SLASH_URL_PART_REGEX
+      file_name: ::API::NO_SLASH_URL_PART_REGEX
     }.freeze
 
     def self.resource_type
       :project
     end
 
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       helpers do
         def project_or_group
           authorized_user_project(action: :read_package)

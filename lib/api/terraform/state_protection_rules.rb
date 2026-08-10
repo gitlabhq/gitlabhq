@@ -14,7 +14,7 @@ module API
       params do
         requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
       end
-      resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         resource ':id/terraform/state_protection_rules' do
           desc 'List all Terraform state protection rules for a project' do
             detail 'Lists all Terraform state protection rules for a project. ' \

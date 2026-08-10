@@ -8144,7 +8144,7 @@ msgstr ""
 msgid "AgentPlan|Not yet created"
 msgstr ""
 
-msgid "AgentPlan|Ready to view"
+msgid "AgentPlan|Ready for review"
 msgstr ""
 
 msgid "AgentPlan|Regenerate workplan"
@@ -8163,9 +8163,6 @@ msgid "AgentPlan|What is the confidence score?"
 msgstr ""
 
 msgid "AgentPlan|Workplan"
-msgstr ""
-
-msgid "AgentPlan|Workplan:"
 msgstr ""
 
 msgid "AgentPlan|You are here to help refine a plan for the user from the Work Item context to a Markdown output with key information required for Agent to pick off the work. This plan is for the work item %{workItemUrl}. Use this exact work item as your context, regardless of any other panels or items visible in the UI. The template should have a Why, How, What format with key insights and list of steps. If the issue is lacking details, start by reading the comments. Then, ask clarifying questions to the users in Chat until you are confident. If there are pending questions, please preserve them inside the plan. Then, please proceed with updating the work item 'Workplan' widget with your output. You can erase everything was there before and add your new plan entirely. Don't preserve existing notes if they dont align with what you wrote. If there is enough information but the title or description is lacking, please propose to update it minimally with key insights. Try to preserve anything that is already present, just add on top and dont repeat the full plan. What is important is syncing up enough to preserve the intent and adding data where we had none before."
@@ -29442,6 +29439,9 @@ msgid "DuoAgentPlatform|Failed"
 msgstr ""
 
 msgid "DuoAgentPlatform|Failed to load agent sessions for this merge request."
+msgstr ""
+
+msgid "DuoAgentPlatform|Failed to load agent sessions for this pipeline."
 msgstr ""
 
 msgid "DuoAgentPlatform|Failed to load agent sessions for this work item."
@@ -55633,9 +55633,6 @@ msgstr ""
 msgid "Organization|The visibility of this group will be changed to private because the Organization is private."
 msgstr ""
 
-msgid "Organization|These Organizations will be deleted"
-msgstr ""
-
 msgid "Organization|Unable to fetch organizations. Reload the page to try again."
 msgstr ""
 
@@ -58425,9 +58422,6 @@ msgstr ""
 msgid "Pipeline|Branch name"
 msgstr ""
 
-msgid "Pipeline|Branches or tags could not be loaded."
-msgstr ""
-
 msgid "Pipeline|Canceled"
 msgstr ""
 
@@ -59051,7 +59045,16 @@ msgstr ""
 msgid "PolicyStore|Active policies"
 msgstr ""
 
+msgid "PolicyStore|Add action"
+msgstr ""
+
 msgid "PolicyStore|Add exclusion"
+msgstr ""
+
+msgid "PolicyStore|Add rule"
+msgstr ""
+
+msgid "PolicyStore|Add trigger"
 msgstr ""
 
 msgid "PolicyStore|Advanced"
@@ -59201,6 +59204,9 @@ msgstr ""
 msgid "PolicyStore|Name"
 msgstr ""
 
+msgid "PolicyStore|No building blocks match your search."
+msgstr ""
+
 msgid "PolicyStore|None added"
 msgstr ""
 
@@ -59285,6 +59291,9 @@ msgstr ""
 msgid "PolicyStore|Search templates..."
 msgstr ""
 
+msgid "PolicyStore|Search…"
+msgstr ""
+
 msgid "PolicyStore|Select projects"
 msgstr ""
 
@@ -59339,10 +59348,19 @@ msgstr ""
 msgid "PolicyStore|Warn"
 msgstr ""
 
+msgid "PolicyStore|What conditions must be met?"
+msgstr ""
+
+msgid "PolicyStore|What happens when rules are matched?"
+msgstr ""
+
 msgid "PolicyStore|When a deployment environment is not in the required operational state"
 msgstr ""
 
 msgid "PolicyStore|When a deployment to a gated environment is requested"
+msgstr ""
+
+msgid "PolicyStore|When should this policy be evaluated?"
 msgstr ""
 
 msgid "PolicyStore|Which projects should this policy govern?"

@@ -12,7 +12,7 @@ module API
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project.'
     end
 
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       resource ':id/registry/protection/tag/rules' do
         desc 'List all container registry protection tag rules' do
           detail 'Lists all container registry protection tag rules for a project. This feature was ' \

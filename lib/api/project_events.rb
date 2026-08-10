@@ -22,7 +22,7 @@ module API
       optional :after, type: DateTime, desc: 'Include only events created after a particular date'
       optional :sort, type: String, desc: 'Sort events in asc or desc order by created_at. Default is desc'
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'List all visible events for a project' do
         detail 'Lists all visible events for a specified project. When a push exceeds the Push event ' \
           'activities limit, a single bulk push event is returned instead of individual commit events. ' \

@@ -764,6 +764,7 @@ RSpec/DuplicateSpecLocation:
 Gitlab/BoundedContexts:
   Enabled: true
   Exclude:
+    - 'lib/api.rb'
     - '**/lib/api/**/*'
     - 'ee/lib/ee/api/**/*'
     - '**/app/assets/**/*'

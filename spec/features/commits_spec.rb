@@ -6,6 +6,20 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
   let_it_be(:project, freeze: false) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 
+  let(:ref_selector) { '.ref-selector' }
+  let(:ref_with_hash) { 'ref-#-hash' }
+
+  def switch_ref_to(ref_name)
+    find(ref_selector).click
+    wait_for_requests
+
+    page.within ref_selector do
+      fill_in 'Search by Git revision', with: ref_name
+      wait_for_requests
+      find('li', text: ref_name, match: :prefer_exact).click
+    end
+  end
+
   describe 'CI' do
     before do
       sign_in(user)
@@ -248,19 +262,6 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
 
   context 'viewing commits for a branch' do
     let(:branch_name) { 'master' }
-    let(:ref_selector) { '.ref-selector' }
-    let(:ref_with_hash) { 'ref-#-hash' }
-
-    def switch_ref_to(ref_name)
-      first(ref_selector).click
-      wait_for_requests
-
-      page.within ref_selector do
-        fill_in 'Search by Git revision', with: ref_name
-        wait_for_requests
-        find('li', text: ref_name, match: :prefer_exact).click
-      end
-    end
 
     before do
       stub_feature_flags(project_commits_refactor: false)
@@ -299,6 +300,52 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
     end
   end
 
+  context 'viewing commits for a branch with refactored UI', :js do
+    let(:branch_name) { 'master' }
+
+    before do
+      project.add_maintainer(user)
+      sign_in(user)
+      project.repository.create_branch(ref_with_hash, branch_name)
+      visit project_commits_path(project, branch_name)
+    end
+
+    it 'shows commits grouped by day with dates', :aggregate_failures do
+      commits = project.repository.commits(branch_name, limit: 20)
+      # The UI renders day headers in the browser's (OS-local) timezone,
+      # so mirror that with +localtime+ rather than +Time.zone+.
+      expected_days = commits.map { |c| c.committed_date.localtime.strftime('%b %-d, %Y') }.uniq
+
+      expect(page).to have_testid('daily-commits', count: expected_days.length)
+
+      expected_days.each do |day|
+        expect(page).to have_content(day)
+      end
+
+      within_testid('daily-commits', match: :first) do
+        expect(page).to have_testid('daily-commits-date', text: expected_days.first)
+        expect(page).to have_testid('commit-row', text: commits.first.title)
+      end
+    end
+
+    it 'shows the author and a relative authored date for each commit', :aggregate_failures do
+      commits = project.repository.commits(branch_name, limit: 20)
+
+      expect(page).to have_testid('commit-row', count: commits.length)
+
+      within_testid('commit-row', match: :first) do
+        expect(page).to have_content("#{commits.first.author_name} authored")
+        expect(page).to have_testid('commit-authored-date')
+      end
+    end
+
+    it 'switches ref to ref containing a hash' do
+      switch_ref_to(ref_with_hash)
+
+      expect(page).to have_selector ref_selector, text: ref_with_hash
+    end
+  end
+
   context 'viewing commits for an author' do
     let(:author_commit) { project.repository.commits(nil, limit: 1).first }
     let(:commits) { project.repository.commits(nil, author: author, limit: 40) }
@@ -334,6 +381,52 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
       let(:author) { author_commit.author_email.to_s }
 
       it_behaves_like 'show commits by author'
+    end
+  end
+
+  context 'viewing commits for an author with refactored UI', :js do
+    let(:author_commit) { project.repository.commit }
+    let(:other_author_commit) do
+      # A commit on the first (unfiltered) page authored by someone else,
+      # so it would be visible if author filtering did not work.
+      project.repository.commits(nil, limit: 20).find do |commit|
+        commit.author_email != author_commit.author_email
+      end
+    end
+
+    before do
+      project.add_maintainer(user)
+      sign_in(user)
+    end
+
+    shared_examples 'show commits filtered by author' do
+      it 'shows only commits by the selected author', :aggregate_failures do
+        visit project_commits_path(project, nil, author: author)
+
+        expect(page).to have_testid('commit-row')
+        expect(page).to have_content("#{author_commit.author_name} authored")
+
+        expect(page).not_to have_content("#{other_author_commit.author_name} authored")
+        expect(page).not_to have_content(other_author_commit.title)
+      end
+    end
+
+    context 'when author is specified as both a name and an email' do
+      let(:author) { "#{author_commit.author_name} <#{author_commit.author_email}>" }
+
+      it_behaves_like 'show commits filtered by author'
+    end
+
+    context 'when author is just a name' do
+      let(:author) { author_commit.author_name.to_s }
+
+      it_behaves_like 'show commits filtered by author'
+    end
+
+    context 'when author is just an email' do
+      let(:author) { author_commit.author_email.to_s }
+
+      it_behaves_like 'show commits filtered by author'
     end
   end
 end

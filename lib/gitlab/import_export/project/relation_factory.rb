@@ -113,7 +113,7 @@ module Gitlab
           case @relation_name
           when :merge_request_diff_files then setup_diff
           when :note_diff_file then setup_diff
-          when :notes, :Note then setup_note
+          when :notes, :Note then setup_project_note
           when :'Ci::Pipeline' then setup_pipeline
           when *BUILD_MODELS then setup_build
           when :issues then setup_work_item
@@ -135,6 +135,12 @@ module Gitlab
           return unless RELATIONS_WITH_REWRITABLE_USERNAMES.include?(@relation_name) && @rewrite_mentions
 
           update_username_mentions(@relation_hash)
+        end
+
+        def setup_project_note
+          @relation_hash.delete('namespace_id')
+
+          setup_note
         end
 
         def generate_imported_object

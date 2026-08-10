@@ -154,6 +154,23 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
     end
   end
 
+  describe '#group_settings_create_organization_app_data' do
+    let_it_be(:group) { build_stubbed(:group, path: 'foo-bar') }
+
+    it 'returns expected json' do
+      expect(
+        Gitlab::Json.parse(
+          helper.group_settings_create_organization_app_data(group)
+        )
+      ).to eq(
+        {
+          'group_full_path' => group.full_path,
+          'group_gid' => "gid://gitlab/Group/#{group.id}"
+        }
+      )
+    end
+  end
+
   describe '#organization_groups_and_projects_app_data' do
     context 'when the user can create a group' do
       before do

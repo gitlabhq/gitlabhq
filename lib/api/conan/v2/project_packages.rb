@@ -116,7 +116,7 @@ module API
           requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
         end
 
-        resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+        resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
           namespace ':id/packages/conan/v2' do
             include ::API::Concerns::Packages::Conan::SharedEndpoints
             params do

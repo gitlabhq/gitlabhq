@@ -483,6 +483,28 @@ The `limit:` validator is implemented in
 [`API::Validations::Validators::Limit`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/validations/validators/limit.rb)
 and rejects values longer than the configured size.
 
+### Shared route requirements
+
+Route requirement constants such as `NAMESPACE_OR_PROJECT_REQUIREMENTS` live on
+the `API` module in [`lib/api.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api.rb),
+not on the `API::API` class in `lib/api/api.rb`. Always reference them with a
+leading `::`:
+
+```ruby
+# good
+resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+end
+
+# bad - without the leading ::, `API` resolves to the `API::API` class
+resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+end
+```
+
+`API::API` mounts every endpoint, so resolving a constant on it from an
+endpoint's class body autoloads the entire API surface. When a previously
+mounted endpoint reads back a constant from the endpoint that is still loading,
+this raises a `NameError`.
+
 ## Breaking changes
 
 We must not make breaking changes to our REST API v4, even in major GitLab releases. See [what is a breaking change](#what-is-a-breaking-change) and [what is not a breaking change](#what-is-not-a-breaking-change).

@@ -329,7 +329,7 @@ module API
       end
     end
 
-    resource :users, requirements: API::USER_REQUIREMENTS do
+    resource :users, requirements: ::API::USER_REQUIREMENTS do
       desc 'List all personal projects for a user' do
         detail 'Lists all personal projects for a specified user. Does not return group or subgroup projects. ' \
           'If the user profile is private, returns only an empty list.'
@@ -586,7 +586,7 @@ module API
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Retrieve a project' do
         detail 'Retrieves details on a specified project. This endpoint can be accessed without authentication if ' \
           'the project is publicly accessible.'

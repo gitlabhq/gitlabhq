@@ -53,7 +53,7 @@ module API
           requires :model_version, type: String, desc: 'The model version'
         end
         route_setting :authorization, permissions: :read_ml_flow_artifact, boundary_type: :project
-        get 'artifacts/:model_version/*file_path', urgency: :low, requirements: API::NO_FORMAT_SUFFIX_REQUIREMENT do
+        get 'artifacts/:model_version/*file_path', urgency: :low, requirements: ::API::NO_FORMAT_SUFFIX_REQUIREMENT do
           if candidate_version?(params[:model_version])
             version = params[:model_version].delete_prefix(CANDIDATE_PREFIX)
             present_package_file!(find_run_artifact(user_project, version, CGI.escape(params[:file_path])))

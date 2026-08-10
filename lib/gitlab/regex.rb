@@ -7,12 +7,6 @@ module Gitlab
     extend Packages
     extend Cd
 
-    # Matches a single URL path segment (any characters except a forward slash).
-    # Defined here rather than in API::API so that it can be referenced from
-    # files that are loaded before API::API without triggering a Zeitwerk
-    # circular autoload.
-    NO_SLASH_URL_PART_REGEX = %r{[^/]+}
-
     def project_name_regex
       # The character range \p{Alnum} overlaps with \u{00A9}-\u{1f9ff}
       # hence the Ruby warning.

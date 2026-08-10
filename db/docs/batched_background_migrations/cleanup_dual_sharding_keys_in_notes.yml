@@ -1,0 +1,11 @@
+---
+migration_job_name: CleanupDualShardingKeysInNotes
+description: Nulls out namespace_id on notes rows where both namespace_id and project_id
+  are populated, so that project_id remains the sole authoritative sharding key for
+  project-scoped notes.
+feature_category: team_planning
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238033
+milestone: '19.3'
+queued_migration_version: 20260724100002
+finalized_by: # version of the migration that finalized this BBM
+gitlab_schema: gitlab_main_org

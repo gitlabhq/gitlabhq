@@ -5,7 +5,6 @@ export default {
   files: [
     'app/assets/javascripts/analytics/cycle_analytics/components/filter_bar.vue',
     'app/assets/javascripts/ci/catalog/components/list/catalog_search.vue',
-    'app/assets/javascripts/ci/pipeline_new/components/pipeline_new_form.vue',
     'app/assets/javascripts/credentials/components/credentials_filter_sort_app.vue',
     'app/assets/javascripts/diffs/components/app.vue',
     'app/assets/javascripts/diffs/components/diff_content.vue',
@@ -80,7 +79,6 @@ export default {
     'ee/app/assets/javascripts/analytics/cycle_analytics/components/value_stream_aggregating_warning.vue',
     'ee/app/assets/javascripts/analytics/cycle_analytics/vsa_settings/components/value_stream_form_content.vue',
     'ee/app/assets/javascripts/analytics/productivity_analytics/components/app.vue',
-    'ee/app/assets/javascripts/ci/pipeline_details/tabs/pipeline_tabs.vue',
     'ee/app/assets/javascripts/codequality_report/codequality_report.vue',
     'ee/app/assets/javascripts/compliance_dashboard/components/dashboard/components/status_chart.vue',
     'ee/app/assets/javascripts/compliance_dashboard/components/dashboard/framework_coverage.vue',
@@ -119,7 +117,6 @@ export default {
     'ee/app/assets/javascripts/usage_quotas/seats/components/subscription_user_list.vue',
     'ee/app/assets/javascripts/usage_quotas/usage_billing/components/usage_by_user_tab.vue',
     'ee/app/assets/javascripts/usage_quotas/wallet_agnostic_credits_dashboard/index/components/users_list.vue',
-    'ee/app/assets/javascripts/vue_shared/components/code_flow/vulnerability_code_flow.vue',
     'ee/app/assets/javascripts/vulnerabilities/components/related_issues.vue',
     'ee/app/assets/javascripts/work_items/components/work_item_change_type_modal.vue',
     'ee/app/assets/javascripts/work_items/components/work_item_color.vue',

@@ -12,7 +12,7 @@ module API
         documentation: { example: 23 }
     end
 
-    resource :projects, requirements: ::API::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       before do
         @alert = find_project_alert(params[:alert_iid])
         not_found! if Feature.enabled?(:hide_incident_management_features, @alert&.project)

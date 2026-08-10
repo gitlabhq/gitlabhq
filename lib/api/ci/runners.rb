@@ -387,7 +387,7 @@ module API
           types: [String, Integer],
           desc: 'The ID or URL-encoded path of the project owned by the authenticated user'
       end
-      resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         before { authorize! :read_runners, user_project }
 
         desc 'List all runners for a project' do
@@ -469,7 +469,7 @@ module API
       params do
         requires :id, type: String, desc: 'The ID of a group'
       end
-      resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      resource :groups, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         before { authorize! :read_runners, user_group }
 
         desc 'List all runners in a group' do
@@ -512,7 +512,7 @@ module API
       params do
         requires :id, type: String, desc: 'The ID of a project'
       end
-      resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         before { authenticate_non_get! }
 
         desc 'Reset the runner registration token for a project' do
@@ -534,7 +534,7 @@ module API
       params do
         requires :id, type: String, desc: 'The ID of a group'
       end
-      resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      resource :groups, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         before { authenticate_non_get! }
 
         desc 'Reset the runner registration token for a group' do

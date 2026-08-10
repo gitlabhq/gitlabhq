@@ -50,7 +50,7 @@ module API
       params do
         requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
       end
-      resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         before { authenticate! }
         before { authorize_admin_project_integrations }
 
@@ -75,7 +75,7 @@ module API
         params do
           requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
         end
-        resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+        resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
           desc "Trigger a slash command for #{integration_slug}" do
             detail "Triggers a slash command for #{integration_slug}."
             failure [
@@ -116,7 +116,7 @@ module API
         requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the group'
       end
 
-      resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      resource :groups, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         before { authenticate! }
         before { authorize_admin_group_integrations }
 

@@ -8,7 +8,7 @@ module API
 
     AWARD_EMOJI_TAG = %w[award_emoji].freeze
     Helpers::AwardEmoji.awardables.each do |awardable_params|
-      resource awardable_params[:resource], requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      resource awardable_params[:resource], requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         awardable_string = awardable_params[:type].pluralize
         awardable_id_string = "#{awardable_params[:type]}_#{awardable_params[:find_by]}"
         boundary_type = awardable_params[:resource].to_s.singularize.to_sym

@@ -9,7 +9,7 @@ module API
     feature_category :system_access
     urgency :low
 
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Retrieve the CI/CD job token access settings for a project' do
         detail 'Retrieves the CI/CD job token access settings (job token scope) of a specified project.'
         failure [

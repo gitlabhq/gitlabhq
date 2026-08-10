@@ -34,7 +34,7 @@ module API
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'List all remote mirrors for a project' do
         detail 'Lists all remote mirrors for a specified project.'
         success code: 200, model: Entities::RemoteMirror

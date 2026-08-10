@@ -324,6 +324,41 @@ RSpec.describe ProtectedBranch, feature_category: :source_code_management do
     end
   end
 
+  describe '.sorted_by_name_with_default_first' do
+    let_it_be(:project, freeze: false) { create(:project) }
+
+    let_it_be(:branch_a) { create(:protected_branch, project: project, name: 'alpha') }
+    let_it_be(:branch_main) { create(:protected_branch, project: project, name: 'main') }
+    let_it_be(:branch_wildcard) { create(:protected_branch, project: project, name: 'main-*') }
+    let_it_be(:branch_z) { create(:protected_branch, project: project, name: 'zeta') }
+
+    let(:relation) { described_class.where(project: project) }
+
+    it 'returns the exactly matching name first, the rest sorted by name' do
+      result = relation.sorted_by_name_with_default_first('main')
+
+      expect(result).to eq([branch_main, branch_a, branch_wildcard, branch_z])
+    end
+
+    it 'sorts by name when no entry matches the given name' do
+      result = relation.sorted_by_name_with_default_first('unprotected-default')
+
+      expect(result).to eq([branch_a, branch_main, branch_wildcard, branch_z])
+    end
+
+    it 'sorts by name when the given name is nil' do
+      result = relation.sorted_by_name_with_default_first(nil)
+
+      expect(result).to eq([branch_a, branch_main, branch_wildcard, branch_z])
+    end
+
+    it 'sorts by name when the given name is an empty string' do
+      result = relation.sorted_by_name_with_default_first('')
+
+      expect(result).to eq([branch_a, branch_main, branch_wildcard, branch_z])
+    end
+  end
+
   describe '.excluding_name' do
     let_it_be(:project, freeze: false) { create(:project) }
     let_it_be(:branch_a, freeze: false) { create(:protected_branch, project: project, name: 'a') }

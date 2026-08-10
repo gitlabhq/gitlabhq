@@ -1112,7 +1112,9 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
 
       context 'when clearing the primary domain' do
         let(:project_settings) { create(:project_setting, pages_primary_domain: "http://example.com") }
-        let(:project) { build(:project, project_setting: project_settings) }
+        let(:project) do
+          create(:project, creator: user, namespace: user.namespace, project_setting: project_settings)
+        end
 
         it 'removes the pages primary domain setting' do
           expect(project.project_setting.pages_primary_domain).to eq("http://example.com")

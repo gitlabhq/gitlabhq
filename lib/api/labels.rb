@@ -14,9 +14,9 @@ module API
     feature_category :team_planning
     urgency :low
 
-    LABEL_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(
-      name: API::NO_SLASH_URL_PART_REGEX,
-      label_id: API::NO_SLASH_URL_PART_REGEX)
+    LABEL_ENDPOINT_REQUIREMENTS = ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(
+      name: ::API::NO_SLASH_URL_PART_REGEX,
+      label_id: ::API::NO_SLASH_URL_PART_REGEX).freeze
 
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'

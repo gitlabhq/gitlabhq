@@ -1,38 +1,24 @@
-import organizationsForReconciliationResponse from 'test_fixtures/graphql/organizations/organizations_for_reconciliation.query.graphql.json';
-import { mockDefaultOrganization } from 'jest/organizations/shared/mock_data';
+import groupsResponse from 'test_fixtures/graphql/groups/settings/create_organization/groups.query.graphql.json';
+import { NEW_ORGANIZATION_GID } from '~/groups/settings/create_organization/constants';
+
+export const groupsQueryResponse = groupsResponse;
 
 export const {
-  data: {
-    organizations: { nodes: mockOrganizations },
-  },
-} = organizationsForReconciliationResponse;
+  data: { group: mockGroup, defaultOrganization: mockDefaultOrganization },
+} = groupsResponse;
 
-export const organizationWithGroupsIndex = mockOrganizations.findIndex(
-  (organization) => organization.groups.nodes.length,
-);
-export const organizationWithGroups = mockOrganizations[organizationWithGroupsIndex];
+// The organization the user is about to create. It does not exist yet, so `modal.vue` synthesizes
+// it client side from the group the reconciliation was started from.
+export const mockNewOrganization = {
+  id: NEW_ORGANIZATION_GID,
+  name: mockGroup.fullName,
+  visibility: mockGroup.visibility,
+  avatarUrl: mockGroup.avatarUrl,
+  groups: { nodes: [mockGroup] },
+};
 
-export const organizationWithoutGroupsIndex = mockOrganizations.findIndex(
-  (organization) => !organization.groups.nodes.length,
-);
-export const organizationWithoutGroups = mockOrganizations[organizationWithoutGroupsIndex];
+export const mockOrganizations = [mockNewOrganization, mockDefaultOrganization];
 
 export const organizationsWithoutGroups = mockOrganizations.filter(
   (organization) => !organization.groups.nodes.length,
 );
-
-export const [mockGroup] = organizationWithGroups.groups.nodes;
-
-export const defaultOrgWithGroups = {
-  ...mockDefaultOrganization,
-  __typename: 'Organization',
-  groups: { nodes: [mockGroup], __typename: 'GroupConnection' },
-};
-
-export const defaultOrgWithoutGroups = {
-  ...mockDefaultOrganization,
-  __typename: 'Organization',
-  groups: { nodes: [], __typename: 'GroupConnection' },
-};
-
-export const organizationsWithDefault = [defaultOrgWithGroups, ...mockOrganizations];

@@ -21,7 +21,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a group'
     end
-    resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :groups, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       segment ':id/boards' do
         desc 'List all group issue boards in a group' do
           detail 'Lists all group issue boards for a specified group.'

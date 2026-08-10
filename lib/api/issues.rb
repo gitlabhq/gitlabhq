@@ -198,7 +198,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a group'
     end
-    resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :groups, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'List all issues for a group' do
         detail 'Lists all issues for a specified group. If the group is private, you must provide credentials to ' \
           'authorize. In most cases, you should authenticate with a personal access token.'
@@ -244,7 +244,7 @@ module API
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       include TimeTrackingEndpoints
 
       desc 'List all project issues' do

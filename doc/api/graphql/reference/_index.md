@@ -18032,6 +18032,7 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mutation-updateduoworkflowtoolcallapprovals-approvalsource"></a>`approvalSource` {{< icon name="warning-solid" >}} | [`DuoWorkflowToolCallApprovalSource`](#duoworkflowtoolcallapprovalsource) | Introduced in GitLab 19.3. Status: Experiment. Source of the approval decision, for audit purposes. |
 | <a id="mutation-updateduoworkflowtoolcallapprovals-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-updateduoworkflowtoolcallapprovals-pattern"></a>`pattern` | [`String`](#string) | Glob pattern to approve for matching tool call arguments. |
 | <a id="mutation-updateduoworkflowtoolcallapprovals-toolcallargs"></a>`toolCallArgs` | [`JSON`](#json) | Arguments for the tool call. |
@@ -41649,6 +41650,26 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="duoworkflow-notelinks-linktype"></a>`linkType` | [`DuoWorkflowNoteLinkType`](#duoworkflownotelinktype) | Filter links by their link type. |
 
+##### `DuoWorkflow.toolCallApprovalMatch`
+
+{{< details >}}
+
+- Introduced in GitLab 19.3.
+- Status: Experiment.
+
+{{< /details >}}
+
+Approval match details for the specified tool call.
+
+Returns [`DuoWorkflowToolCallApprovalMatch!`](#duoworkflowtoolcallapprovalmatch).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflow-toolcallapprovalmatch-toolcallargs"></a>`toolCallArgs` | [`String!`](#string) | JSON-serialized arguments for the tool call. |
+| <a id="duoworkflow-toolcallapprovalmatch-toolname"></a>`toolName` | [`String!`](#string) | Name of the tool to check. |
+
 ##### `DuoWorkflow.toolCallApproved`
 
 Whether the specified tool call is approved for the session.
@@ -41800,6 +41821,18 @@ Fields:
 | <a id="duoworkflowsessionartifact-webpath"></a>`webPath` | [`String`](#string) | Path of the session. |
 | <a id="duoworkflowsessionartifact-workflowcreatedat"></a>`workflowCreatedAt` | [`Time!`](#time) | Timestamp of when the session was created. |
 | <a id="duoworkflowsessionartifact-workflowdefinition"></a>`workflowDefinition` | [`String!`](#string) | Workflow definition type of the session. |
+
+### `DuoWorkflowToolCallApprovalMatch`
+
+Approval match details for a Duo Workflow tool call.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflowtoolcallapprovalmatch-matchtype"></a>`matchType` | [`DuoWorkflowToolCallApprovalMatchType`](#duoworkflowtoolcallapprovalmatchtype) | Mechanism that produced the match, null when unmatched. |
+| <a id="duoworkflowtoolcallapprovalmatch-matched"></a>`matched` | [`Boolean!`](#boolean) | Indicates the tool call matches a stored approval. |
+| <a id="duoworkflowtoolcallapprovalmatch-matchedpattern"></a>`matchedPattern` | [`String`](#string) | Glob pattern that produced the match, present only for pattern matches. |
 
 ### `DuoWorkflowWorkItemLink`
 
@@ -67042,6 +67075,26 @@ The status group of the flow session.
 | <a id="duoworkflowstatusgroup-completed"></a>`COMPLETED` | Flow sessions with a status group of completed. |
 | <a id="duoworkflowstatusgroup-failed"></a>`FAILED` | Flow sessions with a status group of failed. |
 | <a id="duoworkflowstatusgroup-paused"></a>`PAUSED` | Flow sessions with a status group of paused. |
+
+### `DuoWorkflowToolCallApprovalMatchType`
+
+Mechanism that resolved a stored Duo Workflow tool call approval.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="duoworkflowtoolcallapprovalmatchtype-exact_hash"></a>`EXACT_HASH` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.3. Status: Experiment. Tool call matched a previously approved call by exact argument hash. |
+| <a id="duoworkflowtoolcallapprovalmatchtype-pattern"></a>`PATTERN` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.3. Status: Experiment. Tool call matched a stored glob pattern. |
+
+### `DuoWorkflowToolCallApprovalSource`
+
+Source of a Duo Workflow tool call approval decision, as reported by the client. Identifies the mechanism the client reports as having made the decision, not the policy that was evaluated or its author.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="duoworkflowtoolcallapprovalsource-auto_mode"></a>`AUTO_MODE` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.3. Status: Experiment. Approval granted automatically by auto-mode. |
+| <a id="duoworkflowtoolcallapprovalsource-preapproved_config"></a>`PREAPPROVED_CONFIG` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.3. Status: Experiment. Approval granted through a pre-approved tool or pattern configuration. |
+| <a id="duoworkflowtoolcallapprovalsource-pretooluse_hook"></a>`PRETOOLUSE_HOOK` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.3. Status: Experiment. Approval granted automatically by a PreToolUse hook. |
+| <a id="duoworkflowtoolcallapprovalsource-user_explicit"></a>`USER_EXPLICIT` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.3. Status: Experiment. Explicit approval by a user action. |
 
 ### `DuoWorkflowWorkItemLinkType`
 

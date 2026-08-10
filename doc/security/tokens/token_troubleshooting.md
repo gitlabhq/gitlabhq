@@ -45,6 +45,19 @@ If the token's usage information does not update after you make a request, the r
 reaching GitLab. GitLab updates usage times every 10 minutes and usage IP addresses every minute.
 If GitLab isn't recording the usage after those intervals elapse, your request did not reach GitLab.
 
+## Token does not work in an editor extension or command-line tool
+
+A token that authenticates in the GitLab UI or API can still fail in an editor extension or a
+command-line tool. Scope requirements differ between tools.
+
+Valid tokens can fail in a tool for the following reasons:
+
+| Cause | Resolution |
+|-------|------------|
+| The token requires different scopes. | Compare the [tool's required scopes](../../user/profile/personal_access_tokens.md#use-third-party-tools-and-ide-extensions) with the [scopes](access_token_scopes.md) added to the token. Create a token with the required scopes. Rotation keeps the original scopes and cannot add missing scopes. |
+| The tool is not using the correct token. | Check which token the tool authenticates with, then update or remove the incorrect token. The GitLab for VS Code extension uses a token in the `GITLAB_WORKFLOW_TOKEN` [environment variable](../../editor_extensions/visual_studio_code/setup.md#store-tokens-in-environment-variables) only when no token is configured for that instance. This variable persists after you delete your VS Code storage. To override it, configure a token for the instance in the extension. |
+| The tool cannot connect to GitLab. | If the token has the required scopes and the tool is using it, verify the tool can reach GitLab over your network. For the GitLab for VS Code extension, see [authentication troubleshooting](../../editor_extensions/visual_studio_code/troubleshooting.md#authentication). |
+
 ## Expired access tokens
 
 If an existing access token is in use and reaches the `expires_at` value, the token
@@ -554,3 +567,8 @@ This script finds tokens without a value set for `expires_at`.
      end
    end
    ```
+
+## Related topics
+
+- [Container registry authentication](../../user/packages/container_registry/authenticate_with_container_registry.md#troubleshooting)
+- [CI/CD job token authentication](../../ci/jobs/ci_job_token.md#troubleshooting)
