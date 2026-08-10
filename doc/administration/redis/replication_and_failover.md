@@ -551,6 +551,16 @@ The same thing happens with `sentinel.conf` that is overridden after the
 initial execution, after any new sentinel node starts watching the **Primary**,
 or a failover promotes a different **Primary** node.
 
+> [!note]
+> GitLab uses the `redis['master_ip']` value in `gitlab.rb` only the first time you run `gitlab-ctl reconfigure`, before `sentinel.conf` exists.
+> On subsequent reconfigures, GitLab reads the current primary IP directly from `sentinel.conf` to preserve the post-failover state of Sentinel.
+> To promote a different node as primary, do not edit `redis['master_ip']`.
+> Use the Sentinel `FAILOVER` command instead:
+>
+> ```shell
+> /opt/gitlab/embedded/bin/redis-cli -p 26379 SENTINEL failover gitlab-redis
+> ```
+
 ### Example configuration for Redis primary and Sentinel 1
 
 In `/etc/gitlab/gitlab.rb`:

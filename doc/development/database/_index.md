@@ -52,7 +52,7 @@ title: Database development guidelines
 - [Overview](partitioning/_index.md)
 - [Date range](partitioning/date_range.md)
 - [Hash](partitioning/hash.md)
-- [Int range](partitioning/int_range.md)
+- [Int range (deprecated)](partitioning/int_range.md)
 - [List](partitioning/list.md)
 
 ## Debugging

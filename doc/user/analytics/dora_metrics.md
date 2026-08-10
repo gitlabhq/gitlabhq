@@ -176,8 +176,8 @@ The first step is to benchmark the quality and stability, between groups and pro
 
 This feature is an [experiment](../../policy/development_stages_support.md).
 To join the list of users testing this feature, [here is a suggested test flow](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96561#steps-to-check-on-localhost).
-If you find a bug, [open an issue here](https://gitlab.com/groups/gitlab-org/-/epics/11490).
-To share your use cases and feedback, comment in [epic 11490](https://gitlab.com/groups/gitlab-org/-/epics/11490).
+If you find a bug, [open an issue here](https://gitlab.com/groups/gitlab-org/-/work_items/11490).
+To share your use cases and feedback, comment in [epic 11490](https://gitlab.com/groups/gitlab-org/-/work_items/11490).
 
 ### Multi-branch rule for lead time for changes
 

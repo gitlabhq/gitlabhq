@@ -609,7 +609,7 @@ The list view displays verification status for a selected component.
 The database diagnostics page consists of a number of checks that
 attempt to flag common problems with the database:
 
-- Index corruption caused by [change in PostgreSQL collations](https://gitlab.com/groups/gitlab-org/-/epics/8573)
+- Index corruption caused by [change in PostgreSQL collations](https://gitlab.com/groups/gitlab-org/-/work_items/8573)
 - [Schema discrepancies](https://gitlab.com/groups/gitlab-org/-/epics/3928)
 
 To run each check, select the run button for the check. Selecting the run button

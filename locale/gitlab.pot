@@ -12052,6 +12052,9 @@ msgid_plural "ArtifactRegistry|Images"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "ArtifactRegistry|Install"
+msgstr ""
+
 msgid "ArtifactRegistry|Install command:"
 msgstr ""
 
@@ -12111,6 +12114,9 @@ msgstr ""
 msgid "ArtifactRegistry|Private"
 msgstr ""
 
+msgid "ArtifactRegistry|Publish"
+msgstr ""
+
 msgid "ArtifactRegistry|Publish command:"
 msgstr ""
 
@@ -12154,6 +12160,9 @@ msgid "ArtifactRegistry|Repository was successfully updated."
 msgstr ""
 
 msgid "ArtifactRegistry|Resource ID must be a valid UUIDv7."
+msgstr ""
+
+msgid "ArtifactRegistry|Setup instructions"
 msgstr ""
 
 msgid "ArtifactRegistry|Sign in to the registry:"
@@ -12208,6 +12217,9 @@ msgid "ArtifactRegistry|Unknown Artifact Registry roles: %{roles}."
 msgstr ""
 
 msgid "ArtifactRegistry|Versions"
+msgstr ""
+
+msgid "ArtifactRegistry|View setup instructions"
 msgstr ""
 
 msgid "ArtifactRegistry|Virtual"

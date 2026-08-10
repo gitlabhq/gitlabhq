@@ -40,7 +40,7 @@ other changes, especially if those changes do not require downtime, such as upgr
 system of nodes running only Puma or Sidekiq.
 
 For more information about how GitLab plans to address this issue, see
-[epic 8573](https://gitlab.com/groups/gitlab-org/-/epics/8573).
+[epic 8573](https://gitlab.com/groups/gitlab-org/-/work_items/8573).
 
 ## Backup and restore
 

@@ -107,7 +107,7 @@ For most JSON requests, `POST`, `PUT`, `PATCH`, and `DELETE` are blocked, and th
 | `POST` | `/users/sign_in` | To allow users to sign in. |
 | `POST` | `/users/sign_out`| To allow users to sign out. |
 | `POST` | `/oauth/token` | To allow users to sign in to a Geo secondary for the first time. |
-| `POST` | `/admin/session`, `/admin/session/destroy` | To allow [Admin Mode for GitLab administrators](https://gitlab.com/groups/gitlab-org/-/epics/2158) |
+| `POST` | `/admin/session`, `/admin/session/destroy` | To allow [Admin Mode for GitLab administrators](https://gitlab.com/groups/gitlab-org/-/work_items/2158) |
 | `POST` | Paths ending with `/compare`| Git revision routes. |
 | `POST` | `.git/git-upload-pack` | To allow Git pull/clone. |
 | `POST` | `/api/v4/internal` | internal API routes |

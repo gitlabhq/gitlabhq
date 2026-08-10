@@ -15,7 +15,7 @@ Offering: GitLab Self-Managed
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8939) in GitLab 17.0 [with a feature flag](../feature_flags/_index.md) named `gitaly_bundle_uri`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/8939) in GitLab 17.0 [with a feature flag](../feature_flags/_index.md) named `gitaly_bundle_uri`. Disabled by default.
 
 {{< /history >}}
 
@@ -247,7 +247,7 @@ go_cloud_url = "s3://<bucket>?region=us-west-1"
 
 {{< history >}}
 
-- `use_path_style` and `disable_https` parameters [introduced](https://gitlab.com/groups/gitlab-org/-/epics/8939) in GitLab 17.4.
+- `use_path_style` and `disable_https` parameters [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/8939) in GitLab 17.4.
 
 {{< /history >}}
 

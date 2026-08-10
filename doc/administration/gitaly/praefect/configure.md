@@ -20,7 +20,7 @@ Smaller GitLab installations may need only [Gitaly itself](../_index.md).
 
 > [!note]
 > Gitaly Cluster (Praefect) is not yet supported in Kubernetes, Amazon ECS, or similar container environments. For more information, see
-> [epic 6127](https://gitlab.com/groups/gitlab-org/-/epics/6127).
+> [epic 6127](https://gitlab.com/groups/gitlab-org/-/work_items/6127).
 
 ## Requirements
 

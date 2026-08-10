@@ -15,7 +15,7 @@ title: Conan 1 packages in the package registry
 
 > [!warning]
 > The Conan package registry for GitLab is under development and isn't ready for production use due to
-> limited functionality. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/6816) details the remaining
+> limited functionality. This [epic](https://gitlab.com/groups/gitlab-org/-/work_items/6816) details the remaining
 > work and timelines to make it production ready.
 
 Publish Conan packages in your project's package registry. Then install the

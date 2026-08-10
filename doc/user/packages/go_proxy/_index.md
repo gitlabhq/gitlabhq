@@ -23,12 +23,6 @@ title: Go proxy for GitLab (deprecated)
 > [!warning]
 > This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/592132) in GitLab 19.1
 > and is planned for removal in 20.0. Use the [Go virtual registry](https://gitlab.com/gitlab-org/gitlab/-/issues/592136) instead, once available.
-<!-- -->
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
-> This feature is available for testing, but not ready for production use.
-> See [epic 3043](https://gitlab.com/groups/gitlab-org/-/epics/3043).
 
 With the Go proxy for GitLab, every project in GitLab can be fetched with the
 [Go proxy protocol](https://proxy.golang.org/).
