@@ -87,7 +87,7 @@
     "@rsdoctor/rspack-plugin": "^1.6.1",
     "@rspack/cli": "^2.1.8",
     "@rspack/core": "^2.1.8",
-    "@sentry/browser": "10.65.0",
+    "@sentry/browser": "10.69.0",
     "@snowplow/browser-plugin-client-hints": "^4.6.8",
     "@snowplow/browser-plugin-form-tracking": "^4.6.8",
     "@snowplow/browser-plugin-ga-cookies": "^4.6.8",

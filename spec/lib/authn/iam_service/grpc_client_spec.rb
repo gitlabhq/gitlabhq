@@ -13,6 +13,7 @@ RSpec.describe Authn::IamService::GrpcClient, feature_category: :system_access d
   let(:auth_stub) { instance_double(::Gitlab::Iam::Auth::V1::AuthService::Stub) }
   let(:login_stub) { instance_double(::Gitlab::Iam::Auth::V1::LoginService::Stub) }
   let(:consent_stub) { instance_double(::Gitlab::Iam::Auth::V1::ConsentService::Stub) }
+  let(:oauth_clients_stub) { instance_double(::Gitlab::Iam::Auth::V1::InternalOAuthClientsService::Stub) }
 
   before do
     allow(Authn::IamAuthService).to receive_messages(
@@ -23,6 +24,7 @@ RSpec.describe Authn::IamService::GrpcClient, feature_category: :system_access d
     allow(::Gitlab::Iam::Auth::V1::AuthService::Stub).to receive(:new).and_return(auth_stub)
     allow(::Gitlab::Iam::Auth::V1::LoginService::Stub).to receive(:new).and_return(login_stub)
     allow(::Gitlab::Iam::Auth::V1::ConsentService::Stub).to receive(:new).and_return(consent_stub)
+    allow(::Gitlab::Iam::Auth::V1::InternalOAuthClientsService::Stub).to receive(:new).and_return(oauth_clients_stub)
   end
 
   describe 'gRPC calls' do
@@ -32,6 +34,11 @@ RSpec.describe Authn::IamService::GrpcClient, feature_category: :system_access d
       :get_consent_challenge    | :get    | :consent_stub | ::Gitlab::Iam::Auth::V1::ConsentServiceGetRequest    | ::Gitlab::Iam::Auth::V1::ConsentServiceGetResponse    | { challenge: 'test-challenge' }
       :accept_consent_challenge | :accept | :consent_stub | ::Gitlab::Iam::Auth::V1::ConsentServiceAcceptRequest | ::Gitlab::Iam::Auth::V1::ConsentServiceAcceptResponse | { challenge: 'test-challenge', granted_scopes: %w[openid profile] }
       :reject_consent_challenge | :reject | :consent_stub | ::Gitlab::Iam::Auth::V1::ConsentServiceRejectRequest | ::Gitlab::Iam::Auth::V1::ConsentServiceRejectResponse | { challenge: 'test-challenge' }
+      # rubocop:disable Layout/LineLength -- fully-qualified gRPC message class names make these table rows exceed the limit
+      :create_oauth_application | :create_client | :oauth_clients_stub | ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceCreateClientRequest | ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceCreateClientResponse | { client_id: 'test-client-id' }
+      :get_oauth_application    | :get_client    | :oauth_clients_stub | ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceGetClientRequest    | ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceGetClientResponse    | { client_id: 'test-client-id' }
+      :delete_oauth_application | :delete_client | :oauth_clients_stub | ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceDeleteClientRequest | ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceDeleteClientResponse | { client_id: 'test-client-id' }
+      # rubocop:enable Layout/LineLength
     end
 
     with_them do
@@ -46,6 +53,38 @@ RSpec.describe Authn::IamService::GrpcClient, feature_category: :system_access d
 
         expect(client.public_send(method, **params)).to eq(response)
       end
+    end
+  end
+
+  describe '#create_oauth_application' do
+    let_it_be(:application) { create(:oauth_application, scopes: 'api read_user') }
+
+    let(:response) do
+      ::Gitlab::Iam::Auth::V1::InternalOAuthClientsServiceCreateClientResponse.new(
+        client: ::Gitlab::Iam::Auth::V1::ManagedClient.new(
+          client_id: application.uid,
+          client_name: application.name,
+          redirect_uris: application.redirect_uri.split,
+          scopes: application.scopes.to_a
+        )
+      )
+    end
+
+    it 'returns the managed client mirrored from the application', :aggregate_failures do
+      allow(oauth_clients_stub).to receive(:create_client).and_return(response)
+
+      result = client.create_oauth_application(
+        client_id: application.uid,
+        client_secret: application.secret,
+        client_name: application.name,
+        redirect_uris: application.redirect_uri.split,
+        scopes: application.scopes.to_a
+      )
+
+      expect(result.client.client_id).to eq(application.uid)
+      expect(result.client.client_name).to eq(application.name)
+      expect(result.client.redirect_uris.to_a).to eq(application.redirect_uri.split)
+      expect(result.client.scopes.to_a).to eq(%w[api read_user])
     end
   end
 
@@ -91,22 +130,40 @@ RSpec.describe Authn::IamService::GrpcClient, feature_category: :system_access d
     context 'when the IAM service is misconfigured' do
       let(:error) { Authn::IamAuthService::ConfigurationError.new('IAM service is not configured') }
 
-      it 'raises RequestError with the configuration message and skips Sentry', :aggregate_failures do
-        expect { client.health }.to raise_error(described_class::RequestError, 'IAM service is not configured')
-        expect(Gitlab::ErrorTracking).not_to have_received(:track_exception)
+      it 'raises an unavailable RequestError and tracks the exception', :aggregate_failures do
+        expect { client.health }.to raise_error(described_class::RequestError) do |e|
+          expect(e.message).to eq('IAM auth service is not configured')
+          expect(e.reason).to eq(:unavailable)
+        end
+        expect(Gitlab::ErrorTracking).to have_received(:track_exception).with(error)
       end
     end
 
     context 'when the gRPC stub raises GRPC::BadStatus' do
-      where(:error_class) do
-        [GRPC::Unavailable, GRPC::Unauthenticated, GRPC::InvalidArgument]
+      where(:error_class, :expected_reason) do
+        GRPC::Unavailable      | :unavailable
+        GRPC::Unauthenticated  | :unauthenticated
+        GRPC::InvalidArgument  | :invalid_request
+        GRPC::PermissionDenied | :permission_denied
+        GRPC::DeadlineExceeded | :timeout
+        GRPC::Internal         | :unknown
+        GRPC::NotFound         | :not_found
+        GRPC::AlreadyExists    | :already_exists
       end
 
       with_them do
         let(:error) { error_class.new('upstream details') }
 
-        it 'raises a sanitized RequestError and tracks the exception', :aggregate_failures do
-          expect { client.health }.to raise_error(described_class::RequestError, 'Failed to connect to IAM service')
+        it 'raises a RequestError with the mapped reason and diagnostic message', :aggregate_failures do
+          expect { client.health }.to raise_error(described_class::RequestError) do |e|
+            expect(e.message).to eq("IAM service request failed: #{error.code}")
+            expect(e.reason).to eq(expected_reason)
+          end
+        end
+
+        it 'tracks the exception in Sentry' do
+          expect { client.health }.to raise_error(described_class::RequestError)
+
           expect(Gitlab::ErrorTracking).to have_received(:track_exception).with(error)
         end
       end

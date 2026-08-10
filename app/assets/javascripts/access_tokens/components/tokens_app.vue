@@ -8,13 +8,13 @@ import Token from './token.vue';
 export default {
   name: 'TokensApp',
   i18n: {
-    canNotAccessOtherData: s__('AccessTokens|It cannot be used to access any other data.'),
     [FEED_TOKEN]: {
       label: s__('AccessTokens|Feed token'),
       copyButtonTitle: s__('AccessTokens|Copy feed token'),
       description: s__(
         'AccessTokens|Your feed token authenticates you when your RSS reader loads a personalized RSS feed or when your calendar application loads a personalized calendar. It is visible in those feed URLs.',
       ),
+      additionalInfo: s__('AccessTokens|It cannot be used to access any other data.'),
       inputDescription: s__(
         'AccessTokens|Keep this token secret. Anyone who has it can read activity and issue RSS feeds or your calendar feed as if they were you. If that happens, %{linkStart}reset this token%{linkEnd}.',
       ),
@@ -26,13 +26,13 @@ export default {
       label: s__('AccessTokens|Incoming email token'),
       copyButtonTitle: s__('AccessTokens|Copy incoming email token'),
       description: s__(
-        'AccessTokens|Your incoming email token authenticates you when you create a new issue by email, and is included in your personal project-specific email addresses.',
+        'AccessTokens|Your incoming email token authenticates you when you create issues and merge requests by email, and is included in your personal project-specific email addresses.',
       ),
       inputDescription: s__(
-        'AccessTokens|Keep this token secret. Anyone who has it can create issues as if they were you. If that happens, %{linkStart}reset this token%{linkEnd}.',
+        'AccessTokens|Keep this token secret. Anyone who has it can create issues and merge requests as if they were you. If that happens, %{linkStart}reset this token%{linkEnd}.',
       ),
       resetConfirmMessage: s__(
-        'AccessTokens|Are you sure? Any issue email addresses currently in use will stop working.',
+        'AccessTokens|Are you sure? Any issue and merge request email addresses currently in use will stop working.',
       ),
     },
     [STATIC_OBJECT_TOKEN]: {
@@ -41,6 +41,7 @@ export default {
       description: s__(
         'AccessTokens|Your static object token authenticates you when repository static objects (such as archives or blobs) are served from an external storage.',
       ),
+      additionalInfo: s__('AccessTokens|It cannot be used to access any other data.'),
       inputDescription: s__(
         'AccessTokens|Keep this token secret. Anyone who has it can access repository static objects as if they were you. If that ever happens, %{linkStart}reset this token%{linkEnd}.',
       ),
@@ -94,7 +95,9 @@ export default {
       </template>
       <template #description>
         {{ $options.i18n[tokenType].description }}
-        {{ $options.i18n.canNotAccessOtherData }}
+        <template v-if="$options.i18n[tokenType].additionalInfo">
+          {{ $options.i18n[tokenType].additionalInfo }}
+        </template>
       </template>
       <template #input-description>
         <gl-sprintf :message="$options.i18n[tokenType].inputDescription">

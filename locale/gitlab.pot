@@ -4540,7 +4540,7 @@ msgstr ""
 msgid "AccessTokens|Are you sure? Any RSS or calendar URLs currently in use will stop working."
 msgstr ""
 
-msgid "AccessTokens|Are you sure? Any issue email addresses currently in use will stop working."
+msgid "AccessTokens|Are you sure? Any issue and merge request email addresses currently in use will stop working."
 msgstr ""
 
 msgid "AccessTokens|At least one group or project is required."
@@ -4755,7 +4755,7 @@ msgstr ""
 msgid "AccessTokens|Keep this token secret. Anyone who has it can access repository static objects as if they were you. If that ever happens, %{linkStart}reset this token%{linkEnd}."
 msgstr ""
 
-msgid "AccessTokens|Keep this token secret. Anyone who has it can create issues as if they were you. If that happens, %{linkStart}reset this token%{linkEnd}."
+msgid "AccessTokens|Keep this token secret. Anyone who has it can create issues and merge requests as if they were you. If that happens, %{linkStart}reset this token%{linkEnd}."
 msgstr ""
 
 msgid "AccessTokens|Keep this token secret. Anyone who has it can read activity and issue RSS feeds or your calendar feed as if they were you. If that happens, %{linkStart}reset this token%{linkEnd}."
@@ -5046,7 +5046,7 @@ msgstr ""
 msgid "AccessTokens|Your feed token authenticates you when your RSS reader loads a personalized RSS feed or when your calendar application loads a personalized calendar. It is visible in those feed URLs."
 msgstr ""
 
-msgid "AccessTokens|Your incoming email token authenticates you when you create a new issue by email, and is included in your personal project-specific email addresses."
+msgid "AccessTokens|Your incoming email token authenticates you when you create issues and merge requests by email, and is included in your personal project-specific email addresses."
 msgstr ""
 
 msgid "AccessTokens|Your new token has been created"
@@ -88035,6 +88035,12 @@ msgstr ""
 msgid "Vulnerability|Assert:"
 msgstr ""
 
+msgid "Vulnerability|Authentication"
+msgstr ""
+
+msgid "Vulnerability|Authorization"
+msgstr ""
+
 msgid "Vulnerability|Auto-dismissed by a security policy"
 msgstr ""
 
@@ -88146,6 +88152,9 @@ msgstr ""
 msgid "Vulnerability|EPSS"
 msgstr ""
 
+msgid "Vulnerability|Elevated"
+msgstr ""
+
 msgid "Vulnerability|Enter the associated CVE or CWE entries for this vulnerability."
 msgstr ""
 
@@ -88201,6 +88210,12 @@ msgid "Vulnerability|GitLab checks if detected secrets are active. You should re
 msgstr ""
 
 msgid "Vulnerability|High"
+msgstr ""
+
+msgid "Vulnerability|How the component determines what an authenticated user or service is allowed to access or do. This includes the roles, permissions, or privilege level required to reach the code."
+msgstr ""
+
+msgid "Vulnerability|How the component verifies the identity of a user or service before allowing access. This indicates whether the vulnerable code requires authentication and what authentication model is used."
 msgstr ""
 
 msgid "Vulnerability|Identifier"
@@ -88332,6 +88347,9 @@ msgstr ""
 msgid "Vulnerability|Select a severity"
 msgstr ""
 
+msgid "Vulnerability|Sensitive data"
+msgstr ""
+
 msgid "Vulnerability|Sent request"
 msgstr ""
 
@@ -88357,6 +88375,9 @@ msgid "Vulnerability|Stacktrace"
 msgstr ""
 
 msgid "Vulnerability|Stacktrace snippet:"
+msgstr ""
+
+msgid "Vulnerability|Standard"
 msgstr ""
 
 msgid "Vulnerability|Static reachability is a factor of dependencies (and the relevant CVEs) which indicates that there is a high probability that the package is in use, and therefore the risk of it is higher."
@@ -88468,6 +88489,9 @@ msgid "Vulnerability|What is a validity check?"
 msgstr ""
 
 msgid "Vulnerability|What is code flow?"
+msgstr ""
+
+msgid "Vulnerability|Whether the component handles data that could cause harm if exposed or misused, such as personal information, credentials, secrets, tokens, payment data, or health data."
 msgstr ""
 
 msgid "Vulnerability|circular dependency"
@@ -91272,7 +91296,7 @@ msgstr ""
 msgid "WorkItem|This group has no active custom fields. Create a custom field to track data that matters to your team."
 msgstr ""
 
-msgid "WorkItem|This is a %{emailsHelpLinkStart}private email address%{emailsHelpLinkEnd} generated just for you. Anyone who has it can create work items as if they were you. If that happens, %{resetLinkStart}reset this token%{resetLinkEnd}."
+msgid "WorkItem|This is a %{emailsHelpLinkStart}private email address%{emailsHelpLinkEnd} generated just for you. Anyone who has it can create work items and merge requests as if they were you. If that happens, %{resetLinkStart}reset this token%{resetLinkEnd}."
 msgstr ""
 
 msgid "WorkItem|This is a system type that cannot be renamed, disabled, or deleted."
@@ -92381,6 +92405,12 @@ msgid "You do not have permission to approve a member"
 msgstr ""
 
 msgid "You do not have permission to create saved views in this namespace."
+msgstr ""
+
+msgid "You do not have permission to create saved views."
+msgstr ""
+
+msgid "You do not have permission to delete this saved view."
 msgstr ""
 
 msgid "You do not have permission to leave this %{namespaceType}."

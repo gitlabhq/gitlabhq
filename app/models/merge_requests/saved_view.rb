@@ -18,6 +18,7 @@ module MergeRequests
     validate :validate_views_limit, on: :create
 
     scope :for_user, ->(user) { where(user: user) }
+    scope :order_id_asc, -> { order(id: :asc) }
 
     # Overridden in EE
     def self.views_limit

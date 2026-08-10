@@ -56,9 +56,18 @@ describe('RecoveryCode', () => {
     expect(findSshLink().attributes('target')).toBe('_blank');
   });
 
-  it('renders the code field with autocomplete off and the otp name', () => {
-    expect(findField().attributes('autocomplete')).toBe('off');
+  it('renders the code field with the otp name', () => {
     expect(findField().attributes('name')).toBe('user[otp_attempt]');
+  });
+
+  it('opts the code field out of password-manager autofill', () => {
+    // A recovery code is neither a password nor a one-time code, so no manager has anything
+    // useful to offer here.
+    expect(findField().attributes('autocomplete')).toBe('off');
+    expect(findField().attributes('data-1p-ignore')).toBe('true');
+    expect(findField().attributes('data-bwignore')).toBe('true');
+    expect(findField().attributes('data-form-type')).toBe('other');
+    expect(findField().attributes('data-lpignore')).toBe('true');
   });
 
   it('does not give the recovery field an otp-named id (avoids password-manager OTP autofill)', () => {

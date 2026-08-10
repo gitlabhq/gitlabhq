@@ -23,7 +23,7 @@ export default {
       default: false,
     },
   },
-  emits: ['package:delete', 'page:changed'],
+  emits: ['package-delete', 'page-changed'],
   data() {
     return {
       itemToBeDeleted: null,
@@ -42,7 +42,7 @@ export default {
         return this.page;
       },
       set(value) {
-        this.$emit('page:changed', value);
+        this.$emit('page-changed', value);
       },
     },
     isListEmpty() {
@@ -61,7 +61,7 @@ export default {
       this.track(TRACKING_ACTIONS.REQUEST_DELETE_PACKAGE);
     },
     deleteItemConfirmation() {
-      this.$emit('package:delete', this.itemToBeDeleted);
+      this.$emit('package-delete', this.itemToBeDeleted);
       this.track(TRACKING_ACTIONS.DELETE_PACKAGE);
       this.itemToBeDeleted = null;
     },
@@ -88,7 +88,7 @@ export default {
             :package-entity="packageEntity"
             :package-link="packageEntity._links.web_path"
             :is-group="isGroupPage"
-            @packageToDelete="setItemToBeDeleted"
+            @package-to-delete="setItemToBeDeleted"
           />
         </li>
       </ul>

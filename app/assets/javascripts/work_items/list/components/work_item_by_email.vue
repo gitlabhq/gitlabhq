@@ -26,7 +26,7 @@ export default {
       'WorkItem|The subject is used as the title of the new work item, and the message is the description. %{quickActionsLinkStart}Quick actions%{quickActionsLinkEnd} and styling with %{markdownLinkStart}Markdown%{markdownLinkEnd} are supported.',
     ),
     privateEmailWarning: s__(
-      'WorkItem|This is a %{emailsHelpLinkStart}private email address%{emailsHelpLinkEnd} generated just for you. Anyone who has it can create work items as if they were you. If that happens, %{resetLinkStart}reset this token%{resetLinkEnd}.',
+      'WorkItem|This is a %{emailsHelpLinkStart}private email address%{emailsHelpLinkEnd} generated just for you. Anyone who has it can create work items and merge requests as if they were you. If that happens, %{resetLinkStart}reset this token%{resetLinkEnd}.',
     ),
   },
   name: 'WorkItemByEmail',

@@ -42,6 +42,8 @@ class UserPolicy < BasePolicy
     enable :disable_passkey
   end
 
+  rule { ~subject_ghost & user_is_self }.enable :create_saved_view
+
   rule { default }.enable :read_user_profile
   rule { (private_profile | blocked_user | unconfirmed_user) & ~(user_is_self | admin) }.prevent :read_user_profile
   rule { (user_is_self | admin) & ~blocked }.enable :create_personal_access_token

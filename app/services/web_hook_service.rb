@@ -103,7 +103,7 @@ class WebHookService
       request_data: {}
     )
 
-    ServiceResponse.error(message: e.to_s)
+    ServiceResponse.error(message: e.to_s, payload: error_payload(e))
   rescue *Gitlab::HTTP::HTTP_ERRORS, Zlib::DataError,
     Gitlab::Json::LimitedEncoder::LimitExceeded,
     URI::InvalidURIError => e
@@ -119,7 +119,7 @@ class WebHookService
 
     Gitlab::AppLogger.error("WebHook Error after #{execution_duration.to_i.seconds}s => #{e}")
 
-    ServiceResponse.error(message: error_message)
+    ServiceResponse.error(message: error_message, payload: error_payload(e))
   end
 
   def async_execute
@@ -139,6 +139,10 @@ class WebHookService
   end
 
   private
+
+  def error_payload(exception)
+    { Labkit::Fields::ERROR_TYPE.to_sym => exception.class.name }
+  end
 
   def parsed_url
     @parsed_url ||= URI.parse(hook.interpolated_url)

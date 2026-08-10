@@ -5,6 +5,7 @@ import { visitUrl } from '~/lib/utils/url_utility';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
+import { PASSWORD_MANAGER_IGNORE_ATTRS } from '~/lib/utils/forms';
 import {
   I18N_EXPLANATION,
   I18N_INPUT_LABEL,
@@ -231,6 +232,7 @@ export default {
     verifyTokenForm: VERIFY_TOKEN_FORM,
     sendToSecondaryEmailForm: SEND_TO_SECONDARY_EMAIL_FORM,
   },
+  passwordManagerIgnoreAttrs: PASSWORD_MANAGER_IGNORE_ATTRS,
 };
 </script>
 
@@ -262,8 +264,10 @@ export default {
           id="verification-code"
           ref="input"
           v-model="verificationCode"
-          autofocus
+          v-bind="$options.passwordManagerIgnoreAttrs"
           autocomplete="one-time-code"
+          autofocus
+          data-testid="verification-code-field"
           inputmode="numeric"
           maxlength="6"
           :state="inputValidation.state"

@@ -280,7 +280,7 @@ describe('TabsWithList', () => {
           await mockApollo.defaultClient.clearStore();
           findFilteredSearchAndSort().vm.$emit('filter', {
             [defaultPropsData.filteredSearchTermKey]: searchTerm,
-            [FILTERED_SEARCH_TOKEN_LANGUAGE]: ['5'],
+            [FILTERED_SEARCH_TOKEN_LANGUAGE]: ['CSS'],
             [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: ['50'],
             [FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL]: [VISIBILITY_LEVEL_PRIVATE_STRING],
             [FILTERED_SEARCH_TOKEN_NAMESPACE]: ['namespace'],
@@ -354,8 +354,8 @@ describe('TabsWithList', () => {
             unique: true,
             operators: [{ value: '=', description: 'is' }],
             options: [
-              { value: '5', title: 'CSS' },
-              { value: '8', title: 'CoffeeScript' },
+              { value: 'CSS', title: 'CSS' },
+              { value: 'CoffeeScript', title: 'CoffeeScript' },
             ],
           },
         ],
@@ -426,12 +426,32 @@ describe('TabsWithList', () => {
         });
       });
 
+      it('uses the programming language name in the query string and GraphQL variables', async () => {
+        const languageToken = findFilteredSearchAndSort()
+          .props('filteredSearchTokens')
+          .find(({ type }) => type === FILTERED_SEARCH_TOKEN_LANGUAGE);
+        const cssOptionValue = languageToken.options.find(({ title }) => title === 'CSS').value;
+
+        findFilteredSearchAndSort().vm.$emit('filter', {
+          [FILTERED_SEARCH_TOKEN_LANGUAGE]: [cssOptionValue],
+        });
+        await waitForPromises();
+
+        expect(router.currentRoute.query).toEqual({
+          [FILTERED_SEARCH_TOKEN_LANGUAGE]: ['CSS'],
+        });
+        expect(Number.isNaN(Number(cssOptionValue))).toBe(true);
+        expect(findTabView().props('filtersAsQueryVariables')).toMatchObject({
+          programmingLanguageName: 'CSS',
+        });
+      });
+
       it('tracks all filter events when multiple filters are applied', async () => {
         const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
         findFilteredSearchAndSort().vm.$emit('filter', {
           [defaultPropsData.filteredSearchTermKey]: searchTerm,
-          [FILTERED_SEARCH_TOKEN_LANGUAGE]: ['5'],
+          [FILTERED_SEARCH_TOKEN_LANGUAGE]: ['CSS'],
           [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: ['50'],
         });
         await waitForPromises();
@@ -443,7 +463,7 @@ describe('TabsWithList', () => {
         );
         expect(trackEventSpy).toHaveBeenCalledWith(
           'filter_by_language_on_your_work_projects',
-          { label: CONTRIBUTED_TAB.value, property: '5' },
+          { label: CONTRIBUTED_TAB.value, property: 'CSS' },
           undefined,
         );
         expect(trackEventSpy).toHaveBeenCalledWith(
@@ -638,7 +658,7 @@ describe('TabsWithList', () => {
     const query = {
       sort: 'name_desc',
       [defaultPropsData.filteredSearchTermKey]: 'foo',
-      [FILTERED_SEARCH_TOKEN_LANGUAGE]: '8',
+      [FILTERED_SEARCH_TOKEN_LANGUAGE]: 'CoffeeScript',
       [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: ACCESS_LEVEL_OWNER_INTEGER,
       [FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL]: VISIBILITY_LEVEL_PRIVATE_STRING,
       [FILTERED_SEARCH_TOKEN_NAMESPACE]: 'namespace',

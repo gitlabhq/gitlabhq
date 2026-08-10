@@ -7,7 +7,8 @@ module Tasks
         module SkipReasons
           REASON_LABELS = {
             parent_authorizes: 'Parent type authorizes',
-            subscription_root: 'Subscription root type; the payload type authorizes each delivery'
+            subscription_root: 'Subscription root type; the payload type authorizes each delivery',
+            child_authorizes: 'Child type authorizes'
           }.freeze
 
           VALID_SKIP_REASONS = REASON_LABELS.keys.freeze

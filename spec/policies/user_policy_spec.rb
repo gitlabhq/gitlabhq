@@ -458,4 +458,44 @@ RSpec.describe UserPolicy, feature_category: :permissions do
       it { is_expected.not_to be_allowed(:rotate_personal_access_token) }
     end
   end
+
+  describe ':create_saved_view' do
+    context 'when creating for themselves' do
+      subject { described_class.new(current_user, current_user) }
+
+      it { expect_allowed(:create_saved_view) }
+    end
+
+    context "when creating for a different user" do
+      it { expect_disallowed(:create_saved_view) }
+    end
+
+    context 'when current_user is an admin creating for another user', :enable_admin_mode do
+      let(:current_user) { admin }
+
+      it { expect_disallowed(:create_saved_view) }
+    end
+
+    context 'when current_user is an admin creating for themselves', :enable_admin_mode do
+      let(:current_user) { admin }
+
+      subject { described_class.new(current_user, current_user) }
+
+      it { expect_allowed(:create_saved_view) }
+    end
+
+    context 'when the subject is a ghost user' do
+      let(:current_user) { create(:user, :ghost) }
+
+      subject { described_class.new(current_user, current_user) }
+
+      it { expect_disallowed(:create_saved_view) }
+    end
+
+    context 'when current_user is anonymous' do
+      let(:current_user) { nil }
+
+      it { expect_disallowed(:create_saved_view) }
+    end
+  end
 end

@@ -440,7 +440,11 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
         expect(WebHooks::LogExecutionWorker).to receive(:perform_async)
           .with(project_hook.id, kind_of(Hash), 'error', '')
 
-        expect(service_instance.execute).to have_attributes(status: :error, message: exception.to_s)
+        expect(service_instance.execute).to have_attributes(
+          status: :error,
+          message: exception.to_s,
+          payload: { Labkit::Fields::ERROR_TYPE.to_sym => exception_class.name }
+        )
       end
     end
 
@@ -450,7 +454,8 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
       it 'handles exceptions' do
         expect(service_instance.execute).to have_attributes(
           status: :error,
-          message: 'bad URI (is not URI?): "http://server.com/my path/"'
+          message: 'bad URI (is not URI?): "http://server.com/my path/"',
+          payload: { Labkit::Fields::ERROR_TYPE.to_sym => 'URI::InvalidURIError' }
         )
         expect { service_instance.execute }.not_to raise_error
       end
@@ -462,7 +467,8 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
 
         expect(service_instance.execute).to have_attributes(
           status: :error,
-          message: 'Gitlab::Json::LimitedEncoder::LimitExceeded'
+          message: 'Gitlab::Json::LimitedEncoder::LimitExceeded',
+          payload: { Labkit::Fields::ERROR_TYPE.to_sym => 'Gitlab::Json::LimitedEncoder::LimitExceeded' }
         )
       end
     end
@@ -640,7 +646,8 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
           expect(service_instance.execute).to have_attributes(
             status: :error,
             message: 'Error while parsing rendered custom webhook template: ' \
-              'You may be trying to access an array value, which is not supported.'
+              'You may be trying to access an array value, which is not supported.',
+            payload: { Labkit::Fields::ERROR_TYPE.to_sym => 'WebHookService::CustomWebHookTemplateError' }
           )
           expect { service_instance.execute }.not_to raise_error
         end
@@ -657,7 +664,8 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
 
           expect(result).to have_attributes(
             status: :error,
-            message: a_string_including('NumberLimitExceeded')
+            message: a_string_including('NumberLimitExceeded'),
+            payload: { Labkit::Fields::ERROR_TYPE.to_sym => 'Gitlab::Json::LimitedEncoder::NumberLimitExceeded' }
           )
           expect { service_instance.execute }.not_to raise_error
         end
@@ -695,7 +703,8 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
 
           expect(result).to have_attributes(
             status: :error,
-            message: a_string_including('Error while parsing rendered custom webhook template:')
+            message: a_string_including('Error while parsing rendered custom webhook template:'),
+            payload: { Labkit::Fields::ERROR_TYPE.to_sym => 'WebHookService::CustomWebHookTemplateError' }
           )
         end
       end
@@ -710,7 +719,8 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
 
           expect(result).to have_attributes(
             status: :error,
-            message: a_string_including('Gitlab::Json::LimitedEncoder::NumberLimitExceeded')
+            message: a_string_including('Gitlab::Json::LimitedEncoder::NumberLimitExceeded'),
+            payload: { Labkit::Fields::ERROR_TYPE.to_sym => 'Gitlab::Json::LimitedEncoder::NumberLimitExceeded' }
           )
         end
 
@@ -733,7 +743,8 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
 
           expect(result).to have_attributes(
             status: :error,
-            message: a_string_including('Error while parsing rendered custom webhook template:')
+            message: a_string_including('Error while parsing rendered custom webhook template:'),
+            payload: { Labkit::Fields::ERROR_TYPE.to_sym => 'WebHookService::CustomWebHookTemplateError' }
           )
         end
 

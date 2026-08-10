@@ -56,6 +56,7 @@ describe('EmailVerification', () => {
   const findForm = () => wrapper.findComponent(GlForm);
   const findSecondaryEmailForm = () => wrapper.findComponent(EmailForm);
   const findCodeInput = () => wrapper.findComponent(GlFormInput);
+  const findCodeField = () => wrapper.findByTestId('verification-code-field');
   const findSubmitButton = () => wrapper.findComponent('[type="submit"]');
   const findResendLink = () => wrapper.findByText(I18N_RESEND_CODE);
   const findShowSecondaryEmailFormLink = () =>
@@ -94,6 +95,16 @@ describe('EmailVerification', () => {
 
     it('does not render EmailForm for sending code to secondary email initially', () => {
       expect(findSecondaryEmailForm().exists()).toBe(false);
+    });
+
+    it('opts the code field out of password-manager autofill without dropping one-time-code', () => {
+      // The field is a one-time code, so it stays annotated as one for the browser's own
+      // autofill; only the extensions that would offer a stored TOTP are opted out.
+      expect(findCodeField().attributes('autocomplete')).toBe('one-time-code');
+      expect(findCodeField().attributes('data-1p-ignore')).toBe('true');
+      expect(findCodeField().attributes('data-bwignore')).toBe('true');
+      expect(findCodeField().attributes('data-form-type')).toBe('other');
+      expect(findCodeField().attributes('data-lpignore')).toBe('true');
     });
   });
 

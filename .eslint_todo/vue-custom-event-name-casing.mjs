@@ -24,8 +24,6 @@ export default {
     'app/assets/javascripts/notes/components/noteable_note.vue',
     'app/assets/javascripts/notes/components/notes_app.vue',
     'app/assets/javascripts/notes/components/timeline_toggle.vue',
-    'app/assets/javascripts/packages_and_registries/infrastructure_registry/list/components/packages_list.vue',
-    'app/assets/javascripts/packages_and_registries/infrastructure_registry/shared/package_list_row.vue',
     'app/assets/javascripts/pipeline_wizard/components/input_wrapper.vue',
     'app/assets/javascripts/projects/settings/branch_rules/components/access_levels_drawer.vue',
     'app/assets/javascripts/projects/settings/components/transfer_project_form.vue',

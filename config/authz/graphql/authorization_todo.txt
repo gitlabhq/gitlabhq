@@ -809,7 +809,6 @@ type:PipelineArtifactRegistry
 type:PipelineCounts
 type:PipelineExecutionPolicy
 type:PipelineExecutionPolicyAttributesType
-type:PipelineExecutionSchedulePolicy
 type:PipelineExecutionScheduledPolicyAttributesType
 type:PipelineManualVariable
 type:PipelineMessage

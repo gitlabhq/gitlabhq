@@ -3014,6 +3014,7 @@ Gitlab/BoundedContexts:
     - 'ee/app/services/click_house/data_ingestion/ci_finished_builds_sync_service.rb'
     - 'ee/app/services/click_house/rebuild_materialized_view_service.rb'
     - 'ee/app/services/click_house/sync_strategies/event_sync_strategy.rb'
+    - 'ee/app/services/concerns/approval_rules/organization_isolation_filter.rb'
     - 'ee/app/services/concerns/approval_rules/updater.rb'
     - 'ee/app/services/concerns/ee/alert_management/alert_processing.rb'
     - 'ee/app/services/concerns/epics/sync_as_work_item.rb'

@@ -22,6 +22,7 @@ import {
   SUCCESS_RESPONSE,
 } from '~/sessions/new/constants';
 import EmailForm from '~/sessions/new/components/email_form.vue';
+import { PASSWORD_MANAGER_IGNORE_ATTRS } from '~/lib/utils/forms';
 import { newUserSessionPath } from '~/lib/utils/path_helpers/routes';
 import VerificationLayout from './verification_layout.vue';
 
@@ -186,6 +187,7 @@ export default {
         (value) => (!value || VERIFICATION_CODE_REGEX.test(value) ? '' : I18N_EMAIL_INVALID_CODE),
       ],
       inputAttrs: {
+        ...PASSWORD_MANAGER_IGNORE_ATTRS,
         autocomplete: 'one-time-code',
         autofocus: true,
         'data-testid': 'email-code-field',

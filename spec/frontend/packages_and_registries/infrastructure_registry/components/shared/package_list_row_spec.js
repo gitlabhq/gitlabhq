@@ -135,14 +135,14 @@ describe('packages_list_row', () => {
       });
     });
 
-    it('emits the packageToDelete event when the delete button is clicked', async () => {
+    it('emits the package-to-delete event when the delete button is clicked', async () => {
       mountComponent({ packageEntity: packageWithoutTags });
 
       findDeleteButton().vm.$emit('click');
 
       await nextTick();
-      expect(wrapper.emitted('packageToDelete')).toHaveLength(1);
-      expect(wrapper.emitted('packageToDelete')[0]).toEqual([packageWithoutTags]);
+      expect(wrapper.emitted('package-to-delete')).toHaveLength(1);
+      expect(wrapper.emitted('package-to-delete')[0]).toEqual([packageWithoutTags]);
     });
   });
 

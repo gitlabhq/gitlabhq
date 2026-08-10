@@ -345,12 +345,22 @@ Prerequisites:
 ### Incoming email token
 
 Each user has an incoming email token that does not expire. The token
-is included in email addresses associated with a personal project.
-You use this token to [create a new issue by email](../../user/project/issues/create_issues.md#by-sending-an-email).
+is included in your personal project-specific email addresses.
+You use this token to create
+[issues](../../user/project/issues/create_issues.md#by-sending-an-email) and
+[merge requests](../../user/project/merge_requests/creating_merge_requests.md#by-sending-an-email)
+by email.
 
-You cannot use this token to access any other data. Anyone who has
-your token can create issues and merge requests as if they were
-you. If you think your token has leaked, reset the token immediately.
+> [!warning]
+> Keep this token secret. Anyone with access to the token can create issues and merge requests
+> as if they were you. If you suspect this token was leaked, reset the token immediately.
+
+#### Reset an incoming email token
+
+1. In the upper-right corner, select your avatar.
+1. Select **Edit profile**.
+1. In the left sidebar, select **Access** > **Personal access tokens**.
+1. Under **Incoming email token**, select **reset this token**.
 
 ### Workspace token
 

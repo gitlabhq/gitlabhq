@@ -155,8 +155,9 @@ You can save this address as a contact in your email client to use it again.
 > The email address you see is a private email address, generated just for you.
 > **Keep it to yourself**, because anyone who knows it can create issues or merge requests as if they
 > were you.
+> If you suspect this private email address was leaked, reset the token immediately.
 
-To regenerate the email address:
+To reset the email address:
 
 1. On the **Issues** page, select **Email issue to this project**.
 1. Select **reset this token**.

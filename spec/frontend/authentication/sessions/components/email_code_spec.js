@@ -87,7 +87,18 @@ describe('EmailCode', () => {
       expect(findVerifyCodeForm().exists()).toBe(true);
       expect(findCodeField().attributes('inputmode')).toBe('numeric');
       expect(findCodeField().attributes('maxlength')).toBe('6');
+    });
+
+    it('opts the code field out of password-manager autofill without dropping one-time-code', () => {
+      createComponent();
+
+      // The field is a one-time code, so it stays annotated as one for the browser's own
+      // autofill; only the extensions that would offer a stored TOTP are opted out.
       expect(findCodeField().attributes('autocomplete')).toBe('one-time-code');
+      expect(findCodeField().attributes('data-1p-ignore')).toBe('true');
+      expect(findCodeField().attributes('data-bwignore')).toBe('true');
+      expect(findCodeField().attributes('data-form-type')).toBe('other');
+      expect(findCodeField().attributes('data-lpignore')).toBe('true');
     });
 
     it('opts the verify button out of the global auto-disable-on-submit behavior', () => {

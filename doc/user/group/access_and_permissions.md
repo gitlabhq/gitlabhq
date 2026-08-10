@@ -109,6 +109,9 @@ list of security implications when accessing GitLab from a disallowed IP address
 - Users can always view the names and hierarchies of groups and projects.
 - Users can always use the [reply by email feature](../../administration/reply_by_email.md)
   to create and edit comments on issues or merge requests.
+- Users can create issues and merge requests by email with their
+  [incoming email token](../../security/tokens/_index.md#incoming-email-token), because
+  incoming email is not subject to IP restrictions.
 - Users can sometimes view push, merge, issue, or comment events on their dashboard.
 - IP restrictions always apply to public projects, but cached project files may sometimes be accessible.
 - IP restrictions always apply to Git operations through SSH on GitLab.com and GitLab Dedicated.

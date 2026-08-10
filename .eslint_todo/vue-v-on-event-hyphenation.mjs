@@ -22,7 +22,6 @@ export default {
     'app/assets/javascripts/notes/components/noteable_discussion.vue',
     'app/assets/javascripts/notes/components/noteable_note.vue',
     'app/assets/javascripts/organizations/activity/components/app.vue',
-    'app/assets/javascripts/packages_and_registries/infrastructure_registry/list/components/packages_list.vue',
     'app/assets/javascripts/packages_and_registries/settings/project/components/container_protection_repository_rules.vue',
     'app/assets/javascripts/packages_and_registries/settings/project/components/container_protection_tag_rules.vue',
     'app/assets/javascripts/packages_and_registries/settings/project/components/packages_protection_rules.vue',
