@@ -3,15 +3,19 @@
 require 'spec_helper'
 
 RSpec.describe 'Projects > Settings > User transfers a project', :js, feature_category: :groups_and_projects do
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:group) { create(:group) }
+
   let(:project) { create(:project, :repository, namespace: user.namespace) }
-  let(:group) { create(:group) }
+
+  before_all do
+    group.add_owner(user)
+  end
 
   before do
     allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(120)
     stub_feature_flags(groups_and_projects_async_transfer: false)
 
-    group.add_owner(user)
     sign_in(user)
   end
 
@@ -33,8 +37,6 @@ RSpec.describe 'Projects > Settings > User transfers a project', :js, feature_ca
     fill_in 'confirm_name_input', with: project.full_path
 
     click_button 'Confirm'
-
-    wait_for_requests
   end
 
   it 'focuses on the confirmation field' do
@@ -47,16 +49,15 @@ RSpec.describe 'Projects > Settings > User transfers a project', :js, feature_ca
     transfer_project(project, group)
     new_path = namespace_project_path(group, project)
 
+    expect(page).to have_current_path(edit_namespace_project_path(group, project))
     expect(project.reload.namespace).to eq(group)
 
     visit new_path
-    wait_for_requests
 
     expect(page).to have_current_path(new_path, ignore_query: true)
     expect(find_by_testid('breadcrumb-links')).to have_content(project.name)
 
     visit old_path
-    wait_for_requests
 
     expect(page).to have_current_path(new_path, ignore_query: true)
     expect(find_by_testid('breadcrumb-links')).to have_content(project.name)
@@ -81,6 +82,7 @@ RSpec.describe 'Projects > Settings > User transfers a project', :js, feature_ca
 
       transfer_project(project, subgroup)
 
+      expect(page).to have_current_path(edit_namespace_project_path(subgroup, project))
       expect(project.reload.namespace).to eq(subgroup)
     end
   end

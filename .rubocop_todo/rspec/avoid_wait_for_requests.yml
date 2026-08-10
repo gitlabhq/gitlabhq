@@ -480,7 +480,6 @@ RSpec/AvoidWaitForRequests:
     - 'spec/features/projects/settings/user_changes_default_branch_spec.rb'
     - 'spec/features/projects/settings/user_manages_merge_requests_settings_spec.rb'
     - 'spec/features/projects/settings/user_tags_project_spec.rb'
-    - 'spec/features/projects/settings/user_transfers_a_project_spec.rb'
     - 'spec/features/projects/show/schema_markup_spec.rb'
     - 'spec/features/projects/show/user_interacts_with_stars_spec.rb'
     - 'spec/features/projects/show/user_manages_notifications_spec.rb'
