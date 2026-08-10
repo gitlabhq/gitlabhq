@@ -6,6 +6,7 @@ import {
   GlDisclosureDropdownItem,
   GlDisclosureDropdownGroup,
   GlTooltipDirective,
+  GlToastMixin,
 } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import api from '~/api';
@@ -42,6 +43,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [GlToastMixin],
   props: {
     mr: {
       type: Object,

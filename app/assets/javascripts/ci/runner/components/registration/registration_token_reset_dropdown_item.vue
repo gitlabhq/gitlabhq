@@ -1,5 +1,11 @@
 <script>
-import { GlDisclosureDropdownItem, GlLoadingIcon, GlModal, GlModalDirective } from '@gitlab/ui';
+import {
+  GlDisclosureDropdownItem,
+  GlLoadingIcon,
+  GlModal,
+  GlModalDirective,
+  GlToastMixin,
+} from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { TYPENAME_GROUP, TYPENAME_PROJECT } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
@@ -26,6 +32,7 @@ export default {
   directives: {
     GlModal: GlModalDirective,
   },
+  mixins: [GlToastMixin],
   inject: {
     groupId: {
       default: null,

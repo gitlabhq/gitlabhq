@@ -661,6 +661,7 @@ required when `external_groups` is configured:
 |-------------------|-------------|----------|
 | `group_base`      | Base used to search for groups. All valid groups have this base as part of their DN. | `'ou=groups,dc=gitlab,dc=example'` |
 | `admin_group`     | The CN of a group containing GitLab administrators. Not `cn=administrators` or the full DN. | `'administrators'` |
+| `audit_group`     | The CN of a group containing GitLab auditors. Not `cn=auditors` or the full DN. | `'auditors'` |
 | `external_groups` | An array of CNs of groups containing users that should be considered external. Not `cn=interns` or the full DN. | `['interns', 'contractors']` |
 | `sync_ssh_keys`   | The LDAP attribute containing a user's public SSH key. | `'sshPublicKey'` or false if not set |
 

@@ -335,6 +335,10 @@
   "RuleInterface": [
     "MavenUpstreamRule"
   ],
+  "ScanProfileConfiguration": [
+    "AutoRemediationConfiguration",
+    "SecretDetectionConfiguration"
+  ],
   "SecurityPolicySource": [
     "GroupSecurityPolicySource",
     "ProjectSecurityPolicySource"

@@ -1,5 +1,5 @@
 <script>
-import { GlAlert } from '@gitlab/ui';
+import { GlAlert, GlToastMixin } from '@gitlab/ui';
 import { uniqueId } from 'lodash-es';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import Api from '~/api';
@@ -29,7 +29,7 @@ export default {
     InviteGroupNotification,
     GlAlert,
   },
-  mixins: [Tracking.mixin({ category: INVITE_GROUP_MODAL_TRACKING_CATEGORY })],
+  mixins: [Tracking.mixin({ category: INVITE_GROUP_MODAL_TRACKING_CATEGORY }), GlToastMixin],
   props: {
     id: {
       type: String,

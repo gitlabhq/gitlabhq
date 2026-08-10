@@ -13,10 +13,11 @@ monitored.
 
 ## Existing SLIs
 
-1. [`rails_request`](rails_request.md)
+1. `audit_event_streaming_nats_dispatch`
 1. `global_search_apdex`
 1. `global_search_error_rate`
 1. `global_search_indexing_apdex`
+1. [`rails_request`](rails_request.md)
 1. [`sidekiq_execution`](sidekiq_execution.md)
 1. [`zoekt_tasks`](zoekt_tasks.md)
 

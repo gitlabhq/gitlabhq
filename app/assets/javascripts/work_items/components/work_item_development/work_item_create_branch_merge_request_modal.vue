@@ -1,5 +1,5 @@
 <script>
-import { GlForm, GlFormInputGroup, GlFormGroup, GlModal } from '@gitlab/ui';
+import { GlForm, GlFormInputGroup, GlFormGroup, GlModal, GlToastMixin } from '@gitlab/ui';
 import { debounce } from 'lodash-es';
 import axios from '~/lib/utils/axios_utils';
 import { createAlert } from '~/alert';
@@ -31,6 +31,7 @@ export default {
     SimpleCopyButton,
     RefSelector,
   },
+  mixins: [GlToastMixin],
   i18n: {
     sourceBranchOrTagLabel: __('Source (branch or tag)'),
     targetBranchLabel: __('Target branch'),

@@ -1,6 +1,6 @@
 <script>
 import { GlBreakpointInstance, breakpoints } from '@gitlab/ui/src/utils'; // eslint-disable-line no-restricted-syntax -- GlBreakpointInstance is used intentionally here. In this case we must obtain viewport breakpoints
-import { GlNavItem, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
+import { GlNavItem, GlModalDirective, GlTooltipDirective, GlToastMixin } from '@gitlab/ui';
 import superSidebarDataQuery from '~/super_sidebar/graphql/queries/super_sidebar.query.graphql';
 import { __, s__, sprintf } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -38,7 +38,7 @@ export default {
     GlModal: GlModalDirective,
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
+  mixins: [glFeatureFlagsMixin(), GlToastMixin],
   modalId: MODAL_ID,
   i18n: {
     browseMoreFeatures: __('More features'),

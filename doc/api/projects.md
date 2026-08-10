@@ -2235,7 +2235,7 @@ Supported general project attributes:
 | `repository_storage`                               | string  | No                             | Which storage shard the repository is on. _(administrator only)_ |
 | `request_access_enabled`                           | boolean | No                             | Allow users to request member access. |
 | `resolve_outdated_diff_discussions`                | boolean | No                             | Automatically resolve merge request diffs discussions on lines changed with a push. |
-| `reviewer_assignment_strategy`                     | string  | No                             | Strategy used to automatically assign reviewers to merge requests. One of `disabled`, `code_owners`, or `dap_powered`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/601621) in GitLab 19.1. Premium and Ultimate only. |
+| `reviewer_assignment_strategy`                     | string  | No                             | Strategy used to automatically assign reviewers to merge requests. One of `disabled`, `code_owners`, or `dap_powered`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/601621) in GitLab 19.2. Premium and Ultimate only. |
 | `shared_runners_enabled`                           | boolean | No                             | Enable instance runners for this project. |
 | `show_default_award_emojis`                        | boolean | No                             | Show default emoji reactions. |
 | `snippets_enabled`                                 | boolean | No                             | _(Deprecated)_ Enable snippets for this project. Use `snippets_access_level` instead. |

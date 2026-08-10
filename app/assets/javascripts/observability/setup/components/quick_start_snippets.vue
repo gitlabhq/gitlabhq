@@ -1,5 +1,5 @@
 <script>
-import { GlTabs, GlTab, GlButton } from '@gitlab/ui';
+import { GlTabs, GlTab, GlButton, GlToastMixin } from '@gitlab/ui';
 import { debounce } from 'lodash-es';
 import { s__ } from '~/locale';
 import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
@@ -15,7 +15,7 @@ export default {
     GlTab,
     GlButton,
   },
-  mixins: [Tracking.mixin()],
+  mixins: [Tracking.mixin(), GlToastMixin],
   props: {
     endpoint: {
       type: String,

@@ -17,6 +17,9 @@ module API
       gcs_adc_configuration: :gcs_application_default
     }.freeze
 
+    ADC_DOCS_URL = 'https://docs.gitlab.com/administration/settings/import_and_export_settings/' \
+      '#allow-application-default-credentials-for-offline-transfer'
+
     helpers do
       params :object_storage_configuration_params do
         requires :bucket, type: String, desc: 'Name of the object storage bucket where export data is stored'
@@ -52,7 +55,9 @@ module API
         end
         optional :gcs_adc_configuration, type: Hash,
           desc: 'Google Cloud Storage configuration using Application Default Credentials. ' \
-            'Available on GitLab Self-Managed or GitLab Dedicated, and must be enabled by an administrator.' do
+            'Available on GitLab Self-Managed or GitLab Dedicated, and must be enabled by an administrator. ' \
+            'Only administrators can use these credentials, and the bucket name must start with ' \
+            "\"gitlab-offline-transfer-\". For more information, see #{ADC_DOCS_URL}" do
           requires :google_project, type: String, desc: 'Google Cloud project ID'
         end
         exactly_one_of(*OBJECT_STORAGE_PROVIDERS.keys)

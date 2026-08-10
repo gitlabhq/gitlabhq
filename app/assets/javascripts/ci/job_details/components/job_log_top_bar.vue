@@ -1,5 +1,12 @@
 <script>
-import { GlTooltipDirective, GlLink, GlButton, GlSearchBoxByClick, GlSprintf } from '@gitlab/ui';
+import {
+  GlTooltipDirective,
+  GlLink,
+  GlButton,
+  GlSearchBoxByClick,
+  GlSprintf,
+  GlToastMixin,
+} from '@gitlab/ui';
 import { backOff } from '~/lib/utils/common_utils';
 import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
@@ -31,6 +38,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [GlToastMixin],
   props: {
     size: {
       type: Number,

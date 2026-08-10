@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlToastMixin } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -42,7 +42,7 @@ export default {
     TransferModal,
     ProjectsListItemLeaveModal,
   },
-  mixins: [InternalEvents.mixin()],
+  mixins: [InternalEvents.mixin(), GlToastMixin],
   inject: ['triggerRestoreLocation'],
   i18n: {
     project: __('Project'),

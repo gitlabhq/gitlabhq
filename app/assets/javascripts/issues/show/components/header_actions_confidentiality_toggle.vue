@@ -1,5 +1,5 @@
 <script>
-import { GlDisclosureDropdownItem } from '@gitlab/ui';
+import { GlDisclosureDropdownItem, GlToastMixin } from '@gitlab/ui';
 
 import { createAlert } from '~/alert';
 import { s__, __, sprintf } from '~/locale';
@@ -18,6 +18,7 @@ export default {
   components: {
     GlDisclosureDropdownItem,
   },
+  mixins: [GlToastMixin],
   inject: ['iid', 'issueType', 'projectPath', 'fullPath'],
   emits: ['close-actions-dropdown'],
   data() {

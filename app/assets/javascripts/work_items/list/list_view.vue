@@ -9,6 +9,7 @@ import {
   GlSkeletonLoader,
   GlModalDirective,
   GlAlert,
+  GlToastMixin,
 } from '@gitlab/ui';
 import produce from 'immer';
 import { isEmpty } from 'lodash-es';
@@ -84,7 +85,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     GlModal: GlModalDirective,
   },
-  mixins: [glFeatureFlagMixin()],
+  mixins: [glFeatureFlagMixin(), GlToastMixin],
   inject: ['isGroup', 'workItemType'],
   apollo: {
     workItemsFull() {

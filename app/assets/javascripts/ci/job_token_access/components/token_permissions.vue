@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlFormCheckbox, GlLink, GlLoadingIcon } from '@gitlab/ui';
+import { GlButton, GlFormCheckbox, GlLink, GlLoadingIcon, GlToastMixin } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __, sprintf } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -18,6 +18,7 @@ export default {
     CrudComponent,
     HelpIcon,
   },
+  mixins: [GlToastMixin],
   inject: ['fullPath'],
   apollo: {
     ciCdSettings: {

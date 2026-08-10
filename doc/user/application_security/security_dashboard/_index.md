@@ -72,6 +72,7 @@ Both dashboards include:
   - [Risk score](#risk-score-panel)
   - [Vulnerabilities by age](#vulnerabilities-by-age)
   - [Top 10 CWEs](#top-10-cwes)
+  - [SAST triage and remediation funnel](#sast-triage-and-remediation-funnel)
 - [Filter the entire dashboard](#filter-the-entire-dashboard)
 - [Export as PDF](#export-as-pdf)
 
@@ -89,6 +90,7 @@ The project security dashboard shows vulnerabilities detected in the project's d
 - The [**Risk score**](#risk-score-panel) panel, which shows the overall security risk of the project.
 - The [**Vulnerabilities by age**](#vulnerabilities-by-age) chart, which groups open vulnerabilities by age buckets.
 - The [**Top 10 CWEs**](#top-10-cwes) chart, which shows the 10 most common CWEs.
+- The [**SAST triage and remediation funnel**](#sast-triage-and-remediation-funnel) chart, which shows how critical and high SAST vulnerabilities progress from detection to fix, including the stages handled by GitLab Duo.
 
 Open vulnerabilities are those with Needs triage or Confirmed status. Closed vulnerabilities with Dismissed or Resolved status are not included in these charts.
 
@@ -105,6 +107,7 @@ supplies the following:
 - The [**Risk score**](#risk-score-panel) panel, which shows total risk and risk for each project.
 - The [**Vulnerabilities by age**](#vulnerabilities-by-age) chart, which groups open vulnerabilities by age buckets.
 - The [**Top 10 CWEs**](#top-10-cwes) chart, which shows the 10 most common CWEs.
+- The [**SAST triage and remediation funnel**](#sast-triage-and-remediation-funnel) chart, which shows how critical and high SAST vulnerabilities progress from detection to fix, including the stages handled by GitLab Duo.
 
 ### Charts
 
@@ -218,6 +221,41 @@ To view details:
 1. Use the dropdown list to filter by **Severity** (for example, **Critical**, **Medium**, or **High**).
 
 ![top 10 CWEs](img/group_security_dashboard_top_10_cwes_v18_11.png)
+
+#### SAST triage and remediation funnel
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239423) in GitLab 19.1 [with a feature flag](../../../administration/feature_flags/_index.md) named `security_dashboard_agentic_adoption`. Disabled by default.
+
+{{< /history >}}
+
+The **SAST triage and remediation funnel** chart is available on group and project dashboards.
+It shows how critical and high SAST vulnerabilities progress through triage and remediation over a
+30, 60, or 90-day period. The default range is 30 days.
+
+The funnel has up to four stages. Each stage shows the number of vulnerabilities that reach it:
+
+- **Critical & High SAST vulnerabilities**: Vulnerabilities detected by SAST.
+- **True positive**: Vulnerabilities confirmed as true positives by [SAST false positive detection](../vulnerabilities/false_positive_detection.md).
+- **Vulnerabilities with AI-created MRs**: Vulnerabilities with a merge request created by [Agentic SAST Vulnerability Resolution](../vulnerabilities/agentic_vulnerability_resolution.md).
+- **Vulnerabilities fixed**: Vulnerabilities fixed by a merged AI-created merge request.
+
+Use the time frame selector to switch the funnel between 30, 60, or 90 days.
+
+![SAST triage and remediation funnel](img/sast_triage_and_remediation_funnel_v19_3.png)
+
+The last three stages use GitLab Duo. To populate these stages:
+
+- Turn on GitLab Duo for the group and its projects.
+- Configure [SAST false positive detection](../vulnerabilities/false_positive_detection.md).
+- Configure [Agentic SAST Vulnerability Resolution](../vulnerabilities/agentic_vulnerability_resolution.md).
+
+When one of these features is turned off, the funnel replaces the affected stages with a message that
+explains which feature to turn on. The message differs for project and group dashboards, and by which
+feature is unavailable.
+
+![SAST triage and remediation funnel with features turned off](img/sast_triage_and_remediation_funnel_empty_state_v19_3.png)
 
 ### Filter the entire dashboard
 

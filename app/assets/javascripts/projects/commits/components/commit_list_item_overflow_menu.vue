@@ -4,6 +4,7 @@ import {
   GlDisclosureDropdownItem,
   GlIcon,
   GlTooltipDirective,
+  GlToastMixin,
 } from '@gitlab/ui';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
@@ -18,6 +19,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [GlToastMixin],
   inject: ['projectRootPath'],
   props: {
     commit: {

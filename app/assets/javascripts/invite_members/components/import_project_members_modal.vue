@@ -1,5 +1,14 @@
 <script>
-import { GlFormGroup, GlModal, GlSprintf, GlAlert, GlCollapse, GlIcon, GlButton } from '@gitlab/ui';
+import {
+  GlFormGroup,
+  GlModal,
+  GlSprintf,
+  GlAlert,
+  GlCollapse,
+  GlIcon,
+  GlButton,
+  GlToastMixin,
+} from '@gitlab/ui';
 import { uniqueId, isEmpty } from 'lodash-es';
 import { importProjectMembers } from '~/api/projects_api';
 import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
@@ -44,6 +53,7 @@ export default {
       category: IMPORT_PROJECT_MEMBERS_MODAL_TRACKING_CATEGORY,
       label: IMPORT_PROJECT_MEMBERS_MODAL_TRACKING_LABEL,
     }),
+    GlToastMixin,
   ],
   inject: {
     addSeatsHref: {

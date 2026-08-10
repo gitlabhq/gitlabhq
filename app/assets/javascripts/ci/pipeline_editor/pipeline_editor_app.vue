@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon, GlModal } from '@gitlab/ui';
+import { GlLoadingIcon, GlModal, GlToastMixin } from '@gitlab/ui';
 import { cloneDeep, debounce } from 'lodash-es';
 import { fetchPolicies } from '~/lib/graphql';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
@@ -45,7 +45,7 @@ export default {
     PipelineEditorHome,
     PipelineEditorMessages,
   },
-  mixins: [InternalEvents.mixin()],
+  mixins: [InternalEvents.mixin(), GlToastMixin],
   inject: ['ciConfigPath', 'newMergeRequestPath', 'projectFullPath', 'usesExternalConfig'],
   data() {
     return {

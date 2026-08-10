@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlTooltipDirective, GlToastMixin } from '@gitlab/ui';
 import { uniqueId } from 'lodash-es';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { __ } from '~/locale';
@@ -46,6 +46,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [GlToastMixin],
   props: {
     id: {
       type: String,

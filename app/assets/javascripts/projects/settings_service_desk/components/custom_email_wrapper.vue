@@ -1,5 +1,13 @@
 <script>
-import { GlAlert, GlLoadingIcon, GlSprintf, GlLink, GlCard, GlExperimentBadge } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlLoadingIcon,
+  GlSprintf,
+  GlLink,
+  GlCard,
+  GlExperimentBadge,
+  GlToastMixin,
+} from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import {
   FEEDBACK_ISSUE_URL,
@@ -29,6 +37,7 @@ export default {
     CustomEmailForm,
     CustomEmail,
   },
+  mixins: [GlToastMixin],
   FEEDBACK_ISSUE_URL,
   I18N_LOADING_LABEL,
   I18N_CARD_TITLE,

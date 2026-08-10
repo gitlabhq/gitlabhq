@@ -1,6 +1,6 @@
 <script>
 import { isEqual } from 'lodash-es';
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlToastMixin } from '@gitlab/ui';
 import { createAlert, VARIANT_DANGER } from '~/alert';
 import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
 import { INTEGRATION_VIEW_CONFIGS, i18n, INTEGRATION_EXTENSIONS_MARKETPLACE } from '../constants';
@@ -30,6 +30,7 @@ export default {
     ExtensionsMarketplaceWarning,
     SettingsSection,
   },
+  mixins: [GlToastMixin],
   inject: {
     integrationViews: {
       default: [],

@@ -7,6 +7,7 @@ import {
   GlFormGroup,
   GlFormInput,
   GlSprintf,
+  GlToastMixin,
 } from '@gitlab/ui';
 import { s__, __, sprintf } from '~/locale';
 import { REVOKE_TOKEN_MODAL_ID } from '../constants';
@@ -27,6 +28,7 @@ export default {
   directives: {
     GlModalDirective,
   },
+  mixins: [GlToastMixin],
   inject: ['agentName', 'projectPath', 'canAdminCluster'],
   props: {
     token: {

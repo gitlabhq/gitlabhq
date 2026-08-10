@@ -63,6 +63,9 @@ The following metrics are available:
 | `gitlab_application_rate_limiter_throttle_utilization_ratio`                   | Histogram |  17.6 | `throttle_key`, `peek`, `feature_category`                              | Utilization ratio of a throttle in GitLab Application Rate Limiter. |
 | `gitaly_circuit_breaker_requests_total`                                        | Counter   |  18.9 | `circuit_state`, `result`, `reason`                                     | Total Gitaly requests processed by circuit breaker. `result` can be `allowed`, `rejected`, or `error`. `reason` provides error detail (for example, `resource_exhausted`) |
 | `gitaly_circuit_breaker_transitions_total`                                     | Counter   |  18.9 | `from_state`, `to_state`                                                | Total circuit breaker state transitions. States are `closed`, `open`. Detailed endpoint and storage information is available in structured logs |
+| `gitlab_audit_event_streaming_nats_consumer_lag_seconds`                       | Histogram |  19.3 | `feature_category`                                                      | Audit event streaming NATS consumer lag (publish to dispatch) in seconds |
+| `gitlab_audit_event_streaming_nats_publish_fallback_total`                     | Counter   |  19.3 | `feature_category`                                                      | Audit event publishes that fell back from NATS to Sidekiq (a degradation ratio, not an error) |
+| `gitlab_audit_event_streaming_nats_publish_total`                              | Counter   |  19.3 | `feature_category`                                                      | Audit event publish attempts through NATS |
 | `gitlab_authorized_projects_safety_net_refresh_rows_total`                     | Counter   |  19.3 | `trigger`, `direction`                                                  | Total number of `project_authorizations` rows added or deleted by a safety-net refresh |
 | `gitlab_bootsnap_compile_cache_events_total`                                   | Counter   |  19.3 | `event`                                                                 | Number of Bootsnap compile cache events observed during boot, by type (`hit`, `revalidated`, `miss`, `stale`). The hit rate is `(hit + revalidated) / total` |
 | `gitlab_cache_misses_total`                                                    | Counter   |  10.2 | `controller`, `action`, `store`, `endpoint_id`                          | Cache read miss |
@@ -288,6 +291,18 @@ For more information, see [Application SLIs](../../../development/application_sl
 | `gitlab_sli_search_zoekt_tasks_apdex_total` | Counter | 16.0 | `zoekt_node`, `task_type` | Total number of Zoekt indexing task Apdex measurements |
 | `gitlab_sli_search_zoekt_tasks_error_total` | Counter | 16.0 | `zoekt_node`, `task_type` | Total number of Zoekt indexing task errors |
 | `gitlab_sli_search_zoekt_tasks_requests_total` | Counter | 16.0 | `zoekt_node`, `task_type` | Total number of Zoekt tasks added to the queue |
+
+### Audit event streaming SLI metrics
+
+These SLIs track the NATS audit event streaming pipeline.
+For more information, see [Application SLIs](../../../development/application_slis/_index.md).
+
+| Metric | Type | Since | Labels | Description |
+|:-------|:-----|------:|:-------|:------------|
+| `gitlab_sli_audit_event_streaming_nats_dispatch_apdex_success_total` | Counter | 19.3 | `feature_category` | Total number of audit event batch dispatches that met the consumer lag target |
+| `gitlab_sli_audit_event_streaming_nats_dispatch_apdex_total` | Counter | 19.3 | `feature_category` | Total number of audit event batch dispatch Apdex measurements |
+| `gitlab_sli_audit_event_streaming_nats_dispatch_error_total` | Counter | 19.3 | `feature_category` | Total number of audit event batch dispatches that failed |
+| `gitlab_sli_audit_event_streaming_nats_dispatch_total` | Counter | 19.3 | `feature_category` | Total number of audit event batch dispatch attempts |
 
 ## Metrics controlled by a feature flag
 

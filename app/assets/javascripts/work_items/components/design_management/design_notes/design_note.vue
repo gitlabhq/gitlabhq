@@ -6,6 +6,7 @@ import {
   GlTooltipDirective,
   GlButton,
   GlDisclosureDropdown,
+  GlToastMixin,
 } from '@gitlab/ui';
 import { isEmpty } from 'lodash-es';
 import { produce } from 'immer';
@@ -53,6 +54,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     SafeHtml,
   },
+  mixins: [GlToastMixin],
   props: {
     note: {
       type: Object,

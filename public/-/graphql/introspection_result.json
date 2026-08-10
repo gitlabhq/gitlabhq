@@ -42569,6 +42569,97 @@
           "possibleTypes": null
         },
         {
+          "kind": "OBJECT",
+          "name": "AutoRemediationConfiguration",
+          "description": "Auto-remediation configuration for a dependency scanning post-processing scan profile.",
+          "fields": [
+            {
+              "name": "cooldown",
+              "description": "Minimum number of days after a package is released before it can be used.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "enabled",
+              "description": "Indicates whether auto-remediation is enabled.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "openMergeRequestsLimit",
+              "description": "Maximum number of open merge requests the feature may have open at once.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "runnerTags",
+              "description": "Runner tags used for auto-remediation jobs.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "severityLevel",
+              "description": "Minimum vulnerability severity that triggers an automated upgrade.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "VulnerabilitySeverity",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "upgradePolicy",
+              "description": "Highest version bump allowed when remediating.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "SecurityScanProfileUpgradePolicy",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
           "kind": "ENUM",
           "name": "AutoStopSetting",
           "description": "Auto stop setting.",
@@ -364630,6 +364721,27 @@
           "possibleTypes": null
         },
         {
+          "kind": "UNION",
+          "name": "ScanProfileConfiguration",
+          "description": "Effective configuration for a scan profile trigger, resolved by scan type.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": [
+            {
+              "kind": "OBJECT",
+              "name": "AutoRemediationConfiguration",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "SecretDetectionConfiguration",
+              "ofType": null
+            }
+          ]
+        },
+        {
           "kind": "OBJECT",
           "name": "ScanProfileProjectStatus",
           "description": "Status of a scan profile for a project.",
@@ -364773,6 +364885,45 @@
               "deprecationReason": null
             }
           ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "ScanProfileTriggerSetting",
+          "description": "A scan profile trigger and its effective configuration.",
+          "fields": [
+            {
+              "name": "configuration",
+              "description": "Effective configuration for the trigger. Null for scan types without a typed configuration.",
+              "args": [],
+              "type": {
+                "kind": "UNION",
+                "name": "ScanProfileConfiguration",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "triggerType",
+              "description": "Type of the trigger.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "ScanProfileTriggerType",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
           "possibleTypes": null
         },
         {
@@ -364922,6 +365073,30 @@
               },
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "triggerSettings",
+              "description": "Trigger settings, including effective configuration, for the scan profile. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "ScanProfileTriggerSetting",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
             },
             {
               "name": "triggers",
@@ -365910,6 +366085,97 @@
                   "name": "String",
                   "ofType": null
                 }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "SecretDetectionConfiguration",
+          "description": "Configuration for a secret detection scan profile.",
+          "fields": [
+            {
+              "name": "excludedPaths",
+              "description": "Glob paths excluded from the scan.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "historicScan",
+              "description": "Indicates whether to scan the full Git history instead of only the current state.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "imageSuffix",
+              "description": "Suffix appended to the analyzer image name.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "SecurityScanProfileImageSuffix",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "logOptions",
+              "description": "Options passed to git log to control the commit range scanned.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "rulesetGitReference",
+              "description": "Git reference of the remote ruleset configuration to use.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "secureAnalyzersPrefix",
+              "description": "Prefix for the container registry from which the analyzer image is pulled.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null

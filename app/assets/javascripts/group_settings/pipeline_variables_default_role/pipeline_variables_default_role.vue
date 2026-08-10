@@ -1,5 +1,12 @@
 <script>
-import { GlButton, GlFormGroup, GlFormRadio, GlFormRadioGroup, GlLink } from '@gitlab/ui';
+import {
+  GlButton,
+  GlFormGroup,
+  GlFormRadio,
+  GlFormRadioGroup,
+  GlLink,
+  GlToastMixin,
+} from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { createAlert } from '~/alert';
 import { __, s__ } from '~/locale';
@@ -37,6 +44,7 @@ export default {
     },
   ],
   components: { GlButton, GlFormGroup, GlFormRadio, GlFormRadioGroup, GlLink },
+  mixins: [GlToastMixin],
   inject: ['fullPath'],
   data() {
     return {

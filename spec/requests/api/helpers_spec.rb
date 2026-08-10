@@ -48,8 +48,12 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
     raise StandardError, "#{status} - #{message}"
   end
 
+  # Write into QUERY_STRING rather than using Rack::Request#update_param: since Rails 8,
+  # ActionDispatch::Request#GET re-parses the query string instead of reading Rack's cached
+  # params hash, so update_param is invisible to AuthFinders#current_request.
   def set_param(key, value)
-    request.update_param(key, value)
+    query = Rack::Utils.parse_nested_query(env['QUERY_STRING'])
+    env['QUERY_STRING'] = Rack::Utils.build_nested_query(query.merge(key.to_s => value))
   end
 
   describe ".current_user" do

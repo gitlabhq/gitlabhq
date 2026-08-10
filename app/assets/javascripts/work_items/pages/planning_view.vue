@@ -1,5 +1,11 @@
 <script>
-import { GlButton, GlAlert, GlFilteredSearchToken, GlIntersectionObserver } from '@gitlab/ui';
+import {
+  GlButton,
+  GlAlert,
+  GlFilteredSearchToken,
+  GlIntersectionObserver,
+  GlToastMixin,
+} from '@gitlab/ui';
 import { isEmpty, isEqual } from 'lodash-es';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import axios from '~/lib/utils/axios_utils';
@@ -231,7 +237,7 @@ export default {
     BoardView,
     WorkItemDetailPanel,
   },
-  mixins: [glFeatureFlagMixin(), InternalEvents.mixin()],
+  mixins: [glFeatureFlagMixin(), InternalEvents.mixin(), GlToastMixin],
   inject: [
     'isIssueRepositioningDisabled',
     'groupId',

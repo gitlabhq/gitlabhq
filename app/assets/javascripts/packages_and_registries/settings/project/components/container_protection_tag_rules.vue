@@ -11,6 +11,7 @@ import {
   GlTable,
   GlTooltipDirective,
   GlSkeletonLoader,
+  GlToastMixin,
 } from '@gitlab/ui';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import ContainerProtectionTagRuleForm from 'ee_else_ce/packages_and_registries/settings/project/components/container_protection_tag_rule_form.vue';
@@ -46,6 +47,7 @@ export default {
     GlModal: GlModalDirective,
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [GlToastMixin],
   inject: ['projectPath'],
   apollo: {
     protectionRulesQueryPayload: {

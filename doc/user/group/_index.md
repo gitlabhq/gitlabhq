@@ -385,18 +385,14 @@ A table displays the member's:
 
 - **Account** name and username.
 - **Source** of their [membership](../project/members/_index.md#membership-types).
-  For transparency, GitLab displays all membership sources of group members.
-  Members who have multiple membership sources are displayed and counted as separate members.
-  For example, if a member has been added to the group both directly and through inheritance,
-  the member is displayed twice in the **Members** table, with different sources,
-  and is counted as two individual members of the group.
+  Group members with multiple sources show up twice in the **Members** table, and are counted as separate members. 
+  Group members with elevated roles, like Owner or Maintainer, override less restrictive roles in descendant groups and projects.
+  For example, a group member with the Owner role can be directly assigned the Developer role in a descendant subgroup or project. 
+  However, because the member is also assigned the Owner role, they have Owner-scoped permissions. [Issue 502458](https://gitlab.com/gitlab-org/gitlab/-/work_items/502458)
+  proposes a change to this behavior where a member's source displays the highest effective role.
 - [**Role**](../project/members/_index.md#which-roles-you-can-assign) in the group.
 - **Expiration** date of their group membership.
 - **Activity** related to their account.
-
-> [!note]
-> The display of group members' **Source** might be inconsistent.
-> For more information, see [issue 23020](https://gitlab.com/gitlab-org/gitlab/-/issues/23020).
 
 To view all namespace members (and their respective occupied seats), in the top-level namespace, [view the **Usage quotas** page](../../subscriptions/manage_seats.md#view-seat-usage).
 

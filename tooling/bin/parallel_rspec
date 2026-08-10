@@ -14,6 +14,12 @@ OptionParser.new do |opts|
   opts.on("--filter filter_tests_file", String, "Optional filename containing tests to be filtered") do |value|
     options[:filter_tests_file] = value
   end
+
+  opts.on("--dry_run_tags tags", String,
+    "Optional space-separated RSpec tags; only files containing examples with any of these tags " \
+      "(found via a dry run) will be run") do |value|
+    options[:dry_run_tags] = value
+  end
 end.parse!
 
 Tooling::ParallelRSpecRunner.run(**options)

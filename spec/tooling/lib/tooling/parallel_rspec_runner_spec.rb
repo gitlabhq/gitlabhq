@@ -87,6 +87,94 @@ RSpec.describe Tooling::ParallelRSpecRunner, feature_category: :tooling do # rub
     end
 
     # rubocop:disable Gitlab/Json -- standard JSON is sufficient
+    context 'with dry run tags' do
+      subject(:runner) { described_class.new(rspec_args: nil, dry_run_tags: dry_run_tags) }
+
+      let(:dry_run_tags) { 'click_house' }
+      let(:dry_run_tag_args) { %w[--tag click_house] }
+      let(:tmpdir) { Dir.mktmpdir }
+      let(:json_report_path) { File.join(tmpdir, 'rspec_dry_run_report.json') }
+      let(:dry_run_examples) do
+        [
+          { 'id' => './01_spec.rb[1:1]' },
+          { 'id' => './01_spec.rb[1:2]' }
+        ]
+      end
+
+      let(:expected_dry_run_command) do
+        %w[bundle exec rspec -Ispec -rspec_helper --dry-run] + dry_run_tag_args +
+          %w[--format json --out] + [json_report_path, '--'] + node_tests
+      end
+
+      before do
+        allow(Knapsack.logger).to receive(:info)
+        allow(allocator_builder).to receive(:filter_tests=).with(filter_tests)
+        tmpdir # create the real temp dir before stubbing Dir.mktmpdir
+        allow(Dir).to receive(:mktmpdir).and_yield(tmpdir)
+        stub_dry_run(dry_run_examples)
+      end
+
+      after do
+        FileUtils.rm_rf(tmpdir)
+      end
+
+      it 'dry runs the node tests and only runs files containing tagged examples' do
+        expect_dry_run_command(expected_dry_run_command)
+        expect_command(%w[bundle exec rspec -- 01_spec.rb])
+
+        runner.run
+      end
+
+      context 'with multiple tags' do
+        let(:dry_run_tags) { 'click_house partition_tz' }
+        let(:dry_run_tag_args) { %w[--tag click_house --tag partition_tz] }
+
+        it 'passes a --tag argument per tag to the dry run' do
+          expect_dry_run_command(expected_dry_run_command)
+          expect_command(%w[bundle exec rspec -- 01_spec.rb])
+
+          runner.run
+        end
+      end
+
+      context 'when no files contain tagged examples' do
+        let(:dry_run_examples) { [] }
+
+        it 'does not run rspec' do
+          expect(runner).not_to receive(:exec)
+
+          runner.run
+        end
+      end
+
+      context 'when the dry run fails' do
+        it 'aborts' do
+          allow(runner).to receive(:system).and_return(false)
+
+          expect { runner.run }.to raise_error(SystemExit).and output("RSpec dry run failed!\n").to_stderr
+        end
+      end
+
+      def stub_dry_run(examples)
+        allow(runner).to receive(:system) do
+          File.write(json_report_path, JSON.dump({ 'examples' => examples }))
+          true
+        end
+      end
+
+      def expect_dry_run_command(command)
+        expect(runner).to receive(:system).with(
+          hash_including('NO_KNAPSACK' => '1', 'SIMPLECOV' => '0'),
+          *command
+        ) do
+          File.write(json_report_path, JSON.dump({ 'examples' => dry_run_examples }))
+          true
+        end
+      end
+    end
+    # rubocop:enable Gitlab/Json
+
+    # rubocop:disable Gitlab/Json -- standard JSON is sufficient
     context 'when KNAPSACK_RSPEC_SUITE_REPORT_PATH set' do
       let(:rspec_args)              { nil }
       let(:master_report_file_name) { 'master-report1.json' }

@@ -1,5 +1,5 @@
 <script>
-import { GlModal, GlFormGroup, GlFormSelect, GlAlert } from '@gitlab/ui';
+import { GlModal, GlFormGroup, GlFormSelect, GlAlert, GlToastMixin } from '@gitlab/ui';
 import { differenceBy } from 'lodash-es';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { visitUrl } from '~/lib/utils/url_utility';
@@ -26,7 +26,7 @@ export default {
     GlFormSelect,
     GlAlert,
   },
-  mixins: [glFeatureFlagMixin()],
+  mixins: [glFeatureFlagMixin(), GlToastMixin],
   inject: ['hasSubepicsFeature', 'getWorkItemTypeConfiguration'],
   actionCancel: {
     text: __('Cancel'),

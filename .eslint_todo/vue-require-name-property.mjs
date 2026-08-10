@@ -6,8 +6,6 @@ export default {
     'ee/app/assets/javascripts/ci/job_details/components/root_cause_analysis_button.vue',
     'ee/app/assets/javascripts/ci/pipeline_details/tabs/pipeline_tabs.vue',
     'ee/app/assets/javascripts/compliance_dashboard/components/dashboard/components/status_chart.vue',
-    'ee/app/assets/javascripts/compliance_dashboard/components/projects_report/framework_selection_box.vue',
-    'ee/app/assets/javascripts/compliance_dashboard/components/projects_report/selection_operations.vue',
     'ee/app/assets/javascripts/compliance_dashboard/components/shared/drawer_accordion.vue',
     'ee/app/assets/javascripts/compliance_dashboard/components/shared/filter_tokens/compliance_framework_token.vue',
     'ee/app/assets/javascripts/compliance_dashboard/components/shared/filter_tokens/project_search_token.vue',

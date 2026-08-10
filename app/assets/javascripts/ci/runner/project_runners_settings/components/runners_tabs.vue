@@ -1,5 +1,5 @@
 <script>
-import { GlTabs } from '@gitlab/ui';
+import { GlTabs, GlToastMixin } from '@gitlab/ui';
 import { INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE } from '~/ci/runner/constants';
 import InstanceRunnersToggle from '~/projects/settings/components/instance_runners_toggle.vue';
 
@@ -24,6 +24,7 @@ export default {
     InstanceRunnersTabEmptyState,
     RunnerToggleAssignButton,
   },
+  mixins: [GlToastMixin],
   inject: {
     canAssignRunners: {
       default: false,

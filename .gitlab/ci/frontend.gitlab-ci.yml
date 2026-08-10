@@ -180,6 +180,8 @@ rspec-all frontend_fixture clickhouse:
     - .use-pg17-clickhouse25
     - .frontend-fixtures-base
     - .frontend:rules:frontend_fixture
+  variables:
+    RSPEC_DRY_RUN_TAGS: "click_house"
   script:
     - !reference [.clickhouse-setup, script]
     - rspec_parallelized_job "--tag click_house"

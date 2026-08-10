@@ -8,8 +8,10 @@ RSpec.describe Users::MigrateRecordsToGhostUserInBatchesWorker, feature_category
   let(:worker) { described_class.new }
 
   let_it_be(:expected_user_types_for_processing) do
-    HasUserType::USER_TYPES.keys - [
-      'human'
+    HasUserType::USER_TYPES.keys - %w[
+      human
+      service_account
+      project_bot
     ]
   end
 

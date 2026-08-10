@@ -1,5 +1,5 @@
 <script>
-import { GlDisclosureDropdown, GlResizeObserverDirective } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlResizeObserverDirective, GlToastMixin } from '@gitlab/ui';
 import { debounce } from 'lodash-es';
 import VueDraggable from '~/lib/utils/vue3compat/draggable_compat.vue';
 import { s__, n__ } from '~/locale';
@@ -25,6 +25,7 @@ export default {
   directives: {
     GlResizeObserver: GlResizeObserverDirective,
   },
+  mixins: [GlToastMixin],
   i18n: {
     defaultViewTitle: s__('WorkItem|All items'),
   },

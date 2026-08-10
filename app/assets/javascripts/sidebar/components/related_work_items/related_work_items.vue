@@ -8,6 +8,7 @@ import {
   GlPopover,
   GlTooltipDirective,
   GlSprintf,
+  GlToastMixin,
 } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __, n__, s__ } from '~/locale';
@@ -45,7 +46,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
+  mixins: [glFeatureFlagsMixin(), GlToastMixin],
   inject: ['fullPath', 'id'],
   data() {
     return {

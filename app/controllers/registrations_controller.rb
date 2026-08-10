@@ -14,7 +14,7 @@ class RegistrationsController < Devise::RegistrationsController
   include ::Gitlab::Utils::StrongMemoize
   include Onboarding::Redirectable
 
-  layout 'devise'
+  layout :registration_layout
 
   prepend_before_action :initialize_timer, only: :create
   prepend_before_action :check_captcha, only: :create

@@ -12,6 +12,7 @@ import {
   GlFormCheckbox,
   GlTooltipDirective,
   GlAnimatedChevronRightDownIcon,
+  GlToastMixin,
 } from '@gitlab/ui';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import { s__, sprintf } from '~/locale';
@@ -73,6 +74,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [GlToastMixin],
   inject: ['projectId', 'projectPath', 'canDestroyArtifacts', 'jobArtifactsCountLimit'],
   emits: ['artifact-count-update'],
   apollo: {

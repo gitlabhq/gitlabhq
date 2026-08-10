@@ -34901,6 +34901,21 @@ Fields:
 | <a id="auditeventsstreaminginstanceheader-key"></a>`key` | [`String!`](#string) | Key of the header. |
 | <a id="auditeventsstreaminginstanceheader-value"></a>`value` | [`String!`](#string) | Value of the header. |
 
+### `AutoRemediationConfiguration`
+
+Auto-remediation configuration for a dependency scanning post-processing scan profile.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="autoremediationconfiguration-cooldown"></a>`cooldown` | [`Int`](#int) | Minimum number of days after a package is released before it can be used. |
+| <a id="autoremediationconfiguration-enabled"></a>`enabled` | [`Boolean`](#boolean) | Indicates whether auto-remediation is enabled. |
+| <a id="autoremediationconfiguration-openmergerequestslimit"></a>`openMergeRequestsLimit` | [`Int`](#int) | Maximum number of open merge requests the feature may have open at once. |
+| <a id="autoremediationconfiguration-runnertags"></a>`runnerTags` | [`[String!]`](#string) | Runner tags used for auto-remediation jobs. |
+| <a id="autoremediationconfiguration-severitylevel"></a>`severityLevel` | [`VulnerabilitySeverity`](#vulnerabilityseverity) | Minimum vulnerability severity that triggers an automated upgrade. |
+| <a id="autoremediationconfiguration-upgradepolicy"></a>`upgradePolicy` | [`SecurityScanProfileUpgradePolicy`](#securityscanprofileupgradepolicy) | Highest version bump allowed when remediating. |
+
 ### `AutocompletedUser`
 
 Core representation of a GitLab user.
@@ -59191,6 +59206,17 @@ Fields:
 | <a id="scanprofileprojectstatus-scanprofile"></a>`scanProfile` | [`ScanProfileType!`](#scanprofiletype) | Scan profile associated with the status. |
 | <a id="scanprofileprojectstatus-status"></a>`status` | [`ScanProfileStatus!`](#scanprofilestatus) | Computed display status: NOT_CONFIGURED, PENDING, ACTIVE, WARNING, FAILED, or STALE. |
 
+### `ScanProfileTriggerSetting`
+
+A scan profile trigger and its effective configuration.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="scanprofiletriggersetting-configuration"></a>`configuration` | [`ScanProfileConfiguration`](#scanprofileconfiguration) | Effective configuration for the trigger. Null for scan types without a typed configuration. |
+| <a id="scanprofiletriggersetting-triggertype"></a>`triggerType` | [`ScanProfileTriggerType!`](#scanprofiletriggertype) | Type of the trigger. |
+
 ### `ScanProfileType`
 
 A scan profile.
@@ -59206,6 +59232,7 @@ Fields:
 | <a id="scanprofiletype-id"></a>`id` | [`SecurityScanProfileID`](#securityscanprofileid) | Global ID of the security scan profile. |
 | <a id="scanprofiletype-name"></a>`name` | [`String!`](#string) | Name of the security scan profile. |
 | <a id="scanprofiletype-scantype"></a>`scanType` | [`SecurityScanProfileType!`](#securityscanprofiletype) | Scan profile type. |
+| <a id="scanprofiletype-triggersettings"></a>`triggerSettings` {{< icon name="warning-solid" >}} | [`[ScanProfileTriggerSetting!]!`](#scanprofiletriggersetting) | Introduced in GitLab 19.3. Status: Experiment. Trigger settings, including effective configuration, for the scan profile. |
 | <a id="scanprofiletype-triggers"></a>`triggers` {{< icon name="warning-solid" >}} | [`[ScanProfileTriggerType!]!`](#scanprofiletriggertype) | Introduced in GitLab 18.10. Status: Experiment. Trigger types for the scan profile. |
 | <a id="scanprofiletype-updatedat"></a>`updatedAt` | [`ISO8601DateTime!`](#iso8601datetime) | Timestamp of when the scan profile was last updated. |
 
@@ -59299,6 +59326,21 @@ Fields:
 | <a id="secondarysecurityfeature-description"></a>`description` | [`String!`](#string) | Description of what the secondary feature does. |
 | <a id="secondarysecurityfeature-name"></a>`name` | [`String!`](#string) | Name of the secondary feature. |
 | <a id="secondarysecurityfeature-type"></a>`type` | [`String!`](#string) | Type identifier for the secondary feature. |
+
+### `SecretDetectionConfiguration`
+
+Configuration for a secret detection scan profile.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="secretdetectionconfiguration-excludedpaths"></a>`excludedPaths` | [`[String!]`](#string) | Glob paths excluded from the scan. |
+| <a id="secretdetectionconfiguration-historicscan"></a>`historicScan` | [`Boolean`](#boolean) | Indicates whether to scan the full Git history instead of only the current state. |
+| <a id="secretdetectionconfiguration-imagesuffix"></a>`imageSuffix` | [`SecurityScanProfileImageSuffix`](#securityscanprofileimagesuffix) | Suffix appended to the analyzer image name. |
+| <a id="secretdetectionconfiguration-logoptions"></a>`logOptions` | [`String`](#string) | Options passed to git log to control the commit range scanned. |
+| <a id="secretdetectionconfiguration-rulesetgitreference"></a>`rulesetGitReference` | [`String`](#string) | Git reference of the remote ruleset configuration to use. |
+| <a id="secretdetectionconfiguration-secureanalyzersprefix"></a>`secureAnalyzersPrefix` | [`String`](#string) | Prefix for the container registry from which the analyzer image is pulled. |
 
 ### `SecretPermission`
 
@@ -72678,6 +72720,15 @@ One of:
 - [`VulnerabilityExportPartUploadRegistry`](#vulnerabilityexportpartuploadregistry)
 - [`VulnerabilityExportUploadRegistry`](#vulnerabilityexportuploadregistry)
 - [`VulnerabilityRemediationUploadRegistry`](#vulnerabilityremediationuploadregistry)
+
+#### `ScanProfileConfiguration`
+
+Effective configuration for a scan profile trigger, resolved by scan type.
+
+One of:
+
+- [`AutoRemediationConfiguration`](#autoremediationconfiguration)
+- [`SecretDetectionConfiguration`](#secretdetectionconfiguration)
 
 #### `SecurityPolicySource`
 

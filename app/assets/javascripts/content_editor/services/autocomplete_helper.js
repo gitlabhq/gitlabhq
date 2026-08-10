@@ -308,7 +308,7 @@ export default class AutocompleteHelper {
       },
       /**
        * We're overriding returned items instead of filtering out
-       * irrelavent items because for `/unlink #`, it should show
+       * irrelevant items because for `/unlink #`, it should show
        * all linked items at once without waiting for user to
        * manually search items.
        */

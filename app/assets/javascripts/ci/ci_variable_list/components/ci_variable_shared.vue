@@ -1,4 +1,5 @@
 <script>
+import { GlToastMixin } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -25,7 +26,7 @@ export default {
   components: {
     CiVariableSettings,
   },
-  mixins: [glFeatureFlagsMixin()],
+  mixins: [glFeatureFlagsMixin(), GlToastMixin],
   inject: ['endpoint'],
   props: {
     areScopedVariablesAvailable: {

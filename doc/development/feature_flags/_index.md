@@ -929,9 +929,9 @@ We want to avoid introducing a changelog when features are not accessible by an 
 ## Feature flags in tests
 
 Introducing a feature flag into the codebase creates an additional code path that should be tested.
-It is strongly advised to include automated tests for all code affected by a feature flag, both when **enabled** and **disabled**
-to ensure the feature works properly. If automated tests are not included for both states, the functionality associated
-with the untested code path should be manually tested before deployment to production.
+Include automated tests for all code affected by a feature flag, both when **enabled** and **disabled**, but because flags are enabled by default in tests, the enabled state is the default scenario and needs no stub and no dedicated context.
+Cover the disabled state in a separate, self-contained context that stubs the flag to `false`, so that removing the flag later is a single deletion (see the pattern below).
+If automated tests are not included for both states, the functionality associated with the untested code path should be manually tested before deployment to production.
 
 When using the testing environment, all feature flags are enabled by default.
 Flags can be disabled by default in the [`spec/spec_helper.rb` file](https://gitlab.com/gitlab-org/gitlab/-/blob/b61fba42eea2cf5bb1ca64e80c067a07ed5d1921/spec/spec_helper.rb#L274).

@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlButton, GlForm, GlFormGroup, GlFormTextarea } from '@gitlab/ui';
+import { GlAlert, GlButton, GlForm, GlFormGroup, GlFormTextarea, GlToastMixin } from '@gitlab/ui';
 import RefSelector from '~/vue_shared/components/ref/components/ref_selector.vue';
 import { __, s__, sprintf } from '~/locale';
 import createCommitMutation from '../queries/create_commit.graphql';
@@ -41,6 +41,7 @@ export default {
     GlFormTextarea,
     StepNav,
   },
+  mixins: [GlToastMixin],
   props: {
     prev: {
       type: Object,

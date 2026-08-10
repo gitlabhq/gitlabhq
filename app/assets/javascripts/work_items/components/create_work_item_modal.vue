@@ -5,6 +5,7 @@ import {
   GlModal,
   GlDisclosureDropdownItem,
   GlTooltipDirective,
+  GlToastMixin,
 } from '@gitlab/ui';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __, s__, sprintf } from '~/locale';
@@ -35,7 +36,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagMixin()],
+  mixins: [glFeatureFlagMixin(), GlToastMixin],
   props: {
     alwaysShowWorkItemTypeSelect: {
       type: Boolean,

@@ -7,6 +7,7 @@ import {
   GlIcon,
   GlModalDirective,
   GlIntersectionObserver,
+  GlToastMixin,
 } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -38,6 +39,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     GlModal: GlModalDirective,
   },
+  mixins: [GlToastMixin],
   inject: {
     pageHeading: { default: null },
     showEditButton: { default: null },

@@ -1,5 +1,5 @@
 <script>
-import { GlToast } from '@gitlab/ui';
+import { GlToast, GlToastMixin } from '@gitlab/ui';
 import Sortable from 'sortablejs';
 import Vue from 'vue';
 import getIssueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_details.query.graphql';
@@ -39,7 +39,7 @@ export default {
   directives: {
     SafeHtml,
   },
-  mixins: [animateMixin],
+  mixins: [animateMixin, GlToastMixin],
   inject: ['fullPath', 'hasIterationsFeature'],
   props: {
     canUpdate: {

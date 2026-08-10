@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlToastMixin } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -58,7 +58,7 @@ export default {
     delay: DRAG_DELAY,
     delayOnTouchOnly: true,
   },
-  mixins: [glFeatureFlagMixin()],
+  mixins: [glFeatureFlagMixin(), GlToastMixin],
   props: {
     rootPageFullPath: {
       type: String,

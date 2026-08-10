@@ -1,6 +1,6 @@
 <script>
 import Vue from 'vue';
-import { GlDisclosureDropdownItem, GlToast } from '@gitlab/ui';
+import { GlDisclosureDropdownItem, GlToast, GlToastMixin } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { InternalEvents } from '~/tracking';
 import { keysFor, PROJECT_FILES_COPY_FILE_PERMALINK } from '~/behaviors/shortcuts/keybindings';
@@ -16,7 +16,7 @@ export default {
   components: {
     GlDisclosureDropdownItem,
   },
-  mixins: [InternalEvents.mixin()],
+  mixins: [InternalEvents.mixin(), GlToastMixin],
   props: {
     permalinkPath: {
       type: String,

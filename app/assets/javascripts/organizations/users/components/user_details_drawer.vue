@@ -1,5 +1,12 @@
 <script>
-import { GlAlert, GlButton, GlCollapsibleListbox, GlDrawer, GlTooltipDirective } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlButton,
+  GlCollapsibleListbox,
+  GlDrawer,
+  GlTooltipDirective,
+  GlToastMixin,
+} from '@gitlab/ui';
 import UserAvatar from '~/vue_shared/components/users_table/user_avatar.vue';
 import {
   ACCESS_LEVEL_DEFAULT_STRING,
@@ -24,6 +31,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [GlToastMixin],
   inject: ['paths'],
   i18n: {
     title: s__('Organization|Organization user details'),

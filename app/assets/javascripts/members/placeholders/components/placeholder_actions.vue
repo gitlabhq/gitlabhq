@@ -1,7 +1,7 @@
 <script>
 import produce from 'immer';
 import { debounce, isEmpty, isNull } from 'lodash-es';
-import { GlAvatarLabeled, GlButton, GlCollapsibleListbox, GlModal } from '@gitlab/ui';
+import { GlAvatarLabeled, GlButton, GlCollapsibleListbox, GlModal, GlToastMixin } from '@gitlab/ui';
 import {
   getFirstPropertyValue,
   normalizeHeaders,
@@ -40,6 +40,7 @@ export default {
     GlCollapsibleListbox,
     GlModal,
   },
+  mixins: [GlToastMixin],
   inject: {
     group: {
       default: {},

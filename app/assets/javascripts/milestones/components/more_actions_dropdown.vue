@@ -6,6 +6,7 @@ import {
   GlDisclosureDropdownGroup,
   GlDisclosureDropdown,
   GlTooltipDirective,
+  GlToastMixin,
 } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import PromoteMilestoneModal from '~/milestones/components/promote_milestone_modal.vue';
@@ -25,6 +26,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [GlToastMixin],
   inject: [
     'id',
     'title',

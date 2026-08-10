@@ -6503,7 +6503,7 @@ msgstr ""
 msgid "AdminSettings|All new projects can use instance runners by default."
 msgstr ""
 
-msgid "AdminSettings|Allow Google Cloud Application Default Credentials for offline transfer"
+msgid "AdminSettings|Allow Google Cloud Application Default Credentials for offline transfer %{link_start}%{icon}%{link_end}"
 msgstr ""
 
 msgid "AdminSettings|Allow S3 compatible object storage for offline transfer"
@@ -48820,6 +48820,12 @@ msgid "MergeTopics|Target topic"
 msgstr ""
 
 msgid "MergeTopics|This action cannot be undone."
+msgstr ""
+
+msgid "MergeTrain|Merge request is not mergeable"
+msgstr ""
+
+msgid "MergeTrain|Merge request is not mergeable. Explanation: %{explanation}"
 msgstr ""
 
 msgid "Merged"

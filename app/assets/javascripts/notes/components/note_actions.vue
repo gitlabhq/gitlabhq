@@ -6,6 +6,7 @@ import {
   GlDisclosureDropdown,
   GlDisclosureDropdownItem,
   GlDisclosureDropdownGroup,
+  GlToastMixin,
 } from '@gitlab/ui';
 import { mapActions, mapState } from 'pinia';
 import Api from '~/api';
@@ -50,7 +51,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [resolvedStatusMixin, Tracking.mixin()],
+  mixins: [resolvedStatusMixin, Tracking.mixin(), GlToastMixin],
   props: {
     author: {
       type: Object,

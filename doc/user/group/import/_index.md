@@ -27,7 +27,7 @@ instead of migrating them is a faster and more complete option.
 You can migrate groups in the following ways:
 
 - By direct transfer (recommended).
-- By [offline transfer](../../import/gitlab_instances/offline-transfer-migrations.md) through object storage when the
+- By [offline transfer](../../import/gitlab_instances/offline-transfer-migrations.md) through object storage, when the
   destination instance has no direct network connection to the source instance.
 - By [uploading an export file](../../project/settings/import_export.md).
 

@@ -14,6 +14,7 @@ import {
   GlAlert,
   GlLink,
   GlSprintf,
+  GlToastMixin,
 } from '@gitlab/ui';
 import { s__, __, n__, sprintf } from '~/locale';
 import { queryToObject, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
@@ -82,6 +83,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     GlModal: GlModalDirective,
   },
+  mixins: [GlToastMixin],
   inject: {
     group: {
       default: {},

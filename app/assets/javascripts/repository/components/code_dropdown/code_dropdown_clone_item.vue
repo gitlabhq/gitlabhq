@@ -6,6 +6,7 @@ import {
   GlFormInputGroup,
   GlToast,
   GlTooltipDirective,
+  GlToastMixin,
 } from '@gitlab/ui';
 import Vue from 'vue';
 import { __ } from '~/locale';
@@ -23,7 +24,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [InternalEvents.mixin()],
+  mixins: [InternalEvents.mixin(), GlToastMixin],
   props: {
     label: {
       type: String,

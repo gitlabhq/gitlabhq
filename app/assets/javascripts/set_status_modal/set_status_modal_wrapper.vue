@@ -1,5 +1,5 @@
 <script>
-import { GlToast, GlTooltipDirective, GlModal } from '@gitlab/ui';
+import { GlToast, GlTooltipDirective, GlModal, GlToastMixin } from '@gitlab/ui';
 import Vue from 'vue';
 import { createAlert } from '~/alert';
 import { BV_HIDE_MODAL } from '~/lib/utils/constants';
@@ -22,7 +22,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
+  mixins: [glFeatureFlagsMixin(), GlToastMixin],
   props: {
     defaultEmoji: {
       type: String,

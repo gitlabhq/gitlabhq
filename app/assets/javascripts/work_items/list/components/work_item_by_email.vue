@@ -8,6 +8,7 @@ import {
   GlLink,
   GlFormInputGroup,
   GlDisclosureDropdownItem,
+  GlToastMixin,
 } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
 import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
@@ -43,6 +44,7 @@ export default {
     GlModal: GlModalDirective,
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [GlToastMixin],
   inject: {
     newWorkItemEmailAddress: {
       default: null,

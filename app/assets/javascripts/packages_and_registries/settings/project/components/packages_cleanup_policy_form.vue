@@ -1,5 +1,5 @@
 <script>
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlToastMixin } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
 import {
   UPDATE_SETTINGS_ERROR_MESSAGE,
@@ -23,7 +23,7 @@ export default {
     GlButton,
     ExpirationDropdown,
   },
-  mixins: [Tracking.mixin()],
+  mixins: [Tracking.mixin(), GlToastMixin],
   inject: ['projectPath'],
   props: {
     value: {

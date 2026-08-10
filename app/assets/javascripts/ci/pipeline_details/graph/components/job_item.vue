@@ -1,5 +1,13 @@
 <script>
-import { GlBadge, GlForm, GlFormCheckbox, GlLink, GlModal, GlTooltipDirective } from '@gitlab/ui';
+import {
+  GlBadge,
+  GlForm,
+  GlFormCheckbox,
+  GlLink,
+  GlModal,
+  GlTooltipDirective,
+  GlToastMixin,
+} from '@gitlab/ui';
 import delayedJobMixin from '~/ci/mixins/delayed_job_mixin';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
@@ -75,7 +83,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [delayedJobMixin],
+  mixins: [delayedJobMixin, GlToastMixin],
   props: {
     job: {
       type: Object,

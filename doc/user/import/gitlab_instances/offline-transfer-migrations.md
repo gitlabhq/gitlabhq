@@ -64,7 +64,7 @@ Offline transfer supports these object storage providers:
 | S3-compatible | MinIO and other S3-compatible providers. Requires an administrator to [turn on S3-compatible object storage](../../../administration/settings/import_and_export_settings.md#allow-s3-compatible-object-storage-for-offline-transfer). |
 | Google Cloud Storage (service account) | Google Cloud Storage authenticated with a service account JSON key. |
 | Google Cloud Storage (HMAC) | Google Cloud Storage authenticated with S3-interoperability HMAC keys. |
-| Google Cloud Storage with Application Default Credentials | Google Cloud Storage authenticated with ADC. Requires an administrator to [turn on ADC for offline transfer](../../../administration/settings/import_and_export_settings.md#allow-application-default-credentials-for-offline-transfer), the bucket name must begin with `gitlab-offline-transfer-`, and only administrators can select this provider. Not available on GitLab.com. |
+| Google Cloud Storage with Application Default Credentials | Google Cloud Storage authenticated with Application Default Credentials (ADC). Restricted to administrators and to specific buckets, and not available on GitLab.com. For more information, see [Application Default Credentials](#application-default-credentials). |
 
 ### Required permissions
 
@@ -80,11 +80,25 @@ For Google Cloud Storage with a service account:
 - Export: `storage.buckets.get`, `storage.objects.create`, and `storage.objects.list`
 - Import: `storage.objects.get`
 
+Google Cloud Storage with ADC needs the same permissions, held by the service account of the instance
+instead of by a key you supply.
+
 Google Cloud Storage HMAC keys authenticate through the S3 interoperability API, so they require the
 AWS S3 permissions listed above rather than the `storage.*` permissions.
 
 Permissions for other S3-compatible providers vary by provider. Configure your provider with read
 and write permissions equivalent to the AWS S3 permissions listed above.
+
+### Application Default Credentials
+
+Google Cloud Storage with ADC authenticates as the service account of the instance that runs GitLab,
+not as the user who starts the transfer. Because that service account is usually more privileged than
+any individual user, GitLab restricts ADC transfers to administrators and to buckets whose name
+starts with `gitlab-offline-transfer-`.
+
+An administrator must also turn on ADC for the instance. For the security implications and the full
+list of restrictions, see
+[Allow application default credentials for offline transfer](../../../administration/settings/import_and_export_settings.md#allow-application-default-credentials-for-offline-transfer).
 
 ## Migrated items
 
@@ -126,6 +140,8 @@ Prerequisites:
 - To export a group, you must have the Owner role for the group.
 - To import into a group, you must have the Owner role for the destination group.
 - To import a group as a top-level group, you must have permission to create groups.
+- To use Application Default Credentials for an export or an import, you must have administrator
+  access.
 
 To migrate a group or project:
 

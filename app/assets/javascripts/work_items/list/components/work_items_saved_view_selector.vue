@@ -6,6 +6,7 @@ import {
   GlDisclosureDropdownGroup,
   GlButton,
   GlTooltipDirective,
+  GlToastMixin,
 } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __, s__, sprintf } from '~/locale';
@@ -28,6 +29,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [GlToastMixin],
   inject: ['isGroup'],
   props: {
     savedView: {

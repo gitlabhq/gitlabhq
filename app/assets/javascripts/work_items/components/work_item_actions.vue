@@ -10,6 +10,7 @@ import {
   GlModalDirective,
   GlTooltipDirective,
   GlToggle,
+  GlToastMixin,
 } from '@gitlab/ui';
 
 import { nextTick } from 'vue';
@@ -79,7 +80,7 @@ export default {
     GlModal: GlModalDirective,
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagMixin(), Tracking.mixin({ label: 'actions_menu' })],
+  mixins: [glFeatureFlagMixin(), Tracking.mixin({ label: 'actions_menu' }), GlToastMixin],
   isLoggedIn: isLoggedIn(),
   inject: {
     getWorkItemTypeConfiguration: {

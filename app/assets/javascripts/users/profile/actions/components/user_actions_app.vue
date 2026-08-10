@@ -1,5 +1,5 @@
 <script>
-import { GlDisclosureDropdown } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlToastMixin } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 
@@ -9,6 +9,7 @@ export default {
     GlDisclosureDropdown,
     AbuseCategorySelector,
   },
+  mixins: [GlToastMixin],
   props: {
     userId: {
       type: String,

@@ -21,7 +21,9 @@ module Users
 
     def user_types_for_processing
       HasUserType::USER_TYPES.keys - [
-        'human' # Processed separately by Users::MigrateHumanRecordsToGhostUserInBatchesWorker
+        'human', # Processed separately by Users::MigrateHumanRecordsToGhostUserInBatchesWorker
+        'service_account', # Processed separately by Users::MigrateServiceAccountRecordsToGhostUserInBatchesWorker
+        'project_bot' # Processed separately by Users::MigrateProjectBotRecordsToGhostUserInBatchesWorker
       ]
     end
   end

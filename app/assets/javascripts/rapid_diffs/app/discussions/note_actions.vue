@@ -6,6 +6,7 @@ import {
   GlDisclosureDropdown,
   GlDisclosureDropdownItem,
   GlDisclosureDropdownGroup,
+  GlToastMixin,
 } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
@@ -41,7 +42,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [Tracking.mixin()],
+  mixins: [Tracking.mixin(), GlToastMixin],
   props: {
     authorId: {
       type: Number,

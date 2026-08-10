@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlForm } from '@gitlab/ui';
+import { GlAlert, GlForm, GlToastMixin } from '@gitlab/ui';
 import { mapState, mapActions } from 'pinia';
 import axios from '~/lib/utils/axios_utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -39,6 +39,7 @@ export default {
   directives: {
     SafeHtml,
   },
+  mixins: [GlToastMixin],
   inject: {
     helpHtml: {
       default: '',

@@ -9,6 +9,7 @@ import {
   GlEmptyState,
   GlModal,
   GlModalDirective,
+  GlToastMixin,
 } from '@gitlab/ui';
 import emptyGroupsSvgPath from '@gitlab/svgs/dist/illustrations/empty-state/empty-groups-md.svg?url';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -87,7 +88,7 @@ export default {
     CrudComponent,
     SettingsSection,
   },
-  mixins: [glFeatureFlagsMixin()],
+  mixins: [glFeatureFlagsMixin(), GlToastMixin],
   inject: {
     branchRulesPath: { default: '' },
     branchesPath: { default: '' },

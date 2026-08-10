@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlSprintf } from '@gitlab/ui';
+import { GlButton, GlSprintf, GlToastMixin } from '@gitlab/ui';
 import { objectToQuery, visitUrl } from '~/lib/utils/url_utility';
 import {
   UPDATE_SETTINGS_ERROR_MESSAGE,
@@ -39,7 +39,7 @@ export default {
     ExpirationRunText,
     CrudComponent,
   },
-  mixins: [Tracking.mixin()],
+  mixins: [Tracking.mixin(), GlToastMixin],
   inject: ['projectPath', 'projectSettingsPath'],
   props: {
     value: {

@@ -9,7 +9,7 @@
 - content_for :overridden_brand_title, custom_sign_up_brand_title
 
 - if unified_registration?
-  = render_if_exists 'layouts/registration_left_panel'
+  = render_if_exists 'devise/registrations/registration_left_panel'
 - else
   .signup-page
     = render_if_exists 'devise/registrations/subscription_unification_subtext'

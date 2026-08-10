@@ -358,7 +358,6 @@ rspec unit clickhouse25:
   extends:
     - .rspec-base-pg17-clickhouse25
     - .rails:rules:clickhouse-changes
-  parallel: 2
 
 # Dedicated job for the partition export/import UTC session guard specs.
 # Runs only the `:partition_tz`-tagged examples (see .rspec-base-pg17-tz) with
@@ -373,31 +372,26 @@ rspec-ee unit clickhouse25:
   extends:
     - .rspec-base-pg17-clickhouse25
     - .rails:rules:ee-only-clickhouse-changes
-  parallel: 2
 
 rspec integration pg17 clickhouse25:
   extends:
     - .rspec-base-pg17-clickhouse25
     - .rails:rules:ee-and-foss-integration
-  parallel: 3
 
 rspec-ee integration pg17 clickhouse25:
   extends:
     - .rspec-base-pg17-clickhouse25
     - .rails:rules:ee-only-integration
-  parallel: 3
 
 rspec unit clickhouse26:
   extends:
     - .rspec-base-pg17-clickhouse26
     - .rails:rules:clickhouse-changes
-  parallel: 2
 
 rspec-ee unit clickhouse26:
   extends:
     - .rspec-base-pg17-clickhouse26
     - .rails:rules:ee-only-clickhouse-changes
-  parallel: 2
 
 rspec system clickhouse25:
   tags:
@@ -407,7 +401,6 @@ rspec system clickhouse25:
     - .rails:rules:clickhouse-system-changes
   variables:
     DEBUG_GITLAB_TRANSACTION_STACK: "true"
-  parallel: 2
 
 rspec-ee system clickhouse25:
   tags:
@@ -417,7 +410,6 @@ rspec-ee system clickhouse25:
     - .rails:rules:ee-only-clickhouse-system-changes
   variables:
     DEBUG_GITLAB_TRANSACTION_STACK: "true"
-  parallel: 2
 
 rspec ci-config-validation branch-pipelines:
   extends:
@@ -502,9 +494,9 @@ rspec:artifact-collector unit:
   needs:
     - job: rspec unit pg17  # 44 jobs
       optional: true
-    - job: rspec unit clickhouse26  # 2 jobs
+    - job: rspec unit clickhouse26  # 1 job
       optional: true
-    - job: rspec unit clickhouse25  # 2 jobs
+    - job: rspec unit clickhouse25  # 1 job
       optional: true
 
 rspec:artifact-collector part-a:
@@ -522,7 +514,7 @@ rspec:artifact-collector part-c:
     - .artifact-collector
     - .rails:rules:artifact-collector-part-c
   needs:
-    - job: rspec system clickhouse25  # 2 jobs
+    - job: rspec system clickhouse25  # 1 job
       optional: true
 
 rspec:artifact-collector part-b:
@@ -532,7 +524,7 @@ rspec:artifact-collector part-b:
   needs:
     - job: rspec integration pg17  # 20 jobs
       optional: true
-    - job: rspec integration pg17 clickhouse25  # 3 jobs
+    - job: rspec integration pg17 clickhouse25  # 1 job
       optional: true
     - job: rspec migration pg17  # 26 jobs
       optional: true
@@ -596,17 +588,17 @@ rspec:artifact-collector ee remainder:
       optional: true
     - job: rspec-ee background_migration pg17  # 6 jobs
       optional: true
-    - job: rspec-ee unit clickhouse26  # 2 jobs
+    - job: rspec-ee unit clickhouse26  # 1 job
       optional: true
-    - job: rspec-ee unit clickhouse25  # 2 jobs
+    - job: rspec-ee unit clickhouse25  # 1 job
       optional: true
     - job: rspec-ee integration pg17  # 9 jobs
       optional: true
-    - job: rspec-ee integration pg17 clickhouse25  # 3 jobs
+    - job: rspec-ee integration pg17 clickhouse25  # 1 job
       optional: true
     - job: rspec-ee system pg17  # 16 jobs
       optional: true
-    - job: rspec-ee system clickhouse25  # 2 jobs
+    - job: rspec-ee system clickhouse25  # 1 job
       optional: true
     - job: rspec fail-fast  # 1 job
       optional: true
@@ -1232,7 +1224,8 @@ rspec-ee system pg17 duo_workflow_service:
     - rspec-ee system pg17
   variables:
     RSPEC_TAGS: "--tag duo_workflow_service"
-  parallel: 4
+    RSPEC_DRY_RUN_TAGS: "duo_workflow_service"
+  parallel: 1  # override parallel: 16 inherited from `rspec-ee system pg17` (.rspec-ee-system-parallel)
   rules:
     - !reference [".rails:rules:triggered-by-aigw-project", rules]
     - !reference [".rails:rules:tier-2-with-backend-spec", rules]

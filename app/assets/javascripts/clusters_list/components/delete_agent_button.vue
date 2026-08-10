@@ -8,6 +8,7 @@ import {
   GlFormInput,
   GlTooltipDirective,
   GlDisclosureDropdownItem,
+  GlToastMixin,
 } from '@gitlab/ui';
 import { sprintf } from '~/locale';
 import { DELETE_AGENT_BUTTON, DELETE_AGENT_MODAL_ID } from '../constants';
@@ -30,6 +31,7 @@ export default {
     GlModalDirective,
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [GlToastMixin],
   inject: ['fullPath', 'canAdminCluster', 'isGroup'],
   props: {
     agent: {

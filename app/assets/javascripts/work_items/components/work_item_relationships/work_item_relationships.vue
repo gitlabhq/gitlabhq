@@ -1,6 +1,6 @@
 <script>
 import { produce } from 'immer';
-import { GlAlert, GlButton, GlBadge, GlTooltipDirective } from '@gitlab/ui';
+import { GlAlert, GlButton, GlBadge, GlTooltipDirective, GlToastMixin } from '@gitlab/ui';
 import { cloneDeep } from 'lodash-es';
 
 import { s__, n__, sprintf } from '~/locale';
@@ -48,7 +48,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
+  mixins: [glFeatureFlagsMixin(), GlToastMixin],
   provide() {
     return {
       preventRouterNav: true,

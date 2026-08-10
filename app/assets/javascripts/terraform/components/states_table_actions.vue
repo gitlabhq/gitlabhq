@@ -9,6 +9,7 @@ import {
   GlModal,
   GlSprintf,
   GlModalDirective,
+  GlToastMixin,
 } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 import getStatesQuery from '../graphql/queries/get_states.query.graphql';
@@ -34,6 +35,7 @@ export default {
   directives: {
     GlModalDirective,
   },
+  mixins: [GlToastMixin],
   inject: ['projectPath'],
   props: {
     state: {

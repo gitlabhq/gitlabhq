@@ -47799,8 +47799,6 @@ CREATE INDEX index_geo_nodes_on_primary ON geo_nodes USING btree ("primary");
 
 CREATE INDEX index_ghost_user_migrations_on_consume_after_id ON ghost_user_migrations USING btree (consume_after, id);
 
-CREATE INDEX index_ghost_user_migrations_on_consume_after_id_non_human ON ghost_user_migrations USING btree (consume_after, id) WHERE (user_type <> 0);
-
 CREATE UNIQUE INDEX index_ghost_user_migrations_on_user_id ON ghost_user_migrations USING btree (user_id);
 
 CREATE INDEX index_ghost_user_migrations_on_user_type_consume_after_id ON ghost_user_migrations USING btree (user_type, consume_after, id);

@@ -126,29 +126,47 @@ To allow S3-compatible object storage for offline transfer:
 > For more information, see the history.
 
 Turn on this setting to allow [offline transfer](../../user/import/gitlab_instances/offline-transfer-migrations.md)
-to authenticate with Google Cloud Storage by using application default credentials.
+to authenticate with Google Cloud Storage by using
+[Application Default Credentials](../object_storage.md#google-cloud-application-default-credentials) (ADC).
+
+With every other object storage provider, the user who creates an export or an import supplies the
+credentials. With ADC, no user supplies credentials. GitLab stores only the Google Cloud project ID
+and resolves the credentials for each request from the environment of the instance, either from the
+Compute Engine metadata server or from the `GOOGLE_APPLICATION_CREDENTIALS` environment variable.
 
 Prerequisites:
 
 - You must be an administrator.
 
 > [!warning]
-> When you enable this setting, offline transfers authenticate with the credentials available in the
-> instance environment instead of user-supplied credentials. Enable this setting only if you trust
-> the users who can perform offline transfers.
+> An offline transfer that uses ADC acts with every Cloud Storage permission that the service account
+> of the instance holds. That service account is usually more privileged than any individual user, so
+> a user who creates an ADC transfer can reach buckets they hold no credentials for.
 
-Even after you enable this setting, only users with administrator access can select
-application default credentials for an offline transfer export or import.
+To limit this risk, GitLab applies the following restrictions, which you cannot turn off:
 
-When this setting is enabled, the Google Cloud Storage bucket name must begin with
-`gitlab-offline-transfer-`.
+- Only users with administrator access can create an offline transfer export or import that uses
+  ADC. Other users receive the error
+  `Only administrators can use Application Default Credentials for offline transfer.`
+- The bucket name must start with `gitlab-offline-transfer-`. This prefix keeps ADC transfers away
+  from the buckets that the instance uses for its own object storage, such as uploads, job artifacts,
+  and LFS objects.
+- ADC is not available on GitLab.com.
 
-To allow application default credentials for offline transfer:
+The Google Cloud project ID that you provide for a transfer does not limit which buckets that
+transfer can reach. Bucket names are globally unique in Cloud Storage, so an ADC transfer can use any
+bucket that the service account can access and whose name starts with `gitlab-offline-transfer-`,
+in any Google Cloud project.
+
+GitLab checks these restrictions when a user creates a transfer. If you turn off this setting, users
+can no longer create ADC transfers, but transfers that already started continue to run.
+
+To allow Application Default Credentials for offline transfer:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Settings** > **General**.
 1. Expand the **Import and export settings** section.
-1. Scroll to **Allow application default credentials for offline transfer**.
+1. Scroll to **Allow Google Cloud Application Default Credentials for offline transfer**.
 1. Select the **Enabled** checkbox.
 1. Select **Save changes**.
 

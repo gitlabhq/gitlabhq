@@ -10,6 +10,7 @@ import {
   GlModalDirective,
   GlTooltipDirective,
   GlSprintf,
+  GlToastMixin,
 } from '@gitlab/ui';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import getPackagesProtectionRuleQuery from '~/packages_and_registries/settings/project/graphql/queries/get_packages_protection_rules.query.graphql';
@@ -49,7 +50,7 @@ export default {
     GlModal: GlModalDirective,
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
+  mixins: [glFeatureFlagsMixin(), GlToastMixin],
   inject: ['projectPath'],
   i18n: {
     delete: __('Delete'),

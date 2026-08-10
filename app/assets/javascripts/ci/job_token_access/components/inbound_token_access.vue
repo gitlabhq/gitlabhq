@@ -8,6 +8,7 @@ import {
   GlSprintf,
   GlTooltipDirective,
   GlFormRadioGroup,
+  GlToastMixin,
 } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __, s__, n__, sprintf } from '~/locale';
@@ -69,6 +70,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [GlToastMixin],
   inject: ['enforceAllowlist', 'fullPath'],
   apollo: {
     inboundJobTokenScopeEnabled: {

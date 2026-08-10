@@ -172,6 +172,8 @@ include:
   extends:
     - .rspec-base
     - .use-pg17-clickhouse25
+  variables:
+    RSPEC_DRY_RUN_TAGS: "click_house"
   script:
     - !reference [.clickhouse-setup, script]
     - rspec_section rspec_parallelized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag ~quarantine --tag click_house"
@@ -180,6 +182,8 @@ include:
   extends:
     - .rspec-base
     - .use-pg17-clickhouse26
+  variables:
+    RSPEC_DRY_RUN_TAGS: "click_house"
   script:
     - !reference [.clickhouse-setup, script]
     - rspec_section rspec_parallelized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag ~quarantine --tag click_house"
@@ -191,6 +195,8 @@ include:
   extends:
     - .rspec-base
     - .use-pg17-tz
+  variables:
+    RSPEC_DRY_RUN_TAGS: "partition_tz"
   script:
     - !reference [.base-script, script]
     - rspec_section rspec_parallelized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag ~quarantine --tag partition_tz"

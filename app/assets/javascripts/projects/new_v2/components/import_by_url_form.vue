@@ -8,6 +8,7 @@ import {
   GlFormInputGroup,
   GlLink,
   GlMultiStepFormTemplate,
+  GlToastMixin,
 } from '@gitlab/ui';
 import csrf from '~/lib/utils/csrf';
 import { visitUrl, isReasonableGitUrl } from '~/lib/utils/url_utility';
@@ -29,6 +30,7 @@ export default {
     GlLink,
     GlMultiStepFormTemplate,
   },
+  mixins: [GlToastMixin],
   inject: {
     importByUrlValidatePath: {
       default: null,

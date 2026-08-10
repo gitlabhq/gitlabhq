@@ -13,6 +13,7 @@ import {
   GlToggle,
   GlTabs,
   GlTab,
+  GlToastMixin,
 } from '@gitlab/ui';
 import { isEqual, isEmpty, omit } from 'lodash-es';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -63,6 +64,7 @@ export default {
   directives: {
     GlModal: GlModalDirective,
   },
+  mixins: [GlToastMixin],
   inject: {
     alertsUsageUrl: {
       default: '#',

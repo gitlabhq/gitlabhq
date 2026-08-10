@@ -3,6 +3,7 @@
 require 'knapsack'
 require 'fileutils'
 require 'json'
+require 'tmpdir'
 require_relative './helpers/duration_formatter'
 
 module Knapsack
@@ -75,12 +76,13 @@ module Tooling
     include Tooling::Helpers::DurationFormatter
 
     # rubocop:disable Gitlab/Json -- standard JSON is sufficient
-    def self.run(rspec_args: nil, filter_tests_file: nil)
-      new(rspec_args: rspec_args, filter_tests_file: filter_tests_file).run
+    def self.run(rspec_args: nil, filter_tests_file: nil, dry_run_tags: nil)
+      new(rspec_args: rspec_args, filter_tests_file: filter_tests_file, dry_run_tags: dry_run_tags).run
     end
 
-    def initialize(filter_tests_file: nil, rspec_args: nil)
+    def initialize(filter_tests_file: nil, rspec_args: nil, dry_run_tags: nil)
       @filter_tests_file = filter_tests_file
+      @dry_run_tags = dry_run_tags&.split(' ') || []
       @rspec_args = rspec_args&.split(' ') || []
     end
 
@@ -107,7 +109,7 @@ module Tooling
 
     private
 
-    attr_reader :filter_tests_file, :rspec_args
+    attr_reader :filter_tests_file, :dry_run_tags, :rspec_args
 
     def parse_expected_duration_from_master_report
       master_report = JSON.parse(File.read(ENV['KNAPSACK_RSPEC_SUITE_REPORT_PATH']))
@@ -141,7 +143,51 @@ module Tooling
     end
 
     def node_tests
-      allocator.node_tests
+      @node_tests ||= begin
+        tests = allocator.node_tests
+        tests = tests_with_tagged_examples(tests) if dry_run_tags.any? && !tests.empty?
+        tests
+      end
+    end
+
+    # Finds which of the given spec files contain examples matching any of the
+    # dry_run_tags, via an RSpec dry run in a separate process. The dry run has
+    # to load every file (tags can be applied inside shared examples defined in
+    # other files, so grepping is not enough), but doing so in a throwaway
+    # process keeps the actual test run's memory footprint proportional to the
+    # files it runs instead of every file allocated to the node.
+    def tests_with_tagged_examples(tests)
+      tags_label = dry_run_tags.join(', ')
+      Knapsack.logger.info "Running RSpec dry run to find files with examples tagged #{tags_label}..."
+
+      examples = Dir.mktmpdir do |tmpdir|
+        json_report_path = File.join(tmpdir, 'rspec_dry_run_report.json')
+        dry_run_command = %w[bundle exec rspec -Ispec -rspec_helper --dry-run] +
+          dry_run_tags.flat_map { |tag| ['--tag', tag] } +
+          ['--format', 'json', '--out', json_report_path, '--'] + tests
+
+        abort 'RSpec dry run failed!' unless system(dry_run_env, *dry_run_command)
+
+        JSON.parse(File.read(json_report_path))['examples']
+      end
+      tagged_files = examples.map { |example| example['id'][/\A(.+?)\[/, 1].delete_prefix('./') }.uniq
+
+      Knapsack.logger.info "RSpec dry run detected #{examples.size} examples tagged #{tags_label} " \
+        "in #{tagged_files.size} of the #{tests.size} spec files allocated to this node."
+
+      tests & tagged_files
+    end
+
+    # Prevent the dry run from generating knapsack/flaky/skipped-tests/coverage
+    # reports that would pollute the reports of the actual test run.
+    def dry_run_env
+      {
+        'NO_KNAPSACK' => '1',
+        'FLAKY_RSPEC_GENERATE_REPORT' => 'false',
+        'RSPEC_SKIPPED_TESTS_REPORT_PATH' => nil,
+        'SIMPLECOV' => '0',
+        'CRYSTALBALL' => nil
+      }
     end
 
     def filter_tests

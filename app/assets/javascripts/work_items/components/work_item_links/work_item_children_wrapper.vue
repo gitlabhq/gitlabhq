@@ -1,6 +1,7 @@
 <script>
 import { cloneDeep } from 'lodash-es';
 import { produce } from 'immer';
+import { GlToastMixin } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 import { isLoggedIn } from '~/lib/utils/common_utils';
@@ -28,7 +29,7 @@ export default {
   components: {
     WorkItemLinkChild,
   },
-  mixins: [glFeatureFlagsMixin()],
+  mixins: [glFeatureFlagsMixin(), GlToastMixin],
   inject: ['getWorkItemTypeConfiguration'],
   props: {
     fullPath: {

@@ -1,5 +1,13 @@
 <script>
-import { GlCard, GlModal, GlSprintf, GlLink, GlLoadingIcon, GlToggle } from '@gitlab/ui';
+import {
+  GlCard,
+  GlModal,
+  GlSprintf,
+  GlLink,
+  GlLoadingIcon,
+  GlToggle,
+  GlToastMixin,
+} from '@gitlab/ui';
 import { sortBy } from 'lodash-es';
 import Api from '~/api';
 import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
@@ -15,7 +23,7 @@ export default {
     GlLoadingIcon,
     GlToggle,
   },
-  mixins: [glListenersMixin],
+  mixins: [glListenersMixin, GlToastMixin],
   inject: {
     projectId: {
       default: null,

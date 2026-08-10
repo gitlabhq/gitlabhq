@@ -8,6 +8,7 @@ import {
   GlFormRadio,
   GlFormRadioGroup,
   GlIcon,
+  GlToastMixin,
 } from '@gitlab/ui';
 import { partition, isString, uniqueId, isEmpty } from 'lodash-es';
 import SafeHtml from '~/vue_shared/directives/safe_html';
@@ -68,7 +69,7 @@ export default {
   directives: {
     SafeHtml,
   },
-  mixins: [Tracking.mixin({ category: INVITE_MEMBER_MODAL_TRACKING_CATEGORY })],
+  mixins: [Tracking.mixin({ category: INVITE_MEMBER_MODAL_TRACKING_CATEGORY }), GlToastMixin],
   inject: {
     addSeatsHref: {
       default: '',

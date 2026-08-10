@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlLoadingIcon, GlModal, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlAlert, GlLoadingIcon, GlModal, GlLink, GlSprintf, GlToastMixin } from '@gitlab/ui';
 import PipelinesEmptyState from '~/ci/common/empty_state/pipelines_empty_state.vue';
 import PipelinesErrorState from '~/ci/common/empty_state/pipelines_error_state.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -40,7 +40,7 @@ export default {
     TablePagination,
     RunPipelineButton,
   },
-  mixins: [PipelinesMixin, glFeatureFlagsMixin()],
+  mixins: [PipelinesMixin, glFeatureFlagsMixin(), GlToastMixin],
   props: {
     canCreatePipelineInTargetProject: {
       type: Boolean,

@@ -1516,8 +1516,28 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :cronjob
+- :name: cronjob:users_migrate_project_bot_records_to_ghost_user_in_batches
+  :worker_name: Users::MigrateProjectBotRecordsToGhostUserInBatchesWorker
+  :feature_category: :user_profile
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:users_migrate_records_to_ghost_user_in_batches
   :worker_name: Users::MigrateRecordsToGhostUserInBatchesWorker
+  :feature_category: :user_profile
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
+- :name: cronjob:users_migrate_service_account_records_to_ghost_user_in_batches
+  :worker_name: Users::MigrateServiceAccountRecordsToGhostUserInBatchesWorker
   :feature_category: :user_profile
   :has_external_dependencies: false
   :urgency: :low

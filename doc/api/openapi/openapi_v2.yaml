@@ -79364,7 +79364,9 @@ definitions:
         type: object
         description: Google Cloud Storage configuration using Application Default
           Credentials. Available on GitLab Self-Managed or GitLab Dedicated, and must
-          be enabled by an administrator.
+          be enabled by an administrator. Only administrators can use these credentials,
+          and the bucket name must start with "gitlab-offline-transfer-". For more
+          information, see https://docs.gitlab.com/administration/settings/import_and_export_settings/#allow-application-default-credentials-for-offline-transfer
         properties:
           google_project:
             type: string
@@ -79479,7 +79481,9 @@ definitions:
         type: object
         description: Google Cloud Storage configuration using Application Default
           Credentials. Available on GitLab Self-Managed or GitLab Dedicated, and must
-          be enabled by an administrator.
+          be enabled by an administrator. Only administrators can use these credentials,
+          and the bucket name must start with "gitlab-offline-transfer-". For more
+          information, see https://docs.gitlab.com/administration/settings/import_and_export_settings/#allow-application-default-credentials-for-offline-transfer
         properties:
           google_project:
             type: string
