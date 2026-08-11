@@ -829,7 +829,7 @@ msgid "%{displayType} supports a maximum of %{maxDimensions} dimensions"
 msgstr "%{displayType} 最多支持 %{maxDimensions} 个维度"
 
 msgid "%{displayType} supports exactly one dimension"
-msgstr ""
+msgstr "%{displayType} 仅支持单一维度"
 
 msgid "%{displayType} with %{maxDimensions} dimensions supports only a single metric"
 msgstr "%{displayType} 在 %{maxDimensions} 个维度时仅支持单个指标"
@@ -2763,7 +2763,7 @@ msgid "AICatalog|External"
 msgstr "外部"
 
 msgid "AICatalog|External agent"
-msgstr ""
+msgstr "AICatalog|外部代理"
 
 msgid "AICatalog|External agents are inactive for all projects. To create or use external agents, %{linkStart}turn on external agents%{linkEnd}."
 msgstr "外部代理对所有项目均未激活。要创建或使用外部代理，请%{linkStart}开启外部代理%{linkEnd}。"
@@ -2850,7 +2850,7 @@ msgid "AICatalog|Flow not found."
 msgstr "未找到工作流。"
 
 msgid "AICatalog|Flow or external agent"
-msgstr ""
+msgstr "AICatalog|流程或外部代理"
 
 msgid "AICatalog|Flow updated."
 msgstr "工作流已更新。"
@@ -3147,13 +3147,13 @@ msgid "AICatalog|Select at least one trigger."
 msgstr "请至少选择一个触发器。"
 
 msgid "AICatalog|Select external agent"
-msgstr ""
+msgstr "AICatalog|选择外部代理"
 
 msgid "AICatalog|Select flow"
-msgstr ""
+msgstr "AICatalog|选择流程"
 
 msgid "AICatalog|Select flow or external agent"
-msgstr ""
+msgstr "AICatalog|选择流程或外部代理"
 
 msgid "AICatalog|Select one or more projects where the agent should be enabled."
 msgstr "选择一个或多个要启用智能体的项目。"
@@ -3510,7 +3510,7 @@ msgid "AICatalog|can't be made private because this item is enabled outside its 
 msgstr "无法设为私有，因为此项在其所属项目之外被启用"
 
 msgid "AICatalog|can't be made restricted because this item is enabled outside the top-level group hierarchy"
-msgstr ""
+msgstr "AICatalog|无法限制，因为此项目在顶级群组层级之外启用"
 
 msgid "AICatalog|cannot be enabled because your top-level group settings block enabling items outside of its hierarchy"
 msgstr "无法启用，因为您的顶级群组设置阻止启用其层次结构之外的项"
@@ -5698,7 +5698,7 @@ msgid_plural "AdminAIPoweredFeatures|%d models selected"
 msgstr[0] "已选择 %d 个模型"
 
 msgid "AdminAIPoweredFeatures|%{allowedCount} of %{totalCount} models allowed"
-msgstr ""
+msgstr "AdminAIPoweredFeatures|已允许 %{allowedCount}/%{totalCount} 个模型"
 
 msgid "AdminAIPoweredFeatures|AI-native features"
 msgstr "AI 原生功能"
@@ -5717,7 +5717,7 @@ msgid_plural "AdminAIPoweredFeatures|All available models (%d models)"
 msgstr[0] "所有可用模型（%d 个模型）"
 
 msgid "AdminAIPoweredFeatures|Allow list disabled"
-msgstr ""
+msgstr "AdminAIPoweredFeatures|允许列表已禁用"
 
 msgid "AdminAIPoweredFeatures|An AI assistant that helps users accelerate software development using real-time conversational AI. This setting is for regular Duo Chat only. %{linkStart}Learn more.%{linkEnd}"
 msgstr "一个AI助手，帮助用户通过实时对话AI加速软件开发。此设置仅适用于常规Duo Chat。%{linkStart}了解更多。%{linkEnd}"
@@ -5870,7 +5870,7 @@ msgid "AdminArea|Edit OAuth configuration"
 msgstr "编辑 OAuth 配置"
 
 msgid "AdminArea|Explore plans"
-msgstr ""
+msgstr "AdminArea|浏览方案"
 
 msgid "AdminArea|Failed to fetch version from KAS"
 msgstr "从 KAS 获取版本时出错"
@@ -7751,7 +7751,7 @@ msgid "AgentArtifacts|AI Item"
 msgstr "AI 项目"
 
 msgid "AgentArtifacts|AI audit event storage is turned off, so no audit events are being recorded. %{linkStart}Turn on storage%{linkEnd} to start capturing audit events."
-msgstr ""
+msgstr "AgentArtifacts|AI 审计事件存储已关闭，因此不会记录任何审计事件。%{linkStart}开启存储%{linkEnd}以开始捕获审计事件。"
 
 msgid "AgentArtifacts|Agent audit events"
 msgstr "智能体审计事件"
@@ -8375,7 +8375,7 @@ msgid "AiPowered|Buy GitLab Credits"
 msgstr "购买 GitLab 积分"
 
 msgid "AiPowered|Buy monthly credits for AI capabilities, additional compute, and GitLab add-ons. Credits from $%{minPrice}, with volume discounts."
-msgstr ""
+msgstr "AiPowered|购买月度积分，用于 AI 功能、额外计算资源和 GitLab 附加组件。积分起价 $%{minPrice}，量大优惠。"
 
 msgid "AiPowered|Buy monthly credits for AI capabilities, additional compute, and GitLab add-ons. Credits from $1, with volume discounts."
 msgstr "购买每月额度，用于 AI 能力、额外计算资源和极狐GitLab 附加组件。额度起价为 $1，量大可享折扣。"
@@ -11547,7 +11547,7 @@ msgid "ArtifactRegistry|Activation"
 msgstr "激活"
 
 msgid "ArtifactRegistry|Ancestor ID must be a valid UUID."
-msgstr ""
+msgstr "ArtifactRegistry|祖先 ID 必须是有效的 UUID。"
 
 msgid "ArtifactRegistry|Artifact registry"
 msgstr "产物仓库"
@@ -11586,16 +11586,16 @@ msgid "ArtifactRegistry|The Artifact Registry service is unavailable."
 msgstr "产物仓库服务不可用。"
 
 msgid "ArtifactRegistry|The requested resources could not be found."
-msgstr ""
+msgstr "ArtifactRegistry|未找到请求的资源。"
 
 msgid "ArtifactRegistry|The role assignment could not be completed."
 msgstr "角色分配无法完成。"
 
 msgid "ArtifactRegistry|The role assignment lookup could not be completed."
-msgstr ""
+msgstr "ArtifactRegistry|无法完成角色分配查询。"
 
 msgid "ArtifactRegistry|The role assignment lookup request was invalid."
-msgstr ""
+msgstr "ArtifactRegistry|角色分配查询请求无效。"
 
 msgid "ArtifactRegistry|The role assignment request was invalid."
 msgstr "角色分配请求无效。"
@@ -11604,13 +11604,13 @@ msgid "ArtifactRegistry|Unknown Artifact Registry role: %{role}."
 msgstr "未知 Artifact Registry 角色：%{role}。"
 
 msgid "ArtifactRegistry|Unknown Artifact Registry roles: %{roles}."
-msgstr ""
+msgstr "ArtifactRegistry|未知的 Artifact Registry 角色：%{roles}。"
 
 msgid "ArtifactRegistry|You are not authorized to grant this role on this resource."
 msgstr "您无权在此资源上授予此角色。"
 
 msgid "ArtifactRegistry|You are not authorized to read these role assignments."
-msgstr ""
+msgstr "ArtifactRegistry|您无权读取这些角色分配。"
 
 msgid "ArtifactRegistry|You cannot grant roles in another organization."
 msgstr "您无法在另一个组织中授予角色。"
@@ -11619,7 +11619,7 @@ msgid "ArtifactRegistry|You must be signed in to grant a role."
 msgstr "您必须登录才能授予角色。"
 
 msgid "ArtifactRegistry|You must be signed in to read role assignments."
-msgstr ""
+msgstr "ArtifactRegistry|您必须登录才能读取角色分配。"
 
 msgid "Artifacts"
 msgstr "产物"
@@ -19166,7 +19166,7 @@ msgid "CompareRevisions|%{source_branch} and %{target_branch} are the same."
 msgstr "%{source_branch} 和 %{target_branch} 是相同的。"
 
 msgid "CompareRevisions|Additional commits have been omitted to prevent performance issues."
-msgstr ""
+msgstr "CompareRevisions|已省略部分提交以防止性能问题。"
 
 msgid "CompareRevisions|An error occurred while retrieving target projects."
 msgstr "检索目标项目时发生错误。"
@@ -21288,7 +21288,7 @@ msgid "Configure CAPTCHAs, IP address limits, and other anti-spam measures."
 msgstr "配置 CAPTCHA、IP 地址限制和其他反垃圾邮件措施。"
 
 msgid "Configure CI/CD Catalog settings, including publishing restrictions."
-msgstr ""
+msgstr "配置 CI/CD 目录设置，包括发布限制。"
 
 msgid "Configure Container Scanning in `.gitlab-ci.yml` using the GitLab managed template. You can [add variable overrides](https://docs.gitlab.com/user/application_security/container_scanning/#customizing-analyzer-behavior) to customize Container Scanning settings."
 msgstr "Configure Container Scanning in `.gitlab-ci.yml` using the GitLab managed template. You can [add variable overrides](https://docs.gitlab.com/user/application_security/container_scanning/#customizing-analyzer-behavior) to customize Container Scanning settings."
@@ -28979,7 +28979,7 @@ msgid "DuoAgentsPlatform|Cancel session?"
 msgstr "取消会话？"
 
 msgid "DuoAgentsPlatform|Change the target or events for this trigger."
-msgstr ""
+msgstr "DuoAgentsPlatform|更改此触发器的目标或事件。"
 
 msgid "DuoAgentsPlatform|Chat"
 msgstr "对话"
@@ -29018,7 +29018,7 @@ msgid "DuoAgentsPlatform|Contact a project Maintainer or group Owner"
 msgstr "联系项目维护者或群组所有者"
 
 msgid "DuoAgentsPlatform|Create a trigger to run a flow or external agent based on project events."
-msgstr ""
+msgstr "DuoAgentsPlatform|创建触发器，基于项目事件运行流程或外部代理。"
 
 msgid "DuoAgentsPlatform|Create commit"
 msgstr "创建提交"
@@ -29075,16 +29075,16 @@ msgid "DuoAgentsPlatform|Enter the path to your configuration file."
 msgstr "请输入配置文件的路径。"
 
 msgid "DuoAgentsPlatform|Event"
-msgstr ""
+msgstr "DuoAgentsPlatform|事件"
 
 msgid "DuoAgentsPlatform|Event type"
-msgstr ""
+msgstr "DuoAgentsPlatform|事件类型"
 
 msgid "DuoAgentsPlatform|Event types are required."
 msgstr "事件类型是必需的。"
 
 msgid "DuoAgentsPlatform|Events"
-msgstr ""
+msgstr "DuoAgentsPlatform|事件"
 
 msgid "DuoAgentsPlatform|Failed to cancel session. Please try again."
 msgstr "取消会话失败。请重试。"
@@ -29120,7 +29120,7 @@ msgid "DuoAgentsPlatform|Flow"
 msgstr "流"
 
 msgid "DuoAgentsPlatform|Flow or external agent"
-msgstr ""
+msgstr "DuoAgentsPlatform|流程或外部代理"
 
 msgid "DuoAgentsPlatform|Flows can't run yet"
 msgstr "流还无法运行"
@@ -29255,7 +29255,7 @@ msgid "DuoAgentsPlatform|Select a service account"
 msgstr "选择一个服务账户"
 
 msgid "DuoAgentsPlatform|Select any flow or external agent enabled in this project."
-msgstr ""
+msgstr "DuoAgentsPlatform|选择此项目中启用的任意流程或外部代理。"
 
 msgid "DuoAgentsPlatform|Select at least one merge request action."
 msgstr "请至少选择一个合并请求操作。"
@@ -29303,7 +29303,7 @@ msgid "DuoAgentsPlatform|Something went wrong while running the initializer."
 msgstr "运行初始化器时出错。"
 
 msgid "DuoAgentsPlatform|Specify the path to a YAML file that contains a flow definition."
-msgstr ""
+msgstr "DuoAgentsPlatform|指定包含流程定义的 YAML 文件路径。"
 
 msgid "DuoAgentsPlatform|Start a Free Trial"
 msgstr "还没有准备好试用 GitLab 和 GitLab Duo 的全部功能？可以先试用 GitLab Duo Pro 的免费试用版。"
@@ -29312,10 +29312,10 @@ msgid "DuoAgentsPlatform|Start your free %{strongStart}%{trialDuration}-day tria
 msgstr "立即开始免费 %{strongStart}%{trialDuration} 天试用%{strongEnd}，加速软件交付。使用 AI 代理自动化任务，从搜索项目到创建提交。"
 
 msgid "DuoAgentsPlatform|Target"
-msgstr ""
+msgstr "DuoAgentsPlatform|目标"
 
 msgid "DuoAgentsPlatform|Target is required."
-msgstr ""
+msgstr "DuoAgentsPlatform|目标为必填项。"
 
 msgid "DuoAgentsPlatform|Tell the agent what to change and it will generate an updated plan for your review."
 msgstr "告诉代理需要更改什么，它将生成更新后的方案供您审核。"
@@ -29375,10 +29375,10 @@ msgid "DuoAgentsPlatform|We won't ask you for this information again. It will ne
 msgstr "我们不会再次要求您提供此信息。它永远不会用于营销目的。"
 
 msgid "DuoAgentsPlatform|What this trigger runs."
-msgstr ""
+msgstr "DuoAgentsPlatform|此触发器运行的内容。"
 
 msgid "DuoAgentsPlatform|When this trigger runs."
-msgstr ""
+msgstr "DuoAgentsPlatform|此触发器的运行时机。"
 
 msgid "DuoAgentsPlatform|Who can grant you access"
 msgstr "谁可以授予您访问权限"
@@ -30361,16 +30361,16 @@ msgid "DuoSlack|Failed to start the Duo Developer workflow. Try again."
 msgstr "启动 Duo Developer 工作流失败。请重试。"
 
 msgid "DuoSlack|Helpful"
-msgstr ""
+msgstr "DuoSlack|有帮助"
 
 msgid "DuoSlack|Mark this response as helpful"
-msgstr ""
+msgstr "DuoSlack|将此回复标记为有帮助"
 
 msgid "DuoSlack|Mark this response as not helpful"
-msgstr ""
+msgstr "DuoSlack|将此回复标记为无帮助"
 
 msgid "DuoSlack|Not helpful"
-msgstr ""
+msgstr "DuoSlack|无帮助"
 
 msgid "DuoSlack|Plan"
 msgstr "方案"
@@ -34332,7 +34332,7 @@ msgid "FoundationalFlow|Analyze critical Secret Detection vulnerabilities."
 msgstr "分析严重的 Secret 检测漏洞。"
 
 msgid "FoundationalFlow|Business Context Security Guidelines"
-msgstr ""
+msgstr "FoundationalFlow|业务上下文安全指南"
 
 msgid "FoundationalFlow|Code Review"
 msgstr "代码评审"
@@ -34350,7 +34350,7 @@ msgid "FoundationalFlow|Fix CI/CD Pipeline"
 msgstr "修复 CI/CD 流水线"
 
 msgid "FoundationalFlow|Generate business context security guidelines for a project."
-msgstr ""
+msgstr "FoundationalFlow|为项目生成业务上下文安全指南。"
 
 msgid "FoundationalFlow|Migrate your Jenkins pipelines to GitLab CI/CD."
 msgstr "将您的 Jenkins 流水线迁移到极狐GitLab CI/CD。"
@@ -38558,7 +38558,7 @@ msgid "Groups|Group name"
 msgstr "群组名称"
 
 msgid "Groups|Group name is required."
-msgstr ""
+msgstr "Groups|群组名称为必填项。"
 
 msgid "Groups|Group path is available."
 msgstr "群组路径可用。"
@@ -49535,7 +49535,7 @@ msgid "Navigation|Monitor settings"
 msgstr "监控设置"
 
 msgid "Navigation|Observe"
-msgstr ""
+msgstr "Navigation|可观测"
 
 msgid "Navigation|Operate"
 msgstr "运维"
@@ -52243,7 +52243,7 @@ msgid "Observability|this project"
 msgstr "此项目"
 
 msgid "Observe"
-msgstr ""
+msgstr "可观测"
 
 msgid "Oct"
 msgstr "10月"
@@ -53690,7 +53690,7 @@ msgid "Orbit|Navigate to"
 msgstr "导航到"
 
 msgid "Orbit|No eligible groups are available for Orbit."
-msgstr ""
+msgstr "Orbit|没有可用于 Orbit 的合格群组。"
 
 msgid "Orbit|No groups match your search."
 msgstr "没有群组匹配您的搜索。"
@@ -57771,13 +57771,13 @@ msgid "PolicyRuleMultiSelect|Select all"
 msgstr "选择所有"
 
 msgid "PolicyStore|Active"
-msgstr ""
+msgstr "PolicyStore|活跃"
 
 msgid "PolicyStore|Active policies"
-msgstr ""
+msgstr "PolicyStore|活跃策略"
 
 msgid "PolicyStore|Audit"
-msgstr ""
+msgstr "PolicyStore|审计"
 
 msgid "PolicyStore|Build policy"
 msgstr ""
@@ -57792,22 +57792,22 @@ msgid "PolicyStore|Description"
 msgstr ""
 
 msgid "PolicyStore|Disabled"
-msgstr ""
+msgstr "PolicyStore|已禁用"
 
 msgid "PolicyStore|Edit policy"
 msgstr ""
 
 msgid "PolicyStore|Enforce"
-msgstr ""
+msgstr "PolicyStore|强制执行"
 
 msgid "PolicyStore|Evaluations this week"
-msgstr ""
+msgstr "PolicyStore|本周评估"
 
 msgid "PolicyStore|Last updated"
-msgstr ""
+msgstr "PolicyStore|最后更新"
 
 msgid "PolicyStore|Mode"
-msgstr ""
+msgstr "PolicyStore|模式"
 
 msgid "PolicyStore|Name"
 msgstr ""
@@ -57816,13 +57816,13 @@ msgid "PolicyStore|New policy"
 msgstr ""
 
 msgid "PolicyStore|Policies"
-msgstr ""
+msgstr "PolicyStore|策略"
 
 msgid "PolicyStore|Review"
 msgstr ""
 
 msgid "PolicyStore|Scope"
-msgstr ""
+msgstr "PolicyStore|范围"
 
 msgid "PolicyStore|This step is coming soon."
 msgstr ""
@@ -57831,7 +57831,7 @@ msgid "PolicyStore|Untitled policy"
 msgstr ""
 
 msgid "PolicyStore|Warn"
-msgstr ""
+msgstr "PolicyStore|警告"
 
 msgid "Polling interval multiplier"
 msgstr "轮询间隔倍数"
@@ -61129,7 +61129,7 @@ msgid "Promotions|When you have a lot of issues, it can be hard to get an overvi
 msgstr "当议题数目很多时，很难得到一个整体情况。 通过给议题添加权重，可以更好地了解工作量、 成本、所需时间或每个议题的价值，从而更好地进行管理。"
 
 msgid "Prompt cache"
-msgstr ""
+msgstr "提示缓存"
 
 msgid "Prompt users to upload SSH keys"
 msgstr "提示用户上传SSH密钥"
@@ -69980,7 +69980,7 @@ msgid "SecurityOrchestration|No linked groups"
 msgstr "没有链接的群组"
 
 msgid "SecurityOrchestration|No new vulnerabilities allowed"
-msgstr ""
+msgstr "SecurityOrchestration|不允许新增漏洞"
 
 msgid "SecurityOrchestration|No other actions are allowed in warn mode"
 msgstr "在警告模式下不允许其他操作"
@@ -73172,7 +73172,7 @@ msgid "SemanticSearch|Elasticsearch"
 msgstr "Elasticsearch"
 
 msgid "SemanticSearch|Embedding model"
-msgstr ""
+msgstr "SemanticSearch|嵌入模型"
 
 msgid "SemanticSearch|Embedding model configuration is not available. Ensure %{coll_name} collection exists."
 msgstr "嵌入模型配置不可用。确保 %{coll_name} 集合存在。"
@@ -77731,7 +77731,7 @@ msgid "The blob is too large to render"
 msgstr "Blob 太大，无法渲染"
 
 msgid "The blocking merge request must be in the same organization"
-msgstr ""
+msgstr "阻止合并请求必须在同一组织中"
 
 msgid "The branch for this project has no active pipeline configuration."
 msgstr "此项目的分支没有活跃的流水线配置。"
@@ -91120,7 +91120,7 @@ msgid_plural "Your instance has used %{used_seats} of %{total_seats} seats (%{ov
 msgstr[0] "您的实例已使用 %{total_seats} 个席位中的 %{used_seats} 个（超出限制 %{overage_count} 个）。限制访问正在阻止添加新用户。购买更多席位以解决超额问题。"
 
 msgid "Your instance has used %{used_seats} of %{total_seats} seats. When no seats remain, adding new users will put your instance into overage. Purchase more seats or turn on restricted access to block new users automatically."
-msgstr ""
+msgstr "您的实例已使用 %{used_seats}/%{total_seats} 个席位。当席位用尽时，添加新用户将使您的实例进入超额状态。请购买更多席位或开启限制访问以自动阻止新用户。"
 
 msgid "Your instance has used %{used_seats} of %{total_seats} seats. When no seats remain, restricted access will block new users from being added to prevent overages."
 msgstr "您的实例已使用 %{used_seats} 个席位（共 %{total_seats} 个）。当没有剩余席位时，限制访问将阻止添加新用户，以防止超额。"
@@ -91196,7 +91196,7 @@ msgid_plural "Your namespace has used %{used_seats} of %{total_seats} seats (%{o
 msgstr[0] "您的命名空间已使用 %{used_seats} / %{total_seats} 个席位（超出限制 %{overage_count} 个）。限制访问正在阻止添加新用户。购买更多席位以解决超额问题。"
 
 msgid "Your namespace has used %{used_seats} of %{total_seats} seats. When no seats remain, adding new users will put your namespace into overage. Purchase more seats or turn on restricted access to block new users automatically."
-msgstr ""
+msgstr "您的命名空间已使用 %{used_seats}/%{total_seats} 个席位。当席位用尽时，添加新用户将使您的命名空间进入超额状态。请购买更多席位或开启限制访问以自动阻止新用户。"
 
 msgid "Your namespace has used %{used_seats} of %{total_seats} seats. When no seats remain, restricted access will block new users from being added to prevent overages."
 msgstr "您的命名空间已使用 %{total_seats} 个席位中的 %{used_seats} 个席位。当没有剩余席位时，受限访问将阻止添加新用户，以防止超额。"
