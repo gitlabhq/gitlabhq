@@ -211,7 +211,7 @@ RSpec.describe Gitlab::Middleware::JsonValidation, feature_category: :api do
     context 'with different JSON content types' do
       shared_examples 'validates JSON content type' do
         it 'validates the request' do
-          expect(::Oj).to receive(:sc_parse).with(an_instance_of(Gitlab::Json::StreamValidator), body)
+          expect(::Oj).to receive(:sc_parse).with(an_instance_of(Gitlab::Json::StreamValidator), body, anything)
           expect(app).to receive(:call).with(env)
 
           middleware.call(env)
@@ -431,6 +431,30 @@ RSpec.describe Gitlab::Middleware::JsonValidation, feature_category: :api do
         expect(result[0]).to eq(400)
         response_body = Gitlab::Json.parse(result[2].first)
         expect(response_body['error']).to eq('Too many total parameters')
+      end
+    end
+
+    context 'when an integer exceeds the digit limit' do
+      let(:options) { { default_limits: { max_integer_digits: 5, mode: :enforced } } }
+      let(:body) { '{"id": 123456}' } # 6 digits, limit is 5
+
+      it 'returns 400 error with numeric message' do
+        result = middleware.call(env)
+
+        expect(result[0]).to eq(400)
+        response_body = Gitlab::Json.parse(result[2].first)
+        expect(response_body['error']).to eq('Numeric value too large')
+      end
+
+      it 'logs the numeric limit error' do
+        expect(Gitlab::AppLogger).to receive(:warn).with(
+          hash_including(
+            class_name: 'Gitlab::Middleware::JsonValidation',
+            message: a_string_including('Numeric value too large')
+          )
+        )
+
+        middleware.call(env)
       end
     end
 

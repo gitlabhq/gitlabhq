@@ -149,7 +149,7 @@ PATH
       batch-loader (~> 2.0)
       bigdecimal (~> 3.2)
       nokogiri (~> 1.0)
-      oj (~> 3.16)
+      oj (~> 3.17, >= 3.17.3)
       rake (~> 13.0)
       toml-rb (~> 4.1)
       yajl-ruby (~> 1.4)

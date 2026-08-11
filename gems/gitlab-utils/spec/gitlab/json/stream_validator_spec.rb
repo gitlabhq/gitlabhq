@@ -343,6 +343,145 @@ RSpec.describe Gitlab::Json::StreamValidator do
     end
   end
 
+  describe 'max_integer_digits enforcement' do
+    let(:options) { { max_integer_digits: 5 } }
+
+    subject(:parse) { described_class.new(options).validate!(json) }
+
+    context 'when an integer has more digits than the configured limit' do
+      let(:json) { '{"key":123456}' } # 6 digits, limit is 5
+
+      it 'raises NumericValueTooLargeError via the Oj guard' do
+        expect { parse }.to raise_error(described_class::NumericValueTooLargeError, 'Numeric value too large')
+      end
+    end
+
+    context 'when an integer has exactly the configured number of digits' do
+      let(:json) { '{"key":12345}' } # 5 digits, limit is 5
+
+      it 'does not raise' do
+        expect { parse }.not_to raise_error
+      end
+    end
+
+    context 'when the JSON is malformed and contains no oversized integer' do
+      let(:json) { '{"a":}' } # syntax error, not a digit-limit breach
+
+      it 'still raises a parse error, not NumericValueTooLargeError', :aggregate_failures do
+        expect { parse }.to raise_error do |error|
+          expect(error).not_to be_a(described_class::NumericValueTooLargeError)
+          expect([Oj::ParseError, EncodingError]).to include(error.class)
+        end
+      end
+    end
+
+    context 'when Oj raises the breach as an EncodingError (app mimic/compat mode)' do
+      let(:json) { '{"id":123456}' }
+
+      before do
+        allow(::Oj).to receive(:sc_parse)
+          .and_raise(EncodingError, 'integer exceeds :max_integer_digits (6 > 5)')
+      end
+
+      it 'still translates to NumericValueTooLargeError' do
+        expect { parse }.to raise_error(described_class::NumericValueTooLargeError, 'Numeric value too large')
+      end
+    end
+  end
+
+  describe 'integer digit pre-scan' do
+    let(:options) { { max_integer_digits: 5 } }
+
+    subject(:parse) { described_class.new(options).validate!(json) }
+
+    context 'on non-gmp-linked instances' do
+      before do
+        # Force the pre-scan branch regardless of how the host Ruby is linked
+        stub_const("#{described_class}::GMP_LINKED", false)
+      end
+
+      context 'when an integer exceeds the digit limit' do
+        let(:json) { '{"key":123456}' } # 6 digits, limit is 5
+
+        it 'raises NumericValueTooLargeError before invoking Oj' do
+          expect(::Oj).not_to receive(:sc_parse)
+
+          expect { parse }.to raise_error(described_class::NumericValueTooLargeError, 'Numeric value too large')
+        end
+      end
+
+      context 'when a nested integer exceeds the digit limit' do
+        let(:json) { '{"a":{"b":[1,2,1234567]}}' } # 7 digits nested in an array
+
+        it 'raises NumericValueTooLargeError' do
+          expect { parse }.to raise_error(described_class::NumericValueTooLargeError, 'Numeric value too large')
+        end
+      end
+
+      context 'when an integer has exactly the digit limit' do
+        let(:json) { '{"key":12345}' } # 5 digits, limit is 5
+
+        it 'does not raise' do
+          expect { parse }.not_to raise_error
+        end
+      end
+
+      context 'when digits appear after the integer portion but should not count toward the limit' do
+        where(:description, :json) do
+          'long fractional part' | "{\"key\":1.#{'9' * 100}}"
+          'long exponent'        | "{\"key\":1e#{'9' * 100}}"
+        end
+
+        with_them do
+          it 'does not raise, since only the integer portion is measured' do
+            expect { parse }.not_to raise_error
+          end
+        end
+      end
+
+      context 'when oversized digit sequences only appear inside strings' do
+        where(:json) do
+          [
+            '{"key":"123456789012345"}', # digits inside a string value
+            '{"1234567890":1}',          # digits inside a string key
+            '{"key":"a \" 1234567890"}'  # digits after an escaped quote, still inside the string
+          ]
+        end
+
+        with_them do
+          it 'does not raise, since strings are not integers' do
+            expect { parse }.not_to raise_error
+          end
+        end
+      end
+
+      context 'when max_integer_digits is not configured' do
+        let(:options) { {} }
+        let(:json) { "{\"key\":#{'9' * 100}}" } # far more digits than the default limit
+
+        it 'skips the pre-scan and parses' do
+          expect { parse }.not_to raise_error
+        end
+      end
+    end
+
+    context 'on gmp-linked instances' do
+      before do
+        stub_const("#{described_class}::GMP_LINKED", true)
+      end
+
+      it 'skips the pre-scan and relies on Oj to enforce the limit' do
+        validator = described_class.new(options)
+
+        expect(validator).not_to receive(:check_integer_digits_before_parse!)
+        expect(::Oj).to receive(:sc_parse).and_call_original
+
+        expect { validator.validate!('{"key":123456}') }
+          .to raise_error(described_class::NumericValueTooLargeError, 'Numeric value too large')
+      end
+    end
+  end
+
   describe 'combined limits' do
     let(:options) do
       {

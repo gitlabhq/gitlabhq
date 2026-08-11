@@ -332,6 +332,7 @@ module API
 
             token
           end
+          strong_memoize_attr :decode_oauth_token_from_jwt
 
           def package_scope
             params[:id].present? ? :project : :instance

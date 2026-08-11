@@ -8,6 +8,7 @@ module API
     include Helpers::Unidiff
 
     helpers ::API::Helpers::HeadersHelpers
+    helpers ::API::Helpers::Authz::PostfilteringHelpers
 
     CONTEXT_COMMITS_POST_LIMIT = 20
 
@@ -211,6 +212,12 @@ module API
         authenticate! unless params[:scope] == 'all'
         validate_search_rate_limit! if declared_params[:search].present?
         merge_requests = find_merge_requests
+
+        merge_requests = filter_with_logging(
+          collection: merge_requests,
+          filter_proc: -> { Ability.merge_requests_readable_by_user(merge_requests, current_user) },
+          resource_type: 'api/merge_requests'
+        )
 
         present merge_requests, serializer_options_for(merge_requests)
       end

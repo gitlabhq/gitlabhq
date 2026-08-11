@@ -5,7 +5,7 @@ RSpec.describe Gitlab::ConanToken, :aggregate_failures, feature_category: :packa
   let(:jwt_secret) do
     OpenSSL::HMAC.hexdigest(
       OpenSSL::Digest.new('SHA256'),
-      ::Gitlab::Encryption::KeyProvider[:db_key_base].encryption_key.secret,
+      ::Packages::Conan::JwtSigningKey.current_secret_key,
       described_class::HMAC_KEY
     )
   end
@@ -128,9 +128,75 @@ RSpec.describe Gitlab::ConanToken, :aggregate_failures, feature_category: :packa
 
       it { is_expected.to be_nil }
     end
+
+    context 'when the token is signed with a different secret' do
+      let(:jwt) do
+        wrong_secret = OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('SHA256'), 'wrong-key', described_class::HMAC_KEY)
+
+        JSONWebToken::HMACToken.new(wrong_secret).tap do |token|
+          token['access_token'] = 123
+          token['user_id'] = 456
+          token.expire_time = 1.day.from_now
+        end.encoded
+      end
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when the token was signed with a previous (non-current) key' do
+      let(:older_secret_key) { SecureRandom.hex(4) }
+      let(:jwt) do
+        older_secret = OpenSSL::HMAC.hexdigest(
+          OpenSSL::Digest.new('SHA256'), older_secret_key, described_class::HMAC_KEY
+        )
+
+        JSONWebToken::HMACToken.new(older_secret).tap do |token|
+          token['access_token'] = 123
+          token['user_id'] = 456
+          token.expire_time = 1.day.from_now
+        end.encoded
+      end
+
+      before do
+        create(:conan_jwt_signing_key, secret_key: older_secret_key)
+        create(:conan_jwt_signing_key, secret_key: SecureRandom.hex(4))
+      end
+
+      it 'still decodes the token using the previous key' do
+        expect(conan_token.access_token_id).to eq(123)
+        expect(conan_token.user_id).to eq(456)
+      end
+    end
+
+    context 'when the token was signed with the current key while an older key also exists' do
+      let(:current_secret_key) { SecureRandom.hex(4) }
+      let(:jwt) do
+        current_secret = OpenSSL::HMAC.hexdigest(
+          OpenSSL::Digest.new('SHA256'), current_secret_key, described_class::HMAC_KEY
+        )
+
+        JSONWebToken::HMACToken.new(current_secret).tap do |token|
+          token['access_token'] = 123
+          token['user_id'] = 456
+          token.expire_time = 1.day.from_now
+        end.encoded
+      end
+
+      before do
+        # all_secret_keys is oldest-first, so the older key here is tried
+        # (and must fail to decode) before the loop reaches the current one.
+        create(:conan_jwt_signing_key, secret_key: SecureRandom.hex(4))
+        create(:conan_jwt_signing_key, secret_key: current_secret_key)
+      end
+
+      it 'decodes the token using the current key' do
+        expect(conan_token.access_token_id).to eq(123)
+        expect(conan_token.user_id).to eq(456)
+      end
+    end
   end
 
-  describe '#to_jwt' do
+  describe '#to_jwt', :freeze_time do
     let(:jwt) do
       build_encoded_jwt(
         access_token_id: 123,
