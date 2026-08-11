@@ -152,6 +152,10 @@ RSpec::Matchers.define :have_correct_replication_target do |clickhouse_table_nam
       @errors << "dedup_by_table '#{target['dedup_by_table']}' does not exist"
     end
 
+    Array(target['downstream_materialized_views']).each do |view|
+      @errors << "downstream_materialized_views '#{view}' does not exist" if clickhouse_table_names.exclude?(view)
+    end
+
     # If dedup_by_table config is present, we must inspect that table for matching primary keys
     clickhouse_table = target['dedup_by_table'] || target['target']
 
