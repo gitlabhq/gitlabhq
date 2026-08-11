@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::Boards::Create, feature_category: :portfolio_management do
+RSpec.describe Mutations::Boards::Create, feature_category: :planning_views do
   let_it_be(:parent) { create(:project) }
   let_it_be_with_reload(:current_user) { create(:user) }
 

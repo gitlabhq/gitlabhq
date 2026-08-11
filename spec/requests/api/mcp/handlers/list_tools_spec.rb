@@ -80,6 +80,7 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
         'get_work_item_types' => { 'readOnlyHint' => true },
         'get_workitem_notes' => { 'readOnlyHint' => true },
         'list_merge_requests' => { 'readOnlyHint' => true },
+        'list_pipelines' => { 'readOnlyHint' => true },
         'search' => { 'readOnlyHint' => true },
         'search_labels' => { 'readOnlyHint' => true },
         'list_wiki_pages' => { 'readOnlyHint' => true }
@@ -129,6 +130,21 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
               "Current schema: #{param_schema.inspect}"
         end
       end
+    end
+
+    it 'derives enum for list_pipelines status, source, order_by, and sort from their Grape values: constraint',
+      :aggregate_failures do
+      post_list_tools
+
+      list_pipelines = json_response['result']['tools'].find { |tool| tool['name'] == 'list_pipelines' }
+      properties = list_pipelines.dig('inputSchema', 'properties')
+
+      expect(properties.dig('status', 'enum')).to eq(::Ci::HasStatus::AVAILABLE_STATUSES)
+      expect(properties.dig('source', 'enum')).to eq(::Ci::Pipeline.sources.keys)
+      expect(properties.dig('order_by', 'enum')).to eq(::Ci::PipelinesFinder::ALLOWED_INDEXED_COLUMNS)
+      expect(properties.dig('sort', 'enum')).to eq(%w[asc desc])
+      expect(properties.dig('created_after', 'type')).to eq('string')
+      expect(properties.dig('created_before', 'type')).to eq('string')
     end
 
     it 'exposes a well-formed JSON Schema envelope for every tool' do

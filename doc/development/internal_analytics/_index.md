@@ -27,7 +27,7 @@ Understanding the difference between the two concepts is vital to using the syst
 
 An event is a record of an action that happened within the GitLab instance.
 An example action would be a user interaction like visiting the issue page or hovering the mouse cursor over the top navigation search.
-Other actions can result from background system processing like scheduled pipeline succeeding or receiving API calls from 3rd party system.
+Other actions can result from background system processing like a scheduled pipeline succeeding or receiving API calls from a 3rd party system.
 Not every action is tracked and thereby turned into a recorded event automatically.
 Instead, if an action helps draw out product insights and helps to make more educated business decisions, we can track an event when the action happens.
 The produced event record, at the minimum, holds information that the action occurred,
@@ -115,7 +115,7 @@ For a list of other metrics tables refer to the [Data Models Cheat Sheet](https:
 
 #### Querying metrics
 
-The following example query returns all values reported for `count_distinct_user_id_from_feature_used_7d` within the last six months and the according `instance_id`:
+The following example query returns all values reported for `count_distinct_user_id_from_feature_used_7d` within the last six months and the corresponding `instance_id`:
 
 ```sql
 SELECT
@@ -170,7 +170,7 @@ The propagation process takes multiple hours to complete. The following diagram 
 #### Pre-computed metrics
 
 Metrics are computed once per week like on Self-Managed, with the only difference being that most of the computation takes place within the Warehouse rather than within the instance.
-For GitLab.com this process is started on Monday morning and computes metrics for the time-frame from Sunday 23:59 UTC and this Sunday 23:59 UTC.
+For GitLab.com this process is started on Monday morning and computes metrics for the time-frame from Sunday 23:59 UTC to this Sunday 23:59 UTC.
 
 The following diagram illustrates the process:
 

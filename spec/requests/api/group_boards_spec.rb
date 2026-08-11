@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::GroupBoards, :with_license, feature_category: :portfolio_management do
+RSpec.describe API::GroupBoards, :with_license, feature_category: :planning_views do
   let_it_be(:user) { create(:user) }
   let_it_be(:non_member) { create(:user) }
   let_it_be(:guest) { create(:user) }

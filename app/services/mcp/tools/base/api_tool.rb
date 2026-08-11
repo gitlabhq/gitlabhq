@@ -12,11 +12,13 @@ module Mcp
         # - Grape::API::Boolean is a boolean
         # - [Integer] is an array of integers
         # - [String] represents a comma-separated string
+        # - DateTime is passed over the wire as an ISO 8601 string
         TYPE_CONVERSIONS = {
           '[String, Integer]' => 'string',
           'Grape::API::Boolean' => 'boolean',
           '[Integer]' => { type: 'array', items: { type: 'integer' } },
-          '[String]' => 'string'
+          '[String]' => 'string',
+          'DateTime' => 'string'
         }.freeze
 
         ARRAY_TYPE_PATTERN = /^Array\[(\w+)\]$/
@@ -42,11 +44,15 @@ module Mcp
 
           properties = params.transform_values do |value|
             parsed_type = parse_type(value[:type])
-            if parsed_type.is_a?(Hash)
-              parsed_type.merge(description: value[:desc])
-            else
-              { type: parsed_type, description: value[:desc] }
-            end
+            property =
+              if parsed_type.is_a?(Hash)
+                parsed_type.merge(description: value[:desc])
+              else
+                { type: parsed_type, description: value[:desc] }
+              end
+
+            enum = parse_enum(value[:values])
+            enum ? property.merge(enum: enum) : property
           end
 
           Mcp::Tools::Base::SchemaDefaults.with_additional_properties(
@@ -94,6 +100,19 @@ module Mcp
           end
 
           type.downcase
+        end
+
+        # Mirrors Grape::Validations::Validators::ValuesValidator#check_values?: only
+        # zero-arity procs produce an enumerable list of allowed values. Procs that take
+        # an argument are predicates (validated per-value), not something to enumerate.
+        def parse_enum(values)
+          zero_arity_proc = values.is_a?(Proc) && values.arity == 0
+          return unless values.is_a?(Array) || zero_arity_proc
+
+          resolved = values.is_a?(Proc) ? values.call : values
+          resolved if resolved.is_a?(Array)
+        rescue StandardError
+          nil
         end
 
         def process_response(status, body)

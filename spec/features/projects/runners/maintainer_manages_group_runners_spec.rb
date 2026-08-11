@@ -58,16 +58,15 @@ RSpec.describe 'Maintainer manages group runners related to project', feature_ca
             create(:ci_runner, :group, groups: [group], description: 'group-runner')
           end
 
-          it 'group runners are available' do
+          it 'group runners are available and can be disabled for a project', :aggregate_failures do
             visit_group_runners_tab
 
+            # wait for the list to load before attempting to disable runners
             expect(page).to have_content 'group-runner'
-          end
 
-          it 'group runners may be disabled for a project' do
-            visit_group_runners_tab
-
-            find_by_testid('group-runners-toggle').find('button:not(.is-disabled)').click
+            within_testid('group-runners-toggle') do
+              find(:element, :button, role: 'switch', 'aria-checked': 'true').click
+            end
 
             expect(page).to have_content 'Group runners are turned off'
             expect(project.reload.group_runners_enabled).to be false

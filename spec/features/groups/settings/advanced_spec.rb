@@ -305,31 +305,84 @@ RSpec.describe 'Group settings > Advanced', :with_current_organization, feature_
   end
 
   describe 'create organization' do
-    context 'when create_org_from_group_settings release flag is enabled' do
-      let_it_be(:subgroup) { create(:group, parent: group) }
-
-      it 'shows section to create an organization for a TLG' do
-        visit edit_group_path(group)
-
-        expect(page).to have_content(s_('GroupSettings|Create an organization'))
+    context 'when the group belongs to an unconfirmed organization' do
+      let_it_be(:group_in_unconfirmed_organization) do
+        create(:group, organization: create(:organization, :unconfirmed, owners: [user]))
       end
 
-      it 'does not show section to create an organization for a subgroup' do
-        visit edit_group_path(subgroup)
+      let_it_be(:subgroup_in_unconfirmed_organization) { create(:group, parent: group_in_unconfirmed_organization) }
 
+      context 'when create_org_from_group_settings release flag is enabled' do
+        it 'shows section to create an organization for a TLG' do
+          visit edit_group_path(group_in_unconfirmed_organization)
+
+          expect(page).to have_content(s_('GroupSettings|Create an organization'))
+        end
+
+        it 'does not show section to create an organization for a subgroup' do
+          visit edit_group_path(subgroup_in_unconfirmed_organization)
+
+          expect(page).to have_content(subgroup_in_unconfirmed_organization.name)
+          expect(page).to have_no_content(s_('GroupSettings|Create an organization'))
+        end
+
+        context 'when create_org_from_group_settings release flag is disabled' do
+          before do
+            stub_organization_release(create_org_from_group_settings: false)
+          end
+
+          it 'does not show section to create an organization' do
+            visit edit_group_path(group_in_unconfirmed_organization)
+
+            expect(page).to have_content(group_in_unconfirmed_organization.name)
+            expect(page).to have_no_content(s_('GroupSettings|Create an organization'))
+          end
+        end
+      end
+    end
+
+    context 'when the group belongs to an active organization' do
+      let_it_be(:group_in_active_organization) do
+        create(:group, organization: create(:organization, owners: [user]))
+      end
+
+      it 'does not show section to create an organization' do
+        visit edit_group_path(group_in_active_organization)
+
+        expect(page).to have_content(group_in_active_organization.name)
         expect(page).to have_no_content(s_('GroupSettings|Create an organization'))
       end
     end
 
-    context 'when create_org_from_group_settings release flag is disabled' do
-      before do
-        stub_organization_release(create_org_from_group_settings: false)
+    context 'when the group belongs to the default organization' do
+      let_it_be(:default_organization) { create(:organization, :default) } # rubocop:disable Gitlab/RSpec/AvoidCreateDefaultOrganization -- the helper branches on the default organization so we need to test this
+      let_it_be(:default_organization_group) do
+        create(:group, organization: default_organization, owners: [user])
       end
 
-      it 'does not show section to create an organization' do
-        visit edit_group_path(group)
+      context 'when on GitLab.com' do
+        before do
+          allow(Gitlab).to receive(:com?).and_return(true)
+        end
 
-        expect(page).to have_no_content(s_('GroupSettings|Create an organization'))
+        it 'shows section to create an organization' do
+          visit edit_group_path(default_organization_group)
+
+          expect(page).to have_content(s_('GroupSettings|Create an organization'))
+        end
+      end
+
+      context 'when self-managed' do
+        before do
+          allow(Gitlab).to receive(:com?).and_return(false)
+        end
+
+        it 'does not show section to create an organization' do
+          visit edit_group_path(default_organization_group)
+
+          expect(page).to have_content(default_organization_group.name)
+          expect(page).to have_no_content(s_('GroupSettings|Create an organization'))
+        end
       end
     end
   end

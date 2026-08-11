@@ -226,7 +226,7 @@ In this case, use passive voice instead. For example, `The report is exported`.
 
 ### Customer perspective
 
-Focus on the functionality and benefits that GitLab brings to customer,
+Focus on the functionality and benefits that GitLab brings to customers,
 rather than what GitLab has created.
 
 For example, use:
@@ -768,7 +768,7 @@ Follow these steps to do something.
 1. Finally, do the last step.
 ```
 
-Use an unordered lists when the steps do not need to be completed in order. For example:
+Use an unordered list when the steps do not need to be completed in order. For example:
 
 ```markdown
 These things are imported:
@@ -2492,7 +2492,7 @@ Configuration procedures can require users to edit configuration files, reconfig
 GitLab, or restart GitLab. In this case:
 
 - Use [tabs](#tabs) to differentiate among the various installation methods.
-- Use the installation methods names exactly as described in the previous list.
+- Use the installation method names exactly as described in the previous list.
 - Use them in the order described below.
 - Indent the code blocks to line up with the list item they belong to.
 - Use the appropriate syntax highlighting for each code block (`ruby`, `shell`, or `yaml`).

@@ -117,6 +117,19 @@ Capybara.default_normalize_ws = true
 Capybara.enable_aria_label = true
 Capybara.default_set_options = { clear: :backspace }
 
+# Pajamas buttons stay focusable while unavailable: they carry
+# `aria-disabled="true"` and drop their click listener instead of taking the
+# native `disabled` attribute. Capybara's own `disabled:` filter reads the
+# native property, so it matches such a button and clicks it into the void.
+#
+# `click_button "Save", aria_disabled: false` waits for the button to become
+# available, whatever GlButton renders underneath.
+Capybara.modify_selector(:button) do
+  node_filter(:aria_disabled, :boolean) do |node, value|
+    (node[:'aria-disabled'] == 'true') == value
+  end
+end
+
 # Screenshot paths are inlined into each failure's own message instead (see
 # `config.append_after` below)
 Capybara::Screenshot::RSpec.add_link_to_screenshot_for_failed_examples = false

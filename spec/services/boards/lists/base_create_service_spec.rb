@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Boards::Lists::BaseCreateService, feature_category: :portfolio_management do
+RSpec.describe Boards::Lists::BaseCreateService, feature_category: :planning_views do
   let(:board) { create(:board) }
   let(:user) { create(:user) }
   let(:service) { described_class.new(board, user) }

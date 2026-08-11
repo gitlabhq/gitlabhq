@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User visits issue boards', :js, feature_category: :portfolio_management do
+RSpec.describe 'User visits issue boards', :js, feature_category: :planning_views do
   using RSpec::Parameterized::TableSyntax
 
   # TODO use 'let' when rspec-parameterized supports it.

@@ -143,9 +143,6 @@ export default {
         createAlert({ message: pathIndeterminateErrorMap[this.issuableType] });
       }
     },
-    onToggleAddRelatedIssuesForm() {
-      this.isFormVisible = !this.isFormVisible;
-    },
     onPendingIssueRemoveRequest(indexToRemove) {
       this.store.removePendingRelatedIssue(indexToRemove);
     },
@@ -268,7 +265,6 @@ export default {
     :has-error="hasError"
     :item-add-failure-message="errorMessage"
     @save-reorder="saveIssueOrder"
-    @toggleAddRelatedIssuesForm="onToggleAddRelatedIssuesForm"
     @add-issuable-form-input="onInput"
     @add-issuable-form-blur="onBlur"
     @add-issuable-form-submit="onPendingFormSubmit"

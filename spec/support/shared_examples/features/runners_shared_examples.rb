@@ -87,7 +87,9 @@ RSpec.shared_examples 'pauses, resumes and deletes a runner' do
       click_button "Pause"
       expect(page).to have_text "Paused"
 
-      click_button "Resume"
+      # The toggle goes Pause (busy) -> Resume (busy) -> Resume (available), so
+      # the badge above lands one render before the button can be used again.
+      click_button "Resume", aria_disabled: false
       expect(page).not_to have_text "Paused"
     end
   end

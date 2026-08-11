@@ -87,7 +87,8 @@ to your configuration or usage patterns. Open a
 and include details about what you are experiencing and when the behavior started.
 
 In the **Covered experiences** section, you can see the current availability status, measured
-from user traffic, for the following services:
+from user traffic, for the services defined as
+[covered experiences](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/service-level-agreement/#covered-experiences) in the GitLab SLA:
 
 - Issues
 - Merge requests
@@ -113,8 +114,42 @@ displays **No data yet** instead of the list of services.
 
 > [!note]
 > This page is informational only. It does not determine compliance with the SLA or your
-> eligibility for service credits. If you believe you are eligible for service credits, follow the
-> process described in the GitLab Dedicated SLA.
+> eligibility for service credits. To request service credits, follow the
+> [credit request process](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/service-level-agreement/#credit-request-process)
+> in the SLA for GitLab Dedicated.
+
+## Switchboard customer API
+
+You can retrieve your instance's SLA status programmatically with the Switchboard API.
+The API is available to Switchboard users with tenant administrator access,
+and returns data only for the instances you have access to.
+
+The API has a single endpoint that returns the same instance health data the Switchboard
+**Health** page displays:
+
+- The overall status of your instance.
+- The availability status of each covered experience.
+- A `data_as_of` timestamp that indicates when the data was last refreshed.
+
+You authenticate through Switchboard using an interactive browser sign-in.
+You can refresh the access token programmatically for up to 30 days without signing in again,
+after which you must sign in through the browser again.
+
+> [!note]
+> API responses are point-in-time snapshots. The API does not return historical or aggregated
+> availability data, and is not intended for alerting. The API does not determine compliance
+> with the SLA or your eligibility for service credits.
+
+### Access the API reference
+
+The API reference, including an authentication walkthrough and a glossary of status values, is
+available only to authenticated Switchboard users.
+
+To access the API reference:
+
+1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
+1. In the sidebar, select **Help**.
+1. Select **API documentation**.
 
 ## Related topics
 

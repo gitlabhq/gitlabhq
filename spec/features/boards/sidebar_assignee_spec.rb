@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Project issue boards sidebar assignee', :js,
   quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9319',
-  feature_category: :portfolio_management do
+  feature_category: :planning_views do
   include BoardHelpers
 
   let_it_be(:user)        { create(:user) }

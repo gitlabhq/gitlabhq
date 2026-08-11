@@ -82,7 +82,6 @@ it's reset to a pristine test after each test.
 - [Example 6](https://gitlab.com/gitlab-org/gitlab/-/issues/418757#note_1502138269): The maximum time to live
   for a database connection causes these connections to be disconnected, which
   in turn causes tests that rely on the transactions on these connections to
-  in turn causes tests that rely on the transactions on these connections to
   fail. The issue was fixed in this [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128567).
 - [Example 7](https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/3389#note_1534827164):
   A TCP socket used in a test was not closed before the next test, which also used
@@ -113,7 +112,7 @@ difficult to achieve locally. Ordering issues are easier to reproduce by repeate
   any table has more than 500 columns. It could pass in the merge request, but fail later in
   `master` if the order of tests changes.
 - [Example 2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91016/diffs): A test asserts
-  that trying to find a record with a nonexistent ID returns an error message. The test uses an
+  that trying to find a record with a nonexistent ID returns an error message. The test uses a
   hardcoded ID that's supposed to not exist (for example, `42`). If the test is run early in the test
   suite, it might pass as not enough records were created before it, but as soon as it would run
   later in the suite, there could be a record that actually has the ID `42`, hence the test would
@@ -139,7 +138,7 @@ difficult to achieve locally. Ordering issues are easier to reproduce by repeate
 <details>
 <summary><strong>Random input</strong> - <code>flaky-test::random input</code></summary>
 
-**Description**: The test use random values, that sometimes match the expectations, and sometimes not.
+**Description**: The test uses random values, that sometimes match the expectations, and sometimes not.
 
 **Difficulty to reproduce**: Easy, as the test can be modified locally to use the "random value"
 used at the time the test failed
@@ -169,7 +168,7 @@ Adding a delay in API or controller could help reproducing the issue.
   matching more than one element, or a non-waiting selector method that does not allow rendering
   time before throwing an `element not found` error.
 - [Example 2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101728/diffs): A CSS selector
-  only appears after a GraphQL requests has finished, and the UI has updated.
+  only appears after a GraphQL request has finished, and the UI has updated.
 - [Example 3](https://gitlab.com/gitlab-org/gitlab/-/issues/408215): A false-positive test, Capybara immediately returns true after
   page visit and page is not fully loaded, or if the element is not detectable by webdriver (such as being rendered outside the viewport or behind other elements).
 
@@ -205,7 +204,7 @@ usually a good idea.
 **Examples**:
 
 - [Example 1](https://gitlab.com/gitlab-org/gitlab/-/issues/363214): The runner is under heavy load at this time.
-- [Example 2](https://gitlab.com/gitlab-org/gitlab/-/issues/360559): The runner is having networking issues, making a job failing early
+- [Example 2](https://gitlab.com/gitlab-org/gitlab/-/issues/360559): The runner is having networking issues, making a job fail early
 
 </details>
 
@@ -244,7 +243,7 @@ It could help to split the large RSpec files in multiple files in order to narro
 
 #### Recreate job failure in CI by forcing the job to run the same set of test files
 
-Reproducing a job failure in CI always helps with troubleshooting why and how a test fails. This require us running the same test files with the same spec order. Since we use Knapsack to distribute tests across parallelized jobs, and files can be distributed differently between two pipelines, we can hardcode this job distribution through the following steps:
+Reproducing a job failure in CI always helps with troubleshooting why and how a test fails. This requires us to run the same test files with the same spec order. Since we use Knapsack to distribute tests across parallelized jobs, and files can be distributed differently between two pipelines, we can hardcode this job distribution through the following steps:
 
 1. Find a job that you want to reproduce, identify the commit that it ran against, set your local `gitlab-org/gitlab` branch to the same commit to ensure we are running with the same copy of the project.
 1. In the job log, locate the list of spec files that were distributed by Knapsack - you can search for `Running command: bundle exec rspec`, the last argument of this command should contain a list of filenames. Copy this list.

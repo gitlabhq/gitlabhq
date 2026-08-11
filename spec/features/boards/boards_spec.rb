@@ -17,7 +17,7 @@ require 'spec_helper'
 # - https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105849
 # - https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9301
 #
-RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_management do
+RSpec.describe 'Project issue boards', :js, feature_category: :planning_views do
   include MobileHelpers
   include BoardHelpers
   include GlFilteredSearchHelpers

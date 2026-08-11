@@ -88,19 +88,12 @@ export default {
       required: false,
       default: undefined,
     },
-    shouldEmitToggleEvent: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     trackAction: {
       type: String,
       required: false,
       default: null,
     },
   },
-  emits: ['toggleEvent'],
-
   data() {
     return {
       isCollapsed: true,
@@ -167,9 +160,6 @@ export default {
         api.trackRedisHllUserEvent(this.trackAction);
       }
 
-      if (this.shouldEmitToggleEvent) {
-        this.$emit('toggleEvent');
-      }
       this.isCollapsed = !this.isCollapsed;
     },
   },

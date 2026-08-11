@@ -17,9 +17,6 @@ export const makeMockUserCalloutDismisser = ({
       dismiss,
     };
   },
-  mounted() {
-    this.$emit('queryResult', { shouldShowCallout });
-  },
   // Vue 3-style zero-arg render; opt out of @vue/compat's legacy
   // render-function emulation, which misclassifies it.
   compatConfig: { RENDER_FUNCTION: false },

@@ -8,8 +8,7 @@ RSpec.describe Mcp::Tools::Pipelines::PipelineService, feature_category: :mcp_se
   let(:retry_tool) { instance_double(Mcp::Tools::Base::ApiTool, name: :retry_pipeline) }
   let(:cancel_tool) { instance_double(Mcp::Tools::Base::ApiTool, name: :cancel_pipeline) }
   let(:delete_tool) { instance_double(Mcp::Tools::Base::ApiTool, name: :delete_pipeline) }
-  let(:list_tool) { instance_double(Mcp::Tools::Base::ApiTool, name: :list_pipelines) }
-  let(:tools) { [create_tool, update_tool, retry_tool, cancel_tool, delete_tool, list_tool] }
+  let(:tools) { [create_tool, update_tool, retry_tool, cancel_tool, delete_tool] }
   let(:service) { described_class.new(tools: tools) }
 
   describe '.tool_name' do
@@ -22,7 +21,7 @@ RSpec.describe Mcp::Tools::Pipelines::PipelineService, feature_category: :mcp_se
     it 'returns the correct description' do
       description = service.description
 
-      %w[List Create Update Retry Cancel Delete].each do |action|
+      %w[Create Update Retry Cancel Delete].each do |action|
         expect(description).to include(action)
       end
     end
@@ -47,13 +46,9 @@ RSpec.describe Mcp::Tools::Pipelines::PipelineService, feature_category: :mcp_se
               type: 'string',
               description: 'ID or URL-encoded path of the project'
             },
-            list: {
-              type: 'boolean',
-              description: 'Set to true to list all pipelines. Required when user says "list pipelines".'
-            },
             ref: {
               type: 'string',
-              description: 'Branch or tag name (for create operation or filtering list)'
+              description: 'Branch or tag name (for create operation)'
             },
             pipeline_id: {
               type: 'integer',
@@ -77,14 +72,6 @@ RSpec.describe Mcp::Tools::Pipelines::PipelineService, feature_category: :mcp_se
             inputs: {
               type: 'object',
               description: 'Pipeline input parameters as key-value pairs'
-            },
-            page: {
-              type: 'integer',
-              description: 'Page number for pagination (default: 1)'
-            },
-            per_page: {
-              type: 'integer',
-              description: 'Number of items per page (default: 20, max: 100)'
             }
           },
           required: ['id'],
@@ -120,24 +107,6 @@ RSpec.describe Mcp::Tools::Pipelines::PipelineService, feature_category: :mcp_se
           aggregator: 'manage_pipeline'
         })
         expect(result[:content].first[:text]).to include('Pipeline created successfully via manage_pipeline')
-      end
-    end
-
-    context 'with list pipeline arguments' do
-      let(:arguments) { { id: 'project-1', list: true } }
-
-      it 'selects the list_pipelines tool' do
-        expect(list_tool).to receive(:execute).with(request: request, params: params).and_return(mock_response)
-
-        result = service.execute(request: request, params: params)
-
-        expect(result[:isError]).to be false
-        expect(result[:structuredContent][:_meta]).to eq({
-          operation: 'list',
-          tool: 'list_pipelines',
-          aggregator: 'manage_pipeline'
-        })
-        expect(result[:content].first[:text]).to include('Pipeline listed successfully via manage_pipeline')
       end
     end
 
@@ -257,7 +226,6 @@ RSpec.describe Mcp::Tools::Pipelines::PipelineService, feature_category: :mcp_se
   describe '#detect_operation' do
     where(:arguments, :expected_operation) do
       [
-        [{ list: true }, :list],
         [{ pipeline_id: 123, retry: true }, :retry],
         [{ pipeline_id: 123, cancel: true }, :cancel],
         [{ pipeline_id: 123, name: 'New Name' }, :update],
@@ -286,7 +254,6 @@ RSpec.describe Mcp::Tools::Pipelines::PipelineService, feature_category: :mcp_se
   describe '#select_tool' do
     where(:operation, :expected_tool_name) do
       [
-        [:list, :list_pipelines],
         [:update, :update_pipeline],
         [:retry, :retry_pipeline],
         [:cancel, :cancel_pipeline],

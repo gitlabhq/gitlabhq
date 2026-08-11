@@ -382,7 +382,7 @@ To update the linting images:
 1. In `docs-gitlab-com`, open a merge request to update `.gitlab-ci.yml` to use the new tooling
    version. ([Example MR](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/merge_requests/341))
 1. When merged, start a `Build docker images pipeline (Manual)` [scheduled pipeline](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/pipeline_schedules).
-1. Go the pipeline you started, and wait for the relevant `test:image` job to complete,
+1. Go to the pipeline you started, and wait for the relevant `test:image` job to complete,
    for example `test:image:docs-lint-markdown`. If the job:
    - Passes, start the relevant `image:` job, for example, `image:docs-lint-markdown`.
    - Fails, review the test job log and start troubleshooting the issue. The image configuration

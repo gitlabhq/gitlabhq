@@ -51,14 +51,11 @@ module Types
         null: true,
         description: 'Default behavior for squashing in merge requests. ',
         experiment: { milestone: '17.9' }
+
       field :updated_at,
         Types::TimeType,
         null: true,
         description: 'Timestamp of when the branch rule was last updated.'
-
-      def squash_option
-        branch_rule.squash_option
-      end
     end
   end
 end

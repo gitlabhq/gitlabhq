@@ -26,6 +26,6 @@ We currently use GCP for its Cloud Storage resources to test Object Storage (GCS
 
 ## How do we maintain this infrastructure?
 
-We have an active [Janitor](https://gitlab.com/gitlab-com/gl-infra/gitlab-gcp-janitor) project that ensures resources in GCP are cleaned up if a test fails to remove it. The Janitor jobs run daily on a scheduled pipeline and target exclusively GCP `group-qa-tests-566cc6`.
+We have an active [Janitor](https://gitlab.com/gitlab-com/gl-infra/gitlab-gcp-janitor) project that ensures resources in GCP are cleaned up if a test fails to remove them. The Janitor jobs run daily on a scheduled pipeline and target exclusively GCP `group-qa-tests-566cc6`.
 
 AWS uses lifecycle management rules to delete objects after 1 day. We have an established [process](https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/blob/main/runbooks/rotating-credentials.md) that enables anyone with access to these environments to rotate credentials.

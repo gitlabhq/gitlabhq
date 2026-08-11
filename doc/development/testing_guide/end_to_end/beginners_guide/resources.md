@@ -49,7 +49,7 @@ create the resource via the public GitLab API:
 - `#api_post_body`: The `POST` body (as a Ruby hash) to create a new resource.
 
 > Be aware that many API resources are [paginated](../../../../api/rest/_index.md#pagination).
-> If you don't find the results you expect, check if there is more that one page of results.
+> If you don't find the results you expect, check if there is more than one page of results.
 
 Let's take the `Shirt` resource class, and add these three API methods:
 
@@ -247,7 +247,7 @@ module QA
 end
 ```
 
-The `populate` method iterates through its arguments and call each
+The `populate` method iterates through its arguments and calls each
 attribute. Here `populate(:brand)` has the same effect as
 just `brand`. Using the populate method makes the intention clearer.
 
@@ -289,7 +289,7 @@ end
 ```
 
 This ensures it's on the shirt page before constructing brand, and
-move back to the previous page to avoid breaking the state.
+moves back to the previous page to avoid breaking the state.
 
 #### Define an attribute based on an API response
 

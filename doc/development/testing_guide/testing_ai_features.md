@@ -57,11 +57,11 @@ For instance, `ee/spec/features/epic_boards/epic_boards_spec.rb` asserts the fol
 
 ### Run DAP feature tests when making a change in AI Gateway
 
-These feature tests run when we make a change to AI Gateway repository as well, to verify that an MR does not accidentally break DAP features e.g.
+These feature tests also run when we make a change to the AI Gateway repository, to verify that an MR does not accidentally break DAP features, for example:
 
 1. A developer opens an MR in AI Gateway project.
 1. A pipeline runs for the MR, which triggers downstream pipeline in GitLab project against `aigw/test-branch` test branch.
-   This branch points the same SHA with master.
+   This branch points to the same SHA as master.
 1. If a pipeline fails, the developer should investigate if the proposed change doesn't accidentally introduce regressions.
 
 > [!note]

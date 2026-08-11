@@ -388,8 +388,6 @@ delegations:
   ee/app/models/vulnerabilities/finding.rb:
   - scanner_name
 methods:
-  app/helpers/routing/groups/members_helper.rb:
-  - resend_invite_group_member_path
   app/helpers/routing/projects/members_helper.rb:
   - request_access_project_members_path
   - leave_project_members_path

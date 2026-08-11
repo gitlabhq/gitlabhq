@@ -13,7 +13,7 @@ Currently Internal Event Tracking is consolidating the following systems:
 - Snowplow
 - AiTracking (GitLab Duo Chat) WIP
 
-Internal Events is an unified interface to track events in GitLab. Each tracking call represents a user action and the
+Internal Events is a unified interface to track events in GitLab. Each tracking call represents a user action and the
 associated properties. Internal Events then provides underlying systems the properties they require for their specific
 analytics needs.
 

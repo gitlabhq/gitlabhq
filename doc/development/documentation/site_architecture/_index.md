@@ -98,7 +98,7 @@ This automation is configured in the [`Dangerfile`](https://gitlab.com/gitlab-or
 
 ## Request a documentation survey banner
 
-To reach to a wider audience, you can request
+To reach a wider audience, you can request
 [a survey banner](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/doc/maintenance.md#survey-banner).
 
 Only one banner can exist at any given time. Priority is given based on who

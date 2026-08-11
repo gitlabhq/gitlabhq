@@ -159,7 +159,7 @@ The layout organizes the data among the nav in containers properly [styled](#css
 The data file describes the structure of the navigation for the applicable project.
 It is stored at <https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/data/en-us/navigation.yaml>.
 
-Each entry comprises of three main components:
+Each entry comprises three main components:
 
 - `title`
 - `url`

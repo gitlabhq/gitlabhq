@@ -121,10 +121,10 @@ The combination of `time_frame: 28d`, the event selection rule under `events` re
 
 ## Event Selection Rules
 
-Event selection rules are the parts which connects metric definitions and event definitions.
+Event selection rules are the parts which connect metric definitions and event definitions.
 They are needed to know which metrics should be updated when an event is triggered.
 
-Each internal event based metric should have a least one event selection rule with the following properties.
+Each internal event based metric should have at least one event selection rule with the following properties.
 
 | Property           | Required | Additional information                                                                                                                                        |
 |--------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|

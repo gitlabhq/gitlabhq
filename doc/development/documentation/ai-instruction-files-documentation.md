@@ -95,7 +95,7 @@ automatically regenerates the following distilled documentation files from the s
 - `documentation-api.md`
 - `documentation-feature-lifecycle.md`
 
-These files are used `gitlab` project only. The `gitlab-ai-principles-distiller` is not configured for any other project that publishes documentation to `docs.gitlab.com`.
+These files are used in the `gitlab` project only. The `gitlab-ai-principles-distiller` is not configured for any other project that publishes documentation to `docs.gitlab.com`.
 
 The automated review file `.gitlab/duo/mr-review-instructions.yaml` is not
 regenerated from the style guide. If a standard in the style guide also belongs

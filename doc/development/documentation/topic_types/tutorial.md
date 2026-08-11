@@ -5,7 +5,7 @@ info: For assistance with this Style Guide page, see <https://handbook.gitlab.co
 title: Tutorial page type
 ---
 
-A tutorial is page that contains an end-to-end walkthrough of a complex workflow or scenario.
+A tutorial is a page that contains an end-to-end walkthrough of a complex workflow or scenario.
 In general, you might consider using a tutorial when:
 
 - The workflow requires sequential steps where each step consists

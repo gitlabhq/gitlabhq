@@ -15,7 +15,7 @@ tasks.
 
 While working on the [GitLab-QA codebase](https://gitlab.com/gitlab-org/gitlab-qa), it is sometimes helpful to run the GitLab-QA pipeline
 against a specific release of the [GitLab project](https://gitlab.com/gitlab-org/gitlab). This could be
-due reasons such as that particular GitLab release containing specific code needed for validating the changes made
+due to reasons such as that particular GitLab release containing specific code needed for validating the changes made
 in GitLab-QA. To run a [GitLab-QA pipeline](https://gitlab.com/gitlab-org/gitlab-qa/pipelines) against
 a specific GitLab release, we need to know the GitLab release version created and tagged by the omnibus pipeline.
 This can be found by either observing the `RELEASE` variable in any of the `test-on-omnibus` test jobs or

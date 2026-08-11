@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Boards::DestroyService, feature_category: :portfolio_management do
+RSpec.describe Boards::DestroyService, feature_category: :planning_views do
   context 'with project board' do
     let_it_be(:parent) { create(:project) }
 

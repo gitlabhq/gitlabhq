@@ -7,7 +7,6 @@ module Mcp
         include Gitlab::Utils::Override
 
         TOOL_MAPPING = {
-          list: :list_pipelines,
           create: :create_pipeline,
           update: :update_pipeline,
           retry: :retry_pipeline,
@@ -16,7 +15,6 @@ module Mcp
         }.freeze
 
         OPERATION_ACTIONS = {
-          list: 'listed',
           create: 'created',
           update: 'updated',
           retry: 'retried',
@@ -29,12 +27,13 @@ module Mcp
             Manage CI/CD pipelines in GitLab projects.
 
             Examples:
-            - Use List to show pipelines, get pipeline status, or see what pipelines exist
             - Use Create to run a pipeline, trigger a build, or start CI on a branch
             - Use Update to rename a pipeline or update pipeline metadata
             - Use Retry to run a pipeline again, rerun, or retry a failed build
             - Use Cancel to stop a pipeline, abort a build, or kill a running job
             - Use Delete to remove a pipeline record
+
+            To list pipelines, use the list_pipelines tool instead.
           DESC
           annotations: {
             readOnlyHint: false,
@@ -47,13 +46,9 @@ module Mcp
                 type: 'string',
                 description: 'ID or URL-encoded path of the project'
               },
-              list: {
-                type: 'boolean',
-                description: 'Set to true to list all pipelines. Required when user says "list pipelines".'
-              },
               ref: {
                 type: 'string',
-                description: 'Branch or tag name (for create operation or filtering list)'
+                description: 'Branch or tag name (for create operation)'
               },
               pipeline_id: {
                 type: 'integer',
@@ -77,14 +72,6 @@ module Mcp
               inputs: {
                 type: 'object',
                 description: 'Pipeline input parameters as key-value pairs'
-              },
-              page: {
-                type: 'integer',
-                description: 'Page number for pagination (default: 1)'
-              },
-              per_page: {
-                type: 'integer',
-                description: 'Number of items per page (default: 20, max: 100)'
               }
             },
             required: ['id']
@@ -112,11 +99,10 @@ module Mcp
         override :transform_arguments
         def transform_arguments(args)
           operation = detect_operation(args)
-          base_args = args.except(:list, :retry, :cancel)
+          base_args = args.except(:retry, :cancel)
 
           transformed = case operation
                         when :create then base_args.slice(:id, :ref, :variables, :inputs)
-                        when :list then base_args.slice(:id, :ref, :page, :per_page)
                         when :update then base_args.slice(:id, :pipeline_id, :name)
                         when :retry, :cancel, :delete then base_args.slice(:id, :pipeline_id)
                         else base_args
@@ -145,7 +131,6 @@ module Mcp
         end
 
         def detect_operation(args)
-          return :list if args[:list] == true
           return :retry if args[:retry] == true && args[:pipeline_id].present?
           return :cancel if args[:cancel] == true && args[:pipeline_id].present?
           return :update if args[:name].present? && args[:pipeline_id].present?
@@ -153,10 +138,10 @@ module Mcp
           return :delete if args[:pipeline_id].present?
 
           raise ArgumentError, "Cannot determine operation. Provide either: " \
-            "(list: true) to list pipelines, (ref) for create, " \
+            "(ref) for create, " \
             "(name + pipeline_id) for update, " \
             "(retry: true + pipeline_id) for retry, (cancel: true + pipeline_id) for cancel, " \
-            "or (pipeline_id) alone for delete"
+            "or (pipeline_id) alone for delete."
         end
       end
     end

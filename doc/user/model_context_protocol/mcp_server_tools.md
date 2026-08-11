@@ -338,37 +338,62 @@ Example:
 Show me the log output for job 88 in project gitlab-org/gitlab
 ```
 
+## `list_pipelines`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/605854) in GitLab 19.3.
+
+{{< /history >}}
+
+Lists pipelines in a GitLab project, with optional filters.
+
+| Parameter        | Type    | Required | Description |
+|------------------|---------|----------|-------------|
+| `id`             | string  | Yes      | ID or URL-encoded path of the project. |
+| `ref`            | string  | No       | Branch or tag name. Filters pipelines by ref. |
+| `status`         | string  | No       | Filters pipelines by status (for example, `running`, `success`, `failed`). |
+| `source`         | string  | No       | Filters pipelines by source (for example, `push`, `web`, `schedule`). |
+| `created_after`  | string  | No       | Returns pipelines created after the specified datetime (ISO 8601 format). |
+| `created_before` | string  | No       | Returns pipelines created before the specified datetime (ISO 8601 format). |
+| `order_by`       | string  | No       | Orders pipelines by `id`, `status`, `ref`, `updated_at`, or `user_id`. Default is `id`. |
+| `sort`           | string  | No       | Sort direction, `asc` or `desc`. Default is `desc`. |
+| `page`           | integer | No       | Current page number. Default is `1`. |
+| `per_page`       | integer | No       | Number of items per page. Default is `20`. |
+
+Child pipelines are excluded from the results by default. To return only child pipelines, set `source` to `parent_pipeline`.
+
+The default order (`id`, `desc`) returns pipelines with the highest ID first. ID order usually matches creation order, but the two aren't guaranteed to agree. Use `created_after` or `created_before` to filter by an explicit time boundary. A caller can page through results and stop at the first pipeline outside its target range.
+
+Example:
+
+```plaintext
+List all failed pipelines on the main branch for project gitlab-org/gitlab
+```
+
 ## `manage_pipeline`
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/583826) in GitLab 18.10.
+- [Removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/247806) the `list` action in favor of the `list_pipelines` tool in GitLab 19.3.
 
 {{< /history >}}
 
-Manages CI/CD pipelines in a GitLab project.
+Manages CI/CD pipelines in a GitLab project. To list pipelines, use the `list_pipelines` tool instead.
 
 | Parameter     | Type    | Required    | Description |
 |---------------|---------|-------------|-------------|
 | `id`          | string  | Yes         | ID or URL-encoded path of the project. |
-| `list`        | boolean | No          | If `true`, lists all pipelines in a project. |
-| `ref`         | string  | No          | Branch or tag name. If set, creates a new pipeline on a branch or tag. Optional for filtering lists. |
+| `ref`         | string  | No          | Branch or tag name. If set, creates a new pipeline on a branch or tag. |
 | `pipeline_id` | integer | No          | ID of the pipeline. If only this parameter is set, deletes a pipeline and all related data. |
 | `retry`       | boolean | No          | If `true` and `pipeline_id` is set, retries failed or canceled pipeline jobs. |
 | `cancel`      | boolean | No          | If `true` and `pipeline_id` is set, cancels all jobs in a running pipeline. |
 | `name`        | string  | No          | Name of the pipeline. If this parameter and `pipeline_id` are set, updates the pipeline metadata. |
 | `variables`   | array   | No          | Pipeline variables in array format (`[{key, value, variable_type}]`). |
 | `inputs`      | hash    | No          | Pipeline input parameters as key-value pairs. |
-| `page`        | integer | No          | Current page number. Default is `1`. |
-| `per_page`    | integer | No          | Number of items per page. Default is `20`. |
 
 Examples:
-
-- List pipelines:
-
-  ```plaintext
-  List all pipelines for project gitlab-org/gitlab
-  ```
 
 - Create a pipeline:
 

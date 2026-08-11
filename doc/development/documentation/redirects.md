@@ -26,7 +26,7 @@ Technical Writers can help with any questions and can review your change.
 Do not redirect to another redirect.
 
 > [!note]
-> When you change the filename of a page, the Google Analytics are removed from the content audit
+> When you change the filename of a page, the Google Analytics data is removed from the content audit
 > and the page views start from scratch. If you want to change the filename, edit the page first,
 > so you can ensure the new page name is as accurate as possible.
 

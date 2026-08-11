@@ -26,7 +26,7 @@ As of 2025-02-03, we have the following estimated distribution of tests per leve
 
 Formal definition: <https://en.wikipedia.org/wiki/Unit_testing>
 
-These kind of tests ensure that a single unit of code (a method) works as
+These kinds of tests ensure that a single unit of code (a method) works as
 expected (given an input, it has a predictable output). These tests should be
 isolated as much as possible. For example, model methods that don't do anything
 with the database shouldn't need a DB record. Classes that don't need database
@@ -227,7 +227,7 @@ graph RL
 
 Formal definition: <https://en.wikipedia.org/wiki/Integration_testing>
 
-These kind of tests ensure that individual parts of the application work well
+These kinds of tests ensure that individual parts of the application work well
 together, without the overhead of the actual app environment (such as the browser).
 These tests should assert at the request/response level: status code, headers,
 body.
@@ -345,7 +345,7 @@ These kind of tests ensure the GitLab Rails application (for example,
 
 Note that:
 
-- knowledge of the internals of the application are still required
+- knowledge of the internals of the application is still required
 - data needed for the tests are usually created directly using RSpec factories
 - expectations are often set on the database or objects state
 
@@ -485,7 +485,7 @@ they're always in-sync with the codebase (especially the views).
 
 Note that:
 
-- knowledge of the internals of the application are not required
+- knowledge of the internals of the application is not required
 - data needed for the tests can only be created using the GUI or the API
 - expectations can only be made against the browser page and API responses
 
@@ -518,11 +518,11 @@ Learn more in the [GitLab QA orchestrator README](https://gitlab.com/gitlab-org/
 
 ## EE-specific tests
 
-EE-specific tests follows the same organization, but under the `ee/spec` folder.
+EE-specific tests follow the same organization, but under the `ee/spec` folder.
 
 ## How to test at the correct level?
 
-As many things in life, deciding what to test at each level of testing is a
+As with many things in life, deciding what to test at each level of testing is a
 trade-off:
 
 - Unit tests are usually cheap, and you should consider them like the basement

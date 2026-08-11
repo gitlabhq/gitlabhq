@@ -552,3 +552,16 @@ Release M: Add alias and rename tool
 Release M+1: Remove alias (after clients have had time to refresh their tool lists)
 
 This approach ensures zero downtime for connected clients during tool renames.
+
+### Splitting an action out of an aggregated tool
+
+An aggregated tool that folds several operations behind a parameter (for example, an `action` or
+boolean flag) can grow a dedicated `list_` tool for its collection-reading action, per the
+[list/save split](#tool-naming-and-consolidation-conventions) convention. Unlike a rename, the call
+shape changes (the caller no longer passes the selector parameter), so a tool alias cannot preserve
+behavior. Callers using the old action must migrate to the new tool explicitly.
+
+Document the change with a `[Removed]` entry in the old tool's `{{</* history */>}}` block in
+[MCP server tools](../../../user/model_context_protocol/mcp_server_tools.md), noting which action
+moved and to which tool, alongside the usual `[Introduced]` entry for the new tool. See the
+`list_pipelines` and `manage_pipeline` entries in that page for an example.

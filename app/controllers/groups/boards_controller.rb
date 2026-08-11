@@ -10,7 +10,7 @@ class Groups::BoardsController < Groups::ApplicationController
       !!group&.work_item_tasks_on_boards_feature_flag_enabled?)
   end
 
-  feature_category :team_planning
+  feature_category :planning_views
   urgency :low
 
   private

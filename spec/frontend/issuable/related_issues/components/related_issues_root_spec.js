@@ -79,24 +79,6 @@ describe('RelatedIssuesRoot', () => {
       });
     });
 
-    describe('when "toggleAddRelatedIssuesForm" event is emitted', () => {
-      it('toggles related issues form to visible from hidden', async () => {
-        createComponent();
-
-        await findRelatedIssuesBlock().vm.$emit('toggleAddRelatedIssuesForm');
-
-        expect(findRelatedIssuesBlock().props('isFormVisible')).toBe(true);
-      });
-
-      it('toggles related issues form to hidden from visible', async () => {
-        createComponent({ data: { isFormVisible: true } });
-
-        await findRelatedIssuesBlock().vm.$emit('toggleAddRelatedIssuesForm');
-
-        expect(findRelatedIssuesBlock().props('isFormVisible')).toBe(false);
-      });
-    });
-
     describe('when "pending-issuable-remove-request" event is emitted', () => {
       beforeEach(async () => {
         createComponent();

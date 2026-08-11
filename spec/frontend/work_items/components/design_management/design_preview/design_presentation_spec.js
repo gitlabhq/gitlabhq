@@ -269,4 +269,21 @@ describe('DesignPresentation', () => {
       });
     });
   });
+
+  describe('closeCommentForm', () => {
+    it('clears the annotation position without re-emitting to the parent', async () => {
+      createComponent({ isAnnotating: true });
+      await nextTick();
+
+      findDesignOverlay().vm.$emit('openCommentForm', { x: 1, y: 1 });
+      await nextTick();
+      expect(findDesignOverlay().props('currentCommentForm')).not.toBeNull();
+
+      findDesignOverlay().vm.$emit('closeCommentForm');
+      await nextTick();
+
+      expect(findDesignOverlay().props('currentCommentForm')).toBeNull();
+      expect(wrapper.emitted('closeCommentForm')).toBeUndefined();
+    });
+  });
 });

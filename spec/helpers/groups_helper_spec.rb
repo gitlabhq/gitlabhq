@@ -792,4 +792,87 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
       end
     end
   end
+
+  describe '#can_create_organization_from_group_settings?' do
+    let_it_be(:owner) { create(:user) }
+    let_it_be(:developer) { create(:user) }
+
+    let_it_be(:unconfirmed_organization) { create(:organization, :unconfirmed) }
+    let_it_be(:group) do
+      create(:group, organization: unconfirmed_organization, owners: owner, developers: developer)
+    end
+
+    let(:current_user) { owner }
+
+    subject(:can_create_organization) { helper.can_create_organization_from_group_settings?(group) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(current_user)
+    end
+
+    context 'when the release flag is disabled' do
+      before do
+        stub_organization_release(create_org_from_group_settings: false)
+      end
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when the user cannot administer the group' do
+      let(:current_user) { developer }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when there is no current user' do
+      let(:current_user) { nil }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when the group is a subgroup' do
+      let_it_be(:subgroup) { create(:group, parent: group, organization: unconfirmed_organization) }
+
+      subject(:can_create_organization) { helper.can_create_organization_from_group_settings?(subgroup) }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when the organization is confirmed' do
+      let_it_be(:confirmed_organization) { create(:organization, :confirmed) }
+      let_it_be(:group) { create(:group, organization: confirmed_organization, owners: owner) }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when the organization is active' do
+      let_it_be(:active_organization) { create(:organization) }
+      let_it_be(:group) { create(:group, organization: active_organization, owners: owner) }
+
+      it { is_expected.to be(false) }
+    end
+
+    # Self-managed instances only ever have the default organization, so creating a
+    # new one from group settings is a GitLab.com-only flow.
+    context 'when the group belongs to the default organization' do
+      let_it_be(:default_organization) { create(:organization, :default) } # rubocop:disable Gitlab/RSpec/AvoidCreateDefaultOrganization -- the helper branches on the default organization so we need to test this
+      let_it_be(:group) { create(:group, organization: default_organization, owners: owner) }
+
+      context 'when on GitLab.com' do
+        before do
+          allow(Gitlab).to receive(:com?).and_return(true)
+        end
+
+        it { is_expected.to be(true) }
+      end
+
+      context 'when self-managed' do
+        before do
+          allow(Gitlab).to receive(:com?).and_return(false)
+        end
+
+        it { is_expected.to be(false) }
+      end
+    end
+  end
 end

@@ -40,7 +40,7 @@ RSpec.describe 'Plan', feature_category: :wiki do
 end
 ```
 
-1. Every `describe`, `context`, and `it` blocks should have a short description attached
+1. Every `describe`, `context`, and `it` block should have a short description attached
 1. Keep descriptions as concise as possible.
    1. Long descriptions or multiple conditionals could be a sign it should be split up (additional `context` blocks).
    1. The [Documentation Style Guide](../../../documentation/styleguide/_index.md) gives recommendations on how to write concisely and with [active voice](../../../documentation/styleguide/_index.md#active-voice).
@@ -378,8 +378,8 @@ because RSpec's built-in matchers are negatable, as are Capybara's, which means 
 equivalent.
 
 ```ruby
-except(page).not_to have_text('hidden')
-except(page).to have_no_text('hidden')
+expect(page).not_to have_text('hidden')
+expect(page).to have_no_text('hidden')
 ```
 
 Unfortunately, that's not automatically the case for the predicate methods that we add to our

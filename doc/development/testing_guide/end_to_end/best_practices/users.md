@@ -7,7 +7,7 @@ title: Environment Setup | Users
 
 ## Administrator user
 
-E2E test framework utilizes administrator user for certain resource creation, like `user` or for changing certain instance level settings. It is not necessary to explicitly configure administrator user for environments used in [test-pipelines](../test_pipelines.md) because these environments automatically create administrator user with known default credentials and personal access token. If administrator user requires different credentials, these can be configured through following environment variables:
+E2E test framework utilizes administrator user for certain resource creation, like `user` or for changing certain instance level settings. It is not necessary to explicitly configure the administrator user for environments used in [test-pipelines](../test_pipelines.md) because these environments automatically create administrator user with known default credentials and personal access token. If administrator user requires different credentials, these can be configured through following environment variables:
 
 - `GITLAB_ADMIN_USERNAME`
 - `GITLAB_ADMIN_PASSWORD`
@@ -21,7 +21,7 @@ All tests running against one of the [test-pipelines](../test_pipelines.md) auto
 
 ### Using single user
 
-It is advised to not run all tests using single user but certain environments impose limitations for generating new user for each test. In order to forcefully disable unique test user creation, environment variable `QA_CREATE_UNIQUE_TEST_USERS` should be set to false. Example reason why unique user creation might be disabled:
+It is advised to not run all tests using a single user but certain environments impose limitations for generating a new user for each test. To forcefully disable unique test user creation, environment variable `QA_CREATE_UNIQUE_TEST_USERS` should be set to false. Example reason why unique user creation might be disabled:
 
 - environment does have administrator user available and can create new users but it has only one top level group with ultimate license. In such case, a single user which is a member of this group has to be used due to new unique users not having access to the common group with ultimate license.
 

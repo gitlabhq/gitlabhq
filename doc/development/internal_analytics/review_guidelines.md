@@ -33,7 +33,7 @@ Three roles participate in an Analytics Instrumentation review:
 
 #### The merge request **author** should
 
-- Decide whether a Analytics Instrumentation review is needed. You can skip the Analytics Instrumentation
+- Decide whether an Analytics Instrumentation review is needed. You can skip the Analytics Instrumentation
   review and remove the labels if the changes are not related to the Analytics Instrumentation domain.
 - If an Analytics Instrumentation review is needed and was not assigned automatically, add the labels
   `~analytics instrumentation` and `~analytics instrumentation::review pending`.

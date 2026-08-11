@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Issue board filters', :js, feature_category: :team_planning do
+RSpec.describe 'Issue board filters', :js, feature_category: :planning_views do
   include GlFilteredSearchHelpers
   let_it_be(:group) { create(:group) }
   let_it_be(:project, freeze: false) { create(:project, :repository, group: group) }

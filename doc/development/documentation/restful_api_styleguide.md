@@ -317,7 +317,7 @@ For information about writing attribute descriptions, see the [GraphQL API descr
 
 | Methods                                         | Description |
 | ----------------------------------------------- | ----------- |
-| `--header "PRIVATE-TOKEN: <your_access_token>"` | Use this method as is, whenever authentication needed. |
+| `--header "PRIVATE-TOKEN: <your_access_token>"` | Use this method as is, whenever authentication is needed. |
 | `--request GET`                                 | Use this method when retrieving existing objects. |
 | `--request POST`                                | Use this method when creating new objects. |
 | `--request PUT`                                 | Use this method when updating existing objects. |

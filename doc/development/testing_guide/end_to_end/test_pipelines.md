@@ -127,10 +127,10 @@ You can currently give any value for `TTFB_THRESHOLD` and `RPS_THRESHOLD` as the
 
 You can refer to other test present in [`qa/performance_test/k6_test`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa/performance_test/k6_test?ref_type=heads) to write your tests.
 
-If you tests required data in the environment you can update the [mr_seed.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/db/seeds/data_seeder/mr_seed.rb?ref_type=heads) file to add the resources you need to create.
+If your tests require data in the environment, you can update the [mr_seed.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/db/seeds/data_seeder/mr_seed.rb?ref_type=heads) file to add the resources you need to create.
 
 > [!note]
-> Do not remove any existing resources being created form [mr_seed.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/db/seeds/data_seeder/mr_seed.rb?ref_type=heads).
+> Do not remove any existing resources being created from [mr_seed.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/db/seeds/data_seeder/mr_seed.rb?ref_type=heads).
 
 [Component Performance testing](https://gitlab.com/gitlab-org/quality/component-performance-testing) currently doesn't support multiple seed files but this will be addressed as a part of <https://gitlab.com/gitlab-org/quality/component-performance-testing/-/issues/76>
 
@@ -306,7 +306,7 @@ my-new-test-job:
 In this example:
 
 - `QA_SCENARIO: Test::Integration::MyNewTestScenario`: name of the scenario class that is passed to the `qa/bin/qa` test execution script. While the full class
-  name would be `QA::Scenario::Test:Integration::MyNewTestScenario`, `QA::Scenario` is omitted to have shorted definitions.
+  name would be `QA::Scenario::Test:Integration::MyNewTestScenario`, `QA::Scenario` is omitted to have shorter definitions.
 
 Considering example above, perform the following steps to create a new job:
 

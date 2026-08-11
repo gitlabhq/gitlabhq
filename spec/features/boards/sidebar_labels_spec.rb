@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project issue boards sidebar labels', :js, feature_category: :portfolio_management do
+RSpec.describe 'Project issue boards sidebar labels', :js, feature_category: :planning_views do
   include BoardHelpers
   include WorkItemsHelpers
 

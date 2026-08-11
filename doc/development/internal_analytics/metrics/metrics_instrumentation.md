@@ -368,7 +368,7 @@ This guide describes how to migrate a Service Ping metric from [`lib/gitlab/usag
 ## Troubleshoot metrics
 
 Sometimes metrics fail for reasons that are not immediately clear. The failures can be related to performance issues or other problems.
-The following pairing session video gives you an example of an investigation in to a real-world failing metric.
+The following pairing session video gives you an example of an investigation into a real-world failing metric.
 
 <div class="video-fallback">
   See the video from: <a href="https://www.youtube.com/watch?v=y_6m2POx2ug">Product Intelligence Office Hours Oct 27th</a> to learn more about the metrics troubleshooting process.

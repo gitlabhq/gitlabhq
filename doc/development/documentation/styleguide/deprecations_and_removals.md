@@ -197,7 +197,7 @@ We don't remove version-specific upgrade pages immediately for a major milestone
 users time to upgrade from older versions.
 
 For example, `doc/update/versions/14_changes.md` should
-be removed during the `.3` milestone. Therefore `14_changes.md` are
+be removed during the `.3` milestone. Therefore `14_changes.md` is
 removed in GitLab 17.3.
 
 Instead of removing the unsupported page:

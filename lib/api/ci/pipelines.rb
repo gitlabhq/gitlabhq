@@ -72,8 +72,7 @@ module API
 
         route_setting :mcp,
           tool_name: :list_pipelines,
-          params: [:id, :ref, :page, :per_page],
-          aggregators: [::Mcp::Tools::Pipelines::PipelineService],
+          params: [:id, :ref, :status, :source, :created_after, :created_before, :order_by, :sort, :page, :per_page],
           resource_name: "project"
         route_setting :authentication, job_token_allowed: true
         route_setting :authorization, job_token_policies: :read_pipelines,

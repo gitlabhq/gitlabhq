@@ -57,7 +57,7 @@ export default {
       default: true,
     },
   },
-  emits: ['closeCommentForm', 'moveNote', 'openCommentForm'],
+  emits: ['moveNote', 'openCommentForm'],
   data() {
     return {
       overlayDimensions: null,
@@ -241,7 +241,6 @@ export default {
     },
     closeCommentForm() {
       this.currentAnnotationPosition = null;
-      this.$emit('closeCommentForm');
     },
     moveNote({ noteId, discussionId, coordinates }) {
       const position = this.getAnnotationPosition(coordinates);

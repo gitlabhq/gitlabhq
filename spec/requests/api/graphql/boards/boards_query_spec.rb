@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'get list of boards', feature_category: :portfolio_management do
+RSpec.describe 'get list of boards', feature_category: :planning_views do
   include GraphqlHelpers
 
   include_context 'group and project boards query context'

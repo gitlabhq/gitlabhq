@@ -30,4 +30,4 @@ The changes need to become an official part of the product.
 - [ ] After the flag removal is deployed, [clean up the feature/experiment feature flags](https://docs.gitlab.com/development/feature_flags/controls/#cleaning-up) by running chatops command in `#production` channel
 - [ ] Ensure the corresponding [Experiment Rollout](https://gitlab.com/groups/gitlab-org/-/boards/1352542?label_name[]=devops%3A%3Agrowth&label_name[]=growth%20experiment&label_name[]=experiment-rollout) issue is updated
 
-/label ~"type::maintenance" ~"workflow::scheduling" ~"growth experiment" ~"feature flag"
+/label ~"type::maintenance" ~"workflow::scheduling" ~"growth experiment" ~"feature flag" ~"cycle-time-retro"

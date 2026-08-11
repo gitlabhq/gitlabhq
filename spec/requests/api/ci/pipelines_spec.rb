@@ -31,7 +31,8 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
       subject { get api("/projects/#{project.id}/pipelines", user) }
 
       it_behaves_like 'an endpoint with mcp route setting', :list_pipelines,
-        expected_params: [:id, :ref, :page, :per_page]
+        expected_params: [:id, :ref, :status, :source, :created_after, :created_before, :order_by, :sort, :page,
+          :per_page]
     end
 
     it_behaves_like 'pipelines visibility table'

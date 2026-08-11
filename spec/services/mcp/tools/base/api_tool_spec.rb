@@ -93,6 +93,22 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
       end
     end
 
+    context 'with DateTime type' do
+      let(:mcp_settings) { { params: [:param4] } }
+
+      let(:route_params) do
+        {
+          'param4' => { required: false, type: 'DateTime', desc: 'Fourth parameter' }
+        }
+      end
+
+      it 'converts DateTime to a string' do
+        schema = api_tool.input_schema
+
+        expect(schema[:properties]['param4'][:type]).to eq('string')
+      end
+    end
+
     context 'when no required fields' do
       let(:route_params) do
         {
@@ -114,6 +130,75 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
         schema = api_tool.input_schema
 
         expect(schema[:properties].keys).to eq(['param1'])
+      end
+    end
+
+    context 'with values: as an array' do
+      let(:mcp_settings) { { params: [:param1] } }
+      let(:route_params) do
+        {
+          'param1' => { required: false, type: 'String', desc: 'Status', values: %w[open closed] }
+        }
+      end
+
+      it 'derives enum from the array' do
+        schema = api_tool.input_schema
+
+        expect(schema[:properties]['param1'][:enum]).to eq(%w[open closed])
+      end
+    end
+
+    context 'with values: as a zero-arity proc' do
+      let(:mcp_settings) { { params: [:param1] } }
+      let(:route_params) do
+        {
+          'param1' => { required: false, type: 'String', desc: 'Shard', values: -> { %w[default other] } }
+        }
+      end
+
+      it 'calls the proc and derives enum from the result' do
+        schema = api_tool.input_schema
+
+        expect(schema[:properties]['param1'][:enum]).to eq(%w[default other])
+      end
+    end
+
+    context 'with values: as a proc that takes an argument' do
+      let(:mcp_settings) { { params: [:param1] } }
+      let(:route_params) do
+        {
+          'param1' => { required: false, type: 'String', desc: 'Custom', values: ->(v) { v.present? } }
+        }
+      end
+
+      it 'does not add an enum' do
+        schema = api_tool.input_schema
+
+        expect(schema[:properties]['param1']).not_to have_key(:enum)
+      end
+    end
+
+    context 'with values: a proc that raises' do
+      let(:mcp_settings) { { params: [:param1] } }
+      let(:route_params) do
+        {
+          'param1' => { required: false, type: 'String', desc: 'Broken', values: -> { raise 'boom' } }
+        }
+      end
+
+      it 'does not add an enum and does not raise' do
+        schema = nil
+
+        expect { schema = api_tool.input_schema }.not_to raise_error
+        expect(schema[:properties]['param1']).not_to have_key(:enum)
+      end
+    end
+
+    context 'without values:' do
+      it 'does not add an enum' do
+        schema = api_tool.input_schema
+
+        expect(schema[:properties]['param1']).not_to have_key(:enum)
       end
     end
   end

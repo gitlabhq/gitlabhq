@@ -84,7 +84,7 @@ sequenceDiagram
 
    - `uuid` - GitLab instance unique identifier
    - `hostname` - GitLab instance hostname
-   - `version` - GitLab instance current versions
+   - `version` - GitLab instance current version
    - `elapsed` - Amount of time which passed since Service Ping report process started and moment of error occurrence
    - `message` - Error message
 

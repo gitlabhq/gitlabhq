@@ -34,7 +34,7 @@ environment with wide access permissions and as a result of engineers testing th
 
 The full or smoke E2E test suite can be triggered on an as-needed basis from the `staging-ref` project's [pipeline schedules](https://ops.gitlab.net/gitlab-org/quality/staging-ref/-/pipeline_schedules).
 
-Staging Ref deployment runs parallel to Staging Canary deployment. These two environments share the same GitLab version, if a failure happens
+Staging Ref deployment runs parallel to Staging Canary deployment. These two environments share the same GitLab version. If a failure happens
 on Staging Ref but not on Staging Canary, it may indicate that the failure is environment specific. See [QA pipeline debugging guide](https://gitlab.com/gitlab-org/quality/gitlab-environment-toolkit-configs/staging-ref/-/blob/main/doc/qa_failure_debug.md) for more information on how to investigate E2E test failures.
 
 ### Preprod
@@ -217,7 +217,7 @@ Restart GDK using the `FIPS_MODE` variable:
 
 `FIPS_MODE=1 gdk restart`
 
-Tests can then be ran with the `FIPS` variable set:
+Tests can then be run with the `FIPS` variable set:
 
 `FIPS=1 bundle exec bin/qa Test::Instance::All https://gdk.test:3000/ ./qa/specs/features/browser_ui/2_plan/issue/create_issue_spec.rb`
 
@@ -237,7 +237,7 @@ WEBDRIVER_HEADLESS=false bundle exec bin/qa Test::Instance::All http://localhost
 
 ### Run the test against a GitLab Docker container
 
-You can also use the same Docker image as the one used in the failing job to run GitLab in a container on your local.
+You can also use the same Docker image as the one used in the failing job to run GitLab in a container locally.
 In the logs of the failing job, search for `gitlab-ee` or `gitlab-ce` and use its tag to start the container locally.
 
 Once you have the image tag, [spin up GitLab instance locally](https://gitlab.com/gitlab-org/quality/runbooks/-/blob/main/running_gitlab_locally/index.md)
@@ -291,7 +291,7 @@ Get in touch with the distribution team on `#g_distribution` channel.
 
 ### Investigating update-major or update-minor tests locally and common failures
 
-Failures in `update-major` or `update-minor` might indicate that GitLab upgrade fails. Such failures could be caused by migration issues or other changes. To ensure customers won't face such issue during upgrade, investigate the error as priority, especially near the release date.
+Failures in `update-major` or `update-minor` might indicate that GitLab upgrade fails. Such failures could be caused by migration issues or other changes. To ensure customers won't face such an issue during upgrade, investigate the error as a priority, especially near the release date.
 
 Follow the document [Investigating update-major or update-minor tests locally and common failures](https://gitlab.com/gitlab-org/quality/runbooks/-/blob/main/debug_orchestrated_test_locally/running_update-major_and_update-minor_locally.md).
 

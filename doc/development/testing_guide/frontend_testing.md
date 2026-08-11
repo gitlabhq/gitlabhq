@@ -204,7 +204,7 @@ For example, it's better to use the generated markup to trigger a button click a
 
 ## Common practices
 
-These some general common practices included as part of our test suite. Should you stumble over something not following this guide, ideally fix it right away. 🎉
+These are some general common practices included as part of our test suite. Should you stumble over something not following this guide, ideally fix it right away. 🎉
 
 ### How to query DOM elements
 
@@ -1025,7 +1025,7 @@ You can generate fixtures by running:
 - `bin/rake frontend:fixtures` to generate all fixtures
 - `bin/rspec spec/frontend/fixtures/merge_requests.rb` to generate specific fixtures (in this case for `merge_request.rb`)
 
-You can find generated fixtures are in `tmp/tests/frontend/fixtures-ee`.
+You can find generated fixtures in `tmp/tests/frontend/fixtures-ee`.
 
 To generate a single fixture for a _spec.js file identify the import from `test_fixtures/` directory:
 
@@ -2210,7 +2210,7 @@ However, we have not done anything with this user yet because it's just a variab
 
 Now that we have a user, we should look at what else we'd need before asserting anything on a pipeline page. If you look at the route `/namespace/project/-/pipelines/:id/` we can determine we need a project and a pipeline.
 
-So we'd create a project and pipeline, and link them together. Usually in factories, the child element requires its parent as an argument. In this case, a pipeline is a child of a project. So we can create the project first, and then when we create the pipeline, we are pass the project as an argument which "binds" the pipeline to the project. A pipeline is also owned by a user, so we need the user as well. For example, this creates a project and a pipeline:
+So we'd create a project and pipeline, and link them together. Usually in factories, the child element requires its parent as an argument. In this case, a pipeline is a child of a project. So we can create the project first, and then when we create the pipeline, we pass the project as an argument which "binds" the pipeline to the project. A pipeline is also owned by a user, so we need the user as well. For example, this creates a project and a pipeline:
 
 ```ruby
   let(:user) { create(:user) }
@@ -2224,7 +2224,7 @@ In the same spirit, you could then create a job (build) by using the build facto
   create(:ci_build, pipeline: pipeline, stage_idx: 10, stage: 'publish', name: 'CentOS')
 ```
 
-There are many factories that already exists, so make sure to look at other existing files to see if what you need is available.
+There are many factories that already exist, so make sure to look at other existing files to see if what you need is available.
 
 #### Navigation
 
@@ -2263,7 +2263,7 @@ You can find a more comprehensive list of actions in the [feature tests actions]
 
 #### Assertions
 
-To assert anything in a page, you can always access `page` variable, which is automatically defines and actually means the page document. This means you can expect the `page` to have certain components like selectors or content. Here are a few examples:
+To assert anything in a page, you can always access `page` variable, which is automatically defined and actually means the page document. This means you can expect the `page` to have certain components like selectors or content. Here are a few examples:
 
 ```ruby
   # Finding a button
@@ -2389,7 +2389,7 @@ allows and what can raise a `BrowserConsoleError` alongside an unrelated failure
 
 ### Debugging
 
-You can run your spec with the prefix `WEBDRIVER_HEADLESS=0` to open an actual browser. However, the specs goes though the commands quickly and leaves you no time to look around.
+You can run your spec with the prefix `WEBDRIVER_HEADLESS=0` to open an actual browser. However, the specs go through the commands quickly and leave you no time to look around.
 
 To avoid this problem, you can write `binding.pry` on the line where you want Capybara to stop execution. You are then inside the browser with standard usage. To understand why you cannot find certain elements, you can:
 
@@ -2406,7 +2406,7 @@ Running the Jest test suite, the number of workers is set to use 60% of the avai
 ### Updating ChromeDriver
 
 Starting from `Selenium` 4.6, ChromeDriver can be automatically managed by `Selenium Manager` which comes with the `selenium-webdriver` gem.
-You are no longer required to manually keeping chromedriver in sync.
+You are no longer required to manually keep chromedriver in sync.
 
 ---
 

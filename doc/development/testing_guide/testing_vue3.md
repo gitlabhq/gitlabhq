@@ -26,7 +26,7 @@ Pipelines run the unit tests suite as well.
 
 ## Running system tests (spec/features) locally with Vue 3
 
-To run system tests using Vue 3, [GDK must be running on with Vue 3 enabled](../fe_guide/vue3_migration.md#switching-between-vue-versions). You may enable it with these commands:
+To run system tests using Vue 3, [GDK must be running with Vue 3 enabled](../fe_guide/vue3_migration.md#switching-between-vue-versions). You may enable it with these commands:
 
 ```shell
 gdk config set vite.vue_version 3 # or 2, to return to vue 2
@@ -119,7 +119,7 @@ describe('MyComponent', () => {
 })
 ```
 
-Note in the above example that we are creating both a mock of the function that is returned by the composable and the `counter` ref - however a very important step is missing the example.
+Note in the above example that we are creating both a mock of the function that is returned by the composable and the `counter` ref - however a very important step is missing from the example.
 
 The `counter` constant is a `ref`, which means that on every test when we modify it the value we assign to it will be retained. In the example the second `it` block will fail as the `counter` will retain the value assigned in some of our previous tests.
 
@@ -203,7 +203,7 @@ the Vue's reactivity proxy from the target object.
 
 In the following example, the component updates the Apollo's in-memory cache after the mutation succeeds
 by swapping the `agent` object between two arrays. The `agent` object is also available in the `agent`
-property, but it is reactive object. The incorrect approach references the `agent` object passed to
+property, but it is a reactive object. The incorrect approach references the `agent` object passed to
 the component as a property which causes the proxy error. The correct approach finds the `agent`
 object that is already stored in the Apollo's cache.
 
@@ -330,7 +330,7 @@ export default {
 </template>
 ```
 
-If we want to be able to test that the `$router.push` call is made, we must trigger the navigation through the `next` even on the `gl-keyset-pagination` component.
+If we want to be able to test that the `$router.push` call is made, we must trigger the navigation through the `next` event on the `gl-keyset-pagination` component.
 
 ```javascript
 wrapper.findComponent(GlKeysetNavigation).vm.$emit('push');

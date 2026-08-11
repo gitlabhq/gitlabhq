@@ -1,5 +1,4 @@
-- return unless Organizations::Release.enabled?(:create_org_from_group_settings, group)
-- return unless group.root?
+- return unless can_create_organization_from_group_settings?(group)
 
 - organization_docs_url = link_to('', help_page_path('user/organization/_index.md'), target: '_blank', rel: 'noopener noreferrer')
 

@@ -5,7 +5,7 @@ info: For assistance with this Style Guide page, see <https://handbook.gitlab.co
 title: Workflows
 ---
 
-The Technical Writing team uses workflows to collaborate with contributors, developers, product managers on:
+The Technical Writing team uses workflows to collaborate with contributors, developers, and product managers on:
 
 - Product documentation changes
 - UI text

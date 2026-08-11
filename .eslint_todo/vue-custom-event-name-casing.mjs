@@ -5,7 +5,6 @@ export default {
   files: [
     'app/assets/javascripts/behaviors/components/diagram_performance_warning.vue',
     'app/assets/javascripts/ci/jobs_page/components/job_cells/actions_cell.vue',
-    'app/assets/javascripts/ci/reports/components/report_section.vue',
     'app/assets/javascripts/content_editor/components/content_editor.vue',
     'app/assets/javascripts/diffs/components/app.vue',
     'app/assets/javascripts/diffs/components/diff_content.vue',
@@ -59,7 +58,6 @@ export default {
     'app/assets/javascripts/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue',
     'app/assets/javascripts/vue_shared/components/markdown/markdown_editor.vue',
     'app/assets/javascripts/vue_shared/components/project_selector/project_selector.vue',
-    'app/assets/javascripts/vue_shared/components/user_callout_dismisser.vue',
     'app/assets/javascripts/work_items/components/create_work_item.vue',
     'app/assets/javascripts/work_items/components/create_work_item_cancel_confirmation_modal.vue',
     'app/assets/javascripts/work_items/components/design_management/design_preview/design_overlay.vue',
