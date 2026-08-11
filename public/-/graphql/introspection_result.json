@@ -282207,6 +282207,30 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "includeSubgroups",
+                  "description": "Include descendant groups of the group given in `parentPath`. Ignored unless `parentPath` is also provided.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": "false",
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "visibilityLevel",
+                  "description": "Filter groups by visibility level.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "VisibilityLevelsEnum",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "allAvailable",
                   "description": "When `true`, returns all accessible groups. When `false`, returns only groups where the user is a member.\nUnauthenticated requests always return all public groups. The `owned_only` argument takes precedence.\n",
                   "type": {
@@ -340758,6 +340782,30 @@
                   "deprecationReason": null
                 },
                 {
+                  "name": "includeSubgroups",
+                  "description": "Include descendant groups of the group given in `parentPath`. Ignored unless `parentPath` is also provided.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": "false",
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "visibilityLevel",
+                  "description": "Filter groups by visibility level.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "VisibilityLevelsEnum",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
                   "name": "allAvailable",
                   "description": "When `true`, returns all accessible groups. When `false`, returns only groups where the user is a member.\nUnauthenticated requests always return all public groups. The `owned_only` argument takes precedence.\n",
                   "type": {
@@ -346275,6 +346323,30 @@
                   "type": {
                     "kind": "SCALAR",
                     "name": "ID",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "includeSubgroups",
+                  "description": "Include descendant groups of the group given in `parentPath`. Ignored unless `parentPath` is also provided.",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  },
+                  "defaultValue": "false",
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "visibilityLevel",
+                  "description": "Filter groups by visibility level.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "VisibilityLevelsEnum",
                     "ofType": null
                   },
                   "defaultValue": null,

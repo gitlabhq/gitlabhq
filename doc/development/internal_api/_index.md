@@ -1321,6 +1321,13 @@ Example response:
           "value": "name@example.com",
           "primary": true
         }
+      ],
+      "groups": [
+        {
+          "value": "86e7d437-1a55-4731-b3a3-2867fb4d2a94",
+          "display": "Developers",
+          "type": "direct"
+        }
       ]
     }
   ]
@@ -1364,9 +1371,25 @@ Example response:
       "value": "name@example.com",
       "primary": true
     }
+  ],
+  "groups": [
+    {
+      "value": "86e7d437-1a55-4731-b3a3-2867fb4d2a94",
+      "display": "Developers",
+      "type": "direct"
+    }
   ]
 }
 ```
+
+Each entry in `groups` describes a SCIM group the user belongs to. The attribute is read-only. To
+change group membership, use the [group endpoints](#group-endpoints).
+
+| Attribute | Type   | Description |
+|:----------|:-------|:------------|
+| `value`   | string | SCIM ID of the group, matching the `id` returned by the `Groups` endpoints. |
+| `display` | string | Human-readable name of the group. |
+| `type`    | string | Type of the membership. Always `direct`. |
 
 #### Create a SCIM provisioned user
 

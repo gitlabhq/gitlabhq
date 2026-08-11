@@ -1215,10 +1215,8 @@
 .gem-change-patterns: &gem-change-patterns
   - Gemfile
   - Gemfile.lock
-  - Gemfile.checksum
   - Gemfile.next
   - Gemfile.next.lock
-  - Gemfile.next.checksum
 
 # Keep in sync with doctor runtime dependencies:
 #   - scripts/ai_harness/doctor (entrypoint + helper scripts)

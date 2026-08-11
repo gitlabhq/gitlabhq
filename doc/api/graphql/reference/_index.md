@@ -135,6 +135,7 @@ Arguments:
 | <a id="query-admingroups-aimedfordeletion"></a>`aimedForDeletion` | [`Boolean`](#boolean) | Filter groups that are marked for deletion. |
 | <a id="query-admingroups-allavailable"></a>`allAvailable` | [`Boolean`](#boolean) | When `true`, returns all accessible groups. When `false`, returns only groups where the user is a member. Unauthenticated requests always return all public groups. The `owned_only` argument takes precedence. |
 | <a id="query-admingroups-ids"></a>`ids` | [`[ID!]`](#id) | Filter groups by IDs. |
+| <a id="query-admingroups-includesubgroups"></a>`includeSubgroups` | [`Boolean`](#boolean) | Include descendant groups of the group given in `parentPath`. Ignored unless `parentPath` is also provided. |
 | <a id="query-admingroups-markedfordeletionon"></a>`markedForDeletionOn` | [`Date`](#date) | Date when the group was marked for deletion. |
 | <a id="query-admingroups-not"></a>`not` | [`BaseGroupsResolverNegatedParams`](#basegroupsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
 | <a id="query-admingroups-ownedonly"></a>`ownedOnly` | [`Boolean`](#boolean) | Only include groups where the current user has an owner role. |
@@ -142,6 +143,7 @@ Arguments:
 | <a id="query-admingroups-search"></a>`search` | [`String`](#string) | Search query for group name or group full path. |
 | <a id="query-admingroups-sort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. |
 | <a id="query-admingroups-toplevelonly"></a>`topLevelOnly` | [`Boolean`](#boolean) | Only include top-level groups. |
+| <a id="query-admingroups-visibilitylevel"></a>`visibilityLevel` | [`VisibilityLevelsEnum`](#visibilitylevelsenum) | Filter groups by visibility level. |
 
 ### `Query.adminMemberRole`
 
@@ -1663,6 +1665,7 @@ Arguments:
 | <a id="query-groups-aimedfordeletion"></a>`aimedForDeletion` | [`Boolean`](#boolean) | Filter groups that are marked for deletion. |
 | <a id="query-groups-allavailable"></a>`allAvailable` | [`Boolean`](#boolean) | When `true`, returns all accessible groups. When `false`, returns only groups where the user is a member. Unauthenticated requests always return all public groups. The `owned_only` argument takes precedence. |
 | <a id="query-groups-ids"></a>`ids` | [`[ID!]`](#id) | Filter groups by IDs. |
+| <a id="query-groups-includesubgroups"></a>`includeSubgroups` | [`Boolean`](#boolean) | Include descendant groups of the group given in `parentPath`. Ignored unless `parentPath` is also provided. |
 | <a id="query-groups-markedfordeletionon"></a>`markedForDeletionOn` | [`Date`](#date) | Date when the group was marked for deletion. |
 | <a id="query-groups-not"></a>`not` | [`BaseGroupsResolverNegatedParams`](#basegroupsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
 | <a id="query-groups-ownedonly"></a>`ownedOnly` | [`Boolean`](#boolean) | Only include groups where the current user has an owner role. |
@@ -1670,6 +1673,7 @@ Arguments:
 | <a id="query-groups-search"></a>`search` | [`String`](#string) | Search query for group name or group full path. |
 | <a id="query-groups-sort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. |
 | <a id="query-groups-toplevelonly"></a>`topLevelOnly` | [`Boolean`](#boolean) | Only include top-level groups. |
+| <a id="query-groups-visibilitylevel"></a>`visibilityLevel` | [`VisibilityLevelsEnum`](#visibilitylevelsenum) | Filter groups by visibility level. |
 | <a id="query-groups-withknowledgegraphenabled"></a>`withKnowledgeGraphEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 18.10. Status: Experiment. Return only groups with Knowledge Graph enabled. |
 
 ### `Query.instanceExternalAuditEventDestinations`
@@ -52588,6 +52592,7 @@ Arguments:
 | <a id="organization-groups-aimedfordeletion"></a>`aimedForDeletion` | [`Boolean`](#boolean) | Filter groups that are marked for deletion. |
 | <a id="organization-groups-allavailable"></a>`allAvailable` | [`Boolean`](#boolean) | When `true`, returns all accessible groups. When `false`, returns only groups where the user is a member. Unauthenticated requests always return all public groups. The `owned_only` argument takes precedence. |
 | <a id="organization-groups-ids"></a>`ids` | [`[ID!]`](#id) | Filter groups by IDs. |
+| <a id="organization-groups-includesubgroups"></a>`includeSubgroups` | [`Boolean`](#boolean) | Include descendant groups of the group given in `parentPath`. Ignored unless `parentPath` is also provided. |
 | <a id="organization-groups-markedfordeletionon"></a>`markedForDeletionOn` | [`Date`](#date) | Date when the group was marked for deletion. |
 | <a id="organization-groups-not"></a>`not` | [`BaseGroupsResolverNegatedParams`](#basegroupsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
 | <a id="organization-groups-ownedonly"></a>`ownedOnly` | [`Boolean`](#boolean) | Only include groups where the current user has an owner role. |
@@ -52595,6 +52600,7 @@ Arguments:
 | <a id="organization-groups-search"></a>`search` | [`String`](#string) | Search query for group name or group full path. |
 | <a id="organization-groups-sort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. |
 | <a id="organization-groups-toplevelonly"></a>`topLevelOnly` | [`Boolean`](#boolean) | Only include top-level groups. |
+| <a id="organization-groups-visibilitylevel"></a>`visibilityLevel` | [`VisibilityLevelsEnum`](#visibilitylevelsenum) | Filter groups by visibility level. |
 | <a id="organization-groups-withknowledgegraphenabled"></a>`withKnowledgeGraphEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 18.10. Status: Experiment. Return only groups with Knowledge Graph enabled. |
 
 ##### `Organization.projects`

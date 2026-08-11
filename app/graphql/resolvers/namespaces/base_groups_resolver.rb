@@ -53,6 +53,18 @@ module Resolvers
         required: false,
         description: 'Full path of the parent group.'
 
+      argument :include_subgroups, GraphQL::Types::Boolean,
+        as: :include_parent_descendants,
+        required: false,
+        default_value: false,
+        description: 'Include descendant groups of the group given in `parentPath`. ' \
+          'Ignored unless `parentPath` is also provided.'
+
+      argument :visibility_level, ::Types::VisibilityLevelsEnum,
+        as: :visibility,
+        required: false,
+        description: 'Filter groups by visibility level.'
+
       argument :all_available, GraphQL::Types::Boolean,
         required: false,
         default_value: true,

@@ -457,7 +457,7 @@ After:
 - If you need to run `bundle install` in the job (even using `BUNDLE_ONLY`), you need to:
   - Download the gems that are stored in the `gitlab-org/gitlab` project.
     - You can use the `download_local_gems` shell command for that purpose.
-  - Include the `Gemfile`, `Gemfile.lock`, and `Gemfile.checksum` (if applicable)
+  - Include the `Gemfile` and `Gemfile.lock`
 
 #### Where is this pattern used?
 
@@ -465,7 +465,6 @@ After:
   - `rspec:coverage` for:
     - `config/bundler_setup.rb`
     - `Gemfile`
-    - `Gemfile.checksum`
     - `Gemfile.lock`
     - `scripts/merge-simplecov`
     - `spec/simplecov_env_core.rb`

@@ -25,14 +25,14 @@ the old `bundler-checksum` gem has been removed.
 Whenever gems are updated, ensure that the `Gemfile.next.lock` file remains consistent.
 
 1. Sync the gem files
-   If you update `Gemfile.checksum`, you must sync the gem files by running:
+   If you update `Gemfile.lock`, you must sync the gem files by running:
 
    ```shell
    bundle exec rake bundler:gemfile:sync
    ```
 
 1. Review and commit changes
-   After syncing, verify the updates and commit any changes to `Gemfile.next.checksum` and `Gemfile.next.lock`.
+   After syncing, verify the updates and commit any changes to `Gemfile.next.lock`.
 
 ## No gems fetched from Git repositories
 

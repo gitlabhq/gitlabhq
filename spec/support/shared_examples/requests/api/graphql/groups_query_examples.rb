@@ -157,6 +157,77 @@ RSpec.shared_examples 'groups query' do
     end
   end
 
+  describe 'visibilityLevel argument' do
+    let_it_be(:internal_group, freeze: false) { create(:group, :internal, name: 'Group C') }
+
+    before_all do
+      private_group.add_maintainer(user)
+    end
+
+    context 'when filtering by public visibility' do
+      let(:filters) { { visibilityLevel: :public } }
+
+      it 'returns only public groups' do
+        subject
+
+        expect(groups_graphql_data).to match_array([a_graphql_entity_for(public_group)])
+      end
+    end
+
+    context 'when filtering by private visibility' do
+      let(:filters) { { visibilityLevel: :private } }
+
+      it 'returns only accessible private groups' do
+        subject
+
+        expect(groups_graphql_data).to match_array([a_graphql_entity_for(private_group)])
+      end
+    end
+
+    context 'when the argument is omitted' do
+      it 'returns groups of every visibility level' do
+        subject
+
+        expect(groups_graphql_data).to match_array([
+          a_graphql_entity_for(public_group),
+          a_graphql_entity_for(internal_group),
+          a_graphql_entity_for(private_group)
+        ])
+      end
+    end
+  end
+
+  describe 'includeSubgroups argument' do
+    let_it_be(:parent_group, freeze: false) { create(:group, :public, name: 'Parent group') }
+    let_it_be(:child_group, freeze: false) { create(:group, :public, name: 'Child group', parent: parent_group) }
+    let_it_be(:grandchild_group, freeze: false) do
+      create(:group, :public, name: 'Grandchild group', parent: child_group)
+    end
+
+    context 'when includeSubgroups is true' do
+      let(:filters) { { parentPath: parent_group.full_path, includeSubgroups: true } }
+
+      it 'returns all descendant groups' do
+        subject
+
+        expect(groups_graphql_data).to match_array([
+          a_graphql_entity_for(child_group),
+          a_graphql_entity_for(grandchild_group)
+        ])
+      end
+    end
+
+    context 'when includeSubgroups is false' do
+      let(:filters) { { parentPath: parent_group.full_path, includeSubgroups: false } }
+
+      it 'returns only direct children' do
+        subject
+
+        expect(groups_graphql_data).to match_array([a_graphql_entity_for(child_group)])
+      end
+    end
+  end
+
   describe 'group sorting' do
     let_it_be(:public_group2, freeze: false) { create(:group, :public, name: 'Group C') }
     let_it_be(:public_group3, freeze: false) { create(:group, :public, name: 'Group D') }

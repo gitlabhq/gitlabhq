@@ -113,6 +113,74 @@ RSpec.describe Resolvers::GroupsResolver, feature_category: :groups_and_projects
       end
     end
 
+    context 'with `include_subgroups` argument' do
+      let_it_be(:parent_group) { create(:group, name: 'parent-group') }
+      let_it_be(:child_group) { create(:group, name: 'child-group', parent: parent_group) }
+      let_it_be(:grandchild_group) { create(:group, name: 'grandchild-group', parent: child_group) }
+
+      context 'when combined with `parent_path`' do
+        let(:params) { { parent_path: parent_group.full_path, include_subgroups: true } }
+
+        it 'returns all descendant groups' do
+          expect(subject).to contain_exactly(child_group, grandchild_group)
+        end
+
+        context 'when `include_subgroups` is false' do
+          let(:params) { { parent_path: parent_group.full_path, include_subgroups: false } }
+
+          it 'returns only direct children' do
+            expect(subject).to contain_exactly(child_group)
+          end
+        end
+      end
+
+      context 'when `parent_path` is not provided' do
+        let(:params) { { include_subgroups: true } }
+
+        it 'has no effect' do
+          expect(subject).to contain_exactly(public_group, parent_group, child_group, grandchild_group)
+        end
+      end
+    end
+
+    context 'with `visibility_level` argument' do
+      let_it_be(:internal_group) { create(:group, :internal, name: 'internal-group') }
+
+      before_all do
+        private_group.add_developer(user)
+      end
+
+      context 'when filtering by public visibility' do
+        let(:params) { { visibility_level: Gitlab::VisibilityLevel::PUBLIC } }
+
+        it 'returns only public groups' do
+          expect(subject).to contain_exactly(public_group)
+        end
+      end
+
+      context 'when filtering by internal visibility' do
+        let(:params) { { visibility_level: Gitlab::VisibilityLevel::INTERNAL } }
+
+        it 'returns only internal groups' do
+          expect(subject).to contain_exactly(internal_group)
+        end
+      end
+
+      context 'when filtering by private visibility' do
+        let(:params) { { visibility_level: Gitlab::VisibilityLevel::PRIVATE } }
+
+        it 'returns only accessible private groups' do
+          expect(subject).to contain_exactly(private_group)
+        end
+      end
+
+      context 'when the argument is not provided' do
+        it 'returns groups of all visibility levels' do
+          expect(subject).to contain_exactly(public_group, internal_group, private_group)
+        end
+      end
+    end
+
     context 'with `all_available` argument' do
       where :args, :expected_param do
         {}                       | { all_available: true }

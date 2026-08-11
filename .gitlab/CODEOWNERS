@@ -37,10 +37,8 @@ caproni-project.yaml @gitlab-org/maintainers/caproni
 *.erb @gitlab-org/maintainers/rails-backend
 Gemfile @gitlab-org/maintainers/rails-backend
 Gemfile.lock @gitlab-org/maintainers/rails-backend
-Gemfile.checksum @gitlab-org/maintainers/rails-backend
 Gemfile.next @gitlab-org/maintainers/rails-backend
 Gemfile.next.lock @gitlab-org/maintainers/rails-backend
-Gemfile.next.checksum @gitlab-org/maintainers/rails-backend
 Rakefile @gitlab-org/maintainers/rails-backend
 config.ru @gitlab-org/maintainers/rails-backend
 /.license_encryption_key.pub @gitlab-org/maintainers/rails-backend

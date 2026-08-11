@@ -119,6 +119,7 @@ Grants the ability to archive, create, read, and update vulnerabilities.
 | Read | Project | Type | `Vulnerability` |
 | Read | Project | Type | `VulnerabilityScanner` |
 | Read | Project | Field | `MergeRequest.findingReportsComparer` |
+| Read | Project | Field | `Project.vulnerabilityWorkflowExecution` |
 | Update | Project | Mutation | `BulkSetVulnerabilityFindingsDueDates` |
 | Update | Project | Mutation | `VulnerabilityAutoRemediation` |
 | Update | Project | Mutation | `VulnerabilityConfirm` |
@@ -134,7 +135,6 @@ Grants the ability to execute vulnerability duo workflows.
 | ------ | ------ | ---- | ---- |
 | Execute | Project | Mutation | `CancelVulnerabilityWorkflow` |
 | Execute | Project | Mutation | `StartVulnerabilityWorkflow` |
-| Execute | Project | Field | `Project.vulnerabilityWorkflowExecution` |
 
 #### Vulnerability Flag
 
