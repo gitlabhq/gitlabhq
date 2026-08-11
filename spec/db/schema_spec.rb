@@ -146,6 +146,11 @@ RSpec.describe 'Database schema',
       oauth_device_grants: %w[resource_owner_id],
       packages_nuget_symbols: %w[project_id],
       packages_package_files: %w[project_id],
+      # Sharding key copied from the parents above, which may reference a deleted project.
+      # Cleanup happens via the loose foreign keys on the parents.
+      # https://gitlab.com/gitlab-org/gitlab/-/work_items/606941
+      packages_nuget_symbol_states: %w[project_id],
+      packages_package_file_states: %w[project_id],
       p_ci_build_needs: %w[project_id],
       p_ci_builds: %w[erased_by_id execution_config_id scoped_user_id],
       p_ci_builds_metadata: %w[project_id],
