@@ -45,6 +45,18 @@ RSpec.describe RuboCop::Cop::Gitlab::AvoidUserOrganization, feature_category: :o
       include_examples 'registers an offense'
     end
 
+    context 'when calling organization on user with safe navigation' do
+      let(:node_value) { 'user&.organization' }
+
+      include_examples 'registers an offense'
+    end
+
+    context 'when calling organization on current_user with safe navigation' do
+      let(:node_value) { 'current_user&.organization' }
+
+      include_examples 'registers an offense'
+    end
+
     context 'when calling organization on @@user class variable' do
       let(:node_value) { '@@user.organization' }
 

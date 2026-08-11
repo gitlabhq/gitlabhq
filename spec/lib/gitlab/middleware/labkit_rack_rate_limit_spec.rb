@@ -19,7 +19,7 @@ RSpec.describe Gitlab::Middleware::LabkitRackRateLimit, feature_category: :rate_
   let(:entry) do
     registry::Entry.new(
       name: 'throttle_unauthenticated_web', limiter: registry::GENERAL, rule_name: 'unauthenticated_web',
-      characteristics: [:ip], match: { path: registry::WEB_PATH_REGEX }, cohort: 2, definition: nil
+      characteristics: [:ip], match: { web_or_frontend: true }, cohort: 2, definition: nil
     )
   end
 
@@ -219,32 +219,6 @@ RSpec.describe Gitlab::Middleware::LabkitRackRateLimit, feature_category: :rate_
         status, = middleware.call(env)
 
         expect(status).to eq(429)
-      end
-    end
-
-    context 'when the block came from a web throttle frontend companion' do
-      # The companion rule name (unauthenticated_web_frontend) is not itself a throttle
-      # name, so it must resolve to its base throttle for both the enforce cohort and
-      # the RateLimit-Name header - otherwise a cohort lookup miss would silently leave
-      # frontend-API traffic unenforced.
-      let(:rule) { instance_double(Labkit::RateLimit::Rule, name: 'unauthenticated_web_frontend') }
-      let(:entry) do
-        registry::Entry.new(
-          name: 'throttle_unauthenticated_web', limiter: registry::GENERAL,
-          rule_name: 'unauthenticated_web_frontend', characteristics: [:ip],
-          match: { frontend: true }, cohort: 2, definition: nil
-        )
-      end
-
-      let(:result) do
-        instance_double(Labkit::RateLimit::Result, action: :block, error?: false, rule: rule, info: info)
-      end
-
-      it 'enforces under the base throttle cohort and names the base throttle in the 429', :aggregate_failures do
-        status, headers, = middleware.call(env)
-
-        expect(status).to eq(429)
-        expect(headers).to include('RateLimit-Name' => 'throttle_unauthenticated_web')
       end
     end
   end

@@ -123,9 +123,9 @@ repository. The lease is taken when the `Geo::FrameworkRepositorySyncService` ex
 
 Its purpose is to:
 
-- Prevents race conditions when multiple sync jobs attempt to update the same repository simultaneously.
-- Ensures data consistency by serializing sync operations for each repository.
-- Protects against un-necessary load coming from duplicated event workers as well as sync stuck in `pending` state.
+- Prevent race conditions when multiple sync jobs attempt to update the same repository simultaneously.
+- Ensure data consistency by serializing sync operations for each repository.
+- Protect against unnecessary load coming from duplicated event workers as well as sync stuck in `pending` state.
 
 The lease has a timeout of 3 hours. The format for the lease key is `geo_sync_ssf_service:{replicable_name}:{model_record_id}`.
 

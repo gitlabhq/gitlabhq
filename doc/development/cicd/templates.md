@@ -13,7 +13,7 @@ title: Development guide for GitLab CI/CD templates (Deprecated)
 > shared CI/CD resources, and avoids the complexities of contributing new CI/CD templates.
 > If you need to update an existing template, you must also update the matching CI/CD component.
 > If no component exists that matches the CI/CD template yet, consider [creating the matching component](components.md).
-> This ensures that template and component functionality remain in sync, aligning with
+> This ensures that template and component functionality remains in sync, aligning with
 > our new development practices.
 
 This document explains how to develop GitLab CI/CD templates.
@@ -303,7 +303,7 @@ Adding a latest template is safe, but comes with a maintenance burden:
   latest template at the next major release of GitLab. The DRI is responsible for
   supporting users who have trouble with the change.
 - When we make a new non-breaking change, both the stable and latest templates must be updated
-  to match, as must as possible.
+  to match, as much as possible.
 - A latest template could remain for longer than planned because many users could
   directly depend on it continuing to exist.
 
@@ -314,7 +314,7 @@ the stable template with a breaking change in a minor milestone, make sure:
 
 - It's a [pipeline template](#template-types) and it has a [code comment](#explain-requirements-and-expectations)
   explaining that it's not designed to be used with the `includes`.
-- The [CI/CD template usage metrics](#add-metrics) doesn't show any usage. If the metrics
+- The [CI/CD template usage metrics](#add-metrics) don't show any usage. If the metrics
   show zero usage for the template, the template is not actively being used with `include`.
 
 ### Stable version

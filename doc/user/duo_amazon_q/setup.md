@@ -374,7 +374,16 @@ You might also encounter the following issue.
 
 ### GitLab instance UUID mismatch
 
-You might encounter a `GitLab instance UUID mismatch` error when disconnecting Amazon Q. This issue typically occurs when:
+You might encounter a `GitLab instance UUID mismatch` error when you disconnect Amazon Q,
+or a `Cannot obtain OIDC token` error when you run a health check.
+For example:
+
+```plaintext
+Authentication with the AI gateway services failed: AI Gateway returned code 500: {"detail":"Cannot obtain OIDC token"}
+Amazon Q connectivity check failed: Cannot obtain OIDC token
+```
+
+These errors typically occur when:
 
 - The GitLab instance has been restored from a backup.
 - The GitLab instance has been migrated to new infrastructure.

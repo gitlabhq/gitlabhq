@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Authorization code review guidelines
 ---
 
-This page provides guidance from the [Govern:Authorization team](https://handbook.gitlab.com/handbook/engineering/development/sec/software-supply-chain-security/authorization) on how to prepare a merge request that involve policy changes, permission definitions, and authorization logic for review.
+This page provides guidance from the [Govern:Authorization team](https://handbook.gitlab.com/handbook/engineering/development/sec/software-supply-chain-security/authorization) on how to prepare a merge request that involves policy changes, permission definitions, and authorization logic for review.
 
 ## Role YAML files are the source of truth
 

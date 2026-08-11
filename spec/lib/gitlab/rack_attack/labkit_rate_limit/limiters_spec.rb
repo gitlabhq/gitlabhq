@@ -63,17 +63,16 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
         .with(hash_including(name: 'unauthenticated_web_claim'))
     end
 
-    it 'builds the web-path rule and its frontend companion as sibling :limit rules' do
-      # The companion is its own registry entry (its own counter/rule name) backing the
-      # same throttle; both build as :limit by default.
+    it 'builds each web throttle as one rule, keeping the throttle on a single counter' do
+      # The rule name keys the Redis counter; web_or_frontend carries the
+      # disjunction that would otherwise need two rules (and so two counters).
       web = registry.all.fetch('throttle_unauthenticated_web')
-      frontend = registry.all.fetch('throttle_unauthenticated_web_frontend')
       described_class.all
 
       expect(Labkit::RateLimit::Rule).to have_received(:new)
-        .with(hash_including(name: 'unauthenticated_web', match: web.match, action: :limit))
-      expect(Labkit::RateLimit::Rule).to have_received(:new)
-        .with(hash_including(name: 'unauthenticated_web_frontend', match: frontend.match, action: :limit))
+        .with(hash_including(name: 'unauthenticated_web', match: web.match, action: :limit)).once
+      expect(Labkit::RateLimit::Rule).not_to have_received(:new)
+        .with(hash_including(name: 'unauthenticated_web_frontend'))
     end
 
     describe 'synthetic terminating rules' do
@@ -136,20 +135,6 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
         expect(Labkit::RateLimit::Rule).not_to have_received(:new)
           .with(hash_including(name: 'unauthenticated_web_dry_run_bypass'))
       end
-
-      it 'shapes the frontend companion as its own dry-run log rule and bypass' do
-        # The companion is the same Rack::Attack throttle, so it follows the same
-        # dry-run state: a :log rule and its own terminating :skip, keyed by the
-        # companion name so it does not collide with the web-path rule's counter.
-        frontend_match = registry.all.fetch('throttle_unauthenticated_web_frontend').match
-        described_class.all
-
-        expect(Labkit::RateLimit::Rule).to have_received(:new)
-          .with(hash_including(name: 'unauthenticated_web_frontend', match: frontend_match, action: :log))
-        expect(Labkit::RateLimit::Rule).to have_received(:new)
-          .with(hash_including(name: 'unauthenticated_web_frontend_dry_run_bypass', match: frontend_match,
-            action: :skip))
-      end
     end
   end
 
@@ -197,9 +182,9 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
       result.rule.name.delete_suffix('_claim') if result.matched?
     end
 
-    # The git rows carry a git path, which also matches WEB_PATH_REGEX (a git path is
-    # a web request), so they also assert the git rules are ordered before (and so
-    # exclude) the web-path rule.
+    # The git rows carry web_or_frontend: true (a git path is a web request) with the
+    # matching web throttle setting on, so they also assert the git rules are ordered
+    # before - and so exclude - the web rules.
     # Unauthenticated rows carry no requester_id/runner_id override, so the facts
     # helper's nil defaults are the unauthenticated? decomposition the rules gate on.
     general_cases = {
@@ -226,19 +211,10 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
         requester_type: 'user', requester_id: '1'
       },
       'unauthenticated_web' => {
-        path: '/dashboard', setting_unauthenticated_web: true
+        path: '/dashboard', web_or_frontend: true, setting_unauthenticated_web: true
       },
       'authenticated_web' => {
-        path: '/dashboard', setting_authenticated_web: true,
-        requester_type: 'user', requester_id: '1'
-      },
-      # The frontend companion: a CSRF request on an API path (not a web path), which
-      # the web-path rule misses but the frontend rule claims before the API rule.
-      'unauthenticated_web_frontend' => {
-        path: paths[:api], frontend: true, setting_unauthenticated_web: true
-      },
-      'authenticated_web_frontend' => {
-        path: paths[:api], frontend: true, setting_authenticated_web: true,
+        path: '/dashboard', web_or_frontend: true, setting_authenticated_web: true,
         requester_type: 'user', requester_id: '1'
       },
       'unauthenticated_api' => { path: paths[:api], setting_unauthenticated_api: true },
@@ -247,14 +223,15 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
         requester_type: 'user', requester_id: '1'
       },
       'unauthenticated_git_http' => {
-        path: paths[:git], setting_unauthenticated_git_http: true
+        path: paths[:git], web_or_frontend: true, setting_unauthenticated_git_http: true,
+        setting_unauthenticated_web: true
       },
       'authenticated_git_http' => {
-        path: paths[:git], setting_authenticated_git_http: true,
+        path: paths[:git], web_or_frontend: true, setting_authenticated_git_http: true,
         setting_authenticated_web: true, requester_type: 'user', requester_id: '1'
       },
       'authenticated_git_lfs' => {
-        path: paths[:git_lfs], setting_authenticated_git_lfs: true,
+        path: paths[:git_lfs], web_or_frontend: true, setting_authenticated_git_lfs: true,
         setting_authenticated_web: true, requester_type: 'user', requester_id: '1'
       }
     }
@@ -263,6 +240,42 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
       it "selects #{throttle} for its representative request" do
         expect(selected_in(general, **request_facts)).to eq(throttle)
       end
+    end
+
+    it 'counts a frontend request on an API path under the web throttle, not the API throttle' do
+      # The API rules' frontend: false gate keeps Rack::Attack's !frontend_request?
+      # exclusion even with the web throttle setting off.
+      frontend_api = {
+        path: paths[:api], frontend: true, web_or_frontend: true,
+        setting_unauthenticated_api: true
+      }
+
+      expect(selected_in(general, **frontend_api, setting_unauthenticated_web: true)).to eq('unauthenticated_web')
+      expect(selected_in(general, **frontend_api, setting_unauthenticated_web: false)).to be_nil
+    end
+
+    it 'accumulates web-page and frontend-API requests from one IP on a single counter' do
+      # The regression this MR fixes: two rules would split the counter and the IP
+      # would reach the limit later than under Rack::Attack.
+      web_page = general.check(
+        facts(path: '/dashboard', web_or_frontend: true, setting_unauthenticated_web: true))
+      frontend_api = general.check(
+        facts(path: paths[:api], frontend: true, web_or_frontend: true, setting_unauthenticated_web: true))
+
+      # An under-limit check terminates on the claim skip, so the counted throttle
+      # evaluation is read off #evaluations.
+      expect(web_page.evaluations.first.rule.name).to eq('unauthenticated_web')
+      expect(frontend_api.evaluations.first.rule.name).to eq('unauthenticated_web')
+      expect(web_page.evaluations.first.info.count).to eq(1)
+      expect(frontend_api.evaluations.first.info.count).to eq(2)
+    end
+
+    it 'lets the collector rule claim a collector request, leaving it out of the web counter' do
+      # Rack::Attack counts a collector request under both throttles (a collector
+      # path is also a web path); the claim is a known, accepted divergence.
+      expect(selected_in(general,
+        path: paths[:collector], aid: 'app-1', web_or_frontend: true,
+        setting_unauthenticated_web: true)).to eq('product_analytics_collector')
     end
 
     protected_cases = {
@@ -345,7 +358,7 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
 
     it 'lets authenticated web claim a git-lfs request when the lfs throttle is disabled (fallthrough)' do
       expect(selected_in(general,
-        path: paths[:git_lfs], requester_type: 'user', requester_id: '1',
+        path: paths[:git_lfs], web_or_frontend: true, requester_type: 'user', requester_id: '1',
         setting_authenticated_web: true, setting_authenticated_git_lfs: false)).to eq('authenticated_web')
     end
 

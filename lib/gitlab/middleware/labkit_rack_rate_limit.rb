@@ -100,9 +100,8 @@ module Gitlab
         return unless blocked
 
         # The 429's RateLimit-Name is the real throttle name (Entry#name), not the
-        # matched rule name: a companion rule (e.g. authenticated_web_frontend) is the
-        # same throttle as its base (throttle_authenticated_web), so the header stays
-        # byte-identical to the legacy Rack::Attack responder for that throttle.
+        # matched rule name, so the header stays byte-identical to the legacy
+        # Rack::Attack responder for that throttle.
         headers = ::Gitlab::RackAttack::RequestThrottleData
           .from_labkit_result(name: entry_for_rule(blocked.rule.name).name, result: blocked)
           &.throttled_response_headers
@@ -125,11 +124,9 @@ module Gitlab
       # The throttle Entry a matched Labkit rule name resolves to, memoized on first
       # use (the first request, past initialization, so the require_dependency'd
       # middleware never resolves its registry sibling at load time). Keyed by Labkit
-      # rule name, companion rules included (a companion like authenticated_web_frontend
-      # resolves to its base throttle_authenticated_web), so both the enforce cohort
-      # (Entry#cohort) and the 429 header name (Entry#name) come from the base throttle.
-      # A synthetic rule has no entry, but a synthetic rule never blocks, so it is
-      # never looked up here.
+      # rule name, from which both the enforce cohort (Entry#cohort) and the 429 header
+      # name (Entry#name, the backing throttle) resolve. A synthetic rule has no entry,
+      # but a synthetic rule never blocks, so it is never looked up here.
       def entry_for_rule(rule_name)
         @entries_by_rule ||= registry.by_rule_name
         @entries_by_rule[rule_name]

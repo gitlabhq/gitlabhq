@@ -55,7 +55,7 @@ sequenceDiagram
 Detailing implementation, Workhorse on the secondary (requested) site decides whether to proxy the data or not. If it
 can "accelerate" the data type (that is, can serve locally to save a roundtrip request), it returns the data
 immediately. Otherwise, traffic is sent to the primary's internal URL, served by Workhorse on the primary exactly
-as a direct request would. The response is then be proxied back to the user through the secondary Workhorse in the
+as a direct request would. The response is then proxied back to the user through the secondary Workhorse in the
 same connection.
 
 ```mermaid
@@ -103,7 +103,7 @@ The Git pull forward path was [renamed from the legacy name `push_from_secondary
 
 #### Accelerated repositories
 
-When a repository exists on the secondary and we detect is up to date with the primary, we serve it directly instead of
+When a repository exists on the secondary and we detect it is up to date with the primary, we serve it directly instead of
 proxying.
 
 ```mermaid
@@ -131,7 +131,7 @@ Wsec-->>C: Pipe messages to the Git client
 
 #### Proxied repositories
 
-If a requested repository isn't synced, or we detect is not up to date, the request will be proxied to the primary, in
+If a requested repository isn't synced, or we detect it is not up to date, the request will be proxied to the primary, in
 order to get the latest version of the changes.
 
 ```mermaid
@@ -178,7 +178,7 @@ Rails internal API.
 
 #### Accelerated repositories
 
-When a repository exists on the secondary and we detect is up to date with the primary, we serve it directly instead of
+When a repository exists on the secondary and we detect it is up to date with the primary, we serve it directly instead of
 proxying.
 
 ```mermaid
@@ -201,7 +201,7 @@ S-->>C: stream Git response back
 
 #### Proxied repositories
 
-If a requested repository isn't synced, or we detect is not up to date, the request will be proxied to the primary, in
+If a requested repository isn't synced, or we detect it is not up to date, the request will be proxied to the primary, in
 order to get the latest version of the changes.
 
 ```mermaid
@@ -258,7 +258,7 @@ S-->>C: return Git response from primary
 
 ### Git push over HTTP(S)
 
-If a requested repository isn't synced, or we detect is not up to date, the request will be proxied to the primary, a push redirects to a local path formatted as `/-/from_secondary/$SECONDARY_ID/*`.
+If a requested repository isn't synced, or we detect it is not up to date, the request will be proxied to the primary. A push redirects to a local path formatted as `/-/from_secondary/$SECONDARY_ID/*`.
 Further, requests through this path are proxied to the primary, which will handle the push.
 
 ```mermaid

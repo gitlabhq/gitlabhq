@@ -674,6 +674,14 @@ paths:
         '400':
           description: Bad Request
       parameters:
+      - name: id
+        required: true
+        description: The ID or URL-encoded path of the namespace
+        schema:
+          oneOf:
+          - type: string
+          - type: integer
+        in: path
       - name: page
         required: false
         description: Current page number
@@ -692,10 +700,6 @@ paths:
           nullable: true
         in: query
         example: 20
-      - name: id
-        required: true
-        schema: {}
-        in: path
   "/api/v4/rollouts/{id}":
     post:
       operationId: postApiV4RolloutsId
@@ -943,7 +947,9 @@ paths:
         in: path
       - name: sast_endpoint
         required: true
-        schema: {}
+        description: The name of the SAST scanner service endpoint to call
+        schema:
+          type: string
         in: path
       requestBody:
         required: true
@@ -4627,7 +4633,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_1bb359633f1e"
+              "$ref": "#/components/schemas/RequestBody_4460f88c4a6d"
   "/api/v4/security/groups/{id}/vulnerability_exports":
     post:
       operationId: postApiV4SecurityGroupsIdVulnerabilityExports
@@ -4659,7 +4665,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_1bb359633f1e"
+              "$ref": "#/components/schemas/RequestBody_4460f88c4a6d"
   "/api/v4/security/vulnerability_exports":
     post:
       operationId: postApiV4SecurityVulnerabilityExports
@@ -11193,7 +11199,9 @@ paths:
         in: path
       - name: approval_rule_id
         required: true
-        schema: {}
+        description: The ID of an approval rule
+        schema:
+          type: integer
         in: path
       requestBody:
         required: false
@@ -71944,6 +71952,12 @@ paths:
         '404':
           description: Not Found
       parameters:
+      - name: ssh_certificates_id
+        required: true
+        description: The ID of a group SSH certificate
+        schema:
+          type: integer
+        in: path
       - name: id
         required: true
         description: The ID or URL-encoded path of the group
@@ -71951,10 +71965,6 @@ paths:
           oneOf:
           - type: string
           - type: integer
-        in: path
-      - name: ssh_certificates_id
-        required: true
-        schema: {}
         in: path
   "/api/v4/projects/{id}/jobs/artifacts/{ref_name}/download":
     get:
@@ -73559,6 +73569,12 @@ paths:
         '400':
           description: Bad Request
       parameters:
+      - name: note_id
+        required: true
+        description: The ID of a note
+        schema:
+          type: integer
+        in: path
       - name: page
         required: false
         description: Current page number
@@ -73591,10 +73607,6 @@ paths:
         description: The internal ID of an issuable
         schema:
           type: integer
-        in: path
-      - name: note_id
-        required: true
-        schema: {}
         in: path
     post:
       operationId: postApiV4ProjectsIdIssuesIssueIidNotesNoteIdAwardEmoji
@@ -73631,7 +73643,9 @@ paths:
         in: path
       - name: note_id
         required: true
-        schema: {}
+        description: The ID of a note
+        schema:
+          type: integer
         in: path
       requestBody:
         required: true
@@ -73683,7 +73697,9 @@ paths:
         in: path
       - name: note_id
         required: true
-        schema: {}
+        description: The ID of a note
+        schema:
+          type: integer
         in: path
     delete:
       operationId: deleteApiV4ProjectsIdIssuesIssueIidNotesNoteIdAwardEmojiAwardId
@@ -73725,7 +73741,9 @@ paths:
         in: path
       - name: note_id
         required: true
-        schema: {}
+        description: The ID of a note
+        schema:
+          type: integer
         in: path
   "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/award_emoji":
     get:
@@ -73920,6 +73938,12 @@ paths:
         '400':
           description: Bad Request
       parameters:
+      - name: note_id
+        required: true
+        description: The ID of a note
+        schema:
+          type: integer
+        in: path
       - name: page
         required: false
         description: Current page number
@@ -73952,10 +73976,6 @@ paths:
         description: The IID of a merge request
         schema:
           type: integer
-        in: path
-      - name: note_id
-        required: true
-        schema: {}
         in: path
     post:
       operationId: postApiV4ProjectsIdMergeRequestsMergeRequestIidNotesNoteIdAwardEmoji
@@ -73992,7 +74012,9 @@ paths:
         in: path
       - name: note_id
         required: true
-        schema: {}
+        description: The ID of a note
+        schema:
+          type: integer
         in: path
       requestBody:
         required: true
@@ -74044,7 +74066,9 @@ paths:
         in: path
       - name: note_id
         required: true
-        schema: {}
+        description: The ID of a note
+        schema:
+          type: integer
         in: path
     delete:
       operationId: deleteApiV4ProjectsIdMergeRequestsMergeRequestIidNotesNoteIdAwardEmojiAwardId
@@ -74086,7 +74110,9 @@ paths:
         in: path
       - name: note_id
         required: true
-        schema: {}
+        description: The ID of a note
+        schema:
+          type: integer
         in: path
   "/api/v4/projects/{id}/snippets/{snippet_id}/award_emoji":
     get:
@@ -74280,6 +74306,12 @@ paths:
         '400':
           description: Bad Request
       parameters:
+      - name: note_id
+        required: true
+        description: The ID of a note
+        schema:
+          type: integer
+        in: path
       - name: page
         required: false
         description: Current page number
@@ -74312,10 +74344,6 @@ paths:
         description: The ID of a project snippet
         schema:
           type: integer
-        in: path
-      - name: note_id
-        required: true
-        schema: {}
         in: path
     post:
       operationId: postApiV4ProjectsIdSnippetsSnippetIdNotesNoteIdAwardEmoji
@@ -74352,7 +74380,9 @@ paths:
         in: path
       - name: note_id
         required: true
-        schema: {}
+        description: The ID of a note
+        schema:
+          type: integer
         in: path
       requestBody:
         required: true
@@ -74404,7 +74434,9 @@ paths:
         in: path
       - name: note_id
         required: true
-        schema: {}
+        description: The ID of a note
+        schema:
+          type: integer
         in: path
     delete:
       operationId: deleteApiV4ProjectsIdSnippetsSnippetIdNotesNoteIdAwardEmojiAwardId
@@ -74446,7 +74478,9 @@ paths:
         in: path
       - name: note_id
         required: true
-        schema: {}
+        description: The ID of a note
+        schema:
+          type: integer
         in: path
   "/api/v4/groups/{id}/epics/{epic_iid}/award_emoji":
     get:
@@ -74640,6 +74674,12 @@ paths:
         '400':
           description: Bad Request
       parameters:
+      - name: note_id
+        required: true
+        description: The ID of a note
+        schema:
+          type: integer
+        in: path
       - name: page
         required: false
         description: Current page number
@@ -74673,10 +74713,6 @@ paths:
           type: integer
         in: path
         example: 1
-      - name: note_id
-        required: true
-        schema: {}
-        in: path
     post:
       operationId: postApiV4GroupsIdEpicsEpicIidNotesNoteIdAwardEmoji
       summary: Add an emoji reaction to an epic comment
@@ -74712,7 +74748,9 @@ paths:
         example: 1
       - name: note_id
         required: true
-        schema: {}
+        description: The ID of a note
+        schema:
+          type: integer
         in: path
       requestBody:
         required: true
@@ -74764,7 +74802,9 @@ paths:
         example: 1
       - name: note_id
         required: true
-        schema: {}
+        description: The ID of a note
+        schema:
+          type: integer
         in: path
     delete:
       operationId: deleteApiV4GroupsIdEpicsEpicIidNotesNoteIdAwardEmojiAwardId
@@ -74806,7 +74846,9 @@ paths:
         example: 1
       - name: note_id
         required: true
-        schema: {}
+        description: The ID of a note
+        schema:
+          type: integer
         in: path
   "/api/v4/avatar":
     get:
@@ -96173,7 +96215,7 @@ components:
           type: boolean
           description: Whether hidden groups should be removed
           nullable: true
-    RequestBody_1bb359633f1e:
+    RequestBody_4460f88c4a6d:
       type: object
       properties:
         export_format:
@@ -96237,6 +96279,8 @@ components:
               properties:
                 critical:
                   type: object
+                  description: Count, median age, and color for critical severity
+                    vulnerabilities
                   properties:
                     count:
                       type: integer
@@ -96253,6 +96297,7 @@ components:
                   nullable: true
                 high:
                   type: object
+                  description: Count, median age, and color for high severity vulnerabilities
                   properties:
                     count:
                       type: integer
@@ -96269,6 +96314,7 @@ components:
                   nullable: true
                 medium:
                   type: object
+                  description: Count, median age, and color for medium severity vulnerabilities
                   properties:
                     count:
                       type: integer
@@ -96285,6 +96331,7 @@ components:
                   nullable: true
                 low:
                   type: object
+                  description: Count, median age, and color for low severity vulnerabilities
                   properties:
                     count:
                       type: integer
@@ -96301,6 +96348,7 @@ components:
                   nullable: true
                 unknown:
                   type: object
+                  description: Count, median age, and color for unknown severity vulnerabilities
                   properties:
                     count:
                       type: integer
@@ -96317,6 +96365,7 @@ components:
                   nullable: true
                 info:
                   type: object
+                  description: Count, median age, and color for info severity vulnerabilities
                   properties:
                     count:
                       type: integer

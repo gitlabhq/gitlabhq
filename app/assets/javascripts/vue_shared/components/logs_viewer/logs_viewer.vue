@@ -110,9 +110,9 @@ export default {
     <logs-top-bar
       :is-full-screen="isFullScreen"
       :is-following="isFollowing"
-      @toggleFullScreen="toggleFullScreen"
-      @scrollToTop="onScrollToTop"
-      @scrollToBottom="onScrollToBottom"
+      @toggle-full-screen="toggleFullScreen"
+      @scroll-to-top="onScrollToTop"
+      @scroll-to-bottom="onScrollToBottom"
       ><slot name="header-details"></slot>
     </logs-top-bar>
     <code class="gl-block gl-bg-black gl-pt-3 gl-text-base">

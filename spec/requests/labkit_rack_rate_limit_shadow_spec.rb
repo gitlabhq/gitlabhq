@@ -162,6 +162,23 @@ RSpec.describe 'Labkit::RateLimit rack middleware', :clean_gitlab_redis_rate_lim
     end
   end
 
+  # Rack::Attack counts a collector request under both the collector and web
+  # throttles (a collector path is also a web path); the collector rule claims it
+  # here. Pins the known, accepted divergence rather than hiding it.
+  describe 'a collector request with the web throttle enabled' do
+    before do
+      stub_application_setting(throttle_unauthenticated_enabled: true)
+      stub_feature_flags(rate_limiter_use_labkit_rack_cohort_1: true, rate_limiter_use_labkit_rack_cohort_2: true)
+    end
+
+    it 'counts under the collector throttle only, under-counting web as Rack::Attack does not', :aggregate_failures do
+      get "/-/collector/i?aid=#{aid}"
+
+      expect(labkit_count).to eq(1)
+      expect(labkit_count_for('unauthenticated_web')).to eq(0)
+    end
+  end
+
   describe 'an allowlisted user' do
     let_it_be(:token) { create(:personal_access_token) }
 

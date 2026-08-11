@@ -6,7 +6,7 @@ title: Reading GraphQL logs
 ---
 
 We use Kibana to filter GraphQL query logs. Sign in to [Kibana](https://log.gprd.gitlab.net/)
-with a `@gitlab.com` email address.
+with an `@gitlab.com` email address.
 
 In Kibana we can inspect two kinds of GraphQL logs:
 
@@ -80,7 +80,7 @@ Below are some examples of common Kibana filters.
 [See example filter](https://log.gprd.gitlab.net/app/r/s/cWkK1).
 
 As mentioned [above](#logs-of-each-graphql-query), `json.meta.caller_id` appears as `graphql:<operation_name>` for queries that
-came from the GitLab frontend, otherwise as `graphql:unknown`. This filter be used to identify internal versus external queries.
+came from the GitLab frontend, otherwise as `graphql:unknown`. This filter can be used to identify internal versus external queries.
 
 1. Combine the [subcomponent filter](#logs-of-each-graphql-query) with the following Kibana filter:
    1. Filter: `json.meta.caller_id`
@@ -114,5 +114,5 @@ To see the full request logs, do not apply the `json.subcomponent` [filter](#log
 
 Some differences from the [query logs](#logs-of-each-graphql-query) described above:
 
-- Some of the [Kibana fields mentioned above](#logs-of-each-graphql-query) are not available to the full request logs.
+- Some of the [Kibana fields mentioned above](#logs-of-each-graphql-query) are not available in the full request logs.
 - The names of filters differ. For example, instead of `json.query_analysis.used_fields` you select `json.graphql.used_fields`.

@@ -26,7 +26,7 @@ Permissions are referenced by [role definition YAML files](role_definitions.md) 
 
 ## Naming Permissions
 
-Our goal is for all permissions to follow a consistent pattern: **`action_resource(_subresource)`**. These guidelines apply to both Assignable Permissions and Raw Permissions, but most strictly be followed with Assignable Permissions as they are public facing.
+Our goal is for all permissions to follow a consistent pattern: **`action_resource(_subresource)`**. These guidelines apply to both Assignable Permissions and Raw Permissions, but must be most strictly followed with Assignable Permissions as they are public facing.
 
 ### Preferred Actions
 

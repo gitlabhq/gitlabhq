@@ -18,13 +18,14 @@ module Gitlab
       #                   authenticated rule gates on { requester_id => /./ }, an
       #                   unauthenticated rule on { requester_id => nil, runner_id => nil }
       #                   (unauthenticated? is exactly no-requester-and-no-runner). The
-      #                   match carries no negations: a general throttle does not
-      #                   exclude the specialized ones it overlaps; instead the rules
-      #                   are ordered specialized-before-general and each entry
-      #                   declares a terminating claim (:claims below), so the first
-      #                   throttle to match counts the request and stops evaluation,
-      #                   exactly as Rack::Attack's hand-written
-      #                   `!throttle_packages? && ...` exclusions do.
+      #                   match carries no negated throttle conditions: a general
+      #                   throttle does not exclude the specialized ones it overlaps;
+      #                   instead the rules are ordered specialized-before-general and
+      #                   each entry declares a terminating claim (:claims below), so
+      #                   the first throttle to match counts the request and stops
+      #                   evaluation, exactly as Rack::Attack's hand-written
+      #                   `!throttle_packages? && ...` exclusions do. A predicate's
+      #                   raw-fact negation is matched directly (frontend: false).
       #   :characteristics the identifier slots the rule counts by, as the array the
       #                   SDK's Rule expects. Labkit joins them in order into the redis
       #                   counter key, so an authenticated rule counts by the
@@ -57,10 +58,16 @@ module Gitlab
       # rules, it encodes the exclusions): the hash
       # is insertion-ordered and Limiters builds rules in that order. The order is
       # specialized API -> git -> web -> general API, so a packages request is claimed
-      # by the packages rule before the general API rule, a frontend request (an API
-      # path the web throttle owns) is claimed by the web rule before the API rule,
-      # and a git request (which is also a web request) is claimed by a git rule
-      # before the web rule.
+      # by the packages rule before the general API rule, and a git request (which is
+      # also a web request) is claimed by a git rule before the web rule.
+      #
+      # A claim expresses an exclusion; it cannot express co-firing. Rack::Attack
+      # counts a request under every throttle that matches; here the first match in a
+      # limiter wins, and only a second limiter buys a second counter (protected
+      # paths, EE incident management). So overlaps inside the general limiter
+      # (collector/web, frontend traffic on specialized API paths) count under the
+      # claiming rule only - a known, accepted divergence:
+      # https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/work_items/29363
       #
       # A spec asserts meta covers every throttle in all_throttle_definitions, so a
       # newly added Rack::Attack throttle cannot silently escape the middleware.
@@ -80,9 +87,8 @@ module Gitlab
         )
 
         # :name is the backing Rack::Attack throttle (definition, dry-run state, 429
-        # header name); :rule_name is the unique Labkit rule / counter name. They differ
-        # only for a sibling rule that shares another throttle (the web frontend
-        # companions): name is the shared throttle, rule_name the companion's own.
+        # header name); :rule_name is the unique Labkit rule / counter name, derived
+        # from the throttle name.
         Entry = Struct.new(
           :name, :limiter, :rule_name, :characteristics, :match, :cohort, :definition, :claims,
           keyword_init: true
@@ -108,24 +114,20 @@ module Gitlab
           def all
             definitions = ::Gitlab::RackAttack.all_throttle_definitions
 
-            meta.each_with_object({}) do |(rule_id, attrs), entries|
-              # A sibling rule sharing another throttle's limit/cohort/settings (the
-              # web frontend companions) names its backing throttle in :throttle; every
-              # other entry backs the throttle its key names.
-              throttle = attrs[:throttle] || rule_id
-              definition = definitions.fetch(throttle) do
-                raise KeyError, "LabkitRateLimit registry references unknown throttle #{throttle.inspect}"
+            meta.each_with_object({}) do |(throttle_name, attrs), entries|
+              definition = definitions.fetch(throttle_name) do
+                raise KeyError, "LabkitRateLimit registry references unknown throttle #{throttle_name.inspect}"
               end
 
               unless attrs.key?(:claims)
-                raise KeyError, "LabkitRateLimit registry entry #{rule_id.inspect} must declare :claims"
+                raise KeyError, "LabkitRateLimit registry entry #{throttle_name.inspect} must declare :claims"
               end
 
-              entries[rule_id] = Entry.new(
-                name: throttle,
-                rule_name: rule_name_for(rule_id),
+              entries[throttle_name] = Entry.new(
+                name: throttle_name,
+                rule_name: rule_name_for(throttle_name),
                 definition: definition,
-                **attrs.except(:throttle)
+                **attrs
               )
             end
           end
@@ -146,10 +148,9 @@ module Gitlab
           end
 
           # Every rule name mapped to its Entry. Each registry entry is exactly one
-          # Labkit rule, so this is all re-keyed by rule_name. The middleware resolves a
-          # matched rule to its throttle here - for the enforce cohort (Entry#cohort)
-          # and the 429 headers (Entry#name, the backing throttle) - so a companion,
-          # whose rule_name is not itself a throttle name, still resolves correctly.
+          # Labkit rule, so this is all re-keyed by rule_name. The middleware resolves
+          # a matched rule to its throttle here - for the enforce cohort (Entry#cohort)
+          # and the 429 headers (Entry#name, the backing throttle).
           def by_rule_name
             all.values.index_by(&:rule_name)
           end
@@ -273,41 +274,34 @@ module Gitlab
                 match: { path: git, requester_id: nil, runner_id: nil, setting_unauthenticated_git_http: true }
               },
 
-              # Cohort 2: general web then general API. Web before API so a frontend
-              # request (an API path the web throttle owns) is claimed here, not by the
-              # API rule. Each web throttle is two rules - a web-path rule
-              # (path: WEB_PATH_REGEX, the native form of the removed web_request?
-              # predicate) and a frontend companion (the CSRF-token frontend fact) -
-              # because "web OR frontend" is a disjunction a single AND-match cannot
-              # express and each rule keys its counter by its unique name. The companion
-              # is a sibling entry backing the same throttle (:throttle), placed
-              # immediately after its web-path rule and before the API rules so it
-              # claims frontend requests on API paths first.
+              # Cohort 2: general web. Each web throttle is a single rule matching the
+              # web_or_frontend fact, so it keeps the one Redis counter (keyed by rule
+              # name) Rack::Attack keeps; two rules would split the counter and an IP
+              # mixing web pages with frontend API calls would trip the limit late.
+              # The predicates' git exclusions are the claiming git rules above.
               'throttle_unauthenticated_web' => {
                 limiter: GENERAL, characteristics: [:ip], cohort: 2, claims: true,
-                match: { path: WEB_PATH_REGEX, requester_id: nil, runner_id: nil, setting_unauthenticated_web: true }
-              },
-              'throttle_unauthenticated_web_frontend' => {
-                throttle: 'throttle_unauthenticated_web',
-                limiter: GENERAL, characteristics: [:ip], cohort: 2, claims: true,
-                match: { frontend: true, requester_id: nil, runner_id: nil, setting_unauthenticated_web: true }
+                match: {
+                  web_or_frontend: true, requester_id: nil, runner_id: nil, setting_unauthenticated_web: true
+                }
               },
               'throttle_authenticated_web' => {
                 limiter: GENERAL, characteristics: [:requester_type, :requester_id], cohort: 2, claims: true,
-                match: { path: WEB_PATH_REGEX, setting_authenticated_web: true, requester_id: /./ }
+                match: { web_or_frontend: true, setting_authenticated_web: true, requester_id: /./ }
               },
-              'throttle_authenticated_web_frontend' => {
-                throttle: 'throttle_authenticated_web',
-                limiter: GENERAL, characteristics: [:requester_type, :requester_id], cohort: 2, claims: true,
-                match: { frontend: true, setting_authenticated_web: true, requester_id: /./ }
-              },
+
+              # Cohort 2: general API. frontend: false is the predicates'
+              # unconditional !frontend_request?: ordering below the web rules only
+              # excludes frontend traffic while a web throttle setting is on.
               'throttle_unauthenticated_api' => {
                 limiter: GENERAL, characteristics: [:ip], cohort: 2, claims: true,
-                match: { path: api, requester_id: nil, runner_id: nil, setting_unauthenticated_api: true }
+                match: {
+                  path: api, frontend: false, requester_id: nil, runner_id: nil, setting_unauthenticated_api: true
+                }
               },
               'throttle_authenticated_api' => {
                 limiter: GENERAL, characteristics: [:requester_type, :requester_id], cohort: 2, claims: true,
-                match: { path: api, setting_authenticated_api: true, requester_id: /./ }
+                match: { path: api, frontend: false, setting_authenticated_api: true, requester_id: /./ }
               },
 
               # Cohort 3: protected paths. Their own limiter (they overlap the general

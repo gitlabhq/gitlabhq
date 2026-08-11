@@ -75,7 +75,7 @@ Using the terminal as an example:
    1. Connects to the specified terminal.
    1. Upgrades the browser to a WebSocket.
    1. Proxies between the two connections for as long as the browser's credentials are valid.
-   1. Send regular `PingMessage` control frames to the browser, to prevent intervening
+   1. Sends regular `PingMessage` control frames to the browser, to prevent intervening
       proxies from terminating the connection while the browser is present.
 
 The browser must request an upgrade with a specific sub-protocol:

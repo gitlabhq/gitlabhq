@@ -16,7 +16,7 @@ class UserAgentDetailService
 
     spammable.create_user_agent_detail(
       ip_address: spam_params.ip_address,
-      organization: ::Gitlab::Current::Organization.new(user: current_user).organization,
+      organization_id: organization_id,
       user_agent: spam_params.user_agent
     )
   end
@@ -24,4 +24,13 @@ class UserAgentDetailService
   private
 
   attr_reader :spammable, :perform_spam_check, :current_user
+
+  # UserAgentDetail has no user/user_id of its own to fall back on, so unlike
+  # Ai::UsageEvent, a nil current_user here would otherwise silently fail to
+  # save instead of erroring - default to the default Organization instead.
+  # Deliberate, temporary regression - see
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/610965.
+  def organization_id
+    current_user&.organization_id || Organizations::Organization::DEFAULT_ORGANIZATION_ID # rubocop:todo Gitlab/AvoidConstDefaultOrganizationId -- see comment above
+  end
 end

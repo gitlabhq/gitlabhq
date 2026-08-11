@@ -9,8 +9,8 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::ThrottleRegistry, feature_ca
     it 'backs every entry with a throttle and covers the whole Rack::Attack set' do
       # Every throttle Rack::Attack registers (via the shared all_throttle_definitions
       # source) must be classified into the shadow, and every entry must back a throttle
-      # that exists (a sibling rule via its :name). A new throttle cannot silently escape
-      # the shadow, and a renamed one fails loudly.
+      # that exists. A new throttle cannot silently escape the shadow, and a renamed
+      # one fails loudly.
       backing = entries.each_value.map(&:name).uniq
 
       expect(backing).to match_array(Gitlab::RackAttack.all_throttle_definitions.keys)
@@ -120,26 +120,45 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::ThrottleRegistry, feature_ca
   end
 
   describe 'the web throttle disjunction' do
-    # web_request? OR frontend_request? cannot be one AND-match, so each web throttle
-    # is a web-path rule (WEB_PATH_REGEX) plus a frontend companion (the frontend fact)
-    # as a sibling entry backing the same throttle, with its own counter (rule_name).
-    {
-      'throttle_unauthenticated_web' => 'throttle_unauthenticated_web_frontend',
-      'throttle_authenticated_web' => 'throttle_authenticated_web_frontend'
-    }.each do |web_id, frontend_id|
-      it "expresses #{web_id} as a WEB_PATH_REGEX rule and a frontend companion" do
-        entries = described_class.all
-        web = entries.fetch(web_id)
-        frontend = entries.fetch(frontend_id)
+    # The disjunction is the single web_or_frontend fact: two rules would mean two
+    # rule names and so two Redis counters, where Rack::Attack keeps one per throttle.
+    %w[throttle_unauthenticated_web throttle_authenticated_web].each do |web_id|
+      it "expresses #{web_id} as a single web_or_frontend rule" do
+        entry = described_class.all.fetch(web_id)
 
-        expect(web.match[:path]).to eq(described_class::WEB_PATH_REGEX)
-        expect(frontend.match).to include(frontend: true)
-        expect(frontend.match).not_to have_key(:path)
-        # The companion is its own rule (counter) but the same backing throttle.
-        expect(frontend.rule_name).to eq(frontend_id.delete_prefix('throttle_'))
-        expect(frontend.name).to eq(web_id)
-        expect(frontend.cohort).to eq(web.cohort)
+        expect(entry.match).to include(web_or_frontend: true)
+        expect(entry.match).not_to have_key(:path)
       end
+    end
+
+    it 'orders the web rules after the git rules and before the general API rules', :aggregate_failures do
+      # Order encodes the exclusions: git before web (a git path is also a web
+      # path), web before API (a frontend request on an API path is web traffic).
+      general = described_class.all.values.select { |entry| entry.limiter == described_class::GENERAL }
+      positions = general.each_with_index.to_h { |entry, index| [entry.name, index] }
+
+      expect(positions['throttle_unauthenticated_git_http']).to be < positions['throttle_unauthenticated_web']
+      expect(positions['throttle_authenticated_git_lfs']).to be < positions['throttle_authenticated_web']
+      expect(positions['throttle_unauthenticated_web']).to be < positions['throttle_unauthenticated_api']
+      expect(positions['throttle_authenticated_web']).to be < positions['throttle_authenticated_api']
+    end
+  end
+
+  describe 'the general API frontend exclusion' do
+    it 'excludes frontend requests from the API rules via a frontend: false match' do
+      # The predicates' !frontend_request?, which holds even with the web setting off.
+      %w[throttle_unauthenticated_api throttle_authenticated_api].each do |api_id|
+        expect(described_class.all.fetch(api_id).match).to include(frontend: false)
+      end
+    end
+  end
+
+  describe '.by_rule_name' do
+    it 'resolves a web rule name to its backing throttle and cohort' do
+      entry = described_class.by_rule_name.fetch('unauthenticated_web')
+
+      expect(entry.name).to eq('throttle_unauthenticated_web')
+      expect(entry.cohort).to eq(2)
     end
   end
 

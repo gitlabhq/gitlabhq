@@ -35557,6 +35557,18 @@
           "description": "Repository in Artifact Registry.",
           "fields": [
             {
+              "name": "description",
+              "description": "Human-readable description of the repository. Null when unset. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
               "name": "downloadsCount",
               "description": "Number of artifact downloads from the repository. Buffered, so it can lag. Introduced in GitLab 19.3: Status: Experiment.",
               "args": [],
@@ -35626,6 +35638,22 @@
                 "ofType": {
                   "kind": "SCALAR",
                   "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
+              "name": "settings",
+              "description": "Kind-specific configuration, discriminated by format and kind. Empty for hosted repositories. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "JSON",
                   "ofType": null
                 }
               },
@@ -281645,6 +281673,35 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "ArtifactRegistryRepositoryConnection",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
+              "name": "artifactRegistryRepository",
+              "description": "Single Artifact Registry repository in the organization, by name. Returns `null` when not found or when the `artifact_registry_ui` feature flag is disabled. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [
+                {
+                  "name": "name",
+                  "description": "Name of the repository to read, unique within its namespace.",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "ArtifactRegistryRepository",
                 "ofType": null
               },
               "isDeprecated": true,

@@ -72,7 +72,7 @@ describe('logs_viewer.vue', () => {
         let topBar;
         beforeEach(async () => {
           topBar = findTopBar();
-          topBar.vm.$emit('scrollToBottom');
+          topBar.vm.$emit('scroll-to-bottom');
           await waitForPromises();
         });
 
@@ -82,7 +82,7 @@ describe('logs_viewer.vue', () => {
 
         describe('when scroll to bottom is clicked the second time', () => {
           beforeEach(async () => {
-            topBar.vm.$emit('scrollToBottom');
+            topBar.vm.$emit('scroll-to-bottom');
             await waitForPromises();
           });
 

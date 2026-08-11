@@ -201,7 +201,6 @@ module Gitlab
       # as the author (so author_id stays correct) and remember the human so it
       # can be recorded in the event details.
       def resolve_author(author)
-        return author unless Feature.enabled?(:composite_identity_audit_event_attribution, attribution_flag_actor)
         return author unless author.is_a?(::User)
 
         actor = ::Gitlab::Auth::Identity.resolve_composite_identity_actor(author)
@@ -210,10 +209,6 @@ module Gitlab
 
         @human_author = author
         ::Gitlab::Audit::CompositeIdentityAuthor.new(actor, human_author: author)
-      end
-
-      def attribution_flag_actor
-        @scope.respond_to?(:root_ancestor) ? @scope.root_ancestor : :instance
       end
 
       def human_author_details

@@ -73,7 +73,7 @@ In addition to code reviews, maintainers are responsible for guiding architectur
 
 **Code review objectives**:
 
-- Verify and confirm changes adheres to style guide ([Work item](https://gitlab.com/gitlab-org/gitlab/-/issues/506689)) and existing patterns in the project.
+- Verify and confirm changes adhere to the style guide ([Work item](https://gitlab.com/gitlab-org/gitlab/-/issues/506689)) and existing patterns in the project.
 - Where applicable, ensure test coverage is added for the changes introduced in the MR.
 - Review for performance implications.
 - Check for security vulnerabilities.

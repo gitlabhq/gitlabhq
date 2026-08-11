@@ -2,7 +2,7 @@
 stage: none
 group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
-title: Create a new Python projects
+title: Create a new Python project
 ---
 
 When creating a new Python repository, some guidelines help keep our code standardized.

@@ -27407,22 +27407,19 @@ msgstr ""
 msgid "DependencyFirewall|Charges may be incurred at the end of beta"
 msgstr ""
 
-msgid "DependencyFirewall|Dependency Firewall"
-msgstr ""
-
 msgid "DependencyFirewall|Dependency Firewall is free during the beta period. Once generally available, it will be a paid feature billed through %{linkStart}GitLab Credits%{linkEnd}. You'll need to opt in before anything is charged, and we'll give you advance notice ahead of general availability."
-msgstr ""
-
-msgid "DependencyFirewall|Dependency Firewall settings were successfully updated."
 msgstr ""
 
 msgid "DependencyFirewall|Dependency firewall"
 msgstr ""
 
-msgid "DependencyFirewall|Enable Dependency Firewall"
+msgid "DependencyFirewall|Dependency firewall settings were successfully updated."
 msgstr ""
 
-msgid "DependencyFirewall|Enable the Dependency Firewall to protect against malicious and suspicious packages."
+msgid "DependencyFirewall|Enable dependency firewall"
+msgstr ""
+
+msgid "DependencyFirewall|Enable the dependency firewall to protect against malicious and suspicious packages."
 msgstr ""
 
 msgid "DependencyFirewall|Enforce"
@@ -27431,7 +27428,7 @@ msgstr ""
 msgid "DependencyFirewall|Failed to load dependency firewall activity."
 msgstr ""
 
-msgid "DependencyFirewall|Failed to update the Dependency Firewall settings."
+msgid "DependencyFirewall|Failed to update the dependency firewall settings."
 msgstr ""
 
 msgid "DependencyFirewall|Last 30 days"
@@ -27462,6 +27459,9 @@ msgid "DependencyFirewall|No active dependency firewall rules."
 msgstr ""
 
 msgid "DependencyFirewall|Policies"
+msgstr ""
+
+msgid "DependencyFirewall|Protect against malicious and suspicious packages for all projects in this GitLab instance."
 msgstr ""
 
 msgid "DependencyFirewall|Rule"
@@ -70121,6 +70121,9 @@ msgstr ""
 msgid "SecurityInventory|Group vulnerabilities"
 msgstr ""
 
+msgid "SecurityInventory|Has stale scans"
+msgstr ""
+
 msgid "SecurityInventory|IaC"
 msgstr ""
 
@@ -70140,6 +70143,9 @@ msgid "SecurityInventory|Manage security scanners"
 msgstr ""
 
 msgid "SecurityInventory|Manage security scanners for subgroup projects"
+msgstr ""
+
+msgid "SecurityInventory|Needs attention"
 msgstr ""
 
 msgid "SecurityInventory|No projects found"
@@ -70208,6 +70214,9 @@ msgstr ""
 msgid "SecurityInventory|Static application security testing (SAST)"
 msgstr ""
 
+msgid "SecurityInventory|Status"
+msgstr ""
+
 msgid "SecurityInventory|This group doesn't have any subgroups."
 msgstr ""
 
@@ -70215,6 +70224,9 @@ msgid "SecurityInventory|Tool coverage"
 msgstr ""
 
 msgid "SecurityInventory|Tool coverage: %{coverage}"
+msgstr ""
+
+msgid "SecurityInventory|Unprotected"
 msgstr ""
 
 msgid "SecurityInventory|View project"

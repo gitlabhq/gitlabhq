@@ -66,14 +66,14 @@ Deploying services to self-hosted environments poses challenges as services are 
 
 Self-hosted customers need to know which version of the service is compatible with their GitLab installation. Python services do not make use of [managed versioning](https://gitlab.com/gitlab-org/release/docs/-/tree/master/components/managed-versioning), so each service needs to handle its versioning and release cuts.
 
-If a service is accessible through cloud-connector, it must adhere to [GitLab Statement Support](https://about.gitlab.com/support/statement-of-support/#version-support), providing stable deployments for the current and previous 2 majors releases of GitLab.
+If a service is accessible through cloud-connector, it must adhere to [GitLab Statement Support](https://about.gitlab.com/support/statement-of-support/#version-support), providing stable deployments for the current and previous 2 major releases of GitLab.
 
 ##### Tips
 
 ###### Create versions that match GitLab release
 
 When supporting self-hosted deployment, it's important to have a version tag that matches GitLab versions, making it easier
-for users to configure the different components of their environment. Add a pipeline to GitLab the GitLab release process
+for users to configure the different components of their environment. Add a pipeline to the GitLab release process
 that tags the service repo with the same tag, which will then trigger a pipeline to create an image with the defined tag.
 
 Example: [a pipeline on GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/aigw-tagging.gitlab-ci.yml) creates a tag on AI Gateway
@@ -96,7 +96,7 @@ Then, once version 20.0 is released, and GitLab version 17.x is not supported an
 
 Images must be published in the container registry of the project.
 
-It's also recommend to publish the images on DockerHub. To create an image repository on Docker Hub, create an account with your GitLab handle and create an Access Request to be added to the [GitLab organization](https://hub.docker.com/u/gitlab). Once the image repository is created, make sure the user `gitlabcibuild` has read and write access to the repository.
+It's also recommended to publish the images on DockerHub. To create an image repository on Docker Hub, create an account with your GitLab handle and create an Access Request to be added to the [GitLab organization](https://hub.docker.com/u/gitlab). Once the image repository is created, make sure the user `gitlabcibuild` has read and write access to the repository.
 
 #### Linux package deployment
 

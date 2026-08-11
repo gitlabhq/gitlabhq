@@ -27,6 +27,12 @@ module API
           awardable_name = awardable_params[:type].humanize(capitalize: false)
           awardable_article = awardable_name.match?(/\A[aeiou]/i) ? 'an' : 'a'
 
+          if is_note_endpoint
+            params do
+              requires :note_id, type: Integer, desc: 'The ID of a note'
+            end
+          end
+
           desc "List all emoji reactions for " \
             "#{awardable_article} #{awardable_name}#{' comment' if is_note_endpoint}" do
             detail "Lists all emoji reactions for a specified " \

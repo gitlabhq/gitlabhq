@@ -18,7 +18,7 @@ It is also possible (although unsupported) to use other reverse proxies such as 
 GitLab from source.
 On many instances of GitLab, such as `gitlab.com`, a CDN like CloudFlare sits in front of NGINX.
 
-Every Rails controller and other code that handles HTTP requests and returning HTTP responses is
+Every Rails controller and other code that handles HTTP requests and returns HTTP responses is
 proxied through GitLab Workhorse.
 Workhorse is unlike other reverse proxies as it is tightly coupled to GitLab Rails, whereas most reverse
 proxies are more generic.

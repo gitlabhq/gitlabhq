@@ -75,7 +75,7 @@ can also open a second listening TCP listening socket with the Go
 
 GitLab Workhorse can listen on Redis build and runner registration events if you
 pass a valid TOML configuration file through the `-config` flag.
-A regular setup it only requires the following (replacing the string
+A regular setup only requires the following (replacing the string
 with the actual socket)
 
 ## Redis
@@ -120,7 +120,7 @@ MaxActive = 1
 
 ## Relative URL support
 
-If you mount GitLab at a relative URL, like `example.com/gitlab`), use this
+If you mount GitLab at a relative URL, like `example.com/gitlab`, use this
 relative URL in the `authBackend` setting:
 
 ```plaintext

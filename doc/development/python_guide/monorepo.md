@@ -65,7 +65,7 @@ omf install pyenv
 ### Dependency management
 
 While GitLab doesn't directly contain any Python scripts, because we depend on Python to render
-[reStructuredText](https://docutils.sourceforge.io/rst.html) markup, we need to keep track on dependencies
+[reStructuredText](https://docutils.sourceforge.io/rst.html) markup, we need to keep track of dependencies
 on the main project level, so we can run that on our development machines.
 
 Recently, an equivalent to the `Gemfile` and the [Bundler](https://bundler.io/) project has been introduced to Python:
@@ -82,7 +82,7 @@ Running this command installs both the required Python version as well as requir
 ### Use instructions
 
 To run any Python code under the Pipenv environment, you need to first start a `virtualenv` based on the dependencies
-of the application. With Pipenv, this is a simple as running:
+of the application. With Pipenv, this is as simple as running:
 
 ```shell
 pipenv shell

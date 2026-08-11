@@ -7,6 +7,14 @@ module RuboCop
     module Gitlab
       # Checks for use of User#organization method
       #
+      # A User belongs to exactly one Organization (ADR 016: ownership via
+      # organization_id is always exclusive), so deriving a sharding key or
+      # attribution value from user.organization is not a shortcut around
+      # Current.organization - it's the correct value. That still needs a local
+      # RuboCop suppression comment explaining why, since this cop can't tell that
+      # case apart from a real offense; see Gitlab::Llm::QAi::Client#ai_settings
+      # for a worked example.
+      #
       # @example
       #
       #   # bad
@@ -45,7 +53,6 @@ module RuboCop
       #   group.organization
       #   namespace.organization
       #
-      #
       class AvoidUserOrganization < RuboCop::Cop::Base
         MSG =
           'Avoid calling `organization` on User objects. ' \
@@ -53,7 +60,7 @@ module RuboCop
 
         # @!method user_organization?(node)
         def_node_matcher :user_organization?, <<~PATTERN
-          (send _ :organization)
+          (call _ :organization)
         PATTERN
 
         def on_send(node)

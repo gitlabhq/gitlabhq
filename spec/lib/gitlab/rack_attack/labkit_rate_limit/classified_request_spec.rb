@@ -31,11 +31,19 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::ClassifiedRequest, feature_c
 
     describe 'classification facts' do
       it 'is not a frontend request without a verified CSRF token' do
-        # web_request? is no longer a fact (the registry matches it as WEB_PATH_REGEX);
-        # frontend is the one web-side fact left, since it is CSRF/session-based and
-        # cannot be a path matcher. A plain request carries no CSRF token.
+        # frontend is CSRF/session-based and cannot be a path matcher. A plain
+        # request carries no CSRF token.
         expect(facts_for('/dashboard')).to include(frontend: false)
         expect(facts_for('/api/v4/projects')).to include(frontend: false)
+      end
+
+      # web_or_frontend carries the web throttles' disjunction as one fact, so each
+      # web throttle is a single rule counting on a single Redis counter.
+      it 'classifies a web path as web_or_frontend and API/health paths as not', :aggregate_failures do
+        expect(facts_for('/dashboard')).to include(web_or_frontend: true)
+        expect(facts_for('/-/collector/i')).to include(web_or_frontend: true)
+        expect(facts_for('/api/v4/projects')).to include(web_or_frontend: false)
+        expect(facts_for('/-/health')).to include(web_or_frontend: false)
       end
 
       it 'reflects the bypass header only when set to 1', :aggregate_failures do
@@ -71,18 +79,16 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::ClassifiedRequest, feature_c
       end
     end
 
-    # The web-before-api ordering rests on a real frontend request (an API path with
-    # a verified CSRF token) producing frontend: true, so the web throttle's frontend
-    # companion claims it before the API rule. The synthetic selection spec proves the
-    # ordering given the fact; this proves a real frontend request produces it.
+    # The synthetic selection spec proves the web-vs-API split given the facts;
+    # this proves a real frontend request (verified CSRF token) produces them.
     describe 'a frontend request on an API path' do
-      it 'is frontend even though the path is an API path' do
+      it 'is frontend (and so web_or_frontend) even though the path is an API path' do
         allow(Gitlab::RequestForgeryProtection).to receive(:verified?).and_return(true)
 
         facts = facts_for('/api/v4/projects',
           'HTTP_X_CSRF_TOKEN' => 'token', 'rack.session' => { _csrf_token: 'token' })
 
-        expect(facts).to include(frontend: true, path: '/api/v4/projects')
+        expect(facts).to include(frontend: true, web_or_frontend: true, path: '/api/v4/projects')
       end
     end
 

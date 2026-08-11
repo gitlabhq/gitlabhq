@@ -33,12 +33,12 @@ In order to help track feature proposals, we use the
 Users that are not members of the project cannot add labels via the UI.
 Instead, use [reactive label commands](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/developer-experience/triage-operations/#reactive-workflow-automation).
 
-Keep feature proposals as small and simple as possible, complex ones
+Keep feature proposals as small and simple as possible. Complex ones
 might be edited to make them small and simple.
 
 For changes to the user interface (UI), follow our [design and UI guidelines](design.md),
 and include a visual example (screenshot, wireframe, or mockup). Such issues should
-be given the `~UX"` label (using the [reactive label commands](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/developer-experience/triage-operations/#reactive-workflow-automation)) for the Product Design team to provide input and guidance.
+be given the `~"UX"` label (using the [reactive label commands](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/developer-experience/triage-operations/#reactive-workflow-automation)) for the Product Design team to provide input and guidance.
 
 ## Finding issues to work on
 
@@ -105,7 +105,7 @@ below will make it easy to manage this, without unnecessary overhead.
    is probably 1, adding a new Git Hook maybe 4 or 5, big features 7-9.
 1. If something is very large, it should probably be split up in multiple
    issues or chunks. You can not set the weight of a parent issue and set
-   weights to children issues.
+   weights to child issues.
 
 ## Regression issues
 

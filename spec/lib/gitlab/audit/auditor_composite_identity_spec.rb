@@ -50,21 +50,6 @@ RSpec.describe Gitlab::Audit::Auditor, ':request_store enabled composite identit
     end
   end
 
-  context 'when the composite_identity_audit_event_attribution flag is disabled' do
-    let(:author) { human }
-
-    before do
-      stub_feature_flags(composite_identity_audit_event_attribution: false)
-      Gitlab::Auth::Identity.link_from_scoped_user(service_account, human, context: :authentication)
-    end
-
-    it 'keeps the previous attribution to the human', :aggregate_failures do
-      expect(emitted_event.author_id).to eq(human.id)
-      expect(emitted_event.author_name).to eq(human.name)
-      expect(emitted_event.details.keys).not_to include(:human_author_id, :human_author_name, :human_author_username)
-    end
-  end
-
   context 'when the service account is linked in the permission_check context' do
     let(:author) { human }
 

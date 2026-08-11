@@ -86,15 +86,15 @@ describe('NoteSuggestions', () => {
     );
   });
 
-  it('calls store.submitSuggestionBatch on applyBatch', () => {
+  it('calls store.submitSuggestionBatch on apply-batch', () => {
     createComponent();
-    findSuggestions().vm.$emit('applyBatch', { message: 'batch msg' });
+    findSuggestions().vm.$emit('apply-batch', { message: 'batch msg' });
     expect(store.submitSuggestionBatch).toHaveBeenCalledWith({ message: 'batch msg' });
   });
 
-  it('calls store.addSuggestionInfoToBatch on addToBatch', () => {
+  it('calls store.addSuggestionInfoToBatch on add-to-batch', () => {
     createComponent();
-    findSuggestions().vm.$emit('addToBatch', 42);
+    findSuggestions().vm.$emit('add-to-batch', 42);
     expect(store.addSuggestionInfoToBatch).toHaveBeenCalledWith({
       suggestionId: 42,
       discussionId: 'disc-1',
@@ -102,9 +102,9 @@ describe('NoteSuggestions', () => {
     });
   });
 
-  it('calls store.removeSuggestionInfoFromBatch on removeFromBatch', () => {
+  it('calls store.removeSuggestionInfoFromBatch on remove-from-batch', () => {
     createComponent();
-    findSuggestions().vm.$emit('removeFromBatch', 42);
+    findSuggestions().vm.$emit('remove-from-batch', 42);
     expect(store.removeSuggestionInfoFromBatch).toHaveBeenCalledWith(42);
   });
 });

@@ -13,11 +13,11 @@ It is the properties of the GraphQL query tree that create opportunities for bat
 
 We should try to batch DB requests as much as possible during GraphQL **query** execution. There is no need to batch loading during **mutations** because they are executed serially. If you need to make a database query, and it is possible to combine two similar (but not necessarily identical) queries, then consider using the batch-loader.
 
-When implementing a new endpoint we should aim to minimise the number of SQL queries. For stability and scalability we must also ensure that our queries do not suffer from N+1 performance issues.
+When implementing a new endpoint we should aim to minimize the number of SQL queries. For stability and scalability we must also ensure that our queries do not suffer from N+1 performance issues.
 
 ## Implementation
 
-Batch loading is useful when a series of queries for inputs `Qα, Qβ, ... Qω` can be combined to a single query for `Q[α, β, ... ω]`. An example of this is lookups by ID, where we can find two users by usernames as cheaply as one, but real-world examples can be more complex.
+Batch loading is useful when a series of queries for inputs `Qα, Qβ, ... Qω` can be combined into a single query for `Q[α, β, ... ω]`. An example of this is lookups by ID, where we can find two users by usernames as cheaply as one, but real-world examples can be more complex.
 
 Batch loading is not suitable when the result sets have different sort orders, grouping, aggregation, or other non-composable features.
 
@@ -44,7 +44,7 @@ end
 - `loader.call` is used to map the result back to the input key (here user is mapped to its username)
 - `BatchLoader::GraphQL` returns a lazy object (suspended promise to fetch the data)
 
-Here an [example MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46549) illustrating how to use our `BatchLoading` mechanism.
+Here is an [example MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46549) illustrating how to use our `BatchLoading` mechanism.
 
 ## The `BatchModelLoader`
 
@@ -70,7 +70,7 @@ end
 
 Each lazy object knows which data it needs to load and how to batch the query. When we need to use the lazy objects (which we announce by calling `#sync`), they are loaded along with all other similar objects in the current batch.
 
-Inside the block we execute a batch query for our items (`User`). After that, all we have to do is to call loader by passing an item which was used in `BatchLoader::GraphQL.for` method (`usernames`) and the loaded object itself (`user`):
+Inside the block we execute a batch query for our items (`User`). After that, all we have to do is to call the loader by passing an item which was used in the `BatchLoader::GraphQL.for` method (`usernames`) and the loaded object itself (`user`):
 
 ```ruby
 BatchLoader::GraphQL.for(username).batch do |usernames, loader|

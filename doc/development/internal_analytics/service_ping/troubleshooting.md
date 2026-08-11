@@ -87,7 +87,7 @@ However, it has the following limitations:
 - While it runs a `node_exporter`, `docker-compose` services emulate hosts, meaning that it usually reports itself as not associated
   with any of the other running services. That is not how node metrics are reported in a production setup, where `node_exporter`
   always runs as a process alongside other GitLab components on any given node. For Service Ping, none of the node data would therefore
-  appear to be associated to any of the services running, because they all appear to be running on different hosts. To alleviate this problem, the `node_exporter` in GCK was arbitrarily "assigned" to the `web` service, meaning only for this service `node_*` metrics appears in Service Ping.
+  appear to be associated to any of the services running, because they all appear to be running on different hosts. To alleviate this problem, the `node_exporter` in GCK was arbitrarily "assigned" to the `web` service, meaning only for this service `node_*` metrics appear in Service Ping.
 
 ## Generate Service Ping
 

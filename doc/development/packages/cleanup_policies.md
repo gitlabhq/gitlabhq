@@ -85,7 +85,7 @@ This job will re-enqueue itself until no more container repositories require cle
 
 #### Services
 
-Here is the services call that will happen from the limited capacity job:
+Here are the service calls that will happen from the limited capacity job:
 
 ```mermaid
 flowchart TD

@@ -130,12 +130,12 @@ module Gitlab
         # #labkit_facts. EE extends this (incident management, Geo). These are only
         # the conditions a matcher cannot express directly (auth state is not here: it
         # is the requester_id / runner_id presence facts in #identity_facts):
-        #   - frontend: frontend_request? (a verified CSRF token). CSRF/session-based,
-        #     not a path, so it cannot be a path matcher. web_request? itself is now a
-        #     path matcher (WEB_PATH_REGEX) in the registry, so there is no derived web
-        #     fact: the web throttles are a WEB_PATH_REGEX rule plus a frontend
-        #     companion that matches this fact (the old web_or_frontend disjunction,
-        #     which Labkit's AND-only matcher cannot express, split into two rules);
+        #   - web_or_frontend: web_request? || frontend_request?, the web throttles'
+        #     disjunction, computed once so each web throttle is one rule with one
+        #     Redis counter (an OR is not expressible in an AND-only match, and two
+        #     rules would split the counter Rack::Attack keeps as one);
+        #   - frontend: frontend_request? (a verified CSRF token) on its own, matched
+        #     as `frontend: false` by the general API rules;
         #   - protected_path: the protected-paths list is admin configured and takes
         #     effect immediately, so it cannot be baked into a static matcher regex. One
         #     method-aware fact for both the POST and GET protected-path throttles: the
@@ -150,6 +150,7 @@ module Gitlab
           settings = ::Gitlab::Throttle.settings
 
           {
+            web_or_frontend: web_request? || frontend_request?,
             frontend: frontend_request?, # frontend_request checks HTTP_X_CSRF_TOKEN header - not a regex
             protected_path: protected_path?,
             deprecated: deprecated_api_request?, # TODO use path matchers for deprecated API requests: https://gitlab.com/gitlab-org/ruby/gems/labkit-ruby/-/work_items/71

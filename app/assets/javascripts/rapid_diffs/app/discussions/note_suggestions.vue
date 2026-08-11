@@ -56,7 +56,6 @@ export default {
 </script>
 
 <template>
-  <!-- eslint-disable vue/v-on-event-hyphenation -- Suggestions.vue emits camelCase events -->
   <suggestions
     class="rd-note-suggestions"
     :suggestions="note.suggestions"
@@ -66,8 +65,8 @@ export default {
     :default-commit-message="commitMessage"
     :help-page-path="suggestionsHelpPath"
     @apply="applySuggestion"
-    @applyBatch="store.submitSuggestionBatch($event)"
-    @addToBatch="addSuggestionToBatch"
-    @removeFromBatch="store.removeSuggestionInfoFromBatch($event)"
+    @apply-batch="store.submitSuggestionBatch($event)"
+    @add-to-batch="addSuggestionToBatch"
+    @remove-from-batch="store.removeSuggestionInfoFromBatch($event)"
   />
 </template>

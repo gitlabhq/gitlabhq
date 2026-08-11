@@ -227,9 +227,9 @@ export default {
       :default-commit-message="commitMessage"
       :failed-to-load-metadata="failedToLoadMetadata"
       @apply="applySuggestion"
-      @applyBatch="applySuggestionBatch"
-      @addToBatch="addSuggestionToBatch"
-      @removeFromBatch="removeSuggestionFromBatch"
+      @apply-batch="applySuggestionBatch"
+      @add-to-batch="addSuggestionToBatch"
+      @remove-from-batch="removeSuggestionFromBatch"
     />
     <div v-else v-safe-html:[$options.safeHtmlConfig]="note.note_html" class="note-text md"></div>
     <duo-code-review-feedback

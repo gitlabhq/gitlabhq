@@ -19,7 +19,7 @@ export default {
       default: false,
     },
   },
-  emits: ['scrollToBottom', 'scrollToTop', 'toggleFullScreen'],
+  emits: ['scroll-to-bottom', 'scroll-to-top', 'toggle-full-screen'],
   i18n: {
     enterFullScreen: s__('LogsViewer|Enter full screen'),
     exitFullScreen: s__('LogsViewer|Exit full screen'),
@@ -50,21 +50,21 @@ export default {
         :selected="isFollowing"
         :title="$options.i18n.scrollToBottom"
         :aria-label="$options.i18n.scrollToBottom"
-        @click="$emit('scrollToBottom')"
+        @click="$emit('scroll-to-bottom')"
       />
       <gl-button
         class="gl-m-3"
         icon="scroll_up"
         :title="$options.i18n.scrollToTop"
         :aria-label="$options.i18n.scrollToTop"
-        @click="$emit('scrollToTop')"
+        @click="$emit('scroll-to-top')"
       />
       <gl-button
         class="gl-m-3"
         :icon="toggleFullScreenIcon"
         :title="toggleFullScreenText"
         :aria-label="toggleFullScreenText"
-        @click="$emit('toggleFullScreen')"
+        @click="$emit('toggle-full-screen')"
       />
       <slot></slot>
     </div>

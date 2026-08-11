@@ -18,6 +18,11 @@ title: Merge requests
 
 {{< /history >}}
 
+## Allowed modes
+
+- Standard mode (default): Query merge request records.
+- Analytics mode: Query aggregated merge request metrics. For more information, see [Merge request analytics](merge_request_analytics.md).
+
 ## Allowed scopes
 
 | Scope     | Description                                           |

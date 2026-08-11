@@ -32,7 +32,7 @@ naming conventions:
 
 - **Model**:
   A model is an Active Model, which is how it is known in the entire
-  Rails codebase. It usually is tied to a database table. From Geo
+  Rails codebase. It usually is tied to a database table. From a Geo
   perspective, a model can have one or more resources.
 
 - **Resource**:

@@ -73,10 +73,10 @@ This section describes the dashboards and metrics that can be used by engineers 
   You can search for the team that owns the feature category you are interested in.
 - The [Pipeline Execution error budget dashboard](https://dashboards.gitlab.net/d/stage-groups-pipeline_execution) contains other useful metrics about pipeline
   creation and job execution.
-- [Production logs](https://log.gprd.gitlab.net/app/discover) also offer many useful information that can be searched and aggregated in Kibana.
+- [Production logs](https://log.gprd.gitlab.net/app/discover) also offer a lot of useful information that can be searched and aggregated in Kibana.
 - The [Pipeline creation dashboard](https://log.gprd.gitlab.net/app/r/s/r5Owf) provides useful breakdowns
   of the steps involved in the pipeline creation.
-  Note that this dashboard only contains data of "slow pipelines", those that take longer to be created or have many jobs in it.
+  Note that this dashboard only contains data of "slow pipelines", those that take longer to be created or have many jobs in them.
   It's similar to a SQL "slow query log".
 - The [CI partitioning dashboard](https://dashboards.gitlab.net/d/ci-partitioning-main/ci-partitioning3a-ci-data-partitions-tracking) contains information about the current partition number, partition sizes, vacuuming, and other database metrics.
 
@@ -263,7 +263,7 @@ There are two ways of marking builds as "stuck" and drop them.
 
 Compute minutes quota mechanism is handled early when the job is created because it is a constant decision for most of the time.
 Once a project exceeds the limit, every next job matching it will be applicable for it until next month starts.
-Of course, the project owner can buy additional minutes, but that is a manual action that the project need to take.
+Of course, the project owner can buy additional minutes, but that is a manual action that the project needs to take.
 
 The same mechanism will be used for `allowed_plans` [soon](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121761).
 If the project is not on the required plan and a job is targeting such runner,
@@ -280,7 +280,7 @@ Depending on the runner's configuration and capacity and the size of the queue i
 There are other possible reasons:
 
 - You are handling runner maintenance, which is temporarily not available.
-- You are updating configuration and, by mistake, you've use the wrong tagging or protected flag.
+- You are updating configuration and, by mistake, you've used the wrong tagging or protected flag.
 - For GitLab.com instance runners, you've assigned a wrong cost factor or `allowed_plans` configuration.
 
 These issues are typically temporary and should be detected and fixed quickly.
@@ -362,7 +362,7 @@ sequenceDiagram
 
 ## The definition of "Job" in GitLab CI/CD
 
-"Job" in GitLab CI context refers a task to drive Continuous Integration, Delivery, and Deployment.
+"Job" in GitLab CI context refers to a task to drive Continuous Integration, Delivery, and Deployment.
 Typically, a pipeline contains multiple stages, and a stage contains multiple jobs.
 
 In Active Record modeling, Job is defined as `CommitStatus` class.
@@ -372,10 +372,10 @@ On top of that, we have the following types of jobs:
 - `Ci::Bridge` ... The job to trigger a downstream pipeline. (See [trigger jobs](#trigger-jobs))
 - `GenericCommitStatus` ... The job to be executed in an external CI/CD system, for example Jenkins.
 
-When you use the "Job" terminology in codebase, readers would
-assume that the class/object is any type of above.
-If you specifically refer `Ci::Build` class, you should not name the object/class
-as "job" as this could cause some confusions. In documentation,
+When you use the "Job" terminology in the codebase, readers would
+assume that the class/object is any of the above types.
+If you specifically refer to the `Ci::Build` class, you should not name the object/class
+as "job" as this could cause some confusion. In documentation,
 we should use "Job" in general, instead of "Build".
 
 We have a few inconsistencies in our codebase that should be refactored.

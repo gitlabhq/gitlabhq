@@ -70,11 +70,11 @@ describe('Suggestion Diff component', () => {
   });
 
   it.each`
-    event                | childArgs         | args
-    ${'apply'}           | ${['test-event']} | ${[{ callback: 'test-event', suggestionId }]}
-    ${'applyBatch'}      | ${['test-event']} | ${['test-event']}
-    ${'addToBatch'}      | ${[]}             | ${[suggestionId]}
-    ${'removeFromBatch'} | ${[]}             | ${[suggestionId]}
+    event                  | childArgs         | args
+    ${'apply'}             | ${['test-event']} | ${[{ callback: 'test-event', suggestionId }]}
+    ${'apply-batch'}       | ${['test-event']} | ${['test-event']}
+    ${'add-to-batch'}      | ${[]}             | ${[suggestionId]}
+    ${'remove-from-batch'} | ${[]}             | ${[suggestionId]}
   `('emits $event event on sugestion diff header $event', ({ event, childArgs, args }) => {
     wrapper.findComponent(SuggestionDiffHeader).vm.$emit(event, ...childArgs);
 

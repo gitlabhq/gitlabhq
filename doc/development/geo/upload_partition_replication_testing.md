@@ -11,7 +11,7 @@ on the GitLab Development Kit (GDK) or on a reference environment.
 Geo replicates and verifies each partition of the `uploads` table with its own replicator.
 
 It does not track the whole table with the single legacy `Geo::UploadReplicator`.
-Support for this proposed in [epic 20933](https://gitlab.com/groups/gitlab-org/-/work_items/20933).
+Support for this is proposed in [epic 20933](https://gitlab.com/groups/gitlab-org/-/work_items/20933).
 
 ## Seed one upload per partition
 
@@ -30,7 +30,7 @@ bundle exec rake gitlab:seed:geo_uploads
 bundle exec rake "gitlab:seed:geo_uploads[group/project]"
 ```
 
-The task prints result for each partition and a summary of upload counts by `model_type`.
+The task prints a result for each partition and a summary of upload counts by `model_type`.
 The count is the partition's total row count, including any pre-existing data, not only
 the rows this run created.
 A partition reports `FAILED` when its recipe raised an error instead of creating a record.
@@ -44,7 +44,7 @@ events, and the partition registry consistency backfill is suppressed.
 
 To exercise the partition replicators, turn on every partition flag first, then turn off the
 legacy flag.
-If a flag is disabled when you disable the legacy flag, the partition stop replicating.
+If a flag is disabled when you disable the legacy flag, the partition stops replicating.
 
 On the primary site, run the following command in a Rails console:
 

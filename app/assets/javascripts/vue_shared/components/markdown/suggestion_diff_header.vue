@@ -64,7 +64,7 @@ export default {
       default: false,
     },
   },
-  emits: ['addToBatch', 'apply', 'applyBatch', 'removeFromBatch'],
+  emits: ['add-to-batch', 'apply', 'apply-batch', 'remove-from-batch'],
   data() {
     return {
       isApplyingSingle: false,
@@ -127,13 +127,13 @@ export default {
     },
     applySuggestionBatch(message) {
       if (!this.canApply) return;
-      this.$emit('applyBatch', message);
+      this.$emit('apply-batch', message);
     },
     addSuggestionToBatch() {
-      this.$emit('addToBatch');
+      this.$emit('add-to-batch');
     },
     removeSuggestionFromBatch() {
-      this.$emit('removeFromBatch');
+      this.$emit('remove-from-batch');
     },
   },
 };

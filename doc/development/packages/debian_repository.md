@@ -24,7 +24,7 @@ The `.deb` file follows the naming convention `<PackageName>_<VersionNumber>-<De
 
 It includes a `control file` that contains metadata about the package. You can view the control file by using `dpkg --info <deb_file>`.
 
-The [`.changes` file](https://www.debian.org/doc/debian-policy/ch-controlfields.html#debian-changes-files-changes) is used to tell the Debian repository how to process updates to packages. It contains a variety of metadata for the package, including architecture, distribution, and version. In addition to the metadata, they contain three lists of checksums: `sha1`, `sha256`, and `md5` in the `Files` section. Refer to [sample_1.2.3~alpha2_amd64.changes](https://gitlab.com/gitlab-org/gitlab/-/blob/dd1e70d3676891025534dc4a1e89ca9383178fe7/spec/fixtures/packages/debian/sample_1.2.3~alpha2_amd64.changes) for an example of how these files are structured.
+The [`.changes` file](https://www.debian.org/doc/debian-policy/ch-controlfields.html#debian-changes-files-changes) is used to tell the Debian repository how to process updates to packages. It contains a variety of metadata for the package, including architecture, distribution, and version. In addition to the metadata, it contains three lists of checksums: `sha1`, `sha256`, and `md5` in the `Files` section. Refer to [sample_1.2.3~alpha2_amd64.changes](https://gitlab.com/gitlab-org/gitlab/-/blob/dd1e70d3676891025534dc4a1e89ca9383178fe7/spec/fixtures/packages/debian/sample_1.2.3~alpha2_amd64.changes) for an example of how these files are structured.
 
 ## How do people get Debian packages?
 
@@ -173,4 +173,4 @@ sequenceDiagram
 
 ### Distributions
 
-You must create a distribution before publishing a package to it. When you create or update a distribution using the project or group distribution API, in addition to creating the initial backing records in the database, the `GenerateDistributionService` run as shown in the above sequence diagram.
+You must create a distribution before publishing a package to it. When you create or update a distribution using the project or group distribution API, in addition to creating the initial backing records in the database, the `GenerateDistributionService` runs as shown in the above sequence diagram.

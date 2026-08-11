@@ -25,6 +25,10 @@
       "type": "boolean",
       "default": false
     },
+    "dependency_firewall_enabled": {
+      "type": "boolean",
+      "default": false
+    },
     "vac_project_ids": {
       "type": "array",
       "items": {

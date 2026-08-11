@@ -50,7 +50,7 @@ if you change this heading (or the location to this file), make sure to update
 ## Type authorization
 
 Authorize a type by passing an ability to the `authorize` method. All
-fields with the same type is authorized by checking that the
+fields with the same type are authorized by checking that the
 currently authenticated user has the required ability.
 
 For example, the following authorization ensures that the currently
@@ -168,7 +168,7 @@ The `Graphql/ForbiddenLoadsArgument` RuboCop cop enforces this rule.
 
 Fields can be authorized with the `authorize` option.
 
-Fields authorization is checked against the current object, and
+Field authorization is checked against the current object, and
 authorization happens before resolution, which means that
 fields do not have access to the resolved resource. If you need to
 apply an authorization check to a field, you probably want to add
@@ -202,7 +202,7 @@ end
 Field authorization is recommended for:
 
 - Scalar fields (strings, booleans, or numbers) that should have different levels
-  of access controls to other fields.
+  of access control than other fields.
 - Object and collection fields where an access check can be applied to the
   parent to save the field resolution, and avoid individual policy checks
   on each resolved object.
@@ -329,7 +329,7 @@ query {
 }
 ```
 
-For example, if the root object of type `SomeType` has 10 discussions. Each of the 10 discussions have 10 notes. And the first note of each discussion has one emoji.
+For example, the root object of type `SomeType` has 10 discussions. Each of the 10 discussions has 10 notes. And the first note of each discussion has one emoji.
 
 In this case, we authorize the discussions in `SomeResolver`, that is 10 authorization calls.
 Then when we represent each discussion with `DiscussionType`, we authorize each discussion object, again 10 calls. These

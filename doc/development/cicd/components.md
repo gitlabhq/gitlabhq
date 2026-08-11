@@ -11,10 +11,10 @@ The location for all official GitLab component projects is the [`gitlab.com/comp
 This group contains all components that are designed to be generic, served to all GitLab users, and maintained by GitLab.
 For example: SAST, secret detection and code quality components.
 A component project can initially be created under a different group (for example `gitlab-org`)
-but it needs to be moved into the `components` group before the first version gets published to the catalog. All projects under [`gitlab.com/components`](https://gitlab.com/components) group must be public
+but it needs to be moved into the `components` group before the first version gets published to the catalog. All projects under the [`gitlab.com/components`](https://gitlab.com/components) group must be public.
 
 Components that are for GitLab internal use only, for example specific to `gitlab-org/gitlab` project, should be
-implemented under `gitlab-org` group.
+implemented under the `gitlab-org` group.
 
 Component projects that are expected to be published in the [CI/CD catalog](../../ci/components/_index.md#cicd-catalog)
 should first be dogfooded to ensure we stay on top of the project quality and have first-hand
@@ -132,20 +132,20 @@ for reviews to ensure that the components are written in consistent style and fo
 
 ## Default maintainers of GitLab official components
 
-Each component project under [`gitlab.com/components`](https://gitlab.com/components) group should
-have specific DRIs and maintainers, however the [`@gitlab-org/maintainers/ci-components`](https://gitlab.com/groups/gitlab-org/maintainers/ci-components/-/group_members?with_inherited_permissions=exclude)
+Each component project under the [`gitlab.com/components`](https://gitlab.com/components) group should
+have specific DRIs and maintainers. However, the [`@gitlab-org/maintainers/ci-components`](https://gitlab.com/groups/gitlab-org/maintainers/ci-components/-/group_members?with_inherited_permissions=exclude)
 group of maintainers is responsible for managing the `components` group in general.
 
 The responsibilities for this group of maintainers:
 
 - Manage any development and helper resources, such as toolkit components and project templates, to provide the best development experience.
-- Manage any component projects that is missing a clear DRI, or is in the process of being developed, and work to find the right owners long term.
+- Manage any component projects that are missing a clear DRI, or are in the process of being developed, and work to find the right owners long term.
 - Guide and mentor the maintainers of individual component projects, including during code reviews and when troubleshooting issues.
 - Ensure best practices are applied and improved over time.
 
 Requirements for becoming a maintainer:
 
-- Have a an in-depth understanding of the [CI/CD YAML syntax](../../ci/yaml/_index.md) and features.
+- Have an in-depth understanding of the [CI/CD YAML syntax](../../ci/yaml/_index.md) and features.
 - Understand how CI components work and demonstrate experience developing them.
 - Have a solid understanding of how to [write a component](../../ci/components/_index.md#write-a-component).
 

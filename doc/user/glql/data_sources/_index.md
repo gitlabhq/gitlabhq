@@ -10,11 +10,12 @@ GLQL can query the following data sources:
 | Data source | Standard mode | [Analytics mode](../_index.md#analytics-mode) | `type` values | Description |
 |---|---|---|---|---|
 | Work items | {{< yes >}} | {{< no >}} | `Issue`, `Incident`, `TestCase`, `Requirement`, `Task`, `Ticket`, `Objective`, `KeyResult`, `Epic` | Issues, epics, and other work item types. Default when `type` is omitted. |
-| Merge requests | {{< yes >}} | {{< no >}} | `MergeRequest` | Code review and merge workflow. |
+| Merge requests | {{< yes >}} | {{< yes >}} | `MergeRequest` | Code review and merge workflow. |
 | Pipelines | {{< yes >}} | {{< yes >}} | `Pipeline` | CI/CD pipelines. |
 | Jobs | {{< yes >}} | {{< no >}} | `Job` | CI/CD jobs within pipelines. |
 | Projects | {{< yes >}} | {{< no >}} | `Project` | Projects within a namespace. |
-| Code suggestions | {{< no >}} | {{< yes >}} | `CodeSuggestion` | Aggregated Duo Code Suggestions analytics. |
+| AI usage events | {{< no >}} | {{< yes >}} | `AiUsageEvent` | Aggregated GitLab Duo usage event analytics. |
+| Code suggestions | {{< no >}} | {{< yes >}} | `CodeSuggestion` | Aggregated GitLab Duo Code Suggestions analytics. |
 | Contributions | {{< no >}} | {{< yes >}} | `Contribution` | Aggregated contribution activity analytics. |
 
 Each data source has its own set of supported fields for filtering, display, and sorting.

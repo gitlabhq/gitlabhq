@@ -23,7 +23,7 @@ With custom roles, the customers can decide which abilities they want to assign 
 - In the default role system, reading of vulnerabilities is limited to a Developer role.
 - In the custom role system, a customer can assign this ability to a new custom role based on any default role.
 
-Like default roles, custom roles are [inherited](../../user/project/members/_index.md#membership-types) within a group hierarchy. If a user has custom role for a group, that user will also have a custom role for any projects or subgroups within the group.
+Like default roles, custom roles are [inherited](../../user/project/members/_index.md#membership-types) within a group hierarchy. If a user has a custom role for a group, that user will also have a custom role for any projects or subgroups within the group.
 
 ## Technical overview
 
@@ -141,7 +141,7 @@ policy.debug(:read_group)
 Every feature added to custom roles should have minimal abilities. For most features, having `read_*` and `admin_*` should be enough. You should consolidate all:
 
 - View-related abilities under `read_*`. For example, viewing a list or detail.
-- Object updates under `admin_*`. For example, updating an object, adding assignees or closing it that object. Usually, a role that enables `admin_` has to have also `read_` abilities enabled. This is defined in `requirement` option in the `ALL_CUSTOMIZABLE_PERMISSIONS` hash on `MemberRole` model.
+- Object updates under `admin_*`. For example, updating an object, adding assignees, or closing that object. Usually, a role that enables `admin_` also has to have `read_` abilities enabled. This is defined in the `requirement` option in the `ALL_CUSTOMIZABLE_PERMISSIONS` hash on the `MemberRole` model.
 
 There might be features that require additional abilities but try to minimize those. You can always ask members of the Authentication and Authorization group for their opinion or help.
 
@@ -153,19 +153,19 @@ If you encounter similar permissions in these classes, consider refactoring so
 that they have the same name.
 
 For example, you see in `GroupPolicy` that there is an ability called
-`read_group_security_dashboard` and in `ProjectPolicy` has an ability called
+`read_group_security_dashboard` and that in `ProjectPolicy` there is an ability called
 `read_project_security_dashboard`. You'd like to make both customizable. Rather
 than adding a row to the `member_roles` table for each ability, consider
 renaming them to `read_security_dashboard` and adding `read_security_dashboard`
 to the `member_roles` table. Enabling `read_security_dashboard` on
 the parent group will allow the custom role to access the group security dashboard and the project security dashboard
-for each project in that group. Enabling the same permission on a specific project will allow access to that projects'
+for each project in that group. Enabling the same permission on a specific project will allow access to that project's
 security dashboard.
 
 ## How to add support for an ability to custom roles
 
 If adding an existing ability, consider [refactoring & consolidating abilities for the feature](#refactoring-abilities)
-before in a separate merge request, before completing the below.
+in a separate merge request before completing the below.
 
 ### Step 1. Generate a configuration file
 

@@ -78,10 +78,10 @@ and offer support for making contributions.
 
 To write and test your code locally, choose a local development environment.
 
-- [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit), is a local
+- [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit) is a local
   development environment that includes an installation of GitLab Self-Managed, sample projects,
   and administrator access with which you can test functionality.
-- [GDK-in-a-box](first_contribution/configure-dev-env-gdk-in-a-box.md),
+- [GDK-in-a-box](first_contribution/configure-dev-env-gdk-in-a-box.md)
   packages GDK into a pre-configured container image that you can connect to with VS Code.
   Follow [Configure GDK-in-a-box](first_contribution/configure-dev-env-gdk-in-a-box.md) to set up GDK-in-a-box.
 
@@ -141,7 +141,7 @@ Read our [merge request guidelines for contributors before you start for the fir
 ## Contributing to Premium/Ultimate features with an Enterprise Edition license
 
 If you would like to work on GitLab features that are within a paid tier, the code that lives in the
-[EE directory](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee), it requires a GitLab Enterprise Edition license.
+[EE directory](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee) requires a GitLab Enterprise Edition license.
 Request an Enterprise Edition Developers License according to the [documented process](https://handbook.gitlab.com/handbook/marketing/developer-relations/contributor-success/community-contributors-workflows/#contributing-to-the-gitlab-enterprise-edition-ee).
 
 ## Get help

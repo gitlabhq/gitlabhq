@@ -59,7 +59,7 @@ consists of 2-3 steps, for a total of 3-4 steps visible to the user.
 # ~/pipeline_wizard/templates/my_template.yml
 id: gitlab/my-template
 title: Set up my specific tech pipeline
-description: Here's two or three introductory sentences that help the user understand what this wizard is going to set up.
+description: Here are two or three introductory sentences that help the user understand what this wizard is going to set up.
 steps:
   # Step 1
   - inputs:
