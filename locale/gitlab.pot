@@ -59069,6 +59069,9 @@ msgstr ""
 msgid "PolicyStore|Advanced"
 msgstr ""
 
+msgid "PolicyStore|Advisory mode. Violations are flagged but progress is not blocked."
+msgstr ""
+
 msgid "PolicyStore|Affected projects"
 msgstr ""
 
@@ -59162,6 +59165,9 @@ msgstr ""
 msgid "PolicyStore|Enforcement"
 msgstr ""
 
+msgid "PolicyStore|Enforcement mode"
+msgstr ""
+
 msgid "PolicyStore|Environment"
 msgstr ""
 
@@ -59192,6 +59198,9 @@ msgstr ""
 msgid "PolicyStore|Freeze Window"
 msgstr ""
 
+msgid "PolicyStore|Hard enforcement. Violations are blocked as defined."
+msgstr ""
+
 msgid "PolicyStore|Last updated"
 msgstr ""
 
@@ -59205,6 +59214,9 @@ msgid "PolicyStore|Min hours"
 msgstr ""
 
 msgid "PolicyStore|Mode"
+msgstr ""
+
+msgid "PolicyStore|Monitoring mode. No actions are taken. Violations are recorded in the audit log."
 msgstr ""
 
 msgid "PolicyStore|Most restrictive SLA wins when multiple policies match"

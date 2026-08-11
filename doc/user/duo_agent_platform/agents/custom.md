@@ -50,21 +50,34 @@ with GitLab Duo Chat in the GitLab UI, VS Code, and JetBrains IDEs.
 {{< history >}}
 
 - Roles that can view private agents [expanded](https://gitlab.com/gitlab-org/gitlab/-/work_items/582507) in GitLab 18.7.
+- Restricted visibility [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/603253) in GitLab 19.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `ai_catalog_internal_visibility`. Disabled by default.
 
 {{< /history >}}
 
-When you create a custom agent, you select a project to manage it and choose whether the agent is public or private.
+> [!flag]
+> The **Restricted** visibility option is controlled by a feature flag named `ai_catalog_internal_visibility`.
+> For more information, see the history.
+
+When you create a custom agent, you select a project to manage it and choose whether the agent is public, private, or restricted.
 
 Public agents:
 
 - Can be viewed by anyone and can be enabled in any project that meets the prerequisites.
+
+Restricted agents:
+
+- Can be viewed and used by members of any project in the top-level group of the managing project.
+- Can be enabled in other projects in the same top-level group.
+- Cannot be viewed or turned on outside that top-level group.
+
+You cannot make a public agent restricted if the agent has been turned on by a project outside of that top-level group.
 
 Private agents:
 
 - Can be viewed only by members of the managing project who have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role.
 - Cannot be enabled in projects other than the managing project.
 
-You cannot make a public agent private if the agent is currently enabled.
+You cannot make a public or restricted agent private if the agent has been turned on by a project other than the managing project.
 
 ## View the agents for your project
 
@@ -82,6 +95,16 @@ To view a list of agents associated with your project:
 Select an agent to view its details.
 
 ## Create an agent
+
+{{< history >}}
+
+- Restricted visibility [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/603253) in GitLab 19.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `ai_catalog_internal_visibility`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The **Restricted** visibility option is controlled by a feature flag named `ai_catalog_internal_visibility`.
+> For more information, see the history.
 
 You can create an agent from a project, or by using the AI Catalog.
 
@@ -101,7 +124,7 @@ To create an agent:
 1. Under **Basic information**:
    1. In **Display name**, enter a name for the agent.
    1. In **Description**, enter a description for the agent.
-1. Under **Visibility & access**, for **Visibility**, select **Private** or **Public**.
+1. Under **Visibility & access**, for **Visibility**, select **Private**, **Restricted**, or **Public**.
 1. Under **Prompts**, in **System prompt**, enter a prompt to define
    the agent's personality, expertise, and behavior.
 1. Optional. Under **Available tools**, from the **Tools** dropdown list,
@@ -127,7 +150,7 @@ To create an agent:
    1. In **Description**, enter a description for the agent.
 1. Under **Visibility & access**:
    1. From the **Managed by** dropdown list, select a project for the agent.
-   1. For **Visibility**, select **Private** or **Public**.
+   1. For **Visibility**, select **Private**, **Restricted**, or **Public**.
 1. Under **Prompts**, in **System prompt**, enter a prompt to define
    the agent's personality, expertise, and behavior.
 1. Optional. Under **Available tools**, from the **Tools** dropdown list,
@@ -188,7 +211,7 @@ To enable an agent:
 1. In the upper-right corner, select **Enable**.
 1. Under **Project**, select the project you want to enable the agent in.
 
-   To enable a public agent for multiple projects, from the **Project** dropdown list,
+   To turn on a public or restricted agent for multiple projects, from the **Project** dropdown list,
    select the relevant projects. You can select up to 100 projects.
 
 1. Select **Enable**.

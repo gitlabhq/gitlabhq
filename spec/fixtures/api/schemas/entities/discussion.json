@@ -223,6 +223,12 @@
               "null"
             ]
           },
+          "duo_session_id": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
           "duo_session_status": {
             "type": [
               "string",

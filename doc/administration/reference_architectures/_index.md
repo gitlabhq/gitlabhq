@@ -40,7 +40,7 @@ As a general guide, the more performant or resilient you want your environment t
 
 The right architecture size depends primarily on your environment's expected peak load. Requests per second (RPS) is the primary metric for sizing a GitLab infrastructure, but other factors can also apply.
 
-For comprehensive RPS analysis and data-driven sizing decisions, see [reference architecture sizing](sizing.md), which provides:
+For comprehensive RPS analysis and data-driven sizing decisions, see [reference architecture sizing](../../install/sizing.md), which provides:
 
 - Detailed PromQL queries for extracting peak and sustained RPS metrics
 - Workload pattern analysis and RPS composition guidance to identify component-specific adjustments
@@ -71,7 +71,7 @@ The following reference architectures are available as recommended starting poin
 
 Linux package-based reference architectures deploy all GitLab components on virtual machines with the package. Select components (PostgreSQL, Redis, Object Storage) can optionally use cloud provider services.
 
-The following RPS targets reflect typical workload composition. For atypical workloads, see [Understanding RPS composition](sizing.md#understanding-rps-composition-and-workload-patterns).
+The following RPS targets reflect typical workload composition. For atypical workloads, see [Understanding RPS composition](../../install/sizing.md#understanding-rps-composition-and-workload-patterns).
 
 | Size                         | API RPS | Web RPS | Git (Pull) RPS | Git (Push) RPS |
 |------------------------------|---------|---------|----------------|----------------|
@@ -100,7 +100,7 @@ Cloud Native Hybrid reference architectures deploy select stateless components (
 
 Cloud Native architectures deploy all GitLab components in Kubernetes, while PostgreSQL,
 Redis, and Object Storage use external managed services. Four standardized sizes cover most
-production deployments. For atypical workloads, see [reference architecture sizing](sizing.md).
+production deployments. For atypical workloads, see [reference architecture sizing](../../install/sizing.md).
 This is the recommended architecture for new deployments.
 
 | Size | Target RPS | Workload characteristics |
@@ -178,7 +178,7 @@ If the primary site becomes unavailable, you can fail over to one of the seconda
 
 [Large monorepos](#large-monorepos) or significant [additional workloads](#additional-workloads) can affect the performance of the environment notably. Some adjustments may be required depending on the context.
 
-For comprehensive analysis of these factors, see [reference architecture sizing](sizing.md), which provides:
+For comprehensive analysis of these factors, see [reference architecture sizing](../../install/sizing.md), which provides:
 
 - Detailed assessment methodology for monorepo impacts on infrastructure.
 - Component-specific scaling recommendations for different workload patterns.
@@ -557,7 +557,7 @@ The listed RPS targets were selected based on real customer data of total enviro
 >
 > - These RPS breakdowns represent test targets based on typical workload patterns. Your actual workload composition may
 >   vary. For guidance on assessing your specific RPS composition and when adjustments are needed, see
->   [Understanding RPS composition](sizing.md#understanding-rps-composition-and-workload-patterns).
+>   [Understanding RPS composition](../../install/sizing.md#understanding-rps-composition-and-workload-patterns).
 > - Network latency between components in test environments was observed at <5 ms but note this is not intended as a hard requirement.
 
 ### Test coverage and results
@@ -585,8 +585,8 @@ Most deployments benefit from adjustments after observing actual workload patter
 
 **Resource sizing adjustments:**
 
-- Increasing Webservice/Rails capacity for API-heavy workloads, particularly when API traffic exceeds 90% of total RPS (see [Understanding RPS composition](sizing.md#understanding-rps-composition-and-workload-patterns))
-- Scaling Gitaly for monorepo-heavy environments or when repository sizes exceed 2 GB (see [Identify component adjustments](sizing.md#identify-component-adjustments))
+- Increasing Webservice/Rails capacity for API-heavy workloads, particularly when API traffic exceeds 90% of total RPS (see [Understanding RPS composition](../../install/sizing.md#understanding-rps-composition-and-workload-patterns))
+- Scaling Gitaly for monorepo-heavy environments or when repository sizes exceed 2 GB (see [Identify component adjustments](../../install/sizing.md#identify-component-adjustments))
 - Adjusting Sidekiq workers for high CI/CD throughput or heavy background job processing
 
 **Configuration tuning:**
@@ -600,7 +600,7 @@ Most deployments benefit from adjustments after observing actual workload patter
 - Splitting Sidekiq into specialized pools for different job types
 - Adjusting minimum instance counts for environments with sharp traffic spikes
 
-These adjustments are typical and expected. Reference architectures provide the foundation, but monitoring your specific workload determines the optimal configuration. For systematic assessment of your environment, see [reference architecture sizing](sizing.md).
+These adjustments are typical and expected. Reference architectures provide the foundation, but monitoring your specific workload determines the optimal configuration. For systematic assessment of your environment, see [reference architecture sizing](../../install/sizing.md).
 
 #### Scaling for GitLab Duo Agent Platform
 

@@ -127,7 +127,7 @@ To override the default code review feature for GitLab Duo Enterprise seats:
 Prerequisites:
 
 - The Owner role for the top-level group.
-- [Code Review Flow](../../duo_agent_platform/flows/foundational_flows/code_review.md#prerequisites)
+- [Code Review Flow](../../duo_agent_platform/flows/foundational_flows/code_review/_index.md#prerequisites)
   turned on and configured correctly for your top-level group.
 
 1. In the top bar, select **Search or go to** and find your top-level group.
@@ -144,7 +144,7 @@ Prerequisites:
 Prerequisites:
 
 - The Maintainer or Owner role for the group.
-- [Code Review Flow](../../duo_agent_platform/flows/foundational_flows/code_review.md#prerequisites)
+- [Code Review Flow](../../duo_agent_platform/flows/foundational_flows/code_review/_index.md#prerequisites)
   turned on and configured correctly for the instance.
 
 1. In the top bar, select **Search or go to** and find your group or subgroup.

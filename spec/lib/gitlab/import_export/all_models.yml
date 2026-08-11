@@ -117,6 +117,7 @@ notes:
 - user_agent_detail
 - duo_workflow_links
 - linked_duo_workflows
+- duo_created_workflow_link
 note_metadata:
   - note
   - email_participant
@@ -140,6 +141,7 @@ commit_notes:
 - user_agent_detail
 - duo_workflow_links
 - linked_duo_workflows
+- duo_created_workflow_link
 label_links:
 - target
 - label

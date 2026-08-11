@@ -138,7 +138,7 @@ The following are the common root causes:
 - You belong to multiple GitLab Duo namespaces and no default namespace is set.
 
 In GitLab 18.9 and later, more specific error messages appear instead.
-For more information, see [troubleshooting Code Review Flow](flows/foundational_flows/code_review.md#troubleshooting).
+For more information, see [troubleshooting Code Review Flow](flows/foundational_flows/code_review/troubleshooting.md).
 
 ### Foundational flow service account not created
 
@@ -419,6 +419,6 @@ To run the diagnostic script in GitLab 18.8 to GitLab 18.11:
 ## Related topics
 
 - [Troubleshooting GitLab Duo Agentic Chat](../gitlab_duo_chat/troubleshooting.md)
-- [Troubleshooting Code Review Flow](flows/foundational_flows/code_review.md#troubleshooting)
+- [Troubleshooting Code Review Flow](flows/foundational_flows/code_review/troubleshooting.md)
 - [Troubleshooting GitLab MCP clients](../gitlab_duo/model_context_protocol/mcp_clients.md#troubleshooting)
 - [Troubleshooting the GitLab MCP Server](../model_context_protocol/mcp_server_troubleshooting.md)

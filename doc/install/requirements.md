@@ -15,16 +15,15 @@ title: GitLab installation requirements
 
 GitLab Self-Managed has specific hardware, component, and infrastructure requirements that
 vary based on your deployment size and workload. For larger or distributed deployments, use the
-[sizing guide](../administration/reference_architectures/sizing.md) to determine the right
-specifications for your environment.
+[sizing guide](sizing.md) to determine the right specifications for your environment.
 
 ## Hardware
 
 You can deploy GitLab on a single node or distributed across multiple nodes. The minimum
 hardware requirements for a single-node installation are listed below. For distributed
 deployments, requirements are allocated per component type and scale with load. Use the
-[sizing guide](../administration/reference_architectures/sizing.md) to determine the right
-specifications based on expected load and workload composition.
+[sizing guide](sizing.md) to determine the right specifications based on expected load and
+workload composition.
 
 ### CPU
 

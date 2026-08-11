@@ -120,7 +120,7 @@ Where:
 - `Git Pull RPS` is the peak Git pull throughput of your GitLab instance.
   You can measure this from your existing environment monitoring,
   see
-  [Extract peak traffic metrics](../reference_architectures/sizing.md#extract-peak-traffic-metrics).
+  [Extract peak traffic metrics](../../install/sizing.md#extract-peak-traffic-metrics).
 - `adoption rate` is the fraction of CI/CD jobs that use Secrets Manager
   (for example, 0.05 for 5%, 0.20 for 20%, or 0.50 for 50%).
 - `3` is the assumed average number of secrets fetched per job that uses the Secrets Manager.

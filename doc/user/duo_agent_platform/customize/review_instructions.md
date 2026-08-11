@@ -174,7 +174,7 @@ When GitLab Duo performs a code review, it combines instructions from the top-le
 instructions defined in the individual project.
 
 > [!note]
-> If you already configured a project to store [automatic review exclusion rules](../flows/foundational_flows/code_review.md#exclude-merge-requests-for-a-project) for your group, store your `mr-review-instructions.yaml`
+> If you already configured a project to store [automatic review exclusion rules](../flows/foundational_flows/code_review/_index.md#exclude-merge-requests-for-a-project) for your group, store your `mr-review-instructions.yaml`
 > in the same project.
 > You can only specify a single project to customize code review for a group, so GitLab automatically
 > checks that project for review instructions as well. You do not need to follow the steps below again.

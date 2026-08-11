@@ -53,14 +53,27 @@ automate complex, multi-step tasks across your GitLab projects.
 {{< history >}}
 
 - Roles that can view private flows [expanded](https://gitlab.com/gitlab-org/gitlab/-/work_items/582507) in GitLab 18.7.
+- Restricted visibility [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/603253) in GitLab 19.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `ai_catalog_internal_visibility`. Disabled by default.
 
 {{< /history >}}
 
-When you create a custom flow, you select a project to manage it and choose whether the flow is public or private.
+> [!flag]
+> The **Restricted** visibility option is controlled by a feature flag named `ai_catalog_internal_visibility`.
+> For more information, see the history.
+
+When you create a custom flow, you select a project to manage it and choose whether the flow is public, private, or restricted.
 
 Public flows:
 
 - Can be viewed by anyone on the instance and can be enabled in any project that meets the prerequisites.
+
+Restricted flows:
+
+- Can be viewed and used by members of any project in the top-level group of the managing project.
+- Can be turned on in other projects in the same top-level group.
+- Cannot be viewed or turned on outside that top-level group.
+
+You cannot make a public flow restricted if the flow has been turned on by a project outside of that top-level group.
 
 Private flows:
 
@@ -71,7 +84,7 @@ Private flows:
 - Cannot be enabled in projects other than the managing project, or in groups
   other than the top-level group.
 
-You cannot change a public flow to private if the flow is enabled.
+You cannot make a public or restricted flow private if the flow has been turned on by a project other than the managing project.
 
 ## View the flows for your project
 
@@ -89,6 +102,16 @@ To view a list of flows associated with your project:
 Select a flow to view its details.
 
 ## Create a flow
+
+{{< history >}}
+
+- Restricted visibility [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/603253) in GitLab 19.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `ai_catalog_internal_visibility`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The **Restricted** visibility option is controlled by a feature flag named `ai_catalog_internal_visibility`.
+> For more information, see the history.
 
 You can create a flow from a project, or by using the AI Catalog.
 
@@ -113,7 +136,7 @@ To create a flow:
 1. Under **Basic information**:
    1. In **Display name**, enter a name.
    1. In **Description**, enter a description.
-1. Under **Visibility & access**, for **Visibility**, select **Private** or **Public**.
+1. Under **Visibility & access**, for **Visibility**, select **Private**, **Restricted**, or **Public**.
 1. Under **Configuration**:
    1. Select **Flow**.
    1. In the editor, enter your flow configuration:
@@ -131,7 +154,7 @@ To create a flow:
 1. Under **Basic information**:
    1. In **Display name**, enter a name.
    1. In **Description**, enter a description.
-1. Under **Visibility & access**, for **Visibility**, select **Private** or **Public**.
+1. Under **Visibility & access**, for **Visibility**, select **Private**, **Restricted**, or **Public**.
 1. Under **Configuration**:
    1. Select **Flow**.
    1. In the editor, enter your flow configuration:
@@ -198,7 +221,7 @@ To enable a flow:
 1. In the upper-right corner, select **Enable**.
 1. Under **Project**, select the project you want to enable the flow in.
 
-   To enable a public flow for multiple projects, from the **Project** dropdown list,
+   To enable a public or restricted flow for multiple projects, from the **Project** dropdown list,
    select the relevant projects. You can select up to 100 projects.
 
 1. For **Add triggers**, select:

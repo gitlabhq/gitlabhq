@@ -84,7 +84,7 @@ For recommended managed service providers (such as GCP Cloud SQL, AWS RDS, Azure
 
 ## Available architectures
 
-These architectures are designed around target RPS ranges representing typical production workload patterns. RPS targets serve as starting points, your specific capacity needs depend on workload composition and usage patterns. For guidance on RPS composition and when adjustments are needed, see [Understanding RPS composition](sizing.md#understanding-rps-composition-and-workload-patterns).
+These architectures are designed around target RPS ranges representing typical production workload patterns. RPS targets serve as starting points, your specific capacity needs depend on workload composition and usage patterns. For guidance on RPS composition and when adjustments are needed, see [Understanding RPS composition](../../install/sizing.md#understanding-rps-composition-and-workload-patterns).
 
 | Size | Target RPS | Intended Workload |
 |------|------------|-------------------|
@@ -93,7 +93,7 @@ These architectures are designed around target RPS ranges representing typical p
 | L | ≤500 | Large teams with heavy development activity and significant automation |
 | XL | ≤1000 | Enterprise deployments with intensive workloads and extensive integrations |
 
-For detailed guidance on determining your expected load and selecting the appropriate size, see the [reference architecture sizing guide](sizing.md).
+For detailed guidance on determining your expected load and selecting the appropriate size, see the [reference architecture sizing guide](../../install/sizing.md).
 
 ## Key benefits
 
@@ -330,7 +330,7 @@ However, this configuration may not be optimal for all workloads. For environmen
 
 For detailed guidance on measuring, tuning, and configuring Gitaly cgroups, see [Gitaly cgroups](../gitaly/cgroups.md).
 
-For large monorepos (over 2 GB) or intensive Git workloads, additional Gitaly adjustments may be required. See [reference architecture sizing guide](sizing.md) for detailed guidance.
+For large monorepos (over 2 GB) or intensive Git workloads, additional Gitaly adjustments may be required. See [reference architecture sizing guide](../../install/sizing.md) for detailed guidance.
 
 ### External service notes
 
@@ -362,7 +362,7 @@ If you have well-understood load patterns you can adjust minimums based on your 
 Cloud Native architectures are designed to scale beyond their base specifications. You may need to adjust capacity if your environment has:
 
 - Consistently higher throughput than the listed RPS targets
-- Atypical workload composition (see [Understanding RPS composition](sizing.md#understanding-rps-composition-and-workload-patterns))
+- Atypical workload composition (see [Understanding RPS composition](../../install/sizing.md#understanding-rps-composition-and-workload-patterns))
 - Large monorepos (over 2 GB)
 - Significant additional workloads
 - Extensive GitLab Duo Agent Platform usage
@@ -452,7 +452,7 @@ After deployment, environments typically require monitoring and tuning to match 
 ### Monitor and validate
 
 1. **Monitor resource utilization** - Track CPU, memory, and queue depths across all components using [Prometheus](../monitoring/prometheus/_index.md)
-1. **Validate RPS assumptions** - Compare your actual [RPS breakdown](sizing.md#extract-peak-traffic-metrics) to the assumed 80/10/10 composition
+1. **Validate RPS assumptions** - Compare your actual [RPS breakdown](../../install/sizing.md#extract-peak-traffic-metrics) to the assumed 80/10/10 composition
 1. **Identify potential adjustments** - Look for components consistently above 70% utilization
 1. **Review Gitaly cgroups** - Consider tuning [repository cgroup counts](../gitaly/cgroups.md) based on your repository access patterns
 
@@ -460,8 +460,8 @@ After deployment, environments typically require monitoring and tuning to match 
 
 Reference architectures are starting points. Many environments benefit from adjustments based on:
 
-- **Actual workload composition** - If your API/Web/Git split differs significantly from typical patterns, see [Understanding RPS composition](sizing.md#understanding-rps-composition-and-workload-patterns)
-- **Repository characteristics** - Monorepo sizes, clone frequency, and access patterns may require [component-specific adjustments](sizing.md#identify-component-adjustments)
+- **Actual workload composition** - If your API/Web/Git split differs significantly from typical patterns, see [Understanding RPS composition](../../install/sizing.md#understanding-rps-composition-and-workload-patterns)
+- **Repository characteristics** - Monorepo sizes, clone frequency, and access patterns may require [component-specific adjustments](../../install/sizing.md#identify-component-adjustments)
 - **Growth patterns** - User count increases, CI/CD expansion, or automation scaling
 
 See [Advanced scaling](#advanced-scaling) for component-specific adjustment guidance.
