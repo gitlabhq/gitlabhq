@@ -36,6 +36,18 @@ RSpec.describe Admin::Organizations::DashboardController, feature_category: :org
           expect(response.body).to include(_('Organization Administration'))
         end
 
+        it 'resolves the organization from the path before authorizing against it' do
+          allow(Ability).to receive(:allowed?).and_call_original
+          expect(Ability).to receive(:allowed?)
+            .with(admin, :access_organization_admin_area, organization)
+            .and_call_original
+            .at_least(:once)
+
+          get organization_admin_organization_dashboard_path(organization)
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+
         it_behaves_like 'the feature flag is disabled'
       end
 

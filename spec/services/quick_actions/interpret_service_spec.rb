@@ -687,6 +687,12 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
         expect(message).to eq(_("Unable to move. Target project or group doesn't exist or doesn't support this item type."))
       end
 
+      it 'returns move issue failure message when too many parameters are provided' do
+        _, _, message = service.execute("/move #{project.full_path} extra", issue)
+
+        expect(message).to eq(_('Failed to move this item: wrong parameters.'))
+      end
+
       context "when we pass a work_item" do
         let(:work_item) { create(:work_item, :issue, project: project) }
         let(:move_command) { "/move #{project.full_path}" }
@@ -695,6 +701,65 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
           _, _, message = service.execute(move_command, work_item)
 
           expect(message).to eq("Moved this item to #{project.full_path}.")
+        end
+      end
+
+      context 'with an optional target work item type' do
+        let_it_be(:target_project) { create(:project, developers: developer) }
+
+        before do
+          target_project.add_maintainer(current_user)
+        end
+
+        it 'sets target_work_item_type_id update when an explicit type is supplied', :aggregate_failures do
+          source_type = issue.work_item_type
+
+          _, updates, message = service.execute("/move #{target_project.full_path} [type:#{source_type.name}]", issue)
+
+          expect(message).to eq("Moved this item to #{target_project.full_path}.")
+          expect(updates[:target_container]).to eq(target_project)
+          expect(updates[:target_work_item_type_id]).to eq(source_type.id)
+        end
+
+        it 'uses the source type when it exists at the destination', :aggregate_failures do
+          source_type = issue.work_item_type
+
+          _, updates, message = service.execute("/move #{target_project.full_path}", issue)
+
+          expect(message).to eq("Moved this item to #{target_project.full_path}.")
+          expect(updates[:target_work_item_type_id]).to eq(source_type.id)
+        end
+
+        it 'fails when the explicit type is not available in the target namespace', :aggregate_failures do
+          _, updates, message = service.execute("/move #{target_project.full_path} [type:DoesNotExist]", issue)
+
+          expect(message).to start_with(
+            'Unable to move. The work item type "DoesNotExist" is not available in the target namespace.'
+          )
+          expect(message).to include('Available types:')
+          expect(updates).not_to have_key(:target_container)
+        end
+
+        it 'ignores the supplied type for a same-namespace move when its the same type', :aggregate_failures do
+          source_type = issue.work_item_type
+
+          _, updates, message = service.execute("/move #{project.full_path} [type:#{source_type.name}]", issue)
+
+          expect(message).to eq("Moved this item to #{project.full_path}.")
+          expect(updates[:target_container]).to eq(project)
+          # Same-namespace conversion is a no-op, so no target_work_item_type_id is applied.
+          expect(updates).not_to have_key(:target_work_item_type_id)
+        end
+
+        it 'validates the supplied type for a same-namespace move and fails on unknown types', :aggregate_failures do
+          _, updates, message = service.execute("/move #{project.full_path} [type:DoesNotExist]", issue)
+
+          expect(message).to start_with(
+            'Unable to move. The work item type "DoesNotExist" is not available in the target namespace.'
+          )
+          expect(message).to include('Available types:')
+          expect(updates).not_to have_key(:target_container)
+          expect(updates).not_to have_key(:target_work_item_type_id)
         end
       end
     end
@@ -706,6 +771,43 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
         formatted_message = format(translated_string, project_full_path: project.full_path.to_s)
 
         expect(message).to eq(formatted_message)
+      end
+
+      context 'with an optional target work item type' do
+        let_it_be(:target_project) { create(:project, developers: developer) }
+
+        before do
+          target_project.add_maintainer(current_user)
+        end
+
+        it 'sets target_work_item_type_id when an explicit type is supplied', :aggregate_failures do
+          source_type = issue.work_item_type
+
+          _, updates, message = service.execute("/clone #{target_project.full_path} [type:#{source_type.name}]", issue)
+
+          expect(message).to eq("Cloned this item to #{target_project.full_path}.")
+          expect(updates[:target_clone_container]).to eq(target_project)
+          expect(updates[:target_work_item_type_id]).to eq(source_type.id)
+        end
+
+        it 'uses the source type when it exists at the destination', :aggregate_failures do
+          source_type = issue.work_item_type
+
+          _, updates, message = service.execute("/clone #{target_project.full_path}", issue)
+
+          expect(message).to eq("Cloned this item to #{target_project.full_path}.")
+          expect(updates[:target_work_item_type_id]).to eq(source_type.id)
+        end
+
+        it 'fails when the explicit type is not available in the target namespace', :aggregate_failures do
+          _, updates, message = service.execute("/clone #{target_project.full_path} [type:DoesNotExist]", issue)
+
+          expect(message).to start_with(
+            'Unable to clone. The work item type "DoesNotExist" is not available in the target namespace.'
+          )
+          expect(message).to include('Available types:')
+          expect(updates).not_to have_key(:target_clone_container)
+        end
       end
 
       it 'returns clone issue failure message when the referenced project is not found' do

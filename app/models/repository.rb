@@ -394,8 +394,8 @@ class Repository
     raw_repository.languages(root_ref)
   end
 
-  def keep_around(*shas, source:)
-    Gitlab::Git::KeepAround.execute(self, shas, source: source)
+  def keep_around(*shas, source:, retry_failed_writes: nil)
+    Gitlab::Git::KeepAround.execute(self, shas, source: source, retry_failed_writes: retry_failed_writes)
   end
 
   def archive_metadata(ref, storage_path, format = "tar.gz", append_sha:, path: nil, ref_type: nil)

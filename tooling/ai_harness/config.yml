@@ -26,3 +26,7 @@ allowed_committed_files:
   # (uncommitted or already committed) and reasons about whether they should be
   # split into smaller, more focused MRs.
   - .claude/skills/split-mr/
+  # Project-scope gitlab-mcp-tool-builder skill. Scaffolds a GraphQL-backed MCP
+  # server tool following the app/services/mcp/tools/ pattern. Vendored from the
+  # ai/skills repo; the directory prefix allows all of the skill's files.
+  - .claude/skills/gitlab-mcp-tool-builder/

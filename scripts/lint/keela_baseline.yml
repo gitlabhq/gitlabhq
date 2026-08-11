@@ -460,7 +460,6 @@ methods:
   - aliased_composite_key
   app/models/issue.rb:
   - previous_updated_at
-  - email_participants_emails
   app/models/namespace.rb:
   - any_project_with_pages_deployed?
   - saved_change_to_parent?

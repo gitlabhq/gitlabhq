@@ -317,6 +317,24 @@ route_setting :mcp, tool_name: :example_tool_for_project, params: [:id], aggrega
 
 For MCP tools that use the GitLab GraphQL API, see the [GraphQL integration guidelines](graphql_integration.md).
 
+To scaffold a GraphQL-backed tool with an AI coding assistant, use the
+`gitlab-mcp-tool-builder` skill.
+The skill distills the guidelines on this page and in the GraphQL integration guidelines,
+adds the common gotchas, and walks you through the tool class, service class,
+`.graphql` operation file, manager registration, and specs.
+This repository includes the skill at `.claude/skills/gitlab-mcp-tool-builder/`, so
+you do not install anything:
+
+- Claude Code and the GitLab Duo CLI discover the skill at session start.
+  Ask the assistant to build or scaffold a GraphQL MCP tool, or invoke the skill by name.
+  For how the GitLab Duo CLI discovers and runs skills, see
+  [Agent Skills](../../../user/duo_agent_platform/customize/agent_skills.md).
+- Assistants that follow the `AGENTS.md` convention load the same skill through the
+  `.agents/skills` symlink.
+
+The guidelines are the source of truth.
+If the skill and the guidelines disagree, follow the guidelines and update the skill.
+
 ### Implement a custom tool
 
 For tools with distinct functionality that should remain separate from API exposure, you can define a standalone class (see [this example](https://gitlab.com/gitlab-org/gitlab/-/blob/5d394a38c3dc20a247473d5334d71dab15d26a4b/app/services/mcp/tools/manager.rb#L7) for reference).

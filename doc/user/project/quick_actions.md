@@ -529,6 +529,10 @@ Clone the work item to a given group or project.
 
 - `<path/to/group_or_project>`: The path to the target group or project. If not provided, clones to the current project.
 - `--with_notes`: Optional flag to include comments and system notes in the clone.
+- `[type:<work item type>]` (optional): The work item type to use in the target
+  namespace. When omitted, the source work item type is preserved.
+  Multi-word type names (for example, `Key Result`) do not need quoting because
+  `]` terminates the value.
 
 **Examples**:
 
@@ -550,10 +554,38 @@ Clone the work item to a given group or project.
   /clone group/project --with_notes
   ```
 
+- Clone to another project and convert to a specific work item type:
+
+  ```plaintext
+  /clone group/project [type:Issue]
+  ```
+
+- Clone with a multi-word type name:
+
+  ```plaintext
+  /clone group/project [type:Key Result]
+  ```
+
 **Additional details**:
 
 - Copies as much data as possible as long as the target contains equivalent objects like labels, milestones, or epics.
 - Does not copy comments or system notes unless `--with_notes` is provided as an argument.
+- When no type is provided, the source work item type is preserved. The clone
+  fails if that type is not available in the target namespace.
+- When a type is provided, the work item is converted to that type. The clone
+  fails if the type is not available in the target namespace.
+- The `[type:...]` value is matched case-insensitively against the names of
+  the work item types available in the target namespace.
+- The clone fails if the resolved type is disabled in the target namespace
+  (archived, admin-disabled, or not visible in the destination context).
+- When cloning to the same namespace, the `[type:...]` argument is validated
+  but no conversion is performed; the clone keeps the source work item type.
+- Basic type conversion between built-in types (for example, `Issue`, `Task`,
+  `Incident`) is available on all tiers.
+- Custom work item types and per-namespace type visibility are Premium and
+  Ultimate features on GitLab.com. If a type is unavailable in the target
+  namespace under your subscription, the clone fails and the error message
+  lists the types you can use.
 
 ### `close`
 
@@ -1125,6 +1157,10 @@ Move the work item to another group or project.
 **Parameters**:
 
 - `<path/to/group_or_project>`: The path to the target group or project.
+- `[type:<work item type>]` (optional): The work item type to use in the target
+  namespace. When omitted, the source work item type is preserved.
+  Multi-word type names (for example, `Key Result`) do not need quoting because
+  `]` terminates the value.
 
 **Examples**:
 
@@ -1134,10 +1170,38 @@ Move the work item to another group or project.
   /move group/project
   ```
 
+- Move to another project and convert to a specific work item type:
+
+  ```plaintext
+  /move group/project [type:Issue]
+  ```
+
+- Move with a multi-word type name:
+
+  ```plaintext
+  /move group/project [type:Key Result]
+  ```
+
 **Additional details**:
 
 - Be careful when moving a work item to a location with different access rules.
   Before moving the work item, make sure it does not contain sensitive data.
+- When no type is provided, the source work item type is preserved. The move
+  fails if that type is not available in the target namespace.
+- When a type is provided, the work item is converted to that type. The move
+  fails if the type is not available in the target namespace.
+- The `[type:...]` value is matched case-insensitively against the names of
+  the work item types available in the target namespace.
+- The move fails if the resolved type is disabled in the target namespace
+  (archived, admin-disabled, or not visible in the destination context).
+- When moving to the same namespace, the `[type:...]` argument is validated
+  but no conversion is performed; the work item keeps its existing type.
+- Basic type conversion between built-in types (for example, `Issue`, `Task`,
+  `Incident`) is available on all tiers.
+- Custom work item types and per-namespace type visibility are Premium and
+  Ultimate features on GitLab.com. If a type is unavailable in the target
+  namespace under your subscription, the move fails and the error message
+  lists the types you can use.
 
 ### `page`
 

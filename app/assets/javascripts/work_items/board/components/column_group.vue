@@ -106,6 +106,11 @@ export default {
       required: false,
       default: false,
     },
+    canCreateWorkItem: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   emits: [
     'card-move',
@@ -114,6 +119,7 @@ export default {
     'drag-start',
     'check-board-params',
     'move-column',
+    'create-item',
   ],
   data() {
     return {
@@ -294,8 +300,10 @@ export default {
       :reorderable="reorderable"
       :can-move-left="canMoveLeft"
       :can-move-right="canMoveRight"
+      :can-create-work-item="canCreateWorkItem"
       @toggle-collapse="$emit('toggle-collapse')"
       @move-column="$emit('move-column', $event)"
+      @create-item="$emit('create-item', value)"
     />
     <div
       v-show="!collapsed"

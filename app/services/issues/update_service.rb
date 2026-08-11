@@ -110,12 +110,18 @@ module Issues
         issue.can_move?(current_user, target_container) &&
         !move_to_same_container?(issue, target_container)
 
+      target_work_item_type_id = params.delete(:target_work_item_type_id)
+
       update(issue)
 
       move_service_container = target_container.is_a?(Project) ? target_container.project_namespace : target_container
 
+      move_params = {}
+      move_params[:target_work_item_type_id] = target_work_item_type_id if target_work_item_type_id
+
       ::WorkItems::DataSync::MoveService.new(
-        work_item: issue, current_user: current_user, target_namespace: move_service_container
+        work_item: issue, current_user: current_user, target_namespace: move_service_container,
+        params: move_params
       ).execute[:work_item]
     end
 
@@ -158,14 +164,19 @@ module Issues
       return unless target_container &&
         issue.can_clone?(current_user, target_container)
 
+      target_work_item_type_id = params.delete(:target_work_item_type_id)
+
       # we've pre-empted this from running in #execute, so let's go ahead and update the Issue now.
       update(issue)
 
       clone_service_container = target_container.is_a?(Project) ? target_container.project_namespace : target_container
 
+      clone_params = { clone_with_notes: with_notes }
+      clone_params[:target_work_item_type_id] = target_work_item_type_id if target_work_item_type_id
+
       ::WorkItems::DataSync::CloneService.new(
         work_item: issue, current_user: current_user, target_namespace: clone_service_container,
-        params: { clone_with_notes: with_notes }
+        params: clone_params
       ).execute[:work_item]
     end
 

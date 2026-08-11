@@ -1,6 +1,36 @@
-@import 'application_base_head';
+// Welcome to GitLab css!
+// If you need to add or modify UI component that is common for many pages
+// like a table or typography then make changes in the framework/ directory.
+// If you need to add unique style that should affect only one page - use pages/
+// directory.
+@import '@gitlab/at.js/dist/css/jquery.atwho';
+@import 'dropzone/dist/basic';
 
-// GitLab UI framework
+// GitLab project specific custom property definitions
+@import 'root';
+
 @import 'framework';
 
-@import 'application_base_body';
+// Page specific styles (issues, projects etc):
+@import 'page_specific_files';
+
+// Component specific styles, will be moved to gitlab-ui
+@import 'components/index';
+
+// Layout specific styles
+@import 'layouts/index';
+
+// Vendors specific styles
+@import 'vendors/index';
+
+// Styles for JS behaviors.
+@import 'behaviors';
+
+// EE-only stylesheets
+@import 'application_ee';
+
+// JH-only stylesheets
+@import 'application_jh';
+
+// print styles
+@import 'print';

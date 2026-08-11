@@ -28,7 +28,7 @@ module Ci
     scope :for_partition, ->(partition) { where(partition: partition) }
 
     def self.find_by_key_and_project(environment_key, project_id)
-      find_by(environment_key: environment_key, project_id: project_id)
+      where(environment_key: environment_key, project_id: project_id).order(id: :desc).first
     end
 
     partitioned_by :partition, strategy: :sliding_list,

@@ -15,6 +15,7 @@ export default {
     actions: s__('WorkItemBoard|Column actions'),
     moveLeft: s__('WorkItemBoard|Move left'),
     moveRight: s__('WorkItemBoard|Move right'),
+    createItem: __('Create new item'),
   },
   components: {
     GlButton,
@@ -64,8 +65,13 @@ export default {
       required: false,
       default: false,
     },
+    canCreateWorkItem: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
-  emits: ['toggle-collapse', 'move-column'],
+  emits: ['toggle-collapse', 'move-column', 'create-item'],
   computed: {
     showIcon() {
       return hasDecorationIcon(this.decoration);
@@ -78,6 +84,9 @@ export default {
     },
     showActionsMenu() {
       return this.reorderable && !this.collapsed;
+    },
+    showActions() {
+      return this.showActionsMenu || (this.canCreateWorkItem && !this.collapsed);
     },
     actionItems() {
       // `move-column` carries a delta (columns to shift by): -1 = left, +1 = right.
@@ -148,19 +157,32 @@ export default {
       <gl-icon name="work-items" :size="16" :class="{ 'gl-rotate-90': collapsed }" />
       {{ count }}
     </span>
-    <gl-disclosure-dropdown
-      v-if="showActionsMenu"
-      :items="actionItems"
-      :toggle-text="$options.i18n.actions"
-      :class="$options.noDragClass"
-      class="gl-ml-auto gl-shrink-0"
-      icon="ellipsis_v"
-      category="tertiary"
-      size="small"
-      placement="bottom-end"
-      no-caret
-      text-sr-only
-      data-testid="column-actions-menu"
-    />
+    <div v-if="showActions" class="gl-ml-auto gl-flex gl-shrink-0 gl-items-center gl-gap-3">
+      <gl-disclosure-dropdown
+        v-if="showActionsMenu"
+        :items="actionItems"
+        :toggle-text="$options.i18n.actions"
+        :class="$options.noDragClass"
+        icon="ellipsis_v"
+        category="tertiary"
+        size="small"
+        placement="bottom-end"
+        no-caret
+        text-sr-only
+        data-testid="column-actions-menu"
+      />
+      <gl-button
+        v-if="canCreateWorkItem"
+        v-gl-tooltip
+        category="tertiary"
+        size="small"
+        icon="plus"
+        :class="$options.noDragClass"
+        :title="$options.i18n.createItem"
+        :aria-label="$options.i18n.createItem"
+        data-testid="column-create-item"
+        @click="$emit('create-item')"
+      />
+    </div>
   </div>
 </template>

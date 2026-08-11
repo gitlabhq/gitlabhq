@@ -4,6 +4,11 @@ module MergeRequests
   class KeepAroundRefsWorker
     include ApplicationWorker
 
+    # Inheriting `RetryError` keeps the retry out of Sentry and out of the Sidekiq
+    # execution SLI: `Gitlab::Git::KeepAround` has already tracked the underlying
+    # Gitaly error, so it is reported once, at its real source.
+    KeepAroundRefsError = Class.new(::Gitlab::SidekiqMiddleware::RetryError)
+
     data_consistency :sticky
 
     sidekiq_options retry: 20
@@ -33,11 +38,31 @@ module MergeRequests
         return
       end
 
-      MergeRequests::KeepAroundRefsService.new(
+      response = MergeRequests::KeepAroundRefsService.new(
         project_ids: project_ids,
         shas: shas,
         source: source
       ).execute
+
+      # Only a project with `retry_failed_keep_around_ref_writes` enabled produces a
+      # `ServiceResponse`; a fully disabled job keeps the service's old return value,
+      # whatever it is. The type check goes away with the flag.
+      return unless response.is_a?(ServiceResponse) && response.error?
+
+      unwritten_shas = response.payload[:unwritten_shas]
+
+      # Job-level summary only: the service has already logged each SHA with its cause
+      # and its repository, which is the only place it can be attributed to one.
+      logger.warn(structured_payload(
+        message: 'Keep-around references were not written.',
+        project_ids: project_ids,
+        shas: unwritten_shas
+      ))
+
+      # Unlike the inline callers `Gitlab::Git::KeepAround` protects by swallowing the
+      # error, this worker can afford to fail, and has to: an unwritten ref leaves the
+      # commit unprotected from `git gc`, and only a retry will still write it.
+      raise KeepAroundRefsError, response.message
     end
   end
 end

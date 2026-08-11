@@ -31,6 +31,7 @@ module Organizations
       enable :access_organization_admin_area
       enable :delete_organization
       enable :read_organization_user
+      enable :read_admin_users
       enable :transfer_group
       enable :update_organization
     end

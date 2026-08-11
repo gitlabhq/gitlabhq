@@ -831,10 +831,6 @@ class Issue < ApplicationRecord
     issue_type_supports?(:move_and_clone)
   end
 
-  def email_participants_emails
-    issue_email_participants.pluck(:email)
-  end
-
   def email_participants_emails_downcase
     issue_email_participants.pluck(IssueEmailParticipant.arel_table[:email].lower)
   end

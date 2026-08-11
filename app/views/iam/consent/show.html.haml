@@ -59,5 +59,6 @@
         = _('Authorize')
     = form_tag reject_iam_consent_path, method: :post, class: 'gl-inline-block' do
       = hidden_field_tag 'consent_challenge', @consent_challenge
-      = render Pajamas::ButtonComponent.new(type: :submit) do
+      = render Pajamas::ButtonComponent.new(type: :submit,
+        button_options: { data: { testid: 'cancel-button' }}) do
         = _('Cancel')

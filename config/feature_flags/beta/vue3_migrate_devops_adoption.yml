@@ -1,0 +1,10 @@
+---
+name: vue3_migrate_devops_adoption
+description: Enables Vue 3 in compatibility mode for the DevOps adoption pages
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/607824
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248659
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/608140
+milestone: '19.3'
+group: group::optimize
+type: beta
+default_enabled: false

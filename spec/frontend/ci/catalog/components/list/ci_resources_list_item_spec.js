@@ -415,6 +415,31 @@ describe('CiResourcesListItem', () => {
     });
   });
 
+  describe('when showStats is false', () => {
+    beforeEach(() => {
+      createComponent({ props: { showStats: false } });
+    });
+
+    it('does not render the usage and favorites stats', () => {
+      expect(findUsage().exists()).toBe(false);
+      expect(findFavorites().exists()).toBe(false);
+    });
+  });
+
+  describe('when showAuthor is false', () => {
+    beforeEach(() => {
+      createComponent({ props: { showAuthor: false } });
+    });
+
+    it('does not render the author link', () => {
+      expect(findUserLink().exists()).toBe(false);
+    });
+
+    it('renders the published message without the author', () => {
+      expect(findPublishedInfo().text()).toMatchInterpolatedText('Published Jan 27, 2024');
+    });
+  });
+
   describe('archive badge', () => {
     it('renders the archive badge when resource is archived', () => {
       createComponent({

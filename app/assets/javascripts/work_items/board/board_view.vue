@@ -1,16 +1,26 @@
 <script>
 import { GlLoadingIcon, GlToastMixin } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { omit } from 'lodash-es';
+import { __, s__, sprintf } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import DraggableCompat from '~/lib/utils/vue3compat/draggable_compat.vue';
 import { defaultSortableOptions, DRAG_DELAY } from '~/sortable/constants';
-import { DETAIL_VIEW_QUERY_PARAM_NAME } from '~/work_items/constants';
+import { getDraft, updateDraft } from '~/lib/utils/autosave';
+import {
+  CREATION_CONTEXT_BOARD,
+  DETAIL_VIEW_QUERY_PARAM_NAME,
+  ROUTES,
+  WORK_ITEM_CREATE_SOURCES,
+  WORK_ITEM_TYPE_NAME_EPIC,
+  WORK_ITEM_TYPE_ROUTE_WORK_ITEM,
+} from '~/work_items/constants';
 import { RELATIVE_POSITION_ASC } from '~/work_items/list/constants';
+import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 
 import getWorkItemsCountOnlyQuery from 'ee_else_ce/work_items/list/graphql/get_work_items_count_only.query.graphql';
-import { findDetailPanelWorkItem } from '../utils';
+import { findDetailPanelWorkItem, getNewWorkItemWidgetsAutoSaveKey } from '../utils';
 import updateBoardWorkItemMutation from './graphql/update_board_work_item.mutation.graphql';
 import { DEFAULT_GROUP_BY, groupingStrategyFor } from './grouping';
 import { SHOW_ALL_GROUPS, isGroupVisible } from './grouping/visibility';
@@ -38,14 +48,18 @@ import {
   BOARD_COLUMN_DRAG_HANDLE_CLASS,
   BOARD_COLUMN_NO_DRAG_CLASS,
 } from './constants';
+import { INHERITED_WIDGET_TYPES, resolveInheritedWidgetsDraft } from './filter_inheritance';
 import ColumnGroup from './components/column_group.vue';
 
 export default {
   name: 'BoardView',
+  CREATION_CONTEXT_BOARD,
+  WORK_ITEM_CREATE_SOURCES,
   components: {
     GlLoadingIcon,
     ColumnGroup,
     DraggableCompat,
+    CreateWorkItemModal,
   },
   columnClass: BOARD_COLUMN_CLASS,
   columnDndGroup: { name: BOARD_COLUMN_DND_GROUP },
@@ -103,13 +117,26 @@ export default {
       required: false,
       default: null,
     },
+    preselectedWorkItemType: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    canCreateWorkItem: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
-  emits: ['set-error', 'set-active-item', 'toggle-collapse', 'reorder-groups'],
+  emits: ['set-error', 'set-active-item', 'toggle-collapse', 'reorder-groups', 'work-item-created'],
   data() {
     return {
       groupByValues: [],
       gateData: null,
       renderedColumns: [],
+      // The column value a new item targets; also gates the create modal's
+      // mount so it re-reads the freshly-seeded draft each time it opens.
+      createColumnValue: null,
       workItemsGroupByVisibleGroups: SHOW_ALL_GROUPS,
       // Column value ids the in-flight dragged item may not be dropped into.
       invalidValueIds: [],
@@ -157,6 +184,10 @@ export default {
     // Reordering needs a user who can persist it and more than one column to move.
     canReorderColumns() {
       return this.canReorder && this.orderedGroupByValues.length > 1;
+    },
+    // Epics are a fixed type on their board, so the type selector is hidden there.
+    alwaysShowWorkItemTypeSelect() {
+      return this.preselectedWorkItemType !== WORK_ITEM_TYPE_NAME_EPIC;
     },
   },
   watch: {
@@ -218,6 +249,106 @@ export default {
   methods: {
     groupId(value) {
       return getGroupId({ groupBy: this.groupBy, value });
+    },
+    // Pre-populates the new work item's widgets draft with the column's grouped attribute
+    // (e.g. status) and the board's active filters (e.g. labels), then opens the create
+    // modal for that column.
+    async handleCreateItem(value) {
+      const draftKey = getNewWorkItemWidgetsAutoSaveKey({
+        fullPath: this.rootPageFullPath,
+        context: CREATION_CONTEXT_BOARD,
+      });
+      const draft = JSON.parse(getDraft(draftKey) || '{}');
+      const inheritedFilters = await resolveInheritedWidgetsDraft({
+        apolloClient: this.$apollo.getClient(),
+        fullPath: this.rootPageFullPath,
+        isGroup: Boolean(this.queryVariables.isGroup),
+        filters: this.queryVariables,
+      });
+      updateDraft(
+        draftKey,
+        JSON.stringify({
+          // Drop previously-inherited widgets first: the draft is shared across board views,
+          // so a filter that is no longer active must not linger from an earlier seeding.
+          ...omit(draft, INHERITED_WIDGET_TYPES),
+          ...(this.strategy?.newItemDraft(value) ?? {}),
+          ...inheritedFilters,
+        }),
+      );
+      this.createColumnValue = value;
+    },
+    async handleWorkItemCreated(workItem) {
+      const clickedColumn = this.createColumnValue;
+      this.createColumnValue = null;
+      if (!workItem?.id || !workItem?.iid || !clickedColumn) {
+        return;
+      }
+
+      // The item's grouping decides which column it belongs to but it can differ from the
+      // clicked column if the user changed the grouped attribute (e.g. status) in the creation modal.
+      const valueId = this.strategy?.itemValueId?.(workItem);
+      const targetColumn = (valueId && this.valueById(valueId)) || clickedColumn;
+
+      const shownOnBoard = await this.insertCreatedItemAtTop(workItem, targetColumn);
+      this.showWorkItemCreatedToast(workItem, shownOnBoard);
+      this.$emit('work-item-created', workItem);
+    },
+    async insertCreatedItemAtTop(workItem, column) {
+      if (!column) {
+        return false;
+      }
+
+      const client = this.$apollo.getClient();
+      const query = this.columnQuery;
+      const variables = this.columnVariables(column);
+
+      try {
+        const { data } = await client.query({
+          query,
+          variables: { ...variables, iid: workItem.iid, firstPageSize: 1 },
+          fetchPolicy: 'no-cache',
+        });
+        const node = data?.namespace?.workItems?.nodes?.[0];
+        if (!node) {
+          return false;
+        }
+
+        const { cache } = client;
+        addWorkItemToColumn({ cache, query, variables, workItem: node, index: 0 });
+        adjustWorkItemCountInColumn({
+          cache,
+          query: getWorkItemsCountOnlyQuery,
+          variables: this.columnCountVariables(column),
+          delta: 1,
+        });
+        return true;
+      } catch (error) {
+        Sentry.captureException(error);
+        return false;
+      }
+    },
+    showWorkItemCreatedToast(workItem, shownOnBoard) {
+      const workItemType =
+        workItem?.workItemType?.name || this.preselectedWorkItemType || s__('WorkItem|Work item');
+      const message = shownOnBoard
+        ? sprintf(s__('WorkItem|%{workItemType} created.'), { workItemType })
+        : sprintf(
+            s__('WorkItem|%{workItemType} created, but it is not shown on the current view.'),
+            { workItemType },
+          );
+
+      this.$toast.show(message, {
+        autoHideDelay: 10000,
+        action: {
+          text: __('View details'),
+          onClick: () => {
+            this.$router?.push({
+              name: ROUTES.workItem,
+              params: { iid: workItem.iid, type: WORK_ITEM_TYPE_ROUTE_WORK_ITEM },
+            });
+          },
+        },
+      });
     },
     // Opens the detail panel for the item in the `show` param.
     // Each column loads separately, so we run this whenever one resolves. We don't clear
@@ -526,6 +657,7 @@ export default {
         :reorderable="canReorderColumns"
         :can-move-left="index > 0"
         :can-move-right="index < renderedColumns.length - 1"
+        :can-create-work-item="canCreateWorkItem"
         :hidden-metadata-keys="hiddenMetadataKeys"
         :active-item="activeItem"
         :detail-panel-enabled="detailPanelEnabled"
@@ -535,7 +667,22 @@ export default {
         @set-active-item="$emit('set-active-item', $event)"
         @check-board-params="checkDetailPanelParams"
         @toggle-collapse="$emit('toggle-collapse', groupId(value))"
+        @create-item="handleCreateItem"
       />
     </draggable-compat>
+    <create-work-item-modal
+      v-if="createColumnValue"
+      visible
+      hide-button
+      :always-show-work-item-type-select="alwaysShowWorkItemTypeSelect"
+      :creation-context="$options.CREATION_CONTEXT_BOARD"
+      :full-path="rootPageFullPath"
+      :is-group="queryVariables.isGroup"
+      :preselected-work-item-type="preselectedWorkItemType"
+      :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_BOARD"
+      suppress-created-toast
+      @work-item-created="handleWorkItemCreated"
+      @hide-modal="createColumnValue = null"
+    />
   </div>
 </template>

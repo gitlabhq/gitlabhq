@@ -1022,7 +1022,6 @@ export default {
     apiFilterParams() {
       const params = convertToApiParams(this.filterTokens, {
         hasCustomFieldsFeature: this.hasCustomFieldsFeature,
-        hasStatusFeature: this.hasStatusFeature,
       });
       if (params.types) {
         params.workItemTypeIds = convertNumberToGid(params.types);
@@ -1917,6 +1916,9 @@ export default {
     handleWorkItemCreated() {
       this.refetchItems({ refetchCounts: true });
     },
+    handleBoardWorkItemCreated() {
+      this.$apollo.queries.workItemsCount.refetch();
+    },
     async refetchItems({ refetchCounts = false }) {
       if (refetchCounts) {
         this.$apollo.queries.workItemsCount.refetch();
@@ -2371,10 +2373,13 @@ export default {
       :active-item="activeItem"
       :detail-panel-enabled="workItemDetailPanelEnabled"
       :updated-work-item="boardUpdatedItem"
+      :preselected-work-item-type="preselectedWorkItemType"
+      :can-create-work-item="showProjectNewWorkItem"
       @set-error="($evt) => (error = $evt)"
       @set-active-item="handleSetActiveItem"
       @toggle-collapse="handleToggleGroupCollapse"
       @reorder-groups="handleReorderGroups"
+      @work-item-created="handleBoardWorkItemCreated"
     />
     <work-item-display-settings-drawer
       :open="isDisplayDrawerOpen"

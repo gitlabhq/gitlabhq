@@ -71,15 +71,34 @@ module WorkItems
         end
       end
 
-      # Strips `target_work_item_type_id` from params and verifies the resolved
-      # type exists in the destination namespace (scoped via the destination's
-      # Provider, so converted custom and namespace-restricted types are honored).
-      # Subclasses can opt out via `skip_target_work_item_type_resolution?` or
-      # `ignore_target_work_item_type_id_param?`.
       def verify_target_work_item_type
         return success({}) if skip_target_work_item_type_resolution?
+        return success({}) if skip_target_work_item_type_resolution_for_epic?
 
         target_type_id_param = params.delete(:target_work_item_type_id)
+        target_type_name_param = params.delete(:target_work_item_type_name)
+
+        # A type _name_ comes from the `/move` and `/clone` quick actions,
+        # where the user typed `[type:NAME]` and expects an actionable error
+        # if that name is unknown or disabled at the destination.
+        if target_type_name_param.present?
+          response = ::WorkItems::TypesFramework::TargetTypeSelector.new(
+            source_type: work_item.work_item_type,
+            target_namespace: target_namespace,
+            type_name: target_type_name_param,
+            same_namespace: work_item.namespace_id == target_namespace.id,
+            action: resolver_action
+          ).execute
+
+          return error(response.message, :unprocessable_entity) if response.error?
+
+          @resolved_target_work_item_type = response.payload[:type]
+          return success({})
+        end
+
+        # A type _id_ (GraphQL) or nothing (hierarchy / bulk moves, or a quick
+        # action without a type) only requires the id to resolve at the
+        # destination.
         target_type_id = target_type_id_param.presence unless ignore_target_work_item_type_id_param?
         target_type_id ||= work_item.work_item_type_id
 
@@ -93,6 +112,13 @@ module WorkItems
 
       # Override to skip resolution entirely (e.g., same-namespace moves).
       def skip_target_work_item_type_resolution?
+        false
+      end
+
+      # Epics are group-scoped with their own move/clone handling, so they
+      # bypass the shared type selector entirely. Overridden in EE, where the
+      # `epic` base type is actually reachable.
+      def skip_target_work_item_type_resolution_for_epic?
         false
       end
 
@@ -111,6 +137,15 @@ module WorkItems
       def target_work_item_type_not_available_error_message
         s_("DataSync|Unable to perform action. The selected work item type is not available in the target namespace.")
       end
+
+      # Subclasses that can reach the `target_work_item_type_name` branch above
+      # must override this to control the wording of actionable error messages
+      # emitted by `WorkItems::TypesFramework::TargetTypeSelector`.
+      def resolver_action
+        raise Gitlab::AbstractMethodError
+      end
     end
   end
 end
+
+WorkItems::DataSync::BaseService.prepend_mod

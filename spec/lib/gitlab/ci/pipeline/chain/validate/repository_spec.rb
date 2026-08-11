@@ -118,7 +118,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::Repository, feature_catego
 
     it 'adds an error about missing SHA' do
       expect(pipeline.errors.to_a)
-        .to include 'Commit not found'
+        .to include described_class::COMMIT_NOT_FOUND_MESSAGE
     end
   end
 

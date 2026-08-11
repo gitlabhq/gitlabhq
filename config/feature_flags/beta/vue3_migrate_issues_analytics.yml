@@ -1,0 +1,10 @@
+---
+name: vue3_migrate_issues_analytics
+description: Enables Vue 3 in compatibility mode for the group and project issue analytics pages
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/607826
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248658
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/608142
+milestone: '19.3'
+group: group::optimize
+type: beta
+default_enabled: false

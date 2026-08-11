@@ -53,6 +53,7 @@ describe('CreateWorkItemModal', () => {
     mergeRequestTitle = '',
     mergeRequestReference = '',
     allowAnyNamespace = false,
+    suppressCreatedToast = false,
   } = {}) => {
     wrapper = shallowMount(CreateWorkItemModal, {
       propsData: {
@@ -68,6 +69,7 @@ describe('CreateWorkItemModal', () => {
         mergeRequestTitle,
         mergeRequestReference,
         allowAnyNamespace,
+        suppressCreatedToast,
       },
       mocks: {
         $toast: {
@@ -197,6 +199,20 @@ describe('CreateWorkItemModal', () => {
         },
       }),
     );
+  });
+
+  it('does not show a toast on work-item-created when suppressCreatedToast is true', async () => {
+    createComponent({ suppressCreatedToast: true });
+
+    await waitForPromises();
+    findForm().vm.$emit('work-item-created', {
+      webUrl: '/',
+      workItem: { webUrl: '/full-path/-/issues/22' },
+      workItemType: { name: 'Epic' },
+    });
+
+    expect(showToast).not.toHaveBeenCalled();
+    expect(wrapper.emitted('work-item-created')).toHaveLength(1);
   });
 
   describe('default trigger', () => {

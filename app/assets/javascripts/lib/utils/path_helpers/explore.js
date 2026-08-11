@@ -230,6 +230,28 @@ export const exploreCatalogIndexPath = /*#__PURE__*/ (...args) => {
 /**
  * Generates the Rails route:
  *
+ * - href: `/explore/catalog/cells(.:format)`
+ * - Path helper: `explore_catalog_cells_path`
+ * - URL helper: `explore_catalog_cells_url`
+ * - controller#action: `explore/catalog#cells`
+ *
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const exploreCatalogCellsPath = /*#__PURE__*/ (...args) => {
+  const _organizationExploreCatalogCellsPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"explore"],[2,[7,"/"],[2,[6,"catalog"],[2,[7,"/"],[2,[6,"cells"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
+  const _exploreCatalogCellsPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"explore"],[2,[7,"/"],[2,[6,"catalog"],[2,[7,"/"],[2,[6,"cells"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
+
+  if (hasOrganizationScopedPaths()) {
+    return _organizationExploreCatalogCellsPath(gon.current_organization.path, ...args);
+  }
+
+  return _exploreCatalogCellsPath(...args);
+};
+
+/**
+ * Generates the Rails route:
+ *
  * - href: `/explore/catalog/*full_path(.:format)`
  * - Path helper: `explore_catalog_path`
  * - URL helper: `explore_catalog_url`

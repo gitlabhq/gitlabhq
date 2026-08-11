@@ -123,6 +123,10 @@ module WorkItems
         work_item.namespace_id == target_namespace.id
       end
 
+      def resolver_action
+        'move'
+      end
+
       def move_work_item
         create_response = WorkItems::DataSync::Handlers::CopyDataHandler.new(
           work_item: work_item,

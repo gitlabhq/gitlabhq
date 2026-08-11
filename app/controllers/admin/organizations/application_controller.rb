@@ -12,8 +12,13 @@ module Admin
 
       private
 
+      override :authorization_subject
+      def authorization_subject
+        ::Current.organization
+      end
+
       def authorize_access_organization_admin_area!
-        access_denied! unless current_user&.can?(:access_organization_admin_area, ::Current.organization)
+        access_denied! unless current_user&.can?(:access_organization_admin_area, authorization_subject)
       end
 
       def can_access_instance_admin_area?

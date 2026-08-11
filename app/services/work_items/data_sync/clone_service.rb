@@ -101,6 +101,10 @@ module WorkItems
       def target_work_item_type_not_available_error_message
         s_("CloneWorkItem|Unable to clone. The selected work item type is not available in the target namespace.")
       end
+
+      def resolver_action
+        'clone'
+      end
     end
   end
 end

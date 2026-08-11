@@ -20,6 +20,7 @@ describe('ColumnHeader', () => {
   const findActionsMenu = () => wrapper.findComponentByTestId('column-actions-menu');
   const findActionItem = (index) => findActionsMenu().props('items')[index];
   const DRAG_HANDLE_CLASS = 'js-board-column-drag-handle';
+  const findCreateButton = () => wrapper.findComponentByTestId('column-create-item');
 
   const createComponent = ({ props = {} } = {}) => {
     wrapper = shallowMountExtended(ColumnHeader, {
@@ -141,6 +142,29 @@ describe('ColumnHeader', () => {
       findActionItem(1).action();
 
       expect(wrapper.emitted('move-column')).toEqual([[-1], [1]]);
+    });
+  });
+
+  describe('create item button', () => {
+    it('renders a plus button when canCreateWorkItem is true and the column is expanded', () => {
+      createComponent({ props: { canCreateWorkItem: true } });
+
+      expect(findCreateButton().exists()).toBe(true);
+      expect(findCreateButton().props('icon')).toBe('plus');
+    });
+
+    it('is hidden when the column is collapsed', () => {
+      createComponent({ props: { canCreateWorkItem: true, collapsed: true } });
+
+      expect(findCreateButton().exists()).toBe(false);
+    });
+
+    it('emits create-item when clicked', () => {
+      createComponent({ props: { canCreateWorkItem: true } });
+
+      findCreateButton().vm.$emit('click');
+
+      expect(wrapper.emitted('create-item')).toHaveLength(1);
     });
   });
 

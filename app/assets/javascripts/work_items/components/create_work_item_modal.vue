@@ -147,6 +147,11 @@ export default {
       required: false,
       default: null,
     },
+    suppressCreatedToast: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   emits: ['hide-modal', 'work-item-created'],
   data() {
@@ -283,46 +288,49 @@ export default {
       }
     },
     /*
-     End of the methods for the confirmation modal when enabled
+    End of the methods for the confirmation modal when enabled
     */
     handleCreated({ workItem }) {
-      const createdWorkItemTypeName = workItem?.workItemType?.name || this.selectedWorkItemTypeName;
-      const workItemCreatedText = sprintf(s__('WorkItem|%{workItemType} created.'), {
-        workItemType: createdWorkItemTypeName,
-      });
+      if (!this.suppressCreatedToast) {
+        const createdWorkItemTypeName =
+          workItem?.workItemType?.name || this.selectedWorkItemTypeName;
+        const workItemCreatedText = sprintf(s__('WorkItem|%{workItemType} created.'), {
+          workItemType: createdWorkItemTypeName,
+        });
 
-      this.$toast.show(workItemCreatedText, {
-        autoHideDelay: 10000,
-        action: {
-          text: __('View details'),
-          href: workItem.webUrl,
-          onClick: (e) => {
-            e?.preventDefault();
-            // Take incidents to the legacy detail view with a full page load
-            if (
-              this.useVueRouter &&
-              workItem?.workItemType?.name !== WORK_ITEM_TYPE_NAME_INCIDENT &&
-              this.$router.getRoutes().some((route) => route.name === 'workItem') &&
-              canRouterNav({
-                fullPath: this.fullPath,
-                isGroup: this.isGroup,
-                webUrl: workItem.webUrl,
-                issueAsWorkItem: true,
-              })
-            ) {
-              this.$router.push({
-                name: 'workItem',
-                params: {
-                  iid: workItem.iid,
-                  type: WORK_ITEM_TYPE_ROUTE_WORK_ITEM,
-                },
-              });
-            } else {
-              visitUrl(workItem.webUrl);
-            }
+        this.$toast.show(workItemCreatedText, {
+          autoHideDelay: 10000,
+          action: {
+            text: __('View details'),
+            href: workItem.webUrl,
+            onClick: (e) => {
+              e?.preventDefault();
+              // Take incidents to the legacy detail view with a full page load
+              if (
+                this.useVueRouter &&
+                workItem?.workItemType?.name !== WORK_ITEM_TYPE_NAME_INCIDENT &&
+                this.$router.getRoutes().some((route) => route.name === 'workItem') &&
+                canRouterNav({
+                  fullPath: this.fullPath,
+                  isGroup: this.isGroup,
+                  webUrl: workItem.webUrl,
+                  issueAsWorkItem: true,
+                })
+              ) {
+                this.$router.push({
+                  name: 'workItem',
+                  params: {
+                    iid: workItem.iid,
+                    type: WORK_ITEM_TYPE_ROUTE_WORK_ITEM,
+                  },
+                });
+              } else {
+                visitUrl(workItem.webUrl);
+              }
+            },
           },
-        },
-      });
+        });
+      }
       this.$emit('work-item-created', workItem);
       this.hideCreateModal();
     },

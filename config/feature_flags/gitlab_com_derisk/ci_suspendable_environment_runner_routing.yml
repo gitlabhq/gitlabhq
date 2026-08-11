@@ -1,0 +1,10 @@
+---
+name: ci_suspendable_environment_runner_routing
+description: Enables suspendable environments routing for CI runner, allows one job to pick up an environment created by a completed job, inheriting its installed tools and services.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/596841
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/247560
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/598070
+milestone: "19.3"
+group: group::runner core
+type: gitlab_com_derisk
+default_enabled: false

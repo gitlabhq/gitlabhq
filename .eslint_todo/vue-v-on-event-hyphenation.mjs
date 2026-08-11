@@ -4,6 +4,7 @@
 export default {
   files: [
     'app/assets/javascripts/analytics/cycle_analytics/components/filter_bar.vue',
+    'app/assets/javascripts/ci/catalog/components/cells/two_source_browse.vue',
     'app/assets/javascripts/ci/catalog/components/list/catalog_search.vue',
     'app/assets/javascripts/credentials/components/credentials_filter_sort_app.vue',
     'app/assets/javascripts/diffs/components/app.vue',

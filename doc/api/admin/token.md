@@ -57,6 +57,7 @@ Retrieves information for a specified token. This endpoint supports the followin
 - [Feature flags client tokens](../../operations/feature_flags.md#get-access-credentials)
 - [GitLab session cookies](../../user/profile/active_sessions.md)
 - [Incoming email tokens](../../security/tokens/_index.md#incoming-email-token)
+- [SCIM access tokens](../../user/group/saml_sso/scim_setup.md)
 
 ```plaintext
 POST /api/v4/admin/token
@@ -124,6 +125,7 @@ Example response:
 - [Feature flags client tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181096) in GitLab 17.9.
 - [Pipeline trigger tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181598) in GitLab 17.10 [with a feature flag](../../administration/feature_flags/_index.md) named `token_api_expire_pipeline_triggers`. Disabled by default.
 - [GitLab sessions added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184047) in GitLab 17.11.
+- [SCIM access tokens added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243804) in GitLab 19.3.
 
 {{< /history >}}
 
@@ -143,6 +145,7 @@ Revokes, resets, or deletes a specified token based on the token type. This endp
 | [Deploy tokens](../../user/project/deploy_tokens/_index.md)                                   | Revoke             |
 | [Cluster agent tokens](../../security/tokens/_index.md#gitlab-cluster-agent-tokens)          | Revoke             |
 | [Pipeline trigger tokens](../../ci/triggers/_index.md#create-a-pipeline-trigger-token)       | Revoke             |
+| [SCIM access tokens](../../user/group/saml_sso/scim_setup.md) | Reset           |
 | [Feed tokens](../../security/tokens/_index.md#feed-token)                                    | Reset              |
 | [Runner authentication tokens](../../security/tokens/_index.md#runner-authentication-tokens) | Reset              |
 | [OAuth application secrets](../../integration/oauth_provider.md)                             | Reset              |

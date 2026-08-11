@@ -145,6 +145,28 @@ When using [bot users for projects](../settings/project_access_tokens.md#bot-use
 or [bot users for groups](../../group/settings/group_access_tokens.md#bot-users-for-groups),
 you must add the generated email suffix so that bot tokens can commit and push changes.
 
+### Commits signed by GitLab
+
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/587254) in GitLab 19.3 to include mirrored commits.
+
+{{< /history >}}
+
+Commits [signed by GitLab](signed_commits/web_commits.md) have an instance email address as the
+committer, like `noreply@example.com`.
+This address does not belong to a GitLab user.
+The following rules do not check the committer email address for these commits, regardless of how
+the commits reach the project:
+
+- **Reject unverified users**
+- **Check whether the commit author is a GitLab user**
+- **Commit author's email**
+
+GitLab checks the author email address instead. The exception is **Reject unverified users**, which
+GitLab skips for commits that arrive by a Git push, such as
+[repository mirroring](mirror/_index.md).
+
 ## Validate commit messages
 
 Use these rules for your commit messages:

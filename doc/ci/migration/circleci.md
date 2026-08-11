@@ -12,16 +12,9 @@ title: Migrate from CircleCI
 
 {{< /details >}}
 
-If you are using CircleCI, you can migrate your CI/CD pipelines to [GitLab CI/CD](../_index.md),
-and start making use of all its powerful features.
-
-Review the following resources before you migrate.
-
-The [Quick Start Guide](../quick_start/_index.md) is a good overview of how GitLab CI/CD works. You may also be interested in [Auto DevOps](../../topics/autodevops/_index.md) which can be used to build, test, and deploy your applications with little to no configuration needed at all.
-
-For advanced CI/CD teams, [custom project templates](../../administration/project_templates.md) can enable the reuse of pipeline configurations.
-
-If you have questions that are not answered here, the [GitLab community forum](https://forum.gitlab.com/) can be a great resource.
+If you use CircleCI, you can migrate your CI/CD pipelines to [GitLab CI/CD](../_index.md).
+Both platforms define pipelines with a YAML configuration file and run jobs in stages.
+Because of this, most CircleCI concepts have a direct equivalent in GitLab CI/CD.
 
 ## `config.yml` vs `.gitlab-ci.yml`
 
@@ -272,10 +265,9 @@ CircleCI provides [Contexts](https://circleci.com/docs/contexts/) to securely pa
 
 ## Orbs
 
-The following GitLab issues address CircleCI Orbs and how GitLab can achieve similar functionality:
-
-- [issue 1151](https://gitlab.com/gitlab-com/Product/-/issues/1151)
-- [issue 195173](https://gitlab.com/gitlab-org/gitlab/-/issues/195173)
+CircleCI Orbs are reusable packages of CI/CD configuration. In GitLab,
+[CI/CD components](../components/_index.md) provide similar reusable pipeline
+configuration that you can use across projects.
 
 ## Build environments
 
@@ -334,3 +326,9 @@ osx job:
   script:
     - echo "Hello, $USER!"
 ```
+
+## Related topics
+
+- [Get started with GitLab CI/CD](../quick_start/_index.md)
+- [Auto DevOps](../../topics/autodevops/_index.md)
+- [Project templates](../../administration/project_templates.md)

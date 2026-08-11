@@ -170,14 +170,41 @@ RSpec.describe Ci::Workloads::RunWorkloadService, feature_category: :continuous_
         build = result.payload.pipeline.builds.first
         expect(build.options.dig(:suspend_options, :suspend_on_success)).to be(true)
       end
+
+      it 'creates a Ci::JobRuntimeEnvironment row with suspend_on_success set', :aggregate_failures do
+        result = execute
+        expect(result).to be_success
+
+        build = result.payload.pipeline.builds.first
+        job_runtime_environment = build.job_runtime_environment
+        expect(job_runtime_environment).to be_present
+        expect(job_runtime_environment.suspend_on_success).to be(true)
+        expect(job_runtime_environment.suspend_on_failure).to be(false)
+      end
+
+      context 'when the feature flag is disabled for the project' do
+        before do
+          stub_feature_flags(ci_suspendable_environment_runner_routing: false)
+        end
+
+        it 'does not create a Ci::JobRuntimeEnvironment row' do
+          result = execute
+          expect(result).to be_success
+
+          build = result.payload.pipeline.builds.first
+          expect(build.job_runtime_environment).to be_nil
+        end
+      end
     end
 
     context 'with environment_key for resume' do
+      let(:environment_key) { '42/machine-id/executor-specific-data' }
+
       let(:workload_definition) do
         ::Ci::Workloads::WorkloadDefinition.new.tap do |definition|
           definition.image = image
           definition.commands = commands
-          definition.environment_key = 'runner-abc/executor-specific-data'
+          definition.environment_key = environment_key
         end
       end
 
@@ -186,7 +213,33 @@ RSpec.describe Ci::Workloads::RunWorkloadService, feature_category: :continuous_
         expect(result).to be_success
 
         build = result.payload.pipeline.builds.first
-        expect(build.options.dig(:suspend_options, :environment_key)).to eq('runner-abc/executor-specific-data')
+        expect(build.options.dig(:suspend_options, :environment_key)).to eq('42/machine-id/executor-specific-data')
+      end
+
+      context 'when a matching Ci::RuntimeEnvironment already exists' do
+        let!(:runtime_environment) do
+          create(:ci_runtime_environment, project: project, environment_key: environment_key)
+        end
+
+        it 'links the build runtime environment to it' do
+          result = execute
+          expect(result).to be_success
+
+          build = result.payload.pipeline.builds.first
+          expect(build.job_runtime_environment.runtime_environment_id).to eq(runtime_environment.id)
+        end
+      end
+
+      context 'when no matching Ci::RuntimeEnvironment exists yet' do
+        it 'still creates a row, with runtime_environment_id nil' do
+          result = execute
+          expect(result).to be_success
+
+          build = result.payload.pipeline.builds.first
+          job_runtime_environment = build.job_runtime_environment
+          expect(job_runtime_environment).to be_present
+          expect(job_runtime_environment.runtime_environment_id).to be_nil
+        end
       end
     end
 
@@ -197,6 +250,14 @@ RSpec.describe Ci::Workloads::RunWorkloadService, feature_category: :continuous_
 
         build = result.payload.pipeline.builds.first
         expect(build.options).not_to have_key(:suspend_options)
+      end
+
+      it 'does not create a Ci::JobRuntimeEnvironment row' do
+        result = execute
+        expect(result).to be_success
+
+        build = result.payload.pipeline.builds.first
+        expect(build.job_runtime_environment).to be_nil
       end
     end
 

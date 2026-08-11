@@ -1600,6 +1600,19 @@ RSpec.describe Issues::UpdateService, :mailer, :request_store, feature_category:
           end
         end
       end
+
+      context 'when target_work_item_type_id is provided' do
+        let_it_be(:target_project, freeze: false) { create(:project, maintainers: user) }
+        let(:type_id) { issue.work_item_type_id }
+
+        it 'forwards target_work_item_type_id to the move service' do
+          expect(::WorkItems::DataSync::MoveService).to receive(:new).with(
+            hash_including(params: { target_work_item_type_id: type_id })
+          ).and_call_original
+
+          update_issue(target_container: target_project, target_work_item_type_id: type_id)
+        end
+      end
     end
 
     context 'clone an issue' do
@@ -1649,6 +1662,21 @@ RSpec.describe Issues::UpdateService, :mailer, :request_store, feature_category:
 
             update_issue(target_clone_container: target_container, clone_with_notes: true)
           end
+        end
+      end
+
+      context 'when target_work_item_type_id is provided' do
+        let_it_be(:target_project, freeze: false) { create(:project, maintainers: user) }
+        let(:type_id) { issue.work_item_type_id }
+
+        it 'forwards target_work_item_type_id to the clone service' do
+          expect(::WorkItems::DataSync::CloneService).to receive(:new).with(
+            hash_including(
+              params: { clone_with_notes: nil, target_work_item_type_id: type_id }
+            )
+          ).and_call_original
+
+          update_issue(target_clone_container: target_project, target_work_item_type_id: type_id)
         end
       end
     end

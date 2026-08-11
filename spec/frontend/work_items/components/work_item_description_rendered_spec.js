@@ -343,6 +343,7 @@ and even more`,
           parentId: 'gid://gitlab/WorkItem/818',
           relatedItem: null,
           showProjectSelector: false,
+          suppressCreatedToast: false,
           title:
             'item 2 with a really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really rea',
           visible: true,

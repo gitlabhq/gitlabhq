@@ -30,8 +30,15 @@ module EnforcesAdminAuthentication
 
   private
 
+  # The authorization subject for admin ability checks. Defaults to `:global`
+  # for the instance admin area. The organization admin area overrides this to
+  # return the current organization.
+  def authorization_subject
+    :global
+  end
+
   def authorize_ability!(ability)
-    attempt_admin_mode unless current_user&.can?(ability)
+    attempt_admin_mode unless current_user&.can?(ability, authorization_subject)
   end
 
   def attempt_admin_mode

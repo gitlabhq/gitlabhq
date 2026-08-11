@@ -849,4 +849,151 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_
       end
     end
   end
+
+  describe 'build runtime environments persistence' do
+    let(:stage) { build(:ci_stage, pipeline: pipeline, project: project) }
+    let(:job) { build(:ci_build, ci_stage: stage, pipeline: pipeline, project: project) }
+
+    before do
+      pipeline.stages = [stage]
+      stage.statuses = [job]
+    end
+
+    shared_examples 'does not create a build runtime environment row' do
+      it 'does not create a build runtime environment row' do
+        step.perform!
+
+        expect(Ci::JobRuntimeEnvironment.count).to eq(0)
+      end
+    end
+
+    context 'when the feature flag is disabled for the project' do
+      let(:command) do
+        Gitlab::Ci::Pipeline::Chain::Command.new(
+          project: project, current_user: user,
+          suspend_options: { suspend_on_success: true }
+        )
+      end
+
+      before do
+        stub_feature_flags(ci_suspendable_environment_runner_routing: false)
+      end
+
+      it_behaves_like 'does not create a build runtime environment row'
+    end
+
+    context 'when suspend_options is not set on the command' do
+      it_behaves_like 'does not create a build runtime environment row'
+    end
+
+    context 'when suspend_options has neither trigger set nor an environment_key' do
+      let(:command) do
+        Gitlab::Ci::Pipeline::Chain::Command.new(
+          project: project, current_user: user,
+          suspend_options: { suspend_on_success: false, suspend_on_failure: false }
+        )
+      end
+
+      it_behaves_like 'does not create a build runtime environment row'
+    end
+
+    context 'when suspend_options has a suspend trigger set (suspend-eligible build)' do
+      let(:command) do
+        Gitlab::Ci::Pipeline::Chain::Command.new(
+          project: project, current_user: user,
+          suspend_options: { suspend_on_success: true, suspend_on_failure: false }
+        )
+      end
+
+      it 'creates a build runtime environment row with runtime_environment_id nil', :aggregate_failures do
+        step.perform!
+
+        job_runtime_environment = job.reload.job_runtime_environment
+        expect(job_runtime_environment).to be_present
+        expect(job_runtime_environment.project_id).to eq(project.id)
+        expect(job_runtime_environment.suspend_on_success).to be(true)
+        expect(job_runtime_environment.suspend_on_failure).to be(false)
+        expect(job_runtime_environment.runtime_environment_id).to be_nil
+        expect(job_runtime_environment.runner_machine_id).to be_nil
+      end
+    end
+
+    context 'when suspend_options has only suspend_on_failure set' do
+      let(:command) do
+        Gitlab::Ci::Pipeline::Chain::Command.new(
+          project: project, current_user: user,
+          suspend_options: { suspend_on_failure: true }
+        )
+      end
+
+      it 'creates a build runtime environment row', :aggregate_failures do
+        step.perform!
+
+        job_runtime_environment = job.reload.job_runtime_environment
+        expect(job_runtime_environment).to be_present
+        expect(job_runtime_environment.suspend_on_success).to be(false)
+        expect(job_runtime_environment.suspend_on_failure).to be(true)
+      end
+    end
+
+    context 'when suspend_options carries an environment_key (resume) matching an existing runtime environment' do
+      let_it_be(:runtime_environment) do
+        create(:ci_runtime_environment, project: project, environment_key: '22/s_abc123/acquisition-key="uuid"')
+      end
+
+      let(:command) do
+        Gitlab::Ci::Pipeline::Chain::Command.new(
+          project: project, current_user: user,
+          suspend_options: { environment_key: runtime_environment.environment_key }
+        )
+      end
+
+      it 'links runtime_environment_id to the matching environment' do
+        step.perform!
+
+        job_runtime_environment = job.reload.job_runtime_environment
+        expect(job_runtime_environment).to be_present
+        expect(job_runtime_environment.runtime_environment_id).to eq(runtime_environment.id)
+      end
+    end
+
+    context 'when suspend_options carries an environment_key with no matching runtime environment' do
+      let(:command) do
+        Gitlab::Ci::Pipeline::Chain::Command.new(
+          project: project, current_user: user,
+          suspend_options: { environment_key: 'nonexistent-key' }
+        )
+      end
+
+      it 'creates the row with runtime_environment_id nil' do
+        step.perform!
+
+        job_runtime_environment = job.reload.job_runtime_environment
+        expect(job_runtime_environment).to be_present
+        expect(job_runtime_environment.runtime_environment_id).to be_nil
+      end
+    end
+
+    context 'when suspend_options carries an environment_key matching another project\'s runtime environment' do
+      let_it_be(:other_project) { create(:project) }
+      let_it_be(:runtime_environment) do
+        create(:ci_runtime_environment, project: other_project, environment_key: 'shared-key')
+      end
+
+      let(:command) do
+        Gitlab::Ci::Pipeline::Chain::Command.new(
+          project: project, current_user: user,
+          suspend_options: { environment_key: 'shared-key' }
+        )
+      end
+
+      it 'does not link across projects' do
+        step.perform!
+
+        job_runtime_environment = job.reload.job_runtime_environment
+        expect(job_runtime_environment).to be_present
+        expect(job_runtime_environment.runtime_environment_id).to be_nil
+      end
+    end
+  end
 end

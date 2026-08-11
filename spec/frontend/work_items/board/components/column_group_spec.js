@@ -135,6 +135,31 @@ describe('ColumnGroup', () => {
     });
   });
 
+  describe('create item', () => {
+    it('does not let the header offer creation by default', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(findColumnHeader().props('canCreateWorkItem')).toBe(false);
+    });
+
+    it('lets the header offer creation when canCreateWorkItem is true', async () => {
+      createComponent({ props: { canCreateWorkItem: true } });
+      await waitForPromises();
+
+      expect(findColumnHeader().props('canCreateWorkItem')).toBe(true);
+    });
+
+    it('forwards create-item from the header with the column value', async () => {
+      createComponent({ props: { canCreateWorkItem: true } });
+      await waitForPromises();
+
+      findColumnHeader().vm.$emit('create-item');
+
+      expect(wrapper.emitted('create-item')).toEqual([[mockStatus]]);
+    });
+  });
+
   describe('collapsed state', () => {
     it('is expanded by default: full-height wide column showing the card list', async () => {
       createComponent();

@@ -11910,6 +11910,9 @@ msgstr ""
 msgid "ArtifactRegistry|Activation"
 msgstr ""
 
+msgid "ArtifactRegistry|Active since"
+msgstr ""
+
 msgid "ArtifactRegistry|Add the dependency to your %{codeStart}build.gradle%{codeEnd} file:"
 msgstr ""
 
@@ -11928,13 +11931,22 @@ msgstr ""
 msgid "ArtifactRegistry|Add this to your %{codeStart}.yarnrc.yml%{codeEnd} file:"
 msgstr ""
 
-msgid "ArtifactRegistry|Add this to your %{codeStart}pom.xml%{codeEnd} %{codeStart}distributionManagement%{codeEnd} block:"
+msgid "ArtifactRegistry|Add this to your %{codeStart}pom.xml%{codeEnd} file:"
 msgstr ""
 
 msgid "ArtifactRegistry|All formats"
 msgstr ""
 
 msgid "ArtifactRegistry|Ancestor ID must be a valid UUIDv7."
+msgstr ""
+
+msgid "ArtifactRegistry|Artifact Registry is disabled"
+msgstr ""
+
+msgid "ArtifactRegistry|Artifact Registry is enabled"
+msgstr ""
+
+msgid "ArtifactRegistry|Artifact Registry is not available for this organization"
 msgstr ""
 
 msgid "ArtifactRegistry|Artifact Registry returned an error."
@@ -11958,6 +11970,9 @@ msgstr ""
 msgid "ArtifactRegistry|At least one assignment is required."
 msgstr ""
 
+msgid "ArtifactRegistry|At least one revocation is required."
+msgstr ""
+
 msgid "ArtifactRegistry|Authenticate with a token in your %{codeStart}settings.xml%{codeEnd} file:"
 msgstr ""
 
@@ -11970,7 +11985,16 @@ msgstr ""
 msgid "ArtifactRegistry|Client configuration files"
 msgstr ""
 
+msgid "ArtifactRegistry|Control artifact registry access for this organization. When enabled, all projects and groups have access to a unified registry."
+msgstr ""
+
 msgid "ArtifactRegistry|Copy and paste this inside your %{codeStart}pom.xml%{codeEnd} %{codeStart}dependencies%{codeEnd} block:"
+msgstr ""
+
+msgid "ArtifactRegistry|Copy registry URL"
+msgstr ""
+
+msgid "ArtifactRegistry|Copy registry handle"
 msgstr ""
 
 msgid "ArtifactRegistry|Copy repository URL"
@@ -12057,9 +12081,6 @@ msgid "ArtifactRegistry|Edit or clear your filters to see more repositories."
 msgstr ""
 
 msgid "ArtifactRegistry|Edit repository"
-msgstr ""
-
-msgid "ArtifactRegistry|Enable Artifact Registry for this organization. All projects and groups will have access to a unified registry once enabled."
 msgstr ""
 
 msgid "ArtifactRegistry|Enable Artifact registry"
@@ -12192,6 +12213,9 @@ msgstr ""
 msgid "ArtifactRegistry|Push an image:"
 msgstr ""
 
+msgid "ArtifactRegistry|Registry URL"
+msgstr ""
+
 msgid "ArtifactRegistry|Registry handle"
 msgstr ""
 
@@ -12237,6 +12261,9 @@ msgstr ""
 msgid "ArtifactRegistry|Resource ID must be a valid UUIDv7."
 msgstr ""
 
+msgid "ArtifactRegistry|Revocation %{number} on resource %{resource_id}: %{message}"
+msgstr ""
+
 msgid "ArtifactRegistry|Set up Artifact registry"
 msgstr ""
 
@@ -12277,6 +12304,12 @@ msgid "ArtifactRegistry|The role assignment lookup request was invalid."
 msgstr ""
 
 msgid "ArtifactRegistry|The role assignment request was invalid."
+msgstr ""
+
+msgid "ArtifactRegistry|The role revocation could not be completed."
+msgstr ""
+
+msgid "ArtifactRegistry|The role revocation request was invalid."
 msgstr ""
 
 msgid "ArtifactRegistry|This action permanently deletes the repository and all of its artifacts. If this repository is connected to a virtual repository, the virtual repository loses access to this repository and its artifacts."
@@ -12327,13 +12360,22 @@ msgstr ""
 msgid "ArtifactRegistry|You are not authorized to read these role assignments."
 msgstr ""
 
+msgid "ArtifactRegistry|You are not authorized to revoke this role on this resource."
+msgstr ""
+
 msgid "ArtifactRegistry|You cannot grant roles in another organization."
+msgstr ""
+
+msgid "ArtifactRegistry|You cannot revoke roles in another organization."
 msgstr ""
 
 msgid "ArtifactRegistry|You must be signed in to grant a role."
 msgstr ""
 
 msgid "ArtifactRegistry|You must be signed in to read role assignments."
+msgstr ""
+
+msgid "ArtifactRegistry|You must be signed in to revoke a role."
 msgstr ""
 
 msgid "ArtifactRegistry|npm"
@@ -17194,6 +17236,9 @@ msgstr ""
 msgid "CiCatalog|Components"
 msgstr ""
 
+msgid "CiCatalog|Components created and maintained by GitLab, available to everyone in your organization. These are your organization's trusted components."
+msgstr ""
+
 msgid "CiCatalog|Components used"
 msgstr ""
 
@@ -17218,6 +17263,15 @@ msgstr ""
 msgid "CiCatalog|Edit your search and try again, or %{linkStart}learn how to create a component project%{linkEnd}."
 msgstr ""
 
+msgid "CiCatalog|Edit your search and try again."
+msgstr ""
+
+msgid "CiCatalog|Empty: GitLab-maintained"
+msgstr ""
+
+msgid "CiCatalog|Empty: your organization"
+msgstr ""
+
 msgid "CiCatalog|Failed to load resource versions"
 msgstr ""
 
@@ -17227,10 +17281,16 @@ msgstr ""
 msgid "CiCatalog|GitLab-maintained"
 msgstr ""
 
+msgid "CiCatalog|GitLab-maintained components have not been made available on this cell yet. They will appear here once they are synced."
+msgstr ""
+
 msgid "CiCatalog|Group"
 msgstr ""
 
 msgid "CiCatalog|How do I publish a component?"
+msgstr ""
+
+msgid "CiCatalog|Last released"
 msgstr ""
 
 msgid "CiCatalog|Last used"
@@ -17242,7 +17302,13 @@ msgstr ""
 msgid "CiCatalog|Learn more about verified creators on GitLab Self-Managed or GitLab Dedicated."
 msgstr ""
 
+msgid "CiCatalog|Name"
+msgstr ""
+
 msgid "CiCatalog|Newest version"
+msgstr ""
+
+msgid "CiCatalog|No GitLab-maintained components yet"
 msgstr ""
 
 msgid "CiCatalog|No component available"
@@ -17275,6 +17341,12 @@ msgstr ""
 msgid "CiCatalog|Partner"
 msgstr ""
 
+msgid "CiCatalog|Populated"
+msgstr ""
+
+msgid "CiCatalog|Preview state:"
+msgstr ""
+
 msgid "CiCatalog|Private - This component project can only be viewed by project members."
 msgstr ""
 
@@ -17293,6 +17365,9 @@ msgstr ""
 msgid "CiCatalog|Publish the CI/CD components in this project to the CI/CD Catalog"
 msgstr ""
 
+msgid "CiCatalog|Published %{timeAgo}"
+msgstr ""
+
 msgid "CiCatalog|Published %{timeAgo} by %{author}"
 msgstr ""
 
@@ -17309,6 +17384,9 @@ msgid "CiCatalog|Remove from the CI/CD catalog"
 msgstr ""
 
 msgid "CiCatalog|Search by component"
+msgstr ""
+
+msgid "CiCatalog|Search components"
 msgstr ""
 
 msgid "CiCatalog|Search incomplete"
@@ -17330,6 +17408,9 @@ msgid "CiCatalog|Sort direction: ascending"
 msgstr ""
 
 msgid "CiCatalog|Sort direction: descending"
+msgstr ""
+
+msgid "CiCatalog|Stars"
 msgstr ""
 
 msgid "CiCatalog|Status"
@@ -17432,6 +17513,9 @@ msgid "CiCatalog|You need maintainer access to at least one CI/CD catalog projec
 msgstr ""
 
 msgid "CiCatalog|Your groups"
+msgstr ""
+
+msgid "CiCatalog|Your organization"
 msgstr ""
 
 msgid "CiCdAnalytics|Date range: %{range}"
@@ -17999,10 +18083,22 @@ msgstr ""
 msgid "CloneWorkItem|Unable to clone. The selected work item type is not available in the target namespace."
 msgstr ""
 
+msgid "CloneWorkItem|Unable to clone. The source work item type \"%{type}\" is not available in the target namespace. Specify one using `[type:NAME]`. Available types: %{available}."
+msgstr ""
+
+msgid "CloneWorkItem|Unable to clone. The work item type \"%{type}\" is disabled in the target namespace. Available types: %{available}."
+msgstr ""
+
+msgid "CloneWorkItem|Unable to clone. The work item type \"%{type}\" is not available in the target namespace. Available types: %{available}."
+msgstr ""
+
 msgid "CloneWorkItem|Unable to clone. You have insufficient permissions."
 msgstr ""
 
 msgid "Cloned this item to %{path_to_group_or_project}."
+msgstr ""
+
+msgid "Clones this item, without comments, to %{group_or_project} and changes the type to %{type}."
 msgstr ""
 
 msgid "Clones this item, without comments, to %{group_or_project}."
@@ -23075,6 +23171,9 @@ msgstr ""
 msgid "ContinuousDeployment|Add at least one service."
 msgstr ""
 
+msgid "ContinuousDeployment|Add link"
+msgstr ""
+
 msgid "ContinuousDeployment|Add service"
 msgstr ""
 
@@ -23141,6 +23240,12 @@ msgstr ""
 msgid "ContinuousDeployment|Cancelled"
 msgstr ""
 
+msgid "ContinuousDeployment|Change / CR system"
+msgstr ""
+
+msgid "ContinuousDeployment|Chat / Slack"
+msgstr ""
+
 msgid "ContinuousDeployment|Clear filters"
 msgstr ""
 
@@ -23166,6 +23271,9 @@ msgid "ContinuousDeployment|Create applications to track them and deploy them to
 msgstr ""
 
 msgid "ContinuousDeployment|Created"
+msgstr ""
+
+msgid "ContinuousDeployment|Dashboard"
 msgstr ""
 
 msgid "ContinuousDeployment|Declare the topology of your application — services, environments, integrations — and Deploy will orchestrate rollouts for it."
@@ -23204,6 +23312,9 @@ msgstr ""
 msgid "ContinuousDeployment|Digest"
 msgstr ""
 
+msgid "ContinuousDeployment|Docs"
+msgstr ""
+
 msgid "ContinuousDeployment|Drift detected"
 msgstr ""
 
@@ -23211,6 +23322,9 @@ msgid "ContinuousDeployment|Edit"
 msgstr ""
 
 msgid "ContinuousDeployment|Edit service"
+msgstr ""
+
+msgid "ContinuousDeployment|Enter a valid URL that starts with http:// or https://"
 msgstr ""
 
 msgid "ContinuousDeployment|Environment %{id}"
@@ -23249,10 +23363,16 @@ msgstr ""
 msgid "ContinuousDeployment|Failed to load deployments. Reload to try again."
 msgstr ""
 
+msgid "ContinuousDeployment|Failed to load links. Reload to try again."
+msgstr ""
+
 msgid "ContinuousDeployment|Failed to load releases. Reload to try again."
 msgstr ""
 
 msgid "ContinuousDeployment|Failed to load the application. Please try again later."
+msgstr ""
+
+msgid "ContinuousDeployment|Failed to save the link. Try again later."
 msgstr ""
 
 msgid "ContinuousDeployment|Failed to trigger the deployment. Please try again."
@@ -23292,6 +23412,9 @@ msgid "ContinuousDeployment|In progress"
 msgstr ""
 
 msgid "ContinuousDeployment|In sync"
+msgstr ""
+
+msgid "ContinuousDeployment|Issue tracker"
 msgstr ""
 
 msgid "ContinuousDeployment|It may have been removed or you may not have access to it."
@@ -23354,6 +23477,12 @@ msgstr ""
 msgid "ContinuousDeployment|No versions recorded."
 msgstr ""
 
+msgid "ContinuousDeployment|On-call rotation"
+msgstr ""
+
+msgid "ContinuousDeployment|Other"
+msgstr ""
+
 msgid "ContinuousDeployment|Out of sync"
 msgstr ""
 
@@ -23393,7 +23522,13 @@ msgstr ""
 msgid "ContinuousDeployment|Remove"
 msgstr ""
 
+msgid "ContinuousDeployment|Repository"
+msgstr ""
+
 msgid "ContinuousDeployment|Rolled back"
+msgstr ""
+
+msgid "ContinuousDeployment|Runbook"
 msgstr ""
 
 msgid "ContinuousDeployment|Running"
@@ -23474,6 +23609,9 @@ msgstr ""
 msgid "ContinuousDeployment|Tier"
 msgstr ""
 
+msgid "ContinuousDeployment|Title"
+msgstr ""
+
 msgid "ContinuousDeployment|Trigger a manual deployment of %{name}. It will use the latest deployment flow."
 msgstr ""
 
@@ -23486,6 +23624,9 @@ msgstr ""
 msgid "ContinuousDeployment|Type"
 msgstr ""
 
+msgid "ContinuousDeployment|URL"
+msgstr ""
+
 msgid "ContinuousDeployment|Unknown"
 msgstr ""
 
@@ -23493,6 +23634,9 @@ msgid "ContinuousDeployment|Version"
 msgstr ""
 
 msgid "ContinuousDeployment|Waiting for your approval"
+msgstr ""
+
+msgid "ContinuousDeployment|e.g. Grafana — Payments overview"
 msgstr ""
 
 msgid "ContinuousDeployment|e.g. acme-platform"
@@ -24402,6 +24546,9 @@ msgid "Create new domain"
 msgstr ""
 
 msgid "Create new emoji"
+msgstr ""
+
+msgid "Create new item"
 msgstr ""
 
 msgid "Create new label"
@@ -34324,6 +34471,9 @@ msgstr ""
 msgid "Failed to move this issue because only a single label can be provided."
 msgstr ""
 
+msgid "Failed to move this item: wrong parameters."
+msgstr ""
+
 msgid "Failed to promote label due to internal error. Please contact administrators."
 msgstr ""
 
@@ -38542,9 +38692,6 @@ msgid "Group '%{group_name}' was successfully updated."
 msgstr ""
 
 msgid "Group Git LFS status:"
-msgstr ""
-
-msgid "Group Name"
 msgstr ""
 
 msgid "Group Owner must have signed in with SAML before enabling Group Managed Accounts"
@@ -50216,6 +50363,15 @@ msgstr ""
 msgid "MoveWorkItem|Unable to move. The selected work item type is not available in the target namespace."
 msgstr ""
 
+msgid "MoveWorkItem|Unable to move. The source work item type \"%{type}\" is not available in the target namespace. Specify one using `[type:NAME]`. Available types: %{available}."
+msgstr ""
+
+msgid "MoveWorkItem|Unable to move. The work item type \"%{type}\" is disabled in the target namespace. Available types: %{available}."
+msgstr ""
+
+msgid "MoveWorkItem|Unable to move. The work item type \"%{type}\" is not available in the target namespace. Available types: %{available}."
+msgstr ""
+
 msgid "MoveWorkItem|Unable to move. You have insufficient permissions."
 msgstr ""
 
@@ -50226,6 +50382,9 @@ msgid "Moved this item to %{path_to_container}."
 msgstr ""
 
 msgid "Moves issue to %{label} column in the board."
+msgstr ""
+
+msgid "Moves this item to %{group_or_project} and changes the type to %{type}."
 msgstr ""
 
 msgid "Moves this item to %{group_or_project}."
@@ -60833,9 +60992,6 @@ msgstr ""
 msgid "Project ID"
 msgstr ""
 
-msgid "Project Name"
-msgstr ""
-
 msgid "Project Security Status"
 msgstr ""
 
@@ -62145,9 +62301,6 @@ msgid "Projects are graded based on the highest severity vulnerability present"
 msgstr ""
 
 msgid "Projects are where you store your code, access issues, wiki, and other features of GitLab."
-msgstr ""
-
-msgid "Projects contain the resources for your repository"
 msgstr ""
 
 msgid "Projects contributed to"
@@ -73795,6 +73948,9 @@ msgstr ""
 msgid "SecurityReports|Container scanning for registry scans the latest tag of each image. It scans for vulnerabilities in the container registry when an image or database is updated."
 msgstr ""
 
+msgid "SecurityReports|Could not start SAST false positive detection. Please try again."
+msgstr ""
+
 msgid "SecurityReports|Could not start Vulnerability Resolution. Please try again."
 msgstr ""
 
@@ -74181,6 +74337,12 @@ msgstr ""
 msgid "SecurityReports|Risk score formula"
 msgstr ""
 
+msgid "SecurityReports|Run SAST False Positive Detection"
+msgstr ""
+
+msgid "SecurityReports|SAST false positive detection is already in progress for this project. Wait for it to finish before starting a new one."
+msgstr ""
+
 msgid "SecurityReports|SAST triage and remediation funnel"
 msgstr ""
 
@@ -74236,6 +74398,11 @@ msgstr ""
 
 msgid "SecurityReports|Sorry, your filter produced no results"
 msgstr ""
+
+msgid "SecurityReports|Started SAST false positive detection for %{count} vulnerability."
+msgid_plural "SecurityReports|Started SAST false positive detection for %{count} vulnerabilities."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "SecurityReports|Started Vulnerability Resolution for %{count} vulnerability."
 msgid_plural "SecurityReports|Started Vulnerability Resolution for %{count} vulnerabilities."
@@ -83115,9 +83282,6 @@ msgstr ""
 msgid "Trial|Continue"
 msgstr ""
 
-msgid "Trial|Continue to GitLab"
-msgstr ""
-
 msgid "Trial|Continue with trial"
 msgstr ""
 
@@ -83137,9 +83301,6 @@ msgid "Trial|GitLab Subscription Agreement"
 msgstr ""
 
 msgid "Trial|Having trouble with this form? You can also request a trial on %{link}."
-msgstr ""
-
-msgid "Trial|Help us personalize your GitLab experience by answering a few questions"
 msgstr ""
 
 msgid "Trial|I agree that GitLab can contact me by email about its product, services, or events."
@@ -89983,6 +90144,9 @@ msgid_plural "WorkItem|%{workItemType} blocks %{itemCount} items"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "WorkItem|%{workItemType} created, but it is not shown on the current view."
+msgstr ""
+
 msgid "WorkItem|%{workItemType} created."
 msgstr ""
 
@@ -92747,9 +92911,6 @@ msgid "You successfully declined the invitation"
 msgstr ""
 
 msgid "You tried to fork %{link_to_the_project} but it failed for the following reason:"
-msgstr ""
-
-msgid "You use groups to organize your projects"
 msgstr ""
 
 msgid "You will be redirected to %{strong_start}%{domain}%{strong_end} after authorizing."

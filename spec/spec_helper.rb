@@ -369,7 +369,10 @@ RSpec.configure do |config|
     # It can be reenabled for specific tests via:
     #
     # expect(Gitlab::Git::KeepAround).to receive(:execute).and_call_original
-    allow(Gitlab::Git::KeepAround).to receive(:execute)
+    #
+    # Returns an empty array to match the real contract: the SHAs whose
+    # keep-around ref could not be written.
+    allow(Gitlab::Git::KeepAround).to receive(:execute).and_return([])
 
     # Stub these calls due to being expensive operations
     # It can be reenabled for specific tests via:

@@ -15,7 +15,7 @@ title: Security Metrics and KPIs
 
 The document describes the installation, configuration, and user guide of the GitLab Security Metrics and KPIs Solution Component. This security solution component provides metrics and KPIs that can be viewed by business units, time range, vulnerability severity, and security types. It can provide a snapshot of the security posture on a monthly or quarterly basis with PDF documents. The data is visualized using a dashboard in Splunk.
 
-![Security Metrics and KPIs](img/security_metrics_kpi_v17_9.png)
+![A security dashboard showing vulnerability aging, top CVEs by occurrence, and vulnerability counts by project path and severity.](img/security_metrics_kpi_v17_9.png)
 
 This solution exports vulnerability data from GitLab projects or groups using the GraphQL API, sends it to Splunk through the HTTP Event Collector (HEC), and includes an out-of-the-box dashboard for security metrics visualization. The export process is designed to run as a GitLab CI/CD pipeline on a scheduled basis.
 

@@ -110,6 +110,24 @@ The workaround is to use an HTTPS repository URL instead of SSH for your push mi
 
 [Issue 249587](https://gitlab.com/gitlab-org/gitlab/-/issues/249587) exists to fix this problem.
 
+## Error: `Committer is not a member of team`
+
+You might get an error that states:
+
+```plaintext
+remote: GitLab: Committer 'noreply@example.com' is not a member of team
+```
+
+This issue occurs when the source project signs commits created in the GitLab UI, and the target
+project has the **Check whether the commit author is a GitLab user**
+[push rule](../push_rules.md#verify-users) turned on.
+Commits signed by GitLab have an instance email address as the committer, and this address does
+not belong to a GitLab user.
+
+GitLab 19.3 and later resolve this issue: push rules no longer check the committer email address
+for [commits signed by GitLab](../push_rules.md#commits-signed-by-gitlab).
+As a workaround for earlier versions, turn off the push rule on the target project.
+
 ## Pull mirror is missing LFS files
 
 In some cases, pull mirroring does not transfer LFS files.

@@ -129,7 +129,7 @@ RSpec.describe SentNotificationsController, feature_category: :shared do
         it 'deletes the connected issue email participant' do
           expect { perform_request }.to change { issue.issue_email_participants.count }.by(-1)
           # Ensure external author is still present
-          expect(issue.email_participants_emails).to contain_exactly(email)
+          expect(issue.email_participants_emails_downcase).to contain_exactly(email.downcase)
         end
       end
 

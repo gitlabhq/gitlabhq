@@ -12,6 +12,7 @@ export const placeholderStrategy = {
   extractValues: () => [],
   columnFilter: () => ({}),
   moveInput: () => ({}),
+  newItemDraft: () => ({}),
   patchCard: () => {},
   headerDecoration: () => ({ type: 'none' }),
 };
