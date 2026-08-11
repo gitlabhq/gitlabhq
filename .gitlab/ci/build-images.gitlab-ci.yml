@@ -36,3 +36,15 @@ build-gdk-image:
         exit 0
       fi
     - scripts/build_gdk_image
+
+# Builds an image containing the siphon table definitions (db/siphon/tables).
+build-siphon-tables-image:
+  extends:
+    - .base-image-build-buildx
+    - .build-images:rules:build-siphon-tables-image
+  stage: build-images
+  needs: []
+  variables:
+    GLCI_BUILD_SIPHON_TABLES_IMAGE: "true"
+  script:
+    - scripts/build_siphon_tables_image

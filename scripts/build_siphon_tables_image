@@ -1,0 +1,59 @@
+#!/bin/bash
+
+set -e
+
+# This script builds an image that contains the siphon table definitions
+# (db/siphon/tables), so they can be consumed by downstream pipelines without
+# needing a full checkout of the gitlab repository.
+
+source "$(dirname "$0")/utils.sh"
+
+# Exit early if we don't want to build the image
+if [ "${GLCI_BUILD_SIPHON_TABLES_IMAGE}" != "true" ]; then
+  echo "GLCI_BUILD_SIPHON_TABLES_IMAGE: ${GLCI_BUILD_SIPHON_TABLES_IMAGE}. Skipping siphon tables image build."
+  exit 0
+fi
+
+# Siphon tables image is only built in canonical namespaces, like the assets image.
+if [[ ! $CI_PROJECT_NAMESPACE =~ ^gitlab(-org|-cn)?($|\/) ]]; then
+  echo "Siphon tables image build is only supported in canonical namespaces. Skipping siphon tables image build."
+  exit 0
+fi
+
+IMAGE_NAME="gitlab-siphon-tables"
+IMAGE_PATH="${CI_REGISTRY}/${CI_PROJECT_PATH}/${IMAGE_NAME}"
+
+# Used by other projects' master pipelines and MR pipelines
+COMMIT_REF_SLUG_DESTINATION="${IMAGE_PATH}:${CI_COMMIT_REF_SLUG}"
+# Used by auto-deploy pipelines: https://gitlab.com/gitlab-org/release/docs/blob/master/general/deploy/auto-deploy.md
+COMMIT_SHA_DESTINATION="${IMAGE_PATH}:${CI_COMMIT_SHA}"
+# Used for tag pipelines
+COMMIT_REF_NAME_DESTINATION="${IMAGE_PATH}:${CI_COMMIT_REF_NAME}"
+
+DESTINATIONS="--tag=${COMMIT_REF_SLUG_DESTINATION} --tag=${COMMIT_SHA_DESTINATION}"
+if [ -n "${CI_COMMIT_TAG}" ]; then
+  DESTINATIONS="$DESTINATIONS --tag=${COMMIT_REF_NAME_DESTINATION}"
+fi
+
+echoinfo "Building siphon tables image" "yes"
+
+# Build from a dedicated directory rather than the repo root: the root
+# `.dockerignore` excludes `/db/` which includes the Siphon table definitions.
+build_dir=siphon_tables_container.build
+# Clean up the build directory on exit so it doesn't accumulate stale content.
+trap 'rm -rf "${build_dir}"' EXIT
+mkdir -p "${build_dir}/db/siphon"
+cp -r db/siphon/tables "${build_dir}/db/siphon/"
+
+docker buildx build \
+  --file - \
+  --platform "${ARCH:-linux/amd64}" \
+  ${DESTINATIONS} \
+  --push \
+  "${build_dir}" <<'DOCKERFILE'
+# Container to store the Siphon table definitions
+FROM scratch
+COPY db/siphon/tables /db/siphon/tables
+DOCKERFILE
+
+echosuccess "Built image '${COMMIT_SHA_DESTINATION}'"
