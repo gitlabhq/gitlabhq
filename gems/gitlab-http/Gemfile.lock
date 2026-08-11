@@ -18,7 +18,7 @@ PATH
       batch-loader (~> 2.0)
       bigdecimal (~> 3.2)
       nokogiri (~> 1.0)
-      oj (~> 3.16)
+      oj (~> 3.17, >= 3.17.3)
       rake (~> 13.0)
       toml-rb (~> 4.1)
       yajl-ruby (~> 1.4)
@@ -245,7 +245,7 @@ GEM
       racc (~> 1.4)
     nokogiri (1.16.8-x86_64-linux)
       racc (~> 1.4)
-    oj (3.16.16)
+    oj (3.17.3)
       bigdecimal (>= 3.0)
       ostruct (>= 0.2)
     os (1.1.4)
@@ -498,7 +498,7 @@ CHECKSUMS
   nokogiri (1.16.8-x86-linux) sha256=f97760e6320166d48234029bed9e999521a888376bd2b7e04f4c054537154f16
   nokogiri (1.16.8-x86_64-darwin) sha256=6c40d7dc444f752634bf6ee8b53a55c3cfca3f9df52be46b8abcc559ccd49e47
   nokogiri (1.16.8-x86_64-linux) sha256=ed7b1f80713ac968dd93fe2b96fc3df6e448b73bd02dd77d5fc89ba92a1ed6d9
-  oj (3.16.16) sha256=3635b36128991796434f55da8decc0de236a323535adcb36fc04e6d0253c013d
+  oj (3.17.3) sha256=ebe3967b0bb7ac4f206561d0d9ac8875b9973f778600d7b61b5c355662a707ed
   os (1.1.4) sha256=57816d6a334e7bd6aed048f4b0308226c5fb027433b67d90a9ab435f35108d3f
   ostruct (0.6.3) sha256=95a2ed4a4bd1d190784e666b47b2d3f078e4a9efda2fccf18f84ddc6538ed912
   parallel (1.26.3) sha256=d86babb7a2b814be9f4b81587bf0b6ce2da7d45969fab24d8ae4bf2bb4d4c7ef

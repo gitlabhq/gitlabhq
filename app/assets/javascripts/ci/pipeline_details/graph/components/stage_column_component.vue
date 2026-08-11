@@ -141,7 +141,7 @@ export default {
             stageName: sanitize(this.name),
           }),
           modalHtmlMessage: `
-            <p>${sanitize(this.action.confirmationMessage)}</p>
+            <p>${escape(this.action.confirmationMessage)}</p>
             <p>${s__('PipelineGraph|Do you want to continue?')}</p>
           `,
           primaryBtnText: sprintf(__('Yes, run all manual')),
