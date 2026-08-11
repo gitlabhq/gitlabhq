@@ -296,7 +296,6 @@ Style/ClassAndModuleChildren:
     - 'app/serializers/import/bulk_import_entity.rb'
     - 'app/serializers/import/fogbugz_provider_repo_entity.rb'
     - 'app/serializers/import/githubish_provider_repo_entity.rb'
-    - 'app/serializers/import/gitlab_provider_repo_entity.rb'
     - 'app/serializers/import/manifest_provider_repo_entity.rb'
     - 'app/serializers/import/provider_repo_serializer.rb'
     - 'app/serializers/jira_connect/app_data_serializer.rb'

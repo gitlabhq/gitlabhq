@@ -35,7 +35,7 @@ RSpec.describe 'ClickHouse::Client', :click_house, feature_category: :database d
       let(:events) { [event1, event2, event3] }
 
       def format_row(event)
-        path = event.project.reload.project_namespace.traversal_path
+        path = event.project.reload.project_namespace.traversal_path(with_organization: false)
 
         action = Event.actions[event.action]
         [

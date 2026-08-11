@@ -7,7 +7,7 @@ RSpec.shared_examples_for 'a ci_finished_pipelines aggregation model' do |table_
 
   let_it_be(:group, freeze: false) { create(:group, :nested) }
   let_it_be(:project, freeze: false) { create(:project, group: group) }
-  let_it_be(:path, freeze: false) { project.reload.project_namespace.traversal_path }
+  let_it_be(:path, freeze: false) { project.reload.project_namespace.traversal_path(with_organization: false) }
 
   let!(:started_at_field) do
     table_name == :ci_finished_pipelines ? 'started_at' : 'started_at_bucket'
@@ -44,7 +44,7 @@ RSpec.shared_examples_for 'a ci_finished_pipelines aggregation model' do |table_
     it 'builds the correct SQL' do
       expected_sql = <<~SQL.lines(chomp: true).join(' ')
         SELECT * FROM `#{table_name}`
-        WHERE startsWith(`#{table_name}`.`path`, '#{group.traversal_path}')
+        WHERE startsWith(`#{table_name}`.`path`, '#{group.traversal_path(with_organization: false)}')
       SQL
 
       expect(result_sql.strip).to eq(expected_sql.strip)
@@ -63,7 +63,7 @@ RSpec.shared_examples_for 'a ci_finished_pipelines aggregation model' do |table_
       it 'builds the correct SQL with OR conditions' do
         expected_sql = <<~SQL.lines(chomp: true).join(' ')
           SELECT * FROM `#{table_name}`
-          WHERE (startsWith(`#{table_name}`.`path`, '#{subgroup1.traversal_path}') OR startsWith(`#{table_name}`.`path`, '#{subgroup2.traversal_path}'))
+          WHERE (startsWith(`#{table_name}`.`path`, '#{subgroup1.traversal_path(with_organization: false)}') OR startsWith(`#{table_name}`.`path`, '#{subgroup2.traversal_path(with_organization: false)}'))
         SQL
 
         is_expected.to eq(expected_sql.strip)
@@ -84,7 +84,7 @@ RSpec.shared_examples_for 'a ci_finished_pipelines aggregation model' do |table_
       it 'builds the correct SQL with a single startsWith' do
         expected_sql = <<~SQL.lines(chomp: true).join(' ')
           SELECT * FROM `#{table_name}`
-          WHERE startsWith(`#{table_name}`.`path`, '#{subgroup1.traversal_path}')
+          WHERE startsWith(`#{table_name}`.`path`, '#{subgroup1.traversal_path(with_organization: false)}')
         SQL
 
         is_expected.to eq(expected_sql.strip)

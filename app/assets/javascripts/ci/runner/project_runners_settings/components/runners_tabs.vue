@@ -92,6 +92,11 @@ export default {
       this.$refs.assignedRunners.refresh();
       this.$refs.otherAvailableRunners.refresh();
     },
+    // Reading the current value is not a change: refreshing here would race the
+    // refresh below and can leave the pre-toggle list showing.
+    onGroupRunnersFetched(value) {
+      this.groupRunnersEnabled = value;
+    },
     onGroupRunnersToggled(value) {
       this.groupRunnersEnabled = value;
       this.$refs.groupRunners.refresh();
@@ -170,6 +175,7 @@ export default {
         <group-runners-toggle
           v-if="canToggleGroupRunners"
           :project-full-path="projectFullPath"
+          @fetched="onGroupRunnersFetched"
           @change="onGroupRunnersToggled"
           @error="onError"
         />

@@ -43,11 +43,17 @@ construct namespace, mount, or authentication paths yourself.
 ## Prerequisites
 
 - Secrets Manager is enabled for the project or group.
+- The Secrets Manager was provisioned in GitLab 19.2 or later.
 - You authenticate with a personal access token, project or group access token, or service account
   token that has the `api` scope.
 - Your role is at least Reporter.
 - To read a secret value, you are granted the read value permission for that secret.
   The Reporter role alone does not expose secret values.
+
+> [!note]
+> Secrets Managers provisioned before GitLab 19.2 do not support access from external requests or
+> services.
+> To enable external access, see [Enable secrets access from external requests](../../../administration/secrets_manager/maintenance.md#enable-secrets-access-from-external-requests).
 
 ## Read a secret
 

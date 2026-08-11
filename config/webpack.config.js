@@ -390,6 +390,14 @@ module.exports = {
         },
       },
       {
+        // zod (a @gitlab/duo-ui dependency) ships ES2020 syntax (`export * as`, `??`)
+        // in both its ESM and CJS builds, which webpack 4's parser can't read.
+        test: /\.[mc]?js$/,
+        include: /node_modules\/zod\//,
+        loader: 'babel-loader',
+        options: defaultJsOptions,
+      },
+      {
         test: /\.(js|cjs)$/,
         exclude: shouldExcludeFromCompiling,
         use: [

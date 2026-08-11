@@ -288,7 +288,7 @@ export default {
       />
 
       <seat-control-section
-        @checkUsersAutoApproval="handleCheckUsersAutoApproval"
+        @check-users-auto-approval="handleCheckUsersAutoApproval"
         @submit="submitForm"
       />
 

@@ -23,6 +23,11 @@ func requestJobV4(url string, body io.Reader) (*http.Response, error) {
 	return http.Post(url+resource, `application/json`, body)
 }
 
+func requestJobRouter(url string, body io.Reader) (*http.Response, error) {
+	resource := `/api/v4/internal/ci/job_router/jobs/request`
+	return http.Post(url+resource, `application/json`, body)
+}
+
 func testJobsLongPolling(t *testing.T, pollingDuration time.Duration, requestJob requestJobFunction) *http.Response {
 	ws := startWorkhorseServerWithLongPolling(t, "http://localhost/", pollingDuration)
 
@@ -51,4 +56,12 @@ func TestJobsLongPollingEndpointDisabled(t *testing.T) {
 
 func TestJobsLongPollingEndpoint(t *testing.T) {
 	testJobsLongPollingEndpoint(t, requestJobV4)
+}
+
+func TestJobRouterJobsLongPollingEndpointDisabled(t *testing.T) {
+	testJobsLongPollingEndpointDisabled(t, requestJobRouter)
+}
+
+func TestJobRouterJobsLongPollingEndpoint(t *testing.T) {
+	testJobsLongPollingEndpoint(t, requestJobRouter)
 }

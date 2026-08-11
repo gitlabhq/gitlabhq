@@ -43,7 +43,7 @@ export default () => {
       showUserTransferLocations: parseBoolean(showUserTransferLocations),
     },
     events: {
-      selectTransferLocation: (id) => {
+      'select-transfer-location': (id) => {
         if (targetHiddenInputId && document.getElementById(targetHiddenInputId)) {
           document.getElementById(targetHiddenInputId).value = id;
         }

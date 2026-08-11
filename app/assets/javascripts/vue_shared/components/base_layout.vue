@@ -87,6 +87,7 @@ export default {
       :heading="heading"
       :heading-tag="headingTag"
       :class="{ 'gl-sr-only': pageHeadingSrOnly }"
+      inline-actions
     >
       <template v-if="glSlots()['heading-wrapper']" #heading-wrapper>
         <slot name="heading-wrapper"></slot>

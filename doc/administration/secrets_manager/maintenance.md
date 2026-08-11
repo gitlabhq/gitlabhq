@@ -165,3 +165,51 @@ To reset OpenBao data:
 
    The status shows `Initialized   true` and `Sealed   false`, and the `bound_audiences` value
    matches the audience GitLab sends.
+
+## Enable secrets access from external requests
+
+{{< history >}}
+
+- Rake task [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/602549) in GitLab 19.3.
+
+{{< /history >}}
+
+Secrets managers provisioned in GitLab 19.2 and later support
+[secrets access from external services and tools](../../ci/secrets/secrets_manager/non_cicd_access.md).
+If a secrets manager was provisioned for a project or group in GitLab 19.1 or earlier, this access
+is not supported.
+
+To enable this access for a secrets manager provisioned before GitLab 19.2, you can either:
+
+- Disable and [re-enable the secrets manager](../../ci/secrets/secrets_manager/_index.md#enable-gitlab-secrets-manager)
+  for the group or project.
+
+  > [!warning]
+  > If you disable a group or project secrets manager, all the group or project's secrets are
+  > permanently deleted. These secrets cannot be recovered.
+
+- Have an administrator run the `backfill_api_auth` Rake task. The secrets manager remains active
+  while the Rake task runs, and existing secrets are preserved.
+
+  Prerequisites:
+
+  - Administrator access.
+
+  To backfill every group and project secrets manager on the instance:
+
+  ```shell
+  # Linux package (Omnibus) and Helm chart (Kubernetes)
+  sudo gitlab-rake gitlab:secrets_management:backfill_api_auth
+
+  # Self-compiled (source)
+  bundle exec rake gitlab:secrets_management:backfill_api_auth RAILS_ENV=production
+  ```
+
+  To scope the backfill to a single top-level group or user namespace instead, pass its ID:
+
+  ```shell
+  sudo gitlab-rake "gitlab:secrets_management:backfill_api_auth[<root_namespace_id>]"
+  ```
+
+  The task is idempotent and safe to run more than once. If it reports failures, fix the underlying
+  cause (for example, an unreachable OpenBao server) and run the task again.

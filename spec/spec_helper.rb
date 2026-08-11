@@ -355,6 +355,12 @@ RSpec.configure do |config|
       # enabling it by default breaks existing specs that use strict receive(:track_event) expectations
       stub_feature_flags(track_api_request_from_personal_access_token: false)
 
+      # Rapid Diffs is not yet the default on the merge request Changes tab. Leaving this on makes
+      # MergeRequestsController#rapid_diffs_page_enabled? resolve the whole suite to Rapid Diffs, so keep
+      # it off until the merge request specs are migrated; see
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/602723
+      stub_feature_flags(rapid_diffs_default_on_mr_show: false)
+
     else
       unstub_all_feature_flags
     end

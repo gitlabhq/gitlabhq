@@ -34,6 +34,11 @@ describe('BaseLayout', () => {
         createComponent({}, { heading: 'Custom Heading' });
         expect(findHeading().exists()).toBe(true);
       });
+
+      it('renders actions inline with the heading', () => {
+        createComponent({ heading: 'Test Heading' });
+        expect(findPageHeading().props('inlineActions')).toBe(true);
+      });
     });
 
     describe('description', () => {

@@ -57576,6 +57576,18 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.2."
             },
             {
+              "name": "status",
+              "description": "Current status of the application, derived from its services' worst health and whether it has a rollout in progress, or null when neither applies. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "ENUM",
+                "name": "CdApplicationStatus",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
               "name": "suggestedNextVersionSetName",
               "description": "Suggested name for the application's next version set, derived from its latest release. Introduced in GitLab 19.3: Status: Experiment.",
               "args": [],

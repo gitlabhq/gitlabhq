@@ -87,7 +87,7 @@ module ClickHouseHelpers
       pipeline.slice(
         %i[id duration status source ref committed_at created_at started_at finished_at]).symbolize_keys
            .merge(
-             path: project&.project_namespace&.traversal_path || '0/',
+             path: project&.project_namespace&.traversal_path(with_organization: false) || '0/',
              is_default_branch: pipeline.default_branch?
            )
     end)

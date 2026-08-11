@@ -6495,7 +6495,6 @@
 - './spec/serializers/import/bulk_import_entity_spec.rb'
 - './spec/serializers/import/fogbugz_provider_repo_entity_spec.rb'
 - './spec/serializers/import/githubish_provider_repo_entity_spec.rb'
-- './spec/serializers/import/gitlab_provider_repo_entity_spec.rb'
 - './spec/serializers/import/manifest_provider_repo_entity_spec.rb'
 - './spec/serializers/import/provider_repo_serializer_spec.rb'
 - './spec/serializers/integrations/event_entity_spec.rb'

@@ -1,7 +1,8 @@
 <script>
-import { GlKeysetPagination, GlLoadingIcon, GlIcon } from '@gitlab/ui';
+import { GlKeysetPagination, GlIcon } from '@gitlab/ui';
 import { InternalEvents } from '~/tracking';
 import { isValidDate, localeDateFormat, newDate } from '~/lib/utils/datetime_utility';
+import IndexLayout from '~/vue_shared/components/index_layout.vue';
 import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
 import {
@@ -29,20 +30,24 @@ import { safeDecodeURIComponent } from '~/lib/utils/url_utility';
 import { extractFirstPathSegment } from '~/repository/utils/url_utility';
 import commitsQuery from '../graphql/queries/commits.query.graphql';
 import { groupCommitsByDay } from '../utils/commit_grouping';
-import CommitListHeader from './commit_list_header.vue';
+import CommitListRefSelector from './commit_list_ref_selector.vue';
+import CommitListActions from './commit_list_actions.vue';
 import CommitListItem from './commit_list_item.vue';
+import CommitFilteredSearch from './commit_filtered_search.vue';
 
 const DEFAULT_PAGE_SIZE = 20;
 
 export default {
   name: 'CommitListApp',
   components: {
+    IndexLayout,
     GlIcon,
     GlKeysetPagination,
-    GlLoadingIcon,
     PageSizeSelector,
-    CommitListHeader,
+    CommitListRefSelector,
+    CommitListActions,
     CommitListItem,
+    CommitFilteredSearch,
   },
   mixins: [InternalEvents.mixin()],
   inject: {
@@ -342,19 +347,23 @@ export default {
 </script>
 
 <template>
-  <div class="gl-mt-5 gl-@container/panel">
-    <commit-list-header
-      :file-path="currentPath"
-      :current-ref="currentRef"
-      :current-ref-type="currentRefType"
-      :initial-filter-tokens="initialFilterTokens"
-      @filter="handleFilter"
-      @ref-change="handleRefChange"
-    />
+  <index-layout :heading="__('Commits')" :loading="isLoading">
+    <template #before>
+      <commit-list-ref-selector
+        :file-path="currentPath"
+        :current-ref="currentRef"
+        :current-ref-type="currentRefType"
+        @ref-change="handleRefChange"
+      />
+    </template>
+    <template #actions>
+      <commit-list-actions :file-path="currentPath" />
+    </template>
+    <template #description>
+      <commit-filtered-search :initial-filter-tokens="initialFilterTokens" @filter="handleFilter" />
+    </template>
 
-    <gl-loading-icon v-if="isLoading" size="md" class="gl-mt-5" />
-
-    <template v-else-if="groupedCommits.length">
+    <template v-if="groupedCommits.length">
       <ol class="gl-my-5 gl-list-none gl-p-0">
         <li
           v-for="group in groupedCommits"
@@ -400,5 +409,5 @@ export default {
     <p v-else class="gl-mt-5 gl-text-center gl-text-subtle">
       {{ s__('Commits|No commits found') }}
     </p>
-  </div>
+  </index-layout>
 </template>

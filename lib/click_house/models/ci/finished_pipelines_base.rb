@@ -29,7 +29,7 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
         end
 
         def for_project(project)
-          where(path: project.project_namespace.traversal_path)
+          where(path: project.project_namespace.traversal_path(with_organization: false))
         end
 
         def for_source(source)
@@ -41,14 +41,16 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
         end
 
         def for_group(group)
-          where(query_builder.func('startsWith', [query_builder[:path], query_builder.quote(group.traversal_path)]))
+          where(query_builder.func('startsWith',
+            [query_builder[:path], query_builder.quote(group.traversal_path(with_organization: false))]))
         end
 
         def for_subgroups(subgroups)
           return self if subgroups.empty?
 
           conditions = subgroups.map do |subgroup|
-            query_builder.func('startsWith', [query_builder[:path], query_builder.quote(subgroup.traversal_path)])
+            query_builder.func('startsWith',
+              [query_builder[:path], query_builder.quote(subgroup.traversal_path(with_organization: false))])
           end
 
           where(conditions.reduce { |left, right| left.or(right) })

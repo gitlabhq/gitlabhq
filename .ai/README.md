@@ -26,7 +26,7 @@ project. These files are referenced from `AGENTS.md` (and its identical copy
   code-review.md           # Code review methodology and standards
   principles/              # SSOT-derived development principles
     manifest.yml           # Manifest: doc paths, file filters, baselines
-    distilled/             # Auto-generated principle files (23 domains)
+    distilled/             # Auto-generated principle files (one per manifest entry)
     baselines/             # Hand-curated rules not yet in docs.gitlab.com
 .claude/
   skills/<name>/SKILL.md   # Shared Claude Code skills (auto-discovered)
@@ -118,15 +118,15 @@ To add a new shared module that all contributors benefit from:
 
 ## Local Overrides
 
-Create `AGENTS.local.md` at any directory level for personal customizations.
-This file is explicitly referenced via `@AGENTS.local.md` in both `CLAUDE.md`
-and `AGENTS.md`. `CLAUDE.local.md` is also supported — Claude Code loads it
-natively by convention, not via an explicit reference in the instruction files.
-Both files can reference any additional gitignored files you have in `.ai/` or
-elsewhere.
+Create `CLAUDE.local.md` at the repository root for personal customizations.
+Both `AGENTS.md` and `CLAUDE.md` reference it explicitly via `Read @CLAUDE.local.md`,
+so every agent picks it up. It can in turn reference any additional gitignored
+files you keep in `.ai/` or elsewhere.
 
-The `AGENTS.local.md` is gitignored and will not be committed.
-It may also be symlinked from a local source-controlled repo.
+`AGENTS.local.md` is also gitignored and reserved for the same purpose, but
+nothing references it today, so it will not be loaded unless you add a reference.
+
+Neither file is committed. Both may be symlinked from a local source-controlled repo.
 
 ## See also
 

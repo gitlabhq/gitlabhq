@@ -9,7 +9,7 @@ import {
 } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { setCookie, removeCookie, getCookie } from '~/lib/utils/common_utils';
+import { setCookie } from '~/lib/utils/common_utils';
 import Api from '~/api';
 import Tracking from '~/tracking';
 import { SERVICE_PING_SCHEMA } from '~/tracking/constants';
@@ -46,7 +46,7 @@ export default {
   },
   data() {
     return {
-      enabled: getCookie(RAPID_DIFFS_COOKIE_NAME) === 'true',
+      enabled: Boolean(window.gon?.rapid_diffs_page_enabled),
     };
   },
   computed: {
@@ -87,7 +87,7 @@ export default {
     },
     async disable() {
       await waitableTrackEvent('toggle_rapid_diffs', { label: 'disabled' });
-      removeCookie(RAPID_DIFFS_COOKIE_NAME);
+      setCookie(RAPID_DIFFS_COOKIE_NAME, 'false');
       this.reloadWithoutParam('rapid_diffs');
     },
     reloadWithoutParam(param) {

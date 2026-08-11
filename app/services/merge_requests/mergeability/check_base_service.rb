@@ -16,8 +16,10 @@ module MergeRequests
       end
 
       # User-facing explanation shown when this check fails, for example in the
-      # merge-train "Merge request is not mergeable" error. Stored raw (marked
-      # with N_ for extraction) and translated at the point of display.
+      # merge-train "Merge request is not mergeable" error. Marked with N_ for
+      # extraction, but note there is no display-time translation for these
+      # today: they are only baked into persisted, English-only system notes
+      # and merge_error, so they render in English regardless of locale.
       def self.set_failure_explanation(value)
         self.failure_explanation = value
       end

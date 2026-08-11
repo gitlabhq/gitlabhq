@@ -3550,6 +3550,9 @@ msgstr ""
 msgid "AICatalog|Trigger %{itemType} on a recurring schedule."
 msgstr ""
 
+msgid "AICatalog|Trigger %{itemType} when a merge request is ready, approved, merged, or has conflicts."
+msgstr ""
+
 msgid "AICatalog|Trigger %{itemType} when a merge request is ready, approved, or has conflicts."
 msgstr ""
 
@@ -37155,9 +37158,6 @@ msgstr ""
 msgid "GitLab.com (SaaS)"
 msgstr ""
 
-msgid "GitLab.com import"
-msgstr ""
-
 msgid "GitLabDuo|GitLab Duo"
 msgstr ""
 
@@ -41351,9 +41351,6 @@ msgid "Import projects from Bitbucket Server"
 msgstr ""
 
 msgid "Import projects from FogBugz"
-msgstr ""
-
-msgid "Import projects from GitLab.com"
 msgstr ""
 
 msgid "Import projects from Gitea"
@@ -48735,6 +48732,9 @@ msgstr ""
 msgid "MergeRequest|Merge request %{currentIndex} of %{stackSize} in stack"
 msgstr ""
 
+msgid "MergeRequest|Merged"
+msgstr ""
+
 msgid "MergeRequest|No files found"
 msgstr ""
 
@@ -48799,12 +48799,6 @@ msgid "MergeTopics|Target topic"
 msgstr ""
 
 msgid "MergeTopics|This action cannot be undone."
-msgstr ""
-
-msgid "MergeTrain|Merge request is not mergeable"
-msgstr ""
-
-msgid "MergeTrain|Merge request is not mergeable. Explanation: %{explanation}"
 msgstr ""
 
 msgid "Merged"

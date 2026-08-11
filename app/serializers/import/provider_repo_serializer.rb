@@ -12,8 +12,6 @@ class Import::ProviderRepoSerializer < BaseSerializer
         Import::BitbucketProviderRepoEntity
       when :bitbucket_server
         Import::BitbucketServerProviderRepoEntity
-      when :gitlab
-        Import::GitlabProviderRepoEntity
       when :manifest
         Import::ManifestProviderRepoEntity
       else

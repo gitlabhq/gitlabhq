@@ -101,6 +101,11 @@ RSpec.describe Gitlab::Database::LoadBalancing::Setup, feature_category: :databa
     subject { model.connection }
 
     it_behaves_like 'connection proxy with skippable load balancer'
+
+    it 'is also available on instances' do
+      # `allocate` avoids the schema load that `new` would trigger for a table-less model.
+      expect(model.allocate.connection).to be(model.connection)
+    end
   end
 
   describe '#lease_connection' do

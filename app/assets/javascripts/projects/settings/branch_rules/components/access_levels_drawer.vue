@@ -200,7 +200,6 @@ export default {
     :header-height="getDrawerHeaderHeight"
     :z-index="$options.DRAWER_Z_INDEX"
     :open="isOpen"
-    @ok="editRule()"
     v-on="glListeners()"
   >
     <template #title>

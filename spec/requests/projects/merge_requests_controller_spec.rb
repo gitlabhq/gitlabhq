@@ -281,19 +281,20 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
       end
     end
 
-    describe '#rapid_diffs' do
+    describe 'rapid diffs' do
       it 'returns 200' do
         get diffs_project_merge_request_path(project, merge_request, rapid_diffs: 'true')
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(response.body).to include('data-page="projects:merge_requests:rapid_diffs"')
+        expect(response.body).to include('data-rapid-diffs')
       end
 
-      it 'uses diffs action when rapid_diffs query parameter doesnt exist' do
+      it 'renders legacy diffs when rapid_diffs query parameter doesnt exist' do
         get diffs_project_merge_request_path(project, merge_request)
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(response.body).to include('data-page="projects:merge_requests:diffs"')
+        expect(response.body).to include('js-diffs-app')
+        expect(response.body).not_to include('data-rapid-diffs')
       end
 
       it 'enables rapid diffs when rapid_diffs_enabled cookie is set' do
@@ -302,23 +303,65 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
         get diffs_project_merge_request_path(project, merge_request)
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(response.body).to include('data-page="projects:merge_requests:rapid_diffs"')
+        expect(response.body).to include('data-rapid-diffs')
       end
 
-      it 'deletes the cookie and redirects to legacy diffs when feature flag is disabled' do
+      it 'renders legacy diffs without redirecting when the feature flag is disabled' do
         stub_feature_flags(rapid_diffs_on_mr_show: false)
         cookies[:rapid_diffs_enabled] = 'true'
 
         get diffs_project_merge_request_path(project, merge_request)
 
-        expect(response).to redirect_to(diffs_project_merge_request_path(project, merge_request))
-        expect(response.cookies['rapid_diffs_enabled']).to be_nil
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).to include('js-diffs-app')
+        expect(response.body).not_to include('data-rapid-diffs')
       end
 
       it 'shows only first 5 files' do
         get diffs_project_merge_request_path(project, merge_request, rapid_diffs: 'true')
 
         expect(response.body.scan('<diff-file ').size).to eq(5)
+      end
+
+      context 'when rapid_diffs_default_on_mr_show is enabled' do
+        before do
+          stub_feature_flags(rapid_diffs_default_on_mr_show: true)
+        end
+
+        it 'renders rapid diffs without an opt-in cookie' do
+          get diffs_project_merge_request_path(project, merge_request)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.body).to include('data-rapid-diffs')
+        end
+
+        it 'renders legacy diffs when the user opted out' do
+          cookies[:rapid_diffs_enabled] = 'false'
+
+          get diffs_project_merge_request_path(project, merge_request)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.body).to include('js-diffs-app')
+          expect(response.body).not_to include('data-rapid-diffs')
+        end
+
+        it 'renders legacy diffs when the rapid_diffs_disabled param is set' do
+          get diffs_project_merge_request_path(project, merge_request, rapid_diffs_disabled: 'true')
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.body).to include('js-diffs-app')
+          expect(response.body).not_to include('data-rapid-diffs')
+        end
+
+        it 'renders rapid diffs when the flag is enabled for the user as an actor' do
+          sign_in(user)
+          stub_feature_flags(rapid_diffs_default_on_mr_show: user)
+
+          get diffs_project_merge_request_path(project, merge_request)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.body).to include('data-rapid-diffs')
+        end
       end
 
       context 'when diff_id and start_sha params are set' do
@@ -386,13 +429,14 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
       end
 
       context 'when rapid_diffs_disabled param is present' do
-        it 'falls through to the legacy diffs action' do
+        it 'renders legacy diffs and leaves the cookie untouched' do
           cookies[:rapid_diffs_enabled] = 'true'
 
           get diffs_project_merge_request_path(project, merge_request, rapid_diffs_disabled: 'true')
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(response.body).to include('data-page="projects:merge_requests:diffs"')
+          expect(response.body).to include('js-diffs-app')
+          expect(response.body).not_to include('data-rapid-diffs')
           expect(response.cookies).not_to have_key('rapid_diffs_enabled')
         end
       end
@@ -442,6 +486,49 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
       stage = create(:ci_stage, name: 'manual-stage', status: 'skipped', pipeline: pipeline)
       create(:ci_build, :manual, stage: stage)
       create(:ci_build, :manual, stage: stage)
+    end
+  end
+
+  describe 'rapid diffs page gating' do
+    before do
+      login_as(user)
+      stub_feature_flags(rapid_diffs_default_on_mr_show: true)
+    end
+
+    it 'reports the page mode to the frontend on the Overview tab' do
+      get project_merge_request_path(project, merge_request)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response.body).to include('gon.rapid_diffs_page_enabled=true')
+    end
+
+    it 'reports the same page mode on the Overview and Changes tabs' do
+      get project_merge_request_path(project, merge_request)
+      overview = response.body
+
+      get diffs_project_merge_request_path(project, merge_request)
+
+      expect(overview).to include('gon.rapid_diffs_page_enabled=true')
+      expect(response.body).to include('gon.rapid_diffs_page_enabled=true')
+      expect(response.body).to include('data-rapid-diffs')
+    end
+
+    it 'reports the page mode as disabled on the Overview tab when the user opted out' do
+      cookies[:rapid_diffs_enabled] = 'false'
+
+      get project_merge_request_path(project, merge_request)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response.body).to include('gon.rapid_diffs_page_enabled=false')
+    end
+
+    it 'reports the page mode as disabled on the Overview tab when the beta flag is off' do
+      stub_feature_flags(rapid_diffs_on_mr_show: false)
+
+      get project_merge_request_path(project, merge_request)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response.body).to include('gon.rapid_diffs_page_enabled=false')
     end
   end
 

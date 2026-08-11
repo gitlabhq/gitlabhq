@@ -15,7 +15,7 @@ export default {
       required: true,
     },
   },
-  emits: ['change', 'error'],
+  emits: ['change', 'error', 'fetched'],
   data() {
     return {
       isLoading: true,
@@ -33,7 +33,7 @@ export default {
       },
       result() {
         this.isLoading = false;
-        this.$emit('change', this.groupRunnersEnabled);
+        this.$emit('fetched', this.groupRunnersEnabled);
       },
       error(error) {
         this.$emit('error', error);

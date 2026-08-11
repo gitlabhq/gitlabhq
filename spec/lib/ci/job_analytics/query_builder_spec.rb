@@ -351,7 +351,7 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
       end
 
       it 'applies project filter' do
-        expect(finder.to_sql).to include(project.project_namespace.traversal_path)
+        expect(finder.to_sql).to include(project.project_namespace.traversal_path(with_organization: false))
       end
 
       context 'when deduplication migration is in progress' do
@@ -374,7 +374,7 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
                   WHERE `ci_finished_builds`.`project_id` = #{project.id}
                     AND `ci_finished_builds`.`pipeline_id` IN (SELECT `ci_finished_pipelines`.`id`
                                                                FROM `ci_finished_pipelines`
-                                                               WHERE `ci_finished_pipelines`.`path` = '#{project.project_namespace.traversal_path}'
+                                                               WHERE `ci_finished_pipelines`.`path` = '#{project.project_namespace.traversal_path(with_organization: false)}'
                                                                  AND `ci_finished_pipelines`.`started_at` >=
                                                                      toDateTime64('#{2.hours.ago.utc.strftime('%Y-%m-%d %H:%M:%S')}', 6, 'UTC')
                                                                  AND `ci_finished_pipelines`.`started_at` <
@@ -442,7 +442,7 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
         expected_sql = <<~SQL.squish.lines(chomp: true).join(' ')
           SELECT `ci_finished_builds`.`name`, round((avg(`ci_finished_builds`.`duration`) / 1000.0), 2) AS mean_duration
           FROM `ci_finished_builds` WHERE `ci_finished_builds`.`project_id` = #{project.id} AND `ci_finished_builds`.`pipeline_id` IN
-          (SELECT `ci_finished_pipelines`.`id` FROM `ci_finished_pipelines` WHERE `ci_finished_pipelines`.`path` = '#{project.project_namespace.traversal_path}'
+          (SELECT `ci_finished_pipelines`.`id` FROM `ci_finished_pipelines` WHERE `ci_finished_pipelines`.`path` = '#{project.project_namespace.traversal_path(with_organization: false)}'
           AND `ci_finished_pipelines`.`started_at` >= toDateTime64('#{formatted_time}', 6, 'UTC')
           AND `ci_finished_pipelines`.`finished_at` >= toDateTime64('#{formatted_time}', 6, 'UTC'))
           AND `ci_finished_builds`.`finished_at` >= toDateTime64('#{formatted_time}', 6, 'UTC')

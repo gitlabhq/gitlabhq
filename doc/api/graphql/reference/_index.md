@@ -35921,6 +35921,7 @@ Fields:
 | <a id="cdapplication-links"></a>`links` {{< icon name="warning-solid" >}} | [`CdApplicationLinkConnection`](#cdapplicationlinkconnection) | Introduced in GitLab 19.2. Status: Experiment. Links belonging to the application. |
 | <a id="cdapplication-name"></a>`name` | [`String!`](#string) | Name of the application. |
 | <a id="cdapplication-organization"></a>`organization` | [`Organization`](#organization) | Organization the application belongs to. |
+| <a id="cdapplication-status"></a>`status` {{< icon name="warning-solid" >}} | [`CdApplicationStatus`](#cdapplicationstatus) | Introduced in GitLab 19.3. Status: Experiment. Current status of the application, derived from its services' worst health and whether it has a rollout in progress, or null when neither applies. |
 | <a id="cdapplication-suggestednextversionsetname"></a>`suggestedNextVersionSetName` {{< icon name="warning-solid" >}} | [`CdSemVer!`](#cdsemver) | Introduced in GitLab 19.3. Status: Experiment. Suggested name for the application's next version set, derived from its latest release. |
 | <a id="cdapplication-updatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the application was last updated. |
 | <a id="cdapplication-userpermissions"></a>`userPermissions` {{< icon name="warning-solid" >}} | [`CdApplicationPermissions`](#cdapplicationpermissions) | Introduced in GitLab 19.2. Status: Experiment. Permissions of the current user for the application. |

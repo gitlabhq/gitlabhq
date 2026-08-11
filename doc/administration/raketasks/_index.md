@@ -46,6 +46,7 @@ The following Rake tasks are available for use with GitLab:
 | [Praefect Rake tasks](praefect.md)                                                                    | [Praefect](../gitaly/praefect/_index.md)-related tasks. |
 | [Project import/export](project_import_export.md)                                                     | Prepare for [project exports and imports](../../user/project/settings/import_export.md). |
 | [Sidekiq job migration](../sidekiq/sidekiq_job_migration.md)                                          | Migrate Sidekiq jobs scheduled for future dates to a new queue. |
+| [Secrets Manager maintenance](../secrets_manager/maintenance.md#enable-secrets-access-from-external-requests) | Enable API authentication from external requests to existing secrets managers. |
 | [Service Desk email](service_desk_email.md)                                                           | Service Desk email-related tasks. |
 | [SMTP maintenance](smtp.md)                                                                           | SMTP-related tasks. |
 | [SPDX license list import](spdx.md)                                                                   | Import a local copy of the [SPDX license list](https://spdx.org/licenses/) for matching [License approval policies](../../user/compliance/license_approval_policies.md). |

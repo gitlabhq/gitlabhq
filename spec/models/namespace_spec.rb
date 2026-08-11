@@ -1594,14 +1594,14 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
   describe 'traversal_path' do
     it 'formats the traversal ids with slashes' do
-      expect(namespace.traversal_path).to eq("#{namespace.id}/")
+      expect(namespace.traversal_path(with_organization: false)).to eq("#{namespace.id}/")
     end
 
     context 'for subgroup' do
       let(:subgroup) { Group.new(traversal_ids: [1, 2, 3], organization_id: 1111) }
 
       it 'formats the traversal ids with slashes' do
-        expect(subgroup.traversal_path).to eq("1/2/3/")
+        expect(subgroup.traversal_path(with_organization: false)).to eq("1/2/3/")
       end
 
       context 'when with_organization option is enabled' do

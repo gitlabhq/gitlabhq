@@ -276,6 +276,20 @@ describe('RunnersTabs', () => {
       ).toBe(false);
     });
 
+    it('updates empty state without refreshing the list when the toggle reports its value', async () => {
+      findRunnerTab('group-runners-tab')
+        .findComponent(GroupRunnersToggle)
+        .vm.$emit('fetched', false);
+      await nextTick();
+
+      expect(mockRefresh).not.toHaveBeenCalled();
+      expect(
+        findRunnerTab('group-runners-tab')
+          .findComponent(GroupRunnersTabEmptyState)
+          .props('groupRunnersEnabled'),
+      ).toBe(false);
+    });
+
     it('emits an error event from toggle', () => {
       findRunnerTab('group-runners-tab').findComponent(GroupRunnersToggle).vm.$emit('error', error);
 

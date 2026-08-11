@@ -24,6 +24,14 @@ module QA
           element 'file-tree-button'
         end
 
+        view 'app/assets/javascripts/rapid_diffs/app/file_browser/file_browser_drawer_toggle.vue' do
+          element 'file-tree-drawer-button'
+        end
+
+        view 'app/components/rapid_diffs/merge_request_app_component.html.haml' do
+          element 'new_discussion_toggle'
+        end
+
         view 'app/assets/javascripts/diffs/components/tree_list.vue' do
           element 'file-tree-container'
           element 'diff-tree-search'
@@ -57,6 +65,11 @@ module QA
         view 'app/assets/javascripts/notes/components/note_form.vue' do
           element 'start-review-button'
           element 'comment-now-button'
+        end
+
+        view 'app/assets/javascripts/rapid_diffs/app/discussions/note_form.vue' do
+          element 'add-to-review-button'
+          element 'reply-comment-button'
         end
 
         view 'app/assets/javascripts/notes/components/noteable_discussion.vue' do
@@ -248,12 +261,12 @@ module QA
         end
 
         def start_review
-          has_active_element?('start-review-button', wait: 0.5)
-          click_element('start-review-button')
+          has_active_element?(start_review_button, wait: 0.5)
+          click_element(start_review_button)
 
           # After clicking the button, wait for it to disappear
           # before moving on to the next part of the test
-          has_no_element?('start-review-button')
+          has_no_element?(start_review_button)
         end
 
         def click_target_version_dropdown
@@ -290,12 +303,16 @@ module QA
         end
 
         def add_comment_to_diff(text)
-          wait_until(sleep_interval: 5) do
-            has_css?('a[data-linenumber="1"]')
-          end
+          if rapid_diffs?
+            start_rapid_diffs_discussion(1)
+          else
+            wait_until(sleep_interval: 5) do
+              has_css?('a[data-linenumber="1"]')
+            end
 
-          all_elements('left-line-number', minimum: 1).first.hover
-          click_element('left-comment-button')
+            all_elements('left-line-number', minimum: 1).first.hover
+            click_element('left-comment-button')
+          end
 
           click_element('dismiss-suggestion-popover-button') if has_element?('dismiss-suggestion-popover-button',
             wait: 1)
@@ -316,9 +333,11 @@ module QA
         def click_diffs_tab
           click_element('diffs-tab')
 
-          # We check for the file-tree-button as sometimes the MR takes some time to be built
+          # We check for the file tree toggle as sometimes the MR takes some time to be built.
+          # Rapid Diffs shows the file browser in a drawer overlay below a certain breakpoint,
+          # which renders a different toggle than the inline one.
           wait_until(message: 'Wait for file tree button to load') do
-            has_element?('file-tree-button')
+            has_file_tree_toggle?
           end
         end
 
@@ -355,7 +374,39 @@ module QA
         end
 
         def open_file_tree
-          click_element('file-tree-button') if has_no_element?('file-tree-container', wait: 1)
+          click_element(file_tree_toggle) if has_no_element?('file-tree-container', wait: 1)
+        end
+
+        def has_file_tree_toggle?
+          has_element?('file-tree-button', wait: 1) || has_element?('file-tree-drawer-button', wait: 1)
+        end
+
+        def file_tree_toggle
+          has_element?('file-tree-button', wait: 1) ? 'file-tree-button' : 'file-tree-drawer-button'
+        end
+
+        def rapid_diffs?
+          has_css?('[data-rapid-diffs]', wait: 0)
+        end
+
+        # Rapid Diffs builds its diff discussions from its own note form, which offers the same two
+        # actions under different testids than the ones the legacy diff form renders.
+        def start_review_button
+          rapid_diffs? ? 'add-to-review-button' : 'start-review-button'
+        end
+
+        def comment_now_button
+          rapid_diffs? ? 'reply-comment-button' : 'comment-now-button'
+        end
+
+        # Rapid Diffs renders its own line markup and reveals a single floating comment button
+        # on line hover, rather than giving every diff row its own button.
+        def start_rapid_diffs_discussion(line)
+          line_selector = "a.rd-line-link[data-line-number='#{line}']"
+
+          wait_until(sleep_interval: 5) { has_css?(line_selector) }
+          find(line_selector).hover
+          click_element('new_discussion_toggle')
         end
 
         def has_merge_button?
@@ -562,8 +613,12 @@ module QA
         end
 
         def add_suggestion_to_diff(suggestion, line)
-          find("a[data-linenumber='#{line}']").hover
-          click_element('left-comment-button')
+          if rapid_diffs?
+            start_rapid_diffs_discussion(line)
+          else
+            find("a[data-linenumber='#{line}']").hover
+            click_element('left-comment-button')
+          end
 
           if has_element?('suggestion-button', wait: 0.5)
             click_element('suggestion-button')
@@ -575,10 +630,10 @@ module QA
             click_element('code-suggestion')
             suggestion_field = find_element('suggestion-field')
             suggestion_field.set(suggestion)
-            has_active_element?('comment-now-button', wait: 0.5)
+            has_active_element?(comment_now_button, wait: 0.5)
           end
 
-          click_element('comment-now-button')
+          click_element(comment_now_button)
           wait_for_requests
         end
 
@@ -593,10 +648,14 @@ module QA
         end
 
         def has_suggestions_applied?(count = 1)
+          # Rapid Diffs skips rendering diff files that are off screen, so a badge below the fold
+          # has no layout box and Capybara does not count it as visible.
+          visibility = rapid_diffs? ? { visible: :all } : {}
+
           wait_until(reload: false) do
-            has_no_element?('applying-badge')
+            has_no_element?('applying-badge', **visibility)
           end
-          all_elements('applied-badge', count: count)
+          all_elements('applied-badge', count: count, **visibility)
         end
 
         def cherry_pick!

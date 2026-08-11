@@ -80,7 +80,7 @@ module Namespaces
         end
       end
 
-      def traversal_path(with_organization: false)
+      def traversal_path(with_organization:)
         ids = traversal_ids.clone
 
         ids.prepend(organization_id) if with_organization

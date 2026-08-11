@@ -106,5 +106,5 @@ The following tools are available to custom agents.
 | Mkdir | `mkdir` | Create a directory in the current working tree. |
 | Read File | `read_file` | Read the contents of a file. |
 | Read Files | `read_files` | Read the contents of files. |
-| Run Command | `run_command` | Run bash commands in the current working directory. Git commands are not supported. |
-| Run Git Command | `run_git_command` | Run Git commands in the current working directory. |
+| Run Command | `run_command` | Run bash commands, including Git commands, in the current working directory. |
+| Run Git Command | `run_git_command` (deprecated) | Run Git commands in the current working directory. Use `run_command` instead. |

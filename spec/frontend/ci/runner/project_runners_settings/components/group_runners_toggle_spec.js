@@ -79,7 +79,8 @@ describe('GroupRunnersToggle', () => {
     expect(findToggle().props('value')).toBe(true);
     expect(findToggle().props('isLoading')).toBe(false);
 
-    expect(wrapper.emitted('change')).toEqual([[true]]);
+    expect(wrapper.emitted('fetched')).toEqual([[true]]);
+    expect(wrapper.emitted('change')).toBeUndefined();
   });
 
   it('handles error when fetching', async () => {
@@ -93,7 +94,9 @@ describe('GroupRunnersToggle', () => {
 
   it('updates setting', async () => {
     await createComponent();
+
     findToggle().vm.$emit('change', false);
+    await waitForPromises();
 
     expect(mutationHandler).toHaveBeenCalledWith({
       input: {
@@ -103,7 +106,7 @@ describe('GroupRunnersToggle', () => {
     });
     expect(findToggle().props('isLoading')).toBe(false);
 
-    expect(wrapper.emitted('change')).toEqual([[true]]);
+    expect(wrapper.emitted('change')).toEqual([[false]]);
   });
 
   it('handles error when updating settings', async () => {

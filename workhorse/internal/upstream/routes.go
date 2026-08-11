@@ -473,6 +473,13 @@ func configureRoutes(u *upstream) {
 		u.route("",
 			newRoute(apiPattern+`v4/jobs/request\z`, "api_jobs_request", railsBackend), ciAPILongPolling),
 
+		// Job Router internal endpoint. KAS (GitLab Relay) proxies a runner's job
+		// request to this path on the runner's behalf. It carries the same JSON body
+		// (`token` + `last_update`), so it benefits from the same long-poll coalescing
+		// as the direct jobs/request route above.
+		u.route("",
+			newRoute(apiPattern+`v4/internal/ci/job_router/jobs/request\z`, "api_job_router_jobs_request", railsBackend), ciAPILongPolling),
+
 		// Not all API endpoints support encoded project IDs
 		// (e.g. `group%2Fproject`), but for the sake of consistency we
 		// use the apiProjectPattern regex throughout. API endpoints
