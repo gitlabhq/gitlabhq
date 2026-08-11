@@ -128,6 +128,7 @@ module API
                 bad_request_missing_attribute!('Tag') if tag.blank?
 
                 authorize_create_package!(project)
+                protect_package!(package_name, :npm, project: project)
 
                 package = ::Packages::Npm::PackageFinder.new(
                   project: project, params: { package_name: package_name, package_version: version }

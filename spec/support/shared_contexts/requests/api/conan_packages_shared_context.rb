@@ -13,13 +13,20 @@ RSpec.shared_context 'with conan api setup' do
 
   let_it_be(:job, freeze: true) { create(:ci_build, :running, user: user, project: project) }
 
+  before do
+    # Seed eagerly so specs that stub Gitlab::ExclusiveLease (e.g. lease
+    # unavailability shared examples) don't trip over the lock inside
+    # JwtSigningKey#seed! the first time a JWT gets built.
+    Packages::Conan::JwtSigningKey.current_secret_key
+  end
+
   let(:conan_package_reference) { package.conan_package_references.first.reference }
 
   let(:job_token) { job.token }
   let(:jwt_secret) do
     OpenSSL::HMAC.hexdigest(
       OpenSSL::Digest.new('SHA256'),
-      ::Gitlab::Encryption::KeyProvider[:db_key_base].encryption_key.secret,
+      ::Packages::Conan::JwtSigningKey.current_secret_key,
       Gitlab::ConanToken::HMAC_KEY
     )
   end
