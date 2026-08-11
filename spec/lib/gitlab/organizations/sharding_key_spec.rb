@@ -108,6 +108,12 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       # nor being NULL by the definition of a sharding key.
       'packages_nuget_symbols.project_id',
       'packages_package_files.project_id',
+      # The sharding key is copied from the parents above, which are allowed to reference a
+      # deleted project. A hard FK here would reject those values and abort the backfill.
+      # Rows are removed by the loose foreign keys on the parents.
+      # https://gitlab.com/gitlab-org/gitlab/-/work_items/606941
+      'packages_nuget_symbol_states.project_id',
+      'packages_package_file_states.project_id',
       'merge_request_commits_metadata.project_id',
       'sbom_vulnerability_scans.project_id',
       'sbom_vulnerability_scan_results.project_id',
