@@ -62,21 +62,6 @@ RSpec.describe 'Query', feature_category: :groups_and_projects do
       end
     end
 
-    context 'when achievements feature flag is off' do
-      let(:target_namespace) { public_group_namespace }
-
-      before do
-        stub_feature_flags(achievements: false)
-      end
-
-      it 'does not return achievementsPath' do
-        subject
-        expect(query_result).to include(
-          'achievementsPath' => nil
-        )
-      end
-    end
-
     context 'when used with a public group' do
       let(:target_namespace) { public_group_namespace }
       let(:achievements_path) { ::Gitlab::Routing.url_helpers.group_achievements_path(target_namespace) }

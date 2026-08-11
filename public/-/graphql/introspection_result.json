@@ -1507,7 +1507,7 @@
             },
             {
               "name": "uniqueUsers",
-              "description": "Unique users who have received the achievement. Introduced in GitLab 18.6: Status: Experiment.",
+              "description": "Unique users who have received the achievement.",
               "args": [
                 {
                   "name": "after",
@@ -1567,8 +1567,8 @@
                   "ofType": null
                 }
               },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 18.6."
+              "isDeprecated": false,
+              "deprecationReason": null
             },
             {
               "name": "updatedAt",
@@ -1588,7 +1588,7 @@
             },
             {
               "name": "userAchievements",
-              "description": "Recipients for the achievement. Introduced in GitLab 15.10: Status: Experiment.",
+              "description": "Recipients for the achievement.",
               "args": [
                 {
                   "name": "after",
@@ -1644,8 +1644,8 @@
                 "name": "UserAchievementConnection",
                 "ofType": null
               },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 15.10."
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "inputFields": null,
@@ -7066,7 +7066,7 @@
             },
             {
               "name": "userAchievements",
-              "description": "Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. Introduced in GitLab 15.10: Status: Experiment.",
+              "description": "Achievements for the user.",
               "args": [
                 {
                   "name": "includeHidden",
@@ -7134,8 +7134,8 @@
                 "name": "UserAchievementConnection",
                 "ofType": null
               },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 15.10."
+              "isDeprecated": false,
+              "deprecationReason": null
             },
             {
               "name": "userPermissions",
@@ -46770,7 +46770,7 @@
             },
             {
               "name": "userAchievements",
-              "description": "Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. Introduced in GitLab 15.10: Status: Experiment.",
+              "description": "Achievements for the user.",
               "args": [
                 {
                   "name": "includeHidden",
@@ -46838,8 +46838,8 @@
                 "name": "UserAchievementConnection",
                 "ofType": null
               },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 15.10."
+              "isDeprecated": false,
+              "deprecationReason": null
             },
             {
               "name": "userPermissions",
@@ -110578,7 +110578,7 @@
             },
             {
               "name": "userAchievements",
-              "description": "Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. Introduced in GitLab 15.10: Status: Experiment.",
+              "description": "Achievements for the user.",
               "args": [
                 {
                   "name": "includeHidden",
@@ -110646,8 +110646,8 @@
                 "name": "UserAchievementConnection",
                 "ofType": null
               },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 15.10."
+              "isDeprecated": false,
+              "deprecationReason": null
             },
             {
               "name": "userPermissions",
@@ -166339,7 +166339,7 @@
           "fields": [
             {
               "name": "achievements",
-              "description": "Achievements for the namespace. Returns `null` if the `achievements` feature flag is disabled. Introduced in GitLab 15.8: Status: Experiment.",
+              "description": "Achievements for the namespace.",
               "args": [
                 {
                   "name": "ids",
@@ -166415,20 +166415,20 @@
                 "name": "AchievementConnection",
                 "ofType": null
               },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 15.8."
+              "isDeprecated": false,
+              "deprecationReason": null
             },
             {
               "name": "achievementsPath",
-              "description": "Path for the namespace's achievements. Returns `null` if the namespace is not a group, or the `achievements` feature flag is disabled. Introduced in GitLab 17.0: Status: Experiment.",
+              "description": "Path for the namespace's achievements. Returns `null` if the namespace is not a group.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
                 "ofType": null
               },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+              "isDeprecated": false,
+              "deprecationReason": null
             },
             {
               "name": "actualRepositorySizeLimit",
@@ -225930,7 +225930,7 @@
             },
             {
               "name": "userAchievements",
-              "description": "Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. Introduced in GitLab 15.10: Status: Experiment.",
+              "description": "Achievements for the user.",
               "args": [
                 {
                   "name": "includeHidden",
@@ -225998,8 +225998,8 @@
                 "name": "UserAchievementConnection",
                 "ofType": null
               },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 15.10."
+              "isDeprecated": false,
+              "deprecationReason": null
             },
             {
               "name": "userPermissions",
@@ -230449,7 +230449,7 @@
             },
             {
               "name": "userAchievements",
-              "description": "Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. Introduced in GitLab 15.10: Status: Experiment.",
+              "description": "Achievements for the user.",
               "args": [
                 {
                   "name": "includeHidden",
@@ -230517,8 +230517,8 @@
                 "name": "UserAchievementConnection",
                 "ofType": null
               },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 15.10."
+              "isDeprecated": false,
+              "deprecationReason": null
             },
             {
               "name": "userPermissions",
@@ -236495,7 +236495,7 @@
             },
             {
               "name": "userAchievements",
-              "description": "Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. Introduced in GitLab 15.10: Status: Experiment.",
+              "description": "Achievements for the user.",
               "args": [
                 {
                   "name": "includeHidden",
@@ -236563,8 +236563,8 @@
                 "name": "UserAchievementConnection",
                 "ofType": null
               },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 15.10."
+              "isDeprecated": false,
+              "deprecationReason": null
             },
             {
               "name": "userPermissions",
@@ -241460,7 +241460,7 @@
             },
             {
               "name": "userAchievements",
-              "description": "Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. Introduced in GitLab 15.10: Status: Experiment.",
+              "description": "Achievements for the user.",
               "args": [
                 {
                   "name": "includeHidden",
@@ -241528,8 +241528,8 @@
                 "name": "UserAchievementConnection",
                 "ofType": null
               },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 15.10."
+              "isDeprecated": false,
+              "deprecationReason": null
             },
             {
               "name": "userPermissions",
@@ -249636,8 +249636,8 @@
                 "name": "AchievementsAwardPayload",
                 "ofType": null
               },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 15.10."
+              "isDeprecated": false,
+              "deprecationReason": null
             },
             {
               "name": "achievementsCreate",
@@ -249665,8 +249665,8 @@
                 "name": "AchievementsCreatePayload",
                 "ofType": null
               },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 15.8."
+              "isDeprecated": false,
+              "deprecationReason": null
             },
             {
               "name": "achievementsDelete",
@@ -249694,8 +249694,8 @@
                 "name": "AchievementsDeletePayload",
                 "ofType": null
               },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 15.11."
+              "isDeprecated": false,
+              "deprecationReason": null
             },
             {
               "name": "achievementsRevoke",
@@ -249723,8 +249723,8 @@
                 "name": "AchievementsRevokePayload",
                 "ofType": null
               },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 15.10."
+              "isDeprecated": false,
+              "deprecationReason": null
             },
             {
               "name": "achievementsUpdate",
@@ -249752,8 +249752,8 @@
                 "name": "AchievementsUpdatePayload",
                 "ofType": null
               },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 15.11."
+              "isDeprecated": false,
+              "deprecationReason": null
             },
             {
               "name": "addProjectToSecurityDashboard",
@@ -267036,8 +267036,8 @@
                 "name": "UserAchievementPrioritiesUpdatePayload",
                 "ofType": null
               },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 16.5."
+              "isDeprecated": false,
+              "deprecationReason": null
             },
             {
               "name": "userAchievementsDelete",
@@ -267065,8 +267065,8 @@
                 "name": "UserAchievementsDeletePayload",
                 "ofType": null
               },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 16.1."
+              "isDeprecated": false,
+              "deprecationReason": null
             },
             {
               "name": "userAchievementsUpdate",
@@ -267094,8 +267094,8 @@
                 "name": "UserAchievementsUpdatePayload",
                 "ofType": null
               },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 17.3."
+              "isDeprecated": false,
+              "deprecationReason": null
             },
             {
               "name": "userAddOnAssignmentBulkCreate",
@@ -268937,7 +268937,7 @@
           "fields": [
             {
               "name": "achievements",
-              "description": "Achievements for the namespace. Returns `null` if the `achievements` feature flag is disabled. Introduced in GitLab 15.8: Status: Experiment.",
+              "description": "Achievements for the namespace.",
               "args": [
                 {
                   "name": "ids",
@@ -269013,20 +269013,20 @@
                 "name": "AchievementConnection",
                 "ofType": null
               },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 15.8."
+              "isDeprecated": false,
+              "deprecationReason": null
             },
             {
               "name": "achievementsPath",
-              "description": "Path for the namespace's achievements. Returns `null` if the namespace is not a group, or the `achievements` feature flag is disabled. Introduced in GitLab 17.0: Status: Experiment.",
+              "description": "Path for the namespace's achievements. Returns `null` if the namespace is not a group.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
                 "ofType": null
               },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 17.0."
+              "isDeprecated": false,
+              "deprecationReason": null
             },
             {
               "name": "actualRepositorySizeLimit",
@@ -403362,7 +403362,7 @@
             },
             {
               "name": "userAchievements",
-              "description": "Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. Introduced in GitLab 15.10: Status: Experiment.",
+              "description": "Achievements for the user.",
               "args": [
                 {
                   "name": "includeHidden",
@@ -403430,8 +403430,8 @@
                 "name": "UserAchievementConnection",
                 "ofType": null
               },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 15.10."
+              "isDeprecated": false,
+              "deprecationReason": null
             },
             {
               "name": "userPermissions",
@@ -409656,7 +409656,7 @@
             },
             {
               "name": "userAchievements",
-              "description": "Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. Introduced in GitLab 15.10: Status: Experiment.",
+              "description": "Achievements for the user.",
               "args": [
                 {
                   "name": "includeHidden",
@@ -409724,8 +409724,8 @@
                 "name": "UserAchievementConnection",
                 "ofType": null
               },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 15.10."
+              "isDeprecated": false,
+              "deprecationReason": null
             },
             {
               "name": "userPermissions",

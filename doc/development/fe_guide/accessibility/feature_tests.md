@@ -125,7 +125,33 @@ You can run accessibility tests locally in the same way as you [run any feature 
 After adding accessibility tests, make sure to fix all possible errors.
 For help on how to do it, refer to [this guide](best_practices.md#quick-checklist).
 You can also check accessibility sections in [Pajamas components' documentation](https://design.gitlab.com/components/overview).
-If any of the errors require global changes, create a follow-up issue and assign these labels: `accessibility`, `WG::product accessibility`.
+If any of the errors require global changes, create a follow-up issue and assign these labels: `accessibility`, `accessibility::intake`.
+
+### Add your first test for critical issues only
+
+By default, `be_axe_clean` fails on every violation, regardless of severity.
+When you add accessibility coverage to an existing area for the first time, this can surface many
+lower-severity violations at once.
+
+To adopt coverage gradually, chain `with_minimum_impact` to fail only on violations at or above a
+severity level.
+Axe reports four severity levels, from lowest to highest: `minor`, `moderate`, `serious`, and
+`critical`.
+
+```ruby
+# Fail only on critical violations. Ignore serious, moderate, and minor violations.
+expect(page).to be_axe_clean.within('#content-body').with_minimum_impact(
+  :critical, because: 'https://gitlab.com/gitlab-org/gitlab/-/issues/12345 - bootstrapping coverage'
+)
+```
+
+The `because:` argument is required and must be non-blank. Because a threshold hides real
+violations, every use must state why the threshold is relaxed, ideally with a tracking issue link.
+The reason stays visible in the diff, in `git blame`, and during code review.
+
+Use `with_minimum_impact` only while you bootstrap coverage.
+After you resolve the critical violations, remove the clause to enforce all severities again, or
+tighten the threshold to `:serious` to also catch serious violations.
 
 ### Good practices
 
@@ -134,7 +160,7 @@ However, there are a few things that can help you contribute to accessibility te
 
 #### What parts of a page to add accessibility tests for
 
-In most cases you do not want to test accessibility of a whole page. There are a couple of reasons:
+In most cases you do not want to test accessibility of a whole page:
 
 1. We have elements that appear on every application view, such as breadcrumbs or main navigation. Including them in every feature spec takes up quite a lot of resources and multiplies something that can be done just once. These elements have their own feature specs and that's where we want to test them.
 1. If a feature spec covers a whole view, the best practice would be to scope it to `<main id="content-body">` element. Here's an example of such test case:
@@ -156,12 +182,12 @@ In most cases you do not want to test accessibility of a whole page. There are a
 #### Test output not specific enough
 
 When axe test case fails, it outputs the violation found and an element that it concerns. Because we often use Pajamas Components,
-it may happen that the element will be a `<div>` without any annotation that could help you identify it. However, we can take
-advantage of a fact that axe_core rules is used both for Ruby tests and Deque browser extension - axe devTools. They both
+the element is often a `<div>` without any annotation that could help you identify the element. However, we can take
+advantage of a fact that axe_core rules is used both for Ruby tests and Deque browser extension - axe DevTools. They both
 provide the same output.
 
 1. Make sure you have axe DevTools extension installed in a browser of your choice. See [axe DevTools official website for more information](https://www.deque.com/axe/browser-extensions/).
-1. Navigate to the view you're testing with a feature test.
+1. Go to the view you're testing with a feature test.
 1. Open axe DevTools extension and run a scan of the page.
 1. Expand found issues and use Highlight option to see the elements on the page for each violation.
 

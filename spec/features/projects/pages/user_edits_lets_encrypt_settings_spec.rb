@@ -135,14 +135,16 @@ RSpec.describe "Pages with Let's Encrypt", :https_pages_enabled, feature_categor
     context 'when certificate is provided by user' do
       let(:domain) { create(:pages_domain, project: project, auto_ssl_enabled: false) }
 
-      it 'user sees certificate subject' do
+      it 'user sees certificate subject',
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/43890' do
         visit project_pages_domain_path(project, domain)
 
         expect(page).to have_selector '[data-testid="crud-title"]', text: 'Certificate'
         expect(page).to have_text domain.subject
       end
 
-      it 'user can delete the certificate', :js do
+      it 'user can delete the certificate', :js,
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/43890' do
         visit project_pages_domain_path(project, domain)
 
         expect(page).to have_selector '[data-testid="crud-title"]', text: 'Certificate'

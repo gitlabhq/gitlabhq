@@ -54,19 +54,6 @@ RSpec.describe Mutations::Achievements::Delete, feature_category: :user_profile 
       end
     end
 
-    context 'when the feature flag is disabled' do
-      before do
-        stub_feature_flags(achievements: false)
-      end
-
-      it 'returns the relevant error' do
-        subject
-
-        expect(graphql_errors.to_s)
-          .to include("The resource that you are attempting to access does not exist or you don't have permission")
-      end
-    end
-
     it 'deletes the achievement' do
       expect { subject }.to change { Achievements::Achievement.count }.by(-1)
     end

@@ -3258,13 +3258,6 @@ mutation($id: NoteableID!, $body: String!) {
 
 ### `Mutation.achievementsAward`
 
-{{< details >}}
-
-- Introduced in GitLab 15.10.
-- Status: Experiment.
-
-{{< /details >}}
-
 Input type: `AchievementsAwardInput`
 
 Arguments:
@@ -3285,13 +3278,6 @@ Fields:
 | <a id="mutation-achievementsaward-userachievement"></a>`userAchievement` | [`UserAchievement`](#userachievement) | Achievement award. |
 
 ### `Mutation.achievementsCreate`
-
-{{< details >}}
-
-- Introduced in GitLab 15.8.
-- Status: Experiment.
-
-{{< /details >}}
 
 Input type: `AchievementsCreateInput`
 
@@ -3315,13 +3301,6 @@ Fields:
 
 ### `Mutation.achievementsDelete`
 
-{{< details >}}
-
-- Introduced in GitLab 15.11.
-- Status: Experiment.
-
-{{< /details >}}
-
 Input type: `AchievementsDeleteInput`
 
 Arguments:
@@ -3341,13 +3320,6 @@ Fields:
 
 ### `Mutation.achievementsRevoke`
 
-{{< details >}}
-
-- Introduced in GitLab 15.10.
-- Status: Experiment.
-
-{{< /details >}}
-
 Input type: `AchievementsRevokeInput`
 
 Arguments:
@@ -3366,13 +3338,6 @@ Fields:
 | <a id="mutation-achievementsrevoke-userachievement"></a>`userAchievement` | [`UserAchievement`](#userachievement) | Achievement award. |
 
 ### `Mutation.achievementsUpdate`
-
-{{< details >}}
-
-- Introduced in GitLab 15.11.
-- Status: Experiment.
-
-{{< /details >}}
 
 Input type: `AchievementsUpdateInput`
 
@@ -18579,13 +18544,6 @@ Fields:
 
 ### `Mutation.userAchievementPrioritiesUpdate`
 
-{{< details >}}
-
-- Introduced in GitLab 16.5.
-- Status: Experiment.
-
-{{< /details >}}
-
 Input type: `UserAchievementPrioritiesUpdateInput`
 
 Arguments:
@@ -18605,13 +18563,6 @@ Fields:
 
 ### `Mutation.userAchievementsDelete`
 
-{{< details >}}
-
-- Introduced in GitLab 16.1.
-- Status: Experiment.
-
-{{< /details >}}
-
 Input type: `UserAchievementsDeleteInput`
 
 Arguments:
@@ -18630,13 +18581,6 @@ Fields:
 | <a id="mutation-userachievementsdelete-userachievement"></a>`userAchievement` | [`UserAchievement`](#userachievement) | Deleted user achievement. |
 
 ### `Mutation.userAchievementsUpdate`
-
-{{< details >}}
-
-- Introduced in GitLab 17.3.
-- Status: Experiment.
-
-{{< /details >}}
 
 Input type: `UserAchievementsUpdateInput`
 
@@ -32331,9 +32275,9 @@ Fields:
 | <a id="achievement-id"></a>`id` | [`AchievementsAchievementID!`](#achievementsachievementid) | ID of the achievement. |
 | <a id="achievement-name"></a>`name` | [`String!`](#string) | Name of the achievement. |
 | <a id="achievement-namespace"></a>`namespace` | [`Namespace`](#namespace) | Namespace of the achievement. |
-| <a id="achievement-uniqueusers"></a>`uniqueUsers` {{< icon name="warning-solid" >}} | [`UserCoreConnection!`](#usercoreconnection) | Introduced in GitLab 18.6. Status: Experiment. Unique users who have received the achievement. |
+| <a id="achievement-uniqueusers"></a>`uniqueUsers` | [`UserCoreConnection!`](#usercoreconnection) | Unique users who have received the achievement. (see [Connections](#connections)) |
 | <a id="achievement-updatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp the achievement was last updated. |
-| <a id="achievement-userachievements"></a>`userAchievements` {{< icon name="warning-solid" >}} | [`UserAchievementConnection`](#userachievementconnection) | Introduced in GitLab 15.10. Status: Experiment. Recipients for the achievement. |
+| <a id="achievement-userachievements"></a>`userAchievements` | [`UserAchievementConnection`](#userachievementconnection) | Recipients for the achievement. (see [Connections](#connections)) |
 
 ### `AchievementUploadRegistry`
 
@@ -32858,14 +32802,7 @@ Arguments:
 
 ##### `AddOnUser.userAchievements`
 
-{{< details >}}
-
-- Introduced in GitLab 15.10.
-- Status: Experiment.
-
-{{< /details >}}
-
-Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
+Achievements for the user.
 
 Returns [`UserAchievementConnection`](#userachievementconnection).
 
@@ -35373,14 +35310,7 @@ Arguments:
 
 ##### `AutocompletedUser.userAchievements`
 
-{{< details >}}
-
-- Introduced in GitLab 15.10.
-- Status: Experiment.
-
-{{< /details >}}
-
-Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
+Achievements for the user.
 
 Returns [`UserAchievementConnection`](#userachievementconnection).
 
@@ -39618,14 +39548,7 @@ Arguments:
 
 ##### `CurrentUser.userAchievements`
 
-{{< details >}}
-
-- Introduced in GitLab 15.10.
-- Status: Experiment.
-
-{{< /details >}}
-
-Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
+Achievements for the user.
 
 Returns [`UserAchievementConnection`](#userachievementconnection).
 
@@ -44314,7 +44237,7 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="group-achievementspath"></a>`achievementsPath` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 17.0. Status: Experiment. Path for the namespace's achievements. Returns `null` if the namespace is not a group, or the `achievements` feature flag is disabled. |
+| <a id="group-achievementspath"></a>`achievementsPath` | [`String`](#string) | Path for the namespace's achievements. Returns `null` if the namespace is not a group. |
 | <a id="group-actualrepositorysizelimit"></a>`actualRepositorySizeLimit` | [`Float`](#float) | Size limit for repositories in the namespace in bytes. This limit only applies to namespaces under Project limit enforcement. |
 | <a id="group-actualsizelimit"></a>`actualSizeLimit` | [`Float`](#float) | The actual storage size limit (in bytes) based on the enforcement type of either repository or namespace. This limit is agnostic of enforcement type. |
 | <a id="group-additionalpurchasedstoragesize"></a>`additionalPurchasedStorageSize` | [`Float`](#float) | Additional storage purchased for the root namespace in bytes. |
@@ -44458,14 +44381,7 @@ Fields:
 
 ##### `Group.achievements`
 
-{{< details >}}
-
-- Introduced in GitLab 15.8.
-- Status: Experiment.
-
-{{< /details >}}
-
-Achievements for the namespace. Returns `null` if the `achievements` feature flag is disabled.
+Achievements for the namespace.
 
 Returns [`AchievementConnection`](#achievementconnection).
 
@@ -49392,14 +49308,7 @@ Arguments:
 
 ##### `MergeRequestAssignee.userAchievements`
 
-{{< details >}}
-
-- Introduced in GitLab 15.10.
-- Status: Experiment.
-
-{{< /details >}}
-
-Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
+Achievements for the user.
 
 Returns [`UserAchievementConnection`](#userachievementconnection).
 
@@ -49878,14 +49787,7 @@ Arguments:
 
 ##### `MergeRequestAuthor.userAchievements`
 
-{{< details >}}
-
-- Introduced in GitLab 15.10.
-- Status: Experiment.
-
-{{< /details >}}
-
-Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
+Achievements for the user.
 
 Returns [`UserAchievementConnection`](#userachievementconnection).
 
@@ -50440,14 +50342,7 @@ Arguments:
 
 ##### `MergeRequestParticipant.userAchievements`
 
-{{< details >}}
-
-- Introduced in GitLab 15.10.
-- Status: Experiment.
-
-{{< /details >}}
-
-Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
+Achievements for the user.
 
 Returns [`UserAchievementConnection`](#userachievementconnection).
 
@@ -50945,14 +50840,7 @@ Arguments:
 
 ##### `MergeRequestReviewer.userAchievements`
 
-{{< details >}}
-
-- Introduced in GitLab 15.10.
-- Status: Experiment.
-
-{{< /details >}}
-
-Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
+Achievements for the user.
 
 Returns [`UserAchievementConnection`](#userachievementconnection).
 
@@ -51406,7 +51294,7 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="namespace-achievementspath"></a>`achievementsPath` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 17.0. Status: Experiment. Path for the namespace's achievements. Returns `null` if the namespace is not a group, or the `achievements` feature flag is disabled. |
+| <a id="namespace-achievementspath"></a>`achievementsPath` | [`String`](#string) | Path for the namespace's achievements. Returns `null` if the namespace is not a group. |
 | <a id="namespace-actualrepositorysizelimit"></a>`actualRepositorySizeLimit` | [`Float`](#float) | Size limit for repositories in the namespace in bytes. This limit only applies to namespaces under Project limit enforcement. |
 | <a id="namespace-actualsizelimit"></a>`actualSizeLimit` | [`Float`](#float) | The actual storage size limit (in bytes) based on the enforcement type of either repository or namespace. This limit is agnostic of enforcement type. |
 | <a id="namespace-additionalpurchasedstoragesize"></a>`additionalPurchasedStorageSize` | [`Float`](#float) | Additional storage purchased for the root namespace in bytes. |
@@ -51460,14 +51348,7 @@ Fields:
 
 ##### `Namespace.achievements`
 
-{{< details >}}
-
-- Introduced in GitLab 15.8.
-- Status: Experiment.
-
-{{< /details >}}
-
-Achievements for the namespace. Returns `null` if the `achievements` feature flag is disabled.
+Achievements for the namespace.
 
 Returns [`AchievementConnection`](#achievementconnection).
 
@@ -61385,14 +61266,7 @@ Arguments:
 
 ##### `UserCore.userAchievements`
 
-{{< details >}}
-
-- Introduced in GitLab 15.10.
-- Status: Experiment.
-
-{{< /details >}}
-
-Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
+Achievements for the user.
 
 Returns [`UserAchievementConnection`](#userachievementconnection).
 
@@ -74414,14 +74288,7 @@ Arguments:
 
 ###### `User.userAchievements`
 
-{{< details >}}
-
-- Introduced in GitLab 15.10.
-- Status: Experiment.
-
-{{< /details >}}
-
-Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
+Achievements for the user.
 
 Returns [`UserAchievementConnection`](#userachievementconnection).
 

@@ -6106,6 +6106,39 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       expect(json_response.size).to eq(2)
     end
 
+    it 'avoids N+1 queries when rendering last_used_ips' do
+      impersonation_token.last_used_ips.create!(organization: organization, ip_address: '192.0.2.30')
+
+      get api(path, admin, admin_mode: true) # warm-up
+
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) { get api(path, admin, admin_mode: true) }
+
+      extra_token = create(:personal_access_token, :impersonation, user: user)
+      extra_token.last_used_ips.create!(organization: organization, ip_address: '192.0.2.31')
+
+      expect { get api(path, admin, admin_mode: true) }.not_to exceed_all_query_limit(control)
+    end
+
+    # Only makes sense while expose_last_used_ips_for_access_tokens is rolled out per-actor.
+    # Delete this whole context when the flag is removed - there's no more current_user-vs-token-owner
+    # mismatch to guard against once everyone is on the same (unconditional) code path.
+    context 'when the flag differs between current_user and a token owner' do
+      it 'avoids N+1 queries' do
+        # Enables the flag only for the token owner (user), not the requester (admin).
+        stub_feature_flags(expose_last_used_ips_for_access_tokens: user)
+        impersonation_token.last_used_ips.create!(organization: organization, ip_address: '192.0.2.30')
+
+        get api(path, admin, admin_mode: true) # warm-up
+
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) { get api(path, admin, admin_mode: true) }
+
+        extra_token = create(:personal_access_token, :impersonation, user: user)
+        extra_token.last_used_ips.create!(organization: organization, ip_address: '192.0.2.31')
+
+        expect { get api(path, admin, admin_mode: true) }.not_to exceed_all_query_limit(control)
+      end
+    end
+
     context 'when expose_last_used_ips_for_access_tokens feature flag is enabled' do
       before do
         stub_feature_flags(expose_last_used_ips_for_access_tokens: true)
@@ -6131,19 +6164,6 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
           token_response = json_response.find { |t| t['id'] == impersonation_token.id }
           expect(token_response['last_used_ips']).to include(ip_address)
         end
-      end
-
-      it 'does not have N+1 queries for last_used_ips' do
-        get api(path, admin, admin_mode: true)
-
-        control = ActiveRecord::QueryRecorder.new do
-          get api(path, admin, admin_mode: true)
-        end
-
-        extra_token = create(:personal_access_token, :impersonation, user: user)
-        extra_token.last_used_ips.create!(organization: organization, ip_address: '192.0.2.20')
-
-        expect { get api(path, admin, admin_mode: true) }.not_to exceed_query_limit(control)
       end
     end
 

@@ -212,8 +212,15 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :text_editors do
     end
 
     context 'autocomplete wiki pages' do
-      let_it_be(:wiki_page1) { create(:wiki_page, project: project, title: 'Home') }
-      let_it_be(:wiki_page2) { create(:wiki_page, project: project, title: 'How to use GitLab') }
+      # Use `let!` instead of `let_it_be` so wiki page creation runs in a
+      # `before(:each)` hook, which is skipped while the example below is
+      # quarantined. With `let_it_be`, the `before(:context)` hook still runs
+      # for the skipped example and fails the job when wiki repository
+      # creation raises Wiki::CouldNotCreateWikiError in CI.
+      # Restore `let_it_be` once the quarantine is no longer needed.
+      # See https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/43858
+      let!(:wiki_page1) { create(:wiki_page, project: project, title: 'Home') }
+      let!(:wiki_page2) { create(:wiki_page, project: project, title: 'How to use GitLab') }
 
       it 'shows wiki pages in the autocomplete menu', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/3859' do
         fill_in 'Add a reply', with: '[[ho'

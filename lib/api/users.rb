@@ -1206,11 +1206,7 @@ module API
           end
           route_setting :authorization, permissions: :read_impersonation_token, boundary_type: :instance
           get feature_category: :system_access do
-            tokens = finder(declared_params(include_missing: false)).execute
-
-            if Feature.enabled?(:expose_last_used_ips_for_access_tokens, current_user)
-              tokens = tokens.preload_last_used_ips
-            end
+            tokens = finder(declared_params(include_missing: false)).execute.preload_users.preload_last_used_ips
 
             present paginate(tokens), with: Entities::ImpersonationToken
           end

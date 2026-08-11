@@ -6,7 +6,7 @@ module Gitlab
     # sharding-key-specific tables.
     #
     # Reads (load_batch_for_table) fan out to every model, merge results by the global consume order
-    # [partition_number, consume_after, id] and truncate to the requested batch size.
+    # [partition_number, consume_after, table_name, id] and truncate to the requested batch size.
     # Writes (mark_records_processed, reschedule, increment_attempts) are routed back to the originating model based on
     # the record's class.
     #
@@ -33,6 +33,11 @@ module Gitlab
         # `batch_size`. Worst case: `MODELS.size * batch_size` records loaded in Ruby per call (~ 5 * 500 = 2,500
         # with the default `ProcessDeletedRecordsService::BATCH_SIZE`). Until Phase 3 routes inserts via the trigger
         # function, four of the five siblings return 0 rows, so steady-state load is `batch_size`.
+        #
+        # The table name is part of the sort key because `id` is a bigint on the cell-local table and a uuid on the
+        # sharded ones. `consume_after` defaults to the transaction timestamp, so records deleted by the same
+        # statement tie on it, and comparing a bigint id against a uuid id raises. Sorting by table name first keeps
+        # the comparison within a single table, where ids are of one type.
         def load_batch_for_table(table, batch_size)
           records = MODELS.flat_map do |model|
             model_records = model.load_batch_for_table(table, batch_size)
@@ -43,7 +48,7 @@ module Gitlab
           end
 
           records
-            .sort_by { |record| [record.partition_number, record.consume_after, record.id] }
+            .sort_by { |record| [record.partition_number, record.consume_after, record.class.table_name, record.id] }
             .first(batch_size)
         end
 

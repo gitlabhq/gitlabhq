@@ -182,9 +182,7 @@ module Types
     field :user_achievements,
       Types::Achievements::UserAchievementType.connection_type,
       null: true,
-      experiment: { milestone: '15.10' },
-      description: "Achievements for the user. " \
-        "Only returns for namespaces where the `achievements` feature flag is enabled.",
+      description: "Achievements for the user.",
       extras: [:lookahead],
       resolver: ::Resolvers::Achievements::UserAchievementsForUserResolver
 

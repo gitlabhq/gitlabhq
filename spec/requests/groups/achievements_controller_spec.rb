@@ -34,14 +34,6 @@ RSpec.describe Groups::AchievementsController, feature_category: :user_profile d
       end
 
       it_behaves_like 'ok response with index template'
-
-      context 'when achievements ff is disabled' do
-        before do
-          stub_feature_flags(achievements: false)
-        end
-
-        it_behaves_like 'response with 404 status'
-      end
     end
 
     context 'with anonymous user' do
@@ -67,14 +59,6 @@ RSpec.describe Groups::AchievementsController, feature_category: :user_profile d
         end
 
         it_behaves_like 'ok response with index template'
-
-        context 'when achievements ff is disabled' do
-          before do
-            stub_feature_flags(achievements: false)
-          end
-
-          it_behaves_like 'response with 404 status'
-        end
       end
 
       context 'with a guest (cannot admin_achievement)' do
@@ -128,14 +112,6 @@ RSpec.describe Groups::AchievementsController, feature_category: :user_profile d
         end
 
         it_behaves_like 'ok response with index template'
-
-        context 'when achievements ff is disabled' do
-          before do
-            stub_feature_flags(achievements: false)
-          end
-
-          it_behaves_like 'response with 404 status'
-        end
       end
 
       context 'with a guest (cannot admin_achievement)' do

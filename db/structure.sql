@@ -894,27 +894,116 @@ $$;
 
 CREATE FUNCTION insert_into_loose_foreign_keys_deleted_records() RETURNS trigger
     LANGUAGE plpgsql
-    AS $$
+    AS $_$
+DECLARE
+  targets JSONB := CASE WHEN TG_NARGS > 0 THEN TG_ARGV[0]::jsonb ELSE '[]'::jsonb END;
+  tracked_table_identifier TEXT := TG_TABLE_SCHEMA || '.' || TG_TABLE_NAME;
+  target_table      TEXT;
+  target_column     TEXT;
+  source_column     TEXT;
+  cell_local_filter TEXT;
 BEGIN
-  INSERT INTO loose_foreign_keys_deleted_records
-  (fully_qualified_table_name, primary_key_value)
-  SELECT TG_TABLE_SCHEMA || '.' || TG_TABLE_NAME, old_table.id FROM old_table;
+  -- Cell local: no routing targets configured
+  IF jsonb_array_length(targets) = 0 THEN
+    INSERT INTO loose_foreign_keys_deleted_records
+    (fully_qualified_table_name, primary_key_value)
+    SELECT tracked_table_identifier, old_table.id
+    FROM old_table;
+
+    RETURN NULL;
+  END IF;
+
+  -- Route every row to each target it carries a sharding key value for
+  FOR target_table, target_column, source_column IN
+    SELECT value ->> 'table', value ->> 'column', value ->> 'source'
+    FROM jsonb_array_elements(targets)
+  LOOP
+    EXECUTE format(
+      'INSERT INTO %I (fully_qualified_table_name, primary_key_value, %I)
+       SELECT $1, old_table.id, old_table.%I
+       FROM old_table
+       WHERE old_table.%I IS NOT NULL',
+       target_table, target_column, source_column, source_column
+     )
+    USING tracked_table_identifier;
+  END LOOP;
+
+  -- Rows carrying no sharding key value at all stay cell local. This filter is the exact
+  -- complement of the loop's, so every deleted row lands in one branch or the other
+  SELECT string_agg(format('old_table.%I IS NULL', value ->> 'source'), ' AND ')
+  INTO cell_local_filter
+  FROM jsonb_array_elements(targets);
+
+  EXECUTE format(
+    'INSERT INTO loose_foreign_keys_deleted_records
+     (fully_qualified_table_name, primary_key_value)
+     SELECT $1, old_table.id
+     FROM old_table
+     WHERE %s',
+     cell_local_filter
+   )
+  USING tracked_table_identifier;
 
   RETURN NULL;
 END
-$$;
+$_$;
 
 CREATE FUNCTION insert_into_loose_foreign_keys_deleted_records_override_table() RETURNS trigger
     LANGUAGE plpgsql
-    AS $$
+    AS $_$
+DECLARE
+  parent_table_name TEXT := TG_ARGV[0];
+  targets JSONB := CASE WHEN TG_NARGS > 1 THEN TG_ARGV[1]::jsonb ELSE '[]'::jsonb END;
+  tracked_table_identifier TEXT := current_schema() || '.' || parent_table_name;
+  target_table      TEXT;
+  target_column     TEXT;
+  source_column     TEXT;
+  cell_local_filter TEXT;
 BEGIN
-  INSERT INTO loose_foreign_keys_deleted_records
-  (fully_qualified_table_name, primary_key_value)
-  SELECT current_schema() || '.' || TG_ARGV[0], old_table.id FROM old_table;
+  -- Cell local: no routing targets configured
+  IF jsonb_array_length(targets) = 0 THEN
+    INSERT INTO loose_foreign_keys_deleted_records
+    (fully_qualified_table_name, primary_key_value)
+    SELECT tracked_table_identifier, old_table.id
+    FROM old_table;
+
+    RETURN NULL;
+  END IF;
+
+  -- Route every row to each target it carries a sharding key value for
+  FOR target_table, target_column, source_column IN
+    SELECT value ->> 'table', value ->> 'column', value ->> 'source'
+    FROM jsonb_array_elements(targets)
+  LOOP
+    EXECUTE format(
+      'INSERT INTO %I (fully_qualified_table_name, primary_key_value, %I)
+       SELECT $1, old_table.id, old_table.%I
+       FROM old_table
+       WHERE old_table.%I IS NOT NULL',
+       target_table, target_column, source_column, source_column
+     )
+    USING tracked_table_identifier;
+  END LOOP;
+
+  -- Rows carrying no sharding key value at all stay cell local. This filter is the exact
+  -- complement of the loop's, so every deleted row lands in one branch or the other
+  SELECT string_agg(format('old_table.%I IS NULL', value ->> 'source'), ' AND ')
+  INTO cell_local_filter
+  FROM jsonb_array_elements(targets);
+
+  EXECUTE format(
+    'INSERT INTO loose_foreign_keys_deleted_records
+     (fully_qualified_table_name, primary_key_value)
+     SELECT $1, old_table.id
+     FROM old_table
+     WHERE %s',
+     cell_local_filter
+   )
+  USING tracked_table_identifier;
 
   RETURN NULL;
 END
-$$;
+$_$;
 
 CREATE FUNCTION insert_namespaces_sync_event() RETURNS trigger
     LANGUAGE plpgsql

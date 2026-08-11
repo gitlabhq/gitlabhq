@@ -100,15 +100,4 @@ RSpec.describe Achievements::UserAchievementPolicy, feature_category: :user_prof
     it { is_expected.to be_allowed(:update_user_achievement_award_message) }
     it { is_expected.to be_allowed(:update_user_achievement) }
   end
-
-  context 'when the achievements feature flag is disabled' do
-    let(:current_user) { achievement_owner }
-
-    before do
-      stub_feature_flags(achievements: false)
-    end
-
-    it { is_expected.to be_disallowed(:read_user_achievement) }
-    it { is_expected.to be_disallowed(:update_user_achievement) }
-  end
 end

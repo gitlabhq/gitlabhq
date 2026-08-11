@@ -11772,6 +11772,9 @@ msgid_plural "Are you sure you want to import %d repositories?"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Are you sure you want to lock %{name}?"
+msgstr ""
+
 msgid "Are you sure you want to lock this directory?"
 msgstr ""
 
@@ -11845,6 +11848,9 @@ msgid "Are you sure you want to revoke this project access token? This action ca
 msgstr ""
 
 msgid "Are you sure you want to stop this environment?"
+msgstr ""
+
+msgid "Are you sure you want to unlock %{name}?"
 msgstr ""
 
 msgid "Are you sure you want to unlock %{path_lock_path}?"
@@ -42729,6 +42735,9 @@ msgid "Invalid URL: %{url}"
 msgstr ""
 
 msgid "Invalid access credentials. %{cta}"
+msgstr ""
+
+msgid "Invalid authorization server URL: %{error}"
 msgstr ""
 
 msgid "Invalid credential data received. Try registering the device again."
@@ -79635,6 +79644,12 @@ msgstr ""
 msgid "The directory has been successfully created."
 msgstr ""
 
+msgid "The directory is locked."
+msgstr ""
+
+msgid "The directory is unlocked."
+msgstr ""
+
 msgid "The discussion in this %{issuableDisplayName} is locked. Only project members can comment."
 msgstr ""
 
@@ -83829,7 +83844,16 @@ msgstr ""
 msgid "Unlock account"
 msgstr ""
 
+msgid "Unlock directory"
+msgstr ""
+
+msgid "Unlock directory?"
+msgstr ""
+
 msgid "Unlock discussion"
+msgstr ""
+
+msgid "Unlock file"
 msgstr ""
 
 msgid "Unlock file?"
@@ -92420,6 +92444,12 @@ msgid "You do not have permission to set a member awaiting"
 msgstr ""
 
 msgid "You do not have permission to unlock it"
+msgstr ""
+
+msgid "You do not have permission to unlock this directory."
+msgstr ""
+
+msgid "You do not have permission to unlock this file."
 msgstr ""
 
 msgid "You do not have permission to update the environment."

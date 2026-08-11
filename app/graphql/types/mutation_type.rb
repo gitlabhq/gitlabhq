@@ -6,14 +6,14 @@ module Types
 
     include Gitlab::Graphql::MountMutation
 
-    mount_mutation Mutations::Achievements::Award, experiment: { milestone: '15.10' }
-    mount_mutation Mutations::Achievements::Create, experiment: { milestone: '15.8' }
-    mount_mutation Mutations::Achievements::Delete, experiment: { milestone: '15.11' }
-    mount_mutation Mutations::Achievements::DeleteUserAchievement, experiment: { milestone: '16.1' }
-    mount_mutation Mutations::Achievements::Revoke, experiment: { milestone: '15.10' }
-    mount_mutation Mutations::Achievements::Update, experiment: { milestone: '15.11' }
-    mount_mutation Mutations::Achievements::UpdateUserAchievement, experiment: { milestone: '17.3' }
-    mount_mutation Mutations::Achievements::UpdateUserAchievementPriorities, experiment: { milestone: '16.5' }
+    mount_mutation Mutations::Achievements::Award
+    mount_mutation Mutations::Achievements::Create
+    mount_mutation Mutations::Achievements::Delete
+    mount_mutation Mutations::Achievements::DeleteUserAchievement
+    mount_mutation Mutations::Achievements::Revoke
+    mount_mutation Mutations::Achievements::Update
+    mount_mutation Mutations::Achievements::UpdateUserAchievement
+    mount_mutation Mutations::Achievements::UpdateUserAchievementPriorities
     mount_mutation Mutations::Admin::SidekiqQueues::DeleteJobs
     mount_mutation Mutations::AlertManagement::CreateAlertIssue
     mount_mutation Mutations::AlertManagement::UpdateAlertStatus

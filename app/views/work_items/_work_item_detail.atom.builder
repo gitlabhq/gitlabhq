@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-builder.title   markdown_field(work_item_detail, :title), type: 'html'
+builder.title   work_item_detail.title
 builder.updated work_item_detail.updated_at.xmlschema
 builder.media   :thumbnail, width: "40", height: "40", url: image_url(avatar_icon_for_user(work_item_detail.author))
 

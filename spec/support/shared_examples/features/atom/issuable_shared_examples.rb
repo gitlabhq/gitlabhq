@@ -18,9 +18,9 @@ RSpec.shared_examples "a sanitized issuable atom feed" do
     expect(body).not_to include('<script>')
   end
 
-  it "renders the title as sanitized HTML" do
-    expect(body).to have_selector('entry title[type="html"]', text: issuable.title)
-    expect(body).not_to include('<script>')
+  it "renders the title as plain text, #security", :aggregate_failures do
+    expect(body).to have_selector('entry title', exact_text: issuable.title)
+    expect(body).not_to have_selector('entry title[type]')
   end
 
   it "XML-escapes the rendered HTML for Atom transport" do

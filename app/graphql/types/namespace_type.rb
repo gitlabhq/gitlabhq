@@ -94,17 +94,14 @@ module Types
     field :achievements,
       Types::Achievements::AchievementType.connection_type,
       null: true,
-      experiment: { milestone: '15.8' },
-      description: "Achievements for the namespace. " \
-        "Returns `null` if the `achievements` feature flag is disabled.",
+      description: "Achievements for the namespace.",
       extras: [:lookahead],
       resolver: ::Resolvers::Achievements::AchievementsResolver
 
     field :achievements_path, GraphQL::Types::String,
       null: true,
-      experiment: { milestone: '17.0' },
       description: "Path for the namespace's achievements. " \
-        "Returns `null` if the namespace is not a group, or the `achievements` feature flag is disabled."
+        "Returns `null` if the namespace is not a group."
 
     field :work_item, Types::WorkItemType,
       null: true,
@@ -256,8 +253,6 @@ module Types
     markdown_field :description_html, null: true, &:namespace_details
 
     def achievements_path
-      return unless Feature.enabled?(:achievements, object)
-
       ::Gitlab::Routing.url_helpers.group_achievements_path(object) if object.is_a?(Group)
     end
 

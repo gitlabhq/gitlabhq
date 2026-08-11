@@ -14,8 +14,6 @@ module Resolvers
       alias_method :namespace, :object
 
       def resolve_with_lookahead(**args)
-        return ::Achievements::Achievement.none if Feature.disabled?(:achievements, namespace)
-
         params = {}
         params[:ids] = args[:ids].map(&:model_id) if args[:ids].present?
 

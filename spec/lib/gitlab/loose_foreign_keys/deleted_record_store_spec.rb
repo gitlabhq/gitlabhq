@@ -108,6 +108,42 @@ RSpec.describe Gitlab::LooseForeignKeys::DeletedRecordStore, feature_category: :
         end
       end
 
+      context 'when the same table has records in the cell-local and in a sharded store' do
+        let_it_be(:shared_table) { 'public.merge_requests' }
+        let_it_be(:consume_after) { Time.current.round }
+
+        let_it_be(:shared_cell_local_record) do
+          Gitlab::Database::SharedModel.using_connection(ApplicationRecord.connection) do
+            LooseForeignKeys::DeletedRecord.create!(
+              fully_qualified_table_name: shared_table,
+              primary_key_value: 66,
+              consume_after: consume_after
+            )
+          end
+        end
+
+        let_it_be(:shared_project_record) do
+          Gitlab::Database::SharedModel.using_connection(ApplicationRecord.connection) do
+            LooseForeignKeys::ProjectDeletedRecord.create!(
+              fully_qualified_table_name: shared_table,
+              primary_key_value: 77,
+              project_id: project.id,
+              consume_after: consume_after
+            )
+          end
+        end
+
+        # A single DELETE statement mixing rows with and without a sharding key writes to both
+        # stores with the same `consume_after`, and the ids are a bigint and a uuid.
+        it 'returns every record instead of comparing a bigint id with a uuid id' do
+          Gitlab::Database::SharedModel.using_connection(ApplicationRecord.connection) do
+            result = described_class.load_batch_for_table(shared_table, 10)
+
+            expect(result).to match_array([shared_cell_local_record, shared_project_record])
+          end
+        end
+      end
+
       it 'returns an empty array when no records match the requested table' do
         Gitlab::Database::SharedModel.using_connection(ApplicationRecord.connection) do
           expect(described_class.load_batch_for_table('public.no_such_table', 10)).to eq([])

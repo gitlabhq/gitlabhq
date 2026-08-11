@@ -242,13 +242,4 @@ RSpec.describe 'UserAchievements', feature_category: :user_profile do
       expect { post_graphql(awarder_query, current_user: awarder) }.not_to exceed_all_query_limit(control)
     end
   end
-
-  context 'when the achievements feature flag is disabled' do
-    before do
-      stub_feature_flags(achievements: false)
-      post_graphql(query, current_user: user)
-    end
-
-    specify { expect(graphql_data_at(:namespace, :achievements, :nodes, :userAchievements, :nodes)).to be_empty }
-  end
 end

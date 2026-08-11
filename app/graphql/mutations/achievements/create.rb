@@ -33,10 +33,6 @@ module Mutations
       def resolve(args)
         namespace = authorized_find!(id: args[:namespace_id])
 
-        if Feature.disabled?(:achievements, namespace)
-          raise_resource_not_available_error! '`achievements` feature flag is disabled.'
-        end
-
         result = ::Achievements::CreateService.new(namespace: namespace,
           current_user: current_user,
           params: args).execute
