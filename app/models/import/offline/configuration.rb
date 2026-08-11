@@ -33,7 +33,7 @@ module Import
 
       encrypts :object_storage_credentials
 
-      validates :provider, :bucket, :export_prefix, :object_storage_credentials, presence: true
+      validates :provider, :bucket, :export_prefix, presence: true
       validates :provider, inclusion: { in: :supported_providers }
       validates :bucket, length: { minimum: 3, maximum: 63 }, format: { with: S3_BUCKET_REGEXP }
       validates :object_storage_credentials, json_schema: {
@@ -52,7 +52,7 @@ module Import
         filename: 'import_offline_configuration_gcs_application_default_credentials', size_limit: 64.kilobytes
       }, if: :gcs_application_default?
       validate :application_default_credentials_bucket_prefix, if: :gcs_application_default?
-      validates :endpoint, addressable_url: true, length: { maximum: 255 }, if: :s3_compatible?
+      validates :endpoint, addressable_url: true, length: { maximum: 255 }, allow_nil: true, if: :s3_compatible?
       validates :entity_prefix_mapping, json_schema: {
         filename: 'import_offline_configuration_entity_prefix_mapping', size_limit: 64.kilobytes
       }

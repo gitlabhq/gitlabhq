@@ -27,8 +27,6 @@ RSpec.describe Import::Offline::Configuration, feature_category: :importers do
     end
 
     it { is_expected.to validate_presence_of(:export_prefix) }
-    it { is_expected.to validate_presence_of(:object_storage_credentials) }
-
     it { is_expected.to validate_presence_of(:bucket) }
     it { is_expected.to validate_length_of(:bucket).is_at_least(3).is_at_most(63) }
     it { is_expected.to allow_value('s3-compliant.bucket-name1').for(:bucket) }
@@ -135,6 +133,23 @@ RSpec.describe Import::Offline::Configuration, feature_category: :importers do
     end
 
     describe '#object_storage_credentials' do
+      context 'when credentials are empty' do
+        before do
+          stub_application_setting(allow_s3_compatible_storage_for_offline_transfer: true)
+          stub_application_setting(allow_application_default_credentials_for_offline_transfer: true)
+        end
+
+        where(provider_trait: %i[aws_s3 s3_compatible gcs gcs_hmac gcs_adc])
+
+        with_them do
+          it 'is valid' do
+            configuration = build(:offline_configuration, provider_trait, object_storage_credentials: {})
+
+            expect(configuration).to be_valid
+          end
+        end
+      end
+
       subject(:valid?) do
         build(:offline_configuration, provider: provider, object_storage_credentials: valid_credentials).valid?
       end
@@ -602,10 +617,9 @@ RSpec.describe Import::Offline::Configuration, feature_category: :importers do
       end
     end
 
-    context 'when credentials are not present' do
+    context 'when credentials are empty' do
       it 'returns nil' do
-        configuration = build(:offline_configuration)
-        allow(configuration).to receive(:object_storage_credentials).and_return(nil)
+        configuration = build(:offline_configuration, object_storage_credentials: {})
 
         expect(configuration.endpoint).to be_nil
       end

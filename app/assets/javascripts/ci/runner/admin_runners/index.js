@@ -1,4 +1,3 @@
-import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
@@ -13,7 +12,6 @@ import { showAlertFromLocalStorage } from '~/lib/utils/local_storage_alert';
 import { createLocalState } from '../graphql/list/local_state';
 import AdminRunnersApp from './admin_runners_app.vue';
 
-Vue.use(GlToast);
 Vue.use(VueApollo);
 
 export const initAdminRunners = (selector = '#js-admin-runners') => {

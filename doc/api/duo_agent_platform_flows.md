@@ -318,14 +318,14 @@ curl --request DELETE \
 
 {{< /details >}}
 
-Returns the `ui_chat_log` entries from the most recent checkpoint of a workflow session
+Returns the `ui_chat_log` entries of a workflow session
 as [JSON Lines](https://jsonlines.org/) (JSONL).
 Each line is a valid JSON object representing one entry from the `ui_chat_log` array.
 Use this endpoint to parse or pipe the trace into tools like `jq`.
 
-> [!note]
-> LangGraph checkpoints are cumulative snapshots. Each checkpoint row contains the full
-> accumulated state, so the most recent checkpoint has the complete `ui_chat_log`.
+By default, the endpoint returns the complete conversation across all threads of the session,
+including messages from before any context compaction.
+Use the `thread` attribute to return a single thread instead.
 
 ```plaintext
 GET /ai/duo_workflows/workflows/:workflow_id/trace.jsonl
@@ -336,12 +336,13 @@ Supported attributes:
 | Attribute | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `workflow_id` | integer | Yes | ID of the workflow. |
+| `thread` | string | No | Which thread to return. Omit for the full trace across all threads. Use `latest` for the most recent thread only, or a thread ID for a specific thread. |
 
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) with:
 
 - **Content-Type**: `application/x-ndjson`
-- **Body**: One JSON object per line, each representing a `ui_chat_log` entry from the most recent checkpoint.
-  Returns an empty body if the workflow has no checkpoints or the latest checkpoint has no `ui_chat_log`.
+- **Body**: One JSON object per line, each representing a `ui_chat_log` entry.
+  Returns an empty body if the workflow has no checkpoints or no `ui_chat_log` entries.
 
 Example request:
 

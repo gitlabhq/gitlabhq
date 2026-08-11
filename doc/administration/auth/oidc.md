@@ -484,9 +484,11 @@ Add the [provider's configuration](https://docs.gitlab.com/charts/charts/globals
 As you migrate from `azure_oauth2` to `omniauth_openid_connect` as part of upgrading to GitLab 17.0 or later, the `sub` claim value set for your organization can vary. `azure_oauth2` uses Microsoft V1 endpoint while `azure_activedirectory_v2` and `omniauth_openid_connect` both use Microsoft V2 endpoint with a common `sub` value.
 
 - **For users with an email address in Entra ID**, to allow falling back to email address and updating the user's identity,
-  configure the following:
-  - In a Linux package installation, [`omniauth_auto_link_user`](../../integration/omniauth.md#link-existing-users-to-omniauth-users).
-  - In a Helm installation, [`autoLinkUser`](https://docs.gitlab.com/charts/charts/globals/#omniauth).
+  use one of the following methods:
+  - Enable automatic linking. In a Linux package installation, configure [`omniauth_auto_link_user`](../../integration/omniauth.md#automatic-linking).
+    In a Helm installation, configure [`autoLinkUser`](https://docs.gitlab.com/charts/charts/globals/#omniauth).
+  - Use the guided linking flow, which prompts users to sign in with their existing credentials to confirm ownership before linking.
+    For more information, see [link an existing account when signing in with OmniAuth](../../integration/omniauth.md#link-an-existing-account-when-signing-in-with-omniauth).
 - **For users with no email address**, administrators must take one of the following actions:
   - Set up another authentication method or enable sign-in using GitLab username and password. The user can then sign in and link their Azure identity manually using their profile.
   - Implement OpenID Connect as a new provider alongside the existing `azure_oauth2` so the user can sign in through OAuth 2.0, and link their OpenID Connect identity (similar to the previous method). This method would also work for users with email addresses, as long as `auto_link_user` is enabled.

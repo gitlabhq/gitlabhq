@@ -31,7 +31,7 @@ the agentic version that your users can access after moving to the Agent Platfor
 | Non-agentic feature | Agent Platform |
 |---------------------|----------------|
 | GitLab Duo Non-Agentic Chat | [Agentic Chat](../../../user/gitlab_duo_chat/agentic_chat.md) <br /> Answer complex questions and autonomously create and edit files. Connects to the Planner and Security Analyst agents. Merge request summary, discussion summary, refactor code, and test generation are now part of Agentic Chat. |
-| GitLab Duo Code Review | [Code Review Flow](../../../user/duo_agent_platform/flows/foundational_flows/code_review.md) <sup>1</sup>  <br /> Automate code review tasks and enforce coding standards across your team. |
+| GitLab Duo Code Review | [Code Review Flow](../../../user/duo_agent_platform/flows/foundational_flows/code_review/_index.md) <sup>1</sup>  <br /> Automate code review tasks and enforce coding standards across your team. |
 | Root cause analysis | [Fix CI/CD pipeline flow](../../../user/duo_agent_platform/flows/foundational_flows/fix_pipeline.md) <sup>1</sup> <br /> Diagnose and automatically fix failing CI/CD pipelines. |
 | Vulnerability explanation and resolution | [SAST vulnerability resolution flow](../../../user/duo_agent_platform/flows/foundational_flows/agentic_sast_vulnerability_resolution.md) <sup>1</sup> <br /> Automatically generate fixes and remediation steps for SAST vulnerabilities. |
 

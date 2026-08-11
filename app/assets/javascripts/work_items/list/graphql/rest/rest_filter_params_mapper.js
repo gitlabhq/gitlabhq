@@ -42,7 +42,7 @@ const STATE_MAP = {
 };
 
 /* eslint-disable @gitlab/require-i18n-strings -- REST API param values, not user-facing text */
-const WILDCARD_MAP = {
+export const WILDCARD_MAP = {
   ANY: 'Any',
   NONE: 'None',
   ME: 'Me',

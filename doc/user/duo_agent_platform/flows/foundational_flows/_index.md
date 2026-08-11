@@ -29,7 +29,7 @@ The following foundational flows are available:
   complete different tasks in GitLab Duo Agentic Chat.
 - [Fix CI/CD Pipeline](fix_pipeline.md): Diagnose and repair failed jobs.
 - [Convert to GitLab CI/CD](convert_to_gitlab_ci.md): Migrate Jenkins pipelines to CI/CD.
-- [Code Review](code_review.md): Automate code review with AI-native analysis and feedback.
+- [Code Review](code_review/_index.md): Automate code review with AI-native analysis and feedback.
 - [Security Review](security_review.md): Detect business logic security vulnerabilities in merge request changes.
 - [Agentic SAST Vulnerability Resolution](agentic_sast_vulnerability_resolution.md): Automatically generate merge requests to resolve SAST vulnerabilities.
 - [SAST false positive detection](sast_false_positive_detection.md): Automatically identify and filter false positives in SAST findings.

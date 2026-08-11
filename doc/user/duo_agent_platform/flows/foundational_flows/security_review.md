@@ -218,7 +218,7 @@ Confirm you meet all [prerequisites](#prerequisites), then check that the flow w
 
 - Verify that you mentioned the **Duo Security Review** account (its username begins with `@duo-security-review-`).
 - Verify [**Allow foundational flows**](_index.md#turn-foundational-flows-on-or-off)
-  and [**Code Review**](code_review.md) settings are turned on for the top-level group.
+  and [**Code Review**](code_review/_index.md) settings are turned on for the top-level group.
 - For GitLab Self-Managed, verify your instance is
   [configured for GitLab Duo](../../../../administration/gitlab_duo/configure/_index.md).
 

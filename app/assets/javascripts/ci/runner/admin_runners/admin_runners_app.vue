@@ -1,6 +1,6 @@
 <script>
 import { defineAsyncComponent } from 'vue';
-import { GlButton, GlLink, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlLink, GlToastMixin, GlTooltipDirective } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { updateHistory } from '~/lib/utils/url_utility';
 import { fetchPolicies } from '~/lib/graphql';
@@ -67,7 +67,7 @@ export default {
       () => import('ee_component/ci/runner/components/runner_dashboard_link.vue'),
     ),
   },
-  mixins: [glFeatureFlagsMixin()],
+  mixins: [glFeatureFlagsMixin(), GlToastMixin],
   props: {
     newRunnerPath: {
       type: String,
@@ -212,7 +212,7 @@ export default {
       this.refetchCounts();
 
       if (event?.message) {
-        this.$root.$toast?.show(event.message);
+        this.$toast.show(event.message);
       }
     },
     refetchCounts() {

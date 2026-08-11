@@ -5,6 +5,7 @@ import VueRouter from 'vue-router';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import showToast from '~/vue_shared/plugins/global_toast';
 import CrmForm from '~/crm/components/crm_form.vue';
 import routes from '~/crm/contacts/routes';
 import createContactMutation from '~/crm/contacts/components/graphql/create_contact.mutation.graphql';
@@ -22,6 +23,8 @@ import {
   createOrganizationMutationResponse,
   getGroupOrganizationsQueryResponse,
 } from './mock_data';
+
+jest.mock('~/vue_shared/plugins/global_toast');
 
 const FORM_CREATE_CONTACT = 'create contact';
 const FORM_UPDATE_CONTACT = 'update contact';
@@ -76,8 +79,6 @@ describe('Reusable form component', () => {
     });
   });
 
-  const mockToastShow = jest.fn();
-
   const findSaveButton = () => wrapper.findComponentByTestId('save-button');
   const findForm = () => wrapper.find('form');
   const findError = () => wrapper.findComponent(GlAlert);
@@ -88,11 +89,6 @@ describe('Reusable form component', () => {
       router,
       apolloProvider: fakeApollo,
       propsData: { drawerOpen: true, ...propsData },
-      mocks: {
-        $toast: {
-          show: mockToastShow,
-        },
-      },
     });
   };
 
@@ -245,7 +241,7 @@ describe('Reusable form component', () => {
         findForm().trigger('submit');
         await waitForPromises();
 
-        expect(mockToastShow).toHaveBeenCalledWith(toastMessage);
+        expect(showToast).toHaveBeenCalledWith(toastMessage);
       });
     },
   );

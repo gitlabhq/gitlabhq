@@ -23270,9 +23270,6 @@ msgstr ""
 msgid "ContinuousDeployment|Filter releases…"
 msgstr ""
 
-msgid "ContinuousDeployment|Flow"
-msgstr ""
-
 msgid "ContinuousDeployment|Flow editor"
 msgstr ""
 
@@ -23310,9 +23307,6 @@ msgid "ContinuousDeployment|Last deployed"
 msgstr ""
 
 msgid "ContinuousDeployment|Last deployed %{time}"
-msgstr ""
-
-msgid "ContinuousDeployment|Latest deployment flow"
 msgstr ""
 
 msgid "ContinuousDeployment|Links"
@@ -23480,7 +23474,7 @@ msgstr ""
 msgid "ContinuousDeployment|Tier"
 msgstr ""
 
-msgid "ContinuousDeployment|Trigger a manual deployment of %{name}. Pick the flow to run."
+msgid "ContinuousDeployment|Trigger a manual deployment of %{name}. It will use the latest deployment flow."
 msgstr ""
 
 msgid "ContinuousDeployment|Trigger deployment"
@@ -23499,9 +23493,6 @@ msgid "ContinuousDeployment|Version"
 msgstr ""
 
 msgid "ContinuousDeployment|Waiting for your approval"
-msgstr ""
-
-msgid "ContinuousDeployment|default"
 msgstr ""
 
 msgid "ContinuousDeployment|e.g. acme-platform"
@@ -80056,6 +80047,9 @@ msgid "The requested authentication service is not supported. Verify the registr
 msgstr ""
 
 msgid "The resource that you are attempting to access does not exist or you don't have permission to perform this action."
+msgstr ""
+
+msgid "The response from Gitaly is too large to load. Maybe, the repository or merge request contains too many commits. This is a size limit, not a temporary error."
 msgstr ""
 
 msgid "The scan has been created."

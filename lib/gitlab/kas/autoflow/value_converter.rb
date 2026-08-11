@@ -8,6 +8,22 @@ module Gitlab
       # the gRPC types directly. A String becomes a string_value, a Hash a
       # dict_value, an Array a list_value, and so on.
       module ValueConverter
+        # A plain class, not a Struct: Struct's to_h/to_a/as_json/deconstruct all
+        # bypass #inspect and would still leak the raw value.
+        class SensitiveString
+          attr_reader :value
+
+          def initialize(value)
+            @value = value
+          end
+
+          def inspect
+            "#<#{self.class.name} [REDACTED]>"
+          end
+          alias_method :to_s, :inspect
+          alias_method :as_json, :inspect
+        end
+
         module_function
 
         # @param named [Hash{String => Object}] name => Ruby value
@@ -16,6 +32,12 @@ module Gitlab
           named.map do |name, value|
             ::Gitlab::Agent::Autoflow::Kwarg.new(name: name.to_s, value: to_value(value))
           end
+        end
+
+        # @param str [String]
+        # @return [SensitiveString]
+        def sensitive_string(str)
+          SensitiveString.new(str)
         end
 
         # @param values [Array<Object>]
@@ -31,6 +53,8 @@ module Gitlab
             object
           when ::String
             value(string_value: object)
+          when SensitiveString
+            value(sensitive_string: ::Gitlab::Agent::Autoflow::SensitiveString.new(value: object.value))
           when ::Integer
             value(integer_value: object)
           when ::Float

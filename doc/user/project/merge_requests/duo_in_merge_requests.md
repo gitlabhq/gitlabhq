@@ -65,7 +65,7 @@ standards.
 When you request a review from GitLab Duo, it automatically runs one of two code review features
 based on your add-on. Users with the Owner role for the group can configure which feature runs for all users.
 
-| Detail              | [Code Review Flow](../../duo_agent_platform/flows/foundational_flows/code_review.md) | [GitLab Duo Code Review](../../gitlab_duo/code_review.md) |
+| Detail              | [Code Review Flow](../../duo_agent_platform/flows/foundational_flows/code_review/_index.md) | [GitLab Duo Code Review](../../gitlab_duo/code_review.md) |
 |---------------------|--------------------------------------------------------------------------------------|-----------------------------------------------------------|
 | Reviewer            | `@GitLabDuo`                                                                         | `@GitLabDuo`                                              |
 | Type                | Agentic                                                                              | Non-agentic                                               |

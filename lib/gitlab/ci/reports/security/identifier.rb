@@ -5,11 +5,7 @@ module Gitlab
     module Reports
       module Security
         class Identifier
-          attr_reader :external_id
-          attr_reader :external_type
-          attr_reader :fingerprint
-          attr_reader :name
-          attr_reader :url
+          attr_reader :external_id, :external_type, :fingerprint, :name, :url
 
           def initialize(external_id:, external_type:, name:, url: nil)
             @external_id = external_id

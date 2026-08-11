@@ -1162,6 +1162,11 @@ checks like custom 2FA.
 When LDAP web sign in is disabled, users don't see an **LDAP** tab on the sign-in page.
 This does not disable using LDAP credentials for Git access.
 
+Disabling LDAP web sign in does not block these users from the web UI: they can
+still sign in with a GitLab password. To require sign-in through your identity
+provider only, also
+[disable password authentication for users with an SSO identity](../../settings/sign_in_restrictions.md#disable-password-and-passkey-authentication-for-users-with-an-sso-identity).
+
 {{< tabs >}}
 
 {{< tab title="Linux package (Omnibus)" >}}

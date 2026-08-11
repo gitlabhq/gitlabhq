@@ -1,7 +1,7 @@
-import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
+import showToast from '~/vue_shared/plugins/global_toast';
 import {
   buildUrlWithCurrentLocation,
   historyReplaceState,
@@ -13,7 +13,6 @@ import Translate from '~/vue_shared/translate';
 import PipelinesApp from '~/ci/pipelines_page/pipelines_app.vue';
 
 Vue.use(Translate);
-Vue.use(GlToast);
 Vue.use(VueApollo);
 
 const apolloProvider = new VueApollo({
@@ -72,7 +71,7 @@ export const initPipelinesIndex = (selector = '#pipelines-list-vue') => {
     },
     created() {
       if (doesHashExistInUrl('delete_success')) {
-        this.$toast.show(__('The pipeline has been deleted'));
+        showToast(__('The pipeline has been deleted'));
         historyReplaceState(buildUrlWithCurrentLocation());
       }
     },

@@ -19,30 +19,10 @@ module Gitlab
             scan
           ].freeze
 
-          attr_reader :confidence
-          attr_reader :identifiers
-          attr_reader :flags
-          attr_reader :links
-          attr_reader :location
-          attr_reader :evidence
-          attr_reader :metadata_version
-          attr_reader :name
-          attr_reader :old_location
-          attr_reader :report_type
-          attr_reader :scanner
-          attr_reader :scan
-          attr_reader :severity
-          attr_accessor :uuid
-          attr_accessor :context_unaware_uuid
-          attr_accessor :overridden_uuid
-          attr_reader :remediations
-          attr_reader :details
-          attr_reader :signatures
-          attr_reader :project_id
-          attr_reader :original_data
-          attr_reader :found_by_pipeline
-          attr_reader :cvss
-          attr_reader :project_tracked_context
+          attr_reader :confidence, :identifiers, :flags, :links, :location, :evidence, :metadata_version, :name,
+            :old_location, :report_type, :scanner, :scan, :severity, :remediations, :details, :signatures,
+            :project_id, :original_data, :found_by_pipeline, :cvss, :project_tracked_context
+          attr_accessor :uuid, :context_unaware_uuid, :overridden_uuid
 
           delegate :file_path, :start_line, :end_line, to: :location
 

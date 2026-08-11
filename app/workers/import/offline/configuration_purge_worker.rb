@@ -15,7 +15,8 @@ module Import
         configuration = ::Import::Offline::Configuration.find_by_id(configuration_id)
         return unless configuration
 
-        configuration.delete
+        configuration.object_storage_credentials = {}
+        configuration.save!(validate: false)
       end
     end
   end

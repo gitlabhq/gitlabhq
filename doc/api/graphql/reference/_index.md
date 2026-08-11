@@ -33680,7 +33680,7 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="aigovernancekpi-count"></a>`count` | [`Int`](#int) | Count in the selected timeframe. |
 | <a id="aigovernancekpi-previouscount"></a>`previousCount` | [`Int`](#int) | Count in the preceding timeframe of equal length. |
-| <a id="aigovernancekpi-trend"></a>`trend` | [`[AiGovernanceKpiTrendPoint!]`](#aigovernancekpitrendpoint) | Bucketed counts across the selected timeframe. |
+| <a id="aigovernancekpi-trend"></a>`trend` | [`[AiGovernanceKpiTrendPoint!]`](#aigovernancekpitrendpoint) | Bucketed counts across the selected timeframe. Each bucket is computed independently, so for distinct-count KPIs such as agents the buckets do not sum to `count`: an agent active on several days is counted once per day here and once in the total. |
 
 ### `AiGovernanceKpiTrendPoint`
 
@@ -44470,6 +44470,7 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="group-aigovernancemetrics-agentclass"></a>`agentClass` | [`AiGovernanceAgentClass`](#aigovernanceagentclass) | Agent class to segment the metrics by. Defaults to ALL. |
 | <a id="group-aigovernancemetrics-timeframe"></a>`timeframe` | [`AiGovernanceMetricsTimeframe`](#aigovernancemetricstimeframe) | Time window for the metrics. Defaults to LAST_7_DAYS. |
 
 ##### `Group.aiMetrics`
@@ -52426,6 +52427,7 @@ Arguments:
 | ---- | ---- | ----------- |
 | <a id="organization-artifactregistryrepositories-format"></a>`format` {{< icon name="warning-solid" >}} | [`ArtifactRegistryRepositoryFormat`](#artifactregistryrepositoryformat) | Introduced in GitLab 19.3. Status: Experiment. Return only repositories holding the given package format. |
 | <a id="organization-artifactregistryrepositories-kind"></a>`kind` {{< icon name="warning-solid" >}} | [`ArtifactRegistryRepositoryKind`](#artifactregistryrepositorykind) | Introduced in GitLab 19.3. Status: Experiment. Return only repositories sourcing their artifacts the given way. |
+| <a id="organization-artifactregistryrepositories-sort"></a>`sort` {{< icon name="warning-solid" >}} | [`ArtifactRegistryRepositorySort`](#artifactregistryrepositorysort) | Introduced in GitLab 19.3. Status: Experiment. Sort repositories by the criteria. |
 
 ##### `Organization.artifactRegistryRepository`
 
@@ -54658,6 +54660,7 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="project-aigovernancemetrics-agentclass"></a>`agentClass` | [`AiGovernanceAgentClass`](#aigovernanceagentclass) | Agent class to segment the metrics by. Defaults to ALL. |
 | <a id="project-aigovernancemetrics-timeframe"></a>`timeframe` | [`AiGovernanceMetricsTimeframe`](#aigovernancemetricstimeframe) | Time window for the metrics. Defaults to LAST_7_DAYS. |
 
 ##### `Project.aiMetrics`
@@ -64968,6 +64971,16 @@ Possible event types for flow triggers.
 | <a id="aiflowtriggereventtype-pipeline_hooks"></a>`PIPELINE_HOOKS` | Flow trigger pipeline_hooks event. |
 | <a id="aiflowtriggereventtype-work_item"></a>`WORK_ITEM` | Flow trigger work_item event. |
 
+### `AiGovernanceAgentClass`
+
+Agent class segmentation for AI governance dashboard metrics.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="aigovernanceagentclass-all"></a>`ALL` | All agent classes, combining internal and external agents. |
+| <a id="aigovernanceagentclass-external"></a>`EXTERNAL` | Agents running outside the Duo Agent Platform, such as third-party coding agents. |
+| <a id="aigovernanceagentclass-internal_dap"></a>`INTERNAL_DAP` | Agents running on the internal Duo Agent Platform. |
+
 ### `AiGovernanceMetricsTimeframe`
 
 Time window for AI governance dashboard metrics.
@@ -65466,6 +65479,21 @@ How an Artifact Registry repository sources its artifacts.
 | <a id="artifactregistryrepositorykind-hosted"></a>`HOSTED` | Stores artifacts published to GitLab. |
 | <a id="artifactregistryrepositorykind-remote"></a>`REMOTE` | Proxies and caches an upstream registry. |
 | <a id="artifactregistryrepositorykind-virtual"></a>`VIRTUAL` | Serves other repositories through a single endpoint. |
+
+### `ArtifactRegistryRepositorySort`
+
+Values for sorting Artifact Registry repositories.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="artifactregistryrepositorysort-downloads_count_asc"></a>`DOWNLOADS_COUNT_ASC` | Downloads count by ascending order. |
+| <a id="artifactregistryrepositorysort-downloads_count_desc"></a>`DOWNLOADS_COUNT_DESC` | Downloads count by descending order. |
+| <a id="artifactregistryrepositorysort-last_updated_at_asc"></a>`LAST_UPDATED_AT_ASC` | Last updated timestamp by ascending order. |
+| <a id="artifactregistryrepositorysort-last_updated_at_desc"></a>`LAST_UPDATED_AT_DESC` | Last updated timestamp by descending order. |
+| <a id="artifactregistryrepositorysort-name_asc"></a>`NAME_ASC` | Name by ascending order. |
+| <a id="artifactregistryrepositorysort-name_desc"></a>`NAME_DESC` | Name by descending order. |
+| <a id="artifactregistryrepositorysort-size_bytes_asc"></a>`SIZE_BYTES_ASC` | Size in bytes by ascending order. |
+| <a id="artifactregistryrepositorysort-size_bytes_desc"></a>`SIZE_BYTES_DESC` | Size in bytes by descending order. |
 
 ### `ArtifactRegistryRepositoryVisibility`
 

@@ -12,7 +12,6 @@ RSpec/NamedSubject:
     - 'ee/spec/controllers/gitlab_subscriptions/subscriptions_controller_spec.rb'
     - 'ee/spec/controllers/groups/analytics/cycle_analytics/summary_controller_spec.rb'
     - 'ee/spec/controllers/groups/analytics/productivity_analytics_controller_spec.rb'
-    - 'ee/spec/controllers/groups/analytics/repository_analytics_controller_spec.rb'
     - 'ee/spec/controllers/groups/analytics/tasks_by_type_controller_spec.rb'
     - 'ee/spec/controllers/groups/epics_controller_spec.rb'
     - 'ee/spec/controllers/groups/insights_controller_spec.rb'

@@ -983,4 +983,4 @@ codes that start with `I` are informational notes about valid but worth-knowing 
 ## Related topics
 
 - [GitLab Duo in merge requests](../../project/merge_requests/duo_in_merge_requests.md)
-- [Code Review Flow](../flows/foundational_flows/code_review.md)
+- [Code Review Flow](../flows/foundational_flows/code_review/_index.md)

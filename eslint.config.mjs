@@ -636,6 +636,7 @@ export default [
       'local-rules/vue3-gl-slots': 'error',
       'local-rules/vue3-gl-slots-mixin-pairing': 'error',
       'local-rules/vue3-gl-listeners-mixin-pairing': 'error',
+      'local-rules/gl-toast-mixin': 'error',
     },
   },
   // Spec files (unit tests)

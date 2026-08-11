@@ -1,6 +1,6 @@
 <script>
 import { defineAsyncComponent } from 'vue';
-import { GlButton, GlLink } from '@gitlab/ui';
+import { GlButton, GlLink, GlToastMixin } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { updateHistory } from '~/lib/utils/url_utility';
 import { fetchPolicies } from '~/lib/graphql';
@@ -58,6 +58,7 @@ export default {
       () => import('ee_component/ci/runner/components/runner_dashboard_link.vue'),
     ),
   },
+  mixins: [GlToastMixin],
   props: {
     newRunnerPath: {
       type: String,
@@ -191,7 +192,7 @@ export default {
       this.refetchCounts();
     },
     onDeleted({ message }) {
-      this.$root.$toast?.show(message);
+      this.$toast.show(message);
       this.refetchCounts();
     },
     reportToSentry(error) {

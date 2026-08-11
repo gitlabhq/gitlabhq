@@ -1788,7 +1788,7 @@ class User < ApplicationRecord
   end
 
   def allow_password_authentication_for_web?
-    return false if ldap_user?
+    return false if ldap_user? && !Gitlab::Auth::Ldap::Config.prevent_ldap_sign_in?
     return false if disable_password_authentication_for_sso_users?
 
     Gitlab::CurrentSettings.password_authentication_enabled_for_web?

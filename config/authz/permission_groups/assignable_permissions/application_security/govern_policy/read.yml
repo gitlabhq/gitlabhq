@@ -1,0 +1,9 @@
+---
+name: read_govern_policy
+description: Grants the ability to read policies in the policy store
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - read_govern_policy

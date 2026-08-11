@@ -52,8 +52,8 @@ configure the settings that are common for all providers.
 | `allow_bypass_two_factor`    | Allows users to sign in with the specified providers without two-factor authentication (2FA). Can be set to `true`, `false`, or an array of providers. For more information, see [Bypass two-factor authentication](#bypass-two-factor-authentication). |
 | `allow_single_sign_on`       | Enables the automatic creation of accounts when signing in with OmniAuth. Can be set to `true`, `false`, or an array of providers. For provider names, see the [supported providers table](#supported-providers). When `false`, signing in using your OmniAuth provider account without a pre-existing GitLab account is not allowed. You must create a GitLab account first, and then connect it to your OmniAuth provider account through your profile settings. |
 | `auto_link_ldap_user`        | Creates an LDAP identity in GitLab for users that are created through an OmniAuth provider. To enable this setting, you must have [LDAP integration](../administration/auth/ldap/_index.md) enabled. Requires the `uid` of the user to be the same in both LDAP and the OmniAuth provider. |
-| `auto_link_saml_user`        | Allows users authenticating through a SAML provider to be automatically linked to a current GitLab user if their emails match. To enable this setting, you must have SAML integration enabled. |
-| `auto_link_user`             | Allows users authenticating through an OmniAuth provider to be automatically linked to a current GitLab user if their emails match. Can be set to `true`, `false`, or an array of providers. For provider names, see the [supported providers table](#supported-providers). |
+| `auto_link_saml_user`        | Allows users authenticating through a SAML provider to automatically link to a current GitLab user with a matching email address. To enable this setting, you must have SAML integration enabled. |
+| `auto_link_user`             | Allows users authenticating through an OmniAuth provider to automatically link to a current GitLab user with a matching email address. Accepts, `true`, `false`, or an array of accepted [providers](#supported-providers). By default, a guided linking flow is available. For more information, see [Link an existing account when signing in with OmniAuth](#link-an-existing-account-when-signing-in-with-omniauth). |
 | `auto_sign_in_with_provider` | Enables users to use a single provider name to automatically sign in. This must match the name of the provider, such as `saml` or `google_oauth2`. To prevent an infinite sign-in loop, users must sign out of their identity provider accounts before signing out of GitLab. There are ongoing feature enhancements like [SAML](https://gitlab.com/gitlab-org/gitlab/-/issues/14414) to implement federated sign out for supported OmniAuth providers. |
 | `block_auto_created_users`   | Places automatically-created users in a [pending approval](../administration/moderate_users.md#users-pending-approval) state (unable to sign in) until they are approved by an administrator. When `false`, make sure you define providers that you can control, like SAML or Google. Otherwise, any user on the internet can sign in to GitLab without an administrator's approval. When `true`, auto-created users are blocked by default and must be unblocked by an administrator before they are able to sign in. |
 | `enabled`                    | Enables and disables the use of OmniAuth with GitLab. When `false`, OmniAuth provider buttons are not visible in the user interface. |
@@ -260,6 +260,10 @@ If you're an existing user, after your GitLab account is
 created, you can activate an OmniAuth provider. For example, if you originally signed in with LDAP, you can enable an OmniAuth
 provider like Google.
 
+### Link an OmniAuth provider through profile settings
+
+To link an OmniAuth provider through your profile settings:
+
 1. Sign in to GitLab with your GitLab credentials, LDAP, or another OmniAuth provider.
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
@@ -269,6 +273,43 @@ provider like Google.
    you are redirected back to GitLab.
 
 You can now use your chosen OmniAuth provider to sign in to GitLab.
+
+### Link an existing account when signing in with OmniAuth
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/246957) in GitLab 19.3 [with a feature flag](../administration/feature_flags/_index.md) named `link_omniauth_to_existing_user_on_login`. Enabled on GitLab.com.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+> This feature is available for testing, but not ready for production use.
+
+By default, when you sign in with an OmniAuth provider whose email address matches an existing GitLab account,
+GitLab guides you through linking the provider to your existing account instead of showing a sign-in error.
+
+If `auto_link_user` is enabled, linking happens automatically without a sign in flow.
+If the `link_omniauth_to_existing_user_on_login` feature flag is not enabled on your instance,
+sign-in fails with a 422 error instead.
+
+The guided linking flow works as follows:
+
+1. You attempt to sign in with an OmniAuth provider.
+1. GitLab detects that the email address from the provider matches an existing account.
+1. You are redirected to the sign-in page with a notice:
+   "An account already exists with the email address for your `<provider>` account.
+   Sign in with your existing credentials to connect your `<provider>` account."
+1. You sign in with your existing credentials, such as a username and password.
+1. GitLab displays the **Authorize identity provider link** page.
+1. Select **Authorize**
+
+GitLab matches your email address against both your primary email and any confirmed secondary email addresses.
+After linking, you can use the OmniAuth provider to sign in to GitLab.
+
+Because the link is established only after you prove ownership of the existing account by signing in,
+this flow is more secure than `auto_link_user`, which links accounts on email match alone.
 
 ## Enable or disable sign-in with an OmniAuth provider without disabling import sources
 
@@ -315,7 +356,20 @@ omniauth:
 
 ## Link existing users to OmniAuth users
 
-You can automatically link OmniAuth users with existing GitLab users if their email addresses match.
+You can link OmniAuth users with existing GitLab users if their email addresses match.
+Two methods are available:
+
+- **Automatic linking** (`auto_link_user`): GitLab links the OmniAuth identity to the
+  matching account automatically on sign-in, without requiring the user to take any action.
+- **Guided linking** (`link_omniauth_to_existing_user_on_login` feature flag): When
+  `auto_link_user` is disabled, GitLab prompts the user to sign in with their existing
+  credentials to confirm ownership before linking the identity.
+  For more information, see [Link an existing account when signing in with OmniAuth](#link-an-existing-account-when-signing-in-with-omniauth).
+
+### Automatic linking
+
+To automatically link OmniAuth users with existing GitLab users when their email addresses match,
+enable `auto_link_user`.
 
 The following example enables automatic linking
 for the OpenID Connect provider and the Google OAuth provider.

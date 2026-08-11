@@ -13,7 +13,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       merge_request_diff_commits
       merge_request_diff_files
       merge_request_diff_files_99208b8fac
-      push_rules
     ]
   end
 
@@ -23,10 +22,15 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
     # web_hook_logs_daily's check_19dc80d658 is left NOT VALID by
     # https://gitlab.com/gitlab-org/gitlab/-/work_items/603303 and re-validated (these entries removed)
     # in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244171
+    #
+    # push_rules' check_1d23f0a102 is validated on GitLab.com only
+    # (https://gitlab.com/gitlab-org/gitlab/-/work_items/607950) and remains NOT VALID for self-managed
+    # until https://gitlab.com/gitlab-org/gitlab/-/work_items/607955 (19.6, after required stop 19.5)
     %w[
       web_hook_logs_daily.organization_id
       web_hook_logs_daily.group_id
       web_hook_logs_daily.project_id
+      push_rules.project_id
     ]
   end
 

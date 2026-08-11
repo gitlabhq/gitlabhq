@@ -77,6 +77,27 @@ RSpec.describe Gitlab::Git::WrapsGitalyErrors, feature_category: :gitaly do
           end
         end
       end
+
+      context 'with a message-size overflow' do
+        it 'wraps in a Gitlab::Git::ResourceExhaustedError with a non-retryable message' do
+          call = -> do
+            wrapper.wrapped_gitaly_errors do
+              raise GRPC::ResourceExhausted, 'grpc: Received message larger than max (5691745 vs. 4194304)'
+            end
+          end
+
+          expect { call.call }.to raise_error do |wrapped_error|
+            expect(wrapped_error).to be_a(Gitlab::Git::ResourceExhaustedError)
+            expect(wrapped_error.message).to eql(
+              "The response from Gitaly is too large to load. " \
+                "Maybe, the repository or merge request contains too many commits. " \
+                "This is a size limit, not a temporary error."
+            )
+            expect(wrapped_error.message).not_to include('Try again later')
+            expect(wrapped_error.headers).to eql({})
+          end
+        end
+      end
     end
 
     context 'when receiving GRPC::Core::StatusCodes::NOT_FOUND' do

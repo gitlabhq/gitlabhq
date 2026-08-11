@@ -78,6 +78,14 @@ Grants the ability to create and read dependency list exports.
 | Read | Group | `GET` | `/dependency_list_exports/:export_id` |
 | Read | Group | `GET` | `/dependency_list_exports/:export_id/download` |
 
+#### Policy Store Policy
+
+Grants the ability to read policies in the policy store.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Read | Instance | `GET` | `/organizations/:id/security/policy_store` |
+
 #### SBOM Occurrence
 
 Grants the ability to read SBOM occurrences.

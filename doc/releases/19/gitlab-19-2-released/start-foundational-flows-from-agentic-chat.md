@@ -19,7 +19,7 @@ When your request matches a specialist workflow, Agentic Chat hands off to one o
 
 - [Developer Flow](../../../user/duo_agent_platform/flows/foundational_flows/developer.md):
   Implements changes or opens a merge request
-- [Code Review Flow](../../../user/duo_agent_platform/flows/foundational_flows/code_review.md):
+- [Code Review Flow](../../../user/duo_agent_platform/flows/foundational_flows/code_review/_index.md):
   Reviews a merge request
 - [Fix CI/CD Pipeline Flow](../../../user/duo_agent_platform/flows/foundational_flows/fix_pipeline.md):
   Diagnoses and repairs a failed pipeline

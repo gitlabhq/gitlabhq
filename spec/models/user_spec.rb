@@ -7739,6 +7739,22 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       let_it_be(:user) { create(:omniauth_user, provider: 'ldapmain') }
 
       it { is_expected.to be_falsey }
+
+      context 'when prevent_ldap_sign_in is enabled' do
+        before do
+          stub_ldap_setting(prevent_ldap_sign_in: true)
+        end
+
+        it { is_expected.to be_truthy }
+
+        context 'when password authentication is disabled for the web interface' do
+          before do
+            stub_application_setting(password_authentication_enabled_for_web: false)
+          end
+
+          it { is_expected.to be_falsey }
+        end
+      end
     end
 
     it_behaves_like 'OmniAuth user password authentication'

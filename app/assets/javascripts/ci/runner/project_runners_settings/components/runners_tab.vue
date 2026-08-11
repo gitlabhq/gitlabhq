@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlLink, GlTab, GlBadge, GlLoadingIcon } from '@gitlab/ui';
+import { GlAlert, GlLink, GlTab, GlBadge, GlLoadingIcon, GlToastMixin } from '@gitlab/ui';
 import { captureException } from '~/sentry/sentry_browser_wrapper';
 import { fetchPolicies } from '~/lib/graphql';
 
@@ -27,7 +27,7 @@ export default {
     RunnerActionsCell,
     RunnerPagination,
   },
-  mixins: [glSlotsMixin],
+  mixins: [glSlotsMixin, GlToastMixin],
   props: {
     projectFullPath: {
       type: String,
@@ -105,7 +105,7 @@ export default {
   },
   methods: {
     onDeleted({ message }) {
-      this.$root.$toast?.show(message);
+      this.$toast.show(message);
     },
     onPaginationInput(value) {
       this.pagination = value;

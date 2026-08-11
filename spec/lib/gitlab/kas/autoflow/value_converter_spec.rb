@@ -46,6 +46,22 @@ RSpec.describe Gitlab::Kas::Autoflow::ValueConverter, feature_category: :deploym
       expect(name.val.string_value).to eq('runner')
     end
 
+    it 'converts a wrapped sensitive string to a sensitive_string value' do
+      wrapped = described_class.sensitive_string('s3cr3t')
+
+      expect(described_class.to_value(wrapped).sensitive_string.value).to eq('s3cr3t')
+    end
+
+    it 'redacts the wrapped value from every serialization path' do
+      wrapped = described_class.sensitive_string('s3cr3t')
+
+      expect(wrapped.inspect).not_to include('s3cr3t')
+      expect(wrapped.to_s).not_to include('s3cr3t')
+      expect(wrapped.as_json).not_to include('s3cr3t')
+      expect(wrapped.to_json).not_to include('s3cr3t')
+      expect(wrapped).not_to respond_to(:to_h)
+    end
+
     it 'passes an existing Value through unchanged' do
       value = Gitlab::Agent::Autoflow::Value.new(string_value: 'x')
 

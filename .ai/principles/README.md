@@ -216,6 +216,12 @@ When individual SSOT authors resolve, the distiller mentions and assigns up to
 three of them as reviewers. If no author resolves, it selects one available
 member of the principle's `owner_team`; CODEOWNERS remains the approval route.
 
+For the review checklist and for how to triage the automated review feedback
+these MRs attract, see [Reviewing auto-generated sync merge
+requests](https://docs.gitlab.com/development/ai_instruction_files_review/#reviewing-auto-generated-sync-merge-requests),
+which is the SSOT for reviewing them. This file stays the SSOT for how the
+sync itself works.
+
 ## Running the sync locally
 
 Both binaries operate on the consuming repository's working tree, which they

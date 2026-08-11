@@ -22532,6 +22532,35 @@
           "possibleTypes": null
         },
         {
+          "kind": "ENUM",
+          "name": "AiGovernanceAgentClass",
+          "description": "Agent class segmentation for AI governance dashboard metrics.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "ALL",
+              "description": "All agent classes, combining internal and external agents.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "INTERNAL_DAP",
+              "description": "Agents running on the internal Duo Agent Platform.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "EXTERNAL",
+              "description": "Agents running outside the Duo Agent Platform, such as third-party coding agents.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
           "kind": "OBJECT",
           "name": "AiGovernanceKpi",
           "description": "Aggregated KPI for the AI governance dashboard.",
@@ -22562,7 +22591,7 @@
             },
             {
               "name": "trend",
-              "description": "Bucketed counts across the selected timeframe.",
+              "description": "Bucketed counts across the selected timeframe. Each bucket is computed independently, so for distinct-count KPIs such as agents the buckets do not sum to `count`: an agent active on several days is counted once per day here and once in the total.",
               "args": [],
               "type": {
                 "kind": "LIST",
@@ -35854,6 +35883,65 @@
             {
               "name": "REMOTE",
               "description": "Proxies and caches an upstream registry.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "ArtifactRegistryRepositorySort",
+          "description": "Values for sorting Artifact Registry repositories.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "NAME_ASC",
+              "description": "Name by ascending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "NAME_DESC",
+              "description": "Name by descending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "LAST_UPDATED_AT_ASC",
+              "description": "Last updated timestamp by ascending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "LAST_UPDATED_AT_DESC",
+              "description": "Last updated timestamp by descending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "DOWNLOADS_COUNT_ASC",
+              "description": "Downloads count by ascending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "DOWNLOADS_COUNT_DESC",
+              "description": "Downloads count by descending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SIZE_BYTES_ASC",
+              "description": "Size in bytes by ascending order.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SIZE_BYTES_DESC",
+              "description": "Size in bytes by descending order.",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -166783,6 +166871,18 @@
                   "defaultValue": "LAST_7_DAYS",
                   "isDeprecated": false,
                   "deprecationReason": null
+                },
+                {
+                  "name": "agentClass",
+                  "description": "Agent class to segment the metrics by. Defaults to ALL.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "AiGovernanceAgentClass",
+                    "ofType": null
+                  },
+                  "defaultValue": "ALL",
+                  "isDeprecated": false,
+                  "deprecationReason": null
                 }
               ],
               "type": {
@@ -281634,6 +281734,18 @@
                   "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
                 },
                 {
+                  "name": "sort",
+                  "description": "Sort repositories by the criteria. Introduced in GitLab 19.3: Status: Experiment.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "ArtifactRegistryRepositorySort",
+                    "ofType": null
+                  },
+                  "defaultValue": "LAST_UPDATED_AT_DESC",
+                  "isDeprecated": true,
+                  "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+                },
+                {
                   "name": "after",
                   "description": "Returns the elements in the list that come after the specified cursor.",
                   "type": {
@@ -306599,6 +306711,18 @@
                     "ofType": null
                   },
                   "defaultValue": "LAST_7_DAYS",
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "agentClass",
+                  "description": "Agent class to segment the metrics by. Defaults to ALL.",
+                  "type": {
+                    "kind": "ENUM",
+                    "name": "AiGovernanceAgentClass",
+                    "ofType": null
+                  },
+                  "defaultValue": "ALL",
                   "isDeprecated": false,
                   "deprecationReason": null
                 }

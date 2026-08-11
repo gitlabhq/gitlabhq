@@ -7,6 +7,7 @@ import {
   GlSprintf,
   GlLink,
   GlFormInputGroup,
+  GlToastMixin,
 } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
@@ -42,6 +43,7 @@ export default {
     GlModal: GlModalDirective,
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [GlToastMixin],
   inject: {
     initialEmail: {
       default: '',
