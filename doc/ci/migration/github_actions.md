@@ -18,7 +18,7 @@ pipelines that replicate and enhance your GitHub Action workflows.
 You can do this by hand, or you can use your agent of choice with the
 [GitHub Actions to GitLab CI/CD agent skill](https://about.gitlab.com/github-actions-to-gitlab-ci/)
 
-## Key Similarities and Differences
+## Key similarities and differences
 
 GitHub Actions and GitLab CI/CD are both used to generate pipelines to automate building, testing,
 and deploying your code. Both share similarities including:
@@ -309,7 +309,7 @@ rules:
 
 Pipelines can also be [scheduled by using Cron syntax](../pipelines/schedules.md).
 
-#### Container Images
+#### Container images
 
 With GitLab you can [run your CI/CD jobs in separate, isolated Docker containers](../docker/using_docker_images.md)
 by using the [`image`](../yaml/_index.md#image) keyword.
@@ -621,7 +621,7 @@ include:
 In these examples, the `setup-terraform` GitHub action and the `Terraform.gitlab-ci.yml` GitLab template
 are not exact matches. These two examples are just to show how complex configuration can be reused.
 
-### Security Scanning features
+### Security scanning features
 
 GitLab provides a variety of [security scanners](../../user/application_security/_index.md)
 by default to detect vulnerabilities in all parts of the SDLC. You can add these features
@@ -637,7 +637,7 @@ include:
 You can customize the behavior of security scanners by using CI/CD variables, for example
 with the [SAST scanners](../../user/application_security/sast/_index.md#available-cicd-variables).
 
-### Secrets Management
+### Secrets management
 
 Privileged information, often referred to as "secrets", is sensitive information
 or credentials you need in your CI/CD workflow. You might use secrets to unlock protected resources
@@ -662,12 +662,12 @@ only be done in [the project, group, or instance settings](../variables/_index.m
 Review the [security guidelines](../variables/_index.md#cicd-variable-security) to improve
 the safety of your CI/CD variables.
 
-## Planning and Performing a Migration
+## Planning and performing a migration
 
 The following list of recommended steps was created after observing organizations
 that were able to quickly complete this migration.
 
-### Create a Migration Plan
+### Create a migration plan
 
 Before starting a migration you should create a [migration plan](plan_a_migration.md) to make preparations for the migration.
 
@@ -683,7 +683,7 @@ Before doing any migration work, you should first:
 1. Test your GitLab instance.
    - Ensure [runners](../runners/_index.md) are available, either by using shared GitLab.com runners or installing new runners.
 
-### Migration Steps
+### Migration steps
 
 1. Migrate Projects from GitHub to GitLab:
    - (Recommended) You can use the [GitHub Importer](../../user/project/import/github.md)
@@ -698,9 +698,7 @@ Before doing any migration work, you should first:
 1. Check the [pipeline efficiency documentation](../pipelines/pipeline_efficiency.md)
    to learn how to make your GitLab CI/CD pipelines faster and more efficient.
 
-### Additional Resources
+### Additional resources
 
 - [Video: How to migrate from GitHub to GitLab including Actions](https://www.youtube.com/watch?v=0Id5oMl1Kqs)
 - [Blog: GitHub to GitLab migration the easy way](https://about.gitlab.com/blog/github-to-gitlab-migration-made-easy/)
-
-If you have questions that are not answered here, the [GitLab community forum](https://forum.gitlab.com/) can be a great resource.

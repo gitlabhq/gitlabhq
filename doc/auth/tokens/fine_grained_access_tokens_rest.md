@@ -2421,6 +2421,8 @@ Grants the ability to create, delete, read, and update work items such as epics 
 | Read | User | `GET` | `/issues` |
 | Read | User | `GET` | `/issues_statistics` |
 | Read | Instance | `GET` | `/issues/:id` |
+| Update | Project | `POST` | `/namespaces/:id/-/work_items/:work_item_iid/children/:child_id` |
+| Update | Project | `POST` | `/projects/:id/-/work_items/:work_item_iid/children/:child_id` |
 | Update | Project | `POST` | `/projects/:id/issues/:issue_iid/add_spent_time` |
 | Update | Project | `POST` | `/projects/:id/issues/:issue_iid/move` |
 | Update | Project | `POST` | `/projects/:id/issues/:issue_iid/reset_spent_time` |
@@ -2445,6 +2447,8 @@ Grants the ability to create, delete, read, and update work items such as epics 
 | Update | Project | `PUT` | `/projects/:id/snippets/:noteable_id/discussions/:discussion_id/notes/:note_id` |
 | Update | Project | `PUT` | `/projects/:id/snippets/:noteable_id/notes/:note_id` |
 | Update | Project | `PUT` | `/projects/:id/wiki_pages/:noteable_id/notes/:note_id` |
+| Update | Group | `POST` | `/groups/:id/-/work_items/:work_item_iid/children/:child_id` |
+| Update | Group | `POST` | `/namespaces/:id/-/work_items/:work_item_iid/children/:child_id` |
 | Update | Group | `PATCH` | `/groups/:id/-/work_items/:work_item_iid` |
 | Update | Group | `PATCH` | `/namespaces/:id/-/work_items/:work_item_iid` |
 | Update | Group | `PUT` | `/groups/:id/(-/)epics/:epic_iid` |

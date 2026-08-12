@@ -288,5 +288,3 @@ Before doing any migration work, you should first:
    and share [CI/CD components](../components/_index.md).
 1. See [pipeline efficiency](../pipelines/pipeline_efficiency.md)
    to learn how to make your GitLab CI/CD pipelines faster and more efficient.
-
-If you have questions that are not answered here, the [GitLab community forum](https://forum.gitlab.com/) can be a great resource.

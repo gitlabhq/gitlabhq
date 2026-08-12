@@ -539,6 +539,68 @@ RSpec.describe Blob, feature_category: :source_code_management do
     end
   end
 
+  describe '#readable_text?' do
+    context 'when the blob is text and not stored externally' do
+      let(:blob) { fake_blob(path: 'file.md') }
+
+      it { expect(blob.readable_text?).to be_truthy }
+    end
+
+    context 'when the blob is binary' do
+      let(:blob) { fake_blob(path: 'file.pdf', binary: true) }
+
+      it { expect(blob.readable_text?).to be_falsy }
+    end
+
+    context 'when the blob is stored externally via LFS' do
+      let(:blob) { fake_blob(path: 'file.md', lfs: true) }
+
+      it { expect(blob.readable_text?).to be_falsy }
+    end
+
+    context 'when the blob is text but truncated' do
+      let(:blob) { fake_blob(path: 'file.md') }
+
+      before do
+        allow(blob).to receive(:truncated?).and_return(true)
+      end
+
+      it 'returns true regardless of truncation' do
+        expect(blob.readable_text?).to be_truthy
+      end
+    end
+  end
+
+  describe '#fully_readable_text?' do
+    context 'when the blob is text and not stored externally' do
+      let(:blob) { fake_blob(path: 'file.md') }
+
+      it { expect(blob.fully_readable_text?).to be_truthy }
+    end
+
+    context 'when the blob is binary' do
+      let(:blob) { fake_blob(path: 'file.pdf', binary: true) }
+
+      it { expect(blob.fully_readable_text?).to be_falsy }
+    end
+
+    context 'when the blob is stored externally via LFS' do
+      let(:blob) { fake_blob(path: 'file.md', lfs: true) }
+
+      it { expect(blob.fully_readable_text?).to be_falsy }
+    end
+
+    context 'when the blob is text but truncated' do
+      let(:blob) { fake_blob(path: 'file.md') }
+
+      before do
+        allow(blob).to receive(:truncated?).and_return(true)
+      end
+
+      it { expect(blob.fully_readable_text?).to be_falsy }
+    end
+  end
+
   describe 'policy' do
     let(:project) { build_stubbed(:project) }
 

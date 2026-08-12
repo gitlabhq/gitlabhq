@@ -21,7 +21,7 @@ RSpec.describe Gitlab::Asciidoc::IncludeProcessor do
 
   let(:document) { Asciidoctor::Document.new(lines) }
 
-  let(:a_blob) { double(:Blob, readable_text?: true, data: a_data) }
+  let(:a_blob) { double(:Blob, readable_text?: true, truncated?: false, data: a_data) }
   let(:a_data) { 'include::b.adoc[]' }
 
   let(:directives) { [':max-include-depth: 1000'] }
@@ -50,6 +50,19 @@ RSpec.describe Gitlab::Asciidoc::IncludeProcessor do
 
         it 'raises NoData' do
           expect { result }.to raise_error(described_class::NoData)
+        end
+      end
+
+      context 'when the blob is truncated' do
+        let(:filename) { 'large_file.txt' }
+        let(:truncated_blob) { double(:Blob, readable_text?: true, truncated?: true) }
+
+        before do
+          allow(project.repository).to receive(:blob_at).with(ref, filename).and_return(truncated_blob)
+        end
+
+        it 'raises NoData with too large message' do
+          expect { result }.to raise_error(described_class::NoData, 'File is too large')
         end
       end
 

@@ -72,6 +72,18 @@ module API
           end
         end
 
+        def render_child_response(result, work_item)
+          if result[:status] == :success
+            status :created
+            present work_item,
+              with: Entities::WorkItemBasic,
+              current_user: current_user,
+              notifications_allow_participant_fallback: true
+          else
+            render_api_error!(Array(result[:message]).join(', '), result[:http_status] || :unprocessable_entity)
+          end
+        end
+
         def render_linked_items_for(parent_work_item, link_type: nil)
           render_paginated_work_items_for(
             parent_work_item, entity: ::API::Entities::WorkItems::LinkedWorkItem

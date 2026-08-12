@@ -2209,6 +2209,19 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
         end
       end
     end
+
+    context 'when text blobs are truncated' do
+      before do
+        # Stub the Blob instance to simulate a truncated blob in diff files
+        allow_next_instance_of(Blob) do |blob_instance|
+          allow(blob_instance).to receive(:truncated?).and_return(true)
+        end
+      end
+
+      it 'still shows the diff for text files' do
+        is_expected.to have_body_text('archive_formats_regex')
+      end
+    end
   end
 
   describe 'email on push with a single commit' do

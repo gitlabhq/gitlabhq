@@ -177,8 +177,6 @@ constants:
   - INTEGRATION_TYPE
   ee/app/services/llm/chat_service.rb:
   - MISSING_RESOURCE_ID_MESSAGE
-  ee/app/services/packages/pypi/upstream/client.rb:
-  - UPSTREAM_FAILURE_ERRORS
   ee/app/services/search/zoekt/indexing_task_service.rb:
   - WATERMARK_RESCHEDULE_INTERVAL
   ee/app/services/search/zoekt/task_serializer_service.rb:
@@ -216,6 +214,9 @@ constants:
   - PROMPT_SIZE
   ee/lib/gitlab/llm/chat_storage/postgresql.rb:
   - DEFAULT_CONVERSATION_TYPE
+  ee/lib/gitlab/nats/client.rb:
+  - DEFAULT_FETCH_TIMEOUT
+  - MESSAGE_ID_HEADER
   ee/lib/gitlab/scim/base_provisioning_service.rb:
   - SKIP_EMAIL_CONFIRMATION
   ee/lib/gitlab/search/client.rb:
@@ -468,8 +469,6 @@ methods:
   - issue_exists?
   - enable_ci
   - valid_runners_token?
-  ee/app/models/ai/duo_code_review.rb:
-  - classic?
   ee/app/models/concerns/ai/user_authorizable.rb:
   - any_group_with_ai_available?
   ee/app/models/concerns/security/pipeline_execution_schedule_policy.rb:
@@ -620,7 +619,6 @@ scopes:
   - by_relation
   app/models/user.rb:
   - for_todos
-  - ordered_by_id_desc
   - with_provisioning_project
   app/models/user_detail.rb:
   - project_provisioned

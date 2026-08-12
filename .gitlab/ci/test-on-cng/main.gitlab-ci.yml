@@ -98,6 +98,14 @@ include:
   variables:
     EXTRA_DEPLOY_VALUES: --env COVERBAND_ENABLED=${COVERBAND_ENABLED}
 
+# pipeline variables outrank job variables, so export it instead
+.without-coverband:
+  before_script:
+    - export COVERBAND_ENABLED=false
+    - !reference [.qa-install, before_script]
+    - !reference [.cng-deploy-cmd, script]
+    - bundle exec orchestrator metrics start --interval 1
+
 # ==========================================
 # Pre stage
 # ==========================================
@@ -170,6 +178,7 @@ cng-registry:
 cng-secrets-manager:
   extends:
     - .cng-test
+    - .without-coverband
   variables:
     QA_SCENARIO: Test::Integration::SecretsManager
     QA_RSPEC_TAGS: --tag secrets_manager
@@ -183,6 +192,8 @@ cng-secrets-manager:
 cng-vue3-rollout:
   extends:
     - .cng-test
+    # one example, so the mapping adds nothing
+    - .without-coverband
   variables:
     QA_SCENARIO: Test::Instance::Vue3Rollout
     QA_RSPEC_TAGS: --tag vue3_rollout
@@ -192,6 +203,8 @@ cng-vue3-rollout:
 cng-relative-url:
   extends:
     - cng-instance
+    # smoke specs duplicate cng-instance, so this mapping adds nothing
+    - .without-coverband
   variables:
     QA_SCENARIO: Test::Instance::Smoke
     QA_RELATIVE_URL_ROOT: "/relative"
@@ -207,6 +220,7 @@ cng-oauth:
     QA_GITHUB_OAUTH_APP_ID: $QA_GITHUB_OAUTH_APP_ID
     QA_GITHUB_OAUTH_APP_SECRET: $QA_GITHUB_OAUTH_APP_SECRET
   before_script:
+    - export COVERBAND_ENABLED=false
     # Install 1Password CLI for GitHub 2FA authentication
     - |
       curl -sSfO https://downloads.1password.com/linux/debian/amd64/stable/1password-cli-amd64-latest.deb
@@ -249,3 +263,7 @@ upload-test-runtime-data:
   extends:
     - .upload-test-runtime-data
     - .rules:report:upload-test-runtime-data
+
+export-code-paths-mapping:
+  extends:
+    - .export-code-paths-mapping

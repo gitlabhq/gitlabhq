@@ -38,7 +38,7 @@ RSpec.describe Banzai::Filter::IncludeFilter, feature_category: :markdown do
     }
   end
 
-  let(:file_blob) { instance_double(::Blob, readable_text?: true, data: file_data) }
+  let(:file_blob) { double(::Blob, readable_text?: true, truncated?: false, data: file_data) } # rubocop:disable RSpec/VerifiedDoubles -- Blob delegates truncated? via SimpleDelegator
 
   before do
     allow(project.repository).to receive(:blob_at).with(ref, anything).and_return(nil)
@@ -121,7 +121,7 @@ RSpec.describe Banzai::Filter::IncludeFilter, feature_category: :markdown do
     end
 
     context 'when reading a wiki blob' do
-      let(:wiki_blob) { instance_double(::Blob, readable_text?: true, data: wiki_data) }
+      let(:wiki_blob) { double(::Blob, readable_text?: true, truncated?: false, data: wiki_data) } # rubocop:disable RSpec/VerifiedDoubles -- Blob delegates truncated? via SimpleDelegator
 
       before do
         allow(project.repository).to receive(:blob_at).with(ref, 'wiki.md').and_return(wiki_blob)
@@ -130,6 +130,18 @@ RSpec.describe Banzai::Filter::IncludeFilter, feature_category: :markdown do
 
       it 'strips any frontmatter' do
         expect(filter('::include{file=wiki.md}', wiki_context)).to eq file_data
+      end
+    end
+
+    context 'when the included blob is truncated' do
+      let(:truncated_blob) { double(::Blob, readable_text?: true, truncated?: true) } # rubocop:disable RSpec/VerifiedDoubles -- Blob delegates truncated? via SimpleDelegator
+
+      before do
+        allow(project.repository).to receive(:blob_at).with(ref, 'file.md').and_return(truncated_blob)
+      end
+
+      it 'returns an error message' do
+        expect(filter(text_include, context)).to include('too large')
       end
     end
   end

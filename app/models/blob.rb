@@ -212,8 +212,13 @@ class Blob < SimpleDelegator
     UploaderHelper::SAFE_AUDIO_EXT.include?(extension)
   end
 
+  # readable_text? only detects text blobs; data consumers must check truncated? or use fully_readable_text?.
   def readable_text?
-    text_in_repo? && !stored_externally? && !truncated?
+    text_in_repo? && !stored_externally?
+  end
+
+  def fully_readable_text?
+    readable_text? && !truncated?
   end
 
   def simple_viewer

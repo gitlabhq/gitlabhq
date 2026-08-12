@@ -1,4 +1,5 @@
 import { builders } from 'prosemirror-test-builder';
+import { CellSelection } from '@tiptap/pm/tables';
 import CopyPaste from '~/content_editor/extensions/copy_paste';
 import CodeBlockHighlight from '~/content_editor/extensions/code_block_highlight';
 import Loading, { findAllLoaders } from '~/content_editor/extensions/loading';
@@ -183,6 +184,304 @@ describe('content_editor/extensions/copy_paste', () => {
 
 `,
       );
+    });
+  });
+
+  describe('table cell selections', () => {
+    const findCellPositions = () => {
+      const positions = [];
+      tiptapEditor.state.doc.descendants((node, pos) => {
+        if (node.type.name === 'tableCell' || node.type.name === 'tableHeader') {
+          positions.push(pos);
+        }
+        return true;
+      });
+      return positions;
+    };
+
+    const selectCellRange = (anchorIndex, headIndex) => {
+      const cells = findCellPositions();
+      const { doc: stateDoc, tr } = tiptapEditor.state;
+      tiptapEditor.view.dispatch(
+        tr.setSelection(CellSelection.create(stateDoc, cells[anchorIndex], cells[headIndex])),
+      );
+    };
+
+    const getTableRows = () => {
+      const tableNode = tiptapEditor.state.doc.firstChild;
+      const rows = [];
+      tableNode.forEach((row) => {
+        const cells = [];
+        row.forEach((cell) => cells.push(cell.textContent));
+        rows.push(cells);
+      });
+      return rows;
+    };
+
+    describe('when copying multiple table cells', () => {
+      let event;
+
+      beforeEach(() => {
+        event = buildClipboardEvent({ eventName: 'copy' });
+
+        tiptapEditor.commands.insertContent(
+          '<table><tr><td>Cell 1</td><td>Cell 2</td></tr><tr><td>Cell 3</td><td>Cell 4</td></tr></table>',
+        );
+        selectCellRange(0, 1);
+        tiptapEditor.view.dispatchEvent(event);
+      });
+
+      it('sets table-wrapped HTML in the clipboard', () => {
+        const htmlCall = event.clipboardData.setData.mock.calls.find(
+          ([format]) => format === 'text/html',
+        );
+
+        expect(htmlCall[1]).toMatch(/^<table><tbody><tr>/);
+        expect(htmlCall[1]).toContain('Cell 1');
+        expect(htmlCall[1]).toContain('Cell 2');
+      });
+
+      it('sets tab-separated plain text in the clipboard', () => {
+        expect(event.clipboardData.setData).toHaveBeenCalledWith('text/plain', 'Cell 1\tCell 2');
+      });
+    });
+
+    describe('when copying cells containing tabs or newlines', () => {
+      it('replaces them with spaces in the plain text clipboard data', () => {
+        const event = buildClipboardEvent({ eventName: 'copy' });
+
+        const cellWith = (text) => ({
+          type: 'tableCell',
+          content: [{ type: 'paragraph', content: [{ type: 'text', text }] }],
+        });
+
+        tiptapEditor.commands.insertContent({
+          type: 'table',
+          content: [
+            { type: 'tableRow', content: [cellWith('with\ttab'), cellWith('with\nnewline')] },
+            { type: 'tableRow', content: [cellWith('C'), cellWith('D')] },
+          ],
+        });
+        selectCellRange(0, 1);
+        tiptapEditor.view.dispatchEvent(event);
+
+        expect(event.clipboardData.setData).toHaveBeenCalledWith(
+          'text/plain',
+          'with tab\twith newline',
+        );
+      });
+    });
+
+    describe('when pasting table cells inside a table', () => {
+      beforeEach(() => {
+        tiptapEditor.commands.insertContent(
+          '<table><tr><td>A</td><td>B</td></tr><tr><td>C</td><td>D</td></tr></table>',
+        );
+        // position cursor inside the first cell
+        tiptapEditor.commands.setTextSelection(4);
+      });
+
+      it('distributes pasted cells across columns', async () => {
+        const result = await triggerPasteEventHandler(
+          buildClipboardEvent({
+            types: ['text/plain', 'text/html'],
+            data: {
+              'text/plain': 'X\tY',
+              'text/html': '<table><tr><td>X</td><td>Y</td></tr></table>',
+            },
+          }),
+        );
+
+        expect(result).toBe(true);
+        expect(getTableRows()).toEqual([
+          ['X', 'Y'],
+          ['C', 'D'],
+        ]);
+      });
+
+      it('auto-expands the table when pasting more cells than remaining columns', async () => {
+        const result = await triggerPasteEventHandler(
+          buildClipboardEvent({
+            types: ['text/plain', 'text/html'],
+            data: {
+              'text/plain': 'X\tY\tZ',
+              'text/html': '<table><tr><td>X</td><td>Y</td><td>Z</td></tr></table>',
+            },
+          }),
+        );
+
+        expect(result).toBe(true);
+        expect(getTableRows()).toEqual([
+          ['X', 'Y', 'Z'],
+          ['C', 'D', ''],
+        ]);
+      });
+
+      it('distributes pasted cells when the table HTML is wrapped in div elements', async () => {
+        const result = await triggerPasteEventHandler(
+          buildClipboardEvent({
+            types: ['text/plain', 'text/html'],
+            data: {
+              'text/plain': 'X\tY',
+              'text/html':
+                '<div><div data-sticky-header="true"><table><tbody><tr><td>X</td><td>Y</td></tr></tbody></table></div></div>',
+            },
+          }),
+        );
+
+        expect(result).toBe(true);
+        expect(getTableRows()).toEqual([
+          ['X', 'Y'],
+          ['C', 'D'],
+        ]);
+      });
+
+      it('distributes pasted cells when the clipboard HTML contains orphan tr elements', async () => {
+        const result = await triggerPasteEventHandler(
+          buildClipboardEvent({
+            types: ['text/plain', 'text/html', 'text/x-gfm'],
+            data: {
+              'text/plain': 'X\tY',
+              'text/html': '<tr><td><p>X</p></td><td><p>Y</p></td></tr>',
+              'text/x-gfm': '<table><tr><td>X</td><td>Y</td></tr></table>',
+            },
+          }),
+        );
+
+        expect(result).toBe(true);
+        expect(getTableRows()).toEqual([
+          ['X', 'Y'],
+          ['C', 'D'],
+        ]);
+      });
+
+      it('sanitizes pasted table HTML', async () => {
+        const result = await triggerPasteEventHandler(
+          buildClipboardEvent({
+            types: ['text/plain', 'text/html'],
+            data: {
+              'text/plain': 'X\tY',
+              'text/html':
+                '<table><tr><td><a href="javascript:alert(1)">X</a></td><td><img src="x" onerror="alert(1)">Y</td></tr></table>',
+            },
+          }),
+        );
+
+        expect(result).toBe(true);
+        // eslint-disable-next-line no-script-url
+        expect(JSON.stringify(tiptapEditor.state.doc.toJSON())).not.toContain('javascript:');
+      });
+
+      it('strips stray div and span wrappers from external table HTML', async () => {
+        const result = await triggerPasteEventHandler(
+          buildClipboardEvent({
+            types: ['text/plain', 'text/html'],
+            data: {
+              'text/plain': 'X\tY',
+              'text/html':
+                '<table><tr><td><div><span>X</span></div></td><td><div><span>Y</span></div></td></tr></table>',
+            },
+          }),
+        );
+
+        expect(result).toBe(true);
+        expect(getTableRows()).toEqual([
+          ['X', 'Y'],
+          ['C', 'D'],
+        ]);
+
+        const docJSON = JSON.stringify(tiptapEditor.state.doc.toJSON());
+        expect(docJSON).not.toContain('"div"');
+        expect(docJSON).not.toContain('"span"');
+      });
+
+      it('does not use the table paste handler when pasting content without table cells', async () => {
+        const result = await triggerPasteEventHandler(
+          buildClipboardEvent({
+            types: ['text/plain', 'text/html'],
+            data: {
+              'text/plain': 'plain text',
+              'text/html': '<p>plain text</p>',
+            },
+          }),
+        );
+
+        expect(result).toBe(true);
+        expect(findAllLoaders(tiptapEditor.state)).toHaveLength(1);
+      });
+
+      it('uses the markdown-based paste path when pasting a single cell', async () => {
+        const result = await triggerPasteEventHandler(
+          buildClipboardEvent({
+            types: ['text/plain', 'text/html', 'text/x-gfm'],
+            data: {
+              'text/plain': 'bold text',
+              'text/html': '<tr><td><p><strong>bold text</strong></p></td></tr>',
+              'text/x-gfm': '**bold text**',
+            },
+          }),
+        );
+
+        // gfmContent path returns true and processes markdown asynchronously
+        expect(result).toBe(true);
+        expect(findAllLoaders(tiptapEditor.state)).toHaveLength(1);
+        expect(getTableRows()).not.toEqual([
+          ['bold text', 'B'],
+          ['C', 'D'],
+        ]);
+      });
+    });
+
+    describe('when pasting table cells outside a table', () => {
+      it('falls back to the regular paste handler', async () => {
+        tiptapEditor.commands.setContent('<p>Some text</p>');
+        tiptapEditor.commands.setTextSelection(1);
+
+        const result = await triggerPasteEventHandler(
+          buildClipboardEvent({
+            types: ['text/plain', 'text/html'],
+            data: {
+              'text/plain': 'X\tY',
+              'text/html': '<table><tr><td>X</td><td>Y</td></tr></table>',
+            },
+          }),
+        );
+
+        expect(result).toBe(true);
+        expect(findAllLoaders(tiptapEditor.state)).toHaveLength(1);
+      });
+    });
+
+    describe('round-trip: copying cells in the editor and pasting into a table', () => {
+      it('distributes the copied cells across the target row', async () => {
+        const copyEvent = buildClipboardEvent({ eventName: 'copy' });
+
+        tiptapEditor.commands.insertContent(
+          '<table><tr><td>data</td><td>banana</td></tr><tr><td>C</td><td>D</td></tr></table>',
+        );
+        selectCellRange(0, 1);
+        tiptapEditor.view.dispatchEvent(copyEvent);
+
+        const clipboard = Object.fromEntries(copyEvent.clipboardData.setData.mock.calls);
+
+        tiptapEditor.commands.setContent(
+          '<table><tr><td>A</td><td>B</td></tr><tr><td>C</td><td>D</td></tr></table>',
+        );
+        tiptapEditor.commands.setTextSelection(4);
+
+        const result = await triggerPasteEventHandler(
+          buildClipboardEvent({
+            types: Object.keys(clipboard),
+            data: clipboard,
+          }),
+        );
+
+        expect(result).toBe(true);
+        expect(getTableRows()).toEqual([
+          ['data', 'banana'],
+          ['C', 'D'],
+        ]);
+      });
     });
   });
 

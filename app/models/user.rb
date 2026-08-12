@@ -701,7 +701,7 @@ class User < ApplicationRecord
     end
 
     after_transition active: any do |user|
-      user.starred_projects.where('star_count > 0').update_counters(star_count: -1)
+      user.starred_projects.where(Project.arel_table[:star_count].gt(0)).update_counters(star_count: -1)
     end
   end
 

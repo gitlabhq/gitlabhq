@@ -2282,6 +2282,8 @@
     - <<: *if-dot-com-gitlab-org-schedule
       variables:
         E2E_RUNTIME_COEFFICIENT_GDK: "1.2"
+        # Serial cng runs need more jobs to hold wall clock
+        E2E_RUNTIME_COEFFICIENT_CNG: "1.2"
         # calculate_parallel_jobs_count method in qa/qa/tools/ci/pipeline_creator.rb
         # uses this coefficient to determine the number of parallel job instances
     - *if-default-branch-schedule-nightly
@@ -2465,7 +2467,12 @@
     - !reference [".prevent-tier-1", rules]
     - !reference [".qa:rules:e2e-blocking-base-after", rules]
     - <<: *if-dot-com-gitlab-org-schedule
-      variables: *qa-e2e-test-schedule-variables
+      variables:
+        <<: *qa-e2e-test-schedule-variables
+        # Only the scheduled run needs the code paths mapping
+        COVERBAND_ENABLED: "true"
+        # Parallel processes share one coverage counter and corrupt it
+        QA_RUN_IN_PARALLEL: "false"
 
 .qa:rules:e2e:perf-on-cng:
   rules:

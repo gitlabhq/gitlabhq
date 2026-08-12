@@ -11952,6 +11952,9 @@ msgstr ""
 msgid "ArtifactRegistry|Artifact Registry returned an error."
 msgstr ""
 
+msgid "ArtifactRegistry|Artifact list updated."
+msgstr ""
+
 msgid "ArtifactRegistry|Artifact registry"
 msgstr ""
 
@@ -12128,6 +12131,9 @@ msgid "ArtifactRegistry|Install command:"
 msgstr ""
 
 msgid "ArtifactRegistry|Last updated"
+msgstr ""
+
+msgid "ArtifactRegistry|Loading artifacts."
 msgstr ""
 
 msgid "ArtifactRegistry|Loading repositories."
@@ -59327,9 +59333,6 @@ msgstr ""
 msgid "PolicyStore|Environment"
 msgstr ""
 
-msgid "PolicyStore|Environment Promotion"
-msgstr ""
-
 msgid "PolicyStore|Environment State"
 msgstr ""
 
@@ -59364,9 +59367,6 @@ msgid "PolicyStore|Maintainer"
 msgstr ""
 
 msgid "PolicyStore|Message shown when the action is blocked"
-msgstr ""
-
-msgid "PolicyStore|Min hours"
 msgstr ""
 
 msgid "PolicyStore|Mode"
@@ -59432,15 +59432,6 @@ msgstr ""
 msgid "PolicyStore|Require approval"
 msgstr ""
 
-msgid "PolicyStore|Require minimum time in preceding environment before promotion"
-msgstr ""
-
-msgid "PolicyStore|Require successful deployment to preceding environment before promotion"
-msgstr ""
-
-msgid "PolicyStore|Required environment"
-msgstr ""
-
 msgid "PolicyStore|Restrict which tools an AI agent may call"
 msgstr ""
 
@@ -59454,9 +59445,6 @@ msgid "PolicyStore|Role approvers"
 msgstr ""
 
 msgid "PolicyStore|Rules"
-msgstr ""
-
-msgid "PolicyStore|Same version/ref"
 msgstr ""
 
 msgid "PolicyStore|Scope"
@@ -59483,9 +59471,6 @@ msgstr ""
 msgid "PolicyStore|Showing the first %{shown} of %{total} projects."
 msgstr ""
 
-msgid "PolicyStore|Soak Time"
-msgstr ""
-
 msgid "PolicyStore|Specific projects"
 msgstr ""
 
@@ -59493,6 +59478,9 @@ msgid "PolicyStore|Start from scratch"
 msgstr ""
 
 msgid "PolicyStore|Targeted"
+msgstr ""
+
+msgid "PolicyStore|The available %{catalog} could not be fetched from the Policy Store API. Refresh the page to try again."
 msgstr ""
 
 msgid "PolicyStore|This policy will be enabled for %{scope} in Audit mode. Events will be logged only."
@@ -59555,6 +59543,9 @@ msgstr ""
 msgid "PolicyStore|Your progress will be lost if you leave without saving."
 msgstr ""
 
+msgid "PolicyStore|actions"
+msgstr ""
+
 msgid "PolicyStore|all projects in the group"
 msgstr ""
 
@@ -59567,9 +59558,6 @@ msgstr ""
 msgid "PolicyStore|e.g. 2027-01-02T00:00:00Z"
 msgstr ""
 
-msgid "PolicyStore|e.g. 24"
-msgstr ""
-
 msgid "PolicyStore|e.g. America/New_York"
 msgstr ""
 
@@ -59577,6 +59565,12 @@ msgid "PolicyStore|e.g. production, prod-*"
 msgstr ""
 
 msgid "PolicyStore|e.g. security-leads, engineering-leads"
+msgstr ""
+
+msgid "PolicyStore|rules"
+msgstr ""
+
+msgid "PolicyStore|triggers"
 msgstr ""
 
 msgid "Polling interval multiplier"
