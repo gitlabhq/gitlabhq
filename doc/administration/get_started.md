@@ -206,7 +206,7 @@ Rate limits also improve the security of your application.
 
 ### Configure rate limits
 
-You can make changes to your default rate limits from the **Admin** area. For more information about configuration, see the [**Admin** area page](../rate_limits/_index.md#configurable-limits).
+You can make changes to your default rate limits from the **Admin** area. For more information about configuration, see the [**Admin** area page](../rate_limits/_index.md#configuration-options).
 
 - Define [issues rate limits](settings/rate_limit_on_issues_creation.md) to set a maximum number of issue creation requests per minute, per user.
 - Enforce [user and IP rate limits](settings/user_and_ip_rate_limits.md) for unauthenticated web requests.

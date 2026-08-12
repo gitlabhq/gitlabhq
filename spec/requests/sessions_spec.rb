@@ -149,7 +149,7 @@ RSpec.describe 'Sessions', feature_category: :system_access do
       before do
         allow_next_instance_of(Authn::IamService::AcceptLoginChallengeService) do |service|
           allow(service).to receive(:execute).and_return(
-            ServiceResponse.error(message: 'IAM login accept failed: HTTP 500', reason: :iam_request_failed)
+            ServiceResponse.error(message: 'IAM login accept failed: unavailable', reason: :service_unavailable)
           )
         end
       end

@@ -54,7 +54,7 @@ export default {
       required: false,
     },
   },
-  emits: ['changeFilter', 'changeSort'],
+  emits: ['change-filter', 'change-sort'],
   computed: {
     summarizeTracking() {
       return { label: 'work_item_view_summary', property: this.workItemType };
@@ -102,7 +102,7 @@ export default {
         tracking-action="work_item_notes_filter_changed"
         tracking-label="item_track_notes_filtering"
         data-testid="work-item-filter"
-        @select="$emit('changeFilter', $event)"
+        @select="$emit('change-filter', $event)"
       />
       <work-item-activity-sort-filter
         :work-item-type="workItemType"
@@ -114,7 +114,7 @@ export default {
         tracking-action="work_item_notes_sort_order_changed"
         tracking-label="item_track_notes_sorting"
         data-testid="work-item-sort"
-        @select="$emit('changeSort', $event)"
+        @select="$emit('change-sort', $event)"
       />
     </div>
   </div>

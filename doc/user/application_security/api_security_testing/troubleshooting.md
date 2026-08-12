@@ -233,7 +233,7 @@ If you cannot use a non-TLS connection to access the URL, contact the Support te
 
 You can expedite the investigation with the [testssl.sh tool](https://testssl.sh/). From a machine with a bash shell and connectivity to the affected server:
 
-1. Download the latest release `zip` or `tar.gz` file and extract from <https://github.com/drwetter/testssl.sh/releases>.
+1. Download the latest release `zip` or `tar.gz` file and extract from <https://github.com/testssl/testssl.sh/releases>.
 1. Run `./testssl.sh --log https://specs`.
 1. Attach the log file to your support ticket.
 

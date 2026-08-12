@@ -105,7 +105,7 @@ To use a custom response:
 
 ## Maximum authenticated requests to `project/:id/jobs` per minute
 
-To reduce timeouts, the `project/:id/jobs` endpoint has a default [rate limit](../../rate_limits/_index.md#project-jobs-api-endpoint) of 600 calls per authenticated user.
+To reduce timeouts, the `project/:id/jobs` endpoint has a default [rate limit](../../rate_limits/_index.md) of 600 calls per authenticated user.
 
 To modify the maximum number of requests:
 

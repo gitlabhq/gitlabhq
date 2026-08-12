@@ -86,7 +86,7 @@ should have the concurrency tuned according to:
 
 Each thread requires a Redis connection, so adding threads may increase Redis
 latency and potentially cause client timeouts. See the
-[Sidekiq documentation about Redis](https://github.com/mperham/sidekiq/wiki/Using-Redis)
+[Sidekiq documentation about Redis](https://github.com/sidekiq/sidekiq/wiki/Using-Redis)
 for more details.
 
 #### Manage thread counts with concurrency field

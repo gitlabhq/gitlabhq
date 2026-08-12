@@ -14,14 +14,6 @@ module QA
               element 'edit-button'
             end
 
-            base.view 'app/assets/javascripts/sidebar/components/assignees/assignee_avatar.vue' do
-              element 'avatar-image'
-            end
-
-            base.view 'app/assets/javascripts/sidebar/components/assignees/uncollapsed_assignee_list.vue' do
-              element 'user-list-more-button'
-            end
-
             base.view 'app/assets/javascripts/work_items/components/work_item_assignees.vue' do
               element 'work-item-assignees'
             end
@@ -36,14 +28,6 @@ module QA
             end
           end
 
-          def more_assignees_link
-            find_element('user-list-more-button')
-          end
-
-          def toggle_more_assignees_link
-            click_element('user-list-more-button')
-          end
-
           def has_assignee?(username)
             wait_assignees_block_finish_loading do
               has_text?(username)
@@ -53,12 +37,6 @@ module QA
           def has_no_assignee?(username)
             wait_assignees_block_finish_loading do
               has_no_text?(username)
-            end
-          end
-
-          def has_avatar_image_count?(count)
-            wait_assignees_block_finish_loading do
-              all_elements('avatar-image', count: count)
             end
           end
 

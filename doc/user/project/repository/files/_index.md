@@ -235,7 +235,7 @@ To change the default handling of a file or file type, create a
 
 To determine which languages are in a repository's files, GitLab uses a Ruby gem.
 When the gem parses a file to determine its file type, [the process can use excessive CPU](https://gitlab.com/gitlab-org/gitaly/-/issues/1565).
-The gem contains a [heuristics configuration file](https://github.com/github/linguist/blob/master/lib/linguist/heuristics.yml)
+The gem contains a [heuristics configuration file](https://github.com/github-linguist/linguist/blob/main/lib/linguist/heuristics.yml)
 that defines which file extensions to parse. These file types can take excessive CPU:
 
 - Files with the `.txt` extension.
@@ -245,7 +245,7 @@ To fix this problem, edit your `.gitattributes` file and assign a language to
 specific file extensions. You can also use this approach to fix misidentified file types:
 
 1. Identify the language to specify. The gem contains a
-   [configuration file for known data types](https://github.com/github/linguist/blob/master/lib/linguist/languages.yml).
+   [configuration file for known data types](https://github.com/github-linguist/linguist/blob/main/lib/linguist/languages.yml).
 
 1. To add an entry for text files, for example:
 

@@ -72,17 +72,15 @@ RSpec.describe Gitlab::PolicyStore do
     end
 
     describe '#list' do
-      it 'delegates to the configured repository' do
-        allow(repository).to receive(:list).with(organization_id: 5, trigger_type: nil).and_return([])
+      it 'delegates to the configured repository, defaulting trigger_type to nil' do
+        unfiltered = [instance_double(Gitlab::PolicyStore::Policy)]
+        filtered = [instance_double(Gitlab::PolicyStore::Policy)]
+        allow(repository).to receive(:list).with(organization_id: 5, trigger_type: nil).and_return(unfiltered)
+        allow(repository).to receive(:list)
+          .with(organization_id: 5, trigger_type: 'deployment_requested').and_return(filtered)
 
-        expect(described_class.list(organization_id: 5)).to eq([])
-      end
-
-      it 'passes the trigger_type through' do
-        allow(repository)
-          .to receive(:list).with(organization_id: 5, trigger_type: 'deployment_requested').and_return([])
-
-        expect(described_class.list(organization_id: 5, trigger_type: 'deployment_requested')).to eq([])
+        expect(described_class.list(organization_id: 5)).to eq(unfiltered)
+        expect(described_class.list(organization_id: 5, trigger_type: 'deployment_requested')).to eq(filtered)
       end
     end
   end

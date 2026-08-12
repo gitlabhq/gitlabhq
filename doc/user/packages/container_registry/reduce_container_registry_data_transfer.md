@@ -26,7 +26,7 @@ is the epic tracking the work to surface this information.
 
 Use these tools and techniques to determine your image's size:
 
-- [Skopeo](https://github.com/containers/skopeo):
+- [Skopeo](https://github.com/podman-container-tools/skopeo):
   use the Skopeo `inspect` command to examine layer count and sizes through API calls. You can
   therefore inspect this data prior to running `docker pull IMAGE`.
 

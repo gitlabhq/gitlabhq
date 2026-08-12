@@ -373,8 +373,8 @@ To revoke a personal access token for a service account:
 
 - On GitLab.com, [GitLab.com-specific rate limits](../gitlab_com/_index.md#rate-limits-on-gitlabcom) apply.
 - On GitLab Self-Managed and GitLab Dedicated, these rate limits apply:
-  - [Configurable rate limits](../../rate_limits/_index.md#configurable-limits)
-  - [Non-configurable rate limits](../../rate_limits/_index.md#non-configurable-limits)
+  - [Configurable rate limits](../../rate_limits/_index.md#configuration-options)
+  - [Non-configurable rate limits](../../rate_limits/non_configurable.md)
 
 ## Related topics
 

@@ -35642,7 +35642,7 @@ msgstr ""
 msgid "FoundationalFlow|Analyze critical Secret Detection vulnerabilities."
 msgstr ""
 
-msgid "FoundationalFlow|Business Context Security Guidelines"
+msgid "FoundationalFlow|Analyze project codebase to generate security context for vulnerability prioritization."
 msgstr ""
 
 msgid "FoundationalFlow|Code Review"
@@ -35658,9 +35658,6 @@ msgid "FoundationalFlow|Diagnose and fix issues in your GitLab CI/CD pipeline."
 msgstr ""
 
 msgid "FoundationalFlow|Fix CI/CD Pipeline"
-msgstr ""
-
-msgid "FoundationalFlow|Generate business context security guidelines for a project."
 msgstr ""
 
 msgid "FoundationalFlow|Migrate your Jenkins pipelines to GitLab CI/CD."
@@ -35697,6 +35694,9 @@ msgid "FoundationalFlow|Streamline code reviews by analyzing code changes and re
 msgstr ""
 
 msgid "FoundationalFlow|Turn feedback into actionable merge requests or issues."
+msgstr ""
+
+msgid "FoundationalFlow|Vulnerability Context Analysis"
 msgstr ""
 
 msgid "Framework id(s) %{missing_ids} are invalid."
@@ -74514,7 +74514,7 @@ msgstr ""
 msgid "SecurityReports|This project has reached the maximum number of vulnerabilities it can contain. New vulnerabilities will not be created."
 msgstr ""
 
-msgid "SecurityReports|This project is public. GitLab Duo will generate merge requests with suggested fixes that may be visible to anyone."
+msgid "SecurityReports|This project is public. GitLab Duo merge requests with suggested fixes might be visible to anyone."
 msgstr ""
 
 msgid "SecurityReports|This project is reaching the maximum number of vulnerabilities it can contain."
@@ -74526,7 +74526,7 @@ msgstr ""
 msgid "SecurityReports|Time period"
 msgstr ""
 
-msgid "SecurityReports|To create the MR privately, see %{linkStart}Resolving a vulnerability privately%{linkEnd}."
+msgid "SecurityReports|To create the merge request privately, see %{linkStart}resolve a vulnerability privately%{linkEnd}."
 msgstr ""
 
 msgid "SecurityReports|To learn more about this CWE, view the %{linkStart}MITRE definition.%{linkEnd}"
@@ -74623,6 +74623,9 @@ msgid "SecurityReports|scanned resources"
 msgstr ""
 
 msgid "SecurityReports|security scanning prerequisites"
+msgstr ""
+
+msgid "SecurityScanProfile|Cannot delete a GitLab-recommended scan profile."
 msgstr ""
 
 msgid "SecurityScanProfile|Configuration is not allowed for the %{trigger_type} trigger"

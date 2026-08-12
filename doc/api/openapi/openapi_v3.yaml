@@ -7242,7 +7242,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_099e406a34d9"
+              "$ref": "#/components/schemas/RequestBody_27d9e6c87000"
   "/api/v4/groups/{id}/member_roles/{member_role_id}":
     delete:
       operationId: deleteApiV4GroupsIdMemberRolesMemberRoleId
@@ -7312,7 +7312,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_099e406a34d9"
+              "$ref": "#/components/schemas/RequestBody_27d9e6c87000"
   "/api/v4/member_roles/{member_role_id}":
     delete:
       operationId: deleteApiV4MemberRolesMemberRoleId
@@ -78890,6 +78890,9 @@ components:
         remove_project:
           type: boolean
           default: false
+        delete_security_scan_profiles:
+          type: boolean
+          default: false
         remove_group:
           type: boolean
           default: false
@@ -97135,7 +97138,7 @@ components:
           nullable: true
       required:
       - extern_uid
-    RequestBody_099e406a34d9:
+    RequestBody_27d9e6c87000:
       type: object
       properties:
         base_access_level:
@@ -97185,6 +97188,10 @@ components:
         remove_project:
           type: boolean
           description: Allows deletion of projects.
+          nullable: true
+        delete_security_scan_profiles:
+          type: boolean
+          description: Delete security scan profiles.
           nullable: true
         remove_group:
           type: boolean

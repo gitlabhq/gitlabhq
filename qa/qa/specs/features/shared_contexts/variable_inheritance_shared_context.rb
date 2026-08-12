@@ -1,6 +1,16 @@
 # frozen_string_literal: true
 
 module QA
+  # This context needs no runner.
+  #
+  # Main expectation:
+  # When a pipeline is created it already carries its variables: forwarded ones are present,
+  # non-forwarded ones are absent.
+  #
+  # Required dependencies:
+  # - Each CI config defines a job that never runs, because a pipeline needs at least one to be created.
+  # - Downstream pipelines are ready once the triggered pipeline succeeds, because a bridge without
+  #   `trigger:strategy` succeeds as soon as it has created its downstream pipeline.
   RSpec.shared_context 'variable inheritance test prep' do
     let(:key) { 'TEST_VAR' }
     let(:value) { 'This is great!' }
@@ -27,7 +37,6 @@ module QA
         description: 'Project for pipeline with variable defined via UI - Downstream',
         group: group)
     end
-    let!(:runner) { create(:group_runner, group: group, name: random_string, tags: [random_string]) }
 
     before do
       Flow::Login.sign_in
@@ -36,14 +45,12 @@ module QA
       downstream2_project.change_pipeline_variables_minimum_override_role('developer')
     end
 
-    after do
-      runner.remove_via_api!
-    end
-
     def start_pipeline_with_variable
+      Flow::Pipeline.wait_for_pipeline_creation_via_api(project: upstream_project)
+
       upstream_project.visit!
       Page::Project::Show.perform(&:close_dap_panel_if_exists)
-      Flow::Pipeline.wait_for_latest_pipeline
+      Page::Project::Menu.perform(&:go_to_pipelines)
 
       initial_pipeline_count = upstream_project.pipelines.size
 
@@ -70,11 +77,13 @@ module QA
       end
     end
 
-    def wait_for_pipelines
-      Support::Waiter.wait_until(max_duration: 300, sleep_interval: 10) do
-        triggered_pipeline&.status == 'success' &&
-          child_pipeline('child1_trigger')&.status == 'success' &&
-          downstream_pipeline(downstream1_project, 'downstream1_trigger')&.status == 'success'
+    def wait_for_triggered_pipeline_to_succeed
+      Support::Waiter.wait_until(
+        max_duration: 120,
+        sleep_interval: 5,
+        message: 'Wait for trigger jobs to create their downstream pipelines'
+      ) do
+        triggered_pipeline&.status == 'success'
       end
     end
 
@@ -82,28 +91,14 @@ module QA
       create(:commit, project: project, commit_message: 'Add CI config file', actions: files)
     end
 
-    def visit_job_page(pipeline_title, job_name)
-      Page::Project::Pipeline::Show.perform do |show|
-        show.close_dap_panel_if_exists
-        show.expand_child_pipeline(title: pipeline_title)
-        # Wait for job items to render inside the expanded panel before clicking
-        show.wait_until { show.has_job?(job_name) }
-        show.click_job(job_name)
-      end
+    def expect_pipeline_to_inherit_variable(pipeline)
+      expect(pipeline).to have_variable(key: key, value: value),
+        "Expected to find `{key: '#{key}', value: '#{value}'}` but got #{pipeline.pipeline_variables}"
     end
 
-    def verify_job_log_shows_variable_value
-      Page::Project::Job::Show.perform do |show|
-        show.wait_until { show.successful? }
-        expect(show.output).to have_content(value)
-      end
-    end
-
-    def verify_job_log_does_not_show_variable_value
-      Page::Project::Job::Show.perform do |show|
-        show.wait_until { show.successful? }
-        expect(show.output).to have_no_content(value)
-      end
+    def expect_pipeline_not_to_inherit_variable(pipeline)
+      expect(pipeline).to have_no_variable(key: key, value: value),
+        "Did not expect to find `{key: '#{key}', value: '#{value}'}` but got #{pipeline.pipeline_variables}"
     end
 
     def triggered_pipeline
@@ -130,7 +125,6 @@ module QA
         content: <<~YAML
           child1_job:
             stage: test
-            tags: ["#{random_string}"]
             script:
               - echo $TEST_VAR
               - echo Done!
@@ -145,7 +139,6 @@ module QA
         content: <<~YAML
           child2_job:
             stage: test
-            tags: ["#{random_string}"]
             script:
               - echo $TEST_VAR
               - echo Done!
@@ -160,7 +153,6 @@ module QA
         content: <<~YAML
           downstream1_job:
             stage: deploy
-            tags: ["#{random_string}"]
             script:
               - echo $TEST_VAR
               - echo Done!
@@ -175,7 +167,6 @@ module QA
         content: <<~YAML
           downstream2_job:
             stage: deploy
-            tags: ["#{random_string}"]
             script:
               - echo $TEST_VAR
               - echo Done!

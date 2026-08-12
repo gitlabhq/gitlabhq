@@ -407,6 +407,76 @@ RSpec.describe Gitlab::HttpIO, feature_category: :job_artifacts do
     end
   end
 
+  describe 'chunk caching' do
+    # The fixture spans several chunks, and no read step lands on a chunk
+    # boundary (192394 % 4096 != 0), so every boundary is crossed mid-step.
+    # That is the ordinary case: trace sizes are arbitrary.
+    let(:buffer_size) { 32.kilobytes }
+    let(:step) { 4.kilobytes }
+    let(:chunk_count) { (size.to_f / buffer_size).ceil }
+    let(:boundaries) { chunk_count - 1 }
+
+    before do
+      stub_remote_url_206(url, file_path)
+      stub_const("Gitlab::HttpIO::BUFFER_SIZE", buffer_size)
+    end
+
+    # Mirrors Gitlab::Ci::Trace::Stream#read_backward, the caller this cache
+    # exists for: walk back to the start of the file in steps smaller than a
+    # chunk, re-seeking to the start of each step afterwards.
+    def read_backward(io)
+      io.seek(0, IO::SEEK_END)
+      out = []
+
+      until io.pos == 0
+        cur = io.pos
+        start = [cur - step, 0].max
+
+        io.seek(start)
+        out.unshift(io.read(cur - start))
+        io.seek(start)
+      end
+
+      out.join
+    end
+
+    it 'requests each chunk once', :aggregate_failures do
+      expect(read_backward(http_io)).to eq(file_body)
+
+      expect(a_request(:get, url)).to have_been_made.times(chunk_count)
+    end
+
+    it 'leaves a forward read unaffected' do
+      expect(http_io.read).to eq(file_body)
+
+      expect(a_request(:get, url)).to have_been_made.times(chunk_count)
+    end
+
+    it 'reads the same bytes as it does without the cache' do
+      cached = read_backward(described_class.new(url, size))
+
+      stub_feature_flags(http_io_previous_chunk_cache: false)
+      uncached = read_backward(described_class.new(url, size))
+
+      expect(cached).to eq(file_body)
+      expect(uncached).to eq(cached)
+    end
+
+    context 'when http_io_previous_chunk_cache is disabled' do
+      before do
+        stub_feature_flags(http_io_previous_chunk_cache: false)
+      end
+
+      it 'refetches both chunks at every boundary crossing' do
+        expect(read_backward(http_io)).to eq(file_body)
+
+        # The straddling step refetches the lower chunk and then the upper one
+        # it just evicted; the following step refetches the lower one again.
+        expect(a_request(:get, url)).to have_been_made.times(chunk_count + (2 * boundaries))
+      end
+    end
+  end
+
   describe '#readline' do
     subject { http_io.readline }
 

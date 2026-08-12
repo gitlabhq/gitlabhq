@@ -9,8 +9,8 @@ import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { observable } from '~/lib/utils/observable';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
-import createRouter from 'ee_else_ce/explore/analytics_dashboards/router';
 import App from './pages/app.vue';
+import createRouter from './router';
 
 export default () => {
   const el = document.getElementById('js-explore-analytics-dashboards');

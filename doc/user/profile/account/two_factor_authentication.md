@@ -419,7 +419,7 @@ The following Git credential helpers authenticate to GitLab using OAuth. This is
 
 ### Git Credential Manager
 
-[Git Credential Manager](https://github.com/GitCredentialManager/git-credential-manager) (GCM) authenticates by default using OAuth. GCM supports GitLab.com without any manual configuration. To use GCM with GitLab Self-Managed, see [GitLab support](https://github.com/GitCredentialManager/git-credential-manager/blob/main/docs/gitlab.md).
+[Git Credential Manager](https://github.com/git-ecosystem/git-credential-manager) (GCM) authenticates by default using OAuth. GCM supports GitLab.com without any manual configuration. To use GCM with GitLab Self-Managed, see [GitLab support](https://github.com/git-ecosystem/git-credential-manager/blob/main/docs/gitlab.md).
 
 So you do not need to re-authenticate on every push, GCM supports caching as well as a variety of platform-specific credential stores that persist between sessions. This feature is useful whether you use personal access tokens or OAuth.
 

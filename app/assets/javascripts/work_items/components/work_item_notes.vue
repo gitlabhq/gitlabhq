@@ -614,8 +614,8 @@ export default {
       :work-item-type="workItemType"
       :discussion-filter="discussionFilter"
       :use-h2="useH2"
-      @changeSort="setSort"
-      @changeFilter="setFilter"
+      @change-sort="setSort"
+      @change-filter="setFilter"
     />
     <div class="issuable-discussion gl-mb-5 !gl-clearfix">
       <div v-if="formAtTop && !commentsDisabled && markdownPathsLoaded" class="js-comment-form">
@@ -669,7 +669,7 @@ export default {
           />
         </template>
 
-        <work-item-history-only-filter-note v-if="commentsDisabled" @changeFilter="setFilter" />
+        <work-item-history-only-filter-note v-if="commentsDisabled" @change-filter="setFilter" />
       </ul>
       <work-item-notes-loading v-if="initialLoading || (isLoadingMore && !notesCached)" />
       <div v-if="!formAtTop && !commentsDisabled && markdownPathsLoaded" class="js-comment-form">

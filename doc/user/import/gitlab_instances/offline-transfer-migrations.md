@@ -155,7 +155,8 @@ To migrate a group or project:
 
 ## Rate limits
 
-See [offline transfer rate limits](../../../rate_limits/_index.md#offline-transfer-exports-and-imports).
+Offline transfer exports and imports are rate limited.
+For more information, see [non-configurable rate limits](../../../rate_limits/non_configurable.md).
 
 ## Related topics
 

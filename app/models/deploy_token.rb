@@ -145,6 +145,12 @@ class DeployToken < ApplicationRecord
     holder.has_access_to_group?(requested_group)
   end
 
+  # Deploy tokens have no user; the organization is reachable only through
+  # the sharding key (project_id and group_id are mutually exclusive).
+  def organization_id
+    owner_project&.organization_id || owner_group&.organization_id
+  end
+
   # This is temporal. Currently we limit DeployToken
   # to a single project or group, later we're going to
   # extend that to be for multiple projects and namespaces.

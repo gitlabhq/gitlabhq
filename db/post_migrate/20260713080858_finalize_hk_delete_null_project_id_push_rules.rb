@@ -8,16 +8,16 @@ class FinalizeHkDeleteNullProjectIdPushRules < Gitlab::Database::Migration[2.3]
   restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
   def up
-    return unless Gitlab.com_except_jh?
-
-    ensure_batched_background_migration_is_finished(
-      job_class_name: 'DeleteNullProjectIdPushRules',
-      table_name: :push_rules,
-      column_name: :id,
-      job_arguments: [],
-      finalize: true
-    )
+    # no-op: This migration already ran on GitLab.com. It was no-oped because
+    # the DeleteNullProjectIdPushRules BBM has been requeued for self-managed
+    # by RequeueDeleteNullProjectIdPushRules (20260805094315), so the BBM is
+    # no longer finalized everywhere and `finalized_by` was cleared from the
+    # dictionary. The self-managed finalization is tracked in
+    # https://gitlab.com/gitlab-org/gitlab/-/work_items/607954
+    # See https://gitlab.com/gitlab-org/gitlab/-/work_items/608164
   end
 
-  def down; end
+  def down
+    # no-op
+  end
 end

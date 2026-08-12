@@ -99,6 +99,7 @@ project:
   - delete_freeze_period
   - delete_job_artifact
   - delete_protected_tag
+  - delete_security_scan_profiles
   - delete_service_account
   - delete_squash_option
   - delete_timelog
@@ -239,6 +240,7 @@ group:
   - create_virtual_registry
   - create_work_item_type
   - delete_custom_emoji
+  - delete_security_scan_profiles
   - destroy_package
   - destroy_protected_branch
   - destroy_upload

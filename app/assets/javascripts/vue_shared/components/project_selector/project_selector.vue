@@ -50,7 +50,7 @@ export default {
       default: 0,
     },
   },
-  emits: ['bottomReached', 'projectClicked', 'searched'],
+  emits: ['bottom-reached', 'project-clicked', 'searched'],
   data() {
     return {
       searchQuery: '',
@@ -76,10 +76,10 @@ export default {
   },
   methods: {
     projectClicked(project) {
-      this.$emit('projectClicked', project);
+      this.$emit('project-clicked', project);
     },
     bottomReached() {
-      this.$emit('bottomReached');
+      this.$emit('bottom-reached');
     },
     isSelected(project) {
       return this.selectedProjects.some(({ id }) => project.id === id);

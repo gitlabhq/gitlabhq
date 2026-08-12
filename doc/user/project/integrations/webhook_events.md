@@ -1952,6 +1952,15 @@ has not been retried. `1` means that it's the first retry.
 You can set custom names for pipelines with [`workflow:name`](../../../ci/yaml/_index.md#workflowname).
 If the pipeline has a name, that name is the value of `commit.name`.
 
+### Failure reason
+
+`build_failure_reason` uses the same failure-reason values as
+[`retry:when`](../../../ci/yaml/_index.md#retrywhen), excluding `always`.
+
+If the job has not failed, GitLab returns `unknown_failure` in this field, because no failure
+reason applies. To check whether a job succeeded, use `build_status` instead of
+`build_failure_reason`.
+
 ## Deployment events
 
 Deployment events are triggered when a deployment:

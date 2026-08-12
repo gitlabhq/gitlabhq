@@ -37,7 +37,7 @@ Administrators can monitor usage of these API clients by
 
 ## Java
 
-- [`gitlab4j-api`](https://github.com/gmessner/gitlab4j-api)
+- [`gitlab4j-api`](https://github.com/gitlab4j/gitlab4j-api)
 - [`java-gitlab-api`](https://github.com/timols/java-gitlab-api)
 
 ## Node.js

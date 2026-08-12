@@ -35,11 +35,16 @@ RSpec.describe Ci::TimedOutBuilds::DropRunningService, feature_category: :contin
     end
 
     context 'when the job is complete' do
+      before do
+        job.success!
+      end
+
       it_behaves_like 'job is unchanged'
 
       context 'when the runtime_metadata record has not been removed' do
-        let!(:running_build) { create(:ci_running_build, runner: runner, build: job, created_at: created_at) }
-        let!(:job) { create(:ci_build, :success, runner: runner, timeout: 600) }
+        before do
+          create(:ci_running_build, runner: runner, build: job, created_at: created_at)
+        end
 
         it_behaves_like 'job is unchanged'
       end

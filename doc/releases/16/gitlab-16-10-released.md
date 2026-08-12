@@ -385,7 +385,7 @@ The environment details page is improved in GitLab 16.10. When you select an env
 
 - Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed
-- Links: [Documentation](../../rate_limits/_index.md#failed-authentication-ban-for-git-and-container-registry) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/22787)
+- Links: [Documentation](../../rate_limits/abuse_bans.md#failed-authentication-ban-for-git-and-container-registry) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/22787)
 
 {{< /details >}}
 

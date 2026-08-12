@@ -30,15 +30,15 @@ describe('Work Item History Filter note', () => {
     );
   });
 
-  it('emits `changeFilter` event with 0 parameter on clicking Show all activity button', () => {
+  it('emits `change-filter` event with 0 parameter on clicking Show all activity button', () => {
     findShowAllActivityButton().vm.$emit('click');
 
-    expect(wrapper.emitted('changeFilter')).toEqual([[WORK_ITEM_NOTES_FILTER_ALL_NOTES]]);
+    expect(wrapper.emitted('change-filter')).toEqual([[WORK_ITEM_NOTES_FILTER_ALL_NOTES]]);
   });
 
-  it('emits `changeFilter` event with 1 parameter on clicking Show comments only button', () => {
+  it('emits `change-filter` event with 1 parameter on clicking Show comments only button', () => {
     findShowCommentsButton().vm.$emit('click');
 
-    expect(wrapper.emitted('changeFilter')).toEqual([[WORK_ITEM_NOTES_FILTER_ONLY_COMMENTS]]);
+    expect(wrapper.emitted('change-filter')).toEqual([[WORK_ITEM_NOTES_FILTER_ONLY_COMMENTS]]);
   });
 });

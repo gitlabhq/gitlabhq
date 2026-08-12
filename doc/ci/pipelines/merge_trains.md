@@ -217,6 +217,12 @@ The default limit is 20. If you add more merge requests to the merge
 train than the limit, the extra merge requests are queued until a
 pipeline completes. The number of queued merge requests is unlimited.
 
+After a merge request joins a merge train, new conversation threads do not remove it from the
+train or prevent the merge, even when
+[all threads must be resolved](../../user/project/merge_requests/_index.md#prevent-merge-unless-all-threads-are-resolved)
+is enabled. This behavior is intentional. For more information, see
+[issue 220916](https://gitlab.com/gitlab-org/gitlab/-/issues/220916).
+
 ## Remove a merge request from a merge train
 
 When you remove a merge request from a merge train:
@@ -379,8 +385,6 @@ the merge train drops your merge request automatically. Common causes include:
 
 - Changing the merge request to a [draft](../../user/project/merge_requests/drafts.md).
 - A merge conflict.
-- A new conversation thread that is unresolved, when [all threads must be resolved](../../user/project/merge_requests/_index.md#prevent-merge-unless-all-threads-are-resolved)
-  is enabled.
 
 You can find the reason the merge request was dropped from the merge train in the system
 notes. Check the **Activity** section in the **Overview** tab for a message similar to:

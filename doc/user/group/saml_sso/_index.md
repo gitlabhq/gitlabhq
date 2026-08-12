@@ -767,7 +767,7 @@ identity provider:
    than the GitLab.com file. You can find information on the GitLab Self-Managed instance
    file in the:
    - External [OmniAuth SAML documentation](https://github.com/omniauth/omniauth-saml/).
-   - [`ruby-saml` library](https://github.com/onelogin/ruby-saml).
+   - [`ruby-saml` library](https://github.com/SAML-Toolkits/ruby-saml).
 1. Compare the XML response from your provider with our
    [example XML used for internal testing](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/spec/fixtures/saml/response.xml).
 

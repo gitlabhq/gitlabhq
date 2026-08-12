@@ -536,7 +536,7 @@ To resolve this issue, use [SSH keys to communicate with GitLab](../ssh.md).
 ### Non-configurable limits
 
 For more information about non-configurable rate limits used on GitLab.com, see
-[non-configurable limits](../../rate_limits/_index.md#non-configurable-limits)
+[non-configurable limits](../../rate_limits/non_configurable.md)
 
 ### Pagination response headers
 

@@ -62,7 +62,7 @@ Here's an example setup flow from scratch:
 
 1. Prepare an [Auto DevOps-enabled](../../topics/autodevops/_index.md) project.
 1. Set up a [Kubernetes Cluster](../infrastructure/clusters/_index.md) in your project.
-1. Install [NGINX Ingress](https://github.com/kubernetes/ingress-nginx/tree/master/charts/ingress-nginx) in your cluster.
+1. Install [NGINX Ingress](https://github.com/kubernetes/ingress-nginx/tree/main/charts/ingress-nginx) in your cluster.
 1. Set up [the base domain](clusters/gitlab_managed_clusters.md#base-domain) based on the Ingress
    Endpoint assigned above.
 1. Check if [`v2.0.0+` of `auto-deploy-image` is used in your Auto DevOps pipelines](../../topics/autodevops/upgrading_auto_deploy_dependencies.md#verify-dependency-versions).

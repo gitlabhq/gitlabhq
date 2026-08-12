@@ -46,9 +46,9 @@ describe('Work Item Activity/Discussions Filtering', () => {
   };
 
   describe.each`
-    usedFor        | items                                | storageKey                        | filterEvent       | newInputOption                          | trackingLabel                 | trackingAction                          | defaultSortFilterProp               | sortFilterProp                      | nonDefaultValue
-    ${'Sorting'}   | ${WORK_ITEM_ACTIVITY_SORT_OPTIONS}   | ${WORK_ITEM_NOTES_SORT_ORDER_KEY} | ${'changeSort'}   | ${DESC}                                 | ${'item_track_notes_sorting'} | ${'work_item_notes_sort_order_changed'} | ${ASC}                              | ${ASC}                              | ${DESC}
-    ${'Filtering'} | ${WORK_ITEM_ACTIVITY_FILTER_OPTIONS} | ${WORK_ITEM_NOTES_FILTER_KEY}     | ${'changeFilter'} | ${WORK_ITEM_NOTES_FILTER_ONLY_COMMENTS} | ${'item_track_notes_sorting'} | ${'work_item_notes_filter_changed'}     | ${WORK_ITEM_NOTES_FILTER_ALL_NOTES} | ${WORK_ITEM_NOTES_FILTER_ALL_NOTES} | ${WORK_ITEM_NOTES_FILTER_ONLY_COMMENTS}
+    usedFor        | items                                | storageKey                        | filterEvent        | newInputOption                          | trackingLabel                 | trackingAction                          | defaultSortFilterProp               | sortFilterProp                      | nonDefaultValue
+    ${'Sorting'}   | ${WORK_ITEM_ACTIVITY_SORT_OPTIONS}   | ${WORK_ITEM_NOTES_SORT_ORDER_KEY} | ${'change-sort'}   | ${DESC}                                 | ${'item_track_notes_sorting'} | ${'work_item_notes_sort_order_changed'} | ${ASC}                              | ${ASC}                              | ${DESC}
+    ${'Filtering'} | ${WORK_ITEM_ACTIVITY_FILTER_OPTIONS} | ${WORK_ITEM_NOTES_FILTER_KEY}     | ${'change-filter'} | ${WORK_ITEM_NOTES_FILTER_ONLY_COMMENTS} | ${'item_track_notes_sorting'} | ${'work_item_notes_filter_changed'}     | ${WORK_ITEM_NOTES_FILTER_ALL_NOTES} | ${WORK_ITEM_NOTES_FILTER_ALL_NOTES} | ${WORK_ITEM_NOTES_FILTER_ONLY_COMMENTS}
   `(
     'When used for $usedFor',
     ({

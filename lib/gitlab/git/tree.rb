@@ -37,6 +37,14 @@ module Gitlab
           return [[], nil] if rescue_not_found
 
           raise e
+
+        # Gitaly reports a stale page token as InvalidArgument, which WrapsGitalyErrors
+        # flattens into ArgumentError. Its other InvalidArgument causes, such as a bad
+        # revision or a non-treeish path, have to keep bubbling up untouched.
+        rescue ArgumentError => e
+          raise unless e.message.include?('could not find starting OID')
+
+          raise Gitlab::Git::InvalidPageToken, "Invalid page token: #{pagination_params&.dig(:page_token)}"
         end
 
         private

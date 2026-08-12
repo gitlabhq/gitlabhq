@@ -55,22 +55,22 @@ describe('WorkItemNotesActivityHeader component', () => {
   });
 
   describe('Activity Filter', () => {
-    it('emits `changeFilter` when filtering discussions', () => {
+    it('emits `change-filter` when filtering discussions', () => {
       createComponent();
 
       findActivityFilterDropdown().vm.$emit('select', WORK_ITEM_NOTES_FILTER_ONLY_HISTORY);
 
-      expect(wrapper.emitted('changeFilter')).toEqual([[WORK_ITEM_NOTES_FILTER_ONLY_HISTORY]]);
+      expect(wrapper.emitted('change-filter')).toEqual([[WORK_ITEM_NOTES_FILTER_ONLY_HISTORY]]);
     });
   });
 
   describe('Activity Sorting', () => {
-    it('emits `changeSort` when sorting discussions/activity', () => {
+    it('emits `change-sort` when sorting discussions/activity', () => {
       createComponent();
 
       findActivitySortDropdown().vm.$emit('select', ASC);
 
-      expect(wrapper.emitted('changeSort')).toEqual([[ASC]]);
+      expect(wrapper.emitted('change-sort')).toEqual([[ASC]]);
     });
   });
 });

@@ -99,6 +99,11 @@ module ActiveContext
     end
 
     def log_indexing_end(set_key, count, first_score, last_score, failures_count, retryable_count, start_time)
+      duration_s = current_time - start_time
+
+      duration_ms = duration_s.to_f * 1_000.to_f
+      duration_per_ref_ms = duration_ms / count.to_f
+
       logger.info(
         'class_name' => self.class.name,
         'message' => 'bulk_indexing_end',
@@ -108,7 +113,8 @@ module ActiveContext
         'meta.indexing.last_score' => last_score,
         'meta.indexing.failures_count' => failures_count,
         'meta.indexing.retryable_count' => retryable_count,
-        'meta.indexing.bulk_execution_duration_s' => current_time - start_time
+        'meta.indexing.bulk_execution_duration_s' => duration_s,
+        'meta.indexing.bulk_execution_duration_per_ref_ms' => duration_per_ref_ms
       )
     end
 

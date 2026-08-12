@@ -2,7 +2,7 @@
 stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-description: Configure and manage rate limits for GitLab instances.
+description: Protect the stability and security of your instance with rate limits on requests to GitLab.
 title: Rate limits
 ---
 
@@ -39,7 +39,12 @@ similarly mitigated by a rate limit.
 > [!note]
 > The rate limits for API requests do not affect requests made by the frontend, because these requests are always counted as web traffic.
 
-## Configurable limits
+## Configuration options
+
+You can set most rate limits in the **Admin** area, and a few only through the API or the
+Rails console.
+
+### Admin area
 
 You can set these rate limits in the **Admin** area of your instance:
 
@@ -63,244 +68,30 @@ You can set these rate limits in the **Admin** area of your instance:
 - [Organizations API rate limits](../administration/settings/rate_limit_on_organizations_api.md)
 - [Webhook operations rate limits](../administration/settings/rate-limit-on-webhook-operations.md)
 
-You can set these rate limits using the [ApplicationSettings API](../api/settings.md):
+### API and Rails console
+
+You can set these rate limits with the [application settings API](../api/settings.md):
 
 - [Autocomplete users rate limit](../administration/instance_limits.md#autocomplete-users-rate-limit)
+- [AI action](../api/settings.md#available-settings) (`ai_action_api_rate_limit`): 160 calls per
+  8 hours per authenticated user. Applies to the GraphQL `aiAction` mutation.
 
-You can set these rate limits using the Rails console:
+You can set this rate limit with the [plan limits API](../api/plan_limits.md) or the
+[Rails console](../administration/operations/rails_console.md#starting-a-rails-console-session):
 
 - [Webhook rate limit](../administration/instance_limits.md#webhook-rate-limit)
 
-## Failed authentication ban for Git and container registry
-
-GitLab returns HTTP status code `403` for 1 hour, if 30 failed authentication requests were received
-in a 3-minute period from a single IP address. This applies only to combined:
-
-- Git requests.
-- Container registry (`/jwt/auth`) requests.
-
-This limit:
-
-- Is reset by requests that authenticate successfully. For example, 29 failed authentication
-  requests followed by 1 successful request, followed by 29 more failed authentication requests
-  would not trigger a ban.
-- Does not apply to JWT requests authenticated by `gitlab-ci-token`.
-- Is disabled by default.
-
-No response headers are provided.
-
-To avoid being rate limited, you can:
-
-- Stagger the execution of your automated pipelines.
-- Configure [exponential back off and retry](https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/retry-backoff.html) for failed authentication attempts.
-- Use a documented process and [best practice](https://about.gitlab.com/blog/access-token-lifetime-limits/#how-to-minimize-the-impact) to manage token expiry.
-
-For configuration information, see
-[Linux package configuration options](https://docs.gitlab.com/omnibus/settings/configuration/#configure-a-failed-authentication-ban).
-
 ## Non-configurable limits
 
-### Repository archives
+Some rate limits cannot be configured.
+For a list of these limits, see [non-configurable rate limits](non_configurable.md).
 
-A rate limit for [downloading repository archives](../api/repositories.md#retrieve-file-archive-from-a-repository) is
-available. The limit applies to the project and to the user initiating the download either through
-the UI or the API.
+## Bans and blocks
 
-The rate limit is 5 requests per minute per user.
+Some protections block a client for a period of time instead of slowing requests down.
+For more information, see [abuse and failed authentication bans](abuse_bans.md).
 
-### New users accounts
+## Related topics
 
-There is a rate limit per IP address on the `/users/sign_up` endpoint. This is to mitigate attempts to misuse the endpoint. For example, to mass
-discover usernames or email addresses in use.
-
-The rate limit is 20 calls per minute per IP address.
-
-### Update username
-
-There is a rate limit on how frequently a username can be changed. This is enforced to mitigate misuse of the feature. For example, to mass discover
-which usernames are in use.
-
-The rate limit is 10 calls per minute per authenticated user.
-
-### Username exists
-
-There is a rate limit for the internal endpoint `/users/:username/exists`, used when creating a user account, to check if a chosen username has already been taken.
-This is to mitigate the risk of misuses, such as mass discovery of usernames in use.
-
-The rate limit is 20 calls per minute per IP address.
-
-### Project Jobs API endpoint
-
-There is a rate limit for the endpoint `project/:id/jobs`, which is enforced to reduce timeouts when retrieving jobs.
-
-The rate limit defaults to 600 calls per authenticated user. You can [configure the rate limit](../administration/settings/user_and_ip_rate_limits.md).
-
-### AI action
-
-There is a rate limit for the GraphQL `aiAction` mutation, which is enforced to prevent abuse of this endpoint.
-
-The rate limit is 160 calls per 8 hours per authenticated user.
-
-### Delete a member using the API
-
-There is a rate limit for [removing project or group members using the API endpoints](../api/group_members.md#remove-a-group-member) `/groups/:id/members` or `/project/:id/members`.
-
-The rate limit is 60 deletions per minute.
-
-### List project members using the API
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211239) in GitLab 18.6.
-
-{{< /history >}}
-
-Sets a rate limit for listing all project members in a group or project. Defaults
-to 200 requests per minute on the following endpoints:
-
-```plaintext
-GET /groups/:id/members/all
-GET /projects/:id/members/all
-```
-
-Administrators can [configure the rate limit](../administration/settings/rate_limit_on_groups_api.md)
-for the projects endpoint.
-
-### Repository blob and file access
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/security/gitlab/-/issues/1302) in GitLab 18.1.
-
-{{< /history >}}
-
-Rate limits apply when accessing large files through specific repository API endpoints.
-For files larger than 10 MB, the rate limit is 5 calls per minute per object per project for:
-
-- [Repository blob endpoint](../api/repositories.md#retrieve-a-blob-from-a-repository): `/projects/:id/repository/blobs/:sha`
-- [Repository file endpoint](../api/repository_files.md#retrieve-a-file-from-a-repository): `/projects/:id/repository/files/:file_path`
-
-These limits help prevent excessive resource usage when accessing large repository files through
-the API.
-
-### Notification emails
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439101) in GitLab 17.1 [with a feature flag](../administration/feature_flags/_index.md) named `rate_limit_notification_emails`. Disabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/439101) in GitLab 17.2. Feature flag `rate_limit_notification_emails` removed.
-
-{{< /history >}}
-
-There is a rate limit for notification emails related to a project or group.
-
-The rate limit is 1,000 notifications per 24 hours per project or group per user.
-
-### GitHub import
-
-There is a rate limit for triggering project imports from GitHub.
-
-The rate limit is 6 triggered imports per minute per user.
-
-### FogBugz import
-
-{{< history >}}
-
-- Introduced in GitLab 17.6.
-
-{{< /history >}}
-
-There is a rate limit for triggering project imports from FogBugz.
-
-The rate limit is 1 triggered import per minute per user.
-
-### Offline transfer exports and imports
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209344) in GitLab 19.3.
-
-{{< /history >}}
-
-[Offline transfer](../user/import/gitlab_instances/offline-transfer-migrations.md) exports and
-imports have separate rate limits.
-
-Each rate limit is 6 requests per minute per user.
-
-### Commit diff files
-
-This is a rate limit for expanded commit diff files (`/[group]/[project]/-/commit/[:sha]/diff_files?expanded=1`),
-which is enforced to prevent abuse of this endpoint.
-
-The rate limit is 6 requests per minute per user (authenticated) or per IP address (unauthenticated).
-
-### Changelog generation
-
-There is a rate limit per user per project on the `:id/repository/changelog` endpoint. This is to mitigate attempts to misuse the endpoint.
-The rate limit is shared between GET and POST actions.
-
-The rate limit is 5 calls per minute per user per project.
-
-### Delete a deployment
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/243738) in GitLab 19.2.
-
-{{< /history >}}
-
-A rate limit applies to [deleting a deployment](../api/deployments.md#delete-a-deployment)
-through the `DELETE /projects/:id/deployments/:deployment_id` endpoint.
-This limit reduces the infrastructure impact of mass deployment deletions.
-
-The rate limit is 500 requests per minute per authenticated user.
-
-## Troubleshooting
-
-### Rack Attack is denylisting the load balancer
-
-Rack Attack may block your load balancer if all traffic appears to come from
-the load balancer. In that case, you must:
-
-1. [Configure `nginx[real_ip_trusted_addresses]`](https://docs.gitlab.com/omnibus/settings/nginx/#configure-gitlab-trusted-proxies-and-nginx-real_ip-module).
-   This keeps users' IPs from being listed as the load balancer IPs.
-1. Allowlist the load balancer's IP addresses.
-1. Reconfigure GitLab:
-
-   ```shell
-   sudo gitlab-ctl reconfigure
-   ```
-
-### Remove blocked IPs from Rack Attack with Redis
-
-To remove a blocked IP:
-
-1. Find the IPs that have been blocked in the production log:
-
-   ```shell
-   grep "Rack_Attack" /var/log/gitlab/gitlab-rails/auth.log
-   ```
-
-1. The denylist is stored in Redis, so you must open up `redis-cli`:
-
-   ```shell
-   /opt/gitlab/embedded/bin/redis-cli -s /var/opt/gitlab/redis/redis.socket
-   ```
-
-1. You can remove the block using the following syntax, replacing `<ip>` with
-   the actual IP that is denylisted:
-
-   ```plaintext
-   del cache:gitlab:rack::attack:allow2ban:ban:<ip>
-   ```
-
-1. Confirm that the key with the IP no longer shows up:
-
-   ```plaintext
-   keys *rack::attack*
-   ```
-
-   By default, the [`keys` command is disabled](https://docs.gitlab.com/omnibus/settings/redis/#renamed-commands).
-
-1. Optionally, add [the IP to the allowlist](https://docs.gitlab.com/omnibus/settings/configuration/#configure-a-failed-authentication-ban)
-   to prevent it being denylisted again.
+- [GitLab application limits](../administration/instance_limits.md)
+- [CI/CD limits](../administration/cicd/limits.md)

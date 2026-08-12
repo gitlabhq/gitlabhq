@@ -401,7 +401,7 @@ the query details.
 
 ## Managing Sidekiq queues
 
-It is possible to use [Sidekiq API](https://github.com/mperham/sidekiq/wiki/API)
+It is possible to use [Sidekiq API](https://github.com/sidekiq/sidekiq/wiki/API)
 to perform a number of troubleshooting steps on Sidekiq.
 
 These are the administrative commands and it should only be used if currently

@@ -5,11 +5,6 @@ module QA
     module Project
       module WorkItem
         class Index < Page::Base
-          view 'app/assets/javascripts/issuable/components/issue_assignees.vue' do
-            element 'assignee-link'
-            element 'avatar-counter-content'
-          end
-
           view 'app/assets/javascripts/vue_shared/issuable/list/components/issuable_list_root.vue' do
             element 'issuable-container'
           end
@@ -27,10 +22,6 @@ module QA
           view 'app/assets/javascripts/work_items/list/components/work_items_csv_export_modal.vue' do
             element 'export-work-items-button'
             element 'export-work-items-modal'
-          end
-
-          def avatar_counter
-            find_element('avatar-counter-content')
           end
 
           def click_issue_link(title)
@@ -87,10 +78,6 @@ module QA
             end
 
             click_import_from_jira_link
-          end
-
-          def has_assignee_link_count?(count)
-            all_elements('assignee-link', count: count)
           end
 
           def has_issue?(issue)

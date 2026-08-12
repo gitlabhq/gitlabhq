@@ -116,14 +116,30 @@ To do this:
 
 ## Pipeline success for auto-merge
 
+{{< history >}}
+
+- Auto-merge retained when target branch updates and automatic rebase is enabled
+  [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248017) in GitLab 19.3
+  [with a feature flag](../../../administration/feature_flags/_index.md) named
+  `retain_auto_merge_with_automatic_rebase`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
 If the pipeline succeeds, the merge request merges. If the pipeline fails, the author
 can either retry any failed jobs, or push new commits to fix the failure:
 
 - If a retried job succeeds on the second try, the merge request merges.
 - If you add new commits to the merge request, GitLab cancels the request
   to ensure the new changes receive a review before merge.
-- If you add new commits to the target branch of the merge request, and your project
-  allows only fast-forward merge requests, GitLab cancels the request to prevent merge conflicts.
+- If you add new commits to the target branch, and your project uses the
+  **Merge commit with semi-linear history** or **Fast-forward merge** method without
+  [automatic rebase before merge](methods/_index.md#automatic-rebase-before-merge) turned on,
+  GitLab cancels the request to prevent merge conflicts. If you have automatic rebase before merge
+  turned on, auto-merge stays active and GitLab rebases when the merge request merges.
 
 For stricter control on pipeline status, you can also
 [require a successful pipeline](#require-a-successful-pipeline-for-merge) before merge.

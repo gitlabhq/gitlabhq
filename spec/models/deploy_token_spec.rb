@@ -287,6 +287,32 @@ RSpec.describe DeployToken, feature_category: :continuous_delivery do
     end
   end
 
+  describe '#organization_id' do
+    subject { deploy_token.organization_id }
+
+    let_it_be(:organization) { create(:organization) }
+
+    context 'when the token is of project type' do
+      let_it_be(:project) { create(:project, organization: organization) }
+      let(:deploy_token) { create(:deploy_token, projects: [project]) }
+
+      it { is_expected.to eq(organization.id) }
+    end
+
+    context 'when the token is of group type' do
+      let(:group) { create(:group, organization: organization) }
+      let(:deploy_token) { create(:deploy_token, :group, groups: [group]) }
+
+      it { is_expected.to eq(organization.id) }
+    end
+
+    context 'when the token has no owner project or group' do
+      let(:deploy_token) { build(:deploy_token, projects: []) }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe '#has_access_to?' do
     let(:project) { create(:project) }
 

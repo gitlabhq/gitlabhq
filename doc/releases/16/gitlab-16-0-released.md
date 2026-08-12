@@ -1098,7 +1098,7 @@ With this method, the runner is now easily traceable to the user, which will hel
 
 - Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed
-- Links: [Documentation](../../rate_limits/_index.md) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/382985)
+- Links: [Documentation](../../rate_limits/non_configurable.md) | [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/382985)
 
 {{< /details >}}
 

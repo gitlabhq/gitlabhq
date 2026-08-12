@@ -255,6 +255,15 @@ module MergeRequests
     def abort_ff_merge_requests_with_auto_merges
       return unless @project.ff_merge_must_be_possible?
 
+      # Aborting exists because a moved target branch normally leaves the author with a
+      # manual rebase that a pending auto-merge cannot perform for them. With automatic
+      # rebase before merge, that rebase happens as part of the merge, so the pending
+      # auto-merge stays valid.
+      if @project.project_setting.automatic_rebase_enabled? &&
+          Feature.enabled?(:retain_auto_merge_with_automatic_rebase, @project)
+        return
+      end
+
       merge_requests_with_auto_merge_enabled_to(@push.branch_name).each do |merge_request|
         unless merge_request.auto_merge_strategy == AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS
           next

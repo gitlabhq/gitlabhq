@@ -407,23 +407,23 @@ describe('WorkItemNotes component', () => {
       await waitForPromises();
     });
 
-    it('sorts the list when the `changeSort` event is emitted', async () => {
+    it('sorts the list when the `change-sort` event is emitted', async () => {
       expect(findSystemNoteAtIndex(0).props('note').id).toEqual(firstSystemNodeId);
 
-      await findActivityHeader().vm.$emit('changeSort', DESC);
+      await findActivityHeader().vm.$emit('change-sort', DESC);
 
       expect(findSystemNoteAtIndex(0).props('note').id).not.toEqual(firstSystemNodeId);
     });
 
     it('puts form at start of list in when sorting by newest first', async () => {
-      findActivityHeader().vm.$emit('changeSort', DESC);
+      findActivityHeader().vm.$emit('change-sort', DESC);
       await nextTick();
 
       expect(findAllListItems().at(0).element.tagName).toBe('WORK-ITEM-ADD-NOTE-STUB');
     });
 
     it('puts form at end of list in when sorting by oldest first', async () => {
-      findActivityHeader().vm.$emit('changeSort', ASC);
+      findActivityHeader().vm.$emit('change-sort', ASC);
       await nextTick();
 
       const lastIndex = findAllListItems().length - 1;
@@ -717,7 +717,7 @@ describe('WorkItemNotes component', () => {
       async ({ sortDirection }) => {
         jest.spyOn(CopyAsGFM, 'selectionToGfm').mockReturnValueOnce('foo');
 
-        findActivityHeader().vm.$emit('changeSort', sortDirection);
+        findActivityHeader().vm.$emit('change-sort', sortDirection);
         await nextTick();
 
         await triggerReplyShortcut();

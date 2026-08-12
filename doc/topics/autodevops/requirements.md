@@ -168,4 +168,4 @@ According to the [Kubernetes Ingress-NGINX docs](https://kubernetes.github.io/in
 The documentation linked previously explains the issue and provides possible solutions, for example:
 
 - Through [MetalLB](https://github.com/metallb/metallb).
-- Through [PorterLB](https://github.com/kubesphere/porterlb).
+- Through [OpenELB (formerly PorterLB)](https://github.com/openelb/openelb).

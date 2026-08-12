@@ -106058,6 +106058,12 @@
               "deprecationReason": null
             },
             {
+              "name": "DELETE_SECURITY_SCAN_PROFILES",
+              "description": "Delete security scan profiles.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "REMOVE_GROUP",
               "description": "Ability to delete or restore a subgroup. This ability does not allow deleting top-level groups. Review the retention period settings to prevent accidental deletion.",
               "isDeprecated": false,

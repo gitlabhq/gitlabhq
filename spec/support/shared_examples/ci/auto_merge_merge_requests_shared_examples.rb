@@ -39,10 +39,14 @@ RSpec.shared_examples 'abort ff merge requests with auto merges' do
   end
 
   let(:refresh_service) { described_class.new(project: project, current_user: user) }
+  let(:automatic_rebase_enabled) { false }
+  let(:retain_auto_merge_flag_enabled) { true }
 
   before do
+    stub_feature_flags(retain_auto_merge_with_automatic_rebase: retain_auto_merge_flag_enabled)
     target_project.merge_method = merge_method
     target_project.save!
+    target_project.project_setting.update!(automatic_rebase_enabled: automatic_rebase_enabled)
     merge_request.auto_merge_strategy = auto_merge_strategy
     merge_request.save!
 
@@ -66,6 +70,24 @@ RSpec.shared_examples 'abort ff merge requests with auto merges' do
 
       it_behaves_like 'maintained merge requests for auto merges'
     end
+
+    context 'when automatic rebase before merge is enabled' do
+      let(:automatic_rebase_enabled) { true }
+
+      it_behaves_like 'maintained merge requests for auto merges'
+
+      context 'with forked project' do
+        let(:source_project) { forked_project }
+
+        it_behaves_like 'maintained merge requests for auto merges'
+      end
+
+      context 'when the retain_auto_merge_with_automatic_rebase flag is disabled' do
+        let(:retain_auto_merge_flag_enabled) { false }
+
+        it_behaves_like 'aborted merge requests for auto merges'
+      end
+    end
   end
 
   context 'when Project#merge_method is set to rebase_merge' do
@@ -77,6 +99,18 @@ RSpec.shared_examples 'abort ff merge requests with auto merges' do
       let(:source_project) { forked_project }
 
       it_behaves_like 'aborted merge requests for auto merges'
+    end
+
+    context 'when automatic rebase before merge is enabled' do
+      let(:automatic_rebase_enabled) { true }
+
+      it_behaves_like 'maintained merge requests for auto merges'
+
+      context 'when the retain_auto_merge_with_automatic_rebase flag is disabled' do
+        let(:retain_auto_merge_flag_enabled) { false }
+
+        it_behaves_like 'aborted merge requests for auto merges'
+      end
     end
   end
 

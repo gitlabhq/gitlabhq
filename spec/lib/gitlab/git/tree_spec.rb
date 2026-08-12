@@ -173,6 +173,30 @@ RSpec.describe Gitlab::Git::Tree, feature_category: :source_code_management do
         end
       end
 
+      context 'and the page token is stale' do
+        let(:pagination_params) { { limit: 3, page_token: 'invalid' } }
+
+        before do
+          allow(repository.gitaly_commit_client).to receive(:tree_entries)
+            .and_raise(GRPC::InvalidArgument.new('could not find starting OID: invalid'))
+        end
+
+        it 'raises an InvalidPageToken error' do
+          expect { entries }.to raise_error(Gitlab::Git::InvalidPageToken, 'Invalid page token: invalid')
+        end
+      end
+
+      context 'and Gitaly rejects the request for another reason' do
+        before do
+          allow(repository.gitaly_commit_client).to receive(:tree_entries)
+            .and_raise(GRPC::InvalidArgument.new('empty path'))
+        end
+
+        it 'raises the flattened ArgumentError' do
+          expect { entries }.to raise_error(ArgumentError, /empty path/)
+        end
+      end
+
       context 'and invalid reference is used' do
         before do
           allow(repository.gitaly_commit_client).to receive(:tree_entries).and_raise(Gitlab::Git::Index::IndexError)

@@ -50,14 +50,14 @@ describe('ProjectSelector component', () => {
     expect(findSearchInput().attributes('placeholder')).toBe('Search your projects');
   });
 
-  it(`triggers a "bottomReached" event when user has scrolled to the bottom of the list`, () => {
+  it(`triggers a "bottom-reached" event when user has scrolled to the bottom of the list`, () => {
     wrapper.findComponent(GlInfiniteScroll).vm.$emit('bottomReached');
-    expect(wrapper.emitted('bottomReached')).toHaveLength(1);
+    expect(wrapper.emitted('bottom-reached')).toHaveLength(1);
   });
 
-  it(`triggers a "projectClicked" event when a project is clicked`, () => {
+  it(`triggers a "project-clicked" event when a project is clicked`, () => {
     wrapper.findComponent(ProjectListItem).vm.$emit('click', head(searchResults));
-    expect(wrapper.emitted('projectClicked')).toEqual([[head(searchResults)]]);
+    expect(wrapper.emitted('project-clicked')).toEqual([[head(searchResults)]]);
   });
 
   it(`shows a "no results" message if showNoResultsMessage === true`, async () => {

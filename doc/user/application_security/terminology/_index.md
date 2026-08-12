@@ -273,7 +273,7 @@ A page that displays findings discovered in the associated CI pipeline.
 
 A software component that is possibly affected by vulnerability. For example, when scanning a
 project for known vulnerabilities, components are first evaluated to see if they match the name
-and [package type](https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst).
+and [package type](https://github.com/package-url/purl-spec/blob/main/PURL-TYPES.rst).
 During this stage, they're possibly affected by the vulnerability, and are only [known to be affected](#known-affected-component)
 after it's confirmed that they fall in the affected version range.
 

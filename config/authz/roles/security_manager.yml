@@ -20,6 +20,7 @@ project:
   - create_security_scan_profiles
   - create_vulnerability_archive_export
   - create_vulnerability_export
+  - delete_security_scan_profiles
   - edit_on_demand_dast_scan
   - enable_container_scanning_for_registry
   - enable_secret_push_protection
@@ -66,6 +67,7 @@ group:
   - apply_security_scan_profiles
   - create_security_scan_profiles
   - create_vulnerability_export
+  - delete_security_scan_profiles
   - enable_secret_push_protection
   - read_agent_artifacts
   - read_any_audit_event

@@ -252,7 +252,7 @@ The following `.gitlab-ci.yml` example uses:
 
 - [`rspec`](https://rspec.info/) to run tests.
 - [`simplecov`](https://github.com/simplecov-ruby/simplecov) and
-  [`simplecov-cobertura`](https://github.com/dashingrocket/simplecov-cobertura) to record
+  [`simplecov-cobertura`](https://github.com/jessebs/simplecov-cobertura) to record
   the coverage profile and create a report in Cobertura XML format.
 
 This example assumes:

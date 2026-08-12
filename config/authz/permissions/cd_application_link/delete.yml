@@ -1,0 +1,3 @@
+---
+name: delete_cd_application_link
+description: Grants the ability to delete continuous deployment application links

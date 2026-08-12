@@ -80,19 +80,7 @@ export const getSuperSidebarData = () => {
   };
 };
 
-export const initSuperSidebar = ({
-  el,
-  currentPath,
-  isSaas,
-  sidebarData,
-  searchContext,
-  projectFilesPath,
-  projectBlobPath,
-  commandPaletteCommands,
-  commandPaletteLinks,
-  isImpersonating,
-  isGroup,
-}) => {
+export const initSuperSidebar = ({ el, currentPath, isSaas, sidebarData }) => {
   if (!el) return false;
 
   bindSuperSidebarCollapsedEvents();
@@ -106,23 +94,11 @@ export const initSuperSidebar = ({
     apolloProvider,
     provide: {
       currentPath,
-      isImpersonating,
       ...getTrialStatusWidgetData(sidebarData),
-      commandPaletteCommands,
-      commandPaletteLinks,
-      searchContext,
-      projectFilesPath,
-      projectBlobPath,
       resourceId: sidebarData.current_context?.item?.id,
       aiSearchAvailable: parseBoolean(sidebarData.ai_search_available),
-      fullPath: sidebarData.work_items?.full_path,
-      isGroup,
       isSaas: parseBoolean(isSaas),
     },
-    store: createStore({
-      searchContext,
-      search: '',
-    }),
     component: SuperSidebar,
     props: {
       sidebarData,
@@ -130,11 +106,6 @@ export const initSuperSidebar = ({
   });
 };
 
-/**
- * This init function duplicates the args of `initSuperSidebar` for now.
- * TODO: When we clean up the `paneled_view` feature flag, we should remove the unused args from
- * both functions.
- */
 export const initSuperTopbar = ({
   sidebarData,
   searchContext,
@@ -160,8 +131,6 @@ export const initSuperTopbar = ({
       searchContext,
       projectFilesPath,
       projectBlobPath,
-      resourceId: sidebarData.current_context?.item?.id,
-      aiSearchAvailable: parseBoolean(sidebarData.ai_search_available),
       fullPath: sidebarData.work_items?.full_path,
       isGroup,
       isSaas: parseBoolean(isSaas),

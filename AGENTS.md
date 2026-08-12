@@ -33,7 +33,13 @@ These apply to every task without needing a trigger:
 - Danger bot will comment on MRs with warnings; these are often non-blocking
 - This repository is very large; use targeted searches and glob patterns
 
-## Fix Pipeline merge requests
+## Fix Pipeline
+
+### Job-name stop rules
+
+Skip the failing job whose name equals `danger-review`. Do not fetch its logs or attempt to fix it. Continue investigating and fixing all other blocking failing jobs. Take no action only when every blocking failing job matches the filters specified.
+
+### Merge requests
 
 When opening a merge request as part of the Fix Pipeline flow (the title contains `[FixPipeline]`), apply labels based on the source of the run. The `<fix_pipeline_source>` block in your instructions contains exactly one of `merge_request`, `default_branch`, or `branch` — use it to determine which case applies.
 

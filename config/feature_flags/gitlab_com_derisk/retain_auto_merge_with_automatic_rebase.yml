@@ -1,0 +1,11 @@
+---
+name: retain_auto_merge_with_automatic_rebase
+description: Keep a pending auto-merge when the target branch is updated in projects
+  that have automatic rebase before merge turned on, instead of aborting it
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/463356
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248017
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/611435
+milestone: '19.3'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

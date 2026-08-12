@@ -897,6 +897,42 @@ In manually-triggered pipelines, the **New pipeline** page displays all pipeline
 You must configure the prefilled variables as allowed using [`variables_override`](#variables_override-type),
 otherwise the values used when manually triggering the pipelines are ignored.
 
+#### Missing prefilled variables with `override_project_ci`
+
+When a project is assigned a pipeline execution policy that uses the
+[`override_project_ci`](#override_project_ci) strategy, the **New pipeline** page might not show
+the policy's prefilled variables. This issue occurs when the project's `.gitlab-ci.yml` file is not
+a valid CI/CD configuration on its own. For example, a file that contains only a `variables:` block
+and no jobs returns the error `jobs config should contain at least one visible job` when GitLab
+tries to list the prefilled variables.
+
+The pipeline itself still runs correctly, because the policy supplies the missing jobs when the
+pipeline is created. The issue affects only the **New pipeline** page's display of prefilled
+variables.
+
+As a workaround, add a visible job to the project's `.gitlab-ci.yml` file, so the file is valid on
+its own. Give the job a `rules:` clause with `when: never`, so it is never actually added to a
+pipeline:
+
+```yaml
+variables:
+  SOME_VAR: "value"
+
+placeholder-job:
+  script:
+    - echo "Placeholder job that keeps this configuration valid on its own."
+  rules:
+    - when: never
+```
+
+A hidden job (one whose name starts with a period) does not work as a substitute, because the
+configuration must contain at least one visible job.
+
+Use this workaround only if your project relies on the policy to provide its jobs. If the policy
+does not apply to a branch, a configuration whose only job never runs does not create a pipeline.
+
+For more information, see [issue 600124](https://gitlab.com/gitlab-org/gitlab/-/issues/600124).
+
 #### Recreate pipeline execution policies
 
 To recreate a pipeline execution policy:

@@ -490,7 +490,7 @@ used in Auto Deploy
 
 To run a worker, you must ensure the worker can respond to
 the standard health checks, which expect a successful HTTP response on port
-`5000`. For [Sidekiq](https://github.com/mperham/sidekiq), you can use
+`5000`. For [Sidekiq](https://github.com/sidekiq/sidekiq), you can use
 the [`sidekiq_alive` gem](https://rubygems.org/gems/sidekiq_alive).
 
 To work with Sidekiq, you must also ensure your deployments have

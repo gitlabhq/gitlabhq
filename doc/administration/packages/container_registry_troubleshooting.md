@@ -291,7 +291,7 @@ You might get stuck in retry loops when pushing Docker images, even though `dock
 This issue occurs when NGINX isn't properly forwarding headers to the registry, typically in custom
 setups where SSL is offloaded to a third-party reverse proxy.
 
-For more information, see [Docker push through NGINX proxy fails trying to send a 32B layer #970](https://github.com/docker/distribution/issues/970).
+For more information, see [Docker push through NGINX proxy fails trying to send a 32B layer #970](https://github.com/distribution/distribution/issues/970).
 
 To resolve this issue, update your NGINX configuration to enable relative URLs in the registry:
 

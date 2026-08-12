@@ -134,6 +134,25 @@ RSpec.describe ActiveContext::BulkProcessQueue do
       end
     end
 
+    it 'logs the indexing completion with relevant information' do
+      expect(logger).to receive(:info).with(
+        hash_including(
+          'class_name' => described_class.name,
+          'message' => 'bulk_indexing_end',
+          'meta.indexing.redis_set' => 'redis_set_key',
+          'meta.indexing.refs_count' => 2,
+          'meta.indexing.first_score' => 1,
+          'meta.indexing.last_score' => 2,
+          'meta.indexing.failures_count' => 0,
+          'meta.indexing.retryable_count' => 0,
+          'meta.indexing.bulk_execution_duration_s' => kind_of(Numeric),
+          'meta.indexing.bulk_execution_duration_per_ref_ms' => kind_of(Numeric)
+        )
+      )
+
+      bulk_process_queue.process(redis)
+    end
+
     context 'when specs are empty' do
       let(:specs) { [] }
 
