@@ -54,8 +54,6 @@ export default {
     'app/assets/javascripts/work_items/components/work_item_loading.vue',
     'app/assets/javascripts/work_items/list/components/work_items_existing_saved_views_modal.vue',
     'app/assets/javascripts/work_items/list/components/work_items_saved_views_selectors.vue',
-    'ee/app/assets/javascripts/ai/catalog/components/ai_catalog_list_item.vue',
-    'ee/app/assets/javascripts/ai/catalog/components/ai_catalog_mcp_server_list_item.vue',
     'ee/app/assets/javascripts/ai/components/content_container.vue',
     'ee/app/assets/javascripts/ai/duo_agentic_chat/components/duo_agentic_chat_view.vue',
     'ee/app/assets/javascripts/ai/duo_agentic_chat/components/duo_chat_header.vue',

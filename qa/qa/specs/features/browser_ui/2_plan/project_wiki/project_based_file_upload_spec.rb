@@ -12,11 +12,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'by creating a formatted page with an image uploaded',
-        quarantine: {
-          issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/41036',
-          type: :stale
-        } do
+      it 'by creating a formatted page with an image uploaded' do
         initial_wiki.visit!
 
         Page::Project::Wiki::Show.perform(&:click_new_page)
@@ -28,7 +24,10 @@ module QA
           edit.upload_image(Runtime::Path.fixture('designs', image_file_name))
         end
 
-        Page::Project::Wiki::Edit.perform(&:click_submit)
+        Page::Project::Wiki::Edit.perform do |edit|
+          edit.click_submit
+          edit.confirm_message
+        end
 
         Page::Project::Wiki::Show.perform do |wiki|
           aggregate_failures 'page shows expected content' do

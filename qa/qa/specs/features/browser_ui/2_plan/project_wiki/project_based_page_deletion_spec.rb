@@ -29,13 +29,7 @@ module QA
         end
       end
 
-      it(
-        'can delete a page with spaces in the path',
-        quarantine: {
-          issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/41030',
-          type: :stale
-        }
-      ) do
+      it 'can delete a page with spaces in the path' do
         Resource::Repository::WikiPush.fabricate! do |push|
           push.file_name = "#{new_wiki_page_with_spaces_in_the_path}.md"
           push.file_content = new_wiki_page_with_spaces_in_the_path_content

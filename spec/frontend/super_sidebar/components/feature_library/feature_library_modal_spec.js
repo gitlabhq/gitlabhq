@@ -279,10 +279,6 @@ describe('FeatureLibraryModal', () => {
         expect(findModal().attributes('centered')).toBeUndefined();
       });
 
-      it('caps its height so tall content scrolls internally', () => {
-        expect(findModal().attributes('scrollable')).toBeDefined();
-      });
-
       it('applies the feature-library-modal class for top-anchored positioning', () => {
         expect(findModal().props('modalClass')).toContain('feature-library-modal');
       });

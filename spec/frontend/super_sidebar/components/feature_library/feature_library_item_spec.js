@@ -11,6 +11,7 @@ const baseItem = {
   icon: 'code',
   category: 'code',
   tier: TIERS.FREE,
+  link: '/-/repository',
 };
 
 describe('FeatureLibraryItem', () => {
@@ -67,23 +68,14 @@ describe('FeatureLibraryItem', () => {
   });
 
   describe('title navigation', () => {
-    it('renders the title as a plain span (no link) when the item has no link', async () => {
+    it('renders the title as a link', () => {
       createWrapper();
-      expect(findTitle().element.tagName).toBe('SPAN');
-      expect(findTitleLink().exists()).toBe(false);
-
-      await findTitle().trigger('click');
-      expect(wrapper.emitted('navigate')).toBeUndefined();
-    });
-
-    it('renders the title as a link when the item has a link', () => {
-      createWrapper({ item: { ...baseItem, link: '/-/repository' } });
       expect(findTitle().element.tagName).toBe('A');
       expect(findTitleLink().attributes('href')).toBe('/-/repository');
     });
 
     it('emits navigate with the item id when the title link is clicked', async () => {
-      createWrapper({ item: { ...baseItem, link: '/-/repository' } });
+      createWrapper();
       const link = findTitleLink();
       link.element.addEventListener('click', (e) => e.preventDefault());
       await link.trigger('click');
@@ -91,34 +83,25 @@ describe('FeatureLibraryItem', () => {
     });
 
     it('stretches the title link over the tile content area', () => {
-      createWrapper({ item: { ...baseItem, link: '/-/repository' } });
+      createWrapper();
       // The ::after overlay stretches against the positioned content wrapper.
       expect(findContent().classes()).toContain('gl-relative');
-      expect(findTitleLink().classes()).toEqual(
-        expect.arrayContaining(["after:gl-content-['']", 'after:gl-absolute', 'after:gl-inset-0']),
-      );
+      expect(findTitleLink().classes()).toContain('gl-stretched-link');
     });
 
     it('keeps the pin action outside the stretched link click target', () => {
-      createWrapper({ item: { ...baseItem, link: '/-/repository' } });
+      createWrapper();
       expect(findContent().findComponent(GlButton).exists()).toBe(false);
     });
   });
 
   describe('focus()', () => {
     it('moves keyboard focus to the title link when the item has a link', () => {
-      createWrapper({ item: { ...baseItem, link: '/-/repository' } });
+      createWrapper();
 
       wrapper.vm.focus();
 
       expect(document.activeElement).toBe(findTitleLink().element);
-    });
-
-    it('does nothing when the item has no link', () => {
-      createWrapper();
-
-      expect(() => wrapper.vm.focus()).not.toThrow();
-      expect(document.activeElement).not.toBe(findTitle().element);
     });
   });
 

@@ -125,6 +125,20 @@ RSpec.describe Gitlab::PolicyStore::ScopeTranspiler do
 
         expect(with_strings).to eq(with_symbols)
       end
+
+      it "treats string and symbol values identically" do
+        symbol_valued = { match_mode: :any, groups: { including: [{ id: 10 }] } }
+        round_tripped = JSON.parse(JSON.generate(symbol_valued))
+
+        expect(described_class.new(symbol_valued, policy_name: "P").transpile)
+          .to eq(described_class.new(round_tripped, policy_name: "P").transpile)
+      end
+
+      it "honours a symbol project type in an excluding entry" do
+        rego = described_class.new({ projects: { excluding: [{ type: :personal }] } }, policy_name: "P").transpile
+
+        expect(rego).to include("personal")
+      end
     end
 
     # `security_policy_scope.json` requires `id` only for security attributes, so

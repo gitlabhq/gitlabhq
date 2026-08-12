@@ -14,6 +14,8 @@ module QA
             element 'wiki-path-textbox'
             element 'wiki-message-textbox'
             element 'wiki-submit-button'
+            element 'wiki-confirm-message'
+            element 'commit-message-modal'
           end
 
           base.view 'app/assets/javascripts/vue_shared/components/markdown/markdown_editor.vue' do
@@ -30,11 +32,16 @@ module QA
         end
 
         def set_path(path)
-          if has_element?('wiki-path-textbox', wait: 0)
-            fill_element('wiki-path-textbox', path)
-          else
-            set_title(path)
+          if has_css?('#wiki-page-options', wait: 1)
+            find('#wiki-page-options').click
+
+            if has_element?('wiki-path-textbox', wait: 1)
+              fill_element('wiki-path-textbox', path)
+              return
+            end
           end
+
+          set_title(path)
         end
 
         def set_title(title)
@@ -59,6 +66,16 @@ module QA
           sleep 0.5
 
           click_element('wiki-submit-button')
+
+          wait_until(reload: false) do
+            has_element?('commit-message-modal', wait: 0) || has_no_element?('wiki-title-textbox', wait: 0)
+          end
+        end
+
+        def confirm_message
+          sleep 0.5
+
+          click_element('wiki-confirm-message')
 
           QA::Support::Retrier.retry_on_exception do
             has_no_element?('wiki-title-textbox')

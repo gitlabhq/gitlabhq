@@ -2,7 +2,7 @@ import { assign } from 'lodash-es';
 import { gql } from '@apollo/client/core';
 import createDefaultClient from '~/lib/graphql';
 import TaskQueue from '../utils/task_queue';
-import { extractGroupOrProject } from '../utils/common';
+import { getGroupOrProjectFromPageData } from '../utils/common';
 
 const CONCURRENCY_LIMIT = 1;
 
@@ -27,7 +27,7 @@ export default class Executor {
   init(client) {
     Executor.taskQueue = Executor.taskQueue || new TaskQueue(CONCURRENCY_LIMIT);
 
-    const searchParams = new URLSearchParams(extractGroupOrProject());
+    const searchParams = new URLSearchParams(getGroupOrProjectFromPageData());
 
     this.#client = client || createDefaultClient({}, { path: `/api/glql?${searchParams}` });
 

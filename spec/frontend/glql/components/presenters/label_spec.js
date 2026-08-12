@@ -1,6 +1,5 @@
 import { GlLabel } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import setWindowLocation from 'helpers/set_window_location_helper';
 import LabelPresenter from '~/glql/components/presenters/label.vue';
 import { MOCK_LABELS } from '../../mock_data';
 
@@ -17,9 +16,14 @@ describe('LabelPresenter', () => {
 
   const findGlLabel = () => wrapper.findComponent(GlLabel);
 
+  afterEach(() => {
+    delete document.body.dataset.projectFullPath;
+    delete document.body.dataset.groupFullPath;
+  });
+
   describe('for a group label', () => {
     beforeEach(() => {
-      setWindowLocation('https://gitlab.test/groups/foo-bar/-/work_items/1');
+      document.body.dataset.groupFullPath = 'foo-bar';
     });
 
     it('correctly renders a label', () => {
@@ -47,7 +51,8 @@ describe('LabelPresenter', () => {
 
   describe('for a project label', () => {
     beforeEach(() => {
-      setWindowLocation('https://gitlab.test/foo-bar/baz/-/work_items/1');
+      document.body.dataset.groupFullPath = 'foo-bar';
+      document.body.dataset.projectFullPath = 'foo-bar/baz';
     });
 
     it('correctly renders a label', () => {

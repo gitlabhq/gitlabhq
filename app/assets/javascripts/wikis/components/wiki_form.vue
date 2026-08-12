@@ -296,7 +296,10 @@ export default {
     },
     messageModalAction() {
       return {
-        primary: { text: this.submitButtonText },
+        primary: {
+          text: this.submitButtonText,
+          attributes: { 'data-testid': 'wiki-confirm-message' },
+        },
         cancel: { text: this.$options.i18n.cancel },
       };
     },
@@ -703,6 +706,7 @@ export default {
                     icon="chevron-down"
                     :toggle-text="s__('Wiki|Edit page options')"
                     text-sr-only
+                    toggle-id="wiki-page-options"
                     category="tertiary"
                     no-caret
                     fluid-width

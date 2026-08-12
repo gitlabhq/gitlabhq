@@ -401,7 +401,9 @@ $command-palette-spacing: px-to-rem(14px);
   }
 
   .feature-library-scroll-area {
-    min-height: 20rem;
+    // Keeps the modal from collapsing on empty results, while staying small
+    // enough not to overflow short viewports.
+    min-height: min(20rem, 40vh);
   }
 
   // Let the scroll area (and its top/bottom scrim gradients) bleed to the

@@ -1,19 +1,44 @@
 import { upperFirst, lowerCase } from 'lodash-es';
 import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
+import {
+  stripRelativeUrlRootFromPath,
+  cleanLeadingSeparator,
+  parseUrlPathname,
+} from '~/lib/utils/url_utility';
 
-export const extractGroupOrProject = (url = window.location.href) => {
-  // These are URL parsing operations on dynamic values, not ideal but acceptable
+/**
+ * Returns the group or project fullPath of the resource the given URL points to.
+ *
+ * @param {string} url - URL of a group or project resource.
+ * @returns {{ group?: string, project?: string }} The group or project fullPath, or an
+ * empty object when neither can be determined.
+ */
+export const getGroupOrProjectFromUrl = (url) => {
+  if (!url) return {};
+
   /* eslint-disable @gitlab/no-hardcoded-urls */
-  let fullPath = url
-    .replace(window.location.origin, '')
-    .split('/-/')[0]
-    .replace(new RegExp(`^${gon.relative_url_root}/`), '/');
-
-  const isGroup = fullPath.startsWith('/groups');
+  const path = stripRelativeUrlRootFromPath(parseUrlPathname(url)).split('/-/')[0];
+  const isGroup = path.startsWith('/groups');
   /* eslint-enable @gitlab/no-hardcoded-urls */
-  fullPath = fullPath.replace(/^\/groups\//, '').replace(/^\//g, '');
+
+  const fullPath = cleanLeadingSeparator(path.replace(/^\/groups\//, ''));
   if (isGroup) return { group: fullPath };
   if (fullPath) return { project: fullPath };
+  return {};
+};
+
+/**
+ * Returns the group or project fullPath the current page is scoped to, as set on
+ * `document.body` by the layout.
+ *
+ * @returns {{ group?: string, project?: string }} The group or project fullPath, or an
+ * empty object when the page is not scoped to either.
+ */
+export const getGroupOrProjectFromPageData = () => {
+  const { projectFullPath, groupFullPath } = document.body.dataset;
+
+  if (projectFullPath) return { project: projectFullPath };
+  if (groupFullPath) return { group: groupFullPath };
   return {};
 };
 

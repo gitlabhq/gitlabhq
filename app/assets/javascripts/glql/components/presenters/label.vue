@@ -3,7 +3,7 @@ import { GlLabel } from '@gitlab/ui';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import { projectIssuesPath } from '~/lib/utils/path_helpers/issues';
 import { issuesGroupPath } from '~/lib/utils/path_helpers/group';
-import { extractGroupOrProject } from '../../utils/common';
+import { getGroupOrProjectFromPageData } from '../../utils/common';
 
 export default {
   name: 'LabelPresenter',
@@ -25,7 +25,7 @@ export default {
       return `~${this.data.title}`;
     },
     labelUrl() {
-      const { group, project } = extractGroupOrProject();
+      const { group, project } = getGroupOrProjectFromPageData();
 
       if (project) {
         return projectIssuesPath(project, { label: this.data.title });

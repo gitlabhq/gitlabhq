@@ -2,7 +2,11 @@
 import { GlLink, GlIntersperse } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import initIssuablePopovers from '~/issuable/popover';
-import { extractGroupOrProject, relativeNamespace } from '../../utils/common';
+import {
+  getGroupOrProjectFromUrl,
+  getGroupOrProjectFromPageData,
+  relativeNamespace,
+} from '../../utils/common';
 
 const types = {
   WorkItem: 'issue',
@@ -30,7 +34,7 @@ export default {
     return {
       project: undefined,
       group: undefined,
-      ...extractGroupOrProject(this.data.webUrl),
+      ...getGroupOrProjectFromUrl(this.data.webUrl),
     };
   },
   computed: {
@@ -39,7 +43,7 @@ export default {
       return types[this.data.__typename];
     },
     referencePrefix() {
-      const current = extractGroupOrProject();
+      const current = getGroupOrProjectFromPageData();
 
       return relativeNamespace(current.project || current.group, this.project || this.group);
     },

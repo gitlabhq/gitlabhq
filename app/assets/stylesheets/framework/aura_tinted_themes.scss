@@ -288,15 +288,6 @@
   }
 
   /**
-   * Application chrome nav item overrides
-   * app/assets/stylesheets/framework/application_chrome_nav_item.scss
-   */
-  .browser-more-features-badge {
-    color: var(--gl-nav-item-selected-foreground-color-hover) !important;
-    background-color: var(--gl-nav-item-selected-background-color-hover) !important;
-  }
-
-  /**
    * Application theme preview overrides
    * app/assets/stylesheets/page_bundles/profiles/preferences.scss
    */

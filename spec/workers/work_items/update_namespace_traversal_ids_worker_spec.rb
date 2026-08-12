@@ -9,6 +9,7 @@ RSpec.describe WorkItems::UpdateNamespaceTraversalIdsWorker, feature_category: :
   let(:worker) { described_class.new }
 
   let(:update_traversal_id_service) { WorkItems::UpdateNamespaceTraversalIdsService }
+  let(:update_positioning_service) { WorkItems::UpdatePositioningNamespaceIdService }
 
   it 'has a concurrency limit' do
     expect(described_class.get_concurrency_limit).to eq(200)
@@ -19,12 +20,14 @@ RSpec.describe WorkItems::UpdateNamespaceTraversalIdsWorker, feature_category: :
 
     before do
       allow(update_traversal_id_service).to receive(:execute)
+      allow(update_positioning_service).to receive(:execute)
     end
 
     it 'calls the service layer logic' do
       worker.perform(namespace_id)
 
       expect(update_traversal_id_service).to have_received(:execute).with(namespace)
+      expect(update_positioning_service).to have_received(:execute).with(namespace)
     end
 
     context 'when the service fails to obtain lock' do
@@ -55,6 +58,7 @@ RSpec.describe WorkItems::UpdateNamespaceTraversalIdsWorker, feature_category: :
         perform
 
         expect(update_traversal_id_service).not_to have_received(:execute)
+        expect(update_positioning_service).not_to have_received(:execute)
       end
     end
   end

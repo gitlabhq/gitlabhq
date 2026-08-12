@@ -9,8 +9,10 @@ image: "registry.gitlab.com/gitlab-org/gitlab-build-images/ci/debian-bookworm-sl
 
 setup_script:
   # SRT sandbox — fail closed, no || true.
+  - apt-get update -qq && apt-get install -y -qq bubblewrap socat ripgrep
   - npm install -g @anthropic-ai/sandbox-runtime@0.0.49 --ignore-scripts
-  - srt --version
+  # Verify sandbox dependencies and fail closed.
+  - srt ls
 
   # Ruby gems — install to vendor/bundle so the path is covered by the
   # existing /vendor/bundle/* entry in .gitignore, preventing gem stubs

@@ -295,11 +295,16 @@ module Gitlab
 
       def deep_stringify(hash)
         hash.each_with_object({}) do |(key, value), stringified|
-          stringified[key.to_s] = case value
-                                  when Hash then deep_stringify(value)
-                                  when Array then value.map { |item| item.is_a?(Hash) ? deep_stringify(item) : item }
-                                  else value
-                                  end
+          stringified[key.to_s] = stringify_value(value)
+        end
+      end
+
+      def stringify_value(value)
+        case value
+        when Hash then deep_stringify(value)
+        when Array then value.map { |item| stringify_value(item) }
+        when Symbol then value.to_s
+        else value
         end
       end
     end

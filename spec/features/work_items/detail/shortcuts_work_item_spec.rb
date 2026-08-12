@@ -7,7 +7,7 @@ RSpec.describe 'Work item keyboard shortcuts', :js, feature_category: :team_plan
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public, :repository) }
-  let_it_be(:work_item) { create(:work_item, project: project) }
+  let_it_be_with_reload(:work_item) { create(:work_item, project: project) }
   let_it_be(:work_items_path) { project_work_item_path(project, work_item.iid) }
   let_it_be(:note_text) { 'I got this!' }
 

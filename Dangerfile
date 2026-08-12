@@ -51,7 +51,8 @@ Gitlab::Dangerfiles.for_project(self, project_name) do |gitlab_dangerfiles|
   # and renders as plain text. Map the downcased category back to the correctly-cased
   # label reference so it renders as a colored label.
   gitlab_dangerfiles.config.custom_labels_for_categories = {
-    'merge requests backend': '~"Merge Requests backend"'
+    'merge requests backend': '~"Merge Requests backend"',
+    geo: '~"group::geo"'
   }
   gitlab_dangerfiles.import_dangerfiles(except: %w[simple_roulette])
 end

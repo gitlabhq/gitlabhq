@@ -18,8 +18,12 @@ describe('TablePresenter', () => {
   useMockLocationHelper();
 
   beforeEach(() => {
-    window.location.href = 'https://gitlab.com/gitlab-org/gitlab-shell/-/issues/1';
     window.location.origin = 'https://gitlab.com';
+    document.body.dataset.projectFullPath = 'gitlab-org/gitlab-shell';
+  });
+
+  afterEach(() => {
+    delete document.body.dataset.projectFullPath;
   });
 
   const createWrapper = async ({ data, fields, ...moreProps }, mountFn = shallowMountExtended) => {

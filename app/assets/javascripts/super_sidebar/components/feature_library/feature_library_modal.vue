@@ -463,9 +463,8 @@ export default {
     :aria-label="s__('FeatureLibrary|GitLab features')"
     :hide-footer="!showFooter"
     modal-class="feature-library-modal"
-    body-class="gl-flex gl-flex-col"
+    body-class="gl-flex gl-flex-col gl-overflow-hidden"
     size="lg"
-    scrollable
     hide-header
     @shown="onShown"
     @hidden="onHidden"
@@ -640,7 +639,7 @@ export default {
         </gl-button>
 
         <div v-if="showFeedbackLink" class="gl-text-center gl-text-sm">
-          <gl-link :href="$options.FEEDBACK_ISSUE_URL" target="_blank" rel="noopener noreferrer">{{
+          <gl-link :href="$options.FEEDBACK_ISSUE_URL" show-external-icon target="_blank">{{
             s__('FeatureLibrary|Share feedback about this feature library')
           }}</gl-link>
         </div>
