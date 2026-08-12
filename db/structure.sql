@@ -52033,9 +52033,7 @@ CREATE UNIQUE INDEX unique_external_audit_event_destination_namespace_id_and_nam
 
 CREATE UNIQUE INDEX unique_google_cloud_logging_configurations_on_namespace_id ON audit_events_google_cloud_logging_configurations USING btree (namespace_id, google_project_id_name, log_id_name);
 
-CREATE UNIQUE INDEX unique_govern_policies_org_and_name_without_namespace ON govern_policies USING btree (organization_id, name) WHERE (namespace_id IS NULL);
-
-CREATE UNIQUE INDEX unique_govern_policies_org_namespace_and_name ON govern_policies USING btree (organization_id, namespace_id, name) WHERE (namespace_id IS NOT NULL);
+CREATE UNIQUE INDEX unique_govern_policies_organization_id_and_name ON govern_policies USING btree (organization_id, name);
 
 CREATE UNIQUE INDEX unique_govern_policy_enforcements_org_policy_and_project ON govern_policy_enforcements USING btree (organization_id, govern_policy_id, project_id) WHERE (project_id IS NOT NULL);
 

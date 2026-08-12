@@ -213,10 +213,20 @@ RSpec.shared_examples 'a policy repository' do
   end
 
   describe '#list' do
+    let(:deployment_attributes) { attributes.merge(name: 'Deployment policy', trigger_type: 'deployment_requested') }
+
     it 'returns the policies for the organization' do
       created = repository.create(attributes)
 
       expect(repository.list(organization_id: organization_id)).to contain_exactly(created)
+    end
+
+    it 'returns every trigger when no trigger_type is given' do
+      deployment_policy = repository.create(deployment_attributes)
+      merge_request_policy = repository.create(attributes)
+
+      expect(repository.list(organization_id: organization_id))
+        .to contain_exactly(deployment_policy, merge_request_policy)
     end
 
     it 'returns an empty array when no policies exist for the organization' do
@@ -236,6 +246,30 @@ RSpec.shared_examples 'a policy repository' do
       repository.delete(created.id)
 
       expect(repository.list(organization_id: organization_id)).to be_empty
+    end
+
+    context 'with a trigger_type' do
+      it 'returns only the policies for that trigger' do
+        deployment_policy = repository.create(deployment_attributes)
+        repository.create(attributes)
+
+        expect(repository.list(organization_id: organization_id, trigger_type: 'deployment_requested'))
+          .to contain_exactly(deployment_policy)
+      end
+
+      it 'returns an empty array when no policy targets it' do
+        repository.create(attributes)
+
+        expect(repository.list(organization_id: organization_id, trigger_type: 'deployment_requested')).to be_empty
+      end
+
+      it 'still excludes policies from other organizations' do
+        repository.create(deployment_attributes.merge(organization_id: other_organization_id))
+        our_policy = repository.create(deployment_attributes)
+
+        expect(repository.list(organization_id: organization_id, trigger_type: 'deployment_requested'))
+          .to contain_exactly(our_policy)
+      end
     end
   end
 end

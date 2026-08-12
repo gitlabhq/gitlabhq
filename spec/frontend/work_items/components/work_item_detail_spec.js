@@ -799,7 +799,7 @@ describe('WorkItemDetail component', () => {
         expect(findWorkItemRelationships().exists()).toBe(true);
       });
 
-      it('opens the drawer with the linked item when `showModal` is emitted', async () => {
+      it('opens the drawer with the linked item when `show-modal` is emitted', async () => {
         createComponent({
           handler,
         });
@@ -810,7 +810,7 @@ describe('WorkItemDetail component', () => {
         };
         const child = { id: 'childWorkItemId' };
 
-        findWorkItemRelationships().vm.$emit('showModal', {
+        findWorkItemRelationships().vm.$emit('show-modal', {
           event,
           child,
         });

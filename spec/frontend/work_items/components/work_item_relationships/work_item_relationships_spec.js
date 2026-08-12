@@ -221,14 +221,27 @@ describe('WorkItemRelationships', () => {
     expect(findWorkItemRelationshipForm().exists()).toBe(false);
   });
 
-  it('removes linked item and shows toast message when removeLinkedItem event is emitted', async () => {
+  it('re-emits show-modal with the widget name when a list asks to open the drawer', async () => {
+    await createComponent();
+
+    const child = { id: 'gid://gitlab/WorkItem/2' };
+    await findAllWorkItemRelationshipListComponents()
+      .at(0)
+      .vm.$emit('show-modal', { event: null, child });
+
+    expect(wrapper.emitted('show-modal')).toEqual([
+      [{ event: null, child, context: 'linkeditems' }],
+    ]);
+  });
+
+  it('removes linked item and shows toast message when remove-linked-item event is emitted', async () => {
     await createComponent();
 
     expect(findLinkedItemsCountBadge().text()).toBe('3');
 
     await findAllWorkItemRelationshipListComponents()
       .at(0)
-      .vm.$emit('removeLinkedItem', { id: 'gid://gitlab/WorkItem/2' });
+      .vm.$emit('remove-linked-item', { id: 'gid://gitlab/WorkItem/2' });
 
     await waitForPromises();
 
@@ -257,7 +270,7 @@ describe('WorkItemRelationships', () => {
 
       await findAllWorkItemRelationshipListComponents()
         .at(0)
-        .vm.$emit('removeLinkedItem', { id: 'gid://gitlab/WorkItem/2' });
+        .vm.$emit('remove-linked-item', { id: 'gid://gitlab/WorkItem/2' });
 
       await waitForPromises();
 
@@ -366,7 +379,7 @@ describe('WorkItemRelationships', () => {
     expect(blockingList.props('linkedItems')).toHaveLength(1);
     expect(blockedByList.props('linkedItems')).toHaveLength(1);
 
-    blockingList.vm.$emit('updateLinkedItem', {
+    blockingList.vm.$emit('update-linked-item', {
       linkedItem: blockingList.props('linkedItems')[0],
       fromRelationshipType: 'blocks',
       toRelationshipType: 'is_blocked_by',

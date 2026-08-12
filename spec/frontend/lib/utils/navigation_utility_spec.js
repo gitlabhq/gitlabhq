@@ -26,6 +26,80 @@ describe('findAndFollowLink', () => {
   });
 });
 
+describe('registerNavShortcutLinks', () => {
+  const menuItems = [
+    {
+      title: 'Code',
+      link: '/flightjs/Flight/-/tree/master',
+      link_classes: 'shortcuts-tree',
+      items: [
+        {
+          title: 'Commits',
+          link: '/flightjs/Flight/-/commits/master',
+          link_classes: 'shortcuts-commits',
+        },
+        { title: 'Branches', link: '/flightjs/Flight/-/branches' },
+      ],
+    },
+    { title: 'No link', link_classes: 'shortcuts-no-link' },
+  ];
+
+  beforeEach(() => {
+    navigationUtils.registerNavShortcutLinks(menuItems);
+  });
+
+  afterEach(() => {
+    navigationUtils.registerNavShortcutLinks([]);
+    resetHTMLFixture();
+  });
+
+  it('follows a registered link when it is not rendered in the DOM', () => {
+    findAndFollowLink('.shortcuts-tree');
+
+    expect(visitUrl).toHaveBeenCalledWith('/flightjs/Flight/-/tree/master');
+  });
+
+  it('registers links of nested menu items', () => {
+    findAndFollowLink('.shortcuts-commits');
+
+    expect(visitUrl).toHaveBeenCalledWith('/flightjs/Flight/-/commits/master');
+  });
+
+  it('prefers a link rendered in the DOM over a registered one', () => {
+    setHTMLFixture(`<a class="shortcuts-tree" href="/dom/path">link</a>`);
+
+    findAndFollowLink('.shortcuts-tree');
+
+    expect(visitUrl).toHaveBeenCalledWith('/dom/path');
+  });
+
+  it('ignores items without a link', () => {
+    findAndFollowLink('.shortcuts-no-link');
+
+    expect(visitUrl).not.toHaveBeenCalled();
+  });
+
+  it('does nothing for selectors that match neither the DOM nor registered links', () => {
+    findAndFollowLink('.js-wiki-edit');
+
+    expect(visitUrl).not.toHaveBeenCalled();
+  });
+
+  it('does not follow registered links after they are re-registered with new items', () => {
+    navigationUtils.registerNavShortcutLinks([]);
+
+    findAndFollowLink('.shortcuts-tree');
+
+    expect(visitUrl).not.toHaveBeenCalled();
+  });
+
+  it('follows a registered link via findAndFollowChildLink when it is not rendered in the DOM', () => {
+    navigationUtils.findAndFollowChildLink('.shortcuts-tree');
+
+    expect(visitUrl).toHaveBeenCalledWith('/flightjs/Flight/-/tree/master');
+  });
+});
+
 describe('findAndFollowChildLink', () => {
   it('visits a child link when the selector exists', () => {
     const href = '/some/path';

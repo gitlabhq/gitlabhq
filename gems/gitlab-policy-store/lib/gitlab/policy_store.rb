@@ -53,8 +53,8 @@ module Gitlab
         configuration.repository.delete(id)
       end
 
-      def list(organization_id:)
-        configuration.repository.list(organization_id: organization_id)
+      def list(organization_id:, trigger_type: nil)
+        configuration.repository.list(organization_id: organization_id, trigger_type: trigger_type)
       end
     end
   end

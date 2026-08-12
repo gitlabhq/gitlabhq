@@ -2489,6 +2489,8 @@
     # Automatically run for MRs with group::code review label or maintenance::dependency label and backend changes
     - <<: *if-group-code-review-label-or-maintenance-label-on-mr
       changes: *backend-only-patterns
+    # Run only on the canonical gitlab-org/gitlab 2-hourly maintenance schedule so CPT stores baselines
+    - <<: *if-dot-com-ee-schedule-default-branch-maintenance
     # Allow manual triggering for CNG dependency changes
     - <<: *if-merge-request
       changes: *cng-dependency-patterns

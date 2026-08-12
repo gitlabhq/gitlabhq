@@ -103,7 +103,7 @@ export default {
       default: false,
     },
   },
-  emits: ['showModal'],
+  emits: ['show-modal'],
   apollo: {
     linkedWorkItems: {
       query: workItemLinkedItemsQuery,
@@ -456,15 +456,15 @@ export default {
         :active-child-item-id="activeChildItemId"
         :active-panel="activePanel"
         :contextual-view-enabled="contextualViewEnabled"
-        @showModal="
-          $emit('showModal', {
+        @show-modal="
+          $emit('show-modal', {
             event: $event.event,
             child: $event.child,
             context: widgetName,
           })
         "
-        @removeLinkedItem="removeLinkedItem"
-        @updateLinkedItem="updateLinkedItem"
+        @remove-linked-item="removeLinkedItem"
+        @update-linked-item="updateLinkedItem"
       />
       <work-item-relationship-list
         v-if="openIsBlockedByLinks.length"
@@ -479,15 +479,15 @@ export default {
         :active-child-item-id="activeChildItemId"
         :active-panel="activePanel"
         :contextual-view-enabled="contextualViewEnabled"
-        @showModal="
-          $emit('showModal', {
+        @show-modal="
+          $emit('show-modal', {
             event: $event.event,
             child: $event.child,
             context: widgetName,
           })
         "
-        @removeLinkedItem="removeLinkedItem"
-        @updateLinkedItem="updateLinkedItem"
+        @remove-linked-item="removeLinkedItem"
+        @update-linked-item="updateLinkedItem"
       />
       <work-item-relationship-list
         v-if="openRelatesToLinks.length"
@@ -502,15 +502,15 @@ export default {
         :active-child-item-id="activeChildItemId"
         :active-panel="activePanel"
         :contextual-view-enabled="contextualViewEnabled"
-        @showModal="
-          $emit('showModal', {
+        @show-modal="
+          $emit('show-modal', {
             event: $event.event,
             child: $event.child,
             context: widgetName,
           })
         "
-        @removeLinkedItem="removeLinkedItem"
-        @updateLinkedItem="updateLinkedItem"
+        @remove-linked-item="removeLinkedItem"
+        @update-linked-item="updateLinkedItem"
       />
 
       <div

@@ -142,9 +142,16 @@ describe('WorkItemRelationshipList', () => {
     createComponent({ linkedItems: mockLinkedItems });
     findWorkItemLinkChildContents().vm.$emit('click', { target: null });
 
-    expect(wrapper.emitted('showModal')).toEqual([
+    expect(wrapper.emitted('show-modal')).toEqual([
       [expect.objectContaining({ child: mockLinkedItems[0].workItem })],
     ]);
+  });
+
+  it('emits remove-linked-item with the child when the child asks to be removed', () => {
+    createComponent({ linkedItems: mockLinkedItems });
+    findWorkItemLinkChildContents().vm.$emit('remove-child');
+
+    expect(wrapper.emitted('remove-linked-item')).toEqual([[mockLinkedItems[0].workItem]]);
   });
 
   describe('redirects to URL on click', () => {
@@ -270,16 +277,16 @@ describe('WorkItemRelationshipList', () => {
       expect(document.removeEventListener).toHaveBeenCalledWith('keyup', expect.any(Function));
     });
 
-    it('does not emit updateLinkedItem event when relationship type did not change', async () => {
+    it('does not emit update-linked-item event when relationship type did not change', async () => {
       await emitDragEnd(mockFrom, mockFrom);
 
-      expect(wrapper.emitted('updateLinkedItem')).toBeUndefined();
+      expect(wrapper.emitted('update-linked-item')).toBeUndefined();
     });
 
-    it('emits updateLinkedItem event when relationship type did change', async () => {
+    it('emits update-linked-item event when relationship type did change', async () => {
       await emitDragEnd(mockFrom, mockTo);
 
-      expect(wrapper.emitted('updateLinkedItem')).toEqual([
+      expect(wrapper.emitted('update-linked-item')).toEqual([
         [
           {
             linkedItem: mockLinkedItems[0],

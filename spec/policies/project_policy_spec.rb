@@ -4618,6 +4618,52 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     it_behaves_like 'subgroup/project-provisioned service account restriction', :create_service_account
   end
 
+  describe ':request_access' do
+    let_it_be(:group_requester) { create(:user) }
+    let_it_be(:group_with_project) { create(:group, :public) }
+    let_it_be(:public_project_with_group) do
+      create(:project, :public, namespace: group_with_project)
+    end
+
+    before_all do
+      group_with_project.request_access(group_requester)
+    end
+
+    subject { described_class.new(current_user, project) }
+
+    context 'when user can request access' do
+      let(:project) { public_project_with_group }
+      let(:current_user) { non_member }
+
+      it { expect_allowed(:request_access) }
+    end
+
+    context 'when user cannot request access' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:case_name, :current_user, :project) do
+        'anonymous user'            | lazy { nil }                  | lazy { public_project_with_group }
+        'direct project owner'      | lazy { owner }                | lazy { public_project }
+        'direct project guest'      | lazy { guest }                | lazy { public_project }
+        'inherited group owner'     | lazy { inherited_owner }      | lazy { public_project_in_group }
+        'inherited group developer' | lazy { inherited_developer }  | lazy { public_project_in_group }
+        'inherited group guest'     | lazy { inherited_guest }      | lazy { public_project_in_group }
+        'group requester'           | lazy { group_requester }      | lazy { public_project_with_group }
+      end
+
+      with_them do
+        it { expect_disallowed(:request_access) }
+      end
+    end
+
+    context 'when request_access_enabled is disabled on the project' do
+      let(:project) { create(:project, :public, request_access_enabled: false) }
+      let(:current_user) { non_member }
+
+      it { expect_disallowed(:request_access) }
+    end
+  end
+
   private
 
   def project_subject(project_type)

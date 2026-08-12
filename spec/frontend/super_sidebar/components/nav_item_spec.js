@@ -248,6 +248,33 @@ describe('NavItem component', () => {
         expect(pinButton.classes()).toContain('gl-pointer-events-none');
       });
     });
+
+    describe('when sidebar is in icon-only mode', () => {
+      it('does not render pin button', () => {
+        createWrapper({
+          item: { title: 'Foo' },
+          provide: {
+            panelSupportsPins: true,
+            isIconOnly: true,
+          },
+        });
+
+        expect(findPinButton().exists()).toBe(false);
+      });
+
+      it('renders pin button in a flyout menu', () => {
+        createWrapper({
+          item: { title: 'Foo' },
+          props: { isFlyout: true },
+          provide: {
+            panelSupportsPins: true,
+            isIconOnly: true,
+          },
+        });
+
+        expect(findPinButton().exists()).toBe(true);
+      });
+    });
   });
 
   it('applies correct aria-label', () => {

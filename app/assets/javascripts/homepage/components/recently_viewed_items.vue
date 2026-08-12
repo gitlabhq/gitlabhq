@@ -40,15 +40,17 @@ export default {
           .map((entry) => {
             // eslint-disable-next-line no-underscore-dangle
             const typename = entry.item.__typename;
+            const { workItemType } = entry.item;
             // For WorkItems, use workItemType.name (Issue, Epic, Task, etc.)
             // For other types (MergeRequest, WikiPage), use __typename
-            const itemType = typename === 'WorkItem' ? entry.item.workItemType?.name : typename;
+            const itemType = typename === 'WorkItem' ? workItemType?.name : typename;
 
             return {
               ...entry.item,
               viewedAt: entry.viewedAt,
               itemType,
-              icon: ICON_MAP[itemType] || 'question',
+              // workItemType.iconName covers custom work item types, which are absent from ICON_MAP
+              icon: workItemType?.iconName || ICON_MAP[itemType] || 'question',
             };
           })
           .slice(0, MAX_ITEMS);

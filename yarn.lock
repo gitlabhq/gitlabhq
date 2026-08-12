@@ -1426,20 +1426,12 @@
   resolved "https://registry.yarnpkg.com/@fastify/busboy/-/busboy-3.1.1.tgz#af3aea7f1e52ec916d8b5c9dcc0f09d4c060a3fc"
   integrity sha512-5DGmA8FTdB2XbDeEwc/5ZXBl6UbBAyBOOLlPuBnZ/N1SwdH9Ii+cOX3tBROlDgcTXxjOYnLMVoKk9+FXAw0CJw==
 
-"@floating-ui/core@^1.7.5", "@floating-ui/core@^1.8.0":
+"@floating-ui/core@^1.8.0":
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/@floating-ui/core/-/core-1.8.0.tgz#d01c0bbea02e4a57f6fd7d5de6fc2c5c7dca40e1"
   integrity sha512-0CIZ5itps/8x7BG8dEIhs53BvCUH2PCoogtakwRTut+Arm58sJooJ0AuZhLw2HJYIR5cMLNPBSS728sPho2khQ==
   dependencies:
     "@floating-ui/utils" "^0.2.12"
-
-"@floating-ui/dom@1.7.6":
-  version "1.7.6"
-  resolved "https://registry.yarnpkg.com/@floating-ui/dom/-/dom-1.7.6.tgz#f915bba5abbb177e1f227cacee1b4d0634b187bf"
-  integrity sha512-9gZSAI5XM36880PPMm//9dfiEngYoC6Am2izES1FF406YFsjvyBMmeJ2g4SAju3xWwtuynNRFL2s9hgxpLI5SQ==
-  dependencies:
-    "@floating-ui/core" "^1.7.5"
-    "@floating-ui/utils" "^0.2.11"
 
 "@floating-ui/dom@1.8.0", "@floating-ui/dom@^1.0.0", "@floating-ui/dom@^1.8.0":
   version "1.8.0"
@@ -1456,7 +1448,7 @@
   dependencies:
     "@floating-ui/dom" "^1.0.0"
 
-"@floating-ui/utils@^0.2.11", "@floating-ui/utils@^0.2.12":
+"@floating-ui/utils@^0.2.12":
   version "0.2.12"
   resolved "https://registry.yarnpkg.com/@floating-ui/utils/-/utils-0.2.12.tgz#afefe785949f16ac4cdd1e695935a321572dd56a"
   integrity sha512-HpCo8tmWzLVad5s2d19EhAz5zqrrQ6s69qd6moPMQvkOuSwDT1YgRfWSVuc4ennqrgv3OHppiOGMQ7oC13yIww==
@@ -1474,12 +1466,12 @@
     core-js "^3.29.1"
     mitt "^3.0.1"
 
-"@gitlab/duo-ui@^15.41.0":
-  version "15.41.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/duo-ui/-/duo-ui-15.41.0.tgz#1a0aeb94e13fdea4e304c3be390cd5b7ecea601a"
-  integrity sha512-m2mUeZ63Ynyg5MxC11YXyPyTUOU8erhkEwYNOx37aNIJUb8qYUm3bX/TnRpKi7uJsOTiULswGAPGk8PBsITqWA==
+"@gitlab/duo-ui@^15.45.0":
+  version "15.46.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/duo-ui/-/duo-ui-15.46.1.tgz#0499ea3079d84f5cc597c99d575e93129e1adb81"
+  integrity sha512-V+go+oEGf+0ZJt4ixLvoifIgg/ATpqojbXiQD8mA34aVvAp7H7v1qm3L/vy/JwDC0SpXNbTDtxRMRlRig/jsqg==
   dependencies:
-    "@floating-ui/dom" "1.7.6"
+    "@floating-ui/dom" "1.8.0"
     diff "^8.0.2"
     echarts "^5.3.2"
     iframe-resizer "^4.3.2"
@@ -1494,6 +1486,7 @@
     vue-functional-data-merge "^3.1.0"
     vue-resizable "1.3.4"
     vue-runtime-helpers "^1.1.2"
+    zod "^4.4.3"
 
 "@gitlab/eslint-plugin@21.5.0":
   version "21.5.0"
@@ -16955,6 +16948,11 @@ zen-observable@0.8.15:
   version "0.8.15"
   resolved "https://registry.yarnpkg.com/zen-observable/-/zen-observable-0.8.15.tgz#96415c512d8e3ffd920afd3889604e30b9eaac15"
   integrity sha512-PQ2PC7R9rslx84ndNBZB/Dkv8V8fZEpk83RLgXtYd0fwUgEjseMn1Dgajh2x6S8QbZAFa9p2qVCEuYZNgve0dQ==
+
+zod@^4.4.3:
+  version "4.4.3"
+  resolved "https://registry.yarnpkg.com/zod/-/zod-4.4.3.tgz#b680f172885d18bbebf21a834ea25e55a1bbf356"
+  integrity sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ==
 
 zrender@5.6.1:
   version "5.6.1"

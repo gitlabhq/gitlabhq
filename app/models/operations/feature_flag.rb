@@ -44,6 +44,10 @@ module Operations
 
     scope :new_version_only, -> { where(version: :new_version_flag) }
 
+    scope :with_api_entity_associations, -> {
+      preload(project: [:project_feature, :organization, :route, { namespace: [:route, :organization] }])
+    }
+
     enum :version, {
       new_version_flag: 2
     }

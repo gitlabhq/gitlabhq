@@ -248,37 +248,68 @@ describe('RecentlyViewedItems', () => {
       expect(mrItems.at(0).text()).toBe('Implement authentication improvements');
     });
 
-    it('renders work item with correct icon', async () => {
-      const mockWorkItemResponse = {
-        data: {
-          currentUser: {
-            id: 123,
-            recentlyViewedItems: [
-              {
-                viewedAt: '2025-06-19T10:00:00Z',
-                item: {
-                  __typename: 'WorkItem',
-                  id: 'work-item-1',
-                  title: 'Test Work Item',
-                  webUrl: '/project/-/work_items/1',
-                  workItemType: {
-                    id: 'gid://gitlab/WorkItems::Type/1',
-                    name: 'Issue',
+    describe('work items', () => {
+      const createWorkItemHandler = (workItemType) =>
+        jest.fn().mockResolvedValue({
+          data: {
+            currentUser: {
+              id: 123,
+              recentlyViewedItems: [
+                {
+                  viewedAt: '2025-06-19T10:00:00Z',
+                  item: {
+                    __typename: 'WorkItem',
+                    id: 'work-item-1',
+                    title: 'Test Work Item',
+                    webUrl: '/project/-/work_items/1',
+                    workItemType,
                   },
                 },
-              },
-            ],
+              ],
+            },
           },
-        },
-      };
+        });
 
-      const workItemHandler = jest.fn().mockResolvedValue(mockWorkItemResponse);
-      createComponent({ recentlyViewedHandler: workItemHandler });
-      await waitForPromises();
+      it('renders work item with correct icon', async () => {
+        createComponent({
+          recentlyViewedHandler: createWorkItemHandler({
+            id: 'gid://gitlab/WorkItems::Type/1',
+            name: 'Issue',
+            iconName: 'work-item-issue',
+          }),
+        });
+        await waitForPromises();
 
-      expect(findItemLinks()).toHaveLength(1);
-      expect(findItemIcons().at(0).props('name')).toBe('work-item-issue');
-      expect(findItemLinks().at(0).text()).toBe('Test Work Item');
+        expect(findItemLinks()).toHaveLength(1);
+        expect(findItemIcons().at(0).props('name')).toBe('work-item-issue');
+        expect(findItemLinks().at(0).text()).toBe('Test Work Item');
+      });
+
+      it('renders the custom icon of a custom work item type', async () => {
+        createComponent({
+          recentlyViewedHandler: createWorkItemHandler({
+            id: 'gid://gitlab/WorkItems::Type/100',
+            name: 'Bug Report',
+            iconName: 'bug',
+          }),
+        });
+        await waitForPromises();
+
+        expect(findItemIcons().at(0).props('name')).toBe('bug');
+      });
+
+      it('falls back to the question icon when the type has no icon name', async () => {
+        createComponent({
+          recentlyViewedHandler: createWorkItemHandler({
+            id: 'gid://gitlab/WorkItems::Type/100',
+            name: 'Bug Report',
+            iconName: null,
+          }),
+        });
+        await waitForPromises();
+
+        expect(findItemIcons().at(0).props('name')).toBe('question');
+      });
     });
 
     it('renders items with correct URLs', () => {

@@ -75,7 +75,7 @@ export default {
       default: false,
     },
   },
-  emits: ['removeLinkedItem', 'showModal', 'updateLinkedItem'],
+  emits: ['remove-linked-item', 'show-modal', 'update-linked-item'],
   data() {
     return {
       dragCancelled: false,
@@ -172,7 +172,7 @@ export default {
       // Relationship type didn't change, prevent moving.
       if (fromRelationshipType === toRelationshipType) return;
 
-      this.$emit('updateLinkedItem', {
+      this.$emit('update-linked-item', {
         linkedItem,
         fromRelationshipType,
         toRelationshipType,
@@ -225,7 +225,7 @@ export default {
         return;
       }
 
-      this.$emit('showModal', { event, child: linkedItem.workItem });
+      this.$emit('show-modal', { event, child: linkedItem.workItem });
       this.$nextTick(() => {
         this.lastActiveElement = event.target;
         scrollToElement(this.lastActiveElement, { offset: -80, behavior: 'auto' });
@@ -276,7 +276,7 @@ export default {
           }"
           :contextual-view-enabled="contextualViewEnabled"
           @click="handleLinkedItemClick($event, linkedItem)"
-          @remove-child="$emit('removeLinkedItem', linkedItem.workItem)"
+          @remove-child="$emit('remove-linked-item', linkedItem.workItem)"
         />
       </li>
     </component>

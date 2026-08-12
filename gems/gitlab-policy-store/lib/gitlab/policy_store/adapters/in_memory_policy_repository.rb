@@ -33,8 +33,11 @@ module Gitlab
           nil
         end
 
-        def list(organization_id:)
-          @policies.values.select { |policy| policy.organization_id == organization_id }
+        def list(organization_id:, trigger_type: nil)
+          @policies.values.select do |policy|
+            policy.organization_id == organization_id &&
+              (trigger_type.nil? || policy.trigger_type == trigger_type)
+          end
         end
 
         private

@@ -105,6 +105,9 @@ export default {
     isPinned() {
       return this.pinnedItemIds.ids.includes(this.item.id);
     },
+    showPinButton() {
+      return this.isPinnable && (!this.isIconOnly || this.isFlyout);
+    },
     trackingProps() {
       // Set extra event data to debug missing IDs / Panel Types
       const extraData =
@@ -312,7 +315,7 @@ export default {
       </template>
     </gl-nav-item>
     <gl-button
-      v-if="isPinnable"
+      v-if="showPinButton"
       v-gl-tooltip.noninteractive.right.viewport="
         isPinned ? $options.i18n.unpinItem : $options.i18n.pinItem
       "

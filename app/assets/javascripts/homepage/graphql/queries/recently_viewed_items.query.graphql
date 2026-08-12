@@ -11,6 +11,7 @@ query RecentlyViewedItems {
           workItemType {
             id
             name
+            iconName
           }
         }
         ... on Issue {

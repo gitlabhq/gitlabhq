@@ -1263,7 +1263,7 @@ export default {
             :active-child-item-id="activeChildItemId"
             :has-blocked-work-items-feature="hasBlockedWorkItemsFeature"
             contextual-view-enabled
-            @showModal="openContextualView"
+            @show-modal="openContextualView"
           />
 
           <work-item-development

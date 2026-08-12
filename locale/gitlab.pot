@@ -11982,6 +11982,9 @@ msgstr ""
 msgid "ArtifactRegistry|CI/CD pipelines (.gitlab-ci.yml)"
 msgstr ""
 
+msgid "ArtifactRegistry|CLI commands"
+msgstr ""
+
 msgid "ArtifactRegistry|Client configuration files"
 msgstr ""
 
@@ -12207,6 +12210,12 @@ msgstr ""
 msgid "ArtifactRegistry|Publish command:"
 msgstr ""
 
+msgid "ArtifactRegistry|Publish your first image to get started."
+msgstr ""
+
+msgid "ArtifactRegistry|Publish your first package to get started."
+msgstr ""
+
 msgid "ArtifactRegistry|Pull an image:"
 msgstr ""
 
@@ -12312,6 +12321,12 @@ msgstr ""
 msgid "ArtifactRegistry|The role revocation request was invalid."
 msgstr ""
 
+msgid "ArtifactRegistry|There are no images in this repository yet"
+msgstr ""
+
+msgid "ArtifactRegistry|There are no packages in this repository yet"
+msgstr ""
+
 msgid "ArtifactRegistry|This action permanently deletes the repository and all of its artifacts. If this repository is connected to a virtual repository, the virtual repository loses access to this repository and its artifacts."
 msgstr ""
 
@@ -12319,9 +12334,6 @@ msgid "ArtifactRegistry|This cannot be changed once claimed, even if Artifact Re
 msgstr ""
 
 msgid "ArtifactRegistry|This organization has no repositories yet."
-msgstr ""
-
-msgid "ArtifactRegistry|This repository has no artifacts."
 msgstr ""
 
 msgid "ArtifactRegistry|Type"

@@ -38,8 +38,9 @@ module Gitlab
         end
 
         # @param organization_id [Integer] the organization ID
+        # @param trigger_type [String, nil] returns every trigger when nil
         # @return [Array<Gitlab::PolicyStore::Policy>] the policies
-        def list(organization_id:)
+        def list(organization_id:, trigger_type: nil)
           raise NotImplementedError
         end
 

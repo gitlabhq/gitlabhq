@@ -132,6 +132,14 @@ ee/lib/api/entities/work_items/features/custom_fields.rb:
   - updated_by
   - value
   - work_item_types
+ee/lib/api/entities/work_items/features/feature_flag.rb:
+  usage_radius: 18
+  fields:
+  - active
+  - id
+  - name
+  - path
+  - reference
 ee/lib/api/entities/work_items/features/health_status.rb:
   usage_radius: 18
   fields:

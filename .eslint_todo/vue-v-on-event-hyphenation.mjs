@@ -67,7 +67,6 @@ export default {
     'app/assets/javascripts/work_items/components/work_item_milestone.vue',
     'app/assets/javascripts/work_items/components/work_item_notes.vue',
     'app/assets/javascripts/work_items/components/work_item_parent.vue',
-    'app/assets/javascripts/work_items/components/work_item_relationships/work_item_relationships.vue',
     'app/assets/javascripts/work_items/components/work_item_sticky_header.vue',
     'app/assets/javascripts/work_items/pages/create_work_item.vue',
     'app/assets/javascripts/work_items/pages/work_item_root.vue',

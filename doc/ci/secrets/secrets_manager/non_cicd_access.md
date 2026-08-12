@@ -120,7 +120,7 @@ vault kv get -mount=<path> "<secrets_path>/<secret_name>"
 
 The [External Secrets Operator](https://external-secrets.io) syncs GitLab secrets into Kubernetes
 secrets through its HashiCorp Vault provider.
-A workload in the cluster keeps a fresh access token in a Kubernetes secret, and the operator reads
+A workload such as a [CronJob](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/) in the cluster keeps a fresh access token in a Kubernetes secret, and the operator reads
 that token to authenticate to OpenBao.
 
 Map the mint response onto a `SecretStore`, and reference each secret by `<secrets_path>/<secret_name>`:
@@ -169,6 +169,37 @@ The access token expires after five minutes, so a workload must refresh the `git
 Kubernetes secret before it expires.
 
 A native Kubernetes integration is proposed in [epic 20382](https://gitlab.com/groups/gitlab-org/-/epics/20382).
+
+### Authentication flow
+
+You can view the authentication flow with the External Secrets Operator in this diagram:
+
+```mermaid
+sequenceDiagram
+    accTitle: Access token flow between Workload refresher, Secrets Manager API, ESO, and OpenBao
+    accDescr: A workload refresher mints a short-lived access token and stores it in a Kubernetes secret. ESO reads the token, authenticates to OpenBao with it, reads the secret value, and writes it to a synced Kubernetes secret on each sync interval.
+    participant W as Workload <br/> refresher
+    participant API as Secrets Manager API
+    participant KAuth as K8s Secret <br/> auth token
+    participant ESO as ESO
+    participant OB as OpenBao
+    participant KApp as K8s Secret <br/> synced
+
+    W->>API: Mint access token
+    API-->>W: Short-lived token
+    W->>KAuth: Store token
+
+    loop Sync interval
+        ESO->>KAuth: Read token
+        ESO->>OB: JWT login
+        OB-->>ESO: Client token
+        ESO->>OB: Read KV path
+        OB-->>ESO: Secret value
+        ESO->>KApp: Write value
+    end
+
+    Note over W,API: Access token expires in 5 min
+```
 
 ## Use with Terraform
 
