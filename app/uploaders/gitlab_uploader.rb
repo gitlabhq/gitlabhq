@@ -51,6 +51,8 @@ class GitlabUploader < CarrierWave::Uploader::Base
   delegate :base_dir, :file_storage?, to: :class
 
   before :cache, :protect_from_path_traversal!
+  # Re-check at store time: filename/store_dir can change between cache and store (TOCTOU).
+  before :store, :protect_from_path_traversal!
 
   def initialize(model, mounted_as = nil, **uploader_context)
     super(model, mounted_as)
@@ -208,6 +210,10 @@ class GitlabUploader < CarrierWave::Uploader::Base
 
     rescue ObjectNotReadyError
       # Do nothing. This test was attempted before the file was ready for that method
+    rescue NotImplementedError
+      # Do nothing. This uploader does not implement this path segment (for
+      # example, a direct-upload-only uploader without a `dynamic_segment`), so
+      # there is no path to validate for this method.
     end
   end
 end

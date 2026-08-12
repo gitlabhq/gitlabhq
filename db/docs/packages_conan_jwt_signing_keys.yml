@@ -1,0 +1,11 @@
+---
+table_name: packages_conan_jwt_signing_keys
+classes:
+- Packages::Conan::JwtSigningKey
+feature_categories:
+- package_registry
+description: Stores the instance-wide signing key used to sign and verify Conan package JWT authentication tokens
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/189000
+milestone: '19.3'
+gitlab_schema: gitlab_main_cell_setting
+table_size: small
