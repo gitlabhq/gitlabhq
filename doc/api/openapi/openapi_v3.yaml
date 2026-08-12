@@ -75487,6 +75487,18 @@ components:
           type: boolean
         user:
           type: object
+    APIEntitiesMergeRequestsStatusCheckResponseExternalStatusCheck:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: QA
+        external_url:
+          type: string
+          example: https://www.example.com
     APIEntitiesMergeRequestsStatusCheckResponse:
       type: object
       properties:
@@ -75496,7 +75508,7 @@ components:
         merge_request:
           "$ref": "#/components/schemas/APIEntitiesMergeRequest"
         external_status_check:
-          "$ref": "#/components/schemas/APIEntitiesExternalStatusCheck"
+          "$ref": "#/components/schemas/APIEntitiesMergeRequestsStatusCheckResponseExternalStatusCheck"
     APIEntitiesMergeRequestsStatusCheck:
       type: object
       properties:

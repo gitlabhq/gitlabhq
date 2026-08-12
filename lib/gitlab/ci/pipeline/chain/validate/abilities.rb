@@ -68,6 +68,8 @@ module Gitlab
                 true
               elsif @command.merge_request_ref? && @command.merge_request&.for_same_project?
                 access.can_run_pipeline_on_branch?(@command.merge_request.source_branch)
+              elsif @command.merge_request_ref? && @command.merge_request.nil?
+                false
               elsif @command.branch?
                 access.can_run_pipeline_on_branch?(@command.ref)
               elsif @command.tag?

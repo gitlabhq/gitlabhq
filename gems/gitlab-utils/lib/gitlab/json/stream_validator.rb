@@ -20,6 +20,13 @@ module Gitlab
 
       MAX_NUMERIC_BIT_LENGTH = 3321 # ~1000 decimal digits
 
+      # Non-gmp linked instances require a pre-scan to prevent oversized integers
+      # exceeding max_integer_digits
+      # TODO - remove once Oj gem releases improvements to raise ParseError prior to
+      # parsing oversized integers
+      GMP_LINKED = RbConfig::CONFIG['MAINLIBS'].to_s.include?('gmp').freeze
+      INTEGER_DIGIT_SCAN_REGEX = /"(?:[^"\\]|\\.)*"|(-?\d+)(?:\.\d+)?(?:[eE][+-]?\d+)?/
+
       attr_reader :result, :options
 
       # We want to hide the limits configured, but still show what type
@@ -97,7 +104,19 @@ module Gitlab
           return
         end
 
-        ::Oj.sc_parse(self, body)
+        check_integer_digits_before_parse!(body, options[:max_integer_digits]) unless GMP_LINKED
+
+        begin
+          ::Oj.sc_parse(self, body, max_integer_digits: options[:max_integer_digits])
+        rescue Oj::ParseError, EncodingError => e
+          # Oj does not have a distinct malformed json vs. numeric limit exceeded error class.
+          # The only way to distinguish an error that breaches max_integer_digits is through the error message
+          # (depending on Oj's mode the breach surfaces as Oj::ParseError or EncodingError).
+          # reference: https://github.com/ohler55/oj/blob/v3.17.3/ext/oj/parse.c#L974-L986
+          raise NumericValueTooLargeError, "Numeric value too large" if e.message.include?('max_integer_digits')
+
+          raise
+        end
 
         nil
       end
@@ -202,6 +221,17 @@ module Gitlab
       end
 
       private
+
+      def check_integer_digits_before_parse!(body, limit)
+        return if limit.to_i <= 0
+
+        body.b.scan(INTEGER_DIGIT_SCAN_REGEX) do |(digits)|
+          next unless digits
+          next unless digits.length > limit
+
+          raise NumericValueTooLargeError, "Numeric value too large"
+        end
+      end
 
       def simple_json_string?(body)
         body.lstrip.start_with?('"')

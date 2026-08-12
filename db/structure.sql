@@ -25838,6 +25838,22 @@ CREATE SEQUENCE packages_conan_file_metadata_id_seq
 
 ALTER SEQUENCE packages_conan_file_metadata_id_seq OWNED BY packages_conan_file_metadata.id;
 
+CREATE TABLE packages_conan_jwt_signing_keys (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    secret_key jsonb NOT NULL
+);
+
+CREATE SEQUENCE packages_conan_jwt_signing_keys_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE packages_conan_jwt_signing_keys_id_seq OWNED BY packages_conan_jwt_signing_keys.id;
+
 CREATE TABLE packages_conan_metadata (
     id bigint NOT NULL,
     package_id bigint NOT NULL,
@@ -36740,6 +36756,8 @@ ALTER TABLE ONLY packages_build_infos ALTER COLUMN id SET DEFAULT nextval('packa
 
 ALTER TABLE ONLY packages_conan_file_metadata ALTER COLUMN id SET DEFAULT nextval('packages_conan_file_metadata_id_seq'::regclass);
 
+ALTER TABLE ONLY packages_conan_jwt_signing_keys ALTER COLUMN id SET DEFAULT nextval('packages_conan_jwt_signing_keys_id_seq'::regclass);
+
 ALTER TABLE ONLY packages_conan_metadata ALTER COLUMN id SET DEFAULT nextval('packages_conan_metadata_id_seq'::regclass);
 
 ALTER TABLE ONLY packages_conan_package_references ALTER COLUMN id SET DEFAULT nextval('packages_conan_package_references_id_seq'::regclass);
@@ -40666,6 +40684,9 @@ ALTER TABLE ONLY packages_composer_packages
 
 ALTER TABLE ONLY packages_conan_file_metadata
     ADD CONSTRAINT packages_conan_file_metadata_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY packages_conan_jwt_signing_keys
+    ADD CONSTRAINT packages_conan_jwt_signing_keys_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY packages_conan_metadata
     ADD CONSTRAINT packages_conan_metadata_pkey PRIMARY KEY (id);

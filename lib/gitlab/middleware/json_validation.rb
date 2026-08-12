@@ -75,6 +75,8 @@ module Gitlab
         max_depth: ENV.fetch('GITLAB_JSON_MAX_DEPTH', 32).to_i,
         max_array_size: ENV.fetch('GITLAB_JSON_MAX_ARRAY_SIZE', 50000).to_i,
         max_hash_size: ENV.fetch('GITLAB_JSON_MAX_HASH_SIZE', 50000).to_i,
+        # Max 1000 decimal digits (~3321 bits) for any integer in the request body
+        max_integer_digits: ENV.fetch('GITLAB_JSON_MAX_INTEGER_DIGITS', 1000).to_i,
         max_total_elements: ENV.fetch('GITLAB_JSON_MAX_TOTAL_ELEMENTS', 100000).to_i,
         # Disabled by default because some endpoints upload large payloads
         max_json_size_bytes: ENV.fetch('GITLAB_JSON_MAX_JSON_SIZE_BYTES', 0).to_i,
@@ -99,6 +101,7 @@ module Gitlab
             max_depth: 64,
             max_array_size: 50000,
             max_hash_size: 50000,
+            max_integer_digits: 1000,
             max_total_elements: 250000,
             max_json_size_bytes: 50.megabytes,
             mode: :logging
@@ -112,6 +115,7 @@ module Gitlab
             max_depth: 32,
             max_array_size: 50000,
             max_hash_size: 50000,
+            max_integer_digits: 1000,
             max_total_elements: 250000,
             max_json_size_bytes: 50.megabytes,
             mode: :enforced
@@ -124,6 +128,7 @@ module Gitlab
             max_depth: 32,
             max_array_size: 50000,
             max_hash_size: 50000,
+            max_integer_digits: 1000,
             max_total_elements: 250000,
             max_json_size_bytes: 50.megabytes,
             mode: :enforced
@@ -136,6 +141,7 @@ module Gitlab
             max_depth: 32,
             max_array_size: 50000,
             max_hash_size: 50000,
+            max_integer_digits: 1000,
             max_total_elements: 250000,
             max_json_size_bytes: 50.megabytes,
             mode: :enforced
@@ -149,6 +155,7 @@ module Gitlab
             max_depth: 32,
             max_array_size: 50000,
             max_hash_size: 50000,
+            max_integer_digits: 1000,
             max_total_elements: 0, # Regularly exceeds 10,000, disable for now
             max_json_size_bytes: 10.megabytes,
             mode: :enforced
@@ -162,6 +169,7 @@ module Gitlab
             max_depth: 32,
             max_array_size: 5000,
             max_hash_size: 5000,
+            max_integer_digits: 1000,
             max_total_elements: 100_000,
             max_json_size_bytes: 4.megabytes,
             mode: :enforced
@@ -175,6 +183,7 @@ module Gitlab
             max_depth: 32,
             max_array_size: 50000,
             max_hash_size: 50000,
+            max_integer_digits: 1000,
             max_total_elements: 100000,
             max_json_size_bytes: 2.megabytes,
             mode: :enforced
@@ -188,6 +197,7 @@ module Gitlab
             max_depth: 32,
             max_array_size: 50000,
             max_hash_size: 50000,
+            max_integer_digits: 1000,
             max_total_elements: 100000,
             max_json_size_bytes: 3.megabytes,
             mode: :enforced
@@ -201,6 +211,7 @@ module Gitlab
             max_depth: 32,
             max_array_size: 50000,
             max_hash_size: 50000,
+            max_integer_digits: 1000,
             max_total_elements: 100000,
             max_json_size_bytes: 1.megabyte,
             mode: :enforced

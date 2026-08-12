@@ -31,19 +31,32 @@ module Gitlab
       end
 
       def decode(jwt)
+        decryption_secrets.lazy.filter_map { |secret| try_decode(jwt, secret) }.first
+      end
+
+      def secret
+        hmac_secret(::Packages::Conan::JwtSigningKey.current_secret_key)
+      end
+
+      private
+
+      # All signing keys are tried on decode so tokens signed with a previous
+      # key still verify after a key rotation.
+      def decryption_secrets
+        ::Packages::Conan::JwtSigningKey.all_secret_keys.map { |key| hmac_secret(key) }
+      end
+
+      def try_decode(jwt, secret)
         payload = JSONWebToken::HMACToken.decode(jwt, secret).first
         new(access_token_id: payload['access_token'], user_id: payload['user_id'])
       rescue JWT::DecodeError, JWT::ExpiredSignature, JWT::ImmatureSignature
         # we return on expired and errored tokens because the Conan client
         # will request a new token automatically.
+        nil
       end
 
-      def secret
-        OpenSSL::HMAC.hexdigest(
-          OpenSSL::Digest.new('SHA256'),
-          ::Gitlab::Encryption::KeyProvider[:db_key_base].encryption_key.secret,
-          HMAC_KEY
-        )
+      def hmac_secret(key)
+        OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('SHA256'), key, HMAC_KEY)
       end
     end
 

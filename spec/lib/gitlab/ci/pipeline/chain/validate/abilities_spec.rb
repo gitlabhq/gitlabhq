@@ -250,10 +250,12 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::Abilities, feature_categor
     end
 
     context 'when origin_ref refers to a MR but its object is absent' do
+      let(:origin_ref) { 'refs/merge-requests/1/head' }
       let(:merge_request) { nil }
 
       before do
-        allow(command).to receive(:merge_request_ref?).and_return(true)
+        project.add_developer(user)
+        project.repository.create_ref(project.commit.sha, origin_ref)
       end
 
       it { is_expected.to be_falsey }
