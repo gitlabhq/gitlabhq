@@ -30,7 +30,7 @@ module Projects
     prepend_before_action :authenticate_user!, only: [:new]
     before_action :authorize_create_work_item!, only: [:new]
 
-    feature_category :portfolio_management, [:index, :rss, :calendar]
+    feature_category :planning_views, [:index, :rss, :calendar]
     feature_category :team_planning
     urgency :high, [:authorize]
     urgency :low

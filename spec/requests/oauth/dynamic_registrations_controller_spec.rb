@@ -541,6 +541,50 @@ RSpec.describe Oauth::DynamicRegistrationsController, :with_current_organization
         end
       end
 
+      context 'when rate limited' do
+        let(:request_body) { valid_request_body }
+
+        before do
+          # #check_rate_limit skips the check entirely in test/development, so
+          # the rate-limit branch needs Rails.env stubbed to actually exercise it.
+          allow(Rails.env).to receive(:test?).and_return(false)
+          allow(Gitlab::ApplicationRateLimiter)
+            .to receive(:throttled_request?)
+            .with(anything, anything, :oauth_dynamic_registration, scope: anything)
+            .and_return(true)
+        end
+
+        it 'returns 429 with a JSON error body and a Retry-After header', :aggregate_failures do
+          create_registration
+
+          expect(response).to have_gitlab_http_status(:too_many_requests)
+          expect(response.content_type).to include('application/json')
+          expect(response.parsed_body).to eq(
+            'error' => 'temporarily_unavailable',
+            'error_description' => 'Rate limit exceeded, retry after 3600 seconds'
+          )
+          expect(response.headers['Retry-After']).to eq('3600')
+        end
+
+        it 'does not create an application' do
+          expect { create_registration }.not_to change { Authn::OauthApplication.count }
+        end
+
+        context 'when oauth_dynamic_registration_json_rate_limit_error is disabled' do
+          before do
+            stub_feature_flags(oauth_dynamic_registration_json_rate_limit_error: false)
+          end
+
+          it 'returns 429 with the plain-text throttled response', :aggregate_failures do
+            create_registration
+
+            expect(response).to have_gitlab_http_status(:too_many_requests)
+            expect(response.content_type).to include('text/plain')
+            expect(response.body).to eq('This endpoint has been requested too many times. Try again later.')
+          end
+        end
+      end
+
       context 'with database validation failures' do
         context 'with duplicate application name' do
           let(:request_body) { valid_request_body.merge(client_name: 'Duplicate App') }

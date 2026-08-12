@@ -95,8 +95,10 @@ following for each approver:
 - Most recent activity.
 
 For the default **All Members** rule, which lists no approvers, GitLab Duo Agent Platform chooses
-from the project members who can both approve the merge request and merge into the target branch.
-When no role can merge into the target branch, the candidates are all members who can approve.
+from the direct members of the project who can both approve the merge request and merge into the
+target branch. When no role can merge into the target branch, the candidates are all direct members
+who can approve. Members who get their access from a parent group or an invited group are not
+candidates, so a project without direct members gets no recommendation for this rule.
 
 GitLab assigns reviewers when the merge request becomes ready, the same as the code owners strategy.
 The recommendation runs in the background, so the reviewers might take a moment to appear. GitLab

@@ -144,7 +144,7 @@ directive on this level only accepts a single value. However, multiple claims ca
 on the role level by using the [`bound_claims`](https://developer.hashicorp.com/vault/api-docs/auth/jwt#bound_claims)
 map configuration directive.
 
-With this method you can provide Vault with multiple options for the `iss` claim validation. This supports the `https://` prefixed GitLab instance hostname claim that comes with the `id_tokens`, as well as the old non-prefixed claim.
+With this method you can provide Vault with multiple options for the `iss` claim validation. This supports the `https://` prefixed GitLab instance hostname claim that comes with the `id_tokens` and the old non-prefixed claim.
 
 To add the [`bound_claims`](https://developer.hashicorp.com/vault/api-docs/auth/jwt#bound_claims) configuration to the required roles, run:
 

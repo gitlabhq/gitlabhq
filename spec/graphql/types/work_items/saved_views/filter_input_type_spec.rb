@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Types::WorkItems::SavedViews::FilterInputType, feature_category: :portfolio_management do
+RSpec.describe Types::WorkItems::SavedViews::FilterInputType, feature_category: :planning_views do
   # The purpose of this spec is to check if the FilterInputType deviates from the arguments of the work items resolver
   # query. If this test is failing, and:
   #

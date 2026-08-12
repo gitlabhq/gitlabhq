@@ -10,13 +10,15 @@ auto_mr:
     - type::maintenance
   remove_source_branch: true
 
-# Non-distilled .ai/ files included in AGENTS.md Context Loading.
+# Non-distilled .ai/ files included in AGENTS.md Context Loading or Always-on rules.
 # These are manually maintained and have no SSOT sources.
 static_entries:
   - description: Git, commits, or branches
     path: .ai/git.md
   - description: CI/CD pipelines or `.gitlab-ci.yml`
     path: .ai/ci-cd.md
+  - description: Confidential issue with `~security` label and without `~security-fix-in-public` label
+    path: .ai/security-fixes.md
 
 principles:
   # ── Database (4 sub-domains) ──────────────────────────────────────────────

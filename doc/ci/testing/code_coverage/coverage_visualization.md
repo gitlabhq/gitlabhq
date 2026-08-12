@@ -72,7 +72,7 @@ The visualization appears only after the pipeline completes. If the pipeline has
 is not available until that job runs.
 
 To download the coverage report from the job details page, add it to the
-artifact `paths` as well as `reports`:
+artifact `paths` and `reports`:
 
 ```yaml
 artifacts:

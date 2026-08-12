@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User applies parent filter', :js, feature_category: :team_planning do
+RSpec.describe 'User applies parent filter', :js, feature_category: :planning_views do
   include FilteredSearchHelpers
 
   let_it_be(:user) { create(:user) }

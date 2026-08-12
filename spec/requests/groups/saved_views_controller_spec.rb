@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Groups::SavedViews', feature_category: :portfolio_management do
+RSpec.describe 'Groups::SavedViews', feature_category: :planning_views do
   let_it_be(:group) { create(:group) }
   let_it_be(:user, freeze: false) { create(:user, developer_of: group) }
 

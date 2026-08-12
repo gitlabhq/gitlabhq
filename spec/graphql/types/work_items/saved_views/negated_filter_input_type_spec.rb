@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Types::WorkItems::SavedViews::NegatedFilterInputType, feature_category: :portfolio_management do
+RSpec.describe Types::WorkItems::SavedViews::NegatedFilterInputType, feature_category: :planning_views do
   # The purpose of this spec is to check if the SavedViews::NegatedFilterInputType deviates from the arguments of the
   # WorkItems::NegatedWorkItemFilterInputType type. If this test is failing, and:
   #

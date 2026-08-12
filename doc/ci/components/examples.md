@@ -429,7 +429,7 @@ The CI/CD template migration involves the following steps:
          - go test -race $(go list ./... | grep -v /vendor/)
      ```
 
-1. In order to test the component, modify the `.gitlab-ci.yml` configuration file,
+1. To test the component, modify the `.gitlab-ci.yml` configuration file,
    and add [tests](_index.md#test-the-component).
 
    - Specify a different value for `golang_version` as input for the `build` job.

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Work items bulk editing', :js, feature_category: :team_planning do
+RSpec.describe 'Work items bulk editing', :js, feature_category: :planning_views do
   include FilteredSearchHelpers
   include WorkItemsHelpers
 

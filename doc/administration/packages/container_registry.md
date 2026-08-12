@@ -678,6 +678,15 @@ S3 configuration parameters:
 - `regionendpoint`: Required only when using an S3-compatible service or an AWS S3 VPC Endpoint.
 - `pathstyle`: Controls URL formatting. Set to `true` for `host/bucket_name/object` (most S3-compatible services) or `false` for `bucket_name.host/object` (AWS S3).
 
+On AWS S3, the `s3_v2` driver resolves the S3 endpoint for the configured `region`.
+The presigned URLs that clients follow to download blobs can therefore use a regional hostname,
+such as `s3.us-east-1.amazonaws.com`, rather than the global `s3.amazonaws.com` hostname.
+If a proxy, firewall, or secure web gateway filters outbound traffic from your container image clients,
+add the regional hostname for your bucket region to the allowlist on that device.
+An allowlist that contains only `s3.amazonaws.com` causes image pulls to fail with `403 Forbidden` responses.
+To direct presigned URLs to a hostname you control instead, set `regionendpoint` to an S3 VPC endpoint
+or another fixed endpoint.
+
 To avoid 503 errors from the S3 API, add the `maxrequestspersecond` parameter to set a rate limit on connections:
 
 ```ruby

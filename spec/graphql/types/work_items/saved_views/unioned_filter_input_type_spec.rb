@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Types::WorkItems::SavedViews::UnionedFilterInputType, feature_category: :portfolio_management do
+RSpec.describe Types::WorkItems::SavedViews::UnionedFilterInputType, feature_category: :planning_views do
   # The purpose of this spec is to check if the UnionedFilterInputType deviates from the arguments of
   # Types::WorkItems::UnionedWorkItemFilterInputType. If this test is failing, and:
   #

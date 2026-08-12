@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Multiple work item updating from work items list', :js, feature_category: :team_planning do
+RSpec.describe 'Multiple work item updating from work items list', :js, feature_category: :planning_views do
   include ListboxHelpers
 
   let!(:project)   { create(:project) }

@@ -114,8 +114,15 @@ module Gitlab
       # Rack::Attack has nothing left to independently throttle: safelisting
       # every request here stops it from re-running (and possibly re-blocking)
       # a request Labkit already decided.
+      #
+      # The registry is referenced from the top level (::Gitlab::...) rather
+      # than relative to the surrounding module: this block is registered once
+      # at boot, so after a development code reload its lexical scope points at
+      # the unloaded Gitlab::RackAttack module and a relative lookup raises
+      # NameError. A root-anchored lookup resolves through Object and lets
+      # Zeitwerk autoload the fresh constants.
       rack_attack.safelist('labkit_fully_enforced') do |_req|
-        LabkitRateLimit::ThrottleRegistry.fully_enforced?
+        ::Gitlab::RackAttack::LabkitRateLimit::ThrottleRegistry.fully_enforced?
       end
     end
 

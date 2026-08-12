@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe "User sorts work items", feature_category: :portfolio_management do
+RSpec.describe "User sorts work items", feature_category: :planning_views do
   include Features::SortingHelpers
   include SortingHelper
   include IssueHelpers

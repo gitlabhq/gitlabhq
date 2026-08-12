@@ -171,8 +171,12 @@ RSpec.describe NamespaceStatistics, type: :model, feature_category: :consumables
 
     context 'when other columns are updated' do
       it 'does not enqueue the job to update root storage statistics' do
-        columns_to_update = NamespaceStatistics.columns_hash.reject { |k, _| %w[id namespace_id].include?(k) || k.include?('_size') }.keys
-        columns_to_update.each { |c| statistics[c] = 10 }
+        columns_to_update = NamespaceStatistics.columns_hash
+          .reject { |k, _| %w[id namespace_id].include?(k) || k.include?('_size') }
+
+        columns_to_update.each do |name, column|
+          statistics[name] = column.type == :datetime ? Time.current : 10
+        end
 
         expect(statistics).not_to receive(:update_root_storage_statistics)
         expect(Namespaces::ScheduleAggregationWorker).not_to receive(:perform_async)

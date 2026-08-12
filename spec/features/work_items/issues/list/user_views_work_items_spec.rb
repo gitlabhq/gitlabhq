@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe "User views work items", feature_category: :team_planning do
+RSpec.describe "User views work items", feature_category: :planning_views do
   let!(:closed_issue) { create(:closed_issue, project: project) }
   let!(:open_issue1) { create(:issue, project: project) }
   let!(:open_issue2) { create(:issue, project: project) }

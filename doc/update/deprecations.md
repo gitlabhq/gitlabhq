@@ -455,7 +455,7 @@ GitLab has [required client authentication for ROPC on GitLab.com](https://about
 ### S3 storage driver (AWS SDK v1) for the container registry
 
 - Announced in GitLab 17.10
-- Removal in GitLab 19.0
+- Removal in GitLab 19.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/523095).
 
 The S3 storage driver for the container registry that uses AWS SDK v1 is deprecated and will be removed in GitLab 19.0.
@@ -471,6 +471,13 @@ To migrate to the `s3_v2` driver:
 1. Update your registry configuration file to use the `s3_v2` configuration instead of `s3`.
 1. Move from Signature Version 2 to Signature Version 4 for authentication if you haven't already, as AWS SDK v2 only supports Signature Version 4.
 1. Test the configuration in a non-production environment before deploying to production.
+
+On AWS S3, the driver change can also alter the hostname in the presigned URLs that clients use to
+download registry blobs. AWS SDK v2 resolves the S3 endpoint for your configured region, so presigned
+URLs can use a regional hostname such as `s3.us-east-1.amazonaws.com` instead of the global
+`s3.amazonaws.com` hostname. If your network restricts outbound traffic, update your proxy or firewall
+allowlist to include the regional hostname before you upgrade. Otherwise, image pulls fail with
+`403 Forbidden` responses.
 
 For more information about updating your storage driver configuration, see [use object storage](https://docs.gitlab.com/administration/packages/container_registry/#use-object-storage).
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Filter work items', :js, feature_category: :portfolio_management do
+RSpec.describe 'Filter work items', :js, feature_category: :planning_views do
   include FilteredSearchHelpers
 
   let(:project) { create(:project) }

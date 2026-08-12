@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User manage saved views list', :js, feature_category: :team_planning do
+RSpec.describe 'User manage saved views list', :js, feature_category: :planning_views do
   include FilteredSearchHelpers
   include WorkItemsHelpers
 

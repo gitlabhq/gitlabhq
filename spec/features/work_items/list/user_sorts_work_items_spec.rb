@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe "User sorts work items", :js, feature_category: :team_planning do
+RSpec.describe "User sorts work items", :js, feature_category: :planning_views do
   include Features::SortingHelpers
   include SortingHelper
   include FilteredSearchHelpers

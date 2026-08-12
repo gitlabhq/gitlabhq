@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::SavedViews::UpdateService, feature_category: :portfolio_management do
+RSpec.describe WorkItems::SavedViews::UpdateService, feature_category: :planning_views do
   let_it_be(:current_user, freeze: false) { create(:user) }
   let_it_be(:other_user, freeze: false) { create(:user) }
   let_it_be(:project, freeze: false) { create(:project, planners: current_user) }

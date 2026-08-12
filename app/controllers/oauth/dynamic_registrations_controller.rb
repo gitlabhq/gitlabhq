@@ -101,7 +101,23 @@ module Oauth
     def check_rate_limit
       return if Rails.env.test? || Rails.env.development?
 
-      check_rate_limit!(:oauth_dynamic_registration, scope: request.ip)
+      unless Feature.enabled?(:oauth_dynamic_registration_json_rate_limit_error, :instance)
+        return check_rate_limit!(:oauth_dynamic_registration, scope: request.ip)
+      end
+
+      check_rate_limit!(:oauth_dynamic_registration, scope: request.ip) do
+        # RFC 6749 section 5.2 / RFC 7591 section 3.2.2 define a JSON
+        # error-response shape for OAuth endpoints; standards-compliant
+        # clients (including the MCP SDK) fail to parse the default
+        # plain-text throttled response.
+        retry_after = Gitlab::ApplicationRateLimiter.period_for(:oauth_dynamic_registration).to_i
+        response.headers['Retry-After'] = retry_after.to_s
+
+        render json: {
+          error: 'temporarily_unavailable',
+          error_description: "Rate limit exceeded, retry after #{retry_after} seconds"
+        }, status: :too_many_requests
+      end
     end
 
     def check_dynamic_client_registration_enabled

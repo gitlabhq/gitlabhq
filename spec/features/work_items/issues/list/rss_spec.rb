@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project Issues RSS', :js, feature_category: :team_planning do
+RSpec.describe 'Project Issues RSS', :js, feature_category: :planning_views do
   let_it_be_with_reload(:user) { create(:user) }
   let_it_be(:group) { create(:group, developers: user) }
   let_it_be_with_reload(:project) { create(:project, group: group, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }

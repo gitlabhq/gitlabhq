@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::WorkItems::SavedViews::Reorder, feature_category: :portfolio_management do
+RSpec.describe Mutations::WorkItems::SavedViews::Reorder, feature_category: :planning_views do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }

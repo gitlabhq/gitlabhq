@@ -113,20 +113,14 @@ module SidebarsHelper
   def work_items_modal_data(group, project)
     if project&.persisted?
       return {
-        full_path: project.full_path,
-        issues_list_path: project_issues_path(project),
-        labels_manage_path: project_labels_path(project),
-        can_admin_label: can?(current_user, :admin_label, project).to_s
+        full_path: project.full_path
       }
     end
 
     return unless group && group.id
 
     {
-      full_path: group.full_path,
-      issues_list_path: issues_group_path(group),
-      labels_manage_path: group_labels_path(group),
-      can_admin_label: can?(current_user, :admin_label, group).to_s
+      full_path: group.full_path
     }
   end
 

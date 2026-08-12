@@ -27,6 +27,7 @@ This window takes place on May 4 - 6, 2026 from 09:00 UTC to 22:00 UTC.
 | [The `heroku/builder:22` image is deprecated](deprecations.md#the-herokubuilder22-image-is-deprecated) | Medium | Project |  |
 | [`ciJobTokenScopeAddProject` GraphQL mutation is deprecated](deprecations.md#cijobtokenscopeaddproject-graphql-mutation-is-deprecated) | Low | Project |  |
 | [Linux package support for Ubuntu 20.04](deprecations.md#linux-package-support-for-ubuntu-2004) | Medium | Instance |  |
+| [S3 storage driver (AWS SDK v1) for the container registry](deprecations.md#s3-storage-driver-aws-sdk-v1-for-the-container-registry) | Medium | Instance | <https://docs.gitlab.com/update/versions/gitlab_19_changes/#container-registry-s3-storage-driver-replaced-by-s3_v2> |
 | [Support for Redis 6](deprecations.md#support-for-redis-6) | Low | Instance |  |
 | [Slack slash commands](deprecations.md#slack-slash-commands) | Low | Instance, group, project | <https://gitlab.com/gitlab-org/gitlab/-/work_items/569345#am-i-impacted> |
 | [Trending tab in Explore projects page is deprecated](deprecations.md#trending-tab-in-explore-projects-page-is-deprecated) | Low | Project |  |

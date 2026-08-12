@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Dashboard Issues', :js, :with_current_organization, feature_category: :team_planning do
+RSpec.describe 'Dashboard Issues', :js, :with_current_organization, feature_category: :planning_views do
   include FilteredSearchHelpers
   include ListboxHelpers
 

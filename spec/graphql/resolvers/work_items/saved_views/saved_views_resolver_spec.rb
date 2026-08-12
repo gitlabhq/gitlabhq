@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::WorkItems::SavedViews::SavedViewsResolver, feature_category: :portfolio_management do
+RSpec.describe Resolvers::WorkItems::SavedViews::SavedViewsResolver, feature_category: :planning_views do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }

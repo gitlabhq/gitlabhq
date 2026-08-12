@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Work items > Labels bulk assignment', feature_category: :team_planning do
+RSpec.describe 'Work items > Labels bulk assignment', feature_category: :planning_views do
   include ListboxHelpers
 
   let(:user)      { create(:user) }

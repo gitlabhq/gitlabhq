@@ -5,7 +5,7 @@ module Groups
     include SearchRateLimitable
     include WorkItemsCollections
 
-    feature_category :portfolio_management, [:index, :rss, :calendar]
+    feature_category :planning_views, [:index, :rss, :calendar]
     feature_category :team_planning
 
     urgency :low, [:rss, :calendar]

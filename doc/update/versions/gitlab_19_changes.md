@@ -141,9 +141,16 @@ For more information, see
 - Affects: Linux package, self-compiled
 - Affected versions: 19.0.0
 
-In GitLab 19.0, the legacy `s3` container registry storage driver (AWS SDK v1) is removed
-and aliased to the new `s3_v2` driver (AWS SDK v2). This change affects installations
-using S3-compatible object storage backends such as Ceph RGW, MinIO, or OVH S3.
+In GitLab 19.0, the legacy `s3` container registry storage driver (AWS SDK v1) is removed.
+The `s3` and `s3aws` driver names are now aliases for the `s3_v2` driver (AWS SDK v2).
+Because the previous driver names continue to work, instances that were never reconfigured
+also move to AWS SDK v2 when they upgrade.
+
+This change affects two groups of installations:
+
+- Installations that use S3-compatible object storage backends such as Ceph RGW, MinIO, or OVH S3.
+- Installations that use AWS S3 and restrict outbound network traffic.
+  For more information, see [presigned URL hostnames on AWS S3](#presigned-url-hostnames-on-aws-s3).
 
 The `s3_v2` driver introduces two breaking changes for non-AWS S3-compatible backends:
 
@@ -203,6 +210,45 @@ registry['storage'] = {
 
 For more information, see
 [the container registry object storage documentation](../../administration/packages/container_registry.md#use-object-storage).
+
+#### Presigned URL hostnames on AWS S3
+
+When the registry serves a blob, it redirects the client to a presigned S3 URL.
+AWS SDK v2 resolves the S3 endpoint for the region in your registry configuration,
+so these presigned URLs can use a regional hostname such as `s3.us-east-1.amazonaws.com`
+instead of the global `s3.amazonaws.com` hostname that AWS SDK v1 could return.
+
+The registry itself continues to work, but clients must be able to reach the new hostname.
+In environments that filter outbound traffic with a proxy, firewall, or secure web gateway,
+an allowlist that contains only `s3.amazonaws.com` blocks the redirect target.
+Image pulls then fail with `403 Forbidden` responses returned by the filtering device rather than by S3.
+
+Before you upgrade, add the regional hostname for your bucket region to the allowlist on any device
+that filters outbound traffic from your container image clients.
+Use the specific regional hostname for your region, such as `s3.eu-west-2.amazonaws.com`,
+rather than a wildcard that covers all of Amazon S3.
+
+If your instance uses an S3 VPC endpoint or another fixed endpoint, set `regionendpoint` to that
+endpoint so that presigned URLs use a hostname you control.
+For more information, see [use object storage](../../administration/packages/container_registry.md#use-object-storage).
+
+To validate blob pulls after you upgrade:
+
+1. Pull an image that is larger than a few megabytes, so that the pull is served by a blob redirect
+   rather than from a cache:
+
+   ```shell
+   docker pull gitlab.example.com:5050/mygroup/myproject/myimage:latest
+   ```
+
+1. If the pull fails, request a blob directly to see the redirect target:
+
+   ```shell
+   curl --head "https://gitlab.example.com:5050/v2/mygroup/myproject/myimage/blobs/<digest>"
+   ```
+
+   Check the `location` response header for the hostname the client is redirected to,
+   then confirm that hostname is allowed by your egress controls.
 
 ### Geo design management replication `NoMethodError` when project is `nil`
 

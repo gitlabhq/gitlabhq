@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects::SavedViews', feature_category: :portfolio_management do
+RSpec.describe 'Projects::SavedViews', feature_category: :planning_views do
   let_it_be(:project) { create(:project) }
   let_it_be(:user, freeze: false) { create(:user, developer_of: project) }
 

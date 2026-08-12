@@ -214,8 +214,8 @@ you should verify:
 - The `Audience` defined in the Entra ID federated identity credentials, for example `https://gitlab.com`
   or your own GitLab URL.
 
-You can review these settings, as well as your `AZURE_CLIENT_ID` and `AZURE_TENANT_ID`
-CI/CD variables, from the Azure Portal:
+You can review these settings and your `AZURE_CLIENT_ID` and `AZURE_TENANT_ID`
+CI/CD variables from the Azure Portal:
 
 1. Open the [Microsoft Entra ID App Registration](https://portal.azure.com/#view/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/~/RegisteredApps)
    view and select the appropriate app registration by searching for the display name `gitlab-oidc`.

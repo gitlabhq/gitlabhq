@@ -2383,7 +2383,7 @@ rspec:
 
 **Additional details**:
 
-- You can combine `cache:untracked` with `cache:paths` to cache all untracked files, as well as files in the configured paths.
+- You can combine `cache:untracked` with `cache:paths` to cache all untracked files and files in the configured paths.
   Use `cache:paths` to cache any specific files, including tracked files, or files that are outside of the working directory,
   and use `cache: untracked` to also cache all untracked files. For example:
 
@@ -2396,7 +2396,7 @@ rspec:
         - binaries/
   ```
 
-  In this example, the job caches all untracked files in the repository, as well as all the files in `binaries/`.
+  In this example, the job caches all untracked files in the repository and all the files in `binaries/`.
   If there are untracked files in `binaries/`, they are covered by both keywords.
 
 ---

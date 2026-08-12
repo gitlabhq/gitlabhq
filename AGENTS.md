@@ -22,6 +22,7 @@ Load the following instruction files based on your current task:
 These apply to every task without needing a trigger:
 
 - **Minimal fix** — apply the smallest change that solves the problem; do not expand scope across layers unless each layer is genuinely load-bearing
+- **Security fixes** — treat an issue as requiring a special security fix when the issue is confidential, has the `~security` label, and does NOT have the `~security-fix-in-public` label. When all three hold, DO NOT push to `gitlab-org/gitlab` (or any canonical repo); follow .ai/security-fixes.md
 - **Comment discipline** — cap comments at 1-3 lines and only add one when the why is non-obvious, like an invariant, a gotcha, or a tradeoff; delete comments that just restate the code, by default, not only when asked to trim
 - **Prose via subagent** — on a high-capability model, write human-facing prose (comments, MR/issue text, docs) via a mid-tier model subagent instead of typing it inline, since high-capability models tend to produce dense, jargon-heavy prose; brief it with the facts and constraints, then check its output for accuracy; on a mid-tier model, just write it directly
 
@@ -53,7 +54,7 @@ Each ci-health incident title names the affected test file, failure category, or
 If the failing job or test matches an open issue in any of these:
 
 1. Link to the issue in your response or fix MR description.
-2. Use it to guide your approach:
+1. Use it to guide your approach:
    - **Infra failure** (`failed_to_pull_image`, `runner_system_failure`, etc.): no code fix is possible. Post a comment with the incident link. Do not open a fix MR.
    - **Known flaky test**: the failure may be unrelated to the MR. Note this and link the issue, but still check whether the MR changes could have contributed.
    - **Known failure category** (`docs_outdated`, `rake_outdated_translated_strings`, etc.): likely unrelated to the MR. Post a comment with the incident link rather than attempting a code fix.

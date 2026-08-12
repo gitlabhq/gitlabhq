@@ -45,4 +45,4 @@ And we’ll measure the impact on... {metrics}
 * [ ] Replace the ~"ICE Score Needed" with an ICE low/medium/high score label once all values in the ICE table have been added.
 * [ ] Mention the [at]gitlab-core-team team and ask for their feedback.
 
-/label ~"workflow::validation backlog" ~"experiment idea"
+/label ~"workflow::validation backlog" ~"experiment idea" ~"epic-status-update"

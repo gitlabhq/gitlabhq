@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Group work items page', feature_category: :team_planning do
+RSpec.describe 'Group work items page', feature_category: :planning_views do
   include Features::SortingHelpers
   include FilteredSearchHelpers
   include ListboxHelpers

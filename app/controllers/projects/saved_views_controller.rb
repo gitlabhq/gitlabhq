@@ -4,7 +4,7 @@ module Projects
   class SavedViewsController < Projects::ApplicationController
     before_action :authenticate_user!
 
-    feature_category :portfolio_management
+    feature_category :planning_views
 
     before_action do
       push_force_frontend_feature_flag(:glql_load_on_click, !!project&.glql_load_on_click_feature_flag_enabled?)

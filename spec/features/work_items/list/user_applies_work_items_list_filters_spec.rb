@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Work items list filters', :js, feature_category: :portfolio_management do
+RSpec.describe 'Work items list filters', :js, feature_category: :planning_views do
   include FilteredSearchHelpers
 
   let_it_be(:user1, freeze: false) { create(:user) }

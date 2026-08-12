@@ -140,10 +140,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
     it 'returns sidebar values for work item context with group id', :use_clean_rails_memory_store_caching do
       expect(context_with_group_id).to include({
         work_items: {
-          full_path: group_with_id.full_path,
-          issues_list_path: issues_group_path(group_with_id),
-          labels_manage_path: group_labels_path(group_with_id),
-          can_admin_label: "true"
+          full_path: group_with_id.full_path
         }
       })
     end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Dropdown release', :js, feature_category: :team_planning do
+RSpec.describe 'Dropdown release', :js, feature_category: :planning_views do
   include FilteredSearchHelpers
 
   let_it_be_with_reload(:project) { create(:project) }
