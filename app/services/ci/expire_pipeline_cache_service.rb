@@ -116,11 +116,6 @@ module Ci
 
     def load_relative_pipelines(pipeline)
       project = pipeline.project
-
-      unless Feature.enabled?(:ci_expire_pipeline_cache_record_reuse, project)
-        return pipeline.upstream_and_all_downstreams.includes(project: [:route, { namespace: :route }]) # rubocop: disable CodeReuse/ActiveRecord -- legacy path, removed with the feature flag
-      end
-
       relative_pipelines = pipeline.upstream_and_all_downstreams.to_a
 
       # `available_records` lets relatives in the caller's project point at the project

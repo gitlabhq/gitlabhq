@@ -3,6 +3,7 @@ import { getSlotFunction, normalizeRender } from '~/lib/utils/vue3compat/normali
 
 export default normalizeRender({
   name: 'StrategiesDefault',
+  emits: ['change'],
   mounted() {
     this.$emit('change', { parameters: {} });
   },

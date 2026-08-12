@@ -107,28 +107,16 @@ RSpec.describe Ci::ExpirePipelineCacheService, feature_category: :continuous_int
     context 'when the pipeline is triggered by another pipeline' do
       let(:source) { create(:ci_sources_pipeline, pipeline: pipeline) }
 
-      shared_examples 'updating the cache of the dependent pipeline' do
-        it 'updates the cache of dependent pipeline' do
-          # Sanity check: the dependent pipeline lives in another project, so its routes
-          # cannot be served by the record reuse and have to be loaded.
-          expect(source.source_project).not_to eq(project)
+      it 'updates the cache of dependent pipeline' do
+        # Sanity check: the dependent pipeline lives in another project, so its routes
+        # cannot be served by the record reuse and have to be loaded.
+        expect(source.source_project).not_to eq(project)
 
-          dependent_pipeline_path = "/#{source.source_project.full_path}/-/pipelines/#{source.source_pipeline.id}.json"
+        dependent_pipeline_path = "/#{source.source_project.full_path}/-/pipelines/#{source.source_pipeline.id}.json"
 
-          expect_touched_etag_caching_paths(dependent_pipeline_path)
+        expect_touched_etag_caching_paths(dependent_pipeline_path)
 
-          subject.execute(pipeline)
-        end
-      end
-
-      it_behaves_like 'updating the cache of the dependent pipeline'
-
-      context 'when ci_expire_pipeline_cache_record_reuse is disabled' do
-        before do
-          stub_feature_flags(ci_expire_pipeline_cache_record_reuse: false)
-        end
-
-        it_behaves_like 'updating the cache of the dependent pipeline'
+        subject.execute(pipeline)
       end
     end
 

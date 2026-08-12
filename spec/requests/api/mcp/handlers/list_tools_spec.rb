@@ -58,6 +58,7 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
 
       expected_annotations = {
         # write, non-destructive
+        'add_branch' => { 'readOnlyHint' => false, 'destructiveHint' => false },
         'create_issue' => { 'readOnlyHint' => false, 'destructiveHint' => false },
         'create_merge_request' => { 'readOnlyHint' => false, 'destructiveHint' => false },
         'create_merge_request_note' => { 'readOnlyHint' => false, 'destructiveHint' => false },

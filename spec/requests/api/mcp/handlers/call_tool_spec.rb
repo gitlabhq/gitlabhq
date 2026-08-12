@@ -680,5 +680,70 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
       end
     end
   end
+
+  describe '#add_branch' do
+    let(:tool_params) do
+      { name: 'add_branch', arguments: { project_id: project.full_path, branch: 'my-feature', ref: 'master' } }
+    end
+
+    it 'creates the branch', :aggregate_failures do
+      post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['result']['isError']).to be_falsey
+      expect(json_response['result']['structuredContent']['branch']['name']).to eq('my-feature')
+      expect(project.repository.branch_exists?('my-feature')).to be true
+    end
+
+    context 'when called as the create_branch alias' do
+      let(:tool_params) do
+        {
+          name: 'create_branch',
+          arguments: { project_id: project.full_path, branch: 'another-feature', ref: 'master' }
+        }
+      end
+
+      it 'creates the branch' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_falsey
+        expect(project.repository.branch_exists?('another-feature')).to be true
+      end
+    end
+
+    context 'when called with a url instead of project_id' do
+      let(:tool_params) do
+        {
+          name: 'add_branch',
+          arguments: {
+            url: "https://gitlab.example.com/#{project.full_path}", branch: 'feature-via-url', ref: 'master'
+          }
+        }
+      end
+
+      it 'creates the branch' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_falsey
+        expect(project.repository.branch_exists?('feature-via-url')).to be true
+      end
+    end
+
+    context 'when the ref does not exist' do
+      let(:tool_params) do
+        { name: 'add_branch',
+          arguments: { project_id: project.full_path, branch: 'my-feature', ref: 'does-not-exist' } }
+      end
+
+      it 'returns an error' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_truthy
+      end
+    end
+  end
 end
 # rubocop:enable RSpec/SpecFilePathFormat

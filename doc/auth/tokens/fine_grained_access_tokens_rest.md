@@ -85,6 +85,7 @@ Grants the ability to read policies in the policy store.
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
 | Read | Instance | `GET` | `/organizations/:id/security/policy_store` |
+| Read | Instance | `GET` | `/organizations/:id/security/policy_store/:policy_id` |
 
 #### SBOM Occurrence
 

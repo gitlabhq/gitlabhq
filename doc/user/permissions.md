@@ -964,12 +964,17 @@ Minimal Access for members automatically added to the top-level group through SS
 
 ### Minimal access users receive 404 errors
 
-Because of an [outstanding issue](https://gitlab.com/gitlab-org/gitlab/-/issues/267996), when a user with the Minimal Access role:
+Because of an [outstanding issue](https://gitlab.com/gitlab-org/gitlab/-/issues/267996), a user
+with the Minimal Access role who signs in with standard web authentication receives a `404` error
+when accessing the parent group.
 
-- Signs in with standard web authentication, they receive a `404` error when accessing the parent group.
-- Signs in with Group SSO, they receive a `404` error immediately because they are redirected to the parent group page.
+A user with the Minimal Access role who signs in with Group SSO is redirected to their groups
+dashboard rather than the parent group page.
+For known issues with the groups shown on that dashboard, see [issue 506280](https://gitlab.com/gitlab-org/gitlab/-/issues/506280) and [issue 507968](https://gitlab.com/gitlab-org/gitlab/-/issues/507968).
 
-To work around the issue, give these users the Guest, Planner, Reporter, Security Manager, Developer, Maintainer, or Owner role to any project or subgroup in the parent group. Guest users consume a license seat in the Premium tier but do not in the Ultimate tier.
+To work around the `404` error, give these users the Guest, Planner, Reporter, Security Manager,
+Developer, Maintainer, or Owner role to any project or subgroup in the parent group. Guest users
+consume a license seat in the Premium tier but do not in the Ultimate tier.
 
 ## Related topics
 

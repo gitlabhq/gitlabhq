@@ -1803,27 +1803,27 @@ GEM
       coderay
       parser
       unparser
-    prometheus-client-mmap (1.6.0)
+    prometheus-client-mmap (1.6.1)
       base64
       bigdecimal
       logger
       rb_sys (~> 0.9.128)
-    prometheus-client-mmap (1.6.0-aarch64-linux-gnu)
+    prometheus-client-mmap (1.6.1-aarch64-linux-gnu)
       base64
       bigdecimal
       logger
       rb_sys (~> 0.9.128)
-    prometheus-client-mmap (1.6.0-arm64-darwin)
+    prometheus-client-mmap (1.6.1-arm64-darwin)
       base64
       bigdecimal
       logger
       rb_sys (~> 0.9.128)
-    prometheus-client-mmap (1.6.0-x86_64-darwin)
+    prometheus-client-mmap (1.6.1-x86_64-darwin)
       base64
       bigdecimal
       logger
       rb_sys (~> 0.9.128)
-    prometheus-client-mmap (1.6.0-x86_64-linux-gnu)
+    prometheus-client-mmap (1.6.1-x86_64-linux-gnu)
       base64
       bigdecimal
       logger
@@ -3383,11 +3383,11 @@ CHECKSUMS
   prime (0.1.3) sha256=baf031c50d6ce923594913befc8ac86a3251bffb9d6a5e8b03687962054e53e3
   prism (1.9.0) sha256=7b530c6a9f92c24300014919c9dcbc055bf4cdf51ec30aed099b06cd6674ef85
   proc_to_ast (0.1.0) sha256=92a73fa66e2250a83f8589f818b0751bcf227c68f85916202df7af85082f8691
-  prometheus-client-mmap (1.6.0) sha256=239e5d26462afa4f1f07102c7d2ce7f921ed40168a56294df38f88b7b9636570
-  prometheus-client-mmap (1.6.0-aarch64-linux-gnu) sha256=a5f1b4f9204042ffbbfab269ef3e18e60297788da32a8b12a2fed243939dc44d
-  prometheus-client-mmap (1.6.0-arm64-darwin) sha256=852ade15c7459fea03ef17c0eb4d6c8e78a6364ca094dcdf5d98590e18f3bfe5
-  prometheus-client-mmap (1.6.0-x86_64-darwin) sha256=3187045bb3fa6c6a44f048c152fde8f485e77e60391a295a4967c76cc7f44c26
-  prometheus-client-mmap (1.6.0-x86_64-linux-gnu) sha256=5ff65d847388ece19b9b1fec6ca23ff62699d488b9d5e94b4a4be5be102482b3
+  prometheus-client-mmap (1.6.1) sha256=db2994fd547c49631fda38019cc19acf163bdf9a7dcba2ba2f497c53e0256e51
+  prometheus-client-mmap (1.6.1-aarch64-linux-gnu) sha256=47b43352a00a5536a510b6b24063b4897b6d432cf109f0a510d3145ea1433419
+  prometheus-client-mmap (1.6.1-arm64-darwin) sha256=759b512fc5b0c1928da7e8201567fea8fb7f7ca9a3b5e5b7f9f36f6825a85ca8
+  prometheus-client-mmap (1.6.1-x86_64-darwin) sha256=7daa7eac077f24eb88796b106f0e39551874f1fc316512ab2b27472021763df3
+  prometheus-client-mmap (1.6.1-x86_64-linux-gnu) sha256=7146bcc8e7285cc1b3ca87c1a96c987c26ea8e30d61326e1706a2d129b10dadb
   pry (0.14.2) sha256=c4fe54efedaca1d351280b45b8849af363184696fcac1c72e0415f9bdac4334d
   pry-byebug (3.11.0) sha256=0b0abb7d309bc7f00044d512a3c8567274f7012b944b38becc8440439a1cea72
   pry-rails (0.3.11) sha256=a69e28e24a34d75d1f60bcf241192a54253f8f7ef8a62cba1e75750a9653593d

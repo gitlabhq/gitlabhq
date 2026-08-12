@@ -147,7 +147,7 @@ class:
 - `save_` for create and update field mutations. The presence of `id` defines whether the operation is a create or update action.
   Parameters required on create should be marked as such in the tool definition.
 - `delete_` for actual delete operations. These should never be folded into `save_` to allow for better governance handling.
-- `add_` or other deviations from the pattern are reserved for objects that do not have a typical CRUD shape, such as commits or sessions (for example `add_commit`).
+- `add_` or other deviations from the pattern are reserved for objects that do not have a typical CRUD shape, such as commits, branches, or sessions (for example `add_commit`, `add_branch`).
 
 **Resource identification:** every project-scoped tool identifies its target the same way.
 Each tool declares `url`, `project_id`, and the resource's internal ID in its own input schema.
