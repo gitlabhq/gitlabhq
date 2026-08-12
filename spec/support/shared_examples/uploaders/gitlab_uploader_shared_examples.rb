@@ -66,5 +66,20 @@ RSpec.shared_examples "builds correct paths" do |**patterns|
       expect { subject.cache!(fixture_file_upload(fixture)) }.to raise_error(Gitlab::PathTraversal::PathTraversalAttackError)
       expect { subject.store!(fixture_file_upload(fixture)) }.to raise_error(Gitlab::PathTraversal::PathTraversalAttackError)
     end
+
+    context "when the filename becomes malicious after caching" do
+      # Reproduces the TOCTOU bypass: the file is cached with a safe filename
+      # (passing the before :cache check), then the filename is mutated to a
+      # traversal path before storing. The before :store check must still catch it.
+      it "throws an exception on store" do
+        allow(subject).to receive(:filename).and_return("safe-filename")
+        subject.cache!(fixture_file_upload(fixture))
+
+        allow(subject).to receive(:filename)
+          .and_return("3bc58d54542d6a5efffa9a87554faac0254f73f675b337899ea869f6d38b7371/122../../../../../../../../.ssh/authorized_keys")
+
+        expect { subject.store! }.to raise_error(Gitlab::PathTraversal::PathTraversalAttackError)
+      end
+    end
   end
 end

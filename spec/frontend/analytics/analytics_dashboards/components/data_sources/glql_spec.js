@@ -14,4 +14,10 @@ describe('GLQL data source', () => {
   it('returns an empty string when no arguments are provided', () => {
     expect(fetch()).toBe('');
   });
+
+  it('throws when the query is not a string', () => {
+    expect(() => fetch({ query: { glql: { some: 'object' } } })).toThrow(
+      'GLQL query must be a string.',
+    );
+  });
 });

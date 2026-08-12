@@ -247,10 +247,19 @@ describe('DataTable Visualization', () => {
   });
 
   describe('sorting', () => {
-    const sortableOpts = { fields: [{ sortable: true }] };
+    const sortableOpts = { fields: [{ key: 'field_one', sortable: true }] };
 
     it('uses GlTableLite when no fields are sortable', () => {
       createWrapper(shallowMount);
+
+      expect(findTable().exists()).toBe(true);
+      expect(findSortableTable().exists()).toBe(false);
+    });
+
+    it('uses GlTableLite when the only sortable field has an unsupported key', () => {
+      createWrapper(shallowMount, {
+        options: { fields: [{ key: '_meta.value', sortable: true }] },
+      });
 
       expect(findTable().exists()).toBe(true);
       expect(findSortableTable().exists()).toBe(false);
@@ -344,6 +353,25 @@ describe('DataTable Visualization', () => {
           expect(headers.at(index).text()).toBe(field);
           expect(rowCells.at(index).text()).toBe(value);
         });
+      });
+
+      it('only renders fields with a supported key format', () => {
+        createWrapper(mount, {
+          options: {
+            fields: [
+              { key: 'field_one' },
+              { key: 'sign-up_date' },
+              { key: 'nested.field.value' },
+              { key: '_meta.value' },
+            ],
+          },
+        });
+
+        expect(findTableHeaders().wrappers.map((header) => header.text())).toEqual([
+          'Field One',
+          'Sign-up Date',
+          'Nested.field.value',
+        ]);
       });
 
       it('can disable the default responsive table layout', () => {

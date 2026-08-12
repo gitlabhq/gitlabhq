@@ -36807,6 +36807,9 @@ msgstr ""
 msgid "Globally-allowed IP ranges"
 msgstr ""
 
+msgid "Glql|GLQL query must be a string."
+msgstr ""
+
 msgid "Go Back"
 msgstr ""
 

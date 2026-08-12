@@ -40,7 +40,6 @@ export default {
             jobName: this.jobName,
           }),
         },
-        message: this.customMessage,
         title: sprintf(this.$options.i18n.title, {
           jobName: this.jobName,
         }),
@@ -61,7 +60,7 @@ export default {
     @change="$emit('change', $event)"
   >
     <div>
-      <p>{{ modalText.message }}</p>
+      <p>{{ customMessage }}</p>
       <span>{{ $options.i18n.confirmationText }}</span>
     </div>
   </gl-modal>
