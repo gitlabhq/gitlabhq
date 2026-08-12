@@ -1,0 +1,13 @@
+---
+table_name: cd_rollout_steps
+classes:
+- Cd::RolloutStep
+feature_categories:
+- continuous_delivery
+description: One row per node in a rollout's flow definition tree, addressable by position, tracking that node's own execution state
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249246
+milestone: '19.3'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  organization_id: organizations
+table_size: small

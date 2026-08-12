@@ -40,7 +40,7 @@ export default {
       default: true,
     },
   },
-  emits: ['click-file', 'clickRow', 'clickSubmodule', 'clickTree', 'showMore', 'toggleTree'],
+  emits: ['click-file', 'click-row', 'click-submodule', 'click-tree', 'show-more', 'toggle-tree'],
   computed: {
     isTree() {
       return this.file.type === 'tree';
@@ -88,12 +88,12 @@ export default {
         return;
       }
 
-      this.$emit('clickRow', event);
+      this.$emit('click-row', event);
 
       if (this.isTree) {
-        this.$emit('clickTree', event);
+        this.$emit('click-tree', event);
       } else if (this.file.submodule) {
-        this.$emit('clickSubmodule', event);
+        this.$emit('click-submodule', event);
       } else if (this.isBlob) {
         this.$emit('click-file', event);
       }
@@ -121,7 +121,7 @@ export default {
     class="gl-w-full !gl-justify-start !gl-border-none !gl-pl-6 hover:!gl-bg-transparent"
     button-text-classes="gl-text-blue-700"
     :tabindex="buttonTabindex"
-    @click="$emit('showMore', $event)"
+    @click="$emit('show-more', $event)"
   >
     {{ __('Show more') }}
   </gl-button>
@@ -152,7 +152,7 @@ export default {
       class="file-row-indentation gl-z-3 gl-mr-1 gl-shrink-0 hover:!gl-bg-transparent"
       :aria-label="chevronAriaLabel"
       :tabindex="buttonTabindex"
-      @click="$emit('toggleTree', $event)"
+      @click="$emit('toggle-tree', $event)"
     />
 
     <component

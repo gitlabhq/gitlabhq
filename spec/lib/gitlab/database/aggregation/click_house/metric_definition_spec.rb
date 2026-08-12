@@ -37,6 +37,17 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::MetricDefinition, feat
         expect(result.to_s).to eq('COUNT(*)')
       end
     end
+
+    context 'when the name is dotted and no expression is provided' do
+      let(:metric) { described_class.new(:"duration.max", :integer) }
+      let(:result) { metric.to_inner_arel(context) }
+
+      it 'falls back to the column named by the first segment' do
+        expect(result).to be_a(Arel::Attributes::Attribute)
+        expect(result.relation.name).to eq('events')
+        expect(result.name).to eq('duration')
+      end
+    end
   end
 
   describe '#validate_part' do

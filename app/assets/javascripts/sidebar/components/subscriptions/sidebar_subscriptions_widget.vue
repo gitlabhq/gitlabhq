@@ -29,7 +29,7 @@ export default {
       type: String,
     },
   },
-  emits: ['expand-sidebar', 'subscribedUpdated'],
+  emits: ['expand-sidebar'],
   data() {
     return {
       subscribed: false,
@@ -61,7 +61,6 @@ export default {
         this.emailsDisabled = this.parentIsGroup
           ? data.namespace?.emailsDisabled
           : data.namespace?.issuable?.emailsDisabled;
-        this.$emit('subscribedUpdated', data.namespace?.issuable?.subscribed);
       },
       error() {
         createAlert({

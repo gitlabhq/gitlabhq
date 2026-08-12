@@ -58,6 +58,7 @@ cd_deployments: todo
 cd_environment_driver_bindings: todo
 cd_environments: no_work_needed
 cd_rollout_environments: todo
+cd_rollout_steps: todo
 cd_rollout_transitions: todo
 cd_rollouts: todo
 cd_service_environment_healths: todo

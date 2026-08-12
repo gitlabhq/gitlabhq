@@ -207,13 +207,6 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
       is_expected.to be_a(ClickHouse::Finders::Ci::SiphonFinishedBuildsFinder)
     end
 
-    it 'takes precedence over the deduplicated finder even while the backfill is in progress' do
-      allow(ClickHouse::MigrationSupport::CiFinishedBuildsConsistencyHelper)
-        .to receive(:backfill_in_progress?).and_return(true)
-
-      is_expected.to be_a(ClickHouse::Finders::Ci::SiphonFinishedBuildsFinder)
-    end
-
     it 'reads from siphon_p_ci_builds scoped by the container' do
       expect(finder.to_sql).to include(
         'siphon_p_ci_builds',
@@ -352,57 +345,6 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
 
       it 'applies project filter' do
         expect(finder.to_sql).to include(project.project_namespace.traversal_path(with_organization: false))
-      end
-
-      context 'when deduplication migration is in progress' do
-        before do
-          allow(ClickHouse::MigrationSupport::CiFinishedBuildsConsistencyHelper)
-            .to receive(:backfill_in_progress?).and_return(true)
-        end
-
-        it 'uses the deduplicated finder' do
-          is_expected.to be_a(ClickHouse::Finders::Ci::FinishedBuildsDeduplicatedFinder)
-        end
-
-        it 'generates valid SQL' do
-          expected_sql = <<~SQL.squish
-            SELECT `finished_builds`.`name`, round((avg(`finished_builds`.`duration`) / 1000.0), 2) AS mean_duration
-            FROM (SELECT `ci_finished_builds`.`id`,
-                         argMax(`ci_finished_builds`.`name`, `ci_finished_builds`.`version`)     AS name,
-                         argMax(`ci_finished_builds`.`duration`, `ci_finished_builds`.`version`) AS duration
-                  FROM `ci_finished_builds`
-                  WHERE `ci_finished_builds`.`project_id` = #{project.id}
-                    AND `ci_finished_builds`.`pipeline_id` IN (SELECT `ci_finished_pipelines`.`id`
-                                                               FROM `ci_finished_pipelines`
-                                                               WHERE `ci_finished_pipelines`.`path` = '#{project.project_namespace.traversal_path(with_organization: false)}'
-                                                                 AND `ci_finished_pipelines`.`started_at` >=
-                                                                     toDateTime64('#{2.hours.ago.utc.strftime('%Y-%m-%d %H:%M:%S')}', 6, 'UTC')
-                                                                 AND `ci_finished_pipelines`.`started_at` <
-                                                                     toDateTime64('#{1.hour.ago.utc.strftime('%Y-%m-%d %H:%M:%S')}', 6, 'UTC')
-                                                                 AND `ci_finished_pipelines`.`finished_at` >=
-                                                                     toDateTime64('#{2.hours.ago.utc.strftime('%Y-%m-%d %H:%M:%S')}', 6, 'UTC')
-                                                                 AND `ci_finished_pipelines`.`source` = 'web'
-                                                                 AND `ci_finished_pipelines`.`ref` = 'main')
-                    AND `ci_finished_builds`.`finished_at` >= toDateTime64('#{2.hours.ago.utc.strftime('%Y-%m-%d %H:%M:%S')}', 6, 'UTC')
-                  GROUP BY id
-                  HAVING argMax(`ci_finished_builds`.`name`, `ci_finished_builds`.`version`) ILIKE '%test%') finished_builds
-            GROUP BY `finished_builds`.`name`
-            ORDER BY `finished_builds`.`name` ASC
-          SQL
-
-          expect(query_builder.to_sql).to eq(expected_sql)
-        end
-      end
-
-      context 'when deduplication migration is not in progress' do
-        before do
-          allow(ClickHouse::MigrationSupport::CiFinishedBuildsConsistencyHelper)
-            .to receive(:backfill_in_progress?).and_return(false)
-        end
-
-        it 'uses the regular finder' do
-          is_expected.to be_a(ClickHouse::Finders::Ci::FinishedBuildsFinder)
-        end
       end
     end
 

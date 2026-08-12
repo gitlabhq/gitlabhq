@@ -70,10 +70,6 @@ describe('Sidebar Subscriptions Widget', () => {
       expect(findSubscribeButton().exists()).toBe(true);
       expect(findNotificationIconIsOn()).toBe(true);
     });
-
-    it('emits `subscribedUpdated` event with a `false` payload', () => {
-      expect(wrapper.emitted('subscribedUpdated')).toEqual([[false]]);
-    });
   });
 
   describe('when user is subscribed to the issue', () => {
@@ -87,10 +83,6 @@ describe('Sidebar Subscriptions Widget', () => {
     it('renders the notification icon in the off (subscribed) state', () => {
       expect(findSubscribeButton().exists()).toBe(true);
       expect(findNotificationIconIsOn()).toBe(false);
-    });
-
-    it('emits `subscribedUpdated` event with a `true` payload', () => {
-      expect(wrapper.emitted('subscribedUpdated')).toEqual([[true]]);
     });
   });
 

@@ -1,3 +1,5 @@
+import { s__ } from '~/locale';
+
 /**
  * Passes a GLQL query string straight through to the visualization.
  *
@@ -7,5 +9,9 @@
  * the panel's `data.query`) as the `data` prop the visualization receives.
  */
 export default function fetch({ query: { glql = '' } = {} } = {}) {
+  if (typeof glql !== 'string') {
+    throw new Error(s__('Glql|GLQL query must be a string.'));
+  }
+
   return glql;
 }

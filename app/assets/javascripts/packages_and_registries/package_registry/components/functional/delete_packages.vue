@@ -24,6 +24,7 @@ export default normalizeRender({
       default: false,
     },
   },
+  emits: ['start', 'end', 'success'],
   i18n: {
     errorMessage: DELETE_PACKAGE_ERROR_MESSAGE,
     errorMessageMultiple: DELETE_PACKAGES_ERROR_MESSAGE,

@@ -12,10 +12,6 @@ import SidebarEditableItem from '../sidebar_editable_item.vue';
 import SidebarFormattedDate from './sidebar_formatted_date.vue';
 import SidebarInheritDate from './sidebar_inherit_date.vue';
 
-const hideDropdownEvent = new CustomEvent('hiddenGlDropdown', {
-  bubbles: true,
-});
-
 export default {
   name: 'SidebarDateWidget',
   tracking: {
@@ -69,7 +65,6 @@ export default {
       default: null,
     },
   },
-  emits: ['closeForm', 'dueDateUpdated', 'startDateUpdated'],
   data() {
     return {
       issuable: {},
@@ -96,12 +91,6 @@ export default {
       },
       update(data) {
         return data.namespace?.issuable || {};
-      },
-      result({ data }) {
-        if (!data) {
-          return;
-        }
-        this.$emit(`${this.dateType}Updated`, data.namespace?.issuable?.[this.dateType]);
       },
       error() {
         createAlert({
@@ -192,12 +181,6 @@ export default {
     epicDatePopoverEl() {
       return this.$refs?.epicDatePopover?.$el;
     },
-    // eslint-disable-next-line vue/no-unused-properties -- closeForm() is part of the component's public API.
-    closeForm() {
-      this.$refs.editable.collapse();
-      this.$el.dispatchEvent(hideDropdownEvent);
-      this.$emit('closeForm');
-    },
     openDatePicker() {
       this.$refs.datePicker.show();
     },
@@ -237,8 +220,6 @@ export default {
               createAlert({
                 message: errors[0],
               });
-            } else {
-              this.$emit('closeForm');
             }
           },
         )

@@ -43,11 +43,11 @@ module Gitlab
           end
 
           def identifier
-            :"#{name}_count"
+            dotted_name? ? name : :"#{name}_count"
           end
 
           def to_inner_arel(_context)
-            bitmap_expression = expression ? expression.call : Arel.sql(name.to_s)
+            bitmap_expression = expression ? expression.call : Arel.sql(source_column.to_s)
             Arel::Nodes::SqlLiteral.new("groupBitmapState(#{bitmap_expression})")
           end
 

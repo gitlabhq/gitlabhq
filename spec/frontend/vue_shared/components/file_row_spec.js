@@ -76,7 +76,7 @@ describe('File row component', () => {
     expect(wrapper.element.title.trim()).toEqual('');
   });
 
-  it('emits clickTree on tree click', () => {
+  it('emits click-tree on tree click', () => {
     const fileName = 't3';
     createComponent({
       file: {
@@ -88,18 +88,18 @@ describe('File row component', () => {
 
     findFileButton().trigger('click');
 
-    expect(wrapper.emitted('clickTree')).toHaveLength(1);
+    expect(wrapper.emitted('click-tree')).toHaveLength(1);
   });
 
-  it('emits clickRow on tree click', () => {
+  it('emits click-row on tree click', () => {
     const fileName = 'folder';
     const filePath = 'path/to/folder';
     createComponent({ file: { ...file(fileName), type: 'tree', path: filePath }, level: 0 });
 
     findFileButton().trigger('click');
 
-    expect(wrapper.emitted('clickRow')).toHaveLength(1);
-    expect(wrapper.emitted('clickTree')).toHaveLength(1);
+    expect(wrapper.emitted('click-row')).toHaveLength(1);
+    expect(wrapper.emitted('click-tree')).toHaveLength(1);
   });
 
   it('emits click-file on blob click', () => {
@@ -118,7 +118,7 @@ describe('File row component', () => {
     expect(wrapper.emitted('click-file')).toHaveLength(1);
   });
 
-  it('emits clickRow event on blob click', () => {
+  it('emits click-row event on blob click', () => {
     const fileName = 'test.txt';
     createComponent({
       file: {
@@ -130,7 +130,7 @@ describe('File row component', () => {
 
     findFileButton().trigger('click');
 
-    expect(wrapper.emitted('clickRow')).toHaveLength(1);
+    expect(wrapper.emitted('click-row')).toHaveLength(1);
   });
 
   it('renders header for file', () => {
@@ -185,12 +185,12 @@ describe('File row component', () => {
       expect(showMoreButton.text().trim()).toBe('Show more');
     });
 
-    it('emits showMore event when show more button is clicked', () => {
+    it('emits show-more event when show more button is clicked', () => {
       createComponent({ file: { isShowMore: true, loading: false }, level: 0 });
 
       findShowMoreButton().vm.$emit('click');
 
-      expect(wrapper.emitted('showMore')).toHaveLength(1);
+      expect(wrapper.emitted('show-more')).toHaveLength(1);
     });
 
     it('shows loading state on show more button', () => {
@@ -258,7 +258,7 @@ describe('File row component', () => {
     });
   });
 
-  it('emits clickSubmodule for submodules', () => {
+  it('emits click-submodule for submodules', () => {
     createComponent({
       file: { ...file('sub'), submodule: true, webUrl: 'https://ext.com' },
       level: 0,
@@ -266,7 +266,7 @@ describe('File row component', () => {
 
     findFileButton().trigger('click');
 
-    expect(wrapper.emitted('clickSubmodule')).toHaveLength(1);
+    expect(wrapper.emitted('click-submodule')).toHaveLength(1);
   });
 
   describe('Tree toggle chevron button', () => {
@@ -311,10 +311,10 @@ describe('File row component', () => {
       );
     });
 
-    it('renders chevron button for trees and emits toggleTree when clicked', () => {
+    it('renders chevron button for trees and emits toggle-tree when clicked', () => {
       findChevronButton().vm.$emit('click', { stopPropagation: jest.fn() });
 
-      expect(wrapper.emitted('toggleTree')).toHaveLength(1);
+      expect(wrapper.emitted('toggle-tree')).toHaveLength(1);
     });
 
     it('does not render when showTreeToggle is false', () => {
@@ -368,7 +368,7 @@ describe('File row component', () => {
     expect(preventDefaultSpy).toHaveBeenCalled();
   });
 
-  it('emits clickRow and click-file when clicking blob', () => {
+  it('emits click-row and click-file when clicking blob', () => {
     createComponent({
       file: {
         ...file('test.rb'),
@@ -379,7 +379,7 @@ describe('File row component', () => {
 
     findFileButton().trigger('click');
 
-    expect(wrapper.emitted('clickRow')).toHaveLength(1);
+    expect(wrapper.emitted('click-row')).toHaveLength(1);
     expect(wrapper.emitted('click-file')).toHaveLength(1);
   });
 });

@@ -442,12 +442,6 @@ You can now start a new chat and ask a question depending on the [available tool
 
 ## Reuse a single OAuth application
 
-{{< details >}}
-
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
-
 {{< history >}}
 
 - OAuth application creation through the Admin UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245979) in GitLab 19.3.
@@ -467,17 +461,13 @@ Reuse a pre-registered OAuth application to avoid the following issues with DCR:
   egress IP address, such as a corporate network or VPN, can exceed this limit and
   fail to authenticate to the MCP server.
 
-To reuse a pre-registered OAuth application, create the application, then configure the MCP client
-with its client ID. An administrator or group Owner can create a shared application and give the
-client ID to users. Alternatively, a user can create an application for their own account.
-
 Every user still authorizes with OAuth and receives their own access token. A shared application
 is the OAuth client identity, not a shared credential.
 
 Create the OAuth application for one of the following scopes, depending on who reuses it:
 
-- Instance: Shared by all users on the instance. Requires administrator access. 
-- Group: Shared by members of a group. Requires the Owner role for the group.
+- Instance: Shared by all users on the instance.
+- Group: Shared by members of a group.
 - User: For a user's own account.
 
 Prerequisites:
@@ -485,13 +475,15 @@ Prerequisites:
 - An MCP client that supports the following:
   - Pre-configured OAuth credentials
   - The `clientId` field in its configuration
+- Have administrator access, if you create the application for the instance.
+- Have the Owner role for the group, if you create the application for a group.
 
 To create the OAuth application:
 
-1. Create an OAuth application at the
+1. Create an OAuth application for an
    [instance](../../integration/oauth_provider.md#create-an-instance-wide-application),
    [group](../../integration/oauth_provider.md#create-a-group-owned-application), or
-   [user](../../integration/oauth_provider.md#create-a-user-owned-application) level.
+   [user](../../integration/oauth_provider.md#create-a-user-owned-application).
 1. For the scopes, select **mcp** and clear the **Confidential** checkbox.
 1. Save the application.
 1. Configure your MCP client with the application ID, or give the application ID to the users who

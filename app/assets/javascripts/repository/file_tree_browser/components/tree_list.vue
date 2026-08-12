@@ -672,12 +672,12 @@ export default {
             }"
             :bold-text="isCurrentPath(item.path)"
             class="gl-relative !gl-mx-0"
-            @clickTree="onTreeClick(item)"
-            @toggleTree.stop="toggleDirectory(item.path)"
-            @clickSubmodule="handleClickSubmodule(item.webUrl)"
+            @click-tree="onTreeClick(item)"
+            @toggle-tree.stop="toggleDirectory(item.path)"
+            @click-submodule="handleClickSubmodule(item.webUrl)"
             @click-file="handleNavigate(item)"
-            @clickRow="onFileClick"
-            @showMore="handleShowMore(item.parentPath, $event)"
+            @click-row="onFileClick"
+            @show-more="handleShowMore(item.parentPath, $event)"
           />
           <div v-else data-placeholder-item class="gl-h-7" tabindex="-1"></div>
         </li>

@@ -270,9 +270,6 @@ export default {
     withConfirmationModal() {
       return (this.isRetryableBridge && !this.skipRetryModal) || this.hasManualConfirmationMessage;
     },
-    manualConfirmationMessage() {
-      return this.job.status.action.confirmationMessage;
-    },
     jobActionTooltipText() {
       const { group } = this.status;
       const { title, icon } = this.status.action;
@@ -410,7 +407,7 @@ export default {
       @hide="handleConfirmationModalPreferences"
     >
       <div v-if="job.status.action.confirmationMessage">
-        <p>{{ manualConfirmationMessage }}</p>
+        <p>{{ job.status.action.confirmationMessage }}</p>
         <p>{{ $options.i18n.manualConfirmationModal.confirmationText }}</p>
       </div>
       <div v-else>

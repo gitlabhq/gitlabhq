@@ -134,17 +134,17 @@ describe('Diffs tree list component', () => {
       expect(wrapper.emitted('click-file')).toMatchObject([[item]]);
     });
 
-    it('re-emits clickSubmodule as click-file event', () => {
+    it('re-emits click-submodule as click-file event', () => {
       const row = wrapper.findComponent(FileRow);
       const item = row.props('file');
-      row.vm.$emit('clickSubmodule', { stopPropagation: jest.fn() });
+      row.vm.$emit('click-submodule', { stopPropagation: jest.fn() });
       expect(wrapper.emitted('click-file')).toMatchObject([[item]]);
     });
 
-    it('re-emits clickTree event as toggle-folder', () => {
+    it('re-emits click-tree event as toggle-folder', () => {
       const row = wrapper.findComponent(FileRow);
       const item = row.props('file');
-      row.vm.$emit('clickTree', { stopPropagation: jest.fn() });
+      row.vm.$emit('click-tree', { stopPropagation: jest.fn() });
       expect(wrapper.emitted('toggle-folder')).toMatchObject([[item.path]]);
     });
 

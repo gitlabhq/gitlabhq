@@ -162,6 +162,52 @@ RSpec.describe API::NpmProjectPackages, :aggregate_failures, feature_category: :
 
       subject { put(url, headers: build_token_auth_header(personal_access_token.token)) }
     end
+
+    context 'with a package protection rule' do
+      using RSpec::Parameterized::TableSyntax
+
+      let_it_be(:tag_name) { 'test' }
+      let_it_be(:pat_developer) { create(:personal_access_token, user: create(:user, developer_of: project)) }
+      let_it_be(:pat_maintainer) { create(:personal_access_token, user: create(:user, maintainer_of: project)) }
+
+      let_it_be(:package_protection_rule) do
+        create(:package_protection_rule, package_type: :npm, project: project,
+          package_name_pattern: package.name, minimum_access_level_for_push: :maintainer)
+      end
+
+      let(:url) { api("/projects/#{project.id}/packages/npm/-/package/#{package_name}/dist-tags/#{tag_name}") }
+
+      subject(:create_dist_tag) do
+        put(url, env: { 'api.request.body': package.version },
+          headers: build_token_auth_header(personal_access_token.token))
+      end
+
+      shared_examples 'protected package' do
+        it 'rejects the request as forbidden', :aggregate_failures do
+          expect { create_dist_tag }.not_to change { Packages::Tag.count }
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(json_response).to include('message' => '403 Forbidden - Package protected.')
+        end
+      end
+
+      shared_examples 'allowed package' do
+        it 'creates the dist-tag', :aggregate_failures do
+          expect { create_dist_tag }.to change { Packages::Tag.count }.by(1)
+
+          expect(response).to have_gitlab_http_status(:no_content)
+        end
+      end
+
+      where(:personal_access_token, :shared_examples_name) do
+        ref(:pat_developer)  | 'protected package'
+        ref(:pat_maintainer) | 'allowed package'
+      end
+
+      with_them do
+        it_behaves_like params[:shared_examples_name]
+      end
+    end
   end
 
   describe 'DELETE /api/v4/projects/:id/packages/npm/-/package/*package_name/dist-tags/:tag' do

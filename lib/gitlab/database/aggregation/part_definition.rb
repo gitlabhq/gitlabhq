@@ -4,6 +4,8 @@ module Gitlab
   module Database
     module Aggregation
       class PartDefinition
+        IDENTIFIER_SEGMENT_FORMAT = /\A[a-z][a-z0-9_]*\z/
+
         attr_reader :name, :type, :expression, :secondary_expression, :description, :formatter
 
         # @param name [Symbol] the name of the part
@@ -19,6 +21,8 @@ module Gitlab
           @secondary_expression = secondary_expression
           @description = description
           @formatter = formatter
+
+          validate_name!
         end
 
         def format_value(val)
@@ -40,13 +44,49 @@ module Gitlab
           name
         end
 
+        # Segments of the identifier: one segment for a plain identifier,
+        # two for a dotted identifier (`duration.max` => [:duration, :max]).
+        def identifier_parts
+          @identifier_parts ||= identifier.to_s.split('.', -1).map(&:to_sym)
+        end
+
         # Returns unique key for each part configuration in given request.
         # For definitions without configration the key is static
         # For definitions with configuration the key depends on
         # the configuration parameters
         # Must be unique across all QueryPlan parts.
         def instance_key(_configuration)
-          identifier.to_s
+          identifier_parts.join('__')
+        end
+
+        private
+
+        # Only metric definitions support dotted names; dimensions and filters do not.
+        def supports_dotted_identifier?
+          false
+        end
+
+        def dotted_name?
+          name.to_s.include?('.')
+        end
+
+        def validate_name!
+          return unless dotted_name?
+
+          unless supports_dotted_identifier?
+            raise ArgumentError, "Dotted name `#{name}` is not supported for #{self.class.name}"
+          end
+
+          return if identifier_parts.size == 2 &&
+            identifier_parts.all? { |segment| IDENTIFIER_SEGMENT_FORMAT.match?(segment.to_s) }
+
+          raise ArgumentError,
+            "Invalid dotted name `#{name}`: expected exactly two dot-separated segments " \
+              "matching #{IDENTIFIER_SEGMENT_FORMAT.inspect}"
+        end
+
+        def source_column
+          dotted_name? ? identifier_parts.first : name
         end
       end
     end

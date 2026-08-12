@@ -69,6 +69,7 @@ module Gitlab
             @metrics += DefinitionsCollector.new(metrics_mapping, transients: transients).collect(&block)
 
             guard_definitions_uniqueness!(dimensions + metrics)
+            guard_dotted_identifiers!(@metrics)
 
             @metrics
           end
@@ -79,9 +80,37 @@ module Gitlab
             identifiers = parts.map(&:identifier)
             duplicates = identifiers.group_by(&:itself).select { |_k, v| v.size > 1 }.keys
 
+            if duplicates.present?
+              raise "Identical engine parts found: #{duplicates.inspect}. Engine parts identifiers must be unique."
+            end
+
+            guard_instance_keys_uniqueness!(parts)
+          end
+
+          def guard_instance_keys_uniqueness!(parts)
+            keys = parts.map { |part| part.instance_key({}) }
+            duplicates = keys.group_by(&:itself).select { |_k, v| v.size > 1 }.keys
+
             return unless duplicates.present?
 
-            raise "Identical engine parts found: #{duplicates.inspect}. Engine parts identifiers must be unique."
+            raise "Identical engine part keys found: #{duplicates.inspect}. " \
+              "Engine parts identifiers must be unique after sanitization."
+          end
+
+          def guard_dotted_identifiers!(metrics)
+            dotted, flat = metrics.partition { |metric| metric.identifier_parts.size == 2 }
+            return if dotted.empty?
+
+            prefixes = dotted.map { |metric| metric.identifier_parts.first }.uniq
+
+            if prefixes.include?(:dimensions)
+              raise "The `dimensions` prefix is reserved and cannot be used in dotted identifiers."
+            end
+
+            conflicts = prefixes & flat.map(&:identifier)
+            return if conflicts.empty?
+
+            raise "Dotted identifier prefixes conflict with flat identifiers: #{conflicts.inspect}."
           end
         end
 

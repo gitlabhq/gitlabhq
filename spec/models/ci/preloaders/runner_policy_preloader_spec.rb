@@ -28,17 +28,21 @@ RSpec.describe Ci::Preloaders::RunnerPolicyPreloader, feature_category: :fleet_v
   end
 
   describe '#execute' do
-    it 'calls ProjectPolicyPreloader with correct projects' do
+    it 'calls ProjectPolicyPreloader with runner projects and owner projects' do
       expect(::Preloaders::ProjectPolicyPreloader).to receive(:new)
                                                         .with([project, another_project], user)
+                                                        .and_call_original
+      expect(::Preloaders::ProjectPolicyPreloader).to receive(:new)
+                                                        .with([project], user)
                                                         .and_call_original
 
       preloader.execute
     end
 
-    it 'calls GroupPolicyPreloader with correct groups' do
+    it 'calls GroupPolicyPreloader with runner groups and owner groups' do
       expect(::Preloaders::GroupPolicyPreloader).to receive(:new)
                                                       .with([group], user)
+                                                      .twice
                                                       .and_call_original
 
       preloader.execute
@@ -102,6 +106,54 @@ RSpec.describe Ci::Preloaders::RunnerPolicyPreloader, feature_category: :fleet_v
       preloader = described_class.new([runner1, runner2], user)
 
       expect(preloader.send(:groups)).to eq([shared_group])
+    end
+  end
+
+  describe '#owner_projects' do
+    subject(:owner_projects) { preloader.send(:owner_projects) }
+
+    it 'returns unique owner projects from all runners' do
+      expect(owner_projects).to contain_exactly(project)
+    end
+
+    context 'when no runners have an owner project' do
+      let(:runners) { [group_runner, instance_runner] }
+
+      it { is_expected.to eq([]) }
+    end
+
+    context 'with runners from the same project' do
+      let_it_be(:shared_project) { create(:project) }
+
+      let(:runners) { create_list(:ci_runner, 2, :project, projects: [shared_project]) }
+
+      it 'handles duplicate owner projects across runners' do
+        expect(owner_projects).to contain_exactly(shared_project)
+      end
+    end
+  end
+
+  describe '#owner_groups' do
+    subject(:owner_groups) { preloader.send(:owner_groups) }
+
+    it 'returns unique owner groups from all runners' do
+      expect(owner_groups).to contain_exactly(group)
+    end
+
+    context 'when no runners have an owner group' do
+      let(:runners) { [project_runner, instance_runner] }
+
+      it { is_expected.to eq([]) }
+    end
+
+    context 'with runners from the same group' do
+      let_it_be(:shared_group) { create(:group) }
+
+      let(:runners) { create_list(:ci_runner, 2, :group, groups: [shared_group]) }
+
+      it 'handles duplicate owner groups across runners' do
+        expect(owner_groups).to contain_exactly(shared_group)
+      end
     end
   end
 end

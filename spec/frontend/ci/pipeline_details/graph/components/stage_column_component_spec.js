@@ -290,6 +290,26 @@ describe('stage column component', () => {
           );
         });
 
+        it('escapes HTML in the confirmation message instead of rendering it', () => {
+          const stageWithHtmlConfirmationMessage = JSON.parse(
+            JSON.stringify(stageWithConfirmationMessage),
+          );
+          stageWithHtmlConfirmationMessage.action.confirmationMessage =
+            '<img src=x onerror=alert(1)>';
+
+          createComponent({
+            method: mount,
+            props: {
+              ...stageWithHtmlConfirmationMessage,
+            },
+          });
+          findActionComponent().trigger('click');
+
+          const { modalHtmlMessage } = confirmAction.mock.calls[0][1];
+          expect(modalHtmlMessage).toContain('&lt;img src=x onerror=alert(1)&gt;');
+          expect(modalHtmlMessage).not.toContain('<img src=x onerror=alert(1)>');
+        });
+
         it('execute post action modal is confirmed', async () => {
           createComponent({
             method: mount,

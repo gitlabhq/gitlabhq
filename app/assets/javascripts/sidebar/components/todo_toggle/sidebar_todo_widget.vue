@@ -46,7 +46,6 @@ export default {
       type: String,
     },
   },
-  emits: ['todoUpdated'],
   data() {
     return {
       todoId: null,
@@ -79,7 +78,6 @@ export default {
         const currentUserTodos = data.namespace?.issuable?.currentUserTodos?.nodes ?? [];
         this.todoId = currentUserTodos[0]?.id;
         this.todoCount = currentUserTodos.length;
-        this.$emit('todoUpdated', currentUserTodos.length > 0);
       },
       error() {
         createAlert({

@@ -30,25 +30,26 @@ module Ci
       def pause_runners(paused)
         active = !paused
         runner_count = runners.limit(RUNNER_LIMIT + 1).count
-        authorized_runners_ids, unauthorized_runners_ids = compute_authorized_runners
-        runners_to_be_updated = Ci::Runner.id_in(authorized_runners_ids)
-        runners_to_be_updated.update(active: active)
+        authorized_runners, unauthorized_runners = compute_authorized_runners
+        authorized_runners.each { |runner| runner.update(active: active) }
         ServiceResponse.success(
           payload: {
-            updated_count: runners_to_be_updated.count,
-            updated_runners: runners_to_be_updated,
-            errors: error_messages(runner_count, authorized_runners_ids, unauthorized_runners_ids)
+            updated_count: authorized_runners.count,
+            updated_runners: authorized_runners,
+            errors: error_messages(runner_count, authorized_runners.map(&:id), unauthorized_runners.map(&:id))
           })
       end
 
+      # Returns the preloaded, authorization-checked runner records themselves (not just their
+      # ids), so callers can reuse the same objects (and their preloaded associations) instead of
+      # re-querying by id, which would otherwise re-trigger the N+1 queries this preloader avoids.
       def compute_authorized_runners
-        limited_runners = runners.limit(RUNNER_LIMIT)
+        limited_runners = runners.limit(RUNNER_LIMIT).to_a
         ::Ci::Preloaders::RunnerPolicyPreloader.new(limited_runners, current_user).execute
 
-        authorized_runners, unauthorized_runners =
-          limited_runners
-            .partition { |runner| Ability.allowed?(current_user, :update_runner, runner) }
-        [authorized_runners.map(&:id), unauthorized_runners.map(&:id)]
+        # partition's [truthy_items, falsy_items] result becomes this method's own return value:
+        # [authorized_runners, unauthorized_runners], unpacked by the caller below.
+        limited_runners.partition { |runner| Ability.allowed?(current_user, :update_runner, runner) }
       end
 
       def error_messages(runner_count, authorized_runners_ids, unauthorized_runners_ids)

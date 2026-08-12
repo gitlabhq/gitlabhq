@@ -11,7 +11,7 @@ module Gitlab
           end
 
           def identifier
-            :"#{name}_rate"
+            dotted_name? ? name : :"#{name}_rate"
           end
 
           def to_outer_arel(context)

@@ -603,7 +603,7 @@ The GraphQL integration automatically generates:
 - **Query field** for mounted engine
 - **Filter arguments** based on engine filter definitions
 - **Order argument** based on engine dimensions and metrics definitions. Snake-cased dimension and metric identifiers can be used as an order identifier
-- **Response types** with dimensions and metrics as fields
+- **Response types** with dimensions and metrics as fields; metrics with [dotted identifiers](#dotted-metric-identifiers) are nested under a shared group field
 - **Parameterized fields** for dimensions and metrics with parameters
 - **Pagination**: aggregation results are automatically paginated using `OFFSET` pagination
 
@@ -709,6 +709,39 @@ Filter arguments are split across the two levels based on when the filter is app
 - **Non-metric filters** (those defined with `exact_match` or `range`) appear on the outer field (e.g. `issueAnalytics`).
 - **Metric filters** (those defined with `metric_exact_match` or `metric_range`) appear on the
   inner `aggregated` field.
+
+### Dotted metric identifiers
+
+To group several aggregates of the same underlying value under one GraphQL field, declare metrics with a dotted name. The name is used verbatim as the identifier (the usual `:{name}_count`-style derivation is skipped):
+
+```ruby
+metrics do
+  mean :"duration.mean", :float, ->(_params) { Arel.sql("dateDiff('seconds', created_at, finished_at)") }
+  quantile :"duration.quantile", :float, ->(_params) { Arel.sql("dateDiff('seconds', created_at, finished_at)") },
+    parameters: { quantile: { type: :float } }
+end
+```
+
+All metrics sharing a prefix become one object field with a sub-field per second segment, similar to the nested `dimensions` sub-object. Parameterized metrics keep their arguments on the sub-field:
+
+```graphql
+nodes {
+  duration {
+    mean
+    quantile(quantile: 0.9)
+  }
+}
+```
+
+A dotted metric without an explicit expression falls back to reading the database column named by the first segment (for example, `duration.max` reads the `duration` column). `count` metrics never reference the name as a column.
+
+Rules, enforced at definition time:
+
+- Exactly two dot-separated segments, each matching `[a-z][a-z0-9_]*`. Metrics only; dimensions and filters reject dotted names.
+- The prefix must not collide with a flat metric identifier, and `dimensions` is reserved.
+- Identifiers must stay unique after dot sanitization: instance keys (SQL aliases and result-row keys) replace `.` with `__`, so `duration.max` collides with a `duration__max` metric.
+
+`orderBy` accepts the full dotted identifier (`{ identifier: "duration.max", direction: DESC }`). Metric filters can't target dotted metrics.
 
 ### Custom request validations
 

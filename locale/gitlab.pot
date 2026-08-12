@@ -38113,6 +38113,9 @@ msgstr ""
 msgid "Globally-allowed IP ranges"
 msgstr ""
 
+msgid "Glql|GLQL query must be a string."
+msgstr ""
+
 msgid "Go Back"
 msgstr ""
 
@@ -45170,6 +45173,9 @@ msgid "Keep divergent refs"
 msgstr ""
 
 msgid "Keep review"
+msgstr ""
+
+msgid "Keep running"
 msgstr ""
 
 msgid "Keep sidebar visible"
@@ -73597,6 +73603,9 @@ msgstr ""
 msgid "SecurityProfiles|Apply default profile"
 msgstr ""
 
+msgid "SecurityProfiles|Apply profile"
+msgstr ""
+
 msgid "SecurityProfiles|Apply profile to enable"
 msgstr ""
 
@@ -73822,7 +73831,7 @@ msgstr ""
 msgid "SecurityReports|90 days"
 msgstr ""
 
-msgid "SecurityReports|A Vulnerability Resolution is already in progress for this project. Wait for it to finish before starting a new one."
+msgid "SecurityReports|A Vulnerability Resolution is already running for this project. You can cancel it to start a new one."
 msgstr ""
 
 msgid "SecurityReports|A comment is required when changing the severity."
@@ -73904,6 +73913,12 @@ msgid "SecurityReports|Branches"
 msgstr ""
 
 msgid "SecurityReports|CVSS v%{version}:"
+msgstr ""
+
+msgid "SecurityReports|Cancel Vulnerability Resolution?"
+msgstr ""
+
+msgid "SecurityReports|Cancel resolution"
 msgstr ""
 
 msgid "SecurityReports|Change severity"
@@ -74199,6 +74214,9 @@ msgstr ""
 msgid "SecurityReports|Merge Request"
 msgstr ""
 
+msgid "SecurityReports|Merge requests created by this run will remain open and will not be reverted or closed. Only the ongoing resolution process will be canceled."
+msgstr ""
+
 msgid "SecurityReports|Monitor vulnerabilities in all of your projects"
 msgstr ""
 
@@ -74451,6 +74469,9 @@ msgstr ""
 msgid "SecurityReports|The following security reports contain one or more vulnerability findings that could not be parsed and were not recorded. To investigate a report, download the artifacts in the job output. Ensure the security report conforms to the relevant %{helpPageLinkStart}JSON schema%{helpPageLinkEnd}."
 msgstr ""
 
+msgid "SecurityReports|The resolution run appears to have already completed. Refresh the page to confirm."
+msgstr ""
+
 msgid "SecurityReports|The security report for this pipeline has %{helpPageLinkStart}expired%{helpPageLinkEnd}. Re-run the pipeline to generate a new security report."
 msgstr ""
 
@@ -74482,6 +74503,9 @@ msgid "SecurityReports|There was an error reverting the dismissal."
 msgstr ""
 
 msgid "SecurityReports|There was an error while generating the report."
+msgstr ""
+
+msgid "SecurityReports|This Vulnerability Resolution run has already completed."
 msgstr ""
 
 msgid "SecurityReports|This project has reached the maximum number of vulnerabilities it can contain and some of the vulnerabilities couldn't be ingested."
@@ -74565,6 +74589,9 @@ msgstr ""
 msgid "SecurityReports|Vulnerability Resolution available"
 msgstr ""
 
+msgid "SecurityReports|Vulnerability Resolution canceled."
+msgstr ""
+
 msgid "SecurityReports|Vulnerability Resolution turned off"
 msgstr ""
 
@@ -74583,6 +74610,9 @@ msgstr ""
 msgid "SecurityReports|Warning parsing security reports"
 msgstr ""
 
+msgid "SecurityReports|We could not cancel the resolution. Try again or refresh the page."
+msgstr ""
+
 msgid "SecurityReports|Yes"
 msgstr ""
 
@@ -74593,6 +74623,9 @@ msgid "SecurityReports|scanned resources"
 msgstr ""
 
 msgid "SecurityReports|security scanning prerequisites"
+msgstr ""
+
+msgid "SecurityScanProfile|Configuration is not allowed for the %{trigger_type} trigger"
 msgstr ""
 
 msgid "SecurityScanProfile|Default GitLab-recommended profiles are not editable."

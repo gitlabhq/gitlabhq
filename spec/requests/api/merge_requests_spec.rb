@@ -1328,6 +1328,44 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         end
       end
     end
+
+    context 'when merge requests are filtered by authorization' do
+      let_it_be(:filter_user) { create(:user) }
+      let_it_be(:filter_group) { create(:group) }
+      let_it_be(:filter_project) do
+        create(:project, :repository, namespace: filter_group, developers: [filter_user])
+      end
+
+      let_it_be(:restricted_mr) do
+        create(:merge_request, :simple, source_project: filter_project, target_project: filter_project,
+          author: filter_user, source_branch: 'restricted-branch')
+      end
+
+      let_it_be(:unrestricted_mr) do
+        create(:merge_request, :simple, source_project: filter_project, target_project: filter_project,
+          author: filter_user, source_branch: 'unrestricted-branch')
+      end
+
+      context 'when unauthorized merge requests are not filtered out' do
+        it 'includes all merge requests' do
+          get api('/merge_requests', filter_user), params: { scope: 'created_by_me' }
+
+          expect_response_contain_exactly(restricted_mr.id, unrestricted_mr.id)
+        end
+      end
+
+      context 'when Ability filters out unauthorized merge requests' do
+        before do
+          allow(Ability).to receive(:merge_requests_readable_by_user).and_return([unrestricted_mr])
+        end
+
+        it 'includes only authorized merge requests' do
+          get api('/merge_requests', filter_user), params: { scope: 'created_by_me' }
+
+          expect_response_contain_exactly(unrestricted_mr.id)
+        end
+      end
+    end
   end
 
   describe "GET /projects/:id/merge_requests", :use_clean_rails_memory_store_caching do

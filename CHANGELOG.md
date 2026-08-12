@@ -2,6 +2,47 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 19.2.2 (2026-08-11)
+
+### Fixed (10 changes)
+
+- [Update Codex Agent to use gpt-5.3-codex](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f62b8388d0964679ea4eded13c7ba1bdd946a75d)
+- [Fix duplicated content when copying across blob viewer chunks](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c8a70d5b3a878f701ba9f39d7ca4039d12eba847)
+- [[19.2] Remove project_id FKs from two Geo verification state tables](https://gitlab.com/gitlab-org/security/gitlab/-/commit/685182cb30de9fcd22880673e795c169723ed1f6)
+- [Preserve Geo verification retry fields across resyncs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/647075a901b1cabeb5ede738fc6e88dc68f3b118) **GitLab Enterprise Edition**
+- [Fix Open in full page action in board issue drawer](https://gitlab.com/gitlab-org/security/gitlab/-/commit/40bcd2fbb4dec7cde39617ffb241a84ed1212772)
+- [Fix work item drawer expand crash on issue boards](https://gitlab.com/gitlab-org/security/gitlab/-/commit/922ec0322ff15d5c9065f75147744a261ad97b81)
+- [Pre-approve GitLab MCP server read tools in the claim](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2b248bf4f55150b2bbecb444a9f266d3d8ded6ff) **GitLab Enterprise Edition**
+- [Pre-approve Orbit MCP tools in tool access policies claim](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e589eff2c87a8596afbccadc3c6a55e853caac42) **GitLab Enterprise Edition**
+- [Sign Workhorse MCP client requests with the API JWT](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0737f1aef3bf1d340cdd87dcdc20813d3a98cdfa)
+- [Push agent_artifacts_page flag on project settings edit page](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7826f8211b9e2d104b3cfdb9c3a5db6e6a1422de) **GitLab Enterprise Edition**
+
+### Changed (1 change)
+
+- [Reuse ci_max_total_yaml_size_bytes for job definition config limit](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ad4489b91642887a8b87d4ef9d2bb3b44d6173b2)
+
+### Security (15 changes)
+
+- [Enforce namespace containment in aiToolRules resolver](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4336fc0d8fb55477e5c3cac657b05c2174cbd6e4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6539))
+- [Fix authorize_admin_project! being skipped on project update](https://gitlab.com/gitlab-org/security/gitlab/-/commit/32a74eac4323077abb603d0bcba2ce8270e1ca6c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6544))
+- [Exclude awaiting project members from custom role permissions](https://gitlab.com/gitlab-org/security/gitlab/-/commit/aae05ccb61847dbbcc744ec22f11105b47fbd2d7) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6535))
+- [Migrate Conan JWT authentication to dedicated conan_jwt_secret](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1c4bf0c3d8d1937e1aa7d9563d4880c0691b42e3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6494))
+- [Fix Google Cloud JWT to honor project sub claim config](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e60ac03bd65ba087db5a5c465d9e67dcb3c3831e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6531))
+- [Bind only known props to DataTable pagination component](https://gitlab.com/gitlab-org/security/gitlab/-/commit/36f2f01ca3529a5147498e0d9e6e254c945e0757) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6522))
+- [Validate the format of DataTable field keys](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4a03382c7f35306ff17109d0699f00cacaacd83d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6519))
+- [Filter unauthorized merge requests from global API endpoint](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cd0b6af91ee60a95ebedd75cda64825303df68ca) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6513))
+- [Strip external status check URL in status check responses](https://gitlab.com/gitlab-org/security/gitlab/-/commit/97bf139b0d87f066f506c0079fe3d85e6fe91ca4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6480))
+- [Re-validate upload path traversal before store](https://gitlab.com/gitlab-org/security/gitlab/-/commit/435cf863df7c943f4fc26ce5e0f362d216b16fcf) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6396))
+- [Enforce package protection rules on npm dist-tags](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b1ce2324733ff31340c1024b1f403771a5aebfb2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6393))
+- [Escape the manual_confirmation message](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4747c7ed06a5c652d91b35fee3a4d2b06964e0dc) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6498))
+- [Prevent pipeline creation for spoofed merge request refs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/96c082b98c5da8e023c6f929e0c2c8670623be0b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6511))
+- [Add authorization to Duo group configuration settings page](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e26407296b33c397aaa2ce1ec8c365f7d167c91f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6470))
+- [Reject oversized integers during JSON validation](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9cba955d35ab90fbfa6e98cb2626ca96f92b5dad) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6489))
+
+### Performance (1 change)
+
+- [Fix pipeline test report timeout on large pipelines](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5d5abf22fefbbe9747b584bb6c2aa0883d1f7f1e)
+
 ## 19.2.1 (2026-07-29)
 
 ### Fixed (6 changes)
@@ -942,6 +983,42 @@ entry.
 - [Refactor wiki page model tests to improve factory performance](https://gitlab.com/gitlab-org/gitlab/-/commit/dc699f120c26c632556b3b0b9280ec3244f2fc5a) by @gerardo-navarro ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218029))
 - [Remove unused method EE::ProjectsHelper#paid_duo_tier_for_project](https://gitlab.com/gitlab-org/gitlab/-/commit/1a0c188555670d73d5114f0421ede6b25387ccd1) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240524))
 - [Drop `push_rule_id` column from `namespaces` table](https://gitlab.com/gitlab-org/gitlab/-/commit/0cf896e7157b152614205d5979e7cfee40ce83cb) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238105))
+
+## 19.1.4 (2026-08-12)
+
+### Fixed (6 changes)
+
+- [[19.1] Remove project_id FKs from two Geo verification state tables](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c4ff4ab1a8fb6ab8c59ed6d93d07a1884a246885)
+- [Fix 500 when fetching vulnerability notes via REST API](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7bcef82d548321290950da9095d3d3234f444900) **GitLab Enterprise Edition**
+- [Fix duplicated content when copying across blob viewer chunks](https://gitlab.com/gitlab-org/security/gitlab/-/commit/121b9a7f79e4c33bf9387930d027e100a6677a89)
+- [Preserve Geo verification retry fields across resyncs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bf2eb46f9894a289b8c5246876330c1efd2facca) **GitLab Enterprise Edition**
+- [Fix DUO_WORKFLOW_DEFINITION for custom flows](https://gitlab.com/gitlab-org/security/gitlab/-/commit/941dfa1a70430be07224b7faca2d11fdb35d5e2a) **GitLab Enterprise Edition**
+- [Pre-approve GitLab MCP and Orbit tools in the claim](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d2ad73fb9894ff409f673a1448b6709fc79677c6) **GitLab Enterprise Edition**
+
+### Changed (1 change)
+
+- [Reuse ci_max_total_yaml_size_bytes for job definition config limit](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ffce3d0dea9687ed22bf4f22d5f33ed602516ab8)
+
+### Security (14 changes)
+
+- [Enforce namespace containment in aiToolRules resolver](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b0015c3814e8b4c81a63469d29d605b1e4f12766) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6540))
+- [Fix authorize_admin_project! being skipped on project update](https://gitlab.com/gitlab-org/security/gitlab/-/commit/fae767204ce91102c2cd9ab021cff7546c8e25b2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6545))
+- [Exclude awaiting project members from custom role permissions](https://gitlab.com/gitlab-org/security/gitlab/-/commit/80d76d1ff0310078a9df3a5182efbeff09a346dd) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6536))
+- [Migrate Conan JWT authentication to dedicated conan_jwt_secret](https://gitlab.com/gitlab-org/security/gitlab/-/commit/650671cc01f96be879c0b23c75f1b3feccae6d62) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6495))
+- [Fix Google Cloud JWT to honor project sub claim config](https://gitlab.com/gitlab-org/security/gitlab/-/commit/83a3eade8c5f933d96d420f278b922bf3537e850) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6532))
+- [Bind only known props to DataTable pagination component](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7e5546607c19bd95cc20c53c0edbcfb87b84ce0e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6523))
+- [Validate the format of DataTable field keys](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d22068048565084f80de047b7687f0ac04ea449a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6520))
+- [Filter unauthorized merge requests from global API endpoint](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ecf8f72b74d4e81be932c4af236fda4dd1ac36f0) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6514))
+- [Strip external status check URL in status check responses](https://gitlab.com/gitlab-org/security/gitlab/-/commit/963e834de3f3a52b27876f64db4d0ffb0f9493ca) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6481))
+- [Re-validate upload path traversal before store](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e0f55356c0eedfa4595e564f3694f3765adb97a9) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6394))
+- [Enforce package protection rules on npm dist-tags](https://gitlab.com/gitlab-org/security/gitlab/-/commit/731aac57260e7d84379b3ee1c5498dbbb936164c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6391))
+- [Prevent pipeline creation for spoofed merge request refs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e64b649f58959d6f546d7b5302a0b110ee4ee439) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6510))
+- [Add authorization to Duo group configuration settings page](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a5fb27fbcb4b2e9179c3979b7b1c71be25e9b5d0) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6427))
+- [Reject oversized integers during JSON validation](https://gitlab.com/gitlab-org/security/gitlab/-/commit/75e0993b2b8ccd2aea1ecac321bf917744caf97c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6490))
+
+### Performance (1 change)
+
+- [Fix pipeline test report timeout on large pipelines](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e35cbc15d724d58fd34993dca56d2c6e225ae254)
 
 ## 19.1.3 (2026-07-29)
 
@@ -2003,6 +2080,36 @@ entry.
 - [Remove ai_catalog_items_priority_order feature flag](https://gitlab.com/gitlab-org/gitlab/-/commit/3c719be1afd1506f038e8d715d6ef7154c2854ba) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236530)) **GitLab Enterprise Edition**
 - [Quarantine flaky expose_job_artifacts_in_mr_spec.rb](https://gitlab.com/gitlab-org/gitlab/-/commit/0131444c50a0135906c1d13ccba129c5d8c695e7) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/233934))
 - [Fix non-auto-correctable Style/NumberedParameters offenses](https://gitlab.com/gitlab-org/gitlab/-/commit/9a3ba532c9715bcdfd07fd54cf434c7fcd256229) by @JonstonChan ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227367))
+
+## 19.0.6 (2026-08-12)
+
+### Fixed (2 changes)
+
+- [[19.0] Remove project_id FKs from two Geo verification state tables](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2f327a2caa34fffa41fc013c0aff0de6f1b5d711)
+- [Add postgres_index_bloat_estimate SQL function](https://gitlab.com/gitlab-org/security/gitlab/-/commit/933c5ddb8cc647f343991adf63cf65189605dc94)
+
+### Changed (1 change)
+
+- [Reuse ci_max_total_yaml_size_bytes for job definition config limit](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ede22d45a2ad22842653a3768aa51022624ef964)
+
+### Security (12 changes)
+
+- [Exclude awaiting project members from custom role permissions](https://gitlab.com/gitlab-org/security/gitlab/-/commit/02ff563af577a13d88f0b787f5298844be1b71c6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6537))
+- [Migrate Conan JWT authentication to dedicated conan_jwt_secret](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9f816cf8066362c13c8413f3ab150465841486fe) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6496))
+- [Fix Google Cloud JWT to honor project sub claim config](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e5fe4d87314a803224c0132fdb02b5b17fa04e45) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6533))
+- [Bind only known props to DataTable pagination component](https://gitlab.com/gitlab-org/security/gitlab/-/commit/19c67612c53622a76f0dc8b17bbac81eae3b0cba) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6524))
+- [Validate the format of DataTable field keys](https://gitlab.com/gitlab-org/security/gitlab/-/commit/09ec078c5a8dab08e025e46eb21394a8644d0b32) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6521))
+- [Filter unauthorized merge requests from global API endpoint](https://gitlab.com/gitlab-org/security/gitlab/-/commit/15087bf3a74fa2c9ea2c510a11684a604bf0d5a2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6515))
+- [Strip external status check URL in status check responses](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a98dded97aae21b941b36f6fc895d4ba9934b74e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6482))
+- [Re-validate upload path traversal before store](https://gitlab.com/gitlab-org/security/gitlab/-/commit/54248359ee66270a1aa465d02b5ae32c2ebdf12a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6395))
+- [Enforce package protection rules on npm dist-tags](https://gitlab.com/gitlab-org/security/gitlab/-/commit/05fa13fa6bb86cdae76e7b43b41ee45b70fc442c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6392))
+- [Prevent pipeline creation for spoofed merge request refs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d07d73dd0957f05eb4437016dfac8d6cc17574d6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6509))
+- [Add authorization to Duo group configuration settings page](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e4bf8085e2733544d4c3bb46a6048e81276f25b2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6428))
+- [Reject oversized integers during JSON validation](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c00f9adcad022e92c7d984b1ca2809ba7feb13c5) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6491))
+
+### Performance (1 change)
+
+- [Fix pipeline test report timeout on large pipelines](https://gitlab.com/gitlab-org/security/gitlab/-/commit/79f33e1aa8c9861e054d35c955b05e67fb04e83e)
 
 ## 19.0.5 (2026-07-29)
 

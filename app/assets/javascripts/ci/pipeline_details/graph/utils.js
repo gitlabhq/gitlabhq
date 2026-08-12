@@ -1,4 +1,4 @@
-import { isEmpty } from 'lodash-es';
+import { escape, isEmpty } from 'lodash-es';
 import { getIdFromGraphQLId, etagQueryHeaders } from '~/graphql_shared/utils';
 import { reportToSentry } from '~/ci/utils';
 
@@ -132,7 +132,7 @@ const confirmJobConfirmationMessage = (jobName, message) => {
       jobName: sanitize(jobName),
     }),
     modalHtmlMessage: `
-      <p>${sanitize(message)}</p>
+      <p>${escape(message)}</p>
       <p>${s__('PipelineGraph|Do you want to continue?')}</p>
     `,
     primaryBtnText: sprintf(__('Yes, run %{jobName}'), {

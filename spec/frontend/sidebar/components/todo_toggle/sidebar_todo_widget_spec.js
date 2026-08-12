@@ -61,10 +61,6 @@ describe('Sidebar Todo Widget', () => {
     it('passes false isTodo prop to Todo button component', () => {
       expect(findTodoButton().props('isTodo')).toBe(false);
     });
-
-    it('emits `todoUpdated` event with a `false` payload', () => {
-      expect(wrapper.emitted('todoUpdated')).toEqual([[false]]);
-    });
   });
 
   describe('when user has a todo for the issuable', () => {
@@ -81,10 +77,6 @@ describe('Sidebar Todo Widget', () => {
 
     it('passes todoCount of 1 to Todo button component', () => {
       expect(findTodoButton().props('todoCount')).toBe(1);
-    });
-
-    it('emits `todoUpdated` event with a `true` payload', () => {
-      expect(wrapper.emitted('todoUpdated')).toEqual([[true]]);
     });
   });
 
@@ -103,10 +95,6 @@ describe('Sidebar Todo Widget', () => {
     it('passes correct todoCount to Todo button component', () => {
       expect(findTodoButton().props('todoCount')).toBe(3);
     });
-
-    it('emits `todoUpdated` event with a `true` payload', () => {
-      expect(wrapper.emitted('todoUpdated')).toEqual([[true]]);
-    });
   });
 
   it('displays an alert message when query is rejected', async () => {
@@ -119,8 +107,6 @@ describe('Sidebar Todo Widget', () => {
   });
 
   describe('collapsed', () => {
-    const event = { stopPropagation: jest.fn(), preventDefault: jest.fn() };
-
     beforeEach(() => {
       createComponent({
         todosQueryHandler: jest.fn().mockResolvedValue(noTodosResponse),
@@ -147,13 +133,6 @@ describe('Sidebar Todo Widget', () => {
       await waitForPromises();
       expect(wrapper.findComponent(GlAnimatedTodoIcon).props('isOn')).toBe(true);
       expect(wrapper.findComponent(GlButton).attributes('title')).toBe('Mark to-do items done');
-    });
-
-    it('emits `todoUpdated` event on click on icon', async () => {
-      wrapper.findComponent(GlAnimatedTodoIcon).vm.$emit('click', event);
-
-      await nextTick();
-      expect(wrapper.emitted('todoUpdated')).toEqual([[false]]);
     });
   });
 

@@ -35,7 +35,7 @@ module Ci
 
         finder = build_finder
 
-        return finder.final_query if returns_final_query?(finder)
+        return finder.final_query if siphon_finder?(finder)
 
         finder.query_builder
       end
@@ -64,8 +64,6 @@ module Ci
 
       def base_finder
         return ::ClickHouse::Finders::Ci::SiphonFinishedBuildsFinder.new if use_siphon_finder?
-
-        return ::ClickHouse::Finders::Ci::FinishedBuildsDeduplicatedFinder.new if use_deduplicated_finder?
 
         ::ClickHouse::Finders::Ci::FinishedBuildsFinder.new
       end
@@ -105,16 +103,8 @@ module Ci
         finder.is_a?(::ClickHouse::Finders::Ci::SiphonFinishedBuildsFinder)
       end
 
-      def returns_final_query?(finder)
-        finder.is_a?(::ClickHouse::Finders::Ci::FinishedBuildsDeduplicatedFinder) || siphon_finder?(finder)
-      end
-
       def use_siphon_finder?
         ::Feature.enabled?(:job_analytics_siphon, project)
-      end
-
-      def use_deduplicated_finder?
-        ::ClickHouse::MigrationSupport::CiFinishedBuildsConsistencyHelper.backfill_in_progress?
       end
 
       def extract_sort_info(value)

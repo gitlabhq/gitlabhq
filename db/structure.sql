@@ -16798,6 +16798,39 @@ CREATE SEQUENCE cd_rollout_environments_id_seq
 
 ALTER SEQUENCE cd_rollout_environments_id_seq OWNED BY cd_rollout_environments.id;
 
+CREATE TABLE cd_rollout_steps (
+    id bigint NOT NULL,
+    organization_id bigint NOT NULL,
+    rollout_id bigint NOT NULL,
+    rollout_environment_id bigint,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    started_at timestamp with time zone,
+    finished_at timestamp with time zone,
+    state smallint DEFAULT 0 NOT NULL,
+    path text NOT NULL,
+    parent_path text,
+    step_type text NOT NULL,
+    name text,
+    error text,
+    params jsonb,
+    CONSTRAINT check_2616ca32fc CHECK ((char_length(parent_path) <= 255)),
+    CONSTRAINT check_701f5f3b03 CHECK ((char_length(error) <= 2000)),
+    CONSTRAINT check_8664750c43 CHECK ((char_length(step_type) <= 255)),
+    CONSTRAINT check_b3c12cd6f7 CHECK ((char_length(path) <= 255)),
+    CONSTRAINT check_cd_rollout_steps_params_is_hash CHECK (((params IS NULL) OR (jsonb_typeof(params) = 'object'::text))),
+    CONSTRAINT check_d28e5591e2 CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE cd_rollout_steps_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE cd_rollout_steps_id_seq OWNED BY cd_rollout_steps.id;
+
 CREATE TABLE cd_rollout_transitions (
     id bigint NOT NULL,
     organization_id bigint NOT NULL,
@@ -26212,6 +26245,22 @@ CREATE SEQUENCE packages_conan_file_metadata_id_seq
     CACHE 1;
 
 ALTER SEQUENCE packages_conan_file_metadata_id_seq OWNED BY packages_conan_file_metadata.id;
+
+CREATE TABLE packages_conan_jwt_signing_keys (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    secret_key jsonb NOT NULL
+);
+
+CREATE SEQUENCE packages_conan_jwt_signing_keys_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE packages_conan_jwt_signing_keys_id_seq OWNED BY packages_conan_jwt_signing_keys.id;
 
 CREATE TABLE packages_conan_metadata (
     id bigint NOT NULL,
@@ -36504,6 +36553,8 @@ ALTER TABLE ONLY cd_environments ALTER COLUMN id SET DEFAULT nextval('cd_environ
 
 ALTER TABLE ONLY cd_rollout_environments ALTER COLUMN id SET DEFAULT nextval('cd_rollout_environments_id_seq'::regclass);
 
+ALTER TABLE ONLY cd_rollout_steps ALTER COLUMN id SET DEFAULT nextval('cd_rollout_steps_id_seq'::regclass);
+
 ALTER TABLE ONLY cd_rollout_transitions ALTER COLUMN id SET DEFAULT nextval('cd_rollout_transitions_id_seq'::regclass);
 
 ALTER TABLE ONLY cd_rollouts ALTER COLUMN id SET DEFAULT nextval('cd_rollouts_id_seq'::regclass);
@@ -37241,6 +37292,8 @@ ALTER TABLE ONLY p_generated_ref_commits ALTER COLUMN id SET DEFAULT nextval('p_
 ALTER TABLE ONLY packages_build_infos ALTER COLUMN id SET DEFAULT nextval('packages_build_infos_id_seq'::regclass);
 
 ALTER TABLE ONLY packages_conan_file_metadata ALTER COLUMN id SET DEFAULT nextval('packages_conan_file_metadata_id_seq'::regclass);
+
+ALTER TABLE ONLY packages_conan_jwt_signing_keys ALTER COLUMN id SET DEFAULT nextval('packages_conan_jwt_signing_keys_id_seq'::regclass);
 
 ALTER TABLE ONLY packages_conan_metadata ALTER COLUMN id SET DEFAULT nextval('packages_conan_metadata_id_seq'::regclass);
 
@@ -39563,6 +39616,9 @@ ALTER TABLE ONLY cd_environments
 ALTER TABLE ONLY cd_rollout_environments
     ADD CONSTRAINT cd_rollout_environments_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY cd_rollout_steps
+    ADD CONSTRAINT cd_rollout_steps_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY cd_rollout_transitions
     ADD CONSTRAINT cd_rollout_transitions_pkey PRIMARY KEY (id);
 
@@ -41107,6 +41163,9 @@ ALTER TABLE ONLY packages_composer_packages
 
 ALTER TABLE ONLY packages_conan_file_metadata
     ADD CONSTRAINT packages_conan_file_metadata_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY packages_conan_jwt_signing_keys
+    ADD CONSTRAINT packages_conan_jwt_signing_keys_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY packages_conan_metadata
     ADD CONSTRAINT packages_conan_metadata_pkey PRIMARY KEY (id);
@@ -46797,6 +46856,12 @@ CREATE INDEX index_cd_rollout_environments_on_organization_id ON cd_rollout_envi
 CREATE INDEX index_cd_rollout_environments_on_previous_version_set_id ON cd_rollout_environments USING btree (previous_version_set_id);
 
 CREATE UNIQUE INDEX index_cd_rollout_environments_on_rollout_and_environment ON cd_rollout_environments USING btree (rollout_id, environment_id);
+
+CREATE INDEX index_cd_rollout_steps_on_organization_id ON cd_rollout_steps USING btree (organization_id);
+
+CREATE INDEX index_cd_rollout_steps_on_rollout_environment_id ON cd_rollout_steps USING btree (rollout_environment_id);
+
+CREATE UNIQUE INDEX index_cd_rollout_steps_on_rollout_id_and_path ON cd_rollout_steps USING btree (rollout_id, path);
 
 CREATE INDEX index_cd_rollout_transitions_on_organization_id ON cd_rollout_transitions USING btree (organization_id);
 
@@ -57365,6 +57430,9 @@ ALTER TABLE ONLY audit_events_google_cloud_logging_configurations
 ALTER TABLE ONLY cd_service_environment_healths
     ADD CONSTRAINT fk_465b9ae2c4 FOREIGN KEY (service_id) REFERENCES cd_services(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY cd_rollout_steps
+    ADD CONSTRAINT fk_47761ddbef FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY user_permission_export_upload_upload_states
     ADD CONSTRAINT fk_47faf4aabf FOREIGN KEY (user_permission_export_upload_upload_id) REFERENCES user_permission_export_upload_uploads(id) ON DELETE CASCADE;
 
@@ -58649,6 +58717,9 @@ ALTER TABLE ONLY merge_request_metrics
 ALTER TABLE ONLY packages_nuget_dependency_link_metadata
     ADD CONSTRAINT fk_ae9b989220 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY cd_rollout_steps
+    ADD CONSTRAINT fk_aee7ef2ca4 FOREIGN KEY (rollout_id) REFERENCES cd_rollouts(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY work_item_date_field_values
     ADD CONSTRAINT fk_aefe8caa2b FOREIGN KEY (work_item_id) REFERENCES issues(id) ON DELETE CASCADE;
 
@@ -59518,6 +59589,9 @@ ALTER TABLE ONLY cd_application_flow_definitions
 
 ALTER TABLE ONLY observability_metrics_issues_connections
     ADD CONSTRAINT fk_f218d84a14 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY cd_rollout_steps
+    ADD CONSTRAINT fk_f22b60875d FOREIGN KEY (rollout_environment_id) REFERENCES cd_rollout_environments(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY workspaces_agent_configs
     ADD CONSTRAINT fk_f25d0fbfae FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

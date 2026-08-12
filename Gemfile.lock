@@ -181,7 +181,7 @@ PATH
       batch-loader (~> 2.0)
       bigdecimal (~> 3.2)
       nokogiri (~> 1.0)
-      oj (~> 3.16)
+      oj (~> 3.17, >= 3.17.3)
       rake (~> 13.0)
       toml-rb (~> 4.1)
       yajl-ruby (~> 1.4)
@@ -1948,7 +1948,7 @@ GEM
       redis-store (>= 1.1.0, < 2)
     redis-client (0.30.0)
       connection_pool
-    redis-cluster-client (0.16.5)
+    redis-cluster-client (0.17.0)
       redis-client (~> 0.28)
     redis-clustering (5.4.1)
       redis (= 5.4.1)
@@ -3435,7 +3435,7 @@ CHECKSUMS
   redis (5.4.1) sha256=b5e675b57ad22b15c9bcc765d5ac26f60b675408af916d31527af9bd5a81faae
   redis-actionpack (5.5.0) sha256=dc0570b78c14ec62b35c17b97fab778ee5986bc55e695bfb6826488088693311
   redis-client (0.30.0) sha256=743f11ed42f0a41a0341554087b077479fec7e2d47a7c123fd90a12c0db5e477
-  redis-cluster-client (0.16.5) sha256=3cd5e6422ec1a5dc1178aefdbd816f7ecefa586857e1be06b346fce18756a4f5
+  redis-cluster-client (0.17.0) sha256=6b691ad1a0af54025ea05b8f4414988517b5e75603309a56bcafb61ff780c8aa
   redis-clustering (5.4.1) sha256=87444bb101fda5f1ef73b87243759224ca5952f3fe3c73842a2b8f78e45844ea
   redis-namespace (1.11.0) sha256=e91a1aa2b2d888b6dea1d4ab8d39e1ae6fac3426161feb9d91dd5cca598a2239
   redis-rack (3.0.0) sha256=abb50b82ae10ad4d11ca2e4901bfc2b98256cdafbbd95f80c86fc9e001478380

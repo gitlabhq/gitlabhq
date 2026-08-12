@@ -15,6 +15,7 @@ export default normalizeRender({
       required: true,
     },
   },
+  emits: ['alert', 'busy'],
   methods: {
     async saveRole() {
       try {

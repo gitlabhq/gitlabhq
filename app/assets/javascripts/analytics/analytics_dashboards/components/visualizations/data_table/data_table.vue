@@ -13,6 +13,10 @@ import { isExternal } from '~/lib/utils/url_utility';
 import { formatVisualizationValue } from '../utils';
 
 const DEFAULT_PAGE_SIZE = 20;
+const SUPPORTED_FIELD_KEY_PATTERN = /^[a-zA-Z0-9][\w-]*(\.[a-zA-Z0-9][\w-]*)*$/;
+
+const hasSupportedFieldKey = ({ key }) =>
+  typeof key === 'string' && SUPPORTED_FIELD_KEY_PATTERN.test(key);
 
 export default {
   name: 'DataTable',
@@ -62,7 +66,7 @@ export default {
   emits: ['update-query'],
   computed: {
     tableComponent() {
-      const hasSorting = this.options.fields?.some(({ sortable }) => Boolean(sortable));
+      const hasSorting = this.sanitizedOptions.fields?.some(({ sortable }) => Boolean(sortable));
       return hasSorting ? GlTable : GlTableLite;
     },
     nodes() {
@@ -90,7 +94,7 @@ export default {
         fixed: fixed ?? false,
         stacked: stacked ?? false,
         refetchOnSort: refetchOnSort ?? false,
-        fields: fields || this.derivedFields,
+        fields: fields ? fields.filter(hasSupportedFieldKey) : this.derivedFields,
       };
     },
     showPaginationControls() {
@@ -181,7 +185,10 @@ export default {
     <gl-keyset-pagination
       v-if="showPaginationControls"
       class="gl-m-3 gl-flex gl-items-center gl-justify-center"
-      v-bind="pageInfo"
+      :has-previous-page="pageInfo.hasPreviousPage"
+      :has-next-page="pageInfo.hasNextPage"
+      :start-cursor="pageInfo.startCursor"
+      :end-cursor="pageInfo.endCursor"
       @prev="prevPage"
       @next="nextPage"
     />

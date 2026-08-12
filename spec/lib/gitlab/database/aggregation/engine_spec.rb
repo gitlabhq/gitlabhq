@@ -127,4 +127,72 @@ RSpec.describe Gitlab::Database::Aggregation::Engine, feature_category: :databas
       end.to raise_error("Identical engine parts found: [:user_id]. Engine parts identifiers must be unique.")
     end
   end
+
+  describe 'dotted identifier guards' do
+    def build_engine(&definitions)
+      described_class.build do
+        define_singleton_method(:metrics_mapping) do
+          { metric: Gitlab::Database::Aggregation::ClickHouse::MetricDefinition }
+        end
+
+        define_singleton_method(:dimensions_mapping) do
+          { column: Gitlab::Database::Aggregation::PartDefinition }
+        end
+
+        define_singleton_method(:filters_mapping) do
+          { column: Gitlab::Database::Aggregation::PartDefinition }
+        end
+
+        class_eval(&definitions)
+      end
+    end
+
+    it 'allows dotted metrics alongside distinct flat parts' do
+      engine = build_engine do
+        dimensions do
+          column :user_id, :integer
+        end
+
+        metrics do
+          metric :total, :integer
+          metric :"duration.max", :integer, ->(_params) { Arel.sql('max(duration)') }
+          metric :"duration.mean", :float, ->(_params) { Arel.sql('avg(duration)') }
+        end
+      end
+
+      expect(engine.metrics.map(&:identifier)).to eq([:total, :"duration.max", :"duration.mean"])
+    end
+
+    it 'raises when identifiers collide after dot sanitization' do
+      expect do
+        build_engine do
+          metrics do
+            metric :"duration.max", :integer, ->(_params) { Arel.sql('max(duration)') }
+            metric :duration__max, :integer
+          end
+        end
+      end.to raise_error(/Identical engine part keys found: \["duration__max"\]/)
+    end
+
+    it 'raises when a dotted prefix collides with a flat identifier' do
+      expect do
+        build_engine do
+          metrics do
+            metric :duration, :integer
+            metric :"duration.max", :integer, ->(_params) { Arel.sql('max(duration)') }
+          end
+        end
+      end.to raise_error(/Dotted identifier prefixes conflict with flat identifiers: \[:duration\]/)
+    end
+
+    it 'raises for the reserved `dimensions` prefix' do
+      expect do
+        build_engine do
+          metrics do
+            metric :"dimensions.max", :integer, ->(_params) { Arel.sql('max(duration)') }
+          end
+        end
+      end.to raise_error(/The `dimensions` prefix is reserved/)
+    end
+  end
 end

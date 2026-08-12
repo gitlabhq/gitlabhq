@@ -555,6 +555,7 @@ export default [
       'local-rules/vue-require-valid-help-page-link-component': 'error',
       'local-rules/vue-require-vue-constructor-name': 'error',
       'local-rules/no-orphaned-feature-flag-references': 'error',
+      'local-rules/gl-toast-mixin': 'error',
       'local-rules/no-web-url': 'error',
       'local-rules/vue-no-web-url': 'error',
     },
@@ -636,7 +637,6 @@ export default [
       'local-rules/vue3-gl-slots': 'error',
       'local-rules/vue3-gl-slots-mixin-pairing': 'error',
       'local-rules/vue3-gl-listeners-mixin-pairing': 'error',
-      'local-rules/gl-toast-mixin': 'error',
     },
   },
   // Spec files (unit tests)

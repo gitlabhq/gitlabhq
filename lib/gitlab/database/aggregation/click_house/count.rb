@@ -13,7 +13,7 @@ module Gitlab
           end
 
           def identifier
-            :"#{name}_count"
+            dotted_name? ? name : :"#{name}_count"
           end
 
           def to_inner_arel(...)

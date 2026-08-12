@@ -42,7 +42,7 @@ module Resolvers
             dimensions = dimensions_selection ? build_parts_from_selection(dimensions_selection.selections) : []
 
             metric_selections = selections.reject { |s| s.name == :dimensions }
-            metrics = build_parts_from_selection(metric_selections)
+            metrics = build_metric_parts(metric_selections, engine)
 
             ::Gitlab::Database::Aggregation::Request.new(
               filters: outer_request.filters + metric_filters,
@@ -56,6 +56,28 @@ module Resolvers
             part_selections(selections).map do |field|
               { identifier: field.name.to_sym, parameters: field.arguments || {} }
             end
+          end
+
+          # Metric group selections (built from dotted identifiers like
+          # `duration.max`) are expanded into one part per sub-field.
+          def build_metric_parts(selections, engine)
+            group_prefixes = metric_group_prefixes(engine)
+
+            part_selections(selections).flat_map do |field|
+              next [{ identifier: field.name.to_sym, parameters: field.arguments || {} }] unless
+                group_prefixes.include?(field.name)
+
+              part_selections(field.selections).map do |sub_field|
+                { identifier: :"#{field.name}.#{sub_field.name}", parameters: sub_field.arguments || {} }
+              end
+            end
+          end
+
+          def metric_group_prefixes(engine)
+            engine.class.metrics.filter_map do |metric|
+              parts = metric.identifier_parts
+              parts.first if parts.size == 2
+            end.to_set
           end
 
           def part_selections(selections)

@@ -10,7 +10,7 @@ module Gitlab
           end
 
           def identifier
-            :"mean_#{name}"
+            dotted_name? ? name : :"mean_#{name}"
           end
 
           def to_outer_arel(context)

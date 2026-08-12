@@ -67,6 +67,7 @@ const (
 	capabilityCommandTimeout       capability = "command_timeout"
 	capabilityWebSearch            capability = "web_search"
 	capabilityToolCallStreaming    capability = "tool_call_streaming"
+	capabilityScheduleNotification capability = "schedule_notification"
 
 	// Server capabilities
 	capabilityAdvancedSearch          capability = "advanced_search"
@@ -91,6 +92,7 @@ var ClientCapabilities = []capability{
 	capabilityCommandTimeout,
 	capabilityWebSearch,
 	capabilityToolCallStreaming,
+	capabilityScheduleNotification,
 }
 
 // ServerCapabilities defines the list of allowed server capabilities that

@@ -180,7 +180,7 @@ describe('Tree List', () => {
     subdirResponse.data.project.repository.paginatedTree.nodes[0].blobs.nodes = [];
     getQueryHandlerSuccess.mockResolvedValueOnce(subdirResponse);
 
-    findFileRows().at(0).vm.$emit('clickTree');
+    findFileRows().at(0).vm.$emit('click-tree');
     await waitForPromises();
 
     expect(getQueryHandlerSuccess).toHaveBeenLastCalledWith(
@@ -201,15 +201,15 @@ describe('Tree List', () => {
       subdirResponse.data.project.repository.paginatedTree.nodes[0].blobs.nodes = [];
       getQueryHandlerSuccess.mockResolvedValueOnce(subdirResponse);
 
-      findFileRows().at(0).vm.$emit('clickTree');
+      findFileRows().at(0).vm.$emit('click-tree');
       await waitForPromises();
 
       expect(findFileRows().at(0).props('file').opened).toBe(true);
 
       if (toggleClose) {
-        findFileRows().at(0).vm.$emit('toggleTree', { stopPropagation: jest.fn() });
+        findFileRows().at(0).vm.$emit('toggle-tree', { stopPropagation: jest.fn() });
       } else {
-        findFileRows().at(0).vm.$emit('clickTree');
+        findFileRows().at(0).vm.$emit('click-tree');
       }
       await nextTick();
 
@@ -274,7 +274,7 @@ describe('Tree List', () => {
         },
       };
 
-      findFileRows().at(2).vm.$emit('showMore', mockEvent);
+      findFileRows().at(2).vm.$emit('show-more', mockEvent);
 
       await waitForPromises();
 
@@ -315,7 +315,7 @@ describe('Tree List', () => {
         secondPageResponse.data.project.repository.paginatedTree.nodes[0].blobs.nodes = [];
         getQueryHandlerSuccess.mockResolvedValueOnce(secondPageResponse);
 
-        findFileRows().at(2).vm.$emit('showMore', mockEvent);
+        findFileRows().at(2).vm.$emit('show-more', mockEvent);
         await nextTick();
         await nextTick();
         triggerIntersectionForAll();
@@ -332,7 +332,7 @@ describe('Tree List', () => {
         secondPageResponse.data.project.repository.paginatedTree.nodes[0].blobs.nodes = [];
         getQueryHandlerSuccess.mockResolvedValueOnce(secondPageResponse);
 
-        findFileRows().at(2).vm.$emit('showMore', mockEvent);
+        findFileRows().at(2).vm.$emit('show-more', mockEvent);
         await waitForPromises();
         triggerIntersectionForAll();
         await nextTick();
@@ -356,7 +356,7 @@ describe('Tree List', () => {
         secondPageResponse.data.project.repository.paginatedTree.nodes[0].blobs.nodes = [];
         getQueryHandlerSuccess.mockResolvedValueOnce(secondPageResponse);
 
-        findFileRows().at(1).vm.$emit('showMore', mockEvent);
+        findFileRows().at(1).vm.$emit('show-more', mockEvent);
         await nextTick();
         await nextTick();
         triggerIntersectionForAll();
@@ -373,7 +373,7 @@ describe('Tree List', () => {
         secondPageResponse.data.project.repository.paginatedTree.nodes[0].blobs.nodes = [];
         getQueryHandlerSuccess.mockResolvedValueOnce(secondPageResponse);
 
-        findFileRows().at(1).vm.$emit('showMore', mockEvent);
+        findFileRows().at(1).vm.$emit('show-more', mockEvent);
         await waitForPromises();
         triggerIntersectionForAll();
         await nextTick();
@@ -411,7 +411,7 @@ describe('Tree List', () => {
         secondPageResponse.data.project.repository.paginatedTree.nodes[0].blobs.nodes = [];
         getQueryHandlerSuccess.mockResolvedValueOnce(secondPageResponse);
 
-        findFileRows().at(1).vm.$emit('showMore', mockEvent);
+        findFileRows().at(1).vm.$emit('show-more', mockEvent);
         await nextTick();
         await nextTick();
         triggerIntersectionForAll();
@@ -428,7 +428,7 @@ describe('Tree List', () => {
         secondPageResponse.data.project.repository.paginatedTree.nodes[0].blobs.nodes = [];
         getQueryHandlerSuccess.mockResolvedValueOnce(secondPageResponse);
 
-        findFileRows().at(1).vm.$emit('showMore', mockEvent);
+        findFileRows().at(1).vm.$emit('show-more', mockEvent);
         await waitForPromises();
         triggerIntersectionForAll();
         await nextTick();
@@ -1013,7 +1013,7 @@ describe('Tree List', () => {
       getQueryHandlerSuccess.mockResolvedValueOnce(subdirResponse);
 
       const treeFileRow = findFileRows().at(0); // First row is the tree based on mockResponse
-      treeFileRow.vm.$emit('clickTree', treeFileRow.props('file').path);
+      treeFileRow.vm.$emit('click-tree', treeFileRow.props('file').path);
 
       await waitForPromises();
 
@@ -1158,7 +1158,7 @@ describe('Tree List', () => {
     });
 
     it('navigates to submodule when clicked', () => {
-      findFileRows().at(1).vm.$emit('clickSubmodule', webUrl);
+      findFileRows().at(1).vm.$emit('click-submodule', webUrl);
 
       expect(visitUrl).toHaveBeenCalledWith(webUrl);
     });
@@ -1294,7 +1294,7 @@ describe('Tree List', () => {
   });
 
   it('calls scrollUp when file is clicked', () => {
-    findFileRows().at(0).vm.$emit('clickRow');
+    findFileRows().at(0).vm.$emit('click-row');
 
     expect(scrollUp).toHaveBeenCalled();
   });
@@ -1302,7 +1302,7 @@ describe('Tree List', () => {
   it('tracks event when row is clicked', async () => {
     const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
-    findFileRows().at(1).vm.$emit('clickRow');
+    findFileRows().at(1).vm.$emit('click-row');
     await nextTick();
 
     expect(trackEventSpy).toHaveBeenCalledWith(

@@ -314,6 +314,10 @@ export default {
         }
 
         const { cache } = client;
+        const columnNodesBeforeInsert = this.isManualSort
+          ? readWorkItemsFromColumn({ cache, query, variables })
+          : [];
+
         addWorkItemToColumn({ cache, query, variables, workItem: node, index: 0 });
         adjustWorkItemCountInColumn({
           cache,
@@ -321,10 +325,47 @@ export default {
           variables: this.columnCountVariables(column),
           delta: 1,
         });
+
+        if (columnNodesBeforeInsert?.length) {
+          this.persistCreatedItemPosition({
+            workItemId: workItem.id,
+            nodes: columnNodesBeforeInsert,
+          });
+        }
         return true;
       } catch (error) {
         Sentry.captureException(error);
         return false;
+      }
+    },
+    async persistCreatedItemPosition({ workItemId, nodes }) {
+      const { moveBeforeId, moveAfterId } = getMovePositionIds({
+        nodes,
+        sameColumn: false,
+        newIndex: 0,
+      });
+      if (!moveBeforeId && !moveAfterId) {
+        return;
+      }
+
+      const input = { id: workItemId };
+      if (moveBeforeId) {
+        input.moveBeforeId = moveBeforeId;
+      }
+      if (moveAfterId) {
+        input.moveAfterId = moveAfterId;
+      }
+
+      try {
+        const { data } = await this.$apollo.mutate({
+          mutation: updateBoardWorkItemMutation,
+          variables: { input },
+        });
+        if (data?.workItemUpdate?.errors?.length) {
+          throw new Error(data.workItemUpdate.errors.join(', '));
+        }
+      } catch (error) {
+        Sentry.captureException(error);
       }
     },
     showWorkItemCreatedToast(workItem, shownOnBoard) {
