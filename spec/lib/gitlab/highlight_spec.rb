@@ -165,6 +165,15 @@ RSpec.describe Gitlab::Highlight do
         highlight
       end
 
+      it 'preserves suppress_line_ids in the fallback' do
+        highlighter = described_class.new('file.rb', 'begin', language: 'ruby')
+
+        expect(highlighter).to receive(:highlight_plain)
+          .with('Content', suppress_line_ids: true).and_call_original
+
+        highlighter.highlight('Content', used_on: :diff)
+      end
+
       it 'logs a warning with timeout message' do
         expect(Gitlab::ErrorTracking).to receive(:log_exception).with(
           instance_of(Timeout::Error),
@@ -176,6 +185,23 @@ RSpec.describe Gitlab::Highlight do
         )
 
         highlight
+      end
+    end
+
+    context 'when highlighting raises an error' do
+      before do
+        allow(Rouge::Formatters::HTMLGitlab).to receive(:format).and_call_original
+        allow(Rouge::Formatters::HTMLGitlab).to receive(:format)
+          .with(anything, hash_including(:tag)).and_raise(StandardError)
+      end
+
+      it 'preserves suppress_line_ids in the fallback' do
+        highlighter = described_class.new('file.rb', 'begin', language: 'ruby')
+
+        expect(highlighter).to receive(:highlight_plain)
+          .with('Content', suppress_line_ids: true).and_call_original
+
+        highlighter.highlight('Content', used_on: :diff)
       end
     end
 

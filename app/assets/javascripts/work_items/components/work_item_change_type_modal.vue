@@ -88,7 +88,7 @@ export default {
       default: () => {},
     },
   },
-  emits: ['error', 'promoteToEpic', 'work-item-type-changed'],
+  emits: ['error', 'promote-to-epic', 'work-item-type-changed'],
   data() {
     return {
       selectedWorkItemType: null,
@@ -330,7 +330,7 @@ export default {
   methods: {
     changeType() {
       if (this.isSelectedWorkItemTypeEpic) {
-        this.$emit('promoteToEpic');
+        this.$emit('promote-to-epic');
       } else {
         this.convertType();
       }

@@ -74,7 +74,6 @@ export default {
     'app/assets/javascripts/work_items/components/shared/work_item_sidebar_widget.vue',
     'app/assets/javascripts/work_items/components/work_item_actions.vue',
     'app/assets/javascripts/work_items/components/work_item_assignees.vue',
-    'app/assets/javascripts/work_items/components/work_item_change_type_modal.vue',
     'app/assets/javascripts/work_items/components/work_item_description.vue',
     'app/assets/javascripts/work_items/components/work_item_description_rendered.vue',
     'app/assets/javascripts/work_items/components/work_item_description_template_listbox.vue',

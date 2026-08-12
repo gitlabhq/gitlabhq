@@ -39,11 +39,11 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::ClassifiedRequest, feature_c
 
       # web_or_frontend carries the web throttles' disjunction as one fact, so each
       # web throttle is a single rule counting on a single Redis counter.
-      it 'classifies a web path as web_or_frontend and API/health paths as not', :aggregate_failures do
+      it 'classifies a web path as web_or_frontend and API/health/collector paths as not', :aggregate_failures do
         expect(facts_for('/dashboard')).to include(web_or_frontend: true)
-        expect(facts_for('/-/collector/i')).to include(web_or_frontend: true)
         expect(facts_for('/api/v4/projects')).to include(web_or_frontend: false)
         expect(facts_for('/-/health')).to include(web_or_frontend: false)
+        expect(facts_for('/-/collector/i')).to include(web_or_frontend: false)
       end
 
       it 'reflects the bypass header only when set to 1', :aggregate_failures do

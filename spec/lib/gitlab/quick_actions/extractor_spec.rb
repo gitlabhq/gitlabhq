@@ -337,12 +337,12 @@ RSpec.describe Gitlab::QuickActions::Extractor, feature_category: :team_planning
       where(:description, :text) do
         'block HTML tags'               | "Hello\r\n<div>\r\nText\r\n/close\r\n/assign @user\r\n</div>\r\n\r\nWorld"
         'raw HTML with sourcepos'       | "<p data-sourcepos=\"0:1-2:10\">\r\n/close\r\n</p>"
-        'inline html on seperated rows' | "Text\r\n<b>\r\n/close\r\n</b>"
+        'inline html on separated rows' | "Text\r\n<b>\r\n/close\r\n</b>"
         'HTML comments'                 | "<!--\n/assign @user\n-->"
         'blockquotes'                   | "> Text\r\n/reopen"
         'multiline blockquotes'         | "Hello\r\n\r\n>>>\r\nText\r\n/close\r\n/assign @user\r\n>>>\r\n\r\nWorld"
         'code blocks'                   | "Hello\r\n```\r\nText\r\n/close\r\n/assign @user\r\n```\r\n\r\nWorld"
-        'inline code on seperated rows' | "Hello `Text\r\n/close\r\n/assign @user\r\n`\r\n\r\nWorld"
+        'inline code on separated rows' | "Hello `Text\r\n/close\r\n/assign @user\r\n`\r\n\r\nWorld"
       end
 
       with_them do

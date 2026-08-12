@@ -87,9 +87,9 @@ module Gitlab
         lexer_tag: tag,
         text_length: text.length
       )
-      highlight_plain(text)
+      highlight_plain(text, suppress_line_ids:)
     rescue StandardError
-      highlight_plain(text)
+      highlight_plain(text, suppress_line_ids:)
     end
 
     def link_dependencies(text, highlighted_text, used_on: :blob)

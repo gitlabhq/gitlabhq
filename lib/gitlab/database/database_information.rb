@@ -36,6 +36,14 @@ module Gitlab
         ORDER BY is_current DESC, name ASC
       SQL
 
+      SCHEMA_TABLES_SQL = <<~SQL
+        SELECT n.nspname AS schema_name, c.relname AS table_name
+        FROM pg_catalog.pg_namespace n
+        JOIN pg_catalog.pg_class c ON c.relnamespace = n.oid
+        WHERE n.nspname NOT IN ('pg_catalog', 'pg_toast', 'information_schema')
+          AND c.relkind IN ('r', 'p', 'v', 'm')
+      SQL
+
       # Live snapshot of in-progress (auto)vacuums for the current database.
       # relid is resolved to schema.table via pg_class/pg_namespace, and the
       # result is scoped to the current database (the view reports for the
@@ -101,13 +109,15 @@ module Gitlab
           }
         end
 
+        schema_tables = connection.select_all(SCHEMA_TABLES_SQL).map { |row| [row['schema_name'], row['table_name']] }
+
         current_user = connection.select_value('SELECT current_user').to_s
 
         {
           current_user: current_user,
           search_path: search_path,
           schemas: schemas,
-          findings: search_path_findings(search_path, schemas, current_user),
+          findings: search_path_findings(search_path, schemas, schema_tables, current_user),
           vacuums: collect_vacuums(connection)
         }
       rescue StandardError => e
@@ -118,7 +128,7 @@ module Gitlab
       # Inspects the live search_path against GitLab's PostgreSQL conventions
       # and returns an ordered list of findings. Each finding is a plain hash:
       # { severity: 'error'|'warning', code: String, message: String }.
-      def search_path_findings(search_path, schemas, current_user)
+      def search_path_findings(search_path, schemas, schema_tables, current_user)
         entries = parse_search_path(search_path)
         partition_schema_names = Gitlab::Database::EXTRA_SCHEMAS.map(&:to_s)
 
@@ -138,24 +148,53 @@ module Gitlab
         # are the candidate schemas the search path resolves objects against.
         candidate_names = entries.map { |entry| entry == USER_TOKEN ? current_user : entry } -
           partition_schema_names
-        populated = schemas.select do |schema|
-          candidate_names.include?(schema[:name]) && schema[:has_tables]
-        end
+        candidates = schemas.select { |schema| candidate_names.include?(schema[:name]) }
 
+        # More than one schema on the search path holds objects of any kind. On
+        # its own this can be legitimate (an extension's schema, a DBA's own
+        # tooling), so it is only a warning: unqualified references still resolve
+        # against the first match, which is worth flagging but not a defect.
+        populated = candidates.select { |schema| schema[:has_tables] }
         if populated.size > 1
           findings << {
             severity: 'warning',
             code: 'search_path_objects_split_across_schemas',
             message: format(
               s_('DatabaseDiagnostics|More than one schema in the search path contains objects: %{schemas}. ' \
-                'GitLab\'s objects should all live in a single schema. If they are split across ' \
-                'multiple schemas, unqualified references can resolve unexpectedly.'),
+                'This can be intentional, but unqualified references resolve against the first match, so ' \
+                'objects spread across schemas can resolve unexpectedly.'),
               schemas: populated.pluck(:name).join(', ')
             )
           }
         end
 
+        # More than one schema on the search path holds GitLab's own objects.
+        # GitLab expects all of its objects in a single schema, so this is a real
+        # misconfiguration rather than a possibility, and is reported as an error.
+        gitlab_populated = candidates.select { |schema| schema_has_gitlab_objects?(schema[:name], schema_tables) }
+        if gitlab_populated.size > 1
+          findings << {
+            severity: 'error',
+            code: 'search_path_gitlab_objects_split_across_schemas',
+            message: format(
+              s_('DatabaseDiagnostics|More than one schema in the search path contains GitLab objects: ' \
+                '%{schemas}. GitLab\'s objects should all live in a single schema. When they are split ' \
+                'across multiple schemas, unqualified references can resolve unexpectedly.'),
+              schemas: gitlab_populated.pluck(:name).join(', ')
+            )
+          }
+        end
+
         findings
+      end
+
+      def schema_has_gitlab_objects?(schema_name, schema_tables)
+        schema_tables.any? { |(namespace, table_name)| namespace == schema_name && gitlab_object?(table_name) }
+      end
+
+      def gitlab_object?(table_name)
+        schema = Gitlab::Database::GitlabSchema.table_schema(table_name)
+        schema.present? && schema != :gitlab_internal
       end
 
       # Normalizes a raw search_path string into an ordered list of tokens,

@@ -2,7 +2,7 @@
 stage: AI Clients
 group: Developer Clients
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-description: Configure hooks, custom slash commands, and network settings for the GitLab Duo CLI.
+description: Configure hooks, custom slash commands, plugins, and network settings for the GitLab Duo CLI.
 title: Customize the GitLab Duo CLI
 ---
 
@@ -23,6 +23,8 @@ The GitLab Duo CLI supports the following customizations:
 
 - Use hooks to run custom commands at specific points in the GitLab Duo CLI lifecycle.
 - Use custom slash commands to better align the CLI with your workflow or use case.
+- Use plugins to install Agent Skills, custom slash commands, and Model Context Protocol (MCP)
+  servers from a marketplace.
 - Use [custom instructions](../duo_agent_platform/customize/_index.md) set for
   the GitLab Duo Agent Platform to match your workflow, coding standards, or
   project requirements.
@@ -236,7 +238,544 @@ Use additional text to customize what the custom slash command does.
 
 For example, `/daily prioritize my milestone deliverables`.
 
+## Plugins
+
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v9.10.0) as an [experiment](../../policy/development_stages_support.md#experiment) in GitLab Duo CLI 9.10.0, during the GitLab 19.3 release.
+
+{{< /history >}}
+
+Use plugins to extend the GitLab Duo CLI with additional capabilities.
+
+A plugin is a directory that bundles extensions for the GitLab Duo CLI. A plugin can bundle
+[Agent Skills](../duo_agent_platform/customize/agent_skills.md),
+[custom slash commands](#custom-slash-commands), and
+[MCP servers](../gitlab_duo/model_context_protocol/mcp_clients.md).
+
+A marketplace is a catalog of available plugins in a Git repository or a local
+directory. The `marketplace.json` file lists the available plugins and where to
+find them.
+
+To use a plugin, you register the marketplace that contains it, then install the plugin from that
+marketplace. Plugins are identified as `<plugin>@<marketplace>`.
+
+For compatibility with the existing community plugin ecosystem, the GitLab Duo CLI also reads
+`.claude-plugin/marketplace.json` files. Existing plugin marketplaces work with the GitLab Duo CLI
+without modification.
+
+Prerequisites:
+
+- [Set up the GitLab Duo CLI](set_up.md).
+- Git, if you want to add a marketplace from a Git repository.
+
+### Register a marketplace
+
+Before you can install a plugin, you must register the marketplace that contains it.
+
+The first time you use plugins, the GitLab Duo CLI automatically registers the official GitLab
+marketplace, [`gitlab-duo-plugins`](https://gitlab.com/gitlab-org/ai/gitlab-duo-plugins).
+If you remove this marketplace, the GitLab Duo CLI does not register it again.
+
+To register a marketplace:
+
+{{< tabs >}}
+
+{{< tab title="glab" >}}
+
+```shell
+glab duo plugin marketplace add <source>
+```
+
+{{< /tab >}}
+
+{{< tab title="duo" >}}
+
+```shell
+duo plugin marketplace add <source>
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+`<source>` is one of the following:
+
+| Source type      | Format                                                                                     | Example                                          |
+|-------------------|---------------------------------------------------------------------------------------------|---------------------------------------------------|
+| Git repository    | A URL that `git clone` accepts. Optionally append `#<ref>` to pin a branch or tag.          | `https://gitlab.com/group/marketplace.git#stable` |
+| Local directory   | An absolute or relative path. `~` is expanded to your home directory.                       | `~/marketplaces/internal`                        |
+
+For example:
+
+{{< tabs >}}
+
+{{< tab title="glab" >}}
+
+```shell
+glab duo plugin marketplace add https://gitlab.com/example-group/example-marketplace.git
+```
+
+```shell
+glab duo plugin marketplace add ~/marketplaces/internal
+```
+
+{{< /tab >}}
+
+{{< tab title="duo" >}}
+
+```shell
+duo plugin marketplace add https://gitlab.com/example-group/example-marketplace.git
+```
+
+```shell
+duo plugin marketplace add ~/marketplaces/internal
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+The GitLab Duo CLI identifies the marketplace by the `name` field in its `marketplace.json` file.
+
+#### Automatically update plugins from a marketplace
+
+To automatically update the plugins you install from a marketplace, register the marketplace with
+the `--auto-update` option:
+
+{{< tabs >}}
+
+{{< tab title="glab" >}}
+
+```shell
+glab duo plugin marketplace add <source> --auto-update
+```
+
+{{< /tab >}}
+
+{{< tab title="duo" >}}
+
+```shell
+duo plugin marketplace add <source> --auto-update
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+When the GitLab Duo CLI starts, it updates the plugins you installed from this marketplace in the
+background, without confirmation. When a plugin is updated, the GitLab Duo CLI prompts you to
+restart to load the new version.
+
+#### List registered marketplaces
+
+To list the marketplaces you've registered:
+
+{{< tabs >}}
+
+{{< tab title="glab" >}}
+
+```shell
+glab duo plugin marketplace list
+```
+
+{{< /tab >}}
+
+{{< tab title="duo" >}}
+
+```shell
+duo plugin marketplace list
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+For each marketplace, the GitLab Duo CLI displays:
+
+- The marketplace source.
+- When the marketplace was last updated.
+- The number of plugins the marketplace has.
+- Whether automatic updates are enabled for the marketplace.
+
+#### List available marketplace plugins
+
+To list the plugins a marketplace offers:
+
+{{< tabs >}}
+
+{{< tab title="glab" >}}
+
+```shell
+glab duo plugin marketplace show <name>
+```
+
+{{< /tab >}}
+
+{{< tab title="duo" >}}
+
+```shell
+duo plugin marketplace show <name>
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+For each plugin, the GitLab Duo CLI displays the version, description, and where the plugin is
+installed, if anywhere.
+
+#### Update a marketplace
+
+To refresh a marketplace's catalog from its source:
+
+{{< tabs >}}
+
+{{< tab title="glab" >}}
+
+```shell
+glab duo plugin marketplace update <name>
+```
+
+{{< /tab >}}
+
+{{< tab title="duo" >}}
+
+```shell
+duo plugin marketplace update <name>
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+#### Remove a marketplace
+
+To remove a registered marketplace:
+
+{{< tabs >}}
+
+{{< tab title="glab" >}}
+
+```shell
+glab duo plugin marketplace remove <name>
+```
+
+{{< /tab >}}
+
+{{< tab title="duo" >}}
+
+```shell
+duo plugin marketplace remove <name>
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+> [!warning]
+> Removing a marketplace also uninstalls all plugins that you installed from it.
+
+### Install and manage plugins
+
+When you install a plugin, you choose a scope. The scope determines which configuration file the
+GitLab Duo CLI updates, and who the installation applies to.
+
+| Scope               | Configuration file                          | Use for                                                            |
+|----------------------|----------------------------------------------|------------------------------------------------------------------------|
+| `user` (default)     | `<config dir>/plugins.json`                 | Plugins for all your projects.                                       |
+| `project`            | `.gitlab/duo/plugins.json` in the project   | Team-shared plugins. Commit this file to your repository.           |
+| `local`              | `.gitlab/duo/plugins.local.json` in the project | Personal, per-project plugins. Add this file to your `.gitignore`. |
+
+`<config dir>` is `~/.gitlab/duo` on Linux and macOS, or `%APPDATA%\GitLab\duo` on Windows.
+
+To install a plugin from a registered marketplace:
+
+{{< tabs >}}
+
+{{< tab title="glab" >}}
+
+```shell
+glab duo plugin install <plugin>@<marketplace> [--scope user|project|local]
+```
+
+{{< /tab >}}
+
+{{< tab title="duo" >}}
+
+```shell
+duo plugin install <plugin>@<marketplace> [--scope user|project|local]
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+If you don't specify `--scope`, the GitLab Duo CLI uses the `user` scope.
+
+For example:
+
+{{< tabs >}}
+
+{{< tab title="glab" >}}
+
+```shell
+glab duo plugin install my-plugin@my-marketplace
+```
+
+```shell
+glab duo plugin install my-plugin@my-marketplace --scope project
+```
+
+{{< /tab >}}
+
+{{< tab title="duo" >}}
+
+```shell
+duo plugin install my-plugin@my-marketplace
+```
+
+```shell
+duo plugin install my-plugin@my-marketplace --scope project
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+#### Enabled state after installation
+
+When you install a plugin, the GitLab Duo CLI records whether the plugin is enabled in the scope's
+configuration file. To determine the initial state, the GitLab Duo CLI uses, in order of precedence:
+
+1. Any enabled or disabled setting you previously recorded for the plugin in the target scope or a
+   broader scope. For example, if you disabled a plugin, uninstalled it, and then reinstalled it, the plugin stays disabled.
+1. The `defaultEnabled` value in the plugin's marketplace catalog entry.
+1. The `defaultEnabled` value in the plugin's `plugin.json` manifest.
+
+If none of these are set, the plugin is enabled.
+
+#### List installed plugins
+
+To list your installed plugins:
+
+{{< tabs >}}
+
+{{< tab title="glab" >}}
+
+```shell
+glab duo plugin list
+```
+
+{{< /tab >}}
+
+{{< tab title="duo" >}}
+
+```shell
+duo plugin list
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+Installed plugins are grouped by scope, and the list shows whether each plugin is enabled.
+
+#### Enable or disable a plugin
+
+When you enable, disable, or uninstall a plugin, you can identify it by its name alone. If the
+same plugin name is installed from more than one marketplace, use the full `<plugin>@<marketplace>`
+identifier.
+
+To enable or disable an installed plugin:
+
+{{< tabs >}}
+
+{{< tab title="glab" >}}
+
+```shell
+glab duo plugin enable <plugin> [--scope user|project|local]
+glab duo plugin disable <plugin> [--scope user|project|local]
+```
+
+{{< /tab >}}
+
+{{< tab title="duo" >}}
+
+```shell
+duo plugin enable <plugin> [--scope user|project|local]
+duo plugin disable <plugin> [--scope user|project|local]
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+If you enable or disable a plugin at multiple scopes, the most specific scope takes precedence:
+`local`, then `project`, then `user`.
+
+#### Update a plugin
+
+To update a plugin to the latest version available from its marketplace:
+
+{{< tabs >}}
+
+{{< tab title="glab" >}}
+
+```shell
+glab duo plugin update <plugin>@<marketplace>
+```
+
+{{< /tab >}}
+
+{{< tab title="duo" >}}
+
+```shell
+duo plugin update <plugin>@<marketplace>
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+The update applies to all scopes where the plugin is installed.
+
+#### Uninstall a plugin
+
+To uninstall a plugin:
+
+{{< tabs >}}
+
+{{< tab title="glab" >}}
+
+```shell
+glab duo plugin uninstall <plugin> [--scope user|project|local]
+```
+
+{{< /tab >}}
+
+{{< tab title="duo" >}}
+
+```shell
+duo plugin uninstall <plugin> [--scope user|project|local]
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+Uninstalling removes the plugin from your configuration.
+
+### Use an installed plugin
+
+After you install and enable a plugin, the GitLab Duo CLI discovers everything the plugin
+bundles the next time it starts:
+
+- Skills become available the same way as other Agent Skills.
+- Custom slash commands appear in the slash command menu. Built-in slash commands, Agent Skills
+  slash commands, and your own custom slash commands take precedence over a plugin command with
+  the same name.
+- MCP servers are loaded alongside the MCP servers you have configured, and require
+  [tool approval](../gitlab_duo/model_context_protocol/mcp_clients.md#configure-tool-approval) in
+  the same way. To identify where a server comes from, the GitLab Duo CLI prefixes the server name
+  with the plugin name.
+
+### Create a marketplace
+
+To create a marketplace, add a `marketplace.json` file at the root of a Git repository or a
+local directory. For example:
+
+```json
+{
+  "name": "my-marketplace",
+  "owner": {
+    "name": "Your Name"
+  },
+  "plugins": [
+    {
+      "name": "my-plugin",
+      "source": "./plugins/my-plugin",
+      "description": "A short description of the plugin."
+    }
+  ]
+}
+```
+
+Each entry in `plugins` must set `source` to a path relative to the marketplace root, starting with
+`./`.
+
+### Create a plugin
+
+A plugin is a directory that contains an optional `plugin.json` manifest and the extensions the
+plugin bundles: skills, custom slash commands, and MCP servers.
+
+The `plugin.json` manifest supports the following fields:
+
+| Field             | Required | Description                                              |
+|--------------------|----------|--------------------------------------------------------------|
+| `name`             | Yes      | The plugin's name.                                            |
+| `version`          | No       | The plugin's version.                                         |
+| `description`      | No       | A short description of the plugin.                            |
+| `defaultEnabled`   | No       | Whether the plugin is enabled by default when installed.      |
+
+For example:
+
+```json
+{
+  "name": "my-plugin",
+  "version": "1.0.0",
+  "description": "A short description of the plugin.",
+  "defaultEnabled": true
+}
+```
+
+For compatibility with existing community plugins, the GitLab Duo CLI also reads the manifest from
+`.claude-plugin/plugin.json`.
+
+To bundle extensions with your plugin:
+
+- Skills: Add a `SKILL.md` file to a `skills/<skill-name>/` directory in the plugin. For the
+  `SKILL.md` file format, see [create skills](../duo_agent_platform/customize/agent_skills.md#create-skills).
+- Custom slash commands: Add a Markdown file to a `commands/` directory in the plugin. The filename
+  is the command name, and the file format is the same as a
+  [custom slash command](#create-a-custom-slash-command).
+- MCP servers: Add a `.mcp.json` file to the root of the plugin. The file format is the same as the
+  [MCP configuration format](../gitlab_duo/model_context_protocol/mcp_clients.md#configuration-format).
+  To reference files inside the plugin, use the `${DUO_PLUGIN_ROOT}` variable, which resolves to
+  the directory the plugin is installed in.
+
+For example, a marketplace repository with one plugin that bundles a skill, a custom slash command,
+and an MCP server:
+
+```plaintext
+my-marketplace/
+├── marketplace.json
+└── plugins/
+    └── my-plugin/
+        ├── plugin.json
+        ├── .mcp.json
+        ├── commands/
+        │   └── my-command.md
+        └── skills/
+            └── my-skill/
+                └── SKILL.md
+```
+
+The GitLab Duo CLI determines a plugin's version from, in order of precedence:
+
+1. The `version` field in the plugin's `plugin.json`.
+1. The `version` field on the plugin's entry in the marketplace `marketplace.json`.
+
+If neither field is set, the plugin's version is `unknown`.
+
 ## Related topics
 
 - [GitLab Duo CLI complete reference](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/cli/docs/cli-reference.md)
 - [Customize GitLab Duo Agent Platform](../duo_agent_platform/customize/_index.md)
+- [Agent Skills](../duo_agent_platform/customize/agent_skills.md)

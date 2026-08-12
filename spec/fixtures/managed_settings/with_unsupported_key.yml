@@ -1,0 +1,3 @@
+managed_settings:
+  sidekiq_timezone_override: "Europe/London"
+  asset_proxy_secret_key: "s3cr3t"

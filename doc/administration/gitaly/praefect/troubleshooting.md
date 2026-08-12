@@ -415,10 +415,10 @@ If the [Praefect `dataloss`](recovery.md#check-for-data-loss) shows [repositorie
 
    Replace `<relative-path>` with the repository path [beginning with `@hashed`](../../repository_storage_paths.md#hashed-storage).
 
-### Alternate directory does not exists
+### Alternate directory does not exist
 
 GitLab uses the Git alternates mechanism for deduplication. `alternates` is a text file that points to the `objects` directory on
-a `@pool` repository to fetch objects. If this file points to an invalid path, replication can fail with one of the following the errors:
+a `@pool` repository to fetch objects. If this file points to an invalid path, replication can fail with one of the following errors:
 
 - `"error":"no alternates directory exists", "warning","msg":"alternates file does not point to valid git repository"`
 - `"error":"unexpected alternates content:`

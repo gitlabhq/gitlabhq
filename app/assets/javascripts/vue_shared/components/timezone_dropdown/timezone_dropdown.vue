@@ -43,6 +43,11 @@ export default {
       required: false,
       default: false,
     },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     defaultText: {
       type: String,
       required: false,
@@ -136,7 +141,7 @@ export default {
 <template>
   <div class="gl-relative">
     <input
-      v-if="name"
+      v-if="name && !disabled"
       :id="inputId"
       :name="name"
       :value="submitValue"
@@ -150,6 +155,7 @@ export default {
       :toggle-text="selectedTimezoneLabel"
       :toggle-class="additionalClass"
       :no-results-text="$options.translations.noResultsText"
+      :disabled="disabled"
       :selected="tzValue"
       block
       fluid-width

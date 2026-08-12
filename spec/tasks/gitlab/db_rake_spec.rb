@@ -1381,6 +1381,12 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     end
   end
 
+  describe 'db:migrate:reset' do
+    it 'does not dump the schema before the database is migrated' do
+      expect(Rake::Task['db:migrate:reset'].prerequisites).to eq(%w[db:drop db:create db:migrate])
+    end
+  end
+
   describe 'drop_tables' do
     let(:tables) { %w[one two schema_migrations] }
     let(:views) { %w[three four pg_stat_statements] }

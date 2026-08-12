@@ -32,6 +32,9 @@ and use the information as they work.
 When you specify a `SKILL.md` file, the skills are available for GitLab Duo Agent Platform and any
 other AI tool that supports the specification.
 
+You can also distribute and install skills as part of a GitLab Duo CLI plugin. For more
+information, see [GitLab Duo CLI plugins](../../gitlab_duo_cli/customize.md#plugins).
+
 Specify Agent Skills for GitLab Duo to use with:
 
 - GitLab Duo Chat in your local environment.

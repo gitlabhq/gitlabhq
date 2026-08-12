@@ -40,7 +40,7 @@ ID tokens support cloud providers with OIDC, including:
 > review for the pipeline, focusing on the additional access. For more information about supply chain attacks, see
 > [How a DevOps Platform helps protect against supply chain attacks](https://about.gitlab.com/blog/devops-platform-supply-chain-attacks/).
 
-## Use cases
+OIDC connections to cloud services provide the following benefits:
 
 - Removes the need to store secrets in your GitLab group or project. Temporary credentials can be retrieved from your cloud provider through OIDC.
 - Provides temporary access to cloud resources with granular GitLab conditionals including a group, project, branch, or tag.

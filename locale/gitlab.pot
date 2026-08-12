@@ -26713,7 +26713,10 @@ msgstr ""
 msgid "DatabaseDiagnostics|More than one index pass means the dead-tuple store filled up. Consider increasing maintenance_work_mem or autovacuum_work_mem."
 msgstr ""
 
-msgid "DatabaseDiagnostics|More than one schema in the search path contains objects: %{schemas}. GitLab's objects should all live in a single schema. If they are split across multiple schemas, unqualified references can resolve unexpectedly."
+msgid "DatabaseDiagnostics|More than one schema in the search path contains GitLab objects: %{schemas}. GitLab's objects should all live in a single schema. When they are split across multiple schemas, unqualified references can resolve unexpectedly."
+msgstr ""
+
+msgid "DatabaseDiagnostics|More than one schema in the search path contains objects: %{schemas}. This can be intentional, but unqualified references resolve against the first match, so objects spread across schemas can resolve unexpectedly."
 msgstr ""
 
 msgid "DatabaseDiagnostics|No schema issues detected."
@@ -79605,6 +79608,9 @@ msgstr ""
 msgid "That's OK, I don't want to renew"
 msgstr ""
 
+msgid "The %{name} is a managed setting and cannot be changed."
+msgstr ""
+
 msgid "The %{plan_name} is no longer available to purchase. For more information about how this will impact you, check our %{faq_link_start}frequently asked questions%{faq_link_end}."
 msgstr ""
 
@@ -81482,6 +81488,12 @@ msgid "This setting is configured for the group. To make changes, go to %{linkSt
 msgstr ""
 
 msgid "This setting is configured for the group. To make changes, go to group repository settings."
+msgstr ""
+
+msgid "This setting is managed and cannot be changed from here."
+msgstr ""
+
+msgid "This setting is managed by %{managed_by} and cannot be changed from here."
 msgstr ""
 
 msgid "This stage has one or more manual jobs that require confirmation before retrying. Do you want to proceed?"

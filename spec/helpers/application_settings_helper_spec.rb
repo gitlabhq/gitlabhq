@@ -457,6 +457,37 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
     it { is_expected.to eq([%w[Track track], %w[Compress compress]]) }
   end
 
+  describe '#managed_setting?' do
+    before do
+      Gitlab::ManagedSettings.reset!
+      stub_const('Gitlab::ManagedSettings::PATH',
+        Rails.root.join('spec/fixtures/managed_settings/valid.yml'))
+    end
+
+    after do
+      Gitlab::ManagedSettings.reset!
+    end
+
+    it 'is true for a managed setting' do
+      expect(helper.managed_setting?(:sidekiq_timezone_override)).to be(true)
+    end
+
+    it 'is false for an unmanaged setting' do
+      expect(helper.managed_setting?(:signup_enabled)).to be(false)
+    end
+
+    context 'when no managed settings file is present' do
+      before do
+        stub_const('Gitlab::ManagedSettings::PATH',
+          Rails.root.join('spec/fixtures/managed_settings/does_not_exist.yml'))
+      end
+
+      it 'is false' do
+        expect(helper.managed_setting?(:sidekiq_timezone_override)).to be(false)
+      end
+    end
+  end
+
   describe '#sidekiq_timezone_dropdown_view_model' do
     let(:application_setting) { build(:application_setting, sidekiq_timezone_override: 'Europe/London') }
 
@@ -464,6 +495,7 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
 
     before do
       helper.instance_variable_set(:@application_setting, application_setting)
+      allow(Gitlab::ManagedSettings).to receive(:managed?).and_return(false)
     end
 
     it 'returns the timezone dropdown view model' do
@@ -473,7 +505,8 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
         timezoneData: helper.timezone_data_with_unique_identifiers,
         name: 'application_setting[sidekiq_timezone_override]',
         defaultText: _('System default'),
-        additionalClass: ['gl-md-form-input-lg']
+        additionalClass: ['gl-md-form-input-lg'],
+        disabled: false
       )
     end
 

@@ -150,6 +150,20 @@ describe('Deploy freeze timezone dropdown', () => {
     });
   });
 
+  describe('when disabled', () => {
+    beforeEach(async () => {
+      await createComponent('', 'Europe/Berlin', { disabled: true });
+    });
+
+    it('disables the listbox', () => {
+      expect(findDropdown().props('disabled')).toBe(true);
+    });
+
+    it('does not render a submitting input', () => {
+      expect(findHiddenInput().exists()).toBe(false);
+    });
+  });
+
   describe('with a default option', () => {
     const defaultText = 'System default';
 

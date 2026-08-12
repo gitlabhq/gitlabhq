@@ -9,6 +9,8 @@ module ApplicationSettings
     MARKDOWN_CACHE_INVALIDATING_PARAMS = %w[asset_proxy_enabled asset_proxy_url asset_proxy_secret_key asset_proxy_whitelist].freeze
 
     def execute
+      return false if managed_settings_conflict?
+
       result = update_settings
 
       if result
@@ -20,6 +22,35 @@ module ApplicationSettings
     end
 
     private
+
+    # Whether the update changes a managed setting. Adds an error for each changed managed
+    # attribute so the update is rejected; resubmitting the enforced value is allowed.
+    #
+    # @return [Boolean]
+    def managed_settings_conflict?
+      return false unless ::Gitlab::ManagedSettings.enabled?
+
+      application_setting.assign_attributes(params.to_h.symbolize_keys.slice(*::Gitlab::ManagedSettings.keys))
+
+      locked = changed_managed_settings
+      return false if locked.empty?
+
+      locked.each do |attr|
+        application_setting.errors.add(
+          :base,
+          format(_('The %{name} is a managed setting and cannot be changed.'), name: attr)
+        )
+      end
+
+      true
+    end
+
+    # Managed attributes with pending changes on the application setting record.
+    #
+    # @return [Array<Symbol>]
+    def changed_managed_settings
+      application_setting.changed.map(&:to_sym) & ::Gitlab::ManagedSettings.keys
+    end
 
     def update_settings
       validate_classification_label_param!(application_setting, :external_authorization_service_default_label) unless bypass_external_auth?

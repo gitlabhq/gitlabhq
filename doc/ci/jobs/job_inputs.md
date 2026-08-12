@@ -144,8 +144,6 @@ Job inputs can be used in these job keywords and their subkeys:
 - `image`
 - `services`
 
-### Limitations
-
 Job inputs use `${{ job.inputs.INPUT_NAME }}` syntax which is evaluated when the job runs, not when
 the pipeline configuration is created. You cannot use job inputs in parts of the configuration
 that must be evaluated at pipeline creation time, such as:

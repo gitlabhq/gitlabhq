@@ -33,10 +33,10 @@ func initRdb(t *testing.T) *redis.Client {
 	return rdb
 }
 
-func countSubscribers(kw *KeyWatcher, key string) int {
+func countSubscribers(kw *KeyWatcher) int {
 	kw.mu.Lock()
 	defer kw.mu.Unlock()
-	return len(kw.subscribers[key])
+	return len(kw.subscribers[runnerKey])
 }
 
 // Forces a run of the `Process` loop against a mock PubSubConn.
@@ -54,7 +54,7 @@ func processMessages(t *testing.T, kw *KeyWatcher, numWatchers int, value string
 	close(ready)
 
 	require.Eventually(t, func() bool {
-		return countSubscribers(kw, runnerKey) == numWatchers
+		return countSubscribers(kw) == numWatchers
 	}, time.Second, time.Millisecond)
 
 	// send message after listeners are ready
@@ -269,14 +269,14 @@ func TestShutdown(t *testing.T) {
 
 	go func() {
 		defer wg.Done()
-		assert.Eventually(t, func() bool { return countSubscribers(kw, runnerKey) == 1 }, 10*time.Second, time.Millisecond)
+		assert.Eventually(t, func() bool { return countSubscribers(kw) == 1 }, 10*time.Second, time.Millisecond)
 
 		kw.Shutdown()
 	}()
 
 	wg.Wait()
 
-	require.Eventually(t, func() bool { return countSubscribers(kw, runnerKey) == 0 }, 10*time.Second, time.Millisecond)
+	require.Eventually(t, func() bool { return countSubscribers(kw) == 0 }, 10*time.Second, time.Millisecond)
 
 	// Adding a key after the shutdown should result in an immediate response
 	var val WatchKeyStatus
@@ -294,6 +294,46 @@ func TestShutdown(t *testing.T) {
 	case <-time.After(100 * time.Millisecond):
 		t.Fatal("timeout waiting for WatchKey")
 	}
+}
+
+func TestWatchKeyContextCancel(t *testing.T) {
+	rdb := initRdb(t)
+
+	kw := NewKeyWatcher(rdb)
+	kw.conn = kw.redisConn.Subscribe(ctx, []string{}...)
+	defer kw.Shutdown()
+
+	rdb.Set(ctx, runnerKey, "something", 0)
+
+	watchCtx, cancel := context.WithCancel(ctx)
+
+	var val WatchKeyStatus
+	var err error
+	done := make(chan struct{})
+	go func() {
+		val, err = kw.WatchKey(watchCtx, runnerKey, "something", 10*time.Second)
+		close(done)
+	}()
+
+	// Wait until the watch is active, then simulate the client disconnecting.
+	require.Eventually(t, func() bool { return countSubscribers(kw) == 1 }, 10*time.Second, time.Millisecond)
+	cancel()
+
+	select {
+	case <-done:
+		require.NoError(t, err, "Expected no error")
+		require.Equal(t, WatchKeyStatusNoChange, val, "Expected no change on cancellation")
+	case <-time.After(time.Second):
+		t.Fatal("WatchKey did not return promptly after context cancellation")
+	}
+
+	// The subscription is released, both in-process and server-side.
+	require.Eventually(t, func() bool { return countSubscribers(kw) == 0 }, 10*time.Second, time.Millisecond)
+	require.Eventually(t, func() bool {
+		channels, err := rdb.PubSubChannels(ctx, channelPrefix+runnerKey).Result()
+		require.NoError(t, err)
+		return len(channels) == 0
+	}, 10*time.Second, time.Millisecond)
 }
 
 func TestLazySubscribeInit(t *testing.T) {

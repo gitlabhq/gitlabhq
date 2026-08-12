@@ -8668,26 +8668,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         end
       end
     end
-
-    context 'when ci_pipeline_archival_setting feature flag is disabled for the project' do
-      before do
-        stub_feature_flags(ci_pipeline_archival_setting: false)
-        stub_application_setting(archive_builds_in_seconds: 3600)
-      end
-
-      it { is_expected.not_to be_archived }
-
-      context 'when logging is requested' do
-        it 'still calls access logger with archived: false' do
-          expect(::Gitlab::Ci::Pipeline::AccessLogger)
-            .to receive(:new)
-            .with(pipeline: pipeline, archived: false)
-            .and_call_original
-
-          expect(pipeline.archived?(log: true)).to be_falsey
-        end
-      end
-    end
   end
 
   describe '.not_archived' do

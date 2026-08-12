@@ -100,17 +100,6 @@ RSpec.describe Ci::CreateCommitStatusService, :clean_gitlab_redis_cache, feature
             expect(job.pipeline_id).to be_present
             expect(job.pipeline_id).not_to eq(pipeline.id)
           end
-
-          context 'when ci_pipeline_archival_setting feature flag is disabled for the project' do
-            before do
-              stub_feature_flags(ci_pipeline_archival_setting: false)
-            end
-
-            it 'reuses the existing archived pipeline' do
-              expect(response).to be_success
-              expect(job.pipeline_id).to eq(pipeline.id)
-            end
-          end
         end
 
         context 'when the pipeline size is exceeded' do

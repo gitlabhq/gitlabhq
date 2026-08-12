@@ -811,8 +811,18 @@ module ApplicationSettingsHelper
       timezoneData: timezone_data_with_unique_identifiers,
       name: 'application_setting[sidekiq_timezone_override]',
       defaultText: _('System default'),
-      additionalClass: ['gl-md-form-input-lg']
+      additionalClass: ['gl-md-form-input-lg'],
+      disabled: managed_setting?(:sidekiq_timezone_override)
     }
+  end
+
+  # Whether the given application setting is managed by configuration and therefore read-only
+  # in the Admin UI.
+  #
+  # @param attr [Symbol, String]
+  # @return [Boolean]
+  def managed_setting?(attr)
+    Gitlab::ManagedSettings.managed?(attr)
   end
 
   def vscode_extension_marketplace_settings_view

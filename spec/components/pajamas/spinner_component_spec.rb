@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Pajamas::SpinnerComponent, type: :component do
+RSpec.describe Pajamas::SpinnerComponent, type: :component, feature_category: :design_system do
   let(:options) { {} }
 
   before do

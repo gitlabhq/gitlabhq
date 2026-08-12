@@ -143,6 +143,32 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       end
     end
 
+    context 'with a managed setting' do
+      before do
+        Gitlab::ManagedSettings.reset!
+        stub_const('Gitlab::ManagedSettings::PATH',
+          Rails.root.join('spec/fixtures/managed_settings/valid.yml'))
+      end
+
+      after do
+        Gitlab::ManagedSettings.reset!
+      end
+
+      it 'rejects changing the managed setting' do
+        put api('/application/settings', admin), params: { sidekiq_timezone_override: 'UTC' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']['base'])
+          .to include('The sidekiq_timezone_override is a managed setting and cannot be changed.')
+      end
+
+      it 'allows changing an unmanaged setting' do
+        put api('/application/settings', admin), params: { home_page_url: 'http://example.com' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
     context 'iframe in markdown settings' do
       it 'updates iframe_rendering_enabled and iframe_rendering_allowlist via array' do
         put api('/application/settings', admin),

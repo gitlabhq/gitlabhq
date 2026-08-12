@@ -1,0 +1,2 @@
+managed_settings:
+  sidekiq_timezone_override: "Not/AZone"

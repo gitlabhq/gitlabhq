@@ -51,6 +51,10 @@ RSpec.describe Gitlab::Database::DatabaseInformation, feature_category: :databas
         [{ 'name' => 'public', 'is_current' => true, 'owner' => 'gitlab', 'has_tables' => true }]
       end
 
+      let(:schema_table_rows) do
+        [{ 'schema_name' => 'public', 'table_name' => 'projects' }]
+      end
+
       subject(:findings) { described_class.execute[:databases]['main'][:findings] }
 
       before do
@@ -58,7 +62,9 @@ RSpec.describe Gitlab::Database::DatabaseInformation, feature_category: :databas
         allow(model).to receive(:connection).and_return(connection)
         allow(connection).to receive(:select_value).with('SELECT current_user').and_return('gitlab')
         allow(connection).to receive(:select_value).with('SHOW search_path').and_return(search_path)
-        allow(connection).to receive(:select_all).and_return(schema_rows)
+        allow(connection).to receive(:select_all).with(described_class::SCHEMAS_SQL).and_return(schema_rows)
+        allow(connection).to receive(:select_all)
+          .with(described_class::SCHEMA_TABLES_SQL).and_return(schema_table_rows)
 
         # These tests focus on search_path findings; vacuum collection shares
         # collect_for_database but is exercised separately, so stub it out.
@@ -111,12 +117,16 @@ RSpec.describe Gitlab::Database::DatabaseInformation, feature_category: :databas
           ]
         end
 
+        let(:schema_table_rows) do
+          [{ 'schema_name' => 'gitlab', 'table_name' => 'projects' }]
+        end
+
         it 'returns no findings' do
           expect(findings).to be_empty
         end
       end
 
-      context 'when objects are split across more than one populated schema' do
+      context 'when GitLab objects are split across more than one populated schema' do
         let(:search_path) { 'gitlab, public' }
         let(:schema_rows) do
           [
@@ -125,12 +135,95 @@ RSpec.describe Gitlab::Database::DatabaseInformation, feature_category: :databas
           ]
         end
 
-        it 'returns a split-objects error naming the schemas', :aggregate_failures do
-          finding = findings.find { |f| f[:code] == 'search_path_objects_split_across_schemas' }
+        let(:schema_table_rows) do
+          [
+            { 'schema_name' => 'public', 'table_name' => 'projects' },
+            { 'schema_name' => 'gitlab', 'table_name' => 'namespaces' }
+          ]
+        end
 
-          expect(finding).to be_present
-          expect(finding[:severity]).to eq('warning')
-          expect(finding[:message]).to include('public').and(include('gitlab'))
+        it 'reports a split-objects warning and a split-GitLab-objects error', :aggregate_failures do
+          generic = findings.find { |f| f[:code] == 'search_path_objects_split_across_schemas' }
+          gitlab = findings.find { |f| f[:code] == 'search_path_gitlab_objects_split_across_schemas' }
+
+          expect(generic).to be_present
+          expect(generic[:severity]).to eq('warning')
+          expect(generic[:message]).to include('public').and(include('gitlab'))
+
+          expect(gitlab).to be_present
+          expect(gitlab[:severity]).to eq('error')
+          expect(gitlab[:message]).to include('public').and(include('gitlab'))
+        end
+      end
+
+      context 'when a second populated schema contains only non-GitLab objects' do
+        let(:search_path) { 'gitlab, public' }
+        let(:schema_rows) do
+          [
+            { 'name' => 'public', 'is_current' => false, 'owner' => 'gitlab', 'has_tables' => true },
+            { 'name' => 'gitlab', 'is_current' => true, 'owner' => 'gitlab', 'has_tables' => true }
+          ]
+        end
+
+        let(:schema_table_rows) do
+          [
+            { 'schema_name' => 'public', 'table_name' => 'projects' },
+            { 'schema_name' => 'gitlab', 'table_name' => 'some_extension_table' }
+          ]
+        end
+
+        it 'warns about split objects but does not raise a GitLab-objects error', :aggregate_failures do
+          codes = findings.map { |f| f[:code] }
+
+          expect(codes).to include('search_path_objects_split_across_schemas')
+          expect(codes).not_to include('search_path_gitlab_objects_split_across_schemas')
+        end
+      end
+
+      context 'when a second populated schema contains only internal bookkeeping tables' do
+        let(:search_path) { 'gitlab, public' }
+        let(:schema_rows) do
+          [
+            { 'name' => 'public', 'is_current' => false, 'owner' => 'gitlab', 'has_tables' => true },
+            { 'name' => 'gitlab', 'is_current' => true, 'owner' => 'gitlab', 'has_tables' => true }
+          ]
+        end
+
+        # 'schema_migrations' resolves to :gitlab_internal - Rails bookkeeping,
+        # not one of GitLab's own objects - so it must not raise the error.
+        let(:schema_table_rows) do
+          [
+            { 'schema_name' => 'public', 'table_name' => 'projects' },
+            { 'schema_name' => 'gitlab', 'table_name' => 'schema_migrations' }
+          ]
+        end
+
+        it 'warns about split objects but does not raise a GitLab-objects error', :aggregate_failures do
+          codes = findings.map { |f| f[:code] }
+
+          expect(codes).to include('search_path_objects_split_across_schemas')
+          expect(codes).not_to include('search_path_gitlab_objects_split_across_schemas')
+        end
+      end
+
+      context 'when a second populated schema holds a GitLab view rather than a table' do
+        let(:search_path) { 'gitlab, public' }
+        let(:schema_rows) do
+          [
+            { 'name' => 'public', 'is_current' => false, 'owner' => 'gitlab', 'has_tables' => true },
+            { 'name' => 'gitlab', 'is_current' => true, 'owner' => 'gitlab', 'has_tables' => true }
+          ]
+        end
+
+        let(:schema_table_rows) do
+          [
+            { 'schema_name' => 'public', 'table_name' => 'projects' },
+            { 'schema_name' => 'gitlab', 'table_name' => 'personal_snippets_view' }
+          ]
+        end
+
+        it 'raises the GitLab-objects error' do
+          expect(findings.map { |f| f[:code] }).to include('search_path_gitlab_objects_split_across_schemas')
         end
       end
 
@@ -143,8 +236,15 @@ RSpec.describe Gitlab::Database::DatabaseInformation, feature_category: :databas
           ]
         end
 
-        it 'resolves "$user" and reports the split' do
-          expect(findings.map { |f| f[:code] }).to include('search_path_objects_split_across_schemas')
+        let(:schema_table_rows) do
+          [
+            { 'schema_name' => 'public', 'table_name' => 'projects' },
+            { 'schema_name' => 'gitlab', 'table_name' => 'namespaces' }
+          ]
+        end
+
+        it 'resolves "$user" and raises the GitLab-objects error' do
+          expect(findings.map { |f| f[:code] }).to include('search_path_gitlab_objects_split_across_schemas')
         end
       end
     end

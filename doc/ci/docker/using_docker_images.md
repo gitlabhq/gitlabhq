@@ -236,13 +236,6 @@ To define which option should be used, the runner process reads the configuratio
   If the `--user` flag is provided to run the child processes as unprivileged user,
   the home directory of the main runner process user is used.
 
-### Requirements and limitations
-
-- [Credentials Store](#use-a-credentials-store) and [Credential Helpers](#use-credential-helpers)
-  require binaries to be added to the GitLab Runner `$PATH`, and require access to do so. Therefore,
-  these features are not available on instance runners, or any other runner where the user does not
-  have access to the environment where the runner is installed.
-
 ### Use statically-defined credentials
 
 You can access a private registry using two approaches. Both require setting the CI/CD variable
@@ -386,12 +379,17 @@ To add `DOCKER_AUTH_CONFIG` to a runner:
 
 ### Use a Credentials Store
 
+A Credentials Store is not available on instance runners, or any other runner where you do not have
+access to the environment where the runner is installed.
+
+Prerequisites:
+
+- An external helper program to interact with a specific keychain or external store, available in
+  the GitLab Runner `$PATH`.
+
 To configure a Credentials Store:
 
-1. To use a Credentials Store, you need an external helper program to interact with a specific keychain or external store.
-   Make sure the helper program is available in the GitLab Runner `$PATH`.
-
-1. Make GitLab Runner use it. You can accomplish this by using one of the following options:
+1. Make GitLab Runner use the helper program. You can accomplish this by using one of the following options:
 
    - Create a
      [CI/CD variable](../variables/_index.md)
@@ -417,12 +415,18 @@ pulling from Docker Hub fails. The Docker daemon tries to use the same credentia
 As an example, let's assume that you want to use the `<aws_account_id>.dkr.ecr.<region>.amazonaws.com/private/image:latest`
 image. This image is private and requires you to sign in to a private container registry.
 
-To configure access for `<aws_account_id>.dkr.ecr.<region>.amazonaws.com`, follow these steps:
+Credential Helpers are not available on instance runners, or any other runner where you do not have
+access to the environment where the runner is installed.
 
-1. Make sure [`docker-credential-ecr-login`](https://github.com/awslabs/amazon-ecr-credential-helper) is available in the GitLab Runner `$PATH`.
-1. Have any of the following [AWS credentials setup](https://github.com/awslabs/amazon-ecr-credential-helper#aws-credentials).
-   GitLab Runner Manager acquires the credentials and passes them to the runners. Make sure that GitLab Runner can access the credentials.
-1. Make GitLab Runner use it. You can accomplish this by using one of the following options:
+Prerequisites:
+
+- [`docker-credential-ecr-login`](https://github.com/awslabs/amazon-ecr-credential-helper), available in the GitLab Runner `$PATH`.
+- Any of the following [AWS credentials setup](https://github.com/awslabs/amazon-ecr-credential-helper#aws-credentials).
+  GitLab Runner Manager acquires the credentials and passes them to the runners. Make sure that GitLab Runner can access the credentials.
+
+To configure access for `<aws_account_id>.dkr.ecr.<region>.amazonaws.com`:
+
+1. Make GitLab Runner use the credential helper. You can accomplish this by using one of the following options:
 
    - Create a [CI/CD variable](../variables/_index.md)
      `DOCKER_AUTH_CONFIG` with the content of the

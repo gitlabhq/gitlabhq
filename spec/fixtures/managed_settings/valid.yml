@@ -1,0 +1,4 @@
+installation:
+  managed_by: "GitLab Helm Chart"
+managed_settings:
+  sidekiq_timezone_override: "Europe/London"

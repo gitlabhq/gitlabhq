@@ -19,6 +19,8 @@
         = _("Threshold in bytes at which to reject Sidekiq jobs. Set this to 0 to if you don't want to limit Sidekiq jobs.")
     .form-group
       = f.label :sidekiq_timezone_override, _('Cron jobs time zone'), class: 'label-bold'
+      - if managed_setting?(:sidekiq_timezone_override)
+        = render Admin::ManagedSettingAlertComponent.new
       .js-timezone-dropdown{ data: { view_model: sidekiq_timezone_dropdown_view_model.to_json } }
       .form-text.gl-text-subtle
         = _('Time zone used to evaluate cron schedules for Sidekiq jobs. Select "System default" to use the instance time zone.')

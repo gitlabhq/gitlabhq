@@ -111,7 +111,6 @@ export default {
     'ee/app/assets/javascripts/usage_quotas/usage_billing/components/usage_by_user_tab.vue',
     'ee/app/assets/javascripts/usage_quotas/wallet_agnostic_credits_dashboard/index/components/users_list.vue',
     'ee/app/assets/javascripts/vulnerabilities/components/related_issues.vue',
-    'ee/app/assets/javascripts/work_items/components/work_item_change_type_modal.vue',
     'ee/app/assets/javascripts/work_items/components/work_item_color.vue',
     'ee/app/assets/javascripts/work_items/components/work_item_custom_fields_multi_select.vue',
     'ee/app/assets/javascripts/work_items/components/work_item_custom_fields_number.vue',
