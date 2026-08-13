@@ -57,8 +57,7 @@ RSpec.describe Gitlab::Graphql::VersionFilter::FutureFieldFallback, feature_cate
 
         expect(field).to be_a(GraphQL::Schema::Field)
         expect(field.name).to eq('futureField')
-        expect(field.type).to eq(GraphQL::Types::Boolean)
-        expect(field.instance_variable_get(:@fallback_value)).to be_nil
+        expect(field.resolver).to eq(Resolvers::NilResolver)
         expect(field.owner).to eq(test_class)
       end
 
