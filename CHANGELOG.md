@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.11.10 (2026-08-13)
+
+### Security (2 changes)
+
+- [Prevent query swapping with multiplexed queries and gl-introduced](https://gitlab.com/gitlab-org/security/gitlab/-/commit/74c41971b698e6efcea3fd7fa56129afd692c60a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6573))
+- [Prevent calling object method when resolving fallback field](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2bc74d338de9399ea5d04a20bc6abad15596ffe6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6574))
+
 ## 18.11.9 (2026-08-06)
 
 No changes.
