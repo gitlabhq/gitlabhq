@@ -100,7 +100,7 @@ To grant your GitLab CI/CD job permissions on Google Cloud, you must:
 1. [Grant IAM permissions](https://docs.cloud.google.com/iam/docs/granting-changing-revoking-access) to your
    service account on Google Cloud resources. These permissions vary significantly based on
    your use case. In general, grant this service account the permissions on your Google Cloud
-   project and resources you want your GitLab CI/CD job to be able to use. For example, if you needed to upload a file to a Google Cloud Storage bucket in your GitLab CI/CD job, you would grant this Service Account the `roles/storage.objectCreator` role on your Cloud Storage bucket.
+   project and resources you want your GitLab CI/CD job to use. For example, if you needed to upload a file to a Google Cloud Storage bucket in your GitLab CI/CD job, you would grant this Service Account the `roles/storage.objectCreator` role on your Cloud Storage bucket.
 1. [Grant the external identity permissions](https://cloud.google.com/iam/docs/workload-identity-federation-with-other-clouds#impersonate)
    to impersonate that Service Account. This step enables a GitLab CI/CD job to authorize
    to Google Cloud by using Service Account impersonation. This step grants an IAM permission

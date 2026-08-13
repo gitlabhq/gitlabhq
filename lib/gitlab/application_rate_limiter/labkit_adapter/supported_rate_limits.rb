@@ -381,6 +381,13 @@ module Gitlab
               period: 1.minute,
               action: :limit
             ),
+            mobile_push_notifications: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_mobile_push_notifications_by_user',
+              characteristics: %i[user],
+              limit: 60,
+              period: 1.hour,
+              action: :limit
+            ),
             namespace_exists: ::Labkit::RateLimit::Rule.new(
               name: 'limit_namespace_existence_checks_by_user',
               characteristics: %i[user],

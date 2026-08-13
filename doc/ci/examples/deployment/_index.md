@@ -20,7 +20,7 @@ Dpl can be used to deploy to any of the [supported providers](https://github.com
 
 ## Prerequisite
 
-To use Dpl you need at least Ruby 1.9.3 with the ability to install gems.
+To use Dpl you need at least Ruby 1.9.3 with permission to install gems.
 
 ## Basic usage
 

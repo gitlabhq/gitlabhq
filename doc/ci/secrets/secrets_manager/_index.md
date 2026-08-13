@@ -216,7 +216,7 @@ To update the secrets permissions for a project:
 
 Prerequisites:
 
-- You must have the Owner role for the group to be able to manage the secrets permissions.
+- You must have the Owner role for the group to manage the secrets permissions.
   Only users with the Owner role for the group can view the defined permissions.
 - The Secrets Manager must be enabled for the group.
 

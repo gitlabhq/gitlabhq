@@ -127,7 +127,7 @@ EOF
 ```
 
 Combined with [protected branches](../../user/project/repository/branches/protected.md),
-you can restrict who is able to authenticate and read the secrets.
+you can restrict who can authenticate and read the secrets.
 
 Any of the claims [included in the JWT](id_token_authentication.md#token-payload)
 can be matched against a list of values in the bound claims. For example:

@@ -176,7 +176,7 @@ To set a feature to be only visible to project members:
 1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Set the visibility to **Only project members** for the features you want to restrict access to.
-   - The ability to fetch artifacts is controlled by the CI/CD visibility setting.
+   - Access to fetch artifacts is controlled by the CI/CD visibility setting.
 1. Select **Save changes**.
 
 ### Allow any project to access your project

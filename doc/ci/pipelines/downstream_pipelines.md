@@ -58,7 +58,7 @@ For an overview, see [Nested Dynamic Pipelines](https://www.youtube.com/watch?v=
 ## Multi-project pipelines
 
 A pipeline in one project can trigger downstream pipelines in another project,
-called multi-project pipelines. The user triggering the upstream pipeline must be able to
+called multi-project pipelines. The user triggering the upstream pipeline must have permission to
 start pipelines in the downstream project, otherwise [the downstream pipeline fails to start](downstream_pipelines_troubleshooting.md#trigger-job-fails-and-does-not-create-multi-project-pipeline).
 
 Multi-project pipelines:

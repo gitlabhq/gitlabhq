@@ -48,6 +48,8 @@ import {
   protectableBranchesMockResponse,
   allowedToMergeDrawerProps,
   protectionPropsMock,
+  pushAccessLevelsCount,
+  mergeAccessLevelsCount,
 } from 'ee_else_ce_jest/projects/settings/branch_rules/components/mock_data';
 
 jest.mock('~/lib/utils/url_utility', () => ({
@@ -442,7 +444,7 @@ describe('View branch rules', () => {
     expect(findAllowedToPush().props()).toMatchObject({
       roles: protectionPropsMock.roles,
       header: 'Allowed to push and merge',
-      count: 2,
+      count: pushAccessLevelsCount,
       isProtectedByPolicy: false,
     });
   });
@@ -484,7 +486,7 @@ describe('View branch rules', () => {
     expect(findAllowedToMerge().props()).toMatchObject({
       roles: protectionPropsMock.roles,
       header: 'Allowed to merge',
-      count: 2,
+      count: mergeAccessLevelsCount,
     });
   });
 

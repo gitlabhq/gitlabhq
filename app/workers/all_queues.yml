@@ -1116,6 +1116,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :cronjob
+- :name: cronjob:notifications_mobile_push_prune_stale_subscriptions
+  :worker_name: Notifications::MobilePush::PruneStaleSubscriptionsWorker
+  :feature_category: :notifications
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:object_storage_delete_stale_direct_uploads
   :worker_name: ObjectStorage::DeleteStaleDirectUploadsWorker
   :feature_category: :job_artifacts
@@ -5580,6 +5590,16 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: false
+  :tags: []
+  :queue_namespace:
+- :name: todos_push_notification
+  :worker_name: Todos::PushNotificationWorker
+  :feature_category: :notifications
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
   :queue_namespace:
 - :name: update_external_pull_requests

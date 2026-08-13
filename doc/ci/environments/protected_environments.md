@@ -17,7 +17,7 @@ title: Protected environments
 production reasons.
 
 Because deploy jobs can be raised by different users with different roles, it's
-important to be able to protect specific environments from the effects of
+important to protect specific environments from the effects of
 unauthorized users.
 
 By default, a protected environment ensures that only people with the
@@ -288,7 +288,7 @@ Protected environments can also be used to require manual approvals before deplo
 
 ### Reporter can't run a trigger job that deploys to a protected environment in downstream pipeline
 
-You might not be able to run a job that uses the [`trigger`](../yaml/_index.md#trigger) keyword, even with [deployment-only access to protected environments](#deployment-only-access-to-protected-environments).
+A job that uses the [`trigger`](../yaml/_index.md#trigger) keyword might not run, even with [deployment-only access to protected environments](#deployment-only-access-to-protected-environments).
 
 This issue occurs when the trigger job doesn't have the [`environment`](../yaml/_index.md#environment) keyword set. Without it, GitLab can't associate the job with the protected environment, so the job falls back to the [regular CI/CD permission model](../../user/permissions.md#project-cicd), which doesn't grant the user's deployment-only role access to run it.
 

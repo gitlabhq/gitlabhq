@@ -277,6 +277,22 @@ production: &base
     # access_key_id: "YOUR-AWS-ACCESS-KEY-ID"
     # secret_access_key: "YOUR-AWS-SECRET-ACCESS-KEY"
 
+  ## Mobile push notifications
+  # Delivery of to-do push notifications to the GitLab mobile app over APNs,
+  # using Apple provider token (p8) authentication. Delivery is skipped when
+  # no key is configured.
+  # mobile_push:
+  #   apns:
+  #     # Path to the APNs provider token signing key (.p8) from your Apple Developer account.
+  #     auth_key_path: "/home/git/gitlab/.apns_auth_key.p8"
+  #     # The 10-character identifier of the signing key.
+  #     key_id: "YOUR-APNS-KEY-ID"
+  #     # The Apple Developer team identifier.
+  #     team_id: "YOUR-APPLE-TEAM-ID"
+  #     # apns-topic sent for subscriptions that don't carry a bundle identifier.
+  #     # Defaults to "com.gitlab-mobile.app".
+  #     topic:
+
   ## Reply by email
   # Allow users to comment on issues and merge requests by replying to notification emails.
   # For documentation on how to set this up, see https://docs.gitlab.com/ee/administration/reply_by_email.html

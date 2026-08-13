@@ -291,6 +291,10 @@ merge_requests_process_scheduled_merge:
   class: MergeRequests::ProcessScheduledMergeWorker
   cron: "*/1 * * * *"
 
+mobile_push_prune_stale_subscriptions_worker:
+  class: Notifications::MobilePush::PruneStaleSubscriptionsWorker
+  cron: "0 4 * * *"
+
 namespaces_process_outdated_namespace_descendants_cron_worker:
   class: Namespaces::ProcessOutdatedNamespaceDescendantsCronWorker
   cron: "*/1 * * * *"

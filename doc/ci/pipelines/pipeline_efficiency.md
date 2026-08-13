@@ -142,7 +142,7 @@ with cloud providers, and define offline times to reduce costs.
 
 Use your existing monitoring tools and dashboards to integrate CI/CD pipeline monitoring,
 or build them from scratch. Ensure that the runtime data is actionable
-across teams, and operations/SREs are able to identify problems early enough.
+across teams, so operations/SREs can identify problems early enough.
 [Incident management](../../operations/incident_management/_index.md) can help here too,
 with embedded metric charts and all valuable details to analyze the problem.
 

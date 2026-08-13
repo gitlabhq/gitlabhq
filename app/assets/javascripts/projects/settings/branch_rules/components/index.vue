@@ -205,6 +205,13 @@ export default {
       const { pushAccessLevels } = this.branchProtection || {};
       return this.getAccessLevels(pushAccessLevels);
     },
+    // getAccessLevels only returns memberRoles in EE, so default for CE callers
+    mergeMemberRoles() {
+      return this.mergeAccessLevels.memberRoles || [];
+    },
+    pushMemberRoles() {
+      return this.pushAccessLevels.memberRoles || [];
+    },
     allBranches() {
       return this.branch === ALL_BRANCHES_WILDCARD;
     },
@@ -645,7 +652,11 @@ export default {
           :is-group-level="isGroupLevelProtection"
           data-testid="allowed-to-merge-content"
           @edit="openAllowedToMergeDrawer"
-        />
+        >
+          <template #ee-custom-roles>
+            <slot name="ee-merge-custom-roles" :member-roles="mergeMemberRoles"></slot>
+          </template>
+        </protection>
 
         <!-- Allowed to push -->
         <protection
@@ -666,7 +677,11 @@ export default {
           :is-group-level="isGroupLevelProtection"
           data-testid="allowed-to-push-content"
           @edit="openAllowedToPushAndMergeDrawer"
-        />
+        >
+          <template #ee-custom-roles>
+            <slot name="ee-push-custom-roles" :member-roles="pushMemberRoles"></slot>
+          </template>
+        </protection>
 
         <!-- Force push -->
         <protection-toggle

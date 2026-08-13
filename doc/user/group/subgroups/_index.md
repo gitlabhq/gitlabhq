@@ -27,6 +27,8 @@ Subgroups can:
 - Belong to one immediate parent group.
 - Have many subgroups.
 - Be nested up to 20 levels.
+  To avoid performance problems, nest groups to a maximum of five levels or fewer.
+  For more information, see [recommended limits for group structure](../_index.md#recommended-limits-for-group-structure).
 - Use [runners](../../../ci/runners/_index.md) registered to parent groups:
   - Secrets configured for the parent group are available to subgroup jobs.
   - Users with the Maintainer or Owner role in projects that belong to subgroups can see the details of runners registered to

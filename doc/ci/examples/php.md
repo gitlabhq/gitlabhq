@@ -242,11 +242,11 @@ default:
 ## Access private packages or dependencies
 
 If your test suite needs to access a private repository, you need to configure
-the [SSH keys](../jobs/ssh_keys.md) to be able to clone it.
+the [SSH keys](../jobs/ssh_keys.md) to clone it.
 
 ## Use databases or other services
 
-Most of the time, you need a running database for your tests to be able to
+Most of the time, you need a running database for your tests to
 run. If you're using the Docker executor, you can leverage Docker to
 link to other containers. With GitLab Runner, this can be achieved by defining
 a `service`.

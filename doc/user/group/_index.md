@@ -79,6 +79,66 @@ The following table describes the most common models of structuring groups.
 > [compliance center](../compliance/compliance_center/_index.md), and
 > [value stream analytics](value_stream_analytics/_index.md).
 
+### Recommended limits for group structure
+
+Groups have no enforced limits on membership, hierarchy depth, or the number of group shares.
+However, large or deeply nested structures can degrade performance.
+Dashboards can load slowly, permission calculations can time out, and some operations can return `500` errors.
+To keep a group responsive, stay within the following recommended limits:
+
+| Structure | Recommended limit | Maximum limit | Likely symptom beyond the recommended limit |
+| --------- | ----------------- | ------------- | ------------------------------------------- |
+| Members per group | Fewer than 1,000 | None | Performance degrades. At 1,500 or more members, operations can time out or return `500` errors. |
+| Child groups per parent group | Fewer than 100 | None | Navigation and permission calculations slow down. |
+| Hierarchy depth | Five levels or fewer | 20 levels | Database queries can time out. |
+
+Recommended limits differ from maximum limits. A maximum limit is a technical ceiling that GitLab enforces.
+If a group is beyond a recommended limit, it is still supported.
+
+Performance issues are most severe when these limits combine.
+For example, a group that has both deep nesting and many child groups can cause database query timeouts
+sooner than either condition alone.
+
+The recommended limits reflect current performance behavior. For details on planned work to
+help you move from a large, deeply nested structure to a more performant one, see
+[epic 21582](https://gitlab.com/groups/gitlab-org/-/epics/21582).
+
+#### Stay within the recommended limits
+
+If a group approaches or exceeds the recommended limits, you can use the following workarounds
+to reduce the performance impact.
+
+For large group membership:
+
+- Split a group that has more than 1,000 members into smaller functional groups,
+  each with 500 members or fewer.
+  For example, replace a single group of all engineers with separate groups for frontend, backend, and infrastructure engineers.
+- Share each smaller group individually with projects and groups, rather than sharing
+  one large group.
+- For bulk member changes, use the [group members API](../../api/group_members.md) with delays between
+  requests to stay within the [member management rate limits](../../administration/instance_limits.md#rate-limits).
+
+For deep or wide hierarchies:
+
+- Keep hierarchies to five levels or fewer.
+- Use separate top-level groups for parts of your organization that do not need to
+  share inherited membership, rather than nesting everything under one hierarchy.
+- Reduce the number of direct child groups under a single parent group.
+
+For group shares:
+
+- Add a group directly to a project instead of sharing through nested group shares
+  when you need to manage individual member permissions.
+- If a new subgroup does not inherit permissions from a shared group, change the
+  share's role to a different value and then back again to trigger a permission
+  recalculation.
+
+For large hierarchies synced from an identity provider:
+
+- Configure [LDAP sync](../../administration/auth/ldap/ldap_synchronization.md)
+  intervals to avoid rate limiting on the identity provider.
+  Rate limit errors during a sync can block users or remove group memberships.
+
 ## Group visibility
 
 Like projects, a group can be configured to be visible to:

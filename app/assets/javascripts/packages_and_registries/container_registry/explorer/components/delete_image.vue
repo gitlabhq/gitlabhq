@@ -18,6 +18,7 @@ export default normalizeRender({
       default: false,
     },
   },
+  emits: ['start', 'end', 'error', 'success'],
   methods: {
     updateImageStatus(store, { data: { destroyContainerRepository } }) {
       const variables = {

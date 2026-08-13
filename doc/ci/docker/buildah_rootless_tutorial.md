@@ -83,7 +83,7 @@ For these steps, you need to run the commands in a terminal connected to the Ope
    EOF
    ```
 
-1. Give the created service account the ability to run with `anyuid` [SCC](https://docs.openshift.com/container-platform/4.3/authentication/managing-security-context-constraints.html):
+1. Give the created service account permission to run with `anyuid` [SCC](https://docs.openshift.com/container-platform/4.3/authentication/managing-security-context-constraints.html):
 
    ```shell
    oc adm policy add-scc-to-user anyuid -z buildah-sa -n gitlab-runner

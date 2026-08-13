@@ -12,7 +12,7 @@ title: Migrate from Jenkins
 
 {{< /details >}}
 
-If you're migrating from Jenkins to GitLab CI/CD, you are able to create CI/CD
+If you're migrating from Jenkins to GitLab CI/CD, you can create CI/CD
 pipelines that replicate and enhance your Jenkins workflows.
 
 ## Key similarities and differences
@@ -485,7 +485,7 @@ your own runners.
 
 To convert a Jenkins agent for use with GitLab CI/CD, uninstall the agent and then
 [install and register a runner](../runners/_index.md). Runners do not require much overhead,
-so you might be able to use similar provisioning as the Jenkins agents you were using.
+so you can likely use similar provisioning as the Jenkins agents you were using.
 
 Some key details about runners:
 
@@ -681,8 +681,7 @@ the safety of your CI/CD variables.
 
 ## Planning and performing a migration
 
-The following list of recommended steps was created after observing organizations
-that were able to quickly complete this migration.
+The following steps help you plan and perform this migration.
 
 ### Create a migration plan
 

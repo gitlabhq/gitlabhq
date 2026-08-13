@@ -1040,8 +1040,8 @@ To resolve this issue, [create a new release](#publish-a-new-release).
 
 ### Error: `Build component error: Spec must be a valid json schema`
 
-If a component has invalid formatting, you might not be able to create a release
-and could receive an error like `Build component error: Spec must be a valid json schema`.
+If a component has invalid formatting, you might get an error like
+`Build component error: Spec must be a valid json schema` when you create a release.
 
 This error can be caused by an empty `spec:inputs` section. If your configuration
 does not use any inputs, you can make the `spec` section empty instead. For example:

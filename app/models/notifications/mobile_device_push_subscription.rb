@@ -50,6 +50,14 @@ module Notifications
     # creation time, so it is never NULL.
     scope :stale, ->(cutoff) { where(last_seen_at: ...cutoff) }
 
+    # The distinct ids among `user_ids` that have at least one registered
+    # device. Lets dispatch callers skip enqueues for the (vast) majority of
+    # users without one. The result is at most one row per input id, which
+    # `limit` makes explicit.
+    def self.subscribed_user_ids(user_ids)
+      where(user_id: user_ids).distinct.limit(user_ids.size).pluck(:user_id)
+    end
+
     private
 
     def subscriptions_limit

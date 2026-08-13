@@ -243,8 +243,7 @@ is supported in GitLab CI/CD natively with CI/CD keywords and features.
 
 ## Planning and performing a migration
 
-The following list of recommended steps was created after observing organizations
-that were able to quickly complete a migration to GitLab CI/CD.
+The following steps help you plan and perform a migration to GitLab CI/CD.
 
 ### Create a migration plan
 

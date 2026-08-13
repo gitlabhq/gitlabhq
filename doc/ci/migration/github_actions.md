@@ -12,7 +12,7 @@ title: Migrate from GitHub Actions
 
 {{< /details >}}
 
-If you're migrating from GitHub Actions to GitLab CI/CD, you are able to create CI/CD
+If you're migrating from GitHub Actions to GitLab CI/CD, you can create CI/CD
 pipelines that replicate and enhance your GitHub Action workflows.
 
 You can do this by hand, or you can use your agent of choice with the
@@ -664,8 +664,7 @@ the safety of your CI/CD variables.
 
 ## Planning and performing a migration
 
-The following list of recommended steps was created after observing organizations
-that were able to quickly complete this migration.
+The following steps help you plan and perform this migration.
 
 ### Create a migration plan
 

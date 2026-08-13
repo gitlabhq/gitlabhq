@@ -228,5 +228,5 @@ on an instance with both:
   This feature flag is enabled by default in GitLab Environment Toolkit or Helm Chart deployments,
   but could also be enabled manually.
 
-To restore the ability to view job logs on affected jobs,
+To view job logs on affected jobs,
 [re-enable incremental logging](../../administration/settings/continuous_integration.md#configure-incremental-logging)

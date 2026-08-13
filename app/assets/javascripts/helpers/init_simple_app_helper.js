@@ -1,4 +1,3 @@
-import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
@@ -32,10 +31,6 @@ const registerVueRouter = () => {
   Vue.use(VueRouter);
 };
 
-const registerGlToast = () => {
-  Vue.use(GlToast);
-};
-
 /**
  * Initializes a component as a simple vue app, passing the necessary props. If the element
  * has a data attribute named `data-view-model`, the content of that attributed will be
@@ -52,8 +47,6 @@ const registerGlToast = () => {
  *      withVueRouter: if true, registers Vue Router as a Vue plugin. Use when the root component (or any of
  *        its descendants) declares its own router via the `router` option, or uses `<router-view>`,
  *        `<router-link>`, `$route`, or `$router`.
- *      withGlToast: if true, registers GlToast as a Vue plugin. Use when the root component (or any of
- *        its descendants) calls `this.$toast.show(...)` to display toast notifications.
  * @param {{name: string}} Name of the app
 
  *
@@ -84,13 +77,7 @@ const registerGlToast = () => {
 export const initSimpleApp = (
   selector,
   component,
-  {
-    withApolloProvider,
-    withVueRouter = false,
-    withGlToast = false,
-    name,
-    additionalProvide = {},
-  } = {},
+  { withApolloProvider, withVueRouter = false, name, additionalProvide = {} } = {},
 ) => {
   const element = document.querySelector(selector);
 
@@ -100,10 +87,6 @@ export const initSimpleApp = (
 
   if (withVueRouter) {
     registerVueRouter();
-  }
-
-  if (withGlToast) {
-    registerGlToast();
   }
 
   const apolloProvider = getApolloProvider(withApolloProvider);

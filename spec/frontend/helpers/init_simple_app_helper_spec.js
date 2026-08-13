@@ -1,4 +1,3 @@
-import { GlToast } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import { createWrapper } from '@vue/test-utils';
@@ -142,30 +141,6 @@ describe('helpers/init_simple_app_helper/initSimpleApp', () => {
           initMock('<div id="mount-here"></div>', { withVueRouter: true });
 
           expect(vueUseSpy).toHaveBeenCalledWith(VueRouter);
-        });
-      });
-    });
-
-    describe('withGlToast', () => {
-      let vueUseSpy;
-
-      beforeEach(() => {
-        vueUseSpy = jest.spyOn(Vue, 'use');
-      });
-
-      describe('if false (default), GlToast is not registered', () => {
-        it('does not call Vue.use with GlToast', () => {
-          initMock('<div id="mount-here"></div>');
-
-          expect(vueUseSpy).not.toHaveBeenCalledWith(GlToast);
-        });
-      });
-
-      describe('if true, registers GlToast', () => {
-        it('calls Vue.use with GlToast', () => {
-          initMock('<div id="mount-here"></div>', { withGlToast: true });
-
-          expect(vueUseSpy).toHaveBeenCalledWith(GlToast);
         });
       });
     });

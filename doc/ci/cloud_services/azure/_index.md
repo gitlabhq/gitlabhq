@@ -231,7 +231,7 @@ Review [Connect to cloud services](../_index.md) for further details.
 If you receive the error `ERROR: AADSTS501661: Request to External OIDC endpoint failed.`
 you should verify that your GitLab instance is publicly accessible from the internet.
 
-Azure must be able to access the following GitLab endpoints to authenticate with OIDC:
+Azure must have access to the following GitLab endpoints to authenticate with OIDC:
 
 - `GET /.well-known/openid-configuration`
 - `GET /oauth/discovery/keys`

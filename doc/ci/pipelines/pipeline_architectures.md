@@ -203,8 +203,8 @@ As pipelines grow more complex, a few related problems start to emerge:
   namespace collisions where jobs are unintentionally duplicated.
 - Pipeline UX has too many jobs and stages to work with.
 
-Additionally, sometimes the behavior of a pipeline needs to be more dynamic. The ability
-to choose to start sub-pipelines (or not) is a powerful ability, especially if the
+Additionally, sometimes the behavior of a pipeline needs to be more dynamic. You can choose
+whether to start sub-pipelines, which is especially useful if the
 YAML is dynamically generated.
 
 In the previous [basic pipeline](#basic-pipelines) and [`needs` pipeline](#pipelines-with-the-needs-keyword)

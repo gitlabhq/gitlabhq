@@ -67,6 +67,23 @@ RSpec.describe Notifications::MobileDevicePushSubscription, feature_category: :n
     end
   end
 
+  describe '.subscribed_user_ids' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:unsubscribed_user) { create(:user) }
+
+    it 'returns the distinct given user ids that have a subscription' do
+      create_list(:mobile_device_push_subscription, 2, user: user)
+
+      ids = described_class.subscribed_user_ids([user.id, unsubscribed_user.id, non_existing_record_id])
+
+      expect(ids).to contain_exactly(user.id)
+    end
+
+    it 'returns an empty array when no given user has a subscription' do
+      expect(described_class.subscribed_user_ids([unsubscribed_user.id])).to be_empty
+    end
+  end
+
   describe 'device token encryption' do
     it 'stores the token encrypted and decrypts it transparently' do
       token = SecureRandom.hex(32)

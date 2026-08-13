@@ -772,6 +772,16 @@ Settings.amazon_ses_mailer['secret_access_key'] ||= nil
 Settings.amazon_ses_mailer['role_arn'] ||= nil
 
 #
+# Mobile push notifications
+#
+Settings['mobile_push'] ||= {}
+Settings.mobile_push['apns'] ||= {}
+Settings.mobile_push.apns['auth_key_path'] ||= nil
+Settings.mobile_push.apns['key_id'] ||= nil
+Settings.mobile_push.apns['team_id'] ||= nil
+Settings.mobile_push.apns['topic'] ||= 'com.gitlab-mobile.app'
+
+#
 # Kerberos
 #
 Gitlab.ee do

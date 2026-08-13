@@ -22,6 +22,7 @@ export default normalizeRender({
       required: true,
     },
   },
+  emits: ['model-deleted'],
   methods: {
     handleError(error) {
       createAlert({

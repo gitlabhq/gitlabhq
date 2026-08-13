@@ -1741,6 +1741,67 @@ RSpec.describe TodoService, feature_category: :notifications do
     end
   end
 
+  describe 'push notification dispatch' do
+    let_it_be(:issue) { create(:issue, project: project) }
+
+    let(:service) { described_class.new }
+
+    before do
+      allow(::Todos::PushNotificationWorker).to receive(:perform_async)
+    end
+
+    context 'when the recipient has a registered device' do
+      before do
+        create(:mobile_device_push_subscription, user: john_doe)
+      end
+
+      it 'enqueues one batch push notification job for the created todos' do
+        service.mark_todo(issue, john_doe)
+
+        todo = Todo.find_by(user: john_doe, target: issue, action: Todo::MARKED)
+        expect(::Todos::PushNotificationWorker).to have_received(:perform_async).with([todo.id])
+      end
+
+      it 'does not enqueue when the dispatch feature flag is disabled' do
+        stub_feature_flags(mobile_push_notifications_dispatch: false)
+
+        service.mark_todo(issue, john_doe)
+
+        expect(::Todos::PushNotificationWorker).not_to have_received(:perform_async)
+      end
+
+      context 'when a database transaction is open' do
+        it 'defers the enqueue until the transaction commits' do
+          todo = create(:todo, user: john_doe, project: project, target: issue)
+
+          Todo.transaction do
+            service.send(:enqueue_push_notifications, [todo])
+
+            expect(::Todos::PushNotificationWorker).not_to have_received(:perform_async)
+          end
+
+          expect(::Todos::PushNotificationWorker).to have_received(:perform_async).with([todo.id])
+        end
+      end
+    end
+
+    it 'does not enqueue for recipients without a registered device' do
+      service.mark_todo(issue, john_doe)
+
+      expect(::Todos::PushNotificationWorker).not_to have_received(:perform_async)
+    end
+
+    it 'enqueues only the todos of recipients with a registered device' do
+      create(:mobile_device_push_subscription, user: john_doe)
+      subscribed_todo = create(:todo, user: john_doe, project: project, target: issue)
+      unsubscribed_todo = create(:todo, user: author, project: project, target: issue)
+
+      service.send(:enqueue_push_notifications, [subscribed_todo, unsubscribed_todo])
+
+      expect(::Todos::PushNotificationWorker).to have_received(:perform_async).with([subscribed_todo.id])
+    end
+  end
+
   def should_create_todo(attributes = {})
     attributes.reverse_merge!(
       project: project,

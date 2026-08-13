@@ -359,7 +359,41 @@ class TodoService
 
     Users::UpdateTodoCountCacheService.new(users.map(&:id)).execute
 
+    enqueue_push_notifications(todos)
+
     todos
+  end
+
+  # Todos are bulk-inserted, so the records carry no AR transaction callbacks;
+  # when a surrounding transaction is open (for example merge-train abort) the
+  # job must wait for its commit rather than race it or fire on a rollback.
+  # One batch job per call, scoped to recipients that have a registered
+  # device; the worker enforces the :mobile_push_notifications flag per
+  # recipient.
+  def enqueue_push_notifications(todos)
+    return if todos.empty?
+    # Deliberately actor-less: this is the instance-wide enqueue gate and kill
+    # switch. It keeps the todo path free of subscription reads and enqueues
+    # while the feature is dark and protects rolling deploys (web nodes know
+    # the worker class before the Sidekiq fleet does). Per-user rollout rides
+    # :mobile_push_notifications, checked per recipient in the worker.
+    return unless Feature.enabled?(:mobile_push_notifications_dispatch) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- instance-wide dispatch gate; per-user actor check happens in the worker
+
+    Todo.current_transaction.after_commit do
+      todo_ids = push_subscribed_todo_ids(todos)
+      ::Todos::PushNotificationWorker.perform_async(todo_ids) if todo_ids.any?
+    end
+  end
+
+  # Push notifications are used by a small minority of users, so only todos
+  # whose recipient has a registered device produce a job: one indexed query
+  # per batch (after commit, so it never lengthens the write transaction)
+  # instead of a no-op Sidekiq job for almost every todo batch.
+  def push_subscribed_todo_ids(todos)
+    subscribed_user_ids = ::Notifications::MobileDevicePushSubscription
+      .subscribed_user_ids(todos.map(&:user_id).uniq).to_set
+
+    todos.select { |todo| subscribed_user_ids.include?(todo.user_id) }.map(&:id)
   end
 
   def excluded_user_ids(users, attributes)

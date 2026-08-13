@@ -225,8 +225,7 @@ If the configuration file is in a separate project, you can set more granular pe
 - Create a public project to host the configuration file.
 - Give write permissions on the project only to users who are allowed to edit the file.
 
-Then other users and projects can access the configuration file without being
-able to edit it.
+Then other users and projects can access, but not edit, the configuration file.
 
 ## Choose the default Git strategy
 

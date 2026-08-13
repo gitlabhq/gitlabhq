@@ -60,7 +60,7 @@ To integrate a different tool with Code Quality:
 1. Configure the tool to output a report as a file.
    - This file must use a [specific JSON format](#code-quality-report-format).
    - Many tools support this output format natively. They may call it a "CodeClimate report", "GitLab Code Quality report", or another similar name.
-   - Other tools can sometimes create JSON output using a custom JSON format or template. Because the [report format](#code-quality-report-format) has only a few required fields, you may be able to use this output type to create a report for Code Quality.
+   - Other tools can sometimes create JSON output using a custom JSON format or template. Because the [report format](#code-quality-report-format) has only a few required fields, this output type might work for a Code Quality report.
 1. Declare a [`codequality` report artifact](../yaml/artifacts_reports.md#artifactsreportscodequality) that matches this file.
 
 Now, after the pipeline runs, the quality tool's results are [processed and displayed](#view-code-quality-results).
@@ -213,7 +213,7 @@ Many tools natively support the required [report format](#code-quality-report-fo
 They may call it a "CodeClimate report", "GitLab Code Quality report", or another similar name.
 
 Other tools can be configured to create JSON output by providing a custom template or format specification.
-Because the [report format](#code-quality-report-format) has only a few required fields, you may be able to use this output type to create a report for Code Quality.
+Because the [report format](#code-quality-report-format) has only a few required fields, this output type might work for a Code Quality report.
 
 If you already use a tool in your CI/CD pipeline, you should adapt the existing job to add a Code Quality report.
 Adapting the existing job prevents you from running a separate job that may confuse developers and make your pipelines take longer to run.

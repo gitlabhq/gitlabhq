@@ -195,6 +195,8 @@ export default {
     <!-- Roles -->
     <protection-row v-if="roles.length" :title="$options.i18n.rolesTitle" :access-levels="roles" />
 
+    <slot name="ee-custom-roles"></slot>
+
     <!-- Users and Groups -->
     <protection-row
       v-if="hasUsers || hasGroups"
