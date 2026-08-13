@@ -28,7 +28,7 @@ The term `SHOULD` per the [RFC 2119](https://www.ietf.org/rfc/rfc2119.txt) means
 
 Ideally, each of these tradeoffs should be documented
 in the separate issues, labeled accordingly and linked
-to original issue and epic.
+to the original issue and epic.
 
 ## Impact Analysis
 
@@ -36,7 +36,7 @@ to original issue and epic.
 and those maintaining a GitLab setup.
 
 Any change submitted can have an impact not only on the application itself but
-also those maintaining it and those keeping it up and running (for example, production
+also on those maintaining it and those keeping it up and running (for example, production
 engineers). As a result you should think carefully about the impact of your
 merge request on not only the application but also on the people keeping it up
 and running.
@@ -75,16 +75,16 @@ The data set the merge request processes should be known
 and documented. The feature should clearly document what the expected
 data set is for this feature to process, and what problems it might cause.
 
-If you would think about the following example that puts
-a strong emphasis of data set being processed.
+Consider the following example that puts
+a strong emphasis on the data set being processed.
 The problem is simple: you want to filter a list of files from
 some Git repository. Your feature requests a list of all files
-from the repository and perform search for the set of files.
-As an author you should in context of that problem consider
+from the repository and performs a search for the set of files.
+As an author you should, in the context of that problem, consider
 the following:
 
 1. What repositories are planned to be supported?
-1. How long it do big repositories like Linux kernel take?
+1. How long do big repositories like the Linux kernel take?
 1. Is there something that we can do differently to not process such a
    big data set?
 1. Should we build some fail-safe mechanism to contain
@@ -96,7 +96,7 @@ the following:
 The query plan can tell us if we need additional
 indexes, or expensive filtering (such as using sequential scans).
 
-Each query plan should be run against substantial size of data set.
+Each query plan should be run against a substantial-sized data set.
 For example, if you look for issues with specific conditions,
 you should consider validating a query against
 a small number (a few hundred) and a big number (100_000) of issues.
@@ -163,7 +163,7 @@ By default, queries use read-only replicas, but due to
 [primary sticking](../../administration/postgresql/database_load_balancing.md#primary-sticking), GitLab uses the
 primary for some time and reverts to secondaries after they have either caught up or after 30 seconds.
 Doing this can lead to a considerable amount of unnecessary load on the primary.
-To prevent switching to the primary [merge request 56849](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56849) introduced the
+To prevent switching to the primary, [merge request 56849](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56849) introduced the
 `without_sticky_writes` block. Typically, this method can be applied to prevent primary stickiness
 after a trivial or insignificant write which doesn't affect the following queries in the same session.
 
@@ -176,7 +176,7 @@ As a counterpart of the `without_sticky_writes` utility,
 replicas regardless of the current primary stickiness.
 This utility is reserved for cases where queries can tolerate replication lag.
 
-Internally, our database load balancer classifies the queries based on their main statement (`select`, `update`, `delete`, and so on). When in doubt, it redirects the queries to the primary database. Hence, there are some common cases the load balancer sends the queries to the primary unnecessarily:
+Internally, our database load balancer classifies the queries based on their main statement (`select`, `update`, `delete`, and so on). When in doubt, it redirects the queries to the primary database. Hence, there are some common cases where the load balancer sends the queries to the primary unnecessarily:
 
 - Custom queries (via `exec_query`, `execute_statement`, `execute`, and so on)
 - Read-only transactions
@@ -242,7 +242,7 @@ build.project == pipeline_project
 # => true
 ```
 
-When we call `build.project`, it doesn't hit the database, it uses the cached result, but it re-instantiates
+When we call `build.project`, it doesn't hit the database. It uses the cached result, but it re-instantiates
 the same pipeline project object. It turns out that associated objects do not point to the same in-memory object.
 
 If we try to serialize each build:
@@ -253,7 +253,7 @@ pipeline.builds.each do |build|
 end
 ```
 
-It re-instantiates project object for each build, instead of using the same in-memory object.
+It re-instantiates a project object for each build, instead of using the same in-memory object.
 
 In this particular case the workaround is fairly easy:
 
@@ -291,13 +291,13 @@ For fetching rows from various tables in a batch-style, see [Eager Loading](#eag
 ### Example: Delete multiple files from Object Storage
 
 When you delete multiple files from object storage, like GCS,
-executing a single REST API call multiple times is a quite expensive
+executing a single REST API call multiple times is quite an expensive
 process. Ideally, this should be done in a batch-style, for example, S3 provides
 [batch deletion API](https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteObjects.html),
 so it'd be a good idea to consider such an approach.
 
 The `FastDestroyAll` module might help this situation. It's a
-small framework when you remove a bunch of database rows and its associated data
+small framework for removing a bunch of database rows and their associated data
 in a batch style.
 
 ## Timeout
@@ -310,24 +310,24 @@ Often, GitLab needs to communicate with an external service such as Kubernetes
 clusters. In this case, it's hard to estimate when the external service finishes
 the requested process, for example, if it's a user-owned cluster that's inactive for some reason,
 GitLab might wait for the response forever ([Example](https://gitlab.com/gitlab-org/gitlab/-/issues/31475)).
-This could result in Puma timeout and should be avoided at all cost.
+This could result in Puma timeout and should be avoided at all costs.
 
 You should set a reasonable timeout, gracefully handle exceptions and surface the
-errors in UI or logging internally.
+errors in the UI or logging internally.
 
 Using [`ReactiveCaching`](../utilities.md#reactivecaching) is one of the best solutions to fetch external data.
 
 ## Keep database transaction minimal
 
-**Summary**: You should avoid accessing to external services like Gitaly during database
+**Summary**: You should avoid accessing external services like Gitaly during database
 transactions, otherwise it leads to severe contention problems
 as an open transaction basically blocks the release of a PostgreSQL backend connection.
 
-For keeping transaction as minimal as possible, consider using `AfterCommitQueue`
+For keeping the transaction as minimal as possible, consider using `AfterCommitQueue`
 module or `after_commit` AR hook.
 
 Here is [an example](https://gitlab.com/gitlab-org/gitlab/-/issues/36154#note_247228859)
-that one request to Gitaly instance during transaction triggered a ~"priority::1" issue.
+that one request to a Gitaly instance during a transaction triggered a ~"priority::1" issue.
 
 ## Eager Loading
 
@@ -365,7 +365,7 @@ A merge request must not increase the memory usage of GitLab by more than the
 absolute bare minimum required by the code. This means that if you have to parse
 some large document (for example, an HTML document) it's best to parse it as a stream
 whenever possible, instead of loading the entire input into memory. Sometimes
-this isn't possible, in that case this should be stated explicitly in the merge
+this isn't possible. In that case, this should be stated explicitly in the merge
 request.
 
 ## Lazy Rendering of UI Elements
@@ -410,22 +410,22 @@ The main styles of pagination are:
    and the total number of pages. This style is well supported by all components of GitLab.
 1. Offset-based pagination, but without the count: user goes to a specific page, like 1.
    User sees only the next page number, but does not see the total amount of pages.
-1. Next page using keyset-based pagination: user can only go to next page, as we don't know how many pages
+1. Next page using keyset-based pagination: user can only go to the next page, as we don't know how many pages
    are available.
 1. Infinite scrolling pagination: user scrolls the page and next items are loaded asynchronously. This is ideal,
-   as it has exact same benefits as the previous one.
+   as it has the exact same benefits as the previous one.
 
 The ultimately scalable solution for pagination is to use Keyset-based pagination.
-However, we don't have support for that at GitLab at that moment. You
-can follow the progress looking at [API: Keyset Pagination](https://gitlab.com/groups/gitlab-org/-/work_items/2039).
+However, we don't have support for that at GitLab at the moment. You
+can follow the progress by looking at [API: Keyset Pagination](https://gitlab.com/groups/gitlab-org/-/work_items/2039).
 
 Take into consideration the following when choosing a pagination strategy:
 
-1. It's very inefficient to calculate amount of objects that pass the filtering,
-   this operation usually can take seconds, and can time out,
-1. It's very inefficient to get entries for page at higher ordinals, like 1000.
+1. It's very inefficient to calculate the number of objects that pass the filtering.
+   This operation usually can take seconds, and can time out.
+1. It's very inefficient to get entries for a page at higher ordinals, like 1000.
    The database has to sort and iterate all previous items, and this operation usually
-   can result in substantial load put on database.
+   can result in a substantial load on the database.
 
 You can find useful tips related to pagination in the [pagination guidelines](../database/pagination_guidelines.md).
 
@@ -433,11 +433,11 @@ You can find useful tips related to pagination in the [pagination guidelines](..
 
 Counters should always be truncated. It means that we don't want to present
 the exact number over some threshold. The reason for that is for the cases where we want
-to calculate exact number of items, we effectively need to filter each of them for
+to calculate the exact number of items, we effectively need to filter each of them for
 the purpose of knowing the exact number of items matching.
 
-From ~UX perspective it's often acceptable to see that you have over 1000+ pipelines,
-instead of that you have 40000+ pipelines, but at a tradeoff of loading page for 2s longer.
+From a UX perspective it's often acceptable to see that you have over 1000+ pipelines,
+instead of that you have 40000+ pipelines, but at a tradeoff of loading the page for 2s longer.
 
 An example of this pattern is the list of pipelines and jobs. We truncate numbers to `1000+`,
 but we show an accurate number of running pipelines, which is the most interesting information.
@@ -451,9 +451,9 @@ This can speed up the initial page load and give a better user experience overal
 ## Usage of feature flags
 
 Each feature that has performance critical elements or has a known performance deficiency
-needs to come with feature flag to disable it.
+needs to come with a feature flag to disable it.
 
-The feature flag makes our team more happy, because they can monitor the system and
+The feature flag makes our team happier, because they can monitor the system and
 quickly react without our users noticing the problem.
 
 Performance deficiencies should be addressed right away after we merge initial
@@ -464,42 +464,42 @@ Read more about when and how feature flags should be used in
 
 ## Storage
 
-We can consider the following types of storages:
+We can consider the following types of storage:
 
-- **Local temporary storage** (very-very short-term storage) This type of storage is system-provided storage, like a `/tmp` folder.
+- **Local temporary storage** (very short-term storage) This type of storage is system-provided storage, like a `/tmp` folder.
   This is the type of storage that you should ideally use for all your temporary tasks.
   The fact that each node has its own temporary storage makes scaling significantly easier.
   This storage is also very often SSD-based, thus is significantly faster.
   The local storage can be configured for the application with
-  the usage of `TMPDIR` variable.
+  the usage of the `TMPDIR` variable.
 - **Shared temporary storage** (short-term storage) This type of storage is network-based temporary storage,
   usually run with a common NFS server. As of Feb 2020, we still use this type of storage
   for most of our implementations. Even though this allows the above limit to be significantly larger,
   it does not really mean that you can use more. The shared temporary storage is shared by
-  all nodes. Thus, the job that uses significant amount of that space or performs a lot
-  of operations creates a contention on execution of all other jobs and request
-  across the whole application, this can impact stability of the whole GitLab.
+  all nodes. Thus, the job that uses a significant amount of that space or performs a lot
+  of operations creates a contention on execution of all other jobs and requests
+  across the whole application. This can impact the stability of the whole GitLab.
   Be respectful of that.
 - **Shared persistent storage** (long-term storage) This type of storage uses
   shared network-based storage (for example, NFS). This solution is mostly used by customers running small
   installations consisting of a few nodes. The files on shared storage are easily accessible,
-  but any job that is uploading or downloading data can create a serious contention to all other jobs.
+  but any job that is uploading or downloading data can create a serious contention for all other jobs.
   This is also an approach by default used by Omnibus.
-- **Object-based persistent storage** (long term storage) this type of storage uses external
+- **Object-based persistent storage** (long term storage) This type of storage uses external
   services like [AWS S3](https://en.wikipedia.org/wiki/Amazon_S3). The Object Storage
   can be treated as infinitely scalable and redundant. Accessing this storage usually requires
   downloading the file to manipulate it. The Object Storage can be considered as an ultimate
   solution, as by definition it can be assumed that it can handle unlimited concurrent uploads
-  and downloads of files. This is also ultimate solution required to ensure that application can
-  run in containerized deployments (Kubernetes) at ease.
+  and downloads of files. This is also an ultimate solution required to ensure that the application can
+  run in containerized deployments (Kubernetes) with ease.
 
 ### Temporary storage
 
 The storage on production nodes is really sparse. The application should be built
 in a way that accommodates running under very limited temporary storage.
-You can expect the system on which your code runs has a total of `1G-10G`
+You can expect that the system on which your code runs has a total of `1G-10G`
 of temporary storage. However, this storage is really shared across all
-jobs being run. If your job requires to use more than `100MB` of that space
+jobs being run. If your job requires using more than `100MB` of that space
 you should reconsider the approach you have taken.
 
 Whatever your needs are, you should clearly document if you need to process files.
@@ -510,7 +510,7 @@ to work with you to possibly discover a better solution.
 
 The usage of local storage is a desired solution to use,
 especially since we work on deploying applications to Kubernetes clusters.
-When you would like to use `Dir.mktmpdir`? In a case when you want for example
+When would you like to use `Dir.mktmpdir`? In a case when you want for example
 to extract/create archives, perform extensive manipulation of existing data, and so on.
 
 ```ruby
@@ -524,13 +524,13 @@ end
 #### Shared temporary storage
 
 The usage of shared temporary storage is required if your intent
-is to persistent file for a disk-based storage, and not Object Storage.
-[Workhorse direct upload](../uploads/_index.md#direct-upload) when accepting file
+is to persist a file to disk-based storage, and not Object Storage.
+[Workhorse direct upload](../uploads/_index.md#direct-upload) when accepting a file
 can write it to shared storage, and later GitLab Rails can perform a move operation.
 The move operation on the same destination is instantaneous.
-The system instead of performing `copy` operation just re-attaches file into a new place.
+The system instead of performing a `copy` operation just re-attaches the file into a new place.
 
-Since this introduces extra complexity into application, you should only try
+Since this introduces extra complexity into the application, you should only try
 to re-use well established patterns (for example, `ObjectStorage` concern) instead of re-implementing it.
 
 The usage of shared temporary storage is otherwise deprecated for all other usages.
@@ -540,17 +540,17 @@ The usage of shared temporary storage is otherwise deprecated for all other usag
 #### Object Storage
 
 It is required that all features holding persistent files support saving data
-to Object Storage. Having a persistent storage in the form of shared volume across nodes
-is not scalable, as it creates a contention on data access all nodes.
+to Object Storage. Having a persistent storage in the form of a shared volume across nodes
+is not scalable, as it creates a contention on data access across all nodes.
 
 GitLab offers the [ObjectStorage concern](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/uploaders/object_storage.rb)
-that implements a seamless support for Shared and Object Storage-based persistent storage.
+that implements seamless support for Shared and Object Storage-based persistent storage.
 
 #### Data access
 
-Each feature that accepts data uploads or allows to download them needs to use
-[Workhorse direct upload](../uploads/_index.md#direct-upload). It means that uploads needs to be
-saved directly to Object Storage by Workhorse, and all downloads needs to be served
+Each feature that accepts data uploads or allows them to be downloaded needs to use
+[Workhorse direct upload](../uploads/_index.md#direct-upload). It means that uploads need to be
+saved directly to Object Storage by Workhorse, and all downloads need to be served
 by Workhorse.
 
 Performing uploads/downloads via Puma is an expensive operation,
@@ -558,7 +558,7 @@ as it blocks the whole processing slot (thread) for the duration of the upload.
 
 Performing uploads/downloads via Puma also has a problem where the operation
 can time out, which is especially problematic for slow clients. If clients take a long time
-to upload/download the processing slot might be killed due to request processing
+to upload/download, the processing slot might be killed due to request processing
 timeout (usually between 30s-60s).
 
 For the above reasons it is required that [Workhorse direct upload](../uploads/_index.md#direct-upload) is implemented

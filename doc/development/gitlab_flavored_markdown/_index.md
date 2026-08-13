@@ -21,8 +21,8 @@ GitLab Flavored Markdown (GLFM).
 > ...a standard, unambiguous syntax specification for Markdown, along with a suite of comprehensive tests to validate Markdown implementations against this specification.
 
 Extensions from [GitHub Flavored Markdown (GFM)](https://github.github.com/gfm/), such as tables and task lists, are supported.
-Various [extensions](../../user/markdown.md#differences-with-standard-markdown), such as math and multiline
-blockquotes are then added, creating GLFM.
+Various [extensions](../../user/markdown.md#differences-with-standard-markdown) (such as math and multiline
+blockquotes) are then added, creating GLFM.
 
 > [!note]
 > In many places in the code, we use `gfm` or `GFM`. In those cases, we're usually
@@ -36,7 +36,7 @@ To create the HTML displayed to the user, the Markdown is usually processed as f
 - A processing pipeline (the "Banzai" pipeline) is run.
   - Some pre-processing happens, then is converted into basic HTML using the
     [`gitlab-glfm-markdown`](https://gitlab.com/gitlab-org/ruby/gems/gitlab-glfm-markdown) gem, which uses [`comrak`](https://github.com/kivikakk/comrak).
-  - Various filters are run which further transform the HTML. For example handling
+  - Various filters are run which further transform the HTML. For example, handling
     references or custom emoji.
 - The HTML is then handed to the frontend, which displays it in various ways, or cached in the database.
   - For example, the rich text editor converts the HTML into a format used by [`tiptap`](https://tiptap.dev/product/editor) to be displayed and edited.

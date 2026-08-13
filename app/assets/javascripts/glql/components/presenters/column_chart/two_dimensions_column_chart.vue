@@ -2,7 +2,9 @@
 import { GlStackedColumnChart } from '@gitlab/ui/src/charts';
 import {
   buildStackedByDimension,
+  dimensionLabelFormatter,
   tooltipContentFromParams,
+  tooltipTitleFromParams,
   baseFieldKeyOf,
   labelWithParameter,
 } from '../../../utils/chart_data';
@@ -51,16 +53,28 @@ export default {
     yAxisTitle() {
       return labelWithParameter(this.metric);
     },
+    categoryFormatter() {
+      return dimensionLabelFormatter(this.data.nodes, this.primaryDimension);
+    },
     chartOptions() {
       // GlStackedColumnChart declares yAxis as an array; pass an array so the
       // formatter merges in. Axis uses the compact variant for counts; tooltip
       // keeps full-digit formatting via metricFormatter below.
-      return { yAxis: [{ axisLabel: { formatter: this.metricAxisFormatter } }] };
+      return {
+        xAxis: { axisLabel: { formatter: this.categoryFormatter } },
+        yAxis: [{ axisLabel: { formatter: this.metricAxisFormatter } }],
+      };
     },
   },
   methods: {
     formatTooltipValue(_label, value) {
       return this.metricFormatter(value);
+    },
+    tooltipTitle(params) {
+      return tooltipTitleFromParams(params, {
+        formatLabel: this.categoryFormatter,
+        axisName: this.xAxisTitle,
+      });
     },
     contentFromParams: tooltipContentFromParams,
   },
@@ -78,6 +92,7 @@ export default {
     presentation="stacked"
     :include-legend-avg-max="false"
   >
+    <template #tooltip-title="{ params }">{{ tooltipTitle(params) }}</template>
     <template #tooltip-content="{ params }">
       <formatted-tooltip-content
         :content="contentFromParams(params)"

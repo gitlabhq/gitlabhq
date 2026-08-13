@@ -145,7 +145,7 @@ processing, or "who is the processor".
 Processing in Rails looks appealing but it tends to lead to scaling
 problems down the road because you cannot use direct upload. You are
 then forced to rebuild your feature with processing in Workhorse. So
-if the requirements of your feature allows it, doing the processing in
+if the requirements of your feature allow it, doing the processing in
 Sidekiq strikes a good balance between complexity and the ability to
 scale.
 
@@ -293,7 +293,7 @@ this file to its intended location.
 
 ## Tables
 
-The Scalability::Frameworks team is making object storage and uploads more easy to use and more robust. If you add or change uploaders, it helps us if you update this table too. This helps us keep an overview of where and how uploaders are used.
+The Scalability::Frameworks team is making object storage and uploads easier to use and more robust. If you add or change uploaders, it helps us if you update this table too. This helps us keep an overview of where and how uploaders are used.
 
 ### Feature bucket details
 

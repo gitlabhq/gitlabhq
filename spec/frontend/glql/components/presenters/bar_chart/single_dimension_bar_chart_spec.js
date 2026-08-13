@@ -5,7 +5,13 @@ import { barCategoryAxisOptions } from '~/glql/components/presenters/bar_chart/b
 import { chartTooltipStub } from '../../../chart_helpers';
 
 const DIMENSION = { key: 'language', label: 'Language', name: 'language', type: 'dimension' };
-const CREATED = { key: 'created', label: 'Created', name: 'created', type: 'dimension' };
+const CREATED = {
+  key: 'created',
+  label: 'Created',
+  name: 'created',
+  type: 'dimension',
+  parameters: { granularity: 'daily' },
+};
 const TOTAL_COUNT = {
   key: 'totalCount',
   label: 'Total count',
@@ -225,26 +231,36 @@ describe('SingleDimensionBarChart', () => {
     it('overrides the truncating label formatter with pixel-based sizing', () => {
       createComponent();
 
-      expect(yAxisOption().axisLabel.formatter('Jan 1, 2026')).toBe('Jan 1, 2026');
+      // The probe must be longer than GlBarChart's 7-character truncation to
+      // tell the identity override apart from the default truncating formatter.
+      expect(yAxisOption().axisLabel.formatter('feature-branch-name')).toBe('feature-branch-name');
       expect(yAxisOption().axisLabel.overflow).toBe('truncate');
     });
 
     it('sizes the label gutter from the longest category label', () => {
+      // Multi-year buckets produce yearful labels ("Jan 1, 2025"), keeping the
+      // expected width above the clamp floor so this pins the proportional
+      // sizing, not just the minimum.
       createComponent({
         dimension: CREATED,
-        data: { nodes: [{ created: '2026-01-01', totalCount: 21 }] },
+        data: {
+          nodes: [
+            { created: '2025-01-01', totalCount: 21 },
+            { created: '2026-06-01', totalCount: 14 },
+          ],
+        },
       });
 
       // The sizing math itself is covered by bar_chart_options_spec; here we
       // assert the formatted labels reach the util and its output the chart.
-      const { yAxis, grid } = barCategoryAxisOptions(['Jan 1, 2026']);
+      const { yAxis, grid } = barCategoryAxisOptions(['Jan 1, 2025', 'Jun 1, 2026']);
 
       expect(yAxisOption().axisLabel.width).toBe(yAxis.axisLabel.width);
       expect(yAxisOption().nameGap).toBe(yAxis.nameGap);
       expect(findChart().props('option').grid).toEqual(grid);
     });
 
-    it('formats date-bucket dimension values as localized dates', () => {
+    it('keeps raw bucket values in the data and formats them via the axis formatter', () => {
       createComponent({
         dimension: CREATED,
         data: {
@@ -257,10 +273,11 @@ describe('SingleDimensionBarChart', () => {
 
       expect(findChart().props('data')).toEqual({
         'Total count': [
-          [21, 'Jan 1, 2026'],
-          [14, 'Feb 1, 2026'],
+          [21, '2026-01-01'],
+          [14, '2026-02-01'],
         ],
       });
+      expect(yAxisOption().axisLabel.formatter('2026-01-01')).toBe('Jan 1');
     });
   });
 

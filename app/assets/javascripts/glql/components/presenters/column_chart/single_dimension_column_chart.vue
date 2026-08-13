@@ -5,8 +5,10 @@ import {
   baseFieldKeyOf,
   buildSeries,
   buildStackedByMetric,
+  dimensionLabelFormatter,
   labelWithParameter,
   tooltipContentFromParams,
+  tooltipTitleFromParams,
 } from '../../../utils/chart_data';
 import {
   axisFormatterFor,
@@ -63,11 +65,16 @@ export default {
     dimensionLabel() {
       return labelWithParameter(this.dimension);
     },
+    categoryFormatter() {
+      return dimensionLabelFormatter(this.data.nodes, this.dimension);
+    },
     chartOptions() {
+      const xAxis = { axisLabel: { formatter: this.categoryFormatter } };
       // Dual-axis: per-metric formatter on each axis. ECharts deep-merges yAxis
       // by index when given an array.
       if (this.metrics.length === 2 && !this.useSingleAxisChart) {
         return {
+          xAxis,
           yAxis: [
             { axisLabel: { formatter: axisFormatterFor(baseFieldKeyOf(this.metrics[0])) } },
             { axisLabel: { formatter: axisFormatterFor(baseFieldKeyOf(this.metrics[1])) } },
@@ -79,10 +86,11 @@ export default {
       // pass an array for the merge to apply.
       if (this.useSingleAxisChart) {
         return this.sharedAxisFormatter
-          ? { yAxis: [{ axisLabel: { formatter: this.sharedAxisFormatter } }] }
-          : {};
+          ? { xAxis, yAxis: [{ axisLabel: { formatter: this.sharedAxisFormatter } }] }
+          : { xAxis };
       }
       return {
+        xAxis,
         yAxis: { axisLabel: { formatter: axisFormatterFor(baseFieldKeyOf(this.metrics[0])) } },
       };
     },
@@ -101,6 +109,12 @@ export default {
     formatValueByLabel(label, value) {
       return formatValueForLabel(this.formatterByLabel, label, value);
     },
+    tooltipTitle(params) {
+      return tooltipTitleFromParams(params, {
+        formatLabel: this.categoryFormatter,
+        axisName: this.dimensionLabel,
+      });
+    },
     contentFromParams: tooltipContentFromParams,
   },
 };
@@ -118,6 +132,7 @@ export default {
     :presentation="presentation"
     :include-legend-avg-max="false"
   >
+    <template #tooltip-title="{ params }">{{ tooltipTitle(params) }}</template>
     <template #tooltip-content="{ params }">
       <formatted-tooltip-content
         :content="contentFromParams(params)"
@@ -135,6 +150,7 @@ export default {
     :secondary-data="secondaryBars"
     :secondary-data-title="secondaryDataTitle"
   >
+    <template #tooltip-title="{ params }">{{ tooltipTitle(params) }}</template>
     <template #tooltip-content="{ params }">
       <formatted-tooltip-content
         :content="contentFromParams(params)"

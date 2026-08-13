@@ -10,13 +10,13 @@ title: The Banzai pipeline and parsing
 
 Parsing and rendering [GitLab Flavored Markdown](_index.md) into HTML involves different components:
 
-- Banzai pipeline and it's various filters
+- Banzai pipeline and its various filters
 - Markdown parser
 
 The backend does all the processing for GLFM to HTML. This provides several benefits:
 
 - Security: We run robust sanitization which removes unknown tags, classes, and ids.
-- References: Our reference syntax requires access to the database to resolve issues, etc, as well as redacting references in which the user has no access.
+- References: Our reference syntax requires access to the database, for example, to resolve issues, as well as redacting references in which the user has no access.
 - Consistency: We want to provide users with a consistent experience, which includes full support of the GLFM syntax and styling. Having a single place where the processing is done allows us to provide that.
 - Caching: We cache the HTML in our database when possible, such as for issue or MR descriptions, or comments.
 - Quick actions: We use a specialized pipeline to process quick actions, so that we can better detect them in Markdown text.
@@ -56,8 +56,8 @@ Of specific note is the `SanitizationFilter`. This is critical for providing saf
 
 ### `PostProcessPipeline`
 
-The output from the `FullPipeline` gets cached in the database. However references have already been resolved. Based on
-a users' permissions, they may not be able to see those references. `PostProcessPipeline` is responsible for redacting any
+The output from the `FullPipeline` gets cached in the database. However, references have already been resolved. Based on
+a user's permissions, they may not be able to see those references. `PostProcessPipeline` is responsible for redacting any
 confidential information based on user permissions. These changes are never cached, as they need to get recomputed each time
 they are displayed.
 
@@ -86,7 +86,7 @@ For this we use several techniques:
 - For certain filters that can take a long time, we use a Ruby timeout with `Gitlab::RenderTimeout.timeout` in [TimeoutFilterHandler](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/banzai/filter/concerns/timeout_filter_handler.rb).
   This allows us to interrupt the actual processing if it takes too long.
   In general, using Ruby `timeout` is [not considered safe](https://jvns.ca/blog/2015/11/27/why-rubys-timeout-is-dangerous-and-thread-dot-raise-is-terrifying/).
-  We therefore only use it when absolutely necessary, preferring to fix an actual performance problem rather then using a timeout.
+  We therefore only use it when absolutely necessary, preferring to fix an actual performance problem rather than using a timeout.
 - [PipelineTimingCheck](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/banzai/filter/concerns/pipeline_timing_check.rb) allows us to keep track of the cumulative amount of time the pipeline is taking. When we reach a maximum, we can then skip any remaining filters.
   For nearly all filters, it's generally ok to skip them in a case like this in order to show the user _something_, rather than nothing.
 

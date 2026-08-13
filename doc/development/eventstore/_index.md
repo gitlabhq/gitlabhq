@@ -43,7 +43,7 @@ We change `Ci::CreatePipelineService` and add logic (like an `if` statement) to 
 pipeline is created. Then we schedule a worker to run some side-effects for the `MergeRequests::` domain.
 
 This style violates the [Open-Closed Principle](https://en.wikipedia.org/wiki/Open%E2%80%93closed_principle)
-and unnecessarily add side-effects logic from other domains, increasing coupling:
+and unnecessarily adds side-effects logic from other domains, increasing coupling:
 
 ```mermaid
 graph LR

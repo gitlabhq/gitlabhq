@@ -1281,7 +1281,7 @@ flowchart TD
 
 In the dependency detection phase the analyzer parses available lockfiles to build a comprehensive inventory of your project's dependencies and their relationship (dependency graph). This inventory is captured in a CycloneDX SBOM (Software Bill of Materials) document.
 
-In the static reachability phase he analyzer parses source files to identify which SBOM components are actively used and marks them accordingly in the SBOM file.
+In the static reachability phase the analyzer parses source files to identify which SBOM components are actively used and marks them accordingly in the SBOM file.
 This allows users to prioritize vulnerabilities based on whether the vulnerable component is reachable.
 For more information, see the [static reachability page](../static_reachability.md).
 

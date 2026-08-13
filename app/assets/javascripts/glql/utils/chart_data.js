@@ -1,4 +1,8 @@
-import { DATE_ONLY_REGEX, newDate } from '~/lib/utils/datetime/date_calculation_utility';
+import {
+  DATE_ONLY_REGEX,
+  newDate,
+  nDaysAfter,
+} from '~/lib/utils/datetime/date_calculation_utility';
 import { toISODateFormat } from '~/lib/utils/datetime/date_format_utility';
 import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
 import { __ } from '~/locale';
@@ -57,19 +61,78 @@ const labelByObjectType = {
 const isRealCalendarDate = (value) =>
   DATE_ONLY_REGEX.test(value) && toISODateFormat(newDate(value)) === value;
 
+// Bucket starts arrive date-only for weekly/monthly but as ISO datetimes
+// for daily (ClickHouse's toStartOfInterval returns DateTime for day), so
+// extract and validate the date part; anything else is not a bucket value.
+const BUCKET_TIME_SUFFIX_REGEX = /^T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})?$/;
+
+const bucketDateOf = (value) => {
+  if (typeof value !== 'string') return null;
+  const datePart = value.slice(0, 10);
+  if (!isRealCalendarDate(datePart)) return null;
+  const timePart = value.slice(10);
+  if (timePart && !BUCKET_TIME_SUFFIX_REGEX.test(timePart)) return null;
+  return datePart;
+};
+
 // newDate parses "YYYY-MM-DD" as a local date, keeping the label on the
-// bucket's own day in every viewer timezone.
-const formatDateLabel = (value) => localeDateFormat.asDate.format(newDate(value));
+// bucket's own day in every viewer timezone. Daily and weekly labels drop
+// the year unless `includeYear` is set - the axis carries the year context.
+const formatDateLabel = (value, granularity, includeYear) => {
+  const date = newDate(value);
+  const dayFormat = includeYear ? localeDateFormat.asDate : localeDateFormat.asDateWithoutYear;
+  if (granularity === 'weekly') {
+    return dayFormat.formatRange(date, nDaysAfter(date, 6));
+  }
+  if (granularity === 'monthly') return localeDateFormat.asMonthYear.format(date);
+  if (granularity === 'yearly') return String(date.getFullYear());
+  return dayFormat.format(date);
+};
 
 export const dimensionValue = (node, dimension) => {
   const value = node[dimension.key];
   if (value == null) return __('Unknown');
-  if (typeof value === 'string' && isRealCalendarDate(value)) return formatDateLabel(value);
+
+  // Bucket values stay raw: dimensionValue's output is the category/series
+  // identity downstream, and distinct buckets must stay distinct even when
+  // their labels coincide. Formatting is dimensionLabelFormatter's job.
   if (typeof value !== 'object') return String(value);
 
   // eslint-disable-next-line no-underscore-dangle
   const formatter = labelByObjectType[value.__typename];
   return String(formatter?.(value) ?? '');
+};
+
+// Year-less labels are ambiguous when a series crosses a calendar year, so
+// once buckets span two years (weekly: range ends included), all labels
+// carry the year. Cosmetic only - bucket identity is the raw value.
+const spansMultipleYears = (nodes, dimension) => {
+  const granularity = dimension?.parameters?.granularity;
+  if (!granularity) return false;
+  const years = new Set();
+  for (const node of nodes ?? []) {
+    const bucketDate = bucketDateOf(node[dimension.key]);
+    if (bucketDate) {
+      years.add(bucketDate.slice(0, 4));
+      if (granularity === 'weekly') {
+        years.add(String(nDaysAfter(newDate(bucketDate), 6).getFullYear()));
+      }
+    }
+    if (years.size > 1) return true;
+  }
+  return false;
+};
+
+// Maps raw category values to display labels (axis formatters, tooltip
+// titles, sizing). A factory: the year decision needs the whole series.
+export const dimensionLabelFormatter = (nodes, dimension) => {
+  const granularity = dimension?.parameters?.granularity;
+  if (!granularity) return (value) => String(value);
+  const includeYear = spansMultipleYears(nodes, dimension);
+  return (value) => {
+    const bucketDate = bucketDateOf(value);
+    return bucketDate ? formatDateLabel(bucketDate, granularity, includeYear) : String(value);
+  };
 };
 
 export const buildSeries = (nodes, dimension, metric) => {
@@ -97,6 +160,22 @@ export const buildBarSeriesData = (nodes, dimension, metrics) => {
   );
 };
 
+// ECharts renders series/legend names with no formatting hook, so labels
+// are baked into bars[].name. Colliding labels fall back to raw values,
+// which are distinct grouping keys that never look like date labels.
+const seriesNamesFor = (values, nodes, dimension) => {
+  const format = dimensionLabelFormatter(nodes, dimension);
+  const names = new Map(values.map((value) => [value, format(value)]));
+
+  const counts = new Map();
+  names.forEach((name) => counts.set(name, (counts.get(name) ?? 0) + 1));
+  names.forEach((name, value) => {
+    if (counts.get(name) > 1) names.set(value, String(value));
+  });
+
+  return names;
+};
+
 export const buildStackedByDimension = ({ nodes, primaryDim, secondaryDim, metric }) => {
   if (!nodes?.length || !primaryDim || !secondaryDim || !metric) {
     return { groups: [], bars: [] };
@@ -104,7 +183,9 @@ export const buildStackedByDimension = ({ nodes, primaryDim, secondaryDim, metri
 
   const groups = [];
   const groupIndex = new Map();
-  const valuesBySecondary = {};
+  // Both dimensions group by raw values; the primary is formatted at the
+  // axis edge, the secondary via the injective name mapping below.
+  const valuesBySecondary = new Map();
 
   nodes.forEach((node) => {
     const primary = dimensionValue(node, primaryDim);
@@ -114,12 +195,14 @@ export const buildStackedByDimension = ({ nodes, primaryDim, secondaryDim, metri
       groupIndex.set(primary, groups.length);
       groups.push(primary);
     }
-    if (!valuesBySecondary[secondary]) valuesBySecondary[secondary] = {};
-    valuesBySecondary[secondary][groupIndex.get(primary)] = node[metric.key] ?? 0;
+    if (!valuesBySecondary.has(secondary)) valuesBySecondary.set(secondary, {});
+    valuesBySecondary.get(secondary)[groupIndex.get(primary)] = node[metric.key] ?? 0;
   });
 
-  const bars = Object.entries(valuesBySecondary).map(([name, valuesByIndex]) => ({
-    name,
+  const names = seriesNamesFor([...valuesBySecondary.keys()], nodes, secondaryDim);
+
+  const bars = [...valuesBySecondary.entries()].map(([value, valuesByIndex]) => ({
+    name: names.get(value),
     data: groups.map((_, i) => valuesByIndex[i] ?? 0),
   }));
 
@@ -140,16 +223,27 @@ export const buildStackedByMetric = (nodes, dimension, metrics) => {
   };
 };
 
-// Why this exists: the shared GitLab UI tooltip slot pre-computes `content` as
-// `value[metricIndex]`, which yields `undefined` for stacked-column data (where
-// `value` is a scalar, not a tuple) and surfaces as NaN once formatters run.
-// Reading `params.seriesData` directly sidesteps that, and works for both
-// tuples and scalar data points.
-//
-// Column/line chart tuples are `[label, value]`; bar chart's are flipped to
-// `[value, label]` because its value axis is x instead of y (see
-// buildBarSeriesData). Callers pass their displayType rather than the tuple
-// index directly, so this detail stays private to this function.
+// The shared ChartTooltip pre-computes `content` as `value[metricIndex]`,
+// which is undefined for scalar stacked-column points, so the two helpers
+// below rebuild the title and rows from `params.seriesData`. Bar chart
+// tuples are flipped to [value, category] because their value axis is x;
+// callers pass displayType so the tuple index stays private here.
+
+// The title is the deduplicated categories run through the label formatter;
+// scalar points carry the category in the point's `name` instead.
+export const tooltipTitleFromParams = (
+  params,
+  { formatLabel = String, axisName = null, displayType = DISPLAY_TYPES.COLUMN_CHART } = {},
+) => {
+  if (!params?.seriesData?.length) return '';
+  const dimensionIndex = displayType === DISPLAY_TYPES.BAR_CHART ? 1 : 0;
+  const categories = params.seriesData.map(({ value, name }) =>
+    Array.isArray(value) ? value[dimensionIndex] : name,
+  );
+  const title = [...new Set(categories)].map(formatLabel).join(', ');
+  return axisName ? `${title} (${axisName})` : title;
+};
+
 export const tooltipContentFromParams = (params, displayType = DISPLAY_TYPES.COLUMN_CHART) => {
   if (!params?.seriesData) return {};
   const valueIndex = displayType === DISPLAY_TYPES.BAR_CHART ? 0 : 1;

@@ -126,6 +126,13 @@ To select a model for Agentic Chat:
    1. In the **Available models: Agentic Chat** dialog, select the
       **Restrict to specific models** checkbox.
    1. Select the models that you want Agentic Chat to be able to use.
+      To select every model, select the **Select all models** checkbox.
+      When every model is selected, select **Clear all models** to clear the selection.
+
+      > [!note]
+      > The default model is always available to users and cannot be cleared.
+      > To save your changes, you must select at least one model in addition to the default model.
+
    1. Select **Save**.
 
    > [!note]

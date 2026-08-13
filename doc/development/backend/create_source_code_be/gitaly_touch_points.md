@@ -11,7 +11,7 @@ Gitaly is a wrapper around the `git` binary. It provides managed access to the f
 
 The [Beginner's guide to Gitaly contributions](https://gitlab.com/gitlab-org/gitaly/-/blob/master/doc/beginners_guide.md) is focused on making updates to Gitaly, and offers many insights into how to understand the Gitaly code.
 
-All access to Gitaly from other parts of GitLab are through Create: Source Code endpoints:
+All access to Gitaly from other parts of GitLab is through Create: Source Code endpoints:
 
 ## The `Commit` model
 

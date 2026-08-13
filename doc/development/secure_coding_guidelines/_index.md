@@ -84,7 +84,7 @@ Each time you implement a new feature or endpoint at the UI, API, or GraphQL lev
   - Make assertions based on the actors and objects involved: can a user or group or XYZ perform this action on this object?
   - Consider defining them upfront with stakeholders, particularly for the edge cases
 - Do not forget **abuse cases**: write specs that **make sure certain things can't happen**
-  - A lot of specs are making sure things do happen and coverage percentage doesn't take into account permissions as same piece of code is used.
+  - A lot of specs are making sure things do happen and coverage percentage doesn't take into account permissions as the same piece of code is used.
   - Make assertions that certain actors cannot perform actions
 - Naming convention to ease auditability: to be defined, for example, a subfolder containing those specific permission tests, or a `#permissions` block
 
@@ -107,7 +107,7 @@ The [CI/CD development guidelines](../cicd/_index.md) are essential reading mate
 When a regular expression (regex) is used to search for a string and can't find a match,
 it may then backtrack to try other possibilities.
 
-For example when the regex `.*!$` matches the string `hello!`, the `.*` first matches
+For example, when the regex `.*!$` matches the string `hello!`, the `.*` first matches
 the entire string but then the `!` from the regex is unable to match because the
 character has already been used. In that case, the Ruby regex engine _backtracks_
 one character to allow the `!` to match.
@@ -119,7 +119,7 @@ way that increases execution time by several orders of magnitude.
 
 ### Impact
 
-The resource, for example Puma, or Sidekiq, can be made to hang as it takes
+The resource (for example, Puma or Sidekiq) can be made to hang as it takes
 a long time to evaluate the bad regex match. The evaluation time may require manual
 termination of the resource.
 
@@ -441,7 +441,7 @@ have been reported to GitLab include:
     that could be used in further attacks. [More details](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/51327).
 - Reading internal services, including cloud service metadata.
   - The latter can be a serious problem, because an attacker can obtain keys that allow control of the victim's cloud infrastructure. (This is also a good reason
-    to give only necessary privileges to the token.). [More details](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/51490).
+    to give only necessary privileges to the token). [More details](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/51490).
 - When combined with CRLF vulnerability, remote code execution. [More details](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41293).
 
 ### When to Consider
@@ -531,7 +531,7 @@ XSS issues are commonly classified in three categories, by their delivery method
 
 ### Impact
 
-The injected client-side code is executed on the victim's browser in the context of their current session. This means the attacker could perform any same action the victim would typically be able to do through a browser. The attacker would also have the ability to:
+The injected client-side code is executed on the victim's browser in the context of their current session. This means the attacker could perform the same actions the victim would typically be able to do through a browser. The attacker would also have the ability to:
 
 - <i class="fa-youtube-play" aria-hidden="true"></i> [log victim keystrokes](https://youtu.be/2VFavqfDS6w?t=1367)
 - launch a network scan from the victim's browser
@@ -567,7 +567,7 @@ For more information, see ([issue 463408](https://gitlab.com/gitlab-org/gitlab/-
 
 ##### Setting expectations
 
-For any and all input fields, ensure to define expectations on the type/format of input, the contents, <i class="fa-youtube-play" aria-hidden="true"></i> [size limits](https://youtu.be/2VFavqfDS6w?t=7582), the context in which it will be output. It's important to work with both security and product teams to determine what is considered acceptable input.
+For any and all input fields, ensure to define expectations on the type/format of input, the contents, <i class="fa-youtube-play" aria-hidden="true"></i> [size limits](https://youtu.be/2VFavqfDS6w?t=7582), and the context in which it will be output. It's important to work with both security and product teams to determine what is considered acceptable input.
 
 ##### Validate input
 
@@ -661,7 +661,7 @@ Many models expose a sanitized HTML field (for example `description_html`) along
 
 ### Description
 
-Path Traversal vulnerabilities grant attackers access to arbitrary directories and files on the server that is executing an application. This data can include data, code, or credentials.
+Path Traversal vulnerabilities grant attackers access to arbitrary directories and files on the server that is executing an application. This can include data, code, or credentials.
 
 Traversal can occur when a path includes directories. A typical malicious example includes one or more `../`, which tells the file system to look in the parent directory. Supplying many of them in a path, for example `../../../../../../../etc/passwd`, usually resolves to `/etc/passwd`. If the file system is instructed to look back to the root directory and can't go back any further, then extra `../` are ignored. The file system then looks from the root, resulting in `/etc/passwd` - a file you definitely do not want exposed to a malicious attacker!
 
@@ -823,14 +823,14 @@ In order to prevent this from happening, it is recommended to use the method `us
 
 ## Time of check to time of use bugs
 
-Time of check to time of use, or TOCTOU, is a class of error which occur when the state of something changes unexpectedly partway during a process.
+Time of check to time of use, or TOCTOU, is a class of error which occurs when the state of something changes unexpectedly partway during a process.
 More specifically, it's when the property you checked and validated has changed when you finally get around to using that property.
 
 These types of bugs are often seen in environments which allow multi-threading and concurrency, like filesystems and distributed web applications; these are a type of race condition. TOCTOU also occurs when state is checked and stored, then after a period of time that state is relied on without re-checking its accuracy and/or validity.
 
 ### Examples
 
-**Example 1**: you have a model which accepts a URL as input. When the model is created you verify that the URL host resolves to a public IP address, to prevent attackers making internal network calls. But DNS records can change ([DNS rebinding](#server-side-request-forgery-ssrf)]). An attacker updates the DNS record to `127.0.0.1`, and when your code resolves those URL host it results in sending a potentially malicious request to a server on the internal network. The property was valid at the "time of check", but invalid and malicious at "time of use".
+**Example 1**: you have a model which accepts a URL as input. When the model is created you verify that the URL host resolves to a public IP address, to prevent attackers from making internal network calls. But DNS records can change ([DNS rebinding](#server-side-request-forgery-ssrf)). An attacker updates the DNS record to `127.0.0.1`, and when your code resolves that URL host, it results in sending a potentially malicious request to a server on the internal network. The property was valid at the "time of check", but invalid and malicious at "time of use".
 
 GitLab-specific example can be found in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/214401) where, although `Gitlab::HTTP_V2::UrlBlocker.validate!` was called, the returned value was not used. This made it vulnerable to TOCTOU bug and SSRF protection bypass through [DNS rebinding](#server-side-request-forgery-ssrf). The fix was to [use the validated IP address](https://gitlab.com/gitlab-org/gitlab/-/commit/85c6a73598e72ab104ab29b72bf83661cd961646).
 
@@ -838,7 +838,7 @@ GitLab-specific example can be found in [this issue](https://gitlab.com/gitlab-o
 
 **Example 3**: you need to fetch a remote file, and perform a `HEAD` request to get and validate the content length and content type. When you subsequently make a `GET` request, the file delivered is a different size or different file type. (This is stretching the definition of TOCTOU, but things have changed between time of check and time of use).
 
-**Example 4**: you allow users to upvote a comment if they haven't already. The server is multi-threaded, and you aren't using transactions or an applicable database index. By repeatedly selecting upvote in quick succession a malicious user is able to add multiple upvotes: the requests arrive at the same time, the checks run in parallel and confirm that no upvote exists yet, and so each upvote is written to the database.
+**Example 4**: you allow users to upvote a comment if they haven't already. The server is multi-threaded, and you aren't using transactions or an applicable database index. By repeatedly selecting upvote in quick succession, a malicious user is able to add multiple upvotes: the requests arrive at the same time, the checks run in parallel and confirm that no upvote exists yet, and so each upvote is written to the database.
 
 Here's some pseudocode showing an example of a potential TOCTOU bug:
 
@@ -1062,7 +1062,7 @@ Local storage uses a built-in browser storage feature that caches data in read-o
 
 ### Impact
 
-Local storage is subject to exfiltration during XSS attacks. These type of attacks highlight the inherent insecurity of storing sensitive information locally.
+Local storage is subject to exfiltration during XSS attacks. These types of attacks highlight the inherent insecurity of storing sensitive information locally.
 
 ### Mitigations
 
@@ -1179,7 +1179,7 @@ vulnerability would be a critical (severity 1) incident.
 - Follow secure coding best practices specific to the feature's
   functionality.
 - If licensing tiers are used as part of a defense-in-depth strategy,
-  combine it with other effective security controls.
+  combine them with other effective security controls.
 
 ## Who to contact if you have questions
 

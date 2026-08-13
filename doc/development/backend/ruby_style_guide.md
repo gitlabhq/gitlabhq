@@ -384,9 +384,9 @@ end
 ```
 
 With an application this simple, it can be hard to see the benefits of the second
-approach. But we already some benefits:
+approach. But we already have some benefits:
 
-- Can test `Repository` creation logic separate from `Project` creation logic. Code
+- We can test `Repository` creation logic separate from `Project` creation logic. Code
   no longer violates law of demeter (`Repository` class doesn't need to know
   `project.name`).
 - Clarity of invocation order.

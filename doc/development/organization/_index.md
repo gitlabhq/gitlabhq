@@ -28,7 +28,7 @@ The Organizations team are implementing changes which will automatically include
 - Application level Organization Isolation: There will be an ActiveRecord extension that will take care of [Organization Scoping](https://gitlab.com/groups/gitlab-org/-/work_items/19414). This is provisionally planned for availability and usage in early FY27-Q2.
 - Sidekiq: there is no need to pass `organization_id` to Sidekiq worker parameters: Sidekiq workers will inherit the Current Organization from the scheduling context
 - Events / Logging: similar to User, Project, or Namespace, Organization will be included
-- Routing: Enabling / disabling organization based URL's (`/o/<organization>` prefix) will be available.
+- Routing: Enabling / disabling organization based URLs (`/o/<organization>` prefix) will be available.
 - Organization availability in tests
 
 Teams do not need to implement these, unless there are specific reasons.

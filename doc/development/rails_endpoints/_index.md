@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Rails Endpoints
 ---
 
-Rails Endpoints are used by different GitLab components, they cannot be
+Rails Endpoints are used by different GitLab components. They cannot be
 used by other consumers. This documentation is intended for people
 working on the GitLab codebase.
 

@@ -34,7 +34,7 @@ Benefits of the aggregated VSA backend:
 - Simpler database queries (fewer JOINs).
 - Faster aggregations, only a single table is accessed.
 - Possibility to introduce further aggregations for improving the first page load time.
-- Better performance for large groups (with many subgroups, projects, issues and, merge requests).
+- Better performance for large groups (with many subgroups, projects, issues, and merge requests).
 - Ready for database decomposition. The VSA related database tables could live in a separate
   database with a minimal development effort.
 - Ready for keyset pagination which can be useful for exporting the data.
@@ -64,7 +64,7 @@ every day.
 
 ### Feature availability
 
-The aggregated VSA feature is available on the group and project level however, the aggregated
+The aggregated VSA feature is available on the group and project level. However, the aggregated
 backend is only available for Premium and Ultimate customers due to data storage and data
 computation costs. Storing de-normalized, aggregated data requires significant disk space.
 
@@ -170,7 +170,7 @@ Due to the async nature of the data collection, data consistency issues are boun
 is a trade-off that makes the query performance significantly faster. We think that for analytical
 workload a slight lag in the data is acceptable.
 
-Before the rollout we plan to implement some indicators on the VSA page that shows the most
+Before the rollout we plan to implement some indicators on the VSA page that show the most
 recent backend activities. For example, indicators that show the last data collection timestamp
 and the last consistency check timestamp.
 
@@ -254,8 +254,8 @@ database tables. This change could be implemented using array columns.
 
 ### Endpoints
 
-The feature uses private JSON APIs for delivering the data to the frontend. On the first page load
-, the following requests are invoked:
+The feature uses private JSON APIs for delivering the data to the frontend. On the first page load,
+the following requests are invoked:
 
 - Initial HTML page load which is mostly empty. Some configuration data is exposed via `data` attributes.
 - `value_streams` - Load the available value streams for the given group.

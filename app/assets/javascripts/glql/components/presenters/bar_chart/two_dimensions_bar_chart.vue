@@ -3,7 +3,9 @@ import { GlBarChart } from '@gitlab/ui/src/charts';
 import { DISPLAY_TYPES } from '../../../constants';
 import {
   buildStackedByDimension,
+  dimensionLabelFormatter,
   tooltipContentFromParams,
+  tooltipTitleFromParams,
   baseFieldKeyOf,
   labelWithParameter,
 } from '../../../utils/chart_data';
@@ -65,12 +67,17 @@ export default {
     yAxisTitle() {
       return dimensionAxisTitleFor(this.primaryDimension, this.secondaryDimension);
     },
+    categoryFormatter() {
+      return dimensionLabelFormatter(this.data.nodes, this.primaryDimension);
+    },
     xAxisTitle() {
       return labelWithParameter(this.metric);
     },
     chartOptions() {
       return {
-        ...barCategoryAxisOptions(this.chart.groups),
+        ...barCategoryAxisOptions(this.chart.groups.map(this.categoryFormatter), {
+          formatter: this.categoryFormatter,
+        }),
         xAxis: { axisLabel: { formatter: this.metricAxisFormatter } },
       };
     },
@@ -81,6 +88,13 @@ export default {
     },
     contentFromParams(params) {
       return tooltipContentFromParams(params, DISPLAY_TYPES.BAR_CHART);
+    },
+    tooltipTitle(params) {
+      return tooltipTitleFromParams(params, {
+        formatLabel: this.categoryFormatter,
+        axisName: this.yAxisTitle,
+        displayType: DISPLAY_TYPES.BAR_CHART,
+      });
     },
   },
 };
@@ -94,6 +108,7 @@ export default {
     :x-axis-title="xAxisTitle"
     :y-axis-title="yAxisTitle"
   >
+    <template #tooltip-title="{ params }">{{ tooltipTitle(params) }}</template>
     <template #tooltip-content="{ params }">
       <formatted-tooltip-content
         :content="contentFromParams(params)"

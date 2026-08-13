@@ -26,6 +26,9 @@ RSpec.describe CheckCiPartitionPruning, feature_category: :tooling do
 
   describe '#run' do
     before do
+      # The real variable is set when these specs run in an MR pipeline, so neutralize it to keep
+      # every example independent of the labels on the merge request under test.
+      stub_env('CI_MERGE_REQUEST_LABELS', '')
       allow(gate.comment_poster).to receive(:post)
     end
 
@@ -165,6 +168,28 @@ RSpec.describe CheckCiPartitionPruning, feature_category: :tooling do
         gate.run
 
         expect(logger).to have_received(:info).with(/query differ did not run/)
+      end
+    end
+
+    context 'when the merge request carries the skip label' do
+      before do
+        write_gz('p_ci_builds_multiple_partition_scans.ndjson.gz', ['{"fingerprint":"fp1","job_name":"rspec a"}'])
+        write_new_fingerprints("fp1\n")
+      end
+
+      it 'returns 0 and posts nothing even though an offender is present' do
+        stub_env('CI_MERGE_REQUEST_LABELS', "backend,#{described_class::SKIP_LABEL},database")
+
+        expect(gate.run).to eq(0)
+        expect(gate.comment_poster).not_to have_received(:post)
+        expect(logger).to have_received(:info)
+          .with(a_string_including(%(~"#{described_class::SKIP_LABEL}" label is set)))
+      end
+
+      it 'reports the offender when a different skip label is set' do
+        stub_env('CI_MERGE_REQUEST_LABELS', 'backend,pipeline:skip-check-migrations')
+
+        expect(gate.run).to eq(1)
       end
     end
 

@@ -292,7 +292,7 @@ changes that:
 1. Are well-defined,
 1. Are likely to get accepted by a maintainer.
 
-We want to avoid a situation when a contributor picks an
+We want to avoid a situation when a contributor picks a
 ~"Seeking community contributions" issue and then their merge request gets closed,
 because we realize that it does not fit our vision, or we want to solve it in a
 different way.

@@ -27,7 +27,7 @@ title: Implement an ActivityPub actor
 This feature requires two feature flags:
 
 - `activity_pub`: Enables or disables all ActivityPub-related features.
-- `activity_pub_project`: Enables and disable ActivityPub features specific to
+- `activity_pub_project`: Enables and disables ActivityPub features specific to
   projects. Requires the `activity_pub` flag to also be enabled.
 
 ActivityPub is based on three standard documents:
@@ -40,7 +40,7 @@ ActivityPub is based on three standard documents:
   defines the various messages recognized by default.
 
 The first one is typically handled by controllers, while the two others are
-related to what happen in serializers.
+related to what happens in serializers.
 
 To implement an ActivityPub actor, you must:
 
@@ -127,7 +127,7 @@ is an actor profile page. You don't need those if your serializer
 represents an object that is just meant to be embedded as part of actors,
 like the object representing the contact information for a user.
 
-Each resource serialized (included other objects embedded in your
+Each resource serialized (including other objects embedded in your
 actor) must provide an `id` and a `type` field.
 
 `id` is a URL. It's meant to be a unique identifier for the resource, and

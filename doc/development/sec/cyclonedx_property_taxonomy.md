@@ -117,5 +117,5 @@ is displayed in the pipeline security tab.
 
 | Property                               | Description | Example values | Property of |
 | ---------------------------------------| ----------- | -------------- | ----------- |
-| `gitlab:container_scanning:operating_system:name`    | The name of the operation system.    | `alpine` | `metadata`, `component` |
-| `gitlab:container_scanning:operating_system:version` | The version of the operation system. | `3.1.8` | `metadata`, `component` |
+| `gitlab:container_scanning:operating_system:name`    | The name of the operating system.    | `alpine` | `metadata`, `component` |
+| `gitlab:container_scanning:operating_system:version` | The version of the operating system. | `3.1.8` | `metadata`, `component` |

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Internal API
 ---
 
-The internal API is used by different GitLab components, it cannot be
+The internal API is used by different GitLab components. It cannot be
 used by other consumers. This documentation is intended for people
 working on the GitLab codebase.
 
@@ -26,7 +26,7 @@ internal data that external actors cannot have. For example, in the internal Pag
 a secret token that identifies a request as internal or sign a request with a public key that is
 not available to a wider community.
 
-Another reason to separate something into an internal API is when request to such API endpoint
+Another reason to separate something into an internal API is when a request to such an API endpoint
 should never go through an edge (public) load balancer. This way we can configure different rate
 limiting rules and policies around how the endpoint is being accessed, because we know that only
 internal requests can be made to that endpoint going through an internal load balancer.
@@ -34,8 +34,8 @@ internal requests can be made to that endpoint going through an internal load ba
 ## Authentication
 
 These methods are all authenticated using a shared secret. This secret
-is stored in a file at the path configured in `config/gitlab.yml` by
-default this is in the root of the rails app named
+is stored in a file at the path configured in `config/gitlab.yml`. By
+default, this is in the root of the GitLab Rails app named
 `.gitlab_shell_secret`
 
 To authenticate using that token, clients:
@@ -147,7 +147,7 @@ curl --request POST --header "Gitlab-Shell-Api-Request: <JWT token>" \
 ## Authorized Keys Check
 
 This endpoint is called by the GitLab Shell authorized keys
-check. Which is called by OpenSSH or GitLab SSHD for
+check, which is called by OpenSSH or GitLab SSHD for
 [fast SSH key lookup](../../administration/operations/fast_ssh_key_lookup.md).
 
 | Attribute | Type   | Required | Description |
@@ -425,7 +425,7 @@ Example response:
 
 ## PostReceive
 
-Called from Gitaly after a receiving a push. This triggers the
+Called from Gitaly after receiving a push. This triggers the
 `PostReceive`-worker in Sidekiq, processes the passed push options and
 builds the response including messages that need to be displayed to
 the user.

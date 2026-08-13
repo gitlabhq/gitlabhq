@@ -137,7 +137,7 @@ successfully before the actual build environments get updates.
 | [Alertmanager](https://github.com/prometheus/alertmanager)                       | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab/-/issues)                                                     |
 | Docker Distribution Pruner                                                       | [Issue Tracker](https://gitlab.com/gitlab-org/docker-distribution-pruner)                                          |
 | Gitaly                                                                           | [Issue Tracker](https://gitlab.com/gitlab-org/gitaly/-/issues)                                                     |
-| GitLab Compose Kit                                                               | [Issuer Tracker](https://gitlab.com/gitlab-org/gitlab-compose-kit/-/issues)                                        |
+| GitLab Compose Kit                                                               | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab-compose-kit/-/issues)                                        |
 | GitLab container registry                                                        | [Issue Tracker](https://gitlab.com/gitlab-org/container-registry)                                                  |
 | GitLab Elasticsearch Indexer                                                     | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer/-/issues)                               |
 | GitLab Zoekt Indexer                                                             | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab-zoekt-indexer/-/issues)                                       |

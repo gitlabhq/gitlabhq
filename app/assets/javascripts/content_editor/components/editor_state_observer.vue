@@ -25,6 +25,7 @@ export default normalizeRender({
       default: 100,
     },
   },
+  emits: [...Object.values(tiptapToComponentMap), ...eventHubEvents],
   created() {
     this.disposables = [];
 

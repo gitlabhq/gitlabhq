@@ -18,9 +18,12 @@ const AXIS_TITLE_SPACE_PX = 20;
  * consumer `option` prop over its defaults, so these keys win.
  *
  * @param {string[]} categoryLabels - the formatted category axis labels
+ * @param {object} [options]
+ * @param {function(string): string} [options.formatter] - maps raw category
+ *   values to display labels; defaults to identity for pre-formatted data
  * @returns {{ yAxis: object, grid: object }}
  */
-export const barCategoryAxisOptions = (categoryLabels) => {
+export const barCategoryAxisOptions = (categoryLabels, { formatter = (label) => label } = {}) => {
   const longest = categoryLabels.reduce((max, label) => Math.max(max, label.length), 0);
   const labelWidth = clamp(longest * AVG_CHAR_WIDTH_PX, MIN_LABEL_WIDTH_PX, MAX_LABEL_WIDTH_PX);
   const nameGap = labelWidth + NAME_GAP_PADDING_PX;
@@ -31,7 +34,7 @@ export const barCategoryAxisOptions = (categoryLabels) => {
       axisLabel: {
         // Replaces GlBarChart's truncating default formatter; overly long
         // labels are instead ellipsized by ECharts at `width` pixels.
-        formatter: (label) => label,
+        formatter,
         width: labelWidth,
         overflow: 'truncate',
       },

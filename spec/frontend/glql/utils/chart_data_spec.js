@@ -1,7 +1,9 @@
 import {
   baseFieldKeyOf,
   labelWithParameter,
+  dimensionLabelFormatter,
   dimensionValue,
+  tooltipTitleFromParams,
   dimensionsOf,
   metricsOf,
   buildSeries,
@@ -14,7 +16,13 @@ import { DISPLAY_TYPES } from '~/glql/constants';
 
 const LANGUAGE = { key: 'language', label: 'Language', name: 'language', type: 'dimension' };
 const USER = { key: 'user', label: 'User', name: 'user', type: 'dimension' };
-const CREATED = { key: 'created', label: 'Created', name: 'created', type: 'dimension' };
+const CREATED = {
+  key: 'created',
+  label: 'Created',
+  name: 'created',
+  type: 'dimension',
+  parameters: { granularity: 'daily' },
+};
 const TOTAL_COUNT = { key: 'totalCount', label: 'Total count', name: 'totalCount', type: 'metric' };
 const ACCEPTANCE_RATE = {
   key: 'acceptanceRate',
@@ -234,21 +242,56 @@ describe('dimensionValue', () => {
     expect(dimensionValue({ language: value }, LANGUAGE)).toBe('');
   });
 
-  it('formats date-only strings as localized dates', () => {
-    expect(dimensionValue({ created: '2026-01-01' }, CREATED)).toBe('Jan 1, 2026');
-  });
-
-  // Datetime values deliberately render raw: today's engines emit date-only
-  // bucket values, so formatting anything else is deferred until an engine
-  // actually needs it.
-  it.each(['2026-01-01T00:00:00Z', '2026-01-01 00:00:00'])(
-    'passes the datetime string %s through unchanged',
+  // Time dimension bucket values pass through raw: dimensionValue's output
+  // is the category/series identity downstream, so distinct buckets must
+  // stay distinct even when their display labels would coincide. Display
+  // formatting lives in dimensionLabelFormatter.
+  it.each(['2026-01-01', '2026-08-03T00:00:00Z'])(
+    'returns the bucket value %s unchanged for time dimensions',
     (value) => {
       expect(dimensionValue({ created: value }, CREATED)).toBe(value);
     },
   );
 
+  it('passes date-shaped values through unchanged for non-time dimensions', () => {
+    expect(dimensionValue({ language: '2026-01-01' }, LANGUAGE)).toBe('2026-01-01');
+  });
+});
+
+describe('dimensionLabelFormatter', () => {
+  const format = (granularity, value) =>
+    dimensionLabelFormatter([{ created: value }], { ...CREATED, parameters: { granularity } })(
+      value,
+    );
+
+  it.each`
+    granularity  | value           | expected
+    ${'daily'}   | ${'2026-06-01'} | ${'Jun 1'}
+    ${'weekly'}  | ${'2026-01-12'} | ${'Jan 12 – 18'}
+    ${'weekly'}  | ${'2026-06-29'} | ${'Jun 29 – Jul 5'}
+    ${'monthly'} | ${'2026-06-01'} | ${'Jun 2026'}
+    ${'yearly'}  | ${'2026-01-01'} | ${'2026'}
+  `('formats a $granularity bucket start as $expected', ({ granularity, value, expected }) => {
+    expect(format(granularity, value)).toBe(expected);
+  });
+
+  // Daily bucket starts arrive as ISO datetimes (ClickHouse's
+  // toStartOfInterval returns DateTime for day intervals) while weekly and
+  // monthly arrive date-only, so ISO datetime bucket values format too.
+  it.each`
+    granularity  | value                         | expected
+    ${'daily'}   | ${'2026-08-03T00:00:00Z'}     | ${'Aug 3'}
+    ${'daily'}   | ${'2026-08-03T00:00:00.000Z'} | ${'Aug 3'}
+    ${'monthly'} | ${'2026-06-01T00:00:00Z'}     | ${'Jun 2026'}
+  `('formats the ISO datetime bucket $value as $expected', ({ granularity, value, expected }) => {
+    expect(format(granularity, value)).toBe(expected);
+  });
+
   it.each([
+    '2026-01-01 00:00:00',
+    '2026-01-01Tjunk',
+    '2026-02-30T00:00:00Z',
+    '2026-01-01T00:00:00+junk',
     '2026-01',
     '2026-01-01-hotfix',
     'v2026-01-01',
@@ -257,8 +300,151 @@ describe('dimensionValue', () => {
     '2027-02-29',
     '0099-01-01',
     '2026-01-01 release notes',
-  ])('passes the non-date string %s through unchanged', (value) => {
-    expect(dimensionValue({ created: value }, CREATED)).toBe(value);
+  ])('passes the non-bucket string %s through unchanged', (value) => {
+    expect(format('daily', value)).toBe(value);
+  });
+
+  it('is plain stringification for non-time dimensions', () => {
+    expect(dimensionLabelFormatter([], LANGUAGE)('2026-01-01')).toBe('2026-01-01');
+    expect(dimensionLabelFormatter([], LANGUAGE)(42)).toBe('42');
+  });
+});
+
+describe('multi-year time dimensions', () => {
+  const DAILY = { ...CREATED, parameters: { granularity: 'daily' } };
+  const WEEKLY = { ...CREATED, parameters: { granularity: 'weekly' } };
+  const METRIC = { key: 'totalCount', label: 'Total count', type: 'metric' };
+  const MULTI_YEAR_NODES = [
+    { created: '2025-06-01', language: 'ruby', totalCount: 5 },
+    { created: '2026-06-01', language: 'ruby', totalCount: 7 },
+  ];
+
+  // Bucket identity is the raw value, so same-day buckets from different
+  // years can never merge, regardless of how they are labelled.
+  it('buildStackedByDimension keeps same-day buckets from different years distinct', () => {
+    const { groups, bars } = buildStackedByDimension({
+      nodes: MULTI_YEAR_NODES,
+      primaryDim: DAILY,
+      secondaryDim: LANGUAGE,
+      metric: METRIC,
+    });
+
+    expect(groups).toEqual(['2025-06-01', '2026-06-01']);
+    expect(bars).toEqual([{ name: 'ruby', data: [5, 7] }]);
+  });
+
+  it('daily labels carry the year when buckets span multiple years', () => {
+    const format = dimensionLabelFormatter(MULTI_YEAR_NODES, DAILY);
+
+    expect(format('2025-06-01')).toBe('Jun 1, 2025');
+    expect(format('2026-06-01')).toBe('Jun 1, 2026');
+  });
+
+  it('weekly labels carry the year when buckets span multiple years', () => {
+    const nodes = [{ created: '2025-01-13' }, { created: '2026-12-28' }];
+    const format = dimensionLabelFormatter(nodes, WEEKLY);
+
+    expect(format('2025-01-13')).toBe('Jan 13 – 19, 2025');
+    expect(format('2026-12-28')).toBe('Dec 28, 2026 – Jan 3, 2027');
+  });
+
+  it('includes years when a weekly bucket straddles the year boundary', () => {
+    const nodes = [{ created: '2026-12-14' }, { created: '2026-12-28' }];
+    const format = dimensionLabelFormatter(nodes, WEEKLY);
+
+    expect(format('2026-12-14')).toBe('Dec 14 – 20, 2026');
+    expect(format('2026-12-28')).toBe('Dec 28, 2026 – Jan 3, 2027');
+  });
+
+  it('labels stay compact when all buckets share one year', () => {
+    const format = dimensionLabelFormatter(
+      [{ created: '2026-06-01' }, { created: '2026-06-02' }],
+      DAILY,
+    );
+
+    expect(format('2026-06-01')).toBe('Jun 1');
+  });
+
+  // Series/legend names have no formatting hook in ECharts, so the builder
+  // bakes display labels into bars[].name through an injective mapping while
+  // grouping stays keyed by the raw value.
+  it('keeps same-day buckets from different years distinct as series names', () => {
+    const { groups, bars } = buildStackedByDimension({
+      nodes: [
+        { language: 'ruby', created: '2025-06-01', totalCount: 5 },
+        { language: 'ruby', created: '2026-06-01', totalCount: 7 },
+      ],
+      primaryDim: LANGUAGE,
+      secondaryDim: DAILY,
+      metric: METRIC,
+    });
+
+    expect(groups).toEqual(['ruby']);
+    expect(bars).toEqual([
+      { name: 'Jun 1, 2025', data: [5] },
+      { name: 'Jun 1, 2026', data: [7] },
+    ]);
+  });
+
+  it('falls back to raw values as series names when labels collide', () => {
+    const { bars } = buildStackedByDimension({
+      nodes: [
+        { language: 'ruby', created: '2026-06-01', totalCount: 5 },
+        { language: 'ruby', created: '2026-06-01T00:00:00Z', totalCount: 7 },
+      ],
+      primaryDim: LANGUAGE,
+      secondaryDim: DAILY,
+      metric: METRIC,
+    });
+
+    expect(bars.map((b) => b.name)).toEqual(['2026-06-01', '2026-06-01T00:00:00Z']);
+  });
+
+  it('formats time dimension series names when it is the secondary dimension', () => {
+    const { bars } = buildStackedByDimension({
+      nodes: [
+        { language: 'ruby', created: '2026-06-01', totalCount: 5 },
+        { language: 'ruby', created: '2026-07-01', totalCount: 7 },
+      ],
+      primaryDim: LANGUAGE,
+      secondaryDim: { ...CREATED, parameters: { granularity: 'monthly' } },
+      metric: METRIC,
+    });
+
+    expect(bars.map((b) => b.name)).toEqual(['Jun 2026', 'Jul 2026']);
+  });
+});
+
+describe('tooltipTitleFromParams', () => {
+  const formatLabel = (v) => `L(${v})`;
+
+  it('formats deduplicated tuple categories for column and line charts', () => {
+    const params = {
+      seriesData: [{ value: ['2026-06-01', 5] }, { value: ['2026-06-01', 7] }],
+    };
+
+    expect(tooltipTitleFromParams(params, { formatLabel })).toBe('L(2026-06-01)');
+  });
+
+  it('reads the flipped tuple index for bar charts', () => {
+    const params = { seriesData: [{ value: [5, '2026-06-01'] }] };
+
+    expect(
+      tooltipTitleFromParams(params, { formatLabel, displayType: DISPLAY_TYPES.BAR_CHART }),
+    ).toBe('L(2026-06-01)');
+  });
+
+  it('falls back to the point name for scalar stacked-column values', () => {
+    const params = { seriesData: [{ value: 5, name: '2026-06-01' }] };
+
+    expect(tooltipTitleFromParams(params, { formatLabel })).toBe('L(2026-06-01)');
+  });
+
+  it('appends the axis name and handles missing params', () => {
+    const params = { seriesData: [{ value: ['ruby', 5] }] };
+
+    expect(tooltipTitleFromParams(params, { axisName: 'Language' })).toBe('ruby (Language)');
+    expect(tooltipTitleFromParams(null)).toBe('');
   });
 });
 
@@ -427,7 +613,7 @@ describe('buildStackedByDimension', () => {
     });
   });
 
-  it('formats date-bucket primary dimension values into the groups', () => {
+  it('keeps raw date-bucket primary dimension values as group identities', () => {
     const nodes = [
       { created: '2026-01-01', language: 'ruby', totalCount: 12 },
       { created: '2026-02-01', language: 'ruby', totalCount: 6 },
@@ -441,7 +627,7 @@ describe('buildStackedByDimension', () => {
         metric: TOTAL_COUNT,
       }),
     ).toEqual({
-      groups: ['Jan 1, 2026', 'Feb 1, 2026'],
+      groups: ['2026-01-01', '2026-02-01'],
       bars: [{ name: 'ruby', data: [12, 6] }],
     });
   });

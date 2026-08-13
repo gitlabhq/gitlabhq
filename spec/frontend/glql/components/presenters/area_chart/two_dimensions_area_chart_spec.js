@@ -90,6 +90,37 @@ describe('TwoDimensionsAreaChart', () => {
     });
   });
 
+  describe('with a time primary dimension', () => {
+    const DAILY_DIM = {
+      key: 'created',
+      label: 'Created',
+      name: 'created',
+      type: 'dimension',
+      parameters: { granularity: 'daily' },
+    };
+    const DAILY_DATA = {
+      nodes: [
+        { created: '2026-06-01', language: 'ruby', totalCount: 12 },
+        { created: '2026-06-02', language: 'ruby', totalCount: 6 },
+      ],
+    };
+
+    beforeEach(() => {
+      createComponent({ primaryDimension: DAILY_DIM, data: DAILY_DATA });
+    });
+
+    it('keeps raw bucket values as category identities', () => {
+      expect(findChart().props('data')[0].data).toEqual([
+        ['2026-06-01', 12],
+        ['2026-06-02', 6],
+      ]);
+    });
+
+    it('formats category axis labels from raw bucket values', () => {
+      expect(findChart().props('option').xAxis.axisLabel.formatter('2026-06-01')).toBe('Jun 1');
+    });
+  });
+
   describe('with an unaliased parameterised metric', () => {
     it('uses the parameterised label as the y-axis title', () => {
       createComponent({

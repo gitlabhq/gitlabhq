@@ -111,7 +111,7 @@ while and there are no issues, we can proceed.
 
 ### Proposed solution: Migrate data by using MultiStore with the fallback strategy
 
-We need a way to migrate users to a new Redis store without causing any inconveniences from UX perspective.
+We need a way to migrate users to a new Redis store without causing any inconveniences from a UX perspective.
 We also want the ability to fall back to the "old" Redis instance if something goes wrong with the new instance.
 
 Migration Requirements:
@@ -181,7 +181,7 @@ Upon satisfactory validation results, we are probably safe to move the traffic t
 This will allow the MultiStore to read and write only from the primary Redis store (new store), moving all the traffic to the new Redis store.
 
 Once we have moved all our traffic to the primary store, our data migration is complete.
-We can safely remove the MultiStore implementation and continue to use newly introduced Redis store instance.
+We can safely remove the MultiStore implementation and continue to use the newly introduced Redis store instance.
 
 #### Implementation details
 

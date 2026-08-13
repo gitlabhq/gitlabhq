@@ -129,12 +129,18 @@ You can search across your entire GitLab instance including code, work items, me
 
 [GitLab Duo](../../user/gitlab_duo/_index.md) AI features are authorized under FedRAMP and GovRAMP
 and available to federal, state, local, and education agencies with no additional compliance review.
+GitLab Duo on GitLab Dedicated for Government requires the GitLab Duo Self-Hosted architecture,
+because the GitLab-managed AI Gateway and models are not available. To set up GitLab Duo Self-Hosted, see
+[configure GitLab Duo on GitLab Dedicated for Government](../../administration/gitlab_duo/configure/gitlab_dedicated_for_government.md).
+
 Available features include:
 
 - [GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/_index.md)
 - [GitLab Duo Vulnerability Explanation](../../user/application_security/analyze/duo.md)
 - [GitLab Duo Vulnerability Resolution](../../user/application_security/remediate/duo.md)
 - [GitLab Duo Chat](../../user/gitlab_duo_chat/_index.md)
+
+[GitLab Duo Agent Platform](../../user/duo_agent_platform/_index.md) is not available on GitLab Dedicated for Government.
 
 ## Unavailable features
 
@@ -160,8 +166,8 @@ some GitLab features are not available in GitLab Dedicated for Government.
 
 | Feature                                                            | Alternative |
 | ------------------------------------------------------------------ | ----------- |
-| Some [GitLab Duo AI capabilities](../../user/gitlab_duo/_index.md) | See [supported AI features](../../user/gitlab_duo/_index.md) |
-| [Server-side Git hooks](../../administration/server_hooks.md)      | Use [push rules](../../user/project/repository/push_rules.md) or [webhooks](../../user/project/integrations/webhooks.md) |
+| [GitLab Duo Agent Platform](../../user/duo_agent_platform/_index.md) | No autonomous workflow alternative. Use [other GitLab Duo features](#gitlab-duo) instead |
+| [Server-side Git hooks](../../administration/server_hooks.md) | Use [push rules](../../user/project/repository/push_rules.md) or [webhooks](../../user/project/integrations/webhooks.md) |
 | Features configured outside of the GitLab user interface           | Contact support |
 
 ### Application features

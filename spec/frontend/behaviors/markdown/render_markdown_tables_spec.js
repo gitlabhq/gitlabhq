@@ -116,7 +116,7 @@ describe('renderMarkdownTables', () => {
       expect(container.contains(table)).toBe(false);
     });
 
-    it('uses the first tbody row as the header when there is no thead', async () => {
+    it('leaves a table without a thead untouched', () => {
       const table = document.createElement('table');
       const tbody = document.createElement('tbody');
       [
@@ -133,14 +133,12 @@ describe('renderMarkdownTables', () => {
       table.appendChild(tbody);
       const container = appendTable(table);
 
-      await renderMarkdownTables([table]);
+      expect(renderMarkdownTables([table])).toBeNull();
 
-      const headers = Array.from(container.querySelectorAll('thead th')).map(
-        (th) => th.textContent,
-      );
-      expect(headers[0]).toContain('Name');
-      expect(headers[1]).toContain('Age');
-      expect(container.querySelectorAll('tbody tr')).toHaveLength(2);
+      expect(container.contains(table)).toBe(true);
+      expect(container.querySelector('thead')).toBeNull();
+      expect(container.querySelectorAll('tbody tr')).toHaveLength(3);
+      expect(container.querySelectorAll('th')).toHaveLength(0);
     });
 
     describe('cell content', () => {

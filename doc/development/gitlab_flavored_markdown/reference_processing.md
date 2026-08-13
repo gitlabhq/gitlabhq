@@ -130,7 +130,7 @@ reference filter.
 
 Each `ReferenceFilter` would iterate over all `<a>` and `text()` nodes in a document.
 
-Not all nodes are processed, document is filtered only for nodes that we want to process.
+Not all nodes are processed. The document is filtered only for nodes that we want to process.
 We are skipping:
 
 - Link tags already processed by some previous filter (if they have a `gfm` class).
@@ -140,7 +140,7 @@ We are skipping:
 
 To avoid filtering such nodes for each `ReferenceFilter`, we do it only once and store the result in the result Hash of the pipeline as `result[:reference_filter_nodes]`.
 
-Pipeline `result` is passed to each filter for modification, so every time when `ReferenceFilter` replaces text or link tag, filtered list (`reference_filter_nodes`) are updated for the next filter to use.
+Pipeline `result` is passed to each filter for modification, so every time when `ReferenceFilter` replaces text or link tag, filtered list (`reference_filter_nodes`) is updated for the next filter to use.
 
 ## Reference parsers
 

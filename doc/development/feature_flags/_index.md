@@ -174,7 +174,7 @@ Feature.disabled?(:dev_flag_name)
 
 Some features are complex and need to be implemented through several MRs. Until they're fully implemented,
 it needs to be hidden from anyone. In that case, the `wip` (for "Work In Progress") feature flag allows
-to merge all the changes to the main branch without actually using the feature yet.
+merging all the changes to the main branch without actually using the feature yet.
 
 Once the feature is complete, the feature flag type can be changed to the `gitlab_com_derisk` or
 `beta` type depending on how the feature will be presented/documented to customers.

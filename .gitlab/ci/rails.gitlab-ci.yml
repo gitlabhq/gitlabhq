@@ -871,7 +871,8 @@ rspec:merge-auto-explain-logs:
       - auto_explain/
 
 # Checks for new queries that fail partition pruning on CI tables (p_ci_*).
-# Soft-launch: allow_failure warns without blocking; flip to `false` to enforce.
+# Allowed to fail: a flagged query may originate in spec code, which the detector can't
+# distinguish from app code. Revisit if the CI database has another LWLock incident.
 rspec:check-ci-partition-pruning:
   extends:
     - .rails:rules:check-ci-partition-pruning

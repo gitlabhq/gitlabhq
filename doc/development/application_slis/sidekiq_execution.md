@@ -11,10 +11,10 @@ You can drill down by workers in the [Application SLI Violations dashboard](http
 > This SLI is used for service monitoring. But not for [error budgets for stage groups](../stage_group_observability/_index.md#error-budget)
 > by default.
 
-The Sidekiq execution Apdex measures the duration of successful jobs completion as an indicator for
+The Sidekiq execution Apdex measures the duration of successful job completions as an indicator for
 application performance.
 
-The error rate measures unsuccessful jobs completion when exception occurs as an indicator for
+The error rate measures unsuccessful job completions when an exception occurs as an indicator for
 server misbehavior.
 
 - `gitlab_sli_sidekiq_execution_apdex_total`: This counter gets

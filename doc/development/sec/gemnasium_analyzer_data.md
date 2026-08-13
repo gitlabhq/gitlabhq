@@ -26,7 +26,7 @@ The following table lists the data available for the Gemnasium analyzer.
 | Credits                                       | {{< icon name="check-circle" >}} Yes |
 
 - {{< icon name="check-circle" >}} Yes => we have that data
-- {{< icon name="dotted-circle" >}} No => we don't have that data, or it would need to develop specific or inefficient/unreliable logic to obtain it.
+- {{< icon name="dotted-circle" >}} No => we don't have that data, or we would need to develop specific or inefficient/unreliable logic to obtain it.
 
 The values provided by these tools are heterogeneous, so they are sometimes normalized into common
 values (for example, `severity`, `confidence`, etc).

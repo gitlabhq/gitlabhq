@@ -68,7 +68,7 @@ Gitaly Rails provides API endpoints that are counterparts of Gitaly RPCs. For mo
 ### Annotated Rails Source Code
 
 The `:source_code_management` annotation indicates which code belongs to the Source Code Management
-group in the Rails codebase. The annotated objects are presented the [Source Code owned objects](https://gitlab-com.gitlab.io/gl-infra/platform/stage-groups-index/source-code.html) page, along
+group in the Rails codebase. The annotated objects are presented on the [Source Code owned objects](https://gitlab-com.gitlab.io/gl-infra/platform/stage-groups-index/source-code.html) page, along
 with the [Error Budgets dashboards](https://dashboards.gitlab.net/d/stage-groups-source_code/stage-groups3a-source-code3a-group-dashboard?orgId=1).
 
 ## GitLab Workhorse

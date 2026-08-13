@@ -6,7 +6,7 @@ title: Security report ingestion overview
 ---
 
 > [!warning]
-> The `Vulnerability::Feedback` model is currently undergoing deprecation and should be actively avoided in all further development. It is currently maintained with feature parity to enable revert should any issues arise, but is intended to be removed in 16.0. Any interactions relating to the Feedback model are superseded by the `StateTransition`, `IssueLink`, and `MergeRequestLink` models. You can find out more on [in this epic](https://gitlab.com/groups/gitlab-org/-/work_items/5629).
+> The `Vulnerability::Feedback` model is currently undergoing deprecation and should be actively avoided in all further development. It is currently maintained with feature parity to enable revert should any issues arise, but is intended to be removed in 16.0. Any interactions relating to the Feedback model are superseded by the `StateTransition`, `IssueLink`, and `MergeRequestLink` models. You can find out more [in this epic](https://gitlab.com/groups/gitlab-org/-/work_items/5629).
 
 ## Commonly used terms
 
@@ -36,7 +36,7 @@ An instance of the `Vulnerabilities::StateTransition` class. This model represen
 
 ### Vulnerability
 
-An instance of `Vulnerability` class. A `Vulnerability` is representative of a `Vulnerabilities::Finding` record which has been detected in the default branch of the project, or if the `present_on_default_branch` flag is false, is representative of a finding which has been interacted with in some way outside of the default branch, such as if it is dismissed (`State Transition`), or linked to an `Issue` or `Merge Request`. They are created based on information available in `Vulnerabilities::Finding` class. Every `Vulnerability` **must have** a corresponding `Vulnerabilities::Finding` object to be valid, however this is not enforced at the database level.
+An instance of `Vulnerability` class. A `Vulnerability` is representative of a `Vulnerabilities::Finding` record which has been detected in the default branch of the project, or if the `present_on_default_branch` flag is false, is representative of a finding which has been interacted with in some way outside of the default branch, such as if it is dismissed (`State Transition`), or linked to an `Issue` or `Merge Request`. They are created based on information available in the `Vulnerabilities::Finding` class. Every `Vulnerability` **must have** a corresponding `Vulnerabilities::Finding` object to be valid, however this is not enforced at the database level.
 
 ### Vulnerability Finding
 
@@ -44,7 +44,7 @@ An instance of `Vulnerabilities::Finding` class. A `Vulnerabilities::Finding` re
 
 ### Identifier
 
-An instance of the `Vulnerabilities::Identifier` class. Each vulnerability is given a unique identifier that can be derived from it's finding, enabling multiple Findings of the same `Vulnerability` to be correlated accordingly.
+An instance of the `Vulnerabilities::Identifier` class. Each vulnerability is given a unique identifier that can be derived from its finding, enabling multiple Findings of the same `Vulnerability` to be correlated accordingly.
 
 ### Vulnerability Read
 
@@ -88,7 +88,7 @@ If the pipeline ran on the default branch then the following steps, in addition 
 
 ### Dismissal
 
-If you change the state of a vulnerability, such as selecting `Dismiss vulnerability` the following things currently happen:
+If you change the state of a vulnerability, such as selecting `Dismiss vulnerability`, the following things currently happen:
 
 - A `Feedback` record of `dismissal` type is created to record the current state.
 - If they do not already exist, a `Vulnerability Finding` and a `Vulnerability` with `present_on_default_branch: false` attribute get created, to which a `State Transition` reflecting the state change is related.
@@ -100,17 +100,17 @@ You can optionally add a comment to the state change which is recorded on both t
 If you select `Create issue` or `Create merge request` the following things currently happen:
 
 - A `Vulnerabilities::Feedback` record is created. The Feedback will have a `feedback_type` of `issue` or `merge request` and an `issue_id` or `merge_request_id` that's not `NULL` respective to the attachment.
-- If they do not already exist, a `Vulnerability Finding` and a `Vulnerability` with `present_on_default_branch: false` attribute get created, to which a `Issue Link` or `Merge Request Link` will be related respective to the action taken.
+- If they do not already exist, a `Vulnerability Finding` and a `Vulnerability` with `present_on_default_branch: false` attribute get created, to which an `Issue Link` or `Merge Request Link` will be related respective to the action taken.
 
 ## Vulnerabilities in the Default Branch
 
-Security Findings detected in scan run on the default branch are saved as `Vulnerabilities` with the `present_on_default_branch: true` attribute and respective `Vulnerability Finding` records. `Vulnerability` records that already exist from interactions outside of the default branch will be updated to `present_on_default_branch: true`
+Security Findings detected in a scan run on the default branch are saved as `Vulnerabilities` with the `present_on_default_branch: true` attribute and respective `Vulnerability Finding` records. `Vulnerability` records that already exist from interactions outside of the default branch will be updated to `present_on_default_branch: true`
 
 `Vulnerabilities` which have already been interacted with will retain all existing `State Transitions`, `Merge Request Links` and `Issue Links`, as well as a corresponding `Vulnerability Feedback`.
 
 ## Vulnerability Read Creation
 
-`Vulnerability::Read` records are created via PostgreSQL database trigger upon the creation of a `Vulnerabilities::Finding` record and as such are part of our ingestion process, though they have no impact on it bar it's denormalization performance benefits on the report pages.
+`Vulnerability::Read` records are created via a PostgreSQL database trigger upon the creation of a `Vulnerabilities::Finding` record and as such are part of our ingestion process, though they have no impact on it bar its denormalization performance benefits on the report pages.
 
 This style of creation was intended to be fast and seamless, but has proven difficult to debug and maintain and may be [migrated to the application layer later](https://gitlab.com/gitlab-org/gitlab/-/issues/393912).
 

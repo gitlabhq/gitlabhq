@@ -23,7 +23,7 @@ Keeping the orphaned commits using keep-around refs comes with its own set of ch
 - Its growth is untenable (`gitlab-org/gitlab` has about 1.2 GB of refs)
 - The actual usage of these keep-around refs is spread across so it's hard to know exactly where
   these keep-around refs are expected to exist
-- It's time consuming to check the needs of keep-around refs as we need to consider all possible places
+- It's time-consuming to check the needs of keep-around refs as we need to consider all possible places
   they could be referenced
 - We could be keeping more commits than necessary because the ancestors of already preserved commits
   don't have to be kept around, but it's hard to verify that and clean up efficiently
@@ -55,8 +55,8 @@ Here are the places where we currently create keep-around refs.
   source projects with the `after_create` callback
 - `Note#keep_around_commit(commit_id)` with the `after_save` callback
 - `DraftNotes::PublishService#keep_around_commits(shas)` as it publishes draft notes in bulk and `shas`
-  are from both `original_potion` and `position`
-- `DiffNote#Keep_around_commits(sha)` similar to above, but just for a single `DiffNote` with the `after_save`
+  are from both `original_position` and `position`
+- `DiffNote#keep_around_commits(sha)` similar to above, but just for a single `DiffNote` with the `after_save`
   callback if it was not skipped for bulk insert
 - `Ci::Pipeline#keep_around_commits(sha, before_sha)` with the `after_create` callback
 

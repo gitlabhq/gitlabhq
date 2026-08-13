@@ -39,21 +39,14 @@ function observeRemoval(table, app) {
 function parseTable(table) {
   // Take care to grab only *this* table's cells, and not any nested tables'.
   const thead = table.tHead;
+
+  // A table without a declared header (e.g. hand-authored HTML) is left as-is;
+  // promoting the first body row would fabricate a header that was never authored.
+  if (!thead) return null;
+
   const [tbody] = table.tBodies;
-
-  if (!thead && !tbody) return null;
-
-  let headerRow;
-  let bodyRows;
-
-  if (thead) {
-    [headerRow] = thead.rows;
-    bodyRows = tbody ? Array.from(tbody.rows) : [];
-  } else {
-    const rows = Array.from(tbody.rows);
-    [headerRow] = rows;
-    bodyRows = rows.slice(1);
-  }
+  const [headerRow] = thead.rows;
+  const bodyRows = tbody ? Array.from(tbody.rows) : [];
 
   if (!headerRow) return null;
 

@@ -22,6 +22,7 @@ require_relative '../api/default_options'
 class CheckCiPartitionPruning
   ARTIFACT_SUFFIX = '_multiple_partition_scans.ndjson.gz'
   NEW_FINGERPRINTS_FILE = 'new_query_fingerprints.txt'
+  SKIP_LABEL = 'pipeline:skip-check-ci-partition-pruning'
 
   RESOLUTION_OPTIONS = [
     { title: 'Fix the query',
@@ -31,13 +32,15 @@ class CheckCiPartitionPruning
       detail: "add the query's fingerprint to `todos:` or `allowed:` in " \
         '`scripts/database/query_analyzers.yml`.' },
     { title: 'Bypass the check',
-      detail: 'apply the ~"pipeline:skip-check-ci-partition-pruning" label to skip this check ' \
-        'for the current MR.' }
+      detail: %(apply the ~"#{SKIP_LABEL}" label to the merge request, then retry this job.) }
   ].freeze
 
-  COVERAGE_CAVEAT =
-    'Only queries that were executed by a spec in the pipeline are analyzed, so coverage may be ' \
-      'partial.'
+  CAVEATS =
+    'A flagged query may come from the spec itself (setup, a factory, an assertion) rather than ' \
+      'from application code. The detector reads the auto_explain log of the RSpec suite and ' \
+      "cannot tell the two apart. For a false positive, prefer the ~\"#{SKIP_LABEL}\" label over " \
+      'an allowlist entry, which would also suppress the query if application code starts ' \
+      'issuing it. Only queries a spec executed are analyzed, so coverage may be partial.'.freeze
 
   attr_reader :logs_dir, :logger, :comment_poster
 
@@ -52,6 +55,11 @@ class CheckCiPartitionPruning
   end
 
   def run
+    if skip_label?
+      logger.info %(The ~"#{SKIP_LABEL}" label is set on the merge request, skipping check)
+      return 0
+    end
+
     new_fingerprints = load_new_fingerprints
 
     if new_fingerprints.nil? || new_fingerprints.empty?
@@ -73,6 +81,12 @@ class CheckCiPartitionPruning
 
   private
 
+  # The job `rules:` already check for this label, but that's evaluated at pipeline creation.
+  # We check it again here so that applying the label allows the job to pass with a retry.
+  def skip_label?
+    ENV.fetch('CI_MERGE_REQUEST_LABELS', '').split(',').include?(SKIP_LABEL)
+  end
+
   def report(offenders)
     separator = "-" * 72
     lines = ["New unpartitioned CI queries detected (#{offenders.size}):", separator]
@@ -91,7 +105,7 @@ class CheckCiPartitionPruning
     end
 
     lines << ""
-    lines << COVERAGE_CAVEAT
+    lines << CAVEATS
     lines << separator
     lines.join("\n")
   end
@@ -334,7 +348,7 @@ class CheckCiPartitionPruning
 
         If you have any questions, please ask in `#g_ci-platform`.
 
-        _#{COVERAGE_CAVEAT}_
+        _#{CAVEATS}_
 
         ----
 

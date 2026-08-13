@@ -2,8 +2,10 @@
 import { GlAreaChart, GlLineChart } from '@gitlab/ui/src/charts';
 import {
   buildSeries,
+  dimensionLabelFormatter,
   labelWithParameter,
   tooltipContentFromParams,
+  tooltipTitleFromParams,
 } from '../../../utils/chart_data';
 import {
   buildFormatterByLabel,
@@ -64,6 +66,9 @@ export default {
     formatterByLabel() {
       return buildFormatterByLabel(this.metrics);
     },
+    categoryFormatter() {
+      return dimensionLabelFormatter(this.data.nodes, this.dimension);
+    },
     sharedAxisFormatter() {
       return buildSharedAxisFormatter(this.metrics);
     },
@@ -72,7 +77,11 @@ export default {
     },
     chartOptions() {
       const options = {
-        xAxis: { name: labelWithParameter(this.dimension) ?? '', type: 'category' },
+        xAxis: {
+          name: labelWithParameter(this.dimension) ?? '',
+          type: 'category',
+          axisLabel: { formatter: this.categoryFormatter },
+        },
       };
       const yAxis = {};
       if (this.yAxisTitle) {
@@ -91,6 +100,12 @@ export default {
     formatValueByLabel(label, value) {
       return formatValueForLabel(this.formatterByLabel, label, value);
     },
+    tooltipTitle(params) {
+      return tooltipTitleFromParams(params, {
+        formatLabel: this.categoryFormatter,
+        axisName: labelWithParameter(this.dimension),
+      });
+    },
     contentFromParams: tooltipContentFromParams,
   },
 };
@@ -103,6 +118,7 @@ export default {
     :option="chartOptions"
     :include-legend-avg-max="false"
   >
+    <template #tooltip-title="{ params }">{{ tooltipTitle(params) }}</template>
     <template #tooltip-content="{ params }">
       <formatted-tooltip-content
         :content="contentFromParams(params)"

@@ -134,9 +134,9 @@ erDiagram
   ApprovalState ||--o{ ApprovalWrappedRule: " "
 ```
 
-`ApprovalWrappedRule` is defined in `ee/app/modes/approval_wrapped_rule.rb` and
+`ApprovalWrappedRule` is defined in `ee/app/models/approval_wrapped_rule.rb` and
 is not an `ActiveRecord` model. It's used to wrap an `ApprovalProjectRule` or
-`ApprovalMergeRequestRule` for common interface. It also has the following sub
+`ApprovalMergeRequestRule` for a common interface. It also has the following sub
 types:
 
 - `ApprovalWrappedAnyApprovalRule` - for wrapping an `any_approver` rule.
@@ -238,7 +238,7 @@ It is responsible for parsing the `approval_rules_attributes` parameter to:
 
 - Remove it when a user can't update approval rules.
 - Filter the user IDs whether they are members of the project or not.
-- Filter the group IDs whether they are visible to user.
+- Filter the group IDs whether they are visible to the user.
 - Identify the `any_approver` rule.
 - Append hidden groups to it when specified.
 - Append user defined inapplicable (rules that do not apply to the merge request's target

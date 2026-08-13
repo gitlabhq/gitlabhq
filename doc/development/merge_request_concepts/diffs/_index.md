@@ -71,13 +71,13 @@ File diffs are collapsed (but are expandable) if 100 files have already been ren
 Gitlab::Git::DiffCollection.collection_limits[:safe_max_lines] = Gitlab::Git::DiffCollection::DEFAULT_LIMITS[:max_lines] = 5000
 ```
 
-File diffs are collapsed (but be expandable) if 5000 lines have already been rendered.
+File diffs are collapsed (but are expandable) if 5000 lines have already been rendered.
 
 ```ruby
 Gitlab::Git::DiffCollection.collection_limits[:safe_max_bytes] = Gitlab::Git::DiffCollection.collection_limits[:safe_max_files] * 5.kilobytes = 500.kilobytes
 ```
 
-File diffs are collapsed (but be expandable) if 500 kilobytes have already been rendered.
+File diffs are collapsed (but are expandable) if 500 kilobytes have already been rendered.
 
 ```ruby
 Gitlab::Git::DiffCollection.collection_limits[:max_files] = Commit::DIFF_HARD_LIMIT_FILES = 1000
@@ -116,7 +116,7 @@ Gitaly only returns `Diff.Collapsed` (RPC) when surpassing collection limits.
 
 #### Not expandable patches (too large)
 
-The patch not be rendered if it's larger than `ApplicationSettings#diff_max_patch_bytes`.
+The patch will not be rendered if it's larger than `ApplicationSettings#diff_max_patch_bytes`.
 Users see a `Changes are too large to be shown.` message and a button to view only that file in that commit.
 
 ```ruby
@@ -130,7 +130,7 @@ This limit is hardcoded and only applied on GitLab.
 ## Viewers
 
 Diff Viewers, which can be found on `models/diff_viewer/*` are classes used to map metadata about each type of Diff File. It has information
-whether it's a binary, which partial should be used to render it or which File extensions this class accounts for.
+about whether it's a binary, which partial should be used to render it or which File extensions this class accounts for.
 
 `DiffViewer::Base` validates _blobs_ (old and new versions) content, extension, and file type to check if it can be rendered.
 

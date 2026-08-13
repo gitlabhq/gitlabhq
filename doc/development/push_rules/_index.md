@@ -38,7 +38,7 @@ change the push behavior.
 - `EE::Gitlab::Checks::PushRules::CommitCheck`: Executes push rule checks
   related to commit rules.
   - Defined in `ee/lib/ee/gitlab/checks/push_rules/commit_check.rb`.
-- `EE::Gitlab::Checks::FileSizeLimtCheck`: Executes push rule checks
+- `EE::Gitlab::Checks::FileSizeLimitCheck`: Executes push rule checks
   related to file size rules.
   - Defined in `ee/lib/ee/gitlab/checks/file_size_limit_check.rb`.
 - `EE::Gitlab::Checks::PushRules::TagCheck`: Executes push rule checks

@@ -5948,6 +5948,9 @@ msgstr ""
 msgid "AdminAIPoweredFeatures|Available models: %{featureTitle}"
 msgstr ""
 
+msgid "AdminAIPoweredFeatures|Clear all models"
+msgstr ""
+
 msgid "AdminAIPoweredFeatures|Code Suggestions"
 msgstr ""
 
@@ -5994,6 +5997,9 @@ msgid "AdminAIPoweredFeatures|Restrict to specific models"
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|Select a model"
+msgstr ""
+
+msgid "AdminAIPoweredFeatures|Select all models"
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|Successfully updated available models for %{title}"

@@ -125,7 +125,7 @@ using the same process as for
 picking a duration that is higher than the SLO for the service.
 
 We shouldn't set the longest durations on endpoints in the merge
-requests that introduces them, because we don't yet have data to support
+requests that introduce them, because we don't yet have data to support
 the decision.
 
 ## Increasing urgency (setting a lower target duration)

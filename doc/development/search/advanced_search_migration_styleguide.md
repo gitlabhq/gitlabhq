@@ -86,7 +86,7 @@ To apply setting changes, for example adding an analyzer, either:
 To apply mapping changes, either:
 
 - Use a [zero-downtime reindexing migration](#zero-downtime-reindex-migration).
-- Use an [update mapping migration](#searchelasticmigrationupdatemappingshelper) to change the mapping for the existing index and optionally a follow-up [backfill migration](#searchelasticmigrationbackfillhelper) to ensure all documents in the index has this field populated.
+- Use an [update mapping migration](#searchelasticmigrationupdatemappingshelper) to change the mapping for the existing index and optionally a follow-up [backfill migration](#searchelasticmigrationbackfillhelper) to ensure all documents in the index have this field populated.
 
 #### Zero-downtime reindex migration
 

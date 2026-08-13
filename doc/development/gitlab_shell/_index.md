@@ -127,7 +127,7 @@ tests requiring Gitaly are skipped. The tests always run in the CI environment.
 GitLab Shell performs rate-limiting by user account and project for Git operations.
 GitLab Shell accepts Git operation requests and then makes a call to the Rails
 rate-limiter, backed by Redis. If the `user + project` exceeds the rate limit,
-then GitLab Shell then drop further connection requests for that `user + project`.
+then GitLab Shell drops further connection requests for that `user + project`.
 
 The rate-limiter is applied at the Git command (plumbing) level. Each command has
 a rate limit of 600 per minute. For example, `git push` has 600 per minute, and

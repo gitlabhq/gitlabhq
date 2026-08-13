@@ -26,7 +26,7 @@ deviations from this guide, they should be described in the
 Having said all of the above, we recommend staying away from shell scripts
 as much as possible. A language like Ruby or Python (if required for
 consistency with codebases that we leverage) is almost always a better choice.
-The high-level interpreted languages have more readable syntax, offer much more
+The high-level interpreted languages have more readable syntax, and offer much more
 mature capabilities for unit-testing, linting, and error reporting.
 
 Use shell scripts only if there's a strong restriction on project's
@@ -101,7 +101,7 @@ shfmt:
 
 > [!note]
 > By default, shfmt uses the [shell detection](https://github.com/mvdan/sh#shfmt) similar to one of ShellCheck
-> and ignore files starting with a period. To override this, use `-ln` flag to specify the shell dialect:
+> and ignores files starting with a period. To override this, use `-ln` flag to specify the shell dialect:
 > `-ln posix` or `-ln bash`.
 
 ## Testing

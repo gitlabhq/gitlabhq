@@ -5,7 +5,7 @@ import EditorStateObserver, {
 } from '~/content_editor/components/editor_state_observer.vue';
 import eventHubFactory from '~/helpers/event_hub_factory';
 import { ALERT_EVENT, KEYDOWN_EVENT } from '~/content_editor/constants';
-import { createTestEditor } from '../test_utils';
+import { createTestEditor, emitEditorEvent } from '../test_utils';
 
 describe('content_editor/components/editor_state_observer', () => {
   let tiptapEditor;
@@ -59,10 +59,18 @@ describe('content_editor/components/editor_state_observer', () => {
       expect(onSelectionUpdateListener).toHaveBeenCalledWith(
         expect.objectContaining({ editor: tiptapEditor }),
       );
-      expect(onSelectionUpdateListener).toHaveBeenCalledWith(
+      expect(onTransactionListener).toHaveBeenCalledWith(
         expect.objectContaining({ editor: tiptapEditor }),
       );
     });
+  });
+
+  it.each(['focus', 'blur'])('emits `%s` when the tiptap editor emits it', async (event) => {
+    buildWrapper();
+
+    await emitEditorEvent({ tiptapEditor, event });
+
+    expect(wrapper.emitted(event)).toHaveLength(1);
   });
 
   it.each`

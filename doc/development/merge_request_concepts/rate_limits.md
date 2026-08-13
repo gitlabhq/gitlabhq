@@ -6,7 +6,7 @@ title: Application and rate limit guidelines
 ---
 
 GitLab, like most large applications, enforces limits in certain features.
-The absences of limits can affect security, performance, data, or could even
+The absence of limits can affect security, performance, data, or could even
 exhaust the allocated resources for the application.
 
 Every new feature should have safe usage limits included in its implementation.

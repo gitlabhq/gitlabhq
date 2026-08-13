@@ -97,7 +97,7 @@ This depends on the feature and what sort of impact it might have.
 
 Guidelines:
 
-- Notify `#support_gitlab-com` beforehand. So in case if the feature has any side effects on user experience, they can mitigate and disable the feature flag to reduce some impact.
+- Notify `#support_gitlab-com` beforehand. So in case the feature has any side effects on user experience, they can mitigate and disable the feature flag to reduce some impact.
   - Include a brief description of what the feature flag does. You can start by asking GitLab Duo Agentic Chat: `Explain the feature flag <feature-flag-name> in the gitlab-org/gitlab project`.
 - If the feature meets the requirements for creating a [Change Management](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/change-management/#feature-flags-and-the-change-management-process) issue, create a Change Management issue per [criticality guidelines](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/change-management/#change-request-workflows).
 <!-- vale gitlab_base.OxfordComma = NO -->

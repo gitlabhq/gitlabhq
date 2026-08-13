@@ -42,7 +42,7 @@ See how to add a [third-party logo](https://gitlab.com/gitlab-org/gitlab-svgs/-/
 
 After the logo is added to the `main` branch,
 [the bot](https://gitlab.com/gitlab-org/frontend/renovate-gitlab-bot/) picks the
-new release up and create an MR in `gitlab-org/gitlab`. You can now proceed to
+new release up and creates an MR in `gitlab-org/gitlab`. You can now proceed to
 the next step.
 
 ### Add the template details
@@ -162,8 +162,8 @@ Ensure all merge requests have been reviewed by the Security counterpart before 
 
 ### Update all templates
 
-Starting a project from a template needs this project to be exported. On a
-up to date default branch run:
+Starting a project from a template needs this project to be exported. On an
+up-to-date default branch run:
 
 ```shell
 gdk start # postgres, praefect, and sshd are required

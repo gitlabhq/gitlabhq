@@ -90,7 +90,7 @@ Remember to run
 [`gosec` analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/gosec)),
 and to follow our [Security requirements](../code_review.md#security).
 
-Web servers can take advantages of middlewares like [Secure](https://github.com/unrolled/secure).
+Web servers can take advantage of middlewares like [Secure](https://github.com/unrolled/secure).
 
 ### Finding a reviewer
 
@@ -171,10 +171,10 @@ If your Go project produces help text for users, consider following the advice g
 
 ## Dependencies
 
-Dependencies should be kept to the minimum. The introduction of a new
+Dependencies should be kept to a minimum. The introduction of a new
 dependency should be argued in the merge request, as per our [Approval Guidelines](../code_review.md#approval-guidelines).
 [Dependency scanning](../../user/application_security/dependency_scanning/_index.md)
-should be activated on all projects to ensure new dependencies
+should be activated on all projects to ensure new dependencies'
 security status and license compatibility.
 
 ### Modules
@@ -220,7 +220,7 @@ deploy a new pod, migrating the data automatically.
 ### Testing frameworks
 
 We should not use any specific library or framework for testing, as the
-[standard library](https://pkg.go.dev/std) provides already everything to get
+[standard library](https://pkg.go.dev/std) already provides everything to get
 started. If there is a need for more sophisticated testing tools, the following
 external dependencies might be worth considering in case we decide to use a specific
 library or framework:
@@ -312,7 +312,7 @@ performance consistency over time.
 
 Adding context before you return the error can be helpful, instead of
 just returning the error. This allows developers to understand what the
-program was trying to do when it entered the error state making it much
+program was trying to do when it entered the error state, making it much
 easier to debug.
 
 For example:
@@ -372,7 +372,7 @@ in the code.
 ### LabKit
 
 [LabKit](https://gitlab.com/gitlab-org/labkit) is a place to keep common
-libraries for Go services. For examples using of using LabKit, see [`workhorse`](https://gitlab.com/gitlab-org/gitlab/tree/master/workhorse)
+libraries for Go services. For examples of using LabKit, see [`workhorse`](https://gitlab.com/gitlab-org/gitlab/tree/master/workhorse)
 and [`gitaly`](https://gitlab.com/gitlab-org/gitaly). LabKit exports three related pieces of functionality:
 
 - [`gitlab.com/gitlab-org/labkit/correlation`](https://gitlab.com/gitlab-org/labkit/tree/master/correlation):
@@ -425,7 +425,7 @@ should be used in functions that can block and passed as the first parameter.
 ## Dockerfiles
 
 Every project should have a `Dockerfile` at the root of their repository, to
-build and run the project. Since Go program are static binaries, they should
+build and run the project. Since Go programs are static binaries, they should
 not require any external dependency, and shells in the final image are useless.
 We encourage [Multistage builds](https://docs.docker.com/build/building/multi-stage/):
 
@@ -501,7 +501,7 @@ If no capacity is passed to `make` when creating a new slice, `append`
 will continuously resize the slice's backing array if it cannot hold
 the values. Providing the capacity ensures that allocations are kept
 to a minimum. It's recommended that the [`prealloc`](https://github.com/alexkohler/prealloc)
-golanci-lint rule automatically check for this.
+golangci-lint rule automatically check for this.
 
 ### Analyzer Tests
 

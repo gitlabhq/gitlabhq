@@ -320,6 +320,13 @@
           ],
           "description": "Preferred model size to use for this agent. 'small' selects a smaller, faster model; 'large' selects a larger, more capable model."
         },
+        "model_tags": {
+          "type": "array",
+          "description": "List of tags used to select or filter the model for this agent. Examples: ['small', 'large']",
+          "items": {
+            "type": "string"
+          }
+        },
         "ui_log_events": {
           "type": "array",
           "description": "UI logging configuration",

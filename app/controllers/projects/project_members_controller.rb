@@ -48,9 +48,9 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   def direct_members_list_data
     direct_members = present_members(non_invited_direct_members.page(direct_members_page))
 
-    helpers.project_members_list_data(
-      @project, direct_members, { param_name: :direct_members_page, params: { search_groups: nil } }
-    )
+    ::Projects::ProjectMembers::AppDataSerializer
+      .new(@project, current_user: current_user)
+      .list_data(direct_members, { param_name: :direct_members_page, params: { search_groups: nil } })
   end
 
   def members

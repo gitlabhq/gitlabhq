@@ -4,8 +4,10 @@ import { stackedPresentationOptions } from '@gitlab/ui/src/utils/constants';
 import { DISPLAY_TYPES } from '../../../constants';
 import {
   buildBarSeriesData,
+  dimensionLabelFormatter,
   labelWithParameter,
   tooltipContentFromParams,
+  tooltipTitleFromParams,
 } from '../../../utils/chart_data';
 import {
   buildFormatterByLabel,
@@ -54,6 +56,9 @@ export default {
     dimensionLabel() {
       return labelWithParameter(this.dimension);
     },
+    categoryFormatter() {
+      return dimensionLabelFormatter(this.data.nodes, this.dimension);
+    },
     // GlBarChart flips the axes: the metric/value axis is x, and the
     // dimension/category axis is y. yAxisTitleFor derives a title from the
     // metrics regardless of which axis it ends up on.
@@ -61,14 +66,14 @@ export default {
       return yAxisTitleFor(this.metrics);
     },
     // Every series maps the same nodes in order, so the first series' tuples
-    // carry all the category labels.
+    // carry all the category values; sizing needs their display labels.
     categoryLabels() {
       const [firstSeries] = Object.values(this.chartData);
-      return (firstSeries ?? []).map(([, label]) => label);
+      return (firstSeries ?? []).map(([, category]) => this.categoryFormatter(category));
     },
     chartOptions() {
       return {
-        ...barCategoryAxisOptions(this.categoryLabels),
+        ...barCategoryAxisOptions(this.categoryLabels, { formatter: this.categoryFormatter }),
         ...(this.sharedAxisFormatter
           ? { xAxis: { axisLabel: { formatter: this.sharedAxisFormatter } } }
           : {}),
@@ -82,6 +87,13 @@ export default {
     contentFromParams(params) {
       return tooltipContentFromParams(params, DISPLAY_TYPES.BAR_CHART);
     },
+    tooltipTitle(params) {
+      return tooltipTitleFromParams(params, {
+        formatLabel: this.categoryFormatter,
+        axisName: this.dimensionLabel,
+        displayType: DISPLAY_TYPES.BAR_CHART,
+      });
+    },
   },
 };
 </script>
@@ -94,6 +106,7 @@ export default {
     :x-axis-title="xAxisTitle"
     :y-axis-title="dimensionLabel"
   >
+    <template #tooltip-title="{ params }">{{ tooltipTitle(params) }}</template>
     <template #tooltip-content="{ params }">
       <formatted-tooltip-content
         :content="contentFromParams(params)"

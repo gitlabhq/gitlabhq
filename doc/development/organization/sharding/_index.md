@@ -389,7 +389,7 @@ This is the step where we add the sharding key column, indexes, foreign keys, an
 
 - Run `bundle install` and migrations.
 
-> Do not push any changes to this branch, just keep rebasing.
+> Do not push any changes to this branch. Just keep rebasing.
 
 **2. Steps to create automated MR:**
 
@@ -433,7 +433,7 @@ The keep file contains code that:
 
    - `bundle exec gitlab-housekeeper -k Keeps::BackfillDesiredShardingKeySmallTable`
 
-   - Running the above command will create a MR with the changes 🎉
+   - Running the above command will create an MR with the changes 🎉
 
 > Follow the same methods for large tables and use the large table keep. The only difference is that the table won't have a FK for performance reasons.
 
@@ -505,7 +505,7 @@ Once the column has been added and the backfill is finished we need to finalize 
 
 1. Once it's 100% create a new branch from master and run: `bundle exec rails g post_deployment_migration finalize_<table><sharding_key>`
 
-   This will create a post deployment migration file, edit it. For example, table `subscription_user_add_on_assignments` it will look like:
+   This will create a post deployment migration file. Edit it. For example, for table `subscription_user_add_on_assignments`, it will look like:
 
    ```ruby
    class FinalizeBackfillSubscriptionUserAddOnAssignmentsOrganizationId < Gitlab::Database::Migration[2.2]
@@ -743,13 +743,13 @@ end
 
 **Using Kibana**
 
-There will be certain cases where you can get failure notification after queuing the backfill job. One way is to use the [Kibana logs](https://log.gprd.gitlab.net/).
+There will be certain cases where you can get a failure notification after queuing the backfill job. One way is to use the [Kibana logs](https://log.gprd.gitlab.net/).
 
 > Note: We only store Kibana logs for 7 days
 
 Let's take the recent `BackfillPushEventPayloadsProjectId` BBM failure as an example.
 
-- Failures are also reported as a comment on backfilled original MR. Example: MR [!183123](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183123#note_2482744925)
+- Failures are also reported as a comment on the backfilled original MR. Example: MR [!183123](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183123#note_2482744925)
 
   ![Merge request comment showing batched background migration failure notification.](img/bbm-failure_v18_6.png)
 - We can also check the status of the job in `#chat-ops-test` Slack channel, using `/chatops gitlab run batched_background_migrations list --job-class-name=<desired_sharding_key_migration_job_name>`.
@@ -769,7 +769,7 @@ Let's take the recent `BackfillPushEventPayloadsProjectId` BBM failure as an exa
 1. Set `json.job_class_name` to `BackfillPushEventPayloadsProjectId` in this case and `json.new_state` to `failed` and apply the filter.
 
    ![Kibana filter configuration setting job class name and failed state parameters.](img/pubsub-filters-add_v18_6.png)
-1. Make sure to select the right timeline, since this migration was reported as a failure a few days ago I will filter it to show only the last 7 days.
+1. Make sure to select the right timeline. Since this migration was reported as a failure a few days ago, I will filter it to show only the last 7 days.
 
    ![Kibana time picker configured to display logs from the last 7 days.](img/kibana-dashboard-timeline_v18_6.png)
 1. After that you will see the desired logs with added filters.
@@ -779,7 +779,7 @@ Let's take the recent `BackfillPushEventPayloadsProjectId` BBM failure as an exa
 
    ![Expanded Kibana log entry revealing the exception message and error details.](img/kibana-logs-message_v18_6.png)
 
-- As you can see this BBM was failed due to `Sidekiq::Shutdown` 😡.
+- As you can see, this BBM failed due to `Sidekiq::Shutdown` 😡.
 - To fix it, just requeue the migration.
 
 **Using Grafana**
@@ -816,18 +816,18 @@ Let's take the recent `BackfillApprovalMergeRequestRulesUsersProjectId` BBM fail
 1. After running the query a graph will be generated within the selected time frame.
 
    ![Grafana graph showing table size baseline at 90 GB from early March 2025.](img/grafana-output-1_v18_6.png)
-1. Let's make sense of this graph. Backfill job started on **2025-03-11**, you can see a slight increase in table size starting at this date.
+1. Let's make sense of this graph. Backfill job started on **2025-03-11**. You can see a slight increase in table size starting at this date.
 
    ![Graph showing gradual table size increase beginning March 11, 2025 when backfill started.](img/grafana-output-2_v18_6.png)
 
    This is very normal.
-1. Let's see the changes we have added in the [post migration](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183354/diffs#396732f8126545e4961d048dbb6e81c4746b5557_0_11). First we added the `prepare_async` index. Let's check the size on [postgres.ai](https://console.postgres.ai/gitlab/gitlab-production-main/sessions/39129/commands/120292) it's size is 10 GB. It was created on **2025-03-15** at 00:00, as we can see in the spike in the graph.
+1. Let's see the changes we have added in the [post migration](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183354/diffs#396732f8126545e4961d048dbb6e81c4746b5557_0_11). First we added the `prepare_async` index. Let's check the size on [postgres.ai](https://console.postgres.ai/gitlab/gitlab-production-main/sessions/39129/commands/120292). Its size is 10 GB. It was created on **2025-03-15** at 00:00, as we can see in the spike in the graph.
 
    ![Sharp spike on March 15, 2025 showing 10 GB increase from async index creation.](img/grafana-output-3_v18_6.png)
 1. Once the index is created, backfill starts.
 
    ![Continued table size growth after index creation, climbing toward 110 GB.](img/grafana-output-4_v18_6.png)
-1. The BBM fails on **2025-03-29**, you can see in the graph that at this point, table size dropped.
+1. The BBM fails on **2025-03-29**. You can see in the graph that at this point, table size dropped.
 
    ![Sudden drop in table size on March 29, 2025 indicating migration failure and rollback.](img/grafana-output-5_v18_6.png)
 

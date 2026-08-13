@@ -78,7 +78,7 @@ Using object storage provides two main benefits:
 - Enabling horizontal scaling of your GitLab installation: multiple GitLab application servers can access the same data
   when it is stored in object storage.
 
-CNG installations including GitLab.com always use object storage (GCS in the case of GitLab.com.)
+CNG installations including GitLab.com always use object storage (GCS in the case of GitLab.com).
 
 A challenge with uploading to a remote object store is that it includes an outgoing HTTP request from
 GitLab to the object store provider. As mentioned above, there are three different strategies available for how

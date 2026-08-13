@@ -3,8 +3,10 @@ import { GlAreaChart } from '@gitlab/ui/src/charts';
 import {
   baseFieldKeyOf,
   buildStackedByDimension,
+  dimensionLabelFormatter,
   labelWithParameter,
   tooltipContentFromParams,
+  tooltipTitleFromParams,
 } from '../../../utils/chart_data';
 import { formatterFor, axisFormatterFor, dimensionAxisTitleFor } from '../../../utils/value_format';
 import FormattedTooltipContent from '../chart/formatted_tooltip_content.vue';
@@ -55,14 +57,21 @@ export default {
     metricAxisFormatter() {
       return axisFormatterFor(baseFieldKeyOf(this.metric));
     },
+    xAxisTitle() {
+      return dimensionAxisTitleFor(this.primaryDimension, this.secondaryDimension);
+    },
     yAxisTitle() {
       return labelWithParameter(this.metric);
+    },
+    categoryFormatter() {
+      return dimensionLabelFormatter(this.data.nodes, this.primaryDimension);
     },
     chartOptions() {
       return {
         xAxis: {
-          name: dimensionAxisTitleFor(this.primaryDimension, this.secondaryDimension),
+          name: this.xAxisTitle,
           type: 'category',
+          axisLabel: { formatter: this.categoryFormatter },
         },
         yAxis: {
           name: this.yAxisTitle,
@@ -75,6 +84,12 @@ export default {
     formatTooltipValue(_label, value) {
       return this.metricFormatter(value);
     },
+    tooltipTitle(params) {
+      return tooltipTitleFromParams(params, {
+        formatLabel: this.categoryFormatter,
+        axisName: this.xAxisTitle,
+      });
+    },
     contentFromParams: tooltipContentFromParams,
   },
 };
@@ -82,6 +97,7 @@ export default {
 
 <template>
   <gl-area-chart :data="chartData" :option="chartOptions" :include-legend-avg-max="false">
+    <template #tooltip-title="{ params }">{{ tooltipTitle(params) }}</template>
     <template #tooltip-content="{ params }">
       <formatted-tooltip-content
         :content="contentFromParams(params)"

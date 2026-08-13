@@ -10,6 +10,10 @@ module QA
       class CoverbandFormatter < ::RSpec::Core::Formatters::BaseFormatter
         include Support::API
 
+        BOOT_COVERAGE_CLEAR_ATTEMPTS = 3
+        MAX_REMAINING_CODE_PATHS_AFTER_CLEAR = 1000
+        WAIT_FOR_COVERBAND_REPORTING_SECONDS = 3
+
         def initialize(output)
           super
 
@@ -23,10 +27,48 @@ module QA
 
         ::RSpec::Core::Formatters.register(
           self,
+          :start,
           :example_started,
           :example_finished,
           :stop
         )
+
+        # Runs at the start of suite
+        #
+        # @param [RSpec::Core::Notifications::StartNotification] notification
+        # @return [void]
+        def start(_notification)
+          remaining = 0
+          status = :failed
+
+          QA::Support::Retrier.retry_until(
+            max_attempts: BOOT_COVERAGE_CLEAR_ATTEMPTS, sleep_interval: 0, raise_on_failure: false
+          ) do
+            delete(cov_api_endpoint, headers: headers_access_token)
+            sleep WAIT_FOR_COVERBAND_REPORTING_SECONDS
+            response = get(cov_api_endpoint, headers: headers_access_token)
+            next (status = :unavailable) if response.code == 404
+            next false if response.code != 200
+
+            remaining = JSON.parse(response.body).size
+            logger.info("Clearing boot coverage, #{remaining} files remaining")
+            status = :cleared if remaining < MAX_REMAINING_CODE_PATHS_AFTER_CLEAR
+          end
+
+          case status
+          when :cleared
+            logger.info("Cleared boot coverage data, #{remaining} files remaining")
+          when :unavailable
+            logger.warn("Coverage API is not available, no mapping will be produced by this job")
+          else
+            logger.error(
+              "Failed to clear boot coverage after #{BOOT_COVERAGE_CLEAR_ATTEMPTS} attempts, " \
+                "#{remaining} files remaining. Mapping from this job is not trustworthy."
+            )
+          end
+        rescue StandardError => e
+          logger.error("Failed to clear boot coverage, error: #{e}")
+        end
 
         # Runs at the end of suite
         #
