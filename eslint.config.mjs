@@ -847,9 +847,9 @@ export default [
     },
   },
 
-  // MSW integration tests
+  // MSW integration tests (EE-only)
   {
-    files: ['{,ee/}spec/frontend/msw_integration/**/*_spec.js'],
+    files: ['ee/spec/frontend/msw_integration/**/*_spec.js'],
     languageOptions: {
       globals: {
         waitForElement: 'readonly',
@@ -965,6 +965,22 @@ export default [
           selector: 'MemberExpression[object.property.name=/[Ss]tore/][property.name="state"]',
           message:
             'Do not access store.state directly. Simulate user behaviours and assert the resulting HTML.',
+        },
+      ],
+    },
+  },
+
+  // MSW integration tests are EE-only. Block any file from being (re)introduced
+  // under the CE path; the harness and fixtures live under ee/spec/frontend/msw_integration/.
+  {
+    files: ['spec/frontend/msw_integration/**/*'],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: 'Program',
+          message:
+            'MSW integration tests are EE-only; use Capybara for FOSS/licensed behavior. Place this file under ee/spec/frontend/msw_integration/ instead.',
         },
       ],
     },

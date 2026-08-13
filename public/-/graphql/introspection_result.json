@@ -140116,6 +140116,53 @@
         },
         {
           "kind": "OBJECT",
+          "name": "DuoWorkflowBranch",
+          "description": "Alternative branch of a Duo Agent Platform session, created by retrying a message",
+          "fields": [
+            {
+              "name": "forkThreadTs",
+              "description": "Identifier of the checkpoint to resume the session from to switch to the branch.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "messages",
+              "description": "Messages the branch added after the point it diverged, oldest first.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "DuoMessage",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
           "name": "DuoWorkflowCheckpointWrite",
           "description": "A pending write associated with a Duo Workflow checkpoint.",
           "fields": [
@@ -346180,6 +346227,59 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 17.9."
+            },
+            {
+              "name": "duoWorkflowBranches",
+              "description": "Other attempts at a turn in a Duo Agent Platform session, created when the user retried it. Always empty until branch reconstruction is released. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [
+                {
+                  "name": "workflowId",
+                  "description": "Global ID of the session.",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "AiDuoWorkflowsWorkflowID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                },
+                {
+                  "name": "threadTs",
+                  "description": "Identifier of the checkpoint that introduced a user message, from `DuoMessage.threadTs`. Returns the other attempts at the same turn, so the branch that message belongs to is excluded.",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "DuoWorkflowBranch",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
             },
             {
               "name": "duoWorkflowEvents",

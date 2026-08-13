@@ -333,7 +333,11 @@ InitializerConnections.warn_if_database_connection do
       draw :git_http
       draw_all :api
       draw :activity_pub
-      draw :customers_dot
+
+      Gitlab.ee do
+        draw :customers_dot
+      end
+
       draw :device_auth
       draw :sidekiq
       draw :help

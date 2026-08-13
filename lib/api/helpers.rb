@@ -10,6 +10,7 @@ module API
     include Gitlab::Ci::Artifacts::Logger
     include Gitlab::Utils::StrongMemoize
     include Gitlab::RackLoadBalancingHelpers
+    include Gitlab::ResourceLookup
 
     SUDO_HEADER = "HTTP_SUDO"
     GITLAB_SHARED_SECRET_HEADER = "Gitlab-Shared-Secret"
@@ -17,7 +18,7 @@ module API
     API_USER_ENV = 'gitlab.api.user'
     API_EXCEPTION_ENV = 'gitlab.api.exception'
     API_RESPONSE_STATUS_CODE = 'gitlab.api.response_status_code'
-    INTEGER_ID_REGEX = /^-?\d+$/
+    INTEGER_ID_REGEX = Gitlab::ResourceLookup::INTEGER_ID_REGEX
     GLOBAL_ID_LOG_REGEXES = [
       %r{^/ai/.*$},
       %r{^/code_suggestions/.*$}
@@ -152,19 +153,9 @@ module API
       UserFinder.new(id).find_by_id_or_username
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def find_project(id)
-      return unless id
-
-      projects = find_project_scopes
-
-      if id.is_a?(Integer) || id =~ INTEGER_ID_REGEX
-        projects.find_by(id: id)
-      elsif id.include?("/")
-        projects.find_by_full_path(id, follow_redirects: true)
-      end
+      lookup_project(id, scope: find_project_scopes)
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     # Can be overridden by API endpoints
     def find_project_scopes
@@ -240,17 +231,11 @@ module API
       check_organization_access(organization)
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def find_group(id, organization: nil)
       collection = organization.present? ? Group.in_organization(organization) : Group.all
 
-      if INTEGER_ID_REGEX.match?(id.to_s)
-        collection.find_by(id: id)
-      else
-        collection.find_by_full_path(id)
-      end
+      lookup_group(id, scope: collection)
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     def find_group!(id, organization: nil)
       group = find_group(id, organization: organization)

@@ -7,7 +7,7 @@ title: 'Database case study: Namespaces storage statistics'
 
 ## Introduction
 
-On [Storage and limits management for groups](https://gitlab.com/groups/gitlab-org/-/epics/886),
+On [Storage and limits management for groups](https://gitlab.com/groups/gitlab-org/-/work_items/886),
 we want to facilitate a method for easily viewing the amount of
 storage consumed by a group, and allow easy management.
 

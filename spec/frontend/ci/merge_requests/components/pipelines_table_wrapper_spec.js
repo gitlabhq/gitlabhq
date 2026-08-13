@@ -331,6 +331,20 @@ describe('PipelinesTableWrapper component', () => {
     });
   });
 
+  describe('when latest pipeline is a branch pipeline', () => {
+    beforeEach(async () => {
+      mergeRequestPipelinesRequest.mockResolvedValue(
+        generateMRPipelinesResponse({ mergeRequestEventType: null }),
+      );
+
+      await createComponent();
+    });
+
+    it('does not render the run pipeline button', () => {
+      expect(findRunPipelineBtn().exists()).toBe(false);
+    });
+  });
+
   describe('run pipeline button', () => {
     describe('on click', () => {
       beforeEach(() => {
@@ -435,6 +449,31 @@ describe('PipelinesTableWrapper component', () => {
 
         expect(showMock).toHaveBeenCalled();
         expect(findRunPipelineBtn().props('isLoading')).toBe(false);
+      });
+    });
+
+    describe('on click for fork merge request when the latest pipeline ran in the target project', () => {
+      beforeEach(async () => {
+        const response = generateMRPipelinesResponse({
+          mergeRequestEventType: MR_PIPELINE_TYPE_DETACHED,
+        });
+        mergeRequestPipelinesRequest.mockResolvedValue(response);
+        await createComponent({
+          props: {
+            canCreatePipelineInTargetProject: true,
+            sourceProjectFullPath: 'test/fork-project',
+            targetProjectFullPath: 'gitlab-org/gitlab',
+          },
+        });
+
+        jest.spyOn(Api, 'postMergeRequestPipeline').mockResolvedValue();
+      });
+
+      it('runs the pipeline without showing the security warning modal', async () => {
+        await findRunPipelineBtn().vm.$emit('run-pipeline');
+
+        expect(showMock).not.toHaveBeenCalled();
+        expect(Api.postMergeRequestPipeline).toHaveBeenCalledWith('5', { mergeRequestId: 1 });
       });
     });
 

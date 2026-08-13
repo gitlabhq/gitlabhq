@@ -1788,8 +1788,7 @@ Using external container registries in GitLab is [deprecated](https://gitlab.com
 
 The integration is not disabled, but support for debugging and fixing issues
 is no longer provided. Additionally, the integration is no longer being developed or
-enhanced with new features. Third-party registry functionality might be completely removed
-after the new GitLab container registry version is available for GitLab Self-Managed (see epic [5521](https://gitlab.com/groups/gitlab-org/-/epics/5521)). Only the GitLab container registry is planned to be supported.
+enhanced with new features. GitLab may remove this integration in a future release. Migrate to the GitLab container registry.
 
 This section has guidance for administrators migrating from third-party registries
 to the GitLab container registry. If the third-party container registry you are using is not listed here,

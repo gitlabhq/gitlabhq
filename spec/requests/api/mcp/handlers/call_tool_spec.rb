@@ -745,5 +745,50 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
       end
     end
   end
+
+  # Facet, filter, and pagination behaviour is covered in the tool spec. These examples only cover
+  # what the tool spec cannot: that arguments survive the JSON-RPC round trip and that the endpoint
+  # enforces access.
+  describe '#get_pipeline' do
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', status: :success, source: :push) }
+    let_it_be(:build) { create(:ci_build, :failed, pipeline: pipeline, name: 'rspec') }
+
+    let(:arguments) { { id: project.full_path, pipeline_id: pipeline.id } }
+    let(:tool_params) { { name: 'get_pipeline', arguments: arguments } }
+
+    it 'returns success response' do
+      post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['result']['isError']).to be_falsey
+      expect(json_response['result']['structuredContent']).to include(
+        'id' => pipeline.id, 'status' => 'success', 'ref' => 'master'
+      )
+    end
+
+    context 'with an include facet and a filter' do
+      let(:arguments) { super().merge(include: ['jobs'], job_status: 'failed') }
+
+      it 'returns the filtered facet' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['structuredContent']['jobs'].pluck('id')).to contain_exactly(build.id)
+      end
+    end
+
+    context 'when caller does not have permission to read the pipeline' do
+      let_it_be(:unauthorized_user) { create(:user) }
+      let_it_be(:unauthorized_access_token) { create(:oauth_access_token, user: unauthorized_user, scopes: [:mcp]) }
+
+      it 'returns a non-leaky not-found error' do
+        post api('/mcp', unauthorized_user, oauth_access_token: unauthorized_access_token), params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_truthy
+        expect(json_response['result']['content'].first['text']).to include('Project not found')
+      end
+    end
+  end
 end
 # rubocop:enable RSpec/SpecFilePathFormat

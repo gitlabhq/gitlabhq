@@ -75,8 +75,6 @@ gem 'faraday-retry', '~> 2.4', feature_category: :shared # rubocop:todo Gemfile/
 # Logger is a dependency of Faraday, but Logger 1.6.0 does not work with Chef.
 gem 'logger', '~> 1.7.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
-gem 'marginalia', '~> 1.11.1', feature_category: :database
-
 # Authorization
 gem 'declarative_policy', '~> 2.1.0', feature_category: :permissions
 gem 'gitlab-glaz', '~> 0.0.3', feature_category: :permissions

@@ -178,7 +178,9 @@ still passes validation for an optional `enum` parameter.
   `include: ["diffs"]`). Valid values are `diffs`, `commits`, `notes`, `pipelines`, and
   `discussions`. Declare `include` as an array of enum values even when only one facet per call is
   supported, and bound it with `maxItems`. Raising that cap later is additive, whereas changing the
-  parameter from a string to an array breaks existing callers.
+  parameter from a string to an array breaks existing callers. See `get_pipeline`
+  (`include: ["jobs"]`/`["downstream_pipelines"]`/`["bridge_jobs"]`) for a worked example of this
+  pattern, including a filter (`job_status`) scoped to a single facet.
 - Independent collections that can be queried on their own get their own `list_` tool (for example
   `list_merge_requests`, `list_pipelines`).
 - Facet-scoped pagination lives on the `get_` reader and applies only to the relevant `include`

@@ -62,7 +62,7 @@ title: Database development guidelines
 - [Troubleshooting and debugging the database](database_debugging.md)
 - Tracing the source of an SQL query:
   - In Rails console using [Verbose Query Logs](https://guides.rubyonrails.org/debugging_rails_applications.html#verbose-query-logs)
-  - Using query comments with [Marginalia](database_query_comments.md)
+  - Using [database query comments](database_query_comments.md)
 
 ## Best practices
 

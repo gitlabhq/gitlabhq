@@ -35,13 +35,20 @@ assignee = currentUser()`;
 });
 
 describe('parse', () => {
+  let originalLocation;
+
   beforeEach(() => {
     gon.current_username = 'root';
-    document.body.dataset.projectFullPath = 'gitlab-org/gitlab';
+    originalLocation = window.location;
+    delete window.location;
+    window.location = {
+      href: 'https://gitlab.example.com/gitlab-org/gitlab/-/wikis/page',
+      origin: 'https://gitlab.example.com',
+    };
   });
 
   afterEach(() => {
-    delete document.body.dataset.projectFullPath;
+    window.location = originalLocation;
   });
 
   it('parses a simple query correctly', async () => {

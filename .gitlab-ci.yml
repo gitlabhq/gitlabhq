@@ -141,13 +141,13 @@ workflow:
         <<: *next-ruby-variables
         BUNDLE_GEMFILE: Gemfile.next
         PIPELINE_NAME: 'Rails next version (Gemfile.next)'
-    # MRs with the 'database' label: opt in to Marginalia :line annotation so
+    # MRs with the 'database' label: opt in to the query log :line annotation so
     # SQL queries carry source-file info (useful when reviewing DB changes).
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train" && $CI_MERGE_REQUEST_LABELS =~ /database/'
       variables:
         <<: [*next-ruby-variables, *default-merge-request-variables]
         PIPELINE_NAME: 'Ruby $RUBY_VERSION MR'
-        MARGINALIA_LINE: "true"
+        QUERY_LOG_LINE: "true"
     # For (detached) merge request pipelines.
     - if: '$CI_MERGE_REQUEST_IID'
       variables:

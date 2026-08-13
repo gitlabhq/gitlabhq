@@ -1,0 +1,9 @@
+---
+name: delete_govern_policy
+description: Grants the ability to delete policies in the policy store
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - delete_govern_policy

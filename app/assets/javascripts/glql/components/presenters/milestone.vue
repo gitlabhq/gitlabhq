@@ -1,7 +1,7 @@
 <script>
 import { GlLink } from '@gitlab/ui';
 import initIssuablePopovers from '~/issuable/popover';
-import { getGroupOrProjectFromUrl } from '../../utils/common';
+import { extractGroupOrProject } from '../../utils/common';
 
 export default {
   name: 'MilestonePresenter',
@@ -18,7 +18,7 @@ export default {
     return {
       project: undefined,
       group: undefined,
-      ...getGroupOrProjectFromUrl(this.data.webPath),
+      ...extractGroupOrProject(this.data.webPath),
     };
   },
   mounted() {

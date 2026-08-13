@@ -11,10 +11,10 @@ module API
     # unauthenticated requests, so the global hook can fall through to the
     # default organization without aborting the request.
     #
-    # Runner-token endpoints set Current.organization through their own
-    # per-endpoint helper (set_current_organization_from_runner);
-    # cluster-agent-token endpoints opt out via
-    # skip_global_organization_setup!.
+    # Runner- and cluster-agent-token endpoints set Current.organization
+    # through their own per-endpoint helpers
+    # (set_current_organization_from_runner,
+    # set_current_organization_from_agent).
     # We do not look up those tokens here because Ci::Runner#find_by_token
     # (and similar partitioned lookups) emit a log line on partition miss
     # that prematurely evaluates the ApplicationContext lazy attributes.

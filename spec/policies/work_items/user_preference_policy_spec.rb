@@ -13,6 +13,7 @@ RSpec.describe WorkItems::UserPreferencePolicy, feature_category: :team_planning
       let_it_be(:user_preference) { create(:work_item_user_preference, namespace: namespace, user: user) }
 
       it { is_expected.to be_allowed(:read_namespace) }
+      it { is_expected.to be_allowed(:update_work_item_user_preference) }
     end
 
     context 'when namespace is a project' do
@@ -21,6 +22,7 @@ RSpec.describe WorkItems::UserPreferencePolicy, feature_category: :team_planning
       let_it_be(:user_preference) { create(:work_item_user_preference, namespace: namespace, user: user) }
 
       it { is_expected.to be_allowed(:read_namespace) }
+      it { is_expected.to be_allowed(:update_work_item_user_preference) }
     end
   end
 
@@ -31,6 +33,7 @@ RSpec.describe WorkItems::UserPreferencePolicy, feature_category: :team_planning
 
       context 'when user is not member of the namespace' do
         it { is_expected.to be_disallowed(:read_namespace) }
+        it { is_expected.to be_disallowed(:update_work_item_user_preference) }
       end
 
       context 'when user is member of the namespace' do
@@ -39,6 +42,7 @@ RSpec.describe WorkItems::UserPreferencePolicy, feature_category: :team_planning
         end
 
         it { is_expected.to be_allowed(:read_namespace) }
+        it { is_expected.to be_allowed(:update_work_item_user_preference) }
       end
     end
 
@@ -49,6 +53,7 @@ RSpec.describe WorkItems::UserPreferencePolicy, feature_category: :team_planning
 
       context 'when user is not member of the namespace' do
         it { is_expected.to be_disallowed(:read_namespace) }
+        it { is_expected.to be_disallowed(:update_work_item_user_preference) }
       end
 
       context 'when user is member of the namespace' do
@@ -57,7 +62,25 @@ RSpec.describe WorkItems::UserPreferencePolicy, feature_category: :team_planning
         end
 
         it { is_expected.to be_allowed(:read_namespace) }
+        it { is_expected.to be_allowed(:update_work_item_user_preference) }
       end
+    end
+  end
+
+  context 'when namespace is a user namespace' do
+    let_it_be(:namespace) { create(:user_namespace) }
+    let_it_be(:user_preference) { create(:work_item_user_preference, namespace: namespace, user: user) }
+
+    context 'when user does not own the namespace' do
+      it { is_expected.to be_disallowed(:read_namespace) }
+      it { is_expected.to be_disallowed(:update_work_item_user_preference) }
+    end
+
+    context 'when user owns the namespace' do
+      subject(:policy) { described_class.new(namespace.owner, user_preference) }
+
+      it { is_expected.to be_allowed(:read_namespace) }
+      it { is_expected.to be_allowed(:update_work_item_user_preference) }
     end
   end
 end

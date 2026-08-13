@@ -337,7 +337,7 @@ RSpec.describe 'Current.organization resolution in Grape API', feature_category:
     end
   end
 
-  describe 'Cluster agent token (KAS, opted out)' do
+  describe 'Cluster agent token (KAS)' do
     let(:jwt_secret) { SecureRandom.random_bytes(Gitlab::Kas::SECRET_LENGTH) }
     let(:jwt_token) do
       JWT.encode(
@@ -351,7 +351,47 @@ RSpec.describe 'Current.organization resolution in Grape API', feature_category:
       allow(Gitlab::Kas).to receive(:secret).and_return(jwt_secret)
     end
 
-    it 'leaves Current.organization unassigned (global hook opted out)' do
+    it 'resolves to the organization of the agent project' do
+      agent_organization = create(:organization)
+      agent_project = create(:project, organization: agent_organization)
+      agent_token = create(:cluster_agent_token, agent: create(:cluster_agent, project: agent_project))
+
+      expect_logged_organization_id(agent_organization.id)
+
+      get api('/internal/kubernetes/verify_project_access'),
+        params: { id: agent_project.id },
+        headers: {
+          Gitlab::Kas::INTERNAL_API_KAS_REQUEST_HEADER => jwt_token,
+          Gitlab::Kas::INTERNAL_API_AGENT_REQUEST_HEADER => agent_token.token
+        }
+
+      expect(response).to have_gitlab_http_status(:no_content)
+    end
+
+    context 'when an organization is already assigned' do
+      let(:other_organization) { create(:organization) }
+      let(:agent_project) { create(:project) }
+      let(:agent_token) { create(:cluster_agent_token, agent: create(:cluster_agent, project: agent_project)) }
+
+      before do
+        allow(::Current).to receive_messages(organization_assigned: true, organization: other_organization)
+      end
+
+      it 'does not overwrite the assigned organization' do
+        expect(::Current).not_to receive(:organization=)
+
+        get api('/internal/kubernetes/verify_project_access'),
+          params: { id: agent_project.id },
+          headers: {
+            Gitlab::Kas::INTERNAL_API_KAS_REQUEST_HEADER => jwt_token,
+            Gitlab::Kas::INTERNAL_API_AGENT_REQUEST_HEADER => agent_token.token
+          }
+
+        expect(response).to have_gitlab_http_status(:no_content)
+      end
+    end
+
+    it 'leaves Current.organization unassigned for KAS JWT-only endpoints (no agent token)' do
       expect_no_logged_organization_id
 
       post api('/internal/kubernetes/usage_metrics'),

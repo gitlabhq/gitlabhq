@@ -109,9 +109,9 @@ module Gitlab
           def hash
             if @vulnerability_finding_signatures_enabled && !signatures.empty?
               highest_signature = signatures.max_by(&:priority)
-              report_type.hash ^ highest_signature.signature_hex.hash ^ primary_identifier_fingerprint.hash
+              [report_type, highest_signature.signature_hex, primary_identifier_fingerprint].hash
             else
-              report_type.hash ^ location.fingerprint.hash ^ primary_identifier_fingerprint.hash
+              [report_type, location.fingerprint, primary_identifier_fingerprint].hash
             end
           end
 

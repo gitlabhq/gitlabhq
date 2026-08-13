@@ -389,7 +389,7 @@ To migrate back to local storage:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11872) in GitLab 17.2.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/11872) in GitLab 17.2.
 - [Introduced](https://gitlab.com/gitlab-org/charts/gitlab/-/merge_requests/3845) for Helm chart (Kubernetes) in GitLab 17.3.
 
 {{< /history >}}

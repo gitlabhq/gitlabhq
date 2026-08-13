@@ -3,43 +3,42 @@
 module Gitlab
   module Cd
     module Driver
-      # Assembles a single AutoFlow deploy program from the orchestration engine
-      # and one or more deploy driver deploy() fragments.
-      #
-      # Each driver ships a module-level `def deploy():` that registers its step
-      # handlers. To let several drivers coexist in one program, every driver's
-      # deploy() is renamed to a gem-unique identifier and invoked at load, after
-      # the orchestrator's main.star is prepended.
-      #
-      # A driver fragment must therefore define `deploy()` and must not bind
-      # anything at module level that the engine already owns (see
-      # ENGINE_GLOBALS): the parts are concatenated into one Starlark module, and
-      # Starlark rejects rebinding a global. assemble enforces both.
+      # Assembles a single AutoFlow deploy program from the orchestration engine and
+      # one or more driver deploy() fragments. Each driver ships a module-level `def
+      # deploy():` that registers its step handlers; it is renamed to a gem-unique
+      # identifier and invoked at load, so several drivers can coexist in one module.
       module Orchestration
         MAIN_PROGRAM_PATH = File.expand_path("../../../../scripts/main.star", __dir__)
 
         DEPLOY_DEF = /^def deploy\(/
 
-        # The names scripts/main.star binds at module level. Hardcoded rather than
-        # parsed on every assemble; a spec pins it to main.star so the two cannot
-        # drift apart unnoticed.
+        # Hardcoded rather than parsed out of main.star on every assemble; a spec pins
+        # the two together so they cannot drift apart unnoticed.
         ENGINE_GLOBALS = %w[
           gitlab_function_run
-          event_emit
+          call_api
           gl_run
           _require
           _STEPS
           _STAGE_TYPE
-          _emit
-          _fail_step
+          _TOPIC
+          _build_emitter
+          failure
+          _emit_step_failed
+          _report_failure
           _VALIDATORS
+          _ACTIONS_ALLOWED
+          _ACTIONS
           register
+          _WAIT_TYPE
           _wait
-          _leaf_steps
+          _check_step_shape
+          _check_flow_document
+          _shape_failure_data
           _step_environment
-          _run_step
-          _validator_steps
+          _plan
           _validate_flow
+          _run_step
           main
         ].freeze
 
@@ -55,8 +54,7 @@ module Gitlab
 
         module_function
 
-        # driver_scripts - Hash of { gem_name (String) => deploy.star source (String) }
-        # Returns the combined program as an ASCII-8BIT string.
+        # driver_scripts - { gem_name => deploy.star source }
         def assemble(driver_scripts:)
           parts = [main_program]
 
@@ -71,9 +69,8 @@ module Gitlab
           parts.join("\n").b
         end
 
-        # Escape a gem name into a safe, reversible Starlark identifier. Existing
-        # underscores are doubled first, so every remaining single "_" in the
-        # output unambiguously marks an escape sequence.
+        # Escapes a gem name into a reversible Starlark identifier. Underscores are
+        # doubled first, so every remaining single "_" marks an escape sequence.
         def gem_name_to_identifier(name)
           out = name.gsub("_", "__")
           out = out.gsub("-", "_d")
@@ -105,7 +102,6 @@ module Gitlab
               "Remove them from the fragment and use the engine's."
         end
 
-        # The names a Starlark fragment binds at module level.
         def fragment_globals(script)
           script.each_line.flat_map do |line|
             load_match = line.match(FRAGMENT_LOAD)
@@ -116,8 +112,7 @@ module Gitlab
           end
         end
 
-        # The names a load() binds: every argument after the module name, taking
-        # the alias where one is given.
+        # Every argument after the module name, taking the alias where one is given.
         def load_bindings(args)
           args.scan(LOAD_BINDING).drop(1).map { |alias_name, symbol| alias_name || symbol }
         end

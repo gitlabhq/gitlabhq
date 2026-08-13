@@ -310,7 +310,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
       )
     end
 
-    # Emulate Marginalia pre-pending comments
+    # Emulate ActiveRecord::QueryLogs pre-pending comments
     def sql(query, comments: true)
       if comments
         "/*application:web,controller:badges,action:pipeline,correlation_id:01EYN39K9VMJC56Z7808N7RSRH*/ #{query}"
@@ -360,13 +360,13 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
       end
     end
 
-    context 'without Marginalia comments' do
+    context 'without query log comments' do
       let(:comments) { false }
 
       it_behaves_like 'track generic sql events'
     end
 
-    context 'with Marginalia comments' do
+    context 'with query log comments' do
       let(:comments) { true }
 
       it_behaves_like 'track generic sql events'
@@ -385,7 +385,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
       )
     end
 
-    # Emulate Marginalia pre-pending comments
+    # Emulate ActiveRecord::QueryLogs pre-pending comments
     def sql(query, comments: true)
       if comments
         "/*application:web,controller:badges,action:pipeline,correlation_id:01EYN39K9VMJC56Z7808N7RSRH*/ #{query}"
@@ -498,13 +498,13 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
       end
     end
 
-    context 'without Marginalia comments' do
+    context 'without query log comments' do
       let(:comments) { false }
 
       it_behaves_like 'track sql events for each role'
     end
 
-    context 'with Marginalia comments' do
+    context 'with query log comments' do
       let(:comments) { true }
 
       it_behaves_like 'track sql events for each role'

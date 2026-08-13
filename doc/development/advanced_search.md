@@ -194,7 +194,7 @@ in the cluster back the request in GitLab.
 
 ## Architecture
 
-The framework used to communicate to Elasticsearch is in the process of a refactor tracked in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/13873).
+The framework used to communicate to Elasticsearch is in the process of a refactor tracked in [this epic](https://gitlab.com/groups/gitlab-org/-/work_items/13873).
 
 ### Indexing Overview
 

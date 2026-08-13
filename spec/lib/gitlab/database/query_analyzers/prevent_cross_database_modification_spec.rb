@@ -157,12 +157,12 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModificatio
 
       context 'when comments are added to the front of query strings' do
         around do |example|
-          prepend_comment_was = Marginalia::Comment.prepend_comment
-          Marginalia::Comment.prepend_comment = true
+          prepend_comment_was = ActiveRecord::QueryLogs.prepend_comment
+          ActiveRecord::QueryLogs.prepend_comment = true
 
           example.run
 
-          Marginalia::Comment.prepend_comment = prepend_comment_was
+          ActiveRecord::QueryLogs.prepend_comment = prepend_comment_was
         end
 
         include_examples 'cross-database modification errors', model: Project,

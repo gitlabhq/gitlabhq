@@ -376,7 +376,6 @@ Style/GuardClause:
     - 'lib/gitlab/instrumentation/uploads.rb'
     - 'lib/gitlab/legacy_github_import/client.rb'
     - 'lib/gitlab/legacy_github_import/issuable_formatter.rb'
-    - 'lib/gitlab/marginalia.rb'
     - 'lib/gitlab/metrics/samplers/ruby_sampler.rb'
     - 'lib/gitlab/metrics/subscribers/active_record.rb'
     - 'lib/gitlab/metrics/subscribers/external_http.rb'

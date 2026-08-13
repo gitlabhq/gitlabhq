@@ -323,6 +323,51 @@ Example:
 Create a branch named feature/x from main in project gitlab-org/gitlab
 ```
 
+## `get_pipeline`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/605853) in GitLab 19.3.
+
+{{< /history >}}
+
+Retrieves a pipeline, and optionally its jobs, downstream pipelines, or bridge (trigger) jobs.
+
+| Parameter     | Type    | Required | Description |
+|---------------|---------|----------|-------------|
+| `id`          | string  | Yes      | ID or full path of the project. |
+| `pipeline_id` | integer | Yes      | ID of the pipeline. |
+| `include`     | array   | No       | Facet to include alongside the pipeline, one per call: `jobs`, `downstream_pipelines`, or `bridge_jobs`. |
+| `job_status`  | string  | No       | Filters the `jobs` facet by status (for example, `failed`). Only applies when `include` is `jobs`. |
+| `first`       | integer | No       | Number of items to return for the selected `include` facet. Default is `20`, maximum is `100`. |
+| `after`       | string  | No       | Cursor for forward pagination of the selected `include` facet. Use the previous response's `page_info.end_cursor`. |
+
+A bridge job's `downstream_pipeline` is omitted (`null`) both when the trigger job hasn't
+triggered a downstream pipeline yet, and when you don't have access to that pipeline.
+
+Each downstream pipeline includes a `project_full_path`, because a downstream pipeline can belong to
+a different project. Use that value as the `id` of a follow-up call.
+
+Examples:
+
+- Get a pipeline:
+
+  ```plaintext
+  Get the status of pipeline 12345 in project gitlab-org/gitlab
+  ```
+
+- Get a pipeline's failed jobs:
+
+  ```plaintext
+  Show me the failed jobs in pipeline 12345 for project gitlab-org/gitlab
+  ```
+
+- Get a pipeline's downstream pipelines:
+
+  ```plaintext
+  Show me the downstream pipelines triggered by pipeline 12345 in project gitlab-org/gitlab
+  ```
+
 ## `get_pipeline_jobs`
 
 {{< history >}}
@@ -331,7 +376,8 @@ Create a branch named feature/x from main in project gitlab-org/gitlab
 
 {{< /history >}}
 
-Retrieves the jobs for a specific GitLab CI/CD pipeline.
+Retrieves the jobs for a specific GitLab CI/CD pipeline. To get jobs alongside the rest of the
+pipeline's data in a single call, use the `get_pipeline` tool with `include: jobs` instead.
 
 | Parameter     | Type    | Required | Description |
 |---------------|---------|----------|-------------|

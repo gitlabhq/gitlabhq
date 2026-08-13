@@ -1320,6 +1320,26 @@ Get GitLab Duo settings.
 
 Returns [`DuoSettings`](#duosettings).
 
+### `Query.duoWorkflowBranches`
+
+{{< details >}}
+
+- Introduced in GitLab 19.3.
+- Status: Experiment.
+
+{{< /details >}}
+
+Other attempts at a turn in a Duo Agent Platform session, created when the user retried it. Always empty until branch reconstruction is released.
+
+Returns [`[DuoWorkflowBranch!]`](#duoworkflowbranch).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="query-duoworkflowbranches-threadts"></a>`threadTs` | [`String!`](#string) | Identifier of the checkpoint that introduced a user message, from `DuoMessage.threadTs`. Returns the other attempts at the same turn, so the branch that message belongs to is excluded. |
+| <a id="query-duoworkflowbranches-workflowid"></a>`workflowId` | [`AiDuoWorkflowsWorkflowID!`](#aiduoworkflowsworkflowid) | Global ID of the session. |
+
 ### `Query.duoWorkflowEvents`
 
 {{< details >}}
@@ -41767,6 +41787,17 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="duoworkflow-workitemlinks-linktype"></a>`linkType` | [`DuoWorkflowWorkItemLinkType`](#duoworkflowworkitemlinktype) | Filter links by their link type. |
+
+### `DuoWorkflowBranch`
+
+Alternative branch of a Duo Agent Platform session, created by retrying a message.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflowbranch-forkthreadts"></a>`forkThreadTs` | [`String`](#string) | Identifier of the checkpoint to resume the session from to switch to the branch. |
+| <a id="duoworkflowbranch-messages"></a>`messages` | [`[DuoMessage!]!`](#duomessage) | Messages the branch added after the point it diverged, oldest first. |
 
 ### `DuoWorkflowCheckpointWrite`
 

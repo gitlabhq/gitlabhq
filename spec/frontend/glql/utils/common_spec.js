@@ -1,72 +1,40 @@
 import {
-  getGroupOrProjectFromUrl,
-  getGroupOrProjectFromPageData,
+  extractGroupOrProject,
   toSentenceCase,
   relativeNamespace,
   wrapQueryInGlqlBlock,
   copyQuerySource,
 } from '~/glql/utils/common';
+import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
 
 jest.mock('~/lib/utils/copy_to_clipboard');
 
-describe('getGroupOrProjectFromUrl', () => {
-  afterEach(() => {
-    delete gon.relative_url_root;
+describe('extractGroupOrProject', () => {
+  useMockLocationHelper();
+
+  it.each`
+    url                                                            | group                       | project
+    ${'https://gitlab.com/gitlab-org/gitlab-test/-/issues'}        | ${undefined}                | ${'gitlab-org/gitlab-test'}
+    ${'https://gitlab.com/groups/gitlab-org/-/issues'}             | ${'gitlab-org'}             | ${undefined}
+    ${'https://gitlab.com/groups/gitlab-org/gitlab-test/-/issues'} | ${'gitlab-org/gitlab-test'} | ${undefined}
+  `('returns the correct group or project', ({ url, group, project }) => {
+    window.location.origin = 'https://gitlab.com';
+
+    window.location.href = url;
+    expect(extractGroupOrProject()).toEqual({ group, project });
   });
 
-  describe.each`
-    path                                         | relativeUrlRoot | group                       | project
-    ${'/gitlab-org/gitlab-test/-/issues'}        | ${''}           | ${undefined}                | ${'gitlab-org/gitlab-test'}
-    ${'/groups/gitlab-org/-/issues'}             | ${''}           | ${'gitlab-org'}             | ${undefined}
-    ${'/groups/gitlab-org/gitlab-test/-/issues'} | ${''}           | ${'gitlab-org/gitlab-test'} | ${undefined}
-    ${'/gitlab-org/gitlab-test/-/issues'}        | ${'/gitlab'}    | ${undefined}                | ${'gitlab-org/gitlab-test'}
-    ${'/groups/gitlab-org/-/issues'}             | ${'/gitlab'}    | ${'gitlab-org'}             | ${undefined}
-    ${'/groups/gitlab-org/gitlab-test/-/issues'} | ${'/gitlab'}    | ${'gitlab-org/gitlab-test'} | ${undefined}
-  `('for $relativeUrlRoot$path', ({ path, relativeUrlRoot, group, project }) => {
-    const fullPath = `${relativeUrlRoot}${path}`;
+  it('removes gon.relative_url_root from the URL before parsing', () => {
+    window.location.origin = 'https://gitlab.com';
+    window.location.href = 'https://gitlab.com/gitlab/groups/gitlab-org/-/issues';
 
-    beforeEach(() => {
-      gon.relative_url_root = relativeUrlRoot;
+    gon.relative_url_root = '/gitlab';
+
+    expect(extractGroupOrProject()).toEqual({
+      group: 'gitlab-org',
+      project: undefined,
     });
-
-    it('returns the correct group or project from an absolute URL', () => {
-      expect(getGroupOrProjectFromUrl(`https://gitlab.com${fullPath}`)).toEqual({ group, project });
-    });
-
-    it('returns the correct group or project from a relative path', () => {
-      expect(getGroupOrProjectFromUrl(fullPath)).toEqual({ group, project });
-    });
-  });
-});
-
-describe('getGroupOrProjectFromPageData', () => {
-  afterEach(() => {
-    delete document.body.dataset.projectFullPath;
-    delete document.body.dataset.groupFullPath;
-  });
-
-  it('returns the project of the current page', () => {
-    document.body.dataset.projectFullPath = 'gitlab-org/gitlab-test';
-
-    expect(getGroupOrProjectFromPageData()).toEqual({ project: 'gitlab-org/gitlab-test' });
-  });
-
-  it('returns the group of the current page', () => {
-    document.body.dataset.groupFullPath = 'gitlab-org';
-
-    expect(getGroupOrProjectFromPageData()).toEqual({ group: 'gitlab-org' });
-  });
-
-  it('returns the project when the page is scoped to a project within a group', () => {
-    document.body.dataset.projectFullPath = 'gitlab-org/gitlab-test';
-    document.body.dataset.groupFullPath = 'gitlab-org';
-
-    expect(getGroupOrProjectFromPageData()).toEqual({ project: 'gitlab-org/gitlab-test' });
-  });
-
-  it('returns an empty object when the page is not scoped to a group or project', () => {
-    expect(getGroupOrProjectFromPageData()).toEqual({});
   });
 });
 

@@ -16,6 +16,9 @@ RSpec.describe 'Resolve an open thread in a merge request by creating an issue',
 
   describe 'As a user with access to the project' do
     before do
+      # On EE the Duo resolve options move this link into a dropdown with a different label.
+      stub_feature_flags(resolve_discussion_with_duo: false)
+
       project.add_maintainer(user)
       sign_in user
       visit project_merge_request_path(project, merge_request)

@@ -1,7 +1,7 @@
 import jsYaml from 'js-yaml';
 import { glql } from '@gitlab/query-language-rust';
 import { DEFAULT_DISPLAY_TYPE, MODE_STANDARD } from '../constants';
-import { getGroupOrProjectFromPageData } from '../utils/common';
+import { extractGroupOrProject } from '../utils/common';
 import { glqlFeatureFlags } from '../utils/feature_flags';
 
 const isValidYAML = (text) => typeof jsYaml.safeLoad(text) === 'object';
@@ -26,7 +26,7 @@ export const parseQueryTextWithFrontmatter = (text) => {
 export const parseQuery = async (query, config) => {
   const { output, success, variables, fields, mode, source } = await glql.compile(query, {
     ...config,
-    ...getGroupOrProjectFromPageData(),
+    ...extractGroupOrProject(),
     username: gon.current_username,
     featureFlags: glqlFeatureFlags(),
   });

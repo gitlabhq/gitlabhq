@@ -599,7 +599,7 @@ For more information, see the
 A [post deployment migration](../../development/database/post_deployment_migrations.md)
 schedules batched [background migrations](../background_migrations.md) to copy CI builds metadata
 to new optimized tables (`p_ci_job_definitions`). This migration is part of an initiative to
-ultimately reduce CI database size (see [epic 13886](https://gitlab.com/groups/gitlab-org/-/epics/13886)).
+ultimately reduce CI database size (see [epic 13886](https://gitlab.com/groups/gitlab-org/-/work_items/13886)).
 If you have an instance with millions of jobs and want to speed up the migration,
 you can [select what data is migrated](#ci-builds-metadata-migration-details).
 
@@ -1005,7 +1005,7 @@ legacy installations, the first two options can be used as a stopgap.
 > This migration only copies existing data from the old format to the new one.
 > No data is deleted.
 
-Data not migrated will be removed in a future release (see [epic 18271](https://gitlab.com/groups/gitlab-org/-/epics/18271)).
+Data not migrated will be removed in a future release (see [epic 18271](https://gitlab.com/groups/gitlab-org/-/work_items/18271)).
 
 The migration duration is directly proportional to the total number of CI jobs in your instance.
 Jobs are processed from newest to oldest partitions to prioritize recent data.

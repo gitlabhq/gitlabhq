@@ -175,15 +175,16 @@ This action cannot be undone.
 > For more information, see the history.
 > This feature is available for testing, but not ready for production use.
 
-The confidence score shows how ready a workplan is for an agent to run.
-GitLab Duo scores the workplan on how complete, clear, and well scoped it is, then
+The confidence score shows how ready a work item is for an agent to run.
+GitLab Duo scores the work item on how complete, clear, and well scoped it is, then
 maps the score to a confidence level.
+The score appears whether or not the work item has a workplan.
 
 In the **Workplan** widget on the work item, the confidence level appears as
 **Low**, **Medium**, or **High**.
 
-To raise the score, add more detail to the workplan steps, such as requirements,
-acceptance criteria, and constraints.
+To raise the score, add more detail to the work item description and to the workplan
+steps, such as requirements, acceptance criteria, and constraints.
 
 ## Implement a workplan with GitLab Duo
 

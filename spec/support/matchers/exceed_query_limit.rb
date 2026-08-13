@@ -63,7 +63,7 @@ module ExceedQueryLimitHelpers
     end
   end
 
-  MARGINALIA_ANNOTATION_REGEX = %r{\s*/\*.*\*/}
+  SQL_ANNOTATION_REGEX = %r{\s*/\*.*\*/}
 
   DB_QUERY_RE = Regexp.union(
     [
@@ -196,7 +196,7 @@ module ExceedQueryLimitHelpers
   #    }
   #  }
   def count_queries(query_recorder)
-    strip_marginalia_annotations(query_log(query_recorder))
+    strip_sql_annotations(query_log(query_recorder))
       .map { |q| query_group_key(q) }
       .group_by { |k| k[:prefix] }
       .transform_values { |keys| frequencies(:suffix, keys) }
@@ -261,8 +261,8 @@ module ExceedQueryLimitHelpers
     "Expected a maximum of #{counts} queries, got #{actual_count}:\n\n#{log_message}"
   end
 
-  def strip_marginalia_annotations(logs)
-    logs.map { |log| log.sub(MARGINALIA_ANNOTATION_REGEX, '') }
+  def strip_sql_annotations(logs)
+    logs.map { |log| log.sub(SQL_ANNOTATION_REGEX, '') }
   end
 end
 

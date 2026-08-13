@@ -1050,7 +1050,7 @@ Specific information applies to Linux package installations:
   sudo gitlab-ctl pg-upgrade -V 14
   ```
 
-  PostgreSQL 14 isn't supported on Geo deployments and is [planned](https://gitlab.com/groups/gitlab-org/-/epics/9065)
+  PostgreSQL 14 isn't supported on Geo deployments and is [planned](https://gitlab.com/groups/gitlab-org/-/work_items/9065)
   for future releases.
 - In 16.2, we are upgrading Redis from 6.2.11 to 7.0.12. This upgrade is expected to be fully backwards compatible.
 

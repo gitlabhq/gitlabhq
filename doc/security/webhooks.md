@@ -113,7 +113,7 @@ To resolve this issue, add the hostname to the
 even if GitLab never needs to make an outbound connection to that host.
 
 This setting is respected by the main GitLab application only, so other services like Gitaly can still make requests that break the rule.
-Additionally, [some areas of GitLab](https://gitlab.com/groups/gitlab-org/-/epics/8029) do not respect outbound filtering
+Additionally, [some areas of GitLab](https://gitlab.com/groups/gitlab-org/-/work_items/8029) do not respect outbound filtering
 rules.
 
 ## Allow outbound requests to certain IP addresses and domains

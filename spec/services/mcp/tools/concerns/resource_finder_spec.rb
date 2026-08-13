@@ -24,6 +24,10 @@ RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_serv
         find_project!(project_id)
       end
 
+      def test_find_project_without_bang(project_id)
+        find_project(project_id)
+      end
+
       def test_find_group(group_id)
         find_group!(group_id)
       end
@@ -143,6 +147,22 @@ RSpec.describe Mcp::Tools::Concerns::ResourceFinder, feature_category: :mcp_serv
       it 'finds the project' do
         is_expected.to eq(project)
       end
+    end
+  end
+
+  describe '#find_project' do
+    subject(:find_project) { service.test_find_project_without_bang(project_id_or_path) }
+
+    let(:project_id_or_path) { public_project.full_path }
+
+    it 'returns the project' do
+      is_expected.to eq(public_project)
+    end
+
+    context 'when the project does not exist' do
+      let(:project_id_or_path) { 'does-not/exist' }
+
+      it { is_expected.to be_nil }
     end
   end
 

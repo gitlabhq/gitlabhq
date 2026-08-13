@@ -19,7 +19,7 @@ module Gitlab
           end
 
           def hash
-            location_fingerprint.hash ^ identifier_fingerprint.hash
+            [location_fingerprint, identifier_fingerprint].hash
           end
 
           alias_method :eql?, :==

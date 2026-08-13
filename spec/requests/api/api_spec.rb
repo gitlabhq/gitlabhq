@@ -465,7 +465,7 @@ RSpec.describe API::API, feature_category: :system_access do
     end
   end
 
-  describe 'Marginalia comments' do
+  describe 'Query log comments' do
     context 'GET /user/:id' do
       let_it_be(:user) { create(:user) }
 

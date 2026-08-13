@@ -1752,7 +1752,6 @@ Style/InlineDisableAnnotation:
     - 'lib/gitlab/legacy_github_import/issuable_formatter.rb'
     - 'lib/gitlab/lets_encrypt/client.rb'
     - 'lib/gitlab/local_and_remote_storage_migration/base_migrater.rb'
-    - 'lib/gitlab/marginalia/comment.rb'
     - 'lib/gitlab/markdown_cache/redis/store.rb'
     - 'lib/gitlab/memory/diagnostic_reports_logger.rb'
     - 'lib/gitlab/merge_requests/mergeability/redis_interface.rb'

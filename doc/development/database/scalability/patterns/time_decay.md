@@ -232,7 +232,7 @@ option, it should outperform API calls.
 
 ### Web hook logs
 
-Related epic: [Partitioning: `web_hook_logs` table](https://gitlab.com/groups/gitlab-org/-/epics/5558)
+Related epic: [Partitioning: `web_hook_logs` table](https://gitlab.com/groups/gitlab-org/-/work_items/5558)
 
 The important characteristics of `web_hook_logs` are the following:
 
@@ -312,13 +312,13 @@ The process required follows:
 
 ### Audit events
 
-Related epic: [Partitioning: Design and implement partitioning strategy for audit events](https://gitlab.com/groups/gitlab-org/-/epics/3206)
+Related epic: [Partitioning: Design and implement partitioning strategy for audit events](https://gitlab.com/groups/gitlab-org/-/work_items/3206)
 
 The `audit_events` table shares a lot of characteristics with the `web_hook_logs` table discussed
 in the previous sub-section, so we focus on the points they differ.
 
 The consensus was that
-[partitioning could solve most of the performance issues](https://gitlab.com/groups/gitlab-org/-/epics/3206#note_338157248).
+[partitioning could solve most of the performance issues](https://gitlab.com/groups/gitlab-org/-/work_items/3206#note_338157248).
 
 In contrast to most other large tables, it has no major conflicting access patterns: we could switch
 the access patterns to align with partitioning by month. This is not the case for example for other

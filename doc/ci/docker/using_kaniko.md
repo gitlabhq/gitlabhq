@@ -2,6 +2,7 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Build container images in GitLab CI/CD with Docker, Buildah, or Podman as alternatives to kaniko.
 title: Use kaniko to build Docker images (removed)
 ---
 

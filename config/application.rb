@@ -84,6 +84,14 @@ module Gitlab
     config.action_controller.per_form_csrf_tokens = false
     config.action_controller.forgery_protection_origin_check = false
 
+    # Annotate SQL queries with runtime context (application, correlation ID,
+    # endpoint, ...) so that queries can be traced back to the code issuing them.
+    # `:legacy` preserves the `key:value` comment format; Rails defaults to
+    # `:sqlcommenter`. The tags themselves are set in
+    # config/initializers/query_logs.rb.
+    config.active_record.query_log_tags_enabled = true
+    config.active_record.query_log_tags_format = :legacy
+
     require_dependency Rails.root.join('lib/gitlab')
     require_dependency Rails.root.join('lib/gitlab/action_cable/config')
     require_dependency Rails.root.join('lib/gitlab/redis/wrapper')

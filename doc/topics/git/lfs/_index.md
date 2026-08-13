@@ -118,7 +118,7 @@ and clones them over HTTPS. If you run `git clone` with an SSH URL, like
 authentication.
 
 By default, Git LFS operations occur over HTTPS, even when Git communicates with your repository over SSH.
-In GitLab 17.2, [pure SSH support for LFS](https://gitlab.com/groups/gitlab-org/-/epics/11872) was introduced.
+In GitLab 17.2, [pure SSH support for LFS](https://gitlab.com/groups/gitlab-org/-/work_items/11872) was introduced.
 For information on how to enable this feature, see [pure SSH transfer protocol](../../../administration/lfs/_index.md#pure-ssh-transfer-protocol).
 
 To fetch new LFS objects for a repository you have already cloned, run this command:

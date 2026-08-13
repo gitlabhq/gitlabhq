@@ -120,9 +120,6 @@ RSpec.describe Gitlab::Cd::Driver::Orchestration do
   end
 
   describe "ENGINE_GLOBALS" do
-    # The list is hardcoded so a fragment is checked without parsing the engine on
-    # every assemble. This pins it to what main.star actually binds, so the engine
-    # gaining or renaming a global fails here rather than silently going unguarded.
     it "matches the module-level globals main.star binds" do
       expect(described_class::ENGINE_GLOBALS.sort)
         .to eq(described_class.fragment_globals(described_class.main_program).sort)

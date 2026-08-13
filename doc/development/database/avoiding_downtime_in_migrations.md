@@ -666,7 +666,7 @@ Adding foreign keys can potentially cause downtime, please refer [FK: Avoiding d
 
 ## Migrating `integer` primary keys to `bigint`
 
-To [prevent the overflow risk](https://gitlab.com/groups/gitlab-org/-/epics/4785) for some tables
+To [prevent the overflow risk](https://gitlab.com/groups/gitlab-org/-/work_items/4785) for some tables
 with `integer` primary key (PK), we have to migrate their PK to `bigint`. The process to do this
 without downtime and causing too much load on the database is described below.
 

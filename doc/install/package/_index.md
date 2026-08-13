@@ -84,7 +84,7 @@ We aim to provide at least 6 months' notice before discontinuing support for any
 
 **Footnotes**:
 
-1. [Known issues](https://gitlab.com/groups/gitlab-org/-/epics/4397) exist for running GitLab on ARM.
+1. [Known issues](https://gitlab.com/groups/gitlab-org/-/work_items/4397) exist for running GitLab on ARM.
 
 ### Unofficial, unsupported installation methods
 

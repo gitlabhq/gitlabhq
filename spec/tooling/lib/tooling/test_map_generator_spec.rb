@@ -20,7 +20,7 @@ RSpec.describe Tooling::TestMapGenerator do
         "./spec/models/factories_spec.rb[1]":
         - lib/gitlab/current_settings.rb
         - lib/feature.rb
-        - lib/gitlab/marginalia.rb
+        - lib/gitlab/query_logs.rb
       YAML
     end
 
@@ -35,7 +35,7 @@ RSpec.describe Tooling::TestMapGenerator do
         "./spec/models/project_spec.rb[1]":
         - lib/gitlab/current_settings.rb
         - lib/feature.rb
-        - lib/gitlab/marginalia.rb
+        - lib/gitlab/query_logs.rb
       YAML
     end
 
@@ -67,7 +67,7 @@ RSpec.describe Tooling::TestMapGenerator do
           'lib/feature.rb' => [
             'spec/models/factories_spec.rb'
           ],
-          'lib/gitlab/marginalia.rb' => [
+          'lib/gitlab/query_logs.rb' => [
             'spec/models/factories_spec.rb'
           ]
         }
@@ -110,7 +110,7 @@ RSpec.describe Tooling::TestMapGenerator do
             'spec/models/factories_spec.rb',
             'spec/models/project_spec.rb'
           ],
-          'lib/gitlab/marginalia.rb' => [
+          'lib/gitlab/query_logs.rb' => [
             'spec/models/factories_spec.rb',
             'spec/models/project_spec.rb'
           ]

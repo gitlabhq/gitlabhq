@@ -197,7 +197,6 @@ For Gitaly Cluster (Praefect) setups, you must deploy and upgrade Praefect in a 
 > [!note]
 > The upgrade process attempts to do a graceful handover to a new Praefect process.
 > Existing long-running Git requests that were started before the upgrade may eventually be dropped as this handover occurs.
-> In the future this functionality may be changed, [refer to this Epic](https://gitlab.com/groups/gitlab-org/-/epics/10328) for more information.
 
 When upgrading an instance that uses Gitaly Cluster (Praefect), upgrade components in this order:
 

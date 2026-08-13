@@ -55,7 +55,7 @@
     },
     {
       "title": "Canary deploy",
-      "description": "Deploys the named services to the Argo Rollouts environment using a canary strategy, rolling each service's Rollout up to its first pause gate and leaving it parked there. The canary steps (traffic weights and pause gates) live in the service's Rollout manifest; a following canary.promote step clears each gate. A canary with K pauses is a canary.deploy step followed by K canary.promote steps. A canary strategy with no pause gate has nothing to park at, so a lone canary.deploy step deploys it to completion. Every gate must be an indefinite `pause: {}`: a timed `pause: {duration}` hands the increment's timing to the Argo controller and is rejected, because the deploy flow, not the controller, decides when a canary advances. Insert a wait step in the flow instead.",
+      "description": "Deploys the named services to the Argo Rollouts environment using a canary strategy, rolling each service's Rollout up to its first pause gate and leaving it parked there. The canary steps (traffic weights and pause gates) live in the service's Rollout manifest; a following canary.promote step clears each gate. A canary with K pauses is a canary.deploy step followed by K canary.promote steps. A canary strategy with no pause gate has nothing to park at, so a lone canary.deploy step deploys it to completion. Exactly one canary.deploy opens a service's canary in an environment, and the canary.promote steps that follow climb it; a second canary.deploy for the same service and environment is refused. Every gate must be an indefinite `pause: {}`: a timed `pause: {duration}` hands the increment's timing to the Argo controller and is rejected, because the deploy flow, not the controller, decides when a canary advances. Insert a wait step in the flow instead.",
       "type": "object",
       "required": ["type", "environment", "services"],
       "additionalProperties": false,
@@ -68,7 +68,7 @@
         "services": {
           "type": "array",
           "minItems": 1,
-          "description": "The services this step deploys. At least one is required.",
+          "description": "The services this step deploys. At least one is required, and each is named at most once: a step naming one service twice is refused.",
           "items": {
             "type": "object",
             "required": ["name", "weight"],
@@ -82,7 +82,7 @@
                 "type": "integer",
                 "minimum": 0,
                 "maximum": 100,
-                "description": "Traffic weight this canary increment deploys to. Must equal the weight the service's Rollout canary strategy reaches before its first pause gate, otherwise the deploy fails: the step weights and the Rollout manifest have to describe the same increments. No two canary steps may target the same weight for one service in one environment, since a repeated weight cannot identify a single gate. May later become an object to express other kinds of weight (e.g. scale, replicas)."
+                "description": "Traffic weight this canary increment deploys to. Must equal the weight the service's Rollout canary strategy reaches before its first pause gate, otherwise the deploy fails: the step weights and the Rollout manifest have to describe the same increments. Taken together, a service's canary weights in one environment must never decrease, must end at 100, and must all differ, since a repeated weight cannot identify a single gate; a flow whose weights cannot describe a gradual rollout to full traffic is refused before it reads, commits or syncs anything. May later become an object to express other kinds of weight (e.g. scale, replicas)."
               }
             }
           }
@@ -91,7 +91,10 @@
     },
     {
       "title": "Canary promote",
-      "description": "Advances services' canary Rollouts one increment: for each named service, this step clears the pause gate that takes its Rollout to the given weight, then waits until the resulting increment completes or reaches the next gate. A canary with K pauses uses K canary.promote steps, one per gate, in ascending weight order. Because the gate is derived from the step's weight rather than from where the Rollout currently sits, re-running a canary.promote that already succeeded is a no-op, and running one out of order fails rather than skipping an increment.",
+      "gitlab": {
+        "action": "com.gitlab.cd.action.promote"
+      },
+      "description": "Advances services' canary Rollouts one increment: for each named service, this step clears the pause gate that takes its Rollout to the given weight, then waits until the resulting increment completes or reaches the next gate. A canary with K pauses uses K canary.promote steps, one per gate, in ascending weight order. Each must follow that service's canary.deploy in the same environment; a canary.promote for a service and environment no canary.deploy opened is refused up front rather than failing in flight against a Rollout that was never deployed. Because the gate is derived from the step's weight rather than from where the Rollout currently sits, re-running a canary.promote that already succeeded is a no-op, and running one out of order fails rather than skipping an increment.",
       "type": "object",
       "required": ["type", "environment", "services"],
       "additionalProperties": false,
@@ -104,7 +107,7 @@
         "services": {
           "type": "array",
           "minItems": 1,
-          "description": "The services this step promotes. At least one is required.",
+          "description": "The services this step promotes. At least one is required, and each is named at most once: a step naming one service twice is refused.",
           "items": {
             "type": "object",
             "required": ["name", "weight"],
@@ -116,9 +119,9 @@
               },
               "weight": {
                 "type": "integer",
-                "minimum": 0,
+                "minimum": 1,
                 "maximum": 100,
-                "description": "Traffic weight this promotion advances to; it selects which pause gate to clear. Must be a weight the service's Rollout canary strategy reaches by clearing a gate (so not the weight canary.deploy already reached), otherwise the deploy fails, and must be distinct from every other canary step's weight for that service in that environment. May later become an object to express other kinds of weight (e.g. scale, replicas)."
+                "description": "Traffic weight this promotion advances to; it selects which pause gate to clear. Must be a weight the service's Rollout canary strategy reaches by clearing a gate (so not the weight canary.deploy already reached), otherwise the deploy fails. The minimum is 1, unlike canary.deploy's 0: a promotion to 0 shifts no traffic, so it advances nothing, while a canary.deploy at 0 legitimately brings a canary up alongside the stable version to be smoke tested before any traffic moves. Taken together, a service's canary weights in one environment must never decrease, must end at 100, and must all differ, since a repeated weight cannot identify a single gate; a flow whose weights cannot describe a gradual rollout to full traffic is refused before it reads, commits or syncs anything. May later become an object to express other kinds of weight (e.g. scale, replicas)."
               }
             }
           }

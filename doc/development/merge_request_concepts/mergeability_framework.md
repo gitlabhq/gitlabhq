@@ -6,7 +6,7 @@ description: Developer information explaining the process to add a new mergeabil
 title: Mergeability framework
 ---
 
-The initial work started with the [better defined mergeability framework](https://gitlab.com/groups/gitlab-org/-/epics/5598)
+The initial work started with the [better defined mergeability framework](https://gitlab.com/groups/gitlab-org/-/work_items/5598)
 
 Originally, the mergeability knowledge was spread throughout the backend and frontend.
 This work was to consolidate some of the mergeability criteria into the same location

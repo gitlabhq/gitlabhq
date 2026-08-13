@@ -42,6 +42,8 @@ app/models/project_team.rb:
   - planner?: Used to surface access rights; referenced by specs and treated as a false positive by `scripts/lint/unused_methods.rb`.
 app/models/service_desk/custom_email_verification.rb:
   - owner_class_attribute_default: Used internally by state_machine
+app/models/concerns/forced_email_confirmation.rb:
+  - confirmation_period_expired?: Override of Devise::Models::Confirmable method; called internally by Devise during confirmation
 app/models/user.rb:
   - inactive_message: Override of Devise method
   - owner_class_attribute_default: Used internally by state_machine

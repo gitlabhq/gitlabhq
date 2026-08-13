@@ -309,7 +309,7 @@ export default {
       return this.sourceProjectFullPath !== this.targetProjectFullPath;
     },
     isLatestPipelineCreatedInTargetProject() {
-      return this.latestPipeline?.project?.fullPath === `/${this.targetProjectFullPath}`;
+      return this.latestPipeline?.project?.fullPath === this.targetProjectFullPath;
     },
     shouldShowSecurityWarning() {
       return (

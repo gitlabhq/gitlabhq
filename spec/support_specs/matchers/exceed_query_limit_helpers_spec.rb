@@ -437,7 +437,7 @@ RSpec.describe ExceedQueryLimitHelpers do
     expect(test_matcher.actual_count).to eq(1)
   end
 
-  it 'does not contain marginalia annotations' do
+  it 'does not contain SQL query log annotations' do
     test_matcher = TestMatcher.new
     test_matcher.verify_count do
       2.times { TestQueries.count }

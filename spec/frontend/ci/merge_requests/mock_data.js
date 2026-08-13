@@ -163,7 +163,9 @@ export const generateMRPipelinesResponse = ({
       project: {
         __typename: 'Project',
         id: 'gid://gitlab/Project/1',
-        fullPath: 'root/project-1',
+        // Must match the pipelines' project fullPath: same gid, so Apollo
+        // normalizes them into one cache entity.
+        fullPath: 'gitlab-org/gitlab',
         mergeRequest: {
           __typename: 'MergeRequest',
           id: 'gid://gitlab/MergeRequest/1',

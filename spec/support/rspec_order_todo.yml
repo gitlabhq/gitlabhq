@@ -5270,7 +5270,7 @@
 - './spec/lib/json_web_token/token_spec.rb'
 - './spec/lib/kramdown/kramdown_spec.rb'
 - './spec/lib/kramdown/parser/atlassian_document_format_spec.rb'
-- './spec/lib/marginalia_spec.rb'
+- './spec/lib/query_logs_spec.rb'
 - './spec/lib/mattermost/client_spec.rb'
 - './spec/lib/mattermost/command_spec.rb'
 - './spec/lib/mattermost/session_spec.rb'

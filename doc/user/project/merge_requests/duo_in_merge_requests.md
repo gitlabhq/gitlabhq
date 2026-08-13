@@ -169,15 +169,19 @@ To switch all reviews back to GitLab Duo Code Review, turn off Code Review Flow.
 
 - Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Beta
 
 {{< /details >}}
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/600990) as a [beta](../../../policy/development_stages_support.md) in GitLab 19.2 [with a feature flag](../../../administration/feature_flags/_index.md) named `resolve_discussion_with_duo`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/603482) in GitLab 19.3.
 
 {{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
 
 Use GitLab Duo to resolve review discussions on merge requests.
 

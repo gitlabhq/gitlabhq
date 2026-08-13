@@ -67,6 +67,7 @@ module Gitlab
           ::Gitlab::SidekiqMiddleware::ExtraDoneLogMetadata,
           ::Gitlab::SidekiqMiddleware::BatchLoader,
           ::Gitlab::SidekiqMiddleware::InstrumentationLogger,
+          ::Gitlab::SidekiqMiddleware::QueryLogs,
           ::Gitlab::SidekiqMiddleware::SetIpAddress,
           ::Gitlab::SidekiqMiddleware::AdminMode::Server,
           ::Gitlab::SidekiqMiddleware::QueryAnalyzer,

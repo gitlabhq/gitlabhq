@@ -22,8 +22,6 @@ description: Store your container registry's data in a database to manage multip
 
 The metadata database provides several [enhancements](#enhancements) to the container registry
 that improve performance and add new features.
-The work on the GitLab Self-Managed release of the registry metadata database feature
-is tracked in [epic 5521](https://gitlab.com/groups/gitlab-org/-/epics/5521).
 
 By default, the container registry uses object storage or a local file system to persist metadata
 related to container images. This method to store metadata limits how efficiently

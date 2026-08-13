@@ -80,10 +80,11 @@ Grants the ability to create and read dependency list exports.
 
 #### Policy Store Policy
 
-Grants the ability to read policies in the policy store.
+Grants the ability to delete and read policies in the policy store.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
+| Delete | Instance | `DELETE` | `/organizations/:id/security/policy_store/:policy_id` |
 | Read | Instance | `GET` | `/organizations/:id/security/policy_store` |
 | Read | Instance | `GET` | `/organizations/:id/security/policy_store/:policy_id` |
 

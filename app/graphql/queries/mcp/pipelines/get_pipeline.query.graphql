@@ -1,0 +1,83 @@
+# @feature_category: mcp_server
+query getPipeline(
+  $fullPath: ID!
+  $pipelineId: CiPipelineID!
+  $includeJobs: Boolean = false
+  $includeDownstreamPipelines: Boolean = false
+  $includeBridgeJobs: Boolean = false
+  $jobStatuses: [CiJobStatus!]
+  $first: Int
+  $after: String
+) {
+  project(fullPath: $fullPath) {
+    id
+    pipeline(id: $pipelineId) {
+      id
+      status
+      ref
+      sha
+      source
+      path
+      jobs(jobKind: BUILD, statuses: $jobStatuses, first: $first, after: $after)
+        @include(if: $includeJobs) {
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        nodes {
+          id
+          name
+          status
+          allowFailure
+          stage {
+            id
+            name
+          }
+          webPath
+        }
+      }
+      downstream(first: $first, after: $after) @include(if: $includeDownstreamPipelines) {
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        nodes {
+          id
+          status
+          ref
+          sha
+          source
+          path
+          project {
+            id
+            fullPath
+          }
+        }
+      }
+      bridgeJobs: jobs(jobKind: BRIDGE, first: $first, after: $after)
+        @include(if: $includeBridgeJobs) {
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        nodes {
+          id
+          name
+          status
+          downstreamPipeline {
+            id
+            status
+            ref
+            sha
+            source
+            path
+            project {
+              id
+              fullPath
+            }
+          }
+        }
+      }
+    }
+  }
+}

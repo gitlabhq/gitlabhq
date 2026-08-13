@@ -8162,7 +8162,7 @@ msgstr ""
 msgid "AgentPlan|Score: %{score} / 100"
 msgstr ""
 
-msgid "AgentPlan|Shows how ready this workplan is for an agent to run. To raise the score, add more detail to the workplan steps. %{linkStart}Learn more%{linkEnd}."
+msgid "AgentPlan|Shows how ready this work item is for an agent to run. To raise the score, add more detail to the work item description and to the workplan steps. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "AgentPlan|What is a workplan?"
@@ -55581,6 +55581,9 @@ msgstr ""
 msgid "Organization|Go to Artifact Registry"
 msgstr ""
 
+msgid "Organization|Group is already in an organization."
+msgstr ""
+
 msgid "Organization|Help improve Organizations"
 msgstr ""
 
@@ -55609,6 +55612,9 @@ msgid "Organization|Only accessible by organization members."
 msgstr ""
 
 msgid "Organization|Only one organization is allowed on this instance."
+msgstr ""
+
+msgid "Organization|Only top-level groups can be moved to a new organization."
 msgstr ""
 
 msgid "Organization|Org ID"
@@ -73767,9 +73773,6 @@ msgstr ""
 msgid "SecurityReports|90 days"
 msgstr ""
 
-msgid "SecurityReports|A Vulnerability Resolution is already running for this project. You can cancel it to start a new one."
-msgstr ""
-
 msgid "SecurityReports|A comment is required when changing the severity."
 msgstr ""
 
@@ -73777,6 +73780,9 @@ msgid "SecurityReports|A comment is required when dismissing."
 msgstr ""
 
 msgid "SecurityReports|A dismissal reason is required."
+msgstr ""
+
+msgid "SecurityReports|A run is already in progress for this project and you can cancel it from the progress bar."
 msgstr ""
 
 msgid "SecurityReports|AI evaluates for false positives, helping to tune the noise to signal ratio."
@@ -73854,10 +73860,10 @@ msgstr ""
 msgid "SecurityReports|CVSS v%{version}:"
 msgstr ""
 
-msgid "SecurityReports|Cancel Vulnerability Resolution?"
+msgid "SecurityReports|Cancel run"
 msgstr ""
 
-msgid "SecurityReports|Cancel resolution"
+msgid "SecurityReports|Cancel the current run?"
 msgstr ""
 
 msgid "SecurityReports|Change severity"
@@ -74064,6 +74070,9 @@ msgstr ""
 msgid "SecurityReports|Filter results..."
 msgstr ""
 
+msgid "SecurityReports|Findings already processed will keep their results. Only the remaining work will be canceled."
+msgstr ""
+
 msgid "SecurityReports|From AI-created MRs"
 msgstr ""
 
@@ -74156,7 +74165,7 @@ msgstr ""
 msgid "SecurityReports|Merge Request"
 msgstr ""
 
-msgid "SecurityReports|Merge requests created by this run will remain open and will not be reverted or closed. Only the ongoing resolution process will be canceled."
+msgid "SecurityReports|Merge requests created by this run will remain open and will not be reverted or closed. Only the ongoing run will be canceled."
 msgstr ""
 
 msgid "SecurityReports|Monitor vulnerabilities in all of your projects"
@@ -74312,9 +74321,6 @@ msgstr ""
 msgid "SecurityReports|Run SAST False Positive Detection"
 msgstr ""
 
-msgid "SecurityReports|SAST false positive detection is already in progress for this project. Wait for it to finish before starting a new one."
-msgstr ""
-
 msgid "SecurityReports|SAST triage and remediation funnel"
 msgstr ""
 
@@ -74414,7 +74420,7 @@ msgstr ""
 msgid "SecurityReports|The following security reports contain one or more vulnerability findings that could not be parsed and were not recorded. To investigate a report, download the artifacts in the job output. Ensure the security report conforms to the relevant %{helpPageLinkStart}JSON schema%{helpPageLinkEnd}."
 msgstr ""
 
-msgid "SecurityReports|The resolution run appears to have already completed. Refresh the page to confirm."
+msgid "SecurityReports|The run has been canceled."
 msgstr ""
 
 msgid "SecurityReports|The security report for this pipeline has %{helpPageLinkStart}expired%{helpPageLinkEnd}. Re-run the pipeline to generate a new security report."
@@ -74450,9 +74456,6 @@ msgstr ""
 msgid "SecurityReports|There was an error while generating the report."
 msgstr ""
 
-msgid "SecurityReports|This Vulnerability Resolution run has already completed."
-msgstr ""
-
 msgid "SecurityReports|This project has reached the maximum number of vulnerabilities it can contain and some of the vulnerabilities couldn't be ingested."
 msgstr ""
 
@@ -74463,6 +74466,9 @@ msgid "SecurityReports|This project is public. GitLab Duo merge requests with su
 msgstr ""
 
 msgid "SecurityReports|This project is reaching the maximum number of vulnerabilities it can contain."
+msgstr ""
+
+msgid "SecurityReports|This run has already finished."
 msgstr ""
 
 msgid "SecurityReports|This selection is required."
@@ -74534,9 +74540,6 @@ msgstr ""
 msgid "SecurityReports|Vulnerability Resolution available"
 msgstr ""
 
-msgid "SecurityReports|Vulnerability Resolution canceled."
-msgstr ""
-
 msgid "SecurityReports|Vulnerability Resolution turned off"
 msgstr ""
 
@@ -74555,7 +74558,7 @@ msgstr ""
 msgid "SecurityReports|Warning parsing security reports"
 msgstr ""
 
-msgid "SecurityReports|We could not cancel the resolution. Try again or refresh the page."
+msgid "SecurityReports|We could not cancel the run. Try again or refresh the page."
 msgstr ""
 
 msgid "SecurityReports|Yes"
@@ -92757,6 +92760,9 @@ msgid "You have insufficient permissions to create an HTTP integration for this 
 msgstr ""
 
 msgid "You have insufficient permissions to create an on-call schedule for this project"
+msgstr ""
+
+msgid "You have insufficient permissions to create an organization from this group."
 msgstr ""
 
 msgid "You have insufficient permissions to create organizations"

@@ -204,10 +204,6 @@ stop signal, the migration is paused for a set time (10 minutes):
 - Patroni apdex SLI dropping below the SLO.
 - WAL rate crossing the threshold.
 
-There is an ongoing effort to add more indicators to further enhance the
-database health check framework. For more details, see
-[epic 7594](https://gitlab.com/groups/gitlab-org/-/epics/7594).
-
 #### How to disable/enable autovacuum indicator on tables
 
 As of GitLab 18.0, this health indicator is enabled by default. To disable it, run the following command on the rails console:

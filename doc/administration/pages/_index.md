@@ -506,7 +506,7 @@ control over how the Pages daemon runs and serves content in your environment.
 | `rate_limit_tls_source_ip_burst`        | Not applicable                                        | Rate limit per source IP maximum TLS connections burst allowed per second. |
 | `rate_limit_tls_domain`                 | Not applicable                                        | Rate limit per domain in number of TLS connections per second. Set to `0` to disable this feature. |
 | `rate_limit_tls_domain_burst`           | Not applicable                                        | Rate limit per domain maximum TLS connections burst allowed per second. |
-| `rate_limit_subnets_allow_list`         | Not applicable                                        | Allow list with the IP ranges (subnets) that should bypass all rate limits. For example, `['1.2.3.4/24', '2001:db8::1/32']`. [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14653) in GitLab 17.3. |
+| `rate_limit_subnets_allow_list`         | Not applicable                                        | Allow list with the IP ranges (subnets) that should bypass all rate limits. For example, `['1.2.3.4/24', '2001:db8::1/32']`. [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/14653) in GitLab 17.3. |
 | `server_read_timeout`                   | `5s`                                                  | Maximum duration to read the request headers and body. For no timeout, set to `0` or a negative value. |
 | `server_read_header_timeout`            | `1s`                                                  | Maximum duration to read the request headers. For no timeout, set to `0` or a negative value. |
 | `server_write_timeout`                  | `0`                                                   | Maximum duration to write all files in the response. Larger files require more time. For no timeout, set to `0` or a negative value. |
@@ -1356,7 +1356,7 @@ than GitLab to prevent XSS attacks.
 
 {{< history >}}
 
-- [Changed](https://gitlab.com/groups/gitlab-org/-/epics/14653) in GitLab 17.3: You can exclude subnets from Pages rate limits.
+- [Changed](https://gitlab.com/groups/gitlab-org/-/work_items/14653) in GitLab 17.3: You can exclude subnets from Pages rate limits.
 
 {{< /history >}}
 

@@ -526,7 +526,6 @@ Style/IfUnlessModifier:
     - 'lib/gitlab/legacy_github_import/issuable_formatter.rb'
     - 'lib/gitlab/legacy_github_import/project_creator.rb'
     - 'lib/gitlab/manifest_import/manifest.rb'
-    - 'lib/gitlab/marginalia.rb'
     - 'lib/gitlab/markdown_cache/field_data.rb'
     - 'lib/gitlab/metrics/methods.rb'
     - 'lib/gitlab/metrics/subscribers/rack_attack.rb'

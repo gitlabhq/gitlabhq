@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    gitlab-cd-driver-orchestration (0.4.0)
+    gitlab-cd-driver-orchestration (0.5.0)
 
 GEM
   remote: https://rubygems.org/
@@ -109,7 +109,6 @@ GEM
     uri (1.1.1)
 
 PLATFORMS
-  arm64-darwin-24
   ruby
 
 DEPENDENCIES
@@ -129,7 +128,7 @@ CHECKSUMS
   connection_pool (3.0.2) sha256=33fff5ba71a12d2aa26cb72b1db8bba2a1a01823559fb01d29eb74c286e62e0a
   diff-lcs (1.6.2) sha256=9ae0d2cba7d4df3075fe8cd8602a8604993efc0dfa934cff568969efb1909962
   drb (2.2.3) sha256=0b00d6fdb50995fe4a45dea13663493c841112e4068656854646f418fda13373
-  gitlab-cd-driver-orchestration (0.4.0)
+  gitlab-cd-driver-orchestration (0.5.0)
   gitlab-styles (14.1.0) sha256=f39bc5619636bad3690d574438d70b865f48e38d57a38d7823bdeff2a90d2d5a
   i18n (1.15.2) sha256=00f9eb62412fe593b2a65a97daa75300d37abb8f7202ec748e94b6d46a9dd1b5
   json (2.21.2) sha256=1f1d3b7cf2b3ba1a69beca0bb6db13d5438b80bff3cd54cdaaa620b9b07c1c6a
