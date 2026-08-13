@@ -46,32 +46,8 @@ you can visit <https://gitlab.com/help/instance_configuration>.
 
 Rate limits can be used to improve the security and durability of GitLab.
 
-Read more about [configuring rate limits](../rate_limits/_index.md).
-
-### Issue creation
-
-This setting limits the request rate to the issue creation endpoint.
-
-Read more about [issue creation rate limits](settings/rate_limit_on_issues_creation.md).
-
-- **Default rate limit**: Disabled by default.
-
-### By User or IP
-
-This setting limits the request rate per user or IP.
-
-Read more about [User and IP rate limits](settings/user_and_ip_rate_limits.md).
-
-- **Default rate limit**: Disabled by default.
-
-### By raw endpoint
-
-These settings limit the request rate on raw endpoints.
-
-Read more about [raw endpoint rate limits](settings/rate_limits_on_raw_endpoints.md).
-
-- **Default rate limit (authenticated and unauthenticated)**: 300 requests per minute, per project and file path.
-- **Default rate limit (unauthenticated)**: 800 requests per minute, per project across all file paths.
+For a complete list of rate limits, and how to change each one, see
+[rate limits](../rate_limits/_index.md).
 
 ### By protected path
 
@@ -100,35 +76,6 @@ GitLab rate limits the following paths for GET requests by default:
 Read more about [protected path rate limits](settings/protected_paths.md).
 
 - **Default rate limit**: After 10 requests, the client must wait 60 seconds before trying again.
-
-### Package registry
-
-This setting limits the request rate on the Packages API per user or IP. For more information, see
-[package registry rate limits](settings/package_registry_rate_limits.md).
-
-- **Default rate limit**: Disabled by default.
-
-### Git LFS
-
-This setting limits the request rate on the [Git LFS](../topics/git/lfs/_index.md)
-requests per user. For more information, read
-[GitLab Git Large File Storage (LFS) Administration](lfs/_index.md).
-
-- **Default rate limit**: Disabled by default.
-
-### Files API
-
-This setting limits the request rate on the Files API per user or IP address. For more information, read
-[Files API rate limits](settings/files_api_rate_limits.md).
-
-- **Default rate limit**: Disabled by default.
-
-### Deprecated API endpoints
-
-This setting limits the request rate on deprecated API endpoints per user or IP address. For more information, read
-[Deprecated API rate limits](settings/deprecated_api_rate_limits.md).
-
-- **Default rate limit**: Disabled by default.
 
 ### Import and export
 
@@ -225,12 +172,6 @@ Autocomplete requests that exceed the autocomplete rate limit per minute return 
 ```plaintext
 This endpoint has been requested too many times. Try again later.
 ```
-
-### Pipeline creation rate limit
-
-This setting limits the request rate to the pipeline creation endpoints.
-
-Read more about [pipeline creation rate limits](cicd/limits.md#pipeline-creation-rate-limits).
 
 ## Gitaly concurrency limit
 

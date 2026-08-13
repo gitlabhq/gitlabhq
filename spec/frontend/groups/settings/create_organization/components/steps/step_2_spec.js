@@ -39,12 +39,34 @@ describe('ReconciliationStep2', () => {
     expect(findBaseStep().props('title')).toBe('Assign top-level groups');
   });
 
-  it('renders step description', () => {
-    createComponent();
+  describe('step description', () => {
+    it('renders the singular description when the default organization has one group', () => {
+      createComponent();
 
-    expect(findBaseStep().text()).toContain(
-      'Drag groups between Organizations to set up your structure. Most companies only need one.',
-    );
+      expect(findBaseStep().text()).toContain(
+        'You have 1 other top-level group. Drag unassigned groups to your organization, or leave the structure as is. Unassigned groups will not be included in the organization.',
+      );
+    });
+
+    it('renders the plural description when the default organization has multiple groups', () => {
+      const [group] = mockDefaultOrganization.groups.nodes;
+
+      createComponent({
+        props: {
+          organizations: [
+            mockNewOrganization,
+            {
+              ...mockDefaultOrganization,
+              groups: { ...mockDefaultOrganization.groups, nodes: [group, { ...group, id: 2 }] },
+            },
+          ],
+        },
+      });
+
+      expect(findBaseStep().text()).toContain(
+        'You have 2 other top-level groups. Drag unassigned groups to your organization, or leave the structure as is. Unassigned groups will not be included in the organization.',
+      );
+    });
   });
 
   it('renders an organization card for each organization', () => {
@@ -85,6 +107,13 @@ describe('ReconciliationStep2', () => {
       expect(findAllGroupCards(card).at(0).props('organizationVisibility')).toBe(
         mockDefaultOrganization.visibility,
       );
+    });
+
+    it('only adds a border to the group cards in the default organization', () => {
+      createComponent();
+
+      expect(findAllGroupCards(findCardAt(1)).at(0).classes()).toContain('gl-border');
+      expect(findAllGroupCards(findCardAt(0)).at(0).classes()).not.toContain('gl-border');
     });
   });
 

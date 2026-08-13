@@ -92,7 +92,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     window.gon = { text_editor: 'plain_text_editor' };
     return new Promise((resolve) => {
       markdownEditorEventHub.$once(MARKDOWN_EDITOR_READY_EVENT, resolve);
-      findContentEditor().vm.$emit('enableMarkdownEditor');
+      findContentEditor().vm.$emit('enable-markdown-editor');
     });
   };
 
@@ -453,7 +453,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     expect(wrapper.emitted(EDITING_MODE_CONTENT_EDITOR)).toHaveLength(1);
   });
 
-  it(`emits ${EDITING_MODE_MARKDOWN_FIELD} event when enableMarkdownEditor emitted from content editor`, async () => {
+  it(`emits ${EDITING_MODE_MARKDOWN_FIELD} event when \`enable-markdown-editor\` emitted from content editor`, async () => {
     buildWrapper();
 
     await enableContentEditor();
@@ -651,7 +651,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
       });
     });
 
-    describe(`when richText editor triggers enableMarkdownEditor event`, () => {
+    describe('when richText editor triggers `enable-markdown-editor` event', () => {
       beforeEach(enableMarkdownEditor);
 
       it('hides the content editor', () => {

@@ -316,6 +316,55 @@ RSpec.describe Gitlab::Database::Aggregation::ClickHouse::Engine, :click_house, 
     end
   end
 
+  describe "measurement macro" do
+    let(:engine_definition) do
+      described_class.build do
+        self.table_name = 'agent_platform_sessions'
+
+        transient(:duration) do
+          sql("dateDiff('seconds', anyIfMerge(created_event_at), anyIfMerge(finished_event_at))")
+        end
+
+        dimensions do
+          column :user_id, :integer
+        end
+
+        measurement :duration, :integer, transient(:duration), description: 'Session duration in seconds'
+      end
+    end
+
+    it 'aggregates all measurement aggregates in one request' do
+      request = Gitlab::Database::Aggregation::Request.new(
+        dimensions: [{ identifier: :user_id }],
+        metrics: [
+          { identifier: :"duration.min" },
+          { identifier: :"duration.max" },
+          { identifier: :"duration.mean" },
+          { identifier: :"duration.quantile", parameters: { quantile: 0.5 } }
+        ],
+        order: [{ identifier: :user_id, direction: :asc }]
+      )
+
+      expect(engine).to execute_aggregation(request).and_return([
+        { user_id: 1, duration__min: 420, duration__max: 600, duration__mean: 510.0,
+          duration__quantile_d2cba: 510.0 },
+        { user_id: 2, duration__min: 180, duration__max: 180, duration__mean: 180.0,
+          duration__quantile_d2cba: 180.0 }
+      ])
+    end
+
+    it 'rejects quantile values outside the declared bounds' do
+      request = Gitlab::Database::Aggregation::Request.new(
+        metrics: [{ identifier: :"duration.quantile", parameters: { quantile: 1.5 } }]
+      )
+
+      response = engine.execute(request)
+
+      expect(response).to be_error
+      expect(response.message).to include('Invalid value(s) for parameter `quantile`')
+    end
+  end
+
   describe "formatting" do
     it 'applies formatting if defined' do
       request = Gitlab::Database::Aggregation::Request.new(

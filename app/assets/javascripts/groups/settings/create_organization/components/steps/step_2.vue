@@ -1,5 +1,7 @@
 <script>
+import { GlSprintf } from '@gitlab/ui';
 import Draggable from '~/lib/utils/vue3compat/draggable_compat.vue';
+import { n__, sprintf } from '~/locale';
 import { isDefaultOrganization } from '~/organizations/shared/utils';
 import OrganizationGroupCard from '../organization_group_card.vue';
 import OrganizationCard from '../organization_card.vue';
@@ -16,6 +18,7 @@ export default {
     OrganizationCard,
     OrganizationGroupCard,
     Draggable,
+    GlSprintf,
   },
   props: {
     organizations: {
@@ -35,10 +38,13 @@ export default {
     };
   },
   computed: {
+    defaultOrganization() {
+      return this.organizations.find(isDefaultOrganization);
+    },
     currentDefaultOrgGroupIds() {
-      const defaultOrg = this.organizations.find(isDefaultOrganization);
-
-      return defaultOrg ? defaultOrg.groups.nodes.map((group) => group.id) : [];
+      return this.defaultOrganization
+        ? this.defaultOrganization.groups.nodes.map((group) => group.id)
+        : [];
     },
     shouldShowDefaultOrganizationDropzone() {
       if (this.activeDragGroupId) {
@@ -46,6 +52,18 @@ export default {
       }
 
       return this.initialDefaultOrgGroupIds.length !== this.currentDefaultOrgGroupIds.length;
+    },
+    stepTitle() {
+      const count = this.defaultOrganization?.groups?.nodes?.length ?? 0;
+
+      return sprintf(
+        n__(
+          'Organization|You have %{boldStart}%{count}%{boldEnd} other top-level group. Drag unassigned groups to your organization, or leave the structure as is. Unassigned groups will not be included in the organization.',
+          'Organization|You have %{boldStart}%{count}%{boldEnd} other top-level groups. Drag unassigned groups to your organization, or leave the structure as is. Unassigned groups will not be included in the organization.',
+          count,
+        ),
+        { count },
+      );
     },
   },
   beforeDestroy() {
@@ -120,11 +138,11 @@ export default {
   <base-step :title="s__('Organization|Assign top-level groups')">
     <template #description>
       <p>
-        {{
-          s__(
-            'Organization|Drag groups between Organizations to set up your structure. Most companies only need one.',
-          )
-        }}
+        <gl-sprintf :message="stepTitle">
+          <template #bold="{ content }">
+            <span class="gl-font-bold">{{ content }}</span>
+          </template>
+        </gl-sprintf>
       </p>
     </template>
 
@@ -136,36 +154,39 @@ export default {
           class="gl-w-1/2 gl-p-2 first:gl-ml-auto last:gl-mr-auto @lg:gl-w-1/3"
         >
           <organization-card :organization="organization">
-            <draggable
-              class="organizations-reconciliation-draggable gl-flex gl-min-h-11 gl-flex-col gl-gap-4"
-              chosen-class="gl-shadow-md"
-              :value="organization.groups.nodes"
-              :group="draggableGroup(organization)"
-              item-key="id"
-              :fallback-on-body="true"
-              :force-fallback="true"
-              :fallback-class="$options.FALLBACK_CSS_CLASS"
-              @start="onDraggableStart(organization, $event)"
-              @input="onDraggableInput(organization, $event)"
-              @end="onDraggableEnd"
-              @choose="onChoose"
-              @unchoose="onUnchoose"
-            >
-              <organization-group-card
-                v-for="group in organization.groups.nodes"
-                :key="group.id"
-                :group="group"
-                :organization-visibility="organization.visibility"
-                class="gl-select-none hover:gl-cursor-grab hover:gl-shadow-md"
-              />
-            </draggable>
-            <div
-              v-if="shouldShowDropzone(organization)"
-              data-testid="organization-dropzone"
-              class="organizations-reconciliation-draggable-dropzone gl-border-secondary gl-pointer-events-none gl-absolute gl-flex gl-h-11 gl-w-full gl-items-center gl-justify-center gl-rounded-md gl-border-dashed gl-border-strong"
-            >
-              <p class="gl-m-0 gl-text-secondary">{{ s__('Organization|Drop groups here') }}</p>
-            </div>
+            <template #default="{ isDefaultOrganization }">
+              <draggable
+                class="organizations-reconciliation-draggable gl-flex gl-min-h-11 gl-flex-col gl-gap-4"
+                chosen-class="gl-shadow-md"
+                :value="organization.groups.nodes"
+                :group="draggableGroup(organization)"
+                item-key="id"
+                :fallback-on-body="true"
+                :force-fallback="true"
+                :fallback-class="$options.FALLBACK_CSS_CLASS"
+                @start="onDraggableStart(organization, $event)"
+                @input="onDraggableInput(organization, $event)"
+                @end="onDraggableEnd"
+                @choose="onChoose"
+                @unchoose="onUnchoose"
+              >
+                <organization-group-card
+                  v-for="group in organization.groups.nodes"
+                  :key="group.id"
+                  :group="group"
+                  :organization-visibility="organization.visibility"
+                  class="gl-select-none hover:gl-cursor-grab hover:gl-shadow-md"
+                  :class="{ 'gl-border': isDefaultOrganization }"
+                />
+              </draggable>
+              <div
+                v-if="shouldShowDropzone(organization)"
+                data-testid="organization-dropzone"
+                class="organizations-reconciliation-draggable-dropzone gl-border-secondary gl-pointer-events-none gl-absolute gl-flex gl-h-11 gl-w-full gl-items-center gl-justify-center gl-rounded-md gl-border-dashed gl-border-strong"
+              >
+                <p class="gl-m-0 gl-text-secondary">{{ s__('Organization|Drop groups here') }}</p>
+              </div>
+            </template>
           </organization-card>
         </div>
       </div>

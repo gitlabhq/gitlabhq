@@ -37,6 +37,7 @@ The limit for [epic](../../user/group/epics/_index.md) creation is the same limi
 
 - Is applied independently per project and per user.
 - Is not applied per IP address.
+- Is disabled by default.
 - Can be set to `0` to disable the rate limit.
 
 Requests over the rate limit are logged into the `auth.log` file.

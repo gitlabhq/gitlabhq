@@ -65,11 +65,7 @@ module Ci
     end
 
     def sort(pipelines)
-      pipelines_table = Ci::Pipeline.quoted_table_name
-      sql = "CASE #{pipelines_table}.source WHEN (?) THEN 0 ELSE 1 END, #{pipelines_table}.id DESC"
-      query = ApplicationRecord.send(:sanitize_sql_array, [sql, Ci::Pipeline.sources[:merge_request_event]]) # rubocop:disable GitlabSecurity/PublicSend
-
-      pipelines.order(Arel.sql(query)) # rubocop: disable CodeReuse/ActiveRecord
+      pipelines.merge_request_event_first
     end
 
     def can_read_pipeline_in_target_project?

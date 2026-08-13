@@ -2,12 +2,26 @@
 
 require 'spec_helper'
 
-RSpec.describe ExploreHelper do
+RSpec.describe ExploreHelper, feature_category: :groups_and_projects do
   let(:user) { build(:user) }
 
   before do
     allow(helper).to receive(:current_user).and_return(user)
     allow(helper).to receive(:can?) { true }
+  end
+
+  describe '#filter_projects_path' do
+    before do
+      helper.params.merge!(name: 'search term', language: '1', language_name: 'C++')
+    end
+
+    it 'preserves and encodes the language name while ignoring the legacy language ID' do
+      expect(helper.filter_projects_path).to eq('?language_name=C%2B%2B&name=search+term')
+    end
+
+    it 'supports explicitly clearing the language name and project name' do
+      expect(helper.filter_projects_path(language_name: nil, name: nil)).to eq('?')
+    end
   end
 
   describe '#public_visibility_restricted?' do

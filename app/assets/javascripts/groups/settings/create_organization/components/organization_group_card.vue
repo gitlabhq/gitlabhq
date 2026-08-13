@@ -7,9 +7,8 @@ import {
   VISIBILITY_LEVEL_INTERNAL_STRING,
   GROUP_VISIBILITY_TYPE,
 } from '~/visibility_level/constants';
-import { numberToMetricPrefix } from '~/lib/utils/number_utils';
 import { s__ } from '~/locale';
-import ListItemStat from '~/vue_shared/components/resource_lists/list_item_stat.vue';
+import OrganizationGroupStats from './organization_group_stats.vue';
 
 export default {
   name: 'OrganizationGroupCard',
@@ -18,7 +17,7 @@ export default {
   },
   components: {
     GlIcon,
-    ListItemStat,
+    OrganizationGroupStats,
   },
   props: {
     group: {
@@ -77,50 +76,29 @@ export default {
       }
     },
   },
-  methods: {
-    numberToMetricPrefix,
-  },
 };
 </script>
 
 <template>
   <div class="gl-rounded-xl gl-bg-default gl-p-4" data-testid="organization-group">
-    <div class="gl-flex gl-items-center gl-gap-3">
-      <gl-icon class="gl-shrink-0" variant="subtle" name="group" />
-      <div class="gl-break-anywhere">
-        <span class="gl-font-bold">{{ group.fullName }}</span
-        ><gl-icon
+    <div class="gl-flex gl-items-start gl-justify-between">
+      <span class="gl-font-bold gl-break-anywhere">{{ group.fullName }}</span>
+      <div class="gl-flex gl-items-center gl-gap-2">
+        <gl-icon
           v-gl-tooltip="visibilityTooltip"
           :name="visibilityIcon"
-          class="gl-ml-2"
           variant="subtle"
           data-testid="group-visibility"
-        /><gl-icon
+        />
+        <gl-icon
           v-if="hasVisibilityChanged"
           v-gl-tooltip="visibilityChangedTooltip"
           name="warning-solid"
-          class="gl-ml-2"
           variant="warning"
           data-testid="visibility-warning"
         />
       </div>
     </div>
-    <div class="gl-mt-3 gl-flex gl-items-center gl-gap-x-3 gl-pl-6">
-      <list-item-stat
-        :tooltip-text="__('Subgroups')"
-        icon-name="subgroup"
-        :stat="numberToMetricPrefix(group.descendantGroupsCount)"
-      />
-      <list-item-stat
-        :tooltip-text="__('Projects')"
-        icon-name="project"
-        :stat="numberToMetricPrefix(group.projectsCount)"
-      />
-      <list-item-stat
-        :tooltip-text="__('Direct members')"
-        icon-name="users"
-        :stat="numberToMetricPrefix(group.groupMembersCount)"
-      />
-    </div>
+    <organization-group-stats class="gl-mt-3" :group="group" />
   </div>
 </template>

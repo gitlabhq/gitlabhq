@@ -14,7 +14,7 @@ import { VIEW_ADMIN_DEPLOY_KEYS_PAGELOAD } from '~/admin/deploy_keys/constants';
 import { __ } from '~/locale';
 import Api, { DEFAULT_PER_PAGE } from '~/api';
 import { InternalEvents } from '~/tracking';
-import CrudComponent from '~/vue_shared/components/crud_component.vue';
+import IndexLayout from '~/vue_shared/components/index_layout.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import {
@@ -32,7 +32,7 @@ export default {
     newDeployKeyButtonText: __('New deploy key'),
     emptyStateTitle: __('No public deploy keys'),
     emptyStateDescription: __(
-      'Deploy keys grant read/write access to all repositories in your instance, start by creating a new one above.',
+      'Deploy keys grant read/write access to all repositories in your instance.',
     ),
     delete: __('Delete deploy key'),
     edit: __('Edit deploy key'),
@@ -91,7 +91,7 @@ export default {
   DEFAULT_PER_PAGE,
   EMPTY_STATE_SVG_URL,
   components: {
-    CrudComponent,
+    IndexLayout,
     GlTable,
     GlButton,
     GlPagination,
@@ -197,26 +197,22 @@ export default {
 </script>
 
 <template>
-  <crud-component
-    :title="$options.i18n.pageTitle"
-    :count="totalItems.toString()"
-    icon="key"
-    class="gl-mt-5"
-  >
+  <index-layout v-if="shouldShowTable" :heading="$options.i18n.pageTitle">
     <template #actions>
-      <gl-button size="small" :href="newAdminDeployKeyPath()" data-testid="new-deploy-key-button">{{
-        $options.i18n.newDeployKeyButtonText
-      }}</gl-button>
+      <gl-button
+        variant="confirm"
+        :href="newAdminDeployKeyPath()"
+        data-testid="new-deploy-key-button"
+        >{{ $options.i18n.newDeployKeyButtonText }}</gl-button
+      >
     </template>
 
     <gl-table
-      v-if="shouldShowTable"
       :busy="loading"
       :items="items"
       :fields="$options.fields"
       stacked="md"
       data-testid="deploy-keys-list"
-      class="-gl-mb-2 -gl-mt-1"
     >
       <template #table-busy>
         <gl-loading-icon size="sm" class="gl-my-5" />
@@ -276,13 +272,6 @@ export default {
         </div>
       </template>
     </gl-table>
-    <gl-empty-state
-      v-else
-      :svg-path="$options.EMPTY_STATE_SVG_URL"
-      :svg-height="150"
-      :title="$options.i18n.emptyStateTitle"
-      :description="$options.i18n.emptyStateDescription"
-    />
     <gl-pagination
       v-if="!loading"
       v-model="page"
@@ -307,5 +296,14 @@ export default {
       </form>
       {{ $options.i18n.modal.body }}
     </gl-modal>
-  </crud-component>
+  </index-layout>
+  <gl-empty-state
+    v-else
+    :svg-path="$options.EMPTY_STATE_SVG_URL"
+    :svg-height="150"
+    :title="$options.i18n.emptyStateTitle"
+    :description="$options.i18n.emptyStateDescription"
+    :primary-button-text="$options.i18n.newDeployKeyButtonText"
+    :primary-button-link="newAdminDeployKeyPath()"
+  />
 </template>

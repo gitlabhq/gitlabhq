@@ -15,6 +15,7 @@ import {
   differenceInSeconds,
   fallsBefore,
   format24HourTimeStringFromInt,
+  getCurrentDateAtOffset,
   getCurrentUtcDate,
   getDateInFuture,
   getDateInPast,
@@ -123,6 +124,21 @@ describe('getCurrentUtcDate', () => {
 
   it('returns the date at midnight', () => {
     expect(getCurrentUtcDate()).toEqual(new Date('2022-12-05T00:00:00.000Z'));
+  });
+});
+
+describe('getCurrentDateAtOffset', () => {
+  useFakeDate(2022, 11, 5, 10, 10);
+
+  it.each`
+    utcOffsetSeconds | expectedDate    | description
+    ${0}             | ${'2022-12-05'} | ${'the UTC date'}
+    ${50400}         | ${'2022-12-06'} | ${'the next day when the offset crosses midnight forward'}
+    ${-39600}        | ${'2022-12-04'} | ${'the previous day when the offset crosses midnight backward'}
+  `('returns $description for offset $utcOffsetSeconds', ({ utcOffsetSeconds, expectedDate }) => {
+    expect(getCurrentDateAtOffset(utcOffsetSeconds)).toEqual(
+      new Date(`${expectedDate}T00:00:00.000Z`),
+    );
   });
 });
 
@@ -470,6 +486,41 @@ describe('getDatesInRange', () => {
       expect(formatter).toHaveBeenCalledTimes(31);
       expect(formatter).toHaveBeenNthCalledWith(1, new Date('2019-01-01'));
       expect(formatter).toHaveBeenNthCalledWith(31, new Date('2019-01-31'));
+    });
+  });
+
+  describe('when the range crosses a DST transition', () => {
+    const toDateString = (date) => `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+
+    beforeEach(() => {
+      timezoneMock.register('US/Pacific');
+    });
+
+    afterEach(() => {
+      timezoneMock.unregister();
+    });
+
+    it('returns every calendar date exactly once across the fall back switch', () => {
+      // DST ends on November 3rd, 2019 in US/Pacific, making it a 25-hour day.
+      // Stepping by fixed 24-hour increments would land on November 3rd twice
+      // and shift every following date back by one calendar day.
+      const range = getDatesInRange(new Date(2019, 10, 1), new Date(2019, 10, 6), toDateString);
+
+      expect(range).toEqual([
+        '2019-11-1',
+        '2019-11-2',
+        '2019-11-3',
+        '2019-11-4',
+        '2019-11-5',
+        '2019-11-6',
+      ]);
+    });
+
+    it('returns every calendar date exactly once across the spring forward switch', () => {
+      // DST starts on March 10th, 2019 in US/Pacific, making it a 23-hour day.
+      const range = getDatesInRange(new Date(2019, 2, 8), new Date(2019, 2, 12), toDateString);
+
+      expect(range).toEqual(['2019-3-8', '2019-3-9', '2019-3-10', '2019-3-11', '2019-3-12']);
     });
   });
 });

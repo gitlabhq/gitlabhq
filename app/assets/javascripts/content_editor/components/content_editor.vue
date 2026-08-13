@@ -156,7 +156,7 @@ export default {
   emits: [
     'blur',
     'change',
-    'enableMarkdownEditor',
+    'enable-markdown-editor',
     'focus',
     'initialized',
     'keydown',
@@ -376,7 +376,7 @@ export default {
       });
     },
     handleEditorModeChanged() {
-      this.$emit('enableMarkdownEditor');
+      this.$emit('enable-markdown-editor');
     },
   },
 };

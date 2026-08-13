@@ -369,17 +369,23 @@ module Ci
         pre_assign_runner_checks.find { |_, check| check.call(build, params) }
       end
 
-      if failure_reason
-        @metrics.increment_queue_operation(:runner_pre_assign_checks_failed)
+      # Persisting the runner assignment changes `runner_id`, which would
+      # schedule an isolation check on every job pickup even though the check
+      # cannot resolve an organization for a runner and always no-ops.
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/606395
+      Organizations::Sharding.skip_isolation_check do
+        if failure_reason
+          @metrics.increment_queue_operation(:runner_pre_assign_checks_failed)
 
-        @logger.instrument(:assign_runner_drop) do
-          build.drop!(failure_reason)
-        end
-      else
-        @metrics.increment_queue_operation(:runner_pre_assign_checks_success)
+          @logger.instrument(:assign_runner_drop) do
+            build.drop!(failure_reason)
+          end
+        else
+          @metrics.increment_queue_operation(:runner_pre_assign_checks_success)
 
-        @logger.instrument(:assign_runner_run) do
-          build.run!(runner_manager)
+          @logger.instrument(:assign_runner_run) do
+            build.run!(runner_manager)
+          end
         end
       end
 

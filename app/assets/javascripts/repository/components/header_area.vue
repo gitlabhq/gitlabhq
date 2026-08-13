@@ -325,7 +325,7 @@ export default {
     >
       <h1
         v-if="!isReadmeView && !isProjectOverview"
-        class="gl-mt-0 gl-inline-flex gl-flex-1 gl-items-center gl-gap-3 gl-break-words gl-text-size-h1 @md/panel:gl-my-0"
+        class="gl-heading-1 gl-mt-2 gl-inline-flex gl-flex-1 gl-items-center gl-gap-3 gl-break-words @md/panel:gl-mb-0"
         data-testid="repository-heading"
       >
         <file-icon

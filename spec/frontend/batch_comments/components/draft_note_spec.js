@@ -170,6 +170,17 @@ describe('Batch comments draft note component', () => {
       });
     });
 
+    it(`resets opened state on update success`, async () => {
+      draft.isEditing = true;
+      createComponent({ draft });
+      await findNoteableNote().vm.$emit('update-success');
+      expect(findNoteableNote().props('restoreFromAutosave')).toBe(false);
+      expect(useBatchComments()[types.SET_DRAFT_EDITING]).toHaveBeenCalledWith({
+        draftId: draft.id,
+        isEditing: false,
+      });
+    });
+
     it(`clears autosave key on form cancel`, () => {
       createComponent({ draft, autosaveKey: 'foo' });
       findNoteableNote().vm.$emit('cancel-form');

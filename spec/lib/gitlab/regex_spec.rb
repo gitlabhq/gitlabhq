@@ -277,21 +277,6 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     it { is_expected.not_to match('') }
   end
 
-  describe '.cd_version_set_name_regex' do
-    subject { described_class.cd_version_set_name_regex }
-
-    it { is_expected.to match('1.2.3') }
-    it { is_expected.to match('v1.2.3') }
-    it { is_expected.to match('1.2.3-rc.1') }
-    it { is_expected.to match('1.2.3-alpha.1+build.5') }
-    it { is_expected.to match('0.0.0') }
-    it { is_expected.not_to match('1.2') }
-    it { is_expected.not_to match('1.2.3.4') }
-    it { is_expected.not_to match('01.2.3') }
-    it { is_expected.not_to match('foo') }
-    it { is_expected.not_to match('') }
-  end
-
   describe '.kubernetes_dns_subdomain_regex' do
     subject { described_class.kubernetes_dns_subdomain_regex }
 

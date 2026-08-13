@@ -175,6 +175,12 @@ describe('noteActions', () => {
         expect(wrapper.find('.js-note-edit').exists()).toBe(true);
       });
 
+      it('emits `handle-edit` when the edit button is clicked', () => {
+        wrapper.findComponent('.js-note-edit').vm.$emit('click');
+
+        expect(wrapper.emitted('handle-edit')).toEqual([[]]);
+      });
+
       it('should be possible to report abuse to admin', () => {
         expect(findReportAbuseButton().exists()).toBe(true);
       });

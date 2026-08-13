@@ -124,6 +124,12 @@ Object.assign(alias, {
   chevrotain: path.join(ROOT_PATH, 'node_modules/chevrotain/lib/src/api.js'),
   'chevrotain-allstar': path.join(ROOT_PATH, 'node_modules/chevrotain-allstar/lib/index.js'),
   langium: path.join(ROOT_PATH, 'node_modules/langium/lib/index.js'),
+  // @json-render/vue imports `@json-render/core/store-utils`, an "exports"-only
+  // subpath of @json-render/core.
+  '@json-render/core/store-utils': path.join(
+    ROOT_PATH,
+    'node_modules/@json-render/core/dist/store-utils.mjs',
+  ),
 });
 
 let dll;
@@ -335,6 +341,14 @@ module.exports = {
       },
       {
         test: /marked\/.*\.js?$/,
+        include: /node_modules/,
+        loader: 'babel-loader',
+      },
+      {
+        // @json-render/core and @json-render/vue (peer dependencies of
+        // @gitlab/duo-ui's gen-UI adapter) ship untranspiled ES2020 (optional
+        // chaining, nullish coalescing) that webpack 4 can't parse.
+        test: /@json-render\/.*\.m?js$/,
         include: /node_modules/,
         loader: 'babel-loader',
       },

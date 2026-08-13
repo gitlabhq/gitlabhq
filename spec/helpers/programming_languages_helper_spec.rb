@@ -4,35 +4,35 @@ require 'spec_helper'
 
 RSpec.describe ProgrammingLanguagesHelper, feature_category: :source_code_management do
   describe '.search_language_placeholder' do
-    let(:programming_language) { build(:programming_language, id: 1, name: 'Ruby') }
+    let(:programming_language) { build(:programming_language, name: 'Ruby') }
 
     before do
       allow(helper).to receive(:programming_languages).and_return([programming_language])
     end
 
-    context 'with no `language` param' do
+    context 'with no `language_name` param' do
       it 'returns a placeholder' do
         expect(helper.search_language_placeholder).to eq(_('Language'))
       end
     end
 
-    context 'with a `language` param' do
+    context 'with a matching `language_name` param' do
+      it 'returns the canonical language name for lowercase and mixed-case input', :aggregate_failures do
+        allow(helper).to receive(:params).and_return({ language_name: 'ruby' })
+        expect(helper.search_language_placeholder).to eq('Ruby')
+
+        allow(helper).to receive(:params).and_return({ language_name: 'rUbY' })
+        expect(helper.search_language_placeholder).to eq('Ruby')
+      end
+    end
+
+    context 'with an unknown `language_name` param' do
       before do
-        allow(helper).to receive(:params).and_return({ language: '2' })
+        allow(helper).to receive(:params).and_return({ language_name: 'unknown' })
       end
 
-      context 'when invalid' do
-        it 'returns a placeholder' do
-          expect(helper.search_language_placeholder).to eq(_('Language'))
-        end
-      end
-
-      context 'when valid' do
-        let(:programming_language) { build(:programming_language, id: 2, name: 'Ruby') }
-
-        it 'returns the chosen language' do
-          expect(helper.search_language_placeholder).to eq('Ruby')
-        end
+      it 'returns a placeholder' do
+        expect(helper.search_language_placeholder).to eq(_('Language'))
       end
     end
   end
@@ -46,22 +46,32 @@ RSpec.describe ProgrammingLanguagesHelper, feature_category: :source_code_manage
   end
 
   describe '.language_state_class' do
-    let(:language) { build(:programming_language, id: language_id) }
+    let(:language) { build(:programming_language, name: 'Ruby') }
 
-    before do
-      allow(helper).to receive(:params).and_return({ language: '1' })
-    end
+    context 'when language name matches case-insensitively' do
+      it 'returns `is-active` for lowercase and mixed-case input', :aggregate_failures do
+        allow(helper).to receive(:params).and_return({ language_name: 'ruby' })
+        expect(helper.language_state_class(language)).to be('is-active')
 
-    context 'when language param matches' do
-      let(:language_id) { 1 }
-
-      it 'returns `is-active`' do
+        allow(helper).to receive(:params).and_return({ language_name: 'rUbY' })
         expect(helper.language_state_class(language)).to be('is-active')
       end
     end
 
-    context 'when language param does not match' do
-      let(:language_id) { 2 }
+    context 'when language name does not match' do
+      before do
+        allow(helper).to receive(:params).and_return({ language_name: 'Python' })
+      end
+
+      it 'returns ``' do
+        expect(helper.language_state_class(language)).to be('')
+      end
+    end
+
+    context 'without a language name param' do
+      before do
+        allow(helper).to receive(:params).and_return({})
+      end
 
       it 'returns ``' do
         expect(helper.language_state_class(language)).to be('')

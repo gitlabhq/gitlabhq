@@ -164,6 +164,15 @@ describe('Markdown field header component', () => {
     expect(wrapper.emitted('show-preview')).toHaveLength(2);
   });
 
+  it('emits `hide-preview` when clicking preview toggle in preview mode', async () => {
+    createWrapper({ props: { previewMarkdown: true } });
+
+    findPreviewToggle().vm.$emit('click');
+
+    await nextTick();
+    expect(wrapper.emitted('hide-preview')).toHaveLength(1);
+  });
+
   it('does not emit toggle markdown event when triggered from another form', () => {
     const form = document.createElement('form');
     form.innerHTML =

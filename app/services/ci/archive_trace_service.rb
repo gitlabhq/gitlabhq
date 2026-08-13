@@ -45,7 +45,10 @@ module Ci
         return
       end
 
-      job.trace.archive!
+      # Archival updates and then deletes the build's trace metadata row, so the
+      # isolation check triggered by that update is a guaranteed no-op.
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/606395
+      Organizations::Sharding.skip_isolation_check { job.trace.archive! }
       job.remove_pending_state!
 
       if job.job_artifacts_trace.present?

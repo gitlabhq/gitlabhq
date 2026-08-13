@@ -40,6 +40,16 @@ RSpec.describe Organizations::Sharding, feature_category: :organization do
 
           issue.update!(duplicated_to: other_issue)
         end
+
+        context 'when the update happens inside a skip_isolation_check block' do
+          it 'does not schedule a organization isolation status check' do
+            expect(Organizations::CheckOrganizationIsolationStatusWorker).not_to receive(:perform_async)
+
+            described_class.skip_isolation_check do
+              issue.update!(duplicated_to: other_issue)
+            end
+          end
+        end
       end
 
       context 'when belongs_to relation is updated' do
@@ -79,6 +89,34 @@ RSpec.describe Organizations::Sharding, feature_category: :organization do
           issue.update!(title: "new title")
         end
       end
+    end
+  end
+
+  describe '.skip_isolation_check' do
+    it 'enables skipping only for the duration of the block' do
+      expect(described_class.skip_isolation_check?).to be(false)
+
+      described_class.skip_isolation_check do
+        expect(described_class.skip_isolation_check?).to be(true)
+      end
+
+      expect(described_class.skip_isolation_check?).to be(false)
+    end
+
+    it 'restores the previous value when nested' do
+      described_class.skip_isolation_check do
+        described_class.skip_isolation_check { nil }
+
+        expect(described_class.skip_isolation_check?).to be(true)
+      end
+    end
+
+    it 'restores the previous value when the block raises' do
+      expect do
+        described_class.skip_isolation_check { raise 'boom' }
+      end.to raise_error('boom')
+
+      expect(described_class.skip_isolation_check?).to be(false)
     end
   end
 

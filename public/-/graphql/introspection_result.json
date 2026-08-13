@@ -9473,6 +9473,18 @@
               "deprecationReason": null
             },
             {
+              "name": "duration",
+              "description": "Aggregated `duration` metrics.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "AgentPlatformSessionsAggregationResponseDurationMetrics",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "durationQuantile",
               "description": "Session duration quantile in seconds",
               "args": [
@@ -9675,6 +9687,78 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "UserCore",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "AgentPlatformSessionsAggregationResponseDurationMetrics",
+          "description": "Aggregated `duration` metrics for `AgentPlatformSessions` aggregation engine",
+          "fields": [
+            {
+              "name": "max",
+              "description": "Maximum session duration in seconds",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "mean",
+              "description": "Mean session duration in seconds",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "min",
+              "description": "Minimum session duration in seconds",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "quantile",
+              "description": "Quantile of session duration in seconds",
+              "args": [
+                {
+                  "name": "quantile",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Float",
+                    "ofType": null
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -57700,22 +57784,6 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
             },
             {
-              "name": "suggestedNextVersionSetName",
-              "description": "Suggested name for the application's next version set, derived from its latest release. Introduced in GitLab 19.3: Status: Experiment.",
-              "args": [],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "CdSemVer",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": true,
-              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
-            },
-            {
               "name": "updatedAt",
               "description": "Timestamp of when the application was last updated.",
               "args": [],
@@ -62291,6 +62359,26 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.2."
             },
             {
+              "name": "rolloutSteps",
+              "description": "Top-level nodes of the rollout flow definition tree, in position order. A stage node exposes its nested steps through its own `steps` field. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "CdRolloutStep",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
               "name": "rolloutTransitions",
               "description": "Transition journal of the rollout. Introduced in GitLab 19.2: Status: Experiment.",
               "args": [
@@ -63299,6 +63387,292 @@
         },
         {
           "kind": "OBJECT",
+          "name": "CdRolloutStep",
+          "description": "Node in a continuous deployment rollout flow definition tree.",
+          "fields": [
+            {
+              "name": "createdAt",
+              "description": "Timestamp of when the step was created.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Time",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "environment",
+              "description": "Environment the step targets, null for steps that target no environment (for example a stage container or a wait step).",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "CdEnvironment",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "error",
+              "description": "Error message of the step, if it failed.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "finishedAt",
+              "description": "Timestamp of when the step finished.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Time",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "id",
+              "description": "Global ID of the rollout step.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "CdRolloutStepID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name",
+              "description": "Name of the step, as defined by the flow definition.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "params",
+              "description": "Step-specific configuration copied from the flow definition (for example wait seconds or canary service weights).",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "JSON",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "parentPath",
+              "description": "Path of the parent step, null for a top-level step.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "path",
+              "description": "Position of the step in the flow definition tree (for example \"0\", \"0.1\").",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "startedAt",
+              "description": "Timestamp of when the step started.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Time",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "state",
+              "description": "State of the step.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "CdRolloutStepState",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "stepType",
+              "description": "Type of the step, as defined by the flow definition (for example \"com.gitlab.cd.steps.stage\" or a deploy driver step type).",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "steps",
+              "description": "Nested steps, for a stage step. Empty for any other step type.",
+              "args": [],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "CdRolloutStep",
+                    "ofType": null
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "updatedAt",
+              "description": "Timestamp of when the step was last updated.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Time",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "SCALAR",
+          "name": "CdRolloutStepID",
+          "description": "A `CdRolloutStepID` is a global ID. It is encoded as a string.\n\nAn example `CdRolloutStepID` is: `\"gid://gitlab/Cd::RolloutStep/1\"`.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "CdRolloutStepState",
+          "description": "State of a continuous deployment rollout step.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "PENDING",
+              "description": "Rollout step is pending.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "RUNNING",
+              "description": "Rollout step is running.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "AWAITING_APPROVAL",
+              "description": "Rollout step is awaiting approval.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "APPROVED",
+              "description": "Rollout step is approved.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "REJECTED",
+              "description": "Rollout step is rejected.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SUCCESS",
+              "description": "Rollout step is success.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "FAILED",
+              "description": "Rollout step is failed.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "SKIPPED",
+              "description": "Rollout step is skipped.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CANCELLED",
+              "description": "Rollout step is cancelled.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
           "name": "CdRolloutTransition",
           "description": "Continuous deployment rollout transition journal entry.",
           "fields": [
@@ -63726,16 +64100,6 @@
               "deprecationReason": null
             }
           ],
-          "possibleTypes": null
-        },
-        {
-          "kind": "SCALAR",
-          "name": "CdSemVer",
-          "description": "Semantic version string, optionally prefixed with `v`.\n\nFor example: `1.2.3` or `v1.2.3-rc.1`.\n",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": null,
           "possibleTypes": null
         },
         {
@@ -65479,7 +65843,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "CdSemVer",
+                  "name": "String",
                   "ofType": null
                 }
               },

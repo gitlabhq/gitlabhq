@@ -7,6 +7,16 @@
   max-width: $fixed-layout-width;
 }
 
+.contrib-calendar {
+  // First row holds the month labels; the remaining 7 rows are the day cells.
+  // The first column holds the day labels and hugs their width; the week
+  // columns are created implicitly, one per week, sized evenly so wide month
+  // labels overflow instead of widening their week column.
+  grid-template-rows: auto repeat(7, minmax(0, 1fr));
+  grid-template-columns: auto;
+  grid-auto-columns: minmax(15px, 1fr);
+}
+
 .user-contribution-graph-cell {
   min-width: 15px;
   min-height: 15px;

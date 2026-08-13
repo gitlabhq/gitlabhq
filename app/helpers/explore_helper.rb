@@ -12,10 +12,9 @@ module ExploreHelper
       personal: params[:personal],
       archived: params[:archived],
       shared: params[:shared],
-      namespace_id: params[:namespace_id]
+      namespace_id: params[:namespace_id],
+      language_name: params[:language_name]
     }
-
-    exist_opts[:language] = params[:language]
 
     options = exist_opts.merge(options).delete_if { |_key, value| value.blank? }
     request_path_with_options(options)

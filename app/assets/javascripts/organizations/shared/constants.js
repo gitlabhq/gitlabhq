@@ -13,7 +13,6 @@ export const DEFAULT_ORGANIZATION_GID = convertToGraphQLId(
   TYPE_ORGANIZATION,
   DEFAULT_ORGANIZATION_ID,
 );
-export const DEFAULT_ORGANIZATION_NAME = __('GitLab');
 
 export const RESOURCE_TYPE_GROUPS = 'groups';
 export const RESOURCE_TYPE_PROJECTS = 'projects';

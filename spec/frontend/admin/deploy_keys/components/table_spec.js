@@ -2,7 +2,6 @@ import { GlLoadingIcon, GlEmptyState, GlPagination, GlModal } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import EMPTY_STATE_SVG_URL from '@gitlab/svgs/dist/illustrations/empty-state/empty-access-token-md.svg?url';
 import responseBody from 'test_fixtures/api/deploy_keys/index.json';
-import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { stubComponent } from 'helpers/stub_component';
@@ -37,8 +36,7 @@ describe('DeployKeysTable', () => {
     });
   };
 
-  const findCrud = () => wrapper.findComponent(CrudComponent);
-  const findCrudTitle = () => wrapper.findByTestId('crud-title');
+  const findTable = () => wrapper.findByTestId('deploy-keys-list');
   const findEditButton = (index) =>
     wrapper.findAllByLabelText(DeployKeysTable.i18n.edit, { selector: 'a' }).at(index);
   const findRemoveButton = (index) =>
@@ -71,7 +69,7 @@ describe('DeployKeysTable', () => {
   };
 
   const itRendersTheEmptyState = () => {
-    it('renders empty state', () => {
+    it('renders empty state with a create action instead of the page heading', () => {
       const emptyState = wrapper.findComponent(GlEmptyState);
 
       expect(emptyState.exists()).toBe(true);
@@ -79,23 +77,39 @@ describe('DeployKeysTable', () => {
         svgPath: EMPTY_STATE_SVG_URL,
         title: DeployKeysTable.i18n.emptyStateTitle,
         description: DeployKeysTable.i18n.emptyStateDescription,
+        primaryButtonText: DeployKeysTable.i18n.newDeployKeyButtonText,
+        primaryButtonLink: '/admin/deploy_keys/new',
       });
+    });
+
+    it('does not render the page heading or its action', () => {
+      expect(wrapper.find('h1').exists()).toBe(false);
+      expect(wrapper.findByTestId('new-deploy-key-button').exists()).toBe(false);
     });
   };
 
-  it('renders page title', () => {
-    createComponent();
+  describe('when there are deploy keys to show', () => {
+    beforeEach(async () => {
+      Api.deployKeys.mockResolvedValue({
+        data: responseBody,
+        headers: { 'x-total': `${responseBody.length}` },
+      });
 
-    expect(wrapper.findByText(DeployKeysTable.i18n.pageTitle).exists()).toBe(true);
-  });
+      createComponent();
 
-  it('renders `New deploy key` button', () => {
-    createComponent();
+      await waitForPromises();
+    });
 
-    const newDeployKeyButton = wrapper.findByTestId('new-deploy-key-button');
+    it('renders page title', () => {
+      expect(wrapper.findByText(DeployKeysTable.i18n.pageTitle).exists()).toBe(true);
+    });
 
-    expect(newDeployKeyButton.exists()).toBe(true);
-    expect(newDeployKeyButton.attributes('href')).toBe('/admin/deploy_keys/new');
+    it('renders `New deploy key` button', () => {
+      const newDeployKeyButton = wrapper.findByTestId('new-deploy-key-button');
+
+      expect(newDeployKeyButton.exists()).toBe(true);
+      expect(newDeployKeyButton.attributes('href')).toBe('/admin/deploy_keys/new');
+    });
   });
 
   describe('when `/deploy_keys` API request is pending', () => {
@@ -123,14 +137,8 @@ describe('DeployKeysTable', () => {
         createComponent();
       });
 
-      it('renders card with the deploy keys', () => {
-        expect(findCrud().exists()).toBe(true);
-      });
-
-      it('shows the correct number of deploy keys', () => {
-        expect(findCrudTitle().text()).toMatchInterpolatedText(
-          `Public deploy keys ${responseBody.length}`,
-        );
+      it('renders table with the deploy keys', () => {
+        expect(findTable().exists()).toBe(true);
       });
 
       it('renders deploy keys in table', () => {

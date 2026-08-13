@@ -86,6 +86,7 @@ Features available on the Free tier require the purchase of [GitLab Credits](../
 | [Custom flows](flows/custom.md) <br /> Combine multiple agents to solve your business problems. | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | [SAST False Positive Detection Flow](flows/foundational_flows/sast_false_positive_detection.md) <br /> Automatically identify and filter out false positives in SAST security scans. | {{< no >}} | {{< no >}}  | {{< yes >}} |
 | [SAST Vulnerability Resolution Flow](flows/foundational_flows/agentic_sast_vulnerability_resolution.md) <br /> Automatically generate fixes and remediation steps for SAST vulnerabilities. | {{< no >}} | {{< no >}}  | {{< yes >}} |
+| [Secret False Positive Detection Flow](flows/foundational_flows/secret_false_positive_detection.md) <br /> Automatically analyze secret detection findings to identify potential false positives. | {{< no >}} | {{< yes >}} | {{< yes >}} |
 | [Security Analyst Agent](agents/foundational_agents/security_analyst_agent.md) <br /> Automate repetitive security tasks: Triage issues, analyze vulnerabilities, and generate fixes. | {{< no >}} | {{< no >}}  | {{< yes >}} |
 
 **Footnotes**:
@@ -118,3 +119,4 @@ but you require credits in your Monthly Commitment Pool to access them.
 | [CI Expert Agent](agents/foundational_agents/ci_expert_agent.md) <br /> Create, debug, and optimize GitLab CI/CD pipelines. | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | [External MCP servers](../gitlab_duo/model_context_protocol/ai_catalog_mcp_servers.md) <br /> Connect custom agents to external data sources and third-party services using MCP servers. | {{< no >}} | {{< yes >}} | {{< yes >}} |
 | [Resolve merge conflicts](../project/merge_requests/conflicts.md#resolve-conflicts-with-gitlab-duo) <br /> Autonomously analyze merge conflicts, edit conflicting files, and push a resolution commit. | {{< no >}} | {{< yes >}} | {{< yes >}} |
+| [Agentic Breaking Change Resolution Flow](flows/foundational_flows/agentic-breaking-change-resolution.md) <br /> Analyze pipeline failures on dependency bump merge requests and create code fixes to resolve breaking changes introduced by the dependency update. | {{< no >}} | {{< no >}} | {{< yes >}} |

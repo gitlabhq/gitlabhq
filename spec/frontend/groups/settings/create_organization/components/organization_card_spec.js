@@ -1,5 +1,4 @@
 import { GlAvatarLabeled, GlCard } from '@gitlab/ui';
-import gitlabLogoUrl from '@gitlab/svgs/dist/illustrations/gitlab_logo.svg?url';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
@@ -12,13 +11,13 @@ describe('OrganizationCard', () => {
 
   const [nonDefaultOrganization] = mockOrganizations;
 
-  const createComponent = ({ props = {}, slots = {} } = {}) => {
+  const createComponent = ({ props = {}, scopedSlots = {} } = {}) => {
     wrapper = shallowMountExtended(OrganizationCard, {
       propsData: {
         organization: nonDefaultOrganization,
         ...props,
       },
-      slots,
+      scopedSlots,
       stubs: {
         GlCard,
         GlAvatarLabeled: stubComponent(GlAvatarLabeled, {
@@ -35,7 +34,7 @@ describe('OrganizationCard', () => {
   const findAvatar = () => wrapper.findComponent(GlAvatarLabeled);
   const findVisibilityIcon = () => wrapper.findComponentByTestId('organization-visibility');
 
-  describe('avatar', () => {
+  describe('when organization is not the default organization', () => {
     it('renders organization name and avatar', () => {
       createComponent();
 
@@ -46,19 +45,66 @@ describe('OrganizationCard', () => {
       });
     });
 
-    describe('when organization is the default organization', () => {
-      beforeEach(() => {
-        createComponent({ props: { organization: mockDefaultOrganization } });
+    it.each`
+      visibility   | expectedIcon | expectedTooltip
+      ${'public'}  | ${'earth'}   | ${'Public - The organization can be accessed without any authentication.'}
+      ${'private'} | ${'lock'}    | ${'Private - The organization can only be viewed by members.'}
+    `(
+      'renders the $visibility visibility icon and tooltip based on the organization visibility',
+      ({ visibility, expectedIcon, expectedTooltip }) => {
+        createComponent({
+          props: {
+            organization: { ...nonDefaultOrganization, visibility },
+          },
+        });
+
+        const icon = findVisibilityIcon();
+
+        expect(icon.props('name')).toBe(expectedIcon);
+        expect(getBinding(icon.element, 'gl-tooltip').value).toBe(expectedTooltip);
+      },
+    );
+
+    it('passes `isDefaultOrganization` as `false` to the default slot', () => {
+      createComponent({
+        scopedSlots: {
+          default: '<div data-testid="slot-content">{{ props.isDefaultOrganization }}</div>',
+        },
       });
 
-      it('renders "GitLab" as the label', () => {
-        expect(findAvatar().props('label')).toBe('GitLab');
-        expect(findAvatar().props('entityName')).toBe('GitLab');
+      expect(wrapper.findByTestId('slot-content').text()).toBe('false');
+    });
+  });
+
+  describe('when organization is the default organization', () => {
+    beforeEach(() => {
+      createComponent({ props: { organization: mockDefaultOrganization } });
+    });
+
+    it('renders the other top-level groups header instead of an avatar', () => {
+      expect(findAvatar().exists()).toBe(false);
+      expect(findCard().text()).toContain('Other top-level groups');
+    });
+
+    it('does not render visibility icon', () => {
+      expect(findVisibilityIcon().exists()).toBe(false);
+    });
+
+    it('renders the card with a border and transparent background', () => {
+      expect(findCard().classes()).toEqual(
+        expect.arrayContaining(['gl-border', 'gl-h-full', 'gl-bg-transparent']),
+      );
+    });
+
+    it('passes `isDefaultOrganization` as `true` to the default slot', () => {
+      createComponent({
+        props: { organization: mockDefaultOrganization },
+        scopedSlots: {
+          default: '<div data-testid="slot-content">{{ props.isDefaultOrganization }}</div>',
+        },
       });
 
-      it('renders GitLab logo as avatar src', () => {
-        expect(findAvatar().props('src')).toBe(gitlabLogoUrl);
-      });
+      expect(wrapper.findByTestId('slot-content').text()).toBe('true');
     });
   });
 
@@ -70,7 +116,7 @@ describe('OrganizationCard', () => {
     });
 
     it('shows card body when default slot content is provided', () => {
-      createComponent({ slots: { default: '<div>slot content</div>' } });
+      createComponent({ scopedSlots: { default: '<div>slot content</div>' } });
 
       expect(findCard().props('bodyClass')).not.toContain('gl-hidden');
     });
@@ -84,7 +130,7 @@ describe('OrganizationCard', () => {
     });
 
     it('does not add bottom padding class when default slot content is provided', () => {
-      createComponent({ slots: { default: '<div>slot content</div>' } });
+      createComponent({ scopedSlots: { default: '<div>slot content</div>' } });
 
       expect(findCard().props('headerClass')).toEqual({ 'gl-pb-2': false });
     });
@@ -92,41 +138,9 @@ describe('OrganizationCard', () => {
 
   describe('default slot', () => {
     it('renders slot content', () => {
-      createComponent({ slots: { default: '<div data-testid="slot-content">test</div>' } });
+      createComponent({ scopedSlots: { default: '<div data-testid="slot-content">test</div>' } });
 
       expect(wrapper.findByTestId('slot-content').exists()).toBe(true);
-    });
-  });
-
-  describe('organization visibility', () => {
-    describe('when organization is the default organization', () => {
-      it('does not render visibility icon', () => {
-        createComponent({ props: { organization: mockDefaultOrganization } });
-
-        expect(findVisibilityIcon().exists()).toBe(false);
-      });
-    });
-
-    describe('when organization is not the default organization', () => {
-      it.each`
-        visibility   | expectedIcon | expectedTooltip
-        ${'public'}  | ${'earth'}   | ${'Public - The organization can be accessed without any authentication.'}
-        ${'private'} | ${'lock'}    | ${'Private - The organization can only be viewed by members.'}
-      `(
-        'renders the $visibility visibility icon and tooltip based on the organization visibility',
-        ({ visibility, expectedIcon, expectedTooltip }) => {
-          createComponent({
-            props: {
-              organization: { ...nonDefaultOrganization, visibility },
-            },
-          });
-
-          const icon = findVisibilityIcon();
-
-          expect(icon.props('name')).toBe(expectedIcon);
-          expect(getBinding(icon.element, 'gl-tooltip').value).toBe(expectedTooltip);
-        },
-      );
     });
   });
 });

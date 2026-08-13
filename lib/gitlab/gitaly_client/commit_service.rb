@@ -320,19 +320,6 @@ module Gitlab
         end
       end
 
-      def find_all_commits(opts = {})
-        request = Gitaly::FindAllCommitsRequest.new(
-          repository: @gitaly_repo,
-          revision: opts[:ref].to_s,
-          max_count: opts[:max_count].to_i,
-          skip: opts[:skip].to_i
-        )
-        request.order = opts[:order].upcase if opts[:order].present?
-
-        response = gitaly_client_call(@repository.storage, :commit_service, :find_all_commits, request, timeout: GitalyClient.medium_timeout)
-        consume_commits_response(response)
-      end
-
       def list_commits(revisions, params = {}) # rubocop:disable Metrics/AbcSize -- request building requires many field assignments
         # We want to include the commit ref in the revisions if present.
         revisions = Array.wrap(params[:ref].presence || []) + Array.wrap(revisions)

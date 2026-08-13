@@ -571,16 +571,27 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
         let_it_be(:ruby) { create(:programming_language, name: 'Ruby') }
         let_it_be(:repository_language) { create(:repository_language, project: internal_project, programming_language: ruby) }
 
-        context 'when language ID is provided' do
+        context 'when only a legacy language ID is provided' do
           let(:params) { { language: ruby.id } }
 
-          it { is_expected.to match_array([internal_project]) }
+          it { is_expected.to match_array([public_project, internal_project]) }
         end
 
         context 'when language name is provided' do
           let(:params) { { language_name: 'ruby' } }
 
           it { is_expected.to match_array([internal_project]) }
+        end
+
+        context 'when both language name and legacy language ID are provided' do
+          let_it_be(:python) { create(:programming_language, name: 'Python') }
+          let_it_be(:python_repository_language) do
+            create(:repository_language, project: public_project, programming_language: python)
+          end
+
+          let(:params) { { language: ruby.id, language_name: 'python' } }
+
+          it { is_expected.to match_array([public_project]) }
         end
       end
 

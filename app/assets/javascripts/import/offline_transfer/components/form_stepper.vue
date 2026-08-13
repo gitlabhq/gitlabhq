@@ -64,6 +64,10 @@ export default {
       return this.getTabState(stepIndex) === 'completed' ? 'check' : null;
     },
 
+    getAriaCurrent(stepIndex) {
+      return stepIndex === this.currentStepIndex ? 'step' : null;
+    },
+
     getTabState(stepIndex) {
       if (stepIndex === this.currentStepIndex) {
         return 'active';
@@ -158,9 +162,15 @@ export default {
         v-for="(step, index) in steps"
         :key="index"
         :class="getTabClasses(index)"
+        :aria-current="getAriaCurrent(index)"
         :data-testid="'step-nav-' + index"
       >
-        <gl-icon v-if="getStepIcon(index)" :name="getStepIcon(index)" class="gl-mr-2" />
+        <gl-icon
+          v-if="getStepIcon(index)"
+          :name="getStepIcon(index)"
+          :aria-label="__('Completed')"
+          class="gl-mr-2"
+        />
         <span v-else class="gl-mr-1">{{ index + 1 }}</span>
         {{ step }}
       </li>

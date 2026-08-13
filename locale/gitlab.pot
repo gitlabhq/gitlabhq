@@ -23141,6 +23141,9 @@ msgstr ""
 msgid "ContinuousDeployment|Approval needed"
 msgstr ""
 
+msgid "ContinuousDeployment|Are you sure you want to delete %{name} link?"
+msgstr ""
+
 msgid "ContinuousDeployment|Artifact URL"
 msgstr ""
 
@@ -23292,6 +23295,9 @@ msgid "ContinuousDeployment|Expand services"
 msgstr ""
 
 msgid "ContinuousDeployment|Failed"
+msgstr ""
+
+msgid "ContinuousDeployment|Failed to delete the link. Try again later."
 msgstr ""
 
 msgid "ContinuousDeployment|Failed to load GitLab agents. Refresh the page to try again."
@@ -23469,6 +23475,9 @@ msgid "ContinuousDeployment|Runbook"
 msgstr ""
 
 msgid "ContinuousDeployment|Running"
+msgstr ""
+
+msgid "ContinuousDeployment|Save changes"
 msgstr ""
 
 msgid "ContinuousDeployment|Save service"
@@ -24096,6 +24105,9 @@ msgid "Corpus Management"
 msgstr ""
 
 msgid "Corpus Management|Are you sure you want to delete the corpus?"
+msgstr ""
+
+msgid "Corpus management"
 msgstr ""
 
 msgid "CorpusManagement|A corpus is used by fuzz testing to improve coverage. Corpus files can be manually created or auto-generated. %{linkStart}Learn more%{linkEnd}"
@@ -27740,7 +27752,7 @@ msgstr ""
 msgid "Deploy keys"
 msgstr ""
 
-msgid "Deploy keys grant read/write access to all repositories in your instance, start by creating a new one above."
+msgid "Deploy keys grant read/write access to all repositories in your instance."
 msgstr ""
 
 msgid "Deploy progress not found. To see pods, ensure your environment matches %{linkStart}deploy board criteria%{linkEnd}."
@@ -42219,6 +42231,9 @@ msgstr ""
 msgid "Infrastructure as Code (IaC) Scanning"
 msgstr ""
 
+msgid "Infrastructure as Code (IaC) scanning"
+msgstr ""
+
 msgid "InfrastructureRegistry|Copy Terraform Command"
 msgstr ""
 
@@ -46115,9 +46130,6 @@ msgstr ""
 msgid "License"
 msgstr ""
 
-msgid "License Compliance"
-msgstr ""
-
 msgid "License Compliance| Used by %{dependencies}"
 msgstr ""
 
@@ -46151,59 +46163,59 @@ msgstr ""
 msgid "LicenseCompliance|Allowed"
 msgstr ""
 
-msgid "LicenseCompliance|Collapse License Compliance details"
+msgid "LicenseCompliance|Collapse license compliance details"
 msgstr ""
 
 msgid "LicenseCompliance|Denied"
 msgstr ""
 
-msgid "LicenseCompliance|Expand License Compliance details"
+msgid "LicenseCompliance|Expand license compliance details"
 msgstr ""
 
-msgid "LicenseCompliance|License Compliance detected %d license"
-msgid_plural "LicenseCompliance|License Compliance detected %d licenses"
+msgid "LicenseCompliance|License compliance detected %d license"
+msgid_plural "LicenseCompliance|License compliance detected %d licenses"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "LicenseCompliance|License Compliance detected %d license and policy violation"
-msgid_plural "LicenseCompliance|License Compliance detected %d licenses and policy violations"
+msgid "LicenseCompliance|License compliance detected %d license and policy violation"
+msgid_plural "LicenseCompliance|License compliance detected %d licenses and policy violations"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "LicenseCompliance|License Compliance detected %d license and policy violation for the source branch only"
-msgid_plural "LicenseCompliance|License Compliance detected %d licenses and policy violations for the source branch only"
+msgid "LicenseCompliance|License compliance detected %d license and policy violation for the source branch only"
+msgid_plural "LicenseCompliance|License compliance detected %d licenses and policy violations for the source branch only"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "LicenseCompliance|License Compliance detected %d license and policy violation for the source branch only; approval required"
-msgid_plural "LicenseCompliance|License Compliance detected %d licenses and policy violations for the source branch only; approval required"
+msgid "LicenseCompliance|License compliance detected %d license and policy violation for the source branch only; approval required"
+msgid_plural "LicenseCompliance|License compliance detected %d licenses and policy violations for the source branch only; approval required"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "LicenseCompliance|License Compliance detected %d license for the source branch only"
-msgid_plural "LicenseCompliance|License Compliance detected %d licenses for the source branch only"
+msgid "LicenseCompliance|License compliance detected %d license for the source branch only"
+msgid_plural "LicenseCompliance|License compliance detected %d licenses for the source branch only"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "LicenseCompliance|License Compliance detected %d new license"
-msgid_plural "LicenseCompliance|License Compliance detected %d new licenses"
+msgid "LicenseCompliance|License compliance detected %d new license"
+msgid_plural "LicenseCompliance|License compliance detected %d new licenses"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "LicenseCompliance|License Compliance detected %d new license and policy violation"
-msgid_plural "LicenseCompliance|License Compliance detected %d new licenses and policy violations"
+msgid "LicenseCompliance|License compliance detected %d new license and policy violation"
+msgid_plural "LicenseCompliance|License compliance detected %d new licenses and policy violations"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "LicenseCompliance|License Compliance detected %d new license and policy violation; approval required"
-msgid_plural "LicenseCompliance|License Compliance detected %d new licenses and policy violations; approval required"
+msgid "LicenseCompliance|License compliance detected %d new license and policy violation; approval required"
+msgid_plural "LicenseCompliance|License compliance detected %d new licenses and policy violations; approval required"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "LicenseCompliance|License Compliance detected no licenses for the source branch only"
+msgid "LicenseCompliance|License compliance detected no licenses for the source branch only"
 msgstr ""
 
-msgid "LicenseCompliance|License Compliance detected no new licenses"
+msgid "LicenseCompliance|License compliance detected no new licenses"
 msgstr ""
 
 msgid "LicenseCompliance|No policy matches this license"
@@ -55479,7 +55491,7 @@ msgstr ""
 msgid "Organization|Accessible without any authentication."
 msgstr ""
 
-msgid "Organization|Activate your Organizations"
+msgid "Organization|After you confirm your organization structure, your data will be transferred to your organization."
 msgstr ""
 
 msgid "Organization|An error occurred changing your organization URL. Please try again."
@@ -55539,19 +55551,25 @@ msgstr ""
 msgid "Organization|Claim your org"
 msgstr ""
 
+msgid "Organization|Confirm your organization"
+msgstr ""
+
 msgid "Organization|Copy organization ID"
 msgstr ""
 
 msgid "Organization|Create an organization to contain all of your groups and projects."
 msgstr ""
 
+msgid "Organization|Create an organization to manage your top-level groups. You can set up your organization structure in the next step."
+msgstr ""
+
 msgid "Organization|Create organization"
 msgstr ""
 
-msgid "Organization|Current organization"
+msgid "Organization|Create your Organizations"
 msgstr ""
 
-msgid "Organization|Drag groups between Organizations to set up your structure. Most companies only need one."
+msgid "Organization|Current organization"
 msgstr ""
 
 msgid "Organization|Drop groups here"
@@ -55564,9 +55582,6 @@ msgid "Organization|Go to Artifact Registry"
 msgstr ""
 
 msgid "Organization|Help improve Organizations"
-msgstr ""
-
-msgid "Organization|Here's your final structure. Activate when you're happy with it."
 msgstr ""
 
 msgid "Organization|If you proceed with this change you will lose your owner permissions for this organization, including access to this page."
@@ -55647,9 +55662,6 @@ msgstr ""
 msgid "Organization|Organization successfully created."
 msgstr ""
 
-msgid "Organization|Organization summary"
-msgstr ""
-
 msgid "Organization|Organization user details"
 msgstr ""
 
@@ -55680,6 +55692,9 @@ msgid "Organization|Organizations must have at least one owner. To delete the us
 msgid_plural "Organization|Organizations must have at least one owner. To delete the user, first assign a new owner to %{links} %{boldStart}and%{boldEnd} %{extrasCount} %{boldStart}other Organizations%{boldEnd}."
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Organization|Other top-level groups"
+msgstr ""
 
 msgid "Organization|Overview"
 msgstr ""
@@ -55744,9 +55759,6 @@ msgstr ""
 msgid "Organization|Visibility levels that are more restrictive than the groups in this Organization have been disabled."
 msgstr ""
 
-msgid "Organization|We'll create one Organization per top-level group. You can reassign groups between them in the next step."
-msgstr ""
-
 msgid "Organization|Welcome to %{organizationName}"
 msgstr ""
 
@@ -55759,8 +55771,10 @@ msgstr ""
 msgid "Organization|You don't have any projects yet."
 msgstr ""
 
-msgid "Organization|Your new structure"
-msgstr ""
+msgid "Organization|You have %{boldStart}%{count}%{boldEnd} other top-level group. Drag unassigned groups to your organization, or leave the structure as is. Unassigned groups will not be included in the organization."
+msgid_plural "Organization|You have %{boldStart}%{count}%{boldEnd} other top-level groups. Drag unassigned groups to your organization, or leave the structure as is. Unassigned groups will not be included in the organization."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Organization|my-organization"
 msgstr ""
@@ -64203,9 +64217,6 @@ msgstr ""
 msgid "ReleaseCreation|Version"
 msgstr ""
 
-msgid "ReleaseCreation|Version must be a valid SemVer, e.g. 1.2.3 or v1.2.3."
-msgstr ""
-
 msgid "ReleaseCreation|Version name cannot exceed %{maxLength} characters."
 msgstr ""
 
@@ -67535,7 +67546,7 @@ msgstr ""
 msgid "ScanProfiles|Block secrets such as keys and API tokens from being pushed to your repositories. Secret detection is triggered when commits are pushed to a repository. If any secrets are detected, the push is blocked."
 msgstr ""
 
-msgid "ScanProfiles|Branch Pipelines (default only)"
+msgid "ScanProfiles|Branch pipelines (default only)"
 msgstr ""
 
 msgid "ScanProfiles|Configuration profiles are reusable settings templates for security tools. Create and manage profiles once, then apply them to multiple projects to ensure consistent security coverage."
@@ -68624,9 +68635,6 @@ msgid "Seconds"
 msgstr ""
 
 msgid "Secret"
-msgstr ""
-
-msgid "Secret Detection"
 msgstr ""
 
 msgid "Secret detection"
@@ -69917,10 +69925,10 @@ msgstr ""
 msgid "SecurityConfiguration|Vulnerabilities are retained in the database for one year after the last update. After one year of inactivity, vulnerabilities are archived on the first of each month. Archives are removed after five years."
 msgstr ""
 
-msgid "SecurityConfiguration|Vulnerability Management"
+msgid "SecurityConfiguration|Vulnerability archives"
 msgstr ""
 
-msgid "SecurityConfiguration|Vulnerability archives"
+msgid "SecurityConfiguration|Vulnerability management"
 msgstr ""
 
 msgid "SecurityConfiguration|Warning"
@@ -73537,7 +73545,7 @@ msgstr ""
 msgid "SecurityProfiles|Coverage may be outdated"
 msgstr ""
 
-msgid "SecurityProfiles|Dependency Scanning"
+msgid "SecurityProfiles|Dependency scanning"
 msgstr ""
 
 msgid "SecurityProfiles|Disable"
@@ -73637,13 +73645,13 @@ msgstr ""
 msgid "SecurityProfiles|Scans your source code using GitLab-managed rules to identify common vulnerabilities like injection flaws and hardcoded secrets. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
-msgid "SecurityProfiles|Secret Detection"
+msgid "SecurityProfiles|Secret detection"
 msgstr ""
 
 msgid "SecurityProfiles|Security configuration illustration"
 msgstr ""
 
-msgid "SecurityProfiles|Static Application Security Testing (SAST)"
+msgid "SecurityProfiles|Static application security testing (SAST)"
 msgstr ""
 
 msgid "SecurityProfiles|The job link failed to load. Please try again."
@@ -73667,10 +73675,10 @@ msgstr ""
 msgid "SecurityProfiles|What are configuration profiles?"
 msgstr ""
 
-msgid "SecurityProfiles|What is Dependency Scanning?"
+msgid "SecurityProfiles|What is SAST?"
 msgstr ""
 
-msgid "SecurityProfiles|What is SAST?"
+msgid "SecurityProfiles|What is dependency scanning?"
 msgstr ""
 
 msgid "SecurityProfiles|What is secret push protection?"
@@ -73696,6 +73704,9 @@ msgstr ""
 msgid "SecurityReports|%{count}+ projects"
 msgstr ""
 
+msgid "SecurityReports|%{failed} could not be processed"
+msgstr ""
+
 msgid "SecurityReports|%{firstProject} and %{secondProject}"
 msgstr ""
 
@@ -73706,6 +73717,9 @@ msgid "SecurityReports|%{nrVulnerabilities} vulnerabilities attached to %{nrIssu
 msgstr ""
 
 msgid "SecurityReports|%{nrVulnerabilities} vulnerabilities attached to 1 issue"
+msgstr ""
+
+msgid "SecurityReports|%{processed} of %{total} vulnerabilities processed"
 msgstr ""
 
 msgid "SecurityReports|%{rating} risk score"
@@ -73825,6 +73839,9 @@ msgstr ""
 msgid "SecurityReports|Branches"
 msgstr ""
 
+msgid "SecurityReports|Bulk action in progress"
+msgstr ""
+
 msgid "SecurityReports|CVSS v%{version}:"
 msgstr ""
 
@@ -73919,6 +73936,9 @@ msgid "SecurityReports|Critical risk"
 msgstr ""
 
 msgid "SecurityReports|Detected in external sources such as running containers and URLs. These vulnerabilities are not necessarily associated with your GitLab project."
+msgstr ""
+
+msgid "SecurityReports|Detecting false positives"
 msgstr ""
 
 msgid "SecurityReports|Detection"
@@ -74266,6 +74286,9 @@ msgid "SecurityReports|Resolve vulnerability"
 msgstr ""
 
 msgid "SecurityReports|Resolve with AI"
+msgstr ""
+
+msgid "SecurityReports|Resolving vulnerabilities with AI"
 msgstr ""
 
 msgid "SecurityReports|Results show vulnerability findings from the latest successful %{helpPageLinkStart}pipeline%{helpPageLinkEnd}."
@@ -77674,6 +77697,9 @@ msgstr ""
 msgid "Static Application Security Testing (SAST)"
 msgstr ""
 
+msgid "Static application security testing (SAST)"
+msgstr ""
+
 msgid "Statistics"
 msgstr ""
 
@@ -79467,6 +79493,12 @@ msgstr ""
 msgid "TestReports|%{count} tests"
 msgstr ""
 
+msgid "TestReports|%{label}, sorted ascending"
+msgstr ""
+
+msgid "TestReports|%{label}, sorted descending"
+msgstr ""
+
 msgid "TestReports|%{rate}%{sign} success rate"
 msgstr ""
 
@@ -79489,6 +79521,9 @@ msgid "TestReports|Learn more about pipeline test reports"
 msgstr ""
 
 msgid "TestReports|No test cases were found in the test report."
+msgstr ""
+
+msgid "TestReports|Sort by %{label}"
 msgstr ""
 
 msgid "TestReports|Test reports require job artifacts but all artifacts are expired. %{linkStart}Learn more%{linkEnd}"

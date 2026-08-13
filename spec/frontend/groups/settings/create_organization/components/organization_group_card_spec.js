@@ -1,7 +1,7 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import OrganizationGroupCard from '~/groups/settings/create_organization/components/organization_group_card.vue';
-import ListItemStat from '~/vue_shared/components/resource_lists/list_item_stat.vue';
+import OrganizationGroupStats from '~/groups/settings/create_organization/components/organization_group_stats.vue';
 import { mockGroup } from './mock_data';
 
 describe('OrganizationGroupCard', () => {
@@ -21,7 +21,7 @@ describe('OrganizationGroupCard', () => {
 
   const findVisibilityIcon = () => wrapper.findComponentByTestId('group-visibility');
   const findVisibilityWarning = () => wrapper.findComponentByTestId('visibility-warning');
-  const findAllStats = () => wrapper.findAllComponents(ListItemStat);
+  const findGroupStats = () => wrapper.findComponent(OrganizationGroupStats);
 
   const expectVisibilityIcon = ({ expectedIcon, expectedTooltip }) => {
     const icon = findVisibilityIcon();
@@ -32,42 +32,15 @@ describe('OrganizationGroupCard', () => {
 
   describe('template', () => {
     beforeEach(() => {
-      createComponent({
-        props: {
-          group: {
-            ...mockGroup,
-            descendantGroupsCount: 1200,
-            projectsCount: 10500,
-            groupMembersCount: 1500000,
-          },
-        },
-      });
+      createComponent();
     });
 
     it('renders group name', () => {
       expect(wrapper.text()).toContain(mockGroup.fullName);
     });
 
-    it('renders group stats', () => {
-      const stats = findAllStats();
-
-      expect(stats.at(0).props()).toMatchObject({
-        tooltipText: 'Subgroups',
-        iconName: 'subgroup',
-        stat: '1.2k',
-      });
-
-      expect(stats.at(1).props()).toMatchObject({
-        tooltipText: 'Projects',
-        iconName: 'project',
-        stat: '10.5k',
-      });
-
-      expect(stats.at(2).props()).toMatchObject({
-        tooltipText: 'Direct members',
-        iconName: 'users',
-        stat: '1.5m',
-      });
+    it('passes group prop to organization group stats', () => {
+      expect(findGroupStats().props('group')).toEqual(mockGroup);
     });
   });
 

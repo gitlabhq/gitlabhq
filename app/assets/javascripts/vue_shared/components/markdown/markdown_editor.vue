@@ -503,7 +503,7 @@ export default {
         @initialized="setEditorAsAutofocused"
         @change="updateMarkdownFromContentEditor"
         @keydown="onKeydown"
-        @enableMarkdownEditor="onEditingModeChange('markdownField')"
+        @enable-markdown-editor="onEditingModeChange('markdownField')"
         @focus="$emit('focus')"
         @blur="$emit('blur')"
       >

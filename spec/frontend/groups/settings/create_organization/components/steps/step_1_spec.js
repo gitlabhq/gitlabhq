@@ -3,6 +3,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import Step1 from '~/groups/settings/create_organization/components/steps/step_1.vue';
 import BaseStep from '~/groups/settings/create_organization/components/steps/base_step.vue';
 import OrganizationCard from '~/groups/settings/create_organization/components/organization_card.vue';
+import OrganizationGroupStats from '~/groups/settings/create_organization/components/organization_group_stats.vue';
 import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
 import { mockOrganizations } from '../mock_data';
 
@@ -24,6 +25,7 @@ describe('ReconciliationStep1', () => {
   const findBaseStep = () => wrapper.findComponent(BaseStep);
   const findOrganizationCards = () => wrapper.findAllComponents(OrganizationCard);
   const findHelpPageLink = () => wrapper.findComponent(HelpPageLink);
+  const findAllGroupStats = () => wrapper.findAllComponents(OrganizationGroupStats);
 
   describe('template', () => {
     beforeEach(() => {
@@ -31,7 +33,7 @@ describe('ReconciliationStep1', () => {
     });
 
     it('renders BaseStep with title', () => {
-      expect(findBaseStep().props('title')).toBe('Activate your Organizations');
+      expect(findBaseStep().props('title')).toBe('Create your Organizations');
     });
 
     it('renders BaseStep with illustration', () => {
@@ -40,7 +42,7 @@ describe('ReconciliationStep1', () => {
 
     it('renders description text', () => {
       expect(wrapper.text()).toContain(
-        "We'll create one Organization per top-level group. You can reassign groups between them in the next step.",
+        'Create an organization to manage your top-level groups. You can set up your organization structure in the next step.',
       );
     });
 
@@ -55,6 +57,13 @@ describe('ReconciliationStep1', () => {
 
     it('passes organization prop to organization card', () => {
       expect(findOrganizationCards().at(0).props('organization')).toEqual(mockOrganizations[0]);
+    });
+
+    it('renders group stats for each group in each organization', () => {
+      const groups = mockOrganizations.flatMap((organization) => organization.groups.nodes);
+
+      expect(findAllGroupStats()).toHaveLength(groups.length);
+      expect(findAllGroupStats().at(0).props('group')).toEqual(groups[0]);
     });
   });
 });

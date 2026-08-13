@@ -6755,7 +6755,7 @@ Arguments:
 | <a id="mutation-cdversionsetcreate-applicationid"></a>`applicationId` | [`CdApplicationID!`](#cdapplicationid) | Global ID of the application to create the version set in. |
 | <a id="mutation-cdversionsetcreate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-cdversionsetcreate-description"></a>`description` | [`String`](#string) | Description of the version set. |
-| <a id="mutation-cdversionsetcreate-name"></a>`name` | [`CdSemVer!`](#cdsemver) | Name of the version set. |
+| <a id="mutation-cdversionsetcreate-name"></a>`name` | [`String!`](#string) | Name of the version set. |
 | <a id="mutation-cdversionsetcreate-versionids"></a>`versionIds` | [`[CdVersionID!]!`](#cdversionid) | Global IDs of the versions that make up the version set, one per service. A version set must contain at least one version. |
 
 Fields:
@@ -33018,6 +33018,7 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="agentplatformsessionsaggregationresponse-completionrate"></a>`completionRate` | [`Float`](#float) | Session completion rate. |
 | <a id="agentplatformsessionsaggregationresponse-dimensions"></a>`dimensions` | [`AgentPlatformSessionsAggregationResponseDimensions`](#agentplatformsessionsaggregationresponsedimensions) | Aggregation dimensions. Every selected dimension will be used for aggregation. |
+| <a id="agentplatformsessionsaggregationresponse-duration"></a>`duration` | [`AgentPlatformSessionsAggregationResponseDurationMetrics`](#agentplatformsessionsaggregationresponsedurationmetrics) | Aggregated `duration` metrics. |
 | <a id="agentplatformsessionsaggregationresponse-finishedcount"></a>`finishedCount` | [`Int`](#int) | Number of finished sessions. |
 | <a id="agentplatformsessionsaggregationresponse-meanduration"></a>`meanDuration` | [`Float`](#float) | Average session duration in seconds. |
 | <a id="agentplatformsessionsaggregationresponse-totalcount"></a>`totalCount` | [`Int`](#int) | Total number of sessions. |
@@ -33061,6 +33062,32 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="agentplatformsessionsaggregationresponsedimensions-createdeventat-granularity"></a>`granularity` | [`String`](#string) |  |
+
+### `AgentPlatformSessionsAggregationResponseDurationMetrics`
+
+Aggregated `duration` metrics for `AgentPlatformSessions` aggregation engine.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="agentplatformsessionsaggregationresponsedurationmetrics-max"></a>`max` | [`Int`](#int) | Maximum session duration in seconds. |
+| <a id="agentplatformsessionsaggregationresponsedurationmetrics-mean"></a>`mean` | [`Float`](#float) | Mean session duration in seconds. |
+| <a id="agentplatformsessionsaggregationresponsedurationmetrics-min"></a>`min` | [`Int`](#int) | Minimum session duration in seconds. |
+
+#### Fields with arguments
+
+##### `AgentPlatformSessionsAggregationResponseDurationMetrics.quantile`
+
+Quantile of session duration in seconds.
+
+Returns [`Float`](#float).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="agentplatformsessionsaggregationresponsedurationmetrics-quantile-quantile"></a>`quantile` | [`Float`](#float) |  |
 
 ### `AgentPlatformSessionsAggregationScope`
 
@@ -36009,7 +36036,6 @@ Fields:
 | <a id="cdapplication-name"></a>`name` | [`String!`](#string) | Name of the application. |
 | <a id="cdapplication-organization"></a>`organization` | [`Organization`](#organization) | Organization the application belongs to. |
 | <a id="cdapplication-status"></a>`status` {{< icon name="warning-solid" >}} | [`CdApplicationStatus`](#cdapplicationstatus) | Introduced in GitLab 19.3. Status: Experiment. Current status of the application, derived from its services' worst health and whether it has a rollout in progress, or null when neither applies. |
-| <a id="cdapplication-suggestednextversionsetname"></a>`suggestedNextVersionSetName` {{< icon name="warning-solid" >}} | [`CdSemVer!`](#cdsemver) | Introduced in GitLab 19.3. Status: Experiment. Suggested name for the application's next version set, derived from its latest release. |
 | <a id="cdapplication-updatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the application was last updated. |
 | <a id="cdapplication-userpermissions"></a>`userPermissions` {{< icon name="warning-solid" >}} | [`CdApplicationPermissions`](#cdapplicationpermissions) | Introduced in GitLab 19.2. Status: Experiment. Permissions of the current user for the application. |
 
@@ -36252,6 +36278,7 @@ Fields:
 | <a id="cdrollout-id"></a>`id` | [`CdRolloutID!`](#cdrolloutid) | Global ID of the rollout. |
 | <a id="cdrollout-iid"></a>`iid` | [`Int!`](#int) | Internal ID of the rollout, unique and user-facing within its application. |
 | <a id="cdrollout-rolloutenvironments"></a>`rolloutEnvironments` {{< icon name="warning-solid" >}} | [`CdRolloutEnvironmentConnection`](#cdrolloutenvironmentconnection) | Introduced in GitLab 19.2. Status: Experiment. Rollout environments of the rollout. |
+| <a id="cdrollout-rolloutsteps"></a>`rolloutSteps` {{< icon name="warning-solid" >}} | [`[CdRolloutStep!]`](#cdrolloutstep) | Introduced in GitLab 19.3. Status: Experiment. Top-level nodes of the rollout flow definition tree, in position order. A stage node exposes its nested steps through its own `steps` field. |
 | <a id="cdrollout-rollouttransitions"></a>`rolloutTransitions` {{< icon name="warning-solid" >}} | [`CdRolloutTransitionConnection`](#cdrollouttransitionconnection) | Introduced in GitLab 19.2. Status: Experiment. Transition journal of the rollout. |
 | <a id="cdrollout-startedat"></a>`startedAt` | [`Time`](#time) | Timestamp of when the rollout started. |
 | <a id="cdrollout-state"></a>`state` | [`CdRolloutState!`](#cdrolloutstate) | State of the rollout. |
@@ -36278,6 +36305,29 @@ Fields:
 | <a id="cdrolloutenvironment-startedat"></a>`startedAt` | [`Time`](#time) | Timestamp of when the rollout environment started. |
 | <a id="cdrolloutenvironment-state"></a>`state` | [`CdRolloutEnvironmentState!`](#cdrolloutenvironmentstate) | State of the rollout environment. |
 | <a id="cdrolloutenvironment-updatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the rollout environment was last updated. |
+
+### `CdRolloutStep`
+
+Node in a continuous deployment rollout flow definition tree.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cdrolloutstep-createdat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the step was created. |
+| <a id="cdrolloutstep-environment"></a>`environment` | [`CdEnvironment`](#cdenvironment) | Environment the step targets, null for steps that target no environment (for example a stage container or a wait step). |
+| <a id="cdrolloutstep-error"></a>`error` | [`String`](#string) | Error message of the step, if it failed. |
+| <a id="cdrolloutstep-finishedat"></a>`finishedAt` | [`Time`](#time) | Timestamp of when the step finished. |
+| <a id="cdrolloutstep-id"></a>`id` | [`CdRolloutStepID!`](#cdrolloutstepid) | Global ID of the rollout step. |
+| <a id="cdrolloutstep-name"></a>`name` | [`String`](#string) | Name of the step, as defined by the flow definition. |
+| <a id="cdrolloutstep-params"></a>`params` | [`JSON`](#json) | Step-specific configuration copied from the flow definition (for example wait seconds or canary service weights). |
+| <a id="cdrolloutstep-parentpath"></a>`parentPath` | [`String`](#string) | Path of the parent step, null for a top-level step. |
+| <a id="cdrolloutstep-path"></a>`path` | [`String!`](#string) | Position of the step in the flow definition tree (for example "0", "0.1"). |
+| <a id="cdrolloutstep-startedat"></a>`startedAt` | [`Time`](#time) | Timestamp of when the step started. |
+| <a id="cdrolloutstep-state"></a>`state` | [`CdRolloutStepState!`](#cdrolloutstepstate) | State of the step. |
+| <a id="cdrolloutstep-steptype"></a>`stepType` | [`String!`](#string) | Type of the step, as defined by the flow definition (for example "com.gitlab.cd.steps.stage" or a deploy driver step type). |
+| <a id="cdrolloutstep-steps"></a>`steps` | [`[CdRolloutStep!]`](#cdrolloutstep) | Nested steps, for a stage step. Empty for any other step type. |
+| <a id="cdrolloutstep-updatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the step was last updated. |
 
 ### `CdRolloutTransition`
 
@@ -65827,6 +65877,22 @@ High-level status of a continuous deployment rollout.
 | <a id="cdrolloutstatus-failed"></a>`FAILED` | Rollout finished unsuccessfully (failed or cancelled). |
 | <a id="cdrolloutstatus-succeeded"></a>`SUCCEEDED` | Rollout finished successfully. |
 
+### `CdRolloutStepState`
+
+State of a continuous deployment rollout step.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="cdrolloutstepstate-approved"></a>`APPROVED` | Rollout step is approved. |
+| <a id="cdrolloutstepstate-awaiting_approval"></a>`AWAITING_APPROVAL` | Rollout step is awaiting approval. |
+| <a id="cdrolloutstepstate-cancelled"></a>`CANCELLED` | Rollout step is cancelled. |
+| <a id="cdrolloutstepstate-failed"></a>`FAILED` | Rollout step is failed. |
+| <a id="cdrolloutstepstate-pending"></a>`PENDING` | Rollout step is pending. |
+| <a id="cdrolloutstepstate-rejected"></a>`REJECTED` | Rollout step is rejected. |
+| <a id="cdrolloutstepstate-running"></a>`RUNNING` | Rollout step is running. |
+| <a id="cdrolloutstepstate-skipped"></a>`SKIPPED` | Rollout step is skipped. |
+| <a id="cdrolloutstepstate-success"></a>`SUCCESS` | Rollout step is success. |
+
 ### `CdRolloutTransitionState`
 
 State recorded in a continuous deployment rollout transition.
@@ -71137,17 +71203,17 @@ A `CdRolloutID` is a global ID. It is encoded as a string.
 
 An example `CdRolloutID` is: `"gid://gitlab/Cd::Rollout/1"`.
 
+### `CdRolloutStepID`
+
+A `CdRolloutStepID` is a global ID. It is encoded as a string.
+
+An example `CdRolloutStepID` is: `"gid://gitlab/Cd::RolloutStep/1"`.
+
 ### `CdRolloutTransitionID`
 
 A `CdRolloutTransitionID` is a global ID. It is encoded as a string.
 
 An example `CdRolloutTransitionID` is: `"gid://gitlab/Cd::RolloutTransition/1"`.
-
-### `CdSemVer`
-
-Semantic version string, optionally prefixed with `v`.
-
-For example: `1.2.3` or `v1.2.3-rc.1`.
 
 ### `CdServiceEnvironmentHealthID`
 

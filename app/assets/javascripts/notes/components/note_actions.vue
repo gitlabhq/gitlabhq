@@ -162,7 +162,7 @@ export default {
       default: '',
     },
   },
-  emits: ['handle-delete', 'handleEdit', 'handle-resolve', 'start-replying', 'update-assignees'],
+  emits: ['handle-delete', 'handle-edit', 'handle-resolve', 'start-replying', 'update-assignees'],
   data() {
     return {
       isReportAbuseDrawerOpen: false,
@@ -279,7 +279,7 @@ export default {
   methods: {
     ...mapActions(useNotes, ['toggleAwardRequest', 'promoteCommentToTimelineEvent']),
     onEdit() {
-      this.$emit('handleEdit');
+      this.$emit('handle-edit');
     },
     onDelete() {
       this.$emit('handle-delete');

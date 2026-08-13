@@ -265,6 +265,32 @@ Calculates the average value with support for conditional averaging using `avgIf
 | `formatter` | Proc | No | Formatting function applied to results |
 | `description` | String | No | Human-readable description |
 
+#### `min` metric
+
+Calculates the minimum value with support for conditional aggregation using `minIf()`.
+
+| Option | Type | Required | Description |
+|--------|------|----------|-------------|
+| `name` | Symbol | Yes | Column name or identifier. Identifier becomes `:min_{name}` |
+| `type` | Symbol | No | Data type. Default: `:float` |
+| `expression` | Proc | No | Custom expression for the value |
+| `if` | Proc | No | Condition expression for conditional aggregation (`minIf`) |
+| `formatter` | Proc | No | Formatting function applied to results |
+| `description` | String | No | Human-readable description |
+
+#### `max` metric
+
+Calculates the maximum value with support for conditional aggregation using `maxIf()`.
+
+| Option | Type | Required | Description |
+|--------|------|----------|-------------|
+| `name` | Symbol | Yes | Column name or identifier. Identifier becomes `:max_{name}` |
+| `type` | Symbol | No | Data type. Default: `:float` |
+| `expression` | Proc | No | Custom expression for the value |
+| `if` | Proc | No | Condition expression for conditional aggregation (`maxIf`) |
+| `formatter` | Proc | No | Formatting function applied to results |
+| `description` | String | No | Human-readable description |
+
 #### `rate` metric
 
 Calculates the ratio between rows matching a numerator condition and rows matching a denominator condition (or total rows).
@@ -509,6 +535,59 @@ metrics do
     description: 'Number of finished sessions'
 end
 ```
+
+## Measurements
+
+A measurement is a row-level value with a base type. Declare it once with the
+class-level `measurement` macro, and the framework expands it into a group of
+related metrics.
+
+```ruby
+measurement(name, type, expression, description: nil)
+```
+
+The macro expands into four metrics with dotted identifiers:
+
+- `<name>.min` and `<name>.max`, which inherit the measurement's base type
+- `<name>.mean`, which is always `:float`
+- `<name>.quantile`, which is always `:float` and has an auto-declared `quantile`
+  parameter of type float, with an allowed range of `0.0` to `1.0` and a default of `0.5`
+
+The `expression` argument can be a `transient(:name)` reference or a lambda.
+Zero-arity lambdas are wrapped automatically.
+
+```ruby
+transient(:duration) do
+  sql("dateDiff('seconds', anyIfMerge(created_event_at), anyIfMerge(finished_event_at))")
+end
+
+measurement :duration, :integer, transient(:duration), description: 'Session duration in seconds'
+```
+
+In GraphQL, the four aggregates surface as one nested group field named after the
+measurement, with `min`, `max`, `mean`, and `quantile` sub-fields.
+
+```graphql
+duration {
+  min
+  max
+  mean
+  quantile(quantile: 0.95)
+}
+```
+
+`orderBy` accepts the full dotted identifier, for example
+`{ identifier: "duration.max", direction: DESC }`.
+
+### Requirements and limitations
+
+- The engine adapter must support the `min`, `max`, `mean`, and `quantile` metrics.
+  Calling `measurement` on an adapter that does not support them (the ActiveRecord
+  engine today) raises `ArgumentError`. In practice, this makes the macro
+  ClickHouse-only.
+- The macro does not accept `if:` or `formatter:` options.
+- The raw measurement value does not get a dimension.
+- `metric_range` and `metric_exact_match` filters cannot target dotted metric identifiers.
 
 ## Using the Framework
 

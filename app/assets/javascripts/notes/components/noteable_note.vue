@@ -529,7 +529,7 @@ export default {
           :resolve-discussion="note.isDraft && note.resolve_discussion"
           :discussion-id="discussionId"
           :award-path="note.toggle_award_path"
-          @handleEdit="editHandler"
+          @handle-edit="editHandler"
           @handle-delete="deleteHandler"
           @handle-resolve="resolveHandler"
           @start-replying="$emit('start-replying')"

@@ -27,6 +27,15 @@ RSpec.describe ProgrammingLanguage, feature_category: :source_code_management do
         contain_exactly(ruby, python)
       )
     end
+
+    it 'treats SQL wildcard characters literally', :aggregate_failures do
+      percent = create(:programming_language, name: 'Lang%')
+      underscore = create(:programming_language, name: 'Lang_')
+      create(:programming_language, name: 'Language')
+
+      expect(described_class.with_name_case_insensitive('lang%')).to contain_exactly(percent)
+      expect(described_class.with_name_case_insensitive('lang_')).to contain_exactly(underscore)
+    end
   end
 
   describe '.most_popular' do

@@ -518,4 +518,43 @@ describe('issue_note', () => {
       expect(findNoteBody().props('autosaveKey')).toBe(autosaveKey);
     });
   });
+
+  describe('events emitted for note actions', () => {
+    const findNoteActions = () => wrapper.findComponent(NoteActions);
+
+    it('emits `handle-edit` when note actions request editing', async () => {
+      createWrapper();
+
+      findNoteActions().vm.$emit('handle-edit');
+      await nextTick();
+
+      expect(wrapper.emitted('handle-edit')).toEqual([[]]);
+    });
+
+    it('emits `handle-delete-note` when the deletion is confirmed', async () => {
+      confirmAction.mockReset();
+      confirmAction.mockResolvedValue(true);
+      useNotes().deleteNote.mockResolvedValue();
+      createWrapper();
+
+      findNoteActions().vm.$emit('handle-delete');
+      await waitForPromises();
+
+      expect(wrapper.emitted('handle-delete-note')).toEqual([[wrapper.props('note')]]);
+    });
+
+    it('emits `update-success` once the note update succeeds', async () => {
+      createWrapper();
+
+      findNoteBody().vm.$emit('handleFormUpdate', {
+        noteText: 'updated note text',
+        parentElement: null,
+        callback: jest.fn(),
+        resolveDiscussion: false,
+      });
+      await waitForPromises();
+
+      expect(wrapper.emitted('update-success')).toHaveLength(1);
+    });
+  });
 });

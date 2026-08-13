@@ -52,6 +52,8 @@ Tier availability varies by agent. For details, see each agent's page.
   when creating a fine-grained personal access token.
 - [Support Assistant](support_assistant.md), for diagnosing and resolving
   GitLab product problems.
+- [Flow Creator](flow_creator.md), for creating
+  custom flows for the AI Catalog from chat.
 
 ## Duplicate an agent
 

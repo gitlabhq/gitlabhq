@@ -1304,6 +1304,47 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe '.merge_request_event_first' do
+    let_it_be(:push_pipeline_old) { create(:ci_pipeline, project: project, source: :push) }
+    let_it_be(:mr_pipeline_old)   { create(:ci_pipeline, project: project, source: :merge_request_event) }
+    let_it_be(:push_pipeline_new) { create(:ci_pipeline, project: project, source: :push) }
+    let_it_be(:mr_pipeline_new)   { create(:ci_pipeline, project: project, source: :merge_request_event) }
+
+    it 'orders merge_request_event pipelines first, then by id desc by default' do
+      expect(described_class.merge_request_event_first)
+        .to eq([mr_pipeline_new, mr_pipeline_old, push_pipeline_new, push_pipeline_old])
+    end
+
+    it 'applies the given secondary order within each source bucket' do
+      expect(described_class.merge_request_event_first(order_by: :id, sort: :asc))
+        .to eq([mr_pipeline_old, mr_pipeline_new, push_pipeline_old, push_pipeline_new])
+    end
+
+    context 'with a non-id secondary column' do
+      # `updated_at` is intentionally inverted relative to `id` so the ordering
+      # only matches when the scope sorts by the requested column rather than
+      # defaulting to id.
+      let_it_be(:mr_recent)   { create(:ci_pipeline, project: project, source: :merge_request_event, updated_at: 1.hour.ago) }
+      let_it_be(:mr_stale)    { create(:ci_pipeline, project: project, source: :merge_request_event, updated_at: 2.hours.ago) }
+      let_it_be(:push_recent) { create(:ci_pipeline, project: project, source: :push, updated_at: 3.hours.ago) }
+      let_it_be(:push_stale)  { create(:ci_pipeline, project: project, source: :push, updated_at: 4.hours.ago) }
+
+      it 'orders by the given column within each source bucket' do
+        result = described_class
+          .where(id: [mr_recent, mr_stale, push_recent, push_stale])
+          .merge_request_event_first(order_by: :updated_at, sort: :desc)
+
+        expect(result).to eq([mr_recent, mr_stale, push_recent, push_stale])
+      end
+    end
+
+    it 'de-duplicates the ORDER BY clause when merged with itself' do
+      merged = described_class.merge_request_event_first.merge(described_class.merge_request_event_first)
+
+      expect(merged.to_sql.scan('CASE').size).to eq(1)
+    end
+  end
+
   describe '.order_created_at_asc_id_asc', :freeze_time do
     subject(:pipelines_ordered_by_created_at_id) { described_class.order_created_at_asc_id_asc }
 

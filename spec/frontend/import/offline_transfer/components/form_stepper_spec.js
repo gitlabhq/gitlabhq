@@ -82,10 +82,13 @@ describe('FormStepper', () => {
       expect(stepsContent.at(0).text()).not.toContain('Verify tab content');
     });
 
-    it('shows tab headings with correct styles', () => {
+    it('shows tab headings with correct styles and attributes', () => {
       expect(hasClasses(findStepHeading(0), FORM_STEPPER_TAB_COLOR.active)).toBe(true);
+      expect(findStepHeading(0).attributes('aria-current')).toBe('step');
       expect(hasClasses(findStepHeading(1), FORM_STEPPER_TAB_COLOR.pending)).toBe(true);
+      expect(findStepHeading(1).attributes('aria-current')).toBeUndefined();
       expect(hasClasses(findStepHeading(2), FORM_STEPPER_TAB_COLOR.pending)).toBe(true);
+      expect(findStepHeading(2).attributes('aria-current')).toBeUndefined();
 
       expect(hasClasses(findStepHeading(0), FORM_STEPPER_TAB_BORDER_COLOR.active)).toBe(true);
       expect(hasClasses(findStepHeading(1), FORM_STEPPER_TAB_BORDER_COLOR.pending)).toBe(true);

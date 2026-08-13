@@ -136,7 +136,6 @@ module Gitlab
                 { service: 'gitaly.CommitService', method: 'CountCommits' },
                 { service: 'gitaly.CommitService', method: 'CountDivergingCommits' },
                 { service: 'gitaly.CommitService', method: 'FilterShasWithSignatures' },
-                { service: 'gitaly.CommitService', method: 'FindAllCommits' },
                 { service: 'gitaly.CommitService', method: 'FindCommit' },
                 { service: 'gitaly.CommitService', method: 'FindCommits' },
                 { service: 'gitaly.CommitService', method: 'GetCommitMessages' },

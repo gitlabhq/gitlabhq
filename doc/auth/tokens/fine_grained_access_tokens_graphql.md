@@ -251,6 +251,7 @@ Grants the ability to create and read CD rollouts.
 | Read | Instance | Type | `CdDeploymentTransition` |
 | Read | Instance | Type | `CdRollout` |
 | Read | Instance | Type | `CdRolloutEnvironment` |
+| Read | Instance | Type | `CdRolloutStep` |
 | Read | Instance | Type | `CdRolloutTransition` |
 
 #### CD Rollout Gate

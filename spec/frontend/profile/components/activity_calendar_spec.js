@@ -39,6 +39,10 @@ describe('ActivityCalendar', () => {
   const findCells = () => wrapper.findAllByTestId('user-contrib-cell');
   const findDateCells = () =>
     findCells().wrappers.filter((cell) => cell.attributes('aria-hidden') !== 'true');
+  const findMonthLabels = () => wrapper.findAllByTestId('month-label');
+  const findDayLabels = () => wrapper.findAllByTestId('day-label');
+  const findRenderedMonthLabels = () =>
+    findMonthLabels().wrappers.filter((label) => label.text() !== '');
 
   beforeEach(() => {
     gon.first_day_of_week = 0;
@@ -183,6 +187,113 @@ describe('ActivityCalendar', () => {
 
         expectToBeEmptyCells(firstCell, secondCell, thirdCell, fourthCell, fifthCell);
         expectToBeDateCells(sixthCell, lastCell);
+      });
+    });
+  });
+
+  describe('month labels', () => {
+    it('renders one label slot per week, with a visible label per month boundary', () => {
+      createComponent();
+
+      // The frozen 12-month range (Aug 5th, 2025 - Aug 5th, 2026) renders 53
+      // weeks and crosses 13 month boundaries, including both partial Augusts.
+      expect(findMonthLabels()).toHaveLength(53);
+      expect(findRenderedMonthLabels()).toHaveLength(13);
+    });
+
+    it('hides only the empty label slots from assistive technology', () => {
+      createComponent();
+
+      findMonthLabels().wrappers.forEach((label) => {
+        expect(label.attributes('role')).toBe('presentation');
+
+        if (label.text() === '') {
+          expect(label.attributes('aria-hidden')).toBe('true');
+        } else {
+          expect(label.attributes('aria-hidden')).toBeUndefined();
+        }
+      });
+    });
+
+    describe('when the first week is the last week of the month', () => {
+      // July 28th, 2026: the range starts on Monday July 28th, 2025, in the
+      // last week of July, so the second week already belongs to August.
+      useFakeDate(2026, 6, 28);
+
+      it('skips the label of the first week so it cannot overlap the next one', () => {
+        createComponent();
+
+        expect(findMonthLabels().at(0).text()).toBe('');
+        expect(findMonthLabels().at(1).text()).toBe('Aug');
+      });
+    });
+
+    describe('when the first week is the second to last week of the month', () => {
+      // July 21st, 2026: the range starts on Monday July 21st, 2025 and the
+      // second week still starts in July.
+      useFakeDate(2026, 6, 21);
+
+      it('renders the label on the first week', () => {
+        createComponent();
+
+        expect(findMonthLabels().at(0).text()).toBe('Jul');
+        expect(findMonthLabels().at(1).text()).toBe('');
+        expect(findMonthLabels().at(2).text()).toBe('Aug');
+      });
+    });
+
+    describe('when the first week is the first week of the month', () => {
+      // August 4th, 2026: the range starts on Monday August 4th, 2025.
+      useFakeDate(2026, 7, 4);
+
+      it('renders the label on the first week', () => {
+        createComponent();
+
+        expect(findMonthLabels().at(0).text()).toBe('Aug');
+        expect(findMonthLabels().at(1).text()).toBe('');
+      });
+    });
+
+    describe('when the first week is the second week of the month', () => {
+      // August 11th, 2026: the range starts on Monday August 11th, 2025.
+      useFakeDate(2026, 7, 11);
+
+      it('renders the label on the first week', () => {
+        createComponent();
+
+        expect(findMonthLabels().at(0).text()).toBe('Aug');
+        expect(findMonthLabels().at(1).text()).toBe('');
+      });
+    });
+  });
+
+  describe('day labels', () => {
+    it.each`
+      firstDayOfWeek | description   | expectedLabels
+      ${0}           | ${'Sunday'}   | ${['', 'M', '', 'W', '', 'F', '']}
+      ${1}           | ${'Monday'}   | ${['M', '', 'W', '', 'F', '', 'S']}
+      ${6}           | ${'Saturday'} | ${['S', '', 'M', '', 'W', '', 'F']}
+    `(
+      'renders $expectedLabels when the week starts on $description',
+      ({ firstDayOfWeek, expectedLabels }) => {
+        gon.first_day_of_week = firstDayOfWeek;
+        createComponent();
+
+        expect(findDayLabels().wrappers.map((label) => label.text())).toEqual(expectedLabels);
+      },
+    );
+
+    it('hides only the empty label slots from assistive technology', () => {
+      createComponent();
+
+      findDayLabels().wrappers.forEach((label) => {
+        expect(label.attributes('role')).toBe('presentation');
+
+        if (label.text() === '') {
+          expect(label.attributes('aria-hidden')).toBe('true');
+        } else {
+          expect(label.attributes('aria-hidden')).toBeUndefined();
+        }
       });
     });
   });

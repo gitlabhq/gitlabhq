@@ -51,6 +51,8 @@ module Gitlab
               {
                 count: Count,
                 mean: Mean,
+                min: Min,
+                max: Max,
                 rate: Rate,
                 quantile: Quantile,
                 sum: Sum,

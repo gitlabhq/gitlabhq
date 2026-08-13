@@ -504,6 +504,14 @@ describe('Markdown field component', () => {
 
       expect(findMarkdownToolbar().classes()).not.toContain('gl-border-t');
     });
+
+    it('re-emits `enable-content-editor` from the toolbar', () => {
+      createWrapper();
+
+      findMarkdownToolbar().vm.$emit('enable-content-editor');
+
+      expect(subject.emitted('enable-content-editor')).toEqual([[]]);
+    });
   });
 
   describe('immersive mode', () => {

@@ -29,7 +29,7 @@ To configure different values for these limits:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Settings** > **Security and compliance**.
-1. Expand **Dependency Scanning**.
+1. Expand **Dependency scanning**.
 1. Change the value of any rate limit, or set a rate limit to `0` to disable it.
 1. Select **Save changes**.
 
@@ -41,7 +41,7 @@ To choose the packages you want to synchronize with the GitLab Package Metadata 
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Settings** > **Security and compliance**.
-1. Expand **License Compliance**.
+1. Expand **License compliance**.
 1. In **Package registry metadata to sync**, select or clear checkboxes for the
    package registries that you want to sync.
 1. Select **Save changes**.

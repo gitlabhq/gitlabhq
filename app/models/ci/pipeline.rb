@@ -592,6 +592,22 @@ module Ci
       )
     end
 
+    # Orders `merge_request_event`-sourced pipelines ahead of all other
+    # sources, then applies the given secondary order (defaulting to `id DESC`)
+    # for ties. Shared by `Ci::PipelinesForMergeRequestFinder` and
+    # `Ci::PipelinesFinder` so the MR Pipelines REST and GraphQL paths return
+    # the same order.
+    scope :merge_request_event_first, ->(order_by: :id, sort: :desc) do
+      table = quoted_table_name
+      column = connection.quote_column_name(order_by)
+      direction = sort.to_s.casecmp?('asc') ? 'ASC' : 'DESC'
+
+      sql = "CASE #{table}.source WHEN (?) THEN 0 ELSE 1 END, #{table}.#{column} #{direction}"
+      query = sanitize_sql_array([sql, sources[:merge_request_event]])
+
+      order(Arel.sql(query))
+    end
+
     scope :order_id_asc, -> { order(id: :asc) }
     scope :order_id_desc, -> { order(id: :desc) }
     scope :order_created_at_asc_id_asc, -> { order(created_at: :asc, id: :asc) }

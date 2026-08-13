@@ -22,9 +22,13 @@ module Resolvers
 
     def query_for(input)
       mr, args = input
-      # Mirror `Ci::PipelinesForMergeRequestFinder` ordering so the MR
-      # Pipelines tab in the UI surfaces `merge_request_event`-sourced
-      # pipelines first, matching the legacy REST-based path.
+      # Both `resolve_pipelines` (via `Ci::PipelinesFinder`) and
+      # `mr.all_pipelines` (via `Ci::PipelinesForMergeRequestFinder`) apply the
+      # shared `Ci::Pipeline.merge_request_event_first` scope, so the MR
+      # Pipelines tab surfaces `merge_request_event`-sourced pipelines first,
+      # matching the legacy REST-based path. Because both relations carry the
+      # identical order values, ActiveRecord's `merge` de-duplicates them and
+      # the generated SQL contains the ORDER BY clause once.
       resolve_pipelines(mr.source_project, args.merge(merge_request_event_first: true))
         .merge(mr.all_pipelines)
     end

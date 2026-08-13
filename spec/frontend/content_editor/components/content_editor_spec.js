@@ -312,6 +312,14 @@ describe('ContentEditor', () => {
     expect(wrapper.findComponent(EditorModeSwitcher).exists()).toBe(true);
   });
 
+  it('emits `enable-markdown-editor` when the editor mode dropdown switches', () => {
+    createWrapper();
+
+    wrapper.findComponent(EditorModeSwitcher).vm.$emit('switch');
+
+    expect(wrapper.emitted('enable-markdown-editor')).toEqual([[]]);
+  });
+
   it('pastes content when CONTENT_EDITOR_READY_PASTE event is emitted', async () => {
     const markdown = 'hello world';
 

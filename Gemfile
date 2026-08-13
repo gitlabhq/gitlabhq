@@ -159,7 +159,13 @@ gem 'gitlab_omniauth-ldap', '~> 2.3.0', require: 'omniauth-ldap', feature_catego
 gem 'net-ldap', '~> 0.20.0', feature_category: :system_access
 
 # API
-gem 'grape', '~> 2.4', feature_category: :api
+# Dual-boot for the Grape 3.2 upgrade: https://gitlab.com/gitlab-org/gitlab/-/work_items/607981
+if next?
+  gem 'grape', '~> 3.2', feature_category: :api
+else
+  gem 'grape', '~> 2.4', feature_category: :api
+end
+
 gem 'grape-entity', '~> 1.1.0', feature_category: :api
 gem 'grape-swagger', '~> 2.1.4', group: [:development, :test], feature_category: :api
 gem 'grape-swagger-entity', '~> 0.7.0', group: [:development, :test], feature_category: :api

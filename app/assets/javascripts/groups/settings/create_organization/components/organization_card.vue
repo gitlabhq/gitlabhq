@@ -1,9 +1,7 @@
 <script>
 import { GlAvatarLabeled, GlCard, GlIcon, GlTooltipDirective } from '@gitlab/ui';
-import gitlabLogoUrl from '@gitlab/svgs/dist/illustrations/gitlab_logo.svg?url';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { DEFAULT_ORGANIZATION_NAME } from '~/organizations/shared/constants';
 import { VISIBILITY_TYPE_ICON, ORGANIZATION_VISIBILITY_TYPE } from '~/visibility_level/constants';
 import { isDefaultOrganization } from '~/organizations/shared/utils';
 import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
@@ -28,17 +26,9 @@ export default {
   },
   computed: {
     organizationName() {
-      if (isDefaultOrganization(this.organization)) {
-        return DEFAULT_ORGANIZATION_NAME;
-      }
-
       return this.organization.name;
     },
     organizationAvatarUrl() {
-      if (isDefaultOrganization(this.organization)) {
-        return gitlabLogoUrl;
-      }
-
       return this.organization.avatarUrl;
     },
     bodyClass() {
@@ -64,16 +54,33 @@ export default {
     visibilityTooltip() {
       return ORGANIZATION_VISIBILITY_TYPE[this.visibility];
     },
+    isDefaultOrganization() {
+      return isDefaultOrganization(this.organization);
+    },
   },
   methods: {
     getIdFromGraphQLId,
-    isDefaultOrganization,
   },
 };
 </script>
 
 <template>
-  <gl-card class="gl-h-full" :header-class="headerClass" :body-class="bodyClass">
+  <gl-card
+    v-if="isDefaultOrganization"
+    class="gl-border gl-h-full gl-bg-transparent"
+    :header-class="headerClass"
+    :body-class="bodyClass"
+  >
+    <template #header>
+      <div class="gl-pt-3 gl-text-center">
+        <p class="gl-m-0 gl-text-sm">{{ s__('Organization|Other top-level groups') }}</p>
+      </div>
+    </template>
+    <div class="gl-relative gl-h-full">
+      <slot :is-default-organization="true"></slot>
+    </div>
+  </gl-card>
+  <gl-card v-else class="gl-h-full" :header-class="headerClass" :body-class="bodyClass">
     <template #header>
       <gl-avatar-labeled
         class="gl-flex"
@@ -84,7 +91,7 @@ export default {
         :size="32"
         :src="organizationAvatarUrl"
       >
-        <template v-if="!isDefaultOrganization(organization)" #meta>
+        <template #meta>
           <div class="gl-p-1">
             <gl-icon
               v-gl-tooltip="visibilityTooltip"
@@ -97,7 +104,7 @@ export default {
       </gl-avatar-labeled>
     </template>
     <div class="gl-relative gl-h-full">
-      <slot></slot>
+      <slot :is-default-organization="false"></slot>
     </div>
   </gl-card>
 </template>

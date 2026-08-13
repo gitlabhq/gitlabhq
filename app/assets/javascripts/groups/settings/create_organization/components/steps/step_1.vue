@@ -2,6 +2,7 @@
 import illustrationUrl from '@gitlab/svgs/dist/illustrations/empty-state/empty-organizations-add-md.svg?url';
 import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
 import OrganizationCard from '../organization_card.vue';
+import OrganizationGroupStats from '../organization_group_stats.vue';
 import BaseStep from './base_step.vue';
 
 export default {
@@ -10,6 +11,7 @@ export default {
   components: {
     BaseStep,
     OrganizationCard,
+    OrganizationGroupStats,
     HelpPageLink,
   },
   props: {
@@ -23,14 +25,14 @@ export default {
 
 <template>
   <base-step
-    :title="s__('Organization|Activate your Organizations')"
+    :title="s__('Organization|Create your Organizations')"
     :illustration="$options.illustrationUrl"
   >
     <template #description>
       <p>
         {{
           s__(
-            "Organization|We'll create one Organization per top-level group. You can reassign groups between them in the next step.",
+            'Organization|Create an organization to manage your top-level groups. You can set up your organization structure in the next step.',
           )
         }}
       </p>
@@ -48,7 +50,15 @@ export default {
           :key="organization.id"
           class="gl-w-1/2 gl-p-2 first:gl-ml-auto last:gl-mr-auto @lg:gl-w-1/3"
         >
-          <organization-card :organization="organization" />
+          <organization-card :organization="organization">
+            <div
+              v-for="group in organization.groups.nodes"
+              :key="group.id"
+              class="gl-rounded-xl gl-bg-default gl-p-4"
+            >
+              <organization-group-stats :group="group" />
+            </div>
+          </organization-card>
         </div>
       </div>
     </div>

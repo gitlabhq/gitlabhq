@@ -8,6 +8,24 @@ module Organizations
       after_update_commit :check_organization_isolation_status
     end
 
+    class << self
+      # Skips scheduling CheckOrganizationIsolationStatusWorker for updates
+      # committed inside the block. Only use on code paths where the check is
+      # a known no-op: https://gitlab.com/gitlab-org/gitlab/-/issues/606395
+      def skip_isolation_check
+        previous = Thread.current[:organizations_skip_isolation_check]
+        Thread.current[:organizations_skip_isolation_check] = true
+
+        yield
+      ensure
+        Thread.current[:organizations_skip_isolation_check] = previous
+      end
+
+      def skip_isolation_check?
+        !!Thread.current[:organizations_skip_isolation_check]
+      end
+    end
+
     class_methods do
       def sharding_keys
         @sharding_keys ||= Gitlab::Database::Dictionary.entry(table_name)&.sharding_key || {}
@@ -36,6 +54,7 @@ module Organizations
     end
 
     def check_organization_isolation_status
+      return if Sharding.skip_isolation_check?
       return unless Feature.enabled?(:isolation_status_check, Feature.current_request)
       return if self.class.sharding_keys.empty?
 

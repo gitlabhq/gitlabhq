@@ -44,7 +44,7 @@ describe('ScanTypeCell', () => {
     });
 
     it('renders the scanner display name', () => {
-      expect(findDisplayName().text()).toBe('Static Application Security Testing (SAST)');
+      expect(findDisplayName().text()).toBe('Static application security testing (SAST)');
     });
 
     describe('with securityScanProfilesStatusIndicators feature flag', () => {
