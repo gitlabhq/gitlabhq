@@ -347521,8 +347521,8 @@
               "description": "Check if Secrets Manager is enrolled at the instance level. Introduced in GitLab 19.0: Status: Experiment.",
               "args": [],
               "type": {
-                "kind": "SCALAR",
-                "name": "Boolean",
+                "kind": "OBJECT",
+                "name": "SecretsManagerInstanceEnrollment",
                 "ofType": null
               },
               "isDeprecated": true,
@@ -368047,6 +368047,22 @@
           "description": "Representation of a Secrets Manager namespace enrollment.",
           "fields": [
             {
+              "name": "beta",
+              "description": "Indicates the enrollment is part of the free beta cohort. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
               "name": "namespace",
               "description": "Namespace the enrollment belongs to.",
               "args": [],
@@ -368253,6 +368269,49 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.2."
             }
           ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "SecretsManagerInstanceEnrollment",
+          "description": "Representation of a Secrets Manager instance enrollment.",
+          "fields": [
+            {
+              "name": "beta",
+              "description": "Indicates the instance enrollment is part of the free beta cohort. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
+              "name": "enrolled",
+              "description": "Indicates Secrets Manager is enrolled at the instance level. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
           "possibleTypes": null
         },
         {

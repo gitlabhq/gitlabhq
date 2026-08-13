@@ -386,6 +386,7 @@
   - ".gitlab/route-map.yml"
   - ".markdownlint-cli2.yaml"
   - "doc/**/*"
+  - "tooling/docs/api/tags/**/*"
   - "scripts/lint-doc.sh"
   - "scripts/lint/check_mermaid.mjs"
   - "rubocop/cop/gitlab/documentation_links/**/*"

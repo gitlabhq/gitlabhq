@@ -34,6 +34,7 @@ module Sidebars
             :admin_push_rules,
             :manage_deploy_tokens,
             :admin_protected_branch,
+            :manage_merge_request_settings,
             :manage_protected_tags
           ],
           merge_requests_menu_item: [

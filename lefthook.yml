@@ -77,7 +77,7 @@ pre-push:
     openapi_docs:
       tags: documentation
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      glob: '{doc/api/openapi/openapi_v3.yaml,*.rb}'
+      glob: '{doc/api/openapi/openapi_v3.yaml,tooling/docs/api/tags/*.md,*.rb}'
       run: GITLAB_SIMULATE_SAAS=false bundle exec rake gitlab:openapi:v3:check_docs
     vale: # Requires Vale: https://docs.gitlab.com/development/documentation/testing/vale/
       tags: documentation style
@@ -390,5 +390,5 @@ auto-fix:
     openapi_generate:
       tags: documentation backend
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD) --cached
-      glob: '{,ee/}lib/api/**/*.rb'
+      glob: '{{,ee/}lib/api/**/*.rb,tooling/docs/api/tags/*.md}'
       run: GITLAB_SIMULATE_SAAS=false bundle exec rake gitlab:openapi:v3:generate

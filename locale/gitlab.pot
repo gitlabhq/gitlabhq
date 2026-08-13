@@ -59218,6 +59218,9 @@ msgstr ""
 msgid "PolicyStore|Continue editing"
 msgstr ""
 
+msgid "PolicyStore|Create a policy to enforce rules for deployments across your organization."
+msgstr ""
+
 msgid "PolicyStore|Create new policy"
 msgstr ""
 
@@ -59323,6 +59326,9 @@ msgstr ""
 msgid "PolicyStore|No building blocks match your search."
 msgstr ""
 
+msgid "PolicyStore|No policies found"
+msgstr ""
+
 msgid "PolicyStore|None added"
 msgstr ""
 
@@ -59420,6 +59426,9 @@ msgid "PolicyStore|Targeted"
 msgstr ""
 
 msgid "PolicyStore|The available %{catalog} could not be fetched from the Policy Store API. Refresh the page to try again."
+msgstr ""
+
+msgid "PolicyStore|The policies could not be fetched from the Policy Store API. Refresh the page to try again."
 msgstr ""
 
 msgid "PolicyStore|This policy will be enabled for %{scope} in Audit mode. Events will be logged only."

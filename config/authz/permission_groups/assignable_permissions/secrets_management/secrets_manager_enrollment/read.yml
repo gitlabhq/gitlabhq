@@ -1,0 +1,9 @@
+---
+name: read_secrets_manager_enrollment
+description: Grants the ability to read Secrets Manager enrollment status.
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - read_secrets_manager_enrollment

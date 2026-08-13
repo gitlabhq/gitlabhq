@@ -37,10 +37,17 @@ ifeq (${FIPS_MODE}, 1)
     # If the golang-fips compiler is built with CGO_ENABLED=0, this needs to be
     # explicitly switched on.
     export CGO_ENABLED=1
-    # Go 1.19+ now requires GOEXPERIMENT=boringcrypto for FIPS compilation.
-    # See https://github.com/golang/go/issues/51940 for more details.
-    ifeq ($(shell GOEXPERIMENT=boringcrypto go version > /dev/null 2>&1; echo $$?), 0)
-      export GOEXPERIMENT=boringcrypto
+    # The Go Cryptographic Module (GOFIPS140, Go 1.24+) is mutually exclusive
+    # with GOEXPERIMENT=boringcrypto. Toolchains that select the native module
+    # report its version via "go env GOFIPS140"; legacy golang-fips toolchains
+    # report "off" (or empty on Go < 1.24) and still require boringcrypto.
+    GOFIPS140_MODULE := $(shell go env GOFIPS140 2>/dev/null)
+    ifeq ($(filter-out off,$(GOFIPS140_MODULE)),)
+      # Go 1.19+ now requires GOEXPERIMENT=boringcrypto for FIPS compilation.
+      # See https://github.com/golang/go/issues/51940 for more details.
+      ifeq ($(shell GOEXPERIMENT=boringcrypto go version > /dev/null 2>&1; echo $$?), 0)
+        export GOEXPERIMENT=boringcrypto
+      endif
     endif
 endif
 

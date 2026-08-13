@@ -90,6 +90,35 @@ RSpec.shared_examples 'a policy repository' do
       expect(policy.namespace_id).to eq(namespace_id)
     end
 
+    it 'stores symbol-keyed json attributes with string keys, matching what jsonb returns' do
+      symbol_keyed = attributes.merge(
+        rules: [{ type: :scan_finding }],
+        actions: [{ type: :require_approval }],
+        policy_scope: { compliance_frameworks: [{ id: 5 }] },
+        scope_rego: nil
+      )
+
+      expect(repository.create(symbol_keyed)).to have_attributes(
+        rules: [{ 'type' => 'scan_finding' }],
+        actions: [{ 'type' => 'require_approval' }],
+        policy_scope: { 'compliance_frameworks' => [{ 'id' => 5 }] }
+      )
+    end
+
+    it 'stores symbol values on text attributes as strings, matching what a text column returns' do
+      symbol_valued = attributes.merge(
+        trigger_type: :deployment_requested,
+        mode: :audit,
+        lifecycle_state: :active
+      )
+
+      expect(repository.create(symbol_valued)).to have_attributes(
+        trigger_type: 'deployment_requested',
+        mode: 'audit',
+        lifecycle_state: 'active'
+      )
+    end
+
     (port::REQUIRED_ATTRIBUTES + port::NON_NULLABLE_ATTRIBUTES).each do |attribute|
       it "raises ValidationError when #{attribute} is nil" do
         expect { repository.create(attributes.merge(attribute => nil)) }

@@ -11,6 +11,8 @@ module Tasks
           #                                                                                           #
           # To edit the introductory text, modify `lib/tasks/gitlab/openapi/v3_document.rb`.          #
           #                                                                                           #
+          # To edit a tag description, modify `tooling/docs/api/tags/<tag>.md`.                       #
+          #                                                                                           #
           # Run `bin/rake gitlab:openapi:v3:generate`                                                 #
           #############################################################################################
 
@@ -18,14 +20,44 @@ module Tasks
 
         def self.render = new.render
 
+        def initialize(tag_content = nil)
+          @tag_content = tag_content
+        end
+
         def render
-          INTRODUCTION + generator.generate.deep_stringify_keys.to_yaml
+          spec = generator.generate.deep_stringify_keys
+          merge_curated_tag_content!(spec)
+
+          INTRODUCTION + spec.to_yaml
         end
 
         private
 
         def generator
           ::Gitlab::GrapeOpenapi::Generator.new(api_classes: ::API::Base.descendants)
+        end
+
+        def merge_curated_tag_content!(spec)
+          return unless spec['tags']
+
+          spec['tags'].each do |tag|
+            fields = curated_tag_content[tag['name']]
+            tag.merge!(fields) if fields
+          end
+        end
+
+        def curated_tag_content
+          @curated_tag_content ||= tag_content.to_h.transform_keys do |slug|
+            ::Gitlab::GrapeOpenapi::Models::Tag.normalize_tag_name(slug)
+          end
+        end
+
+        def tag_content
+          @tag_content ||= begin
+            require_relative '../../../../tooling/docs/api/tag_content'
+
+            ::Docs::Api::TagContent.new
+          end
         end
       end
     end

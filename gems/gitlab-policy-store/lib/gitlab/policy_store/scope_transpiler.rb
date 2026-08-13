@@ -212,7 +212,7 @@ module Gitlab
       end
 
       def source
-        @source ||= authored? ? deep_stringify(policy_scope) : {}
+        @source ||= authored? ? JsonValue.deep_stringify(policy_scope) : {}
       end
 
       def match_mode
@@ -290,21 +290,6 @@ module Gitlab
           elsif item.is_a?(Hash) && item["id"].is_a?(Integer)
             item["id"]
           end
-        end
-      end
-
-      def deep_stringify(hash)
-        hash.each_with_object({}) do |(key, value), stringified|
-          stringified[key.to_s] = stringify_value(value)
-        end
-      end
-
-      def stringify_value(value)
-        case value
-        when Hash then deep_stringify(value)
-        when Array then value.map { |item| stringify_value(item) }
-        when Symbol then value.to_s
-        else value
         end
       end
     end

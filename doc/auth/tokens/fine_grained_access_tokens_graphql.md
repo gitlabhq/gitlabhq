@@ -1324,6 +1324,16 @@ Grants the ability to create and delete target branch rules.
 | Create | Project | Mutation | `ProjectTargetBranchRuleCreate` |
 | Delete | Project | Mutation | `ProjectTargetBranchRuleDestroy` |
 
+### Secrets Management resources
+
+#### Secrets Manager Enrollment
+
+Grants the ability to read secrets manager enrollments.
+
+| Action | Access | Kind | Name |
+| ------ | ------ | ---- | ---- |
+| Read | Instance | Type | `SecretsManagerInstanceEnrollment` |
+
 ### Subscription and Licensing resources
 
 #### Add On Assignment

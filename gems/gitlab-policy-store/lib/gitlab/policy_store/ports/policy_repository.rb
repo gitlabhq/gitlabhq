@@ -85,7 +85,7 @@ module Gitlab
         private
 
         def normalize_attributes(attributes)
-          attributes.to_h.transform_keys(&:to_sym)
+          attributes.to_h.transform_keys(&:to_sym).transform_values { |value| JsonValue.deep_stringify(value) }
         end
 
         def creatable_attributes(attributes)

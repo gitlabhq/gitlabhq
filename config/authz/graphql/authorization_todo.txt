@@ -291,6 +291,7 @@ type:AgentMetadata
 type:AgentPlatformFlowMetric
 type:AgentPlatformSessionsAggregationResponse
 type:AgentPlatformSessionsAggregationResponseDimensions
+type:AgentPlatformSessionsAggregationResponseDurationMetrics
 type:AgentPlatformSessionsAggregationScope
 type:AgentPlatformUserFlowCount
 type:AgentVersionWarning

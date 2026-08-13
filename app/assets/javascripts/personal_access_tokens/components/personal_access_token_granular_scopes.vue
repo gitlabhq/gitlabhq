@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlCollapse, GlIcon, GlLink } from '@gitlab/ui';
-import { camelCase, xor } from 'lodash-es';
+import { camelCase, uniqBy, xor } from 'lodash-es';
 import { groupPermissionsByResourceAndCategory } from '~/personal_access_tokens/utils';
 import { s__, n__, sprintf } from '~/locale';
 import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
@@ -50,7 +50,10 @@ export default {
       return sectionDefs.map(({ type, accessList }) => {
         const scopes = this.scopes.filter(({ access }) => accessList.includes(access));
 
-        const allPermissions = scopes.flatMap(({ permissions }) => permissions);
+        const allPermissions = uniqBy(
+          scopes.flatMap(({ permissions }) => permissions),
+          'name',
+        );
         const categories = groupPermissionsByResourceAndCategory(allPermissions);
         const actionsCount = allPermissions.length;
 

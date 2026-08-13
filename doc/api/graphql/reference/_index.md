@@ -1721,7 +1721,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 Check if Secrets Manager is enrolled at the instance level.
 
-Returns [`Boolean`](#boolean).
+Returns [`SecretsManagerInstanceEnrollment`](#secretsmanagerinstanceenrollment).
 
 ### `Query.instanceSecurityDashboard`
 
@@ -59464,6 +59464,7 @@ Fields:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="secretsmanagerenrollment-beta"></a>`beta` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.3. Status: Experiment. Indicates the enrollment is part of the free beta cohort. |
 | <a id="secretsmanagerenrollment-namespace"></a>`namespace` | [`Namespace!`](#namespace) | Namespace the enrollment belongs to. |
 
 ### `SecretsManagerEntitlement`
@@ -59481,6 +59482,17 @@ Fields:
 | <a id="secretsmanagerentitlement-state"></a>`state` {{< icon name="warning-solid" >}} | [`SecretsManagerEntitlementState!`](#secretsmanagerentitlementstate) | Introduced in GitLab 19.2. Status: Experiment. Resolved entitlement state. |
 | <a id="secretsmanagerentitlement-trialexpiresat"></a>`trialExpiresAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.2. Status: Experiment. Timestamp when the Secrets Manager trial expires. |
 | <a id="secretsmanagerentitlement-trialstartedat"></a>`trialStartedAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.2. Status: Experiment. Timestamp when the Secrets Manager trial started. |
+
+### `SecretsManagerInstanceEnrollment`
+
+Representation of a Secrets Manager instance enrollment.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="secretsmanagerinstanceenrollment-beta"></a>`beta` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.3. Status: Experiment. Indicates the instance enrollment is part of the free beta cohort. |
+| <a id="secretsmanagerinstanceenrollment-enrolled"></a>`enrolled` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.3. Status: Experiment. Indicates Secrets Manager is enrolled at the instance level. |
 
 ### `SecurityAttribute`
 
