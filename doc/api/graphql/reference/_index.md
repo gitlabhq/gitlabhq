@@ -33152,6 +33152,7 @@ Fields:
 | <a id="aiauditevent-createdat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the audit event was created. |
 | <a id="aiauditevent-details"></a>`details` | [`JSON`](#json) | Event-specific details payload. |
 | <a id="aiauditevent-eventname"></a>`eventName` | [`String`](#string) | Name of the audit event. |
+| <a id="aiauditevent-humanauthor"></a>`humanAuthor` | [`UserCore`](#usercore) | Human user on whose behalf the audit event was triggered, present only for composite-identity sessions where a service account acts on behalf of a human. |
 | <a id="aiauditevent-id"></a>`id` | [`ID!`](#id) | ID of the audit event. |
 | <a id="aiauditevent-ipaddress"></a>`ipAddress` | [`String`](#string) | IP address recorded for the audit event. |
 | <a id="aiauditevent-workflowid"></a>`workflowId` | [`ID!`](#id) | ID of the Duo Agent Platform session the event belongs to. |

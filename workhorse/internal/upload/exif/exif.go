@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/exec"
 	"regexp"
+	"strings"
 
 	"gitlab.com/gitlab-org/labkit/log"
 )
@@ -17,17 +18,23 @@ import (
 // ErrRemovingExif is an error returned when there is an issue while removing EXIF metadata from an image.
 var ErrRemovingExif = errors.New("error while removing EXIF")
 
+// Part of the exiftool error emitted when an image carries a malformed
+// OtherImageStart offset pointing outside the file (e.g.
+// "Error reading OtherImageStart data in IFD0").
+const offsetReadErrorSignature = "OtherImageStart"
+
 type cleaner struct {
 	ctx            context.Context
-	preStripExif   *exec.Cmd
+	stdin          io.ReadSeeker
+	preStrip       *exec.Cmd
 	preStripStderr bytes.Buffer
 	cmd            *exec.Cmd
-	stdout         io.Reader
 	stderr         bytes.Buffer
+	stdout         io.Reader
 	eof            bool
-	waited         bool  // Track if we already called Wait()
-	cmdErr         error // Store cmd error
-	preStripErr    error // Store preStripExif error
+	waited         bool
+	fellBack       bool
+	bytesRead      int64
 }
 
 // FileType represents the type of an image file.
@@ -42,12 +49,29 @@ const (
 	TypeTIFF
 )
 
-// NewCleaner creates a new EXIF cleaner instance using the provided context and stdin.
-// It processes the input from stdin to remove EXIF data from images.
-func NewCleaner(ctx context.Context, stdin io.Reader) (io.ReadCloser, error) {
-	c := &cleaner{ctx: ctx}
+// allowlistedTags are the EXIF tags preserved on the normal strip path. They all live in
+// IFD0 and are copied back after -all= deletes everything else.
+var allowlistedTags = []string{
+	"-ResolutionUnit",
+	"-XResolution",
+	"-YResolution",
+	"-YCbCrSubSampling",
+	"-YCbCrPositioning",
+	"-BitsPerSample",
+	"-ImageHeight",
+	"-ImageWidth",
+	"-ImageSize",
+	"-Orientation",
+}
 
-	if err := c.startProcessing(stdin); err != nil {
+// NewCleaner creates a new EXIF cleaner instance using the provided context and stdin.
+// The EXIF strip runs as a streaming two-pass exiftool pipeline: an IPTC/XMP prestrip
+// feeding a strip that preserves an allowlist of tags. If the prestrip fails on a
+// malformed offset, the cleaner rewinds stdin and falls back to a plain full strip.
+func NewCleaner(ctx context.Context, stdin io.ReadSeeker) (io.ReadCloser, error) {
+	c := &cleaner{ctx: ctx, stdin: stdin}
+
+	if err := c.startProcessing(); err != nil {
 		return nil, err
 	}
 
@@ -59,22 +83,17 @@ func (c *cleaner) Close() error {
 		return nil
 	}
 
-	// If we already waited in Read(), return stored errors
 	if c.waited {
-		if c.preStripErr != nil {
-			return c.preStripErr
-		}
-		return c.cmdErr
+		return nil
 	}
 
-	// Otherwise wait now
+	c.waited = true
 	cmdErr := c.cmd.Wait()
 	var preStripErr error
-	if c.preStripExif != nil {
-		preStripErr = c.preStripExif.Wait()
+	if c.preStrip != nil {
+		preStripErr = c.preStrip.Wait()
 	}
 
-	// Return first error
 	if preStripErr != nil {
 		return preStripErr
 	}
@@ -87,29 +106,42 @@ func (c *cleaner) Read(p []byte) (int, error) {
 	}
 
 	n, err := c.stdout.Read(p)
+	c.bytesRead += int64(n)
+
 	if err == io.EOF {
-		// Wait for BOTH commands
-		c.cmdErr = c.cmd.Wait()
-		if c.preStripExif != nil {
-			c.preStripErr = c.preStripExif.Wait()
-		}
 		c.waited = true
+
+		cmdErr := c.cmd.Wait()
+		var preStripErr error
+		if c.preStrip != nil {
+			preStripErr = c.preStrip.Wait()
+		}
+
+		if c.shouldFallBack(preStripErr) {
+			if fallbackErr := c.startFallback(); fallbackErr != nil {
+				c.eof = true
+				return n, ErrRemovingExif
+			}
+
+			return n, nil
+		}
+
 		c.eof = true
 
-		if c.preStripErr != nil {
+		if preStripErr != nil {
 			log.WithContextFields(c.ctx, log.Fields{
-				"command": c.preStripExif.Args,
+				"command": c.preStrip.Args,
 				"stderr":  c.preStripStderr.String(),
-				"error":   c.preStripErr.Error(),
+				"error":   preStripErr.Error(),
 			}).Print("preStripExif command failed")
 			return n, ErrRemovingExif
 		}
 
-		if c.cmdErr != nil {
+		if cmdErr != nil {
 			log.WithContextFields(c.ctx, log.Fields{
 				"command": c.cmd.Args,
 				"stderr":  c.stderr.String(),
-				"error":   c.cmdErr.Error(),
+				"error":   cmdErr.Error(),
 			}).Print("exiftool command failed")
 			return n, ErrRemovingExif
 		}
@@ -118,36 +150,35 @@ func (c *cleaner) Read(p []byte) (int, error) {
 	return n, err
 }
 
-func (c *cleaner) startProcessing(stdin io.Reader) error {
+// shouldFallBack reports whether a failed prestrip should trigger the full-strip fallback:
+// the failure carries the malformed-offset signature, we have not fallen back already, and
+// no output has been delivered to the caller yet, so discarding the failed pipeline's
+// output is safe.
+func (c *cleaner) shouldFallBack(preStripErr error) bool {
+	return preStripErr != nil &&
+		strings.Contains(c.preStripStderr.String(), offsetReadErrorSignature) &&
+		!c.fellBack &&
+		c.bytesRead == 0
+}
+
+// startProcessing starts the streaming two-pass pipeline: the prestrip
+// ("exiftool -IPTC= -XMP= -") reads stdin and strips the IPTC and XMP groups, which may
+// contain unboundedly many tags; the strip reads the prestrip's stdout and strips all
+// remaining metadata while copying back the allowlisted tags.
+func (c *cleaner) startProcessing() error {
 	var err error
 
-	whitelistedTags := []string{
-		"-ResolutionUnit",
-		"-XResolution",
-		"-YResolution",
-		"-YCbCrSubSampling",
-		"-YCbCrPositioning",
-		"-BitsPerSample",
-		"-ImageHeight",
-		"-ImageWidth",
-		"-ImageSize",
-		"-Orientation",
-	}
+	preStrip := exec.CommandContext(c.ctx, "exiftool", "-IPTC=", "-XMP=", "-")
+	preStrip.Stderr = &c.preStripStderr
+	preStrip.Stdin = c.stdin
+	c.preStrip = preStrip
 
-	// Strip IPTC and XMP that might contain unboundedly many tags to avoid problems extracting orientation
-	preStripExif := exec.CommandContext(c.ctx, "exiftool", "-IPTC=", "-XMP=", "-")
-	preStripExif.Stderr = &c.preStripStderr
-	preStripExif.Stdin = stdin
-	c.preStripExif = preStripExif
-
-	// Strip all remaining EXIF but preserve Orientation
-	args := append([]string{"-all=", "-tagsFromFile", "@"}, whitelistedTags...)
+	args := append([]string{"-all=", "-tagsFromFile", "@"}, allowlistedTags...)
 	args = append(args, "-")
-	//nolint:gosec // G204: Command is hardcoded "exiftool", args are from whitelisted constant slice
+	//nolint:gosec // G204: Command is hardcoded "exiftool"; args are from the allowlistedTags constant slice
 	c.cmd = exec.CommandContext(c.ctx, "exiftool", args...)
 	c.cmd.Stderr = &c.stderr
-	c.cmd.Stdin, err = preStripExif.StdoutPipe()
-
+	c.cmd.Stdin, err = preStrip.StdoutPipe()
 	if err != nil {
 		return fmt.Errorf("failed to create stdout pipe for removing iptc and xmp: %v", err)
 	}
@@ -157,13 +188,48 @@ func (c *cleaner) startProcessing(stdin io.Reader) error {
 		return fmt.Errorf("failed to create stdout pipe for all exif: %v", err)
 	}
 
-	if err = preStripExif.Start(); err != nil {
-		return fmt.Errorf("start %v: %v", preStripExif.Args, err)
+	if err = preStrip.Start(); err != nil {
+		return fmt.Errorf("start %v: %v", preStrip.Args, err)
 	}
 
 	if err = c.cmd.Start(); err != nil {
 		return fmt.Errorf("start %v: %v", c.cmd.Args, err)
 	}
+
+	return nil
+}
+
+// startFallback rewinds stdin and starts a plain "exiftool -all=" full strip reading the
+// original bytes directly, replacing the failed pipeline. Orientation is not preserved on
+// this path.
+func (c *cleaner) startFallback() error {
+	log.WithContextFields(c.ctx, log.Fields{
+		"stderr": c.preStripStderr.String(),
+	}).Warn("exif prestrip failed, falling back to full strip")
+
+	c.fellBack = true
+	c.preStrip = nil
+	c.stderr.Reset()
+
+	if _, err := c.stdin.Seek(0, io.SeekStart); err != nil {
+		return err
+	}
+
+	c.cmd = exec.CommandContext(c.ctx, "exiftool", "-all=", "-")
+	c.cmd.Stderr = &c.stderr
+	c.cmd.Stdin = c.stdin
+
+	stdout, err := c.cmd.StdoutPipe()
+	if err != nil {
+		return fmt.Errorf("failed to create stdout pipe for exiftool: %v", err)
+	}
+	c.stdout = stdout
+
+	if err := c.cmd.Start(); err != nil {
+		return fmt.Errorf("start %v: %v", c.cmd.Args, err)
+	}
+
+	c.waited = false
 
 	return nil
 }

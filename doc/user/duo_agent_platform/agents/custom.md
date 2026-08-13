@@ -50,7 +50,7 @@ with GitLab Duo Chat in the GitLab UI, VS Code, and JetBrains IDEs.
 {{< history >}}
 
 - Roles that can view private agents [expanded](https://gitlab.com/gitlab-org/gitlab/-/work_items/582507) in GitLab 18.7.
-- Restricted visibility [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/603253) in GitLab 19.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `ai_catalog_internal_visibility`. Disabled by default.
+- Restricted visibility [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/603253) in GitLab 19.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `ai_catalog_internal_visibility`. Enabled by default.
 
 {{< /history >}}
 
@@ -98,7 +98,7 @@ Select an agent to view its details.
 
 {{< history >}}
 
-- Restricted visibility [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/603253) in GitLab 19.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `ai_catalog_internal_visibility`. Disabled by default.
+- Restricted visibility [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/603253) in GitLab 19.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `ai_catalog_internal_visibility`. Enabled by default.
 
 {{< /history >}}
 

@@ -30,6 +30,7 @@ import {
 import { PANEL_TYPES } from '../../constants';
 import ScrollScrim from '../scroll_scrim.vue';
 import { FEEDBACK_ISSUE_URL, MODAL_ID, ITEMS_PER_RENDER_FRAME } from './constants';
+import { rankSearchResults } from './search';
 import FeatureLibraryItem from './feature_library_item.vue';
 
 const SETTINGS_MENU_ID = 'settings_menu';
@@ -158,25 +159,13 @@ export default {
       return Object.fromEntries(this.catalog.map((item) => [item.id, item]));
     },
     filteredItems() {
-      const q = this.trimmedQuery.toLowerCase();
+      if (!this.trimmedQuery) return this.catalog;
 
-      if (!q) return this.catalog;
-
-      const textMatches = (text = '') => text.toLowerCase().includes(q);
-
-      // Synonym matches from endpoint come first: backend-ranked (exact -> prefix -> contains).
-      const synonymMatches = this.searchResultIds
-        .map((id) => this.catalogById[id])
-        .filter((item) => item);
-
-      // Direct title/description matches follow, excluding any already surfaced as synonyms.
-      const synonymIds = new Set(synonymMatches.map((item) => item.id));
-      const directMatches = this.catalog.filter(
-        (item) =>
-          !synonymIds.has(item.id) && (textMatches(item.title) || textMatches(item.description)),
-      );
-
-      return [...synonymMatches, ...directMatches];
+      return rankSearchResults({
+        catalog: this.catalog,
+        query: this.trimmedQuery,
+        synonymIds: this.searchResultIds,
+      });
     },
     // Sections with their items, honoring the progressive reveal limit.
     // Used when not searching, so each category renders under its own heading.

@@ -457,13 +457,22 @@ describe('FeatureLibraryModal', () => {
         expect(findLoadingIcon().exists()).toBe(false);
       });
 
-      it('synonym matches appear first (backend-ranked), direct matches follow', async () => {
+      // Ranking and sort order are unit-tested in search_spec.js. These two
+      // cover the component's integration with the util via the real endpoint.
+      it('ranks a title match above a synonym-only match from the endpoint', async () => {
         mockAxios.onGet(SEARCH_URL).reply(HTTP_STATUS_OK, { ids: ['boards', 'repository'] });
         await emitSearch('repo');
         await waitForPromises();
 
-        expect(findItemIds()[0]).toBe('boards');
-        expect(findItemIds()[1]).toBe('repository');
+        expect(findItemIds()).toEqual(['repository', 'boards']);
+      });
+
+      it('ranks a title match above a description-only match', async () => {
+        mockAxios.onGet(SEARCH_URL).reply(HTTP_STATUS_OK, { ids: [] });
+        await emitSearch('work');
+        await waitForPromises();
+
+        expect(findItemIds()).toEqual(['project_issue_list', 'boards']);
       });
 
       it('does not duplicate items that match both title and endpoint', async () => {
@@ -511,14 +520,14 @@ describe('FeatureLibraryModal', () => {
         expect(findItemIds()).toContain('boards');
       });
 
-      it('preserves endpoint ranking order among synonym-only results', async () => {
+      it('passes the endpoint order through to synonym-only results', async () => {
         mockAxios
           .onGet(SEARCH_URL)
-          .reply(HTTP_STATUS_OK, { ids: ['boards', 'project_issue_list'] });
+          .reply(HTTP_STATUS_OK, { ids: ['project_issue_list', 'boards'] });
         await emitSearch('sprint');
         await waitForPromises();
 
-        expect(findItemIds()).toEqual(['boards', 'project_issue_list']);
+        expect(findItemIds()).toEqual(['project_issue_list', 'boards']);
       });
 
       it('silently drops endpoint ids that have no catalog entry', async () => {
@@ -1404,7 +1413,7 @@ describe('FeatureLibraryModal', () => {
         await waitForPromises();
       });
 
-      it('focuses the backend-ranked first result on Enter', () => {
+      it('focuses the first displayed result on Enter', () => {
         pressEnter();
 
         expect(focusItem).toHaveBeenCalled();

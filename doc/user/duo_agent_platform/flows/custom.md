@@ -53,7 +53,7 @@ automate complex, multi-step tasks across your GitLab projects.
 {{< history >}}
 
 - Roles that can view private flows [expanded](https://gitlab.com/gitlab-org/gitlab/-/work_items/582507) in GitLab 18.7.
-- Restricted visibility [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/603253) in GitLab 19.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `ai_catalog_internal_visibility`. Disabled by default.
+- Restricted visibility [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/603253) in GitLab 19.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `ai_catalog_internal_visibility`. Enabled by default.
 
 {{< /history >}}
 
@@ -105,7 +105,7 @@ Select a flow to view its details.
 
 {{< history >}}
 
-- Restricted visibility [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/603253) in GitLab 19.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `ai_catalog_internal_visibility`. Disabled by default.
+- Restricted visibility [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/603253) in GitLab 19.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `ai_catalog_internal_visibility`. Enabled by default.
 
 {{< /history >}}
 

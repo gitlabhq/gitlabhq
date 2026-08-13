@@ -10952,6 +10952,18 @@
               "deprecationReason": null
             },
             {
+              "name": "humanAuthor",
+              "description": "Human user on whose behalf the audit event was triggered, present only for composite-identity sessions where a service account acts on behalf of a human.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "UserCore",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "id",
               "description": "ID of the audit event.",
               "args": [],
