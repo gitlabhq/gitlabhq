@@ -87,6 +87,18 @@ RSpec.describe ApplicationController, feature_category: :shared do
       end
     end
 
+    context 'when set_data_context also runs on the same request' do
+      let_it_be(:header_organization) { create(:organization) }
+
+      it 'resolves the request organization anchor only once' do
+        request.headers['X-GitLab-Organization-ID'] = header_organization.id.to_s
+
+        expect(::Organizations::Organization).to receive(:find_by_id_with_isolation_record).once.and_call_original
+
+        get :index, format: :html
+      end
+    end
+
     context 'when multiple calls in one example are done' do
       it 'does not update the organization' do
         expect(Current).to receive(:organization=).once.and_call_original

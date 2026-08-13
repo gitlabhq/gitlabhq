@@ -339,6 +339,32 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
       end
     end
 
+    context 'when the source job definition is loaded' do
+      include_context 'retryable build'
+
+      # `start_pipeline` resets the clone, which drops the association cache
+      # populated by `Ci::CloneJobService`.
+      let(:start_pipeline_on_clone) { true }
+
+      it 're-attaches the shared record to the clone after the reset' do
+        shared_definition = job.job_definition
+
+        expect(new_job.association(:job_definition).target).to be(shared_definition)
+      end
+
+      context 'when ci_retry_shared_job_definition is disabled' do
+        before do
+          stub_feature_flags(ci_retry_shared_job_definition: false)
+        end
+
+        it 'leaves the clone to load its own record' do
+          job.job_definition
+
+          expect(new_job.association(:job_definition)).not_to be_loaded
+        end
+      end
+    end
+
     context 'when enqueue_if_actionable is provided' do
       let!(:job) do
         create(:ci_build, *[trait].compact, :failed, pipeline: pipeline, ci_stage: stage)

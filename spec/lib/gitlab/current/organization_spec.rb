@@ -212,5 +212,39 @@ RSpec.describe Gitlab::Current::Organization, feature_category: :organization do
       end
     end
   end
+
+  describe '#from_request' do
+    subject(:current_organization) { described_class.new(params: params, rack_env: rack_env) }
+
+    where(:params, :rack_env, :expected) do
+      ref(:params_with_namespace_id)      | ref(:rack_env_with_valid_org) | ref(:organization)
+      ref(:params_with_org_path)          | ref(:rack_env_with_valid_org) | ref(:other_organization)
+      ref(:params_with_invalid_namespace) | ref(:rack_env_with_valid_org) | ref(:header_organization)
+      ref(:empty_params)                  | ref(:rack_env_with_valid_org) | ref(:header_organization)
+      ref(:empty_params)                  | ref(:empty_rack_env)          | nil
+      ref(:empty_params)                  | ref(:nil_rack_env)            | nil
+      ref(:params_with_invalid_namespace) | ref(:empty_rack_env)          | nil
+    end
+
+    with_them do
+      it 'resolves what the path/header names, with no fallback' do
+        expect(current_organization.from_request).to eq(expected)
+      end
+    end
+
+    context 'for query optimization' do
+      it 'uses only 1 query when resolving from params' do
+        current_organization = described_class.new(params: params_with_namespace_id, rack_env: nil)
+
+        expect { current_organization.from_request }.to match_query_count(1)
+      end
+
+      it 'uses only 1 query when resolving from headers' do
+        current_organization = described_class.new(params: empty_params, rack_env: rack_env_with_valid_org)
+
+        expect { current_organization.from_request }.to match_query_count(1)
+      end
+    end
+  end
 end
 # rubocop:enable RSpec/MultipleMemoizedHelpers

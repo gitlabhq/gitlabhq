@@ -97,7 +97,9 @@ As part of publishing a package, semantic-release increases the version number i
 1. In your project, select **Add new token**.
 1. In the **Token name** box, enter a token name.
    <!-- markdownlint-disable MD044 -->
+<!-- vale gitlab_base.Spelling = NO -->
 1. Under **Select scopes**, select the **api** checkbox.
+<!-- vale gitlab_base.Spelling = YES -->
    <!-- markdownlint-enable MD044 -->
 1. Select **Create project access token**.
 1. Copy the token value.

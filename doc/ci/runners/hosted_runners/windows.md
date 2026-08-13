@@ -53,8 +53,8 @@ The following files list the available pre-installed software:
 - [Git, Git LFS, and GitLab Runner](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/-/tree/main/cookbooks/gitlab-runner-dependencies/recipes)
 - Pre-installed development tools:
   - [Docker](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/-/blob/main/cookbooks/preinstalled-software/recipes/docker.rb)
-  - [.NET Core SDK 3.1, Ruby, Go, Nodejs, OpenJDK, Python3](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/-/blob/main/cookbooks/preinstalled-software/recipes/languages.rb)
-  - [7-Zip, wget, curl, jq, Docker Compose, NuGet CLI, cmake, GitLab CLI (glab)](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/-/blob/main/cookbooks/preinstalled-software/recipes/utils.rb)
+  - [.NET Core SDK 3.1, Ruby, Go, Node.js, OpenJDK, Python3](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/-/blob/main/cookbooks/preinstalled-software/recipes/languages.rb)
+  - [7-Zip, Wget, curl, jq, Docker Compose, NuGet CLI, CMake, GitLab CLI (glab)](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/-/blob/main/cookbooks/preinstalled-software/recipes/utils.rb)
   - [Visual C Runtimes](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/-/blob/main/cookbooks/preinstalled-software/recipes/vcpkg.rb). See linked file for version.
   - [Visual Studio Build Tools](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/-/blob/main/cookbooks/preinstalled-software/recipes/visual-studio-build-tools.rb). See linked file for version.
 

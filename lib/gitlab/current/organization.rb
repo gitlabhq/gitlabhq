@@ -3,9 +3,11 @@
 module Gitlab
   module Current
     class Organization
-      attr_reader :params, :headers
+      include Gitlab::Utils::StrongMemoize
 
       HTTP_HEADER = "X-GitLab-Organization-ID"
+
+      attr_reader :params
 
       def initialize(params: {}, user: nil, rack_env: nil)
         @params = params
@@ -14,16 +16,17 @@ module Gitlab
       end
 
       def organization
-        from_params || from_headers || from_user || fallback_organization
+        from_request || from_user || fallback_organization
       end
 
-      def user
-        return @user if defined?(@user)
-
-        @user = @user_or_proc.respond_to?(:call) ? @user_or_proc.call : @user_or_proc
+      # The Organization a request's path/header names, if any - see
+      # https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/organization/contexts/.
+      # Does not fall back to the User's home Organization or the default Organization -
+      # those are not what the request is about, see #from_user and Gitlab::Current::DataContext respectively.
+      def from_request
+        from_params || from_headers
       end
-
-      private
+      strong_memoize_attr :from_request
 
       def from_params
         from_group_params || from_organization_params
@@ -44,6 +47,16 @@ module Gitlab
 
         ::Organizations::Organization.find_by_id_with_isolation_record(user.organization_id)
       end
+
+      def user
+        return @user if defined?(@user)
+
+        @user = @user_or_proc.respond_to?(:call) ? @user_or_proc.call : @user_or_proc
+      end
+
+      private
+
+      attr_reader :headers
 
       def from_group_params
         path = params[:namespace_id] || params[:group_id]

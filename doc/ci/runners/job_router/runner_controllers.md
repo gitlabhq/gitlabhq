@@ -31,7 +31,7 @@ Runner controllers enable admission control for CI/CD jobs routed through the
 an admission request to connected runner controllers, which can admit or reject
 the job based on custom policies.
 
-Runner controllers are at the instance level and are applicable to jobs depending
+Runner controllers are configured for the instance, and are applicable to jobs depending
 on their [scoping](#scoping).
 
 Use runner controllers to:

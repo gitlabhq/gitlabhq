@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::ResourceLinkEvent, type: :model, feature_category: :team_planning do
+RSpec.describe WorkItems::ResourceLinkEvent, feature_category: :team_planning do
   it_behaves_like 'a resource event'
 
   describe 'associations' do

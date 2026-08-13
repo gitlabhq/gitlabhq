@@ -34,7 +34,7 @@ RSpec.describe Ci::JobDefinitionInstance, feature_category: :continuous_integrat
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:job) }
-    it { is_expected.to validate_presence_of(:job_definition) }
+    it { is_expected.to validate_presence_of(:job_definition_id) }
     it { is_expected.to validate_presence_of(:project) }
   end
 end

@@ -219,6 +219,11 @@ export default {
           },
         })
         .then(({ data }) => {
+          const mutationErrors = data.issuableSetAssignees?.errors ?? [];
+          if (mutationErrors.length > 0) {
+            createAlert({ message: mutationErrors.join('. ') });
+            return data;
+          }
           this.$emit('assignees-updated', {
             id: data.issuableSetAssignees.issuable.id,
             assignees: data.issuableSetAssignees.issuable.assignees.nodes,

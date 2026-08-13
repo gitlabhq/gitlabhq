@@ -84,6 +84,7 @@ describe('WorkItemAssignees component', () => {
     participants = [],
     searchQueryHandler = successSearchQueryHandler,
     currentUserQueryHandler = successCurrentUserQueryHandler,
+    updateMutationHandler = successUpdateWorkItemMutationHandler,
     allowsMultipleAssignees = false,
     canInviteMembers = false,
     canUpdate = true,
@@ -94,7 +95,7 @@ describe('WorkItemAssignees component', () => {
         [usersSearchQuery, searchQueryHandler],
         [groupUsersSearchQuery, successGroupSearchQueryHandler],
         [currentUserQuery, currentUserQueryHandler],
-        [updateWorkItemMutation, successUpdateWorkItemMutationHandler],
+        [updateWorkItemMutation, updateMutationHandler],
       ],
       resolvers,
     );
@@ -385,6 +386,23 @@ describe('WorkItemAssignees component', () => {
         property: 'type_Task',
         extra: { viewContext: 'full_screen' },
       });
+    });
+  });
+
+  describe('when the update mutation returns errors', () => {
+    it('emits the specific error messages instead of the generic update error', async () => {
+      const mutationError = 'You can assign only one service account at a time.';
+      const errorResponse = cloneDeep(updateWorkItemMutationResponse);
+      errorResponse.data.workItemUpdate.errors = [mutationError];
+      const updateMutationErrorHandler = jest.fn().mockResolvedValue(errorResponse);
+
+      createComponent({ updateMutationHandler: updateMutationErrorHandler, assignees: [] });
+      await waitForPromises();
+
+      findAssignSelfButton().vm.$emit('click', new MouseEvent('click'));
+      await waitForPromises();
+
+      expect(wrapper.emitted('error')).toEqual([[mutationError]]);
     });
   });
 

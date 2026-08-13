@@ -114,19 +114,29 @@ Capybara.javascript_driver = ENV.fetch('WEBDRIVER', :chrome).to_sym
 Capybara.default_max_wait_time = timeout
 Capybara.ignore_hidden_elements = true
 Capybara.default_normalize_ws = true
-Capybara.enable_aria_label = true
 Capybara.default_set_options = { clear: :backspace }
 
-# Pajamas buttons stay focusable while unavailable: they carry
-# `aria-disabled="true"` and drop their click listener instead of taking the
-# native `disabled` attribute. Capybara's own `disabled:` filter reads the
-# native property, so it matches such a button and clicks it into the void.
+## Accessibility considerations
+
+Capybara.enable_aria_label = true
+
+# Pajamas buttons stay focusable while unavailable: GlButton renders
+# `aria-disabled="true"` and ignores its click listener rather than using the
+# native `disabled` attribute. That is true of `loading` today, and of
+# `disabled` once `accessible_disabled_button` is on.
 #
-# `click_button "Save", aria_disabled: false` waits for the button to become
-# available, whatever GlButton renders underneath.
-Capybara.modify_selector(:button) do
-  node_filter(:aria_disabled, :boolean) do |node, value|
-    (node[:'aria-disabled'] == 'true') == value
+# Capybara's `disabled` filter reads the native property, so it matches an
+# unavailable button, clicks it, and the click is discarded. The spec then
+# carries on as though the action had run, and fails later somewhere else.
+#
+# Teach that filter about `aria-disabled` so `click_button` and
+# `click_link_or_button` wait for a button to become available, as they
+# already do for natively disabled ones.
+%i[button link_or_button].each do |selector|
+  Capybara.modify_selector(selector) do
+    node_filter(:disabled, :boolean, default: false, skip_if: :all) do |node, value|
+      (node.disabled? || node[:'aria-disabled'] == 'true') == value
+    end
   end
 end
 

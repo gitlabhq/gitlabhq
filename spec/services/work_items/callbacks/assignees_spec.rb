@@ -122,6 +122,25 @@ RSpec.describe WorkItems::Callbacks::Assignees, :request_store, :freeze_time, fe
 
         expect(work_item.assignee_ids).to contain_exactly(new_assignee.id)
       end
+
+      context 'when composite identity linking raises TooManyIdentitiesLinkedError' do
+        before do
+          allow(::Gitlab::Auth::Identity).to receive(:link_from_scoped_user)
+            .and_raise(::Gitlab::Auth::Identity::TooManyIdentitiesLinkedError)
+        end
+
+        it 'logs a warning and raises a callback error with a user-facing message' do
+          expect(::Gitlab::AppLogger).to receive(:warn).with(hash_including(
+            message: 'Composite identity linking failed during assignment',
+            error: 'Gitlab::Auth::Identity::TooManyIdentitiesLinkedError'
+          ))
+
+          expect { assignees_callback }.to raise_error(
+            ::Issuable::Callbacks::Base::Error,
+            /You can assign only one service account at a time\./
+          )
+        end
+      end
     end
 
     context 'when assignee is a regular user with composite_identity_enforced' do

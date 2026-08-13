@@ -16,6 +16,7 @@ class Current < ActiveSupport::CurrentAttributes
 
   # watch background jobs need to reset on each job if using
   attribute :organization, :organization_assigned
+  attribute :data_context
   attribute :token_info
   attribute :granular_denied_permissions
 

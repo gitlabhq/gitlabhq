@@ -68,6 +68,21 @@ RSpec.shared_examples 'an assignable resource' do
         expect(subject[:errors]).not_to match_array(['foo'])
       end
 
+      context 'when composite identity linking raises TooManyIdentitiesLinkedError' do
+        before do
+          allow_next_instance_of(mutation.send(:update_service_class)) do |service|
+            allow(service).to receive(:execute)
+              .and_raise(::Gitlab::Auth::Identity::TooManyIdentitiesLinkedError)
+          end
+        end
+
+        it 'returns a user-facing error in the mutation response instead of propagating the exception' do
+          expect(subject[:errors]).to include(
+            a_string_matching(/You can assign only one service account at a time/)
+          )
+        end
+      end
+
       context 'when passing an empty assignee list' do
         let(:assignee_usernames) { [] }
 

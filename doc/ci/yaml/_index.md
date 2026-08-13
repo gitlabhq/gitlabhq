@@ -1758,7 +1758,7 @@ Use `expire_in` to specify how long [job artifacts](../jobs/job_artifacts.md) ar
 they expire and are deleted. The `expire_in` setting does not affect:
 
 - Artifacts from the latest job, unless keeping the latest job artifacts is disabled
-  [at the project level](../jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs)
+  [for the project](../jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs)
   or [instance-wide](../../administration/settings/continuous_integration.md#keep-artifacts-from-latest-successful-pipelines).
 
 After their expiry, artifacts are deleted hourly by default (using a cron job), and are not
@@ -6680,7 +6680,7 @@ In this example, only runners with both the `ruby` and `postgres` tags can run t
 Use `timeout` to configure a timeout for a specific job. If the job runs for longer
 than the timeout, the job fails.
 
-The job-level timeout can be longer than the [project-level timeout](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run),
+The job-level timeout can be longer than the [project timeout](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run),
 but can't be longer than the [runner's timeout](../runners/configure_runners.md#set-the-maximum-job-timeout).
 
 **Keyword type**: Job keyword. You can use it only as part of a job.

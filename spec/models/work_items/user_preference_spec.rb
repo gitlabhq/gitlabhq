@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::UserPreference, type: :model, feature_category: :team_planning do
+RSpec.describe WorkItems::UserPreference, feature_category: :team_planning do
   describe 'associations' do
     it { is_expected.to belong_to(:user) }
     it { is_expected.to belong_to(:namespace) }

@@ -2,6 +2,8 @@
 
 module Ci
   class CloneJobService
+    include Gitlab::Utils::StrongMemoize
+
     def initialize(job, current_user:)
       @job = job
       @current_user = current_user
@@ -17,7 +19,17 @@ module Ci
 
       new_attributes[:user] = current_user
 
-      job.class.new(new_attributes)
+      new_job = job.class.new(new_attributes)
+
+      # Definition-backed attributes (options, tag_list, ...) are absent from
+      # clone_accessors and resolve through this association, which yields
+      # nothing while the clone is unsaved. Sharing the row makes the clone
+      # report the source's config pre-save instead of falling back to
+      # defaults. This changes what those reads return; it saves no queries,
+      # as Active Record does not query the association for a new record.
+      new_job.association(:job_definition).target = shared_job_definition if shared_job_definition
+
+      new_job
     end
 
     private
@@ -70,5 +82,13 @@ module Ci
         partition_id: job_definition_instance.partition_id
       }
     end
+
+    def shared_job_definition
+      return unless Feature.enabled?(:ci_retry_shared_job_definition, project)
+      return unless job.association(:job_definition).loaded?
+
+      job.job_definition
+    end
+    strong_memoize_attr :shared_job_definition
   end
 end

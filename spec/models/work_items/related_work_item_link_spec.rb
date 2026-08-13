@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::RelatedWorkItemLink, type: :model, feature_category: :portfolio_management do
+RSpec.describe WorkItems::RelatedWorkItemLink, feature_category: :portfolio_management do
   let_it_be(:project) { create(:project) }
   let_it_be(:issue) { create(:work_item, :issue, project: project) }
 

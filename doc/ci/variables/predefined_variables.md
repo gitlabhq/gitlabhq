@@ -110,8 +110,8 @@ Predefined variables become available at three different phases of pipeline exec
 | `CI_PAGES_DOMAIN`                               | Pre-pipeline | The instance's domain that hosts GitLab Pages, not including the namespace subdomain. To use the full hostname, use `CI_PAGES_HOSTNAME` instead. |
 | `CI_PAGES_HOSTNAME`                             | Job-only     | The full hostname of the Pages deployment. |
 | `CI_PAGES_URL`                                  | Job-only     | The URL for a GitLab Pages site. Always a subdomain of `CI_PAGES_DOMAIN`. In GitLab 17.9 and later, the value includes the `path_prefix` when one is specified. |
-| `CI_PIPELINE_ID`                                | Job-only     | The instance-level ID of the current pipeline. This ID is unique across all projects on the GitLab instance. |
-| `CI_PIPELINE_IID`                               | Pipeline     | The project-level IID (internal ID) of the current pipeline. This ID is unique only in the current project. |
+| `CI_PIPELINE_ID`                                | Job-only     | The ID of the current pipeline. This ID is unique across all projects on the GitLab instance. |
+| `CI_PIPELINE_IID`                               | Pipeline     | The IID (internal ID) of the current pipeline. This ID is unique only in the current project. |
 | `CI_PIPELINE_SOURCE`                            | Pre-pipeline | How the pipeline was triggered. The value can be one of the [pipeline sources](../jobs/job_rules.md#ci_pipeline_source-predefined-variable). |
 | `CI_PIPELINE_TRIGGERED`                         | Pipeline     | `true` for pipelines [triggered with a trigger token](../triggers/_index.md). For pipelines triggered with the [`trigger`](../yaml/_index.md#trigger) keyword, use [`CI_PIPELINE_SOURCE`](../jobs/job_rules.md#ci_pipeline_source-predefined-variable) instead. |
 | `CI_PIPELINE_URL`                               | Job-only     | The URL for the pipeline details. |
@@ -201,8 +201,8 @@ and the merge request must be open.
 | `CI_MERGE_REQUEST_EVENT_TYPE`               | The event type of the merge request. Can be `detached`, `merged_result` or `merge_train`. |
 | `CI_MERGE_REQUEST_DESCRIPTION`              | The description of the merge request. If the description is more than 2700 characters long, only the first 2700 characters are stored in the variable. |
 | `CI_MERGE_REQUEST_DESCRIPTION_IS_TRUNCATED` | `true` if `CI_MERGE_REQUEST_DESCRIPTION` is truncated down to 2700 characters because the description of the merge request is too long, otherwise `false`. |
-| `CI_MERGE_REQUEST_ID`                       | The instance-level ID of the merge request. The ID is unique across all projects on the GitLab instance. |
-| `CI_MERGE_REQUEST_IID`                      | The project-level IID (internal ID) of the merge request. This ID is unique for the current project, and is the number used in the merge request URL, page title, and other visible locations. |
+| `CI_MERGE_REQUEST_ID`                       | The ID of the merge request. The ID is unique across all projects on the GitLab instance. |
+| `CI_MERGE_REQUEST_IID`                      | The IID (internal ID) of the merge request. This ID is unique for the current project, and is the number used in the merge request URL, page title, and other visible locations. |
 | `CI_MERGE_REQUEST_LABELS`                   | Comma-separated label names of the merge request. Only available if the merge request has at least one label. |
 | `CI_MERGE_REQUEST_MILESTONE`                | The milestone title of the merge request. Only available if the merge request has a milestone set. |
 | `CI_MERGE_REQUEST_PROJECT_ID`               | The ID of the project of the merge request. |

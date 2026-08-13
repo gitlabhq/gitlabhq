@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::UserPreferences::DestroyWorker, type: :worker, feature_category: :team_planning do
+RSpec.describe WorkItems::UserPreferences::DestroyWorker, feature_category: :team_planning do
   let_it_be(:root_namespace) { create(:group) }
   let_it_be(:user) { create(:user) }
 

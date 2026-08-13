@@ -45,6 +45,10 @@ module Gitlab
         configuration.repository.create(attributes)
       end
 
+      def update(id, attributes)
+        configuration.repository.update(id, attributes)
+      end
+
       def find(id)
         configuration.repository.find(id)
       end

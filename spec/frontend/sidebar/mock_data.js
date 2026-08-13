@@ -578,6 +578,7 @@ export const searchAutocompleteQueryResponse = {
 export const updateIssueAssigneesMutationResponse = {
   data: {
     issuableSetAssignees: {
+      errors: [],
       issuable: {
         id: 'gid://gitlab/Issue/1',
         iid: '1',
@@ -594,6 +595,37 @@ export const updateIssueAssigneesMutationResponse = {
               webPath: '/root',
               status: null,
               type: userTypes.human,
+              compositeIdentityEnforced: false,
+            },
+          ],
+          __typename: 'UserConnection',
+        },
+        __typename: 'Issue',
+      },
+    },
+  },
+};
+
+export const updateIssueAssigneesMutationErrorResponse = {
+  data: {
+    issuableSetAssignees: {
+      errors: ['You can assign only one service account at a time.'],
+      issuable: {
+        id: 'gid://gitlab/Issue/1',
+        iid: '1',
+        assignees: {
+          nodes: [
+            {
+              __typename: 'UserCore',
+              id: 'gid://gitlab/User/2',
+              avatarUrl:
+                'https://www.gravatar.com/avatar/a95e5b71488f4b9d69ce5ff58bfd28d6?s=80\u0026d=identicon',
+              name: 'Jacki Kub',
+              username: 'francina.skiles',
+              webUrl: '/franc',
+              webPath: '/franc',
+              status: null,
+              type: 'HUMAN',
               compositeIdentityEnforced: false,
             },
           ],

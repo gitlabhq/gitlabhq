@@ -54,6 +54,16 @@ RSpec.describe Gitlab::PolicyStore do
       end
     end
 
+    describe '#update' do
+      it 'delegates to the configured repository' do
+        attributes = { name: 'renamed' }
+        policy = instance_double(Gitlab::PolicyStore::Policy)
+        allow(repository).to receive(:update).with(1, attributes).and_return(policy)
+
+        expect(described_class.update(1, attributes)).to eq(policy)
+      end
+    end
+
     describe '#find' do
       it 'delegates to the configured repository' do
         policy = instance_double(Gitlab::PolicyStore::Policy)

@@ -238,7 +238,7 @@ For complex Docker-in-Docker setups like [Code Quality scanning using CodeClimat
 ## Use Docker pipe binding
 
 Windows Containers run Windows executables compiled for the Windows Server kernel and userland
-(either windowsservercore or nanoserver). To build and run Windows containers, a Windows system
+(either Windows Server Core or Nano Server). To build and run Windows containers, a Windows system
 with container support is required.
 For more information, see [Windows Containers](https://learn.microsoft.com/en-us/virtualization/windowscontainers/).
 

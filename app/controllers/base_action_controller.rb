@@ -22,6 +22,7 @@
 class BaseActionController < ActionController::Base
   extend ContentSecurityPolicyPatch
   include CurrentOrganization
+  include CurrentDataContext
 
   content_security_policy do |p|
     next if p.directives.blank?

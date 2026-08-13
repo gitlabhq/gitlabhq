@@ -324,7 +324,7 @@ You can use or adapt the [PMD CI/CD component](https://gitlab.com/explore/catalo
 
 Using [SwiftLint](https://realm.github.io/SwiftLint/) requires additional configuration because its default output doesn't conform to the required format.
 
-You can use or adapt the [Swiftlint CI/CD component](https://gitlab.com/explore/catalog/components/code-quality-oss/codequality-os-scanners-integration) to run the scan and integrate its output with Code Quality.
+You can use or adapt the [SwiftLint CI/CD component](https://gitlab.com/explore/catalog/components/code-quality-oss/codequality-os-scanners-integration) to run the scan and integrate its output with Code Quality.
 
 #### RuboCop
 

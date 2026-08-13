@@ -126,6 +126,7 @@ burstable
 CA
 cacheable
 Caddy
+cAdvisor
 callout
 callouts
 callstack
@@ -301,11 +302,12 @@ DevOps
 Dhall
 dialogs
 Diffblue
+DinD
 disambiguates
 discoverability
 dismissable
 Disqus
-Distroless
+distroless
 Divio
 DLE
 DNs
@@ -322,6 +324,7 @@ dogfoods
 DOMPurify
 dotenv
 dotfiles
+dotnet
 doublestar
 downvoted
 downvotes
@@ -338,6 +341,7 @@ EGit
 ElastiCache
 Elasticsearch
 Eleventy
+Embeddable
 enablement
 Encrypt
 enqueued
@@ -355,10 +359,12 @@ ETag
 ETags
 Etsy
 Excon
+ExCoveralls
 exfiltrate
 exfiltration
 ExifTool
 expirable
+Fabernovel
 Facebook
 failover
 failovers
@@ -406,6 +412,8 @@ fuzzer
 fuzzing
 Gantt
 Gbps
+GCC
+gcovr
 Gemfile
 Gemnasium
 Gemojione
@@ -434,13 +442,16 @@ globstars
 GLQL's
 Gmail
 Godep
+gofmt
 Golang
 Goldmark
+golint
 Gollum
 Google
 goroutine
 goroutines
 Gosec
+govet
 GPUs
 Gradle
 Grafana
@@ -477,6 +488,7 @@ hotfixed
 hotfixes
 hotfixing
 hotspots
+howto
 HTMLHint
 http
 https
@@ -491,6 +503,7 @@ IDEs
 idmapper
 Iglu
 IID
+IIDs
 IIFEs
 Immer
 inclusivity
@@ -548,6 +561,7 @@ keyless
 keyset
 keyspace
 keystore
+keystores
 keytab
 keytabs
 Kibana
@@ -676,6 +690,7 @@ namespaced
 namespaces
 namespacing
 namespacings
+Nano
 Nanoc
 NAT
 navigations
@@ -760,6 +775,7 @@ Pipfiles
 Piwik
 plaintext
 pnpm
+Podfile
 podman
 Poedit
 polyfill
@@ -907,6 +923,7 @@ roadmaps
 rock
 rollout
 rollouts
+Roslynator
 routable
 RPCs
 RSpec
@@ -939,9 +956,11 @@ scatterplot
 scatterplots
 schedulable
 Schemastore
+scoverage
 scriptable
 scrollable
 SDKs
+seccomp
 segmentations
 SELinux
 Semgrep
@@ -1060,6 +1079,8 @@ supercookie
 supercookies
 supergroup
 supergroups
+superproject
+superproject's
 superset
 supersets
 supertype
@@ -1069,6 +1090,7 @@ swappiness
 swimlane
 swimlanes
 syncable
+syntaxes
 Sysbench
 Sysbox
 syscall
@@ -1096,6 +1118,7 @@ timeboxing
 timecop
 timelog
 timelogs
+Timestamper
 Tiptap
 todos
 tokenizer
@@ -1120,6 +1143,7 @@ Trendline
 triaged
 triages
 triaging
+triggerer
 Trivy
 Trixie
 Truststore
@@ -1239,6 +1263,7 @@ untarred
 untrack
 untracked
 untrusted
+untyped
 unvalidated
 unverified
 unverifies
@@ -1253,6 +1278,7 @@ upvotes
 urgencies
 URIs
 URL
+userland
 UUIDs
 Vagrantfile
 validator
@@ -1282,6 +1308,7 @@ webserver
 Webservice
 websocket
 websockets
+Wget
 whitepaper
 whitepapers
 wireframe
@@ -1301,6 +1328,7 @@ Xcode
 Xenial
 Xeon
 Xerus
+XGBoost
 XPath
 Yandex
 YouTrack
@@ -1312,6 +1340,7 @@ Zeitwerk
 Zendesk
 ZenTao
 Zoekt
+Zscaler
 zsh
 Zstandard
 Zuora

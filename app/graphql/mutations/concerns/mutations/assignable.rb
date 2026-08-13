@@ -21,7 +21,14 @@ module Mutations
       resource = authorized_find!(project_path: project_path, iid: iid)
       users = new_assignees(resource, assignee_usernames)
 
-      assign!(resource, users, operation_mode)
+      begin
+        assign!(resource, users, operation_mode)
+      rescue ::Gitlab::Auth::Identity::TooManyIdentitiesLinkedError
+        resource.errors.add(
+          :base,
+          _("You can assign only one service account at a time.")
+        )
+      end
 
       {
         resource.class.name.underscore.to_sym => resource,

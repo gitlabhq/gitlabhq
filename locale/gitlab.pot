@@ -13606,25 +13606,7 @@ msgstr ""
 msgid "Billing"
 msgstr ""
 
-msgid "BillingPlans|$%{cost}/yr"
-msgstr ""
-
-msgid "BillingPlans|$12 in GitLab Credits per user per month"
-msgstr ""
-
-msgid "BillingPlans|$24 in GitLab Credits per user per month"
-msgstr ""
-
-msgid "BillingPlans|%{amount} × $%{pricePerCredit} = $%{cost}/mo"
-msgstr ""
-
-msgid "BillingPlans|%{creditsPerUser} credits/user/month included in plan for:"
-msgstr ""
-
 msgid "BillingPlans|%{group_name} is currently using the %{plan_name}"
-msgstr ""
-
-msgid "BillingPlans|*Limited time offer. %{linkStart}See details and promo terms.%{linkEnd}"
 msgstr ""
 
 msgid "BillingPlans|10,000 Compute Minutes per Month"
@@ -13637,9 +13619,6 @@ msgid "BillingPlans|10000 compute minutes"
 msgstr ""
 
 msgid "BillingPlans|400 compute minutes"
-msgstr ""
-
-msgid "BillingPlans|50,000 compute minutes per month"
 msgstr ""
 
 msgid "BillingPlans|50000 compute minutes"
@@ -13681,16 +13660,7 @@ msgstr ""
 msgid "BillingPlans|Advanced application security"
 msgstr ""
 
-msgid "BillingPlans|Advanced security capabilities"
-msgstr ""
-
-msgid "BillingPlans|After purchasing your subscription, you'll complete a separate checkout for credits."
-msgstr ""
-
 msgid "BillingPlans|Agents"
-msgstr ""
-
-msgid "BillingPlans|All included credits, plus shared credits for:"
 msgstr ""
 
 msgid "BillingPlans|All stages of the DevOps lifecycle"
@@ -13711,9 +13681,6 @@ msgstr ""
 msgid "BillingPlans|Automatically sync branches, tags, and commits from an external repository."
 msgstr ""
 
-msgid "BillingPlans|Best for teams just getting started with AI. Included in the cost of your %{planName} subscription.*"
-msgstr ""
-
 msgid "BillingPlans|Billing"
 msgstr ""
 
@@ -13727,9 +13694,6 @@ msgid "BillingPlans|Built to grow with your team"
 msgstr ""
 
 msgid "BillingPlans|Buy monthly credits for AI capabilities, additional compute, and GitLab add-ons. Credits from $1, with volume discounts."
-msgstr ""
-
-msgid "BillingPlans|Cannot exceed 999,999 credits"
 msgstr ""
 
 msgid "BillingPlans|Chat that can be used throughout the GitLab platform, granting a much more fluid and efficient workflow experience."
@@ -13756,9 +13720,6 @@ msgstr ""
 msgid "BillingPlans|Consolidate your toolchain in one place"
 msgstr ""
 
-msgid "BillingPlans|Continue to checkout"
-msgstr ""
-
 msgid "BillingPlans|Control who can approve merge requests to ensure code quality and compliance."
 msgstr ""
 
@@ -13775,9 +13736,6 @@ msgid "BillingPlans|Customizable pre-receive Git hooks that enforce commit conte
 msgstr ""
 
 msgid "BillingPlans|Customize approval workflows with rules defining who must review code before merging, including options to prevent self-approvals and require authentication."
-msgstr ""
-
-msgid "BillingPlans|Discounted bulk credits shared across your group, this is best for teams looking to scale their AI usage. Billed annually."
 msgstr ""
 
 msgid "BillingPlans|Discover Premium"
@@ -13828,9 +13786,6 @@ msgstr ""
 msgid "BillingPlans|Flows"
 msgstr ""
 
-msgid "BillingPlans|For enterprises requiring advanced security and compliance capabilities."
-msgstr ""
-
 msgid "BillingPlans|For individuals working on personal projects and open source contributions."
 msgstr ""
 
@@ -13877,9 +13832,6 @@ msgid "BillingPlans|Have a question? We're here to help."
 msgstr ""
 
 msgid "BillingPlans|If you would like to downgrade your plan please contact %{support_link_start}Customer Support%{support_link_end}."
-msgstr ""
-
-msgid "BillingPlans|Included credits"
 msgstr ""
 
 msgid "BillingPlans|Includes $12 in GitLab Credits per user per month"
@@ -13930,12 +13882,6 @@ msgstr ""
 msgid "BillingPlans|Merge trains"
 msgstr ""
 
-msgid "BillingPlans|Minimum 5 credits"
-msgstr ""
-
-msgid "BillingPlans|Monthly commitment"
-msgstr ""
-
 msgid "BillingPlans|Monthly commitments offer significant discounts. Pool credits across your namespace for predictable costs, and keep them after your trial ends."
 msgstr ""
 
@@ -13943,9 +13889,6 @@ msgid "BillingPlans|Multi-region support"
 msgstr ""
 
 msgid "BillingPlans|Multiple approval rules"
-msgstr ""
-
-msgid "BillingPlans|Must be a valid number"
 msgstr ""
 
 msgid "BillingPlans|No credit card required"
@@ -14000,12 +13943,6 @@ msgid "BillingPlans|See all %{plan_name} features"
 msgstr ""
 
 msgid "BillingPlans|See all features"
-msgstr ""
-
-msgid "BillingPlans|Select your credits"
-msgstr ""
-
-msgid "BillingPlans|Select your subscription"
 msgstr ""
 
 msgid "BillingPlans|Software Supply Chain Security"
@@ -14086,25 +14023,10 @@ msgstr ""
 msgid "BillingPlans|Unlimited licensed users"
 msgstr ""
 
-msgid "BillingPlans|Up to %{maxCodeReviews} code reviews"
-msgstr ""
-
-msgid "BillingPlans|Up to %{maxCodeSuggestions} code suggestions"
-msgstr ""
-
-msgid "BillingPlans|Up to 4 additional code reviews per credit"
-msgstr ""
-
-msgid "BillingPlans|Up to 50 additional code suggestions per credit"
-msgstr ""
-
 msgid "BillingPlans|Upgrade and unlock advanced features that boost your team's productivity instantly."
 msgstr ""
 
 msgid "BillingPlans|Upgrade before your trial ends to maintain access to these Premium features."
-msgstr ""
-
-msgid "BillingPlans|Upgrade subscription"
 msgstr ""
 
 msgid "BillingPlans|Upgrade to Premium"
@@ -14116,13 +14038,7 @@ msgstr ""
 msgid "BillingPlans|Visibility & Incident Response"
 msgstr ""
 
-msgid "BillingPlans|Volume discounts available"
-msgstr ""
-
 msgid "BillingPlans|Vulnerability Management"
-msgstr ""
-
-msgid "BillingPlans|We recommend starting with 20 credits per month."
 msgstr ""
 
 msgid "BillingPlans|You have an active monthly commitment of GitLab Credits shared across your group. You keep these credits when the trial ends."
@@ -14171,9 +14087,6 @@ msgid "BillingPlans|instance"
 msgstr ""
 
 msgid "BillingPlans|monthly"
-msgstr ""
-
-msgid "BillingPlans|per GitLab Credit"
 msgstr ""
 
 msgid "BillingPlans|per user"
@@ -24978,9 +24891,6 @@ msgid "Credit card"
 msgstr ""
 
 msgid "Credit card validation record saved"
-msgstr ""
-
-msgid "Credits per month"
 msgstr ""
 
 msgid "Critical - S1"
@@ -63983,9 +63893,6 @@ msgstr ""
 msgid "Recently viewed"
 msgstr ""
 
-msgid "Recommended"
-msgstr ""
-
 msgid "Recommended. Permanently delete an item:"
 msgstr ""
 
@@ -92383,6 +92290,9 @@ msgid "You can also use our GraphQL API to remove an item:"
 msgstr ""
 
 msgid "You can also use project access tokens with Git to authenticate over HTTP(S). %{link_start}Learn more.%{link_end}"
+msgstr ""
+
+msgid "You can assign only one service account at a time."
 msgstr ""
 
 msgid "You can check it in your %{pat_link_start}personal access tokens%{pat_link_end} settings."

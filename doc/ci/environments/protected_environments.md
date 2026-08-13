@@ -192,15 +192,15 @@ If a new rule is added, previous deployments show the new rules without the opti
 
 For more information, see [Deployment safety](deployment_safety.md).
 
-## Group-level protected environments
+## Protected environments for groups
 
 Typically, large enterprise organizations have an explicit permission boundary
 between [developers and operators](https://about.gitlab.com/topics/devops/).
 Developers build and test their code, and operators deploy and monitor the
-application. With group-level protected environments, operators can
-restrict access to critical environments from developers. Group-level protected environments
-extend the [project-level protected environments](#protecting-environments)
-to the group-level.
+application. With protected environments for groups, operators can
+restrict access to critical environments from developers. They extend
+the [protected environments for projects](#protecting-environments)
+to the group.
 
 The permissions of deployments can be illustrated in the following table:
 
@@ -213,10 +213,10 @@ The permissions of deployments can be illustrated in the following table:
 
 _(Reference: [Deployment environments on Wikipedia](https://en.wikipedia.org/wiki/Deployment_environment))_
 
-### Group-level protected environments names
+### Protected environment names for groups
 
-Contrary to project-level protected environments, group-level protected
-environments use the [deployment tier](_index.md#deployment-tier-of-environments)
+Unlike protected environments for projects, protected environments for groups
+use the [deployment tier](_index.md#deployment-tier-of-environments)
 as their name.
 
 A group may consist of many project environments that have unique names.
@@ -225,18 +225,18 @@ environment, so protecting a specific environment name doesn't scale well.
 By using deployment tiers, both are recognized as `production` deployment tier
 and are protected at the same time.
 
-### Configure group-level memberships
+### Configure group memberships
 
-To maximize the effectiveness of group-level protected environments,
-[group-level memberships](../../user/group/_index.md) must be correctly
+To maximize the effectiveness of protected environments for groups,
+[group memberships](../../user/group/_index.md) must be correctly
 configured:
 
 - Operators should be given the Owner role
   for the top-level group. They can maintain CI/CD configurations for
-  the higher environments (such as production) in the group-level settings page,
-  which includes group-level protected environments,
-  [group-level runners](../runners/runners_scope.md#group-runners), and
-  [group-level clusters](../../user/group/clusters/_index.md). Those
+  the higher environments (such as production) in the group settings page,
+  which includes protected environments for groups,
+  [runners for the group](../runners/runners_scope.md#group-runners), and
+  [clusters for the group](../../user/group/clusters/_index.md). Those
   configurations are inherited to the child projects as read-only entries.
   This ensures that only operators can configure the organization-wide
   deployment ruleset.
@@ -246,13 +246,11 @@ configured:
   top-level group, so operators can ensure that the critical configuration won't
   be accidentally changed by the developers.
 - For subgroups and child projects:
-  - Regarding [subgroups](../../user/group/subgroups/_index.md), if a higher
-    group has configured the group-level protected environment, the lower groups
-    cannot override it.
-  - [Project-level protected environments](#protecting-environments) can be
-    combined with the group-level setting. If both group-level and project-level
-    environment configurations exist, to run a deployment job, the user must be allowed in both
-    rulesets.
+  - If a parent group has configured a protected environment for itself, its
+    [subgroups](../../user/group/subgroups/_index.md) cannot override it.
+  - [Protected environments for projects](#protecting-environments) can be
+    combined with the group setting. If both configurations exist, to run a
+    deployment job, the user must be allowed in both rulesets.
   - In a project or a subgroup of the top-level group, developers can be
     safely assigned the Maintainer role to tune their lower environments (such
     as `testing`).
@@ -266,7 +264,7 @@ Having this configuration in place:
 
 ### Protect critical environments under a group
 
-To protect a group-level environment, make sure your environments have the correct
+To protect an environment for a group, make sure your environments have the correct
 [`deployment_tier`](_index.md#deployment-tier-of-environments) defined in `.gitlab-ci.yml`.
 
 #### Using the UI
@@ -280,7 +278,7 @@ To protect a group-level environment, make sure your environments have the corre
 
 #### Using the API
 
-Configure the group-level protected environments by using the [REST API](../../api/group_protected_environments.md).
+Configure protected environments for groups by using the [REST API](../../api/group_protected_environments.md).
 
 ## Deployment approvals
 

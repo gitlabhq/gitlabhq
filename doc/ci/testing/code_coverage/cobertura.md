@@ -27,9 +27,9 @@ The [Cobertura XML](https://cobertura.github.io/cobertura/) format was originall
 developed for Java, but most coverage frameworks support it through plugins or built-in
 exporters:
 
-- [simplecov-cobertura](https://rubygems.org/gems/simplecov-cobertura) (Ruby)
-- [gocover-cobertura](https://github.com/boumenot/gocover-cobertura) (Go)
-- [cobertura](https://www.npmjs.com/package/cobertura) (Node.js)
+- [`simplecov-cobertura`](https://rubygems.org/gems/simplecov-cobertura) (Ruby)
+- [`gocover-cobertura`](https://github.com/boumenot/gocover-cobertura) (Go)
+- [`cobertura`](https://www.npmjs.com/package/cobertura) (Node.js)
 - [Istanbul](https://istanbul.js.org/docs/advanced/alternative-reporters/#cobertura) (JavaScript)
 - [Coverage.py](https://coverage.readthedocs.io/en/coverage-5.0.4/cmd.html#xml-reporting) (Python)
 - [PHPUnit](https://github.com/sebastianbergmann/phpunit-documentation-english/blob/master/src/textui.rst#command-line-options) (PHP)

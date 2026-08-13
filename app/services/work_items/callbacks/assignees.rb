@@ -36,6 +36,15 @@ module WorkItems
 
       def link_composite_identity(user)
         ::Gitlab::Auth::Identity.link_from_scoped_user(user, current_user)
+      rescue ::Gitlab::Auth::Identity::TooManyIdentitiesLinkedError
+        ::Gitlab::AppLogger.warn(
+          message: 'Composite identity linking failed during assignment',
+          error: 'Gitlab::Auth::Identity::TooManyIdentitiesLinkedError',
+          user_id: user.id
+        )
+        raise_error(
+          _("You can assign only one service account at a time.")
+        )
       end
     end
   end

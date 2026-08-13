@@ -19,6 +19,7 @@ import UserSelect from '~/vue_shared/components/user_select/user_select.vue';
 import {
   issuableQueryResponse,
   updateIssueAssigneesMutationResponse,
+  updateIssueAssigneesMutationErrorResponse,
   issuableQueryWithPlaceholderResponse,
   mrAssigneesQueryResponse,
   initialAssigneesPlaceholder,
@@ -342,6 +343,26 @@ describe('Sidebar assignees widget', () => {
       expect(createAlert).toHaveBeenCalledWith({
         message: 'An error occurred while updating assignees.',
       });
+    });
+
+    it('shows the specific mutation error message when the response carries one', async () => {
+      const handler = jest.fn().mockResolvedValue(updateIssueAssigneesMutationErrorResponse);
+      createComponent({ updateIssueAssigneesMutationHandler: handler });
+      await waitForPromises();
+      expandDropdown();
+
+      findUserSelect().vm.$emit('input', []);
+      findEditableItem().vm.$emit('close');
+
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'You can assign only one service account at a time.',
+      });
+      expect(wrapper.emitted('assignees-updated')).toBe(undefined);
+      expect(findAssignees().props('users')).toEqual(
+        issuableQueryResponse.data.namespace.issuable.assignees.nodes,
+      );
     });
   });
 

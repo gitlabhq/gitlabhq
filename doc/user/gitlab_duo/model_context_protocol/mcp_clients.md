@@ -79,6 +79,10 @@ For more information about extension support, see [version compatibility](#versi
 Allow the IDE to access external MCP tools in the top-level group where GitLab Duo is configured.
 
 > [!note]
+> Group and project Owners can also block all tools from a specific
+> MCP server using the MCP Registry. A blocked server cannot be unblocked by individual
+> users, regardless of tool approval settings.
+> For more information, see [Block MCP servers](../../duo_agent_platform/agents/tool-governance.md#block-model-context-protocol-mcp-servers).
 > On GitLab Self-Managed, an administrator must also enable the `mcp_client`
 > [feature flag](../../../administration/feature_flags/_index.md) for custom agents and flows
 > to use external MCP tools.

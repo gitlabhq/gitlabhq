@@ -1587,7 +1587,7 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
 
             it_behaves_like 'a mutation that returns top-level errors', errors: [
               'The resource that you are attempting to access does not exist or you don\'t have permission to ' \
-              'perform this action'
+                'perform this action'
             ]
           end
         end

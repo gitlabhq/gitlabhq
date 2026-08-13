@@ -5,6 +5,7 @@ mutation mergeRequestSetAssignees($iid: String!, $assigneeUsernames: [String!]!,
   issuableSetAssignees: mergeRequestSetAssignees(
     input: { iid: $iid, assigneeUsernames: $assigneeUsernames, projectPath: $fullPath }
   ) {
+    errors
     issuable: mergeRequest {
       id
       assignees {
