@@ -1,6 +1,7 @@
 <script>
 import DefaultActions from 'jh_else_ce/blob/components/blob_header_default_actions.vue';
 import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import BlameHeader from './blame_header.vue';
 import BlobFilepath from './blob_header_filepath.vue';
 import ViewerSwitcher from './blob_header_viewer_switcher.vue';
@@ -16,7 +17,7 @@ export default {
     BlobFilepath,
     TableOfContents,
   },
-  mixins: [glListenersMixin],
+  mixins: [glListenersMixin, glSlotsMixin],
   props: {
     blob: {
       type: Object,
@@ -115,7 +116,7 @@ export default {
         :show-as-link="showPathAsLink"
         :show-blob-size="showBlobSize"
       >
-        <template #filepath-prepend>
+        <template v-if="glSlots().prepend" #filepath-prepend>
           <slot name="prepend"></slot>
         </template>
       </blob-filepath>
@@ -146,7 +147,7 @@ export default {
         :override-copy="overrideCopy"
         @copy="proxyCopyRequest"
       >
-        <template #prepend>
+        <template v-if="glSlots()['orbit-action']" #prepend>
           <slot name="orbit-action"></slot>
         </template>
       </default-actions>

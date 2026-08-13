@@ -233,7 +233,7 @@ export default {
       @reset="onReset"
       @bottom-reached="onBottomReached"
     >
-      <template #list-item="{ item }">
+      <template v-if="glSlots()['list-item']" #list-item="{ item }">
         <slot name="list-item" :item="item"></slot>
       </template>
       <template v-if="!searchable" #footer>

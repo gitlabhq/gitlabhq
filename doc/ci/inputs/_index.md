@@ -216,10 +216,15 @@ test_job:
 #### Array type
 
 The content of the items in an array type can be any valid YAML map, sequence, or scalar. More complex YAML features
-like [`!reference`](../yaml/yaml_optimization.md#reference-tags) cannot be used. When using the value of an array
-input in a string (for example `echo "My rules: $[[ inputs.rules-config ]]"` in your `script:` section), you might
-see unexpected results. The array input is converted to its string representation, which might not match your
-expectations for complex YAML structures such as maps.
+like [`!reference`](../yaml/yaml_optimization.md#reference-tags) cannot be used. To reuse a list across
+configuration files, define it as an array input in an
+[external file](#define-pipeline-inputs-in-external-files), which also lets you
+[extend it with additional items](#extend-an-array-input-with-additional-items).
+
+When using the value of an array input in a string (for example
+`echo "My rules: $[[ inputs.rules-config ]]"` in your `script:` section), you might see unexpected results.
+The array input is converted to its string representation, which might not match your expectations for
+complex YAML structures such as maps.
 
 ```yaml
 spec:
@@ -245,6 +250,33 @@ when manually passing inputs for:
 - The [pipelines API](../../api/pipelines.md#create-a-new-pipeline).
 - Git [push options](../../topics/git/commit.md#push-options-for-gitlab-cicd)
 - [Pipeline schedules](../pipelines/schedules.md#create-a-pipeline-schedule)
+
+##### Extend an array input with additional items
+
+When an array input is an entire item in an array, its items are added to the surrounding
+array rather than nested inside it. Use this to extend a shared list with additional items:
+
+```yaml
+spec:
+  inputs:
+    tags:
+      type: array
+---
+
+test_job:
+  tags:
+    - $[[ inputs.tags ]]
+    - additional-tag
+  script: ls
+```
+
+With an input value of `[shared-tag-1, shared-tag-2]`, `test_job` uses
+`[shared-tag-1, shared-tag-2, additional-tag]`.
+
+The input must be the entire array item. When an array item combines the input with other
+text, for example `- prefix-$[[ inputs.tags ]]`, the input is
+[interpolated as a string](#input-types) instead, and the item becomes a single string
+containing the string representation of the array.
 
 ##### Array inputs with options
 

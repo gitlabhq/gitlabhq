@@ -275,7 +275,7 @@ export default {
             :is-imported="note.imported"
             :show-avatar="!timelineLayout"
           >
-            <template #avatar-badge>
+            <template v-if="glSlots()['avatar-badge']" #avatar-badge>
               <slot name="avatar-badge"></slot>
             </template>
           </note-header>

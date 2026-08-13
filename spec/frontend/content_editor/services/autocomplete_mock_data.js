@@ -15,11 +15,7 @@ export const MOCK_MEMBERS = [
       'https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon',
     availability: null,
   },
-  {
-    username: 'all',
-    name: 'All Project and Group Members',
-    count: 8,
-  },
+  { username: 'all', name: 'All Project and Group Members', count: 8 },
   {
     type: 'User',
     username: 'errol',
@@ -147,31 +143,11 @@ export const MOCK_REVIEWERS = MOCK_MEMBERS.filter(
 );
 
 export const MOCK_ISSUES = [
-  {
-    iid: 31,
-    title: 'rdfhdfj',
-    id: null,
-  },
-  {
-    iid: 30,
-    title: 'incident1',
-    id: null,
-  },
-  {
-    iid: 29,
-    title: 'example feature rollout',
-    id: null,
-  },
-  {
-    iid: 28,
-    title: 'sagasg',
-    id: null,
-  },
-  {
-    iid: 26,
-    title: 'Quasi id et et nihil sint autem.',
-    id: null,
-  },
+  { iid: 31, title: 'rdfhdfj', id: null },
+  { iid: 30, title: 'incident1', id: null },
+  { iid: 29, title: 'example feature rollout', id: null },
+  { iid: 28, title: 'sagasg', id: null },
+  { iid: 26, title: 'Quasi id et et nihil sint autem.', id: null },
   {
     iid: 25,
     title: 'Dolorem quisquam cupiditate consequatur perspiciatis sequi eligendi ullam.',
@@ -182,64 +158,24 @@ export const MOCK_ISSUES = [
     title: 'Et molestiae delectus voluptates velit vero illo aut rerum quo et.',
     id: null,
   },
-  {
-    iid: 23,
-    title: 'Nesciunt quia molestiae in aliquam amet et dolorem.',
-    id: null,
-  },
-  {
-    iid: 22,
-    title: 'Sint asperiores unde vel autem delectus ullam dolor nihil et.',
-    id: null,
-  },
-  {
-    iid: 21,
-    title: 'Eaque omnis eius quas necessitatibus hic ut et corrupti.',
-    id: null,
-  },
-  {
-    iid: 20,
-    title: 'Porro tempore qui qui culpa saepe et nam quos.',
-    id: null,
-  },
-  {
-    iid: 19,
-    title: 'Molestiae minima maxime optio nihil quam eveniet dolor.',
-    id: null,
-  },
-  {
-    iid: 18,
-    title: 'Sed sint a est consequatur quae quasi autem debitis alias.',
-    id: null,
-  },
-  {
-    iid: 6,
-    title: 'Et laboriosam aut ratione voluptatem quasi recusandae.',
-    id: null,
-  },
-  {
-    iid: 2,
-    title: 'Aut quisquam magnam eos distinctio incidunt perferendis fugit.',
-    id: null,
-  },
+  { iid: 23, title: 'Nesciunt quia molestiae in aliquam amet et dolorem.', id: null },
+  { iid: 22, title: 'Sint asperiores unde vel autem delectus ullam dolor nihil et.', id: null },
+  { iid: 21, title: 'Eaque omnis eius quas necessitatibus hic ut et corrupti.', id: null },
+  { iid: 20, title: 'Porro tempore qui qui culpa saepe et nam quos.', id: null },
+  { iid: 19, title: 'Molestiae minima maxime optio nihil quam eveniet dolor.', id: null },
+  { iid: 18, title: 'Sed sint a est consequatur quae quasi autem debitis alias.', id: null },
+  { iid: 6, title: 'Et laboriosam aut ratione voluptatem quasi recusandae.', id: null },
+  { iid: 2, title: 'Aut quisquam magnam eos distinctio incidunt perferendis fugit.', id: null },
 ];
 
 export const MOCK_EPICS = [
-  {
-    iid: 6,
-    title: 'sgs',
-    reference: 'flightjs\u00266',
-  },
+  { iid: 6, title: 'sgs', reference: 'flightjs\u00266' },
   {
     iid: 5,
     title: 'Doloremque a quisquam qui culpa numquam doloribus similique iure enim.',
     reference: 'flightjs\u00265',
   },
-  {
-    iid: 4,
-    title: 'Minus eius ut omnis quos sunt dicta ex ipsum.',
-    reference: 'flightjs\u00264',
-  },
+  { iid: 4, title: 'Minus eius ut omnis quos sunt dicta ex ipsum.', reference: 'flightjs\u00264' },
   {
     iid: 3,
     title: 'Quae nostrum possimus rerum aliquam pariatur a eos aut id.',
@@ -258,366 +194,84 @@ export const MOCK_EPICS = [
 ];
 
 export const MOCK_MERGE_REQUESTS = [
-  {
-    iid: 12,
-    title: "Always call registry's trigger method from withRegistration",
-    id: null,
-  },
-  {
-    iid: 11,
-    title: 'Draft: Alunny/publish lib',
-    id: null,
-  },
-  {
-    iid: 10,
-    title: 'Draft: Resolve "hgvbbvnnb"',
-    id: null,
-  },
-  {
-    iid: 9,
-    title: 'Draft: Fix event current target',
-    id: null,
-  },
-  {
-    iid: 3,
-    title: 'Autem eaque et sed provident enim corrupti molestiae.',
-    id: null,
-  },
+  { iid: 12, title: "Always call registry's trigger method from withRegistration", id: null },
+  { iid: 11, title: 'Draft: Alunny/publish lib', id: null },
+  { iid: 10, title: 'Draft: Resolve "hgvbbvnnb"', id: null },
+  { iid: 9, title: 'Draft: Fix event current target', id: null },
+  { iid: 3, title: 'Autem eaque et sed provident enim corrupti molestiae.', id: null },
   {
     iid: 2,
     title: 'Blanditiis maxime voluptatem ut pariatur vel autem vero non quod libero.',
     id: null,
   },
-  {
-    iid: 1,
-    title: 'Optio nemo qui dolorem sit ipsum qui saepe.',
-    id: null,
-  },
+  { iid: 1, title: 'Optio nemo qui dolorem sit ipsum qui saepe.', id: null },
 ];
 
 export const MOCK_SNIPPETS = [
-  {
-    id: 24,
-    title: 'ss',
-  },
-  {
-    id: 22,
-    title: 'another test snippet',
-  },
-  {
-    id: 21,
-    title: 'test snippet',
-  },
+  { id: 24, title: 'ss' },
+  { id: 22, title: 'another test snippet' },
+  { id: 21, title: 'test snippet' },
 ];
 
 export const MOCK_LABELS = [
+  { title: 'Amsche', color: '#9964cf', type: 'GroupLabel', textColor: '#FFFFFF', set: true },
+  { title: 'Brioffe', color: '#203e13', type: 'GroupLabel', textColor: '#FFFFFF', set: true },
+  { title: 'Bronce', color: '#c0b7f2', type: 'GroupLabel', textColor: '#1F1E24' },
+  { title: 'Bryncefunc', color: '#8baa5e', type: 'GroupLabel', textColor: '#FFFFFF', set: true },
+  { title: 'Contour', color: '#8cf3a3', type: 'ProjectLabel', textColor: '#1F1E24' },
+  { title: 'Corolla', color: '#0384f3', type: 'ProjectLabel', textColor: '#FFFFFF' },
+  { title: 'Cygsync', color: '#1308c3', type: 'GroupLabel', textColor: '#FFFFFF' },
+  { title: 'Frontier', color: '#85db43', type: 'ProjectLabel', textColor: '#1F1E24' },
+  { title: 'Ghost', color: '#df1bc4', type: 'ProjectLabel', textColor: '#FFFFFF', set: true },
+  { title: 'Grand Am', color: '#a1d7ee', type: 'ProjectLabel', textColor: '#1F1E24' },
+  { title: 'Onesync', color: '#a73ba0', type: 'GroupLabel', textColor: '#FFFFFF' },
+  { title: 'Phone', color: '#63dceb', type: 'GroupLabel', textColor: '#1F1E24' },
+  { title: 'Pynefunc', color: '#974b19', type: 'GroupLabel', textColor: '#FFFFFF' },
+  { title: 'Trinix', color: '#2c894f', type: 'GroupLabel', textColor: '#FFFFFF' },
+  { title: 'Trounswood', color: '#ad0370', type: 'GroupLabel', textColor: '#FFFFFF' },
   {
-    title: 'Amsche',
-    color: '#9964cf',
-    type: 'GroupLabel',
-    textColor: '#FFFFFF',
-    set: true,
-  },
-  {
-    title: 'Brioffe',
-    color: '#203e13',
-    type: 'GroupLabel',
-    textColor: '#FFFFFF',
-    set: true,
-  },
-  {
-    title: 'Bronce',
-    color: '#c0b7f2',
-    type: 'GroupLabel',
-    textColor: '#1F1E24',
-  },
-  {
-    title: 'Bryncefunc',
-    color: '#8baa5e',
-    type: 'GroupLabel',
-    textColor: '#FFFFFF',
-    set: true,
-  },
-  {
-    title: 'Contour',
-    color: '#8cf3a3',
-    type: 'ProjectLabel',
-    textColor: '#1F1E24',
-  },
-  {
-    title: 'Corolla',
-    color: '#0384f3',
-    type: 'ProjectLabel',
-    textColor: '#FFFFFF',
-  },
-  {
-    title: 'Cygsync',
-    color: '#1308c3',
-    type: 'GroupLabel',
-    textColor: '#FFFFFF',
-  },
-  {
-    title: 'Frontier',
-    color: '#85db43',
-    type: 'ProjectLabel',
-    textColor: '#1F1E24',
-  },
-  {
-    title: 'Ghost',
-    color: '#df1bc4',
-    type: 'ProjectLabel',
-    textColor: '#FFFFFF',
-    set: true,
-  },
-  {
-    title: 'Grand Am',
-    color: '#a1d7ee',
-    type: 'ProjectLabel',
-    textColor: '#1F1E24',
-  },
-  {
-    title: 'Onesync',
-    color: '#a73ba0',
-    type: 'GroupLabel',
-    textColor: '#FFFFFF',
-  },
-  {
-    title: 'Phone',
-    color: '#63dceb',
-    type: 'GroupLabel',
-    textColor: '#1F1E24',
-  },
-  {
-    title: 'Pynefunc',
-    color: '#974b19',
-    type: 'GroupLabel',
-    textColor: '#FFFFFF',
-  },
-  {
-    title: 'Trinix',
-    color: '#2c894f',
-    type: 'GroupLabel',
-    textColor: '#FFFFFF',
-  },
-  {
-    title: 'Trounswood',
-    color: '#ad0370',
-    type: 'GroupLabel',
-    textColor: '#FFFFFF',
-  },
-  {
-    title: 'group::knowledge',
+    title: 'group::planner intelligence',
     color: '#8fbc8f',
     type: 'ProjectLabel',
     textColor: '#1F1E24',
   },
-  {
-    title: 'scoped label',
-    color: '#6699cc',
-    type: 'GroupLabel',
-    textColor: '#FFFFFF',
-  },
-  {
-    title: 'type::one',
-    color: '#9400d3',
-    type: 'ProjectLabel',
-    textColor: '#FFFFFF',
-  },
-  {
-    title: 'type::two',
-    color: '#013220',
-    type: 'ProjectLabel',
-    textColor: '#FFFFFF',
-  },
+  { title: 'scoped label', color: '#6699cc', type: 'GroupLabel', textColor: '#FFFFFF' },
+  { title: 'type::one', color: '#9400d3', type: 'ProjectLabel', textColor: '#FFFFFF' },
+  { title: 'type::two', color: '#013220', type: 'ProjectLabel', textColor: '#FFFFFF' },
 ];
 
 export const MOCK_MILESTONES = [
-  {
-    iid: 65,
-    title: '15.0',
-    due_date: '2022-05-17',
-    id: null,
-  },
-  {
-    iid: 73,
-    title: '15.1',
-    due_date: '2022-06-17',
-    id: null,
-  },
-  {
-    iid: 74,
-    title: '15.2',
-    due_date: '2022-07-17',
-    id: null,
-  },
-  {
-    iid: 75,
-    title: '15.3',
-    due_date: '2022-08-17',
-    id: null,
-  },
-  {
-    iid: 76,
-    title: '15.4',
-    due_date: '2022-09-17',
-    id: null,
-  },
-  {
-    iid: 77,
-    title: '15.5',
-    due_date: '2022-10-17',
-    id: null,
-  },
-  {
-    iid: 81,
-    title: '15.6',
-    due_date: '2022-11-17',
-    id: null,
-  },
-  {
-    iid: 82,
-    title: '15.7',
-    due_date: '2022-12-17',
-    id: null,
-  },
-  {
-    iid: 83,
-    title: '15.8',
-    due_date: '2023-01-17',
-    id: null,
-  },
-  {
-    iid: 84,
-    title: '15.9',
-    due_date: '2023-02-17',
-    id: null,
-  },
-  {
-    iid: 85,
-    title: '15.10',
-    due_date: '2023-03-17',
-    id: null,
-  },
-  {
-    iid: 86,
-    title: '15.11',
-    due_date: '2023-04-17',
-    id: null,
-  },
-  {
-    iid: 80,
-    title: '16.0',
-    due_date: '2023-05-17',
-    id: null,
-  },
-  {
-    iid: 88,
-    title: '16.1',
-    due_date: '2023-06-17',
-    id: null,
-  },
-  {
-    iid: 89,
-    title: '16.2',
-    due_date: '2023-07-17',
-    id: null,
-  },
-  {
-    iid: 90,
-    title: '16.3',
-    due_date: '2023-08-17',
-    id: null,
-  },
-  {
-    iid: 91,
-    title: '16.4',
-    due_date: '2023-09-17',
-    id: null,
-  },
-  {
-    iid: 92,
-    title: '16.5',
-    due_date: '2023-10-17',
-    id: null,
-  },
-  {
-    iid: 93,
-    title: '16.6',
-    due_date: '2023-11-10',
-    id: null,
-  },
-  {
-    iid: 95,
-    title: '16.7',
-    due_date: '2023-12-15',
-    id: null,
-  },
-  {
-    iid: 94,
-    title: '16.8',
-    due_date: '2024-01-12',
-    id: null,
-  },
-  {
-    iid: 96,
-    title: '16.9',
-    due_date: '2024-02-09',
-    id: null,
-  },
-  {
-    iid: 97,
-    title: '16.10',
-    due_date: '2024-03-15',
-    id: null,
-  },
-  {
-    iid: 98,
-    title: '16.11',
-    due_date: '2024-04-12',
-    id: null,
-  },
-  {
-    iid: 87,
-    title: '17.0',
-    due_date: '2024-05-10',
-    id: null,
-  },
-  {
-    iid: 48,
-    title: 'Next 1-3 releases',
-    due_date: null,
-    id: null,
-  },
-  {
-    iid: 24,
-    title: 'Awaiting further demand',
-    due_date: null,
-    id: null,
-  },
-  {
-    iid: 14,
-    title: 'Backlog',
-    due_date: null,
-    id: null,
-  },
-  {
-    iid: 11,
-    title: 'Next 4-7 releases',
-    due_date: null,
-    id: null,
-  },
-  {
-    iid: 10,
-    title: 'Next 3-4 releases',
-    due_date: null,
-    id: null,
-  },
-  {
-    iid: 6,
-    title: 'Next 7-13 releases',
-    due_date: null,
-    id: null,
-  },
+  { iid: 65, title: '15.0', due_date: '2022-05-17', id: null },
+  { iid: 73, title: '15.1', due_date: '2022-06-17', id: null },
+  { iid: 74, title: '15.2', due_date: '2022-07-17', id: null },
+  { iid: 75, title: '15.3', due_date: '2022-08-17', id: null },
+  { iid: 76, title: '15.4', due_date: '2022-09-17', id: null },
+  { iid: 77, title: '15.5', due_date: '2022-10-17', id: null },
+  { iid: 81, title: '15.6', due_date: '2022-11-17', id: null },
+  { iid: 82, title: '15.7', due_date: '2022-12-17', id: null },
+  { iid: 83, title: '15.8', due_date: '2023-01-17', id: null },
+  { iid: 84, title: '15.9', due_date: '2023-02-17', id: null },
+  { iid: 85, title: '15.10', due_date: '2023-03-17', id: null },
+  { iid: 86, title: '15.11', due_date: '2023-04-17', id: null },
+  { iid: 80, title: '16.0', due_date: '2023-05-17', id: null },
+  { iid: 88, title: '16.1', due_date: '2023-06-17', id: null },
+  { iid: 89, title: '16.2', due_date: '2023-07-17', id: null },
+  { iid: 90, title: '16.3', due_date: '2023-08-17', id: null },
+  { iid: 91, title: '16.4', due_date: '2023-09-17', id: null },
+  { iid: 92, title: '16.5', due_date: '2023-10-17', id: null },
+  { iid: 93, title: '16.6', due_date: '2023-11-10', id: null },
+  { iid: 95, title: '16.7', due_date: '2023-12-15', id: null },
+  { iid: 94, title: '16.8', due_date: '2024-01-12', id: null },
+  { iid: 96, title: '16.9', due_date: '2024-02-09', id: null },
+  { iid: 97, title: '16.10', due_date: '2024-03-15', id: null },
+  { iid: 98, title: '16.11', due_date: '2024-04-12', id: null },
+  { iid: 87, title: '17.0', due_date: '2024-05-10', id: null },
+  { iid: 48, title: 'Next 1-3 releases', due_date: null, id: null },
+  { iid: 24, title: 'Awaiting further demand', due_date: null, id: null },
+  { iid: 14, title: 'Backlog', due_date: null, id: null },
+  { iid: 11, title: 'Next 4-7 releases', due_date: null, id: null },
+  { iid: 10, title: 'Next 3-4 releases', due_date: null, id: null },
+  { iid: 6, title: 'Next 7-13 releases', due_date: null, id: null },
 ];
 
 export const MOCK_ITERATIONS = [
@@ -709,26 +363,11 @@ export const MOCK_ITERATIONS = [
 ];
 
 export const MOCK_VULNERABILITIES = [
-  {
-    id: 99499903,
-    title: 'Cross Site Scripting (Persistent)',
-  },
-  {
-    id: 99495085,
-    title: 'Possible SQL injection',
-  },
-  {
-    id: 99490610,
-    title: 'GitLab Runner Authentication Token',
-  },
-  {
-    id: 99288920,
-    title: 'Cross Site Scripting (Persistent)',
-  },
-  {
-    id: 99258720,
-    title: 'Cross Site Scripting (Persistent)',
-  },
+  { id: 99499903, title: 'Cross Site Scripting (Persistent)' },
+  { id: 99495085, title: 'Possible SQL injection' },
+  { id: 99490610, title: 'GitLab Runner Authentication Token' },
+  { id: 99288920, title: 'Cross Site Scripting (Persistent)' },
+  { id: 99258720, title: 'Cross Site Scripting (Persistent)' },
 ];
 
 export const MOCK_COMMANDS = [
@@ -828,14 +467,7 @@ export const MOCK_COMMANDS = [
     icon: '',
     params: ['~label1 ~"label 2"'],
   },
-  {
-    name: 'todo',
-    aliases: [],
-    description: 'Add a to-do item',
-    warning: '',
-    icon: '',
-    params: [],
-  },
+  { name: 'todo', aliases: [], description: 'Add a to-do item', warning: '', icon: '', params: [] },
   {
     name: 'unsubscribe',
     aliases: [],
@@ -1047,21 +679,13 @@ export const MOCK_COMMANDS = [
 ];
 
 export const MOCK_WIKIS = [
-  {
-    title: 'Home',
-    slug: 'home',
-    path: '/gitlab-org/gitlab-test/-/wikis/home',
-  },
+  { title: 'Home', slug: 'home', path: '/gitlab-org/gitlab-test/-/wikis/home' },
   {
     title: 'How to use GitLab',
     slug: 'how-to-use-gitlab',
     path: '/gitlab-org/gitlab-test/-/wikis/how-to-use-gitlab',
   },
-  {
-    title: 'Changelog',
-    slug: 'changelog',
-    path: '/gitlab-org/gitlab-test/-/wikis/changelog',
-  },
+  { title: 'Changelog', slug: 'changelog', path: '/gitlab-org/gitlab-test/-/wikis/changelog' },
 ];
 
 export const MOCK_NEW_MEMBERS = [

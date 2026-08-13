@@ -2,6 +2,7 @@
 import { GlButton, GlModal, GlModalDirective } from '@gitlab/ui';
 import { uniqueId } from 'lodash-es';
 import { s__, __ } from '~/locale';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'ArchiveDesignButton',
@@ -12,6 +13,7 @@ export default {
   directives: {
     GlModalDirective,
   },
+  mixins: [glSlotsMixin],
   props: {
     hasSelectedDesigns: {
       type: Boolean,
@@ -87,7 +89,7 @@ export default {
       :class="buttonClass"
       :disabled="!hasSelectedDesigns || loading"
     >
-      <slot></slot>
+      <template v-if="glSlots().default" #default><slot></slot></template>
     </gl-button>
   </div>
 </template>

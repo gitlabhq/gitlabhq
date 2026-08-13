@@ -2,10 +2,12 @@
 import { GlDisclosureDropdownItem } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState } from 'vuex';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'RemoveMemberDropdownItem',
   components: { GlDisclosureDropdownItem },
+  mixins: [glSlotsMixin],
   inject: ['namespace'],
   props: {
     memberId: {
@@ -81,7 +83,7 @@ export default {
     variant="danger"
     @action="showRemoveMemberModal(modalData)"
   >
-    <template #list-item>
+    <template v-if="glSlots().default" #list-item>
       <slot></slot>
     </template>
   </gl-disclosure-dropdown-item>

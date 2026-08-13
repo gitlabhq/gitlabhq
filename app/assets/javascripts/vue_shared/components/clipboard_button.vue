@@ -24,6 +24,7 @@ import {
   I18N_ERROR_MESSAGE,
 } from '~/behaviors/copy_to_clipboard';
 import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'ClipboardButton',
@@ -39,7 +40,7 @@ export default {
   components: {
     GlButton,
   },
-  mixins: [glListenersMixin],
+  mixins: [glListenersMixin, glSlotsMixin],
   props: {
     text: {
       type: String,
@@ -158,6 +159,6 @@ export default {
     @[$options.CLIPBOARD_ERROR_EVENT]="updateTooltip($options.i18n.error)"
     v-on="glListeners()"
   >
-    <slot></slot>
+    <template v-if="glSlots().default" #default><slot></slot></template>
   </gl-button>
 </template>

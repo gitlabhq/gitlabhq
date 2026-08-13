@@ -639,6 +639,42 @@ export default [
       'local-rules/vue3-gl-listeners-mixin-pairing': 'error',
     },
   },
+  // App code only: the deliberate slot-forwarding fixtures in
+  // spec/frontend/vue3migration and storybook helpers stay unguarded.
+  {
+    files: ['{,ee/,jh/}app/assets/javascripts/**/*.vue'],
+    plugins: {
+      'local-rules': eslintLocalRules,
+    },
+    rules: {
+      'local-rules/vue3-no-unconditional-slot-forwarding': 'error',
+    },
+  },
+  {
+    files: [
+      'app/assets/javascripts/access_tokens/components/token.vue',
+      'ee/app/assets/javascripts/groups/settings/components/comma_separated_list_token_selector.vue',
+      'ee/app/assets/javascripts/members/components/action_dropdowns/ldap_override_dropdown_item.vue',
+    ],
+    plugins: {
+      'local-rules': eslintLocalRules,
+    },
+    rules: {
+      'local-rules/vue3-no-unconditional-slot-forwarding': 'off',
+    },
+  },
+  {
+    files: [
+      'app/assets/javascripts/packages_and_registries/container_registry/explorer/components/list_page/registry_header.vue',
+      'app/assets/javascripts/packages_and_registries/harbor_registry/components/list/harbor_list_header.vue',
+    ],
+    plugins: {
+      'local-rules': eslintLocalRules,
+    },
+    rules: {
+      'local-rules/vue3-no-unconditional-slot-forwarding': 'off',
+    },
+  },
   // Spec files (unit tests)
   {
     files: ['{,ee/,jh/}spec/frontend*/**/*'],

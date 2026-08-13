@@ -1,11 +1,10 @@
 - add_to_breadcrumbs _("Pages"), project_pages_path(@project)
 - page_title _('New pages domain')
 
-= render ::Layouts::PageHeadingComponent.new(_("New pages domain")) do |c|
+= render ::Layouts::DetailLayout.new(heading: _("New pages domain")) do |c|
   - c.with_description do
     = render 'projects/pages_domains/helper_text'
 
-%div
   = gitlab_ui_form_for [@project, domain_presenter], html: { class: 'fieldset-form' } do |f|
     = render 'form', { f: f }
     .gl-flex.gl-gap-3

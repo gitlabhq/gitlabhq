@@ -13,7 +13,7 @@ export default {
 
 <template>
   <access-summary>
-    <template #admin-content>
+    <template v-if="glSlots().default" #admin-content>
       <slot></slot>
     </template>
     <template v-if="!glSlots().default" #admin-list>

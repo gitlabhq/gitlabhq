@@ -427,8 +427,8 @@ export default {
               :is-sidebar-open="isSidebarOpen"
               :is-loading="isLoading"
               :disable-commenting="!isSidebarOpen"
-              @openCommentForm="openCommentForm"
-              @moveNote="onMoveNote"
+              @open-comment-form="openCommentForm"
+              @move-note="onMoveNote"
               @setMaxScale="setMaxScale"
             />
           </div>

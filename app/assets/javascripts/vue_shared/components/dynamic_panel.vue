@@ -57,7 +57,7 @@ export default {
           @close="$emit('close')"
           @maximize="$emit('maximize', $event)"
         >
-          <slot name="actions"></slot>
+          <template v-if="glSlots().actions" #default><slot name="actions"></slot></template>
         </panel-actions>
       </div>
     </div>

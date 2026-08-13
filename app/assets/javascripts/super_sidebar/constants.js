@@ -25,6 +25,11 @@ export const PANEL_TYPES = {
 
 export const PANELS_WITH_PINS = [PANEL_TYPES.GROUP, PANEL_TYPES.PROJECT, PANEL_TYPES.ORGANIZATION];
 
+// Marks nav items the backend still emits but the sidebar must not show (e.g.
+// duplicate "Work items" entries). Every place that lists nav items has to
+// filter these out.
+export const HIDDEN_NAV_ITEM_CLASS = 'js-super-sidebar-nav-item-hidden';
+
 export const USER_MENU_TRACKING_DEFAULTS = {
   'data-track-property': 'nav_user_menu',
   'data-track-action': 'click_link',

@@ -178,6 +178,9 @@ export default {
     isWorkItemOpen() {
       return this.workItemState === STATE_OPEN;
     },
+    lowercaseWorkItemType() {
+      return this.workItemType.toLowerCase();
+    },
     toggleWorkItemStateText() {
       let baseText = this.isWorkItemOpen
         ? s__('WorkItem|Close %{workItemType}')
@@ -185,10 +188,10 @@ export default {
 
       if (this.hasComment) {
         baseText = this.isWorkItemOpen
-          ? s__('WorkItem|Comment & close %{workItemType}')
-          : s__('WorkItem|Comment & reopen %{workItemType}');
+          ? s__('WorkItem|Comment and close %{workItemType}')
+          : s__('WorkItem|Comment and reopen %{workItemType}');
       }
-      return sprintf(baseText, { workItemType: this.workItemType });
+      return sprintf(baseText, { workItemType: this.lowercaseWorkItemType });
     },
     toggleWorkItemStateIcon() {
       return this.isWorkItemOpen ? 'issue-close' : 'issue-open-m';
@@ -206,7 +209,7 @@ export default {
       const baseText = this.isWorkItemOpen
         ? s__('WorkItem|Closing %{workItemType}')
         : s__('WorkItem|Reopening %{workItemType}');
-      return sprintf(baseText, { workItemType: this.workItemType });
+      return sprintf(baseText, { workItemType: this.lowercaseWorkItemType });
     },
     isBlocked() {
       return this.blockerItems.length > 0;
@@ -227,18 +230,18 @@ export default {
     },
     blockedByModalTitle() {
       return sprintf(s__('WorkItem|Are you sure you want to close this blocked %{workItemType}?'), {
-        workItemType: this.workItemType,
+        workItemType: this.lowercaseWorkItemType,
       });
     },
     blockedByModalBody() {
       return sprintf(
         s__('WorkItem|This %{workItemType} is currently blocked by the following items:'),
-        { workItemType: this.workItemType },
+        { workItemType: this.lowercaseWorkItemType },
       );
     },
     openChildrenModalTitle() {
       return sprintf(s__('WorkItem|Are you sure you want to close this %{workItemType}?'), {
-        workItemType: this.workItemType,
+        workItemType: this.lowercaseWorkItemType,
       });
     },
     openChildrenModalBody() {
@@ -246,7 +249,7 @@ export default {
         s__(
           'WorkItem|This %{workItemType} has open child items. If you close this %{workItemType}, they will remain open.',
         ),
-        { workItemType: this.workItemType },
+        { workItemType: this.lowercaseWorkItemType },
       );
     },
     modalActionCancel() {
@@ -257,7 +260,7 @@ export default {
     modalActionPrimary() {
       return {
         text: sprintf(s__('WorkItem|Yes, close %{workItemType}'), {
-          workItemType: this.workItemType,
+          workItemType: this.lowercaseWorkItemType,
         }),
       };
     },

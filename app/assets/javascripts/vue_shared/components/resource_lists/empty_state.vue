@@ -1,6 +1,7 @@
 <script>
 import { GlEmptyState } from '@gitlab/ui';
 import EmptyResult, { TYPES } from '~/vue_shared/components/empty_result.vue';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export { TYPES };
 
@@ -10,6 +11,7 @@ export default {
     GlEmptyState,
     EmptyResult,
   },
+  mixins: [glSlotsMixin],
   props: {
     search: {
       type: String,
@@ -63,10 +65,10 @@ export default {
     :description="description"
     :svg-path="svgPath"
   >
-    <template #description>
+    <template v-if="glSlots().description" #description>
       <slot name="description"></slot>
     </template>
-    <template #actions>
+    <template v-if="glSlots().actions" #actions>
       <slot name="actions"></slot>
     </template>
   </gl-empty-state>

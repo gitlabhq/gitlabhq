@@ -1,6 +1,12 @@
 <script>
-import { GlAlert } from '@gitlab/ui';
 import { DEFAULT_PER_PAGE } from '~/api';
+import axios from '~/lib/utils/axios_utils';
+import { buildApiUrl } from '~/api/api_utils';
+import {
+  HTTP_STATUS_UNPROCESSABLE_ENTITY,
+  HTTP_STATUS_TOO_MANY_REQUESTS,
+} from '~/lib/utils/http_status';
+import { s__ } from '~/locale';
 import { captureException } from '~/sentry/sentry_browser_wrapper';
 import offlineTransferSourceOwnedGroupsQuery from '~/import/offline_transfer/graphql/queries/offline_transfer_source_owned_groups.query.graphql';
 import FormStepper from '~/import/offline_transfer/components/form_stepper.vue';
@@ -17,7 +23,6 @@ export default {
     SelectGroupsTab,
     ExportConfigTab,
     ReviewExportTab,
-    GlAlert,
   },
   data() {
     return {
@@ -30,8 +35,10 @@ export default {
       showFetchError: false,
       showSelectError: false,
       showStorageConfigError: false,
-      // TODO: on form submit (final step) trim strings
-      // POST { bucketName, aws_s3_configuration, entities}
+      hasSubmitSucceeded: false,
+      submissionError: '',
+      isSubmitting: false,
+      isRetryBlocked: false,
       storageConfig: {
         accessKeyId: '',
         secretAccessKey: '',
@@ -39,8 +46,6 @@ export default {
         bucketName: '',
         pathStyle: false,
       },
-
-      isFormComplete: false,
     };
   },
 
@@ -105,6 +110,18 @@ export default {
       if (this.showFetchError) return false;
       return !this.isEmptyGroupsList;
     },
+    exportPayload() {
+      return {
+        bucket: this.storageConfig.bucketName.trim(),
+        aws_s3_configuration: {
+          aws_access_key_id: this.storageConfig.accessKeyId.trim(),
+          aws_secret_access_key: this.storageConfig.secretAccessKey.trim(),
+          region: this.storageConfig.region.trim(),
+          path_style: this.storageConfig.pathStyle,
+        },
+        entities: this.selectedGroups.map((group) => ({ full_path: group.fullPath })),
+      };
+    },
   },
   watch: {
     selectedGroupsCount() {
@@ -113,8 +130,40 @@ export default {
   },
 
   methods: {
-    onComplete() {
-      this.isFormComplete = true;
+    async submitForm() {
+      this.isSubmitting = true;
+      this.submissionError = '';
+
+      try {
+        await axios.post(buildApiUrl('/api/:version/offline_exports'), this.exportPayload);
+        this.hasSubmitSucceeded = true;
+      } catch (error) {
+        const status = error.response?.status;
+        const serverMessage = this.extractErrorMessage(error);
+        const isKnownRejection =
+          (status === HTTP_STATUS_UNPROCESSABLE_ENTITY ||
+            status === HTTP_STATUS_TOO_MANY_REQUESTS) &&
+          Boolean(serverMessage);
+
+        if (isKnownRejection) {
+          this.submissionError = serverMessage;
+          this.isRetryBlocked = true;
+        } else {
+          this.submissionError = s__(
+            'OfflineTransferExport|Something went wrong. Try again later.',
+          );
+          captureException(error);
+        }
+      } finally {
+        this.isSubmitting = false;
+      }
+    },
+    extractErrorMessage(error) {
+      const message = error.response?.data?.message;
+
+      if (typeof message === 'string' && message) return message;
+      if (typeof message?.error === 'string' && message.error) return message.error;
+      return null;
     },
     onSearch(searchTerm) {
       this.search = searchTerm;
@@ -173,6 +222,9 @@ export default {
         this.showSelectError = false;
       } else if (stepIndex === 1) {
         this.showStorageConfigError = false;
+      } else if (stepIndex === 2) {
+        this.submissionError = '';
+        this.isRetryBlocked = false;
       }
     },
     validateStep(stepIndex) {
@@ -207,16 +259,6 @@ export default {
           )
         }}
       </p>
-      <!-- // temporary alerts, to be replaced-->
-      <gl-alert
-        v-if="isFormComplete"
-        :title="__('Complete')"
-        :dismiss-label="__('Dismiss')"
-        dismissible
-        variant="info"
-        data-testid="completion-alert"
-        @dismiss="isFormComplete = false"
-      />
     </header>
 
     <form-stepper
@@ -224,10 +266,13 @@ export default {
       :validate-step="validateStep"
       :can-start="canStart"
       :completion-button-text="s__('OfflineTransferExport|Start export')"
+      :is-form-complete="hasSubmitSucceeded"
+      :is-submitting="isSubmitting"
+      :is-completion-disabled="isRetryBlocked"
       @stepped-back="onStepChanged"
       @stepped-forward="onStepChanged"
       @validation-failed="onValidationFailed"
-      @complete="onComplete"
+      @complete="submitForm"
     >
       <template #step-0>
         <h2 class="gl-heading-3">
@@ -258,10 +303,14 @@ export default {
       </template>
 
       <template #step-2>
-        <h2 class="gl-heading-3">{{ s__('OfflineTransferExport|Review and export') }}</h2>
+        <h2 v-if="!hasSubmitSucceeded" class="gl-heading-3">
+          {{ s__('OfflineTransferExport|Review and export') }}
+        </h2>
         <review-export-tab
           :selected-groups="selectedGroups"
           :bucket-name="storageConfig.bucketName"
+          :has-submit-succeeded="hasSubmitSucceeded"
+          :submission-error="submissionError"
         />
       </template>
     </form-stepper>

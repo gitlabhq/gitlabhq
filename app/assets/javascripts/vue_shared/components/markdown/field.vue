@@ -10,6 +10,7 @@ import Suggestions from '~/vue_shared/components/markdown/suggestions.vue';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { MARKDOWN_EDITOR_READY_EVENT } from '~/vue_shared/constants';
 import markdownEditorEventHub from '~/vue_shared/components/markdown/eventhub';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import MarkdownHeader from './header.vue';
 import MarkdownToolbar from './toolbar.vue';
 
@@ -25,6 +26,7 @@ export default {
     SafeHtml,
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glSlotsMixin],
   props: {
     /**
      * This prop should be bound to the value of the `<textarea>` element
@@ -396,7 +398,7 @@ export default {
           :class="{ 'gl-border-t': showContentEditorSwitcher }"
           @enable-content-editor="$emit('enable-content-editor')"
         >
-          <template #toolbar><slot name="toolbar"></slot></template>
+          <template v-if="glSlots().toolbar" #toolbar><slot name="toolbar"></slot></template>
         </markdown-toolbar>
       </div>
     </div>

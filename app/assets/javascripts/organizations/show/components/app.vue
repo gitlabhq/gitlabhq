@@ -3,10 +3,12 @@ import { GlEmptyState, GlSprintf } from '@gitlab/ui';
 import organizationsEmptyStateSvgPath from '@gitlab/svgs/dist/illustrations/empty-state/empty-organizations-md.svg?url';
 import { s__, sprintf } from '~/locale';
 import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'OrganizationShowApp',
   components: { GlEmptyState, GlSprintf, HelpPageLink },
+  mixins: [glSlotsMixin],
   organizationsEmptyStateSvgPath,
   props: {
     organization: {
@@ -56,7 +58,7 @@ export default {
           </gl-sprintf>
         </slot>
       </template>
-      <template #actions>
+      <template v-if="glSlots().actions" #actions>
         <slot name="actions"></slot>
       </template>
     </gl-empty-state>

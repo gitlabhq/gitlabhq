@@ -3,6 +3,7 @@ import { defineAsyncComponent } from 'vue';
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import { s__, sprintf } from '~/locale';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import { I18N_LOCKED_RUNNER_DESCRIPTION } from '../constants';
 import { formatRunnerName } from '../utils';
 import RunnerCreatedAt from './runner_created_at.vue';
@@ -24,6 +25,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glSlotsMixin],
   props: {
     runner: {
       type: Object,
@@ -57,7 +59,7 @@ export default {
       </div>
     </template>
 
-    <template #actions>
+    <template v-if="glSlots().actions" #actions>
       <slot name="actions"></slot>
     </template>
   </page-heading>

@@ -1,7 +1,8 @@
 ---
-source_checksum: 3a4442a1b08d98ca
-distilled_at_sha: f22602e37afb92eb7028b601a922ebde417df6e4
+source_checksum: 4392aea8be780250
+distilled_at_sha: 18bec1426aecafc1e6f6e47896f845e2690b2bf8
 ---
+
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
 # Database Principles
@@ -86,10 +87,15 @@ distilled_at_sha: f22602e37afb92eb7028b601a922ebde417df6e4
 
 ### Verify Before Flagging
 
-- When a diff modifies or replaces an existing structure, always verify the current state from an authoritative source before flagging a discrepancy. Never infer the pre-change state solely from diff context — check the actual source of truth. For example:
+When a diff modifies or replaces an existing structure, always verify the current state from an
+authoritative source before flagging a discrepancy. Never infer the pre-change state solely from
+diff context — check the actual source of truth. For example:
 
-  - **Migration `down` methods**: verify the `down` schema against the actual pre-migration schema by querying the local PostgreSQL database (`\d tablename`) or, if unavailable, reading the schema from the base branch (`git show master:db/structure.sql`).
-  - **Table or column modifications**: verify what currently exists before claiming something was lost or changed incorrectly.
+- **Migration `down` methods**: verify the `down` schema against the actual pre-migration schema by
+  querying the local PostgreSQL database (`\d tablename`) or, if unavailable, reading the schema
+  from the base branch (`git show master:db/structure.sql`).
+- **Table or column modifications**: verify what currently exists before claiming something was lost
+  or changed incorrectly.
 
 ## Authoritative sources
 
@@ -97,4 +103,3 @@ For the full picture, see:
 
 - doc/development/database_review.md
 - doc/development/database/multiple_databases.md
-

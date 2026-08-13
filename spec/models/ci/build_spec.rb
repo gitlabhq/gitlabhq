@@ -2931,6 +2931,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           { key: 'CI_JOB_TOKEN', value: 'my-token', public: false, masked: true },
           { key: 'CI_JOB_STARTED_AT', value: build.started_at&.iso8601, public: true, masked: false },
           { key: 'CI_JOB_STARTED_AT_SLUG', value: build.started_at && Gitlab::Utils.slugify(build.started_at.iso8601), public: true, masked: false },
+          { key: 'CI_JOB_RETRY_COUNT', value: '0', public: true, masked: false },
           { key: 'CI_REGISTRY_USER', value: 'gitlab-ci-token', public: true, masked: false },
           { key: 'CI_REGISTRY_PASSWORD', value: 'my-token', public: false, masked: true },
           { key: 'CI_REPOSITORY_URL', value: build.repo_url, public: false, masked: false },
@@ -3042,6 +3043,17 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
 
         expect(environment_based_variables_collection).to be_empty
+      end
+
+      context 'when the job has been retried' do
+        before do
+          create_list(:ci_build, 2, :retried, name: build.name, pipeline: pipeline)
+        end
+
+        it 'counts the retries in CI_JOB_RETRY_COUNT' do
+          expect(subject.to_runner_variables)
+            .to include({ key: 'CI_JOB_RETRY_COUNT', value: '2', public: true, masked: false })
+        end
       end
 
       describe 'variables ordering' do

@@ -15,6 +15,7 @@ import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import eventHub from '../event_hub';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
@@ -38,7 +39,7 @@ export default {
   directives: {
     SafeHtml,
   },
-  mixins: [noteable, resolvable],
+  mixins: [noteable, resolvable, glSlotsMixin],
   inject: {
     reportAbusePath: {
       default: '',
@@ -498,7 +499,7 @@ export default {
           :is-imported="note.imported"
           :email-participant="note.external_author"
         >
-          <template #note-header-info>
+          <template v-if="glSlots()['note-header-info']" #note-header-info>
             <slot name="note-header-info"></slot>
           </template>
           <span v-if="commit" v-safe-html="actionText"></span>

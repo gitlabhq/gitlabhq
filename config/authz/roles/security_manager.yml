@@ -69,6 +69,7 @@ group:
   - create_vulnerability_export
   - delete_security_scan_profiles
   - enable_secret_push_protection
+  - read_advanced_dependency_management
   - read_agent_artifacts
   - read_any_audit_event
   - read_audit_event

@@ -142,12 +142,12 @@ module QA
 
           def click_close_issue_button
             open_actions_dropdown
-            click_element('state-toggle-action', text: 'Close Issue')
+            click_element('state-toggle-action', text: 'Close issue')
           end
 
           def has_reopen_issue_button?
             open_actions_dropdown
-            has_element?('state-toggle-action', text: 'Reopen Issue')
+            has_element?('state-toggle-action', text: 'Reopen issue')
           end
 
           # No-op in CE; overridden by EE::Page::Component::DapEmptyState when prepended

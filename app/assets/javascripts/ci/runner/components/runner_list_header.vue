@@ -12,7 +12,7 @@ export default {
 </script>
 <template>
   <page-heading class="gl-mb-3">
-    <template #heading>
+    <template v-if="glSlots().title" #heading>
       <slot name="title"></slot>
     </template>
 

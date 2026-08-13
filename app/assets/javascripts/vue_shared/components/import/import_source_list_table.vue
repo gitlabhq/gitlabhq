@@ -1,4 +1,5 @@
 <script>
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import ImportHistoryTableHeader from './import_history_table_header.vue';
 import ImportHistoryTableRow from './import_history_table_row.vue';
 import ImportHistoryTableSource from './import_history_table_source.vue';
@@ -23,6 +24,7 @@ export default {
     ImportHistoryTableRowStats,
     ImportHistoryTableRowErrors,
   },
+  mixins: [glSlotsMixin],
   props: {
     /**
      * This should be able to accept the data that comes from the BulkImport API.
@@ -76,7 +78,7 @@ export default {
 <template>
   <div>
     <import-history-table-header :grid-classes="$options.gridClasses">
-      <template #checkbox>
+      <template v-if="glSlots()['select-all-checkbox']" #checkbox>
         <!-- 
           @slot Slot for passing a checkbox to select all selectable items.
           @binding items All the items 
@@ -96,7 +98,7 @@ export default {
       :show-toggle="showToggle(item)"
       :grid-classes="$options.gridClasses"
     >
-      <template #checkbox>
+      <template v-if="glSlots()['row-checkbox']" #checkbox>
         <!-- 
           @slot Slot for passing a checkbox for each row that can be used to select it. Only displays if the row does not have a destination defined. Renders in place of the toggle button.
           @binding item The item for this row
@@ -117,7 +119,7 @@ export default {
       <template #column-3>
         <import-history-status-badge v-if="item.status_name" :status="item.status_name" />
       </template>
-      <template #column-4>
+      <template v-if="glSlots().action" #column-4>
         <!-- 
           @slot Slot for passing an action for the item. This will typically be a button that imports or re-imports.
           @binding item The item for this row

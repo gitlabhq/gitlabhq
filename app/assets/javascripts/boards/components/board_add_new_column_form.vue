@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlFormGroup } from '@gitlab/ui';
 import { __ } from '~/locale';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'BoardAddNewColumnForm',
@@ -16,6 +17,7 @@ export default {
     GlButton,
     GlFormGroup,
   },
+  mixins: [glSlotsMixin],
   props: {
     searchLabel: {
       type: String,
@@ -66,7 +68,7 @@ export default {
           :state="selectedIdValid"
           :invalid-feedback="$options.i18n.valueRequiredFieldFeedback"
         >
-          <slot name="dropdown"></slot>
+          <template v-if="glSlots().dropdown" #default><slot name="dropdown"></slot></template>
         </gl-form-group>
       </div>
       <div class="gl-mb-4 gl-flex gl-pr-4">

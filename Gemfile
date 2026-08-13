@@ -474,7 +474,7 @@ gem 'async', '~> 2.39.0', require: false, feature_category: :shared # rubocop:to
 gem 'io-event', '~> 1.14', require: false, feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
 # Security report schemas used to validate CI job artifacts of security jobs
-gem 'gitlab-security_report_schemas', '0.2.0.min15.0.0.max15.2.4', feature_category: :vulnerability_management
+gem 'gitlab-security_report_schemas', '0.2.1.min15.0.0.max15.2.4', feature_category: :vulnerability_management
 
 # Frontend bundling
 gem 'vite_rails', '~> 3.10.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839

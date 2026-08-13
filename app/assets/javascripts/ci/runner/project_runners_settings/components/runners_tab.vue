@@ -133,7 +133,7 @@ export default {
     </div>
     <div v-if="glSlots().description" class="gl-mx-5 gl-mb-5">
       <gl-alert variant="tip" :dismissible="false">
-        <slot name="description"></slot>
+        <template v-if="glSlots().description" #default><slot name="description"></slot></template>
       </gl-alert>
     </div>
     <p v-if="isEmpty" data-testid="empty-message" class="gl-mx-5 gl-mb-5 gl-text-subtle">
@@ -153,7 +153,9 @@ export default {
           :edit-url="runner.editUrl"
           @deleted="onDeleted"
         >
-          <slot name="other-runner-actions" :runner="runner"></slot>
+          <template v-if="glSlots()['other-runner-actions']" #default
+            ><slot name="other-runner-actions" :runner="runner"></slot
+          ></template>
         </runner-actions-cell>
       </template>
     </runner-list>

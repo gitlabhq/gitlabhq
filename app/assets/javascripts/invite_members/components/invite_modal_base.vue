@@ -15,6 +15,7 @@ import { sprintf } from '~/locale';
 import ContentTransition from '~/invite_members/components/content_transition.vue';
 import { initialSelectedRole, roleDropdownItems } from 'ee_else_ce/members/utils';
 import RoleSelector from '~/members/components/role_selector.vue';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import {
   ACCESS_EXPIRE_DATE,
   GRANT_TEMPORARY_ACCESS,
@@ -52,7 +53,7 @@ export default {
     GlIcon,
     ContentTransition,
   },
-  mixins: [Tracking.mixin()],
+  mixins: [Tracking.mixin(), glSlotsMixin],
   inheritAttrs: false,
   props: {
     modalTitle: {
@@ -324,7 +325,9 @@ export default {
           <template v-if="formGroupDescription" #label-description>
             <span class="gl-text-subtle">{{ formGroupDescription }}</span>
           </template>
-          <slot name="select" v-bind="{ exceptionState, inputId: selectId }"></slot>
+          <template v-if="glSlots().select" #default
+            ><slot name="select" v-bind="{ exceptionState, inputId: selectId }"></slot
+          ></template>
         </gl-form-group>
 
         <slot name="after-members-input"></slot>

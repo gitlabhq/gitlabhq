@@ -2,6 +2,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { GlSkeletonLoader } from '@gitlab/ui';
 import { GlAreaChart } from '@gitlab/ui/src/charts';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import { CHART_CONTAINER_HEIGHT } from './constants';
 
 export default {
@@ -10,6 +11,7 @@ export default {
     GlAreaChart,
     GlSkeletonLoader,
   },
+  mixins: [glSlotsMixin],
   props: {
     chartData: {
       type: Array,
@@ -54,10 +56,10 @@ export default {
       :include-legend-avg-max="false"
       :option="areaChartOptions"
     >
-      <template #tooltip-title>
+      <template v-if="glSlots()['tooltip-title']" #tooltip-title>
         <slot name="tooltip-title"></slot>
       </template>
-      <template #tooltip-content>
+      <template v-if="glSlots()['tooltip-content']" #tooltip-content>
         <slot name="tooltip-content"></slot>
       </template>
     </gl-area-chart>

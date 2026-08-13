@@ -3,6 +3,7 @@ import { GlPopover, GlDashboardPanel } from '@gitlab/ui';
 import { alertVariantIconMap } from '@gitlab/ui/src/utils/constants';
 import { isObject } from 'lodash-es';
 import { VARIANT_DANGER, VARIANT_WARNING, VARIANT_INFO } from '~/alert';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 /**
  * This component provides a standardized layout and functionality for dashboard panels.
@@ -18,6 +19,7 @@ export default {
     GlPopover,
     GlDashboardPanel,
   },
+  mixins: [glSlotsMixin],
   props: {
     title: {
       type: String,
@@ -138,10 +140,10 @@ export default {
     @dropdownOpen="dropdownOpen = true"
     @dropdownClosed="dropdownOpen = false"
   >
-    <template #body>
+    <template v-if="glSlots().body" #body>
       <slot name="body"></slot>
     </template>
-    <template #filters>
+    <template v-if="glSlots().filters" #filters>
       <slot name="filters"></slot>
     </template>
     <template #alert-message="{ panelId }">
@@ -158,7 +160,9 @@ export default {
         boundary="viewport"
       >
         <!-- @slot The panel error popover body to display when showAlertState is true. -->
-        <slot name="alert-popover"></slot>
+        <template v-if="glSlots()['alert-popover']" #default
+          ><slot name="alert-popover"></slot
+        ></template>
       </gl-popover>
     </template>
   </gl-dashboard-panel>

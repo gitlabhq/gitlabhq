@@ -88,6 +88,65 @@ describe('DesignPresentation', () => {
     expect(wrapper.element).toMatchSnapshot();
   });
 
+  describe('design overlay events', () => {
+    beforeEach(() => {
+      createComponent({ image: 'test.jpg', imageName: 'test' });
+    });
+
+    it('re-emits `open-comment-form`', () => {
+      findDesignOverlay().vm.$emit('open-comment-form', { x: 10, y: 20 });
+
+      expect(wrapper.emitted('open-comment-form')).toEqual([
+        [
+          {
+            x: 10,
+            y: 20,
+            width: mockOverlayDimensions.width,
+            height: mockOverlayDimensions.height,
+          },
+        ],
+      ]);
+    });
+
+    it('re-emits `move-note`', () => {
+      findDesignOverlay().vm.$emit('move-note', {
+        noteId: 'gid://gitlab/DiffNote/1',
+        discussionId: 'gid://gitlab/Discussion/1',
+        coordinates: { x: 10, y: 20 },
+      });
+
+      expect(wrapper.emitted('move-note')).toEqual([
+        [
+          {
+            noteId: 'gid://gitlab/DiffNote/1',
+            discussionId: 'gid://gitlab/Discussion/1',
+            position: {
+              x: 10,
+              y: 20,
+              width: mockOverlayDimensions.width,
+              height: mockOverlayDimensions.height,
+            },
+          },
+        ],
+      ]);
+    });
+
+    it('clears the annotation position without re-emitting to the parent', async () => {
+      createComponent({ isAnnotating: true });
+      await nextTick();
+
+      findDesignOverlay().vm.$emit('open-comment-form', { x: 1, y: 1 });
+      await nextTick();
+      expect(findDesignOverlay().props('currentCommentForm')).not.toBeNull();
+
+      findDesignOverlay().vm.$emit('close-comment-form');
+      await nextTick();
+
+      expect(findDesignOverlay().props('currentCommentForm')).toBeNull();
+      expect(wrapper.emitted('close-comment-form')).toBeUndefined();
+    });
+  });
+
   describe('getViewportCenter', () => {
     beforeEach(() => {
       createComponent({
@@ -267,23 +326,6 @@ describe('DesignPresentation', () => {
         left: `calc(50% - ${mockOverlayDimensions.width / 2}px)`,
         top: '0',
       });
-    });
-  });
-
-  describe('closeCommentForm', () => {
-    it('clears the annotation position without re-emitting to the parent', async () => {
-      createComponent({ isAnnotating: true });
-      await nextTick();
-
-      findDesignOverlay().vm.$emit('openCommentForm', { x: 1, y: 1 });
-      await nextTick();
-      expect(findDesignOverlay().props('currentCommentForm')).not.toBeNull();
-
-      findDesignOverlay().vm.$emit('closeCommentForm');
-      await nextTick();
-
-      expect(findDesignOverlay().props('currentCommentForm')).toBeNull();
-      expect(wrapper.emitted('closeCommentForm')).toBeUndefined();
     });
   });
 });

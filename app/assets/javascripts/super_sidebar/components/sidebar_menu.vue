@@ -14,6 +14,7 @@ import { formatAsyncCount } from '~/super_sidebar/utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import dismissUserCalloutMutation from '~/graphql_shared/mutations/dismiss_user_callout.mutation.graphql';
 import {
+  HIDDEN_NAV_ITEM_CLASS,
   PANEL_TYPES,
   PANELS_WITH_PINS,
   PINNED_NAV_STORAGE_KEY,
@@ -227,6 +228,32 @@ export default {
       }
       return this.nonStaticItems;
     },
+
+    // The current page's nav item, when it isn't pinned and isn't already
+    // rendered elsewhere in the sidebar. Gives users a sense of place, and a
+    // way to pin the page they are on.
+    activeUnpinnedItem() {
+      if (this.showUnpinnedItems) return null;
+
+      const renderedSectionIds = new Set(this.sectionsToRender.map(({ id }) => id));
+
+      // More than one item can be active at once (on group work items, both the
+      // visible issue list and the hidden epic list match), so skip the ones
+      // that are hidden in the sidebar and take the first item left.
+      return this.nonStaticItems
+        .filter((section) => !renderedSectionIds.has(section.id))
+        .flatMap((section) => section.items)
+        .find(
+          (item) =>
+            item.is_active &&
+            !this.changedPinnedItemIds.ids.includes(item.id) &&
+            // A pinned item can be the hidden twin of this one (a stale
+            // group_epic_list pin points at the same page as group_issue_list),
+            // in which case the page is already represented in the sidebar.
+            !this.pinnedItems.some((pinned) => pinned.link === item.link) &&
+            !item.link_classes?.includes(HIDDEN_NAV_ITEM_CLASS),
+        );
+    },
   },
   mounted() {
     this.decideFlyoutState();
@@ -391,6 +418,16 @@ export default {
     >
       {{ $options.i18n.browseMoreFeatures }}
     </gl-nav-item>
+    <template v-if="activeUnpinnedItem">
+      <hr aria-hidden="true" class="gl-border-t gl-m-3 gl-border-strong" />
+      <ul
+        :aria-label="s__('Navigation|Current page')"
+        class="gl-m-0 gl-list-none gl-p-0"
+        data-testid="current-page-section"
+      >
+        <nav-item :item="activeUnpinnedItem" :async-count="asyncCount" @pin-add="createPin" />
+      </ul>
+    </template>
     <feature-library-modal
       v-if="showFeatureLibrary"
       :supports-pins="supportsPins"

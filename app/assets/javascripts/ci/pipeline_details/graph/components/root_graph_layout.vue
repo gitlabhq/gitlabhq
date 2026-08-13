@@ -17,7 +17,7 @@ export default {
         <slot name="stages"></slot>
       </template>
 
-      <slot name="jobs"></slot>
+      <template v-if="glSlots().jobs" #default><slot name="jobs"></slot></template>
     </gl-card>
   </div>
 </template>

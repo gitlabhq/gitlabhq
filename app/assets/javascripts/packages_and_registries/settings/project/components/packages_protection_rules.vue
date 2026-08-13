@@ -275,7 +275,7 @@ export default {
       :title="$options.i18n.settingBlockTitle"
       :description="$options.i18n.settingBlockDescription"
       :toggle-text="s__('PackageRegistry|Add protection rule')"
-      @showForm="openNewFormDrawer"
+      @show-form="openNewFormDrawer"
     >
       <template #default>
         <gl-alert

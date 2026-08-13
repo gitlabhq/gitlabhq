@@ -10,6 +10,7 @@ import {
 import { uniqueId } from 'lodash-es';
 import { s__, __ } from '~/locale';
 import Markdown from '~/vue_shared/components/markdown/non_gfm_markdown.vue';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import { CI_VARIABLE_TYPE_FILE, CI_VARIABLE_TYPE_ENV_VAR } from '../pipeline_new/constants';
 import VariableValuesListbox from '../pipeline_new/components/variable_values_listbox.vue';
 
@@ -37,6 +38,7 @@ export default {
     Markdown,
     VariableValuesListbox,
   },
+  mixins: [glSlotsMixin],
   props: {
     initialVariables: {
       type: Array,
@@ -317,7 +319,7 @@ export default {
             />
           </div>
         </template>
-        <template #description>
+        <template v-if="glSlots().description" #description>
           <slot name="description"></slot>
         </template>
       </gl-form-group>

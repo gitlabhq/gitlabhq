@@ -10,6 +10,7 @@ import { getPackageTypeLabel } from '~/packages_and_registries/package_registry/
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'PackageTitle',
@@ -24,6 +25,7 @@ export default {
   directives: {
     GlResizeObserver: GlResizeObserverDirective,
   },
+  mixins: [glSlotsMixin],
   inject: ['isGroupPage'],
   i18n: {
     lastDownloadedAt: s__('PackageRegistry|Last downloaded %{dateTime}'),
@@ -116,7 +118,7 @@ export default {
       />
     </template>
 
-    <template #right-actions>
+    <template v-if="glSlots()['delete-button']" #right-actions>
       <slot name="delete-button"></slot>
     </template>
   </title-area>

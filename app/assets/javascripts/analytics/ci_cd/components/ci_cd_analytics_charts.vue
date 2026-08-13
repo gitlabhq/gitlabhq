@@ -1,6 +1,7 @@
 <script>
 import { GlSegmentedControl } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import CiCdAnalyticsAreaChart from './ci_cd_analytics_area_chart.vue';
 import { DEFAULT_SELECTED_CHART } from './constants';
 
@@ -10,6 +11,7 @@ export default {
     CiCdAnalyticsAreaChart,
     GlSegmentedControl,
   },
+  mixins: [glSlotsMixin],
   props: {
     charts: {
       required: true,
@@ -72,10 +74,10 @@ export default {
       <slot name="alerts"></slot>
       <p>{{ dateRange }}</p>
       <slot name="metrics" :selected-chart="selectedChart"></slot>
-      <template #tooltip-title>
+      <template v-if="glSlots()['tooltip-title']" #tooltip-title>
         <slot name="tooltip-title"></slot>
       </template>
-      <template #tooltip-content>
+      <template v-if="glSlots()['tooltip-content']" #tooltip-content>
         <slot name="tooltip-content"></slot>
       </template>
     </ci-cd-analytics-area-chart>

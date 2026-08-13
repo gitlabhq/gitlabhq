@@ -1,10 +1,7 @@
 <script>
 import { GlIcon } from '@gitlab/ui';
 
-export const STATUS_DONE = 'done';
-export const STATUS_TODO = 'todo';
-export const STATUS_BLOCKED = 'blocked';
-export const STATUS_ERROR = 'error';
+import { STATUS_DONE, STATUS_TODO, STATUS_BLOCKED, STATUS_ERROR } from '../constants';
 
 const STATUS_ICONS = {
   [STATUS_DONE]: { name: 'check-circle-filled', variant: 'success' },

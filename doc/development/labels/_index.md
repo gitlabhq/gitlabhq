@@ -14,7 +14,7 @@ Most issues will have labels for at least one of each of the following when appl
 - Type. For example: `~"type::feature"`, `~"type::bug"`, or `~"type::maintenance"`.
 - Section. For example: `~"section::dev"` or `~"section::ai"`.
 - Stage. For example: `~"devops::plan"` or `~"devops::create"`.
-- Group. For example: `~"group::source code"`, `~"group::knowledge"`, or `~"group::editor"`.
+- Group. For example: `~"group::source code"`, `~"group::planner intelligence"`, or `~"group::editor"`.
 - Category. For example: `~"Category:Code Analytics"`, `~"Category:DevOps Reports"`, or `~"Category:Templates"`.
 - Feature. For example: `~wiki`, `~ldap`, `~api`, `~issues`, or `~"merge requests"`.
 - Feature state: `~"Feature state::Experiment"`, `~"Feature state::Beta"`, or `~"Feature state::GA"`

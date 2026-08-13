@@ -54601,7 +54601,9 @@ Fields:
 | <a id="project-duocontextexclusionsettings"></a>`duoContextExclusionSettings` {{< icon name="warning-solid" >}} | [`DuoContextExclusionSettings`](#duocontextexclusionsettings) | Introduced in GitLab 18.2. Status: Experiment. Settings for excluding files from Duo context. |
 | <a id="project-duodependencybumpbreakingchangesavailable"></a>`duoDependencyBumpBreakingChangesAvailable` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.2. Status: Experiment. Indicates whether the GitLab Duo resolve dependency bump breaking changes flow can be triggered for the project. |
 | <a id="project-duofeaturesenabled"></a>`duoFeaturesEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 16.9. Status: Experiment. Indicates whether GitLab Duo features are enabled for the project. |
+| <a id="project-duoworkflowrunneravailable"></a>`duoWorkflowRunnerAvailable` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | Introduced in GitLab 19.3. Status: Experiment. Indicates whether the project has a runner that can pick up GitLab Duo Agent Platform workloads. Resolved on request only, because it queries the project's runners and their managers. |
 | <a id="project-duoworkflowstatuscheck"></a>`duoWorkflowStatusCheck` {{< icon name="warning-solid" >}} | [`DuoWorkflowEnablement`](#duoworkflowenablement) | Introduced in GitLab 17.7. Status: Experiment. Indicates whether Duo Agent Platform is enabled for the project. |
+| <a id="project-duoworkflowusablerunnertype"></a>`duoWorkflowUsableRunnerType` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.3. Status: Experiment. Runner type (instance_type, group_type, or project_type) of the runner that can pick up GitLab Duo Agent Platform workloads, or null when none can. Shares its runner scan with duoWorkflowRunnerAvailable when both are requested. |
 | <a id="project-editpath"></a>`editPath` | [`String!`](#string) | Path for editing project. |
 | <a id="project-explorecatalogpath"></a>`exploreCatalogPath` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 17.6. Status: Experiment. Path to the project catalog resource. |
 | <a id="project-flowmetrics"></a>`flowMetrics` {{< icon name="warning-solid" >}} | [`ProjectValueStreamAnalyticsFlowMetrics`](#projectvaluestreamanalyticsflowmetrics) | Introduced in GitLab 15.10. Status: Experiment. Flow metrics for value stream analytics. |
@@ -57383,7 +57385,7 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="project-vulnerabilityworkflowexecution-executionid"></a>`executionId` | [`String`](#string) | Execution identifier. When omitted, returns the active execution. |
+| <a id="project-vulnerabilityworkflowexecution-executionid"></a>`executionId` | [`String`](#string) | Execution identifier. When omitted, returns the latest execution. |
 | <a id="project-vulnerabilityworkflowexecution-workflow"></a>`workflow` | [`VulnerabilityDuoWorkflow!`](#vulnerabilityduoworkflow) | Duo workflow associated with the execution. |
 
 ##### `Project.webhook`

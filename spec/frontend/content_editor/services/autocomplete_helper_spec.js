@@ -567,7 +567,7 @@ describe('AutocompleteHelper', () => {
       'Pynefunc',
       'Trinix',
       'Trounswood',
-      'group::knowledge',
+      'group::planner intelligence',
       'scoped label',
       'type::one',
       'type::two',

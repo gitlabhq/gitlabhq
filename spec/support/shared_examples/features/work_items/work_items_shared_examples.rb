@@ -419,7 +419,7 @@ RSpec.shared_examples 'authored work item guest user permissions' do
     within_testid 'work-item-actions-dropdown' do
       click_button _('More actions')
 
-      expect(page).to have_button 'Close Key Result'
+      expect(page).to have_button 'Close key result'
       expect(page).to have_button 'New related item'
       expect(page).not_to have_button 'Promote to objective'
       expect(page).not_to have_button 'Change type'

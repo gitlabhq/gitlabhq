@@ -341,6 +341,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/commit_rapid_diffs.css"
     config.assets.precompile << "page_bundles/commits.css"
     config.assets.precompile << "page_bundles/compare_rapid_diffs.css"
+    config.assets.precompile << "page_bundles/continuous_deployment.css"
     config.assets.precompile << "page_bundles/cycle_analytics.css"
     config.assets.precompile << "page_bundles/dashboard.css"
     config.assets.precompile << "page_bundles/dashboard_projects.css"

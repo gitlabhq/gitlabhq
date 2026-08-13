@@ -95,6 +95,7 @@ Predefined variables become available at three different phases of pipeline exec
 | `CI_JOB_MANUAL`                                 | Pipeline     | Only available if the job was started manually. `true` when available. |
 | `CI_JOB_NAME`                                   | Pipeline     | The name of the job. |
 | `CI_JOB_NAME_SLUG`                              | Pipeline     | `CI_JOB_NAME` in lowercase, shortened to 63 bytes, and with everything except `0-9` and `a-z` replaced with `-`. No leading / trailing `-`. Use in paths. |
+| `CI_JOB_RETRY_COUNT`                            | Job-only     | The number of times the job has been retried in the current pipeline. `0` on the first run, and increases by one with each retry. Introduced in GitLab 19.3. |
 | `CI_JOB_STAGE`                                  | Pipeline     | The name of the job's stage. |
 | `CI_JOB_STATUS`                                 | Job-only     | The status of the job as each runner stage is executed. Use with [`after_script`](../yaml/_index.md#after_script). Can be `success`, `failed`, or `canceled`. |
 | `CI_JOB_TAGS`                                   | Job-only     | A JSON array of the job's [runner tags](../yaml/_index.md#tags). For example `["tag_1", "tag_2"]`. Introduced in GitLab 19.3. |

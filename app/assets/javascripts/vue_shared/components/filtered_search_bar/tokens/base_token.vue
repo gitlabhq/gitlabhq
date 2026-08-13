@@ -11,6 +11,7 @@ import { debounce, last } from 'lodash-es';
 
 import { stripQuotes } from '~/lib/utils/text_utility';
 import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import {
   DEBOUNCE_DELAY,
   FILTERS_NONE_ANY_ME,
@@ -30,7 +31,7 @@ export default {
     GlDropdownText,
     GlLoadingIcon,
   },
-  mixins: [glListenersMixin],
+  mixins: [glListenersMixin, glSlotsMixin],
   props: {
     config: {
       type: Object,
@@ -294,7 +295,7 @@ export default {
     @input="handleInput"
     @select="handleTokenValueSelected"
   >
-    <template #view-token="viewTokenProps">
+    <template v-if="glSlots()['view-token']" #view-token="viewTokenProps">
       <slot
         name="view-token"
         :view-token-props="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
@@ -304,7 +305,7 @@ export default {
         } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
       ></slot>
     </template>
-    <template #view="viewTokenProps">
+    <template v-if="glSlots().view" #view="viewTokenProps">
       <slot
         name="view"
         :view-token-props="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {

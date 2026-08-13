@@ -4,6 +4,6 @@ feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/481892
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164251
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/504599
 milestone: '17.6'
-group: group::knowledge
+group: group::planner intelligence
 type: wip
 default_enabled: false

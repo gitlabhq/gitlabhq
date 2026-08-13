@@ -1,6 +1,7 @@
 <script>
 import IssuableSidebar from '~/vue_shared/issuable/sidebar/components/issuable_sidebar_root.vue';
 
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import IssuableBody from './issuable_body.vue';
 import IssuableDiscussion from './issuable_discussion.vue';
 import IssuableHeader from './issuable_header.vue';
@@ -13,6 +14,7 @@ export default {
     IssuableBody,
     IssuableDiscussion,
   },
+  mixins: [glSlotsMixin],
   props: {
     issuable: {
       type: Object,
@@ -137,10 +139,10 @@ export default {
       :show-work-item-type-icon="showWorkItemTypeIcon"
       :type-icon-name="typeIconName"
     >
-      <template #status-badge>
+      <template v-if="glSlots()['status-badge']" #status-badge>
         <slot name="status-badge"></slot>
       </template>
-      <template #header-actions>
+      <template v-if="glSlots()['header-actions']" #header-actions>
         <slot name="header-actions"></slot>
       </template>
     </issuable-header>
@@ -167,25 +169,31 @@ export default {
       @keydown-title="handleKeydownTitle"
       @keydown-description="handleKeydownDescription"
     >
-      <template #status-badge>
+      <template v-if="glSlots()['status-badge']" #status-badge>
         <slot name="status-badge"></slot>
       </template>
-      <template #edit-form-actions="{ issuableMeta }">
+      <template v-if="glSlots()['edit-form-actions']" #edit-form-actions="{ issuableMeta }">
         <slot name="edit-form-actions" v-bind="{ issuableMeta }"></slot>
       </template>
     </issuable-body>
 
     <issuable-discussion>
-      <template #discussion>
+      <template v-if="glSlots().discussion" #discussion>
         <slot name="discussion"></slot>
       </template>
     </issuable-discussion>
 
     <issuable-sidebar>
-      <template #right-sidebar-top-items="{ sidebarExpanded, toggleSidebar }">
+      <template
+        v-if="glSlots()['right-sidebar-top-items']"
+        #right-sidebar-top-items="{ sidebarExpanded, toggleSidebar }"
+      >
         <slot name="right-sidebar-top-items" v-bind="{ sidebarExpanded, toggleSidebar }"></slot>
       </template>
-      <template #right-sidebar-items="{ sidebarExpanded, toggleSidebar }">
+      <template
+        v-if="glSlots()['right-sidebar-items']"
+        #right-sidebar-items="{ sidebarExpanded, toggleSidebar }"
+      >
         <slot name="right-sidebar-items" v-bind="{ sidebarExpanded, toggleSidebar }"></slot>
       </template>
     </issuable-sidebar>

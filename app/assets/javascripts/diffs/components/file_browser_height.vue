@@ -1,9 +1,11 @@
 <script>
 import StickyViewportFillerHeight from '~/diffs/components/sticky_viewport_filler_height.vue';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'FileBrowserHeight',
   components: { StickyViewportFillerHeight },
+  mixins: [glSlotsMixin],
   props: {
     enableStickyHeight: {
       type: Boolean,
@@ -35,7 +37,7 @@ export default {
     :sticky-top-offset="stickyTopOffset"
     :sticky-bottom-offset="bottomPadding"
   >
-    <slot></slot>
+    <template v-if="glSlots().default" #default><slot></slot></template>
   </sticky-viewport-filler-height>
   <div v-else>
     <slot></slot>

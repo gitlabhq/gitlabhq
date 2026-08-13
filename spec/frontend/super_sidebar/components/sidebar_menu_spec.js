@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import MockAdapter from 'axios-mock-adapter';
 import { createWrapper as createRootWrapper } from '@vue/test-utils';
 // eslint-disable-next-line no-restricted-syntax -- test mocks viewport breakpoints used by the source component
 import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
@@ -7,6 +8,8 @@ import superSidebarDataQuery from '~/super_sidebar/graphql/queries/super_sidebar
 import dismissUserCalloutMutation from '~/graphql_shared/mutations/dismiss_user_callout.mutation.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import axios from '~/lib/utils/axios_utils';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SidebarMenu from '~/super_sidebar/components/sidebar_menu.vue';
 import PinnedSection from '~/super_sidebar/components/pinned_section.vue';
@@ -16,6 +19,7 @@ import { MODAL_ID } from '~/super_sidebar/components/feature_library/constants';
 import NavItem from '~/super_sidebar/components/nav_item.vue';
 import MenuSection from '~/super_sidebar/components/menu_section.vue';
 import {
+  HIDDEN_NAV_ITEM_CLASS,
   PANELS_WITH_PINS,
   PINNED_NAV_STORAGE_KEY,
   MAX_OPEN_WORK_ITEMS_COUNT,
@@ -41,8 +45,9 @@ describe('Sidebar Menu', () => {
   let wrapper;
   let handler;
 
-  const createWrapper = ({ queryHandler = handler, provide = {}, ...extraProps }) => {
+  const createWrapper = ({ queryHandler = handler, provide = {}, attachTo, ...extraProps }) => {
     wrapper = shallowMountExtended(SidebarMenu, {
+      attachTo,
       apolloProvider: createMockApollo([[superSidebarDataQuery, queryHandler]]),
       propsData: {
         items: sidebarData.current_menu_items,
@@ -981,6 +986,207 @@ describe('Sidebar Menu', () => {
 
       expect(findPinnedSection().exists()).toBe(true);
       expect(wrapper.findByTestId('feature-library-trigger').exists()).toBe(true);
+    });
+  });
+
+  describe('Current page nav item', () => {
+    const activeItem = { id: 22, title: 'Active subitem', is_active: true };
+
+    const itemsWithActiveSubitem = [
+      { id: 1, title: 'No subitems' },
+      { id: 2, title: 'With subitems', items: [{ id: 21, title: 'Subitem' }, activeItem] },
+      {
+        id: 'settings_menu',
+        title: 'Settings',
+        items: [{ id: 'settings_general', title: 'General' }],
+      },
+    ];
+
+    const findCurrentPageSection = () => wrapper.findByTestId('current-page-section');
+
+    const createPinnedOnlyWrapper = ({
+      items = itemsWithActiveSubitem,
+      pinnedItemIds = [],
+      glFeatures = {},
+      ...options
+    } = {}) =>
+      createWrapper({
+        items,
+        pinnedItemIds,
+        panelType: 'project',
+        provide: { glFeatures: { hideUnpinnedSidebarItems: true, ...glFeatures } },
+        ...options,
+      });
+
+    it('renders the active item when it is not pinned', () => {
+      createPinnedOnlyWrapper();
+
+      expect(findCurrentPageSection().findComponent(NavItem).props('item')).toEqual(activeItem);
+    });
+
+    it('names the list so the item reads as the current page', () => {
+      // Attached to the document so the accessible name computation can resolve
+      // the sibling section's aria-labelledby idref, which points outside this
+      // component.
+      createPinnedOnlyWrapper({ attachTo: document.body });
+
+      expect(wrapper.findByRole('list', { name: 'Current page' }).exists()).toBe(true);
+    });
+
+    it('is not rendered when the active item is already pinned', () => {
+      createPinnedOnlyWrapper({ pinnedItemIds: [activeItem.id] });
+
+      expect(findCurrentPageSection().exists()).toBe(false);
+    });
+
+    it('is not rendered when unpinned items are still shown', () => {
+      createPinnedOnlyWrapper({
+        glFeatures: { hideUnpinnedSidebarItems: false, featureLibraryModal: true },
+      });
+
+      expect(findCurrentPageSection().exists()).toBe(false);
+    });
+
+    it('is not rendered when the active item is in the settings section', () => {
+      createPinnedOnlyWrapper({
+        items: [
+          { id: 2, title: 'With subitems', items: [{ id: 21, title: 'Subitem' }] },
+          {
+            id: 'settings_menu',
+            title: 'Settings',
+            items: [{ id: 'settings_general', title: 'General', is_active: true }],
+          },
+        ],
+      });
+
+      expect(findCurrentPageSection().exists()).toBe(false);
+    });
+
+    it('is not rendered when the active item is a static item', () => {
+      createPinnedOnlyWrapper({
+        items: [
+          { id: 1, title: 'No subitems', is_active: true },
+          { id: 2, title: 'With subitems', items: [{ id: 21, title: 'Subitem' }] },
+        ],
+      });
+
+      expect(findCurrentPageSection().exists()).toBe(false);
+    });
+
+    it('is not rendered when the active item is hidden in the sidebar', () => {
+      createPinnedOnlyWrapper({
+        items: [
+          {
+            id: 2,
+            title: 'With subitems',
+            items: [{ ...activeItem, link_classes: HIDDEN_NAV_ITEM_CLASS }],
+          },
+        ],
+      });
+
+      expect(findCurrentPageSection().exists()).toBe(false);
+    });
+
+    // On group work items, both the visible issue list and the hidden epic list
+    // are active. The visible one must win.
+    it('prefers the visible item when a hidden item is active too', () => {
+      createPinnedOnlyWrapper({
+        items: [
+          {
+            id: 2,
+            title: 'With subitems',
+            items: [
+              {
+                id: 20,
+                title: 'Hidden active',
+                is_active: true,
+                link_classes: HIDDEN_NAV_ITEM_CLASS,
+              },
+              activeItem,
+            ],
+          },
+        ],
+      });
+
+      expect(findCurrentPageSection().findComponent(NavItem).props('item')).toEqual(activeItem);
+    });
+
+    // A group that still has the legacy group_epic_list pinned shows that hidden
+    // item in the pinned section, so its visible twin must not be surfaced again.
+    it('is not rendered when a pinned item links to the same page', () => {
+      createPinnedOnlyWrapper({
+        items: [
+          {
+            id: 2,
+            title: 'With subitems',
+            items: [
+              {
+                id: 20,
+                title: 'Hidden active',
+                link: '/work_items',
+                is_active: true,
+                link_classes: HIDDEN_NAV_ITEM_CLASS,
+              },
+              { ...activeItem, link: '/work_items' },
+            ],
+          },
+        ],
+        pinnedItemIds: [20],
+      });
+
+      expect(findCurrentPageSection().exists()).toBe(false);
+    });
+
+    it('is not rendered when no item is active', () => {
+      createPinnedOnlyWrapper({ items: menuItems });
+
+      expect(findCurrentPageSection().exists()).toBe(false);
+    });
+
+    it('is not rendered on the organization panel', () => {
+      createWrapper({
+        items: itemsWithActiveSubitem,
+        pinnedItemIds: [],
+        panelType: 'organization',
+        provide: { glFeatures: { hideUnpinnedSidebarItems: true } },
+      });
+
+      expect(findCurrentPageSection().exists()).toBe(false);
+    });
+
+    it('is not rendered on panels that do not support pins', () => {
+      createWrapper({
+        items: itemsWithActiveSubitem,
+        pinnedItemIds: [],
+        panelType: 'your_work',
+        provide: { glFeatures: { hideUnpinnedSidebarItems: true } },
+      });
+
+      expect(findCurrentPageSection().exists()).toBe(false);
+    });
+
+    describe('when the item emits pin-add', () => {
+      let axiosMock;
+
+      beforeEach(async () => {
+        axiosMock = new MockAdapter(axios);
+        axiosMock.onPut().reply(HTTP_STATUS_OK, [activeItem.id]);
+        createPinnedOnlyWrapper();
+
+        findCurrentPageSection()
+          .findComponent(NavItem)
+          .vm.$emit('pin-add', activeItem.id, activeItem.title);
+        await waitForPromises();
+      });
+
+      afterEach(() => {
+        axiosMock.restore();
+      });
+
+      it('moves the item into the pinned section', () => {
+        expect(findCurrentPageSection().exists()).toBe(false);
+        expect(findPinnedSection().props('items')).toEqual([activeItem]);
+      });
     });
   });
 });

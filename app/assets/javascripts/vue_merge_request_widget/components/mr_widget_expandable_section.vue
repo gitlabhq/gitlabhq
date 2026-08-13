@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlCollapse, GlIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 /**
  * Renders header section with icon and expand button
@@ -13,6 +14,7 @@ export default {
     GlCollapse,
     GlIcon,
   },
+  mixins: [glSlotsMixin],
   props: {
     iconName: {
       type: String,
@@ -61,7 +63,7 @@ export default {
     </div>
 
     <gl-collapse :visible="contentIsVisible" class="gl-border-t gl-border-t-section gl-bg-subtle">
-      <slot name="content"></slot>
+      <template v-if="glSlots().content" #default><slot name="content"></slot></template>
     </gl-collapse>
   </div>
 </template>

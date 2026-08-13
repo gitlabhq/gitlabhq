@@ -102,7 +102,7 @@ export default {
         </div>
       </template>
 
-      <template #actions>
+      <template v-if="glSlots()['right-actions']" #actions>
         <slot name="right-actions"></slot>
       </template>
     </page-heading>

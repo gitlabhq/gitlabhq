@@ -9,6 +9,7 @@ import { DRAG_DELAY } from '~/sortable/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import ResourceListsLoadingStateList from '~/vue_shared/components/resource_lists/loading_state_list.vue';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import { DEFAULT_SKELETON_COUNT, PAGE_SIZE_STORAGE_KEY } from '../constants';
 import IssuableBulkEditSidebar from './issuable_bulk_edit_sidebar.vue';
 import IssuableItem from './issuable_item.vue';
@@ -41,6 +42,7 @@ export default {
     LocalStorageSync,
     EmptyResult,
   },
+  mixins: [glSlotsMixin],
   props: {
     namespace: {
       type: String,
@@ -360,7 +362,7 @@ export default {
         :max-count="maxCount"
         @click="$emit('click-tab', $event)"
       >
-        <template #nav-actions>
+        <template v-if="glSlots()['nav-actions']" #nav-actions>
           <slot name="nav-actions"></slot>
         </template>
       </issuable-tabs>
@@ -384,7 +386,7 @@ export default {
       @onFilter="$emit('filter', $event)"
       @onSort="$emit('sort', $event)"
     >
-      <template #user-preference>
+      <template v-if="glSlots()['user-preference']" #user-preference>
         <slot name="user-preference"></slot>
       </template>
     </filtered-search-bar>
@@ -398,10 +400,10 @@ export default {
       {{ error }}
     </gl-alert>
     <issuable-bulk-edit-sidebar :expanded="showBulkEditSidebar">
-      <template #bulk-edit-actions>
+      <template v-if="glSlots()['bulk-edit-actions']" #bulk-edit-actions>
         <slot name="bulk-edit-actions" :checked-issuables="checkedIssuables"></slot>
       </template>
-      <template #sidebar-items>
+      <template v-if="glSlots()['sidebar-items']" #sidebar-items>
         <slot name="sidebar-items" :checked-issuables="checkedIssuables"></slot>
       </template>
     </issuable-bulk-edit-sidebar>
@@ -442,43 +444,43 @@ export default {
           @checked-input="handleIssuableCheckedInput(issuable, $event)"
           @select-issuable="$emit('select-issuable', $event)"
         >
-          <template #reference>
+          <template v-if="glSlots().reference" #reference>
             <slot name="reference" :issuable="issuable"></slot>
           </template>
-          <template #author>
+          <template v-if="glSlots().author" #author>
             <slot name="author" :author="issuable.author"></slot>
           </template>
-          <template #timeframe>
+          <template v-if="glSlots().timeframe" #timeframe>
             <slot name="timeframe" :issuable="issuable"></slot>
           </template>
-          <template #target-branch>
+          <template v-if="glSlots()['target-branch']" #target-branch>
             <slot name="target-branch" :issuable="issuable"></slot>
           </template>
-          <template #status>
+          <template v-if="glSlots().status" #status>
             <slot name="status" :issuable="issuable"></slot>
           </template>
-          <template #statistics>
+          <template v-if="glSlots().statistics" #statistics>
             <slot name="statistics" :issuable="issuable"></slot>
           </template>
-          <template #approval-status>
+          <template v-if="glSlots()['approval-status']" #approval-status>
             <slot name="approval-status" :issuable="issuable"></slot>
           </template>
-          <template #pipeline-status>
+          <template v-if="glSlots()['pipeline-status']" #pipeline-status>
             <slot name="pipeline-status" :issuable="issuable"></slot>
           </template>
-          <template #reviewers>
+          <template v-if="glSlots().reviewers" #reviewers>
             <slot name="reviewers" :issuable="issuable"></slot>
           </template>
-          <template #title-icons>
+          <template v-if="glSlots()['title-icons']" #title-icons>
             <slot name="title-icons" :issuable="issuable"></slot>
           </template>
-          <template #discussions>
+          <template v-if="glSlots().discussions" #discussions>
             <slot name="discussions" :issuable="issuable"></slot>
           </template>
-          <template #health-status>
+          <template v-if="glSlots()['health-status']" #health-status>
             <slot name="health-status" :issuable="issuable"></slot>
           </template>
-          <template #custom-status>
+          <template v-if="glSlots()['custom-status']" #custom-status>
             <slot name="custom-status" :issuable="issuable"></slot>
           </template>
         </issuable-item>

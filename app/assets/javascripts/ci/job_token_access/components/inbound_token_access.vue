@@ -280,13 +280,11 @@ export default {
     >
       {{ $options.i18n.saveButtonTitle }}
     </gl-button>
-    <!-- eslint-disable vue/v-on-event-hyphenation -- crud_component is a shared component that emits the camelCase `hideForm` event -->
     <crud-component
       :title="$options.i18n.cardHeaderTitle"
       class="gl-mt-5"
-      @hideForm="hideSelectedAction"
+      @hide-form="hideSelectedAction"
     >
-      <!-- eslint-enable vue/v-on-event-hyphenation -->
       <template #actions="{ showForm }">
         <gl-collapsible-listbox
           v-model="selectedAction"

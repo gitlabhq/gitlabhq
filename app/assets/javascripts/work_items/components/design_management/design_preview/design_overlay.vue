@@ -44,7 +44,7 @@ export default {
       default: false,
     },
   },
-  emits: ['closeCommentForm', 'moveNote', 'openCommentForm'],
+  emits: ['close-comment-form', 'move-note', 'open-comment-form'],
   apollo: {
     activeDesignDiscussion: {
       query: activeDiscussionQuery,
@@ -86,7 +86,7 @@ export default {
   },
   methods: {
     setNewNoteCoordinates({ x, y }) {
-      this.$emit('openCommentForm', { x, y });
+      this.$emit('open-comment-form', { x, y });
     },
     getNoteRelativePosition(position) {
       const { x, y, width, height } = position;
@@ -192,12 +192,12 @@ export default {
     onExistingNoteMouseup(note) {
       if (!this.movingNoteStartPosition || !this.movingNoteNewPosition) {
         this.updateActiveDesignDiscussion(note.id);
-        this.$emit('closeCommentForm');
+        this.$emit('close-comment-form');
         return;
       }
 
       const { x, y } = this.movingNoteNewPosition;
-      this.$emit('moveNote', {
+      this.$emit('move-note', {
         noteId: this.movingNoteStartPosition.noteId,
         discussionId: this.movingNoteStartPosition.discussionId,
         coordinates: { x, y },

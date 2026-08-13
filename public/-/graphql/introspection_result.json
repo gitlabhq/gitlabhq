@@ -311877,6 +311877,18 @@
               "deprecationReason": null
             },
             {
+              "name": "duoWorkflowRunnerAvailable",
+              "description": "Indicates whether the project has a runner that can pick up GitLab Duo Agent Platform workloads. Resolved on request only, because it queries the project's runners and their managers. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
               "name": "duoWorkflowSessionArtifacts",
               "description": "Duo Agent Platform session artifacts for the project. Introduced in GitLab 19.1: Status: Experiment.",
               "args": [
@@ -312020,6 +312032,18 @@
               },
               "isDeprecated": true,
               "deprecationReason": "Status: Experiment. Introduced in GitLab 17.7."
+            },
+            {
+              "name": "duoWorkflowUsableRunnerType",
+              "description": "Runner type (instance_type, group_type, or project_type) of the runner that can pick up GitLab Duo Agent Platform workloads, or null when none can. Shares its runner scan with duoWorkflowRunnerAvailable when both are requested. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
             },
             {
               "name": "duoWorkflowWorkflows",
@@ -324441,7 +324465,7 @@
               "args": [
                 {
                   "name": "executionId",
-                  "description": "Execution identifier. When omitted, returns the active execution.",
+                  "description": "Execution identifier. When omitted, returns the latest execution.",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",

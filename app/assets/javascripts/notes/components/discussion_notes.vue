@@ -7,6 +7,7 @@ import PlaceholderSystemNote from '~/vue_shared/components/notes/placeholder_sys
 import SystemNote from '~/vue_shared/components/notes/system_note.vue';
 import { FILE_DIFF_POSITION_TYPE } from '~/diffs/constants';
 import { useNotes } from '~/notes/store/legacy_notes';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import { SYSTEM_NOTE } from '../constants';
 import { shouldRenderAsDuoSystemNote } from '../utils';
 import DiscussionNotesRepliesWrapper from './discussion_notes_replies_wrapper.vue';
@@ -21,6 +22,7 @@ export default {
     NoteEditedText,
     DiscussionNotesRepliesWrapper,
   },
+  mixins: [glSlotsMixin],
   props: {
     discussion: {
       type: Object,
@@ -159,7 +161,7 @@ export default {
               class-name="discussion-headline-light js-discussion-headline discussion-resolved-text -gl-mt-2 gl-mb-3 gl-ml-3"
             />
           </template>
-          <template #avatar-badge>
+          <template v-if="glSlots()['avatar-badge']" #avatar-badge>
             <slot name="avatar-badge"></slot>
           </template>
         </component>

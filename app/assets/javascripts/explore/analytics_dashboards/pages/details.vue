@@ -3,6 +3,7 @@ import { computed } from 'vue';
 import { GlDashboardLayout, GlTabs, GlTab } from '@gitlab/ui';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import AnalyticsDashboardPanel from '~/analytics/shared/components/analytics_dashboard_panel.vue';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import DashboardFilters from '../components/dashboard_filters.vue';
 import DashboardLoader from '../components/dashboard_loader.vue';
 
@@ -16,6 +17,7 @@ export default {
     DashboardFilters,
     DashboardLoader,
   },
+  mixins: [glSlotsMixin],
   // Provided as computed refs — options-API inject captures the value once
   // at setup, so plain values/getters won't propagate filter changes to panels.
   provide() {
@@ -113,7 +115,7 @@ export default {
         :min-cell-height="minCellHeight"
         :filters="filters"
       >
-        <template #actions>
+        <template v-if="glSlots().actions" #actions>
           <slot name="actions" :is-system-dashboard="isSystemDashboard"></slot>
         </template>
 

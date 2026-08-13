@@ -591,10 +591,10 @@ msgstr ""
 msgid "%{actionText} & %{openOrClose} %{noteable}"
 msgstr ""
 
-msgid "%{actionText} & close %{noteable}"
+msgid "%{actionText} and close %{noteable}"
 msgstr ""
 
-msgid "%{actionText} & reopen %{noteable}"
+msgid "%{actionText} and reopen %{noteable}"
 msgstr ""
 
 msgid "%{action} %{date}"
@@ -3668,6 +3668,12 @@ msgid "AICatalog|YAML is too large. Maximum size is %{size}"
 msgstr ""
 
 msgid "AICatalog|You are an expert in [domain]. Your communication style is [style]. When helping users, you should always... Your key strengths include... You approach problems by..."
+msgstr ""
+
+msgid "AICatalog|You must have the Maintainer or Owner role to enable a flow in a project."
+msgstr ""
+
+msgid "AICatalog|You must have the Maintainer or Owner role to enable an agent in a project."
 msgstr ""
 
 msgid "AICatalog|You must provide a source version."
@@ -7979,9 +7985,6 @@ msgstr ""
 msgid "AgentArtifacts|AI audit event storage is turned off, so no audit events are being recorded. %{linkStart}Turn on storage%{linkEnd} to start capturing audit events."
 msgstr ""
 
-msgid "AgentArtifacts|Agent audit events"
-msgstr ""
-
 msgid "AgentArtifacts|Audit events"
 msgstr ""
 
@@ -11371,9 +11374,6 @@ msgid "Apply a label"
 msgstr ""
 
 msgid "Apply a template"
-msgstr ""
-
-msgid "Apply default profile to all"
 msgstr ""
 
 msgid "Apply filter globally to all notification events"
@@ -23070,8 +23070,23 @@ msgstr ""
 msgid "Continuous Vulnerability Scanning for Dependency Scanning"
 msgstr ""
 
+msgid "ContinuousDeployment|%d environment"
+msgid_plural "ContinuousDeployment|%d environments"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "ContinuousDeployment|%d service"
 msgid_plural "ContinuousDeployment|%d services"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "ContinuousDeployment|%{count} env"
+msgid_plural "ContinuousDeployment|%{count} envs"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "ContinuousDeployment|%{count} step"
+msgid_plural "ContinuousDeployment|%{count} steps"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -23139,6 +23154,9 @@ msgid "ContinuousDeployment|Applications"
 msgstr ""
 
 msgid "ContinuousDeployment|Approval needed"
+msgstr ""
+
+msgid "ContinuousDeployment|Approved"
 msgstr ""
 
 msgid "ContinuousDeployment|Are you sure you want to delete %{name} link?"
@@ -23312,6 +23330,9 @@ msgstr ""
 msgid "ContinuousDeployment|Failed to load releases. Reload to try again."
 msgstr ""
 
+msgid "ContinuousDeployment|Failed to load services. Reload to try again."
+msgstr ""
+
 msgid "ContinuousDeployment|Failed to load the application. Please try again later."
 msgstr ""
 
@@ -23453,6 +23474,9 @@ msgstr ""
 msgid "ContinuousDeployment|Register your first environment"
 msgstr ""
 
+msgid "ContinuousDeployment|Rejected"
+msgstr ""
+
 msgid "ContinuousDeployment|Release"
 msgstr ""
 
@@ -23511,6 +23535,9 @@ msgid "ContinuousDeployment|Services in this release"
 msgstr ""
 
 msgid "ContinuousDeployment|Show %{size} items"
+msgstr ""
+
+msgid "ContinuousDeployment|Skipped"
 msgstr ""
 
 msgid "ContinuousDeployment|Source"
@@ -29456,6 +29483,9 @@ msgstr ""
 msgid "DuoAgentPlatform|%{text} by %{name}"
 msgstr ""
 
+msgid "DuoAgentPlatform|A runner is available and picking up jobs."
+msgstr ""
+
 msgid "DuoAgentPlatform|Action"
 msgstr ""
 
@@ -29498,13 +29528,25 @@ msgstr ""
 msgid "DuoAgentPlatform|Awaiting your input"
 msgstr ""
 
+msgid "DuoAgentPlatform|CI/CD runner"
+msgstr ""
+
 msgid "DuoAgentPlatform|Cancelled"
+msgstr ""
+
+msgid "DuoAgentPlatform|Check again"
 msgstr ""
 
 msgid "DuoAgentPlatform|Commit authored in a GitLab Duo Agent session"
 msgstr ""
 
 msgid "DuoAgentPlatform|Completed"
+msgstr ""
+
+msgid "DuoAgentPlatform|Could not check for a runner. Try again."
+msgstr ""
+
+msgid "DuoAgentPlatform|Could not check for a runner. You do not have permission to check this project."
 msgstr ""
 
 msgid "DuoAgentPlatform|Couldn't load sessions."
@@ -29594,7 +29636,13 @@ msgstr ""
 msgid "DuoAgentPlatform|Manage merge requests, issues, and pipelines, and run Orbit Local from the terminal."
 msgstr ""
 
+msgid "DuoAgentPlatform|Needed once flow execution is on."
+msgstr ""
+
 msgid "DuoAgentPlatform|No GitLab Credits remain for this billing period. %{linkStart}Learn more.%{linkEnd}"
+msgstr ""
+
+msgid "DuoAgentPlatform|No runner this project can use, so flows would never start."
 msgstr ""
 
 msgid "DuoAgentPlatform|Off for this group. Only a Group Owner can turn it on."
@@ -29706,6 +29754,9 @@ msgid "DuoAgentPlatform|View all sessions"
 msgstr ""
 
 msgid "DuoAgentPlatform|View details"
+msgstr ""
+
+msgid "DuoAgentPlatform|View runners"
 msgstr ""
 
 msgid "DuoAgenticChat|%{count} character over limit."
@@ -33890,6 +33941,9 @@ msgstr ""
 msgid "Explore paid plans"
 msgstr ""
 
+msgid "Explore paid plans or re-trial"
+msgstr ""
+
 msgid "Explore projects"
 msgstr ""
 
@@ -35250,6 +35304,12 @@ msgid "FlowEditor|No flow is defined for this application yet."
 msgstr ""
 
 msgid "FlowEditor|Save flow"
+msgstr ""
+
+msgid "FlowEditor|Stage"
+msgstr ""
+
+msgid "FlowEditor|Trigger"
 msgstr ""
 
 msgid "FlowEditor|Version %{version}"
@@ -50841,6 +50901,9 @@ msgstr ""
 msgid "Navigation|Collapse sidebar"
 msgstr ""
 
+msgid "Navigation|Current page"
+msgstr ""
+
 msgid "Navigation|Deploy"
 msgstr ""
 
@@ -53667,6 +53730,9 @@ msgstr ""
 msgid "OfflineTransferExport|Export history"
 msgstr ""
 
+msgid "OfflineTransferExport|Export started"
+msgstr ""
+
 msgid "OfflineTransferExport|Export your groups to an AWS S3 storage service you control. You can import them to any GitLab instance, even without a network connection between this instance and the destination instance. Each group is exported with all of its subgroups and projects."
 msgstr ""
 
@@ -53697,6 +53763,9 @@ msgstr ""
 msgid "OfflineTransferExport|Something went wrong retrieving your groups"
 msgstr ""
 
+msgid "OfflineTransferExport|Something went wrong. Try again later."
+msgstr ""
+
 msgid "OfflineTransferExport|Start export"
 msgstr ""
 
@@ -53717,6 +53786,14 @@ msgstr ""
 
 msgid "OfflineTransferExport|Use path-style URLs (optional)"
 msgstr ""
+
+msgid "OfflineTransferExport|View export status"
+msgstr ""
+
+msgid "OfflineTransferExport|You can leave this page. We'll email you when the export of the group is finished and the package is ready in bucket %{bucket}."
+msgid_plural "OfflineTransferExport|You can leave this page. We'll email you when the export of %{count} groups is finished and the package is ready in bucket %{bucket}."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "OfflineTransferExport|You have no groups available to export"
 msgstr ""
@@ -59948,9 +60025,6 @@ msgid "Preview Markdown"
 msgstr ""
 
 msgid "Preview changes"
-msgstr ""
-
-msgid "Preview default profile"
 msgstr ""
 
 msgid "Preview diagram"
@@ -73539,7 +73613,13 @@ msgstr ""
 msgid "SecurityProfiles|Apply default profile"
 msgstr ""
 
+msgid "SecurityProfiles|Apply default profile to all"
+msgstr ""
+
 msgid "SecurityProfiles|Apply profile"
+msgstr ""
+
+msgid "SecurityProfiles|Apply profile to all"
 msgstr ""
 
 msgid "SecurityProfiles|Apply profile to enable"
@@ -90490,10 +90570,10 @@ msgstr ""
 msgid "WorkItem|Color"
 msgstr ""
 
-msgid "WorkItem|Comment & close %{workItemType}"
+msgid "WorkItem|Comment and close %{workItemType}"
 msgstr ""
 
-msgid "WorkItem|Comment & reopen %{workItemType}"
+msgid "WorkItem|Comment and reopen %{workItemType}"
 msgstr ""
 
 msgid "WorkItem|Comments and threads"
@@ -93463,7 +93543,7 @@ msgstr ""
 msgid "Your private namespace is over %{link_start}the %{free_limit} user limit%{link_end}. Contact your group Owner to reduce the number of users in the namespace, make the namespace public, or upgrade to a paid tier."
 msgstr ""
 
-msgid "Your private namespace is over %{link_start}the %{free_limit} user limit%{link_end}. To remove the read-only state, an Owner can reduce the number of users in the namespace to %{free_limit} or fewer, make the namespace public, or upgrade to a paid tier. If you need more time, you can start a free %{duration}-day Ultimate trial to get unlimited users. %{seat_usage_link_start}View your seat usage%{seat_usage_link_end} to see who counts toward the limit across your namespace."
+msgid "Your private namespace is over %{link_start}the %{free_limit} user limit%{link_end}. To remove the read-only state, an Owner can reduce the number of users in the namespace to %{free_limit} or fewer, make the namespace public, or upgrade to a paid tier. If you need more time, you can start a free %{duration}-day Ultimate trial or re-trial (available %{retrial_window} days after your last trial started) to get unlimited users. %{seat_usage_link_start}View your seat usage%{seat_usage_link_end} to see who counts toward the limit across your namespace."
 msgstr ""
 
 msgid "Your project %{project_name} has been marked for deletion and will be removed in %{days}."

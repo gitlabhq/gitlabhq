@@ -1,5 +1,6 @@
 <script>
 import { throttle } from 'lodash-es';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import ImageViewer from '../../../content_viewer/viewers/image_viewer.vue';
 import { pixeliseValue } from '../../../lib/utils/dom_utils';
 
@@ -8,6 +9,7 @@ export default {
   components: {
     ImageViewer,
   },
+  mixins: [glSlotsMixin],
   props: {
     newPath: {
       type: String,
@@ -148,7 +150,10 @@ export default {
           :encode-path="encodePath"
           @img-loaded="swipeNewImgLoaded"
         >
-          <template #image-overlay="{ width, height, renderedWidth, renderedHeight }">
+          <template
+            v-if="glSlots()['image-overlay']"
+            #image-overlay="{ width, height, renderedWidth, renderedHeight }"
+          >
             <slot
               :width="width"
               :height="height"

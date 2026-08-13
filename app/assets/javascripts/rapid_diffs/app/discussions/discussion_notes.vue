@@ -1,6 +1,7 @@
 <script>
 import { getStartLineNumber, getEndLineNumber } from '~/notes/components/multiline_comment_utils';
 import ToggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import DraftNote from './draft_note.vue';
 import SystemNote from './system_note.vue';
 import NoteableNote from './noteable_note.vue';
@@ -15,6 +16,7 @@ export default {
     ToggleRepliesWidget,
     LineRangeHeadline,
   },
+  mixins: [glSlotsMixin],
   inject: {
     userPermissions: {
       type: Object,
@@ -117,7 +119,7 @@ export default {
       <template v-if="showMultiLineComment" #headline>
         <line-range-headline :line-range="lineRange" />
       </template>
-      <template #avatar-badge>
+      <template v-if="glSlots()['avatar-badge']" #avatar-badge>
         <slot name="avatar-badge"></slot>
       </template>
       <template #footer>

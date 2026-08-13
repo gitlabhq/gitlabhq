@@ -374,7 +374,7 @@ describe('ContainerProtectionTagRules', () => {
 
     describe.each`
       description                                       | beforeFn                                            | title                     | toastMessage
-      ${'when `Add protection rule` button is clicked'} | ${() => findCrudComponent().vm.$emit('showForm')}   | ${'Add protection rule'}  | ${'Container protection rule created.'}
+      ${'when `Add protection rule` button is clicked'} | ${() => findCrudComponent().vm.$emit('show-form')}  | ${'Add protection rule'}  | ${'Container protection rule created.'}
       ${'when `Edit` button for a rule is clicked'}     | ${() => findTableRowButtonEdit(0).trigger('click')} | ${'Edit protection rule'} | ${'Container protection rule updated.'}
     `('$description', ({ beforeFn, title, toastMessage }) => {
       beforeEach(async () => {

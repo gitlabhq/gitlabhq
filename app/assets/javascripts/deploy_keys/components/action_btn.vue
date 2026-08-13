@@ -1,11 +1,13 @@
 <script>
 import { GlButton } from '@gitlab/ui';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'ActionBtn',
   components: {
     GlButton,
   },
+  mixins: [glSlotsMixin],
   props: {
     deployKey: {
       type: Object,
@@ -64,6 +66,6 @@ export default {
     class="btn"
     @click="doAction"
   >
-    <slot></slot>
+    <template v-if="glSlots().default" #default><slot></slot></template>
   </gl-button>
 </template>

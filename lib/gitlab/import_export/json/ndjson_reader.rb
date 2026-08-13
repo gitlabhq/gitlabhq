@@ -25,8 +25,8 @@ module Gitlab
             raise Gitlab::ImportExport::Error, 'Invalid file'
           end
 
-          data = File.read(path, MAX_JSON_DOCUMENT_SIZE)
-          json_decode(data)
+          data = File.read(path, max_json_size_with_error_buffer)
+          json_decode(data, path)
         end
 
         def consume_relation(importable_path, key, mark_as_consumed: true)
@@ -38,19 +38,29 @@ module Gitlab
 
             next if !File.exist?(path) || Gitlab::Utils::FileInfo.linked?(path)
 
-            File.foreach(path, MAX_JSON_DOCUMENT_SIZE).with_index do |line, line_num|
-              documents << [json_decode(line), line_num]
+            File.foreach(path, max_json_size_with_error_buffer).with_index do |line, line_num|
+              documents << [json_decode(line, path), line_num]
             end
           end
         end
 
         private
 
-        def json_decode(string)
+        # Truncate file reads just above the limit to distinguish between oversized JSON and JSON exactly at the limit
+        def max_json_size_with_error_buffer
+          MAX_JSON_DOCUMENT_SIZE + 1
+        end
+
+        def json_decode(string, path)
           Gitlab::Json.parse(string)
         rescue JSON::ParserError => e
           Gitlab::ErrorTracking.log_exception(e)
-          raise Gitlab::ImportExport::Error, 'Incorrect JSON format'
+
+          raise Gitlab::ImportExport::Error, 'Incorrect JSON format' if string.bytesize <= MAX_JSON_DOCUMENT_SIZE
+
+          raise Gitlab::ImportExport::Error,
+            "JSON exceeds #{ActiveSupport::NumberHelper.number_to_human_size(MAX_JSON_DOCUMENT_SIZE)} limit " \
+              "in #{File.basename(path)}"
         end
 
         def file_path(*path)

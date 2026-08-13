@@ -1,5 +1,6 @@
 <script>
 import { GlAlert, GlSprintf, GlLink } from '@gitlab/ui';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import ImportProjectsTable from './import_projects_table.vue';
 
 export default {
@@ -10,6 +11,7 @@ export default {
     GlSprintf,
     GlLink,
   },
+  mixins: [glSlotsMixin],
   inheritAttrs: false,
   props: {
     providerTitle: {
@@ -31,7 +33,7 @@ export default {
 </script>
 <template>
   <import-projects-table :provider-title="providerTitle" v-bind="$attrs">
-    <template #actions>
+    <template v-if="glSlots().actions" #actions>
       <slot name="actions"></slot>
     </template>
     <template #incompatible-repos-warning>

@@ -4,6 +4,7 @@ import { GlIcon, GlTooltip, GlDisclosureDropdown, GlResizeObserverDirective } fr
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { titleInLinkSafeHtmlConfig } from '~/lib/dompurify';
 import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import DisclosureHierarchyItem from './disclosure_hierarchy_item.vue';
 
 export default {
@@ -18,6 +19,7 @@ export default {
     GlResizeObserver: GlResizeObserverDirective,
     SafeHtml,
   },
+  mixins: [glSlotsMixin],
   titleInLinkSafeHtmlConfig,
   props: {
     /**
@@ -102,7 +104,9 @@ export default {
     <ul class="gl-relative gl-m-0 gl-inline-flex gl-max-w-full gl-list-none gl-flex-row gl-p-0">
       <template v-if="withEllipsis || isMobile">
         <disclosure-hierarchy-item v-if="!isMobile" :item="firstItem" :item-id="itemId(0)">
-          <slot :item="firstItem" :item-id="itemId(0)"></slot>
+          <template v-if="glSlots().default" #default
+            ><slot :item="firstItem" :item-id="itemId(0)"></slot
+          ></template>
         </disclosure-hierarchy-item>
         <li v-if="middleItems.length > 0" class="disclosure-hierarchy-item">
           <gl-disclosure-dropdown :items="middleItems">
@@ -140,7 +144,9 @@ export default {
           {{ ellipsisTooltipLabel }}
         </gl-tooltip>
         <disclosure-hierarchy-item :item="lastItem" :item-id="itemId(lastItemIndex)">
-          <slot :item="lastItem" :item-id="itemId(lastItemIndex)"></slot>
+          <template v-if="glSlots().default" #default
+            ><slot :item="lastItem" :item-id="itemId(lastItemIndex)"></slot
+          ></template>
         </disclosure-hierarchy-item>
       </template>
       <disclosure-hierarchy-item
@@ -150,7 +156,9 @@ export default {
         :item="item"
         :item-id="itemId(index)"
       >
-        <slot :item="item" :item-id="itemId(index)"></slot>
+        <template v-if="glSlots().default" #default
+          ><slot :item="item" :item-id="itemId(index)"></slot
+        ></template>
       </disclosure-hierarchy-item>
     </ul>
   </div>

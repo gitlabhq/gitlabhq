@@ -951,8 +951,8 @@ GEM
       sentry-ruby (~> 5.22)
       stackprof (~> 0.2.27)
       toml-rb (~> 4.1)
-    gitlab-security_report_schemas (0.2.0.min15.0.0.max15.2.4)
-      activesupport (>= 6, < 8.1)
+    gitlab-security_report_schemas (0.2.1.min15.0.0.max15.2.4)
+      activesupport (>= 6, < 8.2)
       json_schemer (~> 2.4.0)
       mutex_m (~> 0.3.0)
     gitlab-styles (14.1.0)
@@ -2548,7 +2548,7 @@ DEPENDENCIES
   gitlab-schema-validation!
   gitlab-sdk (~> 0.3.0)
   gitlab-secret_detection (< 1.0)
-  gitlab-security_report_schemas (= 0.2.0.min15.0.0.max15.2.4)
+  gitlab-security_report_schemas (= 0.2.1.min15.0.0.max15.2.4)
   gitlab-sidekiq-fetcher!
   gitlab-styles (~> 14.1)
   gitlab-topology-service-client (~> 0.1)!
@@ -3066,7 +3066,7 @@ CHECKSUMS
   gitlab-schema-validation (0.1.0)
   gitlab-sdk (0.3.1) sha256=48ba49084f4ab92df7c7ef9f347020d9dfdf6ed9c1e782b67264e98ffe6ea710
   gitlab-secret_detection (0.42.1) sha256=50eafdb74af752efebe46801db13e318cf7e7ee9cd97b8b70feb599630b3f595
-  gitlab-security_report_schemas (0.2.0.min15.0.0.max15.2.4) sha256=7ed47c45096101514327ad512979a672889ac899531bfc948cb5905c816e39bf
+  gitlab-security_report_schemas (0.2.1.min15.0.0.max15.2.4) sha256=4a9fc031d6c5374ab2bc6a8ae82ca27659b55e5fd712b61993ae527361579d17
   gitlab-sidekiq-fetcher (0.12.1)
   gitlab-styles (14.1.0) sha256=f39bc5619636bad3690d574438d70b865f48e38d57a38d7823bdeff2a90d2d5a
   gitlab-topology-service-client (0.1)

@@ -3,6 +3,7 @@ import { GlFormCheckbox, GlTableLite, GlTooltipDirective, GlSkeletonLoader } fro
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __, s__ } from '~/locale';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import checkedRunnerIdsQuery from '../graphql/list/checked_runner_ids.query.graphql';
 import { tableField } from '../utils';
 import RunnerBulkActions from './runner_bulk_actions.vue';
@@ -45,6 +46,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glSlotsMixin],
   apollo: {
     checkedRunnerIds: {
       query: checkedRunnerIdsQuery,
@@ -184,7 +186,7 @@ export default {
 
       <template #cell(summary)="{ item }">
         <runner-summary-cell :runner="item">
-          <template #runner-name="{ runner }">
+          <template v-if="glSlots()['runner-name']" #runner-name="{ runner }">
             <slot name="runner-name" :runner="runner"></slot>
           </template>
         </runner-summary-cell>
@@ -205,7 +207,7 @@ export default {
         <runner-owner-cell :runner="item" />
       </template>
 
-      <template #cell(actions)="{ item }">
+      <template v-if="glSlots()['runner-actions-cell']" #cell(actions)="{ item }">
         <slot name="runner-actions-cell" :runner="item"></slot>
       </template>
     </gl-table-lite>

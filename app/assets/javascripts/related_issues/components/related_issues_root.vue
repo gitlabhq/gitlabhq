@@ -271,7 +271,7 @@ export default {
     @add-issuable-form-cancel="onPendingFormCancel"
     @pending-issuable-remove-request="onPendingIssueRemoveRequest"
     @related-issue-remove-request="onRelatedIssueRemoveRequest"
-    @showForm="isFormVisible = true"
-    @hideForm="isFormVisible = false"
+    @show-form="isFormVisible = true"
+    @hide-form="isFormVisible = false"
   />
 </template>

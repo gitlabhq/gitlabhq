@@ -17,9 +17,9 @@ describe('ReviewExportTab', () => {
       avatarUrl: `/avatar/${index + 1}.png`,
     }));
 
-  const createComponent = (selectedGroups) => {
+  const createComponent = (selectedGroups, props = {}) => {
     wrapper = shallowMountExtended(ReviewExportTab, {
-      propsData: { selectedGroups, bucketName },
+      propsData: { selectedGroups, bucketName, ...props },
       stubs: { GlSprintf },
     });
   };
@@ -27,6 +27,9 @@ describe('ReviewExportTab', () => {
   const findGroupRows = () => wrapper.findAllComponents(GroupRow);
   const findPagination = () => wrapper.findComponent(GlPagination);
   const findReviewExportText = () => wrapper.findByTestId('review-text');
+  const findSubmitError = () => wrapper.findComponentByTestId('submit-error');
+  const findSuccessPanel = () => wrapper.findByTestId('submit-success');
+  const findViewExportStatusButton = () => wrapper.findByTestId('view-export-status-button');
 
   describe('when groups list fits on one page', () => {
     const groups = createGroups(1);
@@ -111,6 +114,57 @@ describe('ReviewExportTab', () => {
       await wrapper.setProps({ selectedGroups: createGroups(15) });
 
       expect(findPagination().props('value')).toBe(1);
+    });
+  });
+
+  describe('when Offline Export submission fails', () => {
+    const submissionError = 'Unable to access object storage bucket.';
+
+    beforeEach(() => {
+      createComponent(createGroups(2), { submissionError });
+    });
+
+    it('renders a non-dismissible danger alert with the error message', () => {
+      const alert = findSubmitError();
+
+      expect(findSuccessPanel().exists()).toBe(false);
+      expect(alert.props()).toMatchObject({
+        title: 'Export failed',
+        variant: 'danger',
+        dismissible: false,
+      });
+      expect(alert.text()).toBe(submissionError);
+    });
+
+    it('hides the review subheader text', () => {
+      expect(findReviewExportText().exists()).toBe(false);
+    });
+
+    it('keeps the selected groups list visible', () => {
+      expect(findGroupRows()).toHaveLength(2);
+    });
+  });
+
+  describe('when Offline Export submission succeeds', () => {
+    beforeEach(() => {
+      createComponent(createGroups(2), { hasSubmitSucceeded: true });
+    });
+
+    it('renders the success panel', () => {
+      expect(findSuccessPanel().text()).toContain('Export started');
+      expect(findSuccessPanel().text()).toContain(
+        `You can leave this page. We'll email you when the export of 2 groups is finished and the package is ready in bucket ${bucketName}.`,
+      );
+      expect(findReviewExportText().exists()).toBe(false);
+      expect(findGroupRows()).toHaveLength(0);
+      expect(findSubmitError().exists()).toBe(false);
+    });
+
+    it('links the view export status button to the export history page', () => {
+      expect(findViewExportStatusButton().attributes('href')).toBe(
+        '/import/offline/export/history',
+      );
+      expect(findViewExportStatusButton().text()).toBe('View export status');
     });
   });
 });

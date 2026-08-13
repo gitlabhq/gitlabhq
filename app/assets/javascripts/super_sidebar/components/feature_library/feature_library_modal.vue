@@ -27,16 +27,13 @@ import {
   EVENT_NAVIGATE_TO_FEATURE_FROM_FEATURE_LIBRARY_MODAL,
   EVENT_SEARCH_WITH_GEMINI_IN_FEATURE_LIBRARY_MODAL,
 } from '../../tracking_constants';
-import { PANEL_TYPES } from '../../constants';
+import { HIDDEN_NAV_ITEM_CLASS, PANEL_TYPES } from '../../constants';
 import ScrollScrim from '../scroll_scrim.vue';
 import { FEEDBACK_ISSUE_URL, MODAL_ID, ITEMS_PER_RENDER_FRAME } from './constants';
 import { rankSearchResults } from './search';
 import FeatureLibraryItem from './feature_library_item.vue';
 
 const SETTINGS_MENU_ID = 'settings_menu';
-// Items flagged as hidden in the super sidebar (e.g. duplicate "Work items"
-// entries) must be excluded here too, mirroring menu_section.vue's filter.
-const HIDDEN_NAV_ITEM_CLASS = 'js-super-sidebar-nav-item-hidden';
 const trackingMixin = InternalEvents.mixin();
 const MIN_SEARCH_QUERY_LENGTH = 2;
 

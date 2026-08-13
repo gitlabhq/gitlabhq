@@ -11,6 +11,7 @@ import {
   TYPE_TEST_CASE,
 } from '~/issues/constants';
 import { __ } from '~/locale';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import { issuableLabelsQueries } from '../../../queries/constants';
 import DropdownContents from './dropdown_contents.vue';
 import DropdownContentsCreateView from './dropdown_contents_create_view.vue';
@@ -41,6 +42,7 @@ export default {
     GlDisclosureDropdown,
     GlLoadingIcon,
   },
+  mixins: [glSlotsMixin],
   inject: {
     allowLabelEdit: {
       default: false,
@@ -535,7 +537,7 @@ export default {
         @onCollapsedValueClick="onCollapsedValueClick"
         @label-removed="handleLabelRemove"
       >
-        <slot></slot>
+        <template v-if="glSlots().default" #default><slot></slot></template>
       </dropdown-value>
     </template>
     <template v-else>

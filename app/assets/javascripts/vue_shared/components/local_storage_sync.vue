@@ -42,6 +42,7 @@ export default normalizeRender({
       default: false,
     },
   },
+  emits: ['input'],
   watch: {
     value(newVal) {
       if (!this.persist) return;

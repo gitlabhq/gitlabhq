@@ -1,5 +1,6 @@
 <script>
 import { GlTooltipDirective, GlButton } from '@gitlab/ui';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import { RUNNING, WILL_DEPLOY } from './constants';
 
 export default {
@@ -10,6 +11,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glSlotsMixin],
   props: {
     actionsConfiguration: {
       type: Object,
@@ -71,7 +73,7 @@ export default {
     :icon="icon"
     @click="$emit('click')"
   >
-    <slot> </slot>
+    <template v-if="glSlots().default" #default><slot> </slot></template>
   </gl-button>
   <gl-button
     v-else
@@ -86,6 +88,6 @@ export default {
     :icon="icon"
     @click="$emit('click')"
   >
-    <slot> </slot>
+    <template v-if="glSlots().default" #default><slot> </slot></template>
   </gl-button>
 </template>

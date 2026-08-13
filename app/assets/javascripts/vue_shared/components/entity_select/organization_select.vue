@@ -8,6 +8,7 @@ import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_ORGANIZATION } from '~/graphql_shared/constants';
 import { DEFAULT_PER_PAGE } from '~/api';
 import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import {
   ORGANIZATION_TOGGLE_TEXT,
   ORGANIZATION_HEADER_TEXT,
@@ -23,7 +24,7 @@ export default {
     GlAlert,
     EntitySelect,
   },
-  mixins: [glListenersMixin],
+  mixins: [glListenersMixin, glSlotsMixin],
   props: {
     block: {
       type: Boolean,
@@ -170,7 +171,7 @@ export default {
     :searchable="searchable"
     v-on="glListeners()"
   >
-    <template #label>
+    <template v-if="glSlots().label" #label>
       <slot name="label"></slot>
     </template>
 

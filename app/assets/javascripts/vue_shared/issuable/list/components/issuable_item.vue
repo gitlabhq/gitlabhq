@@ -36,6 +36,7 @@ import {
   findLinkedItemsWidget,
   canRouterNav,
 } from '~/work_items/utils';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'IssuableItem',
@@ -59,7 +60,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     SafeHtml,
   },
-  mixins: [timeagoMixin, glFeatureFlagMixin()],
+  mixins: [timeagoMixin, glFeatureFlagMixin(), glSlotsMixin],
   inject: {
     isGroup: {
       default: false,
@@ -584,7 +585,7 @@ export default {
             class="!gl-cursor-default gl-rounded-pill gl-border-none gl-bg-transparent gl-p-0"
           >
             <gl-badge :variant="statusBadgeVariant">
-              <slot name="status"></slot>
+              <template v-if="glSlots().status" #default><slot name="status"></slot></template>
             </gl-badge>
           </button>
           <slot v-else name="status"></slot>

@@ -313,13 +313,13 @@ RSpec.shared_examples 'thread comments for merge request' do
           end
 
           it 'updates the close button text' do
-            expect(find(close_selector)).to have_content 'Comment & close merge request'
+            expect(find(close_selector)).to have_content 'Comment and close merge request'
           end
 
           it 'typing does not change the close button text' do
             find("#{form_selector} .note-textarea").send_keys('b')
 
-            expect(find(close_selector)).to have_content 'Comment & close merge request'
+            expect(find(close_selector)).to have_content 'Comment and close merge request'
           end
 
           it 'has "Comment" selected when opening the menu' do
@@ -347,17 +347,17 @@ RSpec.shared_examples 'thread comments for merge request' do
       find("#{form_selector} .note-textarea").send_keys('a')
     end
 
-    it "shows a 'Comment & reopen merge request' button" do
-      expect(find("#{form_selector} .js-note-target-reopen")).to have_content 'Comment & reopen merge request'
+    it "shows a 'Comment and reopen merge request' button" do
+      expect(find("#{form_selector} .js-note-target-reopen")).to have_content 'Comment and reopen merge request'
     end
 
-    it "shows a 'Start thread & reopen merge request' button when 'Start thread' is selected" do
+    it "shows a 'Start thread and reopen merge request' button when 'Start thread' is selected" do
       find(toggle_selector).click
 
       find("#{menu_selector} li", match: :first)
       all("#{menu_selector} li").last.click
 
-      expect(find("#{form_selector} .js-note-target-reopen")).to have_content 'Start thread & reopen merge request'
+      expect(find("#{form_selector} .js-note-target-reopen")).to have_content 'Start thread and reopen merge request'
     end
   end
 end

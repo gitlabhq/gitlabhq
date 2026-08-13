@@ -116,7 +116,7 @@ export default {
       default: false,
     },
   },
-  emits: ['click-collapsed', 'click-expanded', 'collapsed', 'expanded', 'hideForm', 'showForm'],
+  emits: ['click-collapsed', 'click-expanded', 'collapsed', 'expanded', 'hide-form', 'show-form'],
   data() {
     return {
       isCollapsed:
@@ -211,11 +211,11 @@ export default {
     showForm() {
       this.isFormVisible = true;
       this.isCollapsed = false;
-      this.$emit('showForm');
+      this.$emit('show-form');
     },
     hideForm() {
       this.isFormVisible = false;
-      this.$emit('hideForm');
+      this.$emit('hide-form');
     },
     getLocalStorageKeyName() {
       return `crud-collapse-${this.anchorId}`;

@@ -75,10 +75,10 @@ export default {
 <template>
   <!-- Vue 2 mode: render default slot (user v-for) -->
   <draggable v-if="!isVue3" v-bind="props" v-on="glListeners()">
-    <template #default>
+    <template v-if="glSlots().default" #default>
       <slot></slot>
     </template>
-    <template #footer>
+    <template v-if="glSlots().footer" #footer>
       <slot name="footer"></slot>
     </template>
   </draggable>
@@ -98,7 +98,7 @@ export default {
     <template #item="slotProps">
       <component :is="itemSlot(slotProps.element)" v-bind="slotProps" />
     </template>
-    <template #footer>
+    <template v-if="glSlots().footer" #footer>
       <slot name="footer"></slot>
     </template>
   </draggable>

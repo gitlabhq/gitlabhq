@@ -2,6 +2,7 @@
 import { GlFormGroup, GlCollapsibleListbox } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { searchInItemsProperties } from '~/lib/utils/search_utils';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 const MIN_ITEMS_COUNT_FOR_SEARCHING = 10;
 
@@ -14,6 +15,7 @@ export default {
     GlFormGroup,
     GlCollapsibleListbox,
   },
+  mixins: [glSlotsMixin],
   model: GlCollapsibleListbox.model,
   props: {
     label: {
@@ -80,6 +82,7 @@ export default {
       default: false,
     },
   },
+  emits: [GlCollapsibleListbox.model.event],
   data() {
     return {
       searchString: '',
@@ -171,7 +174,7 @@ export default {
       @search="search"
       @select="$emit($options.model.event, $event)"
     >
-      <template #footer>
+      <template v-if="glSlots().footer" #footer>
         <slot name="footer" :on-select="handleSelect"></slot>
       </template>
     </gl-collapsible-listbox>

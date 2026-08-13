@@ -7,6 +7,7 @@ import axios from '~/lib/utils/axios_utils';
 import { updateDraft, clearDraft, getDraft } from '~/lib/utils/autosave';
 import { setUrlParams, joinPaths } from '~/lib/utils/url_utility';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import {
   EDITING_MODE_KEY,
   EDITING_MODE_MARKDOWN_FIELD,
@@ -45,6 +46,7 @@ export default {
         ),
     ),
   },
+  mixins: [glSlotsMixin],
   props: {
     value: {
       type: String,
@@ -449,13 +451,13 @@ export default {
       @enable-content-editor="onEditingModeChange('contentEditor')"
       @handle-suggest-dismissed="() => $emit('handle-suggest-dismissed')"
     >
-      <template #header><slot name="header"></slot></template>
+      <template v-if="glSlots().header" #header><slot name="header"></slot></template>
       <template #header-buttons>
         <div>
           <slot name="header-buttons"></slot>
         </div>
       </template>
-      <template #toolbar><slot name="toolbar"></slot></template>
+      <template v-if="glSlots().toolbar" #toolbar><slot name="toolbar"></slot></template>
       <template #textarea>
         <textarea
           v-bind="formFieldProps"
@@ -507,9 +509,11 @@ export default {
         @focus="$emit('focus')"
         @blur="$emit('blur')"
       >
-        <template #header><slot name="header"></slot></template>
-        <template #header-buttons><slot name="header-buttons"></slot></template>
-        <template #toolbar><slot name="toolbar"></slot></template>
+        <template v-if="glSlots().header" #header><slot name="header"></slot></template>
+        <template v-if="glSlots()['header-buttons']" #header-buttons
+          ><slot name="header-buttons"></slot
+        ></template>
+        <template v-if="glSlots().toolbar" #toolbar><slot name="toolbar"></slot></template>
       </content-editor>
       <input v-bind="formFieldProps" :value="markdown" type="hidden" />
     </div>

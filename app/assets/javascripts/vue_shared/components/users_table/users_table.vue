@@ -176,7 +176,7 @@ export default {
       </div>
     </template>
 
-    <template #cell(settings)="{ item: user }">
+    <template v-if="glSlots()['user-actions']" #cell(settings)="{ item: user }">
       <slot name="user-actions" :user="user"></slot>
     </template>
   </gl-table>

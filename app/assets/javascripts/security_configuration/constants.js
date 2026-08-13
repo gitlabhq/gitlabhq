@@ -252,6 +252,8 @@ export const SCAN_PROFILE_I18N = {
   ),
   applyDefault: s__('SecurityProfiles|Apply default profile'),
   applyProfile: s__('SecurityProfiles|Apply profile'),
+  applyDefaultToAll: s__('SecurityProfiles|Apply default profile to all'),
+  applyProfileToAll: s__('SecurityProfiles|Apply profile to all'),
   previewDefault: s__('SecurityProfiles|Preview default profile'),
   previewProfile: s__('SecurityProfiles|Preview profile'),
   disable: s__('SecurityProfiles|Disable'),

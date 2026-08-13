@@ -41,6 +41,7 @@ import {
   UNPROTECTED_BRANCH,
   CHANGED_REQUIRE_CODEOWNER_APPROVAL,
 } from 'ee_else_ce/projects/settings/branch_rules/tracking/constants';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import deleteBranchRuleMutation from '../mutations/branch_rule_delete.mutation.graphql';
 import editSquashOptionMutation from '../mutations/edit_squash_option.mutation.graphql';
 import deleteSquashOptionMutation from '../mutations/delete_squash_option.mutation.graphql';
@@ -88,7 +89,7 @@ export default {
     CrudComponent,
     SettingsSection,
   },
-  mixins: [glFeatureFlagsMixin(), GlToastMixin],
+  mixins: [glFeatureFlagsMixin(), GlToastMixin, glSlotsMixin],
   inject: {
     branchRulesPath: { default: '' },
     branchesPath: { default: '' },
@@ -653,7 +654,7 @@ export default {
           data-testid="allowed-to-merge-content"
           @edit="openAllowedToMergeDrawer"
         >
-          <template #ee-custom-roles>
+          <template v-if="glSlots()['ee-merge-custom-roles']" #ee-custom-roles>
             <slot name="ee-merge-custom-roles" :member-roles="mergeMemberRoles"></slot>
           </template>
         </protection>
@@ -678,7 +679,7 @@ export default {
           data-testid="allowed-to-push-content"
           @edit="openAllowedToPushAndMergeDrawer"
         >
-          <template #ee-custom-roles>
+          <template v-if="glSlots()['ee-push-custom-roles']" #ee-custom-roles>
             <slot name="ee-push-custom-roles" :member-roles="pushMemberRoles"></slot>
           </template>
         </protection>

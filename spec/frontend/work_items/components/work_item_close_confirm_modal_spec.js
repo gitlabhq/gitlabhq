@@ -32,12 +32,12 @@ describe('WorkItemCloseConfirmModal', () => {
     });
 
     it('renders the modal with correct title', () => {
-      expect(findModal().props('title')).toBe('Are you sure you want to close this Task?');
+      expect(findModal().props('title')).toBe('Are you sure you want to close this task?');
     });
 
     it('renders the body text about open child items', () => {
       expect(wrapper.text()).toContain(
-        'This Task has open child items. If you close this Task, they will remain open.',
+        'This task has open child items. If you close this task, they will remain open.',
       );
     });
 
@@ -47,7 +47,7 @@ describe('WorkItemCloseConfirmModal', () => {
 
     it('renders the primary action button text', () => {
       expect(findModal().props('actionPrimary')).toEqual({
-        text: 'Yes, close Task',
+        text: 'Yes, close task',
       });
     });
 
@@ -69,11 +69,11 @@ describe('WorkItemCloseConfirmModal', () => {
     });
 
     it('renders the modal with blocked title', () => {
-      expect(findModal().props('title')).toBe('Are you sure you want to close this blocked Task?');
+      expect(findModal().props('title')).toBe('Are you sure you want to close this blocked task?');
     });
 
     it('renders the body text about blocking items', () => {
-      expect(wrapper.text()).toContain('This Task is currently blocked by the following items:');
+      expect(wrapper.text()).toContain('This task is currently blocked by the following items:');
     });
 
     it('renders blocker links', () => {

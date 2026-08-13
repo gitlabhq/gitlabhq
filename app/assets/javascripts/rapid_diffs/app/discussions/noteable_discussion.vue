@@ -13,6 +13,7 @@ import { getNoteFormErrorMessages } from '~/notes/utils';
 import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import ResolveDiscussionButton from '~/notes/components/resolve_discussion_button.vue';
 import ResolveWithIssueButton from '~/notes/components/discussion_resolve_with_issue_button.vue';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import NoteSignedOutWidget from './note_signed_out_widget.vue';
 import NoteForm from './note_form.vue';
 import DiscussionNotes from './discussion_notes.vue';
@@ -33,6 +34,7 @@ export default {
       () => import('ee_component/notes/components/resolve_with_duo_dropdown_item.vue'),
     ),
   },
+  mixins: [glSlotsMixin],
   inject: {
     store: {
       type: Object,
@@ -261,7 +263,7 @@ export default {
       @start-editing="$emit('start-editing', $event)"
       @cancel-editing="$emit('cancel-editing', $event)"
     >
-      <template #avatar-badge>
+      <template v-if="glSlots()['avatar-badge']" #avatar-badge>
         <slot name="avatar-badge"></slot>
       </template>
       <template #footer="{ hasReplies }">

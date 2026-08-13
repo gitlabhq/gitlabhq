@@ -7,6 +7,7 @@ import {
   GlAnimatedChevronRightDownIcon,
   GlOutsideDirective as Outside,
 } from '@gitlab/ui';
+import { HIDDEN_NAV_ITEM_CLASS } from '../constants';
 import NavItem from './nav_item.vue';
 import FlyoutMenu from './flyout_menu.vue';
 
@@ -68,7 +69,7 @@ export default {
     navItems() {
       return this.item.items.filter((item) => {
         if (item.link_classes) {
-          return !item.link_classes.includes('js-super-sidebar-nav-item-hidden');
+          return !item.link_classes.includes(HIDDEN_NAV_ITEM_CLASS);
         }
         return true;
       });

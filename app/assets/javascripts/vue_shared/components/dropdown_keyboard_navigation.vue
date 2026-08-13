@@ -35,6 +35,7 @@ export default normalizeRender({
       default: false,
     },
   },
+  emits: ['change', 'tab'],
   watch: {
     max() {
       // If the max index (list length) changes, reset the index

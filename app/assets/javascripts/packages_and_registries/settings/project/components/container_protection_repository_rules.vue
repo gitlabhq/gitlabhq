@@ -275,7 +275,7 @@ export default {
       :description="$options.i18n.settingBlockDescription"
       :is-loading="showTopLevelLoading"
       :toggle-text="s__('ContainerRegistry|Add protection rule')"
-      @showForm="openNewFormDrawer"
+      @show-form="openNewFormDrawer"
     >
       <template #default>
         <gl-alert

@@ -2,6 +2,7 @@
 import { n__, s__ } from '~/locale';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'PackageTitle',
@@ -9,6 +10,7 @@ export default {
     MetadataItem,
     TitleArea,
   },
+  mixins: [glSlotsMixin],
   props: {
     count: {
       type: Number,
@@ -40,7 +42,7 @@ export default {
     <template #metadata-amount>
       <metadata-item v-if="showPackageCount" icon="package" :text="packageCountText" />
     </template>
-    <template #right-actions>
+    <template v-if="glSlots()['settings-link']" #right-actions>
       <slot name="settings-link"></slot>
     </template>
   </title-area>

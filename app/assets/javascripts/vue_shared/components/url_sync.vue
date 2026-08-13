@@ -44,6 +44,7 @@ export default normalizeRender({
       default: false,
     },
   },
+  emits: ['popstate'],
   watch: {
     query: {
       immediate: true,

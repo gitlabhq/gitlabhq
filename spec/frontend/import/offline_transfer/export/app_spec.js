@@ -1,8 +1,17 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import MockAdapter from 'axios-mock-adapter';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import axios from '~/lib/utils/axios_utils';
+import { buildApiUrl } from '~/api/api_utils';
+import {
+  HTTP_STATUS_CREATED,
+  HTTP_STATUS_UNPROCESSABLE_ENTITY,
+  HTTP_STATUS_TOO_MANY_REQUESTS,
+  HTTP_STATUS_INTERNAL_SERVER_ERROR,
+} from '~/lib/utils/http_status';
 import OfflineTransferExportApp from '~/import/offline_transfer/export/app.vue';
 import FormStepper from '~/import/offline_transfer/components/form_stepper.vue';
 import SelectGroupsTab from '~/import/offline_transfer/export/select_groups_tab.vue';
@@ -38,7 +47,6 @@ describe('OfflineTransferExportApp', () => {
   const findSelectGroupsTab = () => wrapper.findComponent(SelectGroupsTab);
   const findExportConfigTab = () => wrapper.findComponent(ExportConfigTab);
   const findReviewExportTab = () => wrapper.findComponent(ReviewExportTab);
-  const findCompletionAlert = () => wrapper.findByTestId('completion-alert');
 
   const queryError = new Error('query failed');
   const failingHandler = () => jest.fn().mockRejectedValue(queryError);
@@ -110,15 +118,6 @@ describe('OfflineTransferExportApp', () => {
   describe('events', () => {
     beforeEach(() => {
       createComponent();
-    });
-
-    // TODO - replace when form POST added
-    it('triggers a completion alert when FormStepper emits complete', async () => {
-      expect(findCompletionAlert().exists()).toBe(false);
-
-      await findFormStepper().vm.$emit('complete');
-
-      expect(findCompletionAlert().exists()).toBe(true);
     });
 
     it('when `stepped-back` emitted clears previous step validation error', async () => {
@@ -454,6 +453,180 @@ describe('OfflineTransferExportApp', () => {
 
     it('always passes validation since the step has no action to validate', () => {
       expect(findFormStepper().props('validateStep')(2)).toBe(true);
+    });
+  });
+
+  describe('form submission', () => {
+    let mock;
+
+    const submitUrl = buildApiUrl('/api/:version/offline_exports');
+    const storageConfig = {
+      accessKeyId: ' access-key ',
+      secretAccessKey: 'secret-key',
+      region: 'us-east-1 ',
+      bucketName: 'my-bucket',
+      pathStyle: true,
+    };
+
+    const submitForm = async () => {
+      findFormStepper().vm.$emit('complete');
+      await waitForPromises();
+    };
+
+    beforeEach(async () => {
+      mock = new MockAdapter(axios);
+      createComponent();
+      await waitForPromises();
+
+      findSelectGroupsTab().vm.$emit('toggle', mockGroups[0]);
+      findExportConfigTab().vm.$emit('input', storageConfig);
+    });
+
+    afterEach(() => {
+      mock.restore();
+    });
+
+    it('POSTs the correct payload', async () => {
+      mock.onPost(submitUrl).reply(HTTP_STATUS_CREATED, {});
+
+      await submitForm();
+
+      expect(JSON.parse(mock.history.post[0].data)).toEqual({
+        bucket: 'my-bucket',
+        aws_s3_configuration: {
+          aws_access_key_id: 'access-key',
+          aws_secret_access_key: 'secret-key',
+          region: 'us-east-1',
+          path_style: true,
+        },
+        entities: [{ full_path: mockGroups[0].fullPath }],
+      });
+    });
+
+    it('marks the isSubmitting as true only while the request is pending', async () => {
+      mock.onPost(submitUrl).reply(HTTP_STATUS_CREATED, {});
+
+      findFormStepper().vm.$emit('complete');
+      await nextTick();
+      expect(findFormStepper().props('isSubmitting')).toBe(true);
+
+      await waitForPromises();
+      expect(findFormStepper().props('isSubmitting')).toBe(false);
+    });
+
+    describe('when the export starts (201)', () => {
+      beforeEach(async () => {
+        mock.onPost(submitUrl).reply(HTTP_STATUS_CREATED, {});
+        await submitForm();
+      });
+
+      it('marks the submission as succeeded', () => {
+        expect(findReviewExportTab().props('hasSubmitSucceeded')).toBe(true);
+        expect(findReviewExportTab().props('submissionError')).toBe('');
+        expect(findFormStepper().props('isFormComplete')).toBe(true);
+      });
+    });
+
+    describe('when the server rejects with 422', () => {
+      const serverMessage = 'Unable to access object storage bucket.';
+
+      beforeEach(async () => {
+        mock.onPost(submitUrl).reply(HTTP_STATUS_UNPROCESSABLE_ENTITY, {
+          message: serverMessage,
+        });
+        await submitForm();
+      });
+
+      it('shows the server message and blocks retry', () => {
+        expect(findReviewExportTab().props('submissionError')).toBe(serverMessage);
+        expect(findFormStepper().props('isCompletionDisabled')).toBe(true);
+        expect(findReviewExportTab().props('hasSubmitSucceeded')).toBe(false);
+      });
+
+      it('does not report the failure to Sentry', () => {
+        expect(captureException).not.toHaveBeenCalled();
+      });
+
+      it('clears the error and unblocks retry when the user goes back', async () => {
+        await findFormStepper().vm.$emit('stepped-back', { previousTabIndex: 2 });
+
+        expect(findReviewExportTab().props('submissionError')).toBe('');
+        expect(findFormStepper().props('isCompletionDisabled')).toBe(false);
+      });
+    });
+
+    describe('when server responds with the rate limit 429', () => {
+      const rateLimitMessage = 'This endpoint has been requested too many times. Try again later.';
+
+      beforeEach(async () => {
+        mock.onPost(submitUrl).reply(HTTP_STATUS_TOO_MANY_REQUESTS, {
+          message: { error: rateLimitMessage },
+        });
+        await submitForm();
+      });
+
+      it('shows the server message and blocks retry', () => {
+        expect(findReviewExportTab().props('submissionError')).toBe(rateLimitMessage);
+        expect(findFormStepper().props('isCompletionDisabled')).toBe(true);
+      });
+
+      it('does not report the failure to Sentry', () => {
+        expect(captureException).not.toHaveBeenCalled();
+      });
+
+      it('clears the error and unblocks retry when the user goes back', async () => {
+        await findFormStepper().vm.$emit('stepped-back', { previousTabIndex: 2 });
+
+        expect(findReviewExportTab().props('submissionError')).toBe('');
+        expect(findFormStepper().props('isCompletionDisabled')).toBe(false);
+      });
+    });
+
+    describe('when the failure is unrecognized (500)', () => {
+      beforeEach(async () => {
+        mock.onPost(submitUrl).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+        await submitForm();
+      });
+
+      it('shows the generic error and keeps retry available', () => {
+        expect(findReviewExportTab().props('submissionError')).toBe(
+          'Something went wrong. Try again later.',
+        );
+        expect(findFormStepper().props('isCompletionDisabled')).toBe(false);
+      });
+
+      it('reports the failure to Sentry', () => {
+        expect(captureException).toHaveBeenCalled();
+      });
+
+      it('clears the error when a retry succeeds', async () => {
+        expect(findReviewExportTab().props('submissionError')).not.toBe('');
+
+        mock.reset();
+        mock.onPost(submitUrl).reply(HTTP_STATUS_CREATED, {});
+        await submitForm();
+
+        expect(findReviewExportTab().props('submissionError')).toBe('');
+        expect(findReviewExportTab().props('hasSubmitSucceeded')).toBe(true);
+      });
+    });
+
+    describe('when a rejection carries no readable message', () => {
+      beforeEach(async () => {
+        mock.onPost(submitUrl).reply(HTTP_STATUS_UNPROCESSABLE_ENTITY, {});
+        await submitForm();
+      });
+
+      it('falls back to the generic error and keeps retry available', () => {
+        expect(findReviewExportTab().props('submissionError')).toBe(
+          'Something went wrong. Try again later.',
+        );
+        expect(findFormStepper().props('isCompletionDisabled')).toBe(false);
+      });
+
+      it('reports the failure to Sentry', () => {
+        expect(captureException).toHaveBeenCalled();
+      });
     });
   });
 });

@@ -541,7 +541,7 @@ describe('issue_comment_form component', () => {
       it('should update buttons texts when it has note', () => {
         mountComponent({ initialData: { note: 'Foo' } });
 
-        expect(findCloseReopenButton().text()).toBe('Comment & close ticket');
+        expect(findCloseReopenButton().text()).toBe('Comment and close ticket');
       });
 
       it('updates button text with noteable type', () => {

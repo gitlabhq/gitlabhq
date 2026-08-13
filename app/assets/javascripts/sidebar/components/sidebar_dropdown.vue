@@ -30,6 +30,7 @@ import { issuableAttributesQueries } from 'ee_else_ce/sidebar/queries/constants'
 import { createAlert } from '~/alert';
 import { PathIdSeparator } from '~/related_issues/constants';
 import { WORK_ITEM_TYPE_ENUM_EPIC } from '~/work_items/constants';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'SidebarDropdown',
@@ -45,6 +46,7 @@ export default {
     GlSearchBoxByType,
     GlLoadingIcon,
   },
+  mixins: [glSlotsMixin],
   inject: {
     issuableAttributesQueries: {
       default: issuableAttributesQueries,
@@ -270,7 +272,7 @@ export default {
         </gl-dropdown-item>
       </slot>
     </template>
-    <template #footer>
+    <template v-if="glSlots().footer" #footer>
       <slot name="footer"></slot>
     </template>
   </gl-dropdown>

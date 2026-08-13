@@ -6,6 +6,7 @@ import { isInViewport } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import { VARIANT_SIDEBAR } from '~/sidebar/components/labels/labels_select_widget/constants';
 
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import DropdownButton from './dropdown_button.vue';
 import DropdownContents from './dropdown_contents.vue';
 import DropdownTitle from './dropdown_title.vue';
@@ -28,6 +29,7 @@ export default {
     DropdownContents,
     DropdownValueCollapsed,
   },
+  mixins: [glSlotsMixin],
   props: {
     allowLabelRemove: {
       type: Boolean,
@@ -326,7 +328,7 @@ export default {
         :disable-labels="labelsSelectInProgress"
         @label-removed="$emit('label-removed', $event)"
       >
-        <slot></slot>
+        <template v-if="glSlots().default" #default><slot></slot></template>
       </dropdown-value>
       <dropdown-button v-show="dropdownButtonVisible" class="gl-mt-2" />
       <dropdown-contents

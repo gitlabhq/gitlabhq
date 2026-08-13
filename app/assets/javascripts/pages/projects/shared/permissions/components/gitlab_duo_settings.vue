@@ -2,6 +2,7 @@
 import { GlToggle, GlLink, GlButton, GlCard, GlSprintf } from '@gitlab/ui';
 import DuoDependencyBumpProfileModal from 'ee_component/pages/projects/shared/permissions/components/duo_dependency_bump_profile_modal.vue';
 import DuoReadinessPlatformRow from 'ee_component/pages/projects/shared/permissions/components/duo_readiness_platform_row.vue';
+import DuoReadinessRunnerRow from 'ee_component/pages/projects/shared/permissions/components/duo_readiness_runner_row.vue';
 import projectAutoRemediationProfileQuery from 'ee_else_ce/pages/projects/shared/permissions/graphql/project_auto_remediation_profile.query.graphql';
 import attachProfileMutation from 'ee_else_ce/pages/projects/shared/permissions/graphql/auto_remediation_profile_attach.mutation.graphql';
 import CascadingLockIcon from '~/namespaces/cascading_settings/components/cascading_lock_icon.vue';
@@ -15,10 +16,13 @@ import {
   DUO_SAST_VR_WORKFLOW_ENABLED,
   DUO_SAST_FALSE_POSITIVE_DETECTION_ENABLED,
   DUO_SECRET_DETECTION_FP_ENABLED,
+  STATUS_DONE,
+  STATUS_TODO,
+  STATUS_BLOCKED,
 } from '../constants';
 import ProjectSettingRow from './project_setting_row.vue';
 import ExclusionSettings from './exclusion_settings.vue';
-import DuoReadinessRow, { STATUS_DONE, STATUS_TODO, STATUS_BLOCKED } from './duo_readiness_row.vue';
+import DuoReadinessRow from './duo_readiness_row.vue';
 import DuoLocalSetupSection from './duo_local_setup_section.vue';
 
 const AUTO_REMEDIATION_PROFILE_SCAN_TYPE = 'DEPENDENCY_SCANNING_POST_PROCESSING';
@@ -39,6 +43,7 @@ export default {
     DuoDependencyBumpProfileModal,
     DuoReadinessRow,
     DuoReadinessPlatformRow,
+    DuoReadinessRunnerRow,
     DuoLocalSetupSection,
   },
   mixins: [glFeatureFlagMixin()],
@@ -288,11 +293,12 @@ export default {
       return this.duoRemoteFlowsAvailability ? STATUS_DONE : STATUS_TODO;
     },
     foundationalFlowsRowStatus() {
-      if (!this.platformEnabled || !this.duoEnabled || !this.duoRemoteFlowsAvailability) {
-        return STATUS_BLOCKED;
-      }
+      if (!this.effectiveFlowExecutionEnabled) return STATUS_BLOCKED;
 
       return this.duoFoundationalFlowsAvailability ? STATUS_DONE : STATUS_TODO;
+    },
+    effectiveFlowExecutionEnabled() {
+      return this.platformEnabled && this.duoEnabled && this.duoRemoteFlowsAvailability;
     },
     showAllSettings() {
       return this.visibleSettings.includes(ALL_SETTINGS);
@@ -515,6 +521,12 @@ export default {
             data-testid="duo-foundational-flows-enabled"
           />
         </duo-readiness-row>
+
+        <duo-readiness-runner-row
+          :readiness="duoReadiness"
+          :flow-execution-enabled="effectiveFlowExecutionEnabled"
+          :project-full-path="projectFullPath"
+        />
       </div>
 
       <duo-local-setup-section class="gl-mt-5" />

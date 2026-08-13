@@ -14521,6 +14521,7 @@ CREATE TABLE application_settings (
     self_hosted_duo_agent_platform_service_secure boolean DEFAULT true NOT NULL,
     sidekiq_timezone_override text,
     nats_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
+    o11y_oauth_application_id bigint,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
@@ -45006,6 +45007,8 @@ CREATE UNIQUE INDEX idx_appearance_uploads_on_id ON appearance_uploads USING btr
 
 CREATE INDEX idx_application_settings_on_duo_template_project_id ON application_settings USING btree (duo_template_project_id);
 
+CREATE INDEX idx_application_settings_on_o11y_oauth_application_id ON application_settings USING btree (o11y_oauth_application_id);
+
 CREATE INDEX idx_approval_merge_request_rules_approved_approvers_project_id ON approval_merge_request_rules_approved_approvers USING btree (project_id);
 
 CREATE INDEX idx_approval_merge_request_rules_on_mr_id_config_id_and_id ON approval_merge_request_rules USING btree (merge_request_id, security_orchestration_policy_configuration_id, id);
@@ -57613,6 +57616,9 @@ ALTER TABLE ONLY merge_request_diffs
 
 ALTER TABLE ONLY ml_candidates
     ADD CONSTRAINT fk_56d6ed4d3d FOREIGN KEY (experiment_id) REFERENCES ml_experiments(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY application_settings
+    ADD CONSTRAINT fk_56ede6e5ab FOREIGN KEY (o11y_oauth_application_id) REFERENCES oauth_applications(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY project_repository_states
     ADD CONSTRAINT fk_57201a9be7 FOREIGN KEY (project_repository_id) REFERENCES project_repositories(id) ON DELETE CASCADE NOT VALID;

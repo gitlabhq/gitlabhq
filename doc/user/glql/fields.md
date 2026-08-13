@@ -71,7 +71,7 @@ To resolve this issue, add filters to limit your search scope:
   ```glql
   display: table
   fields: title, labels, created
-  query: type = Issue and group = "gitlab-org" and label = "group::knowledge" and created > "2025-01-01" and created < "2025-03-01"
+  query: type = Issue and group = "gitlab-org" and label = "group::planner intelligence" and created > "2025-01-01" and created < "2025-03-01"
   ```
   ````
 
@@ -81,7 +81,7 @@ To resolve this issue, add filters to limit your search scope:
   ```glql
   display: table
   fields: title, labels, updated
-  query: type = Issue and group = "gitlab-org" and label = "group::knowledge" and updated > -3m
+  query: type = Issue and group = "gitlab-org" and label = "group::planner intelligence" and updated > -3m
   ```
   ````
 

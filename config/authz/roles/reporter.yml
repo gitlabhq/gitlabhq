@@ -51,6 +51,7 @@ project:
   - mark_note_as_internal
   - metrics_dashboard
   - move_design
+  - read_advanced_dependency_management
   - read_build
   - read_ci_cd_analytics
   - read_code

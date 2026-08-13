@@ -32,8 +32,8 @@ export const COMMENT_FORM = {
   actionButtonWithNote: __('%{actionText} & %{openOrClose} %{noteable}'),
   actionButton: {
     withNote: {
-      reopen: __('%{actionText} & reopen %{noteable}'),
-      close: __('%{actionText} & close %{noteable}'),
+      reopen: __('%{actionText} and reopen %{noteable}'),
+      close: __('%{actionText} and close %{noteable}'),
     },
     withoutNote: {
       reopen: __('Reopen %{noteable}'),

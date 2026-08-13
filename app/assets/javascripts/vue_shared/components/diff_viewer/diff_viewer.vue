@@ -1,6 +1,7 @@
 <script>
 import { diffViewerModes, diffModes } from '~/ide/constants';
 import { projectRawPath } from '~/lib/utils/path_helpers/repository';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import DownloadDiffViewer from './viewers/download_diff_viewer.vue';
 import ImageDiffViewer from './viewers/image_diff_viewer.vue';
 import ModeChanged from './viewers/mode_changed.vue';
@@ -8,6 +9,7 @@ import RenamedFile from './viewers/renamed.vue';
 
 export default {
   name: 'DiffViewer',
+  mixins: [glSlotsMixin],
   props: {
     diffFile: {
       type: Object,
@@ -112,7 +114,10 @@ export default {
       :a-mode="aMode"
       :b-mode="bMode"
     >
-      <template #image-overlay="{ width, height, renderedWidth, renderedHeight }">
+      <template
+        v-if="glSlots()['image-overlay']"
+        #image-overlay="{ width, height, renderedWidth, renderedHeight }"
+      >
         <slot
           :width="width"
           :height="height"

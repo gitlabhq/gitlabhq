@@ -2,6 +2,7 @@
 import { GlDisclosureDropdownItem } from '@gitlab/ui';
 import { sprintf, s__, __ } from '~/locale';
 import eventHub, { EVENT_OPEN_CONFIRM_MODAL } from '~/vue_shared/components/confirm_modal_eventhub';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 import { I18N_USER_ACTIONS } from '../../constants';
 
 export default {
@@ -9,6 +10,7 @@ export default {
   components: {
     GlDisclosureDropdownItem,
   },
+  mixins: [glSlotsMixin],
   props: {
     username: {
       type: String,
@@ -43,7 +45,7 @@ export default {
 
 <template>
   <gl-disclosure-dropdown-item @action="onClick">
-    <template #list-item>
+    <template v-if="glSlots().default" #list-item>
       <slot></slot>
     </template>
   </gl-disclosure-dropdown-item>

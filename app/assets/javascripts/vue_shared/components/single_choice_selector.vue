@@ -1,9 +1,11 @@
 <script>
 import { GlFormRadioGroup } from '@gitlab/ui';
+import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';
 
 export default {
   name: 'SingleChoiceSelector',
   components: { GlFormRadioGroup },
+  mixins: [glSlotsMixin],
   props: {
     checked: {
       type: String,
@@ -32,6 +34,6 @@ export default {
     class="multiple-choice-selector gl-border gl-block gl-rounded-base"
     @change="onChange"
   >
-    <slot></slot>
+    <template v-if="glSlots().default" #default><slot></slot></template>
   </gl-form-radio-group>
 </template>
