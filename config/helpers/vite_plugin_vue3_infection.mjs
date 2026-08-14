@@ -100,30 +100,20 @@ export function Vue3InfectionPlugin() {
     configResolved(config) {
       isBuild = config.command === 'build';
 
-      if (process.env.SKIP_INFECTION_SCANNER) {
-        console.log(
-          '[vue3-infection] SKIP_INFECTION_SCANNER set — scanner disabled, all files infectable.',
+      const scriptPath = path.join(
+        ROOT_PATH,
+        'scripts/frontend/infection_scanner/infection_scanner.mjs',
+      );
+      console.log('[vue3-infection] Running infection scanner...');
+      const res = spawnSync(process.execPath, [scriptPath], {
+        cwd: ROOT_PATH,
+        stdio: 'inherit',
+        env: process.env,
+      });
+      if (res.status !== 0) {
+        console.warn(
+          `[vue3-infection] Infection scanner failed (code ${res.status}). Continuing with stale data if available.`,
         );
-        scannerGraph = null;
-        return;
-      }
-
-      if (!isBuild) {
-        const scriptPath = path.join(
-          ROOT_PATH,
-          'scripts/frontend/infection_scanner/infection_scanner.mjs',
-        );
-        console.log('[vue3-infection] Running infection scanner...');
-        const res = spawnSync(process.execPath, [scriptPath], {
-          cwd: ROOT_PATH,
-          stdio: 'inherit',
-          env: process.env,
-        });
-        if (res.status !== 0) {
-          console.warn(
-            `[vue3-infection] Infection scanner failed (code ${res.status}). Continuing with stale data if available.`,
-          );
-        }
       }
 
       scannerGraph = loadScannerData();
