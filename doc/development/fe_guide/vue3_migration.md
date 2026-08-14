@@ -271,7 +271,7 @@ also access injections.
 **Why?**
 
 `Vue.observable` creates reactive state that is tied to the Vue version that created it.
-In the hybrid Vue 2/Vue 3 infection system, modules can be duplicated — one copy for
+In the hybrid Vue 2/Vue 3 infection system, modules can be duplicated - one copy for
 each Vue version. When these modules use `Vue.observable()`, each copy creates its own
 separate reactive object, so state changes in one are invisible to the other.
 
@@ -299,7 +299,7 @@ The `observable(key, defaults)` function:
 The `key` must be a unique string identifier (for example, `'super_sidebar_state'`). It ensures
 both module copies share the same underlying state.
 
-An ESLint rule (`no-restricted-properties`) enforces this — direct `Vue.observable` usage
+An ESLint rule (`no-restricted-properties`) enforces this - direct `Vue.observable` usage
 produces a lint error.
 
 **Limitations**

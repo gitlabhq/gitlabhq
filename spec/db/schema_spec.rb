@@ -44,6 +44,9 @@ RSpec.describe 'Database schema',
       approvals: %w[user_id],
       approver_groups: %w[target_id],
       approvers: %w[target_id user_id],
+      # ar_namespace_id is the Artifact Registry service's namespace UUID, not a GitLab
+      # namespaces reference, so it has no foreign key by design (ADR-022).
+      artifact_registry_namespace_mappings: %w[ar_namespace_id],
       analytics_cycle_analytics_aggregations: %w[last_full_issues_id last_full_merge_requests_id
         last_incremental_issues_id
         last_incremental_merge_requests_id last_consistency_check_issues_stage_event_hash_id

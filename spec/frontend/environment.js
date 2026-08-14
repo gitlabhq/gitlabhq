@@ -41,10 +41,6 @@ class CustomEnvironment extends TestEnvironment {
         // TODO: Remove once every component declares GlToastMixin instead.
         // https://gitlab.com/gitlab-org/gitlab/-/issues/608169
         /^\[Vue warn\]: Mixin has already been applied to target app/,
-
-        // TODO: Implement robust vue-demi switching logic.
-        // https://gitlab.com/groups/gitlab-org/-/epics/15340
-        /^\[Vue warn\]: \(deprecation GLOBAL_PRIVATE_UTIL\)/,
         /^\[Vue warn\]: Slot ".*" invoked outside of the render function/,
       ],
       // TODO: Remove this and replace with localized calls to `useConsoleWatcherThrowsImmediately`

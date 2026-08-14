@@ -14,6 +14,9 @@ RSpec.describe 'gitlab:openapi:v3 namespace rake tasks', :silence_stdout, featur
   # to prevent loading files that require the full Rails environment
   before do
     stub_const('Grape::API::Instance', Class.new)
+    # Stub the API namespace itself, otherwise stubbing the constants below autoloads the real ones
+    stub_const('API', Module.new)
+    stub_const('API::API', Class.new)
     stub_const('API::Base', Class.new)
     stub_const('Grape::Entity', Class.new)
   end

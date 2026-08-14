@@ -88,7 +88,7 @@ When a request includes a composite identity OAuth token, the Rails request cont
 
 ### Attributing actions to the correct actor
 
-Always use `resolve_composite_identity_actor` to resolve the actor for any write operation. You do not need to determine the context yourself — it is set automatically at the request boundary:
+Always use `resolve_composite_identity_actor` to resolve the actor for any write operation. You do not need to determine the context yourself - it is set automatically at the request boundary:
 
 ```ruby
 actor = Gitlab::Auth::Identity.resolve_composite_identity_actor(current_user)
@@ -102,7 +102,7 @@ The method returns the correct actor for the situation:
 - **Human made the request, SA was linked incidentally** (for example, a human assigns an SA as a reviewer): internally tagged as `:permission_check` context. Returns the human. The human is the actor and should be attributed.
 - **No composite identity**: returns `current_user` unchanged.
 
-You never need to call this method differently depending on the scenario — the identity system records the context when the request is authenticated, and `resolve_composite_identity_actor` uses it automatically.
+You never need to call this method differently depending on the scenario - the identity system records the context when the request is authenticated, and `resolve_composite_identity_actor` uses it automatically.
 
 Audit events follow the same attribution rules (GitLab 19.3 and later):
 

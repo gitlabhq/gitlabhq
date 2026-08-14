@@ -2,6 +2,11 @@
 
 module Subscriptions
   module WorkItems
+    # Authorization is namespace-level only, deliberately: this runs once per subscriber per event, so a per-item check
+    # would not scale. Item-intrinsic exclusions (confidential, hidden, ...) are applied once per event at the trigger -
+    # see WorkItems::NamespaceChanges::BroadcastService.
+    #
+    # Net effect: GUEST on this namespace sees the id and action of every remaining work item in the subtree.
     class NamespaceWorkItemChanges < BaseSubscription
       include Gitlab::Graphql::Laziness
 
@@ -18,23 +23,8 @@ module Subscriptions
 
         return unauthorized! if namespace.nil?
 
-        # Require at least GUEST so MINIMAL_ACCESS users (admitted by the default access
-        # level on some namespaces) cannot subscribe to a private namespace's changes.
+        # Require GUEST: MINIMAL_ACCESS users are admitted by some namespaces' default access level.
         return unauthorized! unless namespace.member?(current_user, Gitlab::Access::GUEST)
-
-        # On the update phase, re-check the specific work item so that a member who
-        # cannot read a confidential work item is not disclosed its ID or action.
-        #
-        # NOTE: `authorized?` runs once per subscriber per triggered event, so this
-        # loads the same record N times when N users are subscribed. Once the trigger
-        # is added, pass the already-loaded WorkItem in the payload instead of a bare
-        # id so this becomes an in-memory check (and so `:deleted` can be authorized
-        # against the record captured before destroy).
-        if object
-          work_item = WorkItem.find_by_id(object[:work_item_id])
-
-          return unauthorized! unless work_item && Ability.allowed?(current_user, :read_work_item, work_item)
-        end
 
         true
       end

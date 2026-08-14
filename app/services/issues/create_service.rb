@@ -64,6 +64,7 @@ module Issues
       create_timeline_event(issue)
       try_to_associate_contacts(issue)
       publish_event(issue)
+      issue.run_after_commit_or_now { GraphqlTriggers.work_item_created(issue) }
 
       super
     end

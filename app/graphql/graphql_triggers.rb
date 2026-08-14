@@ -44,8 +44,6 @@ module GraphqlTriggers
       pipeline
     )
 
-    return unless Feature.enabled?(:commit_pipelines_tab_graphql, pipeline.project)
-
     GitlabSchema.subscriptions.trigger(
       :ci_pipeline_statuses_updated,
       { project_id: pipeline.project.to_gid, sha: pipeline.sha },
@@ -139,12 +137,27 @@ module GraphqlTriggers
     )
   end
 
-  def self.work_item_updated(work_item)
+  def self.work_item_updated(work_item, updated_changes: nil)
+    # Read before `becomes` below: dirty-tracking state does not survive the conversion.
+    updated_changes ||= work_item.previous_changes.keys
+
     # becomes is necessary here since this can be triggered with both a WorkItem and also an Issue
     # depending on the update service the call comes from
     work_item = work_item.becomes(::WorkItem) if work_item.is_a?(::Issue) # rubocop:disable Cop/AvoidBecomes
 
     ::GitlabSchema.subscriptions.trigger('workItemUpdated', { work_item_id: work_item.to_gid }, work_item)
+
+    ::WorkItems::NamespaceChanges::BroadcastService
+      .new(work_item, action: :updated, updated_changes: updated_changes)
+      .execute
+  end
+
+  def self.work_item_created(work_item)
+    ::WorkItems::NamespaceChanges::BroadcastService.new(work_item, action: :created).execute
+  end
+
+  def self.work_item_deleted(work_item)
+    ::WorkItems::NamespaceChanges::BroadcastService.new(work_item, action: :deleted).execute
   end
 
   def self.issuable_todo_updated(issuable)

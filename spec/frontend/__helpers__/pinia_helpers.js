@@ -1,4 +1,14 @@
+import { createApp } from 'vue-demi';
+import { createPinia } from 'pinia';
 import waitForPromises from 'helpers/wait_for_promises';
+
+// Under Vue 3, Pinia holds back plugins registered with `use()` until it is installed into an app,
+// so a store-only spec would silently never get them. Install into a throwaway app to flush them.
+export const createTestPinia = () => {
+  const pinia = createPinia();
+  createApp({}).use(pinia);
+  return pinia;
+};
 
 // Use this to migrate from Vuex to Pinia
 // DO NOT use for proper Pinia testing, instead use regular Jest API: mocks, expects, etc.

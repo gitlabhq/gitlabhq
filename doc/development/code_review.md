@@ -278,7 +278,7 @@ The [Danger bot](dangerbot.md) picks a reviewer and maintainer for each codebase
 touches. Override the suggestion if you know a better fit.
 
 The roulette skips people whose status contains `OOO`, `PTO`, `Parental Leave`, `Friends and
-Family`, or `Conference`, or who are at review capacity (set via a number status emoji: 2️⃣–5️⃣).
+Family`, or `Conference`, or who are at review capacity (set via a number status emoji: 2️⃣-5️⃣).
 
 ### Acceptance checklist
 

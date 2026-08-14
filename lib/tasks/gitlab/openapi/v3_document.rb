@@ -34,7 +34,14 @@ module Tasks
         private
 
         def generator
-          ::Gitlab::GrapeOpenapi::Generator.new(api_classes: ::API::Base.descendants)
+          ::Gitlab::GrapeOpenapi::Generator.new(api_classes: api_classes)
+        end
+
+        # Rails 8 draws routes lazily, so we need to reference the root API first so that it mounts and
+        # registers every API class in API::Base.descendants.
+        def api_classes
+          ::API::API # rubocop:disable Lint/Void -- Referenced for its load side effect
+          ::API::Base.descendants
         end
 
         def merge_curated_tag_content!(spec)

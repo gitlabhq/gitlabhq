@@ -37,6 +37,7 @@ ai_events_counts: supported
 ai_settings: no_work_needed
 ai_usage_events: supported
 analytics_cycle_analytics_stage_event_hashes: todo
+artifact_registry_namespace_mappings: no_work_needed
 authentication_events: supported
 award_emoji: supported
 background_operation_jobs: todo

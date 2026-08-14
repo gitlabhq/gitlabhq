@@ -1,4 +1,4 @@
-import { GlAlert, GlEmptyState, GlIntersectionObserver, GlButton, GlSprintf } from '@gitlab/ui';
+import { GlAlert, GlEmptyState } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -63,7 +63,6 @@ jest.mock('~/vue_shared/plugins/global_toast');
 
 describe('WorkItemDetail component', () => {
   let wrapper;
-  let glIntersectionObserver;
   let mockApollo;
 
   Vue.use(VueApollo);
@@ -142,6 +141,8 @@ describe('WorkItemDetail component', () => {
   const findCreateMergeRequestSplitButton = () =>
     wrapper.findComponent(WorkItemCreateBranchMergeRequestSplitButton);
   const findDesignDropzone = () => wrapper.findComponent(DesignDropzone);
+  const findDesignUploadButtonObserver = () =>
+    wrapper.findComponentByTestId('design-upload-button-observer');
   const findWorkItemDetailInfo = () => wrapper.findByTestId('info-alert');
   const findShowSidebarButton = () =>
     wrapper.findComponentByTestId('work-item-show-sidebar-button');
@@ -202,9 +203,9 @@ describe('WorkItemDetail component', () => {
         ...provide,
       },
       stubs: {
-        GlSprintf,
         BaseLayout,
         DetailLayout,
+        PanelActionsPortal: { template: '<div><slot /></div>' },
         WorkItemAncestors: true,
         WorkItemWeight: true,
         WorkItemIteration: true,
@@ -935,18 +936,17 @@ describe('WorkItemDetail component', () => {
         createComponent();
         await mockApollo.resolveAll();
 
-        glIntersectionObserver = wrapper.findComponent(GlIntersectionObserver);
         const dragEvent = mockDragEvent({
           types: ['Files', 'image'],
           items: [{ type: 'image/png' }],
         });
 
         findRootNode().trigger('dragenter', dragEvent);
-        glIntersectionObserver.vm.$emit('appear');
+        findDesignUploadButtonObserver().vm.$emit('appear');
         await nextTick();
 
         findRootNode().trigger('dragover', dragEvent);
-        glIntersectionObserver.vm.$emit('appear');
+        findDesignUploadButtonObserver().vm.$emit('appear');
         await nextTick();
 
         expect(findDesignDropzone().exists()).toBe(true);
@@ -956,18 +956,17 @@ describe('WorkItemDetail component', () => {
         createComponent();
         await mockApollo.resolveAll();
 
-        glIntersectionObserver = wrapper.findComponent(GlIntersectionObserver);
         const dragEvent = mockDragEvent({
           types: ['Files', 'image'],
           items: [{ type: 'image/png' }],
         });
 
         wrapper.trigger('dragenter', dragEvent);
-        glIntersectionObserver.vm.$emit('disappear');
+        findDesignUploadButtonObserver().vm.$emit('disappear');
         await nextTick();
 
         wrapper.trigger('dragover', dragEvent);
-        glIntersectionObserver.vm.$emit('disappear');
+        findDesignUploadButtonObserver().vm.$emit('disappear');
         await nextTick();
 
         expect(findDesignDropzone().exists()).toBe(false);
@@ -1198,13 +1197,6 @@ describe('WorkItemDetail component', () => {
     beforeEach(async () => {
       createComponent();
       await mockApollo.resolveAll();
-    });
-
-    it('enables the edit mode when event `toggleEditMode` is emitted', async () => {
-      findStickyHeader().vm.$emit('toggleEditMode');
-      await nextTick();
-
-      expect(findWorkItemDescription().props('editMode')).toBe(true);
     });
 
     it('sticky header is visible by default', () => {
@@ -1486,7 +1478,7 @@ describe('WorkItemDetail component', () => {
 
     it('hides refetch alert on successful refetch', async () => {
       successHandler.mockReturnValueOnce(workItemByIidQueryResponse);
-      findRefetchAlert().findComponent(GlButton).vm.$emit('click');
+      findRefetchAlert().findComponent(GlAlert).vm.$emit('primaryAction');
       await mockApollo.resolveAll();
 
       expect(findRefetchAlert().exists()).toBe(false);

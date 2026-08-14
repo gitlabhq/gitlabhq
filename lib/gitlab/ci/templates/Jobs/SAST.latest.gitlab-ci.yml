@@ -18,6 +18,11 @@ variables:
   DEFAULT_SAST_EXCLUDED_PATHS: "spec, test, tests, tmp"
   SAST_EXCLUDED_PATHS: "$DEFAULT_SAST_EXCLUDED_PATHS"
   SCAN_KUBERNETES_MANIFESTS: "false"
+  # gitlab-advanced-sast-ext incremental analysis: ON by default. Only functions
+  # whose code changed are re-analyzed; the warm store is carried across
+  # pipelines via the job's cache:. Set to "false" to force a full scan. This
+  # toggles the incremental feature only — the analyzer still runs.
+  GITLAB_ADVANCED_SAST_EXT_INCREMENTAL_ENABLED: "true"
 
 sast:
   stage: test
@@ -364,6 +369,18 @@ gitlab-advanced-sast-ext:
     # Objective-C sources more than 4 directories deep are not skipped. sat
     # honors SEARCH_MAX_DEPTH via --max-depth (analyzer issue #50 / MR !174).
     SEARCH_MAX_DEPTH: 20
+    # Store path for incremental analysis; sat reads this (overriding --store) so
+    # the cache: below persists it across pipelines without a Go-wrapper change.
+    # The customer-facing toggle is GITLAB_ADVANCED_SAST_EXT_INCREMENTAL_ENABLED
+    # (global variables block), so a project can override it from its own
+    # .gitlab-ci.yml.
+    GITLAB_ADVANCED_SAST_EXT_STORE: "$CI_PROJECT_DIR/.sat-store"
+  cache:
+    key: "sat-store-$CI_COMMIT_REF_SLUG"
+    fallback_keys:
+      - "sat-store-$CI_DEFAULT_BRANCH"
+    paths:
+      - .sat-store/
   rules:
     - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
       when: never

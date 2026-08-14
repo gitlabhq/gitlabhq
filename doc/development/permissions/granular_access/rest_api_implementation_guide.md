@@ -36,7 +36,7 @@ Quick reference showing what you create in each step:
 
 | Step | File Type | Location | Quantity | Example |
 |------|-----------|----------|----------|---------|
-| 2 | Planning document | (mental notes) | — | Permission names identified |
+| 2 | Planning document | (mental notes) | - | Permission names identified |
 | 3 | Raw permission YAML | `config/authz/permissions/<resource>/<action>.yml` | 1 per permission | `config/authz/permissions/job/read.yml` |
 | 3 | Raw permission resource metadata | `config/authz/permissions/<resource>/.metadata.yml` | 1 per resource | `config/authz/permissions/job/.metadata.yml` |
 | 4 | Assignable permission YAML | `config/authz/permission_groups/assignable_permissions/<category>/<resource>/<action>.yml` | 1 per group | `config/authz/permission_groups/assignable_permissions/ci_cd/job/run.yml` |

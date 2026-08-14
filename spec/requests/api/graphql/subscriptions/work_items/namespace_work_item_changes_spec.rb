@@ -64,15 +64,36 @@ RSpec.describe Subscriptions::WorkItems::NamespaceWorkItemChanges, feature_categ
       end
     end
 
-    context 'when the member cannot read the changed work item' do
+    # Goes through the real trigger: filtering happens there, so a hand-built payload would be delivered.
+    context 'when a confidential work item changes' do
       let_it_be(:confidential_work_item) { create(:work_item, :confidential, project: project) }
 
-      let(:changed_work_item) { confidential_work_item }
+      subject(:response) do
+        subscription_response { GraphqlTriggers.work_item_created(confidential_work_item) }
+      end
 
-      it 'unsubscribes the user without disclosing the work item' do
+      it 'does not disclose the work item', :aggregate_failures do
         expect(Ability.allowed?(member, :read_work_item, confidential_work_item)).to be(false)
 
-        expect(response).to eq(more: false)
+        expect(response).to be_nil
+      end
+    end
+
+    context 'when the work item was deleted' do
+      let(:deleted_work_item) { create(:work_item, project: project) }
+
+      # The record is gone when subscribers deserialize the payload, so it must not carry the work item.
+      subject(:response) do
+        subscription_response { GraphqlTriggers.work_item_deleted(deleted_work_item) }
+      end
+
+      before do
+        deleted_work_item.destroy!
+      end
+
+      it 'delivers the deleted event', :aggregate_failures do
+        expect(received['workItemId']).to eq(deleted_work_item.to_gid.to_s)
+        expect(received['action']).to eq('DELETED')
       end
     end
   end

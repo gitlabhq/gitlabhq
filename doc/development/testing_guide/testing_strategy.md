@@ -9,7 +9,7 @@ title: GitLab Testing Strategy
 ## Core Principles
 
 **Fast Feedback**
-Prioritize speed by running the most relevant tests first—fail fast, fix fast.
+Prioritize speed by running the most relevant tests first - fail fast, fix fast.
 
 **Progressive Testing**
 Start narrow, expand wide. Build confidence through incremental coverage.

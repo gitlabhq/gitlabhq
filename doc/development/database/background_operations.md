@@ -210,7 +210,7 @@ and [isolation constraints](batched_background_migrations.md#isolation) as BBM.
 ### Schedule via cron (recurring operations)
 
 Use cron scheduling for operations that must run indefinitely on a fixed
-interval — for example, purging expired data every hour.
+interval - for example, purging expired data every hour.
 
 #### 1. Define the operation class
 
@@ -275,7 +275,7 @@ Configuration fields:
 
 ### Schedule via enqueue (on-demand operations)
 
-Use `.enqueue` for operations triggered programmatically — for example, a bulk
+Use `.enqueue` for operations triggered programmatically - for example, a bulk
 cleanup initiated by application logic or a service.
 
 ```ruby

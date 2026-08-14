@@ -184,6 +184,7 @@ export default {
     :category="todosButtonType"
     :selected="pendingTodo"
     class="btn-icon"
+    size="small"
     :aria-label="buttonLabel"
     :aria-pressed="pendingTodoStateText"
     @click="onToggle"

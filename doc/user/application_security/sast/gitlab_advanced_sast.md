@@ -34,7 +34,7 @@ positives than traditional SAST.
 GitLab Advanced SAST is an opt-in feature. When enabled, GitLab Advanced SAST scans all supported
 language files using its predefined ruleset, while the SAST analyzer continues to scan other
 files. Both analyzers can run in parallel. SAST and GitLab Advanced SAST do not have complete
-parity — each analyzer detects some vulnerabilities the other does not. An automated
+parity - each analyzer detects some vulnerabilities the other does not. An automated
 [transition process](#transitioning-from-semgrep-to-gitlab-advanced-sast) deduplicates findings when
 both analyzers detect the same vulnerability.
 
@@ -660,6 +660,7 @@ You can adjust GitLab Advanced SAST behavior using the following variables:
 |---------------------------------------------|------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `GITLAB_ADVANCED_SAST_ENABLED`              | `false`                | Enable GitLab Advanced SAST scanning for all supported languages except C and C++. Swift and Objective-C analysis runs as a separate `gitlab-advanced-sast-ext` job. |
 | `GITLAB_ADVANCED_SAST_CPP_ENABLED`          | `false`                | Enable GitLab Advanced SAST scanning specifically for C and C++ projects.                                                                                                                       |
+| `GITLAB_ADVANCED_SAST_EXT_INCREMENTAL_ENABLED` | `true` | Set to `false` to turn off [incremental scanning](advanced_sast_swift_objc.md#incremental-scanning) for the Swift and Objective-C (`gitlab-advanced-sast-ext`) analyzer. |
 | `ADVANCED_SAST_PARTIAL_SCAN`                | `false`                | Enable GitLab Advanced SAST diff-scanning mode by setting to `differential`.                                                                                                                    |
 | `GITLAB_ADVANCED_SAST_RULE_TIMEOUT`         | `30`                   | Timeout in seconds per rule per file. When exceeded, that analysis is skipped.                                                                                                                  |
 | `REPORT_UNVERIFIED_VULNS`                   | `false`                | Include unverified findings in scan results. Set to `true`, `1`, or `True` to enable.                                                                                                           |

@@ -1,0 +1,366 @@
+# frozen_string_literal: true
+
+# rubocop:disable Gitlab/BoundedContexts -- reuse the existing Atlassian module namespace
+module Atlassian
+  module Jira
+    # Shared transport and payload building for pushing GitLab development
+    # information to Jira. Subclasses implement #headers with their own auth.
+    # The payload serializers stay under Atlassian::JiraConnect: both
+    # transports send the same Jira dev-info payload.
+    class DevInfoClient
+      ASSOCIATION_VALUES_LIMIT = 500
+
+      # Cap the request body attached to error logs so a project that
+      # persistently fails does not flood integrations_json.log with
+      # multi-megabyte payloads on every scheduled sync.
+      REQUEST_BODY_LOG_LIMIT = 10_000
+
+      AssociationsTruncatedError = Class.new(StandardError)
+
+      def self.generate_update_sequence_id
+        (Time.now.utc.to_f * 1000).round
+      end
+
+      def initialize(base_uri)
+        @base_uri = base_uri
+      end
+
+      def send_info(project:, update_sequence_id: nil, **args)
+        common = { project: project, update_sequence_id: update_sequence_id }
+        dev_info = args.slice(:commits, :branches, :merge_requests)
+        build_info = args.slice(:pipelines)
+        deploy_info = args.slice(:deployments)
+        remove_branch_info = args.slice(:remove_branch_info)
+        ff_info = args.slice(:feature_flags)
+
+        responses = []
+
+        responses << store_dev_info(**common, **dev_info) if dev_info.present?
+        responses << store_build_info(**common, **build_info) if build_info.present?
+        responses << store_deploy_info(**common, **deploy_info) if deploy_info.present?
+        responses << remove_branch_info(**common, **remove_branch_info) if remove_branch_info.present?
+        responses << store_ff_info(**common, **ff_info) if ff_info.present?
+        raise ArgumentError, 'Invalid arguments' if responses.empty?
+
+        responses.compact
+      end
+
+      # Fetch user information for the given account.
+      # https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-users/#api-rest-api-3-user-get
+      def user_info(account_id)
+        r = get('/rest/api/3/user', { accountId: account_id, expand: 'groups' })
+
+        ::Atlassian::JiraConnect::JiraUser.new(r.parsed_response) if r.code == 200
+      end
+
+      private
+
+      def headers(_uri, _http_method = 'POST')
+        raise Gitlab::AbstractMethodError, "#{self.class} must implement #headers"
+      end
+
+      def auth_error_message
+        'Authentication failed'
+      end
+
+      def get(path, query_params)
+        uri = build_uri(path)
+        uri.query = URI.encode_www_form(query_params)
+
+        Integrations::Clients::HTTP.get(uri, headers: headers(uri, 'GET'))
+      end
+
+      def store_ff_info(project:, feature_flags:, **opts)
+        items = feature_flags.map { |flag| ::Atlassian::JiraConnect::Serializers::FeatureFlagEntity.represent(flag, opts) }
+        items.reject! { |item| item.issue_keys.empty? }
+
+        return if items.empty?
+
+        r = post('/rest/featureflags/0.1/bulk', {
+          flags: items,
+          properties: { projectId: "project-#{project.id}" }
+        })
+
+        handle_response(r, 'feature flags') do |data|
+          failed = data['failedFeatureFlags']
+          if failed.present?
+            errors = failed.flat_map do |k, errs|
+              errs.map { |e| "#{k}: #{e['message']}" }
+            end
+            { 'errorMessages' => errors }
+          end
+        end
+      end
+
+      def store_deploy_info(project:, deployments:, **opts) # rubocop:disable Lint/UnusedMethodArgument -- keep the shared signature; folding project into opts would change the entity payload
+        items = deployments.map { |d| ::Atlassian::JiraConnect::Serializers::DeploymentEntity.represent(d, opts) }
+        items.select! { |d| d.associations.present? }
+
+        return if items.empty?
+
+        deployment_hashes = items.map do |item|
+          hash = item.as_json.deep_symbolize_keys
+          truncate_associations_if_needed(hash)
+        end
+
+        r = post('/rest/deployments/0.1/bulk', { deployments: deployment_hashes })
+        handle_response(r, 'deployments') { |data| errors(data, 'rejectedDeployments', r) }
+      end
+
+      def store_build_info(pipelines:, update_sequence_id: nil, **)
+        builds = pipelines.filter_map do |pipeline|
+          build = ::Atlassian::JiraConnect::Serializers::BuildEntity.represent(
+            pipeline,
+            update_sequence_id: update_sequence_id
+          )
+          next if build.issue_keys.empty?
+
+          build
+        end
+        return if builds.empty?
+
+        r = post('/rest/builds/0.1/bulk', { builds: builds })
+        handle_response(r, 'builds') { |data| errors(data, 'rejectedBuilds', r) }
+      end
+
+      def store_dev_info(project:, commits: nil, branches: nil, merge_requests: nil, update_sequence_id: nil)
+        repo = ::Atlassian::JiraConnect::Serializers::RepositoryEntity.represent(
+          project,
+          commits: commits,
+          branches: branches,
+          merge_requests: merge_requests,
+          user_notes_count: user_notes_count(merge_requests),
+          update_sequence_id: update_sequence_id
+        )
+
+        r = post('/rest/devinfo/0.10/bulk', { repositories: [repo] })
+        handle_response(r, 'dev_info') { |data| dev_info_errors(data, r) }
+      end
+
+      def remove_branch_info(project:, remove_branch_info:, **)
+        # converts the branch name passed as remove_branch_info into a hexdecimal as per
+        # jira's process. Note: we use the hexdigest method in the serializer to parse the id from the branch name
+        # see ../lib/atlassian/jira_connect/serializers/branch_entity.rb#L8
+        jira_branch_id = Digest::SHA256.hexdigest(remove_branch_info)
+
+        logger.info(
+          { message: "deleting jira branch id: #{jira_branch_id}, gitlab branch name: #{remove_branch_info}" }
+        )
+
+        delete("/rest/devinfo/0.10/repository/#{project.id}/branch/#{jira_branch_id}")
+      end
+
+      def post(path, payload)
+        uri = build_uri(path)
+
+        Integrations::Clients::HTTP.post(uri, headers: headers(uri), body: metadata.merge(payload).to_json)
+      end
+
+      def delete(path)
+        uri = build_uri(path)
+
+        Integrations::Clients::HTTP.delete(uri, headers: headers(uri, 'DELETE'))
+      end
+
+      # append_path (not URI.join) so a base that carries a path prefix (e.g. the
+      # Forge apiBaseUrl https://api.atlassian.com/ex/jira/<cloudId>) keeps it;
+      # URI.join would drop the prefix for an absolute path.
+      def build_uri(path)
+        URI.parse(Gitlab::Utils.append_path(@base_uri, path))
+      end
+
+      def metadata
+        { providerMetadata: { product: "GitLab #{Gitlab::VERSION}" } }
+      end
+
+      def handle_response(response, name)
+        data = response.parsed_response
+
+        if [200, 202].include?(response.code)
+          yield data
+        else
+          case response.code
+          when 400
+            {
+              'errorMessages' => parse_jira_error_messages(data),
+              'response' => data,
+              'requestBody' => truncated_request_body(response)
+            }
+          when 401 then { 'errorMessages' => [auth_error_message] }
+          when 403 then { 'errorMessages' => ["App does not support #{name}"] }
+          when 413 then { 'errorMessages' => ['Data too large'] + parse_jira_error_messages(data) }
+          when 429 then { 'errorMessages' => ['Rate limit exceeded'] }
+          when 503 then { 'errorMessages' => ['Service unavailable'] }
+          else
+            { 'errorMessages' => ['Unknown error'], 'response' => data }
+          end.merge('responseCode' => response.code)
+        end
+      end
+
+      def parse_jira_error_messages(data)
+        case data
+        when Array
+          data.map { |e| e.is_a?(Hash) ? (e['message'] || e.to_s) : e.to_s }
+        when Hash
+          messages = Array(data['errorMessages']).map { |e| e.is_a?(Hash) ? (e['message'] || e.to_s) : e.to_s }
+          messages << data['message'] if data['message'].present?
+          messages << data['error'] if data['error'].present?
+          messages.reject(&:blank?).presence || ["Unrecognized error body: #{data.to_json.truncate(500)}"]
+        else
+          ['Unknown error']
+        end
+      end
+
+      def truncated_request_body(response)
+        raw = response.request.raw_body.to_s
+        return request_body_schema(response) if raw.bytesize <= REQUEST_BODY_LOG_LIMIT
+
+        "Request body truncated (#{raw.bytesize} bytes): #{raw.truncate_bytes(REQUEST_BODY_LOG_LIMIT)}"
+      end
+
+      # The dev_info bulk endpoint reports rejected entities in
+      # `failedDevinfoEntities`, a hash keyed by repository ID. Each repository
+      # entry carries repository-level `errorMessages` plus per-entity errors
+      # under `commits`, `branches`, and `pullRequests`. See:
+      # https://developer.atlassian.com/cloud/jira/software/rest/api-group-development-information#api-rest-devinfo-0-10-bulk-post
+      #
+      # `unknownIssueKeys` is intentionally not treated as an error: it is a
+      # normal occurrence (for example a commit referencing another project's
+      # ticket) and surfacing it would log routine syncs at error level and
+      # attach the full repository payload to the logs.
+      def dev_info_errors(data, response)
+        data = {} unless data.is_a?(Hash)
+        messages = []
+
+        failed_entities = data['failedDevinfoEntities']
+        failed_entities = {} unless failed_entities.is_a?(Hash)
+
+        failed_entities.each_value do |repo_errors|
+          next unless repo_errors.is_a?(Hash)
+
+          Array(repo_errors['errorMessages']).each { |e| messages << e['message'] }
+
+          %w[commits branches pullRequests].each do |type|
+            Array(repo_errors[type]).each do |entity|
+              Array(entity['errorMessages']).each do |e|
+                messages << "#{type} #{entity['id']}: #{e['message']}"
+              end
+            end
+          end
+        end
+
+        result = { 'errorMessages' => messages, 'responseCode' => response.code }
+        # Only attach the request body when there is something to debug, to
+        # avoid logging the full repository payload (commit messages, author
+        # emails, file paths) on every successful sync.
+        result['requestBody'] = request_body_schema(response) if messages.present?
+        result
+      end
+
+      def errors(data, key, response)
+        messages = if data[key].present?
+                     data[key].flat_map do |rejection|
+                       rejection['errors'].map { |e| e['message'] }
+                     end
+                   else
+                     []
+                   end
+
+        { 'errorMessages' => messages, 'responseCode' => response.code, 'requestBody' => request_body_schema(response) }
+      end
+
+      def request_body_schema(response)
+        Oj.load(response.request.raw_body)
+      rescue Oj::ParseError, EncodingError, Encoding::UndefinedConversionError
+        'Request body includes invalid JSON'
+      end
+
+      def user_notes_count(merge_requests)
+        return unless merge_requests
+
+        Note.count_for_collection(merge_requests.map(&:id), 'MergeRequest').to_h do |count_group|
+          [count_group.noteable_id, count_group.count]
+        end
+      end
+
+      # Jira caps total association values per deployment at
+      # ASSOCIATION_VALUES_LIMIT across all associationTypes combined.
+      # Splitting a deployment into multiple POSTs does not accumulate
+      # associations: verified against Jira Cloud, requests with the same
+      # deployment identity and equal updateSequenceNumber are dropped, and
+      # requests with a higher updateSequenceNumber wholesale replace the
+      # previous data. So when a deployment produces more than the limit,
+      # we truncate to the limit and track the excess so we can monitor
+      # customer impact.
+      def truncate_associations_if_needed(deployment_hash)
+        associations = deployment_hash[:associations] || []
+        total_values = associations.sum { |a| a[:values]&.size || 0 }
+
+        return deployment_hash if total_values <= ASSOCIATION_VALUES_LIMIT
+
+        dropped_values = total_values - ASSOCIATION_VALUES_LIMIT
+
+        Gitlab::ErrorTracking.track_exception(
+          AssociationsTruncatedError.new(
+            "Deployment associations truncated: #{total_values} -> #{ASSOCIATION_VALUES_LIMIT}"
+          ),
+          extra: {
+            deployment_sequence_number: deployment_hash[:deploymentSequenceNumber],
+            pipeline_id: deployment_hash.dig(:pipeline, :id),
+            total_values: total_values,
+            dropped_values: dropped_values
+          },
+          tags: truncation_tags(dropped_values)
+        )
+
+        # Prioritise issueKeys in the truncated payload: those are the primary
+        # linkage Jira uses to attach the deployment to issues. If the
+        # serializer emits commit/mergeRequest associations before issue keys,
+        # filling the 500-value budget in input order would starve the issue
+        # keys and the deployment would never link to anything in Jira.
+        issue_keys_type = ::Atlassian::JiraConnect::Serializers::DeploymentEntity::ISSUE_KEYS_ASSOCIATION_TYPE.to_s
+        prioritised, rest = associations.partition do |assoc|
+          assoc[:associationType].to_s == issue_keys_type
+        end
+        ordered = prioritised + rest
+
+        budget = ASSOCIATION_VALUES_LIMIT
+        truncated = ordered.filter_map do |assoc|
+          next if budget <= 0
+
+          take = [assoc[:values].to_a.size, budget].min
+          budget -= take
+          next if take == 0
+
+          assoc.merge(values: assoc[:values].first(take))
+        end
+
+        deployment_hash.merge(associations: truncated)
+      end
+
+      # Coarse, low-cardinality tags so Sentry can aggregate the truncation
+      # distribution. `extra:` data is not aggregatable in Discover.
+      def truncation_tags(dropped_values)
+        bucket = if dropped_values < 100
+                   '<100'
+                 elsif dropped_values < 500
+                   '100-499'
+                 elsif dropped_values < 1000
+                   '500-999'
+                 else
+                   '>=1000'
+                 end
+
+        {
+          dropped_bucket: bucket,
+          truncation_severity: dropped_values >= 800 ? 'high' : 'normal'
+        }
+      end
+
+      def logger
+        Gitlab::IntegrationsLogger
+      end
+    end
+  end
+end
+# rubocop:enable Gitlab/BoundedContexts

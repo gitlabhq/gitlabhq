@@ -518,7 +518,7 @@ For more information, see [scopes](_index.md#scopes).
 | Last comment     | `lastComment`                         | All             | Display the last comment made on the object |
 | Milestone        | `milestone`                           | All             | Display the milestone associated with the object |
 | Parent           | `parent`                              | All             | Display a link to the parent work item or epic |
-| Progress         | `progress`                            | Objective and Key Result only | Display the progress percentage (0–100) of the work item |
+| Progress         | `progress`                            | Objective and Key Result only | Display the progress percentage (0-100) of the work item |
 | Project          | `project`                             | All except Epic | Display the project the work item belongs to |
 | Start date       | `start`, `startDate`                  | Epic only       | Display the start date of the epic |
 | State            | `state`                               | All             | Display a badge indicating the state. Values are `Open` or `Closed` |

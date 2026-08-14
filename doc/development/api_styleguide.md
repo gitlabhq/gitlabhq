@@ -313,7 +313,7 @@ Format the `success` value based on what the endpoint returns:
   ```
 
 - If no `example:` or `examples:` is provided, and a `model:` is defined, an example is
-generated automatically — either from `documentation: { example: ... }` values on the
+generated automatically - either from `documentation: { example: ... }` values on the
 entity fields, or from field types if no field-level examples are defined.
 - If the endpoint responds with an object and you want to illustrate a complete response
   body or provide multiple possible response body examples, use `example:` for a single

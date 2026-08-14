@@ -31,6 +31,12 @@ RSpec.describe WorkItems::DeleteService, feature_category: :team_planning do
     shared_examples 'deletes work item' do
       it { is_expected.to be_success }
 
+      it 'triggers namespaceWorkItemChanges subscription' do
+        expect(GraphqlTriggers).to receive(:work_item_deleted).with(work_item)
+
+        service.execute(work_item)
+      end
+
       it 'publish WorkItems::WorkItemDeletedEvent' do
         expect { service.execute(work_item) }
           .to publish_event(::WorkItems::WorkItemDeletedEvent).with({

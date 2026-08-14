@@ -96,9 +96,9 @@ store stage **skips** the cyclonedx finding-synthesis to avoid double ingestion.
 
 ## Related
 
-- [CycloneDX to security findings](cyclonedx_to_security_findings.md) — ingests the
+- [CycloneDX to security findings](cyclonedx_to_security_findings.md) - ingests the
   `gl-dependency-scanning-report.json` this API produces.
-- [GitLab CycloneDX property taxonomy](cyclonedx_property_taxonomy.md) — the SBOM
+- [GitLab CycloneDX property taxonomy](cyclonedx_property_taxonomy.md) - the SBOM
   format this API validates against.
-- Continuous Vulnerability Scanning (CVS) — the off-pipeline flow that runs the
+- Continuous Vulnerability Scanning (CVS) - the off-pipeline flow that runs the
   same advisory matching over stored SBOM data.

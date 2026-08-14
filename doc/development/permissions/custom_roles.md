@@ -229,7 +229,7 @@ Remove the `wip:` key when the ability is ready to ship.
 
 ### Step 4: Define permissions in the YAML configuration file
 
-Permissions are defined declaratively in the YAML configuration file using the `project_permissions` and `group_permissions` fields. The system automatically generates policy rules from these definitions — you do not need to manually update `ProjectPolicy` or `GroupPolicy`.
+Permissions are defined declaratively in the YAML configuration file using the `project_permissions` and `group_permissions` fields. The system automatically generates policy rules from these definitions - you do not need to manually update `ProjectPolicy` or `GroupPolicy`.
 
 For example, if you are adding a `read_dependency` custom ability, your YAML file should include:
 

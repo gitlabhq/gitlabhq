@@ -15044,6 +15044,23 @@ CREATE SEQUENCE arkose_sessions_id_seq
 
 ALTER SEQUENCE arkose_sessions_id_seq OWNED BY arkose_sessions.id;
 
+CREATE TABLE artifact_registry_namespace_mappings (
+    id bigint NOT NULL,
+    organization_id bigint NOT NULL,
+    ar_namespace_id uuid NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE artifact_registry_namespace_mappings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE artifact_registry_namespace_mappings_id_seq OWNED BY artifact_registry_namespace_mappings.id;
+
 CREATE TABLE ascp_component_dependencies (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -36387,6 +36404,8 @@ ALTER TABLE ONLY approvals ALTER COLUMN id SET DEFAULT nextval('approvals_id_seq
 
 ALTER TABLE ONLY arkose_sessions ALTER COLUMN id SET DEFAULT nextval('arkose_sessions_id_seq'::regclass);
 
+ALTER TABLE ONLY artifact_registry_namespace_mappings ALTER COLUMN id SET DEFAULT nextval('artifact_registry_namespace_mappings_id_seq'::regclass);
+
 ALTER TABLE ONLY ascp_component_dependencies ALTER COLUMN id SET DEFAULT nextval('ascp_component_dependencies_id_seq'::regclass);
 
 ALTER TABLE ONLY ascp_components ALTER COLUMN id SET DEFAULT nextval('ascp_components_id_seq'::regclass);
@@ -39309,6 +39328,9 @@ ALTER TABLE ONLY ar_internal_metadata
 
 ALTER TABLE ONLY arkose_sessions
     ADD CONSTRAINT arkose_sessions_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY artifact_registry_namespace_mappings
+    ADD CONSTRAINT artifact_registry_namespace_mappings_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ascp_component_dependencies
     ADD CONSTRAINT ascp_component_dependencies_pkey PRIMARY KEY (id);
@@ -46447,6 +46469,8 @@ CREATE INDEX index_arkose_sessions_on_session_xid ON arkose_sessions USING btree
 CREATE INDEX index_arkose_sessions_on_user_id ON arkose_sessions USING btree (user_id);
 
 CREATE INDEX index_arkose_sessions_on_verified_at ON arkose_sessions USING btree (verified_at);
+
+CREATE UNIQUE INDEX index_artifact_registry_namespace_mappings_on_organization_id ON artifact_registry_namespace_mappings USING btree (organization_id);
 
 CREATE INDEX index_ascp_component_dependencies_on_component_id ON ascp_component_dependencies USING btree (component_id);
 
@@ -60746,6 +60770,9 @@ ALTER TABLE p_ci_job_definition_instances
 
 ALTER TABLE ONLY ml_experiment_metadata
     ADD CONSTRAINT fk_rails_6b39844d44 FOREIGN KEY (experiment_id) REFERENCES ml_experiments(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY artifact_registry_namespace_mappings
+    ADD CONSTRAINT fk_rails_6b39bd2ff6 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY error_tracking_errors
     ADD CONSTRAINT fk_rails_6b41f837ba FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

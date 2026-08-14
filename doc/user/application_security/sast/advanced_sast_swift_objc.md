@@ -16,6 +16,7 @@ title: Advanced SAST Swift and Objective-C configuration
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/16318) as a [beta](../../../policy/development_stages_support.md#beta) in GitLab 19.3.
+- Incremental scanning [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249721) in GitLab 19.4.
 
 {{< /history >}}
 
@@ -69,6 +70,61 @@ If `GITLAB_ADVANCED_SAST_ENABLED` is set as a group CI/CD variable, a value in t
 variable with the same name. For more information, see
 [CI/CD variable precedence](../../../ci/variables/_index.md#cicd-variable-precedence).
 
+## Incremental scanning
+
+Incremental scanning is turned on by default. The analyzer caches its taint analysis store between
+pipeline runs, then re-analyzes only the files whose code changed or dependencies changed,
+and reuses cached results for unchanged code.
+This reduces scan times on large codebases where most code doesn't change
+between commits.
+
+For the other GitLab Advanced SAST languages, the equivalent feature is
+[incremental scanning](gitlab_advanced_sast.md#incremental-scanning), which is turned off by default
+and configured with different CI/CD variables.
+
+The `gitlab-advanced-sast-ext` job carries the store across pipelines by using the job's `cache:`,
+keyed by the branch with a fallback to the default branch.
+
+Cache reuse requires the runner to have access to the previous cache.
+If your instance uses multiple runners without [distributed caching](https://docs.gitlab.com/runner/configuration/autoscale/#distributed-runners-caching),
+the store might not be available and the analyzer performs a full scan.
+
+### Turn off incremental scanning
+
+To turn off incremental scanning and scan all code on every run, set the `GITLAB_ADVANCED_SAST_EXT_INCREMENTAL_ENABLED` variable
+to `"false"`:
+
+```yaml
+include:
+  - template: Jobs/SAST.gitlab-ci.yml
+
+variables:
+  GITLAB_ADVANCED_SAST_ENABLED: "true"
+  GITLAB_ADVANCED_SAST_EXT_INCREMENTAL_ENABLED: "false"
+```
+
+### Disable the cache
+
+Turning off incremental scanning keeps the `cache:` active, so every pipeline still uploads and
+downloads the store.
+The store stays primed, so you can re-enable incremental scanning and reuse it immediately.
+
+To also remove the cache cost from every pipeline, override the job with an empty `cache:`:
+
+```yaml
+include:
+  - template: Jobs/SAST.gitlab-ci.yml
+
+variables:
+  GITLAB_ADVANCED_SAST_ENABLED: "true"
+
+gitlab-advanced-sast-ext:
+  cache: []
+```
+
+With the cache disabled, every pipeline runs a full scan and pays no cache cost.
+Re-enabling incremental scanning then requires one full scan to prime the store again.
+
 ## Vulnerability coverage
 
 The analyzer traces untrusted input from sources to vulnerable sinks across files and functions.
@@ -103,6 +159,4 @@ During the beta, Swift and Objective-C analysis has the following known issues:
   analyzers detect the same vulnerability in a Swift or Objective-C file, both findings are
   reported.
 - [Custom rulesets](customize_rulesets.md) are not supported.
-- [Diff-based scanning](gitlab_advanced_sast.md#diff-based-scanning) and
-  [incremental scanning](gitlab_advanced_sast.md#incremental-scanning) are not supported. The
-  analyzer always performs a full scan.
+- [Diff-based scanning](gitlab_advanced_sast.md#diff-based-scanning) is not supported.

@@ -618,12 +618,13 @@ export default {
   <div>
     <gl-disclosure-dropdown
       ref="workItemsMoreActions"
-      v-gl-tooltip="showDropdownTooltip"
-      icon="ellipsis_v"
+      v-gl-tooltip.bottom="showDropdownTooltip"
+      icon="ellipsis_h"
       data-testid="work-item-actions-dropdown"
       text-sr-only
       :toggle-text="$options.i18n.moreActions"
       category="tertiary"
+      size="small"
       :auto-close="false"
       no-caret
       placement="bottom-end"

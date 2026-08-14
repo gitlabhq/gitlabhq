@@ -185,7 +185,7 @@ Use the following table to decide which helper to use when backfilling a field:
 | **Mechanism** | Search for documents missing the field, build references, track them through the bookkeeping pipeline for re-indexing. | Search for projects with documents missing the field, issue async `update_by_query` tasks with a Painless script. Uses dual-mode strategy: safe mode for large projects (one at a time), speed mode for small projects (can batch multiple together). |
 | **Best for** | Indices backed by an ActiveRecord model (`DOCUMENT_TYPE`) where the indexer populates the field on re-index. | Project-scoped indices (commits, blobs, wikis) where the field value is derived from the project/namespace and the index is populated by the Go-based indexer. |
 | **Batch limit** | 10,000 documents per search (Elasticsearch default). | Configurable `batch_size` per task (safe mode) and `speed_mode_batch_size` for batched updates (speed mode). Both tunable at runtime via migration state. |
-| **Concurrency** | Sequential. | Concurrent — up to `max_concurrent_tasks` (default: 50) projects processed simultaneously. Tunable at runtime via migration state. |
+| **Concurrency** | Sequential. | Concurrent - up to `max_concurrent_tasks` (default: 50) projects processed simultaneously. Tunable at runtime via migration state. |
 | **Optimization** | None - always sequential. | Automatically optimizes based on project size: careful processing for large projects (≥10k docs), batched processing for small projects. |
 
 ### Migration helpers
@@ -788,8 +788,8 @@ You can test this migration with the
 `'migration backfills a field using project-scoped update_by_query'` shared examples.
 The consuming spec must define two methods inside the `it_behaves_like` block:
 
-- `index_documents_for_projects(projects)` — indexes documents for the given projects.
-- `remove_field_from_indexed_documents(project_ids)` — removes the target field
+- `index_documents_for_projects(projects)` - indexes documents for the given projects.
+- `remove_field_from_indexed_documents(project_ids)` - removes the target field
   from indexed documents (project IDs are strings because `rid` is a keyword field).
 
 ```ruby

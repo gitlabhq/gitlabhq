@@ -28,7 +28,7 @@ When a keyword accepts file or directory paths:
 - [ ] Are edge cases tested? (empty paths, special characters, very long paths)
 - [ ] If a behavior is intentionally _not_ supported (for example, no glob support), is that:
   - [ ] Explicitly documented as a limitation?
-  - [ ] Covered by a spec that documents the current behavior? (If the limitation is later – intentionally or not – removed, the failing test will alert and prevent a breaking change for pipelines that depend on the current behavior.)
+  - [ ] Covered by a spec that documents the current behavior? (If the limitation is later - intentionally or not - removed, the failing test will alert and prevent a breaking change for pipelines that depend on the current behavior.)
 
 ### Variables
 
@@ -73,14 +73,14 @@ How does the keyword behave in combination with CI composability options:
 
 #### Behavior
 
-- [ ] [YAML anchors](../../ci/yaml/yaml_optimization.md#anchors) – native YAML functionality, usually not a concern
-- [ ] The [`!reference` tag](../../ci/yaml/yaml_optimization.md#reference-tags) – a custom extension, a very frequent source of unexpected behavior
+- [ ] [YAML anchors](../../ci/yaml/yaml_optimization.md#anchors) - native YAML functionality, usually not a concern
+- [ ] The [`!reference` tag](../../ci/yaml/yaml_optimization.md#reference-tags) - a custom extension, a very frequent source of unexpected behavior
   - [ ] Does the `!reference` tag work when used in or under the keyword?
   - [ ] Does the keyword work when used in a section that is pulled in via a `!reference` tag?
 - [ ] [Includes](../../ci/yaml/_index.md#include)
   - [ ] Is it okay for the keyword to be used in *all* types of include? (Example: Is there a reason the keyword should not be used in components?)
-  - [ ] Has the semantics of the keyword being used in an included file been considered? (Example: What does `include:local:` mean when being used in a file that is included via `include:project:` – which of the two projects is considered the local one?)
-- [ ] [`extends`](../../ci/yaml/yaml_optimization.md#use-extends-to-reuse-configuration-sections) – deep-merges hashes but *replaces* arrays, which can surprise keywords that take a list
+  - [ ] Has the semantics of the keyword being used in an included file been considered? (Example: What does `include:local:` mean when being used in a file that is included via `include:project:` - which of the two projects is considered the local one?)
+- [ ] [`extends`](../../ci/yaml/yaml_optimization.md#use-extends-to-reuse-configuration-sections) - deep-merges hashes but *replaces* arrays, which can surprise keywords that take a list
   - [ ] Does the keyword merge as expected when a job uses `extends`?
 
 #### Specification and testing

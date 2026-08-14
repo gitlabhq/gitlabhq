@@ -15,6 +15,7 @@ import {
 } from '~/work_items/constants';
 import WorkItemDetailPanel from '~/work_items/components/work_item_detail_panel.vue';
 import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
+import DynamicPanel from '~/vue_shared/components/dynamic_panel.vue';
 import deleteWorkItemMutation from '~/work_items/graphql/delete_work_item.mutation.graphql';
 import workspacePermissionsQuery from '~/work_items/graphql/workspace_permissions.query.graphql';
 import workItemMetadataQuery from 'ee_else_ce/work_items/graphql/work_item_metadata.query.graphql';
@@ -51,7 +52,7 @@ describe('WorkItemDetailPanel', () => {
 
   const findGlDrawer = () => wrapper.findComponent(GlDrawer);
   const findWorkItem = () => wrapper.findComponent(WorkItemDetail);
-  const findLinkButton = () => wrapper.findComponentByTestId('work-item-detail-panel-link-button');
+  const findDynamicPanel = () => wrapper.findComponent(DynamicPanel);
   const findReferenceLink = () => wrapper.findComponent(GlLink);
 
   const createComponent = ({
@@ -64,6 +65,7 @@ describe('WorkItemDetailPanel', () => {
     stubs = {
       WorkItemDetail,
       MountingPortal: { template: '<div data-testid="mounting-portal"><slot /></div>' },
+      DynamicPanel,
     },
   } = {}) => {
     wrapper = mountFn(WorkItemDetailPanel, {
@@ -134,12 +136,10 @@ describe('WorkItemDetailPanel', () => {
     expect(link.text()).toBe('gitlab#1');
   });
 
-  it('displays the correct URL in the full page button', () => {
+  it('passes the correct URL to the panel maximize button', () => {
     createComponent();
 
-    expect(wrapper.findByTestId('work-item-detail-panel-link-button').attributes('href')).toBe(
-      'test',
-    );
+    expect(findDynamicPanel().props('maximizeUrl')).toBe('test');
   });
 
   it('has a copy to clipboard button for the item URL', () => {
@@ -161,14 +161,18 @@ describe('WorkItemDetailPanel', () => {
       fullPath: 'gitlab-org/gitlab',
     };
 
-    it.each`
-      testId                                  | attr
-      ${'work-item-detail-panel-link-button'} | ${'href'}
-      ${'work-item-detail-panel-ref-link'}    | ${'href'}
-    `('renders `webPath` in the $testId $attr', ({ testId, attr }) => {
+    it('renders `webPath` in the reference link href', () => {
       createComponent({ activeItem: boardItem });
 
-      expect(wrapper.findByTestId(testId).attributes(attr)).toBe('/gitlab-org/gitlab/-/issues/1');
+      expect(wrapper.findByTestId('work-item-detail-panel-ref-link').attributes('href')).toBe(
+        '/gitlab-org/gitlab/-/issues/1',
+      );
+    });
+
+    it('passes `webPath` to the panel maximize button', () => {
+      createComponent({ activeItem: boardItem });
+
+      expect(findDynamicPanel().props('maximizeUrl')).toBe('/gitlab-org/gitlab/-/issues/1');
     });
 
     it('copies the absolute URL built from `webPath` to the clipboard', () => {
@@ -184,7 +188,7 @@ describe('WorkItemDetailPanel', () => {
     it('navigates to `webPath` when opening in full page from a board', () => {
       createComponent({ isBoard: true, activeItem: boardItem });
 
-      findLinkButton().vm.$emit('click', new MouseEvent('click'));
+      findDynamicPanel().vm.$emit('maximize', new MouseEvent('click'));
 
       expect(visitUrl).toHaveBeenCalledWith('/gitlab-org/gitlab/-/issues/1');
     });
@@ -293,7 +297,7 @@ describe('WorkItemDetailPanel', () => {
   describe('when redirecting to full screen view', () => {
     it('calls `visitUrl` when link is not a work item path', () => {
       createComponent();
-      findLinkButton().vm.$emit('click', new MouseEvent('click'));
+      findDynamicPanel().vm.$emit('maximize', new MouseEvent('click'));
 
       expect(visitUrl).toHaveBeenCalledWith('test');
     });
@@ -307,7 +311,7 @@ describe('WorkItemDetailPanel', () => {
           fullPath: 'gitlab-org/gitlab',
         },
       });
-      findLinkButton().vm.$emit('click', new MouseEvent('click'));
+      findDynamicPanel().vm.$emit('maximize', new MouseEvent('click'));
 
       expect(visitUrl).not.toHaveBeenCalled();
       expect(mockRouterPush).toHaveBeenCalledWith({
@@ -325,7 +329,7 @@ describe('WorkItemDetailPanel', () => {
           fullPath: 'gitlab-org/gitlab',
         },
       });
-      findLinkButton().vm.$emit('click', new MouseEvent('click'));
+      findDynamicPanel().vm.$emit('maximize', new MouseEvent('click'));
 
       expect(mockRouterPush).toHaveBeenCalledWith({
         name: 'workItem',
@@ -343,7 +347,7 @@ describe('WorkItemDetailPanel', () => {
         },
       });
 
-      findLinkButton().vm.$emit('click', new MouseEvent('click'));
+      findDynamicPanel().vm.$emit('maximize', new MouseEvent('click'));
 
       expect(visitUrl).not.toHaveBeenCalled();
       expect(mockRouterPush).toHaveBeenCalledWith({
@@ -362,7 +366,7 @@ describe('WorkItemDetailPanel', () => {
         },
       });
 
-      findLinkButton().vm.$emit('click', new MouseEvent('click'));
+      findDynamicPanel().vm.$emit('maximize', new MouseEvent('click'));
 
       expect(visitUrl).toHaveBeenCalledWith('/gitlab-org/gitlab-other/-/work_items/1');
       expect(mockRouterPush).not.toHaveBeenCalled();

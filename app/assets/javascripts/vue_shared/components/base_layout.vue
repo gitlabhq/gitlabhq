@@ -70,9 +70,15 @@ export default {
     syncStickyHeaderHeight() {
       const el = this.$refs.stickyHeader;
       if (!el) return;
+      const heightPx = `${el.offsetHeight}px`;
+      // Offsets content while the header is showing; removed when it hides.
+      document.documentElement.style.setProperty('--layout-sticky-header-height', heightPx);
+      // Set once and never removed, so consumers can reserve a stable header
+      // height (e.g. detail-layout's sticky sidebar) without the value toggling
+      // on scroll, which would resize the sidebar and stutter the UI.
       document.documentElement.style.setProperty(
-        '--layout-sticky-header-height',
-        `${el.offsetHeight}px`,
+        '--layout-sticky-header-reserved-height',
+        heightPx,
       );
     },
   },

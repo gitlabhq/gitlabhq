@@ -297,23 +297,23 @@ during systematic improvement efforts. Each links to detailed guidance in the
   (`has_no_link?` or `expect(page).to have_no_link(...)`) instead. See
   [Avoid waiting for elements you expect to be absent](best_practices.md#avoid-waiting-for-elements-you-expect-to-be-absent).
 
-- **Using `all()` instead of `find()`** — `all()` does not raise on missing
+- **Using `all()` instead of `find()`** - `all()` does not raise on missing
   elements and does not benefit from Capybara's smart waiting. Block iteration
   over `all()` results is particularly slow. See
   [Avoid `all()` with `.first` or block iteration](best_practices.md#avoid-all-with-first-or-block-iteration).
 
-- **Slow shared examples with wide inclusion** — A shared example that is slow
+- **Slow shared examples with wide inclusion** - A shared example that is slow
   multiplies its cost across every file that includes it. See
   [Performance impact of slow shared examples](best_practices.md#performance-impact-of-slow-shared-examples).
 
-- **Triggering real external operations** — Specs that shell out to compile
+- **Triggering real external operations** - Specs that shell out to compile
   binaries or run Git commands inherit that wall-clock cost even when the logic
   is already unit-tested. See [Mock expensive external operations](best_practices.md#mock-expensive-external-operations).
 
-- **Factory cascades** — Unnecessarily deep factory associations silently multiply
+- **Factory cascades** - Unnecessarily deep factory associations silently multiply
   database writes. See [Optimize factory usage](best_practices.md#optimize-factory-usage).
 
-- **Unnecessary `:js` tag** — Running specs with a full JavaScript browser when
+- **Unnecessary `:js` tag** - Running specs with a full JavaScript browser when
   an HTML response would suffice. See
   [Don't request capabilities you don't need](best_practices.md#dont-request-capabilities-you-dont-need).
 

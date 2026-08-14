@@ -23,6 +23,9 @@ RSpec.describe Tasks::Gitlab::Openapi::V3Document, feature_category: :api do
 
   before do
     stub_const('Grape::API::Instance', Class.new)
+    # Stub the API namespace itself, otherwise stubbing the constants below autoloads the real ones
+    stub_const('API', Module.new)
+    stub_const('API::API', Class.new)
     stub_const('API::Base', Class.new { def self.descendants; end })
     allow(::API::Base).to receive(:descendants).and_return([])
 
@@ -45,6 +48,12 @@ RSpec.describe Tasks::Gitlab::Openapi::V3Document, feature_category: :api do
 
   it 'renders the generated document below the header' do
     expect(rendered_tags).to eq(generated_spec['tags'])
+  end
+
+  it 'loads the root API so that every API class is registered as a descendant' do
+    hide_const('API::API')
+
+    expect { document }.to raise_error(NameError, /API::API/)
   end
 
   context 'when curated content matches a tag' do

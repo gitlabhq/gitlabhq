@@ -155,9 +155,9 @@ To resolve those parameters, include the `Mcp::Tools::Concerns::UrlParser` and
 `Mcp::Tools::Concerns::ResourceFinder` concerns.
 A caller provides either:
 
-- `url` — a full GitLab URL that encodes the whole path (for example
+- `url` - a full GitLab URL that encodes the whole path (for example
   `https://gitlab.com/group/project/-/merge_requests/1`), or
-- The ID group — `project_id` (numeric ID or URL-encoded path such as `gitlab-org%2Fgitlab`) plus
+- The ID group - `project_id` (numeric ID or URL-encoded path such as `gitlab-org%2Fgitlab`) plus
   the resource's internal ID (`merge_request_iid`, `work_item_iid`, `commit_sha`, and so on).
 
 Keep the project identifier and the internal ID as separate parameters.

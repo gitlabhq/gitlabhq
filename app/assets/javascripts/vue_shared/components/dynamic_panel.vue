@@ -41,6 +41,26 @@ export default {
     },
   },
   emits: ['close', 'maximize'],
+  mounted() {
+    this.$nextTick(this.syncPanelContentHeight);
+    window.addEventListener('resize', this.syncPanelContentHeight);
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.syncPanelContentHeight);
+  },
+  methods: {
+    syncPanelContentHeight() {
+      const el = this.$refs.panelContentInner;
+      if (!el) return;
+      // Scope the height to this panel so nested sticky elements (like the
+      // detail-layout sidebar) size to the panel they live in, not whichever
+      // .panel-content-inner the global panel_height_calc measured first.
+      el.style.setProperty(
+        '--panel-content-inner-height',
+        `${el.getBoundingClientRect().height}px`,
+      );
+    },
+  },
 };
 </script>
 
@@ -62,13 +82,13 @@ export default {
       </div>
     </div>
     <div class="panel-content">
-      <div class="panel-content-inner js-dynamic-panel-inner">
+      <div ref="panelContentInner" class="panel-content-inner js-dynamic-panel-inner">
         <div
           class="container-fluid"
           :class="{ 'container-limited': !fluidLayout }"
           data-testid="layout-container"
         >
-          <div class="content gl-pb-3 gl-@container/panel">
+          <div class="content gl-@container/panel">
             <slot></slot>
           </div>
         </div>

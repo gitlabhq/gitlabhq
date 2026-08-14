@@ -395,6 +395,13 @@ module Gitlab
               period: 1.minute,
               action: :limit
             ),
+            namespace_work_item_changes_broadcast: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_namespace_work_item_change_broadcasts_by_namespace',
+              characteristics: %i[group namespace],
+              limit: 30,
+              period: 1.minute,
+              action: :limit
+            ),
             notes_create: ::Labkit::RateLimit::Rule.new(
               name: 'limit_notes_by_user',
               characteristics: %i[user],

@@ -1,5 +1,4 @@
-import { GlIntersectionObserver, GlLink } from '@gitlab/ui';
-import { nextTick } from 'vue';
+import { GlLink } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { STATE_OPEN, STATE_CLOSED } from '~/work_items/constants';
 import { issueType, taskType, workItemResponseFactory } from 'ee_else_ce_jest/work_items/mock_data';
@@ -9,9 +8,7 @@ import ArchivedBadge from '~/issuable/components/archived_badge.vue';
 import WorkItemStickyHeader from '~/work_items/components/work_item_sticky_header.vue';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
-import TodosToggle from '~/work_items/components/shared/todos_toggle.vue';
 import WorkItemStateBadge from '~/work_items/components/work_item_state_badge.vue';
-import WorkItemNotificationsWidget from '~/work_items/components/work_item_notifications_widget.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 
 describe('WorkItemStickyHeader', () => {
@@ -29,7 +26,6 @@ describe('WorkItemStickyHeader', () => {
     promotedToEpicUrl = null,
     slots = {},
     isDrawer = false,
-    isStickyHeaderShowing = true,
     archived = false,
     workItemState = STATE_OPEN,
     workItemType = taskType,
@@ -48,10 +44,7 @@ describe('WorkItemStickyHeader', () => {
           workItemType,
           state: workItemState,
         }).data.workItem,
-        isStickyHeaderShowing,
         updateInProgress: false,
-        showWorkItemCurrentUserTodos: true,
-        currentUserTodos: [],
         workItemState,
         isDrawer,
         archived,
@@ -65,96 +58,24 @@ describe('WorkItemStickyHeader', () => {
     });
   };
 
-  const findStickyHeader = () => wrapper.findByTestId('work-item-sticky-header');
   const findConfidentialityBadge = () => wrapper.findComponent(ConfidentialityBadge);
   const findHiddenBadge = () => wrapper.findComponent(HiddenBadge);
   const findImportedBadge = () => wrapper.findComponent(ImportedBadge);
   const findLockedBadge = () => wrapper.findComponent(LockedBadge);
   const findArchivedBadge = () => wrapper.findComponent(ArchivedBadge);
-  const findTodosToggle = () => wrapper.findComponent(TodosToggle);
-  const findIntersectionObserver = () => wrapper.findComponent(GlIntersectionObserver);
   const findWorkItemStateBadge = () => wrapper.findComponent(WorkItemStateBadge);
-  const findEditButton = () => wrapper.findByTestId('work-item-edit-button-sticky');
   const findWorkItemTitle = () => wrapper.findComponent(GlLink);
-  const findWorkItemNotificationsWidget = () => wrapper.findComponent(WorkItemNotificationsWidget);
   const findWorkItemTypeIcon = () => wrapper.findComponent(WorkItemTypeIcon);
-  const triggerPageScroll = () => findIntersectionObserver().vm.$emit('disappear');
 
-  it('has the sticky header when the page is scrolled', async () => {
-    createComponent();
-    global.pageYOffset = 100;
-    triggerPageScroll();
-    await nextTick();
-
-    expect(findStickyHeader().exists()).toBe(true);
-  });
-
-  it('renders title and todos', () => {
+  it('renders title', () => {
     createComponent();
 
     expect(findWorkItemTitle().exists()).toBe(true);
-    expect(findTodosToggle().exists()).toBe(true);
-  });
-
-  it('renders the actions slot content when sticky header is showing', () => {
-    createComponent({
-      slots: {
-        actions: '<div class="mock-actions">Mock Actions Content</div>',
-      },
-    });
-
-    const actionsSlot = wrapper.find('.mock-actions');
-    expect(actionsSlot.exists()).toBe(true);
-    expect(actionsSlot.text()).toBe('Mock Actions Content');
   });
 
   it('has title with the link to the top', () => {
     createComponent();
     expect(findWorkItemTitle().attributes('href')).toBe('#top');
-  });
-
-  describe('positioning classes', () => {
-    it('applies absolute positioning classes when isDrawer is true', () => {
-      createComponent({ isDrawer: true });
-
-      const stickyHeader = findStickyHeader();
-      expect(stickyHeader.classes()).toContain('gl-absolute');
-      expect(stickyHeader.classes()).toContain('gl-left-0');
-      expect(stickyHeader.classes()).toContain('panel-top-offset-panel-header-height');
-      expect(stickyHeader.classes()).not.toContain('gl-fixed');
-    });
-
-    it('applies fixed positioning classes when isDrawer is false', () => {
-      createComponent({ isDrawer: false });
-
-      const stickyHeader = findStickyHeader();
-      expect(stickyHeader.classes()).toContain('gl-fixed');
-      expect(stickyHeader.classes()).not.toContain('gl-absolute');
-      expect(stickyHeader.classes()).not.toContain('gl-left-0');
-      expect(stickyHeader.classes()).not.toContain('panel-top-offset-panel-header-height');
-    });
-  });
-
-  describe('edit button', () => {
-    it('renders the button when it has permissions to edit', () => {
-      createComponent({ canUpdate: true });
-
-      expect(findEditButton().exists()).toBe(true);
-    });
-
-    it('does not render the button when it does not have permissions to edit', () => {
-      createComponent({ canUpdate: false });
-
-      expect(findEditButton().exists()).toBe(false);
-    });
-  });
-
-  describe('notifications widget', () => {
-    it('renders the notifications widget', () => {
-      createComponent();
-
-      expect(findWorkItemNotificationsWidget().exists()).toBe(true);
-    });
   });
 
   describe('WorkItemStateBadge', () => {
@@ -188,52 +109,6 @@ describe('WorkItemStickyHeader', () => {
       Object.entries(workItemAttributes).forEach(([prop, url]) => {
         expect(stateBadgeProps[prop]).toBe(url);
       });
-    });
-  });
-
-  describe('sticky header height', () => {
-    beforeEach(() => {
-      // Ensure a clean slate for the CSS variable
-      document.documentElement.style.removeProperty('--work-item-sticky-header-height');
-    });
-
-    afterEach(() => {
-      jest.restoreAllMocks();
-    });
-
-    it('sets the CSS variable with the measured height', async () => {
-      createComponent();
-
-      const stickyHeaderEl = findStickyHeader().element;
-      jest.spyOn(stickyHeaderEl, 'offsetHeight', 'get').mockReturnValue(64);
-
-      wrapper.vm.syncStickyHeaderHeight();
-      await nextTick();
-
-      expect(
-        document.documentElement.style.getPropertyValue('--work-item-sticky-header-height').trim(),
-      ).toBe('64px');
-    });
-
-    it('invokes on mount when sticky header is shown initially', async () => {
-      const spy = jest.spyOn(WorkItemStickyHeader.methods, 'syncStickyHeaderHeight');
-      createComponent({ isStickyHeaderShowing: true });
-
-      await nextTick();
-      await nextTick();
-
-      expect(spy).toHaveBeenCalled();
-    });
-
-    it('invokes when isStickyHeaderShowing toggles from false to true', async () => {
-      createComponent({ isStickyHeaderShowing: false });
-      const spy = jest.spyOn(wrapper.vm, 'syncStickyHeaderHeight');
-
-      await wrapper.setProps({ isStickyHeaderShowing: true });
-      await nextTick();
-      await nextTick();
-
-      expect(spy).toHaveBeenCalled();
     });
   });
 

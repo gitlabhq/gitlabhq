@@ -97,6 +97,12 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
               .to publish_event(::WorkItems::CreatedEvent)
           end
 
+          it 'triggers the work_item_created GraphQL subscription' do
+            expect(GraphqlTriggers).to receive(:work_item_created).with(instance_of(Issue))
+
+            result
+          end
+
           context 'when the issue is imported' do
             before do
               opts[:imported_from] = :github

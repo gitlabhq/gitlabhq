@@ -63,7 +63,7 @@ end
 
 ### Avoid dynamic permission definitions
 
-Dynamically defined permissions are difficult to trace in the codebase. When permissions are generated at runtime rather than declared explicitly, searching for a permission name yields no results — making it impossible to verify that a rename or removal is complete.
+Dynamically defined permissions are difficult to trace in the codebase. When permissions are generated at runtime rather than declared explicitly, searching for a permission name yields no results - making it impossible to verify that a rename or removal is complete.
 
 ```ruby
 # bad - permission name is constructed dynamically; cannot be searched,
@@ -87,13 +87,13 @@ end
 ### Avoid using the wrong `:scope` in conditions
 
 Every `condition` is cached. The `:scope` option tells DeclarativePolicy what
-the cache key is — if it is set incorrectly, the cached result is shared too
+the cache key is - if it is set incorrectly, the cached result is shared too
 broadly and causes bugs where one user's result leaks into another context.
 
 The rules are:
 
-- Use `scope: :user` only if the condition reads **user data only** — no subject data.
-- Use `scope: :subject` only if the condition reads **subject data only** — no user data.
+- Use `scope: :user` only if the condition reads **user data only** - no subject data.
+- Use `scope: :subject` only if the condition reads **subject data only** - no user data.
 - Use `scope: :global` only if the condition doesn't need either user or subject data.
 - Omit `:scope` (the default) if the condition reads both user and subject data.
 

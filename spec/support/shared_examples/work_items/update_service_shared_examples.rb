@@ -16,7 +16,7 @@ RSpec.shared_examples 'update service that triggers GraphQL work_item_updated su
 
     expect(GraphqlTriggers)
       .to receive(:work_item_updated)
-      .with(update_subject)
+      .with(update_subject, any_args)
       .exactly(trigger_call_counter).times
       .and_call_original
 

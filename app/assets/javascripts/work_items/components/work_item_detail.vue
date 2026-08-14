@@ -4,8 +4,6 @@ import { isEmpty } from 'lodash-es';
 import {
   GlAlert,
   GlButton,
-  GlLink,
-  GlSprintf,
   GlTooltipDirective,
   GlEmptyState,
   GlIntersectionObserver,
@@ -14,6 +12,7 @@ import noAccessSvg from '@gitlab/svgs/dist/illustrations/empty-state/empty-searc
 import DuoWorkItemToMrAction from 'ee_component/ai/shared/widgets/duo_work_item_to_mr_action.vue';
 import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import DetailLayout from '~/vue_shared/components/detail_layout.vue';
+import PanelActionsPortal from '~/vue_shared/components/panel_actions_portal.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__, __ } from '~/locale';
 import { InternalEvents } from '~/tracking';
@@ -127,9 +126,8 @@ export default {
     GlButton,
     GlEmptyState,
     GlIntersectionObserver,
-    GlLink,
-    GlSprintf,
     LocalStorageSync,
+    PanelActionsPortal,
     WorkItemActions,
     TodosToggle,
     WorkItemNotificationsWidget,
@@ -224,7 +222,6 @@ export default {
       isReportModalOpen: false,
       reportedUrl: '',
       reportedUserId: 0,
-      isStickyHeaderShowing: false,
       editMode: false,
       draftData: {},
       filesToBeSaved: [],
@@ -471,7 +468,7 @@ export default {
         ? __('Resolved all discussions.')
         : __('Resolved 1 discussion.');
     },
-    showIntersectionObserver() {
+    showStickyHeader() {
       return !this.editMode;
     },
     workItemLinkedItems() {
@@ -744,12 +741,6 @@ export default {
       this.reportedUrl = workItem.webUrl || workItem.url || {};
       this.reportedUserId = workItem.author ? getIdFromGraphQLId(workItem.author.id) : 0;
     },
-    hideStickyHeader() {
-      this.isStickyHeaderShowing = false;
-    },
-    showStickyHeader() {
-      this.isStickyHeaderShowing = true;
-    },
     updateDraft(type, value) {
       this.draftData[type] = value;
     },
@@ -988,45 +979,15 @@ export default {
         <template #loading>
           <work-item-loading />
         </template>
-        <template #before>
+        <template #sticky-header>
           <work-item-sticky-header
-            v-if="showIntersectionObserver"
-            :current-user-todos="currentUserTodos"
-            :show-work-item-current-user-todos="showWorkItemCurrentUserTodos"
+            v-if="showStickyHeader"
             :parent-work-item-confidentiality="parentWorkItemConfidentiality"
             :full-path="workItemFullPath"
             :is-drawer="isDetailPanel"
             :work-item="workItem"
-            :is-sticky-header-showing="isStickyHeaderShowing"
             :archived="workItem.archived"
-            @hideStickyHeader="hideStickyHeader"
-            @showStickyHeader="showStickyHeader"
-            @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
-            @toggleWorkItemConfidentiality="toggleConfidentiality"
-            @error="updateError = $event"
-            @promotedToObjective="$emit('promotedToObjective', iid)"
-            @toggleEditMode="enableEditMode"
-            @toggleReportAbuseModal="toggleReportAbuseModal"
-            @todosUpdated="updateWorkItemCurrentTodosWidgetCache"
-          >
-            <template #actions>
-              <work-item-actions
-                v-if="workItemPresent"
-                v-bind="workItemActionProps"
-                :update-in-progress="updateInProgress"
-                @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
-                @toggleWorkItemConfidentiality="toggleConfidentiality"
-                @error="updateError = $event"
-                @promotedToObjective="$emit('promotedToObjective', iid)"
-                @work-item-state-updated="$emit('work-item-state-updated')"
-                @work-item-type-changed="workItemTypeChanged"
-                @toggleReportAbuseModal="toggleReportAbuseModal"
-                @work-item-created="handleWorkItemCreated"
-                @toggle-sidebar="handleToggleSidebar"
-                @toggleTruncationEnabled="handleTruncationEnabled"
-              />
-            </template>
-          </work-item-sticky-header>
+          />
         </template>
 
         <template #heading-wrapper>
@@ -1077,7 +1038,6 @@ export default {
             >
               <gl-button
                 size="small"
-                category="secondary"
                 data-testid="work-item-show-sidebar-button"
                 icon="sidebar-right"
                 @click="handleToggleSidebar"
@@ -1089,12 +1049,13 @@ export default {
         </template>
 
         <template #actions>
-          <div class="gl-ml-auto gl-mt-1 gl-flex gl-grow gl-gap-3">
+          <panel-actions-portal>
             <gl-button
               v-if="shouldShowEditButton"
               v-gl-tooltip.bottom.html
               :title="editTooltip"
-              category="secondary"
+              category="tertiary"
+              size="small"
               data-testid="work-item-edit-form-button"
               class="shortcut-edit-wi-description"
               @click="enableEditMode"
@@ -1105,7 +1066,6 @@ export default {
               v-if="showWorkItemCurrentUserTodos"
               :item-id="workItem.id"
               :current-user-todos="currentUserTodos"
-              todos-button-type="secondary"
               @todosUpdated="updateWorkItemCurrentTodosWidgetCache"
               @error="updateError = $event"
             />
@@ -1128,7 +1088,7 @@ export default {
               @toggle-sidebar="handleToggleSidebar"
               @toggleTruncationEnabled="handleTruncationEnabled"
             />
-          </div>
+          </panel-actions-portal>
         </template>
 
         <template v-if="hasAlerts" #alerts>
@@ -1154,17 +1114,14 @@ export default {
             :style="{ zIndex: 100 }"
             data-testid="work-item-refetch-alert"
           >
-            <gl-alert class="gl-mb-3" variant="warning" @dismiss="refetchError = null">
-              <span>{{ refetchError }}</span>
-              <gl-button
-                class="gl-ml-2"
-                category="primary"
-                variant="confirm"
-                size="small"
-                @click="$apollo.queries.workItem.refetch()"
-              >
-                {{ __('Refresh') }}
-              </gl-button>
+            <gl-alert
+              class="gl-mb-3"
+              variant="warning"
+              :primary-button-text="__('Refresh')"
+              @primaryAction="$apollo.queries.workItem.refetch()"
+              @dismiss="refetchError = null"
+            >
+              {{ refetchError }}
             </gl-alert>
           </section>
         </template>
@@ -1361,6 +1318,7 @@ export default {
                   <div class="gl-mt-2 gl-flex gl-flex-wrap gl-gap-3 gl-gap-y-3">
                     <gl-intersection-observer
                       v-if="showUploadDesign"
+                      data-testid="design-upload-button-observer"
                       @appear="isDesignUploadButtonInViewport = true"
                       @disappear="isDesignUploadButtonInViewport = false"
                     >

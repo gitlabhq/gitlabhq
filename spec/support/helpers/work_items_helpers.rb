@@ -130,7 +130,7 @@ module WorkItemsHelpers
 
   # drawer helpers
   def close_drawer
-    find('[data-testid="work-item-detail-panel"] .gl-detail-panel-close-button').click
+    find('[data-testid="work-item-detail-panel"] [data-testid="panel-close-button"]').click
     wait_for_all_requests
   end
 

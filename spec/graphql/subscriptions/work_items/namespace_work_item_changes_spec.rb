@@ -120,16 +120,12 @@ RSpec.describe Subscriptions::WorkItems::NamespaceWorkItemChanges, feature_categ
         end
       end
 
-      context 'when the user cannot read the work item' do
-        let_it_be(:confidential_work_item) do
-          create(:work_item, :confidential, project: project)
-        end
+      # No per-item authorization by design; unreadable items are filtered at the trigger.
+      context 'when the work item no longer exists' do
+        let(:payload) { { work_item_id: non_existing_record_id, action: :deleted } }
 
-        let(:payload) { { work_item_id: confidential_work_item.id, action: :created } }
-
-        it 'does not disclose the work item and unsubscribes the user' do
-          expect(Ability.allowed?(member, :read_work_item, confidential_work_item)).to be(false)
-          expect(result).to be_an(GraphQL::Execution::Skip)
+        it 'delivers the event to the member' do
+          expect(result).to eq(payload)
         end
       end
 

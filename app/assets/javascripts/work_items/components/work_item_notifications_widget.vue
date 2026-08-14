@@ -136,11 +136,13 @@ export default {
   <gl-button
     v-if="isLoggedIn"
     ref="tooltip"
-    v-gl-tooltip.hover
+    v-gl-tooltip.bottom="notificationTooltip"
+    category="tertiary"
+    size="small"
     :selected="workItemNotificationsSubscribed"
     data-testid="subscribe-button"
     :data-subscribed="workItemNotificationsSubscribedStateText"
-    :title="notificationTooltip"
+    :aria-label="notificationTooltip"
     :aria-pressed="workItemNotificationsSubscribedStateText"
     class="btn-icon"
     @click="toggleNotifications(!workItemNotificationsSubscribed)"

@@ -152,6 +152,46 @@ RSpec.describe Issues::UpdateService, :mailer, :request_store, feature_category:
         subject(:execute_service) { update_issue(opts) }
       end
 
+      describe 'updated_changes passed to the work_item_updated trigger' do
+        def expect_updated_changes(matcher, opts)
+          expect(GraphqlTriggers).to receive(:work_item_updated).with(
+            issue, updated_changes: matcher
+          ).and_call_original
+
+          update_issue(opts)
+        end
+
+        it 'reports a title change' do
+          expect_updated_changes(include('title'), { title: 'new title' })
+        end
+
+        it 'reports a milestone change' do
+          expect_updated_changes(include('milestone_id'), { milestone_id: milestone.id })
+        end
+
+        it 'reports a label change' do
+          expect_updated_changes(include('labels'), { label_ids: [label.id] })
+        end
+
+        it 'reports an assignee change' do
+          expect_updated_changes(include('assignees'), { assignee_ids: [user2.id] })
+        end
+
+        it 'reports a label removal' do
+          update_issue({ label_ids: [label.id] })
+
+          expect_updated_changes(include('labels'), { label_ids: [] })
+        end
+
+        it 'reports an assignee removal' do
+          expect_updated_changes(include('assignees'), { assignee_ids: [] })
+        end
+
+        it 'does not report labels or assignees when they are untouched' do
+          expect_updated_changes(exclude('labels', 'assignees'), { description: 'new description' })
+        end
+      end
+
       context 'when updating milestone' do
         before do
           update_issue({ milestone_id: nil })

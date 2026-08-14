@@ -30066,6 +30066,12 @@ msgstr ""
 msgid "DuoAgenticChat|chat-rules.md was not found in this page"
 msgstr ""
 
+msgid "DuoAgentsPlatform|%{event}: %{conditions}"
+msgstr ""
+
+msgid "DuoAgentsPlatform|(editing)"
+msgstr ""
+
 msgid "DuoAgentsPlatform|AI"
 msgstr ""
 
@@ -30079,6 +30085,18 @@ msgid "DuoAgentsPlatform|Action"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Actions"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Add a condition so this %{itemType} knows when to run."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Add condition"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Add event"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Add schedule"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Agent Platform health checks pass and runners are available to this project."
@@ -30138,7 +30156,13 @@ msgstr ""
 msgid "DuoAgentsPlatform|Comment on work item"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Commit to default branch"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Complete multi-step tasks with flows"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Conditions"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Config Path"
@@ -30201,7 +30225,13 @@ msgstr ""
 msgid "DuoAgentsPlatform|Description is required."
 msgstr ""
 
+msgid "DuoAgentsPlatform|Edit event"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Edit file"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Edit schedule"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Edit trigger"
@@ -30220,12 +30250,6 @@ msgid "DuoAgentsPlatform|Event"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Event type"
-msgstr ""
-
-msgid "DuoAgentsPlatform|Event types are required."
-msgstr ""
-
-msgid "DuoAgentsPlatform|Events"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Every 15 minutes"
@@ -30259,6 +30283,9 @@ msgid "DuoAgentsPlatform|Files that tune how agents read and act on this codebas
 msgstr ""
 
 msgid "DuoAgentsPlatform|Find files"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Finish or cancel the open condition before saving."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Fix a failing pipeline"
@@ -30324,13 +30351,16 @@ msgstr ""
 msgid "DuoAgentsPlatform|Manage automated flows within your project."
 msgstr ""
 
-msgid "DuoAgentsPlatform|Merge request events configuration"
-msgstr ""
-
 msgid "DuoAgentsPlatform|Modify plan"
 msgstr ""
 
 msgid "DuoAgentsPlatform|New agent sessions will appear here."
+msgstr ""
+
+msgid "DuoAgentsPlatform|New event"
+msgstr ""
+
+msgid "DuoAgentsPlatform|New schedule"
 msgstr ""
 
 msgid "DuoAgentsPlatform|New trigger"
@@ -30339,10 +30369,19 @@ msgstr ""
 msgid "DuoAgentsPlatform|No agent sessions yet"
 msgstr ""
 
+msgid "DuoAgentsPlatform|No conditions yet. Add a schedule or an event."
+msgstr ""
+
 msgid "DuoAgentsPlatform|No runner is available to this project. You can still prepare the repository below while this is fixed."
 msgstr ""
 
 msgid "DuoAgentsPlatform|No triggers yet"
+msgstr ""
+
+msgid "DuoAgentsPlatform|On a schedule"
+msgstr ""
+
+msgid "DuoAgentsPlatform|On an event"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Onboarding"
@@ -30363,9 +30402,6 @@ msgstr ""
 msgid "DuoAgentsPlatform|Path to configuration file"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Pipeline events configuration"
-msgstr ""
-
 msgid "DuoAgentsPlatform|Plan updated"
 msgstr ""
 
@@ -30378,16 +30414,34 @@ msgstr ""
 msgid "DuoAgentsPlatform|Read file"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Remove event"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Remove schedule"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Review a merge request"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Run at"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Run at a recurring time."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Run at set times, or when something happens in the project. Add as many as you need."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Run command"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Run on"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Run when"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Run when something happens in the project."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Save changes"
@@ -30408,10 +30462,13 @@ msgstr ""
 msgid "DuoAgentsPlatform|Security Agent"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Select a condition"
+msgid "DuoAgentsPlatform|Select a service account"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Select a service account"
+msgid "DuoAgentsPlatform|Select an event"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Select an event."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Select any flow or external agent enabled in this project."
@@ -30516,9 +30573,6 @@ msgstr ""
 msgid "DuoAgentsPlatform|Trigger updated successfully."
 msgstr ""
 
-msgid "DuoAgentsPlatform|Trigger when"
-msgstr ""
-
 msgid "DuoAgentsPlatform|Triggers"
 msgstr ""
 
@@ -30529,6 +30583,9 @@ msgid "DuoAgentsPlatform|Try GitLab Duo Agent Platform"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Unknown"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Unknown event"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Until your group enables it, agents and flows can't run on this project. You can still install local tools below, and review what setup is required."
@@ -30555,16 +30612,10 @@ msgstr ""
 msgid "DuoAgentsPlatform|What this trigger runs."
 msgstr ""
 
-msgid "DuoAgentsPlatform|When this trigger runs."
-msgstr ""
-
 msgid "DuoAgentsPlatform|Who can grant you access"
 msgstr ""
 
 msgid "DuoAgentsPlatform|With a trial you can chat with AI agents tailored to your development workflow, such as the following agents:"
-msgstr ""
-
-msgid "DuoAgentsPlatform|Work item events configuration"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Write file"

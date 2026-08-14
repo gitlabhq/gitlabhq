@@ -17,9 +17,9 @@ title: GitLab Duo Adoption Metrics & Analytics
 
 This project provides end-to-end GitLab Duo usage analytics, combining:
 
-- **Duo GraphQL Data Collection** – A generic Python orchestrator that calls the Duo collector scripts backed by a GitLab GraphQL API client.
-- **Duo Usage Metrics Pipeline** – CI jobs that periodically collect and aggregate Duo usage data for your GitLab groups.
-- **Duo Analytics Dashboard** – A GitLab Pages–hosted dashboard showing Duo adoption, usage intensity, and engagement trends.
+- **Duo GraphQL Data Collection** - A generic Python orchestrator that calls the Duo collector scripts backed by a GitLab GraphQL API client.
+- **Duo Usage Metrics Pipeline** - CI jobs that periodically collect and aggregate Duo usage data for your GitLab groups.
+- **Duo Analytics Dashboard** - A GitLab Pages-hosted dashboard showing Duo adoption, usage intensity, and engagement trends.
 
 ## Getting Started
 
@@ -70,11 +70,11 @@ python ai_raw_data_collection.py
 
 The Duo Analytics Dashboard focuses on GitLab Duo adoption and AI usage patterns, including:
 
-- **License & Adoption Analytics** – Track how many users have Duo access and how many actively use it.
-- **Code Suggestions Analytics** – Monitor acceptance rates, volume of suggestions, and language distribution for AI-assisted coding.
-- **Duo Chat Analytics** – View chat interactions, user cohorts, and conversation volumes.
-- **User Engagement Analytics** – Segment users by usage level (inactive, experimenting, regular, heavy).
-- **Language & Workflow Performance** – Analyze Duo effectiveness (e.g., acceptance rate, suggestion usage) by programming language or workflow.
+- **License & Adoption Analytics** - Track how many users have Duo access and how many actively use it.
+- **Code Suggestions Analytics** - Monitor acceptance rates, volume of suggestions, and language distribution for AI-assisted coding.
+- **Duo Chat Analytics** - View chat interactions, user cohorts, and conversation volumes.
+- **User Engagement Analytics** - Segment users by usage level (inactive, experimenting, regular, heavy).
+- **Language & Workflow Performance** - Analyze Duo effectiveness (e.g., acceptance rate, suggestion usage) by programming language or workflow.
 
 These metrics are derived entirely from Duo-related signals; traditional project metrics are not required to use this dashboard.
 
@@ -110,11 +110,11 @@ All Duo-related GraphQL logic is encapsulated in the `gitlab_graphql_api` Python
 
 Key ideas:
 
-- **GraphQL client abstraction** – A central client handles authentication, pagination, and error handling against the GitLab GraphQL endpoint.
-- **Collection classes** – The `collections` module provides higher-level abstractions (such as "project collections" or "user collections") that expose methods for retrieving structured data. Duo collectors use these to:
+- **GraphQL client abstraction** - A central client handles authentication, pagination, and error handling against the GitLab GraphQL endpoint.
+- **Collection classes** - The `collections` module provides higher-level abstractions (such as "project collections" or "user collections") that expose methods for retrieving structured data. Duo collectors use these to:
   - Fetch groups and projects for a given `GROUP_PATH`.
   - Query Duo usage fields and AI-related activity.
-- **Versioned API usage** – The same collections API can be extended as GitLab improves or expands Duo-related GraphQL fields without changing the orchestrator.
+- **Versioned API usage** - The same collections API can be extended as GitLab improves or expands Duo-related GraphQL fields without changing the orchestrator.
 
 The Duo collectors import these collection classes and define the specific queries they need (for example, fetching counts of AI code suggestions, chat usage events, or user-level adoption statistics).
 

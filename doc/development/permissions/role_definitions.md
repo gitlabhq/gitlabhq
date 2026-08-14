@@ -96,7 +96,7 @@ Understanding how they relate to other components:
 ### Raw permissions
 
 Defined in `config/authz/permissions/<resource>/<action>.yml`. These are the
-atomic units of authorization — each represents a single action on a single
+atomic units of authorization - each represents a single action on a single
 resource (for example, `read_issue`, `create_pipeline`). Raw permissions are referenced
 directly in `raw_permissions` arrays in role YAML files and in policy `enable`/`prevent` calls.
 

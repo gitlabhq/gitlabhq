@@ -56,6 +56,7 @@ module.exports = (path, options = {}) => {
       '^vue-virtual-scroll-list$':
         '<rootDir>/app/assets/javascripts/vue_shared/vue_virtual_scroll_list_vue3.js',
       '^portal-vue$': '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/portal_vue_vue3.js',
+      '^vue-demi$': 'vue-demi/lib/v3/index.mjs',
     });
     if (USE_VUE3_COMPILER) {
       Object.assign(globals, {
@@ -213,6 +214,7 @@ module.exports = (path, options = {}) => {
 
   const transformIgnoreNodeModules = [
     'vue-test-utils-compat',
+    'vue-demi',
     '@gitlab/svgs',
     '@gitlab/ui',
     '@gitlab/duo-ui',

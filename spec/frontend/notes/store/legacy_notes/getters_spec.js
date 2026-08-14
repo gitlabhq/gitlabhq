@@ -1,7 +1,7 @@
-import { createPinia, setActivePinia } from 'pinia';
+import { setActivePinia } from 'pinia';
 import discussionWithTwoUnresolvedNotes from 'test_fixtures/merge_requests/resolved_diff_discussion.json';
 import { DESC, ASC, NOTEABLE_TYPE_MAPPING } from '~/notes/constants';
-import { createCustomGetters } from 'helpers/pinia_helpers';
+import { createCustomGetters, createTestPinia } from 'helpers/pinia_helpers';
 import { useNotes } from '~/notes/store/legacy_notes';
 import { useDiscussions } from '~/notes/store/discussions';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
@@ -59,7 +59,7 @@ describe('Getters Notes Store', () => {
     localGetters = {};
     batchComments = {};
     setActivePinia(
-      createPinia()
+      createTestPinia()
         .use(globalAccessorPlugin)
         .use(
           createCustomGetters(() => ({

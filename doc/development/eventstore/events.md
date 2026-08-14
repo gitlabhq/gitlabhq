@@ -81,7 +81,7 @@ To find subscribers, search the subscription files under
 
 | Event | Feature category | Edition | Description |
 |-------|-----------------|---------|-------------|
-| `GitlabSubscriptions::RenewedEvent` | `subscription_management` | CE | Published when a GitLab subscription is renewed. Fires only on genuine renewals — both start_date and end_date must change in the same update, with the new start_date >= the previous end_date. Deferred via run_after_commit. |
+| `GitlabSubscriptions::RenewedEvent` | `subscription_management` | CE | Published when a GitLab subscription is renewed. Fires only on genuine renewals - both start_date and end_date must change in the same update, with the new start_date >= the previous end_date. Deferred via run_after_commit. |
 
 ## Groups
 
@@ -119,7 +119,7 @@ To find subscribers, search the subscription files under
 | `MergeRequests::ClosedEvent` | `code_review_workflow` | EE | Published when a merge request is closed, so EE subscribers (such as security policy workers) can react to the state change. |
 | `MergeRequests::CodeConflictEvent` | `code_review_workflow` | CE | Published when a merge request cannot be merged due to a code conflict. Only fires when the conflict notification condition is met. |
 | `MergeRequests::CreatedEvent` | `code_review_workflow` | EE | Published when a new merge request is created and prepared, so EE subscribers can react to the new merge request. |
-| `MergeRequests::DiscussionsResolvedEvent` | `code_review_workflow` | CE | Published when resolving a discussion brings an auto-merge-enabled MR to a fully resolved state (mergeable_discussions_state? becomes true). Does not fire on every resolution — only when the resolution unblocks auto-merge. |
+| `MergeRequests::DiscussionsResolvedEvent` | `code_review_workflow` | CE | Published when resolving a discussion brings an auto-merge-enabled MR to a fully resolved state (mergeable_discussions_state? becomes true). Does not fire on every resolution - only when the resolution unblocks auto-merge. |
 | `MergeRequests::DraftNotePublishedEvent` | `code_review_workflow` | CE | Published when a draft note (pending review comment) is published on a merge request. |
 | `MergeRequests::DraftStateChangeEvent` | `code_review_workflow` | CE | Published when an MR title update toggles the "Draft:" prefix and the draft status actually changes. Title updates that leave the draft state unchanged do not fire it. |
 | `MergeRequests::ExternalStatusCheckPassedEvent` | `compliance_management` | EE | Published when an external status check response transitions to the passed state for a merge request. |
@@ -158,7 +158,7 @@ To find subscribers, search the subscription files under
 | Event | Feature category | Edition | Description |
 |-------|-----------------|---------|-------------|
 | `Organizations::ConfirmedEvent` | `organization` | CE | Published when an organization transitions from `unconfirmed` to `confirmed`. Emitted by Organizations::ConfirmService after the state transition is committed. Not published if the confirmation fails or is rolled back. |
-| `Organizations::GroupTransferredEvent` | `organization` | CE | Published when a root group is transferred to a different organization. Fired once for the transferred group only — subscribers are responsible for traversing descendants if needed. Published via run_after_commit_or_now inside the transfer transaction, so it is never emitted on rollback. |
+| `Organizations::GroupTransferredEvent` | `organization` | CE | Published when a root group is transferred to a different organization. Fired once for the transferred group only - subscribers are responsible for traversing descendants if needed. Published via run_after_commit_or_now inside the transfer transaction, so it is never emitted on rollback. |
 
 ## Package Metadata
 
@@ -186,7 +186,7 @@ To find subscribers, search the subscription files under
 |-------|-----------------|---------|-------------|
 | `ProjectAuthorizations::AuthorizationsAddedEvent` | `permissions` | CE | Published after project authorization rows are inserted for one or more users. Multiple changes may be batched into a single event group. |
 | `ProjectAuthorizations::AuthorizationsChangedEvent` | `permissions` | CE | Defined to signal project authorization access-level changes. Not currently published anywhere in the codebase; a subscriber exists in EE security_subscriptions.rb but no publish call has been added yet. |
-| `ProjectAuthorizations::AuthorizationsRemovedEvent` | `permissions` | CE | Published after project authorization rows are deleted, but only for users who are truly removed — not for those whose access level merely changes (those users are excluded by comparing against authorizations being added in the same operation). Events are batched. |
+| `ProjectAuthorizations::AuthorizationsRemovedEvent` | `permissions` | CE | Published after project authorization rows are deleted, but only for users who are truly removed - not for those whose access level merely changes (those users are excluded by comparing against authorizations being added in the same operation). Events are batched. |
 
 ## Projects
 

@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import DynamicPanel from '~/vue_shared/components/dynamic_panel.vue';
 import PanelActions from '~/vue_shared/components/panel_actions.vue';
@@ -125,6 +126,33 @@ describe('DynamicPanel', () => {
       await findPanelActions().vm.$emit('maximize', mockEvent);
       expect(wrapper.emitted('maximize')).toHaveLength(1);
       expect(wrapper.emitted('maximize')[0][0]).toBe(mockEvent);
+    });
+  });
+
+  describe('panel content height', () => {
+    const findScrollContainer = () => wrapper.find('.panel-content-inner');
+
+    it('sets --panel-content-inner-height on its own scroll container so nested panels do not collide', async () => {
+      createComponent();
+      const el = findScrollContainer().element;
+      jest.spyOn(el, 'getBoundingClientRect').mockReturnValue({ height: 742 });
+
+      window.dispatchEvent(new Event('resize'));
+      await nextTick();
+
+      expect(el.style.getPropertyValue('--panel-content-inner-height')).toBe('742px');
+    });
+
+    it('stops updating the height after the component is destroyed', async () => {
+      createComponent();
+      const el = findScrollContainer().element;
+      await nextTick();
+      jest.spyOn(el, 'getBoundingClientRect').mockReturnValue({ height: 742 });
+      wrapper.destroy();
+
+      window.dispatchEvent(new Event('resize'));
+
+      expect(el.style.getPropertyValue('--panel-content-inner-height')).not.toBe('742px');
     });
   });
 });

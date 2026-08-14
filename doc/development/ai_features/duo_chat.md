@@ -446,7 +446,7 @@ The implementation has three parts:
 
 1. A custom agent with its own tool that collects information from the user and
    returns structured data your component can consume. Each agent must define its
-   own tool — there is no shared generic tool.
+   own tool - there is no shared generic tool.
 1. A button that opens Duo Chat with that agent pre-selected and a few prompt suggestions.
 1. A component that listens for the tool completion event and applies the result.
 

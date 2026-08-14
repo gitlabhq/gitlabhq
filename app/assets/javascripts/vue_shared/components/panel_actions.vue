@@ -54,6 +54,7 @@ export default {
           category="tertiary"
           icon="close"
           size="small"
+          data-testid="panel-close-button"
           :aria-label="$options.i18n.closePanelText"
           @click="$emit('close')"
         />

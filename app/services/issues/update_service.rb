@@ -133,8 +133,24 @@ module Issues
     def after_update(issue, old_associations)
       super
 
-      GraphqlTriggers.work_item_updated(issue)
+      GraphqlTriggers.work_item_updated(
+        issue,
+        updated_changes: namespace_subscription_changes(issue, old_associations)
+      )
       publish_event(issue, old_associations)
+    end
+
+    # previous_changes only reports columns, so label and assignee changes are diffed against the
+    # captured associations, and widget keys cover changes that touch neither (e.g. status).
+    def namespace_subscription_changes(issue, old_associations)
+      changes = issue.previous_changes.keys + updated_widget_keys
+      changes << 'labels' if issue.labels != old_associations[:labels]
+      changes << 'assignees' if issue.assignees != old_associations[:assignees]
+      changes
+    end
+
+    def updated_widget_keys
+      @widget_params&.compact_blank&.keys&.map(&:to_s) || []
     end
 
     def publish_event(work_item, old_associations)
@@ -143,7 +159,7 @@ module Issues
         namespace_id: work_item.namespace_id,
         previous_work_item_parent_id: old_associations[:work_item_parent_id],
         updated_attributes: work_item.previous_changes&.keys&.map(&:to_s),
-        updated_widgets: @widget_params&.compact_blank&.keys&.map(&:to_s)
+        updated_widgets: updated_widget_keys
       }.tap(&:compact_blank!))
 
       work_item.run_after_commit_or_now do

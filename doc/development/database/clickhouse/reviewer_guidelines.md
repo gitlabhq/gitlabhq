@@ -48,7 +48,7 @@ bundle exec rake gitlab:clickhouse:migrate; bundle exec rake gitlab:clickhouse:s
 ClickHouse queries in GitLab can be written in two ways:
 
 1. **Raw SQL queries**
-1. **QueryBuilder** – an ActiveRecord-like abstraction ([documentation](clickhouse_within_gitlab.md#writing-query-conditions))
+1. **QueryBuilder** - an ActiveRecord-like abstraction ([documentation](clickhouse_within_gitlab.md#writing-query-conditions))
 
 When reviewing raw SQL queries, pay close attention to variable interpolation:
 
@@ -146,7 +146,7 @@ For example: `185/72937` granules means only a small subset of the table was sca
 **When to raise a discussion about performance:**
 
 - The query scans more than **10 million rows**.
-- The query consistently exceeds **5–10 seconds** execution time.
+- The query consistently exceeds **5-10 seconds** execution time.
 - The query will be frequently executed.
 
 Ensure performance validation uses real-world (or synthetic) data from large namespaces (e.g., `gitlab-org` or `gitlab-org/gitlab`).

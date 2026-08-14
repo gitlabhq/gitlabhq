@@ -21,6 +21,7 @@ import {
   getBaseURL,
 } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import DynamicPanel from '~/vue_shared/components/dynamic_panel.vue';
 import { glListenersMixin } from '~/lib/utils/vue3compat/gl_listeners_mixin';
 import { makeDetailPanelItemFullPath, makeDetailPanelUrlParam, canRouterNav } from '../utils';
 import WorkItemMetadataProvider from './work_item_metadata_provider.vue';
@@ -31,6 +32,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   components: {
+    DynamicPanel,
     GlLink,
     GlButton,
     MountingPortal,
@@ -249,62 +251,44 @@ export default {
   i18n: {
     copyTooltipText: __('Copy item URL'),
     copiedTooltipText: __('Copied'),
-    openTooltipText: __('Open in full page'),
-    closePanelText: __('Close panel'),
   },
 };
 </script>
 
 <template>
   <mounting-portal v-if="open" mount-to="#contextual-panel-portal" append>
-    <div data-testid="work-item-detail-panel" class="work-item-detail-panel gl-leading-reset">
-      <div class="work-item-detail-panel-header">
-        <div class="gl-flex gl-min-w-0 gl-grow gl-items-center gl-gap-2">
-          <gl-link
-            ref="workItemUrl"
-            data-testid="work-item-detail-panel-ref-link"
-            :href="itemWebUrl"
-            class="gl-truncate gl-text-sm gl-font-bold gl-text-default"
-            @click="redirectToWorkItem"
-          >
-            {{ headerReference }}
-          </gl-link>
-          <gl-button
-            v-gl-tooltip.bottom
-            data-testid="work-item-detail-panel-copy-button"
-            :title="copyTooltipText"
-            category="tertiary"
-            icon="link"
-            size="small"
-            :aria-label="$options.i18n.copyTooltipText"
-            :data-clipboard-text="itemAbsoluteUrl"
-            @click="handleCopyToClipboard"
-          />
-        </div>
-        <div class="panel-header-controls">
-          <gl-button
-            v-gl-tooltip.bottom
-            data-testid="work-item-detail-panel-link-button"
-            :href="itemWebUrl"
-            :title="$options.i18n.openTooltipText"
-            category="tertiary"
-            icon="maximize"
-            size="small"
-            :aria-label="$options.i18n.openTooltipText"
-            @click="redirectToWorkItem"
-          />
-          <gl-button
-            v-gl-tooltip.bottom
-            class="gl-detail-panel-close-button"
-            category="tertiary"
-            icon="close"
-            size="small"
-            :aria-label="$options.i18n.closePanelText"
-            :title="$options.i18n.closePanelText"
-            @click="handleClose"
-          />
-        </div>
-      </div>
+    <!-- eslint-disable local-rules/vue-no-web-url -->
+    <dynamic-panel
+      class="work-item-detail-panel"
+      data-testid="work-item-detail-panel"
+      :maximize-url="itemWebUrl"
+      @close="handleClose"
+      @maximize="redirectToWorkItem"
+    >
+      <template #header>
+        <gl-link
+          ref="workItemUrl"
+          data-testid="work-item-detail-panel-ref-link"
+          :href="itemWebUrl"
+          class="gl-truncate gl-text-sm gl-font-bold gl-text-default"
+          @click="redirectToWorkItem"
+        >
+          {{ headerReference }}
+        </gl-link>
+        <gl-button
+          v-gl-tooltip.bottom
+          data-testid="work-item-detail-panel-copy-button"
+          :title="copyTooltipText"
+          category="tertiary"
+          icon="link"
+          size="small"
+          :aria-label="$options.i18n.copyTooltipText"
+          :data-clipboard-text="itemAbsoluteUrl"
+          @click="handleCopyToClipboard"
+        />
+      </template>
+      <!-- eslint-enable local-rules/vue-no-web-url -->
+
       <work-item-metadata-provider
         :full-path="activeItemFullPath"
         :include-filterable-flags="false"
@@ -316,7 +300,7 @@ export default {
           :work-item-full-path="activeItemFullPath"
           :is-board="isBoard"
           is-detail-panel
-          class="js-dynamic-panel-inner work-item-detail-panel-content !gl-pt-0"
+          class="work-item-detail-panel-content"
           @deleteWorkItem="deleteWorkItem"
           @work-item-updated="handleWorkItemUpdated"
           @work-item-type-changed="$emit('work-item-type-changed', $event)"
@@ -324,6 +308,6 @@ export default {
         />
         <!-- eslint-enable vue/custom-event-name-casing, vue/v-on-event-hyphenation -->
       </work-item-metadata-provider>
-    </div>
+    </dynamic-panel>
   </mounting-portal>
 </template>

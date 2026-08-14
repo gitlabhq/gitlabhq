@@ -24,6 +24,15 @@ RSpec.describe Atlassian::Forge::SystemTokenClient, feature_category: :integrati
     end
   end
 
+  describe 'a 401 response' do
+    it 'reports a neutral auth failure, not the Connect JWT message' do
+      response = instance_double(HTTParty::Response, code: 401, parsed_response: {})
+
+      expect(client.send(:handle_response, response, 'dev_info'))
+        .to eq('errorMessages' => ['Authentication failed'], 'responseCode' => 401)
+    end
+  end
+
   describe 'outbound dev-info push' do
     it 'POSTs to the apiBaseUrl bulk endpoint with bearer auth and the payload' do
       stub = stub_request(:post, "#{api_base_url}/rest/devinfo/0.10/bulk")

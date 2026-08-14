@@ -276,7 +276,7 @@ Consider potential breaking changes to older GitLab versions before changing an 
 ## Context variables
 
 Context variables let you inject runtime information into a Duo Workflow Service agent's system prompt.
-Use them to make prompt sections conditional or pass more information — for example, customizing the prompt based
+Use them to make prompt sections conditional or pass more information - for example, customizing the prompt based
 on the user location, or pass data from a form.
 
 > [!note]
@@ -698,7 +698,7 @@ With the changes to `FoundationalChatAgentsDefinitions.rb` and the fetched confi
 
 Foundational agents have an integration test harness that runs the full agent loop end-to-end using real LLM calls.
 Use it to verify that an agent correctly selects tools, passes the right arguments,
-and produces valid responses — without needing a live GitLab instance or real tool backends.
+and produces valid responses - without needing a live GitLab instance or real tool backends.
 
 The tests live in the [ai-assist](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/tree/main/agent_tests)
 repository and run as CI jobs (for example, the Data Analyst agent tests run on changes to the agent prompt, otherwise manual).

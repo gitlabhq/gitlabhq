@@ -1103,7 +1103,7 @@ find_by_testid('element')
 it does not benefit from Capybara's smart waiting. This makes it both error-prone
 and slow.
 
-Pattern 1 — `all().first` silently fails:
+Pattern 1 - `all().first` silently fails:
 
 ```ruby
 # Avoid: silent no-op if selector not found; slower than find()
@@ -1126,7 +1126,7 @@ end
 expect(page).to have_link format, href: uri.to_s
 ```
 
-Pattern 2 — `all()` with block iteration to filter by child selector:
+Pattern 2 - `all()` with block iteration to filter by child selector:
 
 ```ruby
 # Avoid: iterates every card, calling has_selector? on each, very slow and not robust
@@ -1752,7 +1752,7 @@ Senddata-emitting Rails controllers and Grape API endpoints call
 `verify_workhorse_api!` to reject requests that did not transit Workhorse. The
 canonical enforcement points are the response-writing helpers themselves
 (`app/helpers/workhorse_helper.rb` for Rails controllers, `lib/api/helpers.rb`
-for Grape — `send_git_blob`, `send_git_archive`, `send_artifacts_entry`,
+for Grape - `send_git_blob`, `send_git_archive`, `send_artifacts_entry`,
 `present_carrierwave_file!`, `send_workhorse_headers!`, ...). Every emit goes
 through one of these helpers; the helpers verify the JWT before storing the
 `Gitlab-Workhorse-Send-Data` response header.
@@ -1761,8 +1761,8 @@ Two test-side mechanisms in `spec/support/workhorse_jwt_injection.rb` exercise
 this contract in CI:
 
 1. A `before` hook injects a valid Workhorse JWT into every test request. The
-   real `Gitlab::Workhorse.verify_api_request!` runs in the test process —
-   there is no stubbing — and happy-path specs do not need to construct a JWT
+   real `Gitlab::Workhorse.verify_api_request!` runs in the test process -
+   there is no stubbing - and happy-path specs do not need to construct a JWT
    header.
 1. An `after` hook fails the example if `Gitlab-Workhorse-Send-Data` was
    emitted but the request lacked a verified JWT. A future endpoint that
