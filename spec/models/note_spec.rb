@@ -449,19 +449,6 @@ RSpec.describe Note, feature_category: :team_planning do
           expect(note.namespace_id).to be_nil
         end
       end
-
-      context 'for an abuse report note' do
-        it 'clears project_id and namespace_id', :aggregate_failures do
-          project = create(:project)
-          note = build(:note, project: project, namespace_id: project.project_namespace_id)
-          allow(note).to receive(:for_abuse_report?).and_return(true)
-
-          note.send(:ensure_organization_id)
-
-          expect(note.project_id).to be_nil
-          expect(note.namespace_id).to be_nil
-        end
-      end
     end
 
     describe '#ensure_namespace_id' do

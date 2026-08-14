@@ -1161,30 +1161,51 @@ describe('GfmAutoComplete', () => {
     let autocomplete;
     let $textarea;
 
-    beforeEach(() => {
-      setHTMLFixture(
-        '<div id="editor-wrapper"><textarea data-supports-quick-actions="true"></textarea></div>',
-      );
-      autocomplete = new GfmAutoComplete({});
-      $textarea = $('textarea');
-      autocomplete.setup($textarea, {});
-    });
-
     afterEach(() => {
       autocomplete.destroy();
       resetHTMLFixture();
     });
 
-    it('attaches the at.js container to the textarea parent so it shares the scroll context', () => {
-      $textarea.trigger('focus');
+    describe('when the input supports quick actions', () => {
+      beforeEach(() => {
+        setHTMLFixture(
+          '<div id="editor-wrapper"><textarea data-supports-quick-actions="true"></textarea></div>',
+        );
+        autocomplete = new GfmAutoComplete({});
+        $textarea = $('textarea');
+        autocomplete.setup($textarea, {});
+      });
 
-      const wrapper = document.getElementById('editor-wrapper');
-      const wrapperContainers = wrapper.querySelectorAll('.atwho-container');
-      expect(wrapperContainers).toHaveLength(1);
-      expect(wrapperContainers[0].parentNode).toBe(wrapper);
+      it('attaches the at.js container to the textarea parent so it shares the scroll context', () => {
+        $textarea.trigger('focus');
 
-      const bodyContainers = document.body.querySelectorAll(':scope > .atwho-container');
-      expect(bodyContainers).toHaveLength(0);
+        const wrapper = document.getElementById('editor-wrapper');
+        const wrapperContainers = wrapper.querySelectorAll('.atwho-container');
+        expect(wrapperContainers).toHaveLength(1);
+        expect(wrapperContainers[0].parentNode).toBe(wrapper);
+
+        const bodyContainers = document.body.querySelectorAll(':scope > .atwho-container');
+        expect(bodyContainers).toHaveLength(0);
+      });
+    });
+
+    describe('when the input does not support quick actions', () => {
+      beforeEach(() => {
+        setHTMLFixture('<div id="editor-wrapper"><input type="text" /></div>');
+        autocomplete = new GfmAutoComplete({});
+        $textarea = $('input');
+        autocomplete.setup($textarea, { emojis: true });
+      });
+
+      it('leaves the at.js container attached to the body', () => {
+        $textarea.trigger('focus');
+
+        const wrapper = document.getElementById('editor-wrapper');
+        expect(wrapper.querySelectorAll('.atwho-container')).toHaveLength(0);
+
+        const bodyContainers = document.body.querySelectorAll(':scope > .atwho-container');
+        expect(bodyContainers).toHaveLength(1);
+      });
     });
   });
 

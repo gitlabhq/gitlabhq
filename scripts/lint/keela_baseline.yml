@@ -701,17 +701,9 @@ scopes:
   - negative_reserved_storage_bytes
   ee/app/models/security/approval_policy_rule.rb:
   - including_approval_merge_request_rules
-  ee/app/models/security/ascp/component.rb:
-  - at_scan
-  ee/app/models/security/ascp/component_dependency.rb:
-  - at_scan
   ee/app/models/security/ascp/scan.rb:
   - full_scans
   - incremental_scans
-  ee/app/models/security/ascp/security_context.rb:
-  - at_scan
-  ee/app/models/security/ascp/security_guideline.rb:
-  - at_scan
   ee/app/models/security/finding.rb:
   - by_scan
   - left_joins_vulnerability_finding

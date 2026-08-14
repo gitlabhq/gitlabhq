@@ -21,7 +21,6 @@ abuse_events: todo
 abuse_report_events: supported
 abuse_report_upload_states: todo
 abuse_report_uploads: todo
-abuse_report_user_mentions: todo
 abuse_reports: todo
 admin_roles: no_work_needed
 agent_organization_authorizations: todo

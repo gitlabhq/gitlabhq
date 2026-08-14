@@ -1301,7 +1301,7 @@ GEM
       activerecord
       kaminari-core (= 1.2.2)
     kaminari-core (1.2.2)
-    keela (0.2.3)
+    keela (0.3.0)
       parallel (~> 1.20)
       rainbow (~> 3.0)
       ruby-progressbar (~> 1.11)
@@ -2611,7 +2611,7 @@ DEPENDENCIES
   jsonb_accessor (~> 1.4)
   jwt (~> 2.10.3)
   kaminari (~> 1.2.2)
-  keela (~> 0.2.3)
+  keela (~> 0.3)
   knapsack (~> 4.0.0)
   kramdown (~> 2.5.0)
   kubeclient (~> 4.12.0)
@@ -3186,7 +3186,7 @@ CHECKSUMS
   kaminari-actionview (1.2.2) sha256=1330f6fc8b59a4a4ef6a549ff8a224797289ebf7a3a503e8c1652535287cc909
   kaminari-activerecord (1.2.2) sha256=0dd3a67bab356a356f36b3b7236bcb81cef313095365befe8e98057dd2472430
   kaminari-core (1.2.2) sha256=3bd26fec7370645af40ca73b9426a448d09b8a8ba7afa9ba3c3e0d39cdbb83ff
-  keela (0.2.3) sha256=efb278cabb8428388e15cfcd5a50f97bd71ecc5da1308eef18d9dad7240f0424
+  keela (0.3.0) sha256=f568b5d4166e861f1df98e0c8b9319b569ed1c5b0b4898f910ae000120e5f193
   knapsack (4.0.0) sha256=a9422688751989d09a40b4bf7f959a71a3bfe7bc49d3cd610c2fcfb6e45482b8
   kramdown (2.5.2) sha256=1ba542204c66b6f9111ff00dcc26075b95b220b07f2905d8261740c82f7f02fa
   kramdown-parser-gfm (1.1.0) sha256=fb39745516427d2988543bf01fc4cf0ab1149476382393e0e9c48592f6581729

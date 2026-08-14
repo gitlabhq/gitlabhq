@@ -22,8 +22,8 @@ module QA
         ]
       end
 
-      where(:case_name, :template, :testcase) do
-        'using express template' | 'express' | 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348075'
+      where(:case_name, :template) do
+        'using express template' | 'express'
       end
 
       with_them do
@@ -47,7 +47,7 @@ module QA
           Flow::Login.sign_in
         end
 
-        it 'works with Auto DevOps', testcase: params[:testcase] do
+        it 'works with Auto DevOps' do
           %w[build code_quality test].each do |job|
             pipeline.visit!
 

@@ -24,8 +24,7 @@ module QA
         runner.remove_via_api!
       end
 
-      shared_examples 'artifact access' do |access_level, developer_access, non_member_access,
-          member_testcase, non_member_testcase|
+      shared_examples 'artifact access' do |access_level, developer_access, non_member_access|
         before do
           commit_ci_file(access_level)
           create_mr
@@ -39,7 +38,7 @@ module QA
           end
         end
 
-        it "verifies artifact access for developer user with #{access_level} access", testcase: member_testcase do
+        it "verifies artifact access for developer user with #{access_level} access" do
           Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
             Flow::Login.sign_in(as: developer_user)
           end
@@ -62,7 +61,7 @@ module QA
           end
         end
 
-        it "verifies artifact access for non-member user with #{access_level} access", testcase: non_member_testcase do
+        it "verifies artifact access for non-member user with #{access_level} access" do
           Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
             Flow::Login.sign_in(as: non_member_user)
           end
@@ -87,18 +86,15 @@ module QA
       end
 
       context 'when access is set to none' do
-        it_behaves_like 'artifact access', 'none', false, false,
-          'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/465991', 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/465697'
+        it_behaves_like 'artifact access', 'none', false, false
       end
 
       context 'when access is set to developer' do
-        it_behaves_like 'artifact access', 'developer', true, false,
-          'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/465994', 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/465995'
+        it_behaves_like 'artifact access', 'developer', true, false
       end
 
       context 'when access is set to all' do
-        it_behaves_like 'artifact access', 'all', true, true,
-          'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/465992', 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/465993'
+        it_behaves_like 'artifact access', 'all', true, true
       end
 
       private

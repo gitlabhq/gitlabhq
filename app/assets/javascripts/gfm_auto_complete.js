@@ -500,7 +500,7 @@ class GfmAutoComplete {
     $input.off('keyup.frequentCommands', frequentCommandsHandler);
     $input.on('keyup.frequentCommands', frequentCommandsHandler);
 
-    attachAtWhoContainerToInputParent($input);
+    attachAtWhoContainerToInputParent($input.filter('[data-supports-quick-actions="true"]'));
   }
 
   // eslint-disable-next-line class-methods-use-this

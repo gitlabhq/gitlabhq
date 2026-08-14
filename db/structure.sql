@@ -12430,26 +12430,6 @@ CREATE TABLE abuse_report_uploads (
     CONSTRAINT check_b888b1df14 CHECK ((char_length(checksum) <= 64))
 );
 
-CREATE TABLE abuse_report_user_mentions (
-    id bigint NOT NULL,
-    abuse_report_id bigint NOT NULL,
-    note_id bigint NOT NULL,
-    mentioned_users_ids bigint[],
-    mentioned_projects_ids bigint[],
-    mentioned_groups_ids bigint[],
-    organization_id bigint,
-    CONSTRAINT check_f0d6e86b14 CHECK ((organization_id IS NOT NULL))
-);
-
-CREATE SEQUENCE abuse_report_user_mentions_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE abuse_report_user_mentions_id_seq OWNED BY abuse_report_user_mentions.id;
-
 CREATE TABLE abuse_reports (
     id bigint NOT NULL,
     reporter_id bigint,
@@ -36253,8 +36233,6 @@ ALTER TABLE ONLY abuse_report_events ALTER COLUMN id SET DEFAULT nextval('abuse_
 
 ALTER TABLE ONLY abuse_report_upload_states ALTER COLUMN id SET DEFAULT nextval('abuse_report_upload_states_id_seq'::regclass);
 
-ALTER TABLE ONLY abuse_report_user_mentions ALTER COLUMN id SET DEFAULT nextval('abuse_report_user_mentions_id_seq'::regclass);
-
 ALTER TABLE ONLY abuse_reports ALTER COLUMN id SET DEFAULT nextval('abuse_reports_id_seq'::regclass);
 
 ALTER TABLE ONLY achievement_upload_states ALTER COLUMN id SET DEFAULT nextval('achievement_upload_states_id_seq'::regclass);
@@ -39067,9 +39045,6 @@ ALTER TABLE ONLY uploads
 
 ALTER TABLE ONLY abuse_report_uploads
     ADD CONSTRAINT abuse_report_uploads_pkey PRIMARY KEY (id, model_type);
-
-ALTER TABLE ONLY abuse_report_user_mentions
-    ADD CONSTRAINT abuse_report_user_mentions_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY abuse_reports
     ADD CONSTRAINT abuse_reports_pkey PRIMARY KEY (id);
@@ -46086,12 +46061,6 @@ CREATE INDEX index_abuse_report_upload_states_on_verification_state ON abuse_rep
 CREATE INDEX index_abuse_report_upload_states_pending_verification ON abuse_report_upload_states USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
 
 CREATE UNIQUE INDEX index_abuse_report_uploads_on_id ON abuse_report_uploads USING btree (id);
-
-CREATE UNIQUE INDEX index_abuse_report_user_mentions_on_abuse_report_id_and_note_id ON abuse_report_user_mentions USING btree (abuse_report_id, note_id);
-
-CREATE INDEX index_abuse_report_user_mentions_on_note_id ON abuse_report_user_mentions USING btree (note_id);
-
-CREATE INDEX index_abuse_report_user_mentions_on_organization_id ON abuse_report_user_mentions USING btree (organization_id);
 
 CREATE INDEX index_abuse_reports_on_assignee_id ON abuse_reports USING btree (assignee_id);
 
@@ -56593,9 +56562,6 @@ ALTER TABLE ONLY analytics_cycle_analytics_stage_event_hashes
 ALTER TABLE ONLY dependency_list_export_upload_states
     ADD CONSTRAINT fk_0852b176dd FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY abuse_report_user_mentions
-    ADD CONSTRAINT fk_088018ecd8 FOREIGN KEY (abuse_report_id) REFERENCES abuse_reports(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY ai_active_context_tasks
     ADD CONSTRAINT fk_0888dc7f58 FOREIGN KEY (depends_on_id) REFERENCES ai_active_context_tasks(id) ON DELETE SET NULL;
 
@@ -58606,9 +58572,6 @@ ALTER TABLE ONLY bulk_import_entities
 ALTER TABLE ONLY namespace_import_users
     ADD CONSTRAINT fk_a49233ca5d FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY abuse_report_user_mentions
-    ADD CONSTRAINT fk_a4bd02b7df FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY security_orchestration_policy_configurations
     ADD CONSTRAINT fk_a50430b375 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -59634,9 +59597,6 @@ ALTER TABLE ONLY cd_service_environment_healths
 
 ALTER TABLE ONLY cd_versions
     ADD CONSTRAINT fk_f4b428461e FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY abuse_report_user_mentions
-    ADD CONSTRAINT fk_f4c2b15ef9 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY alert_management_metric_image_upload_states
     ADD CONSTRAINT fk_f507f261df FOREIGN KEY (alert_management_metric_image_upload_id) REFERENCES alert_management_alert_metric_image_uploads(id) ON DELETE CASCADE;

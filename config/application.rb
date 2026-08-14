@@ -54,7 +54,14 @@ module Gitlab
     config.active_record.encryption.hash_digest_class = OpenSSL::Digest::SHA1 # rubocop:disable Fips/SHA1 -- New default is `SHA-256` needed for backwards compatibility
 
     # Rails 7.0
-    config.action_controller.raise_on_open_redirects = false
+    # Rails 8.1 deprecates raise_on_open_redirects; `:log` is the equivalent of setting it to false.
+    # The new option does not exist before 8.1, so it cannot be set unconditionally.
+    if Rails.gem_version >= Gem::Version.new('8.1')
+      config.action_controller.action_on_open_redirect = :log
+    else
+      config.action_controller.raise_on_open_redirects = false
+    end
+
     config.action_dispatch.return_only_request_media_type_on_content_type = true
     config.action_mailer.smtp_timeout = nil # New default is 5
     config.action_view.button_to_generates_button_tag = nil # New default is true

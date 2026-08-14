@@ -6,8 +6,8 @@ module QA
       let(:project) { create(:project, name: 'prevent-duplicate-mr-pipelines', initialize_with_readme: true) }
       let(:source_branch) { "feature-#{SecureRandom.hex(8)}" }
 
-      shared_examples 'creates both branch and merge request pipelines' do |testcase|
-        it 'creates both branch and merge request pipelines on push to existing MR', testcase: testcase do
+      shared_examples 'creates both branch and merge request pipelines' do
+        it 'creates both branch and merge request pipelines on push to existing MR' do
           create_mr_and_wait(project, source_branch, expected_new: 2)
           count_before = project.pipelines.size
 
@@ -20,8 +20,8 @@ module QA
         end
       end
 
-      shared_examples 'creates only a merge request pipeline' do |testcase|
-        it 'creates only a merge request pipeline on push to existing MR', testcase: testcase do
+      shared_examples 'creates only a merge request pipeline' do
+        it 'creates only a merge request pipeline on push to existing MR' do
           create_mr_and_wait(project, source_branch, expected_new: 1)
           count_before = project.pipelines.size
 
@@ -35,8 +35,8 @@ module QA
         end
       end
 
-      shared_examples 'creates only a branch pipeline' do |testcase|
-        it 'creates only a branch pipeline on push to existing MR', testcase: testcase do
+      shared_examples 'creates only a branch pipeline' do
+        it 'creates only a branch pipeline on push to existing MR' do
           create_mr_and_wait(project, source_branch, expected_new: 1)
           count_before = project.pipelines.size
 
@@ -59,8 +59,7 @@ module QA
         end
 
         context 'when setting is disabled' do
-          it_behaves_like 'creates only a branch pipeline',
-            'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/604967'
+          it_behaves_like 'creates only a branch pipeline'
         end
 
         context 'when setting is enabled' do
@@ -68,8 +67,7 @@ module QA
             project.change_skip_branch_pipelines_for_mrs(true)
           end
 
-          it_behaves_like 'creates only a merge request pipeline',
-            'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/604968'
+          it_behaves_like 'creates only a merge request pipeline'
 
           context 'with pipelines must succeed' do
             before do
@@ -100,8 +98,7 @@ module QA
         end
 
         context 'when setting is disabled' do
-          it_behaves_like 'creates both branch and merge request pipelines',
-            'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/604965'
+          it_behaves_like 'creates both branch and merge request pipelines'
         end
 
         context 'when setting is enabled' do
@@ -109,8 +106,7 @@ module QA
             project.change_skip_branch_pipelines_for_mrs(true)
           end
 
-          it_behaves_like 'creates only a merge request pipeline',
-            'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/604966'
+          it_behaves_like 'creates only a merge request pipeline'
         end
       end
 
@@ -127,8 +123,7 @@ module QA
         end
 
         context 'when setting is disabled' do
-          it_behaves_like 'creates only a merge request pipeline',
-            'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/605643'
+          it_behaves_like 'creates only a merge request pipeline'
         end
 
         context 'when setting is enabled' do
@@ -136,8 +131,7 @@ module QA
             project.change_skip_branch_pipelines_for_mrs(true)
           end
 
-          it_behaves_like 'creates only a merge request pipeline',
-            'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/605644'
+          it_behaves_like 'creates only a merge request pipeline'
 
           context 'with pipelines must succeed' do
             before do
@@ -167,8 +161,7 @@ module QA
         end
 
         context 'when setting is disabled' do
-          it_behaves_like 'creates only a branch pipeline',
-            'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/605645'
+          it_behaves_like 'creates only a branch pipeline'
         end
 
         context 'when setting is enabled' do
@@ -209,8 +202,7 @@ module QA
         end
 
         context 'when setting is disabled' do
-          it_behaves_like 'creates both branch and merge request pipelines',
-            'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/604969'
+          it_behaves_like 'creates both branch and merge request pipelines'
         end
 
         context 'when setting is enabled' do
@@ -218,8 +210,7 @@ module QA
             project.change_skip_branch_pipelines_for_mrs(true)
           end
 
-          it_behaves_like 'creates only a merge request pipeline',
-            'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/604970'
+          it_behaves_like 'creates only a merge request pipeline'
         end
       end
 
