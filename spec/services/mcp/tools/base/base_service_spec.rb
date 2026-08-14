@@ -84,6 +84,14 @@ RSpec.describe Mcp::Tools::Base::BaseService, feature_category: :mcp_server do
     end
   end
 
+  describe '#tool_aliases' do
+    it 'delegates to the class method' do
+      allow(test_service_class).to receive(:tool_aliases).and_return(['old_name'])
+
+      expect(test_service.tool_aliases).to eq(['old_name'])
+    end
+  end
+
   describe '#to_h' do
     it 'returns tool metadata without annotations when empty' do
       result = test_service.to_h

@@ -4,6 +4,7 @@ import { shallowMount } from '@vue/test-utils';
 import { createTestingPinia } from '@pinia/testing';
 import { PiniaVuePlugin } from 'pinia';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import ArchivedBadge from '~/issuable/components/archived_badge.vue';
 import HiddenBadge from '~/issuable/components/hidden_badge.vue';
 import LockedBadge from '~/issuable/components/locked_badge.vue';
 import StatusBadge from '~/issuable/components/status_badge.vue';
@@ -24,6 +25,7 @@ describe('MergeRequestHeader component', () => {
   let pinia;
   let wrapper;
 
+  const findArchivedBadge = () => wrapper.findComponent(ArchivedBadge);
   const findConfidentialBadge = () => wrapper.findComponent(ConfidentialityBadge);
   const findLockedBadge = () => wrapper.findComponent(LockedBadge);
   const findHiddenBadge = () => wrapper.findComponent(HiddenBadge);
@@ -46,7 +48,14 @@ describe('MergeRequestHeader component', () => {
     },
   });
 
-  const createComponent = ({ confidential, hidden, locked, isImported = false } = {}) => {
+  const createComponent = ({
+    archived = false,
+    confidential,
+    hidden,
+    locked,
+    isImported = false,
+  } = {}) => {
+    useNotes().noteableData.archived = archived;
     useNotes().noteableData.confidential = confidential;
     useNotes().noteableData.discussion_locked = locked;
     useNotes().noteableData.targetType = 'merge_request';
@@ -143,6 +152,21 @@ describe('MergeRequestHeader component', () => {
       createComponent({ isImported: false });
 
       expect(findImportedBadge().exists()).toBe(false);
+    });
+  });
+
+  describe('archived badge', () => {
+    it('renders when merge request belongs to an archived project', () => {
+      createComponent({ archived: true });
+
+      expect(findArchivedBadge().exists()).toBe(true);
+      expect(findArchivedBadge().props('issuableType')).toBe('merge_request');
+    });
+
+    it('does not render when merge request does not belong to an archived project', () => {
+      createComponent({ archived: false });
+
+      expect(findArchivedBadge().exists()).toBe(false);
     });
   });
 });

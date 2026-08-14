@@ -346,12 +346,20 @@ The following limits apply to the GitLab GraphQL API.
 
 | Limit                                                 | Default |
 |:------------------------------------------------------|:--------|
-| Maximum page size                                     | 100 records (nodes) per page. Applies to most connections in the API. Particular connections may have different max page size limits that are higher or lower. |
+| [Maximum page size](#maximum-page-size)               | 100 records (nodes) per page. Applies to most connections in the API. Some connections may have different maximum page sizes than the default. |
 | [Maximum query complexity](#maximum-query-complexity) | 200 for unauthenticated requests and 250 for authenticated requests. |
 | Maximum query size                                    | 10,000 characters per query or mutation. If this limit is reached, use [variables](https://graphql.org/learn/queries/#variables) and [fragments](https://graphql.org/learn/queries/#fragments) to reduce the query or mutation size. Remove white spaces as last resort. |
 | Rate limits                                           | For GitLab.com, see [GitLab.com-specific rate limits](../../user/gitlab_com/_index.md#rate-limits-on-gitlabcom). |
 | [Data limits](#data-limits)                           | Blob requests are limited to 20 MB when more than one blob path is specified. |
 | Request timeout                                       | 30 seconds. |
+
+### Maximum page size
+
+The default maximum page size for a connection is 100 records (nodes) per page.
+The connection [`subscriptionUsage.usersUsage.users`](reference/_index.md#gitlabsubscriptionusageusersusageusers) has a maximum page size of 20 records (nodes).
+
+If you request more records than the maximum for a connection, the API returns
+only the maximum number of records.
 
 ### Maximum query complexity
 

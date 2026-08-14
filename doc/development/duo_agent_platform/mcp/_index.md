@@ -532,6 +532,16 @@ module Mcp
 end
 ```
 
+For API tools defined through `route_setting :mcp`, declare aliases with the `tool_aliases:`
+setting instead of overriding a class method. `ApiTool` is a single class shared by every route,
+so aliases must be per-route:
+
+```ruby
+route_setting :mcp, tool_name: :new_name,
+  params: [:id],
+  tool_aliases: [:old_name]
+```
+
 1. Update all references to use the new tool name:
    - Route settings with `tool_name:`
    - Test files
@@ -544,7 +554,10 @@ end
 **Important notes:**
 
 - `list_tools` only returns the canonical tool name, not aliases
-- Aliases work for all tool types: custom, GraphQL, API, and aggregated tools
+- Aliases work for all tool types. Custom, GraphQL, and aggregated tools override `self.tool_aliases`
+  on the tool class. API tools declare aliases through the `tool_aliases:` route setting
+- `tool_aliases:` on a route that also sets `aggregators:` has no effect: the aggregated tool's
+  aliases come from the aggregator class's `self.tool_aliases`
 - The alias resolution happens in `Manager#resolve_alias` which checks all tool registries
 - Plan to remove aliases in a future release after sufficient time for clients to update
 

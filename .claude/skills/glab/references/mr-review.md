@@ -186,18 +186,18 @@ easier to parse programmatically.
 
 ```bash
 # Just the changed file paths
-glab api "projects/<project_id>/merge_requests/<mr_iid>/diffs?per_page=100" \
+glab api --method GET "projects/<project_id>/merge_requests/<mr_iid>/diffs?per_page=100" \
   | jq '.[].new_path'
 
 # Diff for a specific file (unified format)
-glab api "projects/<project_id>/merge_requests/<mr_iid>/diffs?unidiff=true&per_page=100" \
+glab api --method GET "projects/<project_id>/merge_requests/<mr_iid>/diffs?unidiff=true&per_page=100" \
   | jq '.[] | select(.new_path == "path/to/file.rb") | .diff'
 
 # Page through large responses
-glab api "projects/<project_id>/merge_requests/<mr_iid>/diffs?per_page=20&page=2"
+glab api --method GET "projects/<project_id>/merge_requests/<mr_iid>/diffs?per_page=20&page=2"
 
 # MR metadata
-glab api "projects/<project_id>/merge_requests/<mr_iid>"
+glab api --method GET "projects/<project_id>/merge_requests/<mr_iid>"
 ```
 
 ### MR version SHAs
@@ -208,7 +208,7 @@ SHAs from a previous version may be rejected.
 ```bash
 # ⚠️ API returns base_commit_sha / head_commit_sha / start_commit_sha
 # but the position object expects base_sha / head_sha / start_sha — jq renames here
-glab api "projects/<project_id>/merge_requests/<mr_iid>/versions" \
+glab api --method GET "projects/<project_id>/merge_requests/<mr_iid>/versions" \
   | jq '.[0] | {base_sha: .base_commit_sha, head_sha: .head_commit_sha, start_sha: .start_commit_sha}'
 ```
 
@@ -283,7 +283,7 @@ drafts are published, the `draft_notes` endpoint returns an empty array
 and this check produces no output.
 
 ```bash
-glab api --paginate \
+glab api --method GET --paginate \
   "projects/<project_id>/merge_requests/<mr_iid>/draft_notes" \
   | jq '.[] | {id, new_line: .position.new_line, note: .note[0:40]}'
 ```
@@ -317,10 +317,10 @@ the full `notes[].resolved_by` chain). For "list discussions to find a thread ID
 
 ```bash
 # Fetch all discussions (each thread has id, notes array, position info)
-glab api "projects/<project_id>/merge_requests/<mr_iid>/discussions?per_page=100"
+glab api --method GET "projects/<project_id>/merge_requests/<mr_iid>/discussions?per_page=100"
 
 # Extract key fields
-glab api "projects/<project_id>/merge_requests/<mr_iid>/discussions?per_page=100" \
+glab api --method GET "projects/<project_id>/merge_requests/<mr_iid>/discussions?per_page=100" \
   | jq '.[] | {id, resolved: .notes[0].resolved, body: .notes[0].body}'
 ```
 

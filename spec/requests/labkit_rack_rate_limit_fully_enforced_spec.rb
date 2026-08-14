@@ -73,5 +73,17 @@ RSpec.describe 'Rack::Attack safelisted once Labkit fully enforces',
 
       expect(response).not_to have_gitlab_http_status(:too_many_requests)
     end
+
+    it 'carries proactive RateLimit-* headers built from labkit counters', :aggregate_failures do
+      make_request
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response.headers['RateLimit-Name']).to eq('throttle_unauthenticated_api')
+      # Labkit's counter saw only this one request. Rack::Attack's counter sits at 2
+      # from the warm-up, so an Observed of 1 proves the headers no longer come from
+      # the safelisted legacy stack (production-engineering#29539).
+      expect(response.headers['RateLimit-Observed']).to eq('1')
+      expect(response.headers['RateLimit-Remaining']).to eq('0')
+    end
   end
 end

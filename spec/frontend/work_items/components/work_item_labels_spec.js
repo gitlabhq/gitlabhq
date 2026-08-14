@@ -119,7 +119,7 @@ describe('WorkItemLabels component', () => {
 
   const updateLabels = (labels) => {
     findWorkItemSidebarDropdownWidget().vm.$emit('updateSelected', labels);
-    findWorkItemSidebarDropdownWidget().vm.$emit('updateValue', labels);
+    findWorkItemSidebarDropdownWidget().vm.$emit('update-value', labels);
   };
 
   const expectDropdownCountToBe = (count, toggleDropdownText) => {
@@ -375,7 +375,7 @@ describe('WorkItemLabels component', () => {
     });
   });
 
-  it('clears all labels when updateValue has no labels', async () => {
+  it('clears all labels when `update-value` has no labels', async () => {
     createComponent({
       workItemQueryHandler: workItemQueryWithLabelsHandler,
       updateWorkItemMutationHandler: successRemoveAllLabelWorkItemMutationHandler,
@@ -387,7 +387,7 @@ describe('WorkItemLabels component', () => {
 
     expectDropdownCountToBe(3, 'Label 1 +2 more');
 
-    findWorkItemSidebarDropdownWidget().vm.$emit('updateValue', []);
+    findWorkItemSidebarDropdownWidget().vm.$emit('update-value', []);
 
     await waitForPromises();
 
@@ -449,7 +449,7 @@ describe('WorkItemLabels component', () => {
     showDropdown();
     findWorkItemSidebarDropdownWidget().vm.$emit('updateSelected', [label2Id, label3Id]);
     findWorkItemSidebarDropdownWidget().vm.$emit('updateSelected', [label1Id, label2Id, label3Id]);
-    findWorkItemSidebarDropdownWidget().vm.$emit('updateValue', [label1Id, label2Id, label3Id]);
+    findWorkItemSidebarDropdownWidget().vm.$emit('update-value', [label1Id, label2Id, label3Id]);
 
     expect(successRemoveAllLabelWorkItemMutationHandler).not.toHaveBeenCalled();
   });
@@ -466,7 +466,7 @@ describe('WorkItemLabels component', () => {
       trackingSpy = null;
     });
 
-    it('tracks editing the labels on dropdown widget updateValue', async () => {
+    it('tracks editing the labels on dropdown widget `update-value`', async () => {
       showDropdown();
       updateLabels([label1Id]);
 

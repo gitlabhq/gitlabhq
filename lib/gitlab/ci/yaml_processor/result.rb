@@ -25,6 +25,15 @@ module Gitlab
           errors.empty?
         end
 
+        def only_no_visible_jobs_error?
+          errors.one? &&
+            errors.first.to_s.end_with?(Gitlab::Ci::Config::Entry::Jobs::NO_VISIBLE_JOBS_MESSAGE)
+        end
+
+        def any_includes_fully_filtered_by_rules?
+          !!@ci_config&.any_includes_fully_filtered_by_rules?
+        end
+
         def stages_attributes
           stages.uniq.map do |stage|
             seeds = stage_builds_attributes(stage)

@@ -1,7 +1,7 @@
 ---
 name: glab
 description: GitLab workflow automation using the glab CLI. Use when the user asks to create, update, close, label, or comment on a GitLab issue, merge request, work item, or epic; to post a note, review comment, or discussion reply; to call the GitLab REST or GraphQL API through "glab api"; to inspect or retry pipelines and jobs; or to configure glab auth against gitlab.com, a self-managed instance, or a local GDK. Read it before any glab write operation, because several field flags fail silently - they exit 0 while posting the wrong content.
-version: 1.12.1
+version: 1.12.2
 category: Development Workflow
 license: MIT
 metadata:
@@ -175,10 +175,10 @@ GitLab is migrating issues to work items. The URL shows `/work_items/<iid>` but 
 
 ```bash
 # ✅ Use the issues API — same IID, same endpoints
-glab api "projects/org%2Fproject/issues/<iid>"
+glab api --method GET "projects/org%2Fproject/issues/<iid>"
 
 # ❌ /work_items/ REST endpoint does not exist
-glab api "projects/org%2Fproject/work_items/<iid>"   # → 404
+glab api --method GET "projects/org%2Fproject/work_items/<iid>"   # → 404
 ```
 
 URL parsing: `https://gitlab.com/org/project/-/work_items/539076`
@@ -199,7 +199,7 @@ glab mr note create 123 --reply abc12345 -m "..."                   # reply
 glab mr note resolve 123 abc12345                                   # resolve thread
 
 # ❌ Do NOT use glab api .../discussions for these operations
-glab api "projects/<id>/merge_requests/123/discussions"             # use mr note list
+glab api --method GET "projects/<id>/merge_requests/123/discussions"             # use mr note list
 glab api --method PUT ".../discussions/<id>" -f resolved=true       # use mr note resolve
 ```
 
@@ -235,9 +235,9 @@ For full search examples (instance / group / project, scope table, pagination): 
 Quick reference:
 
 ```bash
-glab api "search?scope=issues&search=<query>" | jq '.[] | {iid, title}'
-glab api "groups/<group>/search?scope=merge_requests&search=<query>" | jq '.[]'
-glab api "projects/<org>%2F<repo>/search?scope=issues&search=<query>" | jq '.[]'
+glab api --method GET "search?scope=issues&search=<query>" | jq '.[] | {iid, title}'
+glab api --method GET "groups/<group>/search?scope=merge_requests&search=<query>" | jq '.[]'
+glab api --method GET "projects/<org>%2F<repo>/search?scope=issues&search=<query>" | jq '.[]'
 ```
 
 ## Git and Commit Conventions

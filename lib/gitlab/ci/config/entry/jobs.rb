@@ -10,6 +10,8 @@ module Gitlab
         class Jobs < ::Gitlab::Config::Entry::ComposableHash
           include ::Gitlab::Config::Entry::Validatable
 
+          NO_VISIBLE_JOBS_MESSAGE = 'should contain at least one visible job'
+
           validations do
             validates :config, type: Hash
 
@@ -19,7 +21,7 @@ module Gitlab
               end
 
               unless has_visible_job?
-                errors.add(:config, 'should contain at least one visible job')
+                errors.add(:config, NO_VISIBLE_JOBS_MESSAGE)
               end
             end
 

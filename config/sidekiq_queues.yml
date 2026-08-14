@@ -449,6 +449,8 @@
   - 1
 - - dependency_management_security_update_track_merged_mr
   - 1
+- - dependency_management_security_update_track_resolve_dependency_bump_pipeline
+  - 1
 - - dependency_management_security_update_trigger_resolve_dependency_bump_workflow
   - 1
 - - dependency_proxy

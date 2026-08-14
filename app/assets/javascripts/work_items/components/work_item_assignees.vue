@@ -379,7 +379,7 @@ export default {
     data-testid="work-item-assignees"
     @dropdownShown="onDropdownShown"
     @searchStarted="setSearchKey"
-    @updateValue="handleAssigneesInput"
+    @update-value="handleAssigneesInput"
     @updateSelected="handleAssigneeClick"
     @dropdownHidden="onDropdownHide"
   >

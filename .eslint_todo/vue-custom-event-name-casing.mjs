@@ -20,7 +20,6 @@ export default {
     'app/assets/javascripts/ci/artifacts/components/job_checkbox.vue',
     'app/assets/javascripts/ci/common/private/jobs_filtered_search/app.vue',
     'app/assets/javascripts/ci/job_token_access/components/token_access_table.vue',
-    'app/assets/javascripts/behaviors/components/diagram_performance_warning.vue',
     'app/assets/javascripts/ci/jobs_page/components/job_cells/actions_cell.vue',
     'app/assets/javascripts/content_editor/components/content_editor.vue',
     'app/assets/javascripts/diffs/components/app.vue',

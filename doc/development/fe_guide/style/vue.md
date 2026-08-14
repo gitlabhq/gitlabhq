@@ -88,6 +88,23 @@ Check the [rules](https://github.com/vuejs/eslint-plugin-vue#bulb-rules) for mor
    <my-component />
    ```
 
+## Component props
+
+1. Prefer semantic props that describe intent over generic pass-through CSS class props
+
+   ```html
+   // bad - hands styling ownership to every caller
+   <user-name :username-css-classes="'gl-truncate'" />
+
+   // good - the component owns its styling, callers express intent
+   <user-name :truncate-username="true" />
+   ```
+
+   A semantic prop like the boolean `truncate-username` keeps styling ownership inside the
+   component, so callers cannot restyle its internals and the component stays visually
+   consistent everywhere it is used. Tests can then assert on the public prop instead of on
+   internal CSS classes.
+
 ## Component `name` property
 
 Every Vue component should have a `name` property. Use PascalCase derived from the filename.

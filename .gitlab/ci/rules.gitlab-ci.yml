@@ -1554,7 +1554,8 @@
 # this rule is combination of rules for jobs that use cached frontend assets:
 #  * .frontend:rules:compile-test-assets
 #  * .frontend:rules:compile-production-assets
-#  * .qa:rules:e2e:test-on-gdk
+#  * .qa:rules:e2e:test-on-gdk - now scheduled-pipeline only, keeping the assets
+#    hash available for the scheduled GDK image build; it no longer triggers on MRs
 .caching:rules:frontend-asset-hash:
   rules:
     - <<: *if-tag
@@ -2432,20 +2433,15 @@
 
 .qa:rules:e2e:test-on-gdk:
   rules:
-    # Full suite is already executed against cng deployment which is a proper release environment
+    # test-on-gdk no longer runs on merge request pipelines - E2E coverage for MRs
+    # is provided by test-on-cng. It still runs on the scheduled pipeline so the
+    # E2E code-paths mapping / coverage collection is preserved.
+    # See https://gitlab.com/groups/gitlab-org/quality/test-governance/-/work_items/5
+    - !reference [".qa:rules:e2e-test-never-run", rules]
     - <<: *if-merge-request-targeting-stable-branch
       when: never
     - <<: *if-security-merge-request
       when: never
-    - !reference [".qa:rules:e2e-blocking-base-before", rules]
-    # Run tests automatically for MRs that touch Ruby version files
-    - <<: *if-merge-request
-      changes: *ruby-version-patterns
-    # Certain components trigger a rebuild of the e2e GDK image so we want to test it too
-    - <<: *if-merge-request
-      changes: *gdk-component-patterns
-    - !reference [".prevent-tier-2-and-below", rules]
-    - !reference [".qa:rules:e2e-blocking-base-after", rules]
     - <<: *if-dot-com-gitlab-org-schedule
       variables:
         <<: *qa-e2e-test-schedule-variables

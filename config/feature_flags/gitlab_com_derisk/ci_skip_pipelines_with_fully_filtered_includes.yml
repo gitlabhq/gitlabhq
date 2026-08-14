@@ -1,0 +1,10 @@
+---
+name: ci_skip_pipelines_with_fully_filtered_includes
+description: When include:rules filter out all includes leaving no visible jobs, skip the pipeline (filtered_by_rules) instead of persisting a failed config_error pipeline.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/591780
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/246515
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/609470
+milestone: '19.4'
+group: group::pipeline authoring
+type: gitlab_com_derisk
+default_enabled: false

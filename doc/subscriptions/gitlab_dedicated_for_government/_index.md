@@ -100,6 +100,9 @@ GitLab matches you to the closest reference architecture size based on your numb
 GitLab backs up all your datastores, including databases and Git repositories.
 These backups are tested and stored securely in a separate cloud region by default for added redundancy.
 
+GitLab Dedicated for Government does not support Geo-based secondary-region failover. For more
+information, see [disaster recovery](../../administration/dedicated/disaster_recovery.md).
+
 ### Authentication and authorization
 
 You can configure single sign-on (SSO) using:
@@ -180,7 +183,7 @@ domain is no longer available, which prevents GitLab Pages from functioning.
 
 The following operational features are not available:
 
-- Geo
+- Geo-based secondary-region failover
 - Self-serve purchasing and configuration
 
 ### Feature flags

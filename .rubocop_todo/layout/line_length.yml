@@ -1007,7 +1007,6 @@ Layout/LineLength:
     - 'ee/spec/lib/compliance_management/merge_request_approval_settings/resolver_spec.rb'
     - 'ee/spec/lib/ee/api/entities/deployment_extended_spec.rb'
     - 'ee/spec/lib/ee/banzai/filter/references/epic_reference_filter_spec.rb'
-    - 'ee/spec/lib/ee/banzai/filter/references/label_reference_filter_spec.rb'
     - 'ee/spec/lib/ee/gitlab/alert_management/payload/generic_spec.rb'
     - 'ee/spec/lib/ee/gitlab/auth/ldap/sync/group_spec.rb'
     - 'ee/spec/lib/ee/gitlab/background_migration/backfill_iteration_cadence_id_for_boards_spec.rb'

@@ -144,10 +144,15 @@ module Banzai
           super + ' gl-link gl-label-link'
         end
 
-        # Returns a String containing text.
+        def data_attributes_for(original, parent, object, **attrs)
+          # Causes the title (returned by `object_link_title` below) to be interpreted as HTML.
+          super.merge!(html: true)
+        end
+
+        # Returns a String containing HTML.
         def object_link_title(object, matches)
           presenter = object.present(issuable_subject: project || group)
-          LabelsHelper.label_tooltip_title(presenter)
+          LabelsHelper.label_tooltip_title_html(presenter)
         end
 
         def parent
@@ -161,5 +166,3 @@ module Banzai
     end
   end
 end
-
-Banzai::Filter::References::LabelReferenceFilter.prepend_mod_with('Banzai::Filter::References::LabelReferenceFilter')

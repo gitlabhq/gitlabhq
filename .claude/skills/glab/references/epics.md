@@ -9,23 +9,23 @@ For **nested group paths** → [nested-groups.md](nested-groups.md)
 
 ```bash
 # Group ID from path
-glab api "groups/my-group" | jq '.id'
+glab api --method GET "groups/my-group" | jq '.id'
 
 # Epic: response includes id (internal global), iid (display number), work_item_id
-glab api "groups/<group_id>/epics/<iid>" | jq '{id, iid, title, work_item_id}'
+glab api --method GET "groups/<group_id>/epics/<iid>" | jq '{id, iid, title, work_item_id}'
 ```
 
 ## List and view
 
 ```bash
 # List epics in a group
-glab api "groups/<group_id>/epics" | jq '.[] | {iid, title, state}'
+glab api --method GET "groups/<group_id>/epics" | jq '.[] | {iid, title, state}'
 
 # View a single epic
-glab api "groups/<group_id>/epics/<iid>"
+glab api --method GET "groups/<group_id>/epics/<iid>"
 
 # List issues linked to an epic
-glab api "groups/<group_id>/epics/<epic_iid>/issues" | jq '.[] | {iid, title, state}'
+glab api --method GET "groups/<group_id>/epics/<epic_iid>/issues" | jq '.[] | {iid, title, state}'
 ```
 
 ## Create
@@ -37,7 +37,7 @@ glab api --method POST "groups/<group_id>/epics" \
   -f "description=$(cat /tmp/epic-description.md)"
 
 # With parent epic — parent_id is the INTERNAL id (not iid)
-PARENT_ID=$(glab api "groups/<group_id>/epics/<parent_iid>" | jq '.id')
+PARENT_ID=$(glab api --method GET "groups/<group_id>/epics/<parent_iid>" | jq '.id')
 glab api --method POST "groups/<group_id>/epics" \
   -f title="Child Epic" \
   -f "description=$(cat /tmp/description.md)" \
@@ -65,11 +65,11 @@ glab api --method PUT "groups/<group_id>/epics/<iid>" -f state_event=reopen
 
 ```bash
 # Add — preferred: update the issue's epic_id directly
-EPIC_ID=$(glab api "groups/<group_id>/epics/<epic_iid>" | jq '.id')
+EPIC_ID=$(glab api --method GET "groups/<group_id>/epics/<epic_iid>" | jq '.id')
 glab api --method PUT "projects/<project_id>/issues/<iid>" -f epic_id=$EPIC_ID
 
 # Add — alternative (may 404 depending on plan)
-ISSUE_ID=$(glab api "projects/<project_id>/issues/<iid>" | jq '.id')
+ISSUE_ID=$(glab api --method GET "projects/<project_id>/issues/<iid>" | jq '.id')
 glab api --method POST "groups/<group_id>/epics/<epic_iid>/issues/$ISSUE_ID"
 
 # Remove — preferred: set epic_id to 0

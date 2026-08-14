@@ -240,7 +240,7 @@ export default {
     data-testid="work-item-milestone"
     @dropdownShown="onDropdownShown"
     @searchStarted="search"
-    @updateValue="updateMilestone"
+    @update-value="updateMilestone"
   >
     <template #list-item="{ item }">
       <div>{{ item.text }}{{ itemExpiredText(item) }}</div>

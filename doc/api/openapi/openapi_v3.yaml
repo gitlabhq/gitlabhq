@@ -88,6 +88,8 @@ tags:
   description: Operations related to cluster agents.
 - name: Clusters
   description: Operations related to clusters.
+- name: Code Suggestions
+  description: Operations related to Code Suggestions.
 - name: Code review analytics
   description: Operations related to code review analytics.
 - name: Code search
@@ -1028,6 +1030,8 @@ paths:
       summary: Generate code completions
       description: Generates code completions. Uses the AI abstraction layer to generate
         code completions. Requests to this endpoint are proxied to the AI Gateway.
+      tags:
+      - Code Suggestions
       responses:
         '200':
           description: OK
@@ -1046,6 +1050,8 @@ paths:
       description: Retrieves user-specific connection details which can be used by
         IDEs or clients to send `completion` requests to Code Suggestions directly
         through the AI Gateway.
+      tags:
+      - Code Suggestions
       responses:
         '201':
           description: Created
@@ -1070,6 +1076,8 @@ paths:
       description: Validates the status Code Suggestions for a specified project.
         This checks if the project has `code_suggestions` enabled or if an ancestor
         group has the Code Suggestions add-on enabled.
+      tags:
+      - Code Suggestions
       responses:
         '200':
           description: OK
@@ -1094,6 +1102,8 @@ paths:
       description: Retrieves user-specific connection details which can be used by
         IDEs or clients for telemetry, including an instance-specific application
         ID, application access token, and clickhouse data plane URL.
+      tags:
+      - Code Suggestions
       responses:
         '201':
           description: Created

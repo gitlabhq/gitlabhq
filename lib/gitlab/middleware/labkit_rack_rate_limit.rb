@@ -20,7 +20,10 @@ module Gitlab
     # ordered rule set over them (cohort gates enforcement, not which rules exist).
     # Each limiter returns its first matching rule's decision; labkit blocks the
     # request when any of those decisions is a block whose cohort enforces. On the
-    # way back up it compares labkit's block decision against Rack::Attack's.
+    # way back up it compares labkit's block decision against Rack::Attack's. Once
+    # fully enforced, it also adds the proactive RateLimit-* headers to non-429
+    # responses, taking over from RackAttackHeaders, which the safelist leaves with
+    # nothing to read.
     #
     # The middleware blocks only when an enforcing cohort's rule blocks; otherwise it
     # never blocks. The request's own errors propagate (@app.call is not wrapped);
@@ -44,7 +47,10 @@ module Gitlab
 
         status, headers, body = @app.call(env)
 
-        guard { record(env, decision) } if decision
+        if decision
+          guard { record(env, decision) }
+          guard { annotate_rate_limit_headers(status, headers, decision[:results]) }
+        end
 
         [status, headers, body]
       end
@@ -79,6 +85,26 @@ module Gitlab
           labkit_results: decision[:results],
           facts: decision[:facts]
         )
+      end
+
+      # Outbound: proactive RateLimit-* headers for non-429 responses (a 429 already
+      # carries its own), added only once labkit fully owns enforcement - until then
+      # Rack::Attack still evaluates throttles and RackAttackHeaders builds these.
+      # Built from the counted evaluations, not each limiter's reported result (an
+      # under-limit result reports the claim rule, which carries no counter info);
+      # min is the most constraining evaluation across all limiters.
+      def annotate_rate_limit_headers(status, headers, results)
+        return if status == 429 || !registry.fully_enforced?
+
+        evaluation = results.flat_map(&:evaluations).min
+        entry = evaluation && entry_for_rule(evaluation.rule.name)
+        return unless entry
+
+        rate_limit_headers = ::Gitlab::RackAttack::RequestThrottleData
+          .from_labkit_result(name: entry.name, result: evaluation)
+          &.common_response_headers
+
+        headers.merge!(rate_limit_headers) if rate_limit_headers
       end
 
       # The byte-identical legacy 429 for the first blocking rule whose cohort

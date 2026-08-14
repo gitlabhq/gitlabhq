@@ -335,7 +335,7 @@ describe('WorkItemAssignees component', () => {
       showDropdown();
       await waitForPromises();
 
-      findSidebarDropdownWidget().vm.$emit('updateValue', [
+      findSidebarDropdownWidget().vm.$emit('update-value', [
         'gid://gitlab/User/5',
         'gid://gitlab/User/6',
       ]);
@@ -350,7 +350,7 @@ describe('WorkItemAssignees component', () => {
 
       await waitForPromises();
 
-      findSidebarDropdownWidget().vm.$emit('updateValue', [
+      findSidebarDropdownWidget().vm.$emit('update-value', [
         'gid://gitlab/User/5',
         currentUser.id,
         'gid://gitlab/User/6',
@@ -373,11 +373,11 @@ describe('WorkItemAssignees component', () => {
       trackingSpy = null;
     });
 
-    it('tracks editing the assignees on dropdown widget updateValue', async () => {
+    it('tracks editing the assignees on dropdown widget `update-value`', async () => {
       showDropdown();
       await waitForPromises();
 
-      findSidebarDropdownWidget().vm.$emit('updateValue', mockAssignees[0].id);
+      findSidebarDropdownWidget().vm.$emit('update-value', mockAssignees[0].id);
       await waitForPromises();
 
       expect(trackingSpy).toHaveBeenCalledWith(TRACKING_CATEGORY_SHOW, 'updated_assignees', {
@@ -447,7 +447,7 @@ describe('WorkItemAssignees component', () => {
       showDropdown();
       await waitForPromises();
 
-      findSidebarDropdownWidget().vm.$emit('updateValue', currentUser.id);
+      findSidebarDropdownWidget().vm.$emit('update-value', currentUser.id);
 
       expect(findSidebarDropdownWidget().props('listItems')).toMatchObject([
         { text: currentUser.name },
@@ -466,7 +466,7 @@ describe('WorkItemAssignees component', () => {
       showDropdown();
       await waitForPromises();
 
-      findSidebarDropdownWidget().vm.$emit('updateValue', currentUser.id);
+      findSidebarDropdownWidget().vm.$emit('update-value', currentUser.id);
 
       expect(findSidebarDropdownWidget().props('listItems')).toMatchObject([
         { text: currentUser.name },

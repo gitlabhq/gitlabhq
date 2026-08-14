@@ -5,7 +5,7 @@
 #   create-epic-note.sh <group-id> <epic-iid> "comment body"
 #
 # Arguments:
-#   group-id    Numeric group ID (get with: glab api "groups/my-group%2Fpath" | jq '.id')
+#   group-id    Numeric group ID (get with: glab api --method GET "groups/my-group%2Fpath" | jq '.id')
 #   epic-iid    Epic display number (iid), e.g. 16428
 #   body        Comment text (quoted). Any content is safe — newlines, backticks,
 #               $, and em dashes are passed as a GraphQL variable, not interpolated.
@@ -38,7 +38,7 @@ _err=$(mktemp)
 trap 'rm -f "$_err"' EXIT
 
 # Get the epic's internal (global) ID — the createNote mutation requires it
-if ! EPIC_DATA=$(glab api "groups/${GROUP_ID}/epics/${EPIC_IID}" 2>"$_err"); then
+if ! EPIC_DATA=$(glab api --method GET "groups/${GROUP_ID}/epics/${EPIC_IID}" 2>"$_err"); then
   echo "ERROR fetching epic: $(cat "$_err")" >&2
   exit 1
 fi

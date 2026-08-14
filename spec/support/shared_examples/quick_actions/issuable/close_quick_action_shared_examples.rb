@@ -3,9 +3,11 @@
 RSpec.shared_examples 'close quick action' do |issuable_type|
   include Features::NotesHelpers
 
+  let(:current_user) { maintainer }
+
   before do
     project.add_maintainer(maintainer)
-    sign_in(maintainer)
+    sign_in(current_user)
   end
 
   context "new #{issuable_type}", :js do
@@ -60,14 +62,7 @@ RSpec.shared_examples 'close quick action' do |issuable_type|
     end
 
     context "when current user cannot close #{issuable_type}", :js do
-      before do
-        guest = create(:user)
-        project.add_guest(guest)
-
-        gitlab_sign_out
-        sign_in(guest)
-        visit public_send("project_#{issuable_type}_path", project, issuable)
-      end
+      let(:current_user) { create(:user, guest_of: project) }
 
       it "does not close the #{issuable_type}" do
         add_note('/close', issuable_type)

@@ -281,7 +281,7 @@ export default {
     @dropdownShown="search"
     @searchStarted="search"
     @updateSelected="updateCount"
-    @updateValue="updateItems"
+    @update-value="updateItems"
   >
     <template #readonly>
       <div class="gl-mt-1 gl-gap-2">

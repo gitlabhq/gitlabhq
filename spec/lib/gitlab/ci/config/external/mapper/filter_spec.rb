@@ -9,7 +9,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Filter, feature_category: :
     end
   end
 
-  let_it_be(:context, freeze: false) do
+  let(:context) do
     Gitlab::Ci::Config::External::Context.new(variables: variables)
   end
 
@@ -30,6 +30,49 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Filter, feature_category: :
       is_expected.to eq(
         [{ local: 'config/.gitlab-ci.yml', rules: [{ if: '$VARIABLE1' }] }]
       )
+    end
+
+    it 'does not mark the context when some locations survive' do
+      process
+
+      expect(context.any_includes_fully_filtered_by_rules?).to be false
+    end
+
+    context 'when all locations are filtered out' do
+      let(:locations) do
+        [
+          { local: 'config/.gitlab-ci.yml', rules: [{ if: '$VARIABLE1', when: 'never' }] },
+          { remote: 'https://example.com/.gitlab-ci.yml', rules: [{ if: '$VARIABLE2' }] }
+        ]
+      end
+
+      it 'marks the context' do
+        process
+
+        expect(context.any_includes_fully_filtered_by_rules?).to be true
+      end
+    end
+
+    context 'when no locations are filtered out' do
+      let(:locations) do
+        [{ local: 'config/.gitlab-ci.yml', rules: [{ if: '$VARIABLE1' }] }]
+      end
+
+      it 'does not mark the context' do
+        process
+
+        expect(context.any_includes_fully_filtered_by_rules?).to be false
+      end
+    end
+
+    context 'when locations are empty' do
+      let(:locations) { [] }
+
+      it 'does not mark the context' do
+        process
+
+        expect(context.any_includes_fully_filtered_by_rules?).to be false
+      end
     end
   end
 end

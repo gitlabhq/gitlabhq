@@ -397,7 +397,7 @@ The following are not included in service level availability calculations:
 ### Disaster recovery
 
 For more information about disaster recovery, including recovery objectives, see
-[disaster recovery for GitLab Dedicated](../../administration/dedicated/disaster_recovery.md).
+[disaster recovery](../../administration/dedicated/disaster_recovery.md).
 
 ## Migrate to GitLab Dedicated
 

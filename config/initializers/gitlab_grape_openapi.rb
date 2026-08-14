@@ -68,6 +68,7 @@ Gitlab::GrapeOpenapi.configure do |config|
     'Api' => 'API',
     'bitbucket' => 'Bitbucket',
     'Ci' => 'CI',
+    'Code suggestions' => 'Code Suggestions',
     'Dora' => 'DORA',
     'Duo workflows' => 'Duo Workflows',
     'geo' => 'Geo',

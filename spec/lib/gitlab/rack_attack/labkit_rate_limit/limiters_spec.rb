@@ -39,6 +39,24 @@ RSpec.describe Gitlab::RackAttack::LabkitRateLimit::Limiters, feature_category: 
         .with(hash_including(name: entry.rule_name, match: entry.match))
     end
 
+    # enforced_response and annotate_rate_limit_headers resolve a counted rule
+    # back to its throttle via ThrottleRegistry.by_rule_name; a counting rule not
+    # named after a registry entry would silently lose its 429s and headers.
+    it 'names every counting rule after a registry entry, so a matched rule always resolves to its throttle' do
+      built_rules = []
+      allow(Labkit::RateLimit::Rule).to receive(:new).and_wrap_original do |original, **kwargs|
+        built_rules << kwargs
+        original.call(**kwargs)
+      end
+
+      described_class.all
+
+      counting_rule_names = built_rules.reject { |kwargs| kwargs[:action] == :skip }.map { |kwargs| kwargs[:name] }
+
+      expect(counting_rule_names).not_to be_empty
+      expect(registry.by_rule_name.keys).to include(*counting_rule_names)
+    end
+
     it 'follows each claiming throttle rule with a terminating claim of the same match' do
       # labkit evaluates every matching rule, so the claim is what stops a
       # specialized request also being counted by the general rules below it.

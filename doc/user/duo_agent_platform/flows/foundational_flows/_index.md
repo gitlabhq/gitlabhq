@@ -24,17 +24,18 @@ Each flow is designed to solve a specific problem or help you with a development
 
 The following foundational flows are available:
 
-- [Software Development](software_development.md): Create AI-generated solutions for work across the software development lifecycle.
-- [Developer](developer.md): Create actionable merge requests from issues, or
-  complete different tasks in GitLab Duo Agentic Chat.
-- [Fix CI/CD Pipeline](fix_pipeline.md): Diagnose and repair failed jobs.
-- [Convert to GitLab CI/CD](convert_to_gitlab_ci.md): Migrate Jenkins pipelines to CI/CD.
-- [Code Review](code_review/_index.md): Automate code review with AI-native analysis and feedback.
-- [Security Review](security_review.md): Detect business logic security vulnerabilities in merge request changes.
-- [Agentic SAST Vulnerability Resolution](agentic_sast_vulnerability_resolution.md): Automatically generate merge requests to resolve SAST vulnerabilities.
-- [SAST false positive detection](sast_false_positive_detection.md): Automatically identify and filter false positives in SAST findings.
-- [Secret false positive detection](secret_false_positive_detection.md): Automatically identify and filter false positives in secret detection findings.
-- [Agentic breaking change resolution](agentic-breaking-change-resolution.md): Automatically resolve breaking changes in dependency bump merge requests.
+| Flow | Description |
+|------|-------------|
+| [Agentic Breaking Change Resolution](agentic-breaking-change-resolution.md) | Automatically resolve breaking changes in dependency bump merge requests. |
+| [Code Review](code_review/_index.md) | Automate code review with AI-native analysis and feedback. |
+| [Convert to GitLab CI/CD](convert_to_gitlab_ci.md) | Migrate Jenkins pipelines to CI/CD. |
+| [Developer](developer.md) | Create actionable merge requests from issues, or complete different tasks in GitLab Duo Agentic Chat. |
+| [Fix CI/CD Pipeline](fix_pipeline.md) | Diagnose and repair failed jobs. |
+| [SAST False Positive Detection](sast_false_positive_detection.md) | Automatically identify and filter false positives in SAST findings. |
+| [SAST Vulnerability Resolution](agentic_sast_vulnerability_resolution.md) | Automatically generate merge requests to resolve SAST vulnerabilities. |
+| [Secret False Positive Detection](secret_false_positive_detection.md) | Automatically identify and filter false positives in secret detection findings. |
+| [Security Review](security_review.md) | Detect business logic security vulnerabilities in merge request changes. |
+| [Software Development](software_development.md) | Create AI-generated solutions for work across the software development lifecycle. |
 
 ## For developers
 

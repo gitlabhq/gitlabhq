@@ -7,7 +7,7 @@ module Ci
     class_methods do
       def rules_failure_message
         "The resulting pipeline would have been empty. Review the #{ci_docs_link('rules', 'rules')} " \
-          "configuration for the relevant jobs."
+          "configuration."
       end
 
       def workflow_rules_failure_message

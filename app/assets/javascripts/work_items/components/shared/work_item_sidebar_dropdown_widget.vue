@@ -129,7 +129,7 @@ export default {
     'dropdownShown',
     'searchStarted',
     'updateSelected',
-    'updateValue',
+    'update-value',
   ],
   data() {
     return {
@@ -200,7 +200,7 @@ export default {
 
       this.localSelectedItem = finalValue;
       if (!this.multiSelect) {
-        this.$emit('updateValue', finalValue);
+        this.$emit('update-value', finalValue);
       } else {
         this.isDirty = true;
         this.$emit('updateSelected', this.localSelectedItem);
@@ -220,13 +220,13 @@ export default {
       this.isEditing = false;
       this.$emit('dropdownHidden');
       if (this.multiSelect && this.isDirty) {
-        this.$emit('updateValue', this.localSelectedItem);
+        this.$emit('update-value', this.localSelectedItem);
       }
     },
     unassignValue() {
       this.localSelectedItem = this.multiSelect ? [] : null;
       this.isEditing = false;
-      this.$emit('updateValue', this.localSelectedItem);
+      this.$emit('update-value', this.localSelectedItem);
     },
   },
   titleInLinkSafeHtmlConfig,

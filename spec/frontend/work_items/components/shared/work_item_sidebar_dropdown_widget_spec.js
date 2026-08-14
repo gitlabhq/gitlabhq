@@ -194,20 +194,20 @@ describe('WorkItemSidebarDropdownWidget component', () => {
 
   describe('watcher', () => {
     describe('when createdLabelId prop is updated', () => {
-      it('emits "updateValue" event on listbox hide', async () => {
+      it('emits `update-value` event on listbox hide', async () => {
         createComponent({ isEditing: true, multiSelect: true });
         await nextTick();
 
         findCollapsibleListbox().vm.$emit('hidden');
         await nextTick();
 
-        expect(wrapper.emitted('updateValue')).toBeUndefined();
+        expect(wrapper.emitted('update-value')).toBeUndefined();
 
         findEditButton().vm.$emit('click');
         await wrapper.setProps({ createdLabelId: 'gid://gitlab/Label/33' });
         findCollapsibleListbox().vm.$emit('hidden');
 
-        expect(wrapper.emitted('updateValue')).toBeDefined();
+        expect(wrapper.emitted('update-value')).toBeDefined();
       });
     });
   });

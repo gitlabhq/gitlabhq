@@ -63,7 +63,7 @@ If you have any questions on the status, you can also reach out to the `@release
 GitLab `master` has three QA pipelines generated from scheduled pipeline against the default branch:
 
 - [`test-on-omnibus`](_index.md#using-the-test-on-omnibus-job) runs the `full` suite of end-to-end tests against an omnibus Docker image built from `master`
-- [`test-on-gdk`](_index.md#selective-test-execution-based-on-code-path-mappings) runs the full suite of end-to-end tests as part of the `gdk-instance` job against a GDK instance from a Docker image built from `master`
+- [`test-on-gdk`](_index.md#selective-test-execution-based-on-code-path-mappings) runs the full suite of end-to-end tests as part of the `gdk-instance` job against a GDK instance from a Docker image built from `master`, only in scheduled pipelines and not in merge request pipelines
 
 If jobs in `test-on-omnibus` failed due to a GitLab Docker image issue, reach out to the [Distribution team](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/gitlab-delivery/distribution/) to see if it's a known problem with the build.
 

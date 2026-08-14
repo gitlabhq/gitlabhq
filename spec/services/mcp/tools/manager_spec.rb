@@ -393,5 +393,43 @@ RSpec.describe Mcp::Tools::Manager, feature_category: :ai_agents do
         expect(tool).to eq(semantic_search_api_tool)
       end
     end
+
+    context 'with an API tool that declares an alias in its route settings' do
+      let(:aliased_app) { instance_double(Grape::Endpoint) }
+      let(:aliased_route) { instance_double(Grape::Router::Route, app: aliased_app) }
+      let(:aliased_api_tool) { instance_double(Mcp::Tools::Base::ApiTool) }
+
+      before do
+        allow(aliased_app).to receive(:route_setting).with(:mcp)
+          .and_return({ tool_name: :new_api_tool, tool_aliases: [:old_api_tool] })
+        allow(API::API).to receive(:routes).and_return([aliased_route])
+        allow(Mcp::Tools::Base::ApiTool).to receive(:new)
+          .with(name: 'new_api_tool', route: aliased_route)
+          .and_return(aliased_api_tool)
+        allow(aliased_api_tool).to receive_messages(tool_aliases: ['old_api_tool'], version: '1.0.0')
+      end
+
+      it 'resolves the alias to the discovered ApiTool' do
+        tool = manager.get_tool(name: 'old_api_tool')
+
+        expect(tool).to eq(aliased_api_tool)
+      end
+    end
+  end
+
+  describe 'MCP route settings' do
+    it 'does not declare tool_aliases on a route that also sets aggregators' do
+      offenders = ::API::API.routes.filter_map do |route|
+        settings = route.app.route_setting(:mcp)
+        next if settings.blank?
+        next unless settings[:aggregators].present? && settings[:tool_aliases].present?
+
+        settings[:tool_name]
+      end
+
+      expect(offenders).to be_empty,
+        "tool_aliases on an aggregated route is silently ignored; declare the alias on the " \
+          "aggregator class's self.tool_aliases instead. Offending routes: #{offenders}"
+    end
   end
 end

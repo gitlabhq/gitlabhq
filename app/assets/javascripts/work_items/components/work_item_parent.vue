@@ -376,7 +376,7 @@ export default {
     @dropdownShown="onListboxShown"
     @dropdownHidden="onListboxHide"
     @searchStarted="searchWorkItems"
-    @updateValue="handleItemClick"
+    @update-value="handleItemClick"
     @reset="unassignParent"
   >
     <template #readonly>

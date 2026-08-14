@@ -364,6 +364,10 @@ li.note {
   box-shadow: 0 0 0 2px currentColor inset;
 }
 
+.gl-label-tooltip-footer {
+  color: var(--gl-tooltip-text-color-subtle);
+}
+
 .ref-container,
 .commit-sha-container {
   font-family: $gl-monospace-font;

@@ -679,6 +679,48 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
         end
       end
 
+      shared_examples 'paginates across keyset pages preserving order' do
+        it 'paginates across pages preserving commit order', :aggregate_failures do
+          get api(route, current_user), params: { pagination: 'keyset', per_page: 2 }.merge(keyset_params)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          first_page = json_response.map { |c| c['id'] }
+
+          cursor = pagination_params_from_next_url(response)['page_token']
+          expect(cursor).to be_present
+
+          get api(route, current_user),
+            params: { pagination: 'keyset', per_page: 2, page_token: cursor }.merge(keyset_params)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          second_page = json_response.map { |c| c['id'] }
+
+          expected = project.repository.commits(project.default_branch, keyset_params.merge(limit: 4)).map(&:id)
+          expect(first_page + second_page).to eq(expected)
+        end
+      end
+
+      shared_examples 'paginates across keyset pages without overlap' do
+        it 'paginates across pages without dropping or duplicating commits', :aggregate_failures do
+          get api(route, current_user), params: { pagination: 'keyset', per_page: 2 }.merge(keyset_params)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          first_page = json_response.map { |c| c['id'] }
+
+          cursor = pagination_params_from_next_url(response)['page_token']
+          expect(cursor).to be_present
+
+          get api(route, current_user),
+            params: { pagination: 'keyset', per_page: 2, page_token: cursor }.merge(keyset_params)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          second_page = json_response.map { |c| c['id'] }
+
+          expect(second_page).not_to eq(first_page)
+          expect(first_page & second_page).to be_empty
+        end
+      end
+
       it 'returns commits and a next-page Link header for a full page', :aggregate_failures do
         get api(route, current_user), params: { pagination: 'keyset', per_page: 2 }
 
@@ -709,17 +751,8 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
       end
 
       context 'with all=true' do
-        it 'succeeds and honors keyset pagination (regression for #586997)', :aggregate_failures do
-          get api(route, current_user), params: { pagination: 'keyset', all: true, per_page: 2 }
-          first_page = json_response.map { |c| c['id'] }
-
-          cursor = pagination_params_from_next_url(response)['page_token']
-
-          get api(route, current_user), params: { pagination: 'keyset', all: true, per_page: 2, page_token: cursor }
-          second_page = json_response.map { |c| c['id'] }
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(second_page).not_to eq(first_page)
+        it_behaves_like 'paginates across keyset pages without overlap' do
+          let(:keyset_params) { { all: true } }
         end
       end
 
@@ -763,22 +796,8 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
           expect(first_parent_ids.size).to be < full_ids.size
         end
 
-        it 'paginates across pages without dropping or duplicating commits', :aggregate_failures do
-          get api(route, current_user), params: { pagination: 'keyset', first_parent: true, per_page: 2 }
-
-          expect(response).to have_gitlab_http_status(:ok)
-          first_page = json_response.map { |c| c['id'] }
-
-          cursor = pagination_params_from_next_url(response)['page_token']
-          expect(cursor).to be_present
-
-          get api(route, current_user), params: { pagination: 'keyset', first_parent: true, per_page: 2, page_token: cursor }
-
-          expect(response).to have_gitlab_http_status(:ok)
-          second_page = json_response.map { |c| c['id'] }
-
-          expected = project.repository.commits(project.default_branch, first_parent: true, limit: 4).map(&:id)
-          expect(first_page + second_page).to eq(expected)
+        it_behaves_like 'paginates across keyset pages preserving order' do
+          let(:keyset_params) { { first_parent: true } }
         end
       end
 
@@ -794,22 +813,8 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
           expect(json_response.map { |c| c['id'] }).to eq(expected)
         end
 
-        it 'paginates across pages with stable order', :aggregate_failures do
-          get api(route, current_user), params: { pagination: 'keyset', order: 'topo', per_page: 2 }
-
-          expect(response).to have_gitlab_http_status(:ok)
-          first_page = json_response.map { |c| c['id'] }
-
-          cursor = pagination_params_from_next_url(response)['page_token']
-          expect(cursor).to be_present
-
-          get api(route, current_user), params: { pagination: 'keyset', order: 'topo', per_page: 2, page_token: cursor }
-
-          expect(response).to have_gitlab_http_status(:ok)
-          second_page = json_response.map { |c| c['id'] }
-
-          expected = project.repository.commits(project.default_branch, order: 'topo', limit: 4).map(&:id)
-          expect(first_page + second_page).to eq(expected)
+        it_behaves_like 'paginates across keyset pages preserving order' do
+          let(:keyset_params) { { order: 'topo' } }
         end
       end
 
@@ -825,7 +830,7 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
       context 'with a path filter' do
         let(:path) { 'files/ruby/popen.rb' }
 
-        it 'returns only commits that touch the path', :aggregate_failures do
+        it 'returns only commits that touch the path and matches offset pagination', :aggregate_failures do
           get api(route, current_user), params: { pagination: 'keyset', path: path, per_page: 100 }
 
           expect(response).to have_gitlab_http_status(:ok)
@@ -834,7 +839,7 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
 
           returned_ids = json_response.map { |c| c['id'] }
           expected_ids = project.repository.commits(project.default_branch, path: path, limit: 100).map(&:id)
-          expect(returned_ids).to match_array(expected_ids)
+          expect(returned_ids).to eq(expected_ids)
         end
 
         it 'strips a leading slash from the path', :aggregate_failures do
@@ -858,22 +863,8 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
           end
         end
 
-        it 'paginates across pages without dropping or duplicating commits', :aggregate_failures do
-          get api(route, current_user), params: { pagination: 'keyset', path: path, per_page: 2 }
-
-          expect(response).to have_gitlab_http_status(:ok)
-          first_page = json_response.map { |c| c['id'] }
-
-          cursor = pagination_params_from_next_url(response)['page_token']
-          expect(cursor).to be_present
-
-          get api(route, current_user), params: { pagination: 'keyset', path: path, per_page: 2, page_token: cursor }
-
-          expect(response).to have_gitlab_http_status(:ok)
-          second_page = json_response.map { |c| c['id'] }
-
-          expect(second_page).not_to eq(first_page)
-          expect(first_page & second_page).to be_empty
+        it_behaves_like 'paginates across keyset pages without overlap' do
+          let(:keyset_params) { { path: path } }
         end
 
         context 'with a glob metacharacter in the path' do

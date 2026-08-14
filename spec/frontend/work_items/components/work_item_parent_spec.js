@@ -149,7 +149,7 @@ describe('WorkItemParent component', () => {
   };
 
   const selectWorkItem = (workItem) => {
-    findSidebarDropdownWidget().vm.$emit('updateValue', workItem);
+    findSidebarDropdownWidget().vm.$emit('update-value', workItem);
   };
 
   describe('when loaded', () => {

@@ -12154,6 +12154,9 @@ msgstr ""
 msgid "ArtifactRegistry|Loading repositories."
 msgstr ""
 
+msgid "ArtifactRegistry|Loading versions."
+msgstr ""
+
 msgid "ArtifactRegistry|Lowercase letters, numbers, hyphens (-), and underscores (_) only. The repository name cannot be changed after creation."
 msgstr ""
 
@@ -12235,6 +12238,9 @@ msgid "ArtifactRegistry|Publish your first image to get started."
 msgstr ""
 
 msgid "ArtifactRegistry|Publish your first package to get started."
+msgstr ""
+
+msgid "ArtifactRegistry|Published"
 msgstr ""
 
 msgid "ArtifactRegistry|Pull an image:"
@@ -12370,6 +12376,12 @@ msgid "ArtifactRegistry|Unknown Artifact Registry role: %{role}."
 msgstr ""
 
 msgid "ArtifactRegistry|Unknown Artifact Registry roles: %{roles}."
+msgstr ""
+
+msgid "ArtifactRegistry|Version"
+msgstr ""
+
+msgid "ArtifactRegistry|Version list for %{name} updated."
 msgstr ""
 
 msgid "ArtifactRegistry|Versions"

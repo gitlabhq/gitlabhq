@@ -80,7 +80,7 @@ describe('WorkItemCrmContacts component', () => {
     findWorkItemSidebarDropdownWidget().vm.$emit('searchStarted');
     await waitForPromises();
 
-    findWorkItemSidebarDropdownWidget().vm.$emit('updateValue', items);
+    findWorkItemSidebarDropdownWidget().vm.$emit('update-value', items);
   };
 
   it('renders the work item sidebar dropdown widget with default props', async () => {
@@ -196,9 +196,9 @@ describe('WorkItemCrmContacts component', () => {
     });
   });
 
-  it('clears all items when updateValue has no items', async () => {
+  it('clears all items when `update-value` has no items', async () => {
     createComponent();
-    findWorkItemSidebarDropdownWidget().vm.$emit('updateValue', []);
+    findWorkItemSidebarDropdownWidget().vm.$emit('update-value', []);
     await waitForPromises();
 
     expect(successUpdateWorkItemMutationHandler).toHaveBeenCalledWith({
@@ -297,7 +297,7 @@ describe('WorkItemCrmContacts component', () => {
       trackingSpy = null;
     });
 
-    it('tracks editing the items on dropdown widget updateValue', async () => {
+    it('tracks editing the items on dropdown widget `update-value`', async () => {
       showDropdown();
       updateItems([item1Id]);
 

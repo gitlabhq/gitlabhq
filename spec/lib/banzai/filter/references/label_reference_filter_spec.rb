@@ -108,6 +108,32 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
     end
   end
 
+  describe 'tooltip' do
+    it 'renders the tooltip title as HTML' do
+      doc = reference_filter("Label #{reference}")
+
+      expect(doc.at_css('a').attr('data-html')).to eq('true')
+    end
+
+    context 'when the label is archived' do
+      let(:label) { create(:label, project: project, archived: true) }
+
+      it 'appends an archived line to the tooltip title' do
+        doc = reference_filter("Label #{reference}")
+
+        expect(doc.at_css('a').attr('title')).to include('<span class="gl-label-tooltip-footer">Archived</span>')
+      end
+    end
+
+    context 'when the label is not archived' do
+      it 'does not append an archived line to the tooltip title' do
+        doc = reference_filter("Label #{reference}")
+
+        expect(doc.at_css('a').attr('title')).not_to include('Archived')
+      end
+    end
+  end
+
   context 'Integer-based references' do
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")

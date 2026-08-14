@@ -1,7 +1,7 @@
 ---
 name: gitlab-mcp-tool-builder
 description: "Build a new GraphQL-backed MCP server tool in gitlab-org/gitlab. Use when adding or scaffolding a GitLab Duo Agent Platform MCP tool that follows the app/services/mcp/tools/ *Tool + Graphql*Service pattern — covers GraphQL API discovery, the two-class-plus-registration build recipe, and gotchas. Keywords: MCP tool, MCP server, GraphQL tool, GitLab Duo Agent Platform."
-version: 1.6.0
+version: 1.6.1
 license: MIT
 compatibility: opencode
 metadata:
@@ -233,6 +233,11 @@ a convention (non-standard verb, second write tool on one resource).
   you're replacing lives elsewhere (e.g. a Duo Workflow Python tool that was never MCP-served),
   no MCP client cached the old name, and if it still runs it remains the compatibility path.
   Don't claim the alias "protects cached clients" without confirming the old name was ours.
+- **Where you declare an alias depends on the tool type.** Custom, GraphQL, and aggregated tools
+  override `self.tool_aliases` on the class. API tools (`route_setting :mcp`) set `tool_aliases:` in
+  the route settings instead — the class override does nothing for them, since one `ApiTool` class
+  backs every route. `tool_aliases:` on a route that also sets `aggregators:` is ignored; alias that
+  tool through the aggregator class's `self.tool_aliases`.
 - **Add the tool to the built-in catalog only if a custom agent would use it.** Registering in
   `manager.rb` already exposes the tool to **agentic chat** (`Ai::DuoWorkflows::McpConfigService`
   injects the GitLab MCP server's tools). The extra entry in

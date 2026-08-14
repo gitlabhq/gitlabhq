@@ -80,6 +80,10 @@ module Mcp
           process_response(status, Array(body)[0])
         end
 
+        def tool_aliases
+          Array(settings[:tool_aliases]).map(&:to_s)
+        end
+
         def annotations
           return settings[:annotations] if settings[:annotations].present?
 

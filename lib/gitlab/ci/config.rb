@@ -170,6 +170,10 @@ module Gitlab
         @context.includes.filter_map { |i| i[:component] if i[:type] == :component }.uniq
       end
 
+      def any_includes_fully_filtered_by_rules?
+        @context.any_includes_fully_filtered_by_rules?
+      end
+
       def metadata
         {
           includes: @context.includes,

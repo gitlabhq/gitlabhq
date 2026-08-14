@@ -67,8 +67,10 @@ module Gitlab
 
       # Creates a RequestThrottleData instance from a Labkit::RateLimit::Result.
       #
-      # Used by Gitlab::Middleware::LabkitRackRateLimit when a promoted (enforced)
-      # throttle blocks. The headers it produces are byte-identical to the
+      # Used by Gitlab::Middleware::LabkitRackRateLimit both when a promoted
+      # (enforced) throttle blocks a request, and to build the proactive (non-429)
+      # headers it adds once every cohort is fully enforced.
+      # The headers it produces are byte-identical to the
       # legacy Rack::Attack 429 because both paths feed the same
       # RequestThrottleData math: only labkit's resolved limit/period and
       # observed count are read here, and reset/retry-after are recomputed from
@@ -76,7 +78,9 @@ module Gitlab
       # promoted throttle's response matches what Rack::Attack would have sent.
       #
       # @param name [String, Symbol] The name of the throttle (e.g. 'throttle_authenticated_api')
-      # @param result [Labkit::RateLimit::Result] The decision returned by Limiter#check
+      # @param result [Labkit::RateLimit::Result, Labkit::RateLimit::Result::Evaluation]
+      #   The decision returned by Limiter#check, or a single counted evaluation from it;
+      #   only #info is read
       # @return [RequestThrottleData, nil] A new instance, or nil if required data is missing
       def self.from_labkit_result(name:, result:)
         unless name

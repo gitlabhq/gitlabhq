@@ -336,6 +336,8 @@ GitLab begins linking the role to any matching LDAP users. This process may take
 
 > [!note]
 > When you remove LDAP group syncing, the existing memberships and role assignment are retained.
+> If the group has no remaining LDAP group links, you can edit these memberships directly.
+> You do not need to override them first.
 
 ### Override user permissions
 

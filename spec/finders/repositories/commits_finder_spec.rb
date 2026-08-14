@@ -137,6 +137,18 @@ RSpec.describe Repositories::CommitsFinder, feature_category: :source_code_manag
     context 'with gitaly pagination (gitaly_pagination: true)' do
       subject(:commits) { finder.execute(gitaly_pagination: true) }
 
+      shared_examples 'keyset matches offset for filter' do |filter|
+        it 'matches offset pagination for the same filter' do
+          offset_commits = described_class.new(project, filter.merge(per_page: 100))
+            .execute(gitaly_pagination: false)
+
+          keyset_commits = described_class.new(project, filter.merge(per_page: 100))
+            .execute(gitaly_pagination: true)
+
+          expect(keyset_commits.map(&:id)).to eq(offset_commits.map(&:id))
+        end
+      end
+
       context 'when no params are given' do
         it 'returns commits from the default branch' do
           expect(commits).to be_present
@@ -229,15 +241,7 @@ RSpec.describe Repositories::CommitsFinder, feature_category: :source_code_manag
           expect(first_parent_only.map(&:id).size).to be < full.map(&:id).size
         end
 
-        it 'matches offset pagination for the same first_parent filter' do
-          offset_commits = described_class.new(project, { first_parent: true, per_page: 100 })
-            .execute(gitaly_pagination: false)
-
-          keyset_commits = described_class.new(project, { first_parent: true, per_page: 100 })
-            .execute(gitaly_pagination: true)
-
-          expect(keyset_commits.map(&:id)).to eq(offset_commits.map(&:id))
-        end
+        it_behaves_like 'keyset matches offset for filter', { first_parent: true }
       end
 
       context 'when order is topo' do
@@ -255,15 +259,7 @@ RSpec.describe Repositories::CommitsFinder, feature_category: :source_code_manag
           expect(commits).to be_present
         end
 
-        it 'matches offset pagination for the same order filter' do
-          offset_commits = described_class.new(project, { order: 'topo', per_page: 100 })
-            .execute(gitaly_pagination: false)
-
-          keyset_commits = described_class.new(project, { order: 'topo', per_page: 100 })
-            .execute(gitaly_pagination: true)
-
-          expect(keyset_commits.map(&:id)).to eq(offset_commits.map(&:id))
-        end
+        it_behaves_like 'keyset matches offset for filter', { order: 'topo' }
       end
 
       context 'when order is default' do

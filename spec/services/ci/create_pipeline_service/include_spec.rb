@@ -338,5 +338,84 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
         )
       end
     end
+
+    context 'when a nested include filters out all of its includes leaving no visible jobs' do
+      let(:config) do
+        <<~YAML
+        include:
+          - local: nested.yml
+        YAML
+      end
+
+      let(:project_files) do
+        {
+          '.gitlab-ci.yml' => config,
+          'nested.yml' => <<~YAML
+            include:
+              - local: .child.yml
+                rules:
+                  - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
+            .hidden_job:
+              script: echo
+          YAML
+        }
+      end
+
+      it 'does not persist the pipeline', :aggregate_failures do
+        expect(pipeline).not_to be_persisted
+        expect(pipeline.failure_reason).to eq('filtered_by_rules')
+      end
+    end
+
+    context 'when multiple includes are all filtered out leaving no visible jobs' do
+      let(:config) do
+        <<~YAML
+        include:
+          - local: a.yml
+            rules:
+              - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+          - local: b.yml
+            rules:
+              - if: $CI_PIPELINE_SOURCE == "schedule"
+        YAML
+      end
+
+      # The included files are never fetched: include:rules: filtering runs before
+      # resolution. This asserts that even with several filtered includes only a
+      # single "no visible jobs" error is produced, so the pipeline is reclassified.
+      it 'does not persist the pipeline', :aggregate_failures do
+        expect(pipeline).not_to be_persisted
+        expect(pipeline.failure_reason).to eq('filtered_by_rules')
+      end
+    end
+
+    context 'when an include survives filtering but contributes no visible jobs' do
+      let(:config) do
+        <<~YAML
+        include:
+          - local: defaults.yml
+          - local: .child.yml
+            rules:
+              - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+        YAML
+      end
+
+      let(:project_files) do
+        {
+          '.gitlab-ci.yml' => config,
+          'defaults.yml' => <<~YAML
+            .hidden_job:
+              script: echo
+          YAML
+        }
+      end
+
+      it 'persists a failed pipeline with the original config_error', :aggregate_failures do
+        expect(pipeline).to be_persisted
+        expect(pipeline.failure_reason).to eq('config_error')
+        expect(pipeline.errors.full_messages).to include(a_string_including('at least one visible job'))
+      end
+    end
   end
 end

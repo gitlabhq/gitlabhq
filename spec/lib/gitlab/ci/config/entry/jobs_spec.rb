@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::Entry::Jobs do
+RSpec.describe Gitlab::Ci::Config::Entry::Jobs, feature_category: :pipeline_composition do
   let(:entry) { described_class.new(config) }
 
   let(:config) do
@@ -87,6 +87,13 @@ RSpec.describe Gitlab::Ci::Config::Entry::Jobs do
           it 'returns error about no visible jobs defined' do
             expect(entry.errors)
               .to include 'jobs config should contain at least one visible job'
+          end
+
+          # Guards the coupling relied on by YamlProcessor::Result#only_no_visible_jobs_error?,
+          # which matches the composed error by its NO_VISIBLE_JOBS_MESSAGE suffix.
+          it 'composes an error ending with NO_VISIBLE_JOBS_MESSAGE' do
+            expect(entry.errors)
+              .to include(a_string_ending_with(described_class::NO_VISIBLE_JOBS_MESSAGE))
           end
         end
       end

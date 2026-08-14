@@ -12,12 +12,12 @@ scheme, and port automatically. No `GITLAB_HOST` needed.
 ```bash
 # In a repo cloned from ops.gitlab.net — no GITLAB_HOST needed
 glab mr list
-glab api "projects/gitlab-com%2Fgl-infra%2Fconfig-mgmt/issues/1"
+glab api --method GET "projects/gitlab-com%2Fgl-infra%2Fconfig-mgmt/issues/1"
 glab api graphql -f query='{ currentUser { username } }'
 
 # In a GDK repo cloned from http://gdk.test:3000 — also auto-detected
 glab issue list
-glab api "projects/mygroup%2Fmyproject/issues"
+glab api --method GET "projects/mygroup%2Fmyproject/issues"
 ```
 
 ## Non-origin Remotes
@@ -53,7 +53,7 @@ scheme and the port (`GITLAB_HOST=http://gdk.test:3000`).
 
 ```bash
 # Standard HTTPS — scheme optional
-GITLAB_HOST=ops.gitlab.net glab api "groups/gitlab-com%2Fgl-infra/epics"
+GITLAB_HOST=ops.gitlab.net glab api --method GET "groups/gitlab-com%2Fgl-infra/epics"
 
 # HTTP with non-standard port (e.g. GDK) — scheme and port required
 GITLAB_HOST=http://gdk.test:3000 glab issue list

@@ -344,7 +344,7 @@ export default {
     data-testid="work-item-labels"
     @dropdownShown="onDropdownShown"
     @searchStarted="search"
-    @updateValue="submitLabels"
+    @update-value="submitLabels"
     @updateSelected="setLabels"
   >
     <template #list-item="{ item }">

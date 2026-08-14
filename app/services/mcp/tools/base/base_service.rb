@@ -13,6 +13,10 @@ module Mcp
           @name = name
         end
 
+        def tool_aliases
+          self.class.tool_aliases
+        end
+
         def set_cred(**)
           raise NoMethodError
         end

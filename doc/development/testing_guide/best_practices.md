@@ -720,6 +720,53 @@ within('.modal') { click_button 'Close' }
 
 See [Interacting with modals](#interacting-with-modals) for modal helpers.
 
+#### Vary setup with `let` overrides instead of visiting twice
+
+In `:js` feature specs, nested contexts often need different setup to run before the page visit, such as a different signed-in user, a different record state, or a feature flag state.
+Avoid adding this setup in a nested context's own `before` block and calling `visit` a second time on the same URL.
+
+The extra `visit` reloads the same page and makes the spec slower.
+
+Also, calling `sign_in` after a page has already been visited is racy, because the `sign_in` helper injects the session using `Warden.on_next_request`, and a background request still in flight from the first visited page can consume that injection, which leaves the intended user not signed in.
+
+Bad:
+
+```ruby
+before do
+  sign_in(maintainer)
+  visit path
+end
+
+context 'when the user is a guest' do
+  before do
+    guest = create(:user, guest_of: project)
+    gitlab_sign_out
+    sign_in(guest)
+    visit path
+  end
+end
+```
+
+Instead, keep a single `sign_in` and a single `visit` in the outermost `before` block, and make the setup dynamic by reading from `let` definitions.
+Nested contexts then override only the relevant `let`.
+
+Good:
+
+```ruby
+let(:current_user) { maintainer }
+
+before do
+  sign_in(current_user)
+  visit path
+end
+
+context 'when the user is a guest' do
+  let(:current_user) { create(:user, guest_of: project) }
+end
+```
+
+This keeps the spec faster and avoids the sign-in race.
+
 #### Poll for browser side-effects with `wait_for`
 
 Always prefer asserting on a visible UI outcome (`have_content`,

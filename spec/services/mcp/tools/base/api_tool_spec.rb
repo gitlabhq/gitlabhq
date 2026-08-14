@@ -51,6 +51,20 @@ RSpec.describe Mcp::Tools::Base::ApiTool, feature_category: :ai_agents do
     end
   end
 
+  describe '#tool_aliases' do
+    it 'returns an empty array when the route declares none' do
+      expect(api_tool.tool_aliases).to eq([])
+    end
+
+    context 'when the route declares aliases' do
+      let(:mcp_settings) { { params: [:param1, :param2], tool_name: 'test_tool', tool_aliases: [:old_tool] } }
+
+      it 'returns the aliases from the route settings as strings' do
+        expect(api_tool.tool_aliases).to eq(['old_tool'])
+      end
+    end
+  end
+
   describe '#icons' do
     it 'returns icons array' do
       icons = api_tool.icons
