@@ -68,7 +68,7 @@ describe('Suggestion component', () => {
     await nextTick();
   });
 
-  describe('when a rendered suggestion diff emits a batch event', () => {
+  describe('when a rendered suggestion diff emits an event', () => {
     const noteHtmlWithSuggestion = `
       <div class="suggestion">
         <div class="js-render-suggestion">+newtest</div>
@@ -100,6 +100,23 @@ describe('Suggestion component', () => {
       await wrapper.find('.js-remove-from-batch-btn').trigger('click');
 
       expect(wrapper.emitted('remove-from-batch')).toEqual([[MOCK_DATA.suggestions[0].id]]);
+    });
+
+    it('emits `apply` when the apply suggestion button is clicked without a batch', async () => {
+      await createWithRenderedSuggestion();
+
+      await wrapper.find('[data-testid="commit-with-custom-message-button"]').trigger('click');
+
+      expect(wrapper.emitted('apply')).toEqual([
+        [
+          {
+            suggestionId: MOCK_DATA.suggestions[0].id,
+            callback: expect.any(Function),
+            flashContainer: wrapper.vm.$el,
+            message: null,
+          },
+        ],
+      ]);
     });
 
     it('emits `apply-batch` when the apply suggestions button is clicked', async () => {

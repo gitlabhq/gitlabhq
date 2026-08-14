@@ -58,6 +58,7 @@ export default {
       default: false,
     },
   },
+  emits: ['apply', 'apply-batch', 'add-to-batch', 'remove-from-batch'],
   data() {
     return {
       isRendered: false,

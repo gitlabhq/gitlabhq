@@ -3,6 +3,23 @@
  */
 export default {
   files: [
+    'app/assets/javascripts/behaviors/components/image_lightbox.vue',
+    'app/assets/javascripts/boards/components/board_card_move_to_position.vue',
+    'app/assets/javascripts/boards/components/board_column.vue',
+    'app/assets/javascripts/boards/components/board_content.vue',
+    'app/assets/javascripts/boards/components/board_form.vue',
+    'app/assets/javascripts/boards/components/board_list.vue',
+    'app/assets/javascripts/boards/components/board_list_header.vue',
+    'app/assets/javascripts/boards/components/board_new_issue.vue',
+    'app/assets/javascripts/boards/components/board_options.vue',
+    'app/assets/javascripts/boards/components/board_settings_sidebar.vue',
+    'app/assets/javascripts/boards/components/board_top_bar.vue',
+    'app/assets/javascripts/boards/components/boards_selector.vue',
+    'app/assets/javascripts/ci/artifacts/components/artifact_row.vue',
+    'app/assets/javascripts/ci/artifacts/components/artifacts_bulk_delete.vue',
+    'app/assets/javascripts/ci/artifacts/components/job_checkbox.vue',
+    'app/assets/javascripts/ci/common/private/jobs_filtered_search/app.vue',
+    'app/assets/javascripts/ci/job_token_access/components/token_access_table.vue',
     'app/assets/javascripts/behaviors/components/diagram_performance_warning.vue',
     'app/assets/javascripts/ci/jobs_page/components/job_cells/actions_cell.vue',
     'app/assets/javascripts/content_editor/components/content_editor.vue',

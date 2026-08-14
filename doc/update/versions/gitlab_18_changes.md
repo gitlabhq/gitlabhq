@@ -48,6 +48,7 @@ Before upgrading to GitLab 18.11, review the following:
 - [18.11.0 - 18.11.1] - [CI job token regression pulling container images from internal and public projects](#ci-job-token-regression-pulling-container-images-from-internal-and-public-projects)
 - [18.11.0] - [Upgrading to 18.11 triggers a PostgreSQL 17.7 version upgrade](#postgresql-version-177-upgrade-on-gitlab-1811) (Linux package, Docker, Geo)
 - [18.11.0] - [Mattermost and Spamcheck removed from SLES 12.5 packages](#mattermost-and-spamcheck-removed-from-sles-125-packages) (Linux package)
+- [18.11.0] - [Compiled per-job config is subject to a 1 MiB size limit](#compiled-per-job-config-is-subject-to-a-1-mib-size-limit)
 
 ### Upgrade to 18.10
 
@@ -1282,3 +1283,12 @@ enabled for all projects in the group.
 
 You should check the settings for projects in a group before allowing the foundational flow for
 secret false positive detection for the group.
+
+### Compiled per-job config is subject to a 1 MiB size limit
+
+- Affects: All installation methods
+- Affected versions: 18.11.x
+
+A [change to enforce JSON schema validation also now enforces a 1 MiB size limit of the compiled per-job config](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218219). When a job's compiled config (its options, YAML variables, tokens, secrets, etc.) exceeds this limit, pipeline creation fails with: `Failed to persist the pipeline: Validation failed: Config is too large. Maximum size allowed is 1 MiB`. The workaround is to reduce the size of the job's config to be less than 1 MiB.
+
+In GitLab 19, [the size limit is configurable](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/241962) using the `ci_max_total_yaml_size_bytes` application setting.

@@ -84,27 +84,19 @@ describe('MenuSection component', () => {
       it('does not show as expanded nor is expandable', () => {
         createWrapper({ title: 'Asdf' }, { expanded: true }, { isIconOnly: true });
         expect(findNavItem().props('isIconOnly')).toBe(true);
-
-        // Regression test: We have to keep the GlCollapse with its child NavItems in the DOM
-        // for keyboard shortcuts to work. Keyboard shortcuts look for elements by id to navigate
-        // to their href!
-        expect(findCollapse().exists()).toBe(true);
-
-        // We have to use `visibility: hidden` here, because toggling via `v-show` would show the
-        // GlCollapse's transition effects, which is not desired here.
-        expect(findCollapse().classes()).toContain('gl-invisible');
+        expect(findCollapse().classes()).toContain('gl-hidden');
       });
     });
 
     describe('when coming out of icon-only mode', () => {
       it('shows expanded as expanded again', async () => {
         createWrapper({ title: 'Asdf' }, { expanded: true }, { isIconOnly: true });
-        expect(findCollapse().classes()).toContain('gl-invisible');
+        expect(findCollapse().classes()).toContain('gl-hidden');
 
         provideState.isIconOnly = false;
         await nextTick();
 
-        expect(findCollapse().classes()).not.toContain('gl-invisible');
+        expect(findCollapse().classes()).not.toContain('gl-hidden');
       });
     });
 
@@ -115,7 +107,7 @@ describe('MenuSection component', () => {
           { expanded: true, headerless: true },
           { isIconOnly: true },
         );
-        expect(findCollapse().classes()).not.toContain('gl-invisible');
+        expect(findCollapse().classes()).not.toContain('gl-hidden');
       });
     });
   });

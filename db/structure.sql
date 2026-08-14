@@ -16463,7 +16463,9 @@ CREATE TABLE catalog_bundled_resources (
     CONSTRAINT check_477b124aa9 CHECK ((char_length(description) <= 1024)),
     CONSTRAINT check_88489344ae CHECK ((char_length(name) <= 255)),
     CONSTRAINT check_a7f7ace410 CHECK ((char_length(server_fqdn) <= 255)),
-    CONSTRAINT check_a878d27127 CHECK ((char_length(full_path) <= 1024))
+    CONSTRAINT check_a878d27127 CHECK ((char_length(full_path) <= 1024)),
+    CONSTRAINT check_catalog_bundled_resources_fqdn_lowercase CHECK ((server_fqdn = lower(server_fqdn))),
+    CONSTRAINT check_catalog_bundled_resources_full_path_lowercase CHECK ((full_path = lower(full_path)))
 );
 
 CREATE SEQUENCE catalog_bundled_resources_id_seq
@@ -46791,9 +46793,9 @@ CREATE INDEX index_ca_enabled_incomplete_aggregation_stages_on_last_run_at ON an
 
 CREATE UNIQUE INDEX index_cargo_metadata_on_project_normalized_name_version ON packages_cargo_metadata USING btree (project_id, normalized_name, normalized_version);
 
-CREATE UNIQUE INDEX index_catalog_bundled_resources_on_fqdn_and_full_path ON catalog_bundled_resources USING btree (lower(server_fqdn), lower(full_path));
-
 CREATE INDEX index_catalog_bundled_resources_on_search_vector ON catalog_bundled_resources USING gin (search_vector);
+
+CREATE UNIQUE INDEX index_catalog_bundled_resources_on_server_fqdn_and_full_path ON catalog_bundled_resources USING btree (server_fqdn, full_path);
 
 CREATE INDEX index_catalog_resource_components_on_catalog_resource_id ON catalog_resource_components USING btree (catalog_resource_id);
 

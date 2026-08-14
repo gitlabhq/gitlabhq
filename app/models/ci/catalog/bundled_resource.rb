@@ -10,10 +10,13 @@ module Ci
       has_many :components, class_name: 'Ci::Catalog::BundledResources::Component',
         foreign_key: :catalog_bundled_resource_id, inverse_of: :bundled_resource
 
+      normalizes :server_fqdn, with: ->(value) { value.downcase }
+      normalizes :full_path, with: ->(value) { value.downcase }
+
       validates :server_fqdn, presence: true, length: { maximum: 255 }
       validates :name, presence: true, length: { maximum: 255 }
       validates :full_path, presence: true, length: { maximum: 1024 },
-        uniqueness: { scope: :server_fqdn, case_sensitive: false }
+        uniqueness: { scope: :server_fqdn }
       validates :description, length: { maximum: 1024 }
 
       scope :ordered_by_id, -> { order(id: :asc) }

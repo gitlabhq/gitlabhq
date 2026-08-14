@@ -4,6 +4,17 @@
 export default {
   files: [
     'app/assets/javascripts/analytics/cycle_analytics/components/filter_bar.vue',
+    'app/assets/javascripts/batch_comments/components/draft_note.vue',
+    'app/assets/javascripts/blob/components/blob_content.vue',
+    'app/assets/javascripts/boards/components/board_add_new_column.vue',
+    'app/assets/javascripts/boards/components/board_app.vue',
+    'app/assets/javascripts/boards/components/board_column.vue',
+    'app/assets/javascripts/boards/components/board_content.vue',
+    'app/assets/javascripts/boards/components/board_filtered_search.vue',
+    'app/assets/javascripts/boards/components/board_list.vue',
+    'app/assets/javascripts/boards/components/board_top_bar.vue',
+    'app/assets/javascripts/boards/components/boards_selector.vue',
+    'app/assets/javascripts/ci/artifacts/components/job_artifacts_table.vue',
     'app/assets/javascripts/ci/catalog/components/cells/two_source_browse.vue',
     'app/assets/javascripts/ci/catalog/components/list/catalog_search.vue',
     'app/assets/javascripts/credentials/components/credentials_filter_sort_app.vue',

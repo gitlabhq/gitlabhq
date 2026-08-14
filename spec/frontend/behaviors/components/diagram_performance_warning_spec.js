@@ -25,12 +25,12 @@ describe('DiagramPerformanceWarning component', () => {
   it('emits event when closing alert', () => {
     findAlert().vm.$emit('dismiss');
 
-    expect(wrapper.emitted('closeAlert')).toEqual([[]]);
+    expect(wrapper.emitted('close-alert')).toEqual([[]]);
   });
 
   it('emits event when accepting alert', () => {
     findAlert().vm.$emit('primaryAction');
 
-    expect(wrapper.emitted('showImage')).toEqual([[]]);
+    expect(wrapper.emitted('show-image')).toEqual([[]]);
   });
 });

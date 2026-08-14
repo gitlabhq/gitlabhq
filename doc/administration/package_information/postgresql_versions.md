@@ -37,6 +37,7 @@ Read more about update policies and warnings in the PostgreSQL
 
 | First GitLab version | PostgreSQL versions | Default version for fresh installs | Default version for upgrades | Notes |
 | -------------- | ------------------- | ---------------------------------- | ---------------------------- | ----- |
+| 19.3.0 | 17.10, 18.4 | 17.10 | 17.10 | PostgreSQL 18.4 is available as an opt-in option for fresh installs. |
 | 19.0.0 | 17.8 | 17.8 | 17.8 | Package upgrades are aborted if PostgreSQL is not upgraded to 17 already. |
 | 18.11.0 | 16.11, 17.7 | 17.7 | 17.7 | New installs default to PostgreSQL 17. Unless [opted out](https://docs.gitlab.com/omnibus/settings/database/#opt-out-of-automatic-postgresql-upgrades), Linux package instance upgrades automatically perform an upgrade to PostgreSQL 17 for nodes that are not part of a Geo or HA cluster. |
 | 18.4.1, 18.3.3, 18.2.7 | 16.10 | 16.10 | 16.10 | |
