@@ -133,6 +133,10 @@ RSpec.describe Admin::DashboardController, "routing", feature_category: :tooling
   specify "to #index" do
     expect(get("/admin")).to route_to('admin/dashboard#index')
   end
+
+  specify "to #stats" do
+    expect(get("/admin/dashboard/stats")).to route_to('admin/dashboard#stats')
+  end
 end
 
 # admin_health_check GET    /admin/health_check(.:format) admin/health_check#show

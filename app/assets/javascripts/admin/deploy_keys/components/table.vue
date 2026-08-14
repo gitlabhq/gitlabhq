@@ -21,7 +21,7 @@ import {
   newAdminDeployKeyPath,
   editAdminDeployKeyPath,
   adminDeployKeyPath,
-} from '~/lib/utils/path_helpers/admin';
+} from '~/lib/utils/path_helpers/instance_admin';
 import { createAlert } from '~/alert';
 import csrf from '~/lib/utils/csrf';
 

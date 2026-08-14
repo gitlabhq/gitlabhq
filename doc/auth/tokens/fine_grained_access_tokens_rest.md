@@ -3850,6 +3850,11 @@ feature is enabled.
 | Package: Read | `GET` | `/projects/:id/packages/:package_id/package_files` |
 | Package: Read | `GET` | `/projects/:id/packages/:package_id/package_files/:package_file_id/download` |
 | Package: Read | `GET` | `/projects/:id/packages/:package_id/pipelines` |
+| Package: Read | `GET` | `/projects/:id/packages/cargo/1/:package_name` |
+| Package: Read | `GET` | `/projects/:id/packages/cargo/2/:package_name` |
+| Package: Read | `GET` | `/projects/:id/packages/cargo/3/:first_char/:package_name` |
+| Package: Read | `GET` | `/projects/:id/packages/cargo/:package_name/:package_version/download` |
+| Package: Read | `GET` | `/projects/:id/packages/cargo/:prefix_1/:prefix_2/:package_name` |
 | Package: Read | `GET` | `/projects/:id/packages/cargo/config.json` |
 | Package: Read | `GET` | `/projects/:id/packages/composer/archives/*package_name` |
 | Package: Read | `GET` | `/projects/:id/packages/debian/pool/:distribution/:letter/:package_name/:package_version/:file_name` |
@@ -4110,6 +4115,7 @@ incompatible with personal access tokens.
 | `GET` | `/projects/:id/managed_licenses/:managed_license_id` | Deprecated endpoint |
 | `PATCH` | `/projects/:id/managed_licenses/:managed_license_id` | Deprecated endpoint |
 | `DELETE` | `/projects/:id/managed_licenses/:managed_license_id` | Deprecated endpoint |
+| `PUT` | `/projects/:id/packages/cargo/api/v1/crates/new/authorize` | Workhorse pre-authorization |
 | `PUT` | `/projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name/authorize` | Workhorse pre-authorization |
 | `PUT` | `/projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name/authorize` | Workhorse pre-authorization |
 | `PUT` | `/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/files/:file_name/authorize` | Workhorse pre-authorization |

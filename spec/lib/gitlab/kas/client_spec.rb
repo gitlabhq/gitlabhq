@@ -80,7 +80,7 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
 
       subject(:result) do
         client.start_workflow(
-          identity_key: 'rollout-1',
+          idempotency_key: 'rollout-1',
           workflow_definition: "def main(w):\n    pass\n",
           namespace_id: 600956,
           kwargs: { 'environment' => { 'id' => '42' } }
@@ -96,7 +96,7 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
       it 'builds the request from plain arguments and returns the response' do
         expect(stub).to receive(:start_workflow) do |request, metadata:|
           expect(metadata).to eq('authorization' => 'bearer test-token', **feature_flags)
-          expect(request.identity_key).to eq('rollout-1')
+          expect(request.idempotency_key).to eq('rollout-1')
           expect(request.namespace_id).to eq(600956)
           expect(request.kwargs.map(&:name)).to eq(['environment'])
 

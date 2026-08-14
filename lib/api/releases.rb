@@ -353,8 +353,6 @@ module API
       end
 
       desc 'Delete a release' do
-        detail 'Deletes a release. Deleting a release does not delete the associated tag. Maintainer level access to ' \
-          'the project is required to delete a release.'
         detail "Delete a release. Deleting a release doesn't delete the associated tag. Requires at least the Developer role for the project. This feature was introduced in GitLab 11.7."
         named 'delete_release'
         success Entities::Release

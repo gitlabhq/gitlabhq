@@ -3,6 +3,7 @@
 module API
   module Entities
     class PlanLimit < Grape::Entity
+      expose :cargo_max_file_size, documentation: { type: 'Integer', example: 5368709120 }
       expose :ci_instance_level_variables, documentation: { type: 'Integer', example: 25 }
       expose :ci_pipeline_size, documentation: { type: 'Integer', example: 0 }
       expose :ci_active_jobs, documentation: { type: 'Integer', example: 0 }

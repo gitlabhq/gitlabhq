@@ -12,6 +12,15 @@ For the decision of *which* test type to write, see
 
 ## Checklist
 
+### Location (EE-only)
+
+- Place all MSW integration specs and harness files under
+  `ee/spec/frontend/msw_integration/`. The CE path
+  `spec/frontend/msw_integration/` is intentionally empty and blocked by ESLint.
+- DO NOT add MSW integration tests for FOSS-versus-licensed behavior; MSW mocks
+  the network layer (including auth and licensing) and cannot assert those
+  differences. Use a Capybara feature spec instead.
+
 ### Running MSW Integration Tests
 
 - Run with `yarn jest:msw-integration`; DO NOT run with the default `yarn jest`.

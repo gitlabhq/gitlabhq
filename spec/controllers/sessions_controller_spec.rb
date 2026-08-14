@@ -37,6 +37,147 @@ RSpec.describe SessionsController, feature_category: :system_access do
       end
     end
 
+    context 'with the ChatGPT connector installation flow' do
+      let(:provider_session) { { Authn::ProviderSignInRedirect::SESSION_KEY => 'chatgpt' } }
+
+      context 'when the session carries the ChatGPT provider and the provider is enabled' do
+        before do
+          allow(::Gitlab::Auth::OAuth::Provider).to receive(:enabled?).and_call_original
+          allow(::Gitlab::Auth::OAuth::Provider).to receive(:enabled?).with('chatgpt').and_return(true)
+          allow(controller).to receive(:omniauth_authorize_path).with(:user, 'chatgpt')
+            .and_return('/users/auth/chatgpt')
+        end
+
+        it 'renders the auto-submitting redirect_to_provider template' do
+          get(:new, session: provider_session)
+
+          expect(response).to render_template('devise/sessions/redirect_to_provider', layout: false)
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(assigns(:provider_path)).to eq('/users/auth/chatgpt')
+        end
+
+        it 'clears the provider from the session so it is single-use' do
+          get(:new, session: provider_session)
+
+          expect(session).not_to have_key(Authn::ProviderSignInRedirect::SESSION_KEY)
+        end
+      end
+
+      context 'when the chatgpt_siwc_login_redirect feature flag is disabled' do
+        before do
+          stub_feature_flags(chatgpt_siwc_login_redirect: false)
+          allow(::Gitlab::Auth::OAuth::Provider).to receive(:enabled?).and_call_original
+          allow(::Gitlab::Auth::OAuth::Provider).to receive(:enabled?).with('chatgpt').and_return(true)
+        end
+
+        it 'does not render the redirect_to_provider template' do
+          get(:new, session: provider_session)
+
+          expect(response).not_to render_template('devise/sessions/redirect_to_provider')
+        end
+      end
+
+      context 'when the chatgpt_oauth_sign_in feature flag is disabled' do
+        before do
+          stub_feature_flags(chatgpt_oauth_sign_in: false)
+          allow(::Gitlab::Auth::OAuth::Provider).to receive(:enabled?).and_call_original
+          allow(::Gitlab::Auth::OAuth::Provider).to receive(:enabled?).with('chatgpt').and_return(true)
+        end
+
+        it 'does not render the redirect_to_provider template' do
+          get(:new, session: provider_session)
+
+          expect(response).not_to render_template('devise/sessions/redirect_to_provider')
+        end
+      end
+
+      context 'when a blocking alert is already registered' do
+        before do
+          allow(::Gitlab::Auth::OAuth::Provider).to receive(:enabled?).and_call_original
+          allow(::Gitlab::Auth::OAuth::Provider).to receive(:enabled?).with('chatgpt').and_return(true)
+          allow(controller).to receive(:omniauth_authorize_path).with(:user, 'chatgpt')
+            .and_return('/users/auth/chatgpt')
+
+          flash_hash = ActionDispatch::Flash::FlashHash.new
+          flash_hash[:alert] = 'Your account is blocked.'
+          allow(controller).to receive(:flash).and_return(flash_hash)
+        end
+
+        it 'does not render the redirect_to_provider template to prevent a redirection loop' do
+          get(:new, session: provider_session)
+
+          expect(response).not_to render_template('devise/sessions/redirect_to_provider')
+        end
+      end
+
+      context 'when the unauthenticated failure alert is already registered' do
+        before do
+          allow(::Gitlab::Auth::OAuth::Provider).to receive(:enabled?).and_call_original
+          allow(::Gitlab::Auth::OAuth::Provider).to receive(:enabled?).with('chatgpt').and_return(true)
+          allow(controller).to receive(:omniauth_authorize_path).with(:user, 'chatgpt')
+            .and_return('/users/auth/chatgpt')
+
+          flash_hash = ActionDispatch::Flash::FlashHash.new
+          flash_hash[:alert] = I18n.t('devise.failure.unauthenticated')
+          allow(controller).to receive(:flash).and_return(flash_hash)
+        end
+
+        it 'renders the redirect_to_provider template' do
+          get(:new, session: provider_session)
+
+          expect(response).to render_template('devise/sessions/redirect_to_provider', layout: false)
+        end
+      end
+
+      context 'when OmniAuth is disabled' do
+        before do
+          allow(Gitlab::Auth).to receive(:omniauth_enabled?).and_return(false)
+          allow(::Gitlab::Auth::OAuth::Provider).to receive(:enabled?).and_call_original
+          allow(::Gitlab::Auth::OAuth::Provider).to receive(:enabled?).with('chatgpt').and_return(true)
+        end
+
+        it 'does not render the redirect_to_provider template' do
+          get(:new, session: provider_session)
+
+          expect(response).not_to render_template('devise/sessions/redirect_to_provider')
+        end
+      end
+
+      context 'when the ChatGPT provider is not enabled' do
+        before do
+          allow(::Gitlab::Auth::OAuth::Provider).to receive(:enabled?).and_call_original
+          allow(::Gitlab::Auth::OAuth::Provider).to receive(:enabled?).with('chatgpt').and_return(false)
+        end
+
+        it 'does not render the redirect_to_provider template' do
+          get(:new, session: provider_session)
+
+          expect(response).not_to render_template('devise/sessions/redirect_to_provider')
+        end
+      end
+
+      context 'when the session carries a different provider value' do
+        it 'does not render the redirect_to_provider template' do
+          get(:new, session: { Authn::ProviderSignInRedirect::SESSION_KEY => 'something_else' })
+
+          expect(response).not_to render_template('devise/sessions/redirect_to_provider')
+        end
+      end
+
+      context 'when the provider is passed as a request parameter instead of the session' do
+        before do
+          allow(::Gitlab::Auth::OAuth::Provider).to receive(:enabled?).and_call_original
+          allow(::Gitlab::Auth::OAuth::Provider).to receive(:enabled?).with('chatgpt').and_return(true)
+        end
+
+        it 'does not render the redirect_to_provider template' do
+          get(:new, params: { redirect_to_provider: 'chatgpt' })
+
+          expect(response).not_to render_template('devise/sessions/redirect_to_provider')
+        end
+      end
+    end
+
     context 'with LDAP enabled' do
       before do
         stub_ldap_setting(enabled: true)

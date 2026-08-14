@@ -80596,6 +80596,10 @@ definitions:
   API_Entities_PlanLimit:
     type: object
     properties:
+      cargo_max_file_size:
+        type: integer
+        format: int32
+        example: 5368709120
       ci_instance_level_variables:
         type: integer
         format: int32
@@ -80714,6 +80718,7 @@ definitions:
         format: int32
         example: 20
     required:
+    - cargo_max_file_size
     - ci_instance_level_variables
     - ci_pipeline_size
     - ci_active_jobs
@@ -80760,6 +80765,10 @@ definitions:
         - ultimate_trial_paid_customer
         - premium_trial
         - opensource
+      cargo_max_file_size:
+        type: integer
+        format: int32
+        description: Maximum Cargo package file size in bytes
       ci_instance_level_variables:
         type: integer
         format: int32

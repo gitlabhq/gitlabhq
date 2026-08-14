@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe AccessRequestsFinder do
+RSpec.describe AccessRequestsFinder, feature_category: :groups_and_projects do
   let(:user) { create(:user) }
   let(:access_requester) { create(:user) }
 

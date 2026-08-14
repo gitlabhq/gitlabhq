@@ -86,7 +86,9 @@ module API
           end
           params do
             settings.each do |setting|
+              # rubocop:disable API/ParameterType -- `setting[:type]` is a dynamic value, cop does not recognise this pattern
               requires setting[:name], type: setting[:type], desc: setting[:desc]
+              # rubocop:enable API/ParameterType
             end
           end
           route_setting :authorization, skip_granular_token_authorization: :integration_token_auth

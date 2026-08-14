@@ -30,7 +30,7 @@ import {
   adminRootPath,
   destroyAdminSessionPath,
   newAdminSessionPath,
-} from '~/lib/utils/path_helpers/admin';
+} from '~/lib/utils/path_helpers/instance_admin';
 import { profilePreferencesPath } from '~/lib/utils/path_helpers/profile';
 import { destroyUserSessionPath } from '~/lib/utils/path_helpers/routes';
 import { userPath } from '~/lib/utils/path_helpers/user';

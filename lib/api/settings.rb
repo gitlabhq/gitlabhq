@@ -303,7 +303,9 @@ module API
 
       use :optional_params_ee
 
-      optional(*Helpers::SettingsHelpers.optional_attributes) # rubocop:disable API/ParameterDescription -- dynamic splat of optional_attributes, cannot add static desc
+      # rubocop:disable API/ParameterType, API/ParameterDescription -- `optional_attributes` is a dynamic value, cops do not recognise this pattern
+      optional(*Helpers::SettingsHelpers.optional_attributes)
+      # rubocop:enable API/ParameterType, API/ParameterDescription
       at_least_one_of(*Helpers::SettingsHelpers.optional_attributes)
     end
     route_setting :authorization, permissions: :update_application_setting, boundary_type: :instance

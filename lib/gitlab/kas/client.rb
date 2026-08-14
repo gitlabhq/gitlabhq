@@ -296,7 +296,8 @@ module Gitlab
 
       # Starts an AutoFlow workflow on GitLab Relay.
       #
-      # @param identity_key [String] caller-chosen idempotency key.
+      # @param idempotency_key [String] caller-chosen key that deduplicates the
+      #   submission: re-submitting with the same key returns the existing workflow.
       #   (e.g. "cd-rollout-42")
       # @param workflow_definition [String] the workflow program bytes.
       #   (e.g. "def main(w, *args, **kwargs):\n    pass\n")
@@ -306,9 +307,9 @@ module Gitlab
       # @param kwargs [Hash{String => Object}] named arguments bound to the workflow's main().
       #   (e.g. { "environment" => { "id" => "42" }, "version_set" => { "services" => [...] } })
       # @return [Gitlab::Agent::AutoFlow::Rpc::StartWorkflowResponse]
-      def start_workflow(identity_key:, workflow_definition:, namespace_id:, args: [], kwargs: {})
+      def start_workflow(idempotency_key:, workflow_definition:, namespace_id:, args: [], kwargs: {})
         request = Gitlab::Agent::AutoFlow::Rpc::StartWorkflowRequest.new(
-          identity_key: identity_key,
+          idempotency_key: idempotency_key,
           workflow_definition: workflow_definition,
           namespace_id: namespace_id,
           args: Autoflow::ValueConverter.values(args),

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Subscriptions::WorkItems::NamespaceWorkItemChanges, feature_category: :portfolio_management do
+RSpec.describe Subscriptions::WorkItems::NamespaceWorkItemChanges, feature_category: :planning_views do
   include GraphqlHelpers
   include Graphql::Subscriptions::WorkItems::Helper
 

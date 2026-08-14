@@ -16,9 +16,8 @@ module QA
           end
 
           def search_member(username)
-            filter_input = find('.gl-filtered-search-term-input')
-            filter_input.click
-            filter_input.set(username)
+            find('.gl-filtered-search-term-input').click
+            find('.gl-filtered-search-token-segment-input').set(username)
             click_element 'search-button'
           end
         end

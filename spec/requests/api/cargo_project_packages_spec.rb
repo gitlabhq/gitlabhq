@@ -8,7 +8,7 @@ RSpec.describe API::CargoProjectPackages, feature_category: :package_registry do
 
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
-  let_it_be_with_reload(:project) { create(:project, group: group) }
+  let_it_be_with_reload(:project) { create(:project, :public, group: group) }
   let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
   let_it_be(:deploy_token) do
     create(:deploy_token, read_package_registry: true, write_package_registry: true, projects: [project])
@@ -28,7 +28,7 @@ RSpec.describe API::CargoProjectPackages, feature_category: :package_registry do
       get api(url), headers: headers
     end
 
-    it_behaves_like 'authorizing granular token permissions', :read_package do
+    it_behaves_like 'authorizing granular token permissions', :read_cargo_package do
       let(:boundary_object) { project }
       let(:headers) { { 'Authorization' => "Bearer #{pat.token}" } }
       let(:request) { get(api(url), headers: headers) }
@@ -83,6 +83,15 @@ RSpec.describe API::CargoProjectPackages, feature_category: :package_registry do
           expect(response).to have_gitlab_http_status(:not_found)
         end
       end
+
+      context 'with anonymous user' do
+        let(:headers) { {} }
+
+        it 'returns unauthorized' do
+          request
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
+      end
     end
 
     context 'with deploy token' do
@@ -104,6 +113,15 @@ RSpec.describe API::CargoProjectPackages, feature_category: :package_registry do
       end
 
       it_behaves_like 'successful config response'
+    end
+
+    it_behaves_like 'enforcing job token policies', :read_packages,
+      allow_public_access_for_enabled_project_features: :package_registry do
+      let(:headers) { { 'Authorization' => "Bearer #{target_job.token}" } }
+
+      before_all do
+        project.add_developer(user)
+      end
     end
 
     context 'without read permissions deploy token' do
@@ -194,6 +212,15 @@ RSpec.describe API::CargoProjectPackages, feature_category: :package_registry do
           expect(response).to have_gitlab_http_status(:not_found)
         end
       end
+
+      context 'with anonymous user' do
+        let(:headers) { {} }
+
+        it 'returns unauthorized' do
+          request
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
+      end
     end
 
     context 'with deploy token' do
@@ -215,6 +242,15 @@ RSpec.describe API::CargoProjectPackages, feature_category: :package_registry do
       end
 
       it_behaves_like 'successful crate download'
+    end
+
+    it_behaves_like 'enforcing job token policies', :read_packages,
+      allow_public_access_for_enabled_project_features: :package_registry do
+      let(:headers) { { 'Authorization' => "Bearer #{target_job.token}" } }
+
+      before_all do
+        project.add_developer(user)
+      end
     end
 
     context 'without read permissions deploy token' do
@@ -381,6 +417,15 @@ RSpec.describe API::CargoProjectPackages, feature_category: :package_registry do
           expect(response).to have_gitlab_http_status(:not_found)
         end
       end
+
+      context 'with anonymous user' do
+        let(:headers) { {} }
+
+        it 'returns unauthorized' do
+          request
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
+      end
     end
 
     context 'with deploy token' do
@@ -402,6 +447,15 @@ RSpec.describe API::CargoProjectPackages, feature_category: :package_registry do
       end
 
       it_behaves_like 'successful sparse index response'
+    end
+
+    it_behaves_like 'enforcing job token policies', :read_packages,
+      allow_public_access_for_enabled_project_features: :package_registry do
+      let(:headers) { { 'Authorization' => "Bearer #{target_job.token}" } }
+
+      before_all do
+        project.add_developer(user)
+      end
     end
 
     context 'without read permissions deploy token' do
@@ -615,6 +669,134 @@ RSpec.describe API::CargoProjectPackages, feature_category: :package_registry do
 
         it_behaves_like 'authorizing granular token permissions', :read_cargo_package
       end
+    end
+  end
+
+  describe 'PUT /api/v4/projects/:id/packages/cargo/api/v1/crates/new/authorize' do
+    include_context 'workhorse headers'
+
+    let(:url) { "/projects/#{project.id}/packages/cargo/api/v1/crates/new/authorize" }
+    let(:base_headers) { { 'Authorization' => "Bearer #{personal_access_token.token}" } }
+    let(:headers) { base_headers }
+
+    subject(:request) do
+      put api(url), headers: headers
+    end
+
+    it_behaves_like 'enforcing job token policies', :admin_packages do
+      before_all do
+        project.add_developer(user)
+      end
+
+      let(:headers) { build_token_auth_header(target_job.token).merge(workhorse_headers) }
+    end
+
+    context 'with workhorse headers' do
+      let(:headers) { base_headers.merge(workhorse_headers) }
+
+      before do
+        project.update_column(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
+        project.actual_limits.update!(cargo_max_file_size: 1.megabyte)
+      end
+
+      context 'with a developer' do
+        before_all do
+          project.add_developer(user)
+        end
+
+        it 'authorizes the upload', :aggregate_failures do
+          request
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.media_type).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+          expect(json_response).to include(
+            'TempPath' => ::Packages::PackageFileUploader.workhorse_local_upload_path,
+            'MaximumSize' => 1.megabyte
+          )
+        end
+      end
+
+      context 'with a reporter' do
+        before_all do
+          project.add_reporter(user)
+        end
+
+        it_behaves_like 'returning response status', :forbidden
+      end
+
+      context 'with a deploy token' do
+        let(:base_headers) { { 'Authorization' => "Bearer #{deploy_token.token}" } }
+
+        it_behaves_like 'returning response status', :ok
+      end
+
+      context 'with a job token' do
+        let(:base_headers) { { 'Authorization' => "Bearer #{job.token}" } }
+
+        before_all do
+          project.add_developer(user)
+        end
+
+        it_behaves_like 'returning response status', :ok
+      end
+
+      context 'without write permissions deploy token' do
+        let(:base_headers) { { 'Authorization' => "Bearer #{deploy_token_without_permission.token}" } }
+
+        it_behaves_like 'returning response status', :not_found
+      end
+
+      context 'with unauthenticated user' do
+        let(:headers) { workhorse_headers }
+
+        it_behaves_like 'returning response status', :unauthorized
+      end
+
+      context 'with public project' do
+        before do
+          project.update_column(:visibility_level, Gitlab::VisibilityLevel::PUBLIC)
+        end
+
+        context 'with anonymous user' do
+          let(:headers) { workhorse_headers }
+
+          it_behaves_like 'returning response status', :unauthorized
+        end
+
+        context 'with a guest' do
+          before_all do
+            project.add_guest(user)
+          end
+
+          it_behaves_like 'returning response status', :forbidden
+        end
+      end
+
+      context 'when feature flag is disabled' do
+        let(:base_headers) { { 'Authorization' => "Bearer #{deploy_token.token}" } }
+
+        before do
+          stub_feature_flags(package_registry_cargo_support: false)
+        end
+
+        it_behaves_like 'returning response status', :not_found
+      end
+
+      context 'when package feature is disabled' do
+        before do
+          stub_config(packages: { enabled: false })
+        end
+
+        it_behaves_like 'returning response status', :not_found
+      end
+    end
+
+    context 'without workhorse headers' do
+      before_all do
+        project.add_developer(user)
+      end
+
+      it_behaves_like 'returning response status', :forbidden
     end
   end
 end

@@ -4,7 +4,7 @@ import VueApollo from 'vue-apollo';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import { adminProjectsPath } from '~/lib/utils/path_helpers/admin';
+import { adminProjectsPath } from '~/lib/utils/path_helpers/instance_admin';
 import AdminProjectsApp from '~/admin/projects/index/components/app.vue';
 import routes from './routes';
 

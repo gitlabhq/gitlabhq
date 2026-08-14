@@ -1142,6 +1142,7 @@ Grants the ability to create, delete, read, and update work items such as epics 
 | Update | Project | Mutation | `WorkItemAddClosingMergeRequest` |
 | Update | Project | Mutation | `WorkItemConvert` |
 | Update | Project | Mutation | `WorkItemCreateFromTask` |
+| Update | Project | Mutation | `WorkItemEnableAiPlanning` |
 | Update | Project | Mutation | `WorkItemUpdate` |
 | Update | Project | Mutation | `workItemsReorder` |
 | Update | Group | Mutation | `IterationCadenceUpdate` |
@@ -1150,6 +1151,7 @@ Grants the ability to create, delete, read, and update work items such as epics 
 | Update | Group | Mutation | `UpdateNote` |
 | Update | Group | Mutation | `WorkItemAddClosingMergeRequest` |
 | Update | Group | Mutation | `WorkItemConvert` |
+| Update | Group | Mutation | `WorkItemEnableAiPlanning` |
 | Update | Group | Mutation | `WorkItemUpdate` |
 | Update | Group | Mutation | `workItemsReorder` |
 

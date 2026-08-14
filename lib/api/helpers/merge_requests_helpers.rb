@@ -109,12 +109,12 @@ module API
             desc: '`<Negated>` Returns merge requests which have the user as a reviewer with the given user `id`. `None` returns merge requests with no reviewers. `Any` returns merge requests with any reviewer. Mutually exclusive with `reviewer_username`.'
           mutually_exclusive :reviewer_id, :reviewer_username
         end
-        optional :deployed_before, desc: 'Returns merge requests deployed before the given date/time. Expected in ISO 8601 format.',
+        optional :deployed_before, type: DateTime, desc: 'Returns merge requests deployed before the given date/time. Expected in ISO 8601 format.',
           documentation: { example: '2019-03-15T08:00:00Z' }
-        optional :deployed_after, desc: 'Returns merge requests deployed after the given date/time. Expected in ISO 8601 format',
+        optional :deployed_after, type: DateTime, desc: 'Returns merge requests deployed after the given date/time. Expected in ISO 8601 format',
           documentation: { example: '2019-03-15T08:00:00Z' }
-        optional :environment, desc: 'Returns merge requests deployed to the given environment',
-          documentation: { example: '2019-03-15T08:00:00Z' }
+        optional :environment, type: String, desc: 'Returns merge requests deployed to the given environment',
+          documentation: { example: 'production' }
         optional :merge_user_id, type: Integer,
           desc: "Returns merge requests which have been merged by the user with the given user `id`. Mutually exclusive with `merge_user_username`."
         optional :merge_user_username, type: String,

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Types::WorkItems::NamespaceWorkItemChangesPayloadType, feature_category: :portfolio_management do
+RSpec.describe Types::WorkItems::NamespaceWorkItemChangesPayloadType, feature_category: :planning_views do
   include GraphqlHelpers
 
   it { expect(described_class.graphql_name).to eq('NamespaceWorkItemChangesPayload') }

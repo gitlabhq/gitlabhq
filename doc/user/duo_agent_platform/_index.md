@@ -85,6 +85,7 @@ Features available on the Free tier require the purchase of [GitLab Credits](../
 | [MCP clients](../gitlab_duo/model_context_protocol/mcp_clients.md) <br /> Access GitLab resources and tools from any MCP-compatible AI client or IDE extension. <sup>1</sup> | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | [Custom flows](flows/custom.md) <br /> Combine multiple agents to solve your business problems. | {{< yes >}} | {{< yes >}} | {{< yes >}} |
 | [Resolve merge conflicts](../project/merge_requests/conflicts.md#resolve-conflicts-with-gitlab-duo) <br /> Autonomously analyze merge conflicts, edit conflicting files, and push a resolution commit. | {{< no >}} | {{< yes >}} | {{< yes >}} |
+| [Flow Creator Agent](agents/foundational_agents/flow_creator.md) <br /> Create custom flows for the AI Catalog. | {{< no >}} | {{< yes >}}  | {{< yes >}} |
 | [Resolve review discussions](../project/merge_requests/duo_in_merge_requests.md#resolve-a-discussion-with-gitlab-duo) <br /> Autonomously analyze a review discussion, push the requested changes, and resolve the thread. | {{< no >}} | {{< yes >}} | {{< yes >}} |
 | [SAST False Positive Detection Flow](flows/foundational_flows/sast_false_positive_detection.md) <br /> Automatically identify and filter out false positives in SAST security scans. | {{< no >}} | {{< no >}}  | {{< yes >}} |
 | [SAST Vulnerability Resolution Flow](flows/foundational_flows/agentic_sast_vulnerability_resolution.md) <br /> Automatically generate fixes and remediation steps for SAST vulnerabilities. | {{< no >}} | {{< no >}}  | {{< yes >}} |

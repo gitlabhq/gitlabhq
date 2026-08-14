@@ -34642,7 +34642,8 @@ CREATE TABLE work_item_agent_plans (
     updated_at timestamp with time zone NOT NULL,
     cached_markdown_version integer,
     file_store smallint DEFAULT 1 NOT NULL,
-    readiness_score smallint
+    readiness_score smallint,
+    ai_planning_enabled boolean DEFAULT false NOT NULL
 );
 
 CREATE TABLE work_item_colors (

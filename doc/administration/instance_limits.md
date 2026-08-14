@@ -816,8 +816,15 @@ More information can be found in the [Push event activities limit and bulk push 
 
 ### File size limits
 
+{{< history >}}
+
+- File size limit for Cargo packages [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240512) in GitLab 19.3.
+
+{{< /history >}}
+
 The default maximum file size for a package that's uploaded to the [GitLab package registry](../user/packages/package_registry/_index.md) varies by format:
 
+- Cargo: 5 GB
 - Conan: 3 GB
 - Generic: 5 GB
 - Helm: 5 MB
@@ -836,6 +843,9 @@ or run the following in the
 
 ```ruby
 # File size limit is stored in bytes
+
+# For Cargo Packages
+Plan.default.actual_limits.update!(cargo_max_file_size: 100.megabytes)
 
 # For Conan Packages
 Plan.default.actual_limits.update!(conan_max_file_size: 100.megabytes)
@@ -1025,6 +1035,7 @@ ci_max_artifact_size_coverage_fuzzing: 0,
 ci_max_artifact_size_browser_performance: 0,
 ci_max_artifact_size_load_performance: 0,
 ci_needs_size_limit: 2,
+cargo_max_file_size: 5368709120,
 conan_max_file_size: 3221225472,
 maven_max_file_size: 3221225472,
 npm_max_file_size: 524288000,

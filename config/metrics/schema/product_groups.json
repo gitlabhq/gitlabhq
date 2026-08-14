@@ -90,10 +90,12 @@
     "pipeline_authoring",
     "pipeline_execution",
     "pipeline_security",
+    "planner_intelligence",
     "planning_views",
     "platform_insights",
     "policy_engine",
     "policy_management",
+    "portfolio_planning",
     "product_planning",
     "project_management",
     "provision",
@@ -116,6 +118,7 @@
     "security_platform_management",
     "self_managed",
     "source_code",
+    "spec_driven_development",
     "static_analysis",
     "subscription_management",
     "switchboard",
@@ -128,6 +131,7 @@
     "ux_paper_cuts",
     "vulnerability_management",
     "vulnerability_research",
+    "work_items",
     "workflow_catalog"
   ]
 }

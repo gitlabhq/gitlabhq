@@ -235353,6 +235353,22 @@
           "description": "Represents an agent plan widget.",
           "fields": [
             {
+              "name": "aiPlanningEnabled",
+              "description": "Indicates whether AI planning is enabled for the work item.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "content",
               "description": "Content of the agent plan. This field can only be resolved for one work item in any single request.",
               "args": [],

@@ -15,7 +15,7 @@ RSpec.describe 'User searches project settings', :js, feature_category: :groups_
       visit edit_project_path(project)
     end
 
-    it_behaves_like 'can search settings', 'Naming', 'Visibility'
+    it_behaves_like 'can search and expand collapsed settings', 'Naming', 'Visibility'
   end
 
   context 'in access tokens page' do
@@ -31,7 +31,7 @@ RSpec.describe 'User searches project settings', :js, feature_category: :groups_
       visit project_settings_repository_path(project)
     end
 
-    it_behaves_like 'can search settings', 'Deploy keys', 'Mirroring repositories'
+    it_behaves_like 'can search and expand collapsed settings', 'Deploy keys', 'Mirroring repositories'
   end
 
   context 'in CI/CD page' do
@@ -39,7 +39,7 @@ RSpec.describe 'User searches project settings', :js, feature_category: :groups_
       visit project_settings_ci_cd_path(project)
     end
 
-    it_behaves_like 'can search settings', 'General pipelines', 'Auto DevOps'
+    it_behaves_like 'can search and expand collapsed settings', 'General pipelines', 'Auto DevOps'
   end
 
   context 'in Operations page' do
@@ -47,6 +47,6 @@ RSpec.describe 'User searches project settings', :js, feature_category: :groups_
       visit project_settings_operations_path(project)
     end
 
-    it_behaves_like 'can search settings', 'Alerts', 'Error tracking'
+    it_behaves_like 'can search and expand collapsed settings', 'Alerts', 'Error tracking'
   end
 end

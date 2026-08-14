@@ -14,6 +14,15 @@ module Gitlab
         end
 
         def resolve_redirect_url
+          provider = ::Authn::ProviderSignInRedirect.provider_for_target_flow(
+            request.query_parameters['target_flow'], request
+          )
+
+          if provider
+            session[::Authn::ProviderSignInRedirect::SESSION_KEY] = provider
+            return new_user_session_url
+          end
+
           new_user_session_url
         end
       end

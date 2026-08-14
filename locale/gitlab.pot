@@ -2544,6 +2544,9 @@ msgstr ""
 msgid "AI gateway URL"
 msgstr ""
 
+msgid "AI planning cannot be disabled once it has been enabled."
+msgstr ""
+
 msgid "AI-generated summary"
 msgstr ""
 
@@ -32319,6 +32322,9 @@ msgstr ""
 msgid "Enable access to the performance bar for non-administrators in a given group."
 msgstr ""
 
+msgid "Enable add-on"
+msgstr ""
+
 msgid "Enable and disable Service Desk. Some additional configuration might be required. %{link_start}Learn more%{link_end}."
 msgstr ""
 
@@ -32413,9 +32419,6 @@ msgid "Enable repository checks"
 msgstr ""
 
 msgid "Enable searching"
-msgstr ""
-
-msgid "Enable the add-on"
 msgstr ""
 
 msgid "Enable to allow %{docs_link_start}Device authorization grant flow%{docs_link_end}."
@@ -69112,6 +69115,9 @@ msgstr ""
 msgid "SecretsManager|Are you sure you want to update secret %{secretName}? Saving these changes could cause disruptions, such as loss of access to connected services or failed deployments, if the value is rejected by the services."
 msgstr ""
 
+msgid "SecretsManager|By default, all subgroups and projects can use stored secrets in their pipelines."
+msgstr ""
+
 msgid "SecretsManager|Cannot connect to OpenBao"
 msgstr ""
 
@@ -69134,6 +69140,9 @@ msgid "SecretsManager|Enable Secrets Manager for this instance. When enabled, th
 msgstr ""
 
 msgid "SecretsManager|Enable on-demand billing to try GitLab Secrets Manager"
+msgstr ""
+
+msgid "SecretsManager|Enabling GitLab Secrets Manager"
 msgstr ""
 
 msgid "SecretsManager|Enter a new value to update secret"
@@ -69160,13 +69169,16 @@ msgstr ""
 msgid "SecretsManager|GitLab Secrets Manager"
 msgstr ""
 
+msgid "SecretsManager|GitLab Secrets Manager has been enabled for this group. %{linkStart}Manage permissions.%{linkEnd}"
+msgstr ""
+
+msgid "SecretsManager|GitLab Secrets Manager has been enabled for this project. %{linkStart}Manage permissions.%{linkEnd}"
+msgstr ""
+
 msgid "SecretsManager|GitLab Secrets Manager is free during open beta, but will consume %{linkStart}GitLab Credits%{linkEnd} when it becomes generally available. Credits will be consumed only if you opt in. You will receive advance notice before general availability."
 msgstr ""
 
 msgid "SecretsManager|GitLab Secrets Manager will consume GitLab credits when you store or fetch secrets. %{linkStart}How is secrets manager billed?%{linkEnd}"
-msgstr ""
-
-msgid "SecretsManager|Introducing GitLab Secrets Manager"
 msgstr ""
 
 msgid "SecretsManager|Keep secrets secure with GitLab Secrets Manager"
@@ -69184,16 +69196,13 @@ msgstr ""
 msgid "SecretsManager|On-demand is enabled"
 msgstr ""
 
-msgid "SecretsManager|Please wait while the secrets manager is provisioned. You can refresh at any time."
+msgid "SecretsManager|Please wait while the secrets manager is enabled."
 msgstr ""
 
 msgid "SecretsManager|Protect your organization from potential leaks."
 msgstr ""
 
 msgid "SecretsManager|Protected Branches"
-msgstr ""
-
-msgid "SecretsManager|Provisioning in progress"
 msgstr ""
 
 msgid "SecretsManager|Secret %{secretName} has been deleted."
@@ -69244,6 +69253,9 @@ msgstr ""
 msgid "SecretsManager|The name should be unique within this project and can contain only letters, digits, and '_'."
 msgstr ""
 
+msgid "SecretsManager|There was a problem enabling the GitLab Secrets Manager. Try again later."
+msgstr ""
+
 msgid "SecretsManager|This field is required and must be 200 characters or less."
 msgstr ""
 
@@ -69251,9 +69263,6 @@ msgid "SecretsManager|To confirm, enter %{secretName}:"
 msgstr ""
 
 msgid "SecretsManager|Trial enabled. Redirecting to secrets manager..."
-msgstr ""
-
-msgid "SecretsManager|Use the GitLab Secrets Manager to securely store and manage secrets and credentials for your projects and groups."
 msgstr ""
 
 msgid "SecretsManager|Use the secrets manager to store your sensitive credentials, and then safely use them in your processes."
@@ -77802,6 +77811,9 @@ msgid "Start thread"
 msgstr ""
 
 msgid "Start time"
+msgstr ""
+
+msgid "Start trial"
 msgstr ""
 
 msgid "Start with a letter, digit, emoji, or underscore."

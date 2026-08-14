@@ -2170,8 +2170,6 @@ ee/app/workers/ai/repository_xray/
 /jh/doc/
 
 [Geo]
-/doc/**/geo/**.md @luciezhao @axil @fneill
-/doc/**/geo_**.md @luciezhao @axil @fneill
 /ee/**/geo/ @gitlab-org/geo-team/geo-backend
 /ee/lib/gitlab/geo.rb @gitlab-org/geo-team/geo-backend
 /ee/spec/lib/gitlab/geo_spec.rb @gitlab-org/geo-team/geo-backend
@@ -2181,6 +2179,12 @@ ee/app/workers/ai/repository_xray/
 ^[Geo Frontend]
 app/assets/**/geo_* @zcuddy
 frontend/**/geo_* @zcuddy
+
+^[Geo Docs]
+/doc/administration/geo/**.md @thiagocsf @axil @fneill
+/doc/administration/geo_sites.md @thiagocsf @axil @fneill
+/doc/api/geo_nodes.md @thiagocsf @axil @fneill
+/doc/api/geo_sites.md @thiagocsf @axil @fneill
 
 [DAST Generated]
 # File is generated but there is no verification job, so requires approval to prevent drift

@@ -320,6 +320,9 @@
   // itself paints no background over them.
   &.with-bloom body {
     background-color: var(--gl-application-chrome-background-color);
+    // Override `.page-theme-background` background-image used to provide
+    // gradient with a solid application-chrome background color
+    background-image: none;
 
     &::before,
     &::after {

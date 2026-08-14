@@ -3,7 +3,7 @@ import VueRouter from 'vue-router';
 import VueApollo from 'vue-apollo';
 import { initVueApp } from '~/lib/utils/vue3compat/init_vue_app';
 import createDefaultClient from '~/lib/graphql';
-import { adminGroupsPath } from '~/lib/utils/path_helpers/admin';
+import { adminGroupsPath } from '~/lib/utils/path_helpers/instance_admin';
 import routes from './routes';
 import AdminGroupsApp from './components/app.vue';
 

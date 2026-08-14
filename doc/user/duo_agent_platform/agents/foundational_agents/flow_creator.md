@@ -9,13 +9,12 @@ title: Flow Creator
 
 - Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Experiment
 
 {{< /details >}}
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/22644) as an experiment in GitLab 19.3.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/22644) in GitLab 19.3.
 
 {{< /history >}}
 
@@ -43,7 +42,6 @@ Use the Flow Creator when you need to:
 Prerequisites:
 
 - [Turn on](_index.md#turn-foundational-agents-on-or-off) foundational agents.
-- [Turn on beta and experimental features](../../turn_on_off.md#turn-on-beta-and-experimental-features).
 
 To use the Flow Creator in the GitLab UI:
 

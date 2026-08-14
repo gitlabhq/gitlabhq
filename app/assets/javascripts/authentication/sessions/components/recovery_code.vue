@@ -6,7 +6,7 @@ import csrf from '~/lib/utils/csrf';
 import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { PASSWORD_MANAGER_IGNORE_ATTRS } from '~/lib/utils/forms';
-import { newAdminSessionPath } from '~/lib/utils/path_helpers/admin';
+import { newAdminSessionPath } from '~/lib/utils/path_helpers/instance_admin';
 import { newUserSessionPath } from '~/lib/utils/path_helpers/routes';
 import VerificationLayout from './verification_layout.vue';
 

@@ -639,9 +639,11 @@ principles:
       - 'spec/services/group_access_tokens/**/*_spec.rb'
       - 'spec/services/project_access_tokens/**/*_spec.rb'
       - 'spec/services/resource_access_tokens/**/*_spec.rb'
+      - 'spec/workers/authn/**/*_spec.rb'
       - 'spec/policies/**/*_spec.rb'
       - 'spec/lib/authn/**/*_spec.rb'
       - 'spec/lib/gitlab/auth/**/*_spec.rb'
+      - 'spec/lib/api/entities/*token*_spec.rb'
       - 'spec/requests/api/api_guard_spec.rb'
       - 'spec/requests/api/admin/token_spec.rb'
       - 'spec/requests/api/deploy_tokens_spec.rb'
@@ -664,6 +666,7 @@ principles:
       - 'ee/spec/lib/authn/**/*_spec.rb'
       - 'ee/spec/lib/gitlab/auth/**/*_spec.rb'
       - 'ee/spec/policies/**/*_spec.rb'
+      - 'ee/spec/services/authz/**/*_spec.rb'
       - 'ee/spec/services/ee/personal_access_tokens/**/*_spec.rb'
       - 'ee/spec/services/namespaces/service_accounts/**/*_spec.rb'
       - 'ee/spec/services/users/service_accounts/**/*_spec.rb'
@@ -719,7 +722,6 @@ principles:
     group: Testing
     owner_team: '@gitlab-org/maintainers/frontend'
     file_filters:
-      - 'spec/frontend/msw_integration/**/*'
       - 'ee/spec/frontend/msw_integration/**/*'
     baseline: .ai/principles/baselines/testing-msw.md
     sources:

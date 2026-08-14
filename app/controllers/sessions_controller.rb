@@ -34,6 +34,7 @@ class SessionsController < Devise::SessionsController
   prepend_before_action :store_redirect_uri, only: [:new]
   prepend_before_action :ensure_password_authentication_enabled!,
     if: -> { action_name == 'create' && password_based_login? }
+  before_action :redirect_to_connector_provider, only: [:new]
   before_action :auto_sign_in_with_provider, only: [:new]
   before_action :init_preferred_language, only: :new
   before_action :store_unauthenticated_sessions, only: [:new]
@@ -326,9 +327,15 @@ class SessionsController < Devise::SessionsController
     find_user&.two_factor_enabled?
   end
 
-  def auto_sign_in_with_provider
-    return unless Gitlab::Auth.omniauth_enabled?
+  def redirect_to_connector_provider
+    provider = session.delete(::Authn::ProviderSignInRedirect::SESSION_KEY)
+    return unless provider.present?
+    return unless ::Authn::ProviderSignInRedirect.enabled?(provider)
 
+    render_provider_redirect(provider)
+  end
+
+  def auto_sign_in_with_provider
     provider = Gitlab.config.omniauth.auto_sign_in_with_provider
     return unless provider.present?
 
@@ -336,9 +343,16 @@ class SessionsController < Devise::SessionsController
     # Otherwise, the default is to auto sign-in.
     return if Gitlab::Utils.to_boolean(params.permit(:auto_sign_in)[:auto_sign_in]) == false
 
-    # Auto sign in with an Omniauth provider only if the standard "you need to sign-in" alert is
-    # registered or no alert at all. In case of another alert (such as a blocked user), it is safer
-    # to do nothing to prevent redirection loops with certain Omniauth providers.
+    render_provider_redirect(provider)
+  end
+
+  # Renders the intermediate page that auto-submits a POST to the Omniauth provider.
+  #
+  # Only redirects if the standard "you need to sign-in" alert is registered or there is no alert
+  # at all. In case of another alert (such as a blocked user), it is safer to do nothing to prevent
+  # redirection loops with certain Omniauth providers.
+  def render_provider_redirect(provider)
+    return unless Gitlab::Auth.omniauth_enabled?
     return unless flash[:alert].blank? || flash[:alert] == I18n.t('devise.failure.unauthenticated')
 
     # Prevent alert from popping up on the first page shown after authentication.

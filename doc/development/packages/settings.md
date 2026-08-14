@@ -25,6 +25,7 @@ This page includes an exhaustive list of settings related to and maintained by t
 | `throttle_authenticated_packages_api_period_in_seconds` | `application_settings` | Period in seconds to measure authenticated package API requests. |
 | `throttle_unauthenticated_packages_api_enabled` | `application_settings` | |
 | `throttle_authenticated_packages_api_enabled` | `application_settings` | Enables or disables request limits/throttling for the package API. |
+| `cargo_max_file_size` | `plan_limits` | Maximum file size for a Cargo package file. |
 | `conan_max_file_size` | `plan_limits` | Maximum file size for a Conan package file. |
 | `maven_max_file_size` | `plan_limits` | Maximum file size for a Maven package file. |
 | `npm_max_file_size` | `plan_limits` | Maximum file size for an npm package file. |

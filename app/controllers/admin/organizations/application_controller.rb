@@ -18,7 +18,13 @@ module Admin
       end
 
       def authorize_access_organization_admin_area!
-        access_denied! unless current_user&.can?(:access_organization_admin_area, authorization_subject)
+        return if org_admin_area_enabled? && current_user&.can?(:access_organization_admin_area, authorization_subject)
+
+        access_denied!
+      end
+
+      def org_admin_area_enabled?
+        ::Organizations::Release.enabled?(:org_admin_area, authorization_subject)
       end
 
       def can_access_instance_admin_area?

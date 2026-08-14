@@ -221,8 +221,8 @@ instructions:
       - Reference: https://docs.gitlab.com/development/feature_flags/
 
   # >>> generated: authentication — gitlab-ai-principles-distiller (from .ai/principles/manifest.yml; do not edit)
-  # distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
-  # source_checksum: 4902d9ae179555c2
+  # distilled_at_sha: 18bec1426aecafc1e6f6e47896f845e2690b2bf8
+  # source_checksum: 4f4508ed3a4c3e52
   - name: Authentication & Authorization Security
     fileFilters:
       # Controllers / entry points
@@ -261,6 +261,9 @@ instructions:
       - "app/services/project_access_tokens/**/*.rb"
       - "app/services/resource_access_tokens/**/*.rb"
 
+      # Workers
+      - "app/workers/authn/**/*.rb"
+
       # Auth-relevant policies, initializers, libs
       - "app/policies/personal_access_token_policy.rb"
       - "app/policies/global_policy.rb"
@@ -272,6 +275,10 @@ instructions:
       - "config/initializers/omniauth.rb"
       - "config/initializers/webauthn.rb"
       - "lib/api/api_guard.rb"
+      - "lib/api/personal_access_tokens.rb"
+      - "lib/api/personal_access_tokens/**/*.rb"
+      - "lib/api/helpers/personal_access_tokens_helpers.rb"
+      - "lib/api/entities/*token*.rb"
       - "lib/authn/**/*.rb"
       - "lib/gitlab/auth/**/*.rb"
 
@@ -293,6 +300,7 @@ instructions:
       - "ee/app/models/authn/**/*.rb"
       - "ee/app/models/authz/**/*.rb"
       - "ee/app/models/ee/personal_access_token.rb"
+      - "ee/app/services/authz/**/*.rb"
       - "ee/app/services/ee/personal_access_tokens/**/*.rb"
       - "ee/app/services/namespaces/service_accounts/**/*.rb"
       - "ee/app/services/users/service_accounts/**/*.rb"
@@ -388,7 +396,7 @@ instructions:
       - Ensure composite identity OAuth token scopes include the concrete dynamic scope `user:$ID` for the human user who originated the AI request, plus any required base scopes (for example, `api`).
       - Always use `Gitlab::Auth::Identity.resolve_composite_identity_actor(current_user)` to resolve the actor for any write operation; DO NOT determine the composite identity context manually.
       - Use the actor returned by `resolve_composite_identity_actor` wherever authorship is set (notes, issues/MRs, commits, pipeline user context).
-      - Understand attribution context: OAuth/CI flows tag `:authentication` context (service account is attributed); web/assignment flows tag `:permission_check` context (human is attributed) — DO NOT override this context manually.
+      - Understand attribution context: OAuth/CI flows tag `:authentication` context (service account is attributed); web/assignment flows tag `:permission_check` context (human is attributed) — DO NOT override this context manually. In the `:authentication` context, audit events store `author_name` as `<service account name> on behalf of @<human username>` truncated to 255 characters, and record `human_author_id`, `human_author_name`, and `human_author_username` in event `details`; in the `:permission_check` context the human remains the author and no `human_author_*` keys are added (GitLab 19.3 and later).
 
       ### Feature Flags
 
@@ -403,10 +411,11 @@ instructions:
   # regeneration.
   - name: Authentication Review Heuristics
     fileFilters:
-      - "app/policies/global_policy.rb"
-      - "app/policies/user_policy.rb"
-      - "app/policies/authz/**/*.rb"
-      - "ee/app/policies/authz/**/*.rb"
+      # Policy weakening (broadened roles, relaxed conditions) can happen in
+      # any policy file, so watch them all — matching the product-wide
+      # spec/policies globs that Authentication Test Quality already uses.
+      - "app/policies/**/*.rb"
+      - "ee/app/policies/**/*.rb"
       - "app/models/ability.rb"
       - "app/controllers/concerns/enforces_*authentication*.rb"
       - "app/controllers/concerns/authenticates_with_two_factor*.rb"
@@ -465,9 +474,11 @@ instructions:
       - "spec/services/group_access_tokens/**/*_spec.rb"
       - "spec/services/project_access_tokens/**/*_spec.rb"
       - "spec/services/resource_access_tokens/**/*_spec.rb"
+      - "spec/workers/authn/**/*_spec.rb"
       - "spec/policies/**/*_spec.rb"
       - "spec/lib/authn/**/*_spec.rb"
       - "spec/lib/gitlab/auth/**/*_spec.rb"
+      - "spec/lib/api/entities/*token*_spec.rb"
       - "spec/requests/api/api_guard_spec.rb"
       - "spec/requests/api/admin/token_spec.rb"
       - "spec/requests/api/deploy_tokens_spec.rb"
@@ -490,6 +501,7 @@ instructions:
       - "ee/spec/lib/authn/**/*_spec.rb"
       - "ee/spec/lib/gitlab/auth/**/*_spec.rb"
       - "ee/spec/policies/**/*_spec.rb"
+      - "ee/spec/services/authz/**/*_spec.rb"
       - "ee/spec/services/ee/personal_access_tokens/**/*_spec.rb"
       - "ee/spec/services/namespaces/service_accounts/**/*_spec.rb"
       - "ee/spec/services/users/service_accounts/**/*_spec.rb"

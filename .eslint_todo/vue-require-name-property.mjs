@@ -44,7 +44,6 @@ export default {
     'ee/app/assets/javascripts/external_issues_show/components/note.vue',
     'ee/app/assets/javascripts/external_issues_show/components/sidebar/issue_due_date.vue',
     'ee/app/assets/javascripts/external_issues_show/components/sidebar/issue_field.vue',
-    'ee/app/assets/javascripts/group_links/group_link_role_selector/components/group_link_role_selector.vue',
     'ee/app/assets/javascripts/incidents/components/published_cell.vue',
     'ee/app/assets/javascripts/insights/components/insights.vue',
     'ee/app/assets/javascripts/insights/components/insights_chart.vue',

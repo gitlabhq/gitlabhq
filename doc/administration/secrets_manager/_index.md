@@ -324,8 +324,12 @@ and standby nodes provide automatic failover if the active node fails.
 
 ### Failover
 
-Standby nodes load all namespace metadata at startup, so promotion to active
-requires no additional initialization. The number of namespaces does not affect failover time.
+When the active node fails, a standby node takes over and initializes each namespace before it can
+serve secret operations. Failover time increases with the number of namespaces, similar to
+[upgrade downtime](#upgrade-downtime).
+
+On-demand namespace loading would reduce this initialization time. This work is proposed in
+[issue 607703](https://gitlab.com/gitlab-org/gitlab/-/work_items/607703).
 
 For production deployments:
 

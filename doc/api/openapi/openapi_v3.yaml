@@ -40805,6 +40805,7 @@ paths:
           in ISO 8601 format.
         schema:
           type: string
+          format: date-time
           nullable: true
         in: query
         example: '2019-03-15T08:00:00Z'
@@ -40814,6 +40815,7 @@ paths:
           in ISO 8601 format
         schema:
           type: string
+          format: date-time
           nullable: true
         in: query
         example: '2019-03-15T08:00:00Z'
@@ -40824,7 +40826,7 @@ paths:
           type: string
           nullable: true
         in: query
-        example: '2019-03-15T08:00:00Z'
+        example: production
       - name: merge_user_id
         required: false
         description: Returns merge requests which have been merged by the user with
@@ -41326,6 +41328,7 @@ paths:
           in ISO 8601 format.
         schema:
           type: string
+          format: date-time
           nullable: true
         in: query
         example: '2019-03-15T08:00:00Z'
@@ -41335,6 +41338,7 @@ paths:
           in ISO 8601 format
         schema:
           type: string
+          format: date-time
           nullable: true
         in: query
         example: '2019-03-15T08:00:00Z'
@@ -41345,7 +41349,7 @@ paths:
           type: string
           nullable: true
         in: query
-        example: '2019-03-15T08:00:00Z'
+        example: production
       - name: merge_user_id
         required: false
         description: Returns merge requests which have been merged by the user with
@@ -42040,6 +42044,7 @@ paths:
           in ISO 8601 format.
         schema:
           type: string
+          format: date-time
           nullable: true
         in: query
         example: '2019-03-15T08:00:00Z'
@@ -42049,6 +42054,7 @@ paths:
           in ISO 8601 format
         schema:
           type: string
+          format: date-time
           nullable: true
         in: query
         example: '2019-03-15T08:00:00Z'
@@ -42059,7 +42065,7 @@ paths:
           type: string
           nullable: true
         in: query
-        example: '2019-03-15T08:00:00Z'
+        example: production
       - name: merge_user_id
         required: false
         description: Returns merge requests which have been merged by the user with
@@ -59654,6 +59660,7 @@ paths:
           in ISO 8601 format.
         schema:
           type: string
+          format: date-time
           nullable: true
         in: query
         example: '2019-03-15T08:00:00Z'
@@ -59663,6 +59670,7 @@ paths:
           in ISO 8601 format
         schema:
           type: string
+          format: date-time
           nullable: true
         in: query
         example: '2019-03-15T08:00:00Z'
@@ -59673,7 +59681,7 @@ paths:
           type: string
           nullable: true
         in: query
-        example: '2019-03-15T08:00:00Z'
+        example: production
       - name: merge_user_id
         required: false
         description: Returns merge requests which have been merged by the user with
@@ -75301,7 +75309,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_a9e6fb278ceb"
+              "$ref": "#/components/schemas/RequestBody_ee5cd6f7e046"
   "/api/v4/admin/migrations/pending":
     get:
       operationId: getApiV4AdminMigrationsPending
@@ -94210,6 +94218,9 @@ components:
     APIEntitiesPlanLimit:
       type: object
       properties:
+        cargo_max_file_size:
+          type: integer
+          example: 5368709120
         ci_instance_level_variables:
           type: integer
           example: 25
@@ -117322,7 +117333,7 @@ components:
           description: A description of the image or URL
           example: An example metric
           nullable: true
-    RequestBody_a9e6fb278ceb:
+    RequestBody_ee5cd6f7e046:
       type: object
       properties:
         plan_name:
@@ -117341,6 +117352,10 @@ components:
           - opensource
           description: Name of the plan to update
           minLength: 1
+        cargo_max_file_size:
+          type: integer
+          description: Maximum Cargo package file size in bytes
+          nullable: true
         ci_instance_level_variables:
           type: integer
           description: Maximum number of Instance-level CI/CD variables that can be

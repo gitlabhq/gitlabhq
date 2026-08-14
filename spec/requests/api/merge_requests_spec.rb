@@ -1485,6 +1485,18 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
         expect_empty_array_response
       end
+
+      it 'returns 400 when deployed_before is not a valid date' do
+        get api(endpoint_path, user), params: { deployed_before: '2021-99-99' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      it 'returns 400 when deployed_after is not a valid date' do
+        get api(endpoint_path, user), params: { deployed_after: '2021-99-99' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
     end
 
     context 'a project which enforces all discussions to be resolved' do

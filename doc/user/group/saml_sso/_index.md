@@ -578,6 +578,11 @@ automatically confirms user accounts. Users still receive an
 - The user is provisioned with SAML or SCIM.
 - The user has an email address that belongs to the verified domain.
 
+> [!note]
+> Provisioned users with an email address outside the verified domain remain unconfirmed.
+> If [automatic deletion of unconfirmed users](../../../administration/moderate_users.md#automatically-delete-unconfirmed-users)
+> is enabled, GitLab can delete these users.
+
 ### Disable password and passkey authentication for enterprise users
 
 {{< history >}}

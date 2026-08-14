@@ -19,6 +19,21 @@ RSpec.shared_examples 'can search settings' do |search_term, non_match_section|
   end
 end
 
+RSpec.shared_examples 'can search and expand collapsed settings' do |search_term, non_match_section|
+  it_behaves_like 'can search settings', search_term, non_match_section
+
+  it 'expands a collapsed section that matches the search term' do
+    within('.settings', text: search_term) do
+      find('.js-settings-toggle:not(.js-settings-toggle-trigger-only)').click
+    end
+    expect(page).to have_no_css('.settings.expanded', text: search_term)
+
+    fill_in SearchHelpers::INPUT_PLACEHOLDER, with: search_term
+
+    expect(page).to have_css('.settings.expanded', text: search_term)
+  end
+end
+
 RSpec.shared_examples 'can highlight results' do |search_term|
   it 'has search settings field' do
     expect(page).to have_field(placeholder: SearchHelpers::INPUT_PLACEHOLDER)

@@ -7,7 +7,7 @@ import BrandLogo from 'jh_else_ce/super_sidebar/components/brand_logo.vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { EVENT_OPEN_GLOBAL_SEARCH } from '~/vue_shared/global_search/constants';
 import { staticBreadcrumbs } from '~/lib/utils/breadcrumbs_state';
-import { adminRootPath } from '~/lib/utils/path_helpers/admin';
+import { adminRootPath } from '~/lib/utils/path_helpers/instance_admin';
 import { exploreAnalyticsDashboardsPath } from '~/lib/utils/path_helpers/explore';
 import { newUserRegistrationPath, newUserSessionPath } from '~/lib/utils/path_helpers/routes';
 import SuperSidebarToggle from './super_sidebar_toggle.vue';

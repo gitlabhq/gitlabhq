@@ -48,7 +48,9 @@ module API
           tags ['discussions']
         end
         params do
+          # rubocop:disable API/ParameterType -- `notable_id_type` is a dynamic value, cop does not recognise this pattern
           requires :noteable_id, type: notable_id_type, desc: "The ID of the #{notable_name}"
+          # rubocop:enable API/ParameterType
           use :pagination
         end
 
@@ -69,7 +71,9 @@ module API
         end
         params do
           requires :discussion_id, type: String, desc: 'The ID of a discussion'
+          # rubocop:disable API/ParameterType -- `notable_id_type` is a dynamic value, cop does not recognise this pattern
           requires :noteable_id, type: notable_id_type, desc: "The ID of the #{notable_name}"
+          # rubocop:enable API/ParameterType
         end
         route_setting :authorization, permissions: :"read_#{notable_type_underscore}_discussion", boundary_type: boundary_type
         get ":id/#{noteables_path}/:noteable_id/discussions/:discussion_id", feature_category: feature_category do
@@ -91,7 +95,9 @@ module API
           tags ['discussions']
         end
         params do
+          # rubocop:disable API/ParameterType -- `notable_id_type` is a dynamic value, cop does not recognise this pattern
           requires :noteable_id, type: notable_id_type, desc: "The ID of the #{notable_name}"
+          # rubocop:enable API/ParameterType
           requires :body, type: String, desc: 'The content of a note'
           optional :created_at, type: String, desc: 'The creation date of the note'
 
@@ -158,7 +164,9 @@ module API
         end
         params do
           requires :discussion_id, type: String, desc: 'The ID of a discussion'
+          # rubocop:disable API/ParameterType -- `notable_id_type` is a dynamic value, cop does not recognise this pattern
           requires :noteable_id, type: notable_id_type, desc: "The ID of the #{notable_name}"
+          # rubocop:enable API/ParameterType
         end
         route_setting :authorization, permissions: :"read_#{notable_type_underscore}_discussion_note", boundary_type: boundary_type
         get ":id/#{noteables_path}/:noteable_id/discussions/:discussion_id/notes", feature_category: feature_category do
@@ -178,7 +186,9 @@ module API
           tags ['discussions']
         end
         params do
+          # rubocop:disable API/ParameterType -- `notable_id_type` is a dynamic value, cop does not recognise this pattern
           requires :noteable_id, type: notable_id_type, desc: "The ID of the #{notable_name}"
+          # rubocop:enable API/ParameterType
           requires :discussion_id, type: String, desc: 'The ID of a discussion'
           requires :body, type: String, desc: 'The content of a note'
           optional :created_at, type: String, desc: 'The creation date of the note'
@@ -226,7 +236,9 @@ module API
           tags ['discussions']
         end
         params do
+          # rubocop:disable API/ParameterType -- `notable_id_type` is a dynamic value, cop does not recognise this pattern
           requires :noteable_id, type: notable_id_type, desc: "The ID of the #{notable_name}"
+          # rubocop:enable API/ParameterType
           requires :discussion_id, type: String, desc: 'The ID of a discussion'
           requires :note_id, type: Integer, desc: 'The ID of a note'
         end
@@ -243,7 +255,9 @@ module API
           tags ['discussions']
         end
         params do
+          # rubocop:disable API/ParameterType -- `notable_id_type` is a dynamic value, cop does not recognise this pattern
           requires :noteable_id, type: notable_id_type, desc: "The ID of the #{notable_name}"
+          # rubocop:enable API/ParameterType
           requires :discussion_id, type: String, desc: 'The ID of a discussion'
           requires :note_id, type: Integer, desc: 'The ID of a note'
           optional :body, type: String, desc: 'The content of a note'
@@ -267,7 +281,9 @@ module API
           tags ['discussions']
         end
         params do
+          # rubocop:disable API/ParameterType -- `notable_id_type` is a dynamic value, cop does not recognise this pattern
           requires :noteable_id, type: notable_id_type, desc: "The ID of the #{notable_name}"
+          # rubocop:enable API/ParameterType
           requires :discussion_id, type: String, desc: 'The ID of a discussion'
           requires :note_id, type: Integer, desc: 'The ID of a note'
         end
@@ -285,7 +301,9 @@ module API
             tags ['discussions']
           end
           params do
+            # rubocop:disable API/ParameterType -- `notable_id_type` is a dynamic value, cop does not recognise this pattern
             requires :noteable_id, type: notable_id_type, desc: "The ID of the #{notable_name}"
+            # rubocop:enable API/ParameterType
             requires :discussion_id, type: String, desc: 'The ID of a discussion'
             requires :resolved, type: Boolean, desc: 'Mark discussion resolved/unresolved'
           end

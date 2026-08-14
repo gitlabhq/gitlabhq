@@ -1,0 +1,10 @@
+---
+name: chatgpt_siwc_login_redirect
+description: When an unauthenticated user hits the OAuth authorize endpoint from the ChatGPT connector installation flow (target_flow=chatgpt_siwc), redirect them into the ChatGPT OmniAuth sign-in instead of the standard GitLab login page.
+feature_issue_url: https://gitlab.com/gitlab-com/partners/strategy-product-partnerships/product-partnerships/-/work_items/92
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/247672
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/607391
+milestone: '19.3'
+group: group::authentication
+type: gitlab_com_derisk
+default_enabled: false

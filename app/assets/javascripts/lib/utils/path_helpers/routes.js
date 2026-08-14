@@ -2374,16 +2374,7 @@ export const newProjectPath = /*#__PURE__*/ (...args) => {
  * @param {object | undefined} options
  * @returns {string} route path
  */
-export const connectAdminClustersPath = /*#__PURE__*/ (...args) => {
-  const _connectOrganizationAdminClustersPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"clusters"],[2,[7,"/"],[2,[6,"connect"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
-  const _connectAdminClustersPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"clusters"],[2,[7,"/"],[2,[6,"connect"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
-
-  if (hasOrganizationScopedPaths()) {
-    return _connectOrganizationAdminClustersPath(gon.current_organization.path, ...args);
-  }
-
-  return _connectAdminClustersPath(...args);
-};
+export const connectAdminClustersPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"clusters"],[2,[7,"/"],[2,[6,"connect"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
 /**
  * Generates the Rails route:
@@ -2396,16 +2387,7 @@ export const connectAdminClustersPath = /*#__PURE__*/ (...args) => {
  * @param {object | undefined} options
  * @returns {string} route path
  */
-export const newClusterDocsAdminClustersPath = /*#__PURE__*/ (...args) => {
-  const _newClusterDocsOrganizationAdminClustersPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"clusters"],[2,[7,"/"],[2,[6,"new_cluster_docs"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
-  const _newClusterDocsAdminClustersPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"clusters"],[2,[7,"/"],[2,[6,"new_cluster_docs"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
-
-  if (hasOrganizationScopedPaths()) {
-    return _newClusterDocsOrganizationAdminClustersPath(gon.current_organization.path, ...args);
-  }
-
-  return _newClusterDocsAdminClustersPath(...args);
-};
+export const newClusterDocsAdminClustersPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"clusters"],[2,[7,"/"],[2,[6,"new_cluster_docs"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
 /**
  * Generates the Rails route:
@@ -2418,16 +2400,7 @@ export const newClusterDocsAdminClustersPath = /*#__PURE__*/ (...args) => {
  * @param {object | undefined} options
  * @returns {string} route path
  */
-export const createUserAdminClustersPath = /*#__PURE__*/ (...args) => {
-  const _createUserOrganizationAdminClustersPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"clusters"],[2,[7,"/"],[2,[6,"create_user"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
-  const _createUserAdminClustersPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"clusters"],[2,[7,"/"],[2,[6,"create_user"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
-
-  if (hasOrganizationScopedPaths()) {
-    return _createUserOrganizationAdminClustersPath(gon.current_organization.path, ...args);
-  }
-
-  return _createUserAdminClustersPath(...args);
-};
+export const createUserAdminClustersPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"clusters"],[2,[7,"/"],[2,[6,"create_user"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
 /**
  * Generates the Rails route:
@@ -2441,16 +2414,7 @@ export const createUserAdminClustersPath = /*#__PURE__*/ (...args) => {
  * @param {object | undefined} options
  * @returns {string} route path
  */
-export const createOrUpdateAdminClusterIntegrationPath = /*#__PURE__*/ (...args) => {
-  const _createOrUpdateOrganizationAdminClusterIntegrationPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"cluster_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"clusters"],[2,[7,"/"],[2,[3,"cluster_id"],[2,[7,"/"],[2,[6,"integration"],[2,[7,"/"],[2,[6,"create_or_update"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]);
-  const _createOrUpdateAdminClusterIntegrationPath = /*#__PURE__*/ __jsr.r({"cluster_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"clusters"],[2,[7,"/"],[2,[3,"cluster_id"],[2,[7,"/"],[2,[6,"integration"],[2,[7,"/"],[2,[6,"create_or_update"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
-
-  if (hasOrganizationScopedPaths()) {
-    return _createOrUpdateOrganizationAdminClusterIntegrationPath(gon.current_organization.path, ...args);
-  }
-
-  return _createOrUpdateAdminClusterIntegrationPath(...args);
-};
+export const createOrUpdateAdminClusterIntegrationPath = /*#__PURE__*/ __jsr.r({"cluster_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"clusters"],[2,[7,"/"],[2,[3,"cluster_id"],[2,[7,"/"],[2,[6,"integration"],[2,[7,"/"],[2,[6,"create_or_update"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
 
 /**
  * Generates the Rails route:
@@ -2464,16 +2428,7 @@ export const createOrUpdateAdminClusterIntegrationPath = /*#__PURE__*/ (...args)
  * @param {object | undefined} options
  * @returns {string} route path
  */
-export const environmentsAdminClusterPath = /*#__PURE__*/ (...args) => {
-  const _environmentsOrganizationAdminClusterPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"clusters"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"environments"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
-  const _environmentsAdminClusterPath = /*#__PURE__*/ __jsr.r({"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"clusters"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"environments"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
-
-  if (hasOrganizationScopedPaths()) {
-    return _environmentsOrganizationAdminClusterPath(gon.current_organization.path, ...args);
-  }
-
-  return _environmentsAdminClusterPath(...args);
-};
+export const environmentsAdminClusterPath = /*#__PURE__*/ __jsr.r({"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"clusters"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"environments"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
 /**
  * Generates the Rails route:
@@ -2487,16 +2442,7 @@ export const environmentsAdminClusterPath = /*#__PURE__*/ (...args) => {
  * @param {object | undefined} options
  * @returns {string} route path
  */
-export const clusterStatusAdminClusterPath = /*#__PURE__*/ (...args) => {
-  const _clusterStatusOrganizationAdminClusterPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"clusters"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"cluster_status"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
-  const _clusterStatusAdminClusterPath = /*#__PURE__*/ __jsr.r({"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"clusters"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"cluster_status"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
-
-  if (hasOrganizationScopedPaths()) {
-    return _clusterStatusOrganizationAdminClusterPath(gon.current_organization.path, ...args);
-  }
-
-  return _clusterStatusAdminClusterPath(...args);
-};
+export const clusterStatusAdminClusterPath = /*#__PURE__*/ __jsr.r({"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"clusters"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"cluster_status"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
 /**
  * Generates the Rails route:
@@ -2510,16 +2456,7 @@ export const clusterStatusAdminClusterPath = /*#__PURE__*/ (...args) => {
  * @param {object | undefined} options
  * @returns {string} route path
  */
-export const clearCacheAdminClusterPath = /*#__PURE__*/ (...args) => {
-  const _clearCacheOrganizationAdminClusterPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"clusters"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"clear_cache"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
-  const _clearCacheAdminClusterPath = /*#__PURE__*/ __jsr.r({"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"clusters"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"clear_cache"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
-
-  if (hasOrganizationScopedPaths()) {
-    return _clearCacheOrganizationAdminClusterPath(gon.current_organization.path, ...args);
-  }
-
-  return _clearCacheAdminClusterPath(...args);
-};
+export const clearCacheAdminClusterPath = /*#__PURE__*/ __jsr.r({"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"clusters"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"clear_cache"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
 /**
  * Generates the Rails route:
@@ -2533,16 +2470,7 @@ export const clearCacheAdminClusterPath = /*#__PURE__*/ (...args) => {
  * @param {object | undefined} options
  * @returns {string} route path
  */
-export const migrateAdminClusterPath = /*#__PURE__*/ (...args) => {
-  const _migrateOrganizationAdminClusterPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"clusters"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"migrate"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
-  const _migrateAdminClusterPath = /*#__PURE__*/ __jsr.r({"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"clusters"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"migrate"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
-
-  if (hasOrganizationScopedPaths()) {
-    return _migrateOrganizationAdminClusterPath(gon.current_organization.path, ...args);
-  }
-
-  return _migrateAdminClusterPath(...args);
-};
+export const migrateAdminClusterPath = /*#__PURE__*/ __jsr.r({"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"clusters"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"migrate"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
 /**
  * Generates the Rails route:
@@ -2556,16 +2484,7 @@ export const migrateAdminClusterPath = /*#__PURE__*/ (...args) => {
  * @param {object | undefined} options
  * @returns {string} route path
  */
-export const updateMigrationAdminClusterPath = /*#__PURE__*/ (...args) => {
-  const _updateMigrationOrganizationAdminClusterPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"clusters"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"update_migration"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
-  const _updateMigrationAdminClusterPath = /*#__PURE__*/ __jsr.r({"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"clusters"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"update_migration"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
-
-  if (hasOrganizationScopedPaths()) {
-    return _updateMigrationOrganizationAdminClusterPath(gon.current_organization.path, ...args);
-  }
-
-  return _updateMigrationAdminClusterPath(...args);
-};
+export const updateMigrationAdminClusterPath = /*#__PURE__*/ __jsr.r({"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"clusters"],[2,[7,"/"],[2,[3,"id"],[2,[7,"/"],[2,[6,"update_migration"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
 
 /**
  * Generates the Rails route:
@@ -2578,16 +2497,7 @@ export const updateMigrationAdminClusterPath = /*#__PURE__*/ (...args) => {
  * @param {object | undefined} options
  * @returns {string} route path
  */
-export const adminClustersPath = /*#__PURE__*/ (...args) => {
-  const _organizationAdminClustersPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"clusters"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
-  const _adminClustersPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"clusters"],[1,[2,[8,"."],[3,"format"]]]]]]]);
-
-  if (hasOrganizationScopedPaths()) {
-    return _organizationAdminClustersPath(gon.current_organization.path, ...args);
-  }
-
-  return _adminClustersPath(...args);
-};
+export const adminClustersPath = /*#__PURE__*/ __jsr.r({"format":{}}, [2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"clusters"],[1,[2,[8,"."],[3,"format"]]]]]]]);
 
 /**
  * Generates the Rails route:
@@ -2601,16 +2511,7 @@ export const adminClustersPath = /*#__PURE__*/ (...args) => {
  * @param {object | undefined} options
  * @returns {string} route path
  */
-export const adminClusterPath = /*#__PURE__*/ (...args) => {
-  const _organizationAdminClusterPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"clusters"],[2,[7,"/"],[2,[3,"id"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
-  const _adminClusterPath = /*#__PURE__*/ __jsr.r({"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"clusters"],[2,[7,"/"],[2,[3,"id"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
-
-  if (hasOrganizationScopedPaths()) {
-    return _organizationAdminClusterPath(gon.current_organization.path, ...args);
-  }
-
-  return _adminClusterPath(...args);
-};
+export const adminClusterPath = /*#__PURE__*/ __jsr.r({"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"admin"],[2,[7,"/"],[2,[6,"clusters"],[2,[7,"/"],[2,[3,"id"],[1,[2,[8,"."],[3,"format"]]]]]]]]]);
 
 /**
  * Generates the Rails route:

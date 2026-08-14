@@ -36,15 +36,11 @@ module API
 
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       helpers do
-        def project
-          authorized_user_project(action: :read_package)
-        end
-
         def cargo_registry_url
           URI.join(
             Gitlab.config.gitlab.url,
             File.join(
-              api_v4_projects_packages_path(id: project.id),
+              api_v4_projects_packages_path(id: user_project_with_read_package.id),
               "/packages/cargo"
             )
           )
@@ -54,9 +50,9 @@ module API
       after_validation do
         require_packages_enabled!
 
-        not_found! unless ::Feature.enabled?(:package_registry_cargo_support, project)
+        not_found! unless ::Feature.enabled?(:package_registry_cargo_support, user_project_with_read_package)
 
-        authorize_read_package!(project)
+        authorize_read_package!(user_project_with_read_package)
       end
 
       namespace ':id/packages/cargo' do
@@ -69,13 +65,14 @@ module API
           ]
           tags %w[packages_cargo]
         end
-
-        route_setting :authorization, permissions: :read_package, boundary_type: :project
+        route_setting :authentication, authenticate_non_public: true
+        route_setting :authorization, permissions: :read_cargo_package, boundary_type: :project,
+          job_token_policies: :read_packages, allow_public_access_for_enabled_project_features: :package_registry
         get 'config.json' do
           {
             "dl" => cargo_registry_url,
             "api" => cargo_registry_url,
-            "auth-required" => !project.public?
+            "auth-required" => !user_project_with_read_package.public?
           }
         end
 
@@ -84,7 +81,7 @@ module API
             validate_cargo_index_path!(package_name, path_prefix)
 
             metadata = ::Packages::Cargo::MetadataFinder
-              .new(project, package_name: package_name)
+              .new(user_project_with_read_package, package_name: package_name)
               .execute
               .to_a
 
@@ -134,7 +131,9 @@ module API
         params do
           requires :package_name, type: String, desc: 'The cargo package name'
         end
-        route_setting :authorization, permissions: :read_cargo_package, boundary_type: :project
+        route_setting :authentication, authenticate_non_public: true
+        route_setting :authorization, permissions: :read_cargo_package, boundary_type: :project,
+          job_token_policies: :read_packages, allow_public_access_for_enabled_project_features: :package_registry
         get '1/:package_name', requirements: INDEX_REQUIREMENTS do
           render_cargo_sparse_index!(params[:package_name], path_prefix: %w[1])
         end
@@ -155,7 +154,9 @@ module API
         params do
           requires :package_name, type: String, desc: 'The cargo package name'
         end
-        route_setting :authorization, permissions: :read_cargo_package, boundary_type: :project
+        route_setting :authentication, authenticate_non_public: true
+        route_setting :authorization, permissions: :read_cargo_package, boundary_type: :project,
+          job_token_policies: :read_packages, allow_public_access_for_enabled_project_features: :package_registry
         get '2/:package_name', requirements: INDEX_REQUIREMENTS do
           render_cargo_sparse_index!(params[:package_name], path_prefix: %w[2])
         end
@@ -177,7 +178,9 @@ module API
           requires :first_char, type: String, desc: 'First character of the cargo package name'
           requires :package_name, type: String, desc: 'The cargo package name'
         end
-        route_setting :authorization, permissions: :read_cargo_package, boundary_type: :project
+        route_setting :authentication, authenticate_non_public: true
+        route_setting :authorization, permissions: :read_cargo_package, boundary_type: :project,
+          job_token_policies: :read_packages, allow_public_access_for_enabled_project_features: :package_registry
         get '3/:first_char/:package_name', requirements: INDEX_REQUIREMENTS do
           render_cargo_sparse_index!(params[:package_name], path_prefix: ['3', params[:first_char]])
         end
@@ -200,7 +203,9 @@ module API
           requires :prefix_2, type: String, desc: 'Next two characters of the cargo package name'
           requires :package_name, type: String, desc: 'The cargo package name'
         end
-        route_setting :authorization, permissions: :read_cargo_package, boundary_type: :project
+        route_setting :authentication, authenticate_non_public: true
+        route_setting :authorization, permissions: :read_cargo_package, boundary_type: :project,
+          job_token_policies: :read_packages, allow_public_access_for_enabled_project_features: :package_registry
         get ':prefix_1/:prefix_2/:package_name', requirements: INDEX_REQUIREMENTS do
           render_cargo_sparse_index!(params[:package_name], path_prefix: [params[:prefix_1], params[:prefix_2]])
         end
@@ -220,10 +225,12 @@ module API
           requires :package_name, type: String, desc: 'The cargo package name'
           requires :package_version, type: String, desc: 'The cargo package version'
         end
-        route_setting :authorization, permissions: :download_cargo_package, boundary_type: :project
+        route_setting :authentication, authenticate_non_public: true
+        route_setting :authorization, permissions: :download_cargo_package, boundary_type: :project,
+          job_token_policies: :read_packages, allow_public_access_for_enabled_project_features: :package_registry
         get ':package_name/:package_version/download', requirements: DOWNLOAD_REQUIREMENTS do
           package = ::Packages::Cargo::PackageFinder.new(
-            project,
+            user_project_with_read_package,
             package_name: params[:package_name],
             package_version: params[:package_version]
           ).execute.last
@@ -234,9 +241,35 @@ module API
 
           not_found!('Package file') unless package_file
 
-          track_package_event('pull_package', :cargo, project: project, namespace: project.namespace)
+          track_package_event('pull_package', :cargo, project: user_project_with_read_package,
+            namespace: user_project_with_read_package.namespace)
 
           present_package_file!(package_file)
+        end
+
+        desc 'Authorize a Cargo crate upload' do
+          detail 'Workhorse authorize handshake performed before a cargo publish request'
+          success code: 200
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not Found' }
+          ]
+          tags %w[packages_cargo]
+          hidden true
+        end
+        route_setting :authentication, authenticate_non_public: true
+        route_setting :authorization, skip_granular_token_authorization: :workhorse_pre_authorization,
+          job_token_policies: :admin_packages
+        put 'api/v1/crates/new/authorize' do
+          authorize_upload!(user_project_with_read_package)
+
+          content_type Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE
+
+          ::Packages::PackageFileUploader.workhorse_authorize(
+            has_length: true,
+            maximum_size: user_project_with_read_package.actual_limits.cargo_max_file_size
+          )
         end
       end
     end

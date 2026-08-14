@@ -20,13 +20,22 @@ module Gitlab
         end
 
         chat_user = ChatNames::FindUserService.new(params[:team_id], params[:user_id]).execute
+        user = chat_user&.user
 
-        if chat_user&.user
-          Gitlab::SlashCommands::Command.new(integration.project, chat_user, params).execute
-        else
+        unless user
           url = ChatNames::AuthorizeUserService.new(params).execute
-          Gitlab::SlashCommands::Presenters::Access.new(url).authorize
+          return Gitlab::SlashCommands::Presenters::Access.new(url).authorize
         end
+
+        # Checked here so an unusable account is reported as such. A deactivated account is
+        # otherwise only refused during pipeline creation, which blames a missing CI job.
+        unless user.can?(:use_slash_commands)
+          return Gitlab::SlashCommands::Presenters::Access.new.deactivated if user.deactivated?
+
+          return Gitlab::SlashCommands::Presenters::Access.new.access_denied(integration.project)
+        end
+
+        Gitlab::SlashCommands::Command.new(integration.project, chat_user, params).execute
       end
 
       private

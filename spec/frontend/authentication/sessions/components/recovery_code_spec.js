@@ -1,7 +1,7 @@
 import { GlLink } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import RecoveryCode from '~/authentication/sessions/components/recovery_code.vue';
-import { newAdminSessionPath } from '~/lib/utils/path_helpers/admin';
+import { newAdminSessionPath } from '~/lib/utils/path_helpers/instance_admin';
 import { newUserSessionPath } from '~/lib/utils/path_helpers/routes';
 
 jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
