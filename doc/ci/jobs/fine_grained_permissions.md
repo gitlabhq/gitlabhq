@@ -134,9 +134,9 @@ CI/CD job tokens can access the following REST API endpoints:
 | Download module source | `GET /projects/:id/packages/go/*module_name/@v/:module_version.zip` | `READ_PACKAGES` | Read |
 | Download package file | `GET /projects/:id/packages/generic/:package_name/*package_version/(*path/):file_name` | `READ_PACKAGES` | Read |
 | Download the NPM tarball | `GET /projects/:id/packages/npm/*package_name/-/*file_name` | `READ_PACKAGES` | Read |
-| Download the maven package file at a group level | `GET /groups/:id/-/packages/maven/*path/:file_name` | `READ_PACKAGES` | Read |
-| Download the maven package file at a project level | `GET /projects/:id/packages/maven/*path/:file_name` | `READ_PACKAGES` | Read |
-| Download the maven package file at instance level | `GET /packages/maven/*path/:file_name` | `READ_PACKAGES` | Read |
+| Download the maven package file for a group | `GET /groups/:id/-/packages/maven/*path/:file_name` | `READ_PACKAGES` | Read |
+| Download the maven package file for a project | `GET /projects/:id/packages/maven/*path/:file_name` | `READ_PACKAGES` | Read |
+| Download the maven package file for the instance | `GET /packages/maven/*path/:file_name` | `READ_PACKAGES` | Read |
 | Get all tags for a given NPM package | `GET /groups/:id/-/packages/npm/-/package/*package_name/dist-tags` | `READ_PACKAGES` | Read |
 | Get all tags for a given NPM package | `GET /packages/npm/-/package/*package_name/dist-tags` | `READ_PACKAGES` | Read |
 | Get all tags for a given NPM package | `GET /projects/:id/packages/npm/-/package/*package_name/dist-tags` | `READ_PACKAGES` | Read |
@@ -302,9 +302,9 @@ CI/CD job tokens cannot access the following endpoints:
 | Delete registry repository | `DELETE /projects/:id/registry/repositories/:repository_id` |
 | Delete multiple registry repository tags | `DELETE /projects/:id/registry/repositories/:repository_id/tags` |
 | Delete a registry repository tag | `DELETE /projects/:id/registry/repositories/:repository_id/tags/:tag_name` |
-| Composer packages endpoint at group level for package versions metadata | `GET /group/:id/-/packages/composer/*package_name` |
+| Composer packages endpoint for a group's package versions metadata | `GET /group/:id/-/packages/composer/*package_name` |
 | List all packages for a group | `GET /group/:id/-/packages/composer/p/:sha` |
-| Composer v2 packages p2 endpoint at group level for package versions metadata | `GET /group/:id/-/packages/composer/p2/*package_name` |
+| Composer v2 packages p2 endpoint for a group's package versions metadata | `GET /group/:id/-/packages/composer/p2/*package_name` |
 | Retrieve repository URL templates | `GET /group/:id/-/packages/composer/packages` |
 | NPM registry metadata endpoint | `GET /groups/:id/-/packages/npm/*package_name` |
 | Download a package file from a group | `GET /groups/:id/-/packages/pypi/files/:sha256/*file_identifier` |

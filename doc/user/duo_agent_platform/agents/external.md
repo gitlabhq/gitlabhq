@@ -520,6 +520,8 @@ Restricted agents:
 - Can be viewed and used by members of any project in the top-level group of the managing project.
 - Can be enabled in other projects in the same top-level group.
 - Cannot be viewed or turned on outside that top-level group.
+- Cannot be viewed in the AI Catalog in Explore.
+- Can be created only from a project, not from the AI Catalog in Explore.
 
 You cannot make a public agent restricted if the agent has been turned on by a project outside of that top-level group.
 

@@ -16,6 +16,9 @@ module Gitlab
           scope_rego: 4096
         }.freeze
 
+        COMPILED_TEXT_ATTRIBUTES = [:scope_rego].freeze
+        private_constant :COMPILED_TEXT_ATTRIBUTES
+
         UPDATABLE_ATTRIBUTES = %i[
           name description trigger_type rules actions policy_scope scope_rego mode lifecycle_state
         ].freeze
@@ -152,14 +155,22 @@ module Gitlab
             "Missing required attributes: #{missing.join(', ')}"
         end
 
-        def validate_text_limits!(attributes)
-          TEXT_LIMITS.each do |attr, limit|
-            value = attributes[attr]
+        def validate_authored_text_limits!(attributes)
+          validate_text_limits!(attributes, TEXT_LIMITS.except(*COMPILED_TEXT_ATTRIBUTES))
+        end
+
+        def validate_compiled_text_limits!(attributes)
+          validate_text_limits!(attributes, TEXT_LIMITS.slice(*COMPILED_TEXT_ATTRIBUTES))
+        end
+
+        def validate_text_limits!(attributes, limits = TEXT_LIMITS)
+          limits.each do |attribute, limit|
+            value = attributes[attribute]
             next if value.nil?
 
             if value.to_s.length > limit
               raise PolicyStore::ValidationError,
-                "#{attr} exceeds maximum length of #{limit} characters"
+                "#{attribute} exceeds maximum length of #{limit} characters"
             end
           end
         end

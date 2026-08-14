@@ -101,7 +101,7 @@ Gitlab::PolicyStore.create(
   organization_id: 1, name: "Framework 5 only", trigger_type: "deployment_requested",
   policy_scope: { compliance_frameworks: [{ id: 5 }] }
 ).scope_rego
-# => "package gitlab.scope\n\nimport rego.v1\n\n..."
+# => "package gitlab.scope\n\napplicable := [result.policy | some result in results; result.applies]\n\n..."
 ```
 
 The generated program is `package gitlab.scope`, per

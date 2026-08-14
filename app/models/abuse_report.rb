@@ -74,6 +74,7 @@ class AbuseReport < ApplicationRecord
   scope :by_reporter_id, ->(reporter_id) { where(reporter_id: reporter_id) }
   scope :by_category, ->(category) { where(category: category) }
   scope :with_users, -> { includes(:reporter, :user) }
+  scope :in_organization, ->(organization) { where(organization: organization) }
 
   enum :category, {
     spam: 1,
@@ -264,12 +265,18 @@ class AbuseReport < ApplicationRecord
     )
   end
 
+  # Call this on a relation that already has every filter applied, including the organization
+  # scope: AbuseReport.in_organization(org).open.aggregated_by_user_and_category. Rails passes
+  # that relation into both queries below -- the one that groups the reports, and the one that
+  # reads the grouped rows back -- so the filters apply to both. `all` refers to it. Naming
+  # AbuseReport here would behave the same, but would read as if the filters were dropped.
   def self.aggregated_by_user_and_category(sort_by_count = false)
-    sub_query = self
+    sub_query = all
       .select('user_id, category, COUNT(id) as count', 'MIN(id) as min')
       .group(:user_id, :category)
 
-    reports = AbuseReport.with_users
+    reports = all
+      .with_users
       .open
       .select('aggregated.*, status, id, reporter_id, created_at, updated_at')
       .from(sub_query, :aggregated)

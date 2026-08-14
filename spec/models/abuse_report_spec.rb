@@ -167,6 +167,21 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
       end
     end
 
+    describe '.in_organization' do
+      let_it_be(:other_organization) { create(:organization) }
+      let_it_be(:other_org_report) do
+        create(:abuse_report, reporter: create(:user, organization: other_organization))
+      end
+
+      it 'returns only reports belonging to the given organization' do
+        expect(described_class.in_organization(other_organization)).to contain_exactly(other_org_report)
+      end
+
+      it 'excludes reports belonging to another organization' do
+        expect(described_class.in_organization(report1.organization)).not_to include(other_org_report)
+      end
+    end
+
     describe '.aggregated_by_user_and_category' do
       let_it_be(:report3) { create(:abuse_report, category: report1.category, user: report1.user) }
       let_it_be(:report4) { create(:abuse_report, category: 'phishing', user: report1.user) }
@@ -191,6 +206,31 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
 
         it 'does not sort using a specific order' do
           expect(aggregated).to match_array([report, report1, report4, report5])
+        end
+      end
+
+      context 'when called on an organization-scoped relation' do
+        let_it_be(:other_organization) { create(:organization) }
+
+        # Reports are grouped by reported user and category. This one has the same user and
+        # category as report1, so it lands in the group that report1 and report3 already form --
+        # but it belongs to a different organization, so it must not be counted in that group.
+        # If the organization filter fails to reach the grouping, report1's count comes back
+        # as 3 instead of 2.
+        let_it_be(:other_org_report) do
+          create(:abuse_report, category: report1.category, user: report1.user,
+            reporter: create(:user, organization: other_organization))
+        end
+
+        it 'aggregates only within the receiver relation organization', :aggregate_failures do
+          reports_in_report1_group = [report1, report3]
+
+          result = described_class.in_organization(report1.organization)
+            .aggregated_by_user_and_category(false)
+
+          expect(result).to match_array([report, report1, report4, report5])
+          expect(result.find { |aggregate| aggregate.id == report1.id }.count)
+            .to eq(reports_in_report1_group.size)
         end
       end
     end

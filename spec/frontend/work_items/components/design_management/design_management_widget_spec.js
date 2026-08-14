@@ -74,6 +74,12 @@ describe('DesignWidget', () => {
     .mockResolvedValue(mockMoveDesignMutationResponse);
   const moveDesignMutationError = jest.fn().mockResolvedValue(mockMoveDesignMutationErrorResponse);
 
+  // Hovering the widget is what attaches the paste listener.
+  const hoverWidget = async () => {
+    wrapper.trigger('mouseenter');
+    await nextTick();
+  };
+
   const findWidgetWrapper = () => wrapper.findComponent(CrudComponent);
   const findDesignDropzoneComponent = () => wrapper.findComponent(DesignDropzone);
   const findAllDesignItems = () => wrapper.findAllComponents(DesignItem);
@@ -382,7 +388,26 @@ describe('DesignWidget', () => {
     };
 
     describe('paste functionality based on design state and route', () => {
-      it('enables paste listener when there are no designs and not in design detail view', async () => {
+      it('does not upload designs on paste until the user interacts with the widget', async () => {
+        createComponent({
+          canPasteDesign: true,
+          canAddDesign: true,
+          designCollectionQueryHandler: allDesignsArchivedQueryHandler,
+          routeArg: MOCK_ROUTE,
+        });
+
+        await waitForPromises();
+
+        const event = new Event('paste');
+        event.clipboardData = defaultClipboardData;
+        event.preventDefault = jest.fn();
+
+        document.dispatchEvent(event);
+
+        expect(wrapper.emitted('upload')).toBeUndefined();
+      });
+
+      it('enables paste listener on mouseenter when there are no designs', async () => {
         const addEventListenerSpy = jest.spyOn(document, 'addEventListener');
 
         createComponent({
@@ -393,13 +418,15 @@ describe('DesignWidget', () => {
         });
 
         await waitForPromises();
+        addEventListenerSpy.mockClear();
+
+        wrapper.trigger('mouseenter');
+        await nextTick();
 
         expect(addEventListenerSpy).toHaveBeenCalledWith('paste', expect.any(Function));
       });
 
-      it('disables paste listener when in design detail view', async () => {
-        const removeEventListenerSpy = jest.spyOn(document, 'removeEventListener');
-
+      it('does not upload designs when pasting in design detail view', async () => {
         createComponent({
           canPasteDesign: true,
           canAddDesign: true,
@@ -411,8 +438,15 @@ describe('DesignWidget', () => {
         });
 
         await waitForPromises();
+        await hoverWidget();
 
-        expect(removeEventListenerSpy).toHaveBeenCalledWith('paste', expect.any(Function));
+        const event = new Event('paste');
+        event.clipboardData = defaultClipboardData;
+        event.preventDefault = jest.fn();
+
+        document.dispatchEvent(event);
+
+        expect(wrapper.emitted('upload')).toBeUndefined();
       });
 
       it('does not enable paste on mouseenter when in design detail view', async () => {
@@ -438,6 +472,63 @@ describe('DesignWidget', () => {
       });
     });
 
+    describe('when the paste originates from an editable element', () => {
+      let editable;
+
+      afterEach(() => {
+        editable?.remove();
+        editable = null;
+      });
+
+      const pasteFrom = (element) => {
+        editable = element;
+        document.body.appendChild(editable);
+
+        const event = new Event('paste', { bubbles: true });
+        event.clipboardData = defaultClipboardData;
+        event.preventDefault = jest.fn();
+
+        editable.dispatchEvent(event);
+      };
+
+      beforeEach(async () => {
+        createComponent({
+          canPasteDesign: true,
+          canAddDesign: true,
+          designCollectionQueryHandler: allDesignsArchivedQueryHandler,
+          routeArg: MOCK_ROUTE,
+        });
+
+        await waitForPromises();
+
+        wrapper.trigger('mouseenter');
+        await nextTick();
+      });
+
+      it('does not upload designs when pasting into a textarea', () => {
+        pasteFrom(document.createElement('textarea'));
+
+        expect(wrapper.emitted('upload')).toBeUndefined();
+      });
+
+      it('does not upload designs when pasting into an input', () => {
+        pasteFrom(document.createElement('input'));
+
+        expect(wrapper.emitted('upload')).toBeUndefined();
+      });
+
+      it('does not upload designs when pasting into a contenteditable element', () => {
+        const div = document.createElement('div');
+        div.contentEditable = 'true';
+        // jsdom does not implement isContentEditable, so it is defined explicitly here.
+        Object.defineProperty(div, 'isContentEditable', { value: true });
+
+        pasteFrom(div);
+
+        expect(wrapper.emitted('upload')).toBeUndefined();
+      });
+    });
+
     describe('when canPasteDesign is true', () => {
       const mockDate = new Date('2025-05-01T18:18:19.524Z');
 
@@ -448,20 +539,24 @@ describe('DesignWidget', () => {
         global.Date.toISOString = mockDate.toISOString;
       });
 
-      beforeEach(() => {
+      beforeEach(async () => {
         createComponent({
           canPasteDesign: true,
           canAddDesign: true,
           designCollectionQueryHandler: allDesignsArchivedQueryHandler,
         });
+
+        await hoverWidget();
       });
 
-      it('does not upload designs if canPasteDesign is false', () => {
+      it('does not upload designs if canPasteDesign is false', async () => {
         createComponent({
           canPasteDesign: false,
           canAddDesign: true,
           designCollectionQueryHandler: allDesignsArchivedQueryHandler,
         });
+
+        await hoverWidget();
 
         const event = new Event('paste');
         event.clipboardData = defaultClipboardData;
@@ -472,12 +567,14 @@ describe('DesignWidget', () => {
         expect(wrapper.emitted('upload')).toBeUndefined();
       });
 
-      it('does not upload designs if canAddDesign is false', () => {
+      it('does not upload designs if canAddDesign is false', async () => {
         createComponent({
           canPasteDesign: true,
           canAddDesign: false,
           designCollectionQueryHandler: allDesignsArchivedQueryHandler,
         });
+
+        await hoverWidget();
 
         const event = new Event('paste');
         event.clipboardData = defaultClipboardData;

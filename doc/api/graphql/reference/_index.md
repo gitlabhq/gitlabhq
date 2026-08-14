@@ -4737,6 +4737,95 @@ Fields:
 | <a id="mutation-artifactdestroy-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-artifactdestroy-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
+### `Mutation.artifactRegistryRepositoryCreate`
+
+{{< details >}}
+
+- Introduced in GitLab 19.3.
+- Status: Experiment.
+
+{{< /details >}}
+
+Creates a repository in Artifact Registry.
+
+Input type: `ArtifactRegistryRepositoryCreateInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-artifactregistryrepositorycreate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-artifactregistryrepositorycreate-description"></a>`description` | [`String`](#string) | Human-readable description of the repository. |
+| <a id="mutation-artifactregistryrepositorycreate-format"></a>`format` | [`ArtifactRegistryRepositoryFormat!`](#artifactregistryrepositoryformat) | Package format the repository holds. Cannot be changed after creation. |
+| <a id="mutation-artifactregistryrepositorycreate-kind"></a>`kind` | [`ArtifactRegistryRepositoryKind`](#artifactregistryrepositorykind) | How the repository sources its artifacts. Defaults to hosted in Artifact Registry. |
+| <a id="mutation-artifactregistryrepositorycreate-name"></a>`name` | [`String!`](#string) | Name of the repository, unique within the organization. |
+| <a id="mutation-artifactregistryrepositorycreate-visibility"></a>`visibility` | [`ArtifactRegistryRepositoryVisibility`](#artifactregistryrepositoryvisibility) | Who can read the repository. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-artifactregistryrepositorycreate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-artifactregistryrepositorycreate-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-artifactregistryrepositorycreate-repository"></a>`repository` | [`ArtifactRegistryRepository`](#artifactregistryrepository) | Repository created. Null when the creation was not applied. |
+
+### `Mutation.artifactRegistryRepositoryDelete`
+
+{{< details >}}
+
+- Introduced in GitLab 19.3.
+- Status: Experiment.
+
+{{< /details >}}
+
+Deletes a repository in Artifact Registry.
+
+Input type: `ArtifactRegistryRepositoryDeleteInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-artifactregistryrepositorydelete-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-artifactregistryrepositorydelete-name"></a>`name` | [`String!`](#string) | Name of the repository to delete, unique within the organization. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-artifactregistryrepositorydelete-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-artifactregistryrepositorydelete-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+
+### `Mutation.artifactRegistryRepositoryUpdate`
+
+{{< details >}}
+
+- Introduced in GitLab 19.3.
+- Status: Experiment.
+
+{{< /details >}}
+
+Updates a repository in Artifact Registry.
+
+Input type: `ArtifactRegistryRepositoryUpdateInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-artifactregistryrepositoryupdate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-artifactregistryrepositoryupdate-description"></a>`description` | [`String`](#string) | Human-readable description of the repository. |
+| <a id="mutation-artifactregistryrepositoryupdate-name"></a>`name` | [`String!`](#string) | Name of the repository to update, unique within the organization. Cannot be changed. |
+| <a id="mutation-artifactregistryrepositoryupdate-visibility"></a>`visibility` | [`ArtifactRegistryRepositoryVisibility`](#artifactregistryrepositoryvisibility) | Who can read the repository. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-artifactregistryrepositoryupdate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-artifactregistryrepositoryupdate-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-artifactregistryrepositoryupdate-repository"></a>`repository` | [`ArtifactRegistryRepository`](#artifactregistryrepository) | Repository updated. Null when the update was not applied. |
+
 ### `Mutation.artifactRegistryRoleBulkGrant`
 
 {{< details >}}

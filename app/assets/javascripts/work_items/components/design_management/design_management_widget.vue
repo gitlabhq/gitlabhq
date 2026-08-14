@@ -261,15 +261,14 @@ export default {
     },
   },
   watch: {
-    enablePasteOnNoDesign: {
-      immediate: true,
-      handler(newVal) {
-        if (newVal) {
-          this.toggleOnPasteListener();
-        } else {
-          this.toggleOffPasteListener();
-        }
-      },
+    // Deliberately not `immediate`: attaching on mount makes an invisible, empty
+    // widget claim every paste on the page. Hover is the intent signal instead.
+    enablePasteOnNoDesign(newVal) {
+      if (newVal) {
+        this.toggleOnPasteListener();
+      } else {
+        this.toggleOffPasteListener();
+      }
     },
   },
   unmounted() {
@@ -431,8 +430,18 @@ export default {
         this.$options.VALID_DESIGN_FILE_MIMETYPE.mimetype.includes(item.type),
       );
     },
+    isEditableTarget(target) {
+      return (
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLTextAreaElement ||
+        (target instanceof HTMLElement && target.isContentEditable)
+      );
+    },
     onDesignPaste(event) {
       if (!this.canPasteDesign) return;
+      // The listener is on `document`, so a paste meant for any editor on the
+      // page (comment box, new-item modal, drawer, Duo chat) reaches us too.
+      if (this.isEditableTarget(event.target)) return;
 
       const { clipboardData } = event;
       if (!clipboardData || !clipboardData.files.length) return;

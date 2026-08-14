@@ -149,6 +149,23 @@ RSpec.shared_examples 'a policy repository' do
       end
     end
 
+    it 'accepts a scope_rego at exactly the limit' do
+      limit = Gitlab::PolicyStore::Ports::PolicyRepository::TEXT_LIMITS[:scope_rego]
+      at_limit = attributes.merge(scope_rego: 'p' * limit)
+
+      expect(repository.create(at_limit).scope_rego.length).to eq(limit)
+    end
+
+    it 'raises ValidationError when a policy_scope compiles past the scope_rego limit' do
+      limit = Gitlab::PolicyStore::Ports::PolicyRepository::TEXT_LIMITS[:scope_rego]
+      # One project id per allowed character overshoots the limit, since each id writes at
+      # least one character plus a separator.
+      too_many_projects = { 'projects' => { 'including' => (1..limit).map { |id| { 'id' => id } } } }
+
+      expect { repository.create(attributes.merge(policy_scope: too_many_projects, scope_rego: nil)) }
+        .to raise_error(Gitlab::PolicyStore::ValidationError, /scope_rego exceeds maximum length of #{limit}/)
+    end
+
     it 'allows nil description without raising ValidationError' do
       valid_attributes = minimal_attributes.merge(description: nil)
 

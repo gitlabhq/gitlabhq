@@ -1,5 +1,6 @@
 import { markInputRule } from '@tiptap/core';
 import { Link } from '@tiptap/extension-link';
+import { sanitize } from '~/lib/dompurify';
 
 const extractHrefFromMatch = (match) => {
   return { href: match.groups.href };
@@ -23,6 +24,16 @@ export default Link.extend({
   addOptions() {
     return {
       ...this.parent?.(),
+      isAllowedUri: (url, ctx) => {
+        if (ctx.defaultValidate(url)) {
+          return true;
+        }
+
+        const linkElement = document.createElement('a');
+        linkElement.setAttribute('href', url);
+        sanitize(linkElement, { IN_PLACE: true });
+        return linkElement.hasAttribute('href');
+      },
       openOnClick: false,
     };
   },

@@ -103,7 +103,7 @@ module API
         presenter.provider
       end
 
-      desc 'Composer v2 packages p2 endpoint at group level for package versions metadata' do
+      desc "Composer v2 packages p2 endpoint for a group's package versions metadata" do
         detail 'This feature was introduced in GitLab 13.1'
         success code: 200
         failure [
@@ -123,7 +123,7 @@ module API
         presenter.package_versions
       end
 
-      desc 'Composer packages endpoint at group level for package versions metadata' do
+      desc "Composer packages endpoint for a group's package versions metadata" do
         detail 'This feature was introduced in GitLab 12.1'
         success code: 200
         failure [

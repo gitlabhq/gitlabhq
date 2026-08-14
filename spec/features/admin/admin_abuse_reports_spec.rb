@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe "Admin::AbuseReports", :js, feature_category: :insider_threat do
+RSpec.describe "Admin::AbuseReports", :js, :with_current_organization, feature_category: :insider_threat do
   include Features::SortingHelpers
 
   let_it_be(:user) { create(:user) }
@@ -11,6 +11,12 @@ RSpec.describe "Admin::AbuseReports", :js, feature_category: :insider_threat do
   let_it_be(:open_report) { create(:abuse_report, created_at: 5.days.ago, updated_at: 2.days.ago, category: 'spam', user: user) }
   let_it_be(:open_report2) { create(:abuse_report, created_at: 4.days.ago, updated_at: 3.days.ago, category: 'phishing') }
   let_it_be(:closed_report) { create(:abuse_report, :closed, user: user, category: 'spam') }
+
+  let_it_be(:other_organization) { create(:organization) }
+  let_it_be(:other_org_report) do
+    create(:abuse_report, category: 'spam', user: user,
+      reporter: create(:user, organization: other_organization), organization: other_organization)
+  end
 
   describe 'as an admin' do
     include FilteredSearchHelpers
@@ -33,6 +39,12 @@ RSpec.describe "Admin::AbuseReports", :js, feature_category: :insider_threat do
       within_testid('abuse-reports-filtered-search-bar') do
         expect(page).to have_content 'Status = Open'
       end
+    end
+
+    it 'does not include reports belonging to another organization' do
+      expect_displayed_reports_count(2)
+
+      expect_report_not_shown(other_org_report)
     end
 
     it 'can be filtered by status, user, reporter, and category', :aggregate_failures do

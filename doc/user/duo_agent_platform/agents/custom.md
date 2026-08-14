@@ -69,6 +69,8 @@ Restricted agents:
 - Can be viewed and used by members of any project in the top-level group of the managing project.
 - Can be enabled in other projects in the same top-level group.
 - Cannot be viewed or turned on outside that top-level group.
+- Cannot be viewed in the AI Catalog in Explore.
+- Can be created only from a project, not from the AI Catalog in Explore.
 
 You cannot make a public agent restricted if the agent has been turned on by a project outside of that top-level group.
 
@@ -150,7 +152,7 @@ To create an agent:
    1. In **Description**, enter a description for the agent.
 1. Under **Visibility & access**:
    1. From the **Managed by** dropdown list, select a project for the agent.
-   1. For **Visibility**, select **Private**, **Restricted**, or **Public**.
+   1. For **Visibility**, select **Private** or **Public**.
 1. Under **Prompts**, in **System prompt**, enter a prompt to define
    the agent's personality, expertise, and behavior.
 1. Optional. Under **Available tools**, from the **Tools** dropdown list,

@@ -12,8 +12,6 @@ module Gitlab
       SCOPE_PRELUDE = <<~REGO.chomp
         package gitlab.scope
 
-        import rego.v1
-
         applicable := [result.policy | some result in results; result.applies]
 
         not_applicable := [result.policy | some result in results; not result.applies]

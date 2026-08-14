@@ -11,7 +11,7 @@ module Gitlab
         def clean(exception_name, message)
           return message unless exception_name.in?(EXCEPTION_NAMES)
 
-          message.sub(MESSAGE_REGEX, '\1' + FILTERED_STRING)
+          message.sub(MESSAGE_REGEX, "\\1#{FILTERED_STRING}")
         end
       end
     end

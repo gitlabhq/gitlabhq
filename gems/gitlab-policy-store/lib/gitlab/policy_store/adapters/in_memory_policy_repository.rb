@@ -16,8 +16,9 @@ module Gitlab
         def create(attributes)
           normalized = creatable_attributes(attributes)
           validate_required_attributes!(normalized)
+          validate_authored_text_limits!(normalized)
           normalized = with_compiled_scope(normalized)
-          validate_text_limits!(normalized)
+          validate_compiled_text_limits!(normalized)
           validate_name_available!(normalized)
 
           @sequence += 1
@@ -29,12 +30,14 @@ module Gitlab
         def update(id, attributes)
           existing = find(id)
           changes = updatable_changes(attributes, existing.to_h)
+          authored = existing.to_h.merge(changes)
+          validate_required_attributes!(authored)
+          validate_authored_text_limits!(authored)
           merged = with_updated_scope(existing.to_h, changes)
 
           return existing if merged == existing.to_h
 
-          validate_required_attributes!(merged)
-          validate_text_limits!(merged)
+          validate_compiled_text_limits!(merged)
           validate_name_available!(merged, excluding_id: id)
 
           @policies[id] = build_policy(id, merged.merge(version: existing.version + 1))

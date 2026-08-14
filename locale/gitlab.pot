@@ -11958,6 +11958,9 @@ msgstr ""
 msgid "ArtifactRegistry|Artifact Registry returned an error."
 msgstr ""
 
+msgid "ArtifactRegistry|Artifact details for %{name} loaded."
+msgstr ""
+
 msgid "ArtifactRegistry|Artifact list updated."
 msgstr ""
 
@@ -12137,6 +12140,9 @@ msgid "ArtifactRegistry|Install command:"
 msgstr ""
 
 msgid "ArtifactRegistry|Last updated"
+msgstr ""
+
+msgid "ArtifactRegistry|Loading artifact details."
 msgstr ""
 
 msgid "ArtifactRegistry|Loading artifacts."
@@ -31896,6 +31902,9 @@ msgstr ""
 msgid "Edit milestone"
 msgstr ""
 
+msgid "Edit policy"
+msgstr ""
+
 msgid "Edit project: %{project_name}"
 msgstr ""
 
@@ -51129,6 +51138,9 @@ msgid "New password"
 msgstr ""
 
 msgid "New pipeline has been triggered and will appear shortly."
+msgstr ""
+
+msgid "New policy"
 msgstr ""
 
 msgid "New project"
@@ -90105,6 +90117,42 @@ msgid "WorkItemCustomField|Type"
 msgstr ""
 
 msgid "WorkItemCustomField|Use on"
+msgstr ""
+
+msgid "WorkItemDecisionLog|Approval requested"
+msgstr ""
+
+msgid "WorkItemDecisionLog|Approved"
+msgstr ""
+
+msgid "WorkItemDecisionLog|Auto-generated"
+msgstr ""
+
+msgid "WorkItemDecisionLog|Awaiting %{name}"
+msgstr ""
+
+msgid "WorkItemDecisionLog|Decided"
+msgstr ""
+
+msgid "WorkItemDecisionLog|Decision log"
+msgstr ""
+
+msgid "WorkItemDecisionLog|Pending"
+msgstr ""
+
+msgid "WorkItemDecisionLog|Question resolved"
+msgstr ""
+
+msgid "WorkItemDecisionLog|Rejected"
+msgstr ""
+
+msgid "WorkItemDecisionLog|Requirement added"
+msgstr ""
+
+msgid "WorkItemDecisionLog|Scope decision"
+msgstr ""
+
+msgid "WorkItemDecisionLog|Selected"
 msgstr ""
 
 msgid "WorkItemPlanningView|Board (Beta)"

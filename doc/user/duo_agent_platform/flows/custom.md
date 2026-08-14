@@ -72,6 +72,8 @@ Restricted flows:
 - Can be viewed and used by members of any project in the top-level group of the managing project.
 - Can be turned on in other projects in the same top-level group.
 - Cannot be viewed or turned on outside that top-level group.
+- Cannot be viewed in the AI Catalog in Explore.
+- Can be created only from a project, not from the AI Catalog in Explore.
 
 You cannot make a public flow restricted if the flow has been turned on by a project outside of that top-level group.
 
@@ -154,7 +156,7 @@ To create a flow:
 1. Under **Basic information**:
    1. In **Display name**, enter a name.
    1. In **Description**, enter a description.
-1. Under **Visibility & access**, for **Visibility**, select **Private**, **Restricted**, or **Public**.
+1. Under **Visibility & access**, for **Visibility**, select **Private** or **Public**.
 1. Under **Configuration**:
    1. Select **Flow**.
    1. In the editor, enter your flow configuration:

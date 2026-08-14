@@ -135,7 +135,7 @@ module API
       end
     end
 
-    desc 'Download the maven package file at instance level' do
+    desc 'Download the maven package file for the instance' do
       detail 'This feature was introduced in GitLab 11.6'
       success code: 200
       failure [
@@ -178,7 +178,7 @@ module API
       present_package(package, format, package_file)
     end
 
-    desc 'Download the maven package file at a group level' do
+    desc 'Download the maven package file for a group' do
       detail 'This feature was introduced in GitLab 11.7'
       success [
         { code: 200 },
@@ -227,7 +227,7 @@ module API
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
     resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'Download the maven package file at a project level' do
+      desc 'Download the maven package file for a project' do
         detail 'This feature was introduced in GitLab 11.3'
         success [
           { code: 200 },
