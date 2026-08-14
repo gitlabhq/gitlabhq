@@ -77,7 +77,10 @@ describe('WorkItemDisplaySettingsGroupBy', () => {
     );
     apolloProvider.clients.defaultClient.writeQuery({
       query: workItemsGroupByVisibleGroupsQuery,
-      data: { workItemsGroupByVisibleGroups: visibleGroups },
+      data: {
+        workItemsGroupByVisibleGroups: visibleGroups,
+        workItemsGroupByVisibleGroupsHydrated: true,
+      },
     });
 
     wrapper = shallowMountExtended(WorkItemDisplaySettingsGroupBy, {

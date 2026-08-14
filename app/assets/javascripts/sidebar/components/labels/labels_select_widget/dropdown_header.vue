@@ -35,7 +35,7 @@ export default {
       default: false,
     },
   },
-  emits: ['closeDropdown', 'input', 'search-enter', 'toggleDropdownContentsCreateView'],
+  emits: ['close-dropdown', 'input', 'search-enter', 'toggle-dropdown-contents-create-view'],
   computed: {
     dropdownTitle() {
       return this.showDropdownContentsCreateView ? this.labelsCreateTitle : this.labelsListTitle;
@@ -65,7 +65,7 @@ export default {
         class="js-btn-back dropdown-header-button !gl-p-0"
         icon="arrow-left"
         data-testid="go-back-button"
-        @click.stop="$emit('toggleDropdownContentsCreateView')"
+        @click.stop="$emit('toggle-dropdown-contents-create-view')"
       />
       <span class="gl-grow">{{ dropdownTitle }}</span>
       <gl-button
@@ -75,7 +75,7 @@ export default {
         class="dropdown-header-button !gl-p-0"
         icon="close"
         data-testid="close-labels-dropdown-button"
-        @click="$emit('closeDropdown')"
+        @click="$emit('close-dropdown')"
       />
     </div>
     <gl-search-box-by-type

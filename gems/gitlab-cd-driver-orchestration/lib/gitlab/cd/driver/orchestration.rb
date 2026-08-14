@@ -26,9 +26,8 @@ module Gitlab
           failure
           _emit_step_failed
           _report_failure
-          _VALIDATORS
+          _service_reporter
           _ACTIONS_ALLOWED
-          _ACTIONS
           register
           _WAIT_TYPE
           _wait
@@ -36,8 +35,12 @@ module Gitlab
           _check_flow_document
           _shape_failure_data
           _step_environment
+          _rollout_resource
+          _step_resource
           _plan
+          _owned_steps
           _validate_flow
+          _bind_handlers
           _run_step
           main
         ].freeze

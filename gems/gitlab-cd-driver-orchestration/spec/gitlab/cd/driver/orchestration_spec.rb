@@ -34,7 +34,7 @@ RSpec.describe Gitlab::Cd::Driver::Orchestration do
         def deploy():
             def rolling_deploy(step, environment, services, version_set):
                 pass
-            register("com.gitlab.cd.argo.rolling.deploy", rolling_deploy)
+            register("com.gitlab.cd.argo.rolling.deploy", run = rolling_deploy)
       STAR
     end
 

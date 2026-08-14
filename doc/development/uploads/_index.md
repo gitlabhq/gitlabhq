@@ -100,7 +100,7 @@ uploader.
 As with local storage, this strategy benefits from [Workhorse assistance](#workhorse-assisted-uploads) to
 keep some of the costly I/O work out of Ruby and Rails. Direct upload does a better job at this because it also keeps the HTTP PUT requests to object storage outside Puma.
 
-This strategy is only suitable for small file uploads, as it is subject to Puma's 60 second request timeout.
+This strategy is only suitable for small file uploads, as it is subject to Puma's 60-second request timeout.
 
 ### Direct upload
 
@@ -182,7 +182,7 @@ Workhorse can assist in a variety of ways:
   Compared to Sidekiq background processing, this has the advantage that the user does not see an intermediate state
   where GitLab accepts the file but has not yet processed it.
 - With direct upload, Workhorse can both pre-process the file and upload it to object storage.
-  Uploading a large file to object storage takes time; by doing this in Workhorse we avoid the Puma request timeout.
+  Uploading a large file to object storage takes time. By doing this in Workhorse, we avoid the Puma request timeout.
 
 To implement Workhorse-assisted uploads, you must:
 

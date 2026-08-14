@@ -15,15 +15,15 @@ This page describes how you can switch from one of the previous methods to using
 
 ## What are RedisHLL metrics?
 
-These are Service Ping metrics implemented as Redis HyperLogLog counters via `Gitlab::UsageDataCounters::HLLRedisCounter.track_event`. 
+These are Service Ping metrics implemented as Redis HyperLogLog counters via `Gitlab::UsageDataCounters::HLLRedisCounter.track_event`.
 
 For each triggered event:
 
 - A HyperLogLog key is written in Redis with a 6 week expiry.
 - The data is later aggregated into a unique count.
-- It is then exposed under metric keys such as `redis_hll_counters.analytics.{event_name_monthly}` in Service ping. 
+- It is then exposed under metric keys such as `redis_hll_counters.analytics.{event_name_monthly}` in Service ping.
 
-The metric definitions with `instrumentation_class: RedisHLLMetric` read from HLLRedisCounter and map events into Service Ping Metrics. 
+The metric definitions with `instrumentation_class: RedisHLLMetric` read from HLLRedisCounter and map events into Service Ping Metrics.
 
 The RedisHLL API (HLLRedisCounter) is now deprecated and we have moved to using the Internal Events API (`Gitlab::InternalEvents.track_event`).
 

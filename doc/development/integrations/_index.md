@@ -469,7 +469,7 @@ Sensitive fields are not exposed over the API. Sensitive fields are those fields
 
 By default, integrations can apply to a specific project or group, or
 to an entire instance.
-Most integrations only act in a project context, but can be still configured
+Most integrations only act in a project context, but can still be configured
 for the group and instance.
 
 For some integrations it can make sense to only make it available on certain levels (project, group, or instance).

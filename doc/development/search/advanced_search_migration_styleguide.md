@@ -201,7 +201,7 @@ Requirements:
 - The mapping for the field should already be added
 - The field must always have a value. If the field can be null, use `Search::Elastic::MigrationReindexBasedOnSchemaVersion`
 - For single fields, define `field_name` method and `DOCUMENT_TYPE` constant
-- For multiple fields, define`field_names` method and `DOCUMENT_TYPE` constant
+- For multiple fields, define `field_names` method and `DOCUMENT_TYPE` constant
 
 > [!note]
 > This helper has a batch size limit of 10,000 items per query, which is Elasticsearch's default search
@@ -1063,7 +1063,7 @@ The MR assignee must:
 
 1. Ensure the dictionary file has the correct `marked_obsolete_by_url` and `marked_obsolete_in_milestone`.
 1. Verify that no references to the migration or spec files exist in the `.rubocop_todo/` directory.
-1. Remove any logic-handling backwards compatibility for this migration by
+1. Remove any logic handling backwards compatibility for this migration by
    looking for `Elastic::DataMigrationService.migration_has_finished?(:migration_name_in_lowercase)`.
 1. Push any required changes to the merge request.
 
@@ -1086,7 +1086,7 @@ The MR assignee must:
 
 ## ChatOps commands for monitoring migrations
 
-You can check migration status from Slack (or any ChatOps‑enabled channel) at any time:
+You can check migration status from Slack (or any ChatOps-enabled channel) at any time:
 
 ```plaintext
 /chatops gitlab run search_migrations --help

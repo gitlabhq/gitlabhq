@@ -38,7 +38,7 @@ Check the corresponding `FAIL` line above the summary for the reason.
 
 ## Switch to the partition replicators
 
-The legacy and partition replicators are mutually exclusive. 
+The legacy and partition replicators are mutually exclusive.
 While the `geo_upload_replication` flag is turned on, the partition replicators do not emit
 events, and the partition registry consistency backfill is suppressed.
 

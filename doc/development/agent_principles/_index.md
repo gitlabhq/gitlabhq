@@ -181,7 +181,7 @@ agent consumes:
 - Avoid descriptive statements. The agent ignores statements like
   "feature flags are enabled by default" when they conflict with
   patterns in existing code. Write the same content as a rule: "DO NOT
-  stub feature flags to `true` in specs; they are already enabled by
+  stub feature flags to `true` in specs. They are already enabled by
   default."
 - Keep examples concrete. Use fenced code blocks for code, file paths,
   or command examples so the agent can match them syntactically.

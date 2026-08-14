@@ -48,7 +48,7 @@ Product and Engineering Managers are responsible and accountable for customer im
 
 ## After you have an approved breaking change, what's next?
 
-1. Create a public [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Deprecations.md) that will serve as a source of truth for customers in regards to the change.
+1. Create a public [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Deprecations.md) that will serve as a source of truth for customers regarding the change.
 1. Ensure the change is added to the deprecations docs page by following the guidance below.
 1. Follow the Rollout & Communications plan that was approved in your request.
 

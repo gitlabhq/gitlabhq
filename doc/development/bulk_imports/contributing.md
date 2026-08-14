@@ -64,7 +64,7 @@ For example, to add import support for a new `Project` association called `docum
    ```
 
    > [!note]
-   > If your association is relates to an Enterprise Edition-only feature, add it to the `ee.tree.project` tree at the end of the file so that it is only exported
+   > If your association relates to an Enterprise Edition-only feature, add it to the `ee.tree.project` tree at the end of the file so that it is only exported
    > and imported in Enterprise Edition instances of GitLab.
 
    If your association doesn't need to include any sub-relations, then this is enough. But if it needs more sub-relations to be included (for example, notes),
@@ -88,7 +88,7 @@ For example, to add import support for a new `Project` association called `docum
         - :user
    ```
 
-1. Add `included_attributes` of the relation. By default, any relation attribute that is not listed in `included_attributes` of the YAML file are filtered
+1. Add `included_attributes` of the relation. By default, any relation attribute that is not listed in `included_attributes` of the YAML file is filtered
    out on both export and import. To include the attributes you need, you must add them to `included_attributes` list as following:
 
    ```diff
@@ -109,7 +109,7 @@ For example, to add import support for a new `Project` association called `docum
    ```
 
 1. Add `excluded_attributes` of the relation. We also have `excluded_attributes` list present in the file. You don't need to add excluded attributes for
-   `Project`, but you do still need to do it for `Group`. This list represent attributes that should not be included in the export and should be ignored
+   `Project`, but you do still need to do it for `Group`. This list represents attributes that should not be included in the export and should be ignored
    on import. These attributes usually are:
 
    - Anything that ends on `_id` or `_ids`
@@ -278,8 +278,8 @@ end
 We specified:
 
 - `stage: 2`, so project and repository stages must complete first before our pipeline is run in stage 2.
-- `minimum_source_version: '19.3.0'`. Because we introduced `documents` relation for exports in this milestone, it's not available in previous GitLab versions. Therefore
-  so this pipeline only runs if source version is 19.3 or later.
+- `minimum_source_version: '19.3.0'`. Because we introduced `documents` relation for exports in this milestone, it's not available in previous GitLab versions. Therefore,
+  this pipeline only runs if source version is 19.3 or later.
 
 > [!note]
 > If a relation is deprecated and need only to run the pipeline up to a certain version, we can specify `maximum_source_version` attribute.

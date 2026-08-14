@@ -8,7 +8,7 @@ title: GitLab EventStore
 ## Background
 
 The monolithic GitLab project is becoming larger and more domains are being defined.
-As a result, these domains are becoming entangled with each others due to temporal coupling.
+As a result, these domains are becoming entangled with each other due to temporal coupling.
 
 An emblematic example is the [`PostReceive`](https://gitlab.com/gitlab-org/gitlab/blob/master/app/workers/post_receive.rb)
 worker where a lot happens across multiple domains. If a new behavior reacts to
@@ -25,7 +25,7 @@ This type of architecture:
 
 ## What is EventStore?
 
-`Gitlab:EventStore` is a basic pub-sub system built on top of the existing Sidekiq workers and observability we have today.
+`Gitlab::EventStore` is a basic pub-sub system built on top of the existing Sidekiq workers and observability we have today.
 We use this system to apply an event-driven approach when modeling a domain while keeping coupling
 to a minimum.
 
@@ -106,7 +106,7 @@ to the type of work they are responsible for. For example, one subscriber could 
 `urgency: high` while another one less critical could set `urgency: low`.
 
 The EventStore is only an abstraction that allows us to have Dependency Inversion. This helps
-separating a business transaction from side-effects (often executed in other domains).
+separate a business transaction from side-effects (often executed in other domains).
 
 When an event is published, the EventStore calls `perform_async` on each subscribed worker,
 passing in the event information as arguments. This essentially schedules a Sidekiq job on each
@@ -542,19 +542,19 @@ store.subscribe ::MergeRequests::UpdateHeadPipelineWorker,
   delay: 1.minute
 ```
 
-The `delay` parameter switches the dispatching of the event to use `perform_in` method
+The `delay` parameter switches the dispatching of the event to use the `perform_in` method
 on the subscriber Sidekiq worker, instead of `perform_async`.
 
 This technique is useful when publishing many events and leverage the Sidekiq deduplication.
 
 ### Publishing group of events
 
-In some scenarios we publish multiple events of same type in a single business transaction.
-This puts additional load to Sidekiq by invoking a job for each event. In such cases, we can
+In some scenarios we publish multiple events of the same type in a single business transaction.
+This puts additional load on Sidekiq by invoking a job for each event. In such cases, we can
 publish a group of events by calling `Gitlab::EventStore.publish_group`. This method accepts an
-array of events of similar type. By default the subscriber worker receives a group of max 10 events,
-but this can be configured by defining `group_size` parameter while creating the subscription.
-The number of published events are dispatched to the subscriber in batches based on the
+array of events of a similar type. By default the subscriber worker receives a group of max 10 events,
+but this can be configured by defining the `group_size` parameter while creating the subscription.
+The number of published events is dispatched to the subscriber in batches based on the
 configured `group_size`. If the number of groups exceeds 100, we schedule each group with a delay
 of 10 seconds, to reduce the load on Sidekiq.
 
@@ -601,7 +601,7 @@ end
 
 ### Test a legacy Event class
 
-Use the `'an event with schema''` shared example to validate the `schema`:
+Use the `'an event with schema'` shared example to validate the `schema`:
 
 ```ruby
 RSpec.describe MergeRequests::ApprovedEvent, feature_category: :code_review_workflow do
@@ -711,7 +711,7 @@ end
   - Define the event class and publish the event in the same code where the event always occurs (CE or EE).
     - If the event occurs as a result of a CE feature, the event class must both be defined and published in CE.
       Likewise if the event occurs as a result of an EE feature, the event class must both be defined and published in EE.
-  - Define subscribers that depends on the event in the same code where the dependent feature exists (CE or EE).
+  - Define subscribers that depend on the event in the same code where the dependent feature exists (CE or EE).
     - You can have an event published in CE (for example `Projects::ProjectCreatedEvent`) and a subscriber that depends
       on this event defined in EE (for example `Security::SyncSecurityPolicyWorker`).
 - Define the event class and publish the event within the same bounded context (top-level Ruby namespace).

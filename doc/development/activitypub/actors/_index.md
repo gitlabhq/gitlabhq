@@ -39,7 +39,7 @@ ActivityPub is based on three standard documents:
 - [Activity Vocabulary](https://www.w3.org/TR/activitystreams-vocabulary/)
   defines the various messages recognized by default.
 
-The first one is typically handled by controllers, while the two others are
+The first one is typically handled by controllers, while the other two are
 related to what happens in serializers.
 
 To implement an ActivityPub actor, you must:
@@ -49,7 +49,7 @@ To implement an ActivityPub actor, you must:
 - Handle incoming requests on the inbox.
 
 All requests are made using
-`application/ld+json; profile="https://www.w3.org/ns/activitystreams"` as `Accept` HTTP header.
+`application/ld+json; profile="https://www.w3.org/ns/activitystreams"` as the `Accept` HTTP header.
 
 The actors we've implemented for the social features:
 
@@ -109,7 +109,7 @@ ActivityPub type, with all the correct fields.
 
 Not yet implemented.
 
-The inbox is where the ActivityPub compatible third-parties makes their
+The inbox is where ActivityPub-compatible third parties make their
 requests, to subscribe to the actor or send it messages.
 
 ## ActivityStreams serializers

@@ -67716,6 +67716,12 @@
               "description": "Link of type `created` between a session and a note.",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "TRIGGERED",
+              "description": "Link of type `triggered` between a session and a note.",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null
@@ -141782,6 +141788,18 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "Discussion",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "duoTriggeredSession",
+              "description": "Duo Agent Platform session triggered by the note. Returns nil for system notes or when no triggered session exists.",
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "DuoWorkflow",
                 "ofType": null
               },
               "isDeprecated": false,

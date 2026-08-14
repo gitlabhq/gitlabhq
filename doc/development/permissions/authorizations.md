@@ -83,7 +83,7 @@ To check for an ability in a Vue template, see the
 
 ### Example: Adding a new API endpoint
 
-By default, we authorize at the endpoint. Checking an existing ability may make sense; if not, then we probably need to add one.
+By default, we authorize at the endpoint. Checking an existing ability may make sense. If not, then we probably need to add one.
 
 As an aside, most endpoints can be cleanly categorized as a CRUD (create, read, update, destroy) action on a resource. The services and abilities follow suit, which is why many are named like `Projects::CreateService` or `:read_project`.
 

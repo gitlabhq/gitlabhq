@@ -77,7 +77,7 @@ RSpec.describe Gitlab::ExperimentFeatureRollout, :experiment, feature_category: 
       it "rolls out relatively evenly to 2 behaviors" do
         100.times { |i| run_cycle(subject_experiment, value: i) }
 
-        expect(counts).to eq(variant1: 54, variant2: 46)
+        expect(counts).to eq(variant1: 41, variant2: 59)
       end
 
       it "rolls out relatively evenly to 3 behaviors" do
@@ -85,7 +85,7 @@ RSpec.describe Gitlab::ExperimentFeatureRollout, :experiment, feature_category: 
 
         100.times { |i| run_cycle(subject_experiment, value: i) }
 
-        expect(counts).to eq(variant1: 31, variant2: 29, variant3: 40)
+        expect(counts).to eq(variant1: 35, variant2: 33, variant3: 32)
       end
 
       context "when distribution is specified as an array" do
@@ -98,7 +98,7 @@ RSpec.describe Gitlab::ExperimentFeatureRollout, :experiment, feature_category: 
 
           100.times { |i| run_cycle(subject_experiment, value: i) }
 
-          expect(counts).to eq(variant1: 39, variant2: 23, variant3: 38)
+          expect(counts).to eq(variant1: 31, variant2: 24, variant3: 45)
         end
       end
 
@@ -110,7 +110,7 @@ RSpec.describe Gitlab::ExperimentFeatureRollout, :experiment, feature_category: 
         it "rolls out with the expected distribution" do
           100.times { |i| run_cycle(subject_experiment, value: i) }
 
-          expect(counts).to eq(variant1: 93, variant2: 7)
+          expect(counts).to eq(variant1: 91, variant2: 9)
         end
       end
 

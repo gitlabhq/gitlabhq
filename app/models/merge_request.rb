@@ -545,6 +545,7 @@ class MergeRequest < ApplicationRecord
   scope :order_merged_at_desc, -> { order_by_metric(:merged_at, 'DESC') }
   scope :order_closed_at_asc, -> { order_by_metric(:latest_closed_at, 'ASC') }
   scope :order_closed_at_desc, -> { order_by_metric(:latest_closed_at, 'DESC') }
+  scope :order_iid_asc, -> { reorder(iid: :asc) }
   scope :preload_source_project, -> { preload(:source_project) }
   scope :preload_target_project, -> { preload(:target_project) }
   scope :preload_target_project_with_namespace, -> { preload(target_project: [:namespace]) }

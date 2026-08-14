@@ -132,7 +132,7 @@ export default {
       default: false,
     },
   },
-  emits: ['label-removed', 'onDropdownClose', 'toggleCollapse', 'updateSelectedLabels'],
+  emits: ['label-removed', 'onDropdownClose', 'toggle-collapse', 'update-selected-labels'],
   data() {
     return {
       contentIsOnViewport: true,
@@ -282,11 +282,11 @@ export default {
     handleDropdownClose(labels, touchedLabels) {
       // Only emit label updates if there are any
       // labels to update on UI.
-      if (labels.length) this.$emit('updateSelectedLabels', labels);
+      if (labels.length) this.$emit('update-selected-labels', labels);
       this.$emit('onDropdownClose', touchedLabels);
     },
     handleCollapsedValueClick() {
-      this.$emit('toggleCollapse');
+      this.$emit('toggle-collapse');
     },
     setContentIsOnViewport(showDropdownContents) {
       if (!showDropdownContents) {
@@ -318,7 +318,7 @@ export default {
         v-if="!hideCollapsedView"
         ref="dropdownButtonCollapsed"
         :labels="selectedLabels"
-        @onValueClick="handleCollapsedValueClick"
+        @on-value-click="handleCollapsedValueClick"
       />
       <dropdown-title
         :allow-label-edit="allowLabelEdit"

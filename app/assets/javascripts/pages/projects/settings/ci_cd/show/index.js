@@ -34,7 +34,24 @@ initDeployTokens();
 initDeployFreeze();
 initSettingsPipelinesTriggers();
 initArtifactsSettings();
-initVariablesMinimumOverrideRole();
+
+if (gon.features?.vue3MigratePipelines) {
+  (async () => {
+    try {
+      // eslint-disable-next-line no-shadow -- Override with Vue 3 app
+      const { default: initVariablesMinimumOverrideRole } =
+        await import('~/ci/pipeline_variables_minimum_override_role?vue3');
+      initVariablesMinimumOverrideRole();
+      return;
+    } catch (e) {
+      Sentry.captureException(e);
+    }
+
+    initVariablesMinimumOverrideRole();
+  })();
+} else {
+  initVariablesMinimumOverrideRole();
+}
 
 initRefSwitcherBadges();
 initJobTokenAccess();

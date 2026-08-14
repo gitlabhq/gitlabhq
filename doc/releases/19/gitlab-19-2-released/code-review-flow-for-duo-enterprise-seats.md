@@ -8,7 +8,7 @@ work_item: https://gitlab.com/groups/gitlab-org/-/work_items/22247
 categories: [ DAP Code Review ]
 ---
 
-In previous versions of GitLab, when users with GitLab Duo Enterprise seats requested a code review from GitLab Duo, GitLab Duo Code Review would complete the review. 
+In previous versions of GitLab, when users with GitLab Duo Enterprise seats requested a code review from GitLab Duo, GitLab Duo Code Review would complete the review.
 This would occur even if Code Review Flow was turned on for the group. There was no way to turn on the agentic flow for all users.
 
 Now, top-level group Owners can change this default and configure all code reviews to use Code Review Flow instead,

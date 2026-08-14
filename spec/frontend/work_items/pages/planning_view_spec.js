@@ -3444,7 +3444,10 @@ describe('planning-view', () => {
           });
 
           it('hydrates the local visible-groups cache with them', () => {
-            expect(readVisibleGroups()).toEqual({ workItemsGroupByVisibleGroups: [collapsedId] });
+            expect(readVisibleGroups()).toEqual({
+              workItemsGroupByVisibleGroups: [collapsedId],
+              workItemsGroupByVisibleGroupsHydrated: true,
+            });
           });
         });
 
@@ -3456,7 +3459,48 @@ describe('planning-view', () => {
           });
 
           it('hydrates the local visible-groups cache with null', () => {
-            expect(readVisibleGroups()).toEqual({ workItemsGroupByVisibleGroups: null });
+            expect(readVisibleGroups()).toEqual({
+              workItemsGroupByVisibleGroups: null,
+              workItemsGroupByVisibleGroupsHydrated: true,
+            });
+          });
+        });
+
+        describe('hydration timing', () => {
+          it('does not hydrate the local visible-groups cache until displaySettings resolves', async () => {
+            let resolvePreferences;
+            const deferredHandler = jest.fn(
+              () =>
+                new Promise((resolve) => {
+                  resolvePreferences = resolve;
+                }),
+            );
+
+            await mountComponent({ mockPreferencesHandler: deferredHandler, skipLastWait: true });
+
+            // The preferences query is still in flight, so the selection isn't known yet.
+            // Nothing has written to the local cache — an immediate write here (the bug
+            // this guards against) would make this a real, hydrated value instead of null.
+            expect(readVisibleGroups()).toBeNull();
+
+            resolvePreferences(await preferencesHandlerWith({ visibleGroups: [collapsedId] })());
+            await waitForPromises();
+
+            expect(readVisibleGroups()).toEqual({
+              workItemsGroupByVisibleGroups: [collapsedId],
+              workItemsGroupByVisibleGroupsHydrated: true,
+            });
+          });
+
+          it('hydrates even when displaySettings fails, so the board is not skipped forever', async () => {
+            await mountComponent({
+              mockPreferencesHandler: jest.fn().mockRejectedValue(new Error('boom')),
+            });
+
+            expect(readVisibleGroups()).toEqual({
+              workItemsGroupByVisibleGroups: null,
+              workItemsGroupByVisibleGroupsHydrated: true,
+            });
           });
         });
 

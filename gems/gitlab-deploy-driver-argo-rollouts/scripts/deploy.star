@@ -26,6 +26,30 @@ def _dig(value, *keys):
         value = value[key]
     return value
 
+def _blank(value):
+    return type(value) != "string" or value == ""
+
+def _step_label(step):
+    return "step %s in environment %s" % (step["type"], str(step["environment"]))
+
+def _first_failure_of(items, check):
+    for item in items:
+        f = check(item)
+        if f != None:
+            return f
+    return None
+
+def _service_names(step):
+    return [target["name"] for target in step["services"]]
+
+def _repeated_service(step):
+    seen = []
+    for target in step["services"]:
+        if target["name"] in seen:
+            return target["name"]
+        seen.append(target["name"])
+    return None
+
 def _validate_step_inputs(entry, needs_weight, needs_version):
     step = entry["step"]
     f = _require_environment(step, entry["environment"])
@@ -33,7 +57,33 @@ def _validate_step_inputs(entry, needs_weight, needs_version):
         return f
 
     env_id = str(step["environment"])
-    environment = entry["environment"]
+    f = _check_environment(entry["environment"], env_id)
+    if f != None:
+        return f
+
+    where = _step_label(step)
+    targets = step.get("services")
+    f = _check_service_list(targets, where)
+    if f != None:
+        return f
+
+    for index, target in enumerate(targets):
+        f = _check_target_shape(target, index, where, needs_weight)
+        if f != None:
+            return f
+        name = target["name"]
+
+        f = _check_service_configured(entry["services"], env_id, name, step["type"])
+        if f != None:
+            return f
+
+        if needs_version:
+            f = _check_service_version(entry["version_set"], name)
+            if f != None:
+                return f
+    return None
+
+def _check_environment(environment, env_id):
     if type(environment) != "dict":
         return failure(
             "com.gitlab.cd.argo.reason.environment_invalid",
@@ -46,9 +96,9 @@ def _validate_step_inputs(entry, needs_weight, needs_version):
             "com.gitlab.cd.argo.reason.environment_invalid",
             "environment %s has no cluster_agent_id naming the cluster to deploy to" % env_id,
         )
+    return None
 
-    where = "step %s in environment %s" % (step["type"], env_id)
-    targets = step.get("services")
+def _check_service_list(targets, where):
     if targets == None or targets == []:
         return failure(
             "com.gitlab.cd.argo.reason.step_invalid",
@@ -59,48 +109,44 @@ def _validate_step_inputs(entry, needs_weight, needs_version):
             "com.gitlab.cd.argo.reason.step_invalid",
             "%s has services of %s, not an array of services" % (where, type(targets)),
         )
-
-    for index, target in enumerate(targets):
-        if type(target) != "dict":
-            return failure(
-                "com.gitlab.cd.argo.reason.step_invalid",
-                "%s: services[%d] is %s, not a service object" % (where, index, type(target)),
-            )
-        if type(target.get("name")) != "string" or target["name"] == "":
-            return failure(
-                "com.gitlab.cd.argo.reason.step_invalid",
-                "%s: services[%d] names no service" % (where, index),
-            )
-        name = target["name"]
-
-        if needs_weight:
-            if "weight" not in target:
-                return failure(
-                    "com.gitlab.cd.argo.reason.step_invalid",
-                    "%s: service %s has no canary weight" % (where, name),
-                )
-            if type(target["weight"]) != "int":
-                return failure(
-                    "com.gitlab.cd.argo.reason.step_invalid",
-                    "%s: service %s has a weight of %s, not a whole-number percentage" %
-                    (where, name, type(target["weight"])),
-                )
-
-        if name not in entry["services"]:
-            return failure(
-                "com.gitlab.cd.argo.reason.environment_invalid",
-                "environment %s has no configuration for service %s, which %s deploys" %
-                (env_id, name, step["type"]),
-            )
-        f = _check_service_environment(entry["services"][name], env_id, name)
-        if f != None:
-            return f
-
-        if needs_version:
-            f = _check_service_version(entry["version_set"], name)
-            if f != None:
-                return f
     return None
+
+def _check_target_shape(target, index, where, needs_weight):
+    if type(target) != "dict":
+        return failure(
+            "com.gitlab.cd.argo.reason.step_invalid",
+            "%s: services[%d] is %s, not a service object" % (where, index, type(target)),
+        )
+    if _blank(target.get("name")):
+        return failure(
+            "com.gitlab.cd.argo.reason.step_invalid",
+            "%s: services[%d] names no service" % (where, index),
+        )
+    if not needs_weight:
+        return None
+
+    name = target["name"]
+    if "weight" not in target:
+        return failure(
+            "com.gitlab.cd.argo.reason.step_invalid",
+            "%s: service %s has no canary weight" % (where, name),
+        )
+    if type(target["weight"]) != "int":
+        return failure(
+            "com.gitlab.cd.argo.reason.step_invalid",
+            "%s: service %s has a weight of %s, not a whole-number percentage" %
+            (where, name, type(target["weight"])),
+        )
+    return None
+
+def _check_service_configured(services, env_id, name, step_type):
+    if name not in services:
+        return failure(
+            "com.gitlab.cd.argo.reason.environment_invalid",
+            "environment %s has no configuration for service %s, which %s deploys" %
+            (env_id, name, step_type),
+        )
+    return _check_service_environment(services[name], env_id, name)
 
 def _check_service_environment(app_env, env_id, name):
     if type(app_env) != "dict":
@@ -111,7 +157,7 @@ def _check_service_environment(app_env, env_id, name):
         )
 
     for field in ("namespace", "application"):
-        if type(app_env.get(field)) != "string" or app_env[field] == "":
+        if _blank(app_env.get(field)):
             return failure(
                 "com.gitlab.cd.argo.reason.environment_invalid",
                 "environment %s: service %s has no %s" % (env_id, name, field),
@@ -132,7 +178,7 @@ def _check_service_environment(app_env, env_id, name):
         )
 
     for field in ("host", "project", "branch", "manifests_path"):
-        if type(repo.get(field)) != "string" or repo[field] == "":
+        if _blank(repo.get(field)):
             return failure(
                 "com.gitlab.cd.argo.reason.environment_invalid",
                 "environment %s: service %s has a manifest_repository with no %s" %
@@ -154,7 +200,7 @@ def _check_service_version(version_set, name):
                 "com.gitlab.cd.argo.reason.version_set_invalid",
                 "version_set.services[%d] is %s, not a service object" % (index, type(service)),
             )
-        if type(service.get("name")) != "string" or service["name"] == "":
+        if _blank(service.get("name")):
             return failure(
                 "com.gitlab.cd.argo.reason.version_set_invalid",
                 "version_set.services[%d] names no service" % index,
@@ -198,22 +244,25 @@ def _set_rolling_strategy(files, service, max_surge, max_unavailable):
         "max_unavailable": max_unavailable,
     })["actions"]
 
-def _read_manifests(host, project, branch, path):
+def _read_manifests(repo):
     return gl_run("builtin://gitlab_project.read_files", {
-        "project": project,
-        "ref": branch,
-        "path": path,
-        "host": host,
+        "project": repo["project"],
+        "ref": repo["branch"],
+        "path": repo["manifests_path"],
+        "host": repo["host"],
     })["files"]
 
-def _commit_manifests(host, project, branch, message, actions):
+def _commit_manifests(repo, message, actions):
     return gl_run("builtin://gitlab_project.commit", {
-        "project": project,
-        "branch": branch,
-        "host": host,
+        "project": repo["project"],
+        "branch": repo["branch"],
+        "host": repo["host"],
         "message": message,
         "actions": actions,
     })["sha"]
+
+_APP_SYNC_FAILED = "failed"
+_APP_SYNC_SYNCED = "synced"
 
 def _argo_sync(cluster_agent_id, app_env, revision):
     synced = gl_run("builtin://argo.sync", {
@@ -268,10 +317,10 @@ def _app_sync_state(app, revision):
     requested = _dig(app, "status", "operationState", "operation", "sync", "revision")
     if op_phase == "Failed" or op_phase == "Error":
         if requested == revision:
-            return "failed", "operation phase=%s: %s" % (op_phase, _dig(app, "status", "operationState", "message"))
+            return _APP_SYNC_FAILED, "operation phase=%s: %s" % (op_phase, _dig(app, "status", "operationState", "message"))
 
     if op_phase == "Succeeded" and synced_revision == revision:
-        return "synced", detail
+        return _APP_SYNC_SYNCED, detail
     return None, detail
 
 def _wait_argocd_synced(cluster_agent_id, app_env, revision):
@@ -279,21 +328,14 @@ def _wait_argocd_synced(cluster_agent_id, app_env, revision):
     namespace = app_env["namespace"]
     detail = None
     for _ in range(_SYNC_MAX_POLLS):
-        read_back = gl_run("builtin://k8s.get", {
-            "agent_id": cluster_agent_id,
-            "api_version": "argoproj.io/v1alpha1",
-            "kind": "Application",
-            "namespace": namespace,
-            "name": name,
-        })
-        app = read_back["resource"]
+        app = _get_application(cluster_agent_id, app_env)
         state, detail = _app_sync_state(app, revision)
-        if state == "failed":
+        if state == _APP_SYNC_FAILED:
             return None, failure(
                 "com.gitlab.cd.argo.reason.sync_failed",
                 "Application %s/%s sync failed: %s" % (namespace, name, detail),
             )
-        if state == "synced":
+        if state == _APP_SYNC_SYNCED:
             print("Application", name, "synced to", revision)
             return app, None
         sleep(_SYNC_POLL_INTERVAL)
@@ -303,6 +345,33 @@ def _wait_argocd_synced(cluster_agent_id, app_env, revision):
         "Application %s/%s did not sync to %s within %d polls; %s" %
         (namespace, name, revision, _SYNC_MAX_POLLS, detail),
     )
+
+def _identity(value):
+    return value
+
+def _commit_pinned_manifests(app_env, service, set_strategy):
+    repo = app_env["manifest_repository"]
+    files = _read_manifests(repo)
+
+    actions = set_strategy(_pin_images(files, [service]))
+
+    images = [
+        artifact["source"]["image"] + ":" + artifact["version"]
+        for artifact in service["artifacts"]
+    ]
+    return _commit_manifests(repo, "Deploy " + ", ".join(images), actions), repo
+
+def _sync_to_revision(cluster_agent_id, app_env, revision):
+    _argo_sync(cluster_agent_id, app_env, revision)
+    app, f = _wait_argocd_synced(cluster_agent_id, app_env, revision)
+    if f != None:
+        return None, f
+
+    return _app_namespace(app)
+
+_ROLLOUT_DEGRADED = "degraded"
+_ROLLOUT_PAUSED = "paused"
+_ROLLOUT_COMPLETE = "complete"
 
 def _get_rollout(cluster_agent_id, namespace, name):
     read_back = gl_run("builtin://k8s.get", {
@@ -324,10 +393,10 @@ def _rollout_state(rollout):
         return None, detail
 
     if phase == "Degraded" or _dig(rollout, "status", "abort"):
-        return "degraded", "phase=%s message=%s" % (phase, _dig(rollout, "status", "message"))
+        return _ROLLOUT_DEGRADED, "phase=%s message=%s" % (phase, _dig(rollout, "status", "message"))
 
     if phase == "Paused" and _dig(rollout, "status", "pauseConditions"):
-        return "paused", detail
+        return _ROLLOUT_PAUSED, detail
 
     if phase != "Healthy":
         return None, detail
@@ -346,7 +415,7 @@ def _rollout_state(rollout):
     if steps != None and _dig(rollout, "status", "currentStepIndex") != len(steps):
         return None, detail
 
-    return "complete", detail
+    return _ROLLOUT_COMPLETE, detail
 
 def _wait_for_rollout(cluster_agent_id, namespace, name):
     detail = None
@@ -355,17 +424,17 @@ def _wait_for_rollout(cluster_agent_id, namespace, name):
             sleep(_ROLLOUT_POLL_INTERVAL)
         rollout = _get_rollout(cluster_agent_id, namespace, name)
         state, detail = _rollout_state(rollout)
-        if state == "degraded":
+        if state == _ROLLOUT_DEGRADED:
             return None, None, failure(
                 "com.gitlab.cd.argo.reason.rollout_degraded",
                 "Rollout %s/%s degraded: %s" % (namespace, name, detail),
             )
-        if state == "complete":
+        if state == _ROLLOUT_COMPLETE:
             print("Rollout", name, "complete (fully rolled out + Healthy)")
-            return "complete", rollout, None
-        if state == "paused":
+            return _ROLLOUT_COMPLETE, rollout, None
+        if state == _ROLLOUT_PAUSED:
             print("Rollout", name, "paused at a gate (awaiting promotion)")
-            return "paused", rollout, None
+            return _ROLLOUT_PAUSED, rollout, None
 
     return None, None, failure(
         "com.gitlab.cd.argo.reason.rollout_timeout",
@@ -374,34 +443,18 @@ def _wait_for_rollout(cluster_agent_id, namespace, name):
     )
 
 def _deploy_rolling(app_env, service, cluster_agent_id, step):
-    repo = app_env["manifest_repository"]
-    host = repo["host"]
-    project = repo["project"]
-    branch = repo["branch"]
-    path = repo["manifests_path"]
+    def with_rolling_strategy(actions):
+        return _set_rolling_strategy(
+            actions,
+            service["name"],
+            step.get("max_surge", ""),
+            step.get("max_unavailable", ""),
+        )
 
-    files = _read_manifests(host, project, branch, path)
+    sha, repo = _commit_pinned_manifests(app_env, service, with_rolling_strategy)
+    print("committed", sha, "to", repo["project"], repo["branch"], "->", repo["manifests_path"])
 
-    actions = _pin_images(files, [service])
-
-    max_surge = step.get("max_surge", "")
-    max_unavailable = step.get("max_unavailable", "")
-    actions = _set_rolling_strategy(actions, service["name"], max_surge, max_unavailable)
-
-    images = [
-        artifact["source"]["image"] + ":" + artifact["version"]
-        for artifact in service["artifacts"]
-    ]
-
-    sha = _commit_manifests(host, project, branch, "Deploy " + ", ".join(images), actions)
-    print("committed", sha, "to", project, branch, "->", path)
-
-    _argo_sync(cluster_agent_id, app_env, sha)
-    app, f = _wait_argocd_synced(cluster_agent_id, app_env, sha)
-    if f != None:
-        return f
-
-    namespace, f = _app_namespace(app)
+    namespace, f = _sync_to_revision(cluster_agent_id, app_env, sha)
     if f != None:
         return f
 
@@ -411,7 +464,10 @@ def _deploy_rolling(app_env, service, cluster_agent_id, step):
 _CANARY_DEPLOY_STEP = "com.gitlab.cd.argo.canary.deploy"
 _CANARY_PROMOTE_STEP = "com.gitlab.cd.argo.canary.promote"
 
-def _validate_canary_weights(steps):
+def _ladder_key(env_id, service):
+    return env_id + "/" + service
+
+def _canary_ladders(steps):
     ladders = {}
     for entry in steps:
         step = entry["step"]
@@ -422,42 +478,52 @@ def _validate_canary_weights(steps):
             needs_version = step["type"] != _CANARY_PROMOTE_STEP,
         )
         if f != None:
-            return f
+            return None, f
 
         env_id = str(step["environment"])
-        named = []
-        for target in step["services"]:
-            if target["name"] in named:
-                return failure(
-                    "com.gitlab.cd.argo.reason.canary_service_repeated",
-                    ("step %s names service %s twice in " +
-                     "environment %s; one step names a service once") %
-                    (step["type"], target["name"], env_id),
-                )
-            named.append(target["name"])
 
-            key = env_id + "/" + target["name"]
+        repeated = _repeated_service(step)
+        if repeated != None:
+            return None, failure(
+                "com.gitlab.cd.argo.reason.canary_service_repeated",
+                ("step %s names service %s twice in " +
+                 "environment %s; one step names a service once") %
+                (step["type"], repeated, env_id),
+            )
+
+        for target in step["services"]:
+            name = target["name"]
+            key = _ladder_key(env_id, name)
             ladder = ladders.get(key, {
-                "service": target["name"],
+                "service": name,
                 "environment": env_id,
                 "weights": [],
             })
             ladder, f = _extend_canary_ladder(ladder, step["type"], target["weight"])
             if f != None:
-                return f
+                return None, f
             ladders[key] = ladder
 
-    for ladder in ladders.values():
-        last = ladder["weights"][-1]
-        if last != 100:
-            return failure(
-                "com.gitlab.cd.argo.reason.canary_ladder_incomplete",
-                ("service %s in environment %s ends its canary at " +
-                 "weight %s; its weights %s must climb to 100, and that service's Rollout " +
-                 "strategy must reach 100 too") %
-                (ladder["service"], ladder["environment"], last, ladder["weights"]),
-            )
+    f = _first_failure_of(ladders.values(), _check_ladder_complete)
+    if f != None:
+        return None, f
+    return ladders, None
+
+def _check_ladder_complete(ladder):
+    last = ladder["weights"][-1]
+    if last != 100:
+        return failure(
+            "com.gitlab.cd.argo.reason.canary_ladder_incomplete",
+            ("service %s in environment %s ends its canary at " +
+             "weight %s; its weights %s must climb to 100, and that service's Rollout " +
+             "strategy must reach 100 too") %
+            (ladder["service"], ladder["environment"], last, ladder["weights"]),
+        )
     return None
+
+def _validate_canary_weights(steps):
+    _ladders, f = _canary_ladders(steps)
+    return f
 
 def _extend_canary_ladder(ladder, step_type, weight):
     service = ladder["service"]
@@ -505,8 +571,7 @@ def _canary_increments(rollout):
 
     increments = []
     weight = None
-    for idx in range(len(steps)):
-        step = steps[idx]
+    for idx, step in enumerate(steps):
         if type(step) != "dict":
             continue
         if "setWeight" in step:
@@ -535,36 +600,18 @@ def _gates_for_weight(increments, weight):
 def _increment_weights(increments):
     return [increment["weight"] for increment in increments]
 
-def _deploy_canary(app_env, service, cluster_agent_id, weight):
-    repo = app_env["manifest_repository"]
-    host = repo["host"]
-    project = repo["project"]
-    branch = repo["branch"]
-    path = repo["manifests_path"]
-
-    files = _read_manifests(host, project, branch, path)
-
-    actions = _pin_images(files, [service])
-
-    images = [
-        artifact["source"]["image"] + ":" + artifact["version"]
-        for artifact in service["artifacts"]
-    ]
-
-    sha = _commit_manifests(host, project, branch, "Deploy " + ", ".join(images), actions)
-    print("canary deploy", service["name"], "weight", weight,
-          "- committed", sha, "to", project, branch, "->", path)
-
-    _argo_sync(cluster_agent_id, app_env, sha)
-    app, f = _wait_argocd_synced(cluster_agent_id, app_env, sha)
-    if f != None:
-        return f
-
-    namespace, f = _app_namespace(app)
-    if f != None:
-        return f
-
+def _deploy_canary(app_env, service, cluster_agent_id, weights):
+    weight = weights[0]
     name = service["name"]
+
+    sha, repo = _commit_pinned_manifests(app_env, service, _identity)
+    print("canary deploy", name, "weight", weight,
+          "- committed", sha, "to", repo["project"], repo["branch"], "->", repo["manifests_path"])
+
+    namespace, f = _sync_to_revision(cluster_agent_id, app_env, sha)
+    if f != None:
+        return f
+
     state, rollout, f = _wait_for_rollout(cluster_agent_id, namespace, name)
     if f != None:
         return f
@@ -591,7 +638,7 @@ def _check_canary_parked(rollout, state, namespace, name, weight):
             (weight, namespace, name, first["weight"], _increment_weights(increments)),
         )
 
-    if state == "complete":
+    if state == _ROLLOUT_COMPLETE:
         if first["gate"] == None:
             print("canary deploy", name, "reached weight", weight,
                   "and completed (no gate to park at)")
@@ -647,7 +694,7 @@ def _promote_canary(app_env, service_name, cluster_agent_id, weight):
     gate = pending[0]
 
     state, detail = _rollout_state(rollout)
-    if state != "paused":
+    if state != _ROLLOUT_PAUSED:
         return failure(
             "com.gitlab.cd.argo.reason.canary_not_parked",
             ("Rollout %s/%s is not parked at a promotion gate (%s); " +
@@ -682,17 +729,28 @@ def _cluster_agent_id(step, environment):
     return str(environment["cluster_agent_id"]), None
 
 def _validate_environments(steps):
-    for entry in steps:
+    def check(entry):
         f = _validate_step_inputs(entry, needs_weight = False, needs_version = True)
         if f != None:
             return f
-        f = _validate_rolling_bounds(entry["step"])
+        f = _validate_rolling_services(entry["step"])
         if f != None:
             return f
-    return None
+        return _validate_rolling_bounds(entry["step"])
+
+    return _first_failure_of(steps, check)
+
+def _validate_rolling_services(step):
+    repeated = _repeated_service(step)
+    if repeated == None:
+        return None
+    return failure(
+        "com.gitlab.cd.argo.reason.rolling_service_repeated",
+        "%s names service %s twice; one step names a service once" % (_step_label(step), repeated),
+    )
 
 def _validate_rolling_bounds(step):
-    where = "step %s in environment %s" % (step["type"], str(step["environment"]))
+    where = _step_label(step)
     for field in ("max_surge", "max_unavailable"):
         if field in step and type(step[field]) != "string":
             return failure(
@@ -701,44 +759,66 @@ def _validate_rolling_bounds(step):
             )
     return None
 
-def _rolling_deploy_step(step, environment, services, version_set):
+def _rolling_deploy_step(step, environment, services, version_set, report):
     cluster_agent_id, f = _cluster_agent_id(step, environment)
     if f != None:
         return f
     versions = _versions_by_service(version_set)
-    for target in step["services"]:
-        name = target["name"]
-        f = _deploy_rolling(services[name], versions[name], cluster_agent_id, step)
-        if f != None:
-            return f
-    return None
 
-def _canary_deploy_step(step, environment, services, version_set):
+    def deploy(name):
+        return _deploy_rolling(services[name], versions[name], cluster_agent_id, step)
+
+    return report(_service_names(step), deploy)
+
+def _canary_deploy_step(step, environment, services, version_set, report, ladders):
     cluster_agent_id, f = _cluster_agent_id(step, environment)
     if f != None:
         return f
     versions = _versions_by_service(version_set)
-    for target in step["services"]:
-        name = target["name"]
-        f = _deploy_canary(services[name], versions[name], cluster_agent_id, target["weight"])
-        if f != None:
-            return f
-    return None
+    env_id = str(step["environment"])
 
-def _canary_promote_step(step, environment, services, version_set):
+    def deploy(name):
+        weights = ladders[_ladder_key(env_id, name)]["weights"]
+        return _deploy_canary(services[name], versions[name], cluster_agent_id, weights)
+
+    return report(_service_names(step), deploy)
+
+def _canary_promote_step(step, environment, services, version_set, report):
     cluster_agent_id, f = _cluster_agent_id(step, environment)
     if f != None:
         return f
-    for target in step["services"]:
-        name = target["name"]
-        f = _promote_canary(services[name], name, cluster_agent_id, target["weight"])
-        if f != None:
-            return f
-    return None
+
+    weight_by_service = {target["name"]: target["weight"] for target in step["services"]}
+
+    def promote(name):
+        return _promote_canary(services[name], name, cluster_agent_id, weight_by_service[name])
+
+    return report(_service_names(step), promote)
+
+def _bind_canary_steps(steps):
+    ladders, f = _canary_ladders(steps)
+    if f != None:
+        return None, f
+
+    def deploy_step(step, environment, services, version_set, report):
+        return _canary_deploy_step(step, environment, services, version_set, report, ladders)
+
+    return {
+        _CANARY_DEPLOY_STEP: deploy_step,
+        _CANARY_PROMOTE_STEP: _canary_promote_step,
+    }, None
 
 def deploy():
-    register("com.gitlab.cd.argo.rolling.deploy", _rolling_deploy_step, _validate_environments)
+    register(
+        "com.gitlab.cd.argo.rolling.deploy",
+        run = _rolling_deploy_step,
+        validate = _validate_environments,
+    )
 
-    register(_CANARY_DEPLOY_STEP, _canary_deploy_step, _validate_canary_weights)
-    register(_CANARY_PROMOTE_STEP, _canary_promote_step, _validate_canary_weights,
-             action = "com.gitlab.cd.action.promote")
+    register(_CANARY_DEPLOY_STEP, build = _bind_canary_steps, validate = _validate_canary_weights)
+    register(
+        _CANARY_PROMOTE_STEP,
+        build = _bind_canary_steps,
+        validate = _validate_canary_weights,
+        action = "com.gitlab.cd.action.promote",
+    )

@@ -23,7 +23,7 @@ Please contact the team on Slack (`#g_organizations`) if you wish to informally 
 
 ### Available and planned support for implementing organizations
 
-The Organizations team are implementing changes which will automatically include support for:
+The Organizations team is implementing changes which will automatically include support for:
 
 - Application level Organization Isolation: There will be an ActiveRecord extension that will take care of [Organization Scoping](https://gitlab.com/groups/gitlab-org/-/work_items/19414). This is provisionally planned for availability and usage in early FY27-Q2.
 - Sidekiq: there is no need to pass `organization_id` to Sidekiq worker parameters: Sidekiq workers will inherit the Current Organization from the scheduling context

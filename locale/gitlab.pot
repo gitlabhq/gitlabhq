@@ -19583,6 +19583,9 @@ msgstr ""
 msgid "Collapse %{section} merge requests"
 msgstr ""
 
+msgid "Collapse all"
+msgstr ""
+
 msgid "Collapse all files"
 msgstr ""
 
@@ -28561,16 +28564,10 @@ msgstr ""
 msgid "Designs"
 msgstr ""
 
-msgid "Destination"
-msgstr ""
-
 msgid "Destination activated successfully."
 msgstr ""
 
 msgid "Destination deactivated successfully."
-msgstr ""
-
-msgid "Destination path"
 msgstr ""
 
 msgid "Destroy"
@@ -29474,6 +29471,11 @@ msgstr ""
 msgid "Duo workflow"
 msgstr ""
 
+msgid "DuoAgentPlatform|%d MCP server is connected. Agents can use it in this project."
+msgid_plural "DuoAgentPlatform|%d MCP servers are connected. Agents can use them in this project."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "DuoAgentPlatform|%{base} Attention required."
 msgstr ""
 
@@ -29504,6 +29506,12 @@ msgstr ""
 msgid "DuoAgentPlatform|%{text} by %{name}"
 msgstr ""
 
+msgid "DuoAgentPlatform|A knowledge graph that helps agents reason across your whole project."
+msgstr ""
+
+msgid "DuoAgentPlatform|A knowledge graph that helps agents reason across your whole project. Only a Group Owner can turn it on."
+msgstr ""
+
 msgid "DuoAgentPlatform|A runner is available and picking up jobs."
 msgstr ""
 
@@ -29532,6 +29540,9 @@ msgid "DuoAgentPlatform|Agent todos"
 msgstr ""
 
 msgid "DuoAgentPlatform|Agents cannot run here until everything below is in place."
+msgstr ""
+
+msgid "DuoAgentPlatform|Agents get repo-wide context."
 msgstr ""
 
 msgid "DuoAgentPlatform|Allow GitLab Duo agents to execute flows in this project."
@@ -29591,7 +29602,13 @@ msgstr ""
 msgid "DuoAgentPlatform|Duo Agent Platform Settings have been saved"
 msgstr ""
 
+msgid "DuoAgentPlatform|Enable"
+msgstr ""
+
 msgid "DuoAgentPlatform|Error occurred when starting the flow."
+msgstr ""
+
+msgid "DuoAgentPlatform|Experiment. Agents can connect to tools your team already uses, such as Jira or Linear."
 msgstr ""
 
 msgid "DuoAgentPlatform|Failed"
@@ -29604,6 +29621,9 @@ msgid "DuoAgentPlatform|Failed to load agent sessions for this pipeline."
 msgstr ""
 
 msgid "DuoAgentPlatform|Failed to load agent sessions for this work item."
+msgstr ""
+
+msgid "DuoAgentPlatform|Features that give your agent more context to work with."
 msgstr ""
 
 msgid "DuoAgentPlatform|Flow"
@@ -29624,7 +29644,13 @@ msgstr ""
 msgid "DuoAgentPlatform|GitLab Duo CLI"
 msgstr ""
 
+msgid "DuoAgentPlatform|GitLab Orbit"
+msgstr ""
+
 msgid "DuoAgentPlatform|Group settings"
+msgstr ""
+
+msgid "DuoAgentPlatform|How to connect"
 msgstr ""
 
 msgid "DuoAgentPlatform|IDE extensions"
@@ -29642,6 +29668,9 @@ msgstr ""
 msgid "DuoAgentPlatform|Implement work item with GitLab Duo"
 msgstr ""
 
+msgid "DuoAgentPlatform|Indexed %{timeAgo}. Agents get repo-wide context."
+msgstr ""
+
 msgid "DuoAgentPlatform|Install GitLab Duo CLI"
 msgstr ""
 
@@ -29652,6 +29681,9 @@ msgid "DuoAgentPlatform|Job IDs"
 msgstr ""
 
 msgid "DuoAgentPlatform|Local setup"
+msgstr ""
+
+msgid "DuoAgentPlatform|MCP servers"
 msgstr ""
 
 msgid "DuoAgentPlatform|Manage merge requests, issues, and pipelines, and run Orbit Local from the terminal."
@@ -29678,6 +29710,9 @@ msgstr ""
 msgid "DuoAgentPlatform|On for this instance. Administrators control it."
 msgstr ""
 
+msgid "DuoAgentPlatform|Optional"
+msgstr ""
+
 msgid "DuoAgentPlatform|Other Duo settings"
 msgstr ""
 
@@ -29685,6 +29720,9 @@ msgid "DuoAgentPlatform|Paused"
 msgstr ""
 
 msgid "DuoAgentPlatform|Project-wide behavior, unrelated to readiness."
+msgstr ""
+
+msgid "DuoAgentPlatform|Query graph"
 msgstr ""
 
 msgid "DuoAgentPlatform|Remote GitLab Duo Flows"
@@ -29735,6 +29773,9 @@ msgstr ""
 msgid "DuoAgentPlatform|Something went wrong saving Duo Agent Platform settings"
 msgstr ""
 
+msgid "DuoAgentPlatform|Something went wrong while turning on GitLab Orbit."
+msgstr ""
+
 msgid "DuoAgentPlatform|Starting job"
 msgstr ""
 
@@ -29778,6 +29819,9 @@ msgid "DuoAgentPlatform|View details"
 msgstr ""
 
 msgid "DuoAgentPlatform|View runners"
+msgstr ""
+
+msgid "DuoAgentPlatform|View servers"
 msgstr ""
 
 msgid "DuoAgenticChat|%{count} character over limit."
@@ -34703,9 +34747,6 @@ msgid "Failed: %{failed}"
 msgstr ""
 
 msgid "Failure"
-msgstr ""
-
-msgid "Failures details"
 msgstr ""
 
 msgid "False"
@@ -41748,15 +41789,6 @@ msgstr ""
 msgid "Import|An error occurred while fetching import details."
 msgstr ""
 
-msgid "Import|Close details"
-msgstr ""
-
-msgid "Import|Complete"
-msgstr ""
-
-msgid "Import|Failed"
-msgstr ""
-
 msgid "Import|Failures for %{id}"
 msgstr ""
 
@@ -41770,12 +41802,6 @@ msgid "Import|Import from %{hostname} completed"
 msgstr ""
 
 msgid "Import|Import source user has an invalid status for this operation"
-msgstr ""
-
-msgid "Import|Importing"
-msgstr ""
-
-msgid "Import|In progress"
 msgstr ""
 
 msgid "Import|Invalid credentials"
@@ -41808,16 +41834,7 @@ msgstr ""
 msgid "Import|No import details"
 msgstr ""
 
-msgid "Import|Not started"
-msgstr ""
-
-msgid "Import|Open details"
-msgstr ""
-
 msgid "Import|Partially completed"
-msgstr ""
-
-msgid "Import|Pending"
 msgstr ""
 
 msgid "Import|Placeholder user record reassignment complete"
@@ -77542,9 +77559,6 @@ msgid "Source code (%{fileExtension})"
 msgstr ""
 
 msgid "Source is not available"
-msgstr ""
-
-msgid "Source name"
 msgstr ""
 
 msgid "Source project"

@@ -18,7 +18,7 @@ export default {
       default: '',
     },
   },
-  emits: ['toggleDropdownContentsCreateView'],
+  emits: ['toggle-dropdown-contents-create-view'],
   computed: {
     showManageLabelsItem() {
       return this.footerManageLabelTitle && this.labelsManagePath;
@@ -33,7 +33,7 @@ export default {
       v-if="allowLabelCreate"
       role="button"
       data-testid="create-label-button"
-      @click.capture.native.stop="$emit('toggleDropdownContentsCreateView')"
+      @click.capture.native.stop="$emit('toggle-dropdown-contents-create-view')"
     >
       {{ footerCreateLabelTitle }}
     </gl-dropdown-item>

@@ -7,7 +7,7 @@ title: Model Registry
 
 Model registry is the component in the MLOps lifecycle responsible for managing
 model versions. Beyond tracking just artifacts, it is responsible for tracking the
-metadata associated to each model, like:
+metadata associated with each model, like:
 
 - Performance
 - Parameters

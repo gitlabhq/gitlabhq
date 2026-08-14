@@ -169,7 +169,7 @@ The `spec/controllers/every_controller_spec.rb` will iterate over all
 defined routes, and check the controller to see if a category is
 assigned to all actions.
 
-The spec also validates if the used feature categories are known. And if
+The spec also validates if the used feature categories are known, and if
 the actions used in configuration still exist as routes.
 
 ## API endpoints

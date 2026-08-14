@@ -1,5 +1,5 @@
 <script>
-import { GlToast, GlToastMixin } from '@gitlab/ui';
+import { GlToastMixin } from '@gitlab/ui';
 import Sortable from 'sortablejs';
 import Vue from 'vue';
 import getIssueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_details.query.graphql';
@@ -31,8 +31,6 @@ import {
   taskListSortableOptions,
 } from '../utils';
 import TaskListItemActions from './task_list_item_actions.vue';
-
-Vue.use(GlToast);
 
 export default {
   name: 'ShowDescription',

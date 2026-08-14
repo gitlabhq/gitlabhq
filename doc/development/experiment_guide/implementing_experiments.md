@@ -216,7 +216,7 @@ contexts to simplify reporting:
 - `{ actor: current_user, project: project }`: Assigns a variant and is "sticky"
   to the user who is viewing the given project. This creates a different variant
   assignment possibility for every project that `current_user` views. Understand this
-  can create a large cache size if an experiment like this in a highly trafficked part
+  can create a large cache size if an experiment like this runs in a highly trafficked part
   of the application.
 - `{ wday: Time.current.wday }`: Assigns a variant based on the current day of the
   week. In this example, it would consistently assign one variant on Friday, and a
@@ -382,7 +382,7 @@ about contexts now.
 We can assume we run the experiment in one or a few places, but
 track events potentially in many places. The tracking call remains the same, with
 the arguments you would usually use when
-tracking events using snowplow. The easiest example
+tracking events using Snowplow. The easiest example
 of tracking an event in Ruby would be:
 
 ```ruby
@@ -415,7 +415,7 @@ Any experiment that's been run in the request lifecycle surfaces in `window.gl.e
 and matches [this schema](https://gitlab.com/gitlab-org/iglu/-/blob/master/public/schemas/com.gitlab/gitlab_experiment/jsonschema/1-0-3)
 so it can be used when resolving experimentation in the client layer.
 
-Given that we've defined a class for our experiment, and have defined the variants for it, we can publish that experiment in a couple ways.
+Given that we've defined a class for our experiment, and have defined the variants for it, we can publish that experiment in a couple of ways.
 
 The first way is by running the experiment. Assuming the experiment has been run, it surfaces in the client layer without having to do anything special.
 
@@ -438,7 +438,7 @@ window.gl.experiments // => { pill_color: { excluded: false, experiment: "pill_c
 With the `gitlab-experiment` component, you can define slots that match the name of the
 variants pushed to `window.gl.experiments`.
 
-We can make use of the named slots in the Vue component, that match the behaviors defined in :
+We can make use of the named slots in the Vue component, that match the behaviors defined in our experiment class:
 
 ```vue
 <script>

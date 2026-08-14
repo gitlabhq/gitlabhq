@@ -68,8 +68,8 @@ describe('LabelsSelectRoot', () => {
 
         // We're utilizing `onDropdownClose` event emitted from the component to always include `touchedLabels`
         // while the first param of the method is the labels list which were added/removed.
-        expect(wrapper.emitted('updateSelectedLabels')).toHaveLength(1);
-        expect(wrapper.emitted('updateSelectedLabels')[0]).toEqual([touchedLabels]);
+        expect(wrapper.emitted('update-selected-labels')).toHaveLength(1);
+        expect(wrapper.emitted('update-selected-labels')[0]).toEqual([touchedLabels]);
         expect(wrapper.emitted('onDropdownClose')).toHaveLength(1);
         expect(wrapper.emitted('onDropdownClose')[0]).toEqual([touchedLabels]);
       });
@@ -89,8 +89,8 @@ describe('LabelsSelectRoot', () => {
           },
         );
 
-        expect(wrapper.emitted('updateSelectedLabels')).toHaveLength(1);
-        expect(wrapper.emitted('updateSelectedLabels')[0]).toEqual([
+        expect(wrapper.emitted('update-selected-labels')).toHaveLength(1);
+        expect(wrapper.emitted('update-selected-labels')[0]).toEqual([
           [
             {
               id: 2,
@@ -104,10 +104,10 @@ describe('LabelsSelectRoot', () => {
     });
 
     describe('handleCollapsedValueClick', () => {
-      it('emits `toggleCollapse` event on component', () => {
+      it('emits `toggle-collapse` event on component', () => {
         createComponent();
         wrapper.vm.handleCollapsedValueClick();
-        expect(wrapper.emitted().toggleCollapse).toHaveLength(1);
+        expect(wrapper.emitted()['toggle-collapse']).toHaveLength(1);
       });
     });
   });

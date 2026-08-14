@@ -52523,6 +52523,7 @@ Fields:
 | <a id="note-bodyhtml"></a>`bodyHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of the content of the note. |
 | <a id="note-createdat"></a>`createdAt` | [`Time!`](#time) | Timestamp of the note creation. |
 | <a id="note-discussion"></a>`discussion` | [`Discussion`](#discussion) | Discussion the note is a part of. |
+| <a id="note-duotriggeredsession"></a>`duoTriggeredSession` | [`DuoWorkflow`](#duoworkflow) | Duo Agent Platform session triggered by the note. Returns nil for system notes or when no triggered session exists. |
 | <a id="note-externalauthor"></a>`externalAuthor` | [`String`](#string) | Email address of non-GitLab user adding the note. For guests, the email address is obfuscated. |
 | <a id="note-id"></a>`id` | [`NoteID!`](#noteid) | ID of the note. |
 | <a id="note-imported"></a>`imported` | [`Boolean`](#boolean) | Indicates whether the note was imported. |
@@ -67294,6 +67295,7 @@ Type of link between a GitLab Duo Agent Platform session and a note.
 | Value | Description |
 | ----- | ----------- |
 | <a id="duoworkflownotelinktype-created"></a>`CREATED` | Link of type `created` between a session and a note. |
+| <a id="duoworkflownotelinktype-triggered"></a>`TRIGGERED` | Link of type `triggered` between a session and a note. |
 
 ### `DuoWorkflowStatus`
 

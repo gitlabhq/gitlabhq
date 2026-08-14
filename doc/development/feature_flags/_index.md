@@ -46,7 +46,7 @@ Follow this guidance when working with feature flags in external API consumers:
    [Application Setting](../application_settings.md) that the consumer can query. These values
    persist after the flag is removed.
 1. **Implement fail-open behavior.** If a feature flag must be used in an external API consumer,
-   implement a "fail-open" mechanism: after the rollout milestone is finalised, the consumer should
+   implement a "fail-open" mechanism: after the rollout milestone is finalized, the consumer should
    default to treating the flag as enabled. Update the consumer as soon as the rollout milestone is
    confirmed. See [an example in the GitLab Language Server](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/merge_requests/2558/diffs).
 1. **Consider user upgrade patterns before removal.** Before removing a flag that is used by an
@@ -74,12 +74,12 @@ The following highlights should be considered when deciding if feature flags
 should be leveraged:
 
 - The feature flag must be **disabled by default**.
-- Feature flags should remain in the codebase for as short period as possible
+- Feature flags should remain in the codebase for as short a period as possible
   to reduce the need for feature flag accounting.
 - The person operating the feature flag is responsible for clearly communicating
   the status of a feature behind the feature flag in the documentation and with other stakeholders. The
   issue description should be updated with the feature flag name and whether it is
-  defaulted on or off as soon it is evident that a feature flag is needed.
+  defaulted on or off as soon as it is evident that a feature flag is needed.
 - Merge requests that introduce a feature flag, update its state, or remove the
   existing feature flag because a feature is deemed stable must have the
   ~"feature flag" label assigned.
@@ -111,7 +111,7 @@ When the feature flag removal is delivered over multiple merge requests:
 One might be tempted to think that feature flags will delay the release of a
 feature by at least one month (= one release). This is not the case. A feature
 flag does not have to stick around for a specific amount of time
-(for example, at least one release), instead they should stick around until the feature
+(for example, at least one release). Instead, it should stick around until the feature
 is deemed stable. **Stable means it works on GitLab.com without causing any
 problems, such as outages.**
 
@@ -173,7 +173,7 @@ Feature.disabled?(:dev_flag_name)
 ### `wip` type
 
 Some features are complex and need to be implemented through several MRs. Until they're fully implemented,
-it needs to be hidden from anyone. In that case, the `wip` (for "Work In Progress") feature flag allows
+they need to be hidden from anyone. In that case, the `wip` (for "Work In Progress") feature flag allows
 merging all the changes to the main branch without actually using the feature yet.
 
 Once the feature is complete, the feature flag type can be changed to the `gitlab_com_derisk` or
@@ -287,7 +287,8 @@ created using the [Experiment tracking template](https://gitlab.com/gitlab-org/g
 
 ### `worker` type
 
-`worker` feature flags are special `ops` flags that allow to control Sidekiq workers behavior, such as deferring Sidekiq jobs.
+`worker` feature flags are special `ops` flags that you can use to control Sidekiq worker behavior,
+such as deferring Sidekiq jobs.
 
 `worker` feature flags likely do not have any YAML definition as the name could be dynamically generated using
 the worker name itself, for example, `run_sidekiq_jobs_AuthorizedProjectsWorker`. Some examples for using `worker` type feature
@@ -410,7 +411,7 @@ When choosing a name for a new feature flag, consider the following guidelines:
 
 - Describe the feature the feature flag is holding
   - A long, **descriptive** name is better than a short but confusing one.
-- Avoid names that indicates state/phase of the feature like `_mvc`, `_alpha`, `_beta`, etc
+- Avoid names that indicate state/phase of the feature like `_mvc`, `_alpha`, `_beta`, etc
 - Write the name in snake case (`my_cool_feature_flag`).
 - Avoid using `disable` in the name to avoid having to think (or [document](../documentation/feature_flags.md))
   with double negatives. Consider starting the name with `hide_`, `remove_`, or `disallow_`.
@@ -431,19 +432,19 @@ When choosing a name for a new feature flag, consider the following guidelines:
 
 The [`gitlab-housekeeper`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-housekeeper) is able to automatically remove your feature flag code for you using the [`DeleteOldFeatureFlags` keep](https://gitlab.com/gitlab-org/gitlab/-/blob/master/keeps/delete_old_feature_flags.rb). The tool will run periodically and automatically clean up old feature flags from the code.
 
-For this tool to automatically remove the usages of the feature flag in your code you can add a `.patch` file alongside your feature flag YAML file. The file should be exactly the same name except using the `.patch` extension instead of the `.yml` extension.
+For this tool to automatically remove the usages of the feature flag in your code you can add a `.patch` file alongside your feature flag YAML file. The file should have exactly the same name except using the `.patch` extension instead of the `.yml` extension.
 
 For example you can create a patch file for `config/feature_flags/beta/my_feature_flag.yml` using the following steps:
 
 1. Ensure you have a clean Git working directory.
 1. Delete `config/feature_flags/beta/my_feature_flag.yml`.
-1. Edit the code locally to remove any usage of `my_feature_flag` as though that the feature flag is already enabled and the feature is moving forward.
-1. Run `git diff > config/feature_flags/beta/my_feature_flag.patch`. If your feature flag is not a `beta` flag, ensure your patch file in the same directory as the YAML file that defines your feature flag.
+1. Edit the code locally to remove any usage of `my_feature_flag` as though the feature flag is already enabled and the feature is moving forward.
+1. Run `git diff > config/feature_flags/beta/my_feature_flag.patch`. If your feature flag is not a `beta` flag, ensure your patch file is in the same directory as the YAML file that defines your feature flag.
 1. Undo the deletion of `config/feature_flags/beta/my_feature_flag.yml`
-1. Undo the changes to the files you ended to remove the feature flag usage
+1. Undo the changes to the files you edited to remove the feature flag usage
 1. Commit the patch file to the branch where you are adding the feature flag
 
-Then in future the `gitlab-housekeeper` will automatically clean up your
+Then in the future, the `gitlab-housekeeper` will automatically clean up your
 feature flag for you by applying this patch.
 
 ## List all the feature flags
@@ -548,7 +549,7 @@ end
 Default behavior for not configured feature flags is controlled
 by `default_enabled:` in YAML definition.
 
-If feature flag does not have a YAML definition an error will be raised
+If a feature flag does not have a YAML definition, an error will be raised
 in development or test environment, while returning `false` on production.
 
 For feature flags that don't have a definition file (only allowed for the `experiment`, `worker`, and `undefined` types),
@@ -572,7 +573,7 @@ end
 > recommended, as some adapters don't require a database at all (for example, the HTTP adapter). The
 > feature flag setup check must be abstracted in the `Feature` namespace. This approach also requires
 > application reload when the feature flag changes. You must therefore ask SREs to reload the
-> Web/API/Sidekiq fleet on production, which takes time to fully rollout/rollback the changes. For
+> Web/API/Sidekiq fleet on production, which takes time to fully roll out/roll back the changes. For
 > these reasons, use environment variables (for example, `ENV['YOUR_FEATURE_NAME']`) or `gitlab.yml`
 > instead.
 
@@ -673,7 +674,7 @@ Feature.enabled?(:feature_flag, project)
 
 Models which `include FeatureGate` have an `.actor_from_id` class method.
 If you have the model's ID and do not need the model for anything other than checking the feature
-flag state, you can use `.actor_from_id` in order check the feature flag state without making a
+flag state, you can use `.actor_from_id` in order to check the feature flag state without making a
 database query to retrieve the model.
 
 ```ruby
@@ -713,7 +714,7 @@ both enabled, and disabled at different points in the same request.
 
 In some situations it is safe to mix actor types if you know that it won't lead to
 inconsistent results. For example, a webhook can be associated with either a group or a
-project, and so a feature flag for a webhook might leverage this to rollout a feature for
+project, and so a feature flag for a webhook might leverage this to roll out a feature for
 group and project webhooks using the same feature flag.
 
 If you need to use different actor types and cannot safely mix them in your situation you
@@ -729,7 +730,7 @@ Feature.enabled?(:feature_flag_user, user)
 > [!warning]
 > Instance-wide feature flags should only be used when a feature is tied in to an entire instance. Always prioritize other actors first.
 
-In some cases, you may want a feature flag to be enabled for an entire instance and not based on an actor. A great example are the Admin settings, where it would be impossible to enable the Feature Flag based on a group or a project since they are both `undefined`.
+In some cases, you may want a feature flag to be enabled for an entire instance and not based on an actor. A great example is the Admin settings, where it would be impossible to enable the Feature Flag based on a group or a project since they are both `undefined`.
 
 The user actor would cause confusion since a Feature Flag might be enabled for a user who is not an admin, but disabled for a user who is.
 
@@ -779,7 +780,7 @@ use `percentage_of_actors`.
 
 While the staging environment provides a way to test features in an environment
 that resembles production, it doesn't allow you to compare before-and-after
-performance metrics specific to production environment. It can be useful to have a
+performance metrics specific to the production environment. It can be useful to have a
 project in production with your development feature flag enabled, to allow tools
 like Sitespeed reports to reveal the metrics of the new code under a feature flag.
 
@@ -821,7 +822,7 @@ Feature groups must be defined statically in `lib/feature.rb` (in the
 `.register_feature_groups` method), but their implementation can be
 dynamic (querying the DB, for example).
 
-Once defined in `lib/feature.rb`, you can to activate a
+Once defined in `lib/feature.rb`, you can activate a
 feature for a given feature group via the [`feature_group` parameter of the features API](../../api/features.md#create-or-update-a-feature-flag)
 
 The available feature groups are:
@@ -875,11 +876,11 @@ Feature.all.each(&:remove)
 
 #### On your browser
 
-Access `http://gdk.test:3000/rails/features` to see the manage locally the feature flag.
+Access `http://gdk.test:3000/rails/features` to see and manage the feature flag locally.
 
 ### Logging
 
-Usage and state of the feature flag is logged if either:
+Usage and state of the feature flag are logged if either:
 
 - `log_state_changes` is set to `true` in the feature flag definition.
 - `milestone` refers to a milestone that is greater than or equal to the current GitLab version.
@@ -923,8 +924,8 @@ We want to avoid introducing a changelog when features are not accessible by an 
 
 - The changelog for a feature flag should describe the feature and not the
   flag, unless a default on feature flag is removed keeping the new code (`other` in the flowchart above).
-- A feature flag can also be used for rolling out a bug fix or a maintenance work. In this scenario, the changelog
-  must be related to it, for example; `fixed` or `other`.
+- A feature flag can also be used for rolling out a bug fix or maintenance work. In this scenario, the changelog
+  must be related to it, for example, `fixed` or `other`.
 
 ## Feature flags in tests
 
@@ -1102,7 +1103,7 @@ Make sure behavior under feature flag doesn't go untested in some non-specific c
 This disables a memory-stubbed flipper, and uses `Flipper::Adapters::ActiveRecord`
 a mode that is used by `production` and `development`.
 
-You should use this mode only when you really want to tests aspects of Flipper
+You should use this mode only when you really want to test aspects of Flipper
 with how it interacts with `ActiveRecord`.
 
 ### End-to-end (QA) tests
@@ -1128,7 +1129,7 @@ Feature flags with [`worker` type](#worker-type) can be used to control the beha
 When disabled, feature flags with the format of `run_sidekiq_jobs_{WorkerName}` delay the execution of the worker
 by scheduling the job at a later time. This feature flag is enabled by default for all workers.
 Deferring jobs can be useful during an incident where contentious behavior from
-worker instances are saturating infrastructure resources (such as database and database connection pool).
+worker instances is saturating infrastructure resources (such as database and database connection pool).
 The implementation can be found at [SkipJobs Sidekiq server middleware](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/sidekiq_middleware/skip_jobs.rb).
 
 > [!note]

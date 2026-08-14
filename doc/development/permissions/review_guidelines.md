@@ -38,7 +38,7 @@ This pattern makes role permissions:
 - **Predictable**: Roles always start with their full set of permissions.
   Conditions only remove access, never expand it.
 
-## File organisation
+## File organization
 
 All `prevent` rules for the same condition should be in one `.policy` block, not
 scattered across the file.
@@ -195,7 +195,7 @@ end
 rule { ~model_registry_enabled }.prevent :write_model_registry
 ```
 
-### Avoid  `admin | owner` rules
+### Avoid `admin | owner` rules
 
 `admin` users return true for `condition(:owner)` so there is no need
 to define the rule for `admin | owner`. The same is true for organization

@@ -356,7 +356,7 @@ label, if you do not have permissions to do it by yourself. Additional labels
 can be combined with these labels, to make it easier to schedule
 the improvements for a release.
 
-Issues tagged with these labels have the same priority like issues
+Issues tagged with these labels have the same priority as issues
 that describe a new feature to be introduced in GitLab, and should be scheduled
 for a release by the appropriate person.
 

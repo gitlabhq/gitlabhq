@@ -50,16 +50,16 @@ This page includes an exhaustive list of settings related to and maintained by t
 | `container_registry_features` | `application_settings` | Features supported by the connected container registry. For example, tag deletion. |
 | `container_registry_delete_tags_service_timeout` | `application_settings` | The maximum time (in seconds) that the cleanup process can take to delete a batch of tags. |
 | `container_registry_expiration_policies_worker_capacity` | `application_settings` | Number of concurrent container image cleanup policy workers allowed. |
-| `container_registry_cleanup_tags_service_max_list_size` | `application_settings` | The maximum number of tags that can be deleted in a cleanup policy single execution. Additional tags must be deleted in another execution. |
+| `container_registry_cleanup_tags_service_max_list_size` | `application_settings` | The maximum number of tags that can be deleted in a single cleanup policy execution. Additional tags must be deleted in another execution. |
 | `container_registry_expiration_policies_caching` | `application_settings` | Enable or disable tag creation timestamp caching during execution of cleanup policies. |
-| `container_registry_import_max_tags_count` | `application_settings` | Deprecated in 17.0. The migration for GitLab.com is now complete so we are starting to cleanup this field. This field returns 0 until it gets removed. |
-| `container_registry_import_max_retries` | `application_settings` | Deprecated in 17.0. The migration for GitLab.com is now complete so we are starting to cleanup this field. This field returns 0 until it gets removed. |
-| `container_registry_import_start_max_retries` | `application_settings` | Deprecated in 17.0. The migration for GitLab.com is now complete so we are starting to cleanup this field. This field returns 0 until it gets removed. |
-| `container_registry_import_max_step_duration` | `application_settings` | Deprecated in 17.0. The migration for GitLab.com is now complete so we are starting to cleanup this field. This field returns 0 until it gets removed. |
-| `container_registry_import_target_plan` | `application_settings` | Deprecated in 17.0. The migration for GitLab.com is now complete so we are starting to cleanup this field. This field returns an empty string ('') until it gets removed. |
-| `container_registry_import_created_before` | `application_settings` | Deprecated in 17.0. The migration for GitLab.com is now complete so we are starting to cleanup this field. This field returns an empty string ('') until it gets removed. |
-| `container_registry_pre_import_timeout` | `application_settings` | Deprecated in 17.0. The migration for GitLab.com is now complete so we are starting to cleanup this field. This field returns an empty string ('') until it gets removed. |
-| `container_registry_import_timeout` | `application_settings` | Deprecated in 17.0. The migration for GitLab.com is now complete so we are starting to cleanup this field. This field returns an empty string ('') until it gets removed. |
+| `container_registry_import_max_tags_count` | `application_settings` | Deprecated in 17.0. The migration for GitLab.com is now complete so we are starting to clean up this field. This field returns 0 until it gets removed. |
+| `container_registry_import_max_retries` | `application_settings` | Deprecated in 17.0. The migration for GitLab.com is now complete so we are starting to clean up this field. This field returns 0 until it gets removed. |
+| `container_registry_import_start_max_retries` | `application_settings` | Deprecated in 17.0. The migration for GitLab.com is now complete so we are starting to clean up this field. This field returns 0 until it gets removed. |
+| `container_registry_import_max_step_duration` | `application_settings` | Deprecated in 17.0. The migration for GitLab.com is now complete so we are starting to clean up this field. This field returns 0 until it gets removed. |
+| `container_registry_import_target_plan` | `application_settings` | Deprecated in 17.0. The migration for GitLab.com is now complete so we are starting to clean up this field. This field returns an empty string ('') until it gets removed. |
+| `container_registry_import_created_before` | `application_settings` | Deprecated in 17.0. The migration for GitLab.com is now complete so we are starting to clean up this field. This field returns an empty string ('') until it gets removed. |
+| `container_registry_pre_import_timeout` | `application_settings` | Deprecated in 17.0. The migration for GitLab.com is now complete so we are starting to clean up this field. This field returns an empty string ('') until it gets removed. |
+| `container_registry_import_timeout` | `application_settings` | Deprecated in 17.0. The migration for GitLab.com is now complete so we are starting to clean up this field. This field returns an empty string ('') until it gets removed. |
 | `dependency_proxy_ttl_group_policy_worker_capacity` | `application_settings` | Number of concurrent dependency proxy cleanup policy workers allowed. |
 
 ## Namespace/Group Settings

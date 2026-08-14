@@ -89,6 +89,7 @@ config.ru @gitlab-org/maintainers/rails-backend
 *.graphql @gitlab-org/maintainers/frontend
 # MCP tool query documents can be approved by the MCP tool review board or frontend
 /app/graphql/queries/mcp/**/*.graphql @gitlab-org/maintainers/frontend @gitlab-org/ai-powered/mcp-tool-review-board
+/ee/app/graphql/queries/mcp/**/*.graphql @gitlab-org/maintainers/frontend @gitlab-org/ai-powered/mcp-tool-review-board
 package.json @gitlab-org/maintainers/frontend
 yarn.lock @gitlab-org/maintainers/frontend
 /.browserslistrc @gitlab-org/maintainers/frontend

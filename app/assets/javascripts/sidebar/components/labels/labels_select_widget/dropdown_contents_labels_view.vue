@@ -40,7 +40,7 @@ export default {
       required: true,
     },
   },
-  emits: ['closeDropdown', 'input'],
+  emits: ['close-dropdown', 'input'],
   data() {
     return {
       labels: [],
@@ -114,7 +114,7 @@ export default {
     handleLabelClick(label) {
       this.updateSelectedLabels(label);
       if (!this.allowMultiselect) {
-        this.$emit('closeDropdown', this.localSelectedLabels);
+        this.$emit('close-dropdown', this.localSelectedLabels);
       }
     },
     onDropdownAppear() {

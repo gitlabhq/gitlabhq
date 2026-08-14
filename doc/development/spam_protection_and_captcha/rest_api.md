@@ -17,7 +17,7 @@ The main steps are:
 1. Add `helpers SpammableActions::CaptchaCheck::RestApiActionsSupport` in your `resource`.
 1. Pass `perform_spam_check: true` to the Update Service class constructor.
    It is set to `true` by default in the Create Service.
-1. After you create or update the `Spammable` model instance, call `#check_spam_action_response!`,
+1. After you create or update the `Spammable` model instance, call `#check_spam_action_response!` and
    save the created or updated instance in a variable.
 1. Identify the error handling logic for the `failure` case of the request,
    when create or update was not successful. These indicate possible spam detection,

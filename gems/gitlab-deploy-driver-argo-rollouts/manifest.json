@@ -1,6 +1,6 @@
 {
   "id": "com.gitlab.cd.driver.argo_rollouts",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "configuration": {
     "environment": "schemas/environment.json",
     "service_environment": "schemas/service_environment.json"

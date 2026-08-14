@@ -19,7 +19,7 @@ export default {
       required: true,
     },
   },
-  emits: ['onValueClick'],
+  emits: ['on-value-click'],
   computed: {
     labelsList() {
       const labelsString = this.labels.length
@@ -41,7 +41,7 @@ export default {
   },
   methods: {
     handleClick() {
-      this.$emit('onValueClick');
+      this.$emit('on-value-click');
     },
   },
 };

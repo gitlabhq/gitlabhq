@@ -709,7 +709,10 @@ export const resolvers = {
     updateWorkItemsGroupByVisibleGroups(_, { visibleGroups = SHOW_ALL_GROUPS }, { cache }) {
       cache.writeQuery({
         query: workItemsGroupByVisibleGroupsQuery,
-        data: { workItemsGroupByVisibleGroups: visibleGroups },
+        data: {
+          workItemsGroupByVisibleGroups: visibleGroups,
+          workItemsGroupByVisibleGroupsHydrated: true,
+        },
       });
       return visibleGroups;
     },

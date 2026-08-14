@@ -92,7 +92,7 @@ PATH
 PATH
   remote: gems/gitlab-cd-driver-orchestration
   specs:
-    gitlab-cd-driver-orchestration (0.5.0)
+    gitlab-cd-driver-orchestration (0.6.0)
 
 PATH
   remote: gems/gitlab-configs
@@ -109,7 +109,7 @@ PATH
 PATH
   remote: gems/gitlab-deploy-driver-argo-rollouts
   specs:
-    gitlab-deploy-driver-argo-rollouts (0.5.0)
+    gitlab-deploy-driver-argo-rollouts (0.6.0)
 
 PATH
   remote: gems/gitlab-email_handler
@@ -3024,14 +3024,14 @@ CHECKSUMS
   gitlab-backup-cli (0.0.1)
   gitlab-bitbucket (0.1.0)
   gitlab-bitbucket-server (0.1.0)
-  gitlab-cd-driver-orchestration (0.5.0)
+  gitlab-cd-driver-orchestration (0.6.0)
   gitlab-chronic (0.10.6) sha256=a244d11a1396d2aac6ae9b2f326adf1605ec1ad20c29f06e8b672047d415a9ac
   gitlab-cloud-connector (1.53.0) sha256=cdacefc13725bbf65d8b932f41fca3b238d3cf330966a577450dd8c03ac1b67d
   gitlab-configs (0.1.0)
   gitlab-crystalball (1.1.3) sha256=ea9a90d659704a042d763ce6d343a9f664cd650e0787a19adec7036ea4390861
   gitlab-dangerfiles (4.12.0) sha256=0b8b7b00bf1ab155c3ab37cfc7c9815b5b82f403f85ddaf62aea137129403072
   gitlab-database-data_isolation (0.1.0)
-  gitlab-deploy-driver-argo-rollouts (0.5.0)
+  gitlab-deploy-driver-argo-rollouts (0.6.0)
   gitlab-duo-workflow-service-client (0.10)
   gitlab-email_handler (0.1.0)
   gitlab-experiment (2.0.0) sha256=05183dee7ddad1ef183de43c2c330e57a1457f679744c19c61f637e1135d3c76

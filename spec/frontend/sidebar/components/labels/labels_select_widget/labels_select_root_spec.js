@@ -310,7 +310,7 @@ describe('LabelsSelectRoot', () => {
     });
   });
 
-  it('emits `updateSelectedLabels` when the listbox closes with a selection and iid is not set', async () => {
+  it('emits `update-selected-labels` when the listbox closes with a selection and iid is not set', async () => {
     createComponent({ config: { ...mockConfig, iid: undefined } });
 
     const id = 'gid://gitlab/ProjectLabel/1';
@@ -318,7 +318,7 @@ describe('LabelsSelectRoot', () => {
     findListbox().vm.$emit('hidden');
     await nextTick();
 
-    expect(wrapper.emitted('updateSelectedLabels')).toEqual([[{ labels: [{ id }] }]]);
+    expect(wrapper.emitted('update-selected-labels')).toEqual([[{ labels: [{ id }] }]]);
   });
 
   describe.each`
@@ -366,11 +366,11 @@ describe('LabelsSelectRoot', () => {
       });
     });
 
-    it('emits `updateSelectedLabels` event when the subscription is triggered', async () => {
+    it('emits `update-selected-labels` event when the subscription is triggered', async () => {
       createComponent();
       await waitForPromises();
 
-      expect(wrapper.emitted('updateSelectedLabels')).toEqual([
+      expect(wrapper.emitted('update-selected-labels')).toEqual([
         [
           {
             id: '1',

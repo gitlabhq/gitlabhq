@@ -101,6 +101,7 @@ export const createAppOptions = (el) => {
 
   return {
     el,
+    name: 'PipelineEditorRoot',
     apolloProvider,
     provide: {
       ciConfigPath,

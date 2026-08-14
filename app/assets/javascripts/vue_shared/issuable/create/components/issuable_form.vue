@@ -126,7 +126,7 @@ export default {
             :footer-create-label-title="__('Create project label')"
             :footer-manage-label-title="__('Manage project labels')"
             :variant="$options.VARIANT_EMBEDDED"
-            @updateSelectedLabels="handleUpdateSelectedLabels"
+            @update-selected-labels="handleUpdateSelectedLabels"
           />
         </div>
       </div>

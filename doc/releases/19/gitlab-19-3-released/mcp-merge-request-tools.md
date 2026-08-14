@@ -12,7 +12,7 @@ weight: 50
 
 You can now use `get_merge_request` to retrieve a merge request along with its diffs, commits,
 notes, pipelines, or discussions in a single call, so your AI agent no longer has to chain
-multiple requests to get the full picture of an MR. 
+multiple requests to get the full picture of an MR.
 
 You can also use the new `list_merge_requests`
 tool to search and filter merge requests by author, assignee, reviewer, state, labels, or

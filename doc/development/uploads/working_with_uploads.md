@@ -196,7 +196,7 @@ particular, you currently cannot use the `version` mechanism of
 CarrierWave. Things you can do include:
 
 - Filename validation
-- **Incompatible with direct upload**: One time pre-processing of file contents, for example, image resizing
+- **Incompatible with direct upload**: One-time pre-processing of file contents, for example, image resizing
 - **Incompatible with direct upload**: Encryption at rest
 
 CarrierWave pre-processing behaviors such as image resizing
@@ -218,7 +218,7 @@ CarrierWave has 2 storage engines:
 GitLab uses both of these engines, depending on configuration.
 
 The typical way to choose a storage engine in CarrierWave is to use the
-`Uploader.storage` class method. In GitLab we do not do this; we have
+`Uploader.storage` class method. In GitLab we do not do this. We have
 overridden `Uploader#storage` instead. This allows us to vary the
 storage engine file by file.
 

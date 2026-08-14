@@ -50,7 +50,7 @@ however do not inherit from either of these classes directly, but from
 [`AbstractReferenceFilter`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/banzai/filter/references/abstract_reference_filter.rb),
 which provides a higher-level interface.
 
-Subclasses of `AbstractReferenceFilter` generally do not override `#call`; instead,
+Subclasses of `AbstractReferenceFilter` generally do not override `#call`. Instead,
 a minimum implementation of `AbstractReferenceFilter` should define:
 
 - `.reference_type`: The type of domain object.

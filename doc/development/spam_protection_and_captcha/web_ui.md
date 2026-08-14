@@ -25,7 +25,7 @@ Some parts of the implementation depend upon which of these scenarios you must s
 Two approaches are fully supported:
 
 1. Apollo, using the GraphQL API.
-1. Axios, using either the GraphQL API.
+1. Axios, using the REST API.
 
 The spam and CAPTCHA-related data communication between the frontend and backend requires no
 additional fields being added to the models. Instead, communication is handled:
@@ -81,8 +81,8 @@ changes required to the relevant backend controller actions (typically just `cre
    - The `needs_recaptcha` property on the model is set to true.
 1. Wrap the existing controller action return value (rendering or redirecting) in a block passed to
    a `#with_captcha_check_json_format` helper method, which transparently handles:
-   1. Check if CAPTCHA is enabled, and if so, proceeding with the next step.
-   1. Checking if there the model contains an error, and the `needs_recaptcha` flag is true.
+   1. Checking if CAPTCHA is enabled, and if so, proceeding with the next step.
+   1. Checking if the model contains an error, and the `needs_recaptcha` flag is true.
       - If yes: Add the appropriate spam or CAPTCHA fields to the JSON response, and return
         a `409 - Conflict` HTTP status code.
       - If no (if CAPTCHA is disabled or if no spam was detected): The standard request return

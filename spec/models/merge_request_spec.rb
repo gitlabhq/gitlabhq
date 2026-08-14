@@ -255,6 +255,17 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
+  describe '.order_iid_asc' do
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:lower_iid_mr) { create(:merge_request, source_project: project, source_branch: 'iid-asc-a') }
+    let_it_be(:higher_iid_mr) { create(:merge_request, source_project: project, source_branch: 'iid-asc-b') }
+
+    it 'returns MRs ordered by iid ascending' do
+      expect(described_class.id_in([higher_iid_mr.id, lower_iid_mr.id]).order_iid_asc)
+        .to eq([lower_iid_mr, higher_iid_mr])
+    end
+  end
+
   describe '.order_closed_at_asc' do
     let_it_be(:older_mr) { create(:merge_request, :closed_last_month) }
     let_it_be(:newer_mr) { create(:merge_request, :closed_last_month) }

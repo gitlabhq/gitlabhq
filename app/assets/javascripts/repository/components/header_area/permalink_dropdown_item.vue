@@ -1,6 +1,5 @@
 <script>
-import Vue from 'vue';
-import { GlDisclosureDropdownItem, GlToast, GlToastMixin } from '@gitlab/ui';
+import { GlDisclosureDropdownItem, GlToastMixin } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { InternalEvents } from '~/tracking';
 import { keysFor, PROJECT_FILES_COPY_FILE_PERMALINK } from '~/behaviors/shortcuts/keybindings';
@@ -8,8 +7,6 @@ import { Mousetrap } from '~/lib/mousetrap';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { hashState, updateHash } from '~/blob/state';
 import { getAbsolutePermalinkPath } from './utils';
-
-Vue.use(GlToast);
 
 export default {
   name: 'PermalinkDropdownItem',

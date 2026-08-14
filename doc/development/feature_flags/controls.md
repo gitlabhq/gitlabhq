@@ -31,7 +31,7 @@ When the changes are deployed to the environments it is time to start
 rolling out the feature to our users. The exact procedure of rolling out a
 change is unspecified, as this can vary from change to change. However, in
 general we recommend rolling out changes incrementally, instead of enabling them
-for everybody right away. We also recommend you to not enable a feature
+for everybody right away. We also recommend that you not enable a feature
 _before_ the code is being deployed.
 This allows you to separate rolling out a feature from a deploy, making it
 easier to measure the impact of both separately.
@@ -107,7 +107,7 @@ Guidelines:
 
 #### Guideline for which percentages to choose during the rollout
 
-Choosing which the percentages while rolling out the feature flag
+Choosing the percentages while rolling out the feature flag
 depends on different factors, for example:
 
 - Is the feature flag checked often so that you can collect enough information to decide it's safe to continue with the rollout?
@@ -130,7 +130,7 @@ will be an acceptable choice.
 But you have to make sure to log the result of the feature flag check to the log of your worker. For more instructions about best practices for logging, see
 [Logging context metadata (through Rails or Grape requests)](../logging.md#logging-context-metadata-through-rails-or-grape-requests).
 
-##### B. Feature flag for an operation that runs hundreds or thousands times per day
+##### B. Feature flag for an operation that runs hundreds or thousands of times per day
 
 Your newly introduced feature or change might be more customer facing than whatever runs in Sidekiq jobs. But
 it might not be run often. In this case, choose a percentage high enough to collect some results in order
@@ -144,7 +144,7 @@ dashboard on Grafana.
 
 ##### C. Feature flag for an operation that runs at the core of the app
 
-Sometimes, a new change that might touch every aspect of the GitLab application. For example, changing
+Sometimes, a new change might touch every aspect of the GitLab application. For example, changing
 a database query on one of the core models, like `User`, `Project`, or `Namespace`. In this case, releasing
 the feature for `1%` of the requests, or even less than that (via Change Request) is highly recommended to avoid any incidents.
 See [this change request example](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/16427) of a feature flag that was released
@@ -176,7 +176,7 @@ If you are not certain what percentages to use, then choose the safe recommended
 Between every step you'll want to wait a little while and monitor the
 appropriate graphs on <https://dashboards.gitlab.net>. The exact time to wait
 may differ. For some features a few minutes is enough, while for others you may
-want to wait several hours or even days. This is entirely up to you, just make
+want to wait several hours or even days. This is entirely up to you. Just make
 sure it is clearly communicated to your team and the Production team if you
 anticipate any potential problems.
 
@@ -534,7 +534,7 @@ Once the above MR has been merged, you should:
 ### Cleanup ChatOps
 
 When a feature gate has been removed from the codebase, the feature
-record still exists in the database that the flag was deployed too.
+record still exists in the database that the flag was deployed to.
 The record can be deleted once the MR is deployed to all the environments:
 
 ```shell

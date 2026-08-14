@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |spec|
   spec.name        = "gitlab-cd-driver-orchestration"
-  spec.version     = "0.5.0"
+  spec.version     = "0.6.0"
   spec.authors     = ["GitLab Engineers"]
   spec.email       = ["engineering@gitlab.com"]
 

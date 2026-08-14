@@ -57,7 +57,10 @@ export const initWorkItemsRoot = ({ workItemType, withTabs } = {}) => {
 
   apolloProvider.clients.defaultClient.cache.writeQuery({
     query: workItemsGroupByVisibleGroupsQuery,
-    data: { workItemsGroupByVisibleGroups: SHOW_ALL_GROUPS },
+    data: {
+      workItemsGroupByVisibleGroups: SHOW_ALL_GROUPS,
+      workItemsGroupByVisibleGroupsHydrated: false,
+    },
   });
 
   return new Vue({

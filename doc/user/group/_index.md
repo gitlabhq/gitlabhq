@@ -445,9 +445,9 @@ A table displays the member's:
 
 - **Account** name and username.
 - **Source** of their [membership](../project/members/_index.md#membership-types).
-  Group members with multiple sources show up twice in the **Members** table, and are counted as separate members. 
+  Group members with multiple sources show up twice in the **Members** table, and are counted as separate members.
   Group members with elevated roles, like Owner or Maintainer, override less restrictive roles in descendant groups and projects.
-  For example, a group member with the Owner role can be directly assigned the Developer role in a descendant subgroup or project. 
+  For example, a group member with the Owner role can be directly assigned the Developer role in a descendant subgroup or project.
   However, because the member is also assigned the Owner role, they have Owner-scoped permissions. [Issue 502458](https://gitlab.com/gitlab-org/gitlab/-/work_items/502458)
   proposes a change to this behavior where a member's source displays the highest effective role.
 - [**Role**](../project/members/_index.md#which-roles-you-can-assign) in the group.

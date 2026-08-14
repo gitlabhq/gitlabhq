@@ -23,9 +23,9 @@ major components of the templating feature work.
 A custom group-level project template is a regular project that is exported and
 then imported into the newly created project.
 
-Given we have `Group1` which contains template subgroup named `Subgroup1`.
+Given we have `Group1` which contains a template subgroup named `Subgroup1`.
 Inside Subgroup1 we have a project called `Template1`.
-`User1` creates `Project1` inside `Group1` using `Template1`, the logic follows these
+`User1` creates `Project1` inside `Group1` using `Template1`. The logic follows these
 steps:
 
 1. Initialize `Project1`
@@ -42,7 +42,7 @@ steps:
   - Defined in `ee/app/services/ee/projects/create_service.rb`.
 - `Projects::CreateFromTemplateService`: handles creating a project from a custom project template.
   - Defined in `app/services/projects/create_from_template_service.rb`
-- `EE:Projects::CreateFromTemplateService`: EE extension for create from template service.
+- `EE::Projects::CreateFromTemplateService`: EE extension for create from template service.
   - Defined in `ee/app/services/ee/projects/create_from_template_service.rb`.
 - `Projects::GitlabProjectsImportService`: Handles importing the template.
   - Defined in `app/services/projects/gitlab_projects_import_service.rb`.
@@ -62,7 +62,7 @@ steps:
   - Defined in `lib/gitlab/import_export/avatar_saver.rb`.
 - `Gitlab::ImportExport::Project::TreeSaver`: Exports the project and related objects.
   - Defined in `lib/gitlab/import_export/project/tree_saver.rb`.
-- `EE:Gitlab::ImportExport::Project::TreeSaver`: Exports the project and related objects.
+- `EE::Gitlab::ImportExport::Project::TreeSaver`: Exports the project and related objects.
   - Defined in `lib/gitlab/import_export/project/tree_saver.rb`.
 - `Gitlab::ImportExport::Json::StreamingSerializer`: Serializes the exported objects to JSON.
   - Defined in `lib/gitlab/import_export/json/streaming_serializer.rb`.
@@ -80,7 +80,7 @@ steps:
   - Defined in `lib/gitlab/import_export/repo_saver.rb`.
 - `Gitlab::ImportExport::WikiRepoSaver`: Exports the wiki repository.
   - Defined in `lib/gitlab/import_export/wiki_repo_saver.rb`.
-- `EE:Gitlab::ImportExport::WikiRepoSaver`: Extends wiki repository saver.
+- `EE::Gitlab::ImportExport::WikiRepoSaver`: Extends wiki repository saver.
   - Defined in `ee/lib/ee/gitlab/import_export/wiki_repo_saver.rb`.
 - `Gitlab::ImportExport::LfsSaver`: Export LFS objects and files.
   - Defined in `lib/gitlab/import_export/lfs_saver.rb`.
@@ -110,7 +110,7 @@ steps:
   - Defined in `ee/app/workers/ee/repository_import_worker.rb`.
 - `Projects::ImportService`: Executes the import step.
   - Defined in `app/services/projects/import_service.rb`.
-- `EE:Projects::ImportService`: Extends import service.
+- `EE::Projects::ImportService`: Extends import service.
   - Defined in `ee/app/services/ee/projects/import_service.rb`.
 - `Projects::LfsPointers::LfsImportService`: Imports the LFS objects.
   - Defined in `app/services/projects/lfs_pointers/lfs_import_service.rb`.
@@ -144,7 +144,7 @@ steps:
   - Defined in `lib/gitlab/import_export/avatar_restorer.rb`.
 - `Gitlab::ImportExport::RepoRestorer`: Handles importing repositories.
   - Defined in `lib/gitlab/import_export/repo_restorer.rb`.
-- `EE:Gitlab::ImportExport::RepoRestorer`: Extends repository restorer.
+- `EE::Gitlab::ImportExport::RepoRestorer`: Extends repository restorer.
   - Defined in `ee/lib/ee/gitlab/import_export/repo_restorer.rb`.
 - `Gitlab::ImportExport::DesignRepoRestorer`: Handles restoring design repository.
   - Defined in `lib/gitlab/import_export/design_repo_restorer.rb`.

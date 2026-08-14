@@ -23,7 +23,7 @@ import getWorkItemsCountOnlyQuery from 'ee_else_ce/work_items/list/graphql/get_w
 import { findDetailPanelWorkItem, getNewWorkItemWidgetsAutoSaveKey } from '../utils';
 import updateBoardWorkItemMutation from './graphql/update_board_work_item.mutation.graphql';
 import { DEFAULT_GROUP_BY, groupingStrategyFor } from './grouping';
-import { SHOW_ALL_GROUPS, isGroupVisible } from './grouping/visibility';
+import { SHOW_ALL_GROUPS } from './grouping/visibility';
 import { orderGroups, reorderGroupIds } from './grouping/ordering';
 import workItemsGroupByVisibleGroupsQuery from './grouping/graphql/client/visible_groups.query.graphql';
 import {
@@ -31,6 +31,7 @@ import {
   boardColumnQueryVariables,
   boardColumnCountVariables,
   getGroupId,
+  getGroupValueId,
   getMovePositionIds,
 } from './utils';
 import {
@@ -138,6 +139,7 @@ export default {
       // mount so it re-reads the freshly-seeded draft each time it opens.
       createColumnValue: null,
       workItemsGroupByVisibleGroups: SHOW_ALL_GROUPS,
+      workItemsGroupByVisibleGroupsHydrated: false,
       // Column value ids the in-flight dragged item may not be dropped into.
       invalidValueIds: [],
       // Locks dragging while a move mutation is in flight so a second drop can't
@@ -158,6 +160,13 @@ export default {
     isLoading() {
       return this.$apollo.queries.groupByValues.loading;
     },
+    // undefined (not null) omits the variable — Apollo treats null as a real value.
+    idsToFetch() {
+      if (this.workItemsGroupByVisibleGroups === SHOW_ALL_GROUPS) return undefined;
+      return this.workItemsGroupByVisibleGroups
+        .map((groupId) => getGroupValueId({ groupBy: this.groupBy, groupId }))
+        .filter((valueId) => valueId !== null);
+    },
     columnQuery() {
       return boardColumnQuery(this.glFeatures);
     },
@@ -166,19 +175,15 @@ export default {
     isManualSort() {
       return this.queryVariables.sort === RELATIVE_POSITION_ASC;
     },
-    // Columns hidden via display settings are removed from the board entirely.
-    visibleGroupByValues() {
-      return this.groupByValues.filter((value) =>
-        isGroupVisible(this.workItemsGroupByVisibleGroups, this.groupBy, value),
-      );
-    },
-    // Applies the persisted column order, reconciling on read: unknown/new groups
-    // fall to the end in default order, stale ids are ignored (see grouping/ordering).
+    // The fetch is already scoped to the selected groups, so no client-side filtering
+    // is needed here — just apply the persisted column order. Reconciling on read:
+    // unknown/new groups fall to the end in default order, stale ids are ignored
+    // (see `grouping/ordering.js`).
     orderedGroupByValues() {
       return orderGroups({
         groupOrder: this.groupOrder,
         groupBy: this.groupBy,
-        values: this.visibleGroupByValues,
+        values: this.groupByValues,
       });
     },
     // Reordering needs a user who can persist it and more than one column to move.
@@ -205,14 +210,18 @@ export default {
     workItemsGroupByVisibleGroups: {
       query: workItemsGroupByVisibleGroupsQuery,
     },
+    workItemsGroupByVisibleGroupsHydrated: {
+      query: workItemsGroupByVisibleGroupsQuery,
+    },
     groupByValues() {
       return {
         query: this.strategy?.valuesQuery,
+        // Wait for hydration so the first fetch is already scoped, not fetch-then-refetch.
         skip() {
-          return !this.strategy;
+          return !this.strategy || !this.workItemsGroupByVisibleGroupsHydrated;
         },
         variables() {
-          return { fullPath: this.rootPageFullPath };
+          return { fullPath: this.rootPageFullPath, ids: this.idsToFetch };
         },
         update: (data) => this.strategy?.extractValues(data) ?? [],
         error: (error) => {
@@ -533,7 +542,6 @@ export default {
         'reorder-groups',
         reorderGroupIds({
           visibleValues: this.renderedColumns,
-          allValues: this.groupByValues,
           groupBy: this.groupBy,
           currentOrder: this.groupOrder,
         }),

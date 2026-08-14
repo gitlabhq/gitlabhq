@@ -81,7 +81,7 @@ export default {
       required: true,
     },
   },
-  emits: ['closeDropdown', 'setLabels'],
+  emits: ['close-dropdown', 'set-labels'],
   data() {
     return {
       showDropdownContentsCreateView: false,
@@ -163,10 +163,10 @@ export default {
       if (!this.isDirty) {
         return;
       }
-      this.$emit('setLabels', this.localSelectedLabels);
+      this.$emit('set-labels', this.localSelectedLabels);
     },
     handleDropdownHide() {
-      this.$emit('closeDropdown');
+      this.$emit('close-dropdown');
       if (!this.isSidebar) {
         this.setLabels();
       }
@@ -221,8 +221,8 @@ export default {
         :labels-list-title="labelsListTitle"
         :show-dropdown-contents-create-view="showDropdownContentsCreateView"
         :is-standalone="isStandalone"
-        @toggleDropdownContentsCreateView="toggleDropdownContent"
-        @closeDropdown="hideDropdown"
+        @toggle-dropdown-contents-create-view="toggleDropdownContent"
+        @close-dropdown="hideDropdown"
         @input="debouncedSearchKeyUpdate"
         @search-enter.prevent="selectFirstItem"
       />
@@ -248,7 +248,7 @@ export default {
         v-if="showDropdownFooter"
         :footer-create-label-title="footerCreateLabelTitle"
         :footer-manage-label-title="footerManageLabelTitle"
-        @toggleDropdownContentsCreateView="toggleDropdownContent"
+        @toggle-dropdown-contents-create-view="toggleDropdownContent"
       />
     </template>
   </gl-dropdown>

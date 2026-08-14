@@ -14,18 +14,18 @@ title: Running Composer and npm scripts with deployment through SCP in GitLab CI
 
 Use [GitLab CI/CD](../../_index.md) to build dependencies of a PHP project while compiling assets with an npm script.
 
-It is possible to create your own image with custom PHP and Node.js versions. For brevity, this guide uses an existing [Docker image](https://hub.docker.com/r/tetraweb/php/) with both PHP and Node.js installed.
+It is possible to create your own image with custom PHP and Node.js versions. For brevity, this guide uses the official [`php`](https://hub.docker.com/_/php) Docker image and installs Node.js in the `before_script`.
 
 ```yaml
-image: tetraweb/php
+image: php:8.3
 ```
 
-The next step is to install zip/unzip packages and make composer available. Place these in the `before_script` section:
+The next step is to install the zip/unzip packages and Node.js, and make Composer available. Place these in the `before_script` section:
 
 ```yaml
 before_script:
   - apt-get update
-  - apt-get install zip unzip
+  - apt-get install -y git zip unzip nodejs npm
   - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
   - php composer-setup.php
   - php -r "unlink('composer-setup.php');"
@@ -137,7 +137,7 @@ The final `.gitlab-ci.yml` looks like this:
 
 ```yaml
 stage_deploy:
-  image: tetraweb/php
+  image: php:8.3
   artifacts:
     paths:
       - build/
@@ -145,7 +145,7 @@ stage_deploy:
     - if: $CI_COMMIT_BRANCH == "dev"
   before_script:
     - apt-get update
-    - apt-get install zip unzip
+    - apt-get install -y git zip unzip nodejs npm
     - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
     - php composer-setup.php
     - php -r "unlink('composer-setup.php');"

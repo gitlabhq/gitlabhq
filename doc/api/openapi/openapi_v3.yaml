@@ -740,7 +740,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_a6c22cd9956c"
+              "$ref": "#/components/schemas/RequestBody_70f8c0578b6a"
   "/api/v4/jobs/{id}/sbom_scans/authorize":
     post:
       operationId: postApiV4JobsIdSbomScansAuthorize
@@ -94647,7 +94647,7 @@ components:
       required:
       - started_on
       - expires_on
-    RequestBody_a6c22cd9956c:
+    RequestBody_70f8c0578b6a:
       type: object
       properties:
         topic:
@@ -94669,7 +94669,8 @@ components:
               type: array
               items:
                 type: integer
-              description: Zero-based path to the stage/step in the flow definition
+              description: Zero-based path to the stage/step in the flow definition;
+                required for every event except com.gitlab.cd.rollout_succeeded
               nullable: true
             stage_name:
               type: string
@@ -94694,8 +94695,6 @@ components:
               description: Failure detail, present on step_failed
               nullable: true
               maxLength: 2000
-          required:
-          - position
           nullable: true
       required:
       - topic

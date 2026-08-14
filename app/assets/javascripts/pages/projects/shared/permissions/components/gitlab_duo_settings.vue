@@ -3,6 +3,8 @@ import { GlToggle, GlLink, GlButton, GlCard, GlSprintf } from '@gitlab/ui';
 import DuoDependencyBumpProfileModal from 'ee_component/pages/projects/shared/permissions/components/duo_dependency_bump_profile_modal.vue';
 import DuoReadinessPlatformRow from 'ee_component/pages/projects/shared/permissions/components/duo_readiness_platform_row.vue';
 import DuoReadinessRunnerRow from 'ee_component/pages/projects/shared/permissions/components/duo_readiness_runner_row.vue';
+import DuoOrbitRow from 'ee_component/pages/projects/shared/permissions/components/duo_orbit_row.vue';
+import DuoMcpRow from 'ee_component/pages/projects/shared/permissions/components/duo_mcp_row.vue';
 import projectAutoRemediationProfileQuery from 'ee_else_ce/pages/projects/shared/permissions/graphql/project_auto_remediation_profile.query.graphql';
 import attachProfileMutation from 'ee_else_ce/pages/projects/shared/permissions/graphql/auto_remediation_profile_attach.mutation.graphql';
 import CascadingLockIcon from '~/namespaces/cascading_settings/components/cascading_lock_icon.vue';
@@ -45,6 +47,8 @@ export default {
     DuoReadinessPlatformRow,
     DuoReadinessRunnerRow,
     DuoLocalSetupSection,
+    DuoOrbitRow,
+    DuoMcpRow,
   },
   mixins: [glFeatureFlagMixin()],
   props: {
@@ -189,6 +193,16 @@ export default {
       required: false,
       default: false,
     },
+    duoOrbit: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
+    duoMcp: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
     visibleSettings: {
       type: Array,
       required: false,
@@ -281,6 +295,15 @@ export default {
     // below its row is actionable, so every row reads blocked and its control is disabled.
     platformEnabled() {
       return Boolean(this.duoReadiness.platformEnabled);
+    },
+    showOrbitRow() {
+      return this.showReadinessCard && Boolean(this.duoOrbit.rootGroupPath);
+    },
+    showMcpRow() {
+      return this.showReadinessCard && Boolean(this.duoMcp.serversPath);
+    },
+    showOptionalGroup() {
+      return this.platformEnabled && (this.showOrbitRow || this.showMcpRow);
     },
     duoRowStatus() {
       if (!this.platformEnabled) return STATUS_BLOCKED;
@@ -397,6 +420,10 @@ export default {
     ),
     otherSettingsHeading: s__('DuoAgentPlatform|Other Duo settings'),
     otherSettingsSubtitle: s__('DuoAgentPlatform|Project-wide behavior, unrelated to readiness.'),
+    optionalHeading: s__('DuoAgentPlatform|Optional'),
+    optionalSubtitle: s__(
+      'DuoAgentPlatform|Features that give your agent more context to work with.',
+    ),
     saveChanges: __('Save changes'),
     saveChangesAriaLabel: __('Save changes for GitLab Duo'),
     governanceTitle: s__('AiPowered|Governance'),
@@ -527,6 +554,21 @@ export default {
           :flow-execution-enabled="effectiveFlowExecutionEnabled"
           :project-full-path="projectFullPath"
         />
+      </div>
+
+      <div v-if="showOptionalGroup" class="gl-mt-5" data-testid="duo-optional-group">
+        <div class="gl-mb-3 gl-flex gl-flex-wrap gl-items-baseline gl-gap-3">
+          <span class="gl-font-bold">{{ $options.i18n.optionalHeading }}</span>
+          <span class="gl-text-sm gl-text-subtle">{{ $options.i18n.optionalSubtitle }}</span>
+        </div>
+        <div class="gl-border gl-overflow-hidden gl-rounded-lg">
+          <duo-orbit-row
+            v-if="showOrbitRow"
+            :orbit="duoOrbit"
+            :project-full-path="projectFullPath"
+          />
+          <duo-mcp-row v-if="showMcpRow" :mcp="duoMcp" />
+        </div>
       </div>
 
       <duo-local-setup-section class="gl-mt-5" />

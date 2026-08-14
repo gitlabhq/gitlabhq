@@ -184,7 +184,7 @@ in a separate merge request before completing the below.
 | `admin_ability` | no | Boolean value to indicate whether this ability is checked at the admin level. |
 | `group_ability` | yes | Boolean value to indicate whether this ability is checked on group level. |
 | `enabled_for_group_access_levels` | if `group_ability = true` | The array of access levels that already have access to this custom ability in a group. See the section on [understanding logic for individual abilities](#understanding-logic-for-individual-abilities) for help on determining the base access level for an ability. This is for information only and has no impact on how custom roles operate.  |
-| `project_ability` | yes | Boolean value to whether this ability is checked on project level. |
+| `project_ability` | yes | Boolean value to indicate whether this ability is checked on project level. |
 | `enabled_for_project_access_levels` | if `project_ability = true` | The array of access levels that already have access to this custom ability in a project. See the section on [understanding logic for individual abilities](#understanding-logic-for-individual-abilities) for help on determining the base access level for an ability. This is for information only and has no impact on how custom roles operate.  |
 | `requirements` | no | The list of custom permissions this ability is dependent on. For instance `admin_vulnerability` is dependent on `read_vulnerability`. If none, then enter `[]`  |
 | `project_permissions` | if `project_ability = true` | List of permissions to enable when this custom ability is granted at the project level. These permissions are automatically applied in `ProjectPolicy` without needing to manually add policy rules. |

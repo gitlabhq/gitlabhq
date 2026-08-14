@@ -42,7 +42,7 @@ export default {
       required: true,
     },
   },
-  emits: ['label-removed', 'onCollapsedValueClick'],
+  emits: ['label-removed', 'on-collapsed-value-click'],
   computed: {
     sortedSelectedLabels() {
       return sortBy(this.selectedLabels, (label) => (isScopedLabel(label) ? 0 : 1));
@@ -84,7 +84,7 @@ export default {
       this.$emit('label-removed', labelId);
     },
     handleCollapsedClick() {
-      this.$emit('onCollapsedValueClick');
+      this.$emit('on-collapsed-value-click');
     },
   },
 };

@@ -19,7 +19,7 @@ By default Crowdin commits translations with `[skip ci]` in the commit
 message. This avoids an excessive number of pipelines from running.
 Before merging translations, make sure to trigger a pipeline to validate
 translations. Static analysis validates things Crowdin doesn't do. Create
-a new pipeline at <https://gitlab.com/gitlab-org/gitlab/pipelines/new>.
+a new pipeline at <https://gitlab.com/gitlab-org/gitlab/pipelines/new>
 (requires the Developer role) for the `master-i18n` branch.
 
 The pipeline job validates translations with the [`PoLinter` class](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/i18n/po_linter.rb).
@@ -60,7 +60,7 @@ We are discussing [automating this entire process](https://gitlab.com/gitlab-org
 Crowdin creates a new merge request as soon as the old one is closed
 or merged. But it does not recreate the `master-i18n` branch every
 time. To force Crowdin to recreate the branch, close any [open merge requests](https://gitlab.com/gitlab-org/gitlab/-/merge_requests?scope=all&state=opened&author_username=gitlab-crowdin-bot)
-and delete the [`master-18n`](https://gitlab.com/gitlab-org/gitlab/-/branches/all?utf8=✓&search=master-i18n) branch.
+and delete the [`master-i18n`](https://gitlab.com/gitlab-org/gitlab/-/branches/all?utf8=✓&search=master-i18n) branch.
 
 This might be needed when the merge request contains failures that
 have been fixed on the default branch.

@@ -93,9 +93,9 @@ describe('DropdownValue', () => {
       expect(wrapper.emitted('label-removed')).toEqual([[mockRegularLabel.id]]);
     });
 
-    it('emits `onCollapsedValueClick` when clicking on collapsed value', () => {
+    it('emits `on-collapsed-value-click` when clicking on collapsed value', () => {
       wrapper.find('.sidebar-collapsed-icon').trigger('click');
-      expect(wrapper.emitted('onCollapsedValueClick')).toEqual([[]]);
+      expect(wrapper.emitted('on-collapsed-value-click')).toEqual([[]]);
     });
 
     it('does not show close button if label is locked', () => {

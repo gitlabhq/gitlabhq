@@ -66,42 +66,49 @@ describe('work_items/board/grouping/ordering', () => {
     it('maps the (already reordered) visible values to their group ids in order', () => {
       const visibleValues = [values[1], values[2], values[0]];
 
-      expect(reorderGroupIds({ visibleValues, allValues: values, groupBy })).toEqual([
+      expect(reorderGroupIds({ visibleValues, groupBy })).toEqual([
         groupId(values[1]),
         groupId(values[2]),
         groupId(values[0]),
-      ]);
-    });
-
-    it('appends group ids present in allValues but not visible, preserving them', () => {
-      const visibleValues = [values[2], values[0]];
-
-      expect(reorderGroupIds({ visibleValues, allValues: values, groupBy })).toEqual([
-        groupId(values[2]),
-        groupId(values[0]),
-        groupId(values[1]),
       ]);
     });
 
     it('keeps a hidden column at its stored position instead of pushing it to the end', () => {
+      // values[2] isn't part of the visible fetch — the values query is already scoped to
+      // what's visible — but it's still in currentOrder because it's hidden, not deleted.
       const currentOrder = [groupId(values[2]), groupId(values[1]), groupId(values[0])];
       const visibleValues = [values[0], values[1]];
 
-      expect(reorderGroupIds({ visibleValues, allValues: values, groupBy, currentOrder })).toEqual([
+      expect(reorderGroupIds({ visibleValues, groupBy, currentOrder })).toEqual([
         groupId(values[2]),
         groupId(values[0]),
         groupId(values[1]),
       ]);
     });
 
-    it('drops stale ids from currentOrder and appends newly-added columns', () => {
+    it('appends newly-added visible columns not yet in currentOrder', () => {
+      const currentOrder = [groupId(values[1])];
+      const visibleValues = [values[1], values[0]];
+
+      expect(reorderGroupIds({ visibleValues, groupBy, currentOrder })).toEqual([
+        groupId(values[1]),
+        groupId(values[0]),
+      ]);
+    });
+
+    it('keeps an id with no matching value in currentOrder, since orderGroups ignores it on read', () => {
       const currentOrder = ['status:stale', groupId(values[1])];
       const visibleValues = [values[1], values[0]];
 
-      expect(reorderGroupIds({ visibleValues, allValues: values, groupBy, currentOrder })).toEqual([
-        groupId(values[1]),
-        groupId(values[0]),
-        groupId(values[2]),
+      const groupOrder = reorderGroupIds({ visibleValues, groupBy, currentOrder });
+
+      expect(groupOrder).toEqual(['status:stale', groupId(values[1]), groupId(values[0])]);
+      // values[2] has no entry in groupOrder, so it falls to the end as "unknown" on read;
+      // 'status:stale' has no matching value, so it's simply never placed.
+      expect(orderGroups({ groupOrder, groupBy, values })).toEqual([
+        values[1],
+        values[0],
+        values[2],
       ]);
     });
   });

@@ -146,7 +146,7 @@ export default {
       default: () => [],
     },
   },
-  emits: ['label-removed', 'toggleCollapse', 'updateSelectedLabels'],
+  emits: ['label-removed', 'toggle-collapse', 'update-selected-labels'],
   data() {
     return {
       issuable: null,
@@ -244,7 +244,7 @@ export default {
               id,
               labels: { nodes },
             } = issuableLabelsUpdated;
-            this.$emit('updateSelectedLabels', { id, labels: nodes });
+            this.$emit('update-selected-labels', { id, labels: nodes });
           }
         },
       },
@@ -292,7 +292,7 @@ export default {
       this.oldIid = null;
     },
     onCollapsedValueClick() {
-      this.$emit('toggleCollapse');
+      this.$emit('toggle-collapse');
       this.$nextTick(() => this.$refs.listbox?.open());
     },
     onSearch(value) {
@@ -319,7 +319,7 @@ export default {
       if (this.iid !== '') {
         this.updateSelectedLabels(this.getUpdateVariables(labels));
       } else {
-        this.$emit('updateSelectedLabels', { labels });
+        this.$emit('update-selected-labels', { labels });
       }
     },
     getUpdateVariables(labels) {
@@ -367,7 +367,7 @@ export default {
             throw new Error();
           }
 
-          this.$emit('updateSelectedLabels', {
+          this.$emit('update-selected-labels', {
             id: data.updateIssuableLabels?.issuable?.id,
             labels: data.updateIssuableLabels?.issuable?.labels?.nodes,
           });
@@ -534,7 +534,7 @@ export default {
         :labels-filter-base-path="labelsFilterBasePath"
         :labels-filter-param="labelsFilterParam"
         class="gl-pt-2"
-        @onCollapsedValueClick="onCollapsedValueClick"
+        @on-collapsed-value-click="onCollapsedValueClick"
         @label-removed="handleLabelRemove"
       >
         <template v-if="glSlots().default" #default><slot></slot></template>
@@ -556,7 +556,7 @@ export default {
         :workspace-type="workspaceType"
         :attr-workspace-path="attrWorkspacePath"
         :label-create-type="labelCreateType"
-        @setLabels="handleDropdownClose"
+        @set-labels="handleDropdownClose"
       />
       <embedded-labels-list
         v-if="isLabelListEnabled"

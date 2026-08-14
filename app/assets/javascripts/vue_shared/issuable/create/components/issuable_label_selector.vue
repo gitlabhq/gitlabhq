@@ -79,7 +79,7 @@ export default {
           :label-create-type="labelType"
           :selected-labels="selectedLabels"
           :issuable-supports-lock-on-merge="issuableSupportsLockOnMerge"
-          @updateSelectedLabels="handleUpdateSelectedLabels"
+          @update-selected-labels="handleUpdateSelectedLabels"
           @label-removed="handleLabelRemove"
         >
           {{ $options.i18n.emptySelection }}

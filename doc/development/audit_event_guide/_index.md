@@ -97,7 +97,7 @@ span across multiple processes (for example, background jobs).
 
 ### Using standard method call to record single event
 
-This method allows recording single audit event and involves fewer moving parts.
+This method allows recording a single audit event and involves fewer moving parts.
 
 ```ruby
 if merge_approval_rule.save

@@ -54,7 +54,7 @@ To run experiments in GitLab, follow this workflow:
 ### Add new icons and illustrations for experiments
 
 Some experiments may require you to add custom icons or illustrations to our codebase.
-This process is lengthy and at this stage, the outcome of the experiment uncertain.
+This process is lengthy and, at this stage, the outcome of the experiment is uncertain.
 Therefore, you should postpone this effort until the [experiment cleanup process](https://handbook.gitlab.com/handbook/engineering/development/growth/experimentation/#experiment-cleanup-issue).
 
 We recommend the following workflow:

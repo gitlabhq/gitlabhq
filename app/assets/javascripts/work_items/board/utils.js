@@ -25,6 +25,12 @@ export const getGroupKey = (groupBy) =>
 export const getGroupId = ({ groupBy, value }) =>
   `${getGroupKey(groupBy)}:${value?.id ?? GROUP_NONE}`;
 
+// Inverse of `getGroupId`; returns null for `GROUP_NONE` since it isn't a real fetchable id.
+export const getGroupValueId = ({ groupBy, groupId }) => {
+  const valueId = groupId.slice(`${getGroupKey(groupBy)}:`.length);
+  return valueId === GROUP_NONE ? null : valueId;
+};
+
 // The initial (non-paginated) query variables — the cache key `fetchMore` merges
 // pages into, which the drag-and-drop cache updates must match exactly. The
 // grouping strategy supplies `columnFilter` (e.g. `{ status: { name } }`), so the

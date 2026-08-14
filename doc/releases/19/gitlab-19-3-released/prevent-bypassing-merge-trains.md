@@ -1,5 +1,5 @@
 ---
-title: Enforce merge trains 
+title: Enforce merge trains
 tier: [ Premium, Ultimate ]
 offering: [ gitlab_com, self_managed, gitlab_dedicated, gitlab_dedicated_for_government ]
 stage: verify

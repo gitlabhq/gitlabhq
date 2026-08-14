@@ -84,7 +84,7 @@ You can triage and debug issues raised by ArkoseLabs with:
 - The [Arkose logging service](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/arkose/logger.rb)
 - The [Arkose Labs Portal](https://portal.arkoselabs.com) (users can request access through the Okta portal)
 
-### Analysing Arkose Labs dashboard
+### Analyzing Arkose Labs dashboard
 
 - GitLab regularly sends session data to the Arkose team, which is used to apply custom
   telltales to prevent malicious users from signing up.

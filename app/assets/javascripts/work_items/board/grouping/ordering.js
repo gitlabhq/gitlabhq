@@ -47,14 +47,17 @@ export const orderGroups = ({ groupOrder = [], groupBy, values = [] }) => {
 // previously stored order) so that columns hidden at reorder time keep their
 // stored position instead of being pushed to the end:
 //   - each slot in `currentOrder` holding a visible column takes the next id
-//     from the new visible order; slots holding a hidden (but still existing)
-//     column stay put; stale ids are dropped,
-//   - visible columns absent from `currentOrder` (newly added) come next,
-//   - any remaining known columns are appended in default (query) order.
-export const reorderGroupIds = ({ visibleValues, allValues, groupBy, currentOrder = [] }) => {
+//     from the new visible order,
+//   - every other slot in `currentOrder` — a hidden column, or one that no
+//     longer exists — stays put. We can't tell those two apart here, since
+//     `visibleValues` is the only list of live groups we have once the
+//     values fetch is scoped to what's visible. That's fine: `orderGroups`
+//     already drops an id with no matching value when it reads this order
+//     back, so a stale id costs nothing and a hidden id is preserved,
+//   - visible columns absent from `currentOrder` (newly added) come last.
+export const reorderGroupIds = ({ visibleValues, groupBy, currentOrder = [] }) => {
   const visibleIds = visibleValues.map((value) => getGroupId({ groupBy, value }));
   const visibleSet = new Set(visibleIds);
-  const allSet = new Set(allValues.map((value) => getGroupId({ groupBy, value })));
 
   const result = [];
   const placed = new Set();
@@ -70,11 +73,9 @@ export const reorderGroupIds = ({ visibleValues, allValues, groupBy, currentOrde
     if (visibleSet.has(id)) {
       push(visibleIds[nextVisible]);
       nextVisible += 1;
-    } else if (allSet.has(id)) {
-      // Hidden column that still exists: keep it where it was stored.
+    } else {
       push(id);
     }
-    // Stale id (no longer a real column): drop it.
   });
 
   // Visible columns that weren't in the stored order yet (newly added).
@@ -82,9 +83,6 @@ export const reorderGroupIds = ({ visibleValues, allValues, groupBy, currentOrde
     push(visibleIds[nextVisible]);
     nextVisible += 1;
   }
-
-  // Any remaining known columns (e.g. newly-added hidden ones) in default order.
-  allValues.forEach((value) => push(getGroupId({ groupBy, value })));
 
   return result;
 };

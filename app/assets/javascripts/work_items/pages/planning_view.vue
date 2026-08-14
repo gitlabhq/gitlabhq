@@ -317,6 +317,9 @@ export default {
       initialViewTokens: [],
       initialPreferences: null,
       displaySettings: {},
+      // False until the displaySettings query has actually resolved (or failed), so we
+      // don't mistake "not fetched yet" for a real, empty visibleGroups selection.
+      preferencesLoaded: false,
       showBulkEditSidebar: false,
       checkedIssuableIds: [],
       isStickyHeaderVisible: false,
@@ -477,12 +480,14 @@ export default {
           }
         }
         this.isSortKeyInitialized = true;
+        this.preferencesLoaded = true;
       },
       skip() {
         return !this.workItemTypeId || !this.isLoggedIn;
       },
       error(error) {
         this.isSortKeyInitialized = true;
+        this.preferencesLoaded = true;
         this.error = __('An error occurred while getting work item user preference.');
         Sentry.captureException(error);
       },
@@ -1130,15 +1135,20 @@ export default {
         this.restoreViewDraft();
       }
     },
-    // Ensures the local visibility cache is seeded with the saved view's visibleGroups
-    visibleGroups: {
-      immediate: true,
-      handler(visibleGroups) {
-        this.$apollo.mutate({
-          mutation: updateVisibleGroupsMutation,
-          variables: { visibleGroups },
-        });
-      },
+    // Ensures the local visibility cache is seeded with the saved view's visibleGroups.
+    // Held off until preferencesLoaded, since visibleGroups reads `{}` (i.e. "no
+    // selection") before displaySettings has actually resolved — writing that early
+    // would tell board_view the selection is known when it isn't, and it would fetch
+    // unscoped before this settles.
+    visibleGroups(visibleGroups) {
+      if (this.preferencesLoaded) {
+        this.syncVisibleGroupsToCache(visibleGroups);
+      }
+    },
+    preferencesLoaded(loaded) {
+      if (loaded) {
+        this.syncVisibleGroupsToCache(this.visibleGroups);
+      }
     },
     eeSearchTokens() {
       if (this.isSavedView && Boolean(this.savedView)) {
@@ -1245,9 +1255,25 @@ export default {
     this.releasesCache = [];
     this.areReleasesFetched = false;
     this.drawerOffsetFrameId = null;
+    // Anonymous users never fetch displaySettings (see its `skip`), so there's no
+    // preferences query to wait on — the answer ("no persisted visibleGroups") is
+    // already known.
+    if (!this.isLoggedIn) {
+      this.preferencesLoaded = true;
+    }
   },
 
   methods: {
+    syncVisibleGroupsToCache(visibleGroups) {
+      this.$apollo.mutate({
+        mutation: updateVisibleGroupsMutation,
+        variables: { visibleGroups },
+        // Client-only mutation: the resolver writes to the cache itself, so we never read the result.
+        // Caching it makes a later work item refetch overwrite unrelated edits. We have not pinned
+        // down why, but skipping the cache write stops it.
+        fetchPolicy: 'no-cache',
+      });
+    },
     saveSessionFilters(tokens) {
       if (this.isSavedView) {
         setSavedViewSessionFilters(this.$route.params.view_id, tokens);

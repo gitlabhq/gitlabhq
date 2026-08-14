@@ -36,6 +36,7 @@ document to look.
 | `com.gitlab.cd.argo.reason.step_invalid` | The step names no services, or a service with no name, or a canary service with no whole-number weight. |
 | `com.gitlab.cd.argo.reason.environment_invalid` | The environment has no `cluster_agent_id`, or no configuration for a service the step deploys, or that configuration is missing a `namespace`, `application` or `manifest_repository` field, or names a `manifest_repository` variant other than `gitlab`. |
 | `com.gitlab.cd.argo.reason.version_set_invalid` | The version set has no entry for a service the step deploys, or an entry with no artifact carrying both a `version` and a `source.image`. |
+| `com.gitlab.cd.argo.reason.rolling_service_repeated` | One rolling step names the same service twice; a step names a service once. |
 | `com.gitlab.cd.argo.reason.canary_service_repeated` | One step names the same service twice; a step names a service once. |
 | `com.gitlab.cd.argo.reason.canary_ladder_incomplete` | A service's canary weights stop short of 100, leaving it serving a sliver of the new version indefinitely. |
 | `com.gitlab.cd.argo.reason.canary_deploy_repeated` | A second `canary.deploy` for one service; one deploy opens a canary and promotes climb it. |

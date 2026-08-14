@@ -54,7 +54,7 @@ The first value stream uses standard timestamp-based events for defining the sta
 value stream uses label events.
 
 Each value stream and stage item from the example is persisted in the database. Notice that
-the `Deployment` stage is identical for both value streams; that means that the underlying
+the `Deployment` stage is identical for both value streams. This means that the underlying
 `stage_event_hash_id` is the same for both stages. The `stage_event_hash_id` reduces
 the amount of data the backend collects and plays a vital role in database partitioning.
 

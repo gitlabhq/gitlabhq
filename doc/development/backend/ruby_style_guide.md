@@ -387,7 +387,7 @@ With an application this simple, it can be hard to see the benefits of the secon
 approach. But we already have some benefits:
 
 - We can test `Repository` creation logic separate from `Project` creation logic. Code
-  no longer violates law of demeter (`Repository` class doesn't need to know
+  no longer violates the Law of Demeter (`Repository` class doesn't need to know
   `project.name`).
 - Clarity of invocation order.
 - Open to change: if we decide there are some scenarios where we do not want a

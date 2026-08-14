@@ -13,7 +13,7 @@ weight: 20
 In previous versions of GitLab, you started foundational flows from specific
 UI actions, mentions, or assignments.
 Now you can start them from Agentic Chat
-in the GitLab UI as part of your conversation. 
+in the GitLab UI as part of your conversation.
 
 When your request matches a specialist workflow, Agentic Chat hands off to one of these flows:
 
