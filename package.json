@@ -53,8 +53,8 @@
     "swagger:validate": "swagger-cli validate",
     "webpack": "scripts/build_frontend_islands && NODE_OPTIONS=\"${NODE_OPTIONS:=--max-old-space-size=10240}\" webpack --config config/webpack.config.js",
     "webpack-vendor": "NODE_OPTIONS=\"${NODE_OPTIONS:=--max-old-space-size=10240}\" webpack --config config/webpack.vendor.config.js",
-    "webpack-prod": "yarn run infection-scanner && scripts/build_frontend_islands && NODE_OPTIONS=\"${NODE_OPTIONS:=--max-old-space-size=10240}\" NODE_ENV=production webpack --config config/webpack.config.js",
-    "vite-prod": "yarn run infection-scanner && scripts/build_frontend_islands && yarn run tailwindcss:build && yarn run tailwindcss:cqs:build && NODE_ENV=production vite build"
+    "webpack-prod": "scripts/build_frontend_islands && NODE_OPTIONS=\"${NODE_OPTIONS:=--max-old-space-size=10240}\" NODE_ENV=production webpack --config config/webpack.config.js",
+    "vite-prod": "scripts/build_frontend_islands && yarn run tailwindcss:build && yarn run tailwindcss:cqs:build && NODE_ENV=production vite build"
   },
   "dependencies": {
     "@apollo/client": "^3.5.10",

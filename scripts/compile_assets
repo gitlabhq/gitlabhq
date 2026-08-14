@@ -14,9 +14,6 @@ section_start "assets-compile" "Compiling frontend assets"
 if [[ -s "${GLCI_GITLAB_ASSETS_HASH_FILE}" ]]; then
   echo "Cached assets found, skipping asset compilation!"
 else
-  if [[ -z "${SKIP_INFECTION_SCANNER}" ]]; then
-    node scripts/frontend/infection_scanner/infection_scanner.mjs
-  fi
   bin/rake gitlab:assets:compile
   echo -n "${GLCI_GITLAB_ASSETS_HASH}" >"${GLCI_GITLAB_ASSETS_HASH_FILE}"
 fi
