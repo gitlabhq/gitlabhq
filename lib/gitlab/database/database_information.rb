@@ -185,6 +185,26 @@ module Gitlab
           }
         end
 
+        # GitLab objects in a schema the search path never consults cannot be
+        # resolved by unqualified references, so GitLab never uses them. They
+        # are typically leftovers from a restore or a migration into the wrong
+        # schema. Partition schemas are exempt: GitLab keeps partitions there
+        # by design, outside the search path.
+        outside_names = schemas.pluck(:name) - candidate_names - partition_schema_names
+        gitlab_outside = outside_names.select { |name| schema_has_gitlab_objects?(name, schema_tables) }
+        if gitlab_outside.any?
+          findings << {
+            severity: 'warning',
+            code: 'gitlab_objects_outside_search_path',
+            message: format(
+              s_('DatabaseDiagnostics|Schemas outside the search path contain GitLab objects: %{schemas}. ' \
+                'GitLab does not resolve unqualified references against these schemas, so these objects are ' \
+                'never used. They may be leftovers from a restore or an earlier misconfiguration.'),
+              schemas: gitlab_outside.join(', ')
+            )
+          }
+        end
+
         findings
       end
 

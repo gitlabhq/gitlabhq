@@ -216,11 +216,7 @@ export default {
       );
     },
     showFeatureLibrary() {
-      return (
-        this.isPinnablePanel &&
-        this.panelType !== 'organization' &&
-        (this.glFeatures.featureLibraryModal || !this.showUnpinnedItems)
-      );
+      return this.isPinnablePanel && this.panelType !== 'organization';
     },
     sectionsToRender() {
       if (!this.showUnpinnedItems) {

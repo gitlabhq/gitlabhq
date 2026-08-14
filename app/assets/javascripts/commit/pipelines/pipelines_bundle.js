@@ -15,7 +15,7 @@ const apolloProvider = new VueApollo({
  * Used in:
  *  - Commit details View > Pipelines Tab > Pipelines Table (projects:commit:pipelines)
  */
-export default () => {
+export const initCommitPipelines = () => {
   const pipelineTableViewEl = document.querySelector('#commit-pipeline-table-view');
 
   if (pipelineTableViewEl) {

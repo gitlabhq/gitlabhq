@@ -125,9 +125,9 @@ export default {
   },
   emits: [
     'bottomReached',
-    'dropdownHidden',
-    'dropdownShown',
-    'searchStarted',
+    'dropdown-hidden',
+    'dropdown-shown',
+    'search-started',
     'updateSelected',
     'update-value',
   ],
@@ -188,7 +188,7 @@ export default {
   },
   methods: {
     setSearchKey(value) {
-      this.$emit('searchStarted', value);
+      this.$emit('search-started', value);
     },
     handleItemClick(item) {
       // Handle both single and multi-select cases
@@ -214,11 +214,11 @@ export default {
       }
     },
     onListboxShown() {
-      this.$emit('dropdownShown');
+      this.$emit('dropdown-shown');
     },
     onListboxHide() {
       this.isEditing = false;
-      this.$emit('dropdownHidden');
+      this.$emit('dropdown-hidden');
       if (this.multiSelect && this.isDirty) {
         this.$emit('update-value', this.localSelectedItem);
       }

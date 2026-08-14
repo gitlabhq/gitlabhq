@@ -39,7 +39,7 @@ See sections below for recommended information to include in the prompt.
 
 ### File name and location
 
-Specify a policy file name inside the [`policies`](https://gitlab.com/gitlab-org/quality/triage-ops/-/tree/master/policies?ref_type=heads) directory except for `generated` directory.
+Specify a policy file name inside the [`policies`](https://gitlab.com/gitlab-org/quality/triage-ops/-/tree/master/policies?ref_type=heads) directory except for the `generated` directory.
 
 For example, label migration policies go in [`policies/one-off`](https://gitlab.com/gitlab-org/quality/triage-ops/-/tree/master/policies/one-off) directory.
 
@@ -130,7 +130,7 @@ Submit the code changes to an MR using [this merge request template for one-off 
 
 You are welcome to request a code review to confirm the migration policy was correctly written. However, if you are confident with the result of the label migration, you can choose to skip the code review step.
 
-Reminder, please do not merge the MR when a migration is done.
+Reminder: Do not merge the MR when a migration is done.
 
 ## Best practices and troubleshooting tips
 

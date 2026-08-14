@@ -238,8 +238,8 @@ export default {
     :reset-button-label="__('Clear')"
     :shortcut="shortcut"
     data-testid="work-item-milestone"
-    @dropdownShown="onDropdownShown"
-    @searchStarted="search"
+    @dropdown-shown="onDropdownShown"
+    @search-started="search"
     @update-value="updateMilestone"
   >
     <template #list-item="{ item }">

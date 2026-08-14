@@ -247,6 +247,71 @@ RSpec.describe Gitlab::Database::DatabaseInformation, feature_category: :databas
           expect(findings.map { |f| f[:code] }).to include('search_path_gitlab_objects_split_across_schemas')
         end
       end
+
+      context 'when a schema outside the search path contains GitLab objects' do
+        let(:schema_rows) do
+          [
+            { 'name' => 'public', 'is_current' => true, 'owner' => 'gitlab', 'has_tables' => true },
+            { 'name' => 'foobar', 'is_current' => false, 'owner' => 'gitlab', 'has_tables' => true }
+          ]
+        end
+
+        let(:schema_table_rows) do
+          [
+            { 'schema_name' => 'public', 'table_name' => 'projects' },
+            { 'schema_name' => 'foobar', 'table_name' => 'users' }
+          ]
+        end
+
+        it 'reports only an outside-search-path warning', :aggregate_failures do
+          expect(findings.map { |f| f[:code] }).to contain_exactly('gitlab_objects_outside_search_path')
+
+          finding = findings.first
+          expect(finding[:severity]).to eq('warning')
+          expect(finding[:message]).to include('foobar')
+        end
+      end
+
+      context 'when a schema outside the search path contains only non-GitLab objects' do
+        let(:schema_rows) do
+          [
+            { 'name' => 'public', 'is_current' => true, 'owner' => 'gitlab', 'has_tables' => true },
+            { 'name' => 'foobar', 'is_current' => false, 'owner' => 'gitlab', 'has_tables' => true }
+          ]
+        end
+
+        let(:schema_table_rows) do
+          [
+            { 'schema_name' => 'public', 'table_name' => 'projects' },
+            { 'schema_name' => 'foobar', 'table_name' => 'not_a_gitlab_table' }
+          ]
+        end
+
+        it 'returns no findings' do
+          expect(findings).to be_empty
+        end
+      end
+
+      context 'when partition schemas outside the search path hold GitLab partitions' do
+        let(:schema_rows) do
+          [
+            { 'name' => 'public', 'is_current' => true, 'owner' => 'gitlab', 'has_tables' => true },
+            { 'name' => 'gitlab_partitions_dynamic', 'is_current' => false, 'owner' => 'gitlab',
+              'has_tables' => true }
+          ]
+        end
+
+        let(:schema_table_rows) do
+          [
+            { 'schema_name' => 'public', 'table_name' => 'projects' },
+            { 'schema_name' => 'gitlab_partitions_dynamic', 'table_name' => 'ci_builds' }
+          ]
+        end
+
+        it 'returns no findings' do
+          expect(findings).to be_empty
+        end
+      end
     end
 
     context 'with vacuum progress' do

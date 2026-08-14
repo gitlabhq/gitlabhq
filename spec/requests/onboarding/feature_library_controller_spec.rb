@@ -6,26 +6,7 @@ RSpec.describe Onboarding::FeatureLibraryController, feature_category: :onboardi
   let_it_be(:user) { create(:user) }
 
   describe 'GET /-/onboarding/feature_library/search', :clean_gitlab_redis_rate_limiting do
-    context 'when the feature flag is disabled' do
-      before do
-        stub_feature_flags(feature_library_modal: false)
-        sign_in(user)
-      end
-
-      it 'returns 404' do
-        get onboarding_feature_library_search_path, params: { query: 'pr', panel: 'project' }
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-
-      it 'does not check the rate limit' do
-        expect(Gitlab::ApplicationRateLimiter).not_to receive(:throttled_request?)
-
-        get onboarding_feature_library_search_path, params: { query: 'pr', panel: 'project' }
-      end
-    end
-
-    context 'when the feature flag is enabled' do
+    context 'when signed in' do
       before do
         sign_in(user)
       end

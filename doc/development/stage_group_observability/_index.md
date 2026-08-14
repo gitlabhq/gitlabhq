@@ -11,7 +11,7 @@ performance tuning and debugging. To run a SaaS platform at scale, a
 rich and detailed observability platform is needed.
 
 To make information available to [stage groups](https://handbook.gitlab.com/handbook/product/categories/#hierarchy),
-we are aggregating metrics by feature category and then show
+we are aggregating metrics by feature category and then showing
 this information on [dashboards](dashboards/_index.md) tailored to the groups. Only metrics
 for the features built by the group are visible on their
 dashboards.
@@ -176,7 +176,7 @@ Questions to answer:
 1. Does the failure pattern look like a spike? Or does it persist?
 1. Does the failure look related to a particular component? (database, Redis, ...)
 1. Does the failure affect a specific endpoint? Or is it system-wide?
-1. Does the failure appear caused by infrastructure incidents?
+1. Does the failure appear to be caused by infrastructure incidents?
 
 ## GitLab instrumentation for OpenTelemetry
 

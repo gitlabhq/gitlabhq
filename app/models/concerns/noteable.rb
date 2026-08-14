@@ -12,12 +12,12 @@ module Noteable
   class_methods do
     # `Noteable` class names that support replying to individual notes.
     def replyable_types
-      %w[Issue MergeRequest WikiPage::Meta]
+      %w[Issue MergeRequest AbuseReport WikiPage::Meta]
     end
 
     # `Noteable` class names that support resolvable notes.
     def resolvable_types
-      %w[Issue MergeRequest DesignManagement::Design WikiPage::Meta]
+      %w[Issue MergeRequest DesignManagement::Design AbuseReport WikiPage::Meta]
     end
 
     # `Noteable` class names that support creating/forwarding individual notes.

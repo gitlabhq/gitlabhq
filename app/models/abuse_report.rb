@@ -12,6 +12,8 @@ class AbuseReport < ApplicationRecord
   include Gitlab::FileTypeDetection
   include WithUploads
   include Gitlab::Utils::StrongMemoize
+  include Mentionable
+  include Noteable
 
   ignore_column :assignee_id, remove_with: '16.9', remove_after: '2024-01-19'
 
@@ -28,6 +30,7 @@ class AbuseReport < ApplicationRecord
 
   has_many :events, class_name: 'ResourceEvents::AbuseReportEvent', inverse_of: :abuse_report
   has_many :abuse_events, class_name: 'AntiAbuse::Event', inverse_of: :abuse_report
+  has_many :user_mentions, class_name: 'AntiAbuse::Reports::UserMention'
 
   validates :reporter, presence: true
   validates :user, presence: true, on: :create
@@ -162,6 +165,12 @@ class AbuseReport < ApplicationRecord
     return AbuseReport.none unless open?
 
     user.abuse_reports.open.by_category(category).id_not_in(id).includes(:reporter)
+  end
+
+  # createNote mutation calls noteable.project,
+  # which in case of abuse reports is nil
+  def project
+    nil
   end
 
   def uploads_sharding_key

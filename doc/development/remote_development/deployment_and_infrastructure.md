@@ -71,7 +71,7 @@ are AWS-focused.
 1. Access your GitLab deployment.
 
 For other GitLab-specific configuration and setup, see the
-[CNG repository](https://gitlab.com/gitLab-org/charts/gitlab/-/blob/master/).
+[CNG repository](https://gitlab.com/gitlab-org/charts/gitlab/-/blob/master/).
 
 ### Verify the Helm deployment
 

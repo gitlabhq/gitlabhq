@@ -91,8 +91,8 @@ module Gitlab
             actions: attributes.fetch(:actions, []),
             policy_scope: attributes[:policy_scope],
             scope_rego: attributes[:scope_rego],
-            mode: attributes.fetch(:mode, 'enforce'),
-            lifecycle_state: attributes.fetch(:lifecycle_state, 'active'),
+            mode: attributes.fetch(:mode, DEFAULT_MODE),
+            lifecycle_state: attributes.fetch(:lifecycle_state, DEFAULT_LIFECYCLE_STATE),
             created_at: attributes[:created_at],
             updated_at: attributes[:updated_at]
           )

@@ -39,6 +39,12 @@ module Gitlab
 
         NON_NULLABLE_ATTRIBUTES = %i[rules actions mode lifecycle_state].freeze
 
+        MODES = %w[audit warn enforce].freeze
+        LIFECYCLE_STATES = %w[active disabled].freeze
+
+        DEFAULT_MODE = 'enforce'
+        DEFAULT_LIFECYCLE_STATE = 'active'
+
         # @param _attributes [Hash] the policy attributes, limited to CREATABLE_ATTRIBUTES;
         #   IMMUTABLE_ATTRIBUTES are accepted and dropped, so every policy starts at version 1
         # @return [Gitlab::PolicyStore::Policy] the created policy

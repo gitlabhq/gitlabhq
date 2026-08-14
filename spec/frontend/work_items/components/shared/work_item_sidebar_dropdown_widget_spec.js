@@ -167,7 +167,7 @@ describe('WorkItemSidebarDropdownWidget component', () => {
       findCollapsibleListbox().vm.$emit('select', listItems[0].id);
       await nextTick();
 
-      expect(wrapper.emitted('searchStarted')).toEqual([[''], ['']]);
+      expect(wrapper.emitted('search-started')).toEqual([[''], ['']]);
     });
 
     it('supports infinite scrolling', async () => {

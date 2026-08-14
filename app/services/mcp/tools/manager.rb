@@ -47,6 +47,7 @@ module Mcp
         'create_workitem_note' => ::Mcp::Tools::WorkItems::CreateWorkItemNoteService,
         'get_merge_request' => ::Mcp::Tools::MergeRequests::GetMergeRequestService,
         'get_merge_request_notes' => ::Mcp::Tools::MergeRequests::GetMergeRequestNotesService,
+        'get_repository_file' => ::Mcp::Tools::Repositories::GetRepositoryFileService,
         'get_pipeline' => ::Mcp::Tools::Pipelines::GetPipelineService,
         'get_saved_view_work_items' => ::Mcp::Tools::WorkItems::GetSavedViewWorkItemsService,
         'get_workitem_notes' => ::Mcp::Tools::WorkItems::GetWorkItemNotesService,

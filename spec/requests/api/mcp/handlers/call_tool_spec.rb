@@ -196,6 +196,24 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
       end
     end
 
+    describe '#get_repository_file' do
+      let(:tool_params) do
+        {
+          name: 'get_repository_file',
+          arguments: { project_id: project.full_path, file_path: 'files/ruby/popen.rb', ref: project.default_branch }
+        }
+      end
+
+      it 'returns success response' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_falsey
+        expect(json_response['result']['structuredContent']['path']).to eq('files/ruby/popen.rb')
+        expect(json_response['result']['structuredContent']['content']).to include('module Popen')
+      end
+    end
+
     describe '#get_merge_request_diffs' do
       let(:tool_params) do
         { name: 'get_merge_request_diffs', arguments: { id: project.full_path, merge_request_iid: merge_request.iid } }

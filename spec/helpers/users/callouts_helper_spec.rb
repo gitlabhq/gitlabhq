@@ -371,16 +371,5 @@ RSpec.describe Users::CalloutsHelper, feature_category: :navigation do
 
       it { is_expected.to be false }
     end
-
-    context 'when the feature_library_modal feature flag is disabled' do
-      before do
-        stub_feature_flags(feature_library_modal: false)
-      end
-
-      it 'returns false without checking the callout' do
-        expect(helper).not_to receive(:user_dismissed?)
-        is_expected.to be false
-      end
-    end
   end
 end

@@ -3082,6 +3082,9 @@ msgstr ""
 msgid "AICatalog|Foundational agents and flows must be enabled in the Admin area or group settings."
 msgstr ""
 
+msgid "AICatalog|Foundational flows can only be disabled for a group in the group's GitLab Duo settings"
+msgstr ""
+
 msgid "AICatalog|Frequently failing or nuisance activity."
 msgstr ""
 
@@ -26735,6 +26738,9 @@ msgid "DatabaseDiagnostics|Schema health check"
 msgstr ""
 
 msgid "DatabaseDiagnostics|Schemas"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Schemas outside the search path contain GitLab objects: %{schemas}. GitLab does not resolve unqualified references against these schemas, so these objects are never used. They may be leftovers from a restore or an earlier misconfiguration."
 msgstr ""
 
 msgid "DatabaseDiagnostics|Search path"
@@ -75592,6 +75598,15 @@ msgstr ""
 msgid "Service account generated successfully"
 msgstr ""
 
+msgid "Service account must be a member of the target project"
+msgstr ""
+
+msgid "Service account must be active"
+msgstr ""
+
+msgid "Service account must be group or project scoped, not instance-wide"
+msgstr ""
+
 msgid "Service account was successfully updated."
 msgstr ""
 
@@ -85803,6 +85818,9 @@ msgid "User list %{name} will be removed. Are you sure?"
 msgstr ""
 
 msgid "User map"
+msgstr ""
+
+msgid "User must be a service account"
 msgstr ""
 
 msgid "User must have permission to use Duo Workflows in the project."

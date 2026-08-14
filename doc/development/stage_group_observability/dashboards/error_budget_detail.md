@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Error budget detail dashboard
 ---
 
-With error budget detailed dashboards you can explore the error budget
+With error budget detail dashboards you can explore the error budget
 spent at specific moments in time. By default, the dashboard shows
 the past 28 days. You can adjust it with the [time range controls](_index.md#time-range-controls)
 or by selecting a range on one of the graphs.

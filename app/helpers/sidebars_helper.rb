@@ -51,7 +51,7 @@ module SidebarsHelper
   def super_sidebar_logged_out_context(panel:, panel_type:)
     super_sidebar_shared_context(panel: panel, panel_type: panel_type).merge({
       allow_signup: allow_signup?.to_s,
-      pinned_items: super_sidebar_default_pins(panel_type, nil)
+      pinned_items: super_sidebar_default_pins(panel_type)
     })
   end
 
@@ -399,24 +399,16 @@ module SidebarsHelper
   # rubocop:disable Lint/UnusedMethodArgument -- group is used on EE
   def pinned_items(user, panel_type, group: nil)
     user.pinned_nav_items[panel_type]&.map(&:to_s) ||
-      super_sidebar_default_pins(panel_type, user)
+      super_sidebar_default_pins(panel_type)
   end
   # rubocop:enable Lint/UnusedMethodArgument
 
-  def super_sidebar_default_pins(panel_type, user)
+  def super_sidebar_default_pins(panel_type)
     case panel_type
     when 'project'
-      if Feature.enabled?(:feature_library_modal, user)
-        %w[project_overview members project_issue_list branches project_merge_request_list pipelines]
-      else
-        %w[project_issue_list project_merge_request_list]
-      end
+      %w[project_overview members project_issue_list branches project_merge_request_list pipelines]
     when 'group'
-      if Feature.enabled?(:feature_library_modal, user)
-        %w[group_overview members group_issue_list issue_boards group_merge_request_list]
-      else
-        %w[group_issue_list group_merge_request_list]
-      end
+      %w[group_overview members group_issue_list issue_boards group_merge_request_list]
     else
       []
     end

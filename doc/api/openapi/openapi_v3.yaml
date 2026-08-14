@@ -55382,6 +55382,20 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/RequestBody_c81863da3e12"
+  "/api/v4/glql/schema":
+    get:
+      operationId: getApiV4GlqlSchema
+      summary: Retrieve the GLQL schema
+      description: 'Retrieves the GLQL schema: data sources with their filter, display
+        and sort fields, the operator, value kind and reference type vocabularies,
+        the available functions, and the display types a query can be rendered as.'
+      tags:
+      - GLQL
+      responses:
+        '200':
+          description: OK
+        '500':
+          description: Internal server error
   "/api/v4/groups/{id}/variables":
     get:
       operationId: getApiV4GroupsIdVariables

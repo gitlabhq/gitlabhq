@@ -32,6 +32,11 @@ module Gitlab
         { key: :exposure,        field: "exposure",        loop_variable: "exposure_id" }
       ].freeze
 
+      MAX_BIGINT_ID = (2**63) - 1
+      MAX_SIGNED_ID_LENGTH = MAX_BIGINT_ID.to_s.length + 1
+      MAX_REPORTED_ID_LENGTH = 64
+      private_constant :MAX_BIGINT_ID, :MAX_SIGNED_ID_LENGTH, :MAX_REPORTED_ID_LENGTH
+
       # A nil or empty `policy_scope` is authored intent, not missing data: it means the
       # policy applies everywhere. `policy_name` is emitted into the generated program.
       def initialize(policy_scope, policy_name:)
@@ -277,18 +282,58 @@ module Gitlab
         true
       end
 
-      # Anything that is not an integer id is dropped rather than interpolated, so an
-      # unexpected value cannot reach the generated program.
       def ids_from(value)
-        return [] unless value.is_a?(Array)
+        return [] if value.nil?
+
+        unless value.is_a?(Array)
+          raise PolicyStore::ValidationError,
+            "policy_scope carries a criterion that is not a list of ids: #{reported_value(value)}"
+        end
 
         value.filter_map do |item|
-          if item.is_a?(Integer)
-            item
-          elsif item.is_a?(Hash) && item["id"].is_a?(Integer)
-            item["id"]
-          end
+          item.is_a?(Hash) ? integer_id_from(item["id"]) : integer_id_from(item)
         end
+      end
+
+      def integer_id_from(value)
+        return if value.nil?
+
+        id = coerced_id_from(value)
+
+        unless id
+          raise PolicyStore::ValidationError,
+            "policy_scope carries a value that is not an id: #{reported_value(value)}"
+        end
+
+        return id if id.positive? && id <= MAX_BIGINT_ID
+
+        raise PolicyStore::ValidationError, "policy_scope carries an id outside the range 1 to #{MAX_BIGINT_ID}"
+      end
+
+      def coerced_id_from(value)
+        case value
+        when Integer then value
+        when String then value.to_i if bounded_ascii_integer?(value)
+        end
+      end
+
+      def bounded_ascii_integer?(value)
+        value.length <= MAX_SIGNED_ID_LENGTH &&
+          value.encoding.ascii_compatible? && value.valid_encoding? && value.match?(/\A-?\d+\z/)
+      end
+
+      def reported_value(value)
+        return value.class.name unless value.is_a?(String)
+        return "text encoded as #{value.encoding}" unless value.encoding.ascii_compatible?
+        return "text that is not valid #{value.encoding}" unless value.valid_encoding?
+
+        truncated_string(value)
+      end
+
+      def truncated_string(value)
+        return value.inspect if value.length <= MAX_REPORTED_ID_LENGTH
+
+        "#{value[0, MAX_REPORTED_ID_LENGTH].inspect}..."
       end
     end
   end

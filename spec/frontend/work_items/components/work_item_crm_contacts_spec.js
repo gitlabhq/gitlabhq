@@ -73,11 +73,11 @@ describe('WorkItemCrmContacts component', () => {
   const findAllGroups = () => wrapper.findAllByTestId('organization');
 
   const showDropdown = () => {
-    findWorkItemSidebarDropdownWidget().vm.$emit('dropdownShown');
+    findWorkItemSidebarDropdownWidget().vm.$emit('dropdown-shown');
   };
 
   const updateItems = async (items) => {
-    findWorkItemSidebarDropdownWidget().vm.$emit('searchStarted');
+    findWorkItemSidebarDropdownWidget().vm.$emit('search-started');
     await waitForPromises();
 
     findWorkItemSidebarDropdownWidget().vm.$emit('update-value', items);
@@ -148,7 +148,7 @@ describe('WorkItemCrmContacts component', () => {
     });
 
     showDropdown();
-    await findWorkItemSidebarDropdownWidget().vm.$emit('searchStarted', searchTerm);
+    await findWorkItemSidebarDropdownWidget().vm.$emit('search-started', searchTerm);
 
     expect(findWorkItemSidebarDropdownWidget().props('loading')).toBe(true);
 

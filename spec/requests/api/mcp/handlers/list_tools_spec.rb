@@ -78,6 +78,7 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
         'get_merge_request_pipelines' => { 'readOnlyHint' => true },
         'get_pipeline' => { 'readOnlyHint' => true },
         'get_pipeline_jobs' => { 'readOnlyHint' => true },
+        'get_repository_file' => { 'readOnlyHint' => true },
         'get_saved_view_work_items' => { 'readOnlyHint' => true },
         'get_work_item_types' => { 'readOnlyHint' => true },
         'get_workitem_notes' => { 'readOnlyHint' => true },

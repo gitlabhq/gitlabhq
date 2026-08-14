@@ -54,8 +54,8 @@ See the next section for how we can enable pipelines without using
 Essentially, we use different variables to enable different pipelines.
 An example doing this is `$START_AS_IF_FOSS`. When we want to trigger a
 cross project FOSS pipeline, we set `$START_AS_IF_FOSS`, along with a set of
-other variables like `$ENABLE_RSPEC_UNIT`, `$ENABLE_RSPEC_SYSTEM`, and so on
-so forth to enable each jobs we want to run in the as-if-foss cross project
+other variables like `$ENABLE_RSPEC_UNIT`, `$ENABLE_RSPEC_SYSTEM`, and so on,
+to enable each job we want to run in the as-if-foss cross project
 downstream pipeline.
 
 The advantage of this over `$FORCE_GITLAB_CI` is that we have full control
@@ -163,7 +163,7 @@ By default, this variable is set from the value of `${GITLAB_DEPENDENCY_PROXY}`.
 - `GITLAB_DEPENDENCY_PROXY` is a CI/CD variable in the [`gitlab-org`](https://gitlab.com/gitlab-org) and the [`gitlab-com`](https://gitlab.com/gitlab-com) groups. It is defined as `${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/`.
 - `GITLAB_DEPENDENCY_PROXY_ADDRESS` is defined in the `gitlab-org/gitlab` project. It defaults to `"${GITLAB_DEPENDENCY_PROXY}"`, but is overridden in some cases (see the workaround section below).
 
-In `gitlab-org/gitlab`, we'll use `GITLAB_DEPENDENCY_PROXY_ADDRESS` [due to a workaround](#work-around-for-when-a-pipeline-is-started-by-a-project-access-token-user). Everywhere else in the `gitlab-org` and `gitlab-com` groups, we should use `GITLAB_DEPENDENCY_PROXY` to use the Dependency Proxy. For any other project, you can rely on the `CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX` predefined CI/CD variable to enable the dependency proxy:
+In `gitlab-org/gitlab`, we'll use `GITLAB_DEPENDENCY_PROXY_ADDRESS` [due to a workaround](#workaround-for-when-a-pipeline-is-started-by-a-project-access-token-user). Everywhere else in the `gitlab-org` and `gitlab-com` groups, we should use `GITLAB_DEPENDENCY_PROXY` to use the Dependency Proxy. For any other project, you can rely on the `CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX` predefined CI/CD variable to enable the dependency proxy:
 
 ```yaml
 # In the gitlab-org/gitlab project
@@ -179,7 +179,7 @@ image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/alpine:edge
 Forks that reside on any other personal namespaces or groups fall back to
 Docker Hub unless `GITLAB_DEPENDENCY_PROXY` is also defined there.
 
-### Work around for when a pipeline is started by a Project access token user
+### Workaround for when a pipeline is started by a Project access token user
 
 When a pipeline is started by a Project access token user (for example, the `release-tools approver bot` user which
 automatically updates the Gitaly version used in the main project),
@@ -216,7 +216,7 @@ that are scoped to a single [configuration keyword](../../ci/yaml/_index.md#job-
 |------------------|-------------|
 | `.default-retry` | Allows a job to [retry](../../ci/yaml/_index.md#retry) upon `unknown_failure`, `api_failure`, `runner_system_failure`, `job_execution_timeout`, or `stuck_or_timeout_failure`. |
 | `.default-before_script` | Allows a job to use a default `before_script` definition suitable for Ruby/Rails tasks that may need a database running (for example, tests). |
-| `.repo-from-artifacts` | Allows a job to fetch the repository from artifacts in `clone-gitlab-repo` instead of cloning. This should reduce GitLab.com Gitaly load and also slightly improve the speed because downloading from artifacts is faster than cloning. Note that this should be avoided to be used with jobs having `needs: []` because otherwise it'll start later and we usually want all jobs to start as soon as possible. Use this only on jobs which has other dependencies so that we don't wait longer than just cloning. Note that this behavior can be controlled via `CI_FETCH_REPO_GIT_STRATEGY`. See [Fetch repository via artifacts instead of cloning/fetching from Gitaly](performance.md#fetch-repository-via-artifacts-instead-of-cloningfetching-from-gitaly) for more details. |
+| `.repo-from-artifacts` | Allows a job to fetch the repository from artifacts in `clone-gitlab-repo` instead of cloning. This should reduce GitLab.com Gitaly load and also slightly improve the speed because downloading from artifacts is faster than cloning. Note that this should not be used with jobs having `needs: []` because otherwise it'll start later and we usually want all jobs to start as soon as possible. Use this only on jobs which have other dependencies so that we don't wait longer than just cloning. Note that this behavior can be controlled via `CI_FETCH_REPO_GIT_STRATEGY`. See [Fetch repository via artifacts instead of cloning/fetching from Gitaly](performance.md#fetch-repository-via-artifacts-instead-of-cloningfetching-from-gitaly) for more details. |
 | `.setup-test-env-cache` | Allows a job to use a default `cache` definition suitable for setting up test environment for subsequent Ruby/Rails tasks. |
 | `.ruby-cache` | Allows a job to use a default `cache` definition suitable for Ruby tasks. |
 | `.static-analysis-cache` | Allows a job to use a default `cache` definition suitable for static analysis tasks. |
@@ -286,7 +286,7 @@ and included in `rules` definitions via [YAML anchors](../../ci/yaml/yaml_optimi
 | `frontend-patterns-for-as-if-foss`  | Only create job for frontend-related changes that have impact on FOSS. |
 | `backend-patterns`           | Only create job for backend-related changes.                           |
 | `db-patterns`                | Only create job for DB-related changes. |
-| `backstage-patterns`         | Only create job for backstage-related changes (that is, Danger, fixtures, RuboCop, specs). |
+| `backstage-patterns`         | Only create job for backstage-related changes (that is, Danger, fixtures, RuboCop, and specs). |
 | `code-patterns`              | Only create job for code-related changes.                                |
 | `qa-patterns`                | Only create job for QA-related changes.                                  |
 | `code-backstage-patterns`    | Combination of `code-patterns` and `backstage-patterns`.                 |

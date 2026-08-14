@@ -37,6 +37,25 @@ To enable automatic pipeline instrumentation, add the `GITLAB_OBSERVABILITY_EXPO
    - **Environment scope**: All (or specific environments)
 1. Select **Add variable**.
 
+## Authenticate exported data (optional)
+
+If your GitLab Observability instance requires bearer-token authorization on its
+OTLP endpoint, provide the token through the `GITLAB_OBSERVABILITY_TOKEN` CI/CD
+variable. When set, GitLab sends it as an `Authorization: Bearer <token>` header
+with the exported telemetry. When the variable is not set, GitLab exports the
+data without an `Authorization` header, exactly as before.
+
+1. In the top bar, select **Search or go to** and find your project or group.
+1. In the left sidebar, select **Settings** > **CI/CD**.
+1. Expand **Variables**.
+1. Select **Add variable**.
+1. Configure the variable:
+   - **Key**: `GITLAB_OBSERVABILITY_TOKEN`
+   - **Value**: The token generated in your GitLab Observability instance.
+   - **Type**: Variable
+   - **Flags**: Select **Mask variable** so the token is not exposed in job logs.
+1. Select **Add variable**.
+
 ## Instrumentation types
 
 The `GITLAB_OBSERVABILITY_EXPORT` variable accepts the following values:

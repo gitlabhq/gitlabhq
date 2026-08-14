@@ -762,50 +762,20 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
   end
 
   describe '#super_sidebar_default_pins' do
-    let(:user) { build_stubbed(:user) }
-
-    context 'when feature_library_modal is disabled' do
-      before do
-        stub_feature_flags(feature_library_modal: false)
-      end
-
-      it 'returns old project defaults' do
-        expect(helper.send(:super_sidebar_default_pins, 'project', user)).to eq(
-          %w[project_issue_list project_merge_request_list]
-        )
-      end
-
-      it 'returns old group defaults', unless: Gitlab.ee? do
-        expect(helper.send(:super_sidebar_default_pins, 'group', user)).to eq(
-          %w[group_issue_list group_merge_request_list]
-        )
-      end
-
-      it 'returns empty array for other panel types' do
-        expect(helper.send(:super_sidebar_default_pins, 'explore', user)).to eq([])
-      end
+    it 'returns project defaults' do
+      expect(helper.send(:super_sidebar_default_pins, 'project')).to eq(
+        %w[project_overview members project_issue_list branches project_merge_request_list pipelines]
+      )
     end
 
-    context 'when feature_library_modal is enabled' do
-      before do
-        stub_feature_flags(feature_library_modal: true)
-      end
+    it 'returns group defaults', unless: Gitlab.ee? do
+      expect(helper.send(:super_sidebar_default_pins, 'group')).to eq(
+        %w[group_overview members group_issue_list issue_boards group_merge_request_list]
+      )
+    end
 
-      it 'returns enriched project defaults' do
-        expect(helper.send(:super_sidebar_default_pins, 'project', user)).to eq(
-          %w[project_overview members project_issue_list branches project_merge_request_list pipelines]
-        )
-      end
-
-      it 'returns enriched group defaults', unless: Gitlab.ee? do
-        expect(helper.send(:super_sidebar_default_pins, 'group', user)).to eq(
-          %w[group_overview members group_issue_list issue_boards group_merge_request_list]
-        )
-      end
-
-      it 'returns empty array for other panel types' do
-        expect(helper.send(:super_sidebar_default_pins, 'explore', user)).to eq([])
-      end
+    it 'returns empty array for other panel types' do
+      expect(helper.send(:super_sidebar_default_pins, 'explore')).to eq([])
     end
   end
 end

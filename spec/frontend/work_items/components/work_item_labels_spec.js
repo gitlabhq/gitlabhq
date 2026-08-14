@@ -114,7 +114,7 @@ describe('WorkItemLabels component', () => {
   const findManageLabelsButton = () => wrapper.findByTestId('manage-labels');
 
   const showDropdown = () => {
-    findWorkItemSidebarDropdownWidget().vm.$emit('dropdownShown');
+    findWorkItemSidebarDropdownWidget().vm.$emit('dropdown-shown');
   };
 
   const updateLabels = (labels) => {
@@ -196,7 +196,7 @@ describe('WorkItemLabels component', () => {
     });
 
     showDropdown();
-    await findWorkItemSidebarDropdownWidget().vm.$emit('searchStarted', searchTerm);
+    await findWorkItemSidebarDropdownWidget().vm.$emit('search-started', searchTerm);
 
     expect(findWorkItemSidebarDropdownWidget().props('loading')).toBe(true);
 
@@ -217,7 +217,7 @@ describe('WorkItemLabels component', () => {
     });
 
     showDropdown();
-    await findWorkItemSidebarDropdownWidget().vm.$emit('searchStarted', mockLabels[0].title);
+    await findWorkItemSidebarDropdownWidget().vm.$emit('search-started', mockLabels[0].title);
 
     expect(findWorkItemSidebarDropdownWidget().props('loading')).toBe(true);
 

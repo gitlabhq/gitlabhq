@@ -7,6 +7,14 @@ RSpec.describe Gitlab::PolicyStore::ScopeTranspiler do
     File.read(File.expand_path("../../fixtures/scope/#{name}/policy.rego", __dir__))
   end
 
+  def transpile_including(*entries)
+    described_class.new({ "projects" => { "including" => entries } }, policy_name: "P").transpile
+  end
+
+  def transpile_excluding(*entries)
+    described_class.new({ "projects" => { "excluding" => entries } }, policy_name: "P").transpile
+  end
+
   describe ".transpile" do
     # Whole-string comparison against committed fixtures, rather than matching
     # fragments, because `scope_rego` is stored and evaluated as text. Its
@@ -138,6 +146,155 @@ RSpec.describe Gitlab::PolicyStore::ScopeTranspiler do
         rego = described_class.new({ projects: { excluding: [{ type: :personal }] } }, policy_name: "P").transpile
 
         expect(rego).to include("personal")
+      end
+
+      it "accepts ids delivered as strings, as a form-encoded request sends them" do
+        from_strings = described_class.new(
+          { "compliance_frameworks" => [{ "id" => "5" }] },
+          policy_name: "P"
+        ).transpile
+        from_integers = described_class.new({ compliance_frameworks: [{ id: 5 }] }, policy_name: "P").transpile
+
+        expect(from_strings).to eq(from_integers)
+      end
+
+      it "accepts bare string ids as well as { id: \"n\" } hashes" do
+        rego = described_class.new(
+          { "projects" => { "including" => ["5", { "id" => "3" }] } },
+          policy_name: "P"
+        ).transpile
+
+        expect(rego).to include("input.project.id in {3, 5}")
+      end
+
+      it "keeps an entry that declares a condition without naming an id" do
+        rego = described_class.new({ "projects" => { "including" => [{}] } }, policy_name: "P").transpile
+
+        expect(rego).to include("input.project.id in set()")
+      end
+
+      it "keeps an entry whose id is null, since a null names no id either" do
+        rego = transpile_excluding(nil, { "id" => 7 })
+
+        expect(rego).to include("input.project.id in {7}")
+      end
+
+      it "accepts a padded id, since the padding does not change which id it names" do
+        expect(transpile_including("007")).to include("input.project.id in {7}")
+      end
+
+      [
+        ["a string carrying more than an id", "1; injected"],
+        ["a fractional id", "3.5"],
+        ["a fractional id that is not a string", 3.5],
+        ["a boolean", true],
+        ["an id wrapped in an array", [5]],
+        ["a digit run too long to be worth parsing", "9" * 21],
+        ["an id with a trailing newline, as a text field sends it", "5\n"],
+        ["a non-ASCII digit", "١٢٣"],
+        ["an id in a non-ASCII encoding", "5".encode("UTF-16")]
+      ].each do |description, value|
+        it "raises ValidationError for #{description}, rather than silently dropping it" do
+          expect { transpile_including(value) }
+            .to raise_error(Gitlab::PolicyStore::ValidationError, /is not an id/)
+        end
+      end
+
+      it "raises ValidationError for an id whose bytes are not valid UTF-8, not an encoding error" do
+        invalid_utf8 = (+"\xFF5").force_encoding("UTF-8")
+
+        expect { transpile_including(invalid_utf8) }
+          .to raise_error(Gitlab::PolicyStore::ValidationError, /text that is not valid UTF-8/)
+      end
+
+      it "names the encoding when that is what refused the id, since the bytes can read as one" do
+        expect { transpile_including("5".encode("UTF-32BE")) }
+          .to raise_error(Gitlab::PolicyStore::ValidationError, /text encoded as UTF-32BE/)
+      end
+
+      it "refuses a value that is not an id wherever it is authored, not only under projects" do
+        expect { described_class.new({ "groups" => { "including" => ["1; injected"] } }, policy_name: "P").transpile }
+          .to raise_error(Gitlab::PolicyStore::ValidationError, /is not an id/)
+      end
+
+      it "names the offending value, so the caller can find it" do
+        expect { transpile_including(3, "1; injected") }
+          .to raise_error(Gitlab::PolicyStore::ValidationError, /"1; injected"/)
+      end
+
+      [
+        ["a zero id", 0],
+        ["a zero id delivered as a string", "0"],
+        ["a negative Integer id", -2],
+        ["a negative id delivered as a string", "-2"],
+        ["the widest negative id, sign included", "-9223372036854775807"],
+        ["an Integer past the widest a bigint holds", 9_223_372_036_854_775_808],
+        ["a string past the widest a bigint holds", "9223372036854775808"],
+        ["a digit run one longer than any id", "9" * 20]
+      ].each do |description, value|
+        it "raises ValidationError for #{description}, which no project or group can have" do
+          expect { transpile_including(value) }
+            .to raise_error(Gitlab::PolicyStore::ValidationError, /outside the range 1 to 9223372036854775807/)
+        end
+      end
+
+      it "accepts an id at the widest a bigint holds" do
+        expect(transpile_including("9223372036854775807"))
+          .to include("input.project.id in {9223372036854775807}")
+      end
+
+      it "elides a string too long to be an id rather than echoing it", :aggregate_failures do
+        expect { transpile_including("9" * 65) }
+          .to raise_error(Gitlab::PolicyStore::ValidationError) { |error|
+            expect(error.message.length).to be < 200
+            expect(error.message).to end_with("...")
+          }
+      end
+
+      it "names a container by its type, so nothing it holds is rendered" do
+        expect { transpile_including({ "id" => [10**5_000] }) }
+          .to raise_error(Gitlab::PolicyStore::ValidationError, /is not an id: Array/)
+      end
+
+      it "refuses an id too wide to render without rendering it", :aggregate_failures do
+        expect { transpile_including(10**5_000) }
+          .to raise_error(Gitlab::PolicyStore::ValidationError) { |error|
+            expect(error.message.length).to be < 100
+            expect(error.message).not_to include("0000")
+          }
+      end
+    end
+
+    context "with a criterion that is not a list of ids" do
+      it "raises rather than compiling an inclusion that matches nothing" do
+        expect { described_class.new({ "projects" => { "including" => "5" } }, policy_name: "P").transpile }
+          .to raise_error(Gitlab::PolicyStore::ValidationError, /criterion that is not a list of ids: "5"/)
+      end
+
+      it "raises rather than widening a policy whose exclusion it cannot read" do
+        expect { described_class.new({ "projects" => { "excluding" => { "id" => 5 } } }, policy_name: "P").transpile }
+          .to raise_error(Gitlab::PolicyStore::ValidationError, /criterion that is not a list of ids: Hash/)
+      end
+
+      it "refuses a bare Integer without rendering it, however wide it is", :aggregate_failures do
+        expect { described_class.new({ "projects" => { "including" => 10**5_000 } }, policy_name: "P").transpile }
+          .to raise_error(Gitlab::PolicyStore::ValidationError) { |error|
+            expect(error.message).to end_with("Integer")
+            expect(error.message.length).to be < 100
+          }
+      end
+    end
+
+    context "with an id it cannot compile on the excluding side" do
+      # An excluded id that is dropped rather than refused removes the whole
+      # `scope_excluded` body, so the policy applies to what the author excluded.
+      it "raises rather than widening the policy to the project it was told to exclude" do
+        expect { transpile_excluding("1; injected") }
+          .to raise_error(Gitlab::PolicyStore::ValidationError, /is not an id/)
+      end
+
+      it "keeps compiling an exclusion that names no id, since that is not a failed id" do
+        expect(transpile_excluding({ "type" => "personal" })).to include("input.project.personal == true")
       end
     end
 

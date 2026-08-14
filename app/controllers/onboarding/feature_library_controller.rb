@@ -7,23 +7,19 @@ module Onboarding
 
     MAX_QUERY_LENGTH = 255
 
-    before_action :check_feature_library_search_rate_limit!,
-      only: :search,
-      if: -> { Feature.enabled?(:feature_library_modal, current_user) }
+    before_action :check_feature_library_search_rate_limit!, only: :search
 
     before_action :check_feature_library_ai_search_rate_limit!,
       only: :ai_search,
-      if: -> { Feature.enabled?(:feature_library_modal, current_user) && feature_match_service.ai_search_enabled? }
+      if: -> { feature_match_service.ai_search_enabled? }
 
     def search
-      return not_found unless Feature.enabled?(:feature_library_modal, current_user)
       return render json: { ids: [] } unless valid_panel?
 
       render json: { ids: feature_match_service.execute }
     end
 
     def ai_search
-      return not_found unless Feature.enabled?(:feature_library_modal, current_user)
       return not_found unless feature_match_service.ai_search_enabled?
       return render json: { ids: [], ai_search_available: false } unless valid_panel?
       return render json: { ids: [], ai_search_available: false } unless feature_match_service.ai_search_available?

@@ -559,28 +559,10 @@ describe('Sidebar Menu', () => {
     const findFeatureLibraryModal = () => wrapper.findComponent({ name: 'FeatureLibraryModal' });
     const findTrigger = () => wrapper.findComponentByTestId('feature-library-trigger');
 
-    describe('when feature_library_modal FF is off', () => {
+    describe('when the panel supports pins', () => {
       beforeEach(() => {
         createWrapper({
           panelType: PANELS_WITH_PINS[0],
-          provide: { glFeatures: { featureLibraryModal: false } },
-        });
-      });
-
-      it('does not render the trigger button', () => {
-        expect(findTrigger().exists()).toBe(false);
-      });
-
-      it('does not render the modal', () => {
-        expect(findFeatureLibraryModal().exists()).toBe(false);
-      });
-    });
-
-    describe('when feature_library_modal FF is on and panel supports pins', () => {
-      beforeEach(() => {
-        createWrapper({
-          panelType: PANELS_WITH_PINS[0],
-          provide: { glFeatures: { featureLibraryModal: true } },
         });
       });
 
@@ -609,7 +591,6 @@ describe('Sidebar Menu', () => {
         createWrapper({
           items: menuItems,
           panelType: PANELS_WITH_PINS[0],
-          provide: { glFeatures: { featureLibraryModal: true } },
         });
         expect(
           findFeatureLibraryModal()
@@ -623,7 +604,7 @@ describe('Sidebar Menu', () => {
       beforeEach(() => {
         createWrapper({
           panelType: PANELS_WITH_PINS[0],
-          provide: { glFeatures: { featureLibraryModal: true }, isIconOnly: true },
+          provide: { isIconOnly: true },
         });
       });
 
@@ -637,7 +618,6 @@ describe('Sidebar Menu', () => {
         createWrapper({
           panelType: PANELS_WITH_PINS[0],
           isLoggedIn: false,
-          provide: { glFeatures: { featureLibraryModal: true } },
         });
       });
 
@@ -650,12 +630,11 @@ describe('Sidebar Menu', () => {
       });
     });
 
-    describe('when feature_library_modal FF is on but panel does not support pins', () => {
+    describe('when the panel does not support pins', () => {
       beforeEach(() => {
         createWrapper({
           panelType: 'your_work',
           isLoggedIn: true,
-          provide: { glFeatures: { featureLibraryModal: true } },
         });
       });
 
@@ -675,7 +654,6 @@ describe('Sidebar Menu', () => {
         beforeEach(() => {
           createWrapper({
             panelType: PANELS_WITH_PINS[0],
-            provide: { glFeatures: { featureLibraryModal: true } },
           });
         });
 
@@ -694,7 +672,6 @@ describe('Sidebar Menu', () => {
         beforeEach(() => {
           createWrapper({
             panelType: PANELS_WITH_PINS[0],
-            provide: { glFeatures: { featureLibraryModal: true } },
           });
           jest.spyOn(Mousetrap, 'unbind');
 
@@ -710,7 +687,6 @@ describe('Sidebar Menu', () => {
         beforeEach(() => {
           createWrapper({
             panelType: 'your_work',
-            provide: { glFeatures: { featureLibraryModal: true } },
           });
         });
 
@@ -721,27 +697,12 @@ describe('Sidebar Menu', () => {
         });
       });
 
-      describe('when the feature flag is off', () => {
-        beforeEach(() => {
-          createWrapper({
-            panelType: PANELS_WITH_PINS[0],
-            provide: { glFeatures: { featureLibraryModal: false } },
-          });
-        });
-
-        it('does not bind the shortcut', () => {
-          Mousetrap.trigger('\\');
-
-          expect(emittedShowModal()).toBeUndefined();
-        });
-      });
-
-      describe('when in pinned-only mode with the modal flag off', () => {
+      describe('when in pinned-only mode', () => {
         beforeEach(() => {
           createWrapper({
             panelType: PANELS_WITH_PINS[0],
             provide: {
-              glFeatures: { featureLibraryModal: false, hideUnpinnedSidebarItems: true },
+              glFeatures: { hideUnpinnedSidebarItems: true },
             },
           });
         });
@@ -757,7 +718,6 @@ describe('Sidebar Menu', () => {
         beforeEach(() => {
           createWrapper({
             panelType: 'organization',
-            provide: { glFeatures: { featureLibraryModal: true } },
           });
         });
 
@@ -773,7 +733,6 @@ describe('Sidebar Menu', () => {
       beforeEach(() => {
         createWrapper({
           panelType: PANELS_WITH_PINS[0],
-          provide: { glFeatures: { featureLibraryModal: true } },
         });
       });
 
@@ -829,7 +788,6 @@ describe('Sidebar Menu', () => {
           },
           provide: {
             currentPath: 'group',
-            glFeatures: { featureLibraryModal: true },
           },
         });
       };
@@ -981,7 +939,7 @@ describe('Sidebar Menu', () => {
       createWrapper({
         items: menuItems,
         panelType: 'project',
-        provide: { glFeatures: { hideUnpinnedSidebarItems: true, featureLibraryModal: true } },
+        provide: { glFeatures: { hideUnpinnedSidebarItems: true } },
       });
 
       expect(findPinnedSection().exists()).toBe(true);

@@ -99,6 +99,9 @@ RSpec.describe 'Commit > Pipelines tab', :js, feature_category: :continuous_inte
       # Force notifications on state of new pipeline
       GraphqlTriggers.ci_pipeline_statuses_updated(new_pipeline)
 
+      # Tab count is updated
+      within('.commit-ci-menu') { expect(page).to have_link('Pipelines 2') }
+
       expect(page).to have_content("##{new_pipeline.id}")
       expect(page).to have_testid('pipeline-table-row', count: 2)
     end

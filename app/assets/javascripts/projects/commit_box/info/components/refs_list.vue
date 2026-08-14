@@ -52,6 +52,7 @@ export default {
       required: true,
     },
   },
+  emits: [FETCH_CONTAINING_REFS_EVENT],
   data() {
     return {
       isContainingRefsVisible: false,

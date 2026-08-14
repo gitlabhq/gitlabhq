@@ -67,7 +67,6 @@ export default {
     'ee/app/assets/javascripts/operations/components/dashboard/dashboard.vue',
     'ee/app/assets/javascripts/operations/components/dashboard/project.vue',
     'ee/app/assets/javascripts/operations/components/dashboard/project_header.vue',
-    'ee/app/assets/javascripts/project_quality_summary/components/test_runs_empty_state.vue',
     'ee/app/assets/javascripts/protected_environments/add_approvers.vue',
     'ee/app/assets/javascripts/protected_environments/add_rule_modal.vue',
     'ee/app/assets/javascripts/protected_environments/create_protected_environment.vue',

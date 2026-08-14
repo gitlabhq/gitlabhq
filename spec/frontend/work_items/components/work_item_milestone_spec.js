@@ -37,7 +37,7 @@ describe('WorkItemMilestone component', () => {
     .fn()
     .mockResolvedValue(updateWorkItemMutationResponse);
 
-  const showDropdown = () => findSidebarDropdownWidget().vm.$emit('dropdownShown');
+  const showDropdown = () => findSidebarDropdownWidget().vm.$emit('dropdown-shown');
 
   const createComponent = ({
     mountFn = shallowMountExtended,

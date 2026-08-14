@@ -227,6 +227,155 @@ RSpec.describe Mcp::Tools::Concerns::UrlParser, feature_category: :mcp_server do
     end
   end
 
+  describe '#parse_blob_url' do
+    context 'with valid file URLs' do
+      it 'parses a blob URL' do
+        url = 'https://gitlab.com/namespace/project/-/blob/main/app/models/user.rb'
+        result = service.send(:parse_blob_url, url)
+
+        expect(result).to eq({
+          project_path: 'namespace/project',
+          id: 'main/app/models/user.rb',
+          ref_type: nil
+        })
+      end
+
+      it 'parses a nested project blob URL' do
+        url = 'https://gitlab.com/parent/child/project/-/blob/main/README.md'
+        result = service.send(:parse_blob_url, url)
+
+        expect(result).to eq({
+          project_path: 'parent/child/project',
+          id: 'main/README.md',
+          ref_type: nil
+        })
+      end
+
+      it 'parses a raw URL' do
+        url = 'https://gitlab.com/namespace/project/-/raw/v1.0/README.md'
+        result = service.send(:parse_blob_url, url)
+
+        expect(result[:id]).to eq('v1.0/README.md')
+      end
+
+      it 'parses a blame URL' do
+        url = 'https://gitlab.com/namespace/project/-/blame/main/README.md'
+        result = service.send(:parse_blob_url, url)
+
+        expect(result[:id]).to eq('main/README.md')
+      end
+
+      it 'keeps a slashed ref and the path combined' do
+        url = 'https://gitlab.com/namespace/project/-/blob/feature/my-branch/app/x.rb'
+        result = service.send(:parse_blob_url, url)
+
+        expect(result[:id]).to eq('feature/my-branch/app/x.rb')
+      end
+
+      it 'splits on the first blob segment' do
+        url = 'https://gitlab.com/namespace/project/-/blob/main/docs/-/blob/nested.md'
+        result = service.send(:parse_blob_url, url)
+
+        expect(result).to include(project_path: 'namespace/project', id: 'main/docs/-/blob/nested.md')
+      end
+
+      it 'ignores the fragment' do
+        url = 'https://gitlab.com/namespace/project/-/blob/main/README.md#L10-20'
+        result = service.send(:parse_blob_url, url)
+
+        expect(result[:id]).to eq('main/README.md')
+      end
+
+      it 'decodes percent-encoded path segments' do
+        url = 'https://gitlab.com/namespace/project/-/blob/main/app/models/user%20copy.rb'
+        result = service.send(:parse_blob_url, url)
+
+        expect(result[:id]).to eq('main/app/models/user copy.rb')
+      end
+
+      it 'preserves a plus sign in the path' do
+        url = 'https://gitlab.com/namespace/project/-/blob/main/c++/main.cpp'
+        result = service.send(:parse_blob_url, url)
+
+        expect(result[:id]).to eq('main/c++/main.cpp')
+      end
+    end
+
+    context 'with a ref_type query parameter' do
+      it 'returns heads' do
+        url = 'https://gitlab.com/namespace/project/-/blob/main/README.md?ref_type=heads'
+
+        expect(service.send(:parse_blob_url, url)[:ref_type]).to eq('heads')
+      end
+
+      it 'returns tags' do
+        url = 'https://gitlab.com/namespace/project/-/blob/v1.0/README.md?ref_type=tags'
+
+        expect(service.send(:parse_blob_url, url)[:ref_type]).to eq('tags')
+      end
+
+      it 'ignores an unrecognised ref_type' do
+        url = 'https://gitlab.com/namespace/project/-/blob/main/README.md?ref_type=bogus'
+
+        expect(service.send(:parse_blob_url, url)[:ref_type]).to be_nil
+      end
+
+      it 'ignores other query parameters' do
+        url = 'https://gitlab.com/namespace/project/-/blob/main/README.md?plain=1'
+
+        expect(service.send(:parse_blob_url, url)[:ref_type]).to be_nil
+      end
+    end
+
+    context 'with invalid URLs' do
+      it 'raises ArgumentError for a tree URL' do
+        url = 'https://gitlab.com/namespace/project/-/tree/main/app'
+
+        expect { service.send(:parse_blob_url, url) }
+          .to raise_error(ArgumentError, /Invalid file URL format/)
+      end
+
+      it 'raises ArgumentError when the blob segment is missing' do
+        url = 'https://gitlab.com/namespace/project'
+
+        expect { service.send(:parse_blob_url, url) }
+          .to raise_error(ArgumentError, /Invalid file URL format/)
+      end
+
+      it 'raises ArgumentError when nothing follows the blob segment' do
+        url = 'https://gitlab.com/namespace/project/-/blob/'
+
+        expect { service.send(:parse_blob_url, url) }
+          .to raise_error(ArgumentError, /Invalid file URL format/)
+      end
+
+      it 'raises ArgumentError when the project path is missing' do
+        url = 'https://gitlab.com/-/blob/main/README.md'
+
+        expect { service.send(:parse_blob_url, url) }
+          .to raise_error(ArgumentError, /Invalid file URL format/)
+      end
+
+      it 'raises ArgumentError for an invalid scheme' do
+        expect { service.send(:parse_blob_url, 'ftp://gitlab.com/ns/p/-/blob/main/README.md') }
+          .to raise_error(ArgumentError, /Invalid URL format/)
+      end
+    end
+
+    context 'when the instance is served under a relative URL root' do
+      before do
+        stub_config_setting(relative_url_root: '/gitlab')
+      end
+
+      it 'strips the relative URL root from the project path' do
+        url = 'https://gitlab.example.com/gitlab/namespace/project/-/blob/main/README.md'
+        result = service.send(:parse_blob_url, url)
+
+        expect(result).to include(project_path: 'namespace/project', id: 'main/README.md')
+      end
+    end
+  end
+
   describe '#resolve_parent_from_url' do
     context 'with project URLs' do
       it 'resolves project from URL' do

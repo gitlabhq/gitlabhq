@@ -323,6 +323,41 @@ Example:
 Create a branch named feature/x from main in project gitlab-org/gitlab
 ```
 
+## `get_repository_file`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248744) in GitLab 19.3.
+
+{{< /history >}}
+
+Retrieves the contents of a single file from a repository at a specific ref.
+
+Content comes from the repository, not from your local filesystem.
+The file is returned as committed at `ref`, so uncommitted changes in a local checkout are not included.
+
+| Parameter    | Type    | Required | Description |
+|--------------|---------|----------|-------------|
+| `url`        | string  | No       | URL of the file, for example `https://gitlab.example.com/my-group/my-project/-/blob/main/app/models/user.rb`. Provide this, or `project_id`, `file_path`, and `ref`. |
+| `project_id` | string  | No       | ID or full path of the project. Required if `url` is not provided. |
+| `file_path`  | string  | No       | Path of the file relative to the repository root. Required if `url` is not provided. |
+| `ref`        | string  | No       | Branch name, tag name, or commit SHA. Use `HEAD` for the default branch. Required if `url` is not provided. |
+| `offset`     | integer | No       | Zero-indexed line to start reading from. Default is `0`. |
+| `limit`      | integer | No       | Maximum number of lines to return. Default and maximum are `2000`. |
+
+The response contains a `metadata` object with `total_lines`, `returned_lines`, `truncated`, and `size_bytes`.
+When the response covers only part of the file, `system_instruction` states the `offset` to use in the next call.
+
+This tool returns text only.
+Binary files and files stored in Git LFS return an error.
+Files that a project excludes from GitLab Duo context also return an error.
+
+Example:
+
+```plaintext
+Show me app/models/user.rb from the main branch of my-group/my-project
+```
+
 ## `get_pipeline`
 
 {{< history >}}

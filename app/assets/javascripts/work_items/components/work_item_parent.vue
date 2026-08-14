@@ -373,9 +373,9 @@ export default {
     :toggle-dropdown-text="listboxText"
     :search-placeholder="s__('WorkItem|Search or enter URL')"
     data-testid="work-item-parent"
-    @dropdownShown="onListboxShown"
-    @dropdownHidden="onListboxHide"
-    @searchStarted="searchWorkItems"
+    @dropdown-shown="onListboxShown"
+    @dropdown-hidden="onListboxHide"
+    @search-started="searchWorkItems"
     @update-value="handleItemClick"
     @reset="unassignParent"
   >

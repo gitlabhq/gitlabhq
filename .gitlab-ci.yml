@@ -336,6 +336,9 @@ variables:
   # https://gitlab.com/gitlab-org/gitlab/-/issues/591004
   # https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/6444
   FF_USE_GIT_PROACTIVE_AUTH: "true"
+  # Speed up artifact and cache transfer
+  FF_USE_PARALLEL_CACHE_TRANSFER: "true"
+  FF_USE_PARALLEL_ARTIFACT_TRANSFER: "true"
   # if:exists rules max out at 50,000 files before returning true, unconditionally.
   # https://docs.gitlab.com/ci/yaml/#rulesexists
   # This causes dependency scanning templates to act as if maven/gradle/python dependency files exist, even though they don't.

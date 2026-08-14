@@ -80,10 +80,11 @@ Grants the ability to create and read dependency list exports.
 
 #### Policy Store Policy
 
-Grants the ability to delete and read policies in the policy store.
+Grants the ability to create, delete, and read policies in the policy store.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
+| Create | Instance | `POST` | `/organizations/:id/security/policy_store` |
 | Delete | Instance | `DELETE` | `/organizations/:id/security/policy_store/:policy_id` |
 | Read | Instance | `GET` | `/organizations/:id/security/policy_store` |
 | Read | Instance | `GET` | `/organizations/:id/security/policy_store/:policy_id` |
@@ -3663,6 +3664,7 @@ Fine-grained token scope checks are not applied to these endpoints.
 | ------ | ---- |
 | `GET` | `/broadcast_messages` |
 | `GET` | `/broadcast_messages/:id` |
+| `GET` | `/glql/schema` |
 | `GET` | `/groups/:id/-/packages/nuget/index` |
 | `GET` | `/groups/:id/-/packages/nuget/symbolfiles/*file_name/*signature/*same_file_name` |
 | `GET` | `/groups/:id/-/packages/nuget/v2` |

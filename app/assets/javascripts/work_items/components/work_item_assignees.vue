@@ -377,11 +377,11 @@ export default {
     :shortcut="shortcut"
     clear-search-on-item-select
     data-testid="work-item-assignees"
-    @dropdownShown="onDropdownShown"
-    @searchStarted="setSearchKey"
+    @dropdown-shown="onDropdownShown"
+    @search-started="setSearchKey"
     @update-value="handleAssigneesInput"
     @updateSelected="handleAssigneeClick"
-    @dropdownHidden="onDropdownHide"
+    @dropdown-hidden="onDropdownHide"
   >
     <template #list-item="{ item }">
       <sidebar-participant v-if="item" :user="item" />

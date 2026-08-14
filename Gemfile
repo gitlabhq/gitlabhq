@@ -682,7 +682,7 @@ gem 'gitaly', '~> 19.2', feature_category: :gitaly
 gem 'gitlab-kas-grpc', '~> 19.3.0-rc4', feature_category: :deployment_management
 
 # Knowledge Graph GRPC protocol definitions
-gem 'gitlab-gkg-proto', '~> 0.87.0', feature_category: :knowledge_graph
+gem 'gitlab-orbit-proto', '~> 0.100.0', feature_category: :knowledge_graph
 
 gem 'grpc', '~> 1.81.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
@@ -803,7 +803,7 @@ gem "gitlab-cloud-connector", "~> 1.53", require: 'gitlab/cloud_connector', feat
 
 gem "gvltools", "~> 0.4.0", feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
-gem 'gitlab_query_language', '~> 0.33.0', feature_category: :integrations
+gem 'gitlab_query_language', '~> 0.34.0', feature_category: :integrations
 
 # standard Gem, version increase to resolve vulnerabilities
 gem "zlib", "~> 3.2", ">= 3.2.3", feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/work_items/596593

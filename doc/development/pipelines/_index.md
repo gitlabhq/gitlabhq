@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Pipelines for the GitLab project
 ---
 
-Pipelines for [`gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab) (as well as the `dev` instance's) is configured in the usual
+Pipelines for [`gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab) (as well as the `dev` instance's) are configured in the usual
 [`.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab-ci.yml)
 which itself includes files under
 [`.gitlab/ci/`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/.gitlab/ci)
@@ -29,7 +29,7 @@ We currently have three tiers:
 1. `pipeline::tier-2`: The merge request has at least one approval, but still requires more approvals
 1. `pipeline::tier-3`: The merge request has all the approvals it needs
 
-Typically, the lower the pipeline tier, the fastest the pipeline should be.
+Typically, the lower the pipeline tier, the faster the pipeline should be.
 The higher the pipeline tier, the more confidence the pipeline should give us by running more tests
 
 See the [Introduce "tiers" in MR pipelines](https://gitlab.com/groups/gitlab-org/quality/engineering-productivity/-/work_items/58) epic for more information on the implementation.
@@ -79,7 +79,7 @@ To identify the RSpec tests that are likely to fail in a merge request, we use *
 
 ##### Dynamic mappings
 
-First, we use the [`test_file_finder` gem](https://gitlab.com/gitlab-org/ruby/gems/test_file_finder), with dynamic mapping strategies coming from the [`Crystalball` gem](https://gitlab.com/gitlab-org/ruby/gems/crystalball))
+First, we use the [`test_file_finder` gem](https://gitlab.com/gitlab-org/ruby/gems/test_file_finder), with dynamic mapping strategies coming from the [`Crystalball` gem](https://gitlab.com/gitlab-org/ruby/gems/crystalball)
   ([see where it's used](https://gitlab.com/gitlab-org/gitlab/-/blob/2348d57cf4710f89b96b25de0cf33a455d38325e/tooling/lib/tooling/find_tests.rb#L20), and [the mapping strategies we use in Crystalball](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/crystalball_env.rb)).
 
 In addition to `test_file_finder`, we have added several advanced mappings to detect even more tests to run:
@@ -104,7 +104,7 @@ In addition to `test_file_finder`, we have added several advanced mappings to de
 We use the [`test_file_finder` gem](https://gitlab.com/gitlab-org/ruby/gems/test_file_finder), with a static mapping maintained in the [`tests.yml` file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/tests.yml) for special cases that cannot
   be mapped via dynamic mappings ([see where it's used](https://gitlab.com/gitlab-org/gitlab/-/blob/2348d57cf4710f89b96b25de0cf33a455d38325e/tooling/lib/tooling/find_tests.rb#L17)).
 
-The [test mappings](https://gitlab.com/gitlab-org/gitlab/-/blob/master/tests.yml) contain a map of each source files to a list of test files which is dependent of the source file.
+The [test mappings](https://gitlab.com/gitlab-org/gitlab/-/blob/master/tests.yml) contain a map of each source file to a list of test files which is dependent on the source file.
 
 #### Exceptional cases
 
@@ -160,7 +160,7 @@ as the fallback on tier-2.
 #### Determining predictive Jest test files in a merge request
 
 To identify the jest tests that are likely to fail in a merge request, we pass a list of all the changed files into `jest` using the [`--findRelatedTests`](https://jestjs.io/docs/cli#--findrelatedtests-spaceseparatedlistofsourcefiles) option.
-In this mode, `jest` would resolve all the dependencies of related to the changed files, which include test files that have these files in the dependency chain.
+In this mode, `jest` would resolve all the dependencies related to the changed files, which include test files that have these files in the dependency chain.
 
 #### Exceptional cases
 
@@ -591,7 +591,7 @@ for its implementation.
 
 ##### Why do we have both the mirror project and validation project?
 
-We have separate projects for a several reasons.
+We have separate projects for several reasons:
 
 - **Security**: Previously, we had the mirror project only. However, to fully
   mitigate a [security issue](https://gitlab.com/gitlab-org/gitlab/-/issues/369898),
@@ -713,11 +713,11 @@ Our current RSpec tests parallelization setup is as follows:
    - if knapsack is doing its job, test files that are run should be listed under
      `Report specs`, not under `Leftover specs`.
 1. The `update-tests-metadata` job (which only runs on scheduled pipelines for
-   [the canonical project](https://gitlab.com/gitlab-org/gitlab) and updates the `knapsack/report-master.json` in 2 ways:
+   [the canonical project](https://gitlab.com/gitlab-org/gitlab)) updates the `knapsack/report-master.json` in 2 ways:
    1. By default, it takes all the `knapsack/rspec*.json` files and merge them all together into a single
       `knapsack/report-master.json` file that is saved as artifact.
    1. (Experimental) When the `AVERAGE_KNAPSACK_REPORT` environment variable is set to `true`, instead of merging the reports, the job will calculate the average of the test duration between `knapsack/report-master.json` and `knapsack/rspec*.json` to reduce the performance impact from potentially random factors such as spec ordering, runner hardware differences, flaky tests, etc.
-      This experimental approach is aimed to better predict the duration for each spec files to distribute load among parallel jobs more evenly so the jobs can finish around the same time.
+      This experimental approach is aimed to better predict the duration for each spec file to distribute load among parallel jobs more evenly so the jobs can finish around the same time.
 
 After that, the next pipeline uses the up-to-date `knapsack/report-master.json` file.
 
@@ -775,7 +775,7 @@ For quarantine procedures and syntax, see [Quarantining Tests](../testing_guide/
 
 ## Compatibility testing
 
-By default, we run all tests with the versions that runs on GitLab.com.
+By default, we run all tests with the versions that run on GitLab.com.
 
 Other versions (usually one back-compatible version, and one forward-compatible version) should be running in nightly scheduled pipelines.
 
@@ -790,7 +790,7 @@ See the roadmap at
 for more details.
 
 To make sure all supported Ruby versions are working, we also run our test
-suite on dedicated 2-hourly scheduled pipelines for each supported versions.
+suite on dedicated 2-hourly scheduled pipelines for each supported version.
 
 For merge requests, you can add the following labels to run the respective
 Ruby version only:

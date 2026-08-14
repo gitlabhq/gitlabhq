@@ -620,7 +620,7 @@
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
   - "doc/_index.md"
-  - "doc/api/settings.md"
+  - "doc/api/{glql,settings}.md"
 
 .siphon-tables-patterns: &siphon-tables-patterns
   - "db/siphon/tables/**/*"
@@ -647,7 +647,7 @@
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
   - "doc/_index.md"
-  - "doc/api/settings.md"
+  - "doc/api/{glql,settings}.md"
 
   # Backend patterns  - .ci-patterns
 .backend-only-patterns: &backend-only-patterns
@@ -799,7 +799,7 @@
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
   - "doc/_index.md"
-  - "doc/api/settings.md"
+  - "doc/api/{glql,settings}.md"
   # FE island changes
   - "ee/frontend_islands/{apps,packages}/**/package.json"
   - "ee/frontend_islands/{apps,packages}/**/tsconfig*.json"
@@ -836,7 +836,7 @@
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
   - "doc/_index.md"
-  - "doc/api/settings.md"
+  - "doc/api/{glql,settings}.md"
   # Backstage changes
   - "Dangerfile"
   - "danger/**/*"
@@ -882,7 +882,7 @@
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
   - "doc/_index.md"
-  - "doc/api/settings.md"
+  - "doc/api/{glql,settings}.md"
   # Backstage changes
   - "Dangerfile"
   - "danger/**/*"
@@ -966,7 +966,7 @@
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
   - "doc/_index.md"
-  - "doc/api/settings.md"
+  - "doc/api/{glql,settings}.md"
   # QA changes
   - ".dockerignore"
   - "{,jh/}qa/**/*"
@@ -1028,7 +1028,7 @@
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
   - "doc/_index.md"
-  - "doc/api/settings.md"
+  - "doc/api/{glql,settings}.md"
   # FE island changes
   - "ee/frontend_islands/{apps,packages}/**/package.json"
   - "ee/frontend_islands/{apps,packages}/**/tsconfig*.json"
@@ -1068,7 +1068,7 @@
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
   - "doc/_index.md"
-  - "doc/api/settings.md"
+  - "doc/api/{glql,settings}.md"
   # Backstage and spec changes
   - "Dangerfile"
   - "danger/**/*"

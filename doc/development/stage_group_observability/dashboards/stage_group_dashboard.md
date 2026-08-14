@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Stage group dashboard
 ---
 
-The stage group dashboard is generated dashboard that contains metrics
+The stage group dashboard is a generated dashboard that contains metrics
 for common components used by most stage groups. The dashboard is
 fully customizable and owned by the stage groups.
 
@@ -58,7 +58,7 @@ Queries, raw data, and panel JSON structure are available.
 Read more at [Grafana panel inspection](https://grafana.com/docs/grafana/latest/panels-visualizations/query-transform-data/).
 
 All the dashboards are powered by [Grafana](https://grafana.com/), a frontend for displaying metrics.
-Grafana consumes the data returned from queries to backend Prometheus data source, then presents it
+Grafana consumes the data returned from queries to a backend Prometheus data source, then presents it
 with visualizations. The stage group dashboards are built to serve the most common use cases with a
 limited set of filters and pre-built queries. Grafana provides a way to explore and visualize the
 metrics data with [Grafana Explore](https://grafana.com/docs/grafana/latest/explore/). This requires
@@ -81,7 +81,7 @@ Example debugging workflow:
    can filter by transaction type and `correlation_id` from Kibana's result item.
 
    ![Debug 3](img/stage_group_dashboards_debug_3_v14_10.png)
-1. A precise exception, including a stack trace, job arguments, and other information should now appear.
+1. A precise exception, including a stack trace, job arguments, and other information, should now appear.
 
 Happy debugging!
 
@@ -96,7 +96,7 @@ By convention, each group has a corresponding Jsonnet file. The dashboards are s
 [stage group data](https://gitlab.com/gitlab-com/www-gitlab-com/-/raw/master/data/stages.yml) every
 month.
 
-Expansion and customization are one of the key principles used when we designed this system.
+Expansion and customization are among the key principles used when we designed this system.
 To customize your group's dashboard, edit the corresponding file and follow the
 [Runbook workflow](https://gitlab.com/gitlab-com/runbooks/-/tree/master/dashboards#dashboard-source).
 The dashboard is updated after the MR is merged.

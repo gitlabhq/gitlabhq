@@ -195,7 +195,7 @@ that can tolerate some duplication.
 
 ### Preserve the latest WAL location for idempotent jobs
 
-The deduplication always take into account the latest binary replication pointer, not the first one.
+The deduplication always takes into account the latest binary replication pointer, not the first one.
 This happens because we drop the same job scheduled for the second time and the Write-Ahead Log (WAL) is lost.
 This could lead to comparing the old WAL location and reading from a stale replica.
 

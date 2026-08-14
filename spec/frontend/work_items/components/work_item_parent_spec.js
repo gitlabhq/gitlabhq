@@ -78,7 +78,7 @@ describe('WorkItemParent component', () => {
     .mockResolvedValue(mockAncestorWidgetResponse);
 
   const showDropdown = () => {
-    findSidebarDropdownWidget().vm.$emit('dropdownShown');
+    findSidebarDropdownWidget().vm.$emit('dropdown-shown');
   };
 
   const mockWorkItemConfigGetter = jest.fn().mockImplementation((workItemType) => {
@@ -357,7 +357,7 @@ describe('WorkItemParent component', () => {
         workItemTypeIds: [],
       });
 
-      findSidebarDropdownWidget().vm.$emit('searchStarted', mockText);
+      findSidebarDropdownWidget().vm.$emit('search-started', mockText);
       await waitForPromises();
 
       expect(searchedItemQueryHandler).toHaveBeenLastCalledWith({
@@ -399,7 +399,7 @@ describe('WorkItemParent component', () => {
         workItemTypeIds: [],
       });
 
-      findSidebarDropdownWidget().vm.$emit('searchStarted', input);
+      findSidebarDropdownWidget().vm.$emit('search-started', input);
       await waitForPromises();
 
       expect(workItemReferencesSuccessHandler).toHaveBeenCalledWith({
@@ -466,7 +466,7 @@ describe('WorkItemParent component', () => {
       showDropdown();
       await waitForPromises();
 
-      findSidebarDropdownWidget().vm.$emit('searchStarted', 'Objective 102');
+      findSidebarDropdownWidget().vm.$emit('search-started', 'Objective 102');
       await waitForPromises();
 
       expect(findSidebarDropdownWidget().props('listItems')).not.toContainEqual({

@@ -22,6 +22,8 @@ module Mcp
 
         WORK_ITEM_URL_PATTERN = %r{\A/?(?:groups/)?(?<path>\S*)/-/work_items/(?<id>\d+)\z}
 
+        BLOB_URL_PATTERN = %r{\A(?<project_path>.+?)/-/(?:blob|raw|blame)/(?<id>.+)\z}
+
         private
 
         def resolve_parent_from_url(url)
@@ -69,6 +71,30 @@ module Mcp
           parent_type = path.start_with?('groups/') ? :group : :project
 
           { parent_type: parent_type, parent_path: parent_path, work_item_iid: match[:id].to_i }
+        end
+
+        def parse_blob_url(url)
+          path = extract_path_from_url(url)
+          match = path.match(BLOB_URL_PATTERN)
+
+          raise ArgumentError, "Invalid file URL format. Expected: .../-/blob/<ref>/<file_path>" unless match
+
+          {
+            project_path: match[:project_path],
+            id: unescape_and_scrub_uri(match[:id]),
+            ref_type: ref_type_from_url(url)
+          }
+        end
+
+        def ref_type_from_url(url)
+          query = parse_url!(url).query
+          return if query.blank?
+
+          ::ExtractsRef::RefExtractor.ref_type(Rack::Utils.parse_nested_query(query)['ref_type'])
+        end
+
+        def unescape_and_scrub_uri(uri)
+          Addressable::URI.unescape(uri).scrub.delete("\0")
         end
 
         def extract_path_from_url(url)

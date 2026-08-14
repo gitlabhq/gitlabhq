@@ -95,8 +95,6 @@ module Users
     end
 
     def show_feature_library_shimmer?
-      return false unless Feature.enabled?(:feature_library_modal, current_user)
-
       !user_dismissed?(FEATURE_LIBRARY_SHIMMER)
     end
 

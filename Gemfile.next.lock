@@ -861,8 +861,6 @@ GEM
       mime-types
       net-http-persistent (~> 4.0)
       nokogiri (~> 1, >= 1.10.8)
-    gitlab-gkg-proto (0.87.0)
-      grpc (~> 1.0)
     gitlab-glaz (0.0.3)
       google-protobuf (~> 4.35)
       rb_sys (~> 0.9.128)
@@ -937,6 +935,8 @@ GEM
       wikicloth (= 0.8.1)
     gitlab-net-dns (0.15.0)
       logger
+    gitlab-orbit-proto (0.100.0)
+      grpc (~> 1.0)
     gitlab-rspec-metrics-exporter (0.2.0)
       logger (>= 1.4, < 2.0)
       rspec-core (>= 3.12, < 4.0)
@@ -985,15 +985,15 @@ GEM
       rspec-parameterized (>= 1.0, < 3.0)
       table_print (= 1.5.7)
       zeitwerk (>= 2, < 3)
-    gitlab_query_language (0.33.0)
+    gitlab_query_language (0.34.0)
       rb_sys (~> 0.9.91)
-    gitlab_query_language (0.33.0-aarch64-linux-gnu)
+    gitlab_query_language (0.34.0-aarch64-linux-gnu)
       rb_sys (~> 0.9.91)
-    gitlab_query_language (0.33.0-arm64-darwin)
+    gitlab_query_language (0.34.0-arm64-darwin)
       rb_sys (~> 0.9.91)
-    gitlab_query_language (0.33.0-x86_64-darwin)
+    gitlab_query_language (0.34.0-x86_64-darwin)
       rb_sys (~> 0.9.91)
-    gitlab_query_language (0.33.0-x86_64-linux-gnu)
+    gitlab_query_language (0.34.0-x86_64-linux-gnu)
       rb_sys (~> 0.9.91)
     globalid (1.1.0)
       activesupport (>= 5.0)
@@ -2527,7 +2527,6 @@ DEPENDENCIES
   gitlab-email_handler!
   gitlab-experiment (~> 2.0.0)
   gitlab-fog-azure-rm (~> 2.5.0)
-  gitlab-gkg-proto (~> 0.87.0)
   gitlab-glaz (~> 0.0.3)
   gitlab-glfm-markdown (~> 0.0.42)
   gitlab-grape-openapi (~> 0.3.0)
@@ -2541,6 +2540,7 @@ DEPENDENCIES
   gitlab-mail_room (~> 1.1.0)
   gitlab-markup (~> 2.1.0)
   gitlab-net-dns (~> 0.15.0)
+  gitlab-orbit-proto (~> 0.100.0)
   gitlab-policy-store!
   gitlab-rspec!
   gitlab-rspec-metrics-exporter (~> 0.2.0)
@@ -2557,7 +2557,7 @@ DEPENDENCIES
   gitlab_chronic_duration (~> 0.12)
   gitlab_omniauth-ldap (~> 2.3.0)
   gitlab_quality-test_tooling (~> 3.20.2)
-  gitlab_query_language (~> 0.33.0)
+  gitlab_query_language (~> 0.34.0)
   gon (~> 6.6.0)
   google-apis-androidpublisher_v3 (~> 0.92.0)
   google-apis-cloudbilling_v1 (~> 0.22.0)
@@ -3038,7 +3038,6 @@ CHECKSUMS
   gitlab-email_handler (0.1.0)
   gitlab-experiment (2.0.0) sha256=05183dee7ddad1ef183de43c2c330e57a1457f679744c19c61f637e1135d3c76
   gitlab-fog-azure-rm (2.5.0) sha256=f10fd3f6667925e4ce97cea2fa707b926320c7b7fa06978788e2f452ee7f4db0
-  gitlab-gkg-proto (0.87.0) sha256=fd4109f1d38135447718edd3391de568b87bf6e19ad4c5eb07b198f9fa8be93c
   gitlab-glaz (0.0.3) sha256=f484a1eaf28849d7c19cccf2dabc2ee045c7c9fd870af0d4974a638593634829
   gitlab-glaz (0.0.3-aarch64-linux-gnu) sha256=68f1e940294d2bfef97aad376ab151c8eaf7f821a9b467a3cf04646c577e8de9
   gitlab-glaz (0.0.3-arm64-darwin) sha256=f04aac78729dc7a98675a63ab871d574c9122ec3d31bc062be9a4d973e54a306
@@ -3060,6 +3059,7 @@ CHECKSUMS
   gitlab-mail_room (1.1.0) sha256=784847b914a6636b30264fd8a042c15e39f3473f3acd78ebd254ac0a885a5878
   gitlab-markup (2.1.0) sha256=d352c0d261191a1d354aa63bece5644ef75c663bc34276b6de63539d11adf32f
   gitlab-net-dns (0.15.0) sha256=d229aae205055b86b2ad166981257eb589ce6d6a146aa79b3ea2b1e5d9741f46
+  gitlab-orbit-proto (0.100.0) sha256=29219004efe021aec754759d7a6dec583bdb8b24b6d496e5dde7e24201a7356c
   gitlab-policy-store (0.1.0)
   gitlab-rspec (0.1.0)
   gitlab-rspec-metrics-exporter (0.2.0) sha256=9d05ee0437d30cc59d78437e795916e13746f070ea2423e88e9325e96bd09c63
@@ -3076,11 +3076,11 @@ CHECKSUMS
   gitlab_chronic_duration (0.12.0) sha256=0d766944d415b5c831f176871ee8625783fc0c5bfbef2d79a3a616f207ffc16d
   gitlab_omniauth-ldap (2.3.0) sha256=167036fe37c2711f2e1d2047260766e4c9b31ac37dfc873b101bcd4ea2a3a3b4
   gitlab_quality-test_tooling (3.20.2) sha256=2f1074fc3a1d5fc2904856cb7991227e3cf72c8ad088afaab28cad35a0f5e8b1
-  gitlab_query_language (0.33.0) sha256=76b84235a7bd6e786844173b78dc9fa1f11ccfbe08ef97f6dad1ca6928bee5a3
-  gitlab_query_language (0.33.0-aarch64-linux-gnu) sha256=5dd8e040423f07bedf62dc7f39d1c26e579b53e482cdf081f2ffbf76c74ee671
-  gitlab_query_language (0.33.0-arm64-darwin) sha256=d5036e9b7c25bd91e16af992392036e073cfd1ee5ce7f42a72154044baa95cd4
-  gitlab_query_language (0.33.0-x86_64-darwin) sha256=156c04ac7793d32213943b474f79ae6eaf2df581a3bbee07cd9a2fa8655be902
-  gitlab_query_language (0.33.0-x86_64-linux-gnu) sha256=42feed8c1eabf2a6ad912f9d094aa2a63100f778f1b381593c386fe5d35787c9
+  gitlab_query_language (0.34.0) sha256=12968b3524d826bcba8b5b01ae179d85e369639a70d5d9faceaf5a6320074125
+  gitlab_query_language (0.34.0-aarch64-linux-gnu) sha256=255505b0d96953eb2cb820ec99bdc2fff27ad8377bd862d23824ef0b89699d1b
+  gitlab_query_language (0.34.0-arm64-darwin) sha256=a96ce4984236cddd84a400eaf02bf25284631fb17668e742d69d8c919657a54c
+  gitlab_query_language (0.34.0-x86_64-darwin) sha256=5c9a806be2f6006064fba36211e6d7a30cd3be95c0e014aaf156391cbdb2a596
+  gitlab_query_language (0.34.0-x86_64-linux-gnu) sha256=300d1b18d654110b318be30516d8e8d0a225f24cccfc31e3d8124a27c95e2047
   globalid (1.1.0) sha256=b337e1746f0c8cb0a6c918234b03a1ddeb4966206ce288fbb57779f59b2d154f
   gon (6.6.0) sha256=4c0be4e4f05fc8eb5db5ac2f7d47ae28ee04826f2b153338f7fb03c0e8f6ecd1
   google-apis-androidpublisher_v3 (0.92.0) sha256=e700dea8608494ff70fd9c9ed10c3caa8323b9a15eea85098db65d1178e79035

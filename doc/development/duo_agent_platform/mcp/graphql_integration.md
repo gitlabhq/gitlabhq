@@ -52,7 +52,7 @@ integration:
 - Implementing automatic schema introspection for tool generation
 - Supporting GraphQL subscriptions (real-time updates)
 - Creating a generic GraphQL client library
-- Parallel mutation execution (GraphQL executes mutations sequentially)
+- Executing mutations in parallel (GraphQL executes mutations sequentially)
 
 ## Solution
 
@@ -602,7 +602,7 @@ to `build_variables`. Version-specific `perform_v<version>` methods follow the s
 ### Composite Tool Example
 
 Composite tools combine multiple related operations into a single, cohesive MCP tool.
-Instead of creating separate tools for each different resources, a composite
+Instead of creating separate tools for each different resource, a composite
 tool provides a unified interface with operation-specific parameters.
 
 **Important Limitation**: You can only perform one mutation operation per tool
@@ -891,5 +891,5 @@ Manual tool creation provides better control and documentation.
 ## Future Enhancements
 
 - **Multiple Mutations**: Support multiple mutation GraphQL calls. This can be implemented by calling different tools from the service class and aggregating the responses
-- **Dependent mutations**: Execute multiple graphQL calls to support dependent mutations
+- **Dependent mutations**: Execute multiple GraphQL calls to support dependent mutations
 - **Auto-Generated Tools**: Automatically generate MCP tools by introspecting GraphQL schema

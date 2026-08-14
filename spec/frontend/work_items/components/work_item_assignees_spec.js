@@ -68,11 +68,11 @@ describe('WorkItemAssignees component', () => {
   const errorHandler = jest.fn().mockRejectedValue('Houston, we have a problem');
 
   const showDropdown = () => {
-    findSidebarDropdownWidget().vm.$emit('dropdownShown');
+    findSidebarDropdownWidget().vm.$emit('dropdown-shown');
   };
 
   const hideDropdown = () => {
-    findSidebarDropdownWidget().vm.$emit('dropdownHidden');
+    findSidebarDropdownWidget().vm.$emit('dropdown-hidden');
   };
 
   const newWorkItemPath = newWorkItemFullPath(fullPath, 'task');
@@ -161,7 +161,7 @@ describe('WorkItemAssignees component', () => {
 
       await waitForPromises();
 
-      findSidebarDropdownWidget().vm.$emit('searchStarted', expectedParticipant.username);
+      findSidebarDropdownWidget().vm.$emit('search-started', expectedParticipant.username);
 
       await nextTick();
 

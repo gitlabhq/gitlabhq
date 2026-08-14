@@ -278,8 +278,8 @@ export default {
     multi-select
     clear-search-on-item-select
     data-testid="work-item-crm-contacts"
-    @dropdownShown="search"
-    @searchStarted="search"
+    @dropdown-shown="search"
+    @search-started="search"
     @updateSelected="updateCount"
     @update-value="updateItems"
   >

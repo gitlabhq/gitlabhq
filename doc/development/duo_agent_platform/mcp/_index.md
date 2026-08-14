@@ -85,11 +85,11 @@ Test the authentication from `mcp-remote` to GDK outside an AI assistant:
 ```
 
 If you switch branches, you may experience authentication issues which can include `UNABLE_TO_VERIFY_LEAF_SIGNATURE`
-errors in the logs. The untrusted certificate error in chain is specific to GDK instances that use TLS. The error is
+errors in the logs. The untrusted certificate error in the chain is specific to GDK instances that use TLS. The error is
 caused by the https client used in Node.js and the `mcp-remote` library via npx. The https client doesn't trust
 certificates signed outside a bundled certificate authorities list.
 
-If encountering authentication issues clearing your `~/.mcp-auth` directory, as a last resort, resets stored
+If you're encountering authentication issues, clearing your `~/.mcp-auth` directory, as a last resort, resets stored
 credentials for `mcp-remote`. When the AI Assistant reconnects to the MCP server, a browser window opens to prompt
 for authorization.
 
@@ -395,7 +395,7 @@ safe evolution while maintaining backward compatibility.
 
 **Version registration pattern:**
 
-For aggregated API, custom, and graphQL tools, register versions using `register_version`:
+For aggregated API, custom, and GraphQL tools, register versions using `register_version`:
 
 ```ruby
 module Mcp

@@ -108,6 +108,8 @@ module Gitlab
           instance.merge_request_url(note.noteable, anchor: dom_id(note), **options)
         elsif note.for_snippet?
           instance.gitlab_snippet_url(note.noteable, anchor: dom_id(note), **options)
+        elsif note.for_abuse_report?
+          instance.admin_abuse_report_url(note.noteable, anchor: dom_id(note), **options)
         elsif note.for_wiki_page?
           instance.project_wiki_page_url(note.noteable, anchor: dom_id(note), **options)
         end

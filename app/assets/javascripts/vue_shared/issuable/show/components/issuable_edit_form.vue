@@ -46,6 +46,7 @@ export default {
       required: true,
     },
   },
+  emits: ['keydown-title', 'keydown-description'],
   data() {
     return {
       issuableMeta: {

@@ -139,4 +139,4 @@ To evaluate your local setup, please refer to [GitLab Duo Agent Platform Tests](
 
 ### Comparing results
 
-Once you finish a evaluation and have a experiment ID from LangSmith, compare results using [this notebook](https://gitlab.com/gitlab-org/duo-workflow/testing/notebooks/-/blob/main/notebooks/compare-swe-bench-evals.ipynb?ref_type=heads) from the [GitLab Duo Agent Platform Notebooks](https://gitlab.com/gitlab-org/duo-workflow/testing/notebooks) repo.
+Once you finish an evaluation and have an experiment ID from LangSmith, compare results using [this notebook](https://gitlab.com/gitlab-org/duo-workflow/testing/notebooks/-/blob/main/notebooks/compare-swe-bench-evals.ipynb?ref_type=heads) from the [GitLab Duo Agent Platform Notebooks](https://gitlab.com/gitlab-org/duo-workflow/testing/notebooks) repo.
