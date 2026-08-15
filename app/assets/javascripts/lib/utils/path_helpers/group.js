@@ -2854,6 +2854,29 @@ export const groupObservabilityAccessRequestsPath = /*#__PURE__*/ (...args) => {
 /**
  * Generates the Rails route:
  *
+ * - href: `/groups/*group_id/-/observability/session(.:format)`
+ * - Path helper: `group_observability_session_path`
+ * - URL helper: `group_observability_session_url`
+ * - controller#action: `groups/observability/sessions#create`
+ *
+ * @param {any} groupId
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const groupObservabilitySessionPath = /*#__PURE__*/ (...args) => {
+  const _organizationGroupObservabilitySessionPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"group_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"group_id"]],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"observability"],[2,[7,"/"],[2,[6,"session"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]);
+  const _groupObservabilitySessionPath = /*#__PURE__*/ __jsr.r({"group_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"group_id"]],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"observability"],[2,[7,"/"],[2,[6,"session"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
+
+  if (hasOrganizationScopedPaths()) {
+    return _organizationGroupObservabilitySessionPath(gon.current_organization.path, ...args);
+  }
+
+  return _groupObservabilitySessionPath(...args);
+};
+
+/**
+ * Generates the Rails route:
+ *
  * - href: `/groups/*group_id/-/observability/:id`
  * - Path helper: `group_observability_path`
  * - URL helper: `group_observability_url`

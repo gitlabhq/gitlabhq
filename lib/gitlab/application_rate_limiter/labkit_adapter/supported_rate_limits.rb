@@ -423,6 +423,13 @@ module Gitlab
               period: 1.hour,
               action: :limit
             ),
+            observability_bff_session: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_observability_bff_sessions_by_user',
+              characteristics: %i[user],
+              limit: 20,
+              period: 1.minute,
+              action: :limit
+            ),
             offline_export: ::Labkit::RateLimit::Rule.new(
               name: 'limit_offline_exports_by_user',
               characteristics: %i[user],

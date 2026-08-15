@@ -11964,6 +11964,12 @@ msgstr ""
 msgid "ArtifactRegistry|Artifact Registry returned an error."
 msgstr ""
 
+msgid "ArtifactRegistry|Artifact Registry was disabled."
+msgstr ""
+
+msgid "ArtifactRegistry|Artifact Registry was enabled."
+msgstr ""
+
 msgid "ArtifactRegistry|Artifact details for %{name} loaded."
 msgstr ""
 
@@ -12078,6 +12084,9 @@ msgstr ""
 msgid "ArtifactRegistry|Description cannot be longer than %{maxLength} characters."
 msgstr ""
 
+msgid "ArtifactRegistry|Disable Artifact Registry"
+msgstr ""
+
 msgid "ArtifactRegistry|Docker"
 msgstr ""
 
@@ -12102,6 +12111,9 @@ msgid "ArtifactRegistry|Edit or clear your filters to see more repositories."
 msgstr ""
 
 msgid "ArtifactRegistry|Edit repository"
+msgstr ""
+
+msgid "ArtifactRegistry|Enable Artifact Registry"
 msgstr ""
 
 msgid "ArtifactRegistry|Enable Artifact registry"
@@ -12366,6 +12378,9 @@ msgstr ""
 msgid "ArtifactRegistry|This organization has no repositories yet."
 msgstr ""
 
+msgid "ArtifactRegistry|This will affect all projects currently using this registry."
+msgstr ""
+
 msgid "ArtifactRegistry|Type"
 msgstr ""
 
@@ -12400,6 +12415,9 @@ msgid "ArtifactRegistry|Visibility level"
 msgstr ""
 
 msgid "ArtifactRegistry|Where the registry handle appears"
+msgstr ""
+
+msgid "ArtifactRegistry|You are about to disable Artifact Registry."
 msgstr ""
 
 msgid "ArtifactRegistry|You are not authorized to grant this role on this resource."

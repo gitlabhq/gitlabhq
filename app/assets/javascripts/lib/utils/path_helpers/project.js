@@ -6428,6 +6428,31 @@ export const projectObservabilityAccessRequestsPath = /*#__PURE__*/ (projectFull
 /**
  * Generates the Rails route:
  *
+ * - href: `/:project_full_path/-/observability/session(.:format)`
+ * - Path helper: `project_observability_session_path`
+ * - URL helper: `project_observability_session_url`
+ * - controller#action: `projects/observability/sessions#create`
+ *
+ * @param {string} projectFullPath
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const projectObservabilitySessionPath = /*#__PURE__*/ (projectFullPath, ...args) => {
+  const _organizationNamespaceProjectObservabilitySessionPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"namespace_id":{"r":true},"project_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"observability"],[2,[7,"/"],[2,[6,"session"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]]]);
+  const _namespaceProjectObservabilitySessionPath = /*#__PURE__*/ __jsr.r({"namespace_id":{"r":true},"project_id":{"r":true},"format":{}}, [2,[7,"/"],[2,[5,[3,"namespace_id"]],[2,[7,"/"],[2,[3,"project_id"],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"observability"],[2,[7,"/"],[2,[6,"session"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]);
+
+  const { namespacePath, projectPath } = splitProjectFullPath(projectFullPath);
+
+  if (hasOrganizationScopedPaths()) {
+    return _organizationNamespaceProjectObservabilitySessionPath(gon.current_organization.path, namespacePath, projectPath, ...args);
+  }
+
+  return _namespaceProjectObservabilitySessionPath(namespacePath, projectPath, ...args);
+};
+
+/**
+ * Generates the Rails route:
+ *
  * - href: `/:project_full_path/-/observability/:id`
  * - Path helper: `project_observability_path`
  * - URL helper: `project_observability_url`

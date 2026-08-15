@@ -203,6 +203,9 @@ constraints(Namespaces::GroupUrlConstraint.new) do
       resource :o11y_service_settings, only: [:update, :edit, :destroy]
       resource :setup, only: [:show], controller: 'setup'
       resource :access_requests, only: [:create]
+      # Backend-for-frontend per-user SigNoz session exchange (gated by the
+      # observability_per_user_bff_auth feature flag).
+      resource :session, only: [:create], controller: 'sessions'
     end
     resources :observability, only: [:show], constraints: { id: %r{[a-zA-Z0-9._-]+} }, format: false
     get 'observability/*sub_path', to: 'observability#show', as: :observability_sub_path, format: false,

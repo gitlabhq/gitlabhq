@@ -9,6 +9,8 @@ import {
   TIMEOUTS,
   MAX_POLLING_ATTEMPTS,
   POLLING_TIMEOUT,
+  MAX_BFF_SESSION_ATTEMPTS,
+  BFF_SESSION_TIMEOUT,
   PROVISIONING_MESSAGE_INTERVAL,
 } from '../constants';
 import { buildIframeUrl } from '../utils/url_helpers';
@@ -68,6 +70,11 @@ export default {
       type: String,
       required: true,
     },
+    sessionEndpoint: {
+      type: String,
+      required: false,
+      default: null,
+    },
     queryParams: {
       type: Object,
       required: false,
@@ -85,6 +92,7 @@ export default {
       currentAuthTokens: this.authTokens || {},
       pollingCancelled: false,
       pollingAttempts: 0,
+      bffSessionAttempts: 0,
       authTokensStatus: null,
       provisioningTimedOut: false,
       currentProvisioningMessageIndex: 0,
@@ -167,7 +175,14 @@ export default {
   },
 
   mounted() {
-    if (this.needsPolling) {
+    if (this.sessionEndpoint) {
+      // The polling/initializeAuth paths below assume a shared-credential
+      // iframe login and can't carry a per-user identity, so when the
+      // backend-for-frontend flow is configured (sessionEndpoint set) we take
+      // this branch instead: GitLab mints a per-user token out-of-band and we
+      // fetch+inject it, skipping the polling/init paths entirely.
+      this.fetchBffSession();
+    } else if (this.needsPolling) {
       this.startPolling();
     } else {
       this.initializeAuth();
@@ -240,6 +255,70 @@ export default {
       }, TIMEOUTS.AUTH_TIMEOUT);
 
       window.addEventListener('message', this.handleMessage);
+    },
+
+    fetchBffSession() {
+      this.isLoading = true;
+      this.bffSessionAttempts = 0;
+
+      // Reuse the simplePoll machinery (as startPolling does) so a single
+      // transient failure on the session POST retries instead of dropping
+      // straight to the error state, and so the pollingCancelled guard
+      // prevents acting on responses after the component unmounts.
+      simplePoll(
+        (continuePolling, stopPolling) => {
+          this.requestBffSession(continuePolling, stopPolling);
+        },
+        { timeout: BFF_SESSION_TIMEOUT },
+      )
+        .then((tokens) => {
+          if (this.pollingCancelled) return;
+          this.currentAuthTokens = tokens;
+          this.initializeAuth();
+        })
+        .catch(() => {
+          if (this.pollingCancelled) return;
+          this.handleAuthError();
+        });
+    },
+
+    requestBffSession(continuePolling, stopPolling) {
+      if (this.pollingCancelled) {
+        stopPolling(new Error('CANCELLED'));
+        return;
+      }
+
+      this.bffSessionAttempts += 1;
+
+      axios
+        .post(this.sessionEndpoint)
+        .then(({ data }) => {
+          if (this.pollingCancelled) {
+            stopPolling(new Error('CANCELLED'));
+            return;
+          }
+
+          const tokens = this.transformTokens(data.auth_tokens);
+          if (tokens.accessJwt && tokens.refreshJwt) {
+            stopPolling(tokens);
+          } else if (this.bffSessionAttempts < MAX_BFF_SESSION_ATTEMPTS) {
+            continuePolling();
+          } else {
+            stopPolling(new Error('MAX_ATTEMPTS'));
+          }
+        })
+        .catch(() => {
+          if (this.pollingCancelled) {
+            stopPolling(new Error('CANCELLED'));
+            return;
+          }
+
+          if (this.bffSessionAttempts < MAX_BFF_SESSION_ATTEMPTS) {
+            continuePolling();
+          } else {
+            stopPolling(new Error('MAX_ATTEMPTS'));
+          }
+        });
     },
 
     startPolling() {

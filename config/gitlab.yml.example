@@ -1531,6 +1531,23 @@ production: &base
     #   certificate_file: /home/git/gitlab/config/topology-service-cert.pem
     #   private_key_file: /home/git/gitlab/config/topology-service-key.pem
 
+  observability:
+    # mTLS client cert/key GitLab Rails presents when POSTing per-user
+    # session-exchange requests to the SigNoz BFF endpoint
+    # (POST /api/v1/complete/gitlab/bff). This is a single shared,
+    # fleet-wide secret (not per-group), so it lives on disk rather than in
+    # an encrypted ApplicationSetting column -- rotate via the same
+    # mechanism used for secrets.yml.
+    # bff_mtls:
+    #   enabled: false
+    #   certificate_file: /home/git/gitlab/config/observability-bff-client-cert.pem
+    #   private_key_file: /home/git/gitlab/config/observability-bff-client-key.pem
+    #   # Host/port of the ALB's dedicated mTLS-verified BFF listener --
+    #   # distinct from the instance's normal o11y_service_url/port (used
+    #   # for session-context/UI calls), which is not behind this listener.
+    #   listener_host: bff.o11y.example.com
+    #   listener_port: 8443
+
   gitlab_kas:
     # enabled: true
     # File that contains the secret key for verifying access for gitlab-kas.

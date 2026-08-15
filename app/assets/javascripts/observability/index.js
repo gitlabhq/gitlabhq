@@ -25,6 +25,7 @@ export default () => {
       authTokens,
       title: dataset.title,
       pollingEndpoint: dataset.pollingEndpoint,
+      sessionEndpoint: dataset.sessionEndpoint || null,
       queryParams: JSON.parse(dataset.queryParams || '{}'),
     },
   });

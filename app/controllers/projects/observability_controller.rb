@@ -2,15 +2,8 @@
 
 module Projects
   class ObservabilityController < Projects::ApplicationController
-    include Gitlab::Utils::StrongMemoize
+    include ::Observability::ShowActions
     include Gitlab::InternalEventsTracking
-
-    before_action :authenticate_user!
-    before_action :authorize_read_observability!
-    before_action :reject_path_traversal!
-
-    feature_category :observability
-    urgency :low
 
     content_security_policy_with_context do |p|
       o11y_url = observability_setting&.o11y_service_url
@@ -29,6 +22,7 @@ module Projects
         setting_group = observability_setting.group
 
         @data = ::Observability::ObservabilityPresenter.new(setting_group, path, query_params: filtered_query_params)
+        @session_endpoint = bff_session_endpoint
 
         track_internal_event(
           'visit_project_observability_dashboard',
@@ -70,6 +64,12 @@ module Projects
       ancestors.reverse.find { |g| access_map[g.id].to_i >= Gitlab::Access::DEVELOPER }
     end
 
+    def bff_session_endpoint
+      return unless ::Feature.enabled?(:observability_per_user_bff_auth, observability_setting&.group || project.group)
+
+      project_observability_session_path(project)
+    end
+
     def authorize_read_observability!
       return render_404 unless observability_feature_enabled?
 
@@ -86,33 +86,6 @@ module Projects
       else
         ::Feature.enabled?(:observability_saas_features_user_namespace, project.root_namespace)
       end
-    end
-
-    def observability_path
-      permitted_params[:sub_path] || permitted_params[:id].to_s
-    end
-    strong_memoize_attr :observability_path
-
-    def permitted_params
-      params.permit(:id, :sub_path)
-    end
-
-    def reject_path_traversal!
-      Gitlab::PathTraversal.check_path_traversal!(observability_path)
-    rescue Gitlab::PathTraversal::PathTraversalAttackError
-      render_404
-    end
-
-    def filtered_query_params
-      raw_qs = request.query_string
-
-      return {} if raw_qs.bytesize > ::Observability::ObservabilityPresenter::QUERY_STRING_MAX_BYTES
-
-      allowed_keys = ::Observability::ObservabilityPresenter::ALLOWED_QUERY_PARAMS
-
-      request.query_parameters
-        .slice(*allowed_keys)
-        .select { |_k, v| v.is_a?(String) }
     end
   end
 end

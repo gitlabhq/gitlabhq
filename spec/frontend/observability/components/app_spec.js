@@ -1,10 +1,22 @@
 import { nextTick } from 'vue';
+import MockAdapter from 'axios-mock-adapter';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
+import {
+  HTTP_STATUS_OK,
+  HTTP_STATUS_UNAUTHORIZED,
+  HTTP_STATUS_INTERNAL_SERVER_ERROR,
+} from '~/lib/utils/http_status';
 import simplePoll from '~/lib/utils/simple_poll';
 import App from '~/observability/components/app.vue';
-import { MAX_POLLING_ATTEMPTS, POLLING_TIMEOUT, TIMEOUTS } from '~/observability/constants';
+import {
+  MAX_POLLING_ATTEMPTS,
+  POLLING_TIMEOUT,
+  MAX_BFF_SESSION_ATTEMPTS,
+  BFF_SESSION_TIMEOUT,
+  TIMEOUTS,
+} from '~/observability/constants';
 import iframeNavigator from '~/observability/iframe_navigator';
 import * as cryptoModule from '~/observability/utils/nonce';
 import { AuthManager } from '~/observability/utils/auth_manager';
@@ -56,6 +68,7 @@ const DEFAULTS = {
   TOKENS: { accessJwt: 'access-token-123', refreshJwt: 'refresh-token-456' },
   TITLE: 'Observability',
   POLLING_ENDPOINT: '/-/observability/traces-explorer.json',
+  SESSION_ENDPOINT: '/groups/my-group/-/observability/session',
 };
 
 describe('Observability App Component', () => {
@@ -372,6 +385,160 @@ describe('Observability App Component', () => {
       expectSingleAlert({
         variant: 'warning',
         text: 'The observability service is still initializing. Please try again in a few minutes.',
+      });
+    });
+  });
+
+  describe('Backend-for-frontend session flow', () => {
+    let axiosMock;
+
+    beforeEach(() => {
+      axiosMock = new MockAdapter(axios);
+    });
+
+    afterEach(() => {
+      axiosMock.restore();
+    });
+
+    const exhaustBffAttempts = async () => {
+      await Array.from({ length: MAX_BFF_SESSION_ATTEMPTS }).reduce(
+        (promise) => promise.then(() => waitForPromises()).then(() => jest.runOnlyPendingTimers()),
+        Promise.resolve(),
+      );
+      await waitForPromises();
+      await nextTick();
+    };
+
+    describe('when sessionEndpoint is set and the BFF endpoint returns tokens', () => {
+      beforeEach(async () => {
+        AuthManager.mockClear();
+        axiosMock.onPost(DEFAULTS.SESSION_ENDPOINT).reply(HTTP_STATUS_OK, {
+          auth_tokens: { access_jwt: 'bff-access', refresh_jwt: 'bff-refresh' },
+        });
+
+        await setupComponent({
+          authTokens: {},
+          sessionEndpoint: DEFAULTS.SESSION_ENDPOINT,
+        });
+        await waitForPromises();
+      });
+
+      it('fetches the BFF session endpoint instead of polling', () => {
+        expect(axiosMock.history.post).toHaveLength(1);
+        expect(axiosMock.history.post[0].url).toBe(DEFAULTS.SESSION_ENDPOINT);
+        expect(axiosMock.history.get).toHaveLength(0);
+        expect(simplePoll).toHaveBeenCalledWith(expect.any(Function), {
+          timeout: BFF_SESSION_TIMEOUT,
+        });
+      });
+
+      it('initializes auth with the returned tokens', () => {
+        expect(AuthManager).toHaveBeenCalledWith(
+          expect.any(String),
+          { accessJwt: 'bff-access', refreshJwt: 'bff-refresh' },
+          expect.any(String),
+        );
+      });
+    });
+
+    describe.each([
+      [
+        'when the BFF endpoint returns no tokens',
+        () =>
+          axiosMock
+            .onPost(DEFAULTS.SESSION_ENDPOINT)
+            .reply(HTTP_STATUS_OK, { error: 'authentication failed' }),
+      ],
+      [
+        'when the BFF request rejects',
+        () => axiosMock.onPost(DEFAULTS.SESSION_ENDPOINT).reply(HTTP_STATUS_UNAUTHORIZED),
+      ],
+    ])('%s', (_, mockAxios) => {
+      beforeEach(async () => {
+        mockAxios();
+
+        await setupComponent({
+          authTokens: {},
+          sessionEndpoint: DEFAULTS.SESSION_ENDPOINT,
+        });
+        await exhaustBffAttempts();
+      });
+
+      it('shows the error state after exhausting retries', () => {
+        expect(axiosMock.history.post).toHaveLength(MAX_BFF_SESSION_ATTEMPTS);
+        expect(wrapper.findByTestId('o11y-error-status').exists()).toBe(true);
+      });
+    });
+
+    describe('when the first request fails transiently', () => {
+      beforeEach(async () => {
+        AuthManager.mockClear();
+        axiosMock
+          .onPost(DEFAULTS.SESSION_ENDPOINT)
+          .replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR)
+          .onPost(DEFAULTS.SESSION_ENDPOINT)
+          .reply(HTTP_STATUS_OK, {
+            auth_tokens: { access_jwt: 'bff-access', refresh_jwt: 'bff-refresh' },
+          });
+
+        await setupComponent({
+          authTokens: {},
+          sessionEndpoint: DEFAULTS.SESSION_ENDPOINT,
+        });
+        await waitForPromises();
+        jest.runOnlyPendingTimers();
+        await waitForPromises();
+      });
+
+      it('retries and initializes auth on success', () => {
+        expect(axiosMock.history.post).toHaveLength(2);
+        expect(AuthManager).toHaveBeenCalledWith(
+          expect.any(String),
+          { accessJwt: 'bff-access', refreshJwt: 'bff-refresh' },
+          expect.any(String),
+        );
+        expect(wrapper.findByTestId('o11y-error-status').exists()).toBe(false);
+      });
+    });
+
+    describe('when unmounted mid-request', () => {
+      let resolveResponse;
+
+      beforeEach(async () => {
+        AuthManager.mockClear();
+        let requestStarted;
+        const requestStartedPromise = new Promise((resolve) => {
+          requestStarted = resolve;
+        });
+        axiosMock.onPost(DEFAULTS.SESSION_ENDPOINT).reply(() => {
+          requestStarted();
+          return new Promise((resolve) => {
+            resolveResponse = () =>
+              resolve([
+                HTTP_STATUS_OK,
+                { auth_tokens: { access_jwt: 'bff-access', refresh_jwt: 'bff-refresh' } },
+              ]);
+          });
+        });
+
+        await setupComponent({
+          authTokens: {},
+          sessionEndpoint: DEFAULTS.SESSION_ENDPOINT,
+        });
+        await requestStartedPromise;
+        // In the Vue 2 test environment the beforeUnmount hook does not fire
+        // on destroy(), so invoke it directly (it sets pollingCancelled and is
+        // idempotent under Vue 3, where destroy() also runs it) -- same
+        // pattern as the 'deregisters iframe navigator on destroy' spec below.
+        wrapper.vm.$options.beforeUnmount.call(wrapper.vm);
+        wrapper.destroy();
+      });
+
+      it('does not initialize auth after the response resolves', async () => {
+        resolveResponse();
+        await waitForPromises();
+
+        expect(AuthManager).not.toHaveBeenCalled();
       });
     });
   });

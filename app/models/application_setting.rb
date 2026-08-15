@@ -73,6 +73,7 @@ class ApplicationSetting < ApplicationRecord
 
   belongs_to :push_rule
   belongs_to :web_ide_oauth_application, class_name: 'Authn::OauthApplication'
+  belongs_to :o11y_oauth_application, class_name: 'Authn::OauthApplication', optional: true
 
   alias_attribute :housekeeping_optimize_repository_period, :housekeeping_incremental_repack_period
 

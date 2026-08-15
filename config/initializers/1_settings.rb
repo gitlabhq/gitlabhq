@@ -597,6 +597,25 @@ Settings.cell.topology_service_client['tls']['enabled'] = true if Settings.cell.
 Settings.cell.topology_service_client['metadata'] ||= {}
 
 #
+# Observability
+#
+# BFF (backend-for-frontend) mTLS: GitLab Rails presents this client cert/key
+# when POSTing per-user session-exchange requests to the SigNoz BFF endpoint.
+# Filesystem-based (not ApplicationSetting) since this is a single shared
+# fleet-wide secret, not per-group data. See
+# https://gitlab.com/gitlab-org/embody-team/experimental-observability/documentation/-/work_items/141
+Settings['observability'] ||= {}
+Settings.observability['bff_mtls'] ||= {}
+Settings.observability.bff_mtls['enabled'] ||= false
+Settings.observability.bff_mtls['certificate_file'] ||= nil
+Settings.observability.bff_mtls['private_key_file'] ||= nil
+# Host/port of the ALB's dedicated mTLS-verified BFF listener. This is
+# distinct from the instance's normal o11y_service_url/port (used for
+# session-context and UI calls), which is not behind the mTLS listener.
+Settings.observability.bff_mtls['listener_host'] ||= nil
+Settings.observability.bff_mtls['listener_port'] ||= nil
+
+#
 # GitLab KAS
 #
 Settings['gitlab_kas'] ||= {}

@@ -237,6 +237,41 @@ RSpec.describe '1_settings', feature_category: :settings do
     end
   end
 
+  describe 'observability configuration' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:field, :configured_value, :default_value) do
+      :enabled          | true | false
+      :certificate_file | '/test/observability-bff-client-cert.pem'    | nil
+      :private_key_file | '/test/observability-bff-client-key.pem'     | nil
+      :listener_host    | 'bff.o11y.example.com'                       | nil
+      :listener_port    | 8443                                         | nil
+    end
+
+    with_them do
+      context 'when configured' do
+        before do
+          stub_config(observability: { bff_mtls: { field => configured_value } })
+          load_settings
+        end
+
+        it 'uses the configured value' do
+          expect(Settings.observability.bff_mtls[field]).to eq(configured_value)
+        end
+      end
+
+      context 'when not configured' do
+        before do
+          load_settings
+        end
+
+        it 'falls back to the default value' do
+          expect(Settings.observability.bff_mtls[field]).to eq(default_value)
+        end
+      end
+    end
+  end
+
   describe 'Pages custom domains settings' do
     using RSpec::Parameterized::TableSyntax
 
