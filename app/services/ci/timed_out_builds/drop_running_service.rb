@@ -16,17 +16,26 @@ module Ci
       end
 
       # rubocop:disable CodeReuse/ActiveRecord -- We want to avoid misusage of this query
+      # We must write this query using a lateral join for PG18.
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/605358.
       def timed_out_builds(partition)
-        Ci::Build
-          .joins(:runtime_metadata)
+        running_builds = Ci::RunningBuild.in_partition(partition.id)
+
+        lateral = Ci::Build
+          .in_partition(partition.id)
+          .running
+          .where(Ci::Build.arel_table[:id].eq(Ci::RunningBuild.arel_table[:build_id]))
+          .where(Ci::Build.arel_table[:partition_id].eq(Ci::RunningBuild.arel_table[:partition_id]))
           .where(
             "#{Ci::RunningBuild.table_name}.created_at + " \
               "INTERVAL '1 second' * #{Ci::Build.table_name}.timeout <= ?",
             Time.current - MINUTE_BUFFER
           )
-          .where(Ci::Build.arel_table[:partition_id].eq(Ci::RunningBuild.arel_table[:partition_id]))
-          .running
-          .in_partition(partition.id)
+          .limit(1)
+
+        Ci::Build
+          .from("(#{running_builds.select(:build_id, :partition_id, :created_at).to_sql}) #{Ci::RunningBuild.table_name}")
+          .joins("JOIN LATERAL (#{lateral.to_sql}) #{Ci::Build.table_name} ON TRUE")
       end
       # rubocop:enable CodeReuse/ActiveRecord
     end
