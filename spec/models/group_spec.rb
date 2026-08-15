@@ -2016,21 +2016,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     it { expect(group.has_owner?(nil)).to be_falsey }
   end
 
-  describe '#has_maintainer?' do
-    before do
-      @members = setup_group_members(group)
-      create(:group_member, :invited, :maintainer, group: group)
-    end
-
-    it { expect(group.has_maintainer?(@members[:owner])).to be_falsey }
-    it { expect(group.has_maintainer?(@members[:maintainer])).to be_truthy }
-    it { expect(group.has_maintainer?(@members[:developer])).to be_falsey }
-    it { expect(group.has_maintainer?(@members[:reporter])).to be_falsey }
-    it { expect(group.has_maintainer?(@members[:guest])).to be_falsey }
-    it { expect(group.has_maintainer?(@members[:requester])).to be_falsey }
-    it { expect(group.has_maintainer?(nil)).to be_falsey }
-  end
-
   describe '#last_owner?' do
     before do
       @members = setup_group_members(group)

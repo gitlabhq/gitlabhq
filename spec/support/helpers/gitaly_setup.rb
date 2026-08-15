@@ -79,7 +79,9 @@ module GitalySetup
     {
       # Git hooks can't run during tests as the internal API is not running.
       'GITALY_TESTING_NO_GIT_HOOKS' => "1",
-      'GITALY_TESTING_ENABLE_ALL_FEATURE_FLAGS' => "true"
+      # This must be set to false if the MVCC feature flag should be used, because
+      # of a conditional hardcoded in Gitaly. We should make this cleaner in the future.
+      'GITALY_TESTING_ENABLE_ALL_FEATURE_FLAGS' => mvcc_repositories? ? "false" : "true"
     }
   end
 
@@ -123,17 +125,6 @@ module GitalySetup
       FileUtils.mkdir_p(GitalySetup.storage_path)
     when :gitaly2
       FileUtils.mkdir_p(GitalySetup.second_storage_path)
-    end
-
-    if gitaly_with_transactions? && !toml
-      # The configuration file with transactions is pre-generated. Here we check
-      # whether this job should actually run with transactions and choose the pre-generated
-      # configuration with transactions enabled if so.
-      #
-      # Workhorse provides its own configuration through 'toml'. If a configuration is
-      # explicitly provided, we don't override it. Workhorse test setup has its own logic
-      # to choose the configuration with transactions enabled.
-      toml = "#{config_path(service)}.transactions"
     end
 
     start(service, toml)
@@ -281,8 +272,7 @@ module GitalySetup
         options: {
           runtime_dir: runtime_dir,
           prometheus_listen_addr: 'localhost:9236',
-          config_filename: config_name(:gitaly),
-          transactions_enabled: false
+          config_filename: config_name(:gitaly)
         }
       },
       {
@@ -290,31 +280,11 @@ module GitalySetup
         options: {
           runtime_dir: runtime_dir,
           gitaly_socket: "gitaly2.socket",
-          config_filename: config_name(:gitaly2),
-          transactions_enabled: false
+          config_filename: config_name(:gitaly2)
         }
       }
     ].each do |params|
       params[:options][:logging_level] = gitaly_logging_level
-      Gitlab::SetupHelper::Gitaly.create_configuration(
-        gitaly_dir,
-        params[:storages],
-        force: true,
-        options: params[:options]
-      )
-
-      # CI generates all of the configuration files in the setup-test-env job. When we eventually get
-      # to run the rspec jobs with transactions enabled, the configuration has already been created
-      # without transactions enabled.
-      #
-      # Similarly to the Praefect configuration, generate variant of the configuration file with
-      # transactions enabled. Later when the rspec job runs, we decide whether to run Gitaly
-      # using the configuration with transactions enabled or not.
-      #
-      # These configuration files are only used in the CI.
-      params[:options][:config_filename] = "#{params[:options][:config_filename]}.transactions"
-      params[:options][:transactions_enabled] = true
-
       Gitlab::SetupHelper::Gitaly.create_configuration(
         gitaly_dir,
         params[:storages],
@@ -453,8 +423,8 @@ module GitalySetup
     Gitlab::Utils.to_boolean(ENV['GITALY_PRAEFECT_WITH_DB'], default: false)
   end
 
-  def gitaly_with_transactions?
-    Gitlab::Utils.to_boolean(ENV['GITALY_TRANSACTIONS_ENABLED'], default: false)
+  def mvcc_repositories?
+    Gitlab::Utils.to_boolean(ENV['GITALY_NEW_REPO_MVCC_BACKEND'], default: false)
   end
 
   private

@@ -1394,6 +1394,81 @@ RSpec.describe GroupsController, feature_category: :groups_and_projects do
     end
   end
 
+  describe 'POST #create_organization_from_group', :saas, feature_category: :organization do
+    # rubocop:disable Gitlab/RSpec/AvoidCreateDefaultOrganization -- Groups are only moved out of the default org
+    let_it_be(:default_organization) { create(:organization, :default) }
+    # rubocop:enable Gitlab/RSpec/AvoidCreateDefaultOrganization
+
+    let_it_be(:owner) { create(:user) }
+    let_it_be(:maintainer) { create(:user) }
+    let_it_be_with_reload(:group) { create(:group, organization: default_organization, owners: owner, maintainers: maintainer) }
+
+    subject(:make_request) { post create_organization_from_group_path(group), as: :json }
+
+    before do
+      sign_in(owner)
+    end
+
+    it 'creates an organization from the group' do
+      expect { make_request }.to change { Organizations::Organization.count }.by(1)
+
+      organization = group.reload.organization
+
+      expect(response).to have_gitlab_http_status(:created)
+      expect(json_response).to include('id' => organization.id, 'path' => organization.path)
+      expect(organization).not_to eq(default_organization)
+    end
+
+    context 'when the organization cannot be created from the group' do
+      let_it_be(:other_organization) { create(:organization) }
+      let_it_be_with_reload(:group) { create(:group, organization: other_organization) }
+      let_it_be(:owner) { create(:user, owner_of: group) }
+
+      it 'returns the service error' do
+        expect { make_request }.not_to change { Organizations::Organization.count }
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response['message']).to be_present
+      end
+    end
+
+    context 'when the release flag is disabled' do
+      before do
+        stub_feature_flags(org_stage_experimental: false)
+      end
+
+      it 'returns not found' do
+        expect { make_request }.not_to change { Organizations::Organization.count }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when the user cannot administer the group' do
+      before do
+        sign_in(maintainer)
+      end
+
+      it 'returns not found' do
+        expect { make_request }.not_to change { Organizations::Organization.count }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when the user is not signed in' do
+      before do
+        sign_out(owner)
+      end
+
+      it 'returns not found' do
+        expect { make_request }.not_to change { Organizations::Organization.count }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
   describe 'PUT #transfer' do
     context 'step-up authentication enforcement' do
       let_it_be_with_reload(:group) { create(:group) }

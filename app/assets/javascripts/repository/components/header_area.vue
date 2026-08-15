@@ -135,8 +135,7 @@ export default {
   data() {
     return {
       directoryLocked: false,
-      fileLocked: false,
-      lockAuthor: undefined,
+      lockUser: null,
     };
   },
   computed: {
@@ -160,9 +159,6 @@ export default {
     },
     fileIconName() {
       return this.isTreeView ? 'folder-open' : this.directoryName;
-    },
-    isLocked() {
-      return this.isTreeView ? this.directoryLocked : this.fileLocked;
     },
     getRefType() {
       return this.$route.query.ref_type;
@@ -265,13 +261,9 @@ export default {
       this.trackEvent(FIND_FILE_BUTTON_CLICK);
       Shortcuts.focusSearchFile();
     },
-    onLockedDirectory({ isLocked, lockAuthor }) {
+    onLockedDirectory({ isLocked, lockUser }) {
       this.directoryLocked = isLocked;
-      this.lockAuthor = lockAuthor;
-    },
-    onLockedFile({ isLocked, lockAuthor }) {
-      this.fileLocked = isLocked;
-      this.lockAuthor = lockAuthor;
+      this.lockUser = lockUser;
     },
   },
 };
@@ -337,10 +329,9 @@ export default {
           :class="{ 'gl-text-subtle': isTreeView }"
         />{{ directoryName }}
         <header-lock-icon
-          v-if="!isRoot"
-          :is-tree-view="isTreeView"
-          :is-locked="isLocked"
-          :lock-author="lockAuthor"
+          v-if="!isRoot && isTreeView"
+          :is-locked="directoryLocked"
+          :lock-user="lockUser"
         />
       </h1>
       <!-- Tree controls -->
@@ -464,7 +455,6 @@ export default {
         :project-id-as-number="projectIdAsNumber"
         :ref-type="getRefType"
         :is-binary="isBinary"
-        @locked-file="onLockedFile"
       />
     </div>
   </section>

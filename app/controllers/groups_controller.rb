@@ -24,7 +24,7 @@ class GroupsController < Groups::ApplicationController
   before_action :group, except: [:index, :new, :create]
 
   # Authorize
-  before_action :authorize_admin_group!, only: [:update, :export, :download_export]
+  before_action :authorize_admin_group!, only: [:update, :export, :download_export, :create_organization_from_group]
   before_action :authorize_change_group!, only: [:transfer]
   before_action :authorize_view_edit_page!, only: :edit
   before_action :authorize_remove_group!, only: [:destroy, :restore]
@@ -68,7 +68,8 @@ class GroupsController < Groups::ApplicationController
   feature_category :code_review_workflow, [:merge_requests]
   feature_category :importers, [:export, :download_export]
   feature_category :continuous_delivery, [:unfoldered_environment_names]
-  urgency :low, [:export, :download_export]
+  feature_category :organization, [:create_organization_from_group]
+  urgency :low, [:export, :download_export, :create_organization_from_group]
 
   urgency :high, [:unfoldered_environment_names]
 
@@ -147,6 +148,20 @@ class GroupsController < Groups::ApplicationController
 
   def edit
     @badge_api_endpoint = expose_path(api_v4_groups_badges_path(id: @group.id))
+  end
+
+  def create_organization_from_group
+    return render_404 unless Organizations::Release.enabled?(:create_org_from_group_settings, @group)
+
+    result = Organizations::CreateFromGroupService.new(group: @group, current_user: current_user).execute
+
+    if result.success?
+      organization = result.payload[:organization]
+
+      render json: Organizations::OrganizationSerializer.new.represent(organization), status: :created
+    else
+      render json: { message: Array(result.message) }, status: :unprocessable_entity
+    end
   end
 
   def update

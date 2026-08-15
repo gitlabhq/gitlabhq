@@ -275,7 +275,10 @@ Use title case for **AI Catalog**. Do not use **AI catalog** (lowercase), and do
 
 ## AI Gateway
 
-Use title case for **AI Gateway**. Do not use **AI Gateway** (lowercase), and do not hyphenate.
+Use title case for **AI Gateway**. Do not use **AI gateway** (lowercase), and do not hyphenate.
+
+Use **AI Gateway for GitLab Dedicated** to refer to the AI Gateway that runs inside a customer's GitLab Dedicated environment.
+Do not use **Dedicated-hosted AI Gateway** or **GitLab Dedicated-hosted AI Gateway**.
 
 ## AI-powered, AI-native
 

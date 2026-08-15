@@ -530,6 +530,7 @@ export default {
           :resolve-discussion="note.isDraft && note.resolve_discussion"
           :discussion-id="discussionId"
           :award-path="note.toggle_award_path"
+          :duo-session-id="note.duo_session_id"
           @handle-edit="editHandler"
           @handle-delete="deleteHandler"
           @handle-resolve="resolveHandler"

@@ -79,6 +79,37 @@ RSpec.describe Observability::GroupO11ySetting, feature_category: :observability
       end
     end
 
+    %i[o11y_otel_url o11y_mcp_url].each do |field|
+      context "for #{field}" do
+        it 'is valid when blank' do
+          group_o11y_setting[field] = nil
+          expect(group_o11y_setting).to be_valid
+
+          group_o11y_setting[field] = ''
+          expect(group_o11y_setting).to be_valid
+        end
+
+        it 'is valid with a well-formed url' do
+          group_o11y_setting[field] = 'https://override.example.com:14318'
+          expect(group_o11y_setting).to be_valid
+        end
+
+        it 'is invalid with a malformed url' do
+          group_o11y_setting[field] = 'not-a-valid-url'
+          expect(group_o11y_setting).to be_invalid
+          expect(group_o11y_setting.errors[field]).to include(
+            'is blocked: Only allowed schemes are http, https'
+          )
+        end
+
+        it 'is invalid with a url exceeding maximum length' do
+          group_o11y_setting[field] = "https://example.com/#{'a' * 256}"
+          expect(group_o11y_setting).to be_invalid
+          expect(group_o11y_setting.errors[field]).to include('is too long (maximum is 255 characters)')
+        end
+      end
+    end
+
     %i[o11y_service_password o11y_service_post_message_encryption_key].each do |field|
       context "when #{field} is too long" do
         it "is invalid with #{field} exceeding maximum length" do
@@ -273,72 +304,55 @@ RSpec.describe Observability::GroupO11ySetting, feature_category: :observability
     let(:setting) { build(:observability_group_o11y_setting, group: group) }
 
     shared_examples 'otel endpoint' do |method, scheme, port|
-      context "when on GitLab.com" do
+      context "when o11y_service_name is set" do
         before do
-          allow(Gitlab).to receive(:com?).and_return(true)
+          setting.o11y_service_name = 'my-service'
         end
 
-        context "when o11y_service_name is set" do
-          before do
-            setting.o11y_service_name = 'my-service'
-          end
-
-          it "returns the correct #{method} endpoint" do
-            expect(setting.send(method)).to eq("#{scheme}://my-service.otel.gitlab-o11y.com:#{port}")
-          end
-        end
-
-        context "when o11y_service_name is nil" do
-          before do
-            setting.o11y_service_name = nil
-            allow(setting).to receive(:name_from_url).and_return('service-from-url')
-          end
-
-          it "uses name_from_url as fallback" do
-            expect(setting.send(method)).to eq("#{scheme}://service-from-url.otel.gitlab-o11y.com:#{port}")
-          end
-        end
-
-        context "when both o11y_service_name and name_from_url are nil" do
-          before do
-            setting.o11y_service_name = nil
-            allow(setting).to receive_messages(name_from_url: nil, name_from_group: 'group-path')
-          end
-
-          it "uses name_from_group as fallback" do
-            expect(setting.send(method)).to eq("#{scheme}://group-path.otel.gitlab-o11y.com:#{port}")
-          end
-        end
-
-        context "with special characters in service name" do
-          before do
-            setting.o11y_service_name = 'my-service-with-dashes'
-          end
-
-          it "handles service names with special characters" do
-            expect(setting.send(method)).to eq("#{scheme}://my-service-with-dashes.otel.gitlab-o11y.com:#{port}")
-          end
+        it "returns the correct #{method} endpoint" do
+          expect(setting.send(method)).to eq("#{scheme}://my-service.otel.gitlab-o11y.com:#{port}")
         end
       end
 
-      context "when not on GitLab.com" do
+      context "when o11y_service_name is nil" do
         before do
-          allow(Gitlab).to receive(:com?).and_return(false)
+          setting.o11y_service_name = nil
+          allow(setting).to receive(:name_from_url).and_return('service-from-url')
         end
 
-        it "returns endpoint derived from o11y_service_url" do
-          setting.o11y_service_url = 'https://my-o11y.example.com'
-          expect(setting.send(method)).to eq("#{scheme}://my-o11y.example.com:#{port}")
+        it "uses name_from_url as fallback" do
+          expect(setting.send(method)).to eq("#{scheme}://service-from-url.otel.gitlab-o11y.com:#{port}")
+        end
+      end
+
+      context "when both o11y_service_name and name_from_url are nil" do
+        before do
+          setting.o11y_service_name = nil
+          allow(setting).to receive_messages(name_from_url: nil, name_from_group: 'group-path')
         end
 
-        it "extracts only the host from o11y_service_url with a path" do
-          setting.o11y_service_url = 'https://my-o11y.example.com/api/v1'
-          expect(setting.send(method)).to eq("#{scheme}://my-o11y.example.com:#{port}")
+        it "uses name_from_group as fallback" do
+          expect(setting.send(method)).to eq("#{scheme}://group-path.otel.gitlab-o11y.com:#{port}")
+        end
+      end
+
+      context "with special characters in service name" do
+        before do
+          setting.o11y_service_name = 'my-service-with-dashes'
         end
 
-        it "raises ArgumentError when o11y_service_url is blank" do
-          setting.o11y_service_url = nil
-          expect { setting.send(method) }.to raise_error(ArgumentError, "o11y_service_url must be present")
+        it "handles service names with special characters" do
+          expect(setting.send(method)).to eq("#{scheme}://my-service-with-dashes.otel.gitlab-o11y.com:#{port}")
+        end
+      end
+
+      context "when o11y_otel_url is overridden" do
+        before do
+          setting[:o11y_otel_url] = 'https://otel.self-hosted.example.com:9999'
+        end
+
+        it "derives the host from the override" do
+          expect(setting.send(method)).to eq("#{scheme}://otel.self-hosted.example.com:#{port}")
         end
       end
     end
@@ -351,46 +365,90 @@ RSpec.describe Observability::GroupO11ySetting, feature_category: :observability
       include_examples 'otel endpoint', :otel_grpc_endpoint, 'http', 4317
     end
 
-    describe '#otel_https_endpoint' do
-      include_examples 'otel endpoint', :otel_https_endpoint, 'https', 14318
-    end
-
     describe '#otel_grpcs_endpoint' do
       include_examples 'otel endpoint', :otel_grpcs_endpoint, 'https', 14317
     end
-  end
 
-  describe 'mcp endpoint' do
-    let(:setting) { build(:observability_group_o11y_setting, group: group) }
-
-    describe '#mcp_address' do
-      it 'returns the mcp subdomain for the service name' do
+    describe '#otel_https_endpoint' do
+      it 'returns the default https endpoint with port 14318' do
         setting.o11y_service_name = 'my-service'
 
-        expect(setting.mcp_address).to eq('my-service.mcp.gitlab-o11y.com')
+        expect(setting.otel_https_endpoint).to eq('https://my-service.otel.gitlab-o11y.com:14318')
       end
 
-      it 'falls back to name_from_url when o11y_service_name is not set explicitly' do
-        setting.o11y_service_name = nil
-        allow(setting).to receive(:name_from_url).and_return('service-from-url')
+      context 'when o11y_otel_url is overridden' do
+        it 'uses the host and port from the override' do
+          setting[:o11y_otel_url] = 'https://otel.self-hosted.example.com:9999'
 
-        expect(setting.mcp_address).to eq('service-from-url.mcp.gitlab-o11y.com')
-      end
+          expect(setting.otel_https_endpoint).to eq('https://otel.self-hosted.example.com:9999')
+        end
 
-      it 'falls back to name_from_group when o11y_service_name and name_from_url are nil' do
-        setting.o11y_service_name = nil
-        allow(setting).to receive_messages(name_from_url: nil, name_from_group: 'group-path')
+        it 'falls back to port 14318 when the override has no port' do
+          setting[:o11y_otel_url] = 'https://otel.self-hosted.example.com'
 
-        expect(setting.mcp_address).to eq('group-path.mcp.gitlab-o11y.com')
+          expect(setting.otel_https_endpoint).to eq('https://otel.self-hosted.example.com:14318')
+        end
       end
     end
+  end
 
-    describe '#mcp_endpoint' do
-      it 'returns the full mcp endpoint url' do
-        setting.o11y_service_name = 'my-service'
+  describe '#o11y_otel_url' do
+    let(:setting) { build(:observability_group_o11y_setting, group: group) }
 
-        expect(setting.mcp_endpoint).to eq('https://my-service.mcp.gitlab-o11y.com/mcp')
-      end
+    it 'returns the default otel url derived from the service name' do
+      setting.o11y_service_name = 'my-service'
+
+      expect(setting.o11y_otel_url).to eq('https://my-service.otel.gitlab-o11y.com:14318')
+    end
+
+    it 'returns the stored value when set' do
+      setting[:o11y_otel_url] = 'https://otel.self-hosted.example.com:9999'
+
+      expect(setting.o11y_otel_url).to eq('https://otel.self-hosted.example.com:9999')
+    end
+
+    it 'returns the default when the stored value is blank' do
+      setting.o11y_service_name = 'my-service'
+      setting[:o11y_otel_url] = ''
+
+      expect(setting.o11y_otel_url).to eq('https://my-service.otel.gitlab-o11y.com:14318')
+    end
+  end
+
+  describe '#o11y_mcp_url' do
+    let(:setting) { build(:observability_group_o11y_setting, group: group) }
+
+    it 'returns the default mcp url derived from the service name' do
+      setting.o11y_service_name = 'my-service'
+
+      expect(setting.o11y_mcp_url).to eq('https://my-service.mcp.gitlab-o11y.com/mcp')
+    end
+
+    it 'falls back to name_from_url when o11y_service_name is not set explicitly' do
+      setting.o11y_service_name = nil
+      allow(setting).to receive(:name_from_url).and_return('service-from-url')
+
+      expect(setting.o11y_mcp_url).to eq('https://service-from-url.mcp.gitlab-o11y.com/mcp')
+    end
+
+    it 'falls back to name_from_group when o11y_service_name and name_from_url are nil' do
+      setting.o11y_service_name = nil
+      allow(setting).to receive_messages(name_from_url: nil, name_from_group: 'group-path')
+
+      expect(setting.o11y_mcp_url).to eq('https://group-path.mcp.gitlab-o11y.com/mcp')
+    end
+
+    it 'returns the stored value when set' do
+      setting[:o11y_mcp_url] = 'https://mcp.self-hosted.example.com/mcp'
+
+      expect(setting.o11y_mcp_url).to eq('https://mcp.self-hosted.example.com/mcp')
+    end
+
+    it 'returns the default when the stored value is blank' do
+      setting.o11y_service_name = 'my-service'
+      setting[:o11y_mcp_url] = ''
+
+      expect(setting.o11y_mcp_url).to eq('https://my-service.mcp.gitlab-o11y.com/mcp')
     end
   end
 

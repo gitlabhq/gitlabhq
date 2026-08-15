@@ -194,6 +194,7 @@ group:
   - read_dora4_analytics
   - read_email_enterprise_user
   - read_enterprise_user
+  - read_govern_policy
   - read_group
   - read_group_all_available_runners
   - read_group_contribution_analytics

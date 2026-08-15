@@ -140,7 +140,7 @@
           = s_('Observability|VPN and proxy: If operating within a VPN or behind a proxy, ensure routing rules permit traffic to these external endpoints. Configure proxy settings in your OpenTelemetry SDK if required')
 
 - if Gitlab.com?
-  - mcp_endpoint = configuration_settings.mcp_endpoint
+  - mcp_endpoint = configuration_settings.o11y_mcp_url
   .gl-border-t.gl-border-subtle.gl-pt-5.gl-mb-6
     %h3.gl-heading-3.gl-mb-2
       = s_('Observability|MCP server')

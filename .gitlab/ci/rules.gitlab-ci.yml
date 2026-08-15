@@ -172,9 +172,6 @@
 .if-merge-request-labels-run-praefect-with-db: &if-merge-request-labels-run-praefect-with-db
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-praefect-with-db/'
 
-.if-merge-request-labels-run-without-gitaly-transactions: &if-merge-request-labels-run-without-gitaly-transactions
-  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /run-without-gitaly-transactions/'
-
 .if-merge-request-labels-skip-ci-validation: &if-merge-request-labels-skip-ci-validation
   if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-ci-validation/'
 
@@ -2682,17 +2679,6 @@
       allow_failure: true
     - <<: *if-merge-request-labels-run-praefect-with-db
       allow_failure: true
-
-.rails:rules:gitaly-without-transactions:
-  rules:
-    - <<: *if-schedule-maintenance
-    - <<: *if-merge-request-labels-run-without-gitaly-transactions
-
-.rails:rules:ee-only-gitaly-without-transactions:
-  rules:
-    - <<: *if-not-ee
-      when: never
-    - !reference [".rails:rules:gitaly-without-transactions", rules]
 
 .rails:rules:ee-and-foss-migration:
   rules:

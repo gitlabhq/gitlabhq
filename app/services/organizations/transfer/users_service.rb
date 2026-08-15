@@ -24,8 +24,15 @@ module Organizations
         def skipped_transfer_models
           # Kept in alphabetical order.
           [
+            # AbuseReport has three User associations (reporter, user, resolved_by), so it can never
+            # be auto-discovered. It follows its reporter, handled in #update_abuse_reports.
             "AbuseReport",
             "Ai::Catalog::ItemConsumer",
+            # AntiAbuse::Event would be auto-discovered through its only User association, the
+            # reported user. Its organization_id derives from the parent report instead, so
+            # #update_abuse_reports transfers it by abuse_report_id. Events with a NULL
+            # abuse_report_id are not moved; the only writer,
+            # AntiAbuse::SpamAbuseEventsWorker, always sets it.
             "AntiAbuse::Event",
             "Authz::AdminRole",
             "Authz::GranularScope",
@@ -133,6 +140,7 @@ module Organizations
           update_personal_snippet_notes(user_ids)
           update_clusters(user_ids)
           update_oauth_applications(user_ids)
+          update_abuse_reports(user_ids)
         end
       end
 
@@ -311,6 +319,30 @@ module Organizations
           update_organization_id_for(model_class) do |relation|
             relation.where(cluster_id: cluster_ids)
           end
+        end
+      end
+      # rubocop:enable CodeReuse/ActiveRecord
+
+      # rubocop:disable CodeReuse/ActiveRecord -- Query specific to this service
+      # Abuse reports follow their reporter, matching AntiAbuse::AbuseReport::CreateService which
+      # sets organization_id from params[:reporter].organization_id. Child rows derive their
+      # organization_id from the parent report -- see trigger_ca93521f3a6d (abuse_events) in
+      # db/structure.sql.
+      #
+      # report_ids is scoped to the old organization, so the AbuseReport update must stay last
+      # here. Same ordering contract as #update_granular_scopes.
+      def update_abuse_reports(user_ids)
+        report_ids = AbuseReport
+          .by_reporter_id(user_ids)
+          .where(organization_id: old_organization.id)
+          .select(:id)
+
+        update_organization_id_for(AntiAbuse::Event) do |relation|
+          relation.where(abuse_report_id: report_ids)
+        end
+
+        update_organization_id_for(AbuseReport) do |relation|
+          relation.by_reporter_id(user_ids)
         end
       end
       # rubocop:enable CodeReuse/ActiveRecord

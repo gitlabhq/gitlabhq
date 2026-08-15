@@ -73,7 +73,9 @@ module Groups
           :o11y_service_name,
           :o11y_service_user_email,
           :o11y_service_password,
-          :o11y_service_post_message_encryption_key
+          :o11y_service_post_message_encryption_key,
+          :o11y_otel_url,
+          :o11y_mcp_url
         )
       end
 

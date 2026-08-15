@@ -15,6 +15,7 @@ constraints(Namespaces::GroupUrlConstraint.new) do
       get :details, as: :details_group
       get :activity, as: :activity_group
       put :transfer, as: :transfer_group
+      post :create_organization_from_group, as: :create_organization_from_group
       post :export, as: :export_group
       get :download_export, as: :download_export_group
       get :unfoldered_environment_names, as: :unfoldered_environment_names_group

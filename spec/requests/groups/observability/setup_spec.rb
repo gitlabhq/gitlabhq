@@ -188,7 +188,7 @@ RSpec.describe "Groups::Observability::Setup", feature_category: :observability 
 
             aggregate_failures do
               expect(response.body).to include('MCP server')
-              expect(response.body).to include(setting.mcp_endpoint)
+              expect(response.body).to include(setting.o11y_mcp_url)
               expect(response.body).to include('MCP server documentation')
             end
           end

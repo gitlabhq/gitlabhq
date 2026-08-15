@@ -298,6 +298,7 @@ export default {
             :can-resolve="canResolve"
             :is-resolved="isResolved"
             :is-resolving="isResolving"
+            :duo-session-id="note.duo_session_id"
             @resolve="$emit('resolve')"
             @delete="onDelete"
             @start-editing="$emit('start-editing')"

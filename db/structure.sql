@@ -25556,7 +25556,11 @@ CREATE TABLE observability_group_o11y_settings (
     o11y_service_post_message_encryption_key jsonb NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
+    o11y_otel_url text,
+    o11y_mcp_url text,
     CONSTRAINT check_470a188df1 CHECK ((char_length(o11y_service_user_email) <= 255)),
+    CONSTRAINT check_4f0120e56d CHECK ((char_length(o11y_mcp_url) <= 255)),
+    CONSTRAINT check_5b6fcbe506 CHECK ((char_length(o11y_otel_url) <= 255)),
     CONSTRAINT check_9a69bf69bb CHECK ((char_length(o11y_service_url) <= 255))
 );
 

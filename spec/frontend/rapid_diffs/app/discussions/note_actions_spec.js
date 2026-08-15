@@ -8,6 +8,7 @@ import {
 } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
+import { stubComponent } from 'helpers/stub_component';
 import { mockTracking } from 'helpers/tracking_helper';
 import NoteActions from '~/rapid_diffs/app/discussions/note_actions.vue';
 import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
@@ -93,6 +94,10 @@ describe('NoteActions', () => {
       },
       stubs: {
         EmojiPicker,
+        ViewSessionButton: stubComponent({
+          name: 'ViewSessionButton',
+          props: { sessionId: { type: Number, required: true } },
+        }),
       },
     });
   };
@@ -450,6 +455,34 @@ describe('NoteActions', () => {
 
       it('does not render the feedback modal', () => {
         expect(findFeedbackModal().exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('view session button', () => {
+    const findViewSessionButton = () => wrapper.findComponent({ name: 'ViewSessionButton' });
+
+    describe('when the note has no linked session', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('does not render the view session button', () => {
+        expect(findViewSessionButton().exists()).toBe(false);
+      });
+    });
+
+    describe('when the note has a linked session', () => {
+      beforeEach(() => {
+        createComponent({ duoSessionId: 42 });
+      });
+
+      it('renders the view session button', () => {
+        expect(findViewSessionButton().exists()).toBe(true);
+      });
+
+      it('passes the session id to the view session button', () => {
+        expect(findViewSessionButton().props('sessionId')).toBe(42);
       });
     });
   });

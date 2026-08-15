@@ -440,13 +440,6 @@ describe('Blob controls component', () => {
 
       expect(findForkSuggestionModal().props('visible')).toBe(true);
     });
-
-    it('proxy locked-file event', async () => {
-      findOverflowMenu().vm.$emit('locked-file', true);
-      await nextTick();
-
-      expect(wrapper.emitted('locked-file')).toEqual([[true]]);
-    });
   });
 
   describe('Error handling', () => {

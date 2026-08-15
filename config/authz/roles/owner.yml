@@ -103,6 +103,7 @@ group:
   - change_visibility_level
   - create_approval_rule
   - create_deploy_token
+  - create_govern_policy
   - create_group_link
   - create_placeholder_reassignment
   - create_runners
@@ -111,6 +112,7 @@ group:
   - create_service_account
   - delete_approval_rule
   - delete_enterprise_user
+  - delete_govern_policy
   - delete_group_link
   - delete_secrets_manager_enrollment
   - delete_secrets_permission
@@ -145,6 +147,7 @@ group:
   - read_compliance_violations_report
   - read_email_enterprise_user
   - read_enterprise_user
+  - read_govern_policy
   - read_group_credentials_inventory
   - read_group_saml_identity
   - read_group_scim_identity
@@ -178,6 +181,7 @@ group:
   - update_default_branch_protection
   - update_enterprise_user
   - update_git_access_protocol
+  - update_govern_policy
   - update_group_link
   - update_group_member
   - update_group_organization

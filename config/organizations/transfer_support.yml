@@ -17,12 +17,12 @@
 # Owned by @gitlab-com/gl-infra/tenant-scale/organizations/backend-engineers
 # Changes to this file do NOT require a database review.
 ---
-abuse_events: todo
+abuse_events: supported
 abuse_report_events: supported
 abuse_report_upload_states: todo
 abuse_report_uploads: todo
 abuse_report_user_mentions: todo
-abuse_reports: todo
+abuse_reports: supported
 admin_roles: no_work_needed
 agent_organization_authorizations: todo
 ai_catalog_item_stars: supported

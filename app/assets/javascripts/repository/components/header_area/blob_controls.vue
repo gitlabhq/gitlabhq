@@ -52,6 +52,9 @@ export default {
     WebIdeLink: defineAsyncComponent(
       () => import('ee_else_ce/vue_shared/components/web_ide_link.vue'),
     ),
+    LockButton: defineAsyncComponent(
+      () => import('ee_component/repository/components/header_area/blob_controls_lock_button.vue'),
+    ),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -84,7 +87,6 @@ export default {
       default: false,
     },
   },
-  emits: ['locked-file'],
   apollo: {
     project: {
       query: blobControlsQuery,
@@ -268,9 +270,6 @@ export default {
         visitUrl(isIdeTarget(target) ? ideEditPath : editBlobPath);
       }
     },
-    onLockedFile(event) {
-      this.$emit('locked-file', event);
-    },
   },
 };
 </script>
@@ -280,6 +279,7 @@ export default {
     data-testid="blob-controls"
   >
     <open-mr-badge :project-path="projectPath" :blob-path="filePath" :current-ref="currentRef" />
+    <lock-button v-if="blobInfo.path" :project-path="projectPath" :path="blobInfo.path" />
     <gl-button
       v-gl-tooltip.html="findFileTooltip"
       :title="findFileTooltip"
@@ -350,7 +350,6 @@ export default {
       :is-using-lfs="isUsingLfs"
       @copy="onCopy"
       @show-fork-suggestion="onShowForkSuggestion"
-      @locked-file="onLockedFile"
     />
   </div>
 </template>

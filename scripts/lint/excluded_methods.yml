@@ -25,6 +25,8 @@ app/models/concerns/transactions.rb:
   - reset_open_transactions_baseline: Used in spec_helper.rb to configure transaction behavior
 app/models/event.rb:
   - find_sti_class: Override of an ActiveRecord internal method
+app/models/observability/group_o11y_setting.rb:
+  - read_attribute_for_validation: Override of an ActiveModel internal method called by validators
 app/models/jira_import_state.rb:
   - owner_class_attribute_default: Used internally by state_machine
 app/models/merge_request_diff.rb:

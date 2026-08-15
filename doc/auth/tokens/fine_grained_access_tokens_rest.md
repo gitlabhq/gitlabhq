@@ -80,7 +80,7 @@ Grants the ability to create and read dependency list exports.
 
 #### Policy Store Policy
 
-Grants the ability to create, delete, and read policies in the policy store.
+Grants the ability to create, delete, read, and update policies in the policy store.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
@@ -88,6 +88,7 @@ Grants the ability to create, delete, and read policies in the policy store.
 | Delete | Instance | `DELETE` | `/organizations/:id/security/policy_store/:policy_id` |
 | Read | Instance | `GET` | `/organizations/:id/security/policy_store` |
 | Read | Instance | `GET` | `/organizations/:id/security/policy_store/:policy_id` |
+| Update | Instance | `PATCH` | `/organizations/:id/security/policy_store/:policy_id` |
 
 #### SBOM Occurrence
 

@@ -170,6 +170,29 @@ export const transferGroupPath = /*#__PURE__*/ (...args) => {
 /**
  * Generates the Rails route:
  *
+ * - href: `/groups/*id/-/create_organization_from_group(.:format)`
+ * - Path helper: `create_organization_from_group_path`
+ * - URL helper: `create_organization_from_group_url`
+ * - controller#action: `groups#create_organization_from_group`
+ *
+ * @param {any} id
+ * @param {object | undefined} options
+ * @returns {string} route path
+ */
+export const createOrganizationFromGroupPath = /*#__PURE__*/ (...args) => {
+  const _organizationCreateOrganizationFromGroupPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"id"]],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"create_organization_from_group"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]]]]);
+  const _createOrganizationFromGroupPath = /*#__PURE__*/ __jsr.r({"id":{"r":true},"format":{}}, [2,[7,"/"],[2,[6,"groups"],[2,[7,"/"],[2,[5,[3,"id"]],[2,[7,"/"],[2,[6,"-"],[2,[7,"/"],[2,[6,"create_organization_from_group"],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]);
+
+  if (hasOrganizationScopedPaths()) {
+    return _organizationCreateOrganizationFromGroupPath(gon.current_organization.path, ...args);
+  }
+
+  return _createOrganizationFromGroupPath(...args);
+};
+
+/**
+ * Generates the Rails route:
+ *
  * - href: `/groups/*id/-/export(.:format)`
  * - Path helper: `export_group_path`
  * - URL helper: `export_group_url`

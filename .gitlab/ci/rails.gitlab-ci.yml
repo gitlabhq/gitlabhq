@@ -29,9 +29,7 @@ setup-test-env:
     paths:
       - ${TMP_TEST_FOLDER}/gitaly/_build/bin/
       - ${TMP_TEST_FOLDER}/gitaly/config.toml
-      - ${TMP_TEST_FOLDER}/gitaly/config.toml.transactions
       - ${TMP_TEST_FOLDER}/gitaly/gitaly2.config.toml
-      - ${TMP_TEST_FOLDER}/gitaly/gitaly2.config.toml.transactions
       - ${TMP_TEST_FOLDER}/gitaly/internal/
       - ${TMP_TEST_FOLDER}/gitaly/Makefile
       - ${TMP_TEST_FOLDER}/gitaly/praefect.config.toml
@@ -290,60 +288,62 @@ rspec system pg17 praefect:
     - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
     - !reference [".rails:rules:praefect-with-db", rules]
 
-# Test jobs that run without Gitaly's transactions enabled. These will be removed once
-# transactions are always in use in Gitaly.
-rspec migration pg17 no_gitaly_transactions:
+# Variants of Gitaly jobs where repositories will be created with the MVCC backend enabled.
+rspec migration pg17 gitaly-mvcc:
   extends:
     - rspec migration pg17
-    - .gitaly-without-transactions
+    - .gitaly-mvcc
 
-rspec background_migration pg17 no_gitaly_transactions:
+rspec background_migration pg17 gitaly-mvcc:
   extends:
     - rspec background_migration pg17
-    - .gitaly-without-transactions
+    - .gitaly-mvcc
 
-rspec unit pg17 no_gitaly_transactions:
+rspec unit pg17 gitaly-mvcc:
   extends:
     - rspec unit pg17
-    - .gitaly-without-transactions
+    - .gitaly-mvcc
 
-rspec integration pg17 no_gitaly_transactions:
+rspec integration pg17 gitaly-mvcc:
   extends:
     - rspec integration pg17
-    - .gitaly-without-transactions
+    - .gitaly-mvcc
 
-rspec system pg17 no_gitaly_transactions:
+rspec system pg17 gitaly-mvcc:
   extends:
     - rspec system pg17
-    - .gitaly-without-transactions
-    - .rails:rules:only-run-system-if-medium-runners-available
-
-rspec-ee migration pg17 no_gitaly_transactions:
-  extends:
-    - rspec-ee migration pg17
-    - .ee-only-gitaly-without-transactions
-
-rspec-ee background_migration pg17 no_gitaly_transactions:
-  extends:
-    - rspec-ee background_migration pg17
-    - .ee-only-gitaly-without-transactions
-
-rspec-ee unit pg17 no_gitaly_transactions:
-  extends:
-    - rspec-ee unit pg17
-    - .ee-only-gitaly-without-transactions
-
-rspec-ee integration pg17 no_gitaly_transactions:
-  extends:
-    - rspec-ee integration pg17
-    - .ee-only-gitaly-without-transactions
-
-rspec-ee system pg17 no_gitaly_transactions:
-  extends:
-    - rspec-ee system pg17
-    - .ee-only-gitaly-without-transactions
+    - .gitaly-mvcc
   rules:
     - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
+    - !reference [".rails:rules:ee-and-foss-system", rules]
+
+rspec-ee migration pg17 gitaly-mvcc:
+  extends:
+    - rspec-ee migration pg17
+    - .gitaly-mvcc
+
+rspec-ee background_migration pg17 gitaly-mvcc:
+  extends:
+    - rspec-ee background_migration pg17
+    - .gitaly-mvcc
+
+rspec-ee unit pg17 gitaly-mvcc:
+  extends:
+    - rspec-ee unit pg17
+    - .gitaly-mvcc
+
+rspec-ee integration pg17 gitaly-mvcc:
+  extends:
+    - rspec-ee integration pg17
+    - .gitaly-mvcc
+
+rspec-ee system pg17 gitaly-mvcc:
+  extends:
+    - rspec-ee system pg17
+    - .gitaly-mvcc
+  rules:
+    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
+    - !reference [".rails:rules:ee-only-system", rules]
 
 rspec fast_spec_helper:
   extends:

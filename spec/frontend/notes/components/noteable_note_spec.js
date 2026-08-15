@@ -324,6 +324,16 @@ describe('issue_note', () => {
       expect(noteActionsProps.resolvedBy).toEqual({});
     });
 
+    describe('when the note is linked to a Duo Agent Platform session', () => {
+      beforeEach(() => {
+        createWrapper({ note: { ...note, duo_session_id: 42 } });
+      });
+
+      it('passes the session id to the note actions', () => {
+        expect(wrapper.findComponent(NoteActions).props('duoSessionId')).toBe(42);
+      });
+    });
+
     it('should render issue body', () => {
       expect(findNoteBody().props().note).toMatchObject(note);
       expect(findNoteBody().props().line).toBe(null);

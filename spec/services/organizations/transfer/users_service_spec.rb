@@ -641,6 +641,48 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
       end
     end
 
+    context 'with abuse report transfers' do
+      let_it_be_with_refind(:user1) { create(:user, organization: old_organization) }
+      let_it_be_with_refind(:non_group_user) { create(:user, organization: old_organization) }
+
+      before_all do
+        group.add_developer(user1)
+      end
+
+      it 'updates organization_id for abuse reports filed by transferred users' do
+        abuse_report = create(:abuse_report, reporter: user1, organization: old_organization)
+
+        service.execute
+
+        expect(abuse_report.reload.organization_id).to eq(new_organization.id)
+      end
+
+      it 'updates organization_id for abuse events belonging to transferred reports' do
+        abuse_report = create(:abuse_report, reporter: user1, organization: old_organization)
+        abuse_event = create(:abuse_event, abuse_report: abuse_report, organization: old_organization)
+
+        service.execute
+
+        expect(abuse_event.reload.organization_id).to eq(new_organization.id)
+      end
+
+      it 'does not update abuse reports filed by users not in the group' do
+        non_group_report = create(:abuse_report, reporter: non_group_user, organization: old_organization)
+        non_group_event = create(:abuse_event, abuse_report: non_group_report, organization: old_organization)
+
+        expect { service.execute }
+          .to not_change { non_group_report.reload.organization_id }
+          .and not_change { non_group_event.reload.organization_id }
+      end
+
+      it 'does not update abuse reports where a transferred user is the reported user' do
+        reported_report = create(:abuse_report,
+          reporter: non_group_user, user: user1, organization: old_organization)
+
+        expect { service.execute }.not_to change { reported_report.reload.organization_id }
+      end
+    end
+
     context 'with associated organization_id updates', :aggregate_failures do
       let_it_be_with_refind(:user1) { create(:user, organization: old_organization) }
       let_it_be_with_refind(:user2) { create(:user, organization: old_organization) }

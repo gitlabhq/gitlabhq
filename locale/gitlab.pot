@@ -29004,6 +29004,9 @@ msgstr ""
 msgid "Directory locked"
 msgstr ""
 
+msgid "Directory locked by %{name}"
+msgstr ""
+
 msgid "Directory name"
 msgstr ""
 
@@ -35144,9 +35147,6 @@ msgid "File hooks are similar to system hooks but are executed as files instead 
 msgstr ""
 
 msgid "File is too big (%{fileSize}MiB). Max filesize: %{maxFileSize}MiB."
-msgstr ""
-
-msgid "File locked"
 msgstr ""
 
 msgid "File mode changed from %{a_mode} to %{b_mode}"
@@ -53367,6 +53367,9 @@ msgstr ""
 msgid "Observability|Logs"
 msgstr ""
 
+msgid "Observability|MCP URL override"
+msgstr ""
+
 msgid "Observability|MCP endpoint"
 msgstr ""
 
@@ -53463,6 +53466,9 @@ msgstr ""
 msgid "Observability|O11y service settings already exist"
 msgstr ""
 
+msgid "Observability|OTel URL override"
+msgstr ""
+
 msgid "Observability|Observability"
 msgstr ""
 
@@ -53512,6 +53518,12 @@ msgid "Observability|OpenTelemetry native"
 msgstr ""
 
 msgid "Observability|OpenTelemetry workflow started"
+msgstr ""
+
+msgid "Observability|Optional. Overrides the default MCP endpoint."
+msgstr ""
+
+msgid "Observability|Optional. Overrides the default OTel endpoint for exported telemetry."
 msgstr ""
 
 msgid "Observability|Password for authentication with the o11y service."

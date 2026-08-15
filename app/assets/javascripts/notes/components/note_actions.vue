@@ -47,6 +47,9 @@ export default {
     ReplyButton,
     TimelineEventButton,
     UserAccessRoleBadge,
+    ViewSessionButton: defineAsyncComponent(
+      () => import('ee_component/ai/shared/widgets/view_session_button.vue'),
+    ),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -160,6 +163,11 @@ export default {
       type: String,
       required: false,
       default: '',
+    },
+    duoSessionId: {
+      type: Number,
+      required: false,
+      default: null,
     },
   },
   emits: ['handle-delete', 'handle-edit', 'handle-resolve', 'start-replying', 'update-assignees'],
@@ -381,6 +389,11 @@ export default {
       {{ __('Contributor') }}
     </user-access-role-badge>
     <span class="note-actions__mobile-spacer"></span>
+    <view-session-button
+      v-if="duoSessionId"
+      :session-id="duoSessionId"
+      class="note-action-button"
+    />
     <gl-button
       v-if="canResolve"
       ref="resolveButton"

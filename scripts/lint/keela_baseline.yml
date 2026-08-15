@@ -414,8 +414,6 @@ methods:
   - update_available?
   app/models/concerns/ci/metadatable.rb:
   - degenerate!
-  app/models/concerns/forced_email_confirmation.rb:
-  - confirmation_period_expired?
   app/models/concerns/has_check_constraints.rb:
   - clear_constraints_cache!
   app/models/concerns/integrations/base/harbor.rb:
@@ -453,7 +451,6 @@ methods:
   app/models/group.rb:
   - get_ids_by_ids_or_paths
   - blocked_owners
-  - has_maintainer?
   - hierarchy_members_with_inactive
   app/models/import/source_user_placeholder_reference.rb:
   - aliased_composite_key

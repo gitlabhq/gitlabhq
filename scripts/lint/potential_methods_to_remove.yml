@@ -123,7 +123,6 @@ app/models/concerns/user_mention_behaviour.rb:
 app/models/group.rb:
   - get_ids_by_ids_or_paths
   - blocked_owners
-  - has_maintainer?
   - hierarchy_members_with_inactive
 app/models/import/source_user_placeholder_reference.rb:
   - aliased_composite_key

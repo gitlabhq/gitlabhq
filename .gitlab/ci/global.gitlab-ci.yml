@@ -435,9 +435,7 @@
   paths:
     - ${GLCI_CACHED_SERVICES_FOLDER}/gitaly/_build/bin/
     - ${GLCI_CACHED_SERVICES_FOLDER}/gitaly/config.toml
-    - ${GLCI_CACHED_SERVICES_FOLDER}/gitaly/config.toml.transactions
     - ${GLCI_CACHED_SERVICES_FOLDER}/gitaly/gitaly2.config.toml
-    - ${GLCI_CACHED_SERVICES_FOLDER}/gitaly/gitaly2.config.toml.transactions
     - ${GLCI_CACHED_SERVICES_FOLDER}/gitaly/internal/
     - ${GLCI_CACHED_SERVICES_FOLDER}/gitaly/Makefile
     - ${GLCI_CACHED_SERVICES_FOLDER}/gitaly/praefect.config.toml

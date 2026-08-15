@@ -128,6 +128,14 @@ describe('NoteableNote', () => {
     });
   });
 
+  describe('when the note is linked to a Duo Agent Platform session', () => {
+    it('passes the session id to the note actions', () => {
+      createComponent({ note: createNote({ duo_session_id: 42 }) });
+
+      expect(findNoteActions().props('duoSessionId')).toBe(42);
+    });
+  });
+
   it('shows note body with correct props', () => {
     createComponent({ autosaveKey: 'autosave-key', restoreFromAutosave: true, isFirstNote: true });
     expect(findNoteBody().props()).toMatchObject({

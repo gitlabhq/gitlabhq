@@ -38,6 +38,9 @@ export default {
     DuoChatFeedbackModal: defineAsyncComponent(
       () => import('ee_component/ai/components/duo_chat_feedback_modal.vue'),
     ),
+    ViewSessionButton: defineAsyncComponent(
+      () => import('ee_component/ai/shared/widgets/view_session_button.vue'),
+    ),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -125,6 +128,11 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    duoSessionId: {
+      type: Number,
+      required: false,
+      default: null,
     },
   },
   emits: ['award', 'delete', 'resolve', 'start-editing', 'start-replying'],
@@ -228,6 +236,7 @@ export default {
       {{ __('Contributor') }}
     </user-access-role-badge>
     <span class="@max-sm/discussion:gl-flex-1"></span>
+    <view-session-button v-if="duoSessionId" :session-id="duoSessionId" />
     <gl-button
       v-if="canResolve"
       v-gl-tooltip

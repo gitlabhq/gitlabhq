@@ -68,6 +68,10 @@ describe('noteActions', () => {
       pinia,
       propsData,
       stubs: {
+        ViewSessionButton: stubComponent({
+          name: 'ViewSessionButton',
+          props: { sessionId: { type: Number, required: true } },
+        }),
         GlDisclosureDropdown: stubComponent(GlDisclosureDropdown, {
           methods: {
             close: mockCloseDropdown,
@@ -735,6 +739,34 @@ describe('noteActions', () => {
         await nextTick();
 
         expect(findAbuseCategorySelector().exists()).toEqual(false);
+      });
+    });
+  });
+
+  describe('view session button', () => {
+    const findViewSessionButton = () => wrapper.findComponent({ name: 'ViewSessionButton' });
+
+    describe('when the note has no linked session', () => {
+      beforeEach(() => {
+        wrapper = mountNoteActions(props);
+      });
+
+      it('does not render the view session button', () => {
+        expect(findViewSessionButton().exists()).toBe(false);
+      });
+    });
+
+    describe('when the note has a linked session', () => {
+      beforeEach(() => {
+        wrapper = mountNoteActions({ ...props, duoSessionId: 42 });
+      });
+
+      it('renders the view session button', () => {
+        expect(findViewSessionButton().exists()).toBe(true);
+      });
+
+      it('passes the session id to the view session button', () => {
+        expect(findViewSessionButton().props('sessionId')).toBe(42);
       });
     });
   });

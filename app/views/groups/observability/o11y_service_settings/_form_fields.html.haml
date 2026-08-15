@@ -23,3 +23,16 @@
     = f.password_field :o11y_service_post_message_encryption_key, class: 'form-control', placeholder: '••••••••'
     %span.form-text.gl-text-subtle
       = s_('Observability|32+ character encryption key for secure communication.')
+
+.row
+  .form-group.gl-col-md-6
+    = f.label :o11y_otel_url, s_('Observability|OTel URL override'), class: 'label-bold'
+    = f.text_field :o11y_otel_url, class: 'form-control', placeholder: 'https://otel.example.com:14318', value: f.object.read_attribute(:o11y_otel_url)
+    %span.form-text.gl-text-subtle
+      = s_('Observability|Optional. Overrides the default OTel endpoint for exported telemetry.')
+
+  .form-group.gl-col-md-6
+    = f.label :o11y_mcp_url, s_('Observability|MCP URL override'), class: 'label-bold'
+    = f.text_field :o11y_mcp_url, class: 'form-control', placeholder: 'https://mcp.example.com/mcp', value: f.object.read_attribute(:o11y_mcp_url)
+    %span.form-text.gl-text-subtle
+      = s_('Observability|Optional. Overrides the default MCP endpoint.')

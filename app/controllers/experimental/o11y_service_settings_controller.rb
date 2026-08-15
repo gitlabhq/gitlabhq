@@ -113,12 +113,12 @@ module Experimental
 
     def o11y_service_settings_params
       params.require(:observability_group_o11y_setting).permit(:group_id, :o11y_service_name, :o11y_service_user_email,
-        :o11y_service_password, :o11y_service_post_message_encryption_key)
+        :o11y_service_password, :o11y_service_post_message_encryption_key, :o11y_otel_url, :o11y_mcp_url)
     end
 
     def o11y_service_settings_update_params
       params.require(:observability_group_o11y_setting).permit(:o11y_service_name, :o11y_service_user_email,
-        :o11y_service_password, :o11y_service_post_message_encryption_key)
+        :o11y_service_password, :o11y_service_post_message_encryption_key, :o11y_otel_url, :o11y_mcp_url)
     end
 
     def search_params
