@@ -36,8 +36,13 @@ module Gitlab
 
       # Returns the known operation from the given ::GraphQL::Query object
       def from_query(query)
-        operation_name = query.selected_operation_name
+        from_operation_name(query.selected_operation_name)
+      end
 
+      # Returns the known operation matching the given operation name, or
+      # UNKNOWN when the name is blank or not in the allowlist. Callers can use
+      # this to avoid putting arbitrary client-supplied names into caller_id.
+      def from_operation_name(operation_name)
         return UNKNOWN unless operation_name
 
         @operation_hash[operation_name] || UNKNOWN

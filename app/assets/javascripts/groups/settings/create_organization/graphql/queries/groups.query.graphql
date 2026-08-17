@@ -12,6 +12,7 @@ query groups(
   defaultOrganization: organization(id: $defaultOrganizationGid) {
     id
     name
+    path
     avatarUrl
     visibility
     groups(topLevelOnly: true, ownedOnly: true, not: { ids: [$groupGid] }) {

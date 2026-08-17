@@ -89,6 +89,7 @@ class GraphqlController < ApplicationController
 
   before_action :authorize_access_api!
   before_action(only: [:execute]) { check_dpop! }
+  before_action :set_graphql_caller_id, only: [:execute]
   before_action :set_user_last_activity
   before_action :track_vs_code_usage
   before_action :track_jetbrains_usage
@@ -266,6 +267,26 @@ class GraphqlController < ApplicationController
     operations.any? { |op| op.operation_type == "mutation" }
   rescue GraphQL::ParseError
     true
+  end
+
+  # Append the operation name to caller_id, e.g. "GraphqlController#execute:getProjects"
+  # instead of "GraphqlController#execute". This runs before execution so the operation
+  # is the active caller_id for anything that reads ApplicationContext during the query,
+  # including Gitaly calls.
+  #
+  # We only trust operation names in the KnownOperations allowlist. The client supplies
+  # operationName, so using it verbatim would let arbitrary values into caller_id, which
+  # is a Prometheus label (endpoint_id) and is forwarded to Gitaly. Multiplex requests
+  # have no single operation, so they keep the base caller_id.
+  def set_graphql_caller_id
+    return unless Feature.enabled?(:graphql_caller_id_with_operation_name, Feature.current_request)
+    return if multiplex?
+
+    operation = ::Gitlab::Graphql::KnownOperations.default.from_operation_name(permitted_params[:operationName])
+    return if operation == ::Gitlab::Graphql::KnownOperations::UNKNOWN
+
+    caller_id = "#{self.class.endpoint_id_for_action(:execute)}:#{operation.name}"
+    Gitlab::ApplicationContext.push(caller_id: caller_id)
   end
 
   # Tests may mark some GraphQL queries as exempt from SQL query limits

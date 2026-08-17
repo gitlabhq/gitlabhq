@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 19.2.4 (2026-08-14)
+
+No changes.
+
+## 19.2.3 (2026-08-13)
+
+### Security (2 changes)
+
+- [Prevent query swapping with multiplexed queries and gl-introduced](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d2ea4b971a985ae7c6ec83502a6bb57bb5a0cde8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6570))
+- [Prevent calling object method when resolving fallback field](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e283c6adeb3d7c69967c830d85bb6d47004660f5) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6565))
+
 ## 19.2.2 (2026-08-11)
 
 ### Fixed (10 changes)
@@ -983,6 +994,17 @@ entry.
 - [Refactor wiki page model tests to improve factory performance](https://gitlab.com/gitlab-org/gitlab/-/commit/dc699f120c26c632556b3b0b9280ec3244f2fc5a) by @gerardo-navarro ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218029))
 - [Remove unused method EE::ProjectsHelper#paid_duo_tier_for_project](https://gitlab.com/gitlab-org/gitlab/-/commit/1a0c188555670d73d5114f0421ede6b25387ccd1) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/240524))
 - [Drop `push_rule_id` column from `namespaces` table](https://gitlab.com/gitlab-org/gitlab/-/commit/0cf896e7157b152614205d5979e7cfee40ce83cb) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/238105))
+
+## 19.1.6 (2026-08-14)
+
+No changes.
+
+## 19.1.5 (2026-08-13)
+
+### Security (2 changes)
+
+- [Prevent query swapping with multiplexed queries and gl-introduced](https://gitlab.com/gitlab-org/security/gitlab/-/commit/710f7dba77091c39abde2bd2bc2a5ff20f9ea290) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6571))
+- [Prevent calling object method when resolving fallback field](https://gitlab.com/gitlab-org/security/gitlab/-/commit/df6f3085fa47f99397e1d86fdeff3967e7afcc77) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6566))
 
 ## 19.1.4 (2026-08-12)
 
@@ -2080,6 +2102,17 @@ entry.
 - [Remove ai_catalog_items_priority_order feature flag](https://gitlab.com/gitlab-org/gitlab/-/commit/3c719be1afd1506f038e8d715d6ef7154c2854ba) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236530)) **GitLab Enterprise Edition**
 - [Quarantine flaky expose_job_artifacts_in_mr_spec.rb](https://gitlab.com/gitlab-org/gitlab/-/commit/0131444c50a0135906c1d13ccba129c5d8c695e7) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/233934))
 - [Fix non-auto-correctable Style/NumberedParameters offenses](https://gitlab.com/gitlab-org/gitlab/-/commit/9a3ba532c9715bcdfd07fd54cf434c7fcd256229) by @JonstonChan ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227367))
+
+## 19.0.8 (2026-08-14)
+
+No changes.
+
+## 19.0.7 (2026-08-13)
+
+### Security (2 changes)
+
+- [Prevent query swapping with multiplexed queries and gl-introduced](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3121b998c8f39285a71481e7a46f853364185c95) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6572))
+- [Prevent calling object method when resolving fallback field](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2bd1fa9c203ac158781f017bc7dac458af349382) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6567))
 
 ## 19.0.6 (2026-08-12)
 
@@ -3247,6 +3280,17 @@ entry.
 - [Sync translations from crowdin (2026-04-09)](https://gitlab.com/gitlab-org/gitlab/-/commit/c6534667f1d65993acc2cda1c1270faef72114ea) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230657))
 - [Fix non-auto-correctable Naming/HeredocDelimiterNaming offenses](https://gitlab.com/gitlab-org/gitlab/-/commit/4eae66671a6afc78181cb1f0e0690e0ab3ed55cb) by @JonstonChan ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/230057))
 - [Fix non-auto-correctable API/DescriptionSummary offenses](https://gitlab.com/gitlab-org/gitlab/-/commit/b3eaf6e2b0537ed21ff2332896b45a760a0a9142) by @JonstonChan ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224288))
+
+## 18.11.11 (2026-08-14)
+
+No changes.
+
+## 18.11.10 (2026-08-13)
+
+### Security (2 changes)
+
+- [Prevent query swapping with multiplexed queries and gl-introduced](https://gitlab.com/gitlab-org/security/gitlab/-/commit/74c41971b698e6efcea3fd7fa56129afd692c60a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6573))
+- [Prevent calling object method when resolving fallback field](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2bc74d338de9399ea5d04a20bc6abad15596ffe6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/6574))
 
 ## 18.11.9 (2026-08-06)
 

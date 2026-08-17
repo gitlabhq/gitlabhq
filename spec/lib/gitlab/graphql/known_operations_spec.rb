@@ -41,6 +41,23 @@ RSpec.describe Gitlab::Graphql::KnownOperations, feature_category: :api do
     end
   end
 
+  describe "#from_operation_name" do
+    where(:operation_name, :expected) do
+      nil     | described_class::UNKNOWN
+      ""      | described_class::UNKNOWN
+      "fuzzy" | described_class::UNKNOWN
+      "foo"   | described_class::Operation.new("foo",
+        { "feature_category" => "source_code_management", "urgency" => "low" }
+      )
+    end
+
+    with_them do
+      it "returns the known operation matching the name" do
+        expect(subject.from_operation_name(operation_name)).to eq(expected)
+      end
+    end
+  end
+
   describe "#operations" do
     it "returns array of known operations" do
       expect(subject.operations.map(&:name)).to match_array(%w[unknown foo bar baz high_urgency_op])

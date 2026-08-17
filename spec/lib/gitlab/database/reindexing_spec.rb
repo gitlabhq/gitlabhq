@@ -125,15 +125,6 @@ RSpec.describe Gitlab::Database::Reindexing, feature_category: :database, time_t
         described_class.invoke
       end
     end
-
-    it 'drops the tmp deployments foreign key after reindexing every database' do
-      expect(described_class).to receive(:automatic_reindexing).ordered.exactly(databases_count).times
-      expect_next_instance_of(Gitlab::Database::DropTmpDeploymentsProjectIdFk) do |instance|
-        expect(instance).to receive(:execute).ordered
-      end
-
-      described_class.invoke
-    end
   end
 
   describe '.automatic_reindexing' do

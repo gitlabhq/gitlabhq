@@ -60,6 +60,12 @@ describe('OrganizationReconciliationModal', () => {
     });
   };
 
+  const createComponentAndLoad = async (options = {}) => {
+    createComponent({ ...options, props: { visible: true, ...options.props } });
+
+    await waitForPromises();
+  };
+
   afterEach(() => {
     mockApollo = null;
   });
@@ -108,8 +114,8 @@ describe('OrganizationReconciliationModal', () => {
         expect(successHandler).not.toHaveBeenCalled();
       });
 
-      it('passes empty array when organizations have not loaded', () => {
-        expect(findStep1().props('organizations')).toEqual([]);
+      it('does not render a step component when organizations have not loaded', () => {
+        expect(findStep1().exists()).toBe(false);
       });
     });
 
@@ -134,9 +140,7 @@ describe('OrganizationReconciliationModal', () => {
 
       describe('when loaded', () => {
         beforeEach(async () => {
-          createComponent({ props: { visible: true } });
-
-          await waitForPromises();
+          await createComponentAndLoad();
         });
 
         it('fetches the group and the default organization, excluding the group', () => {
@@ -156,7 +160,7 @@ describe('OrganizationReconciliationModal', () => {
         });
 
         it('passes the organization to be created to step component', () => {
-          expect(findStep1().props('organizations')).toEqual([mockNewOrganization]);
+          expect(findStep1().props('organization')).toEqual(mockNewOrganization);
         });
 
         it('does not refetch when modal is closed and reopened', async () => {
@@ -173,12 +177,7 @@ describe('OrganizationReconciliationModal', () => {
       const error = new Error();
 
       beforeEach(async () => {
-        createComponent({
-          props: { visible: true },
-          handler: jest.fn().mockRejectedValue(error),
-        });
-
-        await waitForPromises();
+        await createComponentAndLoad({ handler: jest.fn().mockRejectedValue(error) });
       });
 
       it('calls createAlert', () => {
@@ -188,12 +187,17 @@ describe('OrganizationReconciliationModal', () => {
           captureError: true,
         });
       });
+
+      it('does not render a step component', () => {
+        expect(findSkeletonLoader().exists()).toBe(false);
+        expect(findStep1().exists()).toBe(false);
+      });
     });
   });
 
   describe('footer buttons', () => {
-    beforeEach(() => {
-      createComponent();
+    beforeEach(async () => {
+      await createComponentAndLoad();
     });
 
     it('renders prev and next buttons', () => {
@@ -231,8 +235,8 @@ describe('OrganizationReconciliationModal', () => {
       },
     ];
     describe('step 1', () => {
-      beforeEach(() => {
-        createComponent();
+      beforeEach(async () => {
+        await createComponentAndLoad();
       });
 
       it('renders step 1 component', () => {
@@ -260,9 +264,7 @@ describe('OrganizationReconciliationModal', () => {
 
     describe('step 2', () => {
       beforeEach(async () => {
-        createComponent({ props: { visible: true } });
-
-        await waitForPromises();
+        await createComponentAndLoad();
 
         findNextButton().vm.$emit('click');
         await nextTick();
@@ -321,7 +323,7 @@ describe('OrganizationReconciliationModal', () => {
 
     describe('step 3', () => {
       beforeEach(async () => {
-        createComponent();
+        await createComponentAndLoad();
 
         findNextButton().vm.$emit('click');
         await nextTick();
@@ -357,44 +359,32 @@ describe('OrganizationReconciliationModal', () => {
       });
     });
 
-    describe('default organization exclusion', () => {
+    describe('step component props', () => {
       beforeEach(async () => {
-        createComponent({ props: { visible: true } });
-
-        await waitForPromises();
+        await createComponentAndLoad();
       });
 
-      it('excludes default organization from step 1', () => {
-        const step1Orgs = findStep1().props('organizations');
-
-        expect(step1Orgs).not.toEqual(
-          expect.arrayContaining([expect.objectContaining({ id: mockDefaultOrganization.id })]),
-        );
+      it('passes organization prop to step 1', () => {
+        expect(findStep1().props('organization')).toEqual(mockNewOrganization);
       });
 
-      it('includes default organization in step 2', async () => {
+      it('organizations prop to step 2', async () => {
         findNextButton().vm.$emit('click');
         await nextTick();
 
-        const step2Orgs = findStep2().props('organizations');
-
-        expect(step2Orgs).toEqual(
+        expect(findStep2().props('organizations')).toEqual(
           expect.arrayContaining([expect.objectContaining({ id: mockDefaultOrganization.id })]),
         );
       });
 
-      it('excludes default organization from step 3', async () => {
+      it('passes organization prop to step 3', async () => {
         findNextButton().vm.$emit('click');
         await nextTick();
 
         findNextButton().vm.$emit('click');
         await nextTick();
 
-        const step3Orgs = findStep3().props('organizations');
-
-        expect(step3Orgs).not.toEqual(
-          expect.arrayContaining([expect.objectContaining({ id: mockDefaultOrganization.id })]),
-        );
+        expect(findStep3().props('organization')).toEqual(mockNewOrganization);
       });
     });
 
@@ -404,8 +394,7 @@ describe('OrganizationReconciliationModal', () => {
       );
 
       beforeEach(async () => {
-        createComponent({ props: { visible: true } });
-        await waitForPromises();
+        await createComponentAndLoad();
 
         findNextButton().vm.$emit('click');
         await nextTick();

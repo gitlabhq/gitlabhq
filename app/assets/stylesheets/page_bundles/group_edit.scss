@@ -9,6 +9,12 @@
   margin-top: -4rem;
 }
 
+.organizations-reconciliation-step-3-attributes-list {
+  > :last-child {
+    border: 0;
+  }
+}
+
 // This class is added to the body when dragging an element.
 // We cannot add `cursor` to the ghost element because it needs `pointer-events: none` which do not work together.
 // The workaround is to set the `cursor` on all elements when dragging an element.

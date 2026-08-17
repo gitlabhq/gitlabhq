@@ -2,7 +2,6 @@
 import { GlButton, GlModal, GlSprintf } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import { createAlert } from '~/alert';
-import { isDefaultOrganization } from '~/organizations/shared/utils';
 import { DEFAULT_ORGANIZATION_GID } from '~/organizations/shared/constants';
 import groupsQuery from '../graphql/queries/groups.query.graphql';
 import { NEW_ORGANIZATION_GID } from '../constants';
@@ -73,6 +72,7 @@ export default {
           {
             id: NEW_ORGANIZATION_GID,
             name: group.fullName,
+            path: group.path,
             visibility: group.visibility,
             avatarUrl: group.avatarUrl,
             groups: {
@@ -88,18 +88,11 @@ export default {
     },
   },
   computed: {
+    organization() {
+      return this.organizations[0];
+    },
     loading() {
       return this.$apollo.queries.organizations.loading;
-    },
-    organizationsWithoutDefault() {
-      return this.organizations.filter((org) => !isDefaultOrganization(org));
-    },
-    stepOrganizations() {
-      if (this.currentStep === 2) {
-        return this.organizations;
-      }
-
-      return this.organizationsWithoutDefault;
     },
     stepComponent() {
       return this.$options.stepComponents[this.currentStep - 1];
@@ -157,7 +150,7 @@ export default {
     @change="updateModalVisibility($event)"
   >
     <skeleton-loader v-if="loading" />
-    <template v-if="!loading">
+    <template v-if="!loading && organization">
       <div class="gl-text-center gl-font-bold">
         <gl-sprintf :message="$options.i18n.stepProgress">
           <template #currentStep>{{ currentStep }}</template>
@@ -166,7 +159,8 @@ export default {
       </div>
       <component
         :is="stepComponent"
-        :organizations="stepOrganizations"
+        :organizations="organizations"
+        :organization="organization"
         :initial-default-org-group-ids="initialDefaultOrgGroupIds"
         @update="onUpdate"
       />

@@ -10,7 +10,7 @@ RSpec.describe Mcp::Tools::Manager, feature_category: :ai_agents do
       'get_mcp_server_version' => Mcp::Tools::GetServerVersionService
     }
     stub_const("#{described_class}::CUSTOM_TOOLS", custom_tools)
-    stub_const("::EE::#{described_class}::CUSTOM_TOOLS", {})
+    stub_const("::EE::#{described_class}::EE_CUSTOM_TOOLS", {})
 
     # Stub the GRAPHQL_TOOLS with GraphQL tools
     graphql_tools = {

@@ -122,6 +122,60 @@ RSpec.describe GraphqlController, feature_category: :api do
         expect(::Gitlab::ApplicationContext.current_context_attribute(:feature_category)).to eq('web_ide')
       end
 
+      context 'with caller_id context' do
+        subject(:caller_id_context) { Gitlab::ApplicationContext.current_context_attribute(:caller_id) }
+
+        let(:query) do
+          <<~GQL
+            query getProjects {
+              projects { nodes { id } }
+            }
+          GQL
+        end
+
+        before do
+          Gitlab::ApplicationContext.push({ caller_id: 'GraphqlController#execute' })
+          allow(Gitlab::Graphql::KnownOperations).to receive(:default)
+            .and_return(Gitlab::Graphql::KnownOperations.new({ 'getProjects' => {} }))
+        end
+
+        it 'appends the operation name to caller_id when it is a known operation' do
+          post :execute, params: { query: query, operationName: 'getProjects' }
+
+          expect(caller_id_context).to eq('GraphqlController#execute:getProjects')
+        end
+
+        it 'keeps the base caller_id for an unknown operation' do
+          post :execute, params: { query: '{ __typename }', operationName: 'somethingArbitrary' }
+
+          expect(caller_id_context).to eq('GraphqlController#execute')
+        end
+
+        it 'keeps the base caller_id when no operation name is present' do
+          post :execute, params: { query: '{ __typename }' }
+
+          expect(caller_id_context).to eq('GraphqlController#execute')
+        end
+
+        it 'keeps the base caller_id for a multiplex request' do
+          post :execute, params: { _json: [{ query: query, operationName: 'getProjects' }] }
+
+          expect(caller_id_context).to eq('GraphqlController#execute')
+        end
+
+        context 'when graphql_caller_id_with_operation_name feature flag is disabled' do
+          before do
+            stub_feature_flags(graphql_caller_id_with_operation_name: false)
+          end
+
+          it 'keeps the base caller_id even for a known operation' do
+            post :execute, params: { query: query, operationName: 'getProjects' }
+
+            expect(caller_id_context).to eq('GraphqlController#execute')
+          end
+        end
+      end
+
       it 'returns 200 when user can access API' do
         post :execute
 

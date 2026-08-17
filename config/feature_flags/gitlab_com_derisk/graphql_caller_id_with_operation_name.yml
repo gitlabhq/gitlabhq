@@ -1,0 +1,10 @@
+---
+name: graphql_caller_id_with_operation_name
+description: Append the GraphQL operation name to caller_id
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/614721
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250311
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/584351
+milestone: '19.4'
+group: group::organizations
+type: gitlab_com_derisk
+default_enabled: false

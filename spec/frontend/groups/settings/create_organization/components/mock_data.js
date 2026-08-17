@@ -12,6 +12,7 @@ export const {
 export const mockNewOrganization = {
   id: NEW_ORGANIZATION_GID,
   name: mockGroup.fullName,
+  path: mockGroup.path,
   visibility: mockGroup.visibility,
   avatarUrl: mockGroup.avatarUrl,
   groups: { nodes: [mockGroup] },

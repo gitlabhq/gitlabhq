@@ -20,6 +20,7 @@ export default {
     Draggable,
     GlSprintf,
   },
+  inheritAttrs: false,
   props: {
     organizations: {
       type: Array,

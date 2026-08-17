@@ -5,7 +5,7 @@ import BaseStep from '~/groups/settings/create_organization/components/steps/bas
 import OrganizationCard from '~/groups/settings/create_organization/components/organization_card.vue';
 import OrganizationGroupStats from '~/groups/settings/create_organization/components/organization_group_stats.vue';
 import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
-import { mockOrganizations } from '../mock_data';
+import { mockNewOrganization } from '../mock_data';
 
 describe('ReconciliationStep1', () => {
   let wrapper;
@@ -13,7 +13,7 @@ describe('ReconciliationStep1', () => {
   const createComponent = ({ props = {} } = {}) => {
     wrapper = shallowMountExtended(Step1, {
       propsData: {
-        organizations: mockOrganizations,
+        organization: mockNewOrganization,
         ...props,
       },
       stubs: {
@@ -51,16 +51,13 @@ describe('ReconciliationStep1', () => {
       expect(findHelpPageLink().text()).toBe('Learn how Organizations work');
     });
 
-    it('renders an organization card for each organization', () => {
-      expect(findOrganizationCards()).toHaveLength(mockOrganizations.length);
+    it('renders a single organization card for the organization to be created', () => {
+      expect(findOrganizationCards()).toHaveLength(1);
+      expect(findOrganizationCards().at(0).props('organization')).toEqual(mockNewOrganization);
     });
 
-    it('passes organization prop to organization card', () => {
-      expect(findOrganizationCards().at(0).props('organization')).toEqual(mockOrganizations[0]);
-    });
-
-    it('renders group stats for each group in each organization', () => {
-      const groups = mockOrganizations.flatMap((organization) => organization.groups.nodes);
+    it('renders group stats for each group in the organization', () => {
+      const groups = mockNewOrganization.groups.nodes;
 
       expect(findAllGroupStats()).toHaveLength(groups.length);
       expect(findAllGroupStats().at(0).props('group')).toEqual(groups[0]);

@@ -278,11 +278,11 @@
       opacity: 0;
     }
 
-    // The shadows are inset by --scrollbar-width so they don't paint over
-    // always-visible scrollbars. With overlay scrollbars it computes to 0px.
     &::before {
-      inset-block: 0 var(--scrollbar-width, 0);
-      inset-inline-end: var(--scrollbar-width, 0);
+      // Scrollbar width can vary depending on the OS settings for visible scrollbar.
+      // This means that we cannot use --scrollbar-width to position the shadow, as it will be different for each user.
+      inset-block: 0 0;
+      inset-inline-end: 0;
       width: 16px;
       background: linear-gradient(to left, var(--gl-shadow-color-default), transparent);
       animation: gl-table-shadow-overlay-x $gl-easing-out-cubic;
@@ -290,8 +290,10 @@
     }
 
     &::after {
-      inset-inline: 0 var(--scrollbar-width, 0);
-      inset-block-end: var(--scrollbar-width, 0);
+      // Scrollbar width can vary depending on the OS settings for visible scrollbar.
+      // This means that we cannot use --scrollbar-width to position the shadow, as it will be different for each user.
+      inset-inline: 0 0;
+      inset-block-end: 0;
       height: 16px;
       background: linear-gradient(to top, var(--gl-shadow-color-default), transparent);
       animation: gl-table-shadow-overlay-y $gl-easing-out-cubic;

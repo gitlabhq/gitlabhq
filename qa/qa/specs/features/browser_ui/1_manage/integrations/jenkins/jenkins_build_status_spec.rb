@@ -17,7 +17,7 @@ module QA
       let(:jenkins_project_name) { "gitlab_jenkins_#{SecureRandom.hex(5)}" }
       let(:connection_name) { 'gitlab-connection' }
       let(:user) { create(:user, &:create_personal_access_token!) }
-      let(:project) { create(:project, :with_readme, api_client: user.api_client) }
+      let(:project) { create(:project, api_client: user.api_client) }
       let(:access_token) { user.personal_access_token.token }
 
       before do
@@ -32,13 +32,15 @@ module QA
       end
 
       after do
+        # Runs on a pass as well as a failure. A passing run shows whether Jenkins folded two
+        # webhooks into one build, which is what lets the outcome be compared across runs.
+        # The `after` hook removes the container, so this is the last chance to read the state.
+        dump_jenkins_state
         jenkins_server&.remove!
         toggle_local_requests(false)
       end
 
-      it 'integrates and displays build status for MR pipeline in GitLab',
-        quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/43780',
-                      type: 'flaky' } do
+      it 'integrates and displays build status for MR pipeline in GitLab' do
         setup_project_integration
 
         jenkins_integration = nil
@@ -51,19 +53,59 @@ module QA
 
         job = create_jenkins_job
 
+        # The project starts empty, so nothing can push before this point. A push here gives
+        # Jenkins a second webhook, and Jenkins can fold it into the build under test.
+        pre_push_sha = branch_tip_sha
+
+        expect(pre_push_sha).to be_nil,
+          "The repository already held commit #{pre_push_sha} before the push. A second Jenkins " \
+            'webhook is possible, and the build under test can hold the wrong commit.'
+
         commit = create(:commit, project: project, api_client: user.api_client, actions: [
           { action: 'create', file_path: 'test_file.txt', content: 'content' }
         ])
 
-        Support::Waiter.wait_until(max_duration: 60, raise_on_failure: false, reload_page: false) do
-          job.status == :success
+        pushed_sha = commit.api_response[:id]
+
+        Runtime::Logger.info("Pre-push branch tip: #{pre_push_sha}. Pushed commit: #{pushed_sha}.")
+
+        # Select the build by the commit that it checked out, and not by the build number. The
+        # push above is the only push, so one build is expected. Any further webhook produces a
+        # separate build, because the job allows concurrent builds, and this selection ignores it.
+        build_id = nil
+        build_found = Support::Waiter.wait_until(
+          max_duration: 120, sleep_interval: 2, reload_page: false,
+          raise_on_failure: false, retry_on_exception: true
+        ) do
+          build_id = job.build_number_for_revision(pushed_sha)
+          !build_id.nil?
         end
 
-        expect(job.status).to eql(:success), "Build failed or is not found: #{job.log}"
+        expect(build_found).to be_truthy,
+          "No Jenkins build checked out the pushed commit #{pushed_sha} within 120s. The push " \
+            'did not reach Jenkins, or Jenkins built a different commit.'
+
+        # getResult can hold a value while post-build steps still run, so isBuilding is the only
+        # check that the result is final.
+        build_finished = Support::Waiter.wait_until(
+          max_duration: 120, sleep_interval: 2, reload_page: false,
+          raise_on_failure: false, retry_on_exception: true
+        ) do
+          job.build_running?(build_id) == false
+        end
+
+        expect(build_finished).to be_truthy,
+          "Jenkins build ##{build_id} did not report as finished within 120s. It is still " \
+            'building, the build was not found, or the Jenkins API is unreachable.'
+
+        # A lambda keeps the log request out of a run that passes. Ruby evaluates a String
+        # argument before `expect` runs, and RSpec calls a callable message only on a failure.
+        expect(job.build_status(build_id)).to eql(:success),
+          -> { "Build ##{build_id} failed or is not found: #{job.build_log(build_id)}" }
 
         statuses_url = Runtime::API::Request.new(
           user.api_client,
-          "/projects/#{project.id}/repository/commits/#{commit.api_response[:id]}/statuses"
+          "/projects/#{project.id}/repository/commits/#{pushed_sha}/statuses"
         ).url
 
         jenkins_status_received = Support::Waiter.wait_until(
@@ -79,8 +121,14 @@ module QA
           next false unless response.code == Support::API::HTTP_STATUS_OK
 
           statuses = Support::API.parse_body(response)
-          statuses.is_a?(Array) && statuses.any? { |status| status[:name] == 'jenkins' && status[:status] == 'success' }
+
+          statuses.is_a?(Array) &&
+            statuses.any? { |status| status[:name] == 'jenkins' && status[:status] == 'success' }
         end
+
+        # The poll accepts only a `success` status. On a timeout, log every status that the
+        # pushed commit holds, so the log shows whether a `pending` or a `failed` status arrived.
+        dump_commit_statuses(pushed_sha) unless jenkins_status_received
 
         expect(jenkins_status_received).to be_truthy,
           "Jenkins reported build success but no 'success' commit status reached GitLab within 60s"
@@ -89,6 +137,9 @@ module QA
 
         project.visit!
 
+        # A commit status creates a pipeline for the commit that it names. The repository holds
+        # one commit, which the assertion above enforces, so the project holds one pipeline and
+        # the latest one is the pipeline under test.
         Flow::Pipeline.visit_latest_pipeline
 
         Page::Project::Pipeline::Show.perform do |show|
@@ -97,6 +148,57 @@ module QA
       end
 
       private
+
+      # Log the job's builds (number, result, causes, revision) and the Jenkins queue. The line
+      # carries the example outcome, so a set of runs shows whether a folded build (two
+      # GitLabWebHookCause entries) and a failure occur together.
+      # Must run before the container is removed, otherwise the evidence is gone.
+      def dump_jenkins_state
+        outcome = RSpec.current_example&.exception ? 'failed' : 'passed'
+
+        Runtime::Logger.info("Jenkins state (example #{outcome}): #{jenkins_client.state_dump(jenkins_project_name)}")
+      rescue StandardError => e
+        Runtime::Logger.warn("Could not read the Jenkins state: #{e.class}: #{e.message}")
+      end
+
+      # The tip of the project's default branch.
+      #
+      # @return [String, nil] the SHA, or nil if the request fails
+      def branch_tip_sha
+        response = Support::API.get(Runtime::API::Request.new(
+          user.api_client, "/projects/#{project.id}/repository/commits", per_page: '1'
+        ).url)
+
+        # An empty repository and a failed request both give nil. The response code separates
+        # them, so log it. Narrow this to the code that an empty repository returns once a run
+        # has shown which code that is.
+        unless response.code == Support::API::HTTP_STATUS_OK
+          Runtime::Logger.info(
+            "Could not list the commits (#{response.code}). The repository is empty, or the read failed."
+          )
+          return
+        end
+
+        Support::API.parse_body(response).first&.dig(:id)
+      rescue StandardError => e
+        Runtime::Logger.warn("Could not read the branch tip: #{e.class}: #{e.message}")
+        nil
+      end
+
+      # Log every commit status that GitLab holds for one commit. The poll accepts only a
+      # `success` status, so it reports nothing about a `pending` or a `failed` status. This
+      # shows which states did arrive.
+      #
+      # @param sha [String] the commit to read
+      def dump_commit_statuses(sha)
+        response = Support::API.get(Runtime::API::Request.new(
+          user.api_client, "/projects/#{project.id}/repository/commits/#{sha}/statuses"
+        ).url)
+
+        Runtime::Logger.info("Commit statuses for #{sha} (#{response.code}): #{response.body}")
+      rescue StandardError => e
+        Runtime::Logger.warn("Could not read the commit statuses: #{e.class}: #{e.message}")
+      end
 
       def setup_project_integration
         patched_jenkins_url = patch_host_name(jenkins_server.host_address, 'jenkins-server')
@@ -112,7 +214,9 @@ module QA
           username: jenkins_server.username,
           password: jenkins_server.password,
           push_events: true,
-          merge_requests_events: true
+          # The spec opens no merge request, and the Jenkins job sets `triggerOnMergeRequest`
+          # to false. A merge request event would only add webhook traffic.
+          merge_requests_events: false
         })
 
         unless put_response.code == Support::API::HTTP_STATUS_OK
@@ -150,6 +254,10 @@ module QA
       end
 
       def configure_gitlab_jenkins
+        # Without a root URL Jenkins sends `unconfigured-jenkins-location` to GitLab in every
+        # commit status target_url.
+        jenkins_client.configure_jenkins_location(patch_host_name(jenkins_server.host_address, 'jenkins-server'))
+
         jenkins_client.configure_gitlab_plugin(
           patch_host_name(Runtime::Scenario.gitlab_address, 'gitlab'),
           connection_name: connection_name,

@@ -140369,7 +140369,7 @@
             },
             {
               "name": "webUrl",
-              "description": "URL of the object.",
+              "description": "URL of the session.",
               "args": [],
               "type": {
                 "kind": "SCALAR",

@@ -39,11 +39,6 @@ module Gitlab
 
           automatic_reindexing
         end
-
-        # Temporary: the weekend maintenance window is the only time this lock is
-        # obtainable. Remove once the FK is gone from .com. See
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/609534
-        DropTmpDeploymentsProjectIdFk.new.execute
       rescue StandardError => e
         Gitlab::AppLogger.error(e)
         raise

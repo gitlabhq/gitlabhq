@@ -78,3 +78,40 @@ in that process. Scripts and tools can read `AI_AGENT` to detect that they are r
 AI-driven execution.
 
 For a complete list of environment variables, see the GitLab Duo CLI complete reference.
+
+## Terminal progress signals
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/releases/v8.79.0) in GitLab Duo CLI 8.79.0, during the GitLab 18.11 release.
+
+{{< /history >}}
+
+In both interactive and headless modes, the GitLab Duo CLI reports its status
+by writing Operating System Command (OSC) `9;4` progress escape sequences to
+`/dev/tty`. Terminals that support this sequence display a progress indicator
+on the tab or window that runs the GitLab Duo CLI. Terminal multiplexers and
+status tools can parse the same sequences to detect the GitLab Duo CLI state.
+
+The GitLab Duo CLI writes each signal as `ESC ] <sequence> ESC \` where `<sequence>` is one of:
+
+| Sequence   | State         | Description                                       |
+|------------|---------------|---------------------------------------------------|
+| `9;4;3`    | Indeterminate | The GitLab Duo CLI is processing a request.       |
+| `9;4;4;50` | Paused        | A tool call is waiting for your approval.         |
+| `9;4;0`    | Clear         | The GitLab Duo CLI is idle and waiting for input. |
+| `9;4;2`    | Error         | The last request ended with an error.             |
+
+The GitLab Duo CLI writes these signals only when its standard output is
+attached to a terminal and the `/dev/tty` device is available. Because the
+signals go to `/dev/tty` instead of standard output, they do not appear in
+redirected or captured output. When the GitLab Duo CLI exits, it clears the
+progress state.
+
+When the GitLab Duo CLI runs in a `tmux` session, it wraps the sequences in the
+`tmux` passthrough escape sequence. In `tmux` 3.3 and later, the sequences
+reach the outer terminal only if you turn on the `allow-passthrough` option.
+
+The GitLab Duo CLI can also send
+[system notifications](use.md#system-notifications) when a session needs your
+attention.

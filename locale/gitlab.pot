@@ -32414,9 +32414,6 @@ msgstr ""
 msgid "Enable access to the performance bar for non-administrators in a given group."
 msgstr ""
 
-msgid "Enable add-on"
-msgstr ""
-
 msgid "Enable and disable Service Desk. Some additional configuration might be required. %{link_start}Learn more%{link_end}."
 msgstr ""
 
@@ -55690,6 +55687,11 @@ msgstr ""
 msgid "Organizations API rate limits"
 msgstr ""
 
+msgid "Organization|%d top-level group"
+msgid_plural "Organization|%d top-level groups"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Organization|%{linkStart}Organizations%{linkEnd} are a top-level container to hold your groups and projects."
 msgstr ""
 
@@ -55712,6 +55714,9 @@ msgid "Organization|Accessible by any signed in user except external users."
 msgstr ""
 
 msgid "Organization|Accessible without any authentication."
+msgstr ""
+
+msgid "Organization|After confirmation, you cannot:"
 msgstr ""
 
 msgid "Organization|After you confirm your organization structure, your data will be transferred to your organization."
@@ -55795,7 +55800,13 @@ msgstr ""
 msgid "Organization|Current organization"
 msgstr ""
 
+msgid "Organization|Delete the organization"
+msgstr ""
+
 msgid "Organization|Drop groups here"
+msgstr ""
+
+msgid "Organization|Editable later from your Organization page"
 msgstr ""
 
 msgid "Organization|Get started with organizations"
@@ -55856,6 +55867,9 @@ msgid "Organization|Organization URL is too short (minimum is 2 characters)."
 msgstr ""
 
 msgid "Organization|Organization URL successfully changed."
+msgstr ""
+
+msgid "Organization|Organization administrators"
 msgstr ""
 
 msgid "Organization|Organization avatar"
@@ -55952,6 +55966,9 @@ msgstr ""
 msgid "Organization|Recently updated projects"
 msgstr ""
 
+msgid "Organization|Remove or add top-level groups. Contact support if you must make changes."
+msgstr ""
+
 msgid "Organization|Search for an organization"
 msgstr ""
 
@@ -55973,6 +55990,12 @@ msgstr ""
 msgid "Organization|The visibility of this group will be changed to private because the Organization is private."
 msgstr ""
 
+msgid "Organization|Top-level groups"
+msgstr ""
+
+msgid "Organization|URL"
+msgstr ""
+
 msgid "Organization|Unable to fetch organizations. Reload the page to try again."
 msgstr ""
 
@@ -55989,6 +56012,9 @@ msgid "Organization|Visibility levels that are more restrictive than the groups 
 msgstr ""
 
 msgid "Organization|Welcome to %{organizationName}"
+msgstr ""
+
+msgid "Organization|You are confirming:"
 msgstr ""
 
 msgid "Organization|You can now start using your new organization."
@@ -69216,6 +69242,9 @@ msgstr ""
 msgid "SecretsManager|Add secret"
 msgstr ""
 
+msgid "SecretsManager|After the trial period, GitLab Secrets Manager consumes GitLab credits to store and fetch secrets. Enable on-demand billing to avoid a service interruption when the trial ends."
+msgstr ""
+
 msgid "SecretsManager|Allow GitLab Secrets Manager to be used in groups and projects."
 msgstr ""
 
@@ -69249,6 +69278,9 @@ msgstr ""
 msgid "SecretsManager|Delete secret"
 msgstr ""
 
+msgid "SecretsManager|Do not close this page until Secrets Manager is finished setting up."
+msgstr ""
+
 msgid "SecretsManager|Edit %{name}"
 msgstr ""
 
@@ -69259,6 +69291,9 @@ msgid "SecretsManager|Enable on-demand billing to try GitLab Secrets Manager"
 msgstr ""
 
 msgid "SecretsManager|Enabling GitLab Secrets Manager"
+msgstr ""
+
+msgid "SecretsManager|Enabling GitLab Secrets Manager trial"
 msgstr ""
 
 msgid "SecretsManager|Enter a new value to update secret"
@@ -69294,7 +69329,7 @@ msgstr ""
 msgid "SecretsManager|GitLab Secrets Manager is free during open beta, but will consume %{linkStart}GitLab Credits%{linkEnd} when it becomes generally available. Credits will be consumed only if you opt in. You will receive advance notice before general availability."
 msgstr ""
 
-msgid "SecretsManager|GitLab Secrets Manager will consume GitLab credits when you store or fetch secrets. %{linkStart}How is secrets manager billed?%{linkEnd}"
+msgid "SecretsManager|How is GitLab Secrets Manager billed?"
 msgstr ""
 
 msgid "SecretsManager|Keep secrets secure with GitLab Secrets Manager"
@@ -69360,7 +69395,13 @@ msgstr ""
 msgid "SecretsManager|Secure your sensitive information"
 msgstr ""
 
+msgid "SecretsManager|Something went wrong while setting up the secrets manager. Please try again."
+msgstr ""
+
 msgid "SecretsManager|Stored secrets"
+msgstr ""
+
+msgid "SecretsManager|The GitLab Secrets Manager trial has been enabled for all groups and projects within this namespace. %{linkStart}Manage group permissions.%{linkEnd}"
 msgstr ""
 
 msgid "SecretsManager|The name should be unique within this group and can contain only letters, digits, and '_'."
@@ -69376,9 +69417,6 @@ msgid "SecretsManager|This field is required and must be 200 characters or less.
 msgstr ""
 
 msgid "SecretsManager|To confirm, enter %{secretName}:"
-msgstr ""
-
-msgid "SecretsManager|Trial enabled. Redirecting to secrets manager..."
 msgstr ""
 
 msgid "SecretsManager|Use the secrets manager to store your sensitive credentials, and then safely use them in your processes."
@@ -77875,6 +77913,9 @@ msgstr ""
 msgid "Stars"
 msgstr ""
 
+msgid "Start 30-day trial"
+msgstr ""
+
 msgid "Start Date"
 msgstr ""
 
@@ -77933,9 +77974,6 @@ msgid "Start thread"
 msgstr ""
 
 msgid "Start time"
-msgstr ""
-
-msgid "Start trial"
 msgstr ""
 
 msgid "Start with a letter, digit, emoji, or underscore."

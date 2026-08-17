@@ -14,9 +14,10 @@ export default {
     OrganizationGroupStats,
     HelpPageLink,
   },
+  inheritAttrs: false,
   props: {
-    organizations: {
-      type: Array,
+    organization: {
+      type: Object,
       required: true,
     },
   },
@@ -43,23 +44,17 @@ export default {
         }}</help-page-link>
       </p>
     </template>
-    <div class="gl-p-2">
-      <div class="-gl-m-2 gl-flex gl-flex-wrap gl-pb-4">
-        <div
-          v-for="organization in organizations"
-          :key="organization.id"
-          class="gl-w-1/2 gl-p-2 first:gl-ml-auto last:gl-mr-auto @lg:gl-w-1/3"
-        >
-          <organization-card :organization="organization">
-            <div
-              v-for="group in organization.groups.nodes"
-              :key="group.id"
-              class="gl-rounded-xl gl-bg-default gl-p-4"
-            >
-              <organization-group-stats :group="group" />
-            </div>
-          </organization-card>
-        </div>
+    <div class="gl-flex gl-w-full gl-justify-center">
+      <div class="gl-w-1/2 @lg:gl-w-1/3">
+        <organization-card :organization="organization">
+          <div
+            v-for="group in organization.groups.nodes"
+            :key="group.id"
+            class="gl-rounded-xl gl-bg-default gl-p-4"
+          >
+            <organization-group-stats :group="group" />
+          </div>
+        </organization-card>
       </div>
     </div>
   </base-step>

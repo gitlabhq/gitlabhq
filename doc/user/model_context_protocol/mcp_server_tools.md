@@ -146,6 +146,37 @@ Example:
 Get merge request 15 in project gitlab-org/gitlab with its commits
 ```
 
+## `list_duo_sessions`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248587) in GitLab 19.3.
+
+{{< /history >}}
+
+Lists your GitLab Duo Agent Platform sessions, excluding Duo Chat sessions.
+Each session includes its individual status, goal preview, flow definition, and creation timestamp.
+Project sessions also include a session URL.
+The goal preview might be truncated.
+
+| Parameter      | Type    | Required | Description |
+|----------------|---------|----------|-------------|
+| `url`          | string  | No       | GitLab URL of the project to filter sessions by. Do not use with `project_id`. |
+| `project_id`   | string  | No       | Numeric ID or full path of the project to filter sessions by. Do not use with `url`. |
+| `status_group` | string  | No       | Session status group. One of `active`, `paused`, `awaiting_input`, `completed`, `failed`, or `canceled`. |
+| `after`        | string  | No       | Cursor for forward pagination. |
+| `first`        | integer | No       | Number of sessions to return for forward pagination. Default is 20, maximum is 100. |
+
+The `status_group` filter can return sessions with multiple individual statuses.
+Each call returns a single page of results.
+If more pages exist, the response includes `pageInfo.endCursor` that you can pass as `after`.
+
+Example:
+
+```plaintext
+List my active Duo Agent Platform sessions in gitlab-org/gitlab
+```
+
 ## `list_merge_requests`
 
 {{< history >}}
