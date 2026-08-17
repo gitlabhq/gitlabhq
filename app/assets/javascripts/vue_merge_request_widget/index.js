@@ -37,6 +37,7 @@ export default () => {
   // eslint-disable-next-line @gitlab/no-runtime-template-compiler
   const vm = new Vue({
     el: '#js-vue-mr-widget',
+    name: 'MRWidgetRoot',
     provide: {
       canViewFalsePositive: parseBoolean(gl.mrWidgetData.can_view_false_positive),
       canCreatePipelineInTargetProject: parseBoolean(

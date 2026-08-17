@@ -4620,6 +4620,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
   describe ':request_access' do
     let_it_be(:group_requester) { create(:user) }
+    let_it_be(:external_user) { create(:user, :external) }
     let_it_be(:group_with_project) { create(:group, :public) }
     let_it_be(:public_project_with_group) do
       create(:project, :public, namespace: group_with_project)
@@ -4632,23 +4633,32 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     subject { described_class.new(current_user, project) }
 
     context 'when user can request access' do
-      let(:project) { public_project_with_group }
-      let(:current_user) { non_member }
+      using RSpec::Parameterized::TableSyntax
 
-      it { expect_allowed(:request_access) }
+      where(:case_name, :current_user, :project) do
+        'public project, logged-in non-member'   | lazy { non_member }    | lazy { public_project_with_group }
+        'internal project, logged-in non-member' | lazy { non_member }    | lazy { internal_project }
+        'public project, external user'          | lazy { external_user } | lazy { public_project_with_group }
+      end
+
+      with_them do
+        it { expect_allowed(:request_access) }
+      end
     end
 
     context 'when user cannot request access' do
       using RSpec::Parameterized::TableSyntax
 
       where(:case_name, :current_user, :project) do
-        'anonymous user'            | lazy { nil }                  | lazy { public_project_with_group }
-        'direct project owner'      | lazy { owner }                | lazy { public_project }
-        'direct project guest'      | lazy { guest }                | lazy { public_project }
-        'inherited group owner'     | lazy { inherited_owner }      | lazy { public_project_in_group }
-        'inherited group developer' | lazy { inherited_developer }  | lazy { public_project_in_group }
-        'inherited group guest'     | lazy { inherited_guest }      | lazy { public_project_in_group }
-        'group requester'           | lazy { group_requester }      | lazy { public_project_with_group }
+        'anonymous user'                         | lazy { nil }                  | lazy { public_project_with_group }
+        'direct project owner'                   | lazy { owner }                | lazy { public_project }
+        'direct project guest'                   | lazy { guest }                | lazy { public_project }
+        'inherited group owner'                  | lazy { inherited_owner }      | lazy { public_project_in_group }
+        'inherited group developer'              | lazy { inherited_developer }  | lazy { public_project_in_group }
+        'inherited group guest'                  | lazy { inherited_guest }      | lazy { public_project_in_group }
+        'group requester'                        | lazy { group_requester }      | lazy { public_project_with_group }
+        'internal project, external user'        | lazy { external_user }        | lazy { internal_project }
+        'private project, non-member'            | lazy { non_member }           | lazy { private_project }
       end
 
       with_them do
@@ -4657,7 +4667,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
 
     context 'when request_access_enabled is disabled on the project' do
-      let(:project) { create(:project, :public, request_access_enabled: false) }
+      let_it_be(:project) { create(:project, :public, request_access_enabled: false) }
       let(:current_user) { non_member }
 
       it { expect_disallowed(:request_access) }

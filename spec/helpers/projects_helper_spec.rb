@@ -1917,6 +1917,41 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
   end
 
+  describe '#project_general_settings_data' do
+    subject(:data) { helper.project_general_settings_data(project) }
+
+    it 'returns the general settings data' do
+      expect(data).to include(
+        project_id: project.id,
+        project_name: project.name,
+        project_description: project.description,
+        project_avatar_removable: 'false',
+        max_description_length: Project::MAX_DESCRIPTION_LENGTH,
+        form_action: project_path(project),
+        organization_id: project.organization.id,
+        external_authorization_enabled: 'false'
+      )
+    end
+
+    context 'when the project has an uploaded avatar' do
+      before do
+        project.update!(avatar: fixture_file_upload('spec/fixtures/dk.png'))
+      end
+
+      it 'marks the avatar as removable' do
+        expect(data).to include(project_avatar_removable: 'true')
+      end
+    end
+
+    context 'when the user is an admin', :enable_admin_mode do
+      let_it_be(:user) { create(:admin) }
+
+      it 'includes the service ping settings path' do
+        expect(data[:service_ping_settings_path]).to be_present
+      end
+    end
+  end
+
   describe '#project_unarchive_settings_app_data' do
     let_it_be_with_reload(:ancestor) { create(:group) }
     let_it_be(:project) { create(:project, group: ancestor) }

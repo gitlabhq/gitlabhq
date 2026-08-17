@@ -1,6 +1,6 @@
 ---
-source_checksum: a1b021dbce0f673e
-distilled_at_sha: 0bc240cb0e70d2bba500cca6317a5c7e9e06605e
+source_checksum: d7add367353684d2
+distilled_at_sha: 3941b843c30927ec6cea3e9caa43c88e5f930cb6
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -12,8 +12,6 @@ distilled_at_sha: 0bc240cb0e70d2bba500cca6317a5c7e9e06605e
 
 - Use `RSpec.describe` for the DevOps stage name, `describe` for the feature under test, `context` for conditions, and `it` for the expected result, so that the full test name reads as a sentence.
 - Begin `context` block descriptions with `when`, `with`, `without`, `for`, `and`, `on`, `in`, `as`, or `if` (enforced by the `RuboCop/RSpec/ContextWording` cop).
-- Add a `testcase:` RSpec metadata tag linking every test to its corresponding test case URL in the GitLab project test cases (`https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/:id`).
-- For parallelized, templated, or shared-example tests that have a one-to-many relationship between a spec line and test cases, pass the `testcase` URL as an argument to `it_behaves_like` rather than using the `testcase:` tag directly.
 - Split tests across separate files to maximize parallelization; Exception: when tests share expensive setup that would be wasteful to repeat per file.
 
 ### Page Objects

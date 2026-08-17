@@ -1,6 +1,6 @@
 ---
-source_checksum: 13aa8704f9d20992
-distilled_at_sha: 18bec1426aecafc1e6f6e47896f845e2690b2bf8
+source_checksum: 74348cb7ea067bf8
+distilled_at_sha: 3941b843c30927ec6cea3e9caa43c88e5f930cb6
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -19,6 +19,7 @@ distilled_at_sha: 18bec1426aecafc1e6f6e47896f845e2690b2bf8
 - Ensure new JavaScript libraries with unapproved licenses are approved by the legal department.
 - Ensure new dependencies or filesystem changes are approved by a Distribution team member; for RubyGems, also request an AppSec review.
 - Ensure `~documentation` or `~UI text` changes are approved by the Technical Writer assigned to the relevant DevOps stage group.
+- Ensure changes to development guidelines are reviewed and approved by an experienced GitLab team member from the group that owns the affected area; typo-scale fixes can be merged by any user with at least the Maintainer role.
 - Ensure end-to-end changes (all files in `qa/`) combined with non-QA changes are approved by a Software Engineer in Test.
 - Ensure end-to-end-only changes are approved by a Quality maintainer.
 - Ensure new or updated application limits are approved by a Product Manager.

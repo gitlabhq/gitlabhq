@@ -6,14 +6,14 @@ import TopicsTokenSelector from './components/topics_token_selector.vue';
 
 Vue.use(VueApollo);
 
-const apolloProvider = new VueApollo({
-  defaultClient: createDefaultClient(),
-});
-
 export default () => {
   const el = document.querySelector('.js-topics-selector');
 
   if (!el) return null;
+
+  const apolloProvider = new VueApollo({
+    defaultClient: createDefaultClient(),
+  });
 
   const { hiddenInputId, organizationId } = el.dataset;
   const hiddenInput = document.getElementById(hiddenInputId);

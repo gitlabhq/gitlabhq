@@ -9,16 +9,6 @@ RSpec.describe ConfirmationsController, feature_category: :system_access do
     set_devise_mapping(context: @request)
   end
 
-  describe 'read-only organization enforcement exemption' do
-    it 'does not run read-only organization enforcement on #create' do
-      allow(controller).to receive(:enforce_read_only_organization).and_call_original
-
-      post :create, params: { user: { email: 'unknown@example.com' } }
-
-      expect(controller).not_to have_received(:enforce_read_only_organization)
-    end
-  end
-
   describe '#show' do
     let_it_be_with_reload(:user) { create(:user, :unconfirmed) }
     let(:confirmation_token) { user.confirmation_token }

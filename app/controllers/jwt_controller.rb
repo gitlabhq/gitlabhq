@@ -4,10 +4,6 @@ class JwtController < ApplicationController
   skip_around_action :set_session_storage
   skip_before_action :authenticate_user!
   skip_before_action :verify_authenticity_token
-  # Authentication must remain available even when the organization is read-only.
-  # JWT token issuance (e.g. container registry auth) is required for read access.
-  # See https://gitlab.com/gitlab-org/gitlab/-/work_items/602813
-  skip_before_action :enforce_read_only_organization
 
   # Add this before other actions, since we want to have the user or project
   prepend_before_action :auth_user, :authenticate_project_or_user

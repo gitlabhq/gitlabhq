@@ -212185,6 +212185,12 @@
               "deprecationReason": null
             },
             {
+              "name": "SECRET_SCANNING_FOR_SOURCE_CODE",
+              "description": "Secret scanning for source code feature.",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "SECURITY_ATTRIBUTES",
               "description": "Security attributes feature.",
               "isDeprecated": false,

@@ -1,0 +1,9 @@
+---
+name: project_general_settings_vue
+description: Render the project general settings (naming, description, topics, avatar) form with Vue instead of the server-rendered HAML form
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236849
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/608582
+milestone: '19.3'
+group: group::design strategy
+type: gitlab_com_derisk
+default_enabled: false

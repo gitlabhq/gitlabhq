@@ -71,6 +71,7 @@ export const ALL_SETTINGS = 'all';
 export const DUO_SAST_VR_WORKFLOW_ENABLED = 'duoSastVrWorkflowEnabled';
 export const DUO_SAST_FALSE_POSITIVE_DETECTION_ENABLED = 'duoSastFalsePositiveDetectionEnabled';
 export const DUO_SECRET_DETECTION_FP_ENABLED = 'duoSecretDetectionFpEnabled';
+export const DUO_VULNERABILITY_CONTEXT_ANALYSIS_ENABLED = 'duoVulnerabilityContextAnalysisEnabled';
 
 export const STATUS_DONE = 'done';
 export const STATUS_TODO = 'todo';

@@ -24,9 +24,9 @@ module EnforcesReadOnlyOrganization
 
   def organization_read_only?
     organization = ::Current.organization
-    return false unless organization
+    return false unless organization&.read_only?
 
-    organization.read_only_enforced?
+    Feature.enabled?(:organization_read_only_enforcement, organization)
   end
 
   def write_request?

@@ -11,11 +11,12 @@ RSpec.describe 'Projects > Settings > User changes avatar', feature_category: :g
     sign_in(user)
   end
 
-  it 'saves the new avatar' do
+  it 'saves the new avatar', :js do
     expect(project.reload.avatar.url).to be_nil
 
     save_avatar(project)
 
+    expect(page).to have_testid('alert-info')
     expect(project.reload.avatar.url).to eq "/uploads/-/system/project/avatar/#{project.id}/banana_sample.gif"
   end
 
@@ -24,22 +25,30 @@ RSpec.describe 'Projects > Settings > User changes avatar', feature_category: :g
       save_avatar(project)
     end
 
-    it 'is possible to remove the avatar' do
-      click_link 'Remove avatar'
+    it 'is possible to remove the avatar', :js do
+      visit edit_project_path(project)
 
-      expect(page).not_to have_link('Remove avatar')
+      within_testid('general-settings-form') do
+        click_button 'Remove avatar'
+        click_button 'Save changes'
+      end
 
+      expect(page).to have_testid('alert-info')
+      expect(page).not_to have_button('Remove avatar')
       expect(project.reload.avatar.url).to be_nil
     end
   end
 
   def save_avatar(project)
     visit edit_project_path(project)
-    attach_file(
-      :project_avatar,
-      File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif')
-    )
-    within_testid('general-settings-content') do
+
+    within_testid('general-settings-form') do
+      attach_file(
+        'project[avatar]',
+        File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif'),
+        make_visible: true
+      )
+
       click_button 'Save changes'
     end
   end

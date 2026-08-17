@@ -122,6 +122,9 @@ class PipelineTestReportBuilder
 
     failed_builds_for_pipeline.each do |failed_build|
       next if failed_build['stage'] != 'test'
+      # Allowed-to-fail jobs never block a pipeline, so their failures aren't worth
+      # re-running. In bulk they also exhaust the rate limit before the real failures are fetched.
+      next if failed_build['allow_failure']
 
       test_report['suites'] << test_report_for_build(pipeline['web_url'], failed_build['id'])
     end

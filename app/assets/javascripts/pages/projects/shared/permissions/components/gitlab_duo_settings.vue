@@ -18,6 +18,7 @@ import {
   DUO_SAST_VR_WORKFLOW_ENABLED,
   DUO_SAST_FALSE_POSITIVE_DETECTION_ENABLED,
   DUO_SECRET_DETECTION_FP_ENABLED,
+  DUO_VULNERABILITY_CONTEXT_ANALYSIS_ENABLED,
   STATUS_DONE,
   STATUS_TODO,
   STATUS_BLOCKED,
@@ -153,6 +154,11 @@ export default {
       required: false,
       default: false,
     },
+    initialDuoVulnerabilityContextAnalysisEnabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     ultimateFeaturesAvailable: {
       type: Boolean,
       required: false,
@@ -220,6 +226,7 @@ export default {
       duoSecretDetectionFpEnabled: this.initialDuoSecretDetectionFpEnabled,
       duoDependencyBumpBreakingChangesEnabled: this.initialDuoDependencyBumpBreakingChangesEnabled,
       duoSastVrWorkflowEnabled: this.initialDuoSastVrWorkflowEnabled,
+      duoVulnerabilityContextAnalysisEnabled: this.initialDuoVulnerabilityContextAnalysisEnabled,
       toolApprovalForSessionEnabled: this.initialToolApprovalForSessionEnabled,
       dapSessionTrackingEnabled: this.initialDapSessionTrackingEnabled,
       auditEventsStorageEnabled: this.aiAuditEventsStorageEnabled,
@@ -412,6 +419,7 @@ export default {
   DUO_SAST_VR_WORKFLOW_ENABLED,
   DUO_SAST_FALSE_POSITIVE_DETECTION_ENABLED,
   DUO_SECRET_DETECTION_FP_ENABLED,
+  DUO_VULNERABILITY_CONTEXT_ANALYSIS_ENABLED,
   i18n: {
     readinessHeading: s__('DuoAgentPlatform|Run GitLab Duo agents on this project'),
     requiredHeading: s__('DuoAgentPlatform|Required'),
@@ -886,6 +894,29 @@ export default {
           label-position="hidden"
           name="project[project_setting_attributes][duo_sast_vr_workflow_enabled]"
           data-testid="duo-sast-vr-workflow-enabled"
+        />
+      </project-setting-row>
+      <project-setting-row
+        v-if="
+          ultimateFeaturesAvailable &&
+          isSettingVisible($options.DUO_VULNERABILITY_CONTEXT_ANALYSIS_ENABLED)
+        "
+        :label="s__('DuoVulnerabilityContext|Turn on Vulnerability Context Analysis')"
+        class="gl-mt-5"
+        :help-text="
+          s__(
+            'DuoVulnerabilityContext|Analyze project codebase to generate security context for vulnerability prioritization',
+          )
+        "
+      >
+        <gl-toggle
+          v-model="duoVulnerabilityContextAnalysisEnabled"
+          class="gl-mt-2"
+          :disabled="!duoEnabled"
+          :label="s__('DuoVulnerabilityContext|Turn on Vulnerability Context Analysis')"
+          label-position="hidden"
+          name="project[project_setting_attributes][duo_vulnerability_context_analysis_enabled]"
+          data-testid="duo-vulnerability-context-analysis-enabled"
         />
       </project-setting-row>
     </div>

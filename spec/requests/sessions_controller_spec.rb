@@ -229,31 +229,6 @@ RSpec.describe SessionsController, type: :request, feature_category: :system_acc
     end
   end
 
-  describe 'read-only organization enforcement exemption' do
-    let_it_be_with_reload(:organization) { create(:organization) }
-    let_it_be_with_reload(:user) { create(:user) }
-
-    before do
-      organization.start_read_only(read_only_reason: 'migration')
-      organization.confirm_read_only
-      stub_current_organization(organization.reload)
-    end
-
-    it 'does not block POST /users/sign_in (session creation)' do
-      post user_session_path, params: { user: { login: 'any', password: 'any' } }
-
-      expect(flash[:alert].to_s).not_to include('read-only mode')
-    end
-
-    it 'does not block POST /users/sign_out (session destruction)' do
-      sign_in(user)
-
-      post destroy_user_session_path
-
-      expect(flash[:alert].to_s).not_to include('read-only mode')
-    end
-  end
-
   describe 'private methods' do
     context 'with .passwordless_passkey_params' do
       before do

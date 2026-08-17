@@ -69,6 +69,7 @@ const initBrowserComponent = async (el, shouldSort) => {
   // eslint-disable-next-line no-new
   new Vue({
     el,
+    name: 'FileBrowserRoot',
     pinia,
     render(h) {
       return h(useMainContainer().isCompact ? FileBrowserDrawer : FileBrowser, {

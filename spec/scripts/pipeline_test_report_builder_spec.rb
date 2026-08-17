@@ -143,6 +143,45 @@ RSpec.describe PipelineTestReportBuilder, feature_category: :tooling do
           end
         end
 
+        context 'when a failed test build is allowed to fail' do
+          let(:allowed_to_fail_build_id) { 8888 }
+          let(:allowed_to_fail_build_uri) do
+            "#{previous_pipeline_url}/tests/suite.json?build_ids[]=#{allowed_to_fail_build_id}"
+          end
+
+          let(:failed_builds_for_pipeline) do
+            [
+              { 'id' => allowed_to_fail_build_id, 'stage' => 'test', 'allow_failure' => true },
+              { 'id' => failed_build_id, 'stage' => 'test', 'allow_failure' => false }
+            ]
+          end
+
+          it 'only reports builds that block the pipeline', :aggregate_failures do
+            expect(subject).not_to receive(:fetch).with(allowed_to_fail_build_uri)
+
+            expected = {
+              'suites' => [test_report_for_build.merge('job_url' => "/jobs/#{failed_build_id}")]
+            }.to_json
+
+            expect(subject.test_report_for_pipeline).to eq(expected)
+          end
+        end
+
+        context 'when every failed test build is allowed to fail' do
+          let(:failed_builds_for_pipeline) do
+            [
+              { 'id' => 8888, 'stage' => 'test', 'allow_failure' => true },
+              { 'id' => 7777, 'stage' => 'test', 'allow_failure' => true }
+            ]
+          end
+
+          it 'returns a hash with an empty "suites" array without fetching any report', :aggregate_failures do
+            expect(subject).not_to receive(:test_report_for_build)
+
+            expect(subject.test_report_for_pipeline).to eq({ suites: [] }.to_json)
+          end
+        end
+
         context 'failed pipeline and failed test builds' do
           before do
             allow(subject).to receive(:fetch).with(failed_build_uri).and_return(test_report_for_build)

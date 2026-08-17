@@ -75,6 +75,9 @@ const (
 	capabilityToolCallPatternApproval capability = "tool_call_pattern_approval"
 	capabilityJobTracePagination      capability = "job_trace_pagination"
 	capabilityIncrementalCheckpoints  capability = "incremental_checkpoints"
+	// The instance stores only the slim checkpoint header and the channel blobs,
+	// so Duo Workflow Service can stop sending channel_values.
+	capabilityIncrementalCheckpointsOnly capability = "incremental_checkpoints_only"
 )
 
 // ClientCapabilities is how gitlab-lsp -> workhorse -> Duo Workflow Service communicates
@@ -109,6 +112,7 @@ var ServerCapabilities = []capability{
 	capabilityToolCallPatternApproval,
 	capabilityJobTracePagination,
 	capabilityIncrementalCheckpoints,
+	capabilityIncrementalCheckpointsOnly,
 }
 
 // intersectClientCapabilities returns the intersection of what gitlab-lsp passed in and what workhorse

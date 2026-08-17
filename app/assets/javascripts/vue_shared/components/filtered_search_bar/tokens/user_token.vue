@@ -59,6 +59,10 @@ export default {
   },
   methods: {
     getActiveUser(users, data) {
+      // Case-sensitive matches to default users (generally wildcard values) take
+      // priority over case-insensitive matches to all users. Allows `Me` wildcard
+      // to be matched before a `me` user.
+      if (this.defaultUsers.some(({ value }) => value === data)) return undefined;
       return users.find((user) => this.getUsername(user).toLowerCase() === data.toLowerCase());
     },
     getAvatarUrl(user) {

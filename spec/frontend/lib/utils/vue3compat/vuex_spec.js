@@ -13,6 +13,7 @@ describe('Vuex store inheritance via parent option', () => {
     const parentEl = document.createElement('div');
     const parentApp = new Vue({
       el: parentEl,
+      name: 'StoreParentRoot',
       store,
       render() {
         return null;
@@ -25,6 +26,7 @@ describe('Vuex store inheritance via parent option', () => {
     // eslint-disable-next-line no-new
     new Vue({
       el: childEl,
+      name: 'StoreChildRoot',
       parent: parentApp,
       mounted() {
         childStore = this.$store;

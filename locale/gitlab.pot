@@ -31773,6 +31773,12 @@ msgstr ""
 msgid "DuoTrialDiscover|Ask questions, explore concepts, test ideas, and receive instant feedback directly in your workflow."
 msgstr ""
 
+msgid "DuoVulnerabilityContext|Analyze project codebase to generate security context for vulnerability prioritization"
+msgstr ""
+
+msgid "DuoVulnerabilityContext|Turn on Vulnerability Context Analysis"
+msgstr ""
+
 msgid "DuoWorkflowSettings|Allow external MCP tools"
 msgstr ""
 
@@ -60689,6 +60695,9 @@ msgstr ""
 msgid "Profiles|Failed to generate new Support PIN."
 msgstr ""
 
+msgid "Profiles|Failed to upload avatar. Please try again."
+msgstr ""
+
 msgid "Profiles|Feed token could not be reset"
 msgstr ""
 
@@ -60894,6 +60903,12 @@ msgid "Profiles|Tell us about yourself in fewer than 250 characters."
 msgstr ""
 
 msgid "Profiles|The ability to update your name has been disabled by your administrator."
+msgstr ""
+
+msgid "Profiles|The file format is not supported. Please try one of the following formats: %{formats}"
+msgstr ""
+
+msgid "Profiles|The file is too large. The maximum file size allowed is 200 KiB."
 msgstr ""
 
 msgid "Profiles|The ideal image size is 192 x 192 pixels."
@@ -62114,6 +62129,9 @@ msgstr ""
 msgid "ProjectSettings|Private"
 msgstr ""
 
+msgid "ProjectSettings|Project description (optional)"
+msgstr ""
+
 msgid "ProjectSettings|Project topics"
 msgstr ""
 
@@ -62157,6 +62175,9 @@ msgid "ProjectSettings|Restrict access to users from projects in this group. If 
 msgstr ""
 
 msgid "ProjectSettings|Roll out new features without redeploying with feature flags."
+msgstr ""
+
+msgid "ProjectSettings|Save changes for naming, description, topics"
 msgstr ""
 
 msgid "ProjectSettings|Search for topic"
@@ -67502,6 +67523,9 @@ msgstr ""
 msgid "Saving"
 msgstr ""
 
+msgid "Saving changes"
+msgstr ""
+
 msgid "Saving project."
 msgstr ""
 
@@ -69129,10 +69153,16 @@ msgstr ""
 msgid "SecretsManagerTrial|0 credits left in secrets manager trial"
 msgstr ""
 
+msgid "SecretsManagerTrial|All trial credits used"
+msgstr ""
+
 msgid "SecretsManagerTrial|Contact your billing administrator to enable on-demand billing and avoid disruption."
 msgstr ""
 
 msgid "SecretsManagerTrial|On-demand billing is disabled"
+msgstr ""
+
+msgid "SecretsManagerTrial|On-demand billing is enabled, and you are incurring charges for continued usage. %{linkStart}How is secrets manager billed?%{linkEnd}"
 msgstr ""
 
 msgid "SecretsManagerTrial|On-demand billing is enabled, and you will incur charges after the trial period ends. %{linkStart}How is secrets manager billed?%{linkEnd}"
@@ -81552,9 +81582,6 @@ msgid "This merge request was merged. To apply this suggestion, edit this file d
 msgstr ""
 
 msgid "This only applies to repository indexing operations."
-msgstr ""
-
-msgid "This organization is currently in read-only mode. New account creation via SSO is currently unavailable."
 msgstr ""
 
 msgid "This organization is currently in read-only mode. Write operations are disabled."

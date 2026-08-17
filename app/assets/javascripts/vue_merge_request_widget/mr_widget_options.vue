@@ -48,9 +48,7 @@ import MrWidgetReadyToMerge from './components/states/new_ready_to_merge.vue';
 import MergeChecks from './components/merge_checks.vue';
 
 export default {
-  // False positive i18n lint: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/25
-  // eslint-disable-next-line @gitlab/require-i18n-strings
-  name: 'MRWidget',
+  name: 'MRWidgetRoot',
   directives: {
     SafeHtml,
   },

@@ -38,6 +38,7 @@ export function initLanguagesChart() {
 
   return new Vue({
     el,
+    name: 'LanguagesChartRoot',
     components: {
       GlColumnChart,
     },
@@ -79,6 +80,7 @@ export function initCodeCoverageChart() {
 
   return new Vue({
     el,
+    name: 'CodeCoverageRoot',
     render(h) {
       return h(CodeCoverage, {
         props: {
@@ -102,6 +104,7 @@ export function initMonthChart() {
 
   return new Vue({
     el,
+    name: 'MonthChartRoot',
     components: {
       GlColumnChart,
     },
@@ -136,6 +139,7 @@ export function initWeekdayChart() {
 
   return new Vue({
     el,
+    name: 'WeekdayChartRoot',
     data() {
       return {
         chartData: JSON.parse(el.dataset.chartData),
@@ -176,6 +180,7 @@ export function initHourChart() {
 
   return new Vue({
     el,
+    name: 'HourChartRoot',
     mixins: [SeriesDataMixin],
     data() {
       return {

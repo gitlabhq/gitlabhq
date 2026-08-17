@@ -87,6 +87,12 @@ RSpec.describe 'projects/edit', feature_category: :groups_and_projects do
   end
 
   describe 'prompt user about registration features' do
+    before do
+      # With the flag disabled the legacy server-rendered form (including the
+      # registration features prompt) is rendered.
+      stub_feature_flags(project_general_settings_vue: false)
+    end
+
     context 'when service ping is enabled' do
       before do
         stub_application_setting(usage_ping_enabled: true)

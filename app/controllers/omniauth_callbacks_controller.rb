@@ -28,14 +28,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   feature_category :system_access
 
-  # OAuth callbacks are authentication flows and must stay available while an
-  # organization is read-only, so the blanket write-blocking before_action from
-  # EnforcesReadOnlyOrganization must not intercept them. New-user creation is
-  # instead blocked precisely in Gitlab::Auth::OAuth::User#save, which raises
-  # NewUserOrganizationReadOnlyError (rescued in sign_in_user_flow), while
-  # existing-user sign-ins remain permitted.
-  skip_before_action :enforce_read_only_organization
-
   # To be used in ee version for raising error on user signup if user is from restricted country
   SignUpFromRestrictedCountyError = Class.new(StandardError)
 
@@ -325,8 +317,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     handle_disabled_provider
   rescue Gitlab::Auth::OAuth::User::SignupDisabledError
     handle_signup_error
-  rescue Gitlab::Auth::OAuth::User::NewUserOrganizationReadOnlyError
-    handle_new_user_organization_read_only
   rescue SignUpFromRestrictedCountyError
     handle_signup_from_restricted_country_error
   end
@@ -450,13 +440,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
        ),
       label: label
     )
-
-    redirect_to new_user_session_path
-  end
-
-  def handle_new_user_organization_read_only
-    flash[:alert] = _('This organization is currently in read-only mode. ' \
-      'New account creation via SSO is currently unavailable.')
 
     redirect_to new_user_session_path
   end

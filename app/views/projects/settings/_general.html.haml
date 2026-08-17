@@ -1,43 +1,46 @@
-- hidden_topics_field_id = 'project_topic_list_field'
-= gitlab_ui_form_for [@project], html: { multipart: true, class: "edit-project js-general-settings-form" }, authenticity_token: true do |f|
-  %input{ name: 'update_section', type: 'hidden', value: 'js-general-settings' }
+- if Feature.enabled?(:project_general_settings_vue, @project)
+  #js-project-general-settings{ data: project_general_settings_data(@project) }
+- else
+  - hidden_topics_field_id = 'project_topic_list_field'
+  = gitlab_ui_form_for [@project], html: { multipart: true, class: "edit-project js-general-settings-form" }, authenticity_token: true do |f|
+    %input{ name: 'update_section', type: 'hidden', value: 'js-general-settings' }
 
-  %fieldset
-    .row
-      .form-group.gl-col-md-5
-        = f.label :name, class: 'label-bold', for: 'project_name_edit' do
-          = _('Project name')
-        = f.text_field :name, class: 'form-control gl-form-input', id: "project_name_edit", data: { testid: 'project-name-field' }, aria: { invalid: false, describedby: 'js-project-name-edit-description' }
-        %small#js-project-name-edit-description.form-text.gl-text-subtle
-          = _('Start with a letter, digit, emoji, or underscore.')
-        #js-project-name-edit-error.gl-field-error.gl-mt-2.gl-hidden{ role: 'alert' }
+    %fieldset
+      .row
+        .form-group.gl-col-md-5
+          = f.label :name, class: 'label-bold', for: 'project_name_edit' do
+            = _('Project name')
+          = f.text_field :name, class: 'form-control gl-form-input', id: "project_name_edit", data: { testid: 'project-name-field' }, aria: { invalid: false, describedby: 'js-project-name-edit-description' }
+          %small#js-project-name-edit-description.form-text.gl-text-subtle
+            = _('Start with a letter, digit, emoji, or underscore.')
+          #js-project-name-edit-error.gl-field-error.gl-mt-2.gl-hidden{ role: 'alert' }
 
-      .form-group.gl-col-md-4
-        = f.label :id, class: 'label-bold' do
-          = _('Project ID')
-        = f.text_field :id, class: 'form-control gl-form-input', readonly: true
+        .form-group.gl-col-md-4
+          = f.label :id, class: 'label-bold' do
+            = _('Project ID')
+          = f.text_field :id, class: 'form-control gl-form-input', readonly: true
 
-    .form-group.gl-mt-2.gl-mb-8
-      = render Pajamas::AvatarComponent.new(@project, size: 96, alt: '', class: 'gl-float-left gl-mr-5')
-      = f.label :avatar, _('Project avatar'), class: 'label-bold gl-block'
-      = render 'shared/choose_avatar_button', f: f
-      - if @project.avatar?
-        %hr
-        = link_button_to _('Remove avatar'), project_avatar_path(@project), aria: { label: _('Remove avatar') }, data: { confirm: _('Avatar will be removed. Are you sure?'), 'confirm-btn-variant': 'danger' }, method: :delete, variant: :danger, category: :secondary
+      .form-group.gl-mt-2.gl-mb-8
+        = render Pajamas::AvatarComponent.new(@project, size: 96, alt: '', class: 'gl-float-left gl-mr-5')
+        = f.label :avatar, _('Project avatar'), class: 'label-bold gl-block'
+        = render 'shared/choose_avatar_button', f: f
+        - if @project.avatar?
+          %hr
+          = link_button_to _('Remove avatar'), project_avatar_path(@project), aria: { label: _('Remove avatar') }, data: { confirm: _('Avatar will be removed. Are you sure?'), 'confirm-btn-variant': 'danger' }, method: :delete, variant: :danger, category: :secondary
 
-    .row
-      .form-group.gl-col-md-9
-        = f.label :description, _('Project description (optional)'), class: 'label-bold'
-        = f.text_area :description, class: 'form-control gl-form-input', rows: 4
+      .row
+        .form-group.gl-col-md-9
+          = f.label :description, _('Project description (optional)'), class: 'label-bold'
+          = f.text_area :description, class: 'form-control gl-form-input', rows: 4
 
-    .row= render_if_exists 'projects/classification_policy_settings', f: f
+      .row= render_if_exists 'projects/classification_policy_settings', f: f
 
-    = render 'shared/repository_size_limit_setting_registration_features_cta', form: f
-    = render_if_exists 'shared/repository_size_limit_setting', form: f, type: :project
+      = render 'shared/repository_size_limit_setting_registration_features_cta', form: f
+      = render_if_exists 'shared/repository_size_limit_setting', form: f, type: :project
 
-    .row
-      .form-group.gl-col-md-9
-        .js-topics-selector{ data: { hidden_input_id: hidden_topics_field_id, organization_id: @project.organization.id } }
-        = f.hidden_field :topics, value: @project.topic_list.join(', '), id: hidden_topics_field_id
+      .row
+        .form-group.gl-col-md-9
+          .js-topics-selector{ data: { hidden_input_id: hidden_topics_field_id, organization_id: @project.organization.id } }
+          = f.hidden_field :topics, value: @project.topic_list.join(', '), id: hidden_topics_field_id
 
-  = f.submit _('Save changes'), pajamas_button: true, data: { testid: 'save-naming-topics-avatar-button' }, aria: { label: _('Save changes for naming, description, topics') }
+    = f.submit _('Save changes'), pajamas_button: true, data: { testid: 'save-naming-topics-avatar-button' }, aria: { label: _('Save changes for naming, description, topics') }

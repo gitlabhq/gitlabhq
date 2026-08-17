@@ -19,7 +19,7 @@ module QA
             element 'merge-request-settings-content'
           end
 
-          view 'app/views/projects/settings/_general.html.haml' do
+          view 'app/assets/javascripts/projects/settings/components/project_general_settings.vue' do
             element 'project-name-field'
             element 'save-naming-topics-avatar-button'
           end

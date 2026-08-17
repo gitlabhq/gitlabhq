@@ -86,6 +86,30 @@ RSpec.describe 'Projects settings', feature_category: :groups_and_projects do
     end
   end
 
+  describe 'prompt user about registration features', :js do
+    context 'when service ping is enabled' do
+      before do
+        stub_application_setting(usage_ping_enabled: true)
+        visit edit_project_path(project)
+        # Wait for the Vue form to render before asserting the prompt is
+        # absent, so the negative assertions cannot pass vacuously.
+        find_field('project_name_edit')
+      end
+
+      it_behaves_like 'does not render registration features prompt', :project_disabled_repository_size_limit
+    end
+
+    context 'with no license and service ping disabled', :without_license do
+      before do
+        stub_application_setting(usage_ping_enabled: false)
+        visit edit_project_path(project)
+        find_field('project_name_edit')
+      end
+
+      it_behaves_like 'renders registration features prompt', :project_disabled_repository_size_limit
+    end
+  end
+
   def expect_toggle_state(state)
     is_collapsed = state == :collapsed
 

@@ -1,6 +1,6 @@
 ---
-source_checksum: ac608e77a4e44110
-distilled_at_sha: 18bec1426aecafc1e6f6e47896f845e2690b2bf8
+source_checksum: 262735e36a66c191
+distilled_at_sha: 3941b843c30927ec6cea3e9caa43c88e5f930cb6
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -127,6 +127,7 @@ distilled_at_sha: 18bec1426aecafc1e6f6e47896f845e2690b2bf8
 - Use the `:enable_admin_mode` RSpec metadata tag to activate admin mode in specs; DO NOT use `enable_admin_mode!(admin, use_ui: true)` — it is slow and race-prone.
 - Wrap both the triggering UI action and the assertion on its visible outcome inside `perform_enqueued_jobs` when testing delayed mail delivery — wrapping only the click can end the block before the AJAX request enqueues the job.
 - Put a page or component readiness assertion in the shared example rather than repeating it in every caller, so it becomes the synchronization contract for all consumers.
+- In nested `:js` feature spec contexts that need different setup before a page visit, keep a single `sign_in` and a single `visit` in the outermost `before` block and override only the relevant `let` in nested contexts — DO NOT call `sign_in` after a page has already been visited (the `Warden.on_next_request` injection can be consumed by a background request) and DO NOT call `visit` a second time on the same URL (it reloads the page and slows the spec).
 
 ### View Specs
 

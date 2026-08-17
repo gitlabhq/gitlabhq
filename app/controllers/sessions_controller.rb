@@ -21,11 +21,6 @@ class SessionsController < Devise::SessionsController
 
   skip_before_action :check_two_factor_requirement, only: [:destroy]
   skip_before_action :check_password_expiration, only: [:destroy]
-  # Authentication must remain available even when the organization is read-only.
-  # Session creation writes (session row, audit event, last-used timestamp) are
-  # the minimum required to let users sign in and then READ the read-only org.
-  # See https://gitlab.com/gitlab-org/gitlab/-/work_items/602813
-  skip_before_action :enforce_read_only_organization
 
   prepend_before_action :check_initial_setup, only: [:new]
   prepend_before_action :authenticate_with_two_factor,

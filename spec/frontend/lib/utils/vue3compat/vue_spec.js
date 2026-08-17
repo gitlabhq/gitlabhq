@@ -17,6 +17,7 @@ describe('Vue.js compat behavior', () => {
   it('respects provide/inject passed via parent option (parent-context-inheritance.patch)', () => {
     const PROVIDED_VALUE = 'DEMO';
     const vueApp = new Vue({
+      name: 'ProvideParentRoot',
       provide: {
         providedValue: PROVIDED_VALUE,
       },
@@ -31,6 +32,7 @@ describe('Vue.js compat behavior', () => {
     // eslint-disable-next-line no-new
     new Vue({
       el,
+      name: 'InjectChildRoot',
       parent: vueApp,
       inject: ['providedValue'],
       render() {
@@ -74,6 +76,7 @@ describe('Vue.js compat behavior', () => {
       // eslint-disable-next-line no-new
       new Vue({
         el: '#app',
+        name: 'QueryDuringMountRoot',
         mounted() {
           queriedElement = document.querySelector('#component');
         },
@@ -103,6 +106,7 @@ describe('Vue.js compat behavior', () => {
         // eslint-disable-next-line no-new
         new Vue({
           el: '#app',
+          name: 'CssCustomPropertyRoot',
           data() {
             return {
               mountedVarValue: null,
@@ -166,6 +170,7 @@ describe('Vue.js compat behavior', () => {
       // eslint-disable-next-line no-new
       new Vue({
         el: container,
+        name: 'MutablePropsRoot',
         render(h) {
           return h(Child, { props: propsData });
         },
@@ -200,6 +205,7 @@ describe('Vue.js compat behavior', () => {
         // eslint-disable-next-line no-new
         new Vue({
           el: container,
+          name: 'ReadonlyPropsRoot',
           render(h) {
             return h(Child, { props: { value: 'initial' } });
           },

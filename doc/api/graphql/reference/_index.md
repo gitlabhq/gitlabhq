@@ -68278,6 +68278,7 @@ Licensed features that can be checked for availability on a namespace or project
 | <a id="licensedfeature-secret_detection"></a>`SECRET_DETECTION` | Secret detection feature. |
 | <a id="licensedfeature-secret_detection_validity_checks"></a>`SECRET_DETECTION_VALIDITY_CHECKS` | Secret detection validity checks feature. |
 | <a id="licensedfeature-secret_push_protection"></a>`SECRET_PUSH_PROTECTION` | Secret push protection feature. |
+| <a id="licensedfeature-secret_scanning_for_source_code"></a>`SECRET_SCANNING_FOR_SOURCE_CODE` | Secret scanning for source code feature. |
 | <a id="licensedfeature-security_attributes"></a>`SECURITY_ATTRIBUTES` | Security attributes feature. |
 | <a id="licensedfeature-security_configuration_in_ui"></a>`SECURITY_CONFIGURATION_IN_UI` | Security configuration in ui feature. |
 | <a id="licensedfeature-security_dashboard"></a>`SECURITY_DASHBOARD` | Security dashboard feature. |

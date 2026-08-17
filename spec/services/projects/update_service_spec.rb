@@ -820,6 +820,43 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
       end
     end
 
+    context 'when removing the avatar' do
+      let(:project) { create(:project, :with_avatar, creator: user, namespace: user.namespace) }
+
+      shared_examples 'removes the avatar' do
+        it 'removes the avatar within the save lifecycle' do
+          expect(project).not_to receive(:remove_avatar!)
+
+          result = update_project(project, user, params)
+
+          expect(result).to eq({ status: :success })
+          expect(project.reload.avatar_url).to be_nil
+        end
+      end
+
+      context 'when avatar param is an empty string' do
+        let(:params) { { avatar: '' } }
+
+        it_behaves_like 'removes the avatar'
+      end
+
+      context 'when avatar param is nil' do
+        let(:params) { { avatar: nil } }
+
+        it_behaves_like 'removes the avatar'
+      end
+
+      context 'when another attribute is invalid' do
+        it 'does not remove the avatar file' do
+          result = update_project(project, user, { avatar: '', name: 'foo&bar' })
+
+          expect(result[:status]).to eq(:error)
+          expect(project.reload.avatar_url).not_to be_nil
+          expect(project.avatar.file).to exist
+        end
+      end
+    end
+
     context 'when updating #emails_enabled' do
       it 'updates the attribute for the project owner' do
         expect { update_project(project, user, emails_enabled: false) }

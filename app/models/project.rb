@@ -97,6 +97,7 @@ class Project < ApplicationRecord
   MAX_MR_TITLE_TEMPLATE_LENGTH = 100
   MAX_MERGE_REQUEST_TITLE_REGEX = 255
   MAX_MERGE_REQUEST_TITLE_REGEX_DESCRIPTION = 255
+  MAX_DESCRIPTION_LENGTH = 2000
 
   INSTANCE_RUNNER_RUNNING_JOBS_MAX_BUCKET = 5
 
@@ -655,7 +656,7 @@ class Project < ApplicationRecord
 
   # Validations
   validates :creator, presence: true, on: :create
-  validates :description, length: { maximum: 2000 }, allow_blank: true
+  validates :description, length: { maximum: MAX_DESCRIPTION_LENGTH }, allow_blank: true
   validates :ci_config_path,
     format: { without: %r{(\.{2}|\A/)},
               message: N_('cannot include leading slash or directory traversal.') },

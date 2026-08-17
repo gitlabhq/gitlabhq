@@ -57,6 +57,11 @@ export default {
       required: false,
       default: 'upload_file',
     },
+    inputFieldId: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
     shouldUpdateInputOnFileDrop: {
       type: Boolean,
       required: false,
@@ -184,8 +189,19 @@ export default {
     openFileUpload() {
       this.$refs.fileUpload.click();
     },
+    // Public method: clears the native file input so a previously selected
+    // file is not submitted with a surrounding form (e.g. after the consumer
+    // discards the selection).
+    clearInputFiles() {
+      if (this.$refs.fileUpload) {
+        this.$refs.fileUpload.value = '';
+      }
+    },
     onFileInputChange(e) {
       if (!this.isValidUpload(Array.from(e.target.files))) {
+        // Clear the rejected file so it is not submitted with a surrounding
+        // form on the next submit.
+        this.clearInputFiles();
         this.$emit('error');
         return;
       }
@@ -253,6 +269,7 @@ export default {
       </button>
 
       <input
+        :id="inputFieldId"
         ref="fileUpload"
         type="file"
         :name="inputFieldName"

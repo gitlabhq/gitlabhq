@@ -25,8 +25,7 @@ devise_controllers = { omniauth_callbacks: :omniauth_callbacks,
                        registrations: :registrations,
                        passwords: :passwords,
                        sessions: :sessions,
-                       confirmations: :confirmations,
-                       unlocks: :unlocks }
+                       confirmations: :confirmations }
 
 if ::Gitlab.ee? && ::Gitlab::Geo.secondary?(infer_without_database: true)
   devise_for :users, controllers: devise_controllers, path_names: { sign_in: 'auth/geo/sign_in',

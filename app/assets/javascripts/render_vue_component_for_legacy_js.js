@@ -15,6 +15,7 @@ import Vue from 'vue';
  */
 export const renderVueComponentForLegacyJS = (Component, data, children) => {
   const vm = new Vue({
+    name: 'LegacyJsRendererRoot',
     render(h) {
       return h(Component, data, children);
     },

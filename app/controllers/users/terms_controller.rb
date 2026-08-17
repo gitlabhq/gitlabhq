@@ -10,11 +10,6 @@ module Users
     skip_before_action :check_password_expiration
     skip_before_action :check_two_factor_requirement
     skip_before_action :require_email
-    # enforce_read_only_organization runs before enforce_terms!, so without this
-    # a user in a read-only org cannot accept the terms they are forced to accept
-    # before reading anything, wedging them out entirely.
-    # See https://gitlab.com/gitlab-org/gitlab/-/work_items/602813
-    skip_before_action :enforce_read_only_organization, only: [:accept, :decline]
 
     before_action :terms
 

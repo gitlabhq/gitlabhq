@@ -85,6 +85,8 @@ describe('GitlabDuoSettings', () => {
     wrapper.findByTestId('duo-dependency-bump-breaking-changes-enabled');
   const findDuoSastVrWorkflowToggle = () =>
     wrapper.findComponentByTestId('duo-sast-vr-workflow-enabled');
+  const findDuoVulnerabilityContextAnalysisToggle = () =>
+    wrapper.findComponentByTestId('duo-vulnerability-context-analysis-enabled');
   const findAutoReviewToggle = () => wrapper.findComponentByTestId('amazon-q-auto-review-enabled');
   const findToolApprovalToggle = () =>
     wrapper.findComponentByTestId('tool-approval-for-session-enabled');
@@ -791,6 +793,63 @@ describe('GitlabDuoSettings', () => {
           expect(parseBoolean(findHiddenInput().attributes('value'))).toBe(false);
         });
       });
+
+      describe('Duo Vulnerability Context Analysis settings', () => {
+        it('shows Vulnerability Context Analysis toggle', () => {
+          wrapper = createWrapper({ duoFeaturesEnabled: true, amazonQAvailable: false });
+
+          expect(findDuoVulnerabilityContextAnalysisToggle().exists()).toBe(true);
+          expect(findDuoVulnerabilityContextAnalysisToggle().props('disabled')).toBe(false);
+        });
+
+        it('does not show Vulnerability Context Analysis toggle when ultimateFeaturesAvailable is false', () => {
+          wrapper = createWrapper({
+            duoFeaturesEnabled: true,
+            amazonQAvailable: false,
+            ultimateFeaturesAvailable: false,
+          });
+
+          expect(findDuoVulnerabilityContextAnalysisToggle().exists()).toBe(false);
+        });
+
+        it('does not disable Vulnerability Context Analysis toggle when Duo features are locked on', () => {
+          wrapper = createWrapper({
+            duoFeaturesEnabled: true,
+            duoFeaturesLocked: true,
+            amazonQAvailable: false,
+          });
+
+          expect(findDuoVulnerabilityContextAnalysisToggle().props('disabled')).toBe(false);
+        });
+
+        it('does not render Vulnerability Context Analysis toggle when Duo features are not enabled', () => {
+          wrapper = createWrapper({
+            duoFeaturesEnabled: false,
+            amazonQAvailable: false,
+          });
+
+          expect(findDuoVulnerabilityContextAnalysisToggle().exists()).toBe(false);
+        });
+
+        it('updates the hidden input value when toggled', async () => {
+          wrapper = createWrapper({
+            duoFeaturesEnabled: true,
+            amazonQAvailable: false,
+            initialDuoVulnerabilityContextAnalysisEnabled: true,
+          });
+
+          const findHiddenInput = () =>
+            wrapper.find(
+              'input[name="project[project_setting_attributes][duo_vulnerability_context_analysis_enabled]"]',
+            );
+
+          expect(parseBoolean(findHiddenInput().attributes('value'))).toBe(true);
+
+          await findDuoVulnerabilityContextAnalysisToggle().vm.$emit('change', false);
+
+          expect(parseBoolean(findHiddenInput().attributes('value'))).toBe(false);
+        });
+      });
     });
   });
 
@@ -1015,6 +1074,7 @@ describe('GitlabDuoSettings', () => {
         expect(findDuoDependencyBumpToggle().exists()).toBe(false);
         expect(findToolApprovalToggle().exists()).toBe(false);
         expect(findDuoRemoteFlowsToggle().exists()).toBe(false);
+        expect(findDuoVulnerabilityContextAnalysisToggle().exists()).toBe(false);
         expect(findExclusionSettings().exists()).toBe(false);
       });
     });
@@ -1042,6 +1102,7 @@ describe('GitlabDuoSettings', () => {
         expect(findDuoSecretDetectionFpToggle().exists()).toBe(false);
         expect(findToolApprovalToggle().exists()).toBe(false);
         expect(findDuoRemoteFlowsToggle().exists()).toBe(false);
+        expect(findDuoVulnerabilityContextAnalysisToggle().exists()).toBe(false);
         expect(findExclusionSettings().exists()).toBe(false);
       });
     });
@@ -1069,6 +1130,7 @@ describe('GitlabDuoSettings', () => {
         expect(findDuoSastFpDetectionToggle().exists()).toBe(false);
         expect(findToolApprovalToggle().exists()).toBe(false);
         expect(findDuoRemoteFlowsToggle().exists()).toBe(false);
+        expect(findDuoVulnerabilityContextAnalysisToggle().exists()).toBe(false);
         expect(findExclusionSettings().exists()).toBe(false);
       });
     });
@@ -1096,6 +1158,7 @@ describe('GitlabDuoSettings', () => {
         expect(findDuoSecretDetectionFpToggle().exists()).toBe(false);
         expect(findToolApprovalToggle().exists()).toBe(false);
         expect(findDuoRemoteFlowsToggle().exists()).toBe(false);
+        expect(findDuoVulnerabilityContextAnalysisToggle().exists()).toBe(false);
         expect(findExclusionSettings().exists()).toBe(false);
       });
     });
@@ -1126,6 +1189,7 @@ describe('GitlabDuoSettings', () => {
         expect(findDuoSastVrWorkflowToggle().exists()).toBe(false);
         expect(findToolApprovalToggle().exists()).toBe(false);
         expect(findDuoRemoteFlowsToggle().exists()).toBe(false);
+        expect(findDuoVulnerabilityContextAnalysisToggle().exists()).toBe(false);
         expect(findExclusionSettings().exists()).toBe(false);
       });
     });

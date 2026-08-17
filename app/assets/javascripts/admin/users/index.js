@@ -16,8 +16,7 @@ const apolloProvider = new VueApollo({
   defaultClient: createDefaultClient(),
 });
 
-// eslint-disable-next-line max-params
-const initApp = (el, component, userPropKey, props = {}, provide = {}) => {
+const initApp = ({ el, component, userPropKey, name, props = {}, provide = {} }) => {
   if (!el) {
     return false;
   }
@@ -26,6 +25,7 @@ const initApp = (el, component, userPropKey, props = {}, provide = {}) => {
 
   return new Vue({
     el,
+    name,
     provide: {
       ...provide,
     },
@@ -51,18 +51,22 @@ export const initAdminUsersFilterApp = () => {
 };
 
 export const initAdminUserActions = (el = document.querySelector('#js-admin-user-actions')) =>
-  initApp(el, UserActions, 'user', { showButtonLabels: true });
+  initApp({
+    el,
+    component: UserActions,
+    userPropKey: 'user',
+    name: 'AdminUserActionsRoot',
+    props: { showButtonLabels: true },
+  });
 
 export const initAdminUsersApp = (el = document.querySelector('#js-admin-users-app')) =>
-  initApp(
+  initApp({
     el,
-    AdminUsersApp,
-    'users',
-    {},
-    {
-      isAtSeatsLimit: parseBoolean(el?.dataset?.isAtSeatsLimit),
-    },
-  );
+    component: AdminUsersApp,
+    userPropKey: 'users',
+    name: 'AdminUsersAppRoot',
+    provide: { isAtSeatsLimit: parseBoolean(el?.dataset?.isAtSeatsLimit) },
+  });
 
 export const initDeleteUserModals = () => {
   return new Vue({

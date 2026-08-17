@@ -5,11 +5,6 @@ class ConfirmationsController < Devise::ConfirmationsController
   include GitlabRecaptcha
   include OneTrustCSP
 
-  # Email confirmation must remain available even when the organization is
-  # read-only, otherwise a confirmation-gated user cannot sign in to read it.
-  # See https://gitlab.com/gitlab-org/gitlab/-/work_items/602813
-  skip_before_action :enforce_read_only_organization, only: [:create]
-
   prepend_before_action :check_recaptcha, only: :create
   before_action :load_recaptcha, only: :new
 

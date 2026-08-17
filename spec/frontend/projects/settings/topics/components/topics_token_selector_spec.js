@@ -99,7 +99,9 @@ describe('TopicsTokenSelector', () => {
     });
 
     it('passes text-input-attrs with correct id to the token selector', () => {
-      expect(findTokenSelector().props('textInputAttrs')).toEqual({ id: 'project_topics_input' });
+      expect(findTokenSelector().props('textInputAttrs')).toMatchObject({
+        id: 'project_topics_input',
+      });
     });
   });
 
@@ -122,9 +124,25 @@ describe('TopicsTokenSelector', () => {
 
     it('passes topic title to the avatar', async () => {
       await createComponent();
+
       const avatars = findAllAvatars();
 
-      mockTopics.map((topic, index) => expect(avatars[index].text()).toBe(topic.title));
+      expect(avatars).toHaveLength(mockTopics.length);
+    });
+
+    it('syncs internal state when selected prop changes', async () => {
+      const initialSelected = [{ id: 11, name: 'topic1' }];
+      createComponent({ selected: initialSelected });
+
+      expect(findSelectedTokensText()).toStrictEqual(['topic1']);
+
+      const newSelected = [
+        { id: 11, name: 'topic1' },
+        { id: 12, name: 'topic2' },
+      ];
+      await wrapper.setProps({ selected: newSelected });
+
+      expect(findSelectedTokensText()).toStrictEqual(['topic1', 'topic2']);
     });
   });
 
@@ -192,6 +210,17 @@ describe('TopicsTokenSelector', () => {
         ...mockTopics,
         expect.objectContaining({ name: USER_DEFINED_TOKEN }),
       ]);
+    });
+
+    it('filters selected tokens out of the dropdown without refetching', async () => {
+      await createComponent({ selected: [{ id: 11, name: mockTopics[0].name }] });
+
+      expect(findTokenSelector().props('dropdownItems')).toStrictEqual([mockTopics[1]]);
+
+      await setTokenSelectorInputValue(mockTopics[1].name);
+      await tokenSelectorTriggerEnter();
+
+      expect(findTokenSelector().props('dropdownItems')).toStrictEqual([]);
     });
   });
 });

@@ -9,24 +9,6 @@ RSpec.describe PasswordsController, feature_category: :system_access do
     set_devise_mapping(context: @request)
   end
 
-  describe 'read-only organization enforcement exemption' do
-    before do
-      allow(controller).to receive(:enforce_read_only_organization).and_call_original
-    end
-
-    it 'does not run read-only organization enforcement on #create' do
-      post :create
-
-      expect(controller).not_to have_received(:enforce_read_only_organization)
-    end
-
-    it 'does not run read-only organization enforcement on #update' do
-      put :update, params: { user: { reset_password_token: 'x', password: 'x', password_confirmation: 'x' } }
-
-      expect(controller).not_to have_received(:enforce_read_only_organization)
-    end
-  end
-
   describe '#check_password_authentication_available' do
     context 'when password authentication is disabled for the web interface and Git' do
       it 'prevents a password reset' do

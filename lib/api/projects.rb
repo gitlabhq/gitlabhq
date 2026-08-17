@@ -740,8 +740,9 @@ module API
         filter_attributes_using_license!(attrs)
         verify_update_project_attrs!(user_project, attrs)
 
-        user_project.remove_avatar! if attrs.key?(:avatar) && attrs[:avatar].nil?
-
+        # Blank avatar params are mapped to CarrierWave's `remove_avatar`
+        # virtual attribute by Projects::UpdateService, so removal happens
+        # inside the save lifecycle after validations pass.
         result = ::Projects::UpdateService.new(user_project, current_user, attrs).execute
 
         case result[:status]

@@ -132,14 +132,6 @@ module Organizations
       groups.none? && projects.none?
     end
 
-    # Single source of truth for "is this organization read-only AND is the
-    # enforcement feature flag enabled for it?". The request-level enforcement
-    # concern, the OAuth new-user guard, and the API helpers all call this so
-    # the cutover-safety decision cannot drift between call sites.
-    def read_only_enforced?
-      read_only? && Feature.enabled?(:organization_read_only_enforcement, self)
-    end
-
     def to_param
       path
     end

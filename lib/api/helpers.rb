@@ -641,9 +641,9 @@ module API
     end
 
     def organization_read_only_enforced?(organization)
-      return false unless organization
+      return false unless organization&.read_only?
 
-      organization.read_only_enforced?
+      Feature.enabled?(:organization_read_only_enforcement, organization)
     end
 
     # Time-bounded reasons are retryable (503 + Retry-After); indefinite reasons

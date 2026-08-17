@@ -13,24 +13,6 @@ RSpec.describe Users::TermsController, feature_category: :system_access do
     sign_in user
   end
 
-  describe 'read-only organization enforcement exemption' do
-    before do
-      allow(controller).to receive(:enforce_read_only_organization).and_call_original
-    end
-
-    it 'does not run read-only organization enforcement on #accept' do
-      post :accept, params: { id: term.id }
-
-      expect(controller).not_to have_received(:enforce_read_only_organization)
-    end
-
-    it 'does not run read-only organization enforcement on #decline' do
-      post :decline, params: { id: term.id }
-
-      expect(controller).not_to have_received(:enforce_read_only_organization)
-    end
-  end
-
   describe 'GET #index' do
     context 'when a user is signed in' do
       it 'redirects when no terms exist' do

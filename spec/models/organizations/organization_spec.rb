@@ -526,41 +526,6 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
     end
   end
 
-  describe '#read_only_enforced?' do
-    subject(:read_only_enforced?) { organization.read_only_enforced? }
-
-    context 'when the organization is read-only' do
-      before do
-        organization.update_column(:state, described_class.states[:read_only])
-      end
-
-      context 'when the enforcement feature flag is enabled' do
-        before do
-          stub_feature_flags(organization_read_only_enforcement: organization)
-        end
-
-        it { is_expected.to be(true) }
-      end
-
-      context 'when the enforcement feature flag is disabled' do
-        before do
-          stub_feature_flags(organization_read_only_enforcement: false)
-        end
-
-        it { is_expected.to be(false) }
-      end
-    end
-
-    context 'when the organization is active' do
-      before do
-        organization.update_column(:state, described_class.states[:active])
-        stub_feature_flags(organization_read_only_enforcement: organization)
-      end
-
-      it { is_expected.to be(false) }
-    end
-  end
-
   describe 'invalid state transitions' do
     let_it_be_with_reload(:user) { create(:user) }
 
