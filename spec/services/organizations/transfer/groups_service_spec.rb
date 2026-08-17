@@ -267,6 +267,48 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
         end
       end
 
+      context 'when batching updates' do
+        include_context 'with transfer batch size of 1'
+
+        let_it_be_with_refind(:subgroup_project2) do
+          create(:project, namespace: subgroup)
+        end
+
+        let_it_be_with_refind(:nested_project2) do
+          create(:project, namespace: nested_subgroup)
+        end
+
+        let_it_be_with_refind(:oauth_app1) do
+          create(:oauth_application, owner_id: group.id, owner_type: 'Namespace', organization: old_organization)
+        end
+
+        let_it_be_with_refind(:oauth_app2) do
+          create(:oauth_application, owner_id: subgroup.id, owner_type: 'Namespace', organization: old_organization)
+        end
+
+        let_it_be_with_refind(:oauth_app3) do
+          create(:oauth_application, owner_id: nested_subgroup.id, owner_type: 'Namespace',
+            organization: old_organization)
+        end
+
+        let(:execute_service) { service.execute }
+        let(:expected_batch_queries) do
+          { 'oauth_applications' => 3 }
+        end
+
+        it 'processes all records across multiple batches' do
+          service.execute
+
+          expect(subgroup_project2.reload.organization_id).to eq(new_organization.id)
+          expect(nested_project2.reload.organization_id).to eq(new_organization.id)
+          expect(oauth_app1.reload.organization_id).to eq(new_organization.id)
+          expect(oauth_app2.reload.organization_id).to eq(new_organization.id)
+          expect(oauth_app3.reload.organization_id).to eq(new_organization.id)
+        end
+
+        it_behaves_like 'generates batched transfer queries'
+      end
+
       context 'when transferring topics' do
         let!(:old_topic) { create(:topic, name: 'rails', organization: old_organization) }
         let!(:project_topic) { create(:project_topic, project: project, topic: old_topic) }

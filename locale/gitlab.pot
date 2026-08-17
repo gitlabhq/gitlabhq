@@ -7817,6 +7817,9 @@ msgstr ""
 msgid "Admin|Geo"
 msgstr ""
 
+msgid "Admin|Instance overview"
+msgstr ""
+
 msgid "Admin|Kubernetes"
 msgstr ""
 
@@ -7833,9 +7836,6 @@ msgid "Admin|Monitoring"
 msgstr ""
 
 msgid "Admin|Note"
-msgstr ""
-
-msgid "Admin|Overview"
 msgstr ""
 
 msgid "Admin|Push rules"
@@ -30081,6 +30081,9 @@ msgid "DuoAgenticChat|To continue collaborating with GitLab Duo Agent Platform, 
 msgstr ""
 
 msgid "DuoAgenticChat|To use Chat, select a default namespace in your %{preferencesLinkStart}user profile preferences%{preferencesLinkEnd}. Alternatively, turn off the %{agenticModeStart}Agentic toggle%{agenticModeEnd} to return to non-agentic Chat."
+msgstr ""
+
+msgid "DuoAgenticChat|To use Chat, select a default namespace in your user profile preferences."
 msgstr ""
 
 msgid "DuoAgenticChat|To use Chat, select a default namespace in your user profile preferences. Alternatively, turn off the Agentic toggle to return to non-agentic Chat."
@@ -59618,6 +59621,9 @@ msgstr ""
 msgid "PolicyStore|Rules"
 msgstr ""
 
+msgid "PolicyStore|Save policy"
+msgstr ""
+
 msgid "PolicyStore|Scope"
 msgstr ""
 
@@ -59655,6 +59661,12 @@ msgid "PolicyStore|The available %{catalog} could not be fetched from the Policy
 msgstr ""
 
 msgid "PolicyStore|The policies could not be fetched from the Policy Store API."
+msgstr ""
+
+msgid "PolicyStore|The policy could not be loaded from the Policy Store API. Refresh the page to try again."
+msgstr ""
+
+msgid "PolicyStore|The policy could not be saved. Try again."
 msgstr ""
 
 msgid "PolicyStore|This policy will be enabled for %{scope} in Audit mode. Events will be logged only."
@@ -65957,7 +65969,7 @@ msgstr ""
 msgid "Rollout cannot be started because its environments use different deploy drivers."
 msgstr ""
 
-msgid "Rollout is not awaiting approval."
+msgid "Rollout has no open approval gate."
 msgstr ""
 
 msgid "Root Moved Permanently redirection response"
@@ -90326,6 +90338,15 @@ msgid "WorkItemDecisionLog|Scope decision"
 msgstr ""
 
 msgid "WorkItemDecisionLog|Selected"
+msgstr ""
+
+msgid "WorkItemDuoQuestion|Recommended"
+msgstr ""
+
+msgid "WorkItemDuoQuestion|Something went wrong while sending your answer. Please try again."
+msgstr ""
+
+msgid "WorkItemDuoQuestion|Your answer was posted, but the thread could not be resolved. Resolve it manually so GitLab Duo can continue."
 msgstr ""
 
 msgid "WorkItemPlanningView|Board (Beta)"

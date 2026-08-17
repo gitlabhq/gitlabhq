@@ -123,26 +123,32 @@ RSpec.describe Organizations::Transfer::CiRunnersService, :aggregate_failures, f
     end
 
     context 'when batching updates' do
-      it 'processes records in batches' do
-        stub_const(
-          "Organizations::Transfer::Concerns::OrganizationUpdater::ORGANIZATION_ID_UPDATE_BATCH_SIZE", 1
-        )
+      include_context 'with transfer batch size of 1'
 
-        runner_batch_count = 0
-        allow(Ci::Runner).to receive(:each_batch).and_wrap_original do |method, **kwargs, &block|
-          method.call(**kwargs) do |batch|
-            runner_batch_count += 1
-            block.call(batch)
-          end
-        end
+      let(:execute_service) { execute }
+      let(:expected_batch_queries) do
+        {
+          'ci_runners' => 3,
+          'ci_runner_machines' => 3,
+          'ci_runner_taggings' => 3
+        }
+      end
 
+      it 'processes all records across multiple batches' do
         execute
 
-        expect(runner_batch_count).to be >= 2
         expect(group_runner.reload.organization_id).to eq(new_organization.id)
         expect(subgroup_runner.reload.organization_id).to eq(new_organization.id)
         expect(project_runner.reload.organization_id).to eq(new_organization.id)
+        expect(group_runner_manager.reload.organization_id).to eq(new_organization.id)
+        expect(subgroup_runner_manager.reload.organization_id).to eq(new_organization.id)
+        expect(project_runner_manager.reload.organization_id).to eq(new_organization.id)
+        expect(group_runner_tagging.reload.organization_id).to eq(new_organization.id)
+        expect(subgroup_runner_tagging.reload.organization_id).to eq(new_organization.id)
+        expect(project_runner_tagging.reload.organization_id).to eq(new_organization.id)
       end
+
+      it_behaves_like 'generates batched transfer queries'
     end
   end
 end

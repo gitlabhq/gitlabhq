@@ -70,7 +70,6 @@ Performance/MapCompact:
     - 'lib/gitaly/server.rb'
     - 'lib/gitlab/analytics/cycle_analytics/aggregated/records_fetcher.rb'
     - 'lib/gitlab/analytics/usage_trends/workers_argument_builder.rb'
-    - 'lib/gitlab/background_migration/backfill_project_repositories.rb'
     - 'lib/gitlab/ci/parsers/security/common.rb'
     - 'lib/gitlab/ci/reports/security/aggregated_report.rb'
     - 'lib/gitlab/ci/reports/security/finding.rb'

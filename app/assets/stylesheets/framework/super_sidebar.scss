@@ -706,7 +706,8 @@ $scroll-scrim-height: 2.25rem;
 .super-sidebar-mr-menu-dropdown .gl-new-dropdown-panel,
 .super-sidebar-new-menu-dropdown .gl-new-dropdown-panel,
 .super-sidebar-user-dropdown .gl-new-dropdown-panel,
-.super-sidebar-help-center-dropdown .gl-new-dropdown-panel {
+.super-sidebar-help-center-dropdown .gl-new-dropdown-panel,
+.super-sidebar-settings-dropdown .gl-new-dropdown-panel {
   @apply gl-min-w-28 #{!important};
   @apply gl-w-28 #{!important};
 }

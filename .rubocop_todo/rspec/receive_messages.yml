@@ -206,7 +206,6 @@ RSpec/ReceiveMessages:
     - 'spec/helpers/issuables_helper_spec.rb'
     - 'spec/helpers/issues_helper_spec.rb'
     - 'spec/helpers/merge_requests_helper_spec.rb'
-    - 'spec/helpers/nav_helper_spec.rb'
     - 'spec/helpers/preferences_helper_spec.rb'
     - 'spec/helpers/projects_helper_spec.rb'
     - 'spec/helpers/sidebars_helper_spec.rb'

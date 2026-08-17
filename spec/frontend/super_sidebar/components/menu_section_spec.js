@@ -1,9 +1,10 @@
 import Vue, { computed, nextTick } from 'vue';
-import { GlNavItem, GlCollapse } from '@gitlab/ui';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { GlNavItem, GlCollapse, GlDisclosureDropdown } from '@gitlab/ui';
+import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import MenuSection from '~/super_sidebar/components/menu_section.vue';
 import NavItem from '~/super_sidebar/components/nav_item.vue';
 import FlyoutMenu from '~/super_sidebar/components/flyout_menu.vue';
+import DisclosureNavItem from '~/super_sidebar/components/disclosure_nav_item.vue';
 import { stubComponent } from 'helpers/stub_component';
 
 describe('MenuSection component', () => {
@@ -13,6 +14,8 @@ describe('MenuSection component', () => {
 
   const findCollapse = () => wrapper.findComponent(GlCollapse);
   const findFlyout = () => wrapper.findComponent(FlyoutMenu);
+  const findDisclosure = () => wrapper.findComponent(GlDisclosureDropdown);
+  const findDisclosureNavItems = () => wrapper.findAllComponents(DisclosureNavItem);
   const findNavItems = () => wrapper.findAllComponents(NavItem);
   const findNavItem = () => wrapper.findComponent(GlNavItem);
 
@@ -28,6 +31,9 @@ describe('MenuSection component', () => {
         GlNavItem,
         GlCollapse: stubComponent(GlCollapse, {
           props: ['visible'],
+        }),
+        GlDisclosureDropdown: stubComponent(GlDisclosureDropdown, {
+          template: `<div><slot name="toggle" :accessibility-attributes="{}" /><slot /></div>`,
         }),
       },
     });
@@ -236,6 +242,41 @@ describe('MenuSection component', () => {
           });
         });
       });
+    });
+  });
+
+  describe('when `disclosure` is true', () => {
+    beforeEach(() => {
+      createWrapper(
+        { title: 'Settings', items: [{ id: 'general', title: 'General', link: '/general' }] },
+        { disclosure: true, 'has-flyout': true },
+      );
+    });
+
+    it('renders a disclosure dropdown with its items and no collapse or flyout', () => {
+      expect(findDisclosure().exists()).toBe(true);
+      expect(findDisclosureNavItems()).toHaveLength(1);
+      expect(findDisclosureNavItems().at(0).props('item')).toMatchObject({ title: 'General' });
+      expect(findCollapse().exists()).toBe(false);
+      expect(findFlyout().exists()).toBe(false);
+    });
+
+    it('renders the dropdown contents as a list (ul) for valid, accessible markup', async () => {
+      wrapper = mountExtended(MenuSection, {
+        propsData: {
+          item: {
+            title: 'Settings',
+            icon: 'settings',
+            items: [{ id: 'general', title: 'General', link: '/general' }],
+          },
+          disclosure: true,
+        },
+      });
+
+      await wrapper.findByTestId('menu-section-button').trigger('click');
+      await nextTick();
+
+      expect(wrapper.find('[data-testid="disclosure-content"]').element.tagName).toBe('UL');
     });
   });
 

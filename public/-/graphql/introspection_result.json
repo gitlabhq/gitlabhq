@@ -62596,6 +62596,22 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.2."
             },
             {
+              "name": "awaitingApproval",
+              "description": "Indicates whether the rollout has an open approval gate awaiting a decision, derived from its transition journal. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
               "name": "createdAt",
               "description": "Timestamp of when the rollout was created.",
               "args": [],
@@ -254380,7 +254396,7 @@
             },
             {
               "name": "cdRolloutGateResolve",
-              "description": "Resolves an approval gate on a paused continuous deployment rollout by recording the decision in the rollout transition journal. Introduced in GitLab 19.2: Status: Experiment.",
+              "description": "Resolves an open approval gate on a continuous deployment rollout by recording the decision in the rollout transition journal. Introduced in GitLab 19.2: Status: Experiment.",
               "args": [
                 {
                   "name": "input",
@@ -442846,6 +442862,18 @@
               "deprecationReason": null
             },
             {
+              "name": "readinessScore",
+              "description": "Readiness score of the agent plan (0-100). Null when the score is not yet available. Only available when the `workplan_score` feature flag is enabled. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
               "name": "type",
               "description": "Widget type.",
               "args": [],
@@ -442879,17 +442907,25 @@
               "name": "content",
               "description": "Content of the agent plan.",
               "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
               },
               "defaultValue": null,
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "readinessScore",
+              "description": "Readiness score of the agent plan (0-100). Null when the score is not yet available. Only available when the `workplan_score` feature flag is enabled. Introduced in GitLab 19.3: Status: Experiment.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
             }
           ],
           "interfaces": null,

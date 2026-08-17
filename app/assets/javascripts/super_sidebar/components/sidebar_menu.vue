@@ -1,6 +1,7 @@
 <script>
 import { GlBreakpointInstance, breakpoints } from '@gitlab/ui/src/utils'; // eslint-disable-line no-restricted-syntax -- GlBreakpointInstance is used intentionally here. In this case we must obtain viewport breakpoints
 import { GlNavItem, GlModalDirective, GlTooltipDirective, GlToastMixin } from '@gitlab/ui';
+import { Portal } from 'portal-vue';
 import superSidebarDataQuery from '~/super_sidebar/graphql/queries/super_sidebar.query.graphql';
 import { __, s__, sprintf } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -19,6 +20,8 @@ import {
   PANELS_WITH_PINS,
   PINNED_NAV_STORAGE_KEY,
   MAX_OPEN_WORK_ITEMS_COUNT,
+  SETTINGS_DISCLOSURE_PORTAL_NAME,
+  SETTINGS_MENU_ITEM_ID,
 } from '../constants';
 import NavItem from './nav_item.vue';
 import PinnedSection from './pinned_section.vue';
@@ -34,7 +37,9 @@ export default {
     PinnedSection,
     GlNavItem,
     FeatureLibraryModal,
+    Portal,
   },
+  settingsDisclosurePortalName: SETTINGS_DISCLOSURE_PORTAL_NAME,
   directives: {
     GlModal: GlModalDirective,
     GlTooltip: GlTooltipDirective,
@@ -220,7 +225,7 @@ export default {
     },
     sectionsToRender() {
       if (!this.showUnpinnedItems) {
-        return this.nonStaticItems.filter((item) => item.id === 'settings_menu');
+        return this.nonStaticItems.filter((item) => item.id === SETTINGS_MENU_ITEM_ID);
       }
       return this.nonStaticItems;
     },
@@ -249,6 +254,14 @@ export default {
             !this.pinnedItems.some((pinned) => pinned.link === item.link) &&
             !item.link_classes?.includes(HIDDEN_NAV_ITEM_CLASS),
         );
+    },
+    // Pin context passed to the portalled settings disclosure.
+    settingsPinContext() {
+      return {
+        pinnedItemIds: this.changedPinnedItemIds,
+        panelSupportsPins: this.supportsPins,
+        panelType: this.panelType,
+      };
     },
   },
   mounted() {
@@ -354,6 +367,14 @@ export default {
     isSection(navItem) {
       return navItem.items?.length;
     },
+    isSettingsSection(navItem) {
+      return navItem.id === SETTINGS_MENU_ITEM_ID;
+    },
+    // Derive from showUnpinnedItems (not the raw flag) so the organization
+    // panel, which is exempt from unpinned-hiding, keeps its in-place section.
+    settingsAsDisclosure(navItem) {
+      return !this.showUnpinnedItems && this.isSettingsSection(navItem);
+    },
     decideFlyoutState() {
       this.showFlyoutMenus = GlBreakpointInstance.windowWidth() >= breakpoints.md;
     },
@@ -448,8 +469,23 @@ export default {
       data-testid="non-static-items-section"
     >
       <template v-for="item in sectionsToRender">
+        <portal
+          v-if="isSection(item) && settingsAsDisclosure(item)"
+          :key="item.id"
+          :to="$options.settingsDisclosurePortalName"
+        >
+          <menu-section
+            :item="item"
+            :separated="item.separated"
+            :async-count="asyncCount"
+            :pin-context="settingsPinContext"
+            disclosure
+            @pin-add="createPin"
+            @pin-remove="destroyPin"
+          />
+        </portal>
         <menu-section
-          v-if="isSection(item)"
+          v-else-if="isSection(item)"
           :key="item.id"
           :item="item"
           :separated="item.separated"

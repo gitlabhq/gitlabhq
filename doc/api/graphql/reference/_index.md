@@ -6763,7 +6763,7 @@ Fields:
 
 {{< /details >}}
 
-Resolves an approval gate on a paused continuous deployment rollout by recording the decision in the rollout transition journal.
+Resolves an open approval gate on a continuous deployment rollout by recording the decision in the rollout transition journal.
 
 Input type: `CdRolloutGateResolveInput`
 
@@ -36410,6 +36410,7 @@ Fields:
 | ---- | ---- | ----------- |
 | <a id="cdrollout-application"></a>`application` | [`CdApplication`](#cdapplication) | Application the rollout belongs to. |
 | <a id="cdrollout-applicationflowdefinition"></a>`applicationFlowDefinition` {{< icon name="warning-solid" >}} | [`CdApplicationFlowDefinition`](#cdapplicationflowdefinition) | Introduced in GitLab 19.2. Status: Experiment. Flow definition the rollout was created from. |
+| <a id="cdrollout-awaitingapproval"></a>`awaitingApproval` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | Introduced in GitLab 19.3. Status: Experiment. Indicates whether the rollout has an open approval gate awaiting a decision, derived from its transition journal. |
 | <a id="cdrollout-createdat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the rollout was created. |
 | <a id="cdrollout-finishedat"></a>`finishedAt` | [`Time`](#time) | Timestamp of when the rollout finished. |
 | <a id="cdrollout-id"></a>`id` | [`CdRolloutID!`](#cdrolloutid) | Global ID of the rollout. |
@@ -63821,6 +63822,7 @@ Fields:
 | <a id="workitemwidgetagentplan-aiplanningenabled"></a>`aiPlanningEnabled` | [`Boolean!`](#boolean) | Indicates whether AI planning is enabled for the work item. |
 | <a id="workitemwidgetagentplan-content"></a>`content` | [`String`](#string) | Content of the agent plan. This field can only be resolved for one work item in any single request. |
 | <a id="workitemwidgetagentplan-contenthtml"></a>`contentHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `content`. This field can only be resolved for one work item in any single request. |
+| <a id="workitemwidgetagentplan-readinessscore"></a>`readinessScore` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.3. Status: Experiment. Readiness score of the agent plan (0-100). Null when the score is not yet available. Only available when the `workplan_score` feature flag is enabled. |
 | <a id="workitemwidgetagentplan-type"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
 ### `WorkItemWidgetAiSession`
@@ -76488,7 +76490,8 @@ Arguments:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="workitemwidgetagentplaninput-content"></a>`content` | [`String!`](#string) | Content of the agent plan. |
+| <a id="workitemwidgetagentplaninput-content"></a>`content` | [`String`](#string) | Content of the agent plan. |
+| <a id="workitemwidgetagentplaninput-readinessscore"></a>`readinessScore` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.3. Status: Experiment. Readiness score of the agent plan (0-100). Null when the score is not yet available. Only available when the `workplan_score` feature flag is enabled. |
 
 ### `WorkItemWidgetAssigneesInput`
 

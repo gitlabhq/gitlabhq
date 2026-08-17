@@ -3,6 +3,16 @@
 // the super_sidebar directory.
 
 export const SIDEBAR_PORTAL_ID = 'sidebar-portal-mount';
+export const SETTINGS_DISCLOSURE_PORTAL_NAME = 'super-sidebar-settings-disclosure';
+export const SETTINGS_MENU_ITEM_ID = 'settings_menu';
+
+// Shared default for the pin context injected/passed into nav items.
+export const DEFAULT_PIN_CONTEXT = {
+  pinnedItemIds: { ids: [] },
+  panelSupportsPins: false,
+  panelType: '',
+};
+
 export const JS_TOGGLE_COLLAPSE_CLASS = 'js-super-sidebar-toggle-collapse';
 export const JS_TOGGLE_EXPAND_CLASS = 'js-super-sidebar-toggle-expand';
 

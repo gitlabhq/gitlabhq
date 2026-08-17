@@ -85,7 +85,6 @@ export default {
   data() {
     return {
       isReportAbuseDrawerOpen: false,
-      selectedVersionId: null,
       selectedVersion: {},
     };
   },
@@ -139,6 +138,9 @@ export default {
     versionBadgeVariant() {
       return this.isLatestVersion ? 'info' : 'neutral';
     },
+    selectedVersionValue() {
+      return this.selectedVersion.value ?? null;
+    },
     toggleButtonText() {
       if (this.selectedVersion.text) {
         return this.selectedVersion.text;
@@ -150,11 +152,13 @@ export default {
     },
   },
   watch: {
+    // `initialVersionId` is null until the parent's versions query resolves, so the
+    // selection cannot be seeded in `data()`. The lookup needs `versions` to be
+    // populated in the same flush, which is how the parent assigns both.
     initialVersionId: {
       immediate: true,
       handler(versionId) {
         if (versionId) {
-          this.selectedVersionId = versionId;
           this.selectedVersion = this.getSelectedVersion(versionId);
         }
       },
@@ -242,7 +246,7 @@ export default {
       </div>
       <div class="gl-ml-auto">
         <gl-collapsible-listbox
-          v-model="selectedVersionId"
+          :selected="selectedVersionValue"
           :items="versions"
           :loading="isSearchingVersions"
           searchable

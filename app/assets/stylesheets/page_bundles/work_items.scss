@@ -556,3 +556,12 @@ ul.content-list {
 .work-item-display-settings-drawer.gl-drawer {
   max-height: calc(100% - var(--drawer-top-offset, 0px)) !important;
 }
+
+// The workplan flow appends a machine-readable copy of its clarifying question
+// to the comment body, fenced as `json:duo-question`. Banzai renders it as a
+// normal code block, so we hide it and instead render a transformed question UI.
+// See https://gitlab.com/groups/gitlab-org/-/work_items/22772
+pre[data-lang-params='duo-question'] {
+  display: none;
+}
+

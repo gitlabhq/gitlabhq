@@ -125,6 +125,10 @@ export default {
     hasReplies() {
       return Boolean(this.replies?.length);
     },
+    // `replies` is null when a thread has none; the note prop wants an array.
+    replyNotes() {
+      return this.replies ?? [];
+    },
     replies() {
       if (this.notes?.length > 1) {
         return this.notes.slice(1);
@@ -267,6 +271,7 @@ export default {
                   :discussion-id="discussionId"
                   :full-path="fullPath"
                   :has-replies="hasReplies"
+                  :replies="replyNotes"
                   :work-item-type="workItemType"
                   :class="{ 'gl-mb-4': hasReplies }"
                   :autocomplete-data-sources="autocompleteDataSources"

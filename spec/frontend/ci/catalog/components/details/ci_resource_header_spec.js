@@ -265,6 +265,16 @@ describe('CiResourceHeader', () => {
       expect(findVersionDropdown().props('items')).toEqual(versions);
     });
 
+    it('marks the initial version as selected in the dropdown', () => {
+      expect(findVersionDropdown().props('selected')).toBe(initialVersionId);
+    });
+
+    it('moves the dropdown selection to the newly selected version', async () => {
+      await findVersionDropdown().vm.$emit('select', versions[0].value);
+
+      expect(findVersionDropdown().props('selected')).toBe(versions[0].value);
+    });
+
     it('emits version-selected event when a version is selected', async () => {
       await findVersionDropdown().vm.$emit('select', versions[0].value);
 
@@ -300,6 +310,10 @@ describe('CiResourceHeader', () => {
 
       it('shows "No versions available" text', () => {
         expect(findVersionButton().text()).toContain('No versions available');
+      });
+
+      it('passes no selection to the dropdown', () => {
+        expect(findVersionDropdown().props('selected')).toBeNull();
       });
     });
 

@@ -1,17 +1,8 @@
 ---
 Migration/BatchedMigrationBaseClass:
   Exclude:
-    - 'lib/gitlab/background_migration/backfill_issue_search_data.rb'
-    - 'lib/gitlab/background_migration/backfill_iteration_cadence_id_for_boards.rb'
-    - 'lib/gitlab/background_migration/backfill_member_namespace_for_group_members.rb'
-    - 'lib/gitlab/background_migration/backfill_note_discussion_id.rb'
-    - 'lib/gitlab/background_migration/backfill_project_repositories.rb'
-    - 'lib/gitlab/background_migration/backfill_project_settings.rb'
-    - 'lib/gitlab/background_migration/create_security_setting.rb'
     - 'lib/gitlab/background_migration/fix_projects_without_project_feature.rb'
-    - 'lib/gitlab/background_migration/fix_projects_without_prometheus_service.rb'
     - 'lib/gitlab/background_migration/mailers/unconfirm_mailer.rb'
-    - 'lib/gitlab/background_migration/migrate_null_private_profile_to_false.rb'
     - 'lib/gitlab/background_migration/populate_latest_pipeline_ids.rb'
     - 'lib/gitlab/background_migration/project_namespaces/models/namespace.rb'
     - 'lib/gitlab/background_migration/project_namespaces/models/project.rb'

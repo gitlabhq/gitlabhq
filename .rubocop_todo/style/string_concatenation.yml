@@ -60,7 +60,6 @@ Style/StringConcatenation:
     - 'lib/bulk_imports/common/pipelines/wiki_pipeline.rb'
     - 'lib/feature/definition.rb'
     - 'lib/gitlab/auth/ldap/dn.rb'
-    - 'lib/gitlab/background_migration/backfill_project_repositories.rb'
     - 'lib/gitlab/ci/build/artifacts/metadata/entry.rb'
     - 'lib/gitlab/ci/status/build/retried.rb'
     - 'lib/gitlab/config/entry/validators.rb'

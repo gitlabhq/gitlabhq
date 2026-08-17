@@ -143,7 +143,6 @@ Lint/UnusedBlockArgument:
     - 'lib/banzai/filter/spaced_link_filter.rb'
     - 'lib/banzai/issuable_extractor.rb'
     - 'lib/container_registry/client.rb'
-    - 'lib/gitlab/background_migration/backfill_project_feature_package_registry_access_level.rb'
     - 'lib/gitlab/ci/build/artifacts/path.rb'
     - 'lib/gitlab/ci/reports/accessibility_reports.rb'
     - 'lib/gitlab/ci/reports/test_suite.rb'

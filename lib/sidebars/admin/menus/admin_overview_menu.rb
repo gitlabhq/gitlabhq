@@ -21,7 +21,7 @@ module Sidebars
 
         override :title
         def title
-          s_('Admin|Overview')
+          s_('Admin|Instance overview')
         end
 
         override :sprite_icon

@@ -1,15 +1,16 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import MockAdapter from 'axios-mock-adapter';
+import { Portal } from 'portal-vue';
 import { createWrapper as createRootWrapper } from '@vue/test-utils';
 // eslint-disable-next-line no-restricted-syntax -- test mocks viewport breakpoints used by the source component
 import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
 import superSidebarDataQuery from '~/super_sidebar/graphql/queries/super_sidebar.query.graphql';
 import dismissUserCalloutMutation from '~/graphql_shared/mutations/dismiss_user_callout.mutation.graphql';
-import createMockApollo from 'helpers/mock_apollo_helper';
-import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SidebarMenu from '~/super_sidebar/components/sidebar_menu.vue';
 import PinnedSection from '~/super_sidebar/components/pinned_section.vue';
@@ -71,6 +72,7 @@ describe('Sidebar Menu', () => {
   const findNonStaticItems = () => findNonStaticItemsSection().findAllComponents(NavItem);
   const findNonStaticSectionItems = () =>
     findNonStaticItemsSection().findAllComponents(MenuSection);
+  const findSettingsPortal = () => wrapper.findComponent(Portal);
 
   describe('Static section', () => {
     describe('when the sidebar supports pins', () => {
@@ -208,6 +210,82 @@ describe('Sidebar Menu', () => {
             true,
             true,
           ]);
+        });
+      });
+    });
+
+    describe('settings section', () => {
+      const findSettingsSection = () =>
+        findNonStaticSectionItems().wrappers.find((w) => w.props('item').id === 'settings_menu');
+
+      beforeEach(() => {
+        jest.spyOn(GlBreakpointInstance, 'windowWidth').mockImplementation(() => 768);
+      });
+
+      describe('when hideUnpinnedSidebarItems is disabled', () => {
+        beforeEach(() => {
+          createWrapper({ items: menuItems, panelType: 'project' });
+        });
+
+        it('renders the settings section in place with a flyout, not as a disclosure', () => {
+          const settingsSection = findSettingsSection();
+
+          expect(settingsSection.props('disclosure')).toBe(false);
+          expect(settingsSection.props('hasFlyout')).toBe(true);
+        });
+      });
+
+      describe('when hideUnpinnedSidebarItems is enabled', () => {
+        let axiosMock;
+
+        beforeEach(() => {
+          axiosMock = new MockAdapter(axios);
+          axiosMock.onPut().reply(HTTP_STATUS_OK, []);
+
+          createWrapper({
+            items: menuItems,
+            panelType: 'project',
+            isLoggedIn: true,
+            provide: { glFeatures: { hideUnpinnedSidebarItems: true } },
+          });
+        });
+
+        afterEach(() => {
+          axiosMock.restore();
+        });
+
+        it('renders the settings section as a disclosure without a flyout', () => {
+          const settingsSection = findSettingsSection();
+
+          expect(settingsSection.props('disclosure')).toBe(true);
+          expect(settingsSection.props('hasFlyout')).toBe(false);
+        });
+
+        it('passes the pin context to the portalled section', () => {
+          const settingsSection = findSettingsSection();
+
+          expect(settingsSection.props('pinContext')).toMatchObject({
+            panelSupportsPins: true,
+            panelType: 'project',
+          });
+        });
+
+        it('relays pin-add from the settings section to persist the pin', async () => {
+          findSettingsSection().vm.$emit('pin-add', 'settings_general', 'General');
+          await waitForPromises();
+
+          expect(JSON.parse(axiosMock.history.put[0].data).menu_item_ids).toContain(
+            'settings_general',
+          );
+        });
+
+        it('relays pin-remove from the settings section to persist the unpin', async () => {
+          findSettingsSection().vm.$emit('pin-add', 'settings_general', 'General');
+          findSettingsSection().vm.$emit('pin-remove', 'settings_general', 'General');
+          await waitForPromises();
+
+          const lastPut = axiosMock.history.put.at(-1);
+          expect(JSON.parse(lastPut.data).menu_item_ids).not.toContain('settings_general');
         });
       });
     });
@@ -875,6 +953,14 @@ describe('Sidebar Menu', () => {
         expect(sections.at(0).props('item').id).toBe('settings_menu');
       });
 
+      it('renders the settings section as a disclosure', () => {
+        expect(findNonStaticSectionItems().at(0).props('disclosure')).toBe(true);
+      });
+
+      it('portals the settings section to the disclosure target', () => {
+        expect(findSettingsPortal().props('to')).toBe('super-sidebar-settings-disclosure');
+      });
+
       it('does not render non-settings sections', () => {
         const sectionTitles = findNonStaticSectionItems().wrappers.map(
           (w) => w.props('item').title,
@@ -933,6 +1019,19 @@ describe('Sidebar Menu', () => {
       });
 
       expect(findNonStaticSectionItems().length).toBeGreaterThan(1);
+    });
+
+    it('renders organization sections in place, not as disclosures', () => {
+      createWrapper({
+        items: menuItems,
+        panelType: 'organization',
+        provide: { glFeatures: { hideUnpinnedSidebarItems: true } },
+      });
+
+      expect(findNonStaticSectionItems().wrappers.map((w) => w.props('disclosure'))).not.toContain(
+        true,
+      );
+      expect(findSettingsPortal().exists()).toBe(false);
     });
 
     it('still renders the pinned section and feature library trigger', () => {

@@ -870,11 +870,15 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
           expect(note_by_external_user.reload.author).to eq(ghost_user)
         end
 
-        it 'performs a single UPDATE query per batch for notes' do
-          recorder = ActiveRecord::QueryRecorder.new { service.execute }
+        context 'when batching note updates' do
+          include_context 'with transfer batch size of 1'
 
-          update_queries = recorder.log.select { |q| q.include?('UPDATE "notes"') }
-          expect(update_queries.size).to eq(1)
+          let(:execute_service) { service.execute }
+          let(:expected_batch_queries) do
+            { 'notes' => 3 }
+          end
+
+          it_behaves_like 'generates batched transfer queries'
         end
 
         it 'does not update notes for personal snippets owned by users not in the group' do
@@ -934,6 +938,46 @@ RSpec.describe Organizations::Transfer::UsersService, :aggregate_failures, featu
           expect(user2.reload.organization_id).to eq(new_organization.id)
           expect(user3.reload.organization_id).to eq(new_organization.id)
         end
+      end
+
+      context 'when batching updates' do
+        include_context 'with transfer batch size of 1'
+
+        let_it_be_with_refind(:pat_user1) { create(:user, organization: old_organization) }
+        let_it_be_with_refind(:pat_user2) { create(:user, organization: old_organization) }
+        let_it_be_with_refind(:pat_user3) { create(:user, organization: old_organization) }
+        let_it_be_with_refind(:token1) do
+          create(:personal_access_token, user: pat_user1, organization: old_organization)
+        end
+
+        let_it_be_with_refind(:token2) do
+          create(:personal_access_token, user: pat_user2, organization: old_organization)
+        end
+
+        let_it_be_with_refind(:token3) do
+          create(:personal_access_token, user: pat_user3, organization: old_organization)
+        end
+
+        let(:execute_service) { service.execute }
+        let(:expected_batch_queries) do
+          { 'personal_access_tokens' => 3 }
+        end
+
+        before_all do
+          group.add_maintainer(pat_user1)
+          group.add_developer(pat_user2)
+          group.add_guest(pat_user3)
+        end
+
+        it 'processes all records across multiple batches' do
+          service.execute
+
+          expect(token1.reload.organization_id).to eq(new_organization.id)
+          expect(token2.reload.organization_id).to eq(new_organization.id)
+          expect(token3.reload.organization_id).to eq(new_organization.id)
+        end
+
+        it_behaves_like 'generates batched transfer queries'
       end
 
       context 'with dynamic migration models' do

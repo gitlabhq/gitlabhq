@@ -60,7 +60,6 @@ Style/RedundantRegexpEscape:
     - 'lib/atlassian/jira_connect/jwt/asymmetric.rb'
     - 'lib/banzai/filter/autolink_filter.rb'
     - 'lib/bulk_imports/common/pipelines/uploads_pipeline.rb'
-    - 'lib/gitlab/background_migration/update_jira_tracker_data_deployment_type_based_on_url.rb'
     - 'lib/gitlab/ci/parsers/test/junit.rb'
     - 'lib/gitlab/ci/pipeline/expression/lexeme/not_matches.rb'
     - 'lib/gitlab/ci/pipeline/expression/lexeme/pattern.rb'

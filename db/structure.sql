@@ -47677,7 +47677,7 @@ CREATE INDEX index_duo_wf_checkpoint_blobs_on_workflow_id ON ONLY p_duo_workflow
 
 CREATE INDEX index_duo_wf_checkpoint_headers_on_namespace_id ON ONLY p_duo_workflows_checkpoint_headers USING btree (namespace_id);
 
-CREATE INDEX index_duo_wf_checkpoint_headers_on_workflow_id ON ONLY p_duo_workflows_checkpoint_headers USING btree (workflow_id);
+CREATE INDEX index_duo_wf_checkpoint_headers_on_workflow_id_thread_ts_id ON ONLY p_duo_workflows_checkpoint_headers USING btree (workflow_id, thread_ts, id);
 
 CREATE INDEX index_duo_wf_session_artifacts_on_ns_wf_updated_wf_id ON duo_workflow_session_artifacts USING btree (namespace_id, workflow_updated_at DESC, workflow_id DESC);
 
