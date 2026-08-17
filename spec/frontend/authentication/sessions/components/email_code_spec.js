@@ -3,7 +3,11 @@ import MockAdapter from 'axios-mock-adapter';
 import { GlFormFields } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { HTTP_STATUS_OK, HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
+import {
+  HTTP_STATUS_OK,
+  HTTP_STATUS_TOO_MANY_REQUESTS,
+  HTTP_STATUS_UNPROCESSABLE_ENTITY,
+} from '~/lib/utils/http_status';
 import axios from '~/lib/utils/axios_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
@@ -21,6 +25,7 @@ jest.mock('~/alert');
 describe('EmailCode', () => {
   let wrapper;
   let axiosMock;
+  let mockAlertDismiss;
 
   const sendEmailOtpPath = '/users/fallback_to_email_otp';
   const verifyPath = '/users/sign_in';
@@ -45,7 +50,7 @@ describe('EmailCode', () => {
   const findVerifyCodeForm = () => wrapper.findByTestId('verify-code-form');
   const findCodeField = () => wrapper.findByTestId('email-code-field');
   const findFormFields = () => wrapper.findComponent(GlFormFields);
-  const findVerifyButton = () => wrapper.findByTestId('verify-code-button');
+  const findVerifyButton = () => wrapper.findComponentByTestId('verify-code-button');
   const findResendButton = () => wrapper.findComponentByTestId('resend-button');
   const findCountdown = () => wrapper.findComponent(GlCountdown);
   const findUseAnotherEmailButton = () => wrapper.findByTestId('use-another-email-button');
@@ -56,6 +61,9 @@ describe('EmailCode', () => {
   const submitCodeForm = () => findFormFields().vm.$emit('submit');
 
   beforeEach(() => {
+    mockAlertDismiss = jest.fn();
+    createAlert.mockReturnValue({ dismiss: mockAlertDismiss });
+
     axiosMock = new MockAdapter(axios);
     axiosMock.onPost(sendEmailOtpPath).reply(HTTP_STATUS_OK, { show_resend_after: null });
   });
@@ -269,6 +277,121 @@ describe('EmailCode', () => {
       expect(JSON.parse(resendRequest.data)).toEqual({ user: { email: 'other@example.com' } });
       expect(findVerifyCodeForm().exists()).toBe(true);
       expect(wrapper.text()).toContain('other@example.com');
+    });
+  });
+
+  describe('while the auto-send is in flight', () => {
+    it('holds the verify button disabled and loading until the send settles', async () => {
+      createComponent();
+
+      expect(findVerifyButton().props('loading')).toBe(true);
+      expect(findVerifyButton().attributes('disabled')).toBeDefined();
+
+      await waitForPromises();
+
+      expect(findVerifyButton().props('loading')).toBe(false);
+      expect(findVerifyButton().attributes('disabled')).toBeUndefined();
+    });
+
+    it('holds a verify submitted mid-flight until the auto-send has landed', async () => {
+      let releaseAutoSend;
+      const autoSendLanded = new Promise((resolve) => {
+        releaseAutoSend = resolve;
+      });
+
+      axiosMock.reset();
+      axiosMock.onPost(sendEmailOtpPath).reply(async () => {
+        await autoSendLanded;
+        return [HTTP_STATUS_OK, { show_resend_after: null }];
+      });
+      axiosMock
+        .onPost(verifyPath)
+        .reply(HTTP_STATUS_OK, { status: 'success', redirect_path: '/welcome' });
+
+      createComponent();
+
+      // Submitting the form directly stands in for a programmatic submit, which reaches
+      // verify() without going through the disabled button - what a password manager
+      // autofilling and submitting does. The session only moves to email verification once
+      // the auto-send commits; a verify that overtakes it is routed to the two-factor branch
+      // and comes back as an unusable generic failure.
+      await enterCode('123456');
+      await submitCodeForm();
+      await waitForPromises();
+
+      expect(axiosMock.history.post.map((req) => req.url)).toEqual([sendEmailOtpPath]);
+
+      releaseAutoSend();
+      await waitForPromises();
+
+      expect(axiosMock.history.post.map((req) => req.url)).toEqual([sendEmailOtpPath, verifyPath]);
+    });
+  });
+
+  describe('dismissing a standing alert', () => {
+    beforeEach(() => {
+      axiosMock.onPost(sendEmailOtpPath).reply(HTTP_STATUS_UNPROCESSABLE_ENTITY);
+    });
+
+    it('dismisses the standing alert when a new one replaces it', async () => {
+      axiosMock
+        .onPost(resendPath)
+        .reply(HTTP_STATUS_TOO_MANY_REQUESTS, { status: 'failure', message: 'Slow down.' });
+
+      createComponent();
+      await waitForPromises();
+
+      expect(mockAlertDismiss).not.toHaveBeenCalled();
+
+      await findResendButton().trigger('click');
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenLastCalledWith({ message: 'Slow down.' });
+      expect(mockAlertDismiss).toHaveBeenCalledTimes(1);
+    });
+
+    it('dismisses the alert when switching to the email form', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalled();
+      expect(mockAlertDismiss).not.toHaveBeenCalled();
+
+      await findUseAnotherEmailButton().trigger('click');
+
+      expect(mockAlertDismiss).toHaveBeenCalledTimes(1);
+    });
+
+    it('dismisses an alert that arrives while the email form is showing when cancelling', async () => {
+      createComponent();
+
+      // Switch before the in-flight auto-send settles, so its alert lands on the email form.
+      await findUseAnotherEmailButton().trigger('click');
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalled();
+      expect(mockAlertDismiss).not.toHaveBeenCalled();
+
+      await findEmailForm().vm.$emit('cancel');
+
+      expect(mockAlertDismiss).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not dismiss the success alert raised by sending to another email', async () => {
+      axiosMock.onPost(resendPath).reply(HTTP_STATUS_OK, { status: 'success' });
+
+      createComponent();
+      await waitForPromises();
+      await findUseAnotherEmailButton().trigger('click');
+      mockAlertDismiss.mockClear();
+
+      await findEmailForm().vm.$emit('submit-email', 'other@example.com');
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenLastCalledWith(
+        expect.objectContaining({ variant: VARIANT_SUCCESS }),
+      );
+      expect(mockAlertDismiss).not.toHaveBeenCalled();
     });
   });
 });

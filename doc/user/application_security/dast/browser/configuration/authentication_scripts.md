@@ -148,7 +148,7 @@ Parameters:
 
 Usage:
 
-Direct the browser to specific pages during the authentication flow. This is typically the first action in most authentication scripts.
+Direct the browser to specific pages during the authentication flow, typically as the first action in most authentication scripts.
 
 Example:
 
@@ -181,7 +181,7 @@ Parameters:
 
 Usage:
 
-This is the primary method for filling out sign-in forms, search boxes, and other text-based input fields.
+Use this method as the primary way to fill out sign-in forms, search boxes, and other text-based input fields.
 
 Example:
 
@@ -553,7 +553,7 @@ auth.successIfElementFound("css:.employee-portal")
 
 ## Logging methods
 
-Add messages to the authentication report. This can be useful when troubleshooting.
+Add messages to the authentication report. This can be helpful when troubleshooting.
 
 | Method | Description |
 |--------|-------------|
@@ -595,7 +595,7 @@ log.info("Authentication completed successfully")
 
 ### `log.debug(msg)`
 
-Logs detailed debugging information useful for troubleshooting script issues.
+Logs detailed debugging information helpful for troubleshooting script issues.
 
 Parameters:
 
@@ -835,7 +835,7 @@ doc.actionFormInput("id:password", process.env.DAST_AUTH_PASSWORD)
 
 ## Debugging
 
-There are two ways to understand how your script is executing and what actions it performed:
+Two ways exist to understand how your script is executing and what actions it performed:
 the authentication report and the debug log. Both are attached to the DAST job as artifacts.
 
 The authentication report includes each step of your authentication script with screenshots to help debug your scripts.

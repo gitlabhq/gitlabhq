@@ -76,7 +76,7 @@ RSpec.describe "Dashboard Issues Feed", feature_category: :planning_views do
           expect(entry).to have_selector('assignees email', text: assignee.public_email)
           expect(entry).not_to have_selector('labels')
           expect(entry).not_to have_selector('milestone')
-          expect(entry).to have_selector('description', text: issue2.description)
+          expect(entry).to have_selector('content', text: issue2.description)
         end
       end
 
@@ -99,7 +99,7 @@ RSpec.describe "Dashboard Issues Feed", feature_category: :planning_views do
           expect(entry).to have_selector('assignees email', text: assignee.public_email)
           expect(entry).to have_selector('labels label', text: label1.title)
           expect(entry).to have_selector('milestone', text: milestone1.title)
-          expect(entry).not_to have_selector('description')
+          expect(entry).not_to have_selector('content')
         end
       end
     end

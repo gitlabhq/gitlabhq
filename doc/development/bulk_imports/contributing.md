@@ -47,7 +47,7 @@ For example, to add import support for a new `Project` association called `docum
 > Associations listed in this file are imported from top to bottom. If you have an association that is order-dependent, put the dependencies before the
 > associations that require them. For example, documents must be imported before merge requests, otherwise they are not valid.
 
-1. Add your association to `tree.project` within the `import_export.yml`.
+1. Add your association to `tree.project` in the `import_export.yml`.
 
    ```diff
    diff --git a/lib/gitlab/import_export/project/import_export.yml b/lib/gitlab/import_export/project/import_export.yml
@@ -68,7 +68,7 @@ For example, to add import support for a new `Project` association called `docum
    > and imported in Enterprise Edition instances of GitLab.
 
    If your association doesn't need to include any sub-relations, then this is enough. But if it needs more sub-relations to be included (for example, notes),
-   you must list them out. For example, documents can have notes (with award emojis on notes) and award emojis (on documents), which we want to migrate. In this
+   you must list them out. For example, documents can have notes (with award emoji on notes) and award emoji (on documents), which we want to migrate. In this
    case, our relation becomes the following:
 
    ```diff
@@ -139,7 +139,7 @@ Follow other relations example to add the new tests.
 
 Any newly-added relation specified in `import_export.yml` is automatically added to the export files written on disk, so no extra actions are required.
 
-Once the relation is added and tests are added, we can manually check that the relation is exported. It should automatically be included in both:
+After the relation is added and tests are added, we can manually check that the relation is exported. It should automatically be included in both:
 
 - File-based imports and exports. Use the [project export functionality](../../user/project/settings/import_export.md#export-a-project-and-its-data) to export,
   download, and inspect the exported data.
@@ -326,10 +326,10 @@ This way, the importer maps each exported `link` to the corresponding `Releases:
 
 #### Importing an existing object that is referenced by multiple other relations
 
-If relations are referenced across multiple associations (or within a single association across multiple records), we won't want to import duplicates.
+If relations are referenced across multiple associations (or in a single association across multiple records), we won't want to import duplicates.
 
 For example, consider a label that is applied on a number of different issues and merge requests. Whenever we export issues and merge requests, the exported
-label is contained within each of the records as its subrelation. When we import exported issues and merge requests, we want to import the label only once
+label is contained in each of the records as its subrelation. When we import exported issues and merge requests, we want to import the label only once
 and reuse it across all of the records. Otherwise, we end up with duplicates (multiple labels with the same name).
 
 To import an object like this only once and reuse it in multiple places, we must define the object as an existing object relation.
@@ -355,7 +355,7 @@ To add a new relation to the ObjectBuilder, you must:
 
 ### Importing a relation from GraphQL API
 
-If your relation is available through GraphQL API, you can use `GraphQlExtractor` and perform transformations and loading within the pipeline class.
+If your relation is available through GraphQL API, you can use `GraphQlExtractor` and perform transformations and loading in the pipeline class.
 
 `MembersPipeline` example:
 
@@ -438,7 +438,7 @@ There are a number of helper service classes to assist with data download:
 
 ### Add a label for the new relation
 
-Once a new relation is added to Direct Transfer, you need to make sure that the relation is displayed in human readable form in the UI.
+After a new relation is added to Direct Transfer, you need to make sure that the relation is displayed in human readable form in the UI.
 
 1. Add a new key value pair to the [`BULK_IMPORT_STATIC_ITEMS`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/import/constants.js#L9)
 

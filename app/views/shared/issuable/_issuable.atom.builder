@@ -10,7 +10,6 @@ builder.author do
 end
 
 builder.summary issuable.title
-builder.description truncate(issuable.description, length: 240) if issuable.description
 builder.content markdown_field(issuable, :description), type: 'html' if issuable.description
 builder.milestone issuable.milestone.title if issuable.milestone
 

@@ -58,6 +58,9 @@ export default {
       verifyError: '',
       activeForm: VERIFY_CODE_FORM,
       isSending: false,
+      // Tracks the auto-send only. `isSending` also covers resends, which must not block
+      // verifying a code from an earlier send.
+      initialSendComplete: false,
       showResendAfter: 0,
     };
   },
@@ -79,7 +82,8 @@ export default {
     },
   },
   mounted() {
-    this.sendCode();
+    // Held so verify() can wait for it.
+    this.sendCodePromise = this.sendCode();
   },
   methods: {
     newUserSessionPath,
@@ -93,15 +97,24 @@ export default {
       } catch (error) {
         const message = error?.response?.data?.message;
         if (message) {
-          createAlert({ message });
+          this.showAlert({ message });
         } else {
           this.handleError(error);
         }
       } finally {
         this.isSending = false;
+        this.initialSendComplete = true;
       }
     },
     async verify() {
+      // The auto-send is what moves the session from the two-factor attempt to email
+      // verification; a code submitted before it lands is handled by the wrong controller
+      // branch and comes back as an unusable generic failure. The verify button stays
+      // disabled until then, but that only covers the paths a user takes: a programmatic
+      // form submit reaches here regardless, so wait for a settled session here too.
+      // sendCode() swallows its own errors, so this always resolves.
+      await this.sendCodePromise;
+
       try {
         const { data } = await axios.post(this.emailVerificationData.verifyPath, {
           user: { verification_token: this.values[FIELD_KEY] },
@@ -128,7 +141,7 @@ export default {
         });
         if (data.status === SUCCESS_RESPONSE) {
           this.showResendAfter = data.show_resend_after ?? 0;
-          createAlert({
+          this.showAlert({
             message: I18N_EMAIL_RESEND_SUCCESS,
             variant: VARIANT_SUCCESS,
           });
@@ -138,7 +151,7 @@ export default {
       } catch (error) {
         const message = error?.response?.data?.message;
         if (message) {
-          createAlert({ message });
+          this.showAlert({ message });
         } else {
           this.handleError(error);
         }
@@ -155,11 +168,24 @@ export default {
       this.showResendAfter = 0;
     },
     handleError(error) {
-      createAlert({
+      this.showAlert({
         message: I18N_GENERIC_ERROR,
         captureError: true,
         error,
       });
+    },
+    // At most one alert stands at a time; dismissing the outgoing one keeps `this.alert`
+    // pointing at what is on screen, whatever createAlert does with the element it replaces.
+    showAlert(options) {
+      this.dismissAlert();
+      this.alert = createAlert(options);
+    },
+    // A standing alert goes stale once the user switches forms, so it is dropped. Only this
+    // component's own alert is dismissed; a server-rendered flash explaining how the user
+    // got here is left alone.
+    dismissAlert() {
+      this.alert?.dismiss();
+      this.alert = null;
     },
     resetForm() {
       this.values = { [FIELD_KEY]: '' };
@@ -169,11 +195,13 @@ export default {
       });
     },
     showVerifyCodeForm(email = '') {
+      this.dismissAlert();
       this.activeForm = this.$options.forms.verifyCodeForm;
       if (email.length) this.email = email;
       this.resetForm();
     },
     showAnotherEmailForm() {
+      this.dismissAlert();
       this.activeForm = this.$options.forms.anotherEmailForm;
     },
   },
@@ -280,6 +308,8 @@ export default {
           class="js-no-auto-disable"
           variant="confirm"
           type="submit"
+          :loading="!initialSendComplete"
+          :disabled="!initialSendComplete"
           data-testid="verify-code-button"
           >{{ $options.i18n.submitButton }}</gl-button
         >
