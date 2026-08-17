@@ -114,12 +114,12 @@ describe('DesignToolbar', () => {
     expect(findWorkItemTodos().props('currentUserTodos')).toEqual([]);
   });
 
-  it('emits `todosUpdated` event when todo button is toggled', () => {
+  it('emits `todos-updated` event when todo button is toggled', () => {
     createComponent();
 
-    findWorkItemTodos().vm.$emit('todosUpdated');
+    findWorkItemTodos().vm.$emit('todos-updated');
 
-    expect(wrapper.emitted('todosUpdated')).toHaveLength(1);
+    expect(wrapper.emitted('todos-updated')).toHaveLength(1);
   });
 
   describe('when user is not logged in', () => {

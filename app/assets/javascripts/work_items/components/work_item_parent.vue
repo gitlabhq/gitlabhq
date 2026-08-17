@@ -86,7 +86,7 @@ export default {
       default: false,
     },
   },
-  emits: ['error', 'parentMilestone', 'update-widget-draft'],
+  emits: ['error', 'parent-milestone', 'update-widget-draft'],
   data() {
     return {
       searchTerm: '',
@@ -353,7 +353,7 @@ export default {
       this.searchTerm = '';
     },
     handleSelectedParentMilestone() {
-      this.$emit('parentMilestone', this.selectedParentMilestone);
+      this.$emit('parent-milestone', this.selectedParentMilestone);
     },
   },
 };

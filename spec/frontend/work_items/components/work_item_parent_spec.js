@@ -597,18 +597,18 @@ describe('WorkItemParent component', () => {
       expect(groupWorkItemsSuccessHandler).toHaveBeenCalled();
     });
 
-    it('emits parentMilestone if a selected parent has an assigned milestone', async () => {
+    it('emits `parent-milestone` if a selected parent has an assigned milestone', async () => {
       showDropdown();
       await waitForPromises();
 
       selectWorkItem(firstParentOption.id);
       await nextTick();
 
-      expect(wrapper.emitted('parentMilestone')).toBeDefined();
+      expect(wrapper.emitted('parent-milestone')).toBeDefined();
     });
 
     describe('when workItemFeaturesField feature flag is enabled', () => {
-      it('emits parentMilestone with data from features.milestone', async () => {
+      it('emits `parent-milestone` with data from features.milestone', async () => {
         const featuresHandler = jest
           .fn()
           .mockResolvedValue(groupEpicsWithMilestonesQueryResponseWithFeatures);
@@ -636,8 +636,8 @@ describe('WorkItemParent component', () => {
         await waitForPromises();
         await nextTick();
 
-        expect(wrapper.emitted('parentMilestone')).toBeDefined();
-        expect(wrapper.emitted('parentMilestone')[0]).toEqual([
+        expect(wrapper.emitted('parent-milestone')).toBeDefined();
+        expect(wrapper.emitted('parent-milestone')[0]).toEqual([
           expect.objectContaining({
             id: mockFeaturesMilestone.id,
             title: mockFeaturesMilestone.title,
@@ -692,7 +692,7 @@ describe('WorkItemParent component', () => {
         ${'Issue'}   | ${false}            | ${true}             | ${false}
         ${'Issue'}   | ${null}             | ${true}             | ${false}
       `(
-        'emits parentMilestone correctly when workItemType=$workItemType and propagatesMilestone=$propagatesMilestone',
+        'emits `parent-milestone` correctly when workItemType=$workItemType and propagatesMilestone=$propagatesMilestone',
         async ({ workItemType, propagatesMilestone, isGroupWorkItemType, shouldEmitMilestone }) => {
           mockWorkItemConfigGetter.mockImplementation(() => {
             return {
@@ -719,7 +719,7 @@ describe('WorkItemParent component', () => {
           await nextTick();
 
           if (shouldEmitMilestone) {
-            expect(wrapper.emitted('parentMilestone')).toEqual([
+            expect(wrapper.emitted('parent-milestone')).toEqual([
               [
                 expect.objectContaining({
                   id: mockMilestone.id,
@@ -728,7 +728,7 @@ describe('WorkItemParent component', () => {
               ],
             ]);
           } else {
-            expect(wrapper.emitted('parentMilestone')).toBeUndefined();
+            expect(wrapper.emitted('parent-milestone')).toBeUndefined();
           }
         },
       );

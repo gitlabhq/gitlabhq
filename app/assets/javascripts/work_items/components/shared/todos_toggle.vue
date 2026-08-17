@@ -39,7 +39,7 @@ export default {
       default: 'tertiary',
     },
   },
-  emits: ['error', 'todosUpdated'],
+  emits: ['error', 'todos-updated'],
   data() {
     return {
       isLoading: false,
@@ -112,7 +112,7 @@ export default {
                 id: todo.id,
               });
             }
-            this.$emit('todosUpdated', { cache, todos });
+            this.$emit('todos-updated', { cache, todos });
           },
         })
         .then(
@@ -149,7 +149,7 @@ export default {
             useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
           },
           update: (cache) => {
-            this.$emit('todosUpdated', { cache, todos: [] });
+            this.$emit('todos-updated', { cache, todos: [] });
           },
         })
         .then(

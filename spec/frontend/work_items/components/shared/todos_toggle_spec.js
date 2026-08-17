@@ -121,7 +121,7 @@ describe('WorkItemTodo component', () => {
         input: inputVariablesMarkAllDoneTodos,
         useWorkItemFeatures: false,
       });
-      expect(wrapper.emitted('todosUpdated')[0][0]).toMatchObject({
+      expect(wrapper.emitted('todos-updated')[0][0]).toMatchObject({
         cache: expect.anything(),
         todos: [],
       });
@@ -168,7 +168,7 @@ describe('WorkItemTodo component', () => {
       expect(createTodoSuccessHandler).toHaveBeenCalledWith({
         input: inputVariablesCreateTodos,
       });
-      expect(wrapper.emitted('todosUpdated')[0][0]).toMatchObject({
+      expect(wrapper.emitted('todos-updated')[0][0]).toMatchObject({
         cache: expect.anything(),
         todos: [{ id: expect.anything() }],
       });

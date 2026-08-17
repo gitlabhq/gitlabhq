@@ -1066,7 +1066,7 @@ export default {
               v-if="showWorkItemCurrentUserTodos"
               :item-id="workItem.id"
               :current-user-todos="currentUserTodos"
-              @todosUpdated="updateWorkItemCurrentTodosWidgetCache"
+              @todos-updated="updateWorkItemCurrentTodosWidgetCache"
               @error="updateError = $event"
             />
             <work-item-notifications-widget

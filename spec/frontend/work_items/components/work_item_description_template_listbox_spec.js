@@ -293,7 +293,7 @@ describe('WorkItemDescriptionTemplateListbox', () => {
         });
 
         it('emits the selected template', () => {
-          expect(wrapper.emitted('selectTemplate')).toEqual([[{ name, category, projectId }]]);
+          expect(wrapper.emitted('select-template')).toEqual([[{ name, category, projectId }]]);
         });
       });
     });

@@ -286,7 +286,7 @@ describe('DesignDetails', () => {
     });
 
     it('updates cache when todos are updated', () => {
-      findDesignToolbar().vm.$emit('todosUpdated', { cache: expect.anything(), todos: [] });
+      findDesignToolbar().vm.$emit('todos-updated', { cache: expect.anything(), todos: [] });
 
       expect(updateWorkItemDesignCurrentTodosWidget).toHaveBeenCalledWith({
         store: expect.anything(),

@@ -1449,7 +1449,7 @@ export default {
                   :allowed-parent-types-for-new-work-item="allowedParentTypesForSelectedType"
                   @update-widget-draft="handleUpdateWidgetDraft"
                   @error="$emit('error', $event)"
-                  @parentMilestone="onParentMilestone"
+                  @parent-milestone="onParentMilestone"
                 />
                 <work-item-weight
                   v-if="workItemWeight"
@@ -1474,7 +1474,7 @@ export default {
                   :can-update="canUpdate"
                   @update-widget-draft="handleUpdateWidgetDraft"
                   @error="$emit('error', $event)"
-                  @parentMilestone="onParentMilestone"
+                  @parent-milestone="onParentMilestone"
                 />
                 <work-item-iteration
                   v-if="workItemIteration"

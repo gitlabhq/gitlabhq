@@ -66,7 +66,7 @@ export default {
       required: false,
     },
   },
-  emits: ['archive-design', 'todosUpdated', 'toggle-sidebar'],
+  emits: ['archive-design', 'todos-updated', 'toggle-sidebar'],
   computed: {
     toggleCommentsButtonLabel() {
       return this.isSidebarOpen
@@ -104,7 +104,7 @@ export default {
         :item-id="design.id"
         :current-user-todos="currentUserDesignTodos"
         todos-button-type="tertiary"
-        @todosUpdated="$emit('todosUpdated', $event)"
+        @todos-updated="$emit('todos-updated', $event)"
       />
       <gl-button
         v-gl-tooltip.bottom

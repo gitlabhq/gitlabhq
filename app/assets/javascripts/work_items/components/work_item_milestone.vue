@@ -62,7 +62,7 @@ export default {
       default: false,
     },
   },
-  emits: ['error', 'milestoneUpdated', 'parentMilestone', 'update-widget-draft'],
+  emits: ['error', 'milestoneUpdated', 'parent-milestone', 'update-widget-draft'],
   data() {
     return {
       searchTerm: '',
@@ -160,7 +160,7 @@ export default {
 
       if (!selectedMilestoneId) {
         this.localMilestone = null;
-        this.$emit('parentMilestone', null);
+        this.$emit('parent-milestone', null);
       }
 
       this.localMilestone = selectedMilestoneId

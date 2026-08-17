@@ -181,7 +181,7 @@ describe('WorkItemMilestone component', () => {
 
       await waitForPromises();
 
-      expect(wrapper.emitted('parentMilestone')).toEqual([[null]]);
+      expect(wrapper.emitted('parent-milestone')).toEqual([[null]]);
       expect(findSidebarDropdownWidget().props('itemValue')).toBe(null);
     });
 
