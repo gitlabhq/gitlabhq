@@ -241,7 +241,7 @@ RSpec.describe Gitlab::TopologyServiceClient::ClaimService, feature_category: :c
 
     where(:title, :args, :expected_request, :expected_deadline) do
       source_type       = Cells::Claimable::CLAIMS_SOURCE_TYPE::UNSPECIFIED
-      bucket_types      = [Cells::Claimable::CLAIMS_SUBJECT_TYPE::UNSPECIFIED]
+      claim_types       = [Cells::Claimable::CLAIMS_CLAIM_TYPE::CLAIM_TYPE_UNSPECIFIED]
       source_id_gt = [100].pack("Q>")
       source_id_lte = [200].pack("Q>")
       deadline = GRPC::Core::TimeConsts.from_relative_time(5.0)
@@ -264,9 +264,9 @@ RSpec.describe Gitlab::TopologyServiceClient::ClaimService, feature_category: :c
           nil
         ],
         [
-          "with bucket_types",
-          { bucket_types: bucket_types },
-          req.call(bucket_types: bucket_types),
+          "with claim_types",
+          { claim_types: claim_types },
+          req.call(claim_types: claim_types),
           nil
         ],
         [
@@ -291,14 +291,14 @@ RSpec.describe Gitlab::TopologyServiceClient::ClaimService, feature_category: :c
           "with all params",
           {
             source_type: source_type,
-            bucket_types: bucket_types,
+            claim_types: claim_types,
             source_id_gt: source_id_gt,
             source_id_lte: source_id_lte,
             deadline: deadline
           },
           req.call(
             source_type: source_type,
-            bucket_types: bucket_types,
+            claim_types: claim_types,
             source_id_gt: source_id_gt,
             source_id_lte: source_id_lte
           ),

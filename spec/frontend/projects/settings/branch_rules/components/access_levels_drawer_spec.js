@@ -64,7 +64,7 @@ describe('Edit Access Levels Drawer', () => {
 
   it('emits an edit rule event when save button is clicked', () => {
     findSaveButton().vm.$emit('click');
-    expect(wrapper.emitted('editRule')).toHaveLength(1);
+    expect(wrapper.emitted('edit-rule')).toHaveLength(1);
   });
 
   it('emits a close event when cancel button is clicked', () => {
@@ -86,8 +86,8 @@ describe('Edit Access Levels Drawer', () => {
     findDevelopersAndMaintainersCheckbox().vm.$emit('input', true);
     findSaveButton().vm.$emit('click');
 
-    expect(wrapper.emitted('editRule')).toHaveLength(1);
-    expect(wrapper.emitted('editRule')[0][0]).toEqual(editRuleData);
+    expect(wrapper.emitted('edit-rule')).toHaveLength(1);
+    expect(wrapper.emitted('edit-rule')[0][0]).toEqual(editRuleData);
   });
 
   it('when `No one` is selected, it sets other access level checkboxes to false', async () => {
@@ -117,8 +117,8 @@ describe('Edit Access Levels Drawer', () => {
     findNoOneCheckbox().vm.$emit('input', true);
 
     findSaveButton().vm.$emit('click');
-    expect(wrapper.emitted('editRule')).toHaveLength(1);
-    expect(wrapper.emitted('editRule')[0][0]).toEqual(editRuleDataNoOne);
+    expect(wrapper.emitted('edit-rule')).toHaveLength(1);
+    expect(wrapper.emitted('edit-rule')[0][0]).toEqual(editRuleDataNoOne);
   });
 
   it('when all roles are unchecked it does not send any role', () => {
@@ -128,7 +128,7 @@ describe('Edit Access Levels Drawer', () => {
     findNoOneCheckbox().vm.$emit('input', false);
 
     findSaveButton().vm.$emit('click');
-    expect(wrapper.emitted('editRule')[0][0]).toEqual(editRuleDataNoAccessLevels);
+    expect(wrapper.emitted('edit-rule')[0][0]).toEqual(editRuleDataNoAccessLevels);
   });
 
   describe('for dot_com', () => {
@@ -166,7 +166,7 @@ describe('Edit Access Levels Drawer', () => {
       await nextTick();
     };
 
-    it('includes memberRoleId entries in the editRule payload when custom roles are selected', async () => {
+    it('includes memberRoleId entries in the `edit-rule` payload when custom roles are selected', async () => {
       createComponent(minimalProps);
       // handleCustomRolesSelected is the slot's on-change handler; calling it
       // directly is the only way to drive the ee-custom-roles slot in shallowMount.
@@ -175,7 +175,7 @@ describe('Edit Access Levels Drawer', () => {
 
       findSaveButton().vm.$emit('click');
 
-      expect(wrapper.emitted('editRule')[0][0]).toEqual(
+      expect(wrapper.emitted('edit-rule')[0][0]).toEqual(
         expect.arrayContaining([
           { memberRoleId: 'gid://gitlab/MemberRole/1' },
           { memberRoleId: 'gid://gitlab/MemberRole/2' },
@@ -191,7 +191,7 @@ describe('Edit Access Levels Drawer', () => {
 
       findSaveButton().vm.$emit('click');
 
-      const emitted = wrapper.emitted('editRule')[0][0];
+      const emitted = wrapper.emitted('edit-rule')[0][0];
       expect(emitted.findIndex((e) => e.memberRoleId !== undefined)).toBeLessThan(
         emitted.findIndex((e) => e.accessLevel !== undefined),
       );
@@ -204,7 +204,7 @@ describe('Edit Access Levels Drawer', () => {
 
       findSaveButton().vm.$emit('click');
 
-      expect(wrapper.emitted('editRule')[0][0]).toEqual([
+      expect(wrapper.emitted('edit-rule')[0][0]).toEqual([
         { memberRoleId: 'gid://gitlab/MemberRole/1' },
       ]);
     });
@@ -215,7 +215,7 @@ describe('Edit Access Levels Drawer', () => {
 
       // Verify preselection via the emitted payload (integer ids → GlobalIDs).
       findSaveButton().vm.$emit('click');
-      expect(wrapper.emitted('editRule')[0][0]).toEqual(
+      expect(wrapper.emitted('edit-rule')[0][0]).toEqual(
         expect.arrayContaining([
           { memberRoleId: 'gid://gitlab/MemberRole/1' },
           { memberRoleId: 'gid://gitlab/MemberRole/2' },
@@ -233,7 +233,7 @@ describe('Edit Access Levels Drawer', () => {
       await nextTick();
 
       findSaveButton().vm.$emit('click');
-      const emitted = wrapper.emitted('editRule')[0][0];
+      const emitted = wrapper.emitted('edit-rule')[0][0];
       expect(emitted.some((e) => e.memberRoleId !== undefined)).toBe(false);
       expect(emitted).toEqual([{ accessLevel: 0 }]);
     });
@@ -252,7 +252,7 @@ describe('Edit Access Levels Drawer', () => {
       await openDrawer();
 
       findSaveButton().vm.$emit('click');
-      expect(wrapper.emitted('editRule')[0][0]).toEqual(
+      expect(wrapper.emitted('edit-rule')[0][0]).toEqual(
         expect.arrayContaining([
           { memberRoleId: 'gid://gitlab/MemberRole/1' },
           { memberRoleId: 'gid://gitlab/MemberRole/2' },

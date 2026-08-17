@@ -1,7 +1,7 @@
 ---
 description: Tracks changes to the sort order of work item notes.
 action: work_item_notes_sort_order_changed
-product_group: project_management
+product_group: work_items
 product_categories:
 - team_planning
 milestone: '15.10'

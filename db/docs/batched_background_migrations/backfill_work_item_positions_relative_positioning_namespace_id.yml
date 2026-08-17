@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillWorkItemPositionsRelativePositioningNamespaceId
+description: Backfill relative_positioning_namespace_id on work_item_positions with the work item's positioning root namespace (project namespace for personal projects, root ancestor otherwise).
+feature_category: team_planning
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/249251
+milestone: '19.3'
+queued_migration_version: 20260809173018
+finalized_by: # TODO: set to the finalize migration version in a follow-up (target milestone 19.5)

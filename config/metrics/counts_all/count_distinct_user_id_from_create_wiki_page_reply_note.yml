@@ -1,7 +1,7 @@
 ---
 key_path: redis_hll_counters.count_distinct_user_id_from_create_wiki_page_reply_note
 description: Count of unique users creating wiki page notes that are part of a discussion
-product_group: knowledge
+product_group: planner_intelligence
 product_categories:
 - wiki
 performance_indicator_type: []

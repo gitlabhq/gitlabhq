@@ -1,7 +1,7 @@
 ---
 description: Tracks updation of a design
 action: update_design
-product_group: product_planning
+product_group: portfolio_planning
 product_categories:
 - design_management
 milestone: '13.5'

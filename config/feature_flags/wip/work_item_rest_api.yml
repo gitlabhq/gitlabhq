@@ -4,6 +4,6 @@ feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/9673
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/223591
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/588874
 milestone: '18.9'
-group: group::product planning
+group: group::portfolio planning
 type: wip
 default_enabled: false

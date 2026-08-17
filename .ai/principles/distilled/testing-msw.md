@@ -21,11 +21,11 @@ distilled_at_sha: 403f0ba78983ea28f47a927139b91425bb93dcef
 
 - Place MSW integration test files under `spec/frontend/msw_integration/` in a subdirectory mirroring the feature area (e.g. `work_items/work_item_spec.js`).
 - Use the shared files (`handlers.js`, `server.js`, `test_setup.js`, `polyfills.js`, `test_helpers.js`) configured automatically through `jest.config.msw_integration.js`; DO NOT duplicate their setup in individual test files.
-- Export new test helpers from `test_helpers.js` so they are available globally in all MSW integration tests (auto-imported via `Object.assign(global, testHelpers)` in `test_setup.js`).
 
 ### Handler Registration
 
 - Place a feature's handlers in a per-feature subdirectory module (e.g. `work_items/handlers.js`) and register them in the top-level `handlers.js` via `featureHandlers`/`restEndpoints`.
+- Export new test helpers from `test_helpers.js` so they are available globally in all MSW integration tests (auto-imported via `Object.assign(global, testHelpers)` in `test_setup.js`).
 - Register one `rest.post` handler for `http://test.host/api/graphql` in `handlers.js` as a thin GraphQL router that delegates to feature-specific resolver functions in order; DO NOT split a single GraphQL endpoint across multiple MSW handlers.
 - Ensure every GraphQL operation that fires during a test has a corresponding handler; unhandled operations fall through to a catch-all that returns a 400 status — if a test fails with `ServerParseError: Unexpected end of JSON input`, add the missing operation to the relevant feature handler file.
 - Have each feature resolver receive `{ operationName, variables, res, ctx }` and return an MSW response if it handles the operation, or `null` to pass to the next resolver.

@@ -233,6 +233,11 @@ For a quick overview, items that are exported include:
 - Protected branches and tags
 - Push rules
 - Emoji reactions
+
+  > [!note]
+  > Emoji reactions that use custom emoji are imported only if a custom emoji with the same name exists on the
+  > destination. Reactions that reference a custom emoji missing from the destination are skipped.
+
 - Direct project members
   (if you have the Maintainer or Owner role for the exported project's group)
 - Inherited project members as direct project members

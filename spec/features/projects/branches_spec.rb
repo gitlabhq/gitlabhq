@@ -27,21 +27,26 @@ RSpec.describe 'Branches', feature_category: :source_code_management do
     end
 
     context 'on the projects with 6 active branches and 4 stale branches' do
-      let(:project) { create(:project, :public, :empty_repo) }
-      let(:repository) { project.repository }
-      let(:threshold) { Gitlab::Git::Branch::STALE_BRANCH_THRESHOLD }
+      let_it_be(:project, freeze: false) { create(:project, :public, :empty_repo) }
+      let_it_be(:repository, freeze: false) { project.repository }
 
-      before do
+      before_all do
+        project.add_developer(user)
+
+        threshold = Gitlab::Git::Branch::STALE_BRANCH_THRESHOLD
+
         # Add 4 stale branches
         (1..4).reverse_each do |i|
           travel_to((threshold + i.hours).ago) do
-            create_file(message: "a commit in stale-#{i}", branch_name: "stale-#{i}")
+            repository.create_file(user, generate(:branch), 'content',
+              message: "a commit in stale-#{i}", branch_name: "stale-#{i}")
           end
         end
         # Add 6 active branches
         (1..6).each do |i|
           travel_to((threshold - i.hours).ago) do
-            create_file(message: "a commit in active-#{i}", branch_name: "active-#{i}")
+            repository.create_file(user, generate(:branch), 'content',
+              message: "a commit in active-#{i}", branch_name: "active-#{i}")
           end
         end
       end
@@ -264,8 +269,11 @@ RSpec.describe 'Branches', feature_category: :source_code_management do
     end
 
     context 'on project with 0 branch' do
-      let(:project) { create(:project, :public, :empty_repo) }
-      let(:repository) { project.repository }
+      let_it_be(:project) { create(:project, :public, :empty_repo) }
+
+      before_all do
+        project.add_developer(user)
+      end
 
       describe '0 branches on Overview' do
         it 'shows warning' do
@@ -292,8 +300,11 @@ RSpec.describe 'Branches', feature_category: :source_code_management do
     end
 
     context 'when the project is archived' do
-      let(:project) { create(:project, :public, :repository, :archived) }
-      let(:repository) { project.repository }
+      let_it_be(:project) { create(:project, :public, :repository, :archived) }
+
+      before_all do
+        project.add_maintainer(user)
+      end
 
       it 'does not show the merge request button when the project is archived' do
         visit project_branches_path(project)
@@ -376,8 +387,9 @@ RSpec.describe 'Branches', feature_category: :source_code_management do
     let_it_be(:project, freeze: false) { create(:project, :public, :empty_repo) }
     let_it_be(:repository, freeze: false) { project.repository }
 
-    before do
-      sha = create_file(branch_name: "branch")
+    before_all do
+      sha = repository.create_file(user, generate(:branch), 'content',
+        message: 'message', branch_name: "branch")
       # Older pipeline
       create(
         :ci_pipeline, :failed,
@@ -399,6 +411,9 @@ RSpec.describe 'Branches', feature_category: :source_code_management do
         ref: "branch", sha: sha,
         created_at: 4.months.ago
       )
+    end
+
+    before do
       visit project_branches_path(project)
     end
 
@@ -468,10 +483,6 @@ RSpec.describe 'Branches', feature_category: :source_code_management do
       end
 
     Regexp.new(sorted_branches.join('.*'))
-  end
-
-  def create_file(branch_name:, message: 'message')
-    repository.create_file(user, generate(:branch), 'content', message: message, branch_name: branch_name)
   end
 
   def search_for_branch(name)

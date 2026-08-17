@@ -1,7 +1,7 @@
 ---
 description: Track when the work item state is updated.
 action: updated_state
-product_group: project_management
+product_group: work_items
 product_categories:
 - team_planning
 milestone: '15.0'

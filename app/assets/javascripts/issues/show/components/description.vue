@@ -10,6 +10,7 @@ import { createAlert } from '~/alert';
 import { TYPE_ISSUE } from '~/issues/constants';
 import { __, s__, sprintf } from '~/locale';
 import { getSortableDefaultOptions, isDragging } from '~/sortable/utils';
+import { installRevertOnEscapePlugin } from '~/sortable/plugins/revert_on_escape';
 import TaskList from '~/task_list';
 import { addHierarchyChild, removeHierarchyChild } from '~/work_items/graphql/cache_utils';
 import createWorkItemMutation from '~/work_items/graphql/create_work_item.mutation.graphql';
@@ -145,16 +146,22 @@ export default {
       this.renderGFM();
     },
   },
+  created() {
+    // This property is intentionally not reactive.
+    this.sortables = [];
+  },
   mounted() {
     eventHub.$on('convert-task-list-item', this.convertTaskListItem);
     eventHub.$on('delete-task-list-item', this.deleteTaskListItem);
 
+    installRevertOnEscapePlugin();
     this.renderGFM();
   },
   beforeDestroy() {
     eventHub.$off('convert-task-list-item', this.convertTaskListItem);
     eventHub.$off('delete-task-list-item', this.deleteTaskListItem);
 
+    this.destroySortableLists();
     this.removeAllPointerEventListeners();
   },
   methods: {
@@ -176,8 +183,14 @@ export default {
         });
 
         this.removeAllPointerEventListeners();
+        this.destroySortableLists();
         this.renderSortableLists();
         this.renderTaskListItemActions();
+      }
+    },
+    destroySortableLists() {
+      while (this.sortables.length > 0) {
+        this.sortables.pop().destroy();
       }
     },
     renderSortableLists() {
@@ -196,17 +209,20 @@ export default {
           this.addPointerEventListeners(listItem, '.drag-icon');
         });
 
-        Sortable.create(
-          list,
-          getSortableDefaultOptions({
-            forceFallback: true,
-            handle: '.drag-icon',
-            ...taskListSortableOptions,
-            onUpdate: (event) => {
-              const description = convertDescriptionWithNewSort(this.descriptionText, event.to);
-              this.$emit('save-description', description);
-            },
-          }),
+        this.sortables.push(
+          Sortable.create(
+            list,
+            getSortableDefaultOptions({
+              forceFallback: true,
+              revertOnEscape: true,
+              handle: '.drag-icon',
+              ...taskListSortableOptions,
+              onUpdate: (event) => {
+                const description = convertDescriptionWithNewSort(this.descriptionText, event.to);
+                this.$emit('save-description', description);
+              },
+            }),
+          ),
         );
       });
     },

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_memory_store_caching, feature_category: :importers do
+RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_memory_store_caching, :clean_gitlab_redis_shared_state, feature_category: :importers do
   let(:group) { create(:group, maintainers: importer_user) }
   let(:members_mapper) { double('members_mapper').as_null_object }
   let(:project) { create(:project, :repository, group: group) }
@@ -938,6 +938,102 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
       ).and_call_original
 
       created_object
+    end
+  end
+
+  context 'award_emoji object' do
+    let(:relation_sym) { :award_emoji }
+    let(:relation_hash) do
+      {
+        'id' => 1,
+        'name' => name,
+        'user_id' => importer_user.id,
+        'awardable_type' => 'Issue'
+      }
+    end
+
+    context 'when the name is a standard (TanukiEmoji) emoji' do
+      let(:name) { 'thumbsup' }
+
+      it 'creates the award emoji' do
+        expect(created_object).to be_a(AwardEmoji)
+        expect(created_object.name).to eq('thumbsup')
+      end
+    end
+
+    context 'when the name is a custom emoji present in the destination group hierarchy' do
+      let(:name) { 'partyparrot' }
+
+      before do
+        create(:custom_emoji, name: 'partyparrot', group: group)
+      end
+
+      it 'creates the award emoji' do
+        expect(created_object).to be_a(AwardEmoji)
+        expect(created_object.name).to eq('partyparrot')
+      end
+    end
+
+    context 'when the name is a custom emoji missing from the destination' do
+      let(:name) { 'doesnotexist' }
+
+      it 'skips creating the record' do
+        expect(created_object).to be_nil
+      end
+    end
+
+    context 'when importing into a personal namespace' do
+      let_it_be(:project) { create(:project, :repository) }
+
+      context 'when the name is a standard (TanukiEmoji) emoji' do
+        let(:name) { 'thumbsup' }
+
+        it 'creates the award emoji' do
+          expect(created_object).to be_a(AwardEmoji)
+          expect(created_object.name).to eq('thumbsup')
+        end
+      end
+
+      context 'when the name is a custom emoji' do
+        let(:name) { 'partyparrot' }
+
+        before do
+          # Custom emojis cannot be added to personal namespaces, but creating `partyparrot`
+          # in `group` to prevent potential false passing depending on method implementation
+          create(:custom_emoji, name: 'partyparrot', group: group)
+        end
+
+        it 'skips creating the record' do
+          expect(created_object).to be_nil
+        end
+      end
+    end
+
+    context 'when several emoji are imported' do
+      let(:name) { 'partyparrot' }
+
+      before do
+        create(:custom_emoji, name: 'partyparrot', group: group)
+      end
+
+      it 'queries custom emoji only once across factory instances' do
+        expect(Groups::CustomEmojiFinder).to receive(:new).once.and_call_original
+
+        2.times do
+          described_class.create( # rubocop:disable Rails/SaveBang -- Not ActiveRecord#create call, defined on described_class
+            relation_sym: relation_sym,
+            relation_hash: relation_hash,
+            relation_index: 1,
+            object_builder: Gitlab::ImportExport::Project::ObjectBuilder,
+            members_mapper: members_mapper,
+            user: importer_user,
+            importable: project,
+            import_source: ::Import::SOURCE_PROJECT_EXPORT_IMPORT,
+            excluded_keys: excluded_keys,
+            rewrite_mentions: true
+          )
+        end
+      end
     end
   end
 end

@@ -12,6 +12,10 @@ module Gitlab
     class JsonValidation
       RACK_ENV_METADATA_KEY = "gitlab.json.validation.metadata"
 
+      AI_AGENTS_AUDIT_EVENT_PATH = %r{
+        \A/api/v4/projects/[^/]+/ai_agent/audit_events\z
+      }xi
+
       COLLECT_EVENTS_PATH = %r{
         \A/-/collect_events\z
       }xi
@@ -91,6 +95,16 @@ module Gitlab
           methods: %i[post],
           limits: DEFAULT_LIMITS.merge({
             max_json_size_bytes: 10.megabytes
+          })
+        },
+        # Stricter limits for AI agent audit events endpoint
+        {
+          regex: AI_AGENTS_AUDIT_EVENT_PATH,
+          methods: %i[post],
+          limits: DEFAULT_LIMITS.merge({
+            max_array_size: 500,
+            max_total_elements: 5000,
+            max_json_size_bytes: 5.megabytes
           })
         },
         # The application setting max_terraform_state_size_bytes limits this file size already

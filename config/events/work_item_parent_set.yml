@@ -12,7 +12,7 @@ additional_properties:
     description: work item type
   property:
     description: user role
-product_group: project_management
+product_group: work_items
 product_categories:
 - team_planning
 milestone: '18.6'

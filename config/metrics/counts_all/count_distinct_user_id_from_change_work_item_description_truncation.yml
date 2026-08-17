@@ -1,7 +1,7 @@
 ---
 key_path: redis_hll_counters.count_distinct_user_id_from_change_work_item_description_truncation
 description: Count of unique users that changed the description truncation setting for work items
-product_group: project_management
+product_group: work_items
 product_categories:
 - team_planning
 performance_indicator_type: []

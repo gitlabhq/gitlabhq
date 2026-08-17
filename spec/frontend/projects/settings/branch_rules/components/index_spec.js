@@ -746,7 +746,7 @@ describe('View branch rules', () => {
 
     it('when save button is clicked it calls edit rule mutation', async () => {
       await openEditRuleDrawer();
-      findAccessLevelsDrawer().vm.$emit('editRule', [{ accessLevel: 30 }]);
+      findAccessLevelsDrawer().vm.$emit('edit-rule', [{ accessLevel: 30 }]);
       await nextTick();
 
       expect(findAccessLevelsDrawer().props('isLoading')).toEqual(true);
@@ -772,7 +772,7 @@ describe('View branch rules', () => {
     it('emits a tracking event when save button is clicked', async () => {
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
       await openEditRuleDrawer();
-      findAccessLevelsDrawer().vm.$emit('editRule', [{ accessLevel: 30 }]);
+      findAccessLevelsDrawer().vm.$emit('edit-rule', [{ accessLevel: 30 }]);
       await waitForPromises();
 
       const eventName =

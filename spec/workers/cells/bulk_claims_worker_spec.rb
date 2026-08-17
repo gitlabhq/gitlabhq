@@ -76,8 +76,7 @@ RSpec.describe Cells::BulkClaimsWorker, feature_category: :cell do
           expect(args[:destroys]).to eq([])
 
           create_entry = args[:creates].first
-          expect(create_entry[:bucket][:type]).to eq(Cells::Claimable::CLAIMS_BUCKET_TYPE::REDIRECT_ROUTES)
-          expect(create_entry[:bucket][:value]).to eq('test-path')
+          expect(create_entry[:claim]).to eq(redirect_route: 'test-path')
 
           mock_service
         end
@@ -96,7 +95,7 @@ RSpec.describe Cells::BulkClaimsWorker, feature_category: :cell do
     context 'with destroy_metadata' do
       let(:destroy_metadata) do
         [{
-          'bucket_type' => Cells::Claimable::CLAIMS_BUCKET_TYPE::REDIRECT_ROUTES,
+          'bucket_type' => Cells::Claimable::CLAIMS_CLAIM_TYPE::CLAIM_TYPE_REDIRECT_ROUTE,
           'bucket_value' => 'old-path',
           'subject_type' => Cells::Claimable::CLAIMS_SUBJECT_TYPE::NAMESPACE,
           'subject_id' => 42,
@@ -113,8 +112,7 @@ RSpec.describe Cells::BulkClaimsWorker, feature_category: :cell do
           expect(args[:destroys].size).to eq(1)
 
           destroy = args[:destroys].first
-          expect(destroy[:bucket][:type]).to eq(Cells::Claimable::CLAIMS_BUCKET_TYPE::REDIRECT_ROUTES)
-          expect(destroy[:bucket][:value]).to eq('old-path')
+          expect(destroy[:claim]).to eq(redirect_route: 'old-path')
           expect(destroy[:subject][:type]).to eq(Cells::Claimable::CLAIMS_SUBJECT_TYPE::NAMESPACE)
           expect(destroy[:subject][:id]).to eq(42)
           expect(destroy[:source][:type]).to eq(RedirectRoute.cells_claims_source_type)
@@ -134,7 +132,7 @@ RSpec.describe Cells::BulkClaimsWorker, feature_category: :cell do
 
       let(:destroy_metadata) do
         [{
-          'bucket_type' => Cells::Claimable::CLAIMS_BUCKET_TYPE::REDIRECT_ROUTES,
+          'bucket_type' => Cells::Claimable::CLAIMS_CLAIM_TYPE::CLAIM_TYPE_REDIRECT_ROUTE,
           'bucket_value' => 'old-path',
           'subject_type' => Cells::Claimable::CLAIMS_SUBJECT_TYPE::NAMESPACE,
           'subject_id' => group.id,

@@ -23,7 +23,6 @@ export default {
     'app/assets/javascripts/organizations/activity/components/app.vue',
     'app/assets/javascripts/pipeline_wizard/components/step.vue',
     'app/assets/javascripts/projects/commits/components/commit_filtered_search.vue',
-    'app/assets/javascripts/projects/settings/branch_rules/components/index.vue',
     'app/assets/javascripts/sidebar/components/assignees/sidebar_assignees_widget.vue',
     'app/assets/javascripts/sidebar/components/labels/labels_select_widget/dropdown_contents.vue',
     'app/assets/javascripts/sidebar/components/labels/labels_select_widget/labels_select_root.vue',

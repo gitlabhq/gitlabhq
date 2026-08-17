@@ -158,7 +158,12 @@ RSpec.describe API::WorkItems, feature_category: :portfolio_management do
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(features_json_for(child_task)).to include(
-            'hierarchy' => a_hash_including('parent' => a_hash_including('id' => hierarchy_parent.id))
+            'hierarchy' => a_hash_including(
+              'parent' => a_hash_including(
+                'id' => hierarchy_parent.id,
+                'namespace' => a_hash_including('full_path' => project.full_path)
+              )
+            )
           )
         end
       end

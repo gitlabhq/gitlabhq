@@ -6,9 +6,9 @@ module API
       module Features
         class Hierarchy < Grape::Entity
           expose :parent,
-            using: ::API::Entities::WorkItems::Features::WorkItemReference,
+            using: ::API::Entities::WorkItems::Features::HierarchyParent,
             expose_nil: true,
-            documentation: { type: 'Entities::WorkItems::Features::WorkItemReference' } do |widget, options|
+            documentation: { type: 'Entities::WorkItems::Features::HierarchyParent' } do |widget, options|
             parent = widget.parent
             next unless parent && Ability.allowed?(options[:current_user], :read_work_item, parent)
 

@@ -600,7 +600,7 @@ export default {
         :project-path="projectPath"
         :title="accessLevelsDrawerTitle"
         :is-push-access-levels="isAllowedToPushAndMergeDrawerOpen"
-        @editRule="onEditAccessLevels"
+        @edit-rule="onEditAccessLevels"
         @close="closeAccessLevelsDrawer"
       />
 

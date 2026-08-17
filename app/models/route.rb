@@ -11,7 +11,7 @@ class Route < ApplicationRecord
     where("strpos(path, '/') = 0")
   end
 
-  cells_claims_attribute :path, type: CLAIMS_BUCKET_TYPE::ROUTES,
+  cells_claims_attribute :path, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_ROUTE,
     feature_flag: :cells_claims_routes,
     if: ->(record) { record.path.exclude?('/') }
 

@@ -180,7 +180,7 @@ pre-push:
     permissions-verify:
       tags: documentation
       files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD
-      glob: '{config/authz/{,**/}*,lib/tasks/gitlab/permissions/{,**/}*.rb,{,ee/}app/policies/{,**/}*.rb,{,ee/}app/graphql/{,**/}*.rb,{,ee/}lib/{,**/}api/{,**/}*.rb,doc/auth/tokens/fine_grained_access_tokens_{rest,graphql}.md,tooling/authz/permissions/docs/templates/*}'
+      glob: '{config/authz/{,**/}*,lib/tasks/gitlab/permissions/{,**/}*.rb,{,ee/}app/policies/{,**/}*.rb,{,ee/}app/graphql/{,**/}*.rb,{,ee/}lib/{,**/}api/{,**/}*.rb,doc/api/graphql/reference/_index.md,doc/auth/tokens/fine_grained_access_tokens_{rest,graphql}.md,tooling/authz/permissions/docs/templates/*}'
       run: bundle exec rake gitlab:permissions:validate
     unused-code-linter:
       tags: backend

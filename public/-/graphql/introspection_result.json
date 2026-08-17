@@ -383024,6 +383024,35 @@
               "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
             },
             {
+              "name": "cdRolloutStepUpdated",
+              "description": "Triggered when the state or error of a rollout step changes. Introduced in GitLab 19.3: Status: Experiment.",
+              "args": [
+                {
+                  "name": "rolloutId",
+                  "description": "Global ID of the rollout whose steps to watch.",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "CdRolloutID",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null,
+                  "isDeprecated": false,
+                  "deprecationReason": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "CdRolloutStep",
+                "ofType": null
+              },
+              "isDeprecated": true,
+              "deprecationReason": "Status: Experiment. Introduced in GitLab 19.3."
+            },
+            {
               "name": "cdRolloutUpdated",
               "description": "Triggered when a rollout status changes in an application, carrying the new deployment status and, when one applies, a Duo session to open. Introduced in GitLab 19.3: Status: Experiment.",
               "args": [

@@ -6,9 +6,8 @@
 # in specs, which would run the shadow, building a second Rack::Attack::Request
 # and re-resolving auth, in every request and feature spec.
 #
-# The shadow is opt-in in production (the flags start off and are flipped per
-# cohort during rollout) and is exercised directly by its own specs, so default
-# these flags off across the suite. This keeps unrelated specs deterministic and
+# The shadow is exercised directly by its own specs, so default these flags off
+# across the suite. This keeps unrelated specs deterministic and
 # free of the shadow's side effects (a second request build and auth
 # resolution). Specs that test the shadow re-enable the cohort flag they need,
 # which overrides this default because it runs in a later before hook.

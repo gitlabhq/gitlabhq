@@ -63,10 +63,7 @@ RSpec.describe Cells::Claims::BulkClaimService, feature_category: :cell do
     context 'when create metadata exists' do
       let(:create_metadata) do
         [{
-          bucket: {
-            type: Cells::Claimable::CLAIMS_BUCKET_TYPE::REDIRECT_ROUTES,
-            value: 'old-group-path'
-          },
+          claim: { redirect_route: 'old-group-path' },
           subject: {
             type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::NAMESPACE,
             id: 42
@@ -123,10 +120,7 @@ RSpec.describe Cells::Claims::BulkClaimService, feature_category: :cell do
       let(:create_metadata) do
         [
           {
-            bucket: {
-              type: Cells::Claimable::CLAIMS_BUCKET_TYPE::REDIRECT_ROUTES,
-              value: 'old-path/sub1'
-            },
+            claim: { redirect_route: 'old-path/sub1' },
             subject: {
               type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::NAMESPACE,
               id: 42
@@ -137,10 +131,7 @@ RSpec.describe Cells::Claims::BulkClaimService, feature_category: :cell do
             }
           },
           {
-            bucket: {
-              type: Cells::Claimable::CLAIMS_BUCKET_TYPE::REDIRECT_ROUTES,
-              value: 'old-path/sub2'
-            },
+            claim: { redirect_route: 'old-path/sub2' },
             subject: {
               type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::NAMESPACE,
               id: 43
@@ -170,10 +161,7 @@ RSpec.describe Cells::Claims::BulkClaimService, feature_category: :cell do
     context 'with destroys only' do
       let(:destroy_metadata) do
         [{
-          bucket: {
-            type: Cells::Claimable::CLAIMS_BUCKET_TYPE::REDIRECT_ROUTES,
-            value: 'old-path'
-          },
+          claim: { redirect_route: 'old-path' },
           subject: {
             type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::NAMESPACE,
             id: 42
@@ -212,10 +200,7 @@ RSpec.describe Cells::Claims::BulkClaimService, feature_category: :cell do
     context 'with both creates and destroys' do
       let(:create_metadata) do
         [{
-          bucket: {
-            type: Cells::Claimable::CLAIMS_BUCKET_TYPE::REDIRECT_ROUTES,
-            value: 'new-path'
-          },
+          claim: { redirect_route: 'new-path' },
           subject: {
             type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::NAMESPACE,
             id: 42
@@ -229,10 +214,7 @@ RSpec.describe Cells::Claims::BulkClaimService, feature_category: :cell do
 
       let(:destroy_metadata) do
         [{
-          bucket: {
-            type: Cells::Claimable::CLAIMS_BUCKET_TYPE::REDIRECT_ROUTES,
-            value: 'old-path'
-          },
+          claim: { redirect_route: 'old-path' },
           subject: {
             type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::NAMESPACE,
             id: 42

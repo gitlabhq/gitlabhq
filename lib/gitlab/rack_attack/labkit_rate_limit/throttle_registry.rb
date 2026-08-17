@@ -164,18 +164,18 @@ module Gitlab
 
           # Determines whether a single cohort's shadow flag is on
           def shadow_enabled?(cohort)
-            # rubocop:disable Gitlab/FeatureFlagKeyDynamic -- bases enumerated in ThrottleRegistry, with matching YAMLs in config/feature_flags/wip/
+            # rubocop:disable Gitlab/FeatureFlagKeyDynamic -- bases enumerated in ThrottleRegistry, with matching YAMLs in config/feature_flags/beta/
             ::Feature.enabled?(
-              :"rate_limiter_use_labkit_#{flag_basis(cohort)}", ::Feature.current_request, type: :wip
+              :"rate_limiter_use_labkit_#{flag_basis(cohort)}", ::Feature.current_request, type: :beta
             )
             # rubocop:enable Gitlab/FeatureFlagKeyDynamic
           end
 
           # Determines whether a single cohort's enforce flag is on
           def enforce_enabled?(cohort)
-            # rubocop:disable Gitlab/FeatureFlagKeyDynamic -- bases enumerated in ThrottleRegistry, with matching YAMLs in config/feature_flags/wip/
+            # rubocop:disable Gitlab/FeatureFlagKeyDynamic -- bases enumerated in ThrottleRegistry, with matching YAMLs in config/feature_flags/beta/
             ::Feature.enabled?(
-              :"rate_limiter_use_labkit_#{flag_basis(cohort)}_enforce", ::Feature.current_request, type: :wip
+              :"rate_limiter_use_labkit_#{flag_basis(cohort)}_enforce", ::Feature.current_request, type: :beta
             )
             # rubocop:enable Gitlab/FeatureFlagKeyDynamic
           end

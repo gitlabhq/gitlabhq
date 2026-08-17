@@ -1,7 +1,7 @@
 ---
 key_path: counts.count_total_work_item_notes
 description: Count of notes on work items being interacted with
-product_group: project_management
+product_group: work_items
 product_categories:
 - team_planning
 performance_indicator_type: []

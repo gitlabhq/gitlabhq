@@ -125,6 +125,7 @@ export default {
   go: () => import(/* webpackChunkName: 'hl-go' */ 'highlight.js/lib/languages/go'),
   golo: () => import(/* webpackChunkName: 'hl-golo' */ 'highlight.js/lib/languages/golo'),
   gradle: () => import(/* webpackChunkName: 'hl-gradle' */ 'highlight.js/lib/languages/gradle'),
+  graphql: () => import(/* webpackChunkName: 'hl-graphql' */ 'highlight.js/lib/languages/graphql'),
   groovy: () => import(/* webpackChunkName: 'hl-groovy' */ 'highlight.js/lib/languages/groovy'),
   haml: () => import(/* webpackChunkName: 'hl-haml' */ 'highlight.js/lib/languages/haml'),
   handlebars: () =>

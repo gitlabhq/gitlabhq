@@ -9,7 +9,7 @@ identifiers:
 additional_properties:
   label:
     description: Whether the user clicked to add the wiki ("add") or to view the existing one ("view").
-product_group: knowledge
+product_group: planner_intelligence
 product_categories:
 - wiki
 milestone: '19.2'

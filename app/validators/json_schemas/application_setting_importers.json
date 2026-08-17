@@ -3,6 +3,9 @@
   "description": "Application settings for importers and exporters",
   "type": "object",
   "properties": {
+    "import_jobs_concurrency_limit": {
+      "type": "integer"
+    },
     "silent_admin_exports_enabled": {
       "type": "boolean"
     },

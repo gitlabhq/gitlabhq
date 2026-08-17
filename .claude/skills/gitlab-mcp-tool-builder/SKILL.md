@@ -1,7 +1,7 @@
 ---
 name: gitlab-mcp-tool-builder
 description: "Build a new GraphQL-backed MCP server tool in gitlab-org/gitlab. Use when adding or scaffolding a GitLab Duo Agent Platform MCP tool that follows the app/services/mcp/tools/ *Tool + Graphql*Service pattern — covers GraphQL API discovery, the two-class-plus-registration build recipe, and gotchas. Keywords: MCP tool, MCP server, GraphQL tool, GitLab Duo Agent Platform."
-version: 1.6.1
+version: 1.6.2
 license: MIT
 compatibility: opencode
 metadata:
@@ -98,6 +98,12 @@ Every tool name uses a `verb_object` shape. The verb signals the operation class
 - **`list_`** — collection (e.g. `list_merge_requests`)
 - **`save_`** — create **or** update field mutations; presence of `id` determines which.
   Mark create-required params as `required` in the schema.
+  Intentional exception: when a lifecycle action has its own mutation (e.g. `retry`, `cancel`)
+  and targets the resource this tool creates, fold it behind an `action` param rather than
+  adding a tool. Route on the resource's own ID, not the parent's, and state the rule in the
+  tool description (`save_pipeline`: no `pipeline_id` creates, `pipeline_id` + `action`
+  transitions). Annotations are per tool, so the whole tool inherits the most destructive
+  action's `destructiveHint`; note the fold in the proposal.
 - **`delete_`** — delete operations only; never fold into `save_`.
 - **`add_`** or other verbs — reserved for objects without a typical CRUD shape (e.g. `add_commit`).
 

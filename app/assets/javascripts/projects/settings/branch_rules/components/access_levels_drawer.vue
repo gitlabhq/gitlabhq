@@ -101,7 +101,7 @@ export default {
       default: false,
     },
   },
-  emits: ['close', 'editRule'],
+  emits: ['close', 'edit-rule'],
   data() {
     return {
       updatedGroups: this.groups,
@@ -189,7 +189,7 @@ export default {
       return items.map((item) => ({ ...item, id: getIdFromGraphQLId(item.id) }));
     },
     editRule() {
-      this.$emit('editRule', this.getRuleEditData());
+      this.$emit('edit-rule', this.getRuleEditData());
     },
   },
 };

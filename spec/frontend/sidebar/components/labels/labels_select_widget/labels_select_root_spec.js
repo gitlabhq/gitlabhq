@@ -165,6 +165,11 @@ describe('LabelsSelectRoot', () => {
         findDropdownValue().vm.$emit('label-removed', label);
         expect(wrapper.emitted('label-removed')).toEqual([[label]]);
       });
+
+      it('emits `toggle-collapse` when the dropdown value emits `on-collapsed-value-click`', () => {
+        findDropdownValue().vm.$emit('on-collapsed-value-click');
+        expect(wrapper.emitted('toggle-collapse')).toEqual([[]]);
+      });
     });
 
     it('creates alert with error message when query is rejected', async () => {

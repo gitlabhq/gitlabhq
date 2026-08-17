@@ -22,7 +22,7 @@ raw OpenAPI 3.0仕様は、GitLabモノレポで入手できます:
 
 ## 対話型REST APIドキュメント {#interactive-rest-api-documentation}
 
-REST APIは、OpenAPI 3.0仕様を使用して完全にドキュメント化されています。[REST APIドキュメント](https://api.gitlab.com/rest/)で、すべてのエンドポイントを対話的に参照およびテストできます。
+REST APIは、OpenAPI 3.0仕様を使用して完全にドキュメント化されています。[REST APIドキュメント](https://api.gitlab.com/ja-jp/rest/)で、すべてのエンドポイントを対話的に参照およびテストできます。
 
 ドキュメントは、[スカラー](https://scalar.com/)（オープンソースのAPI参照ツール）を使用してレンダリングされます。これはGitLabのソースコードにあるOpenAPI specから自動的に生成されるため、常にAPIの現在の状態を反映しています。
 
@@ -32,7 +32,7 @@ REST APIは、OpenAPI 3.0仕様を使用して完全にドキュメント化さ�
 
 認可認証情報を追加するには:
 
-1. [REST APIドキュメント](https://api.gitlab.com/rest/)にアクセスします。
+1. [REST APIドキュメント](https://api.gitlab.com/ja-jp/rest/)にアクセスします。
 1. 右側の**認証**パネルで、ドロップダウンリストから認証方法を選択します。
 1. 認証情報を入力します:
    - `http`の場合は、[パーソナルアクセストークン](../../user/profile/personal_access_tokens.md)を入力します。
@@ -47,7 +47,7 @@ REST APIは、OpenAPI 3.0仕様を使用して完全にドキュメント化さ�
 
 ライブリクエストを送信するには:
 
-1. [REST APIドキュメント](https://api.gitlab.com/rest/)にアクセスします。
+1. [REST APIドキュメント](https://api.gitlab.com/ja-jp/rest/)にアクセスします。
 1. オペレーションを展開する。
 1. **Test Request**を選択します。
 1. 必須またはオプションのパラメータを入力します。

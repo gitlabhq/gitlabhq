@@ -7,7 +7,7 @@ identifiers:
 - project
 - user
 - namespace
-product_group: project_management
+product_group: work_items
 milestone: "16.4"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131847
 tiers:

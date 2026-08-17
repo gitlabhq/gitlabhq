@@ -3,7 +3,7 @@ category: default
 action: click_dropdown
 extra_properties:
 identifiers:
-product_group: product_planning
+product_group: portfolio_planning
 product_categories:
 - portfolio_management
 milestone: "14.0"

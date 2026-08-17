@@ -5,7 +5,7 @@ identifiers:
 - project
 - namespace
 - user
-product_group: product_planning
+product_group: portfolio_planning
 product_categories:
 - portfolio_management
 milestone: '14.0'

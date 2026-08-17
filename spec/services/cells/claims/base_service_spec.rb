@@ -15,8 +15,8 @@ RSpec.describe Cells::Claims::BaseService, feature_category: :cell do
   describe '#chunk_records' do
     subject(:chunks) { service.chunk_records(creates, destroys) }
 
-    let(:small_record) { { bucket: { type: :user_ids, value: 's' }, subject: { type: :user, id: 1 } } }
-    let(:large_record) { { bucket: { type: :user_ids, value: 'l' }, subject: { type: :user, id: 2 } } }
+    let(:small_record) { { claim: { route: 's' }, subject: { type: :user, id: 1 } } }
+    let(:large_record) { { claim: { route: 'l' }, subject: { type: :user, id: 2 } } }
 
     before do
       stub_const("Cells::Claims::BaseService::MAX_GRPC_MESSAGE_BYTES", 1000)
@@ -79,7 +79,7 @@ RSpec.describe Cells::Claims::BaseService, feature_category: :cell do
     end
 
     context 'when a single record exceeds the limit' do
-      let(:oversized) { { bucket: { type: :user_ids, value: 'o' }, subject: { type: :user, id: 3 } } }
+      let(:oversized) { { claim: { route: 'o' }, subject: { type: :user, id: 3 } } }
       let(:creates) { [oversized] }
       let(:destroys) { [] }
 
@@ -135,7 +135,7 @@ RSpec.describe Cells::Claims::BaseService, feature_category: :cell do
     end
 
     context 'when total size is exactly at MAX_GRPC_MESSAGE_BYTES' do
-      let(:boundary_record) { { bucket: { type: :user_ids, value: 'b' }, subject: { type: :user, id: 4 } } }
+      let(:boundary_record) { { claim: { route: 'b' }, subject: { type: :user, id: 4 } } }
       let(:creates) { [boundary_record, boundary_record] }
       let(:destroys) { [] }
 
@@ -151,7 +151,7 @@ RSpec.describe Cells::Claims::BaseService, feature_category: :cell do
     end
 
     context 'when total size is one byte over MAX_GRPC_MESSAGE_BYTES' do
-      let(:just_over_record) { { bucket: { type: :user_ids, value: 'j' }, subject: { type: :user, id: 5 } } }
+      let(:just_over_record) { { claim: { route: 'j' }, subject: { type: :user, id: 5 } } }
       let(:creates) { [just_over_record, just_over_record] }
       let(:destroys) { [] }
 
@@ -193,6 +193,26 @@ RSpec.describe Cells::Claims::BaseService, feature_category: :cell do
         expect(chunks[0]).to eq([[small_record, small_record, small_record], []])
         expect(chunks[1]).to eq([[small_record], []])
       end
+    end
+  end
+
+  describe '#estimate_record_size' do
+    let(:overhead) { Cells::Claims::BaseService::GRPC_PER_RECORD_OVERHEAD_BYTES }
+
+    it 'adds the claim value bytesize to the fixed overhead' do
+      record = { claim: { route: 'abc' }, subject: { type: :user, id: 1 } }
+
+      expect(service.estimate_record_size(record)).to eq('abc'.bytesize + overhead)
+    end
+
+    it 'measures multibyte claim values by byte length' do
+      record = { claim: { route: 'áé' } }
+
+      expect(service.estimate_record_size(record)).to eq('áé'.bytesize + overhead)
+    end
+
+    it 'falls back to the overhead when the claim is missing' do
+      expect(service.estimate_record_size({ subject: { type: :user, id: 1 } })).to eq(overhead)
     end
   end
 end

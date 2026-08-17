@@ -503,13 +503,28 @@ response attributes:
 
 | Attribute         | Type         | Description |
 |-------------------|--------------|-------------|
-| `display_types`   | object array | How a query can be rendered. Each has a `name` (the value to use in a GLQL block's `display:` option) and a `description`. Omitting `display:` renders a list. |
+| `display_types`   | object array | How a query can be rendered, and what each one needs. Omitting `display:` renders a list. See below. |
 | `functions`       | object array | Available functions, each with a `name`, a `kind` (`value` for use in a query, `field` for use in `fields`), a `description`, `args`, and `returns`. |
 | `operators`       | object array | Comparison operators, each with a `symbol`, `name`, and `label`. |
 | `reference_types` | object array | Reference prefixes, each with a `name`, `symbol`, and `example`. For example, `~` for a label. |
 | `sources`         | object array | The data sources. See below. |
 | `value_kinds`     | object array | The kinds of value a filter accepts, each with a `name` and `description`. |
 | `version`         | string       | Version of the GLQL gem this document was shipped in. |
+
+Response attributes for `display_types[]`:
+
+| Attribute     | Type         | Description |
+|---------------|--------------|-------------|
+| `description` | string       | What the display type renders. |
+| `name`        | string       | The value to use in a GLQL block's `display:` option. |
+| `selections`  | object array | The combinations of dimensions and metrics the type accepts. A query must match one of them. Present only for types that aggregate, which for that reason need `mode: analytics`. See below. |
+
+Response attributes for `display_types[].selections[]`:
+
+| Attribute    | Type    | Description |
+|--------------|---------|-------------|
+| `dimensions` | integer | Exact number of dimensions this combination takes. |
+| `metrics`    | object  | How many metrics this combination takes, as `min` and an optional `max`. No `max` means no limit. |
 
 Response attributes for `sources[]`:
 
@@ -610,7 +625,14 @@ Example response, truncated:
   "reference_types": [{ "name": "LabelRef", "symbol": "~", "example": "~frontend" }],
   "display_types": [
     { "name": "list", "description": "A bulleted list of items." },
-    { "name": "barChart", "description": "Horizontal bars, one per dimension value." }
+    {
+      "name": "barChart",
+      "description": "Horizontal bars, one per dimension value.",
+      "selections": [
+        { "dimensions": 1, "metrics": { "min": 1 } },
+        { "dimensions": 2, "metrics": { "min": 1, "max": 1 } }
+      ]
+    }
   ],
   "functions": [
     { "name": "today", "kind": "value", "description": "Today's date at 00:00 UTC.", "args": [], "returns": "Date" }

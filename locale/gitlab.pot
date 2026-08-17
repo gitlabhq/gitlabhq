@@ -35779,6 +35779,9 @@ msgstr ""
 msgid "FoundationalFlow|Analyze project codebase to generate security context for vulnerability prioritization."
 msgstr ""
 
+msgid "FoundationalFlow|Classify the risk of a merge request so review effort can be routed to the changes that warrant it."
+msgstr ""
+
 msgid "FoundationalFlow|Code Review"
 msgstr ""
 
@@ -35813,6 +35816,9 @@ msgid "FoundationalFlow|Resolve critical SAST vulnerabilities."
 msgstr ""
 
 msgid "FoundationalFlow|Review merge request code changes for business logic security vulnerabilities."
+msgstr ""
+
+msgid "FoundationalFlow|Risk Classification"
 msgstr ""
 
 msgid "FoundationalFlow|SAST False Positive Detection"

@@ -13,10 +13,10 @@ class ServiceDeskSetting < ApplicationRecord
   end
 
   cells_claims_attribute :custom_email,
-    type: CLAIMS_BUCKET_TYPE::SERVICE_DESK_CUSTOM_EMAILS,
+    type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_SERVICE_DESK_CUSTOM_EMAIL,
     if: ->(record) { record.custom_email.present? }
   cells_claims_attribute :project_key_address_slug,
-    type: CLAIMS_BUCKET_TYPE::SERVICE_DESK_PROJECT_KEY_ADDRESS_SLUGS,
+    type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_SERVICE_DESK_PROJECT_KEY_ADDRESS_SLUG,
     feature_flag: :cells_claims_service_desk_settings_project_key_address_slugs,
     if: ->(record) { record.project_key_address_slug.present? }
   cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::PROJECT, subject_key: :project_id

@@ -192,7 +192,7 @@ RSpec.describe Routes::RenameDescendantsService, feature_category: :groups_and_p
           # In practice, descendant routes always have '/' and are not claimable
           allow(Route).to receive(:cells_claims_attributes).and_return({
             path: {
-              type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ROUTES,
+              type: Cells::Claimable::CLAIMS_CLAIM_TYPE::CLAIM_TYPE_ROUTE,
               feature_flag: :cells_claims_routes,
               if: ->(_record) { true }
             }

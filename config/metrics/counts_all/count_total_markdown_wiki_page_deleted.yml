@@ -2,7 +2,7 @@
 data_category: optional
 key_path: counts.count_total_markdown_wiki_page_deleted
 description: Count of all Wiki pages written in Markdown deleted
-product_group: knowledge
+product_group: planner_intelligence
 product_categories:
 - wiki
 value_type: number

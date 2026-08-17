@@ -1,7 +1,7 @@
 ---
 key_path: redis_hll_counters.count_distinct_user_id_from_click_new_wiki_page_in_create_menu
 description: Count of unique users clicking 'New wiki page' in the Create menu
-product_group: knowledge
+product_group: planner_intelligence
 product_categories:
 - wiki
 performance_indicator_type: []

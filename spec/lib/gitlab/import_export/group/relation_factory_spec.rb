@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ImportExport::Group::RelationFactory, feature_category: :importers do
+RSpec.describe Gitlab::ImportExport::Group::RelationFactory, :clean_gitlab_redis_shared_state, feature_category: :importers do
   let(:group) { create(:group) }
   let(:members_mapper) { double('members_mapper').as_null_object }
   let(:admin) { create(:admin) }
@@ -234,6 +234,48 @@ RSpec.describe Gitlab::ImportExport::Group::RelationFactory, feature_category: :
       let(:members_mapper) { double('members_mapper', map: {}) }
 
       it 'does not build an Event' do
+        expect(created_object).to be_nil
+      end
+    end
+  end
+
+  context 'award_emoji object' do
+    let(:relation_sym) { :award_emoji }
+    let(:relation_hash) do
+      {
+        'id' => 1,
+        'name' => name,
+        'user_id' => importer_user.id,
+        'awardable_type' => 'Epic'
+      }
+    end
+
+    context 'when the name is a standard (TanukiEmoji) emoji' do
+      let(:name) { 'thumbsup' }
+
+      it 'creates the award emoji' do
+        expect(created_object).to be_a(AwardEmoji)
+        expect(created_object.name).to eq('thumbsup')
+      end
+    end
+
+    context 'when the name is a custom emoji present in the destination group' do
+      let(:name) { 'partyparrot' }
+
+      before do
+        create(:custom_emoji, name: 'partyparrot', group: group)
+      end
+
+      it 'creates the award emoji' do
+        expect(created_object).to be_a(AwardEmoji)
+        expect(created_object.name).to eq('partyparrot')
+      end
+    end
+
+    context 'when the name is a custom emoji missing from the destination' do
+      let(:name) { 'doesnotexist' }
+
+      it 'skips creating the record' do
         expect(created_object).to be_nil
       end
     end

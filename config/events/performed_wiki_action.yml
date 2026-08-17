@@ -9,7 +9,7 @@ identifiers:
 additional_properties:
   label:
     description: Type of action (created, updated, destroyed)
-product_group: knowledge
+product_group: planner_intelligence
 product_categories:
 - wiki
 milestone: '17.7'

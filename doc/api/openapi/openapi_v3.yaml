@@ -36,6 +36,8 @@ tags:
   description: Operations related to advanced search rollout.
 - name: Agents
   description: Operations related to agents.
+- name: Ai agent audit events
+  description: Operations related to ai agent audit events.
 - name: Ai agent identities
   description: Operations related to ai agent identities.
 - name: Ai agent sessions
@@ -1455,6 +1457,46 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/RequestBody_80c272d831b7"
+      x-gitlab-lifecycle: experiment
+  "/api/v4/projects/{id}/ai_agent/audit_events":
+    post:
+      operationId: postApiV4ProjectsIdAiAgentAuditEvents
+      summary: Ingest external agent audit events.
+      description: Accepts a batch of up to 500 audit events for an external agent
+        session. Events are validated, deduplicated by cloud_event_id, and enqueued
+        for storage.
+      tags:
+      - Projects
+      - Ai agent audit events
+      responses:
+        '202':
+          description: Accepted
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+        '429':
+          description: Too many requests
+      parameters:
+      - name: id
+        required: true
+        description: The ID or URL-encoded path of the project
+        schema:
+          oneOf:
+          - type: string
+          - type: integer
+        in: path
+        example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/RequestBody_d3b0ad1c6f72"
       x-gitlab-lifecycle: experiment
   "/api/v4/ai/duo_workflows/flow_callbacks":
     get:
@@ -18007,7 +18049,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_9dcd3025609f"
+              "$ref": "#/components/schemas/RequestBody_4301abf8c328"
   "/api/v4/service_accounts":
     post:
       operationId: postApiV4ServiceAccounts
@@ -84976,6 +85018,8 @@ components:
           type: string
         concurrent_bitbucket_server_import_jobs_limit:
           type: string
+        import_jobs_concurrency_limit:
+          type: string
         container_expiration_policies_enable_historic_entries:
           type: string
         container_registry_expiration_policies_caching:
@@ -95108,6 +95152,46 @@ components:
       required:
       - agent_type
       - machine_fingerprint
+    RequestBody_d3b0ad1c6f72:
+      type: object
+      properties:
+        session_id:
+          type: integer
+          description: The session ID to associate events with.
+          nullable: true
+        events:
+          type: array
+          description: Batch of audit events. Maximum 500.
+          items:
+            type: object
+            properties:
+              event_name:
+                type: string
+                description: The audit event type.
+                nullable: true
+              cloud_event_id:
+                type: string
+                description: Unique CloudEvent ID for deduplication.
+                pattern: "(?:^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$)"
+                nullable: true
+              occurred_at:
+                type: string
+                format: date-time
+                description: When the event occurred (ISO 8601).
+                nullable: true
+              details:
+                type: object
+                default: {}
+                description: Additional event details.
+                nullable: true
+            required:
+            - event_name
+            - cloud_event_id
+            - occurred_at
+          nullable: true
+      required:
+      - session_id
+      - events
     RequestBody_3bf1a359c145:
       type: object
       properties:
@@ -99976,7 +100060,7 @@ components:
           description: Scopes available to the application. Separate multiple scopes
             with a space.
           nullable: true
-    RequestBody_9dcd3025609f:
+    RequestBody_4301abf8c328:
       type: object
       properties:
         admin_mode:
@@ -101349,6 +101433,9 @@ components:
           type: string
           nullable: true
         ci_partitions_in_seconds_limit_human_readable:
+          type: string
+          nullable: true
+        import_jobs_concurrency_limit:
           type: string
           nullable: true
         container_expiration_policies_enable_historic_entries:

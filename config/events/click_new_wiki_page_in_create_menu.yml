@@ -10,7 +10,7 @@ identifiers:
 additional_properties:
   label:
     description: The context level of the wiki page creation, either 'project' or 'group'
-product_group: knowledge
+product_group: planner_intelligence
 product_categories:
 - wiki
 milestone: '18.11'

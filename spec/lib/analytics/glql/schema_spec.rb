@@ -33,6 +33,12 @@ RSpec.describe Analytics::Glql::Schema, feature_category: :custom_dashboards_fou
         'a hash key' => ->(doc) { doc.each_key.first << 'x' },
         'the display types' => ->(doc) { doc['display_types'] << {} },
         'a display type entry' => ->(doc) { doc['display_types'][0]['name'] = 'x' },
+        'a display type selection' => ->(doc) {
+          doc['display_types'].find { |t| t['selections'] }['selections'][0]['dimensions'] = 9
+        },
+        'a selection metric bound' => ->(doc) {
+          doc['display_types'].find { |t| t['selections'] }['selections'][0]['metrics']['min'] = 9
+        },
         'a leaf string' => ->(doc) { doc['display_types'][0]['name'] << 'x' }
       }.each do |description, mutate|
         it "refuses mutation of #{description}" do

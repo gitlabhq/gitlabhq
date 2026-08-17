@@ -675,6 +675,14 @@ Grants the ability to create, delete, read, and update external status check ser
 
 ### Duo resources
 
+#### AI Agent Audit Event
+
+Grants the ability to create AI Agent Audit Events.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Create | Project | `POST` | `/projects/:id/ai_agent/audit_events` |
+
 #### AI Agent Identity
 
 Grants the ability to create AI Agent Identities.

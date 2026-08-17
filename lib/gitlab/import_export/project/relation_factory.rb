@@ -127,6 +127,7 @@ module Gitlab
           when :approvals then setup_approval
           when :events then setup_event
           when :'DesignManagement::Version' then setup_design_management_version
+          when :award_emoji then setup_award_emoji
           end
 
           update_project_references
@@ -171,6 +172,10 @@ module Gitlab
           return unless @relation_hash['group_id']
 
           @relation_hash['group_id'] = @importable.namespace_id
+        end
+
+        def award_emoji_destination_group
+          @importable.namespace if @importable.namespace.is_a?(::Group)
         end
 
         def setup_build

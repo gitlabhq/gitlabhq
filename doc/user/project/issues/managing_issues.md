@@ -258,6 +258,7 @@ Any nested task list items are moved up a nested level.
 {{< history >}}
 
 - Minimum role to reorder list items in the issue description [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
+- Canceling of list item drag operations with <kbd>Esc</kbd> [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248854) in GitLab 19.3.
 
 {{< /history >}}
 
@@ -276,6 +277,8 @@ To reorder list items, when viewing an issue:
 1. Select and hold the grip icon.
 1. Drag the row to the new position in the list.
 1. Release the grip icon.
+
+To cancel reordering, press <kbd>Esc</kbd> before releasing the grip icon.
 
 ## Close an issue
 

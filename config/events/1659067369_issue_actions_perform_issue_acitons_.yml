@@ -7,7 +7,7 @@ identifiers:
   - namespace
   - project
   - user
-product_group: project_management
+product_group: work_items
 product_categories:
 - team_planning
 milestone: "15.3"

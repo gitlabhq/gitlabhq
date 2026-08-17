@@ -1,7 +1,7 @@
 ---
 key_path: redis_hll_counters.quickactions.i_quickactions_unlink_weekly
 description: Count of WAU using the `/unlink` quick action
-product_group: product_planning
+product_group: portfolio_planning
 product_categories:
 - team_planning
 value_type: number

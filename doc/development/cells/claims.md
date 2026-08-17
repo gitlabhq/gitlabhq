@@ -154,7 +154,7 @@ We claim three things for each attribute:
 - **The source of the record** (defined by `cells_claims_metadata`)
 
 >[!note]
-> Every `cells_claims_attribute` must specify a `type` (bucket type). A
+> Every `cells_claims_attribute` must specify a `type` (claim type). A
 > `feature_flag` (model-specific control flag) is added for deployment safety
 > when first rolling out claims for an attribute. It is part of the rollout
 > lifecycle, not a permanent requirement, and can be removed once the attribute
@@ -169,8 +169,8 @@ Using `User` as an example:
 class User < ApplicationRecord
   include Cells::Claimable
 
-  cells_claims_attribute :id, type: CLAIMS_BUCKET_TYPE::USER_IDS, feature_flag: :cells_claims_users
-  cells_claims_attribute :username, type: CLAIMS_BUCKET_TYPE::USERNAMES, feature_flag: :cells_claims_users
+  cells_claims_attribute :id, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_USER_ID, feature_flag: :cells_claims_users
+  cells_claims_attribute :username, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_USERNAME, feature_flag: :cells_claims_users
 
   cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::USER, subject_key: :id
 end
@@ -180,7 +180,7 @@ First, include `Cells::Claimable` in the model.
 
 Here we claim two attributes: `id` and `username`. Each attribute requires:
 
-- A `type` (bucket type), which is defined in Topology Service (covered below)
+- A `type` (claim type), which is defined in Topology Service (covered below)
 - A `feature_flag` to control when this claim is active (follows naming convention `cells_claims_<model>s`)
 
 Second, define the metadata with `cells_claims_metadata`. Normally you only
@@ -235,8 +235,8 @@ When adding claims to a new model:
    class YourModel < ApplicationRecord
      include Cells::Claimable
 
-     cells_claims_attribute :id, type: CLAIMS_BUCKET_TYPE::YOUR_MODEL_IDS, feature_flag: :cells_claims_your_model
-     cells_claims_attribute :unique_attr, type: CLAIMS_BUCKET_TYPE::YOUR_MODEL_ATTRS, feature_flag: :cells_claims_your_model
+     cells_claims_attribute :id, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_YOUR_MODEL_ID, feature_flag: :cells_claims_your_model
+     cells_claims_attribute :unique_attr, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_YOUR_MODEL_ATTR, feature_flag: :cells_claims_your_model
 
      cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::YOUR_MODEL, subject_key: :id
    end
@@ -280,7 +280,7 @@ When `if:` returns `false`, the value is not sent to Topology Service on create 
 class Route < ApplicationRecord
   include Cells::Claimable
 
-  cells_claims_attribute :path, type: CLAIMS_BUCKET_TYPE::ROUTES,
+  cells_claims_attribute :path, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_ROUTE,
     feature_flag: :cells_claims_routes,
     if: ->(record) { record.path.exclude?('/') }
 end
@@ -313,7 +313,7 @@ class Route < ApplicationRecord
     where("strpos(path, '/') = 0")
   end
 
-  cells_claims_attribute :path, type: CLAIMS_BUCKET_TYPE::ROUTES,
+  cells_claims_attribute :path, type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_ROUTE,
     feature_flag: :cells_claims_routes,
     if: ->(record) { record.path.exclude?('/') }
 end
@@ -336,7 +336,7 @@ class ServiceDeskSetting < ApplicationRecord
   include Cells::Claimable
 
   cells_claims_attribute :custom_email,
-    type: CLAIMS_BUCKET_TYPE::SERVICE_DESK_CUSTOM_EMAILS,
+    type: CLAIMS_CLAIM_TYPE::CLAIM_TYPE_SERVICE_DESK_CUSTOM_EMAIL,
     if: ->(record) { record.custom_email.present? }
 end
 ```
@@ -493,20 +493,24 @@ end
 
 ### Topology Service
 
-The types we're using are defined in Topology Service, under:
-[`proto/claims/v1/messages.proto`](https://gitlab.com/gitlab-org/cells/topology-service/-/blob/f1a172d3c09e3aac7d3242c088a0261c9c01f5f7/proto/claims/v1/messages.proto)
+The types we're using are defined in Topology Service. The claim type lives in
+[`proto/types/v1/claim.proto`](https://gitlab.com/gitlab-org/cells/topology-service/-/blob/f3dbc2c643df244162f7144f24579fc5651f5db8/proto/types/v1/claim.proto),
+and the subject and source types live in
+[`proto/claims/v1/messages.proto`](https://gitlab.com/gitlab-org/cells/topology-service/-/blob/f1a172d3c09e3aac7d3242c088a0261c9c01f5f7/proto/claims/v1/messages.proto).
 
 For each new claim, we want to add a new type under:
 
-- [Bucket::Type](https://gitlab.com/gitlab-org/cells/topology-service/-/blob/977b7144a5ef619f626b9b2bab1ea2d53ad40552/proto/claims/v1/messages.proto#L11)
+- [`oneof claim`](https://gitlab.com/gitlab-org/cells/topology-service/-/blob/f3dbc2c643df244162f7144f24579fc5651f5db8/proto/types/v1/claim.proto#L12)
+- [ClaimType](https://gitlab.com/gitlab-org/cells/topology-service/-/blob/f3dbc2c643df244162f7144f24579fc5651f5db8/proto/types/v1/claim.proto#L77)
 - [Subject::Type](https://gitlab.com/gitlab-org/cells/topology-service/-/blob/977b7144a5ef619f626b9b2bab1ea2d53ad40552/proto/claims/v1/messages.proto#L31) (might exist already)
 - [Source::Type](https://gitlab.com/gitlab-org/cells/topology-service/-/blob/977b7144a5ef619f626b9b2bab1ea2d53ad40552/proto/claims/v1/messages.proto#L44)
 
 Here's the workflow to make new types available for Rails:
 
 - Create a merge request in [Topology Service](https://gitlab.com/gitlab-org/cells/topology-service)
-  to add new types in `proto/claims/v1/messages.proto`
-- **Add validation rules** for the new bucket type in the [validation.go](https://gitlab.com/gitlab-org/cells/topology-service/-/blob/977b7144a5ef619f626b9b2bab1ea2d53ad40552/internal/services/claim/rules/validation.go#L10) file to prevent incorrect usage (see [validation docs](https://gitlab.com/gitlab-org/cells/topology-service/-/blob/977b7144a5ef619f626b9b2bab1ea2d53ad40552/docs/claims.md#validation))
+  to add the new claim type in `proto/types/v1/claim.proto` (and the subject or
+  source type in `proto/claims/v1/messages.proto` if needed)
+- **Add validation rules** for the new claim type in the [validation.go](https://gitlab.com/gitlab-org/cells/topology-service/-/blob/977b7144a5ef619f626b9b2bab1ea2d53ad40552/internal/services/claim/rules/validation.go#L10) file to prevent incorrect usage (see [validation docs](https://gitlab.com/gitlab-org/cells/topology-service/-/blob/977b7144a5ef619f626b9b2bab1ea2d53ad40552/docs/claims.md#validation))
 - After it's reviewed and merged, create a merge request in [GitLab](https://gitlab.com/gitlab-org/gitlab)
   to update the Topology Service client, by running
   `scripts/update-topology-service-gem.sh` in the merge request branch

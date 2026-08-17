@@ -9946,10 +9946,10 @@ highlightjs-glimmer@^2.2.2:
   resolved "https://registry.yarnpkg.com/highlightjs-glimmer/-/highlightjs-glimmer-2.2.2.tgz#b0219da39312e557c6e218d43434f7667f8b243c"
   integrity sha512-4Mx/BSXeXidvurvGDxA80npLlDPuznbFMKeVzgVNFhmMOWCr7JUw55dMDGarb0OS4ma6dZL+TdpxqD2zhh5vZQ==
 
-highlightjs-veryl@^0.16.3:
-  version "0.16.3"
-  resolved "https://registry.yarnpkg.com/highlightjs-veryl/-/highlightjs-veryl-0.16.3.tgz#3e4e372bb6222c057824160bcc94f1bcac79e045"
-  integrity sha512-ik9G+d/gtN/tZECx6O1MOM7x733ma+0n9vLIuRluWNVBJ9/RBk8bZtmF32AoLyA2I9tYgmIXqGCVWfr0JItgjw==
+highlightjs-veryl@^0.20.3:
+  version "0.20.3"
+  resolved "https://registry.yarnpkg.com/highlightjs-veryl/-/highlightjs-veryl-0.20.3.tgz#b681b09e020d76162ef0f6f8baf850f89bcfb482"
+  integrity sha512-CBudMogpgvN7KvUFmE1jPeYh4gi0LtHhZl4MExVhUJmlAOFkDGtk+cNVVcw4pGWofuGF/dBFtcqj6rCuJK9hoA==
 
 hmac-drbg@^1.0.1:
   version "1.0.1"

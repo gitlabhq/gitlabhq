@@ -275,6 +275,33 @@ describe('WorkItemDescriptionRendered', () => {
 
         expect(options).toMatchObject(taskListSortableOptions);
       });
+
+      it('creates Sortable with revertOnEscape enabled', () => {
+        const options = Sortable.create.mock.calls[0][1];
+
+        expect(options).toMatchObject({ revertOnEscape: true });
+      });
+
+      it('destroys the sortable instance when the component is destroyed', () => {
+        const sortableInstance = Sortable.create.mock.results[0].value;
+        const destroySpy = jest.spyOn(sortableInstance, 'destroy');
+
+        wrapper.destroy();
+
+        expect(destroySpy).toHaveBeenCalled();
+      });
+
+      it('destroys the previous sortable instance before re-rendering the list', async () => {
+        const firstSortableInstance = Sortable.create.mock.results[0].value;
+        const destroySpy = jest.spyOn(firstSortableInstance, 'destroy');
+
+        wrapper.setProps({
+          workItemDescription: { description, descriptionHtml: `${descriptionHtml}\n` },
+        });
+        await waitForPromises();
+
+        expect(destroySpy).toHaveBeenCalled();
+      });
     });
 
     it('excludes footnotes from sortable lists', async () => {

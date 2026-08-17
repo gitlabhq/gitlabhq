@@ -13,8 +13,8 @@ module Cells
       # thousands of records for deletion. Without a per-chunk record cap, a single commit
       # can take too long and exceed the gRPC deadline.
       MAX_RECORDS_PER_CHUNK = 2000
-      # Estimated per-record protobuf overhead (subject, source, bucket type, varint framing).
-      # The bucket value size is measured separately; this covers the remaining fixed-size fields.
+      # Estimated per-record protobuf overhead (subject, source, claim type, varint framing).
+      # The claim value size is measured separately; this covers the remaining fixed-size fields.
       GRPC_PER_RECORD_OVERHEAD_BYTES = 200
 
       private
@@ -83,13 +83,13 @@ module Cells
         chunks
       end
 
-      # Conservative estimate: measures the variable-length bucket value and adds a fixed overhead
-      # for the remaining protobuf fields (subject, source, bucket type, varint framing).
+      # Conservative estimate: measures the variable-length claim value and adds a fixed overhead
+      # for the remaining protobuf fields (subject, source, claim type, varint framing).
       # The fixed overhead (GRPC_PER_RECORD_OVERHEAD_BYTES = 200) is intentionally generous to
       # account for variation in other metadata fields without needing full protobuf serialization.
       def estimate_record_size(record)
-        bucket_value_size = record.dig(:bucket, :value).to_s.bytesize
-        bucket_value_size + GRPC_PER_RECORD_OVERHEAD_BYTES
+        claim_value_size = record[:claim]&.values&.first.to_s.bytesize
+        claim_value_size + GRPC_PER_RECORD_OVERHEAD_BYTES
       end
 
       def grpc_deadline

@@ -5,6 +5,6 @@ feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/20609
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/220909
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/587972
 milestone: '18.9'
-group: group::project management
+group: group::work items
 type: wip
 default_enabled: false

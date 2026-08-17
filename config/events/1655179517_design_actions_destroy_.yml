@@ -7,7 +7,7 @@ identifiers:
 - project
 - user
 - namespace
-product_group: product_planning
+product_group: portfolio_planning
 product_categories:
 - design_management
 milestone: "15.1"

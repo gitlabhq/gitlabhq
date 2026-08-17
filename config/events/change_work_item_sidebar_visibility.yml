@@ -7,7 +7,7 @@ identifiers:
 additional_properties:
   label:
     description: New sidebar visibility
-product_group: project_management
+product_group: work_items
 product_categories:
 - team_planning
 milestone: '17.11'

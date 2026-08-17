@@ -4,5 +4,5 @@ introduced_by_url:
 rollout_issue_url: 
 milestone: '14.3'
 type: ops
-group: group::project management
+group: group::work items
 default_enabled: false
