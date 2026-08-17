@@ -104,7 +104,7 @@ Examples for such columns:
 - Columns which are not modifiable from the application, for example updating the `target_id` and `target_type` values of a `notes` record.
 
 > [!note]
-> Siphon and ClickHouse does not do any validations regarding the correctness of the primary key configuration.
+> Siphon and ClickHouse do not perform any validations regarding the correctness of the primary key configuration.
 
 ### Siphon Configuration
 
@@ -733,7 +733,7 @@ You should only consider more granular partitioning (such as monthly) if the fol
 
 ## Working in Cells Environment
 
-Siphon-replicated database tables are by design support the [Cells architecture](../../cells/_index.md). Assuming that Siphon is configured on all cells, when an organization or group is moved to another cell, no extra data migrations are needed for ClickHouse.
+Siphon-replicated database tables, by design, support the [Cells architecture](../../cells/_index.md). Assuming that Siphon is configured on all cells, when an organization or group is moved to another cell, no extra data migrations are needed for ClickHouse.
 
 The source of truth is always PostgreSQL which means that all record changes within the relocation process (organization movement) are replicated:
 

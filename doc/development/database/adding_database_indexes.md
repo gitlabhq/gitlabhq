@@ -28,7 +28,7 @@ on the amount of data indexed and the index type. For example, PostgreSQL offers
 indexed by regular B-tree indexes. These indexes, however, generally take up more
 data and are slower to update compared to B-tree indexes.
 
-Because of all this, it's important make the following considerations
+Because of all this, it's important to make the following considerations
 when adding a new index:
 
 1. Do the new queries re-use as many existing indexes as possible?
@@ -195,7 +195,7 @@ Here are some common scenarios with a recommended choice as a quick reference.
 
 Use a post-deployment migration.
 Existing queries already work without the added indexes, and
-would not critical to operating the application.
+would not be critical to operating the application.
 
 If indexing takes a long time to finish
 (concurrent operations in a post-deployment migration should take less than
@@ -293,7 +293,7 @@ for new and updated records while the removal and fix are in progress.
 The details of the work might vary and require different approaches.
 Consult the Database team, reviewers, or maintainers to plan the work.
 
-### All unique indexes needs to be scoped
+### All unique indexes need to be scoped
 
 For more information, see [Unique constraints in Cells](../cells/_index.md#unique-constraints).
 
@@ -759,7 +759,7 @@ An example of creating an index using
 the asynchronous index helpers can be seen in the block below. This migration
 enters the index name and definition into the `postgres_async_indexes`
 table. The process that runs on weekends pulls indexes from this
-table and attempt to create them.
+table and attempts to create them.
 
 ```ruby
 # in db/post_migrate/
@@ -931,7 +931,7 @@ end
 ```
 
 This migration enters the index name and definition into the `postgres_async_indexes`
-table. The process that runs on weekends pulls indexes from this table and attempt
+table. The process that runs on weekends pulls indexes from this table and attempts
 to remove them.
 
 You must [test the database index changes locally](#verify-indexes-removed-asynchronously) before creating a merge request.
@@ -985,6 +985,6 @@ To test changes for removing an index, use the asynchronous index helpers on you
 
 1. Enable the feature flags by running `Feature.enable(:database_reindexing)` in the Rails console.
 1. Run `bundle exec rails db:migrate` which should create an entry in the `postgres_async_indexes` table.
-1. Run `bundle exec rails gitlab:db:reindex` destroy the index asynchronously.
+1. Run `bundle exec rails gitlab:db:reindex` to destroy the index asynchronously.
 1. To verify the index, open the PostgreSQL console by using the [GDK](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/postgresql/)
    command `gdk psql` and run `\d <index_name>` to check that the destroyed index no longer exists.

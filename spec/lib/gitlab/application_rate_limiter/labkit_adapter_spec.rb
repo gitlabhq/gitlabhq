@@ -110,6 +110,49 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
       )
     end
 
+    context 'with bypass_header in the context' do
+      it 'copies bypass_header onto the identifier alongside rule_context' do
+        result = Labkit::RateLimit::Result.new
+        limiter = instance_double(Labkit::RateLimit::Limiter, check: result)
+
+        allow(supported_rate_limits).to receive(:limiter_for).with(:users_get_by_id).and_return(limiter)
+
+        described_class.run!(:users_get_by_id, scope: user, context: { bypass_header: '1' })
+
+        expect(limiter).to have_received(:check).with(
+          { user: user.id, bypass_header: '1' },
+          cost: 1,
+          rule_context: { bypass_header: '1' }
+        )
+      end
+
+      it 'does not increment the real rule counter when the request is bypassed' do
+        described_class.run!(:users_get_by_id, scope: user, context: { bypass_header: '1' })
+
+        count = Gitlab::Redis::RateLimiting.with do |r|
+          r.get("labkit:rl:applimiter_users_get_by_id:limit_user_lookups_by_user:user:#{user.id}")
+        end
+
+        expect(count).to be_nil
+      end
+
+      it 'is never blocked even once the real rule is already over its limit', :aggregate_failures do
+        allow(Gitlab::CurrentSettings.current_application_settings)
+          .to receive(:users_get_by_id_limit).and_return(1)
+        described_class.run!(:users_get_by_id, scope: user)
+        described_class.run!(:users_get_by_id, scope: user) # now over limit (count 2 > limit 1)
+
+        result = described_class.run!(:users_get_by_id, scope: user, context: { bypass_header: '1' })
+
+        expect(result).to be(false)
+
+        count = Gitlab::Redis::RateLimiting.with do |r|
+          r.get("labkit:rl:applimiter_users_get_by_id:limit_user_lookups_by_user:user:#{user.id}")
+        end
+        expect(count.to_i).to eq(2) # the bypassed call did not add a third increment
+      end
+    end
+
     it 'delegates to SupportedRateLimits.limiter_for on each check' do
       result = Labkit::RateLimit::Result.new
       limiter = instance_double(Labkit::RateLimit::Limiter, check: result)
@@ -542,6 +585,22 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter,
         { query_sha: 'sha-abc123' },
         rule_context: {}
       )
+    end
+
+    context 'with bypass_header in the context' do
+      it 'copies bypass_header onto the identifier alongside rule_context' do
+        result = Labkit::RateLimit::Result.new
+        limiter = instance_double(Labkit::RateLimit::Limiter, peek: result)
+
+        allow(supported_rate_limits).to receive(:limiter_for).with(:glql).and_return(limiter)
+
+        described_class.run_peek!(:glql, scope: 'sha-abc123', context: { bypass_header: '1' })
+
+        expect(limiter).to have_received(:peek).with(
+          { query_sha: 'sha-abc123', bypass_header: '1' },
+          rule_context: { bypass_header: '1' }
+        )
+      end
     end
 
     it 'delegates to SupportedRateLimits.limiter_for on each peek' do

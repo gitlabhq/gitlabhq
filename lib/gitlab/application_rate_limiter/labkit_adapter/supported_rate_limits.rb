@@ -914,12 +914,29 @@ module Gitlab
         def self.build_limiter(key)
           ::Labkit::RateLimit::Limiter.new(
             name: "applimiter_#{key}",
-            rules: [rule_for(key)],
+            rules: [bypass_rule_for(key), rule_for(key)],
             redis: ::Gitlab::Redis::RateLimiting,
             logger: ::Gitlab::AppLogger
           )
         end
         private_class_method :build_limiter
+
+        # A synthetic :skip rule ahead of the real throttle rule: bypass-header
+        # traffic (identifier[:bypass_header] == '1') terminates here before
+        # touching Redis, so it stays visible via calls_total{action="skip"}
+        # without back-filling the real rule's rate. Named per key so each
+        # limit's bypass volume is distinguishable in Prometheus/Grafana.
+        def self.bypass_rule_for(key)
+          ::Labkit::RateLimit::Rule.new(
+            name: "#{key}_bypass",
+            match: { bypass_header: ::Gitlab::Throttle::BYPASS_HEADER_VALUE },
+            characteristics: [],
+            limit: 0, # unused: action: :skip terminates evaluation before limit/period are consulted
+            period: 60, # unused: action: :skip terminates evaluation before limit/period are consulted
+            action: :skip
+          )
+        end
+        private_class_method :bypass_rule_for
 
         def self.cost_mode_keys
           Set.new([:main_db_duration_limit_per_worker, :ci_db_duration_limit_per_worker,

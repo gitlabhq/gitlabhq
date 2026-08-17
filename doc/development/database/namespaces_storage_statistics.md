@@ -180,13 +180,13 @@ which means there's a time window in which the statistics are inaccurate. Becaus
 
 ## Conclusion
 
-Updating the storage statistics asynchronously, was the less problematic and
-performant approach of aggregating the root namespaces.
+Updating the storage statistics asynchronously was the least problematic and
+most performant approach of aggregating the root namespaces.
 
 All the details regarding this use case can be found on:
 
 - <https://gitlab.com/gitlab-org/gitlab-foss/-/issues/62214>
 - Merge request with the implementation: <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/28996>
 
-Performance of the namespace storage statistics were measured in staging and production (GitLab.com). All results were posted
+Performance of the namespace storage statistics was measured in staging and production (GitLab.com). All results were posted
 on <https://gitlab.com/gitlab-org/gitlab-foss/-/issues/64092>: No problem has been reported so far.

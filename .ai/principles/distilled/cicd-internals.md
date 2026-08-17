@@ -1,6 +1,6 @@
 ---
-source_checksum: 5a5d9202955ad21b
-distilled_at_sha: a12edd3cd641812cf27868b59ce605d439d981b5
+source_checksum: aff32136b0f97801
+distilled_at_sha: 3941b843c30927ec6cea3e9caa43c88e5f930cb6
 ---
 <!-- Auto-generated from docs.gitlab.com by gitlab-ai-principles-distiller — do not edit manually -->
 
@@ -36,7 +36,7 @@ distilled_at_sha: a12edd3cd641812cf27868b59ce605d439d981b5
 - For keyword reuse (adding an existing keyword as a subkeyword): document any unsupported sub-features, provide clear validation errors for unsupported syntax, and test scenarios where users assume the subkeyword behaves identically to the original.
 - For composability: document and test `!reference` tag behaviour (a frequent source of unexpected behaviour), `include:` semantics, and `extends:` merge behaviour (deep-merges hashes but replaces arrays); add validation that rejects unwanted `!reference` or `include:` usage where applicable.
 - Ensure every relevant usage dimension (string length, list/array size) has a documented limit with a note on the performance impact of raising it; DO NOT ship a keyword without limits on every dimension that could be exploited at scale.
-- Ensure all implemented behaviour is documented, all documented behaviour is covered by specs, validation errors are specific and actionable, and JSON schema validation is consistent with backend validation.
+- Ensure all implemented behaviour is documented, all documented behaviour is covered by specs, validation errors are specific and actionable, and JSON schema validation is consistent with backend validation; update the syntax reference page with the new or changed keyword and include examples covering common use cases with limitations and gotchas clearly called out.
 
 ### CI Database Tables (Partitioning)
 

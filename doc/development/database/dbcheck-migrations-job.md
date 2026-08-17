@@ -31,10 +31,10 @@ This job is not allowed to fail, but it can throw some false positives.
 1. Sometimes pg_dump can change how it orders the constraints and other database objects in minor PostgreSQL version upgrades.
    This causes the job to fail by complaining about the ordering of statements in the schema that are not related
    to the MR. Reference: [job failure](https://gitlab.com/gitlab-org/gitlab/-/jobs/12192481127).
-   - Do report this in #database Slack channel or create an issue, if not already done by someone else. Since this will
+   - Do report this in the #database Slack channel or create an issue, if not already done by someone else, since this will
      affect all the feature MRs.
 
-In such cases it's safer to add `pipeline:skip-check-migrations` label to the MR to skip this job.
+In such cases it's safer to add the `pipeline:skip-check-migrations` label to the MR to skip this job.
 
 ### Schema dump comparison fails after rollback
 
@@ -54,12 +54,12 @@ graph LR
 ```
 
 1. You check out the `dev` working branch from the `main` target branch. At this point,
-   each branch has their `HEAD` at commit A.
+   each branch has its `HEAD` at commit A.
 1. Someone works on the `main` branch and drops the `fk_rails_dbebdaa8fe` constraint,
    thus creating commit B on `main`.
-1. You add column `dependency_proxy_size` to your `dev` branch.
+1. You add a column `dependency_proxy_size` to your `dev` branch.
 1. The `db:check-migrations` job fails for your `dev` branch's CI/CD pipeline, because
-   the `structure.sql` file did not rollback to its expected state.
+   the `structure.sql` file did not roll back to its expected state.
 
 This happened because branch `dev` contained commits A and C, not B. Its database schema
 did not know about the removal of the `fk_rails_dbebdaa8fe` constraint. When comparing the two
@@ -67,4 +67,4 @@ schemas, the `dev` branch contained this constraint while the `main` branch didn
 
 This example really happened. Read the [job failure logs](https://gitlab.com/gitlab-org/gitlab/-/jobs/1992050890).
 
-To fix these kind of issues, rebase the working branch onto the target branch to get the latest changes.
+To fix these kinds of issues, rebase the working branch onto the target branch to get the latest changes.

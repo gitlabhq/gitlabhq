@@ -67,7 +67,7 @@ This replication was restricted only to a few attributes that are needed from ea
 
 ## Keeping the CI mirrored tables in sync with the source tables
 
-We must care about two type 3 events to keep
+We must care about three types of events to keep
 the source and the target tables in sync:
 
 1. Creation of new namespaces or projects.

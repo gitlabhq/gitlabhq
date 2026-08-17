@@ -75,7 +75,6 @@ export default {
     'app/assets/javascripts/work_items/components/work_item_milestone.vue',
     'app/assets/javascripts/work_items/components/work_item_notes.vue',
     'app/assets/javascripts/work_items/components/work_item_title.vue',
-    'ee/app/assets/javascripts/analytics/cycle_analytics/vsa_settings/components/value_stream_form_content_actions.vue',
     'ee/app/assets/javascripts/groups/settings/work_items/custom_status/status_form.vue',
     'ee/app/assets/javascripts/hand_raise_leads/hand_raise_lead/components/hand_raise_lead_button.vue',
     'ee/app/assets/javascripts/roadmap/components/roadmap_shell.vue',

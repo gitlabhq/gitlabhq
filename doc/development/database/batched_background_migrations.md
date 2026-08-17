@@ -64,9 +64,9 @@ in the directory `lib/gitlab/background_migration/`.
 ### Execution mechanism
 
 Batched background migrations are picked from the queue in the order they are enqueued. Multiple migrations are fetched
-and executed in parallel, as long they are in active state and do not target the same database table.
+and executed in parallel, as long as they are in active state and do not target the same database table.
 The default number of migrations processed in parallel is 2, for GitLab.com this limit is configured to 4.
-Once migration is picked for execution, a job is created for the specific batch. After each job execution, migration's
+Once a migration is picked for execution, a job is created for the specific batch. After each job execution, the migration's
 batch size may be increased or decreased, based on the performance of the last 20 jobs.
 
 ```plantuml
@@ -96,7 +96,7 @@ migration4 --> [Scheduling Worker]
 @enduml
 ```
 
-Soon as a worker is available, the BBM is processed by the runner.
+As soon as a worker is available, the BBM is processed by the runner.
 
 ```plantuml
 @startuml
@@ -200,7 +200,7 @@ These database indicators are checked to throttle a migration. Upon receiving a
 stop signal, the migration is paused for a set time (10 minutes):
 
 - WAL queue pending archival crossing the threshold.
-- Active autovacuum on the tables on which the migration works on (enabled by default as of GitLab 18.0).
+- Active autovacuum on the tables on which the migration works (enabled by default as of GitLab 18.0).
 - Patroni apdex SLI dropping below the SLO.
 - WAL rate crossing the threshold.
 
@@ -350,7 +350,7 @@ queue_batched_background_migration(
 > the number of [job arguments](#use-job-arguments) defined in `JOB_CLASS_NAME`.
 
 Make sure the newly-created data is either migrated, or
-saved in both the old and new version upon creation. Removals in
+saved in both the old and new versions upon creation. Removals in
 turn can be handled by defining foreign keys with cascading deletes.
 
 ### Finalize a batched background migration
@@ -619,7 +619,7 @@ Migrating a subset of the table can be done with or without the `scope_to` block
 
 #### Apply selection using `scope_to`
 
-BBM provides an option to define the `scope_to` block. it adds an additional qualifier to the query that determines
+BBM provides an option to define the `scope_to` block. It adds an additional qualifier to the query that determines
 the minimum and maximum range for each batch.
 
 By default, the batching range is determined using the primary key index, which is highly efficient.
@@ -739,10 +739,10 @@ If `tables_to_check_for_vacuum` is not specified, the migration defaults to chec
 
 Background migration contrary to regular migrations does have access to multiple databases
 and can be used to efficiently access and update data across them. To properly indicate
-a database to be used it is desired to create ActiveRecord model inline the migration code.
+a database to be used it is desired to create an ActiveRecord model inline in the migration code.
 Such model should use a correct [`ApplicationRecord`](multiple_databases.md#gitlab-schema)
 depending on which database the table is located. As such usage of `ActiveRecord::Base`
-is disallowed as it does not describe a explicitly database to be used to access given table.
+is disallowed as it does not explicitly describe a database to be used to access a given table.
 
 ```ruby
 # good
@@ -1138,7 +1138,7 @@ end
 
 #### Apply a workaround for our migration helpers (optional)
 
-If your batched background migration touches tables from a schema other than the one you specified by using `restrict_gitlab_migration` helper (example: the scheduling migration has `restrict_gitlab_migration gitlab_schema: :gitlab_main_org` but the background job uses tables from the `:gitlab_ci` schema) then the migration will fail. To prevent that from happening you must to monkey patch database helpers so they don't fail the testing pipeline job:
+If your batched background migration touches tables from a schema other than the one you specified by using `restrict_gitlab_migration` helper (example: the scheduling migration has `restrict_gitlab_migration gitlab_schema: :gitlab_main_org` but the background job uses tables from the `:gitlab_ci` schema) then the migration will fail. To prevent that from happening you must monkey patch database helpers so they don't fail the testing pipeline job:
 
 1. Add the schema names to [`RestrictGitlabSchema`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/migration_helpers/restrict_gitlab_schema.rb#L57)
 
@@ -1183,7 +1183,7 @@ Create a Draft merge request with your changes and trigger the manual `db:gitlab
 ### Establish dependencies
 
 In some instances, migrations depended on the completion of previously enqueued BBMs. If the BBMs are
-still running, the dependent migration fails. For example: introducing an unique index on a large table can depend on
+still running, the dependent migration fails. For example: introducing a unique index on a large table can depend on
 the previously enqueued BBM to handle any duplicate records.
 
 The following process has been configured to make dependencies more evident while writing a migration.
@@ -1297,7 +1297,7 @@ Output example:
 ![Output of the ChatOps command listing all the active batched background migrations.](img/list_v15_4.png)
 
 > [!note]
-> ChatOps returns 20 batched background migrations order by `created_at` (DESC).
+> ChatOps returns 20 batched background migrations ordered by `created_at` (DESC).
 
 ### Monitor the progress and status of a batched background migration
 
@@ -1512,7 +1512,7 @@ for more details.
    ```
 
 1. If possible, update the entire sub-batch in a single query instead of updating each model separately. When doing so, always include a limit guard and extract it in a materialized CTE to eliminate any chance for query plan flips.
-   This can be achieve in different ways, depending on the scenario.
+   This can be achieved in different ways, depending on the scenario.
 
    - Generate an `UPDATE` query, and use `FROM` to join the tables that provide the necessary values
      ([example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184051)).

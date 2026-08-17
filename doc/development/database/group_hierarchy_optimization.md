@@ -120,7 +120,7 @@ MergeRequest.where(target_project_id: group.all_project_ids)
 
 When the group hierarchy changes, for example when a new project or subgroup is added, the cache is invalidated within the same transaction. A periodic worker called [`Namespaces::ProcessOutdatedNamespaceDescendantsCronWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/workers/namespaces/process_outdated_namespace_descendants_cron_worker.rb?ref_type=heads) will update the cache with a slight delay. The invalidation is implemented using ActiveRecord callbacks.
 
-While the cache is invalidated, the hierarchical database queries will continue returning consistent values using the uncached (unoptimized) `traversal_ids` based query query.
+While the cache is invalidated, the hierarchical database queries will continue returning consistent values using the uncached (unoptimized) `traversal_ids` based query.
 
 ## Consistent queries
 

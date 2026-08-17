@@ -49,9 +49,22 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
   def labkit_limiter(name:, rule:)
     ::Labkit::RateLimit::Limiter.new(
       name: name,
-      rules: [rule],
+      rules: [labkit_bypass_rule(name), rule],
       redis: ::Gitlab::Redis::RateLimiting,
       logger: ::Gitlab::AppLogger
+    )
+  end
+
+  # Mirrors SupportedRateLimits.bypass_rule_for so these stubbed limiters exercise
+  # the same bypass-visibility behavior as the real registry.
+  def labkit_bypass_rule(limiter_name)
+    ::Labkit::RateLimit::Rule.new(
+      name: "#{limiter_name.delete_prefix('applimiter_')}_bypass",
+      match: { bypass_header: ::Gitlab::Throttle::BYPASS_HEADER_VALUE },
+      characteristics: [],
+      limit: 0,
+      period: 60,
+      action: :skip
     )
   end
 
@@ -135,6 +148,20 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
         expect(::Gitlab::Instrumentation::RateLimitingGates.payload)
           .to eq(::Gitlab::Instrumentation::RateLimitingGates::GATES => [:test_action])
       end
+    end
+
+    # rule_context (and therefore the labkit identifier) always carries
+    # bypass_header now, even as nil for ordinary calls. :bypass_header is not
+    # one of :test_action's declared characteristics, so labkit's Redis key
+    # (built only from a rule's own characteristics) must stay exactly as it
+    # was before this key existed.
+    it "does not let the always-present :bypass_header key affect the real rule's Redis key" do
+      subject.throttled?(:test_action, scope: [user, project])
+
+      expected_key = "labkit:rl:applimiter_test_action:limit_test_action:user:#{user.id}:project:#{project.id}"
+      count = Gitlab::Redis::RateLimiting.with { |r| r.get(expected_key) }
+
+      expect(count.to_i).to eq(1)
     end
 
     shared_examples 'throttles based on key and scope' do
@@ -237,6 +264,23 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
           travel_to(start_time + 1.minute) do
             expect(subject.throttled?(:test_action, scope: scope, users_allowlist: allowlist)).to eq(true)
           end
+        end
+      end
+    end
+
+    context 'with bypass_header' do
+      let(:start_time) { Time.current.beginning_of_hour }
+
+      before do
+        # Hit the rate limit before running examples
+        travel_to(start_time) { subject.throttled?(:test_action, scope: [user]) }
+      end
+
+      it "is never throttled once bypass_header is '1', even though the key is already over its limit",
+        :aggregate_failures do
+        travel_to(start_time + 1.minute) do
+          expect(subject.throttled?(:test_action, scope: [user])).to eq(true)
+          expect(subject.throttled?(:test_action, scope: [user], bypass_header: '1')).to eq(false)
         end
       end
     end
@@ -507,6 +551,28 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
   describe '.throttled_request?', :freeze_time do
     let(:request) { instance_double('Rack::Request') }
 
+    context 'the arguments forwarded to #throttled?' do
+      it 'omits :bypass_header when there is no header to report' do
+        expect(subject).to receive(:throttled?).with(:test_action, scope: [user]).and_return(false)
+
+        subject.throttled_request?(request, user, :test_action, scope: [user])
+      end
+
+      context 'when the bypass header is set' do
+        before do
+          allow(Gitlab::Throttle).to receive(:bypass_header).and_return('SOME_HEADER')
+          allow(request).to receive(:get_header).with('SOME_HEADER').and_return('1')
+        end
+
+        it 'forwards the raw header value as :bypass_header' do
+          expect(subject).to receive(:throttled?)
+            .with(:test_action, scope: [user], bypass_header: '1').and_return(false)
+
+          subject.throttled_request?(request, user, :test_action, scope: [user])
+        end
+      end
+    end
+
     context 'when request is not over the limit' do
       it 'returns false and does not log the request' do
         expect(subject).not_to receive(:log_request)
@@ -529,6 +595,10 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
       context 'when the bypass header is set' do
         before do
           allow(Gitlab::Throttle).to receive(:bypass_header).and_return('SOME_HEADER')
+          # Pin the enabled state explicitly rather than relying on ops flags
+          # defaulting to enabled in the test env, so a future default change
+          # can't silently stop exercising this path.
+          stub_feature_flags(rate_limiting_rule_bypass_header: true)
         end
 
         it 'skips rate limit if set to "1"' do
@@ -545,6 +615,42 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
           expect(subject).to receive(:log_request).with(request, :test_action_request_limit, user)
 
           expect(subject.throttled_request?(request, user, :test_action, scope: [user])).to eq(true)
+        end
+
+        it 'does not skip rate limit for a truthy-looking value other than "1"', :aggregate_failures do
+          allow(request).to receive(:get_header).with(Gitlab::Throttle.bypass_header).and_return('true')
+
+          expect(subject).to receive(:log_request).with(request, :test_action_request_limit, user)
+
+          expect(subject.throttled_request?(request, user, :test_action, scope: [user])).to eq(true)
+        end
+
+        it 'does not increment the real rate-limit counter when bypassed' do
+          allow(request).to receive(:get_header).with(Gitlab::Throttle.bypass_header).and_return('1')
+
+          redis_key = "labkit:rl:applimiter_test_action:limit_test_action:user:#{user.id}:project:_unknown_"
+          count_before = Gitlab::Redis::RateLimiting.with { |r| r.get(redis_key) }
+
+          subject.throttled_request?(request, user, :test_action, scope: [user])
+
+          count_after = Gitlab::Redis::RateLimiting.with { |r| r.get(redis_key) }
+
+          expect(count_after).to eq(count_before)
+        end
+
+        context 'when :rate_limiting_rule_bypass_header is disabled' do
+          before do
+            stub_feature_flags(rate_limiting_rule_bypass_header: false)
+          end
+
+          it 'keeps the legacy short-circuit: returns false and never reaches labkit', :aggregate_failures do
+            allow(request).to receive(:get_header).with(Gitlab::Throttle.bypass_header).and_return('1')
+
+            expect(Gitlab::ApplicationRateLimiter::LabkitAdapter).not_to receive(:run!)
+            expect(subject).not_to receive(:log_request)
+
+            expect(subject.throttled_request?(request, user, :test_action, scope: [user])).to eq(false)
+          end
         end
       end
     end
@@ -668,6 +774,21 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
           [:key, :threshold],
           [:key, :interval],
           [:key, :users_allowlist],
+          [:key, :peek],
+          [:key, :bypass_header]]
+      )
+    end
+
+    # resource_usage_throttled? is for cost-mode/Sidekiq resource-usage checks,
+    # which have no HTTP request to read a bypass header from. If this ever
+    # gains a :bypass_header parameter, its own coverage needs to catch up too.
+    it 'does not accept a bypass_header parameter on resource_usage_throttled?' do
+      expect(described_class.method(:resource_usage_throttled?).parameters).to eq(
+        [[:req, :key],
+          [:keyreq, :scope],
+          [:keyreq, :resource_key],
+          [:keyreq, :threshold],
+          [:keyreq, :interval],
           [:key, :peek]]
       )
     end
@@ -709,7 +830,8 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
       it 'dispatches to the labkit adapter and forwards the resource id and overrides' do
         expect(Gitlab::ApplicationRateLimiter::LabkitAdapter).to receive(:run!)
           .with(:users_get_by_id, scope: user,
-            context: { resource_id: project.id, threshold: 5, interval: 60 }, cost: nil).and_return(false)
+            context: { resource_id: project.id, threshold: 5, interval: 60, bypass_header: nil },
+            cost: nil).and_return(false)
 
         described_class.throttled?(:users_get_by_id, scope: user, resource: project,
           threshold: 5, interval: 60)
@@ -744,7 +866,8 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
 
       it 'dispatches peek checks to the labkit adapter without incrementing' do
         expect(Gitlab::ApplicationRateLimiter::LabkitAdapter).to receive(:run_peek!)
-          .with(:update_namespace_name, scope: namespace, context: { resource_id: nil, threshold: nil, interval: nil })
+          .with(:update_namespace_name, scope: namespace,
+            context: { resource_id: nil, threshold: nil, interval: nil, bypass_header: nil })
           .and_return(false)
         expect(Gitlab::ApplicationRateLimiter::LabkitAdapter).not_to receive(:run!)
 
@@ -753,7 +876,8 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
 
       it 'returns the labkit peek decision' do
         expect(Gitlab::ApplicationRateLimiter::LabkitAdapter).to receive(:run_peek!)
-          .with(:update_namespace_name, scope: namespace, context: { resource_id: nil, threshold: nil, interval: nil })
+          .with(:update_namespace_name, scope: namespace,
+            context: { resource_id: nil, threshold: nil, interval: nil, bypass_header: nil })
           .and_return(true)
 
         expect(described_class.peek(:update_namespace_name, scope: namespace)).to be(true)

@@ -89,7 +89,7 @@ The worker tables are list-partitioned for lock-free concurrent execution.
 A partial unique index on unfinished statuses prevents duplicate operations
 with the same configuration.
 
-Older partitions (> 14 days) get dropped automatically once all its workers in them get completed.
+Older partitions (> 14 days) get dropped automatically once all their workers in them get completed.
 
 ### Cells compatibility
 
@@ -148,7 +148,7 @@ Since cell-local workers are created only from recurring cronjobs ([work_items/6
 
 #### Group transferring into an organization
 
-Org-specific background workers have to handled while a group getting [transferred](https://gitlab.com/groups/gitlab-org/-/work_items/19841) to an organization.
+Org-specific background workers have to be handled while a group is [transferred](https://gitlab.com/groups/gitlab-org/-/work_items/19841) to an organization.
 
 [Restrict org-specific background operations only for non-administrators](https://gitlab.com/gitlab-org/gitlab/-/work_items/603316) ensures `background_operation_workers` has only
 `non-admin` users, those users background_operation_workers will be updated with the new `organization_id` while the TLG is transferred to an organization.

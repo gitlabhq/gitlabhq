@@ -307,7 +307,7 @@ Select/DML queries (SELECT/UPDATE/DELETE) are disallowed in the DDL (structure) 
 Modifying of 'projects' (gitlab_main) with 'SELECT * FROM projects...
 ```
 
-The current migration do not use `restrict_gitlab_migration`. The lack indicates a migration
+The current migration does not use `restrict_gitlab_migration`. The lack indicates a migration
 running in **DDL** mode, but the executed payload appears to be reading data from `projects`.
 
 **The solution** is to add `restrict_gitlab_migration gitlab_schema: :gitlab_main_org`.
@@ -338,7 +338,7 @@ DDL queries (structure) are disallowed in the Select/DML (SELECT/UPDATE/DELETE) 
 Modifying of 'merge_request_reviewers' with 'CREATE INDEX...
 ```
 
-The current migration do use `restrict_gitlab_migration`. The presence indicates **DML** mode,
+The current migration does use `restrict_gitlab_migration`. The presence indicates **DML** mode,
 but the executed payload appears to be doing structure changes (DDL).
 
 **The solution** is to remove `restrict_gitlab_migration gitlab_schema: :gitlab_main_org`.
@@ -369,7 +369,7 @@ Select/DML queries (SELECT/UPDATE/DELETE) do access 'projects' (gitlab_main) " \
 which is outside of list of allowed schemas: 'gitlab_ci'
 ```
 
-The current migration do restrict the migration to `gitlab_ci`, but appears to modify
+The current migration does restrict the migration to `gitlab_ci`, but appears to modify
 data in `gitlab_main`.
 
 **The solution** is to change `restrict_gitlab_migration gitlab_schema: :gitlab_ci`.
@@ -407,7 +407,7 @@ of this feature for running migrations selectively depending on a context. It is
 to add additional restrictions to DML-only migrations (as the structure coherency is likely
 to stay as-is until further notice) to restrict when they run.
 
-A Potential extension is to limit running DML migration only to specific environments:
+A potential extension is to limit running DML migration only to specific environments:
 
 ```ruby
 restrict_gitlab_migration gitlab_schema: :gitlab_main_org, gitlab_env: :gitlab_com

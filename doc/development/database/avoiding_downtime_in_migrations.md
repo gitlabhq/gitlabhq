@@ -70,9 +70,9 @@ to ignore the column and subsequently remove the column ignore (which would resu
 In this example, the change to ignore the column went into release `12.5`.
 
 > [!note]
-> Ignoring and dropping columns should not occur simultaneously in the same release. Dropping a column before proper ignoring it in the model can cause problems with zero-downtime migrations,
-> where the running instances can fail trying to look up for the removed column until the Rails schema cache expires. This can be an issue for self-managed customers whom attempt to follow zero-downtime upgrades,
-> forcing them to explicit restart all running GitLab instances to re-load the updated schema. To avoid this scenario, first, ignore the column (release M), then, drop it in the next release (release M+1).
+> Ignoring and dropping columns should not occur simultaneously in the same release. Dropping a column before properly ignoring it in the model can cause problems with zero-downtime migrations,
+> where the running instances can fail trying to look up the removed column until the Rails schema cache expires. This can be an issue for self-managed customers who attempt to follow zero-downtime upgrades,
+> forcing them to explicitly restart all running GitLab instances to re-load the updated schema. To avoid this scenario, first, ignore the column (release M), then, drop it in the next release (release M+1).
 
 #### Ignoring columns referenced by database views
 
@@ -233,8 +233,8 @@ The steps:
 1. [Add a post-deployment migration](#add-a-post-deployment-migration-release-m) (release M)
 1. [Remove the ignore rule](#remove-the-ignore-rule-release-m1) (release M+1)
 
-When renaming columns that is referenced by a database view in the regular way, it requires no additional step as
-views updated to the new column name while preserving the `SELECT` portion intact.
+When renaming a column that is referenced by a database view in the regular way, it requires no additional step as
+views are updated to the new column name while preserving the `SELECT` portion intact.
 
 With no downtime there are additional considerations mentioned in the steps above.
 

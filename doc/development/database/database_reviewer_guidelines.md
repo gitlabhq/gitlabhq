@@ -26,7 +26,7 @@ For more information on the database review process, check the [database review 
 ## How to apply for becoming a database reviewer
 
 Team members are encouraged to self-identify as database domain experts, by adding it
-to your profile YAML file:
+to their profile YAML file:
 
 1. Make a merge request using the
    [`Database reviewer` template](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/.gitlab/merge_request_templates/Database%20reviewer.md).

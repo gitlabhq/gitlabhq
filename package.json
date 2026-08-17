@@ -180,7 +180,7 @@
     "graphiql": "^3.7.1",
     "graphql": "16.11.0",
     "graphql-tag": "^2.11.0",
-    "highlight.js": "^11.11.1",
+    "highlight.js": "^11.12.0",
     "highlightjs-glimmer": "^2.2.2",
     "highlightjs-veryl": "^0.16.3",
     "immer": "^9.0.15",

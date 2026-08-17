@@ -73,7 +73,7 @@ end
 Implementing a "continue later" mechanism can add significant complexity to the implementation. Hence, before committing to this work, analyze the existing data in the production database and try to extrapolate data growth. A few examples:
 
 - Mark all `pending` todos for a given user as `done` does not need a "continue later" mechanism.
-  - Reasoning: The number of pending todos will most likely not going to be over a few thousand database rows, even for the busiest users. Updating these rows would finish 99.9% of the time under 1 minute.
+  - Reasoning: The number of pending todos will most likely not be over a few thousand database rows, even for the busiest users. Updating these rows would finish 99.9% of the time under 1 minute.
 - Store CI build records in a CSV files within a given project might require a "continue later" mechanism.
   - Reasoning: for very active projects, CI job count can grow at a very high rate into millions of rows.
 
@@ -487,7 +487,7 @@ def perform(project_id)
 end
 ```
 
-The snippet above can be a short term fix until a proper solution is in place. Offset pagination gets slower as the page number increases which means that there might be a chance where the offset paginated query times out the same way as the original query. The chances are reduced to some extent by the database buffer cache which keeps the previously loaded records in memory; Thus, the consecutive (short-term) lookup of the same rows will not have very high impact on the performance.
+The snippet above can be a short term fix until a proper solution is in place. Offset pagination gets slower as the page number increases which means that there might be a chance where the offset paginated query times out the same way as the original query. The chances are reduced to some extent by the database buffer cache which keeps the previously loaded records in memory. Thus, the consecutive (short-term) lookup of the same rows will not have very high impact on the performance.
 
 Pros:
 

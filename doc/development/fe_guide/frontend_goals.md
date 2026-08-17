@@ -63,7 +63,7 @@ When global state management is needed, it should happen in Apollo instead of Vu
 
 ### HAML by default
 
-We'll continue using HAML over Vue when appropriate. See [when to add Vue application](vue.md#when-to-add-vue-application) on how to decide when Vue should be chosen.
+We'll continue using HAML over Vue when appropriate. See [when to add a Vue application](vue.md#when-to-add-a-vue-application) on how to decide when Vue should be chosen.
 
 **Current Status**
 

@@ -45,7 +45,10 @@ module Gitlab
         # +:resource_id+ supplies the SADD member for count_distinct
         # (set-mode) rules; ignored for INCR-mode rules. A per-call
         # +:threshold+ / +:interval+ overrides the registry value via the
-        # Rule's one-arity `limit:`/`period:` callables. The whole hash is
+        # Rule's one-arity `limit:`/`period:` callables. +:bypass_header+,
+        # when present, is also copied onto the identifier (not just
+        # rule_context) so the synthetic bypass rule can match it against
+        # '1' (see SupportedRateLimits#bypass_rule_for). The whole hash is
         # forwarded as labkit `rule_context:`.
         #
         # +cost+ is the float amount a cost-mode (resource-usage) entry adds to
@@ -58,6 +61,7 @@ module Gitlab
           rule = SupportedRateLimits.rule_for(key)
           limiter = limiter_for(key)
           identifier = identifier_for(rule.characteristics, scope)
+          apply_bypass_header!(identifier, context)
 
           member_slot = rule.count_distinct
           resource_id = context[:resource_id]
@@ -88,11 +92,10 @@ module Gitlab
         def run_peek!(key, scope:, context: {})
           rule = SupportedRateLimits.rule_for(key)
           limiter = limiter_for(key)
+          identifier = identifier_for(rule.characteristics, scope)
+          apply_bypass_header!(identifier, context)
 
-          result = limiter.peek(
-            identifier_for(rule.characteristics, scope),
-            rule_context: context
-          )
+          result = limiter.peek(identifier, rule_context: context)
 
           return false if result.error?
 
@@ -100,6 +103,13 @@ module Gitlab
         end
 
         private
+
+        # Copies :bypass_header from +context+ onto +identifier+ only when the
+        # caller supplied it: true for anything going through #throttled?,
+        # false for callers that bypass it (e.g. resource_usage_throttled?).
+        def apply_bypass_header!(identifier, context)
+          identifier[:bypass_header] = context[:bypass_header] if context.key?(:bypass_header)
+        end
 
         def limiter_for(key)
           SupportedRateLimits.limiter_for(key)

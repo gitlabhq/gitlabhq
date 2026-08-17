@@ -66,10 +66,10 @@ SELECT "ci_builds".* FROM "ci_builds" WHERE "ci_builds"."type" = 'Ci::Build' AND
 => nil
 ```
 
-`And` queries which filter non-unique column by range `WHERE "ci_builds"."user_id" BETWEEN ? AND ?`,
+`And` queries which filter a non-unique column by range `WHERE "ci_builds"."user_id" BETWEEN ? AND ?`,
 even though the range size is limited to a certain threshold (`10,000` in the previous example) this
 threshold does not translate to the size of the returned dataset. That happens because when taking
-`n` possible values of attributes, one can't tell for sure that the number of records that contains
+`n` possible values of attributes, one can't tell for sure that the number of records that contain
 them is less than `n`.
 
 ### Loose-index scan with `distinct_each_batch`
@@ -281,7 +281,7 @@ This is how our table and the newly created index looks like:
 This index definition covers the conditions on the `id` and `sign_in_count` columns thus makes the
 `each_batch` queries very effective (similar to the simple iteration example).
 
-It's rare when a user was never signed in so we a anticipate small index size. Including only the
+It's rare when a user was never signed in, so we anticipate a small index size. Including only the
 `id` in the index definition also helps to keep the index size small.
 
 ##### Index on columns
@@ -353,7 +353,7 @@ constrained (range). The number of rows is limited.
 
 Slow iteration generally takes more time to finish. The iteration count is higher and
 one iteration could yield fewer records than the batch size. Iterations may even yield
-0 records. This is not an optimal solution; however, in some cases (especially when
+0 records. This is not an optimal solution. However, in some cases (especially when
 dealing with large tables) this is the only viable option.
 
 ### Using Subqueries

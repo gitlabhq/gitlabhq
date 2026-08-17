@@ -93,7 +93,7 @@ discuss this topic in more depth - <https://postgres.fm/episodes/data-model-trad
 
 ### Example
 
-Lets look at the `users` table, which at of the time of writing has 75 columns.
+Let's look at the `users` table, which as of the time of writing has 75 columns.
 We can see a few groups of columns that match the above criteria, and are good candidates
 for extraction:
 
@@ -125,4 +125,4 @@ In order to extract it from `users` into a new table, we'll have to do the follo
 
 While this is a lengthy process, it's needed in order to do the extraction
 without disrupting the application. Once completed, the original column and the related index will
-no longer exists on the `users` table, which will result in improved performance.
+no longer exist on the `users` table, which will result in improved performance.

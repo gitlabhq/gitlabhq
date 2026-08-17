@@ -59,7 +59,6 @@ export default {
     'ee/app/assets/javascripts/analytics/analytics_dashboards/components/filters/filtered_search_filter.vue',
     'ee/app/assets/javascripts/analytics/code_review_analytics/components/filter_bar.vue',
     'ee/app/assets/javascripts/analytics/cycle_analytics/components/value_stream_aggregating_warning.vue',
-    'ee/app/assets/javascripts/analytics/cycle_analytics/vsa_settings/components/value_stream_form_content.vue',
     'ee/app/assets/javascripts/analytics/productivity_analytics/components/app.vue',
     'ee/app/assets/javascripts/codequality_report/codequality_report.vue',
     'ee/app/assets/javascripts/compliance_dashboard/components/dashboard/components/status_chart.vue',

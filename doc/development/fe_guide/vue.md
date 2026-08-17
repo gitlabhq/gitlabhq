@@ -14,11 +14,11 @@ What is described in the following sections can be found in these examples:
 - [Security products](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/app/assets/javascripts/vue_shared/security_reports)
 - [Registry](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/app/assets/javascripts/registry/stores)
 
-## When to add Vue application
+## When to add a Vue application
 
-Sometimes, HAML page is enough to satisfy requirements. This statement is correct primarily for the static pages or pages that have very little logic. How do we know it's worth adding a Vue application to the page? The answer is "when we need to maintain application state and synchronize the rendered page with it".
+Sometimes, a HAML page is enough to satisfy requirements. This statement is correct primarily for the static pages or pages that have very little logic. How do we know it's worth adding a Vue application to the page? The answer is "when we need to maintain application state and synchronize the rendered page with it".
 
-To better explain this, let's imagine the page that has one toggle, and toggling it sends an API request. This case does not involve any state we want to maintain, we send the request and switch the toggle. However, if we add one more toggle that should always be the opposite to the first one, we need a _state_: one toggle should be "aware" about the state of another one. When written in plain JavaScript, this logic usually involves listening to DOM event and reacting with modifying DOM. Cases like this are much easier to handle with Vue.js so we should create a Vue application here.
+To better explain this, let's imagine the page that has one toggle, and toggling it sends an API request. This case does not involve any state we want to maintain. We send the request and switch the toggle. However, if we add one more toggle that should always be the opposite to the first one, we need a _state_: one toggle should be "aware" about the state of another one. When written in plain JavaScript, this logic usually involves listening to a DOM event and reacting by modifying the DOM. Cases like this are much easier to handle with Vue.js so we should create a Vue application here.
 
 ## How to add a Vue application to a page
 
@@ -26,24 +26,24 @@ To better explain this, let's imagine the page that has one toggle, and toggling
 1. Add [page-specific JavaScript](performance.md#page-specific-javascript) to load your application.
 1. You can use the [`initSimpleApp helper](#the-initsimpleapp-helper) to simplify [passing data from HAML to JS](#providing-data-from-haml-to-javascript).
 
-### What are some flags signaling that you might need Vue application?
+### What are some flags signaling that you might need a Vue application?
 
 - when you need to define complex conditionals based on multiple factors and update them on user interaction;
 - when you have to maintain any form of application state and share it between tags/elements;
-- when you expect complex logic to be added in the future - it's easier to start with basic Vue application than having to rewrite JS/HAML to Vue on the next step.
+- when you expect complex logic to be added in the future - it's easier to start with a basic Vue application than having to rewrite JS/HAML to Vue on the next step.
 
 ## Avoid multiple Vue applications on the page
 
 In the past, we added interactivity to the page piece-by-piece, adding multiple small Vue applications to different parts of the rendered HAML page. However, this approach led us to multiple complications:
 
-- in most cases, these applications don't share state and perform API requests independently which grows a number of requests;
+- in most cases, these applications don't share state and perform API requests independently which increases the number of requests;
 - we have to provide data from Rails to Vue using multiple endpoints;
 - we cannot render Vue applications dynamically after page load, so the page structure becomes rigid;
 - we cannot fully leverage client-side routing to replace Rails routing;
 - multiple applications lead to unpredictable user experience, increased page complexity, harder debugging process;
 - the way apps communicate with each other affects Web Vitals numbers.
 
-Because of these reasons, we want to be cautious about adding new Vue applications to the pages where another Vue application is already present (this does not include old or new navigation). Before adding a new app, make sure that it is absolutely impossible to extend an existing application to achieve a desired functionality. When in doubt, feel free to ask for the architectural advise on `#frontend` or `#frontend-maintainers` Slack channel.
+Because of these reasons, we want to be cautious about adding new Vue applications to the pages where another Vue application is already present (this does not include old or new navigation). Before adding a new app, make sure that it is absolutely impossible to extend an existing application to achieve a desired functionality. When in doubt, feel free to ask for the architectural advice on `#frontend` or `#frontend-maintainers` Slack channel.
 
 If you still need to add a new application, make sure it shares local state with existing applications.
 Learn: [How do I know which state manager to use?](state_management.md)
@@ -73,7 +73,7 @@ new_feature
 ├── index.js
 ```
 
-_For consistency purposes, we recommend you to follow the same structure._
+_For consistency purposes, we recommend that you follow the same structure._
 
 Let's look into each of them:
 
@@ -258,8 +258,8 @@ Using dependency injection to provide values from HAML is ideal when:
 - The injected value doesn't need an explicit validation against its data type or contents.
 - The value doesn't need to be reactive.
 - Multiple components exist in the hierarchy that need access to this value where
-  prop-drilling becomes an inconvenience. Prop-drilling when the same prop is passed
-  through all components in the hierarchy until the component that is genuinely using it.
+  prop-drilling becomes an inconvenience. Prop-drilling is when the same prop is passed
+  through all components in the hierarchy until the component that genuinely uses it.
 
 Dependency injection can potentially break a child component (either an immediate child or multiple levels deep) if both conditions are true:
 
@@ -417,7 +417,7 @@ return new Vue({
 After pushing an ability to the [frontend](../permissions/authorizations.md#frontend),
 use the [`provide` and `inject`](https://v2.vuejs.org/v2/api/#provide-inject)
 mechanisms in Vue to make abilities available to any descendant components
-in a Vue application. The `glAbilties` object is already provided in
+in a Vue application. The `glAbilities` object is already provided in
 `commons/vue.js`, so only the mixin is required to use the flags:
 
 ```javascript
@@ -517,11 +517,11 @@ else, refer to `vue_shared/components`.
 A good guideline to know when you should create a component is to think if
 it could be reusable elsewhere.
 
-For example, tables are used in a quite amount of places across GitLab, a table
+For example, tables are used in quite a few places across GitLab, so a table
 would be a good fit for a component. On the other hand, a table cell used only
 in one table would not be a good use of this pattern.
 
-You can read more about components in Vue.js site, [Component System](https://v2.vuejs.org/v2/guide/#Composing-with-Components).
+You can read more about components on the Vue.js site, in the [Component System](https://v2.vuejs.org/v2/guide/#Composing-with-Components) section.
 
 ### Pinia
 
@@ -529,7 +529,7 @@ You can read more about components in Vue.js site, [Component System](https://v2
 
 ### Vuex
 
-[Vuex is deprecated](vuex.md#deprecated), consider [migrating](migrating_from_vuex.md).
+[Vuex is deprecated](vuex.md#deprecated). Consider [migrating](migrating_from_vuex.md).
 
 ### Vue Router
 
@@ -610,7 +610,7 @@ To add [Vue Router](https://router.vuejs.org/) to a page:
    This means routes like `/cadences/123/iterations/456/edit` can be validated on the backend,
    for example to check group or project membership.
    It also means we can use the `_path` helper, which means we can load the page in feature specs
-   without manually building the `*vueroute` part of the path..
+   without manually building the `*vueroute` part of the path.
 
 ### Mixing Vue and jQuery
 
@@ -634,7 +634,7 @@ Based on the Vue guidance:
 - **Do not** add new JavaScript class implementations.
 - **Do** encapsulate complex state management with cohesive decoupled components or [a state manager](state_management.md).
 - **Do** maintain existing implementations using such approaches.
-- **Do** Migrate components to a pure object model when there are substantial changes to it.
+- **Do** migrate components to a pure object model when there are substantial changes to it.
 - **Do** move business logic to separate files, so you can test them separately from your component.
 
 #### Why
@@ -686,7 +686,7 @@ Using `v-bind="$attrs"` leads to:
 1. High maintenance cost for each component in the tree. `v-bind="$attrs"` is specifically
    hard to debug because you must scan the whole hierarchy of components to understand
    the data flow.
-1. Problems during migration to Vue 3. `$attrs` in Vue 3 include event listeners which
+1. Problems during migration to Vue 3. `$attrs` in Vue 3 includes event listeners which
    could cause unexpected side-effects after Vue 3 migration is completed.
 
 ### Aim to have one API style per component
@@ -695,7 +695,7 @@ When adding `setup()` property to Vue component, consider refactoring it to Comp
 
 ### Composables
 
-With Composition API, we have a new way of abstracting logic including reactive state to _composables_. Composable is the function that can accept parameters and return reactive properties and methods to be used in Vue component.
+With Composition API, we have a new way of abstracting logic including reactive state to _composables_. A composable is a function that can accept parameters and return reactive properties and methods to be used in a Vue component.
 
 ```javascript
 // useCount.js
@@ -732,7 +732,7 @@ export default {
 
 #### Prefix function and filenames with `use`
 
-Common naming convention in Vue for composables is to prefix them with `use` and then refer to composable functionality briefly (`useBreakpoints`, `useGeolocation` etc). The same rule applies to the `.js` files containing composables - they should start with `use_` even if the file contains more than one composable.
+Common naming convention in Vue for composables is to prefix them with `use` and then refer to composable functionality briefly, like `useBreakpoints` or `useGeolocation`. The same rule applies to the `.js` files containing composables - they should start with `use_` even if the file contains more than one composable.
 
 #### Avoid lifecycle pitfalls
 
@@ -926,8 +926,8 @@ describe('~/todos/app.vue', () => {
 We should test for events emitted in response to an action in our component. This testing
 verifies the correct events are being fired with the correct arguments.
 
-For any native DOM events we should use [`trigger`](https://v1.test-utils.vuejs.org/api/wrapper/#trigger)
-to fire out event.
+For any native DOM events, we should use [`trigger`](https://v1.test-utils.vuejs.org/api/wrapper/#trigger)
+to fire our event.
 
 ```javascript
 // Assuming SomeButton renders: <button>Some button</button>
@@ -989,12 +989,12 @@ You should only apply to be a Vue.js expert when your own merge requests and you
 
 {{< /history >}}
 
-We recommend to minimize adding certain features to the codebase to prevent increasing
+We recommend minimizing the addition of certain features to the codebase to prevent increasing
 the tech debt for the eventual migration:
 
-- filters;
-- event buses;
-- functional templated
+- filters
+- event buses
+- functional templates
 - `slot` attributes
 
 You can find more details on [Migration to Vue 3](vue3_migration.md)

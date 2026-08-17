@@ -176,7 +176,7 @@ BulkInsertableAssociations.with_bulk_insert do
 end
 ```
 
-You can still save relations that are not `BulkInsertSafe` in this block; they
+You can still save relations that are not `BulkInsertSafe` in this block. They
 are treated as if you had invoked `save` from outside the block.
 
 ## Known limitations

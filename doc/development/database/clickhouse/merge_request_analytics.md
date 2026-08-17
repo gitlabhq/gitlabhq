@@ -177,7 +177,7 @@ LIMIT 1000000;
 
 > [!note]
 > Some integer data types were cast as `UInt8` so it is highly probable that they
-> have same values across different rows.
+> have the same values across different rows.
 
 The original count query only aggregated data for one month. With ClickHouse, we can
 attempt aggregating the data for the whole year.

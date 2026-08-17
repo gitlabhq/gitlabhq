@@ -13,7 +13,7 @@ row-count estimate.
 
 [Efficient `IN` operator queries](efficient_in_operator_queries.md). The pattern described here covers a narrower case: a single
 filtered lookup where the planner mis-costs the `IN` predicate itself. It also requires a specific
-sorting which in is not needed in some cases like `DELETE` queries.
+sorting which is not needed in some cases like `DELETE` queries.
 
 ## Symptoms
 

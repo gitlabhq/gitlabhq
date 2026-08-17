@@ -200,14 +200,14 @@ the components outlined previously and the pre-loaded demo runbook.
    1. Go to **Settings** > **CI/CD** > **Variables** to create
       the variables in your project.
 
-      ![GitLab variables](img/gitlab_variables_v11_6.png)
+      ![Database variables added in a project's CI/CD variables page with masked values.](img/gitlab_variables_v11_6.png)
 
    1. Select **Save variables**.
 
    1. In Jupyter, select the **Run SQL queries in Notebook** heading, and then select
       **Run**. The results are displayed inline as follows:
 
-      ![PostgreSQL query](img/postgres_query_v11_6.png)
+      ![Jupyter Notebook running a PostgreSQL query with database variables and showing the results.](img/postgres_query_v11_6.png)
 
 You can try other operations, such as running shell scripts or interacting with a
 Kubernetes cluster. Visit the

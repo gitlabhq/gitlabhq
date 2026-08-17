@@ -86,3 +86,4 @@ ALWAYS load Database principles regardless of which files you are editing.
 
 - **Git, commits, or branches**: Read .ai/git.md
 - **CI/CD pipelines or `.gitlab-ci.yml`**: Read .ai/ci-cd.md
+- **Confidential issue with `~security` label and without `~security-fix-in-public` label**: Read .ai/security-fixes.md

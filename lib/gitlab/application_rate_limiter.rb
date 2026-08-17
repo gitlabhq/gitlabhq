@@ -30,9 +30,14 @@ module Gitlab
       #     includes a current user.
       # @param peek [Boolean] Optional. When true the key will not be
       #     incremented but the current throttled state will be returned.
+      # @param bypass_header [String, nil] Optional. Raw bypass header value,
+      #     matched by a synthetic :skip rule (equal to '1') for visibility.
+      #     Not flag-gated here; only #throttled_request? checks the rollout flag.
       #
       # @return [Boolean] Whether or not a request should be throttled
-      def throttled?(key, scope:, resource: nil, threshold: nil, interval: nil, users_allowlist: nil, peek: false)
+      def throttled?(
+        key, scope:, resource: nil, threshold: nil, interval: nil, users_allowlist: nil, peek: false,
+        bypass_header: nil)
         raise InvalidKeyError, key unless LabkitAdapter.handled?(key)
 
         validate_scope!(key, scope)
@@ -40,7 +45,8 @@ module Gitlab
         rule_context = {
           resource_id: resource&.id,
           threshold: threshold,
-          interval: interval
+          interval: interval,
+          bypass_header: bypass_header
         }
 
         _throttled?(
@@ -66,6 +72,10 @@ module Gitlab
       #     one registered in the labkit rate-limit registry
       #
       # @return [Boolean] Whether or not a request should be throttled
+      #
+      # Note: unlike #throttled?, this has no bypass_header: option. Callers
+      # are cost-mode/Sidekiq resource-usage checks, not HTTP requests, so there
+      # is no bypass header to observe here.
       def resource_usage_throttled?(key, scope:, resource_key:, threshold:, interval:, peek: false)
         validate_scope!(key, scope)
 
@@ -100,10 +110,21 @@ module Gitlab
       #     incremented but the current throttled state will be returned.
       #
       # @return [Boolean] Whether or not a request should be throttled
+      #
+      # :rate_limiting_rule_bypass_header off keeps the legacy behavior
+      # (immediate false); on, bypass traffic reaches labkit's synthetic
+      # :skip rule instead, making bypass volume observable via calls_total.
       def throttled_request?(request, current_user, key, scope:, **options)
-        if ::Gitlab::Throttle.bypass_header.present? && request.get_header(Gitlab::Throttle.bypass_header) == '1'
-          return false
-        end
+        header_name = ::Gitlab::Throttle.bypass_header
+        bypass_header = request.get_header(header_name) if header_name.present?
+
+        return false if bypass_header == ::Gitlab::Throttle::BYPASS_HEADER_VALUE &&
+          !Feature.enabled?(:rate_limiting_rule_bypass_header, Feature.current_request, type: :ops)
+
+        # Only add :bypass_header when there's an actual value to report, so
+        # calls without one keep the exact pre-existing argument shape (callers
+        # never pass this key themselves, so there's nothing to preserve otherwise).
+        options[:bypass_header] = bypass_header if bypass_header
 
         throttled?(key, scope: scope, **options).tap do |throttled|
           log_request(request, :"#{key}_request_limit", current_user) if throttled
@@ -119,6 +140,9 @@ module Gitlab
       # @param users_allowlist [Array<String>] Optional list of usernames to exclude from the limit. This param will only be functional if Scope includes a current user.
       #
       # @return [Boolean] Whether or not a request is currently throttled
+      #
+      # Note: like #resource_usage_throttled?, this has no bypass_header:
+      # option: callers have no request in scope to read one from.
       def peek(key, scope:, threshold: nil, interval: nil, users_allowlist: nil)
         throttled?(key, peek: true, scope: scope, threshold: threshold, interval: interval, users_allowlist: users_allowlist)
       end

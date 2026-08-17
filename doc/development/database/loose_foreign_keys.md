@@ -9,7 +9,7 @@ title: Loose foreign keys
 
 In relational databases (including PostgreSQL), foreign keys provide a way to link
 two database tables together, and ensure data-consistency between them. In GitLab,
-[foreign keys](foreign_keys.md) are vital part of the database design process.
+[foreign keys](foreign_keys.md) are a vital part of the database design process.
 Most of our database tables have foreign keys.
 
 With the ongoing database [decomposition work](https://gitlab.com/groups/gitlab-org/-/work_items/6168),
@@ -419,7 +419,7 @@ end
 ```
 
 With the trigger removal, we prevent further records to be inserted in the `loose_foreign_keys_deleted_records`
-table however, there is still a chance for having leftover pending records in the table. These records
+table. However, there is still a chance for having leftover pending records in the table. These records
 must be removed with an inline data migration.
 
 ```ruby
@@ -704,7 +704,7 @@ The inserted record stores the following information about the deleted record:
 
 The `loose_foreign_keys_deleted_records` table exists on both database servers (`ci` and `main`)
 after the [database decomposition](https://gitlab.com/groups/gitlab-org/-/work_items/6168). The worker
-ill determine which parent tables belong to which database by reading the
+will determine which parent tables belong to which database by reading the
 `lib/gitlab/database/gitlab_schemas.yml` YAML file.
 
 Example:
@@ -853,7 +853,7 @@ end
 The loop-based batch processing is preferred over `EachBatch` for the following reasons:
 
 - The records in the batch are modified, so the next batch contains different records.
-- There is always an index on the foreign key column however, the column is usually not unique.
+- There is always an index on the foreign key column. However, the column is usually not unique.
   `EachBatch` requires a unique column for the iteration.
 - The record order doesn't matter for the cleanup.
 
@@ -887,10 +887,10 @@ The database trigger on the parent tables **decreases** the record deletion spee
 statement that removes rows from the parent table invokes the trigger to insert records
 into the `loose_foreign_keys_deleted_records` table.
 
-The queries within the cleanup worker are fairly efficient index scans, with limits in place
+The queries within the cleanup worker are fairly efficient index scans. With limits in place,
 they're unlikely to affect other parts of the application.
 
-The database queries are not running in transaction, when an error happens for example a statement
+The database queries are not running in a transaction, when an error happens for example a statement
 timeout or a worker crash, the next job continues the processing.
 
 ## Troubleshooting
@@ -906,7 +906,7 @@ When cleaning up "heavy-hitters", the feature ensures fair processing by resched
 batches for later. This gives time for other deleted records to be processed.
 
 For example, a project with millions of `ci_builds` records is deleted. The `ci_builds` records
-is deleted by the loose foreign keys feature.
+are deleted by the loose foreign keys feature.
 
 1. The cleanup worker is scheduled and picks up a batch of deleted `projects` records. The large
    project is part of the batch.
@@ -975,7 +975,7 @@ Possible solutions:
 - Long-term: invoke the worker more frequently. Parallelize the worker
 
 For a one-time fix, we can run the cleanup worker several times from the rails console. The worker
-can run in parallel however, this can introduce lock contention and it could increase the worker
+can run in parallel. However, this can introduce lock contention and it could increase the worker
 runtime.
 
 ```ruby

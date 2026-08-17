@@ -99,6 +99,59 @@ RSpec.describe Gitlab::ApplicationRateLimiter::LabkitAdapter::SupportedRateLimit
       expect(limiter.check({ user: user.id }).exceeded?).to be(false)
       expect(limiter.check({ user: user.id }).exceeded?).to be(true)
     end
+
+    describe 'the synthetic bypass rule' do
+      it "skips before the real rule when bypass_header is '1', without touching Redis", :aggregate_failures do
+        user = build_stubbed(:user)
+        limiter = described_class.limiter_for(:users_get_by_id)
+
+        allow(Gitlab::CurrentSettings.current_application_settings)
+          .to receive(:users_get_by_id_limit).and_return(1)
+
+        result = limiter.check({ user: user.id, bypass_header: '1' })
+
+        expect(result.skipped?).to be(true)
+        expect(result.rule.name).to eq('users_get_by_id_bypass')
+        expect(result.exceeded?).to be(false)
+      end
+
+      it "never matches when bypass_header is absent, nil, or not exactly '1'", :aggregate_failures do
+        user = build_stubbed(:user)
+        limiter = described_class.limiter_for(:users_get_by_id)
+
+        expect(limiter.check({ user: user.id }).skipped?).to be(false)
+        expect(limiter.check({ user: user.id, bypass_header: nil }).skipped?).to be(false)
+        expect(limiter.check({ user: user.id, bypass_header: '0' }).skipped?).to be(false)
+        # Regression guard: the match is exact-string equality, not truthiness
+        # (this field used to be a Boolean before it carried the raw header
+        # value): a caller passing the old Boolean shape must not bypass.
+        expect(limiter.check({ user: user.id, bypass_header: true }).skipped?).to be(false)
+        expect(limiter.check({ user: user.id, bypass_header: 'true' }).skipped?).to be(false)
+      end
+
+      it 'skips on #peek too, without reading or affecting the real rule counter', :aggregate_failures do
+        user = build_stubbed(:user)
+        limiter = described_class.limiter_for(:users_get_by_id)
+
+        limiter.check({ user: user.id }) # real traffic, count now 1
+
+        result = limiter.peek({ user: user.id, bypass_header: '1' })
+
+        expect(result.skipped?).to be(true)
+        expect(result.rule.name).to eq('users_get_by_id_bypass')
+
+        count = Gitlab::Redis::RateLimiting.with do |r|
+          r.get("labkit:rl:applimiter_users_get_by_id:limit_user_lookups_by_user:user:#{user.id}")
+        end
+        expect(count.to_i).to eq(1) # unchanged by the bypassed peek
+      end
+
+      it 'names the bypass rule per key so bypass volume is distinguishable per limit' do
+        expect(described_class.limiter_for(:pipelines_create).check(
+          { project: 1, user: 1, sha: 'a', bypass_header: '1' }
+        ).rule.name).to eq('pipelines_create_bypass')
+      end
+    end
   end
 
   describe '.accepts_context?' do

@@ -121,6 +121,18 @@ RSpec.describe 'gitlab:openapi:v2 namespace rake tasks', :silence_stdout, featur
           .to raise_error(RuntimeError, 'This task can only be run in the development or test environment')
       end
     end
+
+    context 'when the JSON file contains malformed JSON' do
+      before do
+        allow(File).to receive(:read).with('tmp/openapi_swagger_doc.json')
+          .and_return('{ invalid json }')
+      end
+
+      it 'raises JSON::ParserError' do
+        expect { run_rake_task('gitlab:openapi:v2:generate') }
+          .to raise_error(JSON::ParserError)
+      end
+    end
   end
 
   describe 'gitlab:openapi:v2:validate' do
@@ -209,6 +221,18 @@ RSpec.describe 'gitlab:openapi:v2 namespace rake tasks', :silence_stdout, featur
 
         expect(main_object).to receive(:sh).with(expected_command).and_return(true)
         expect { run_rake_task('gitlab:openapi:v2:check_docs') }.to raise_error(SystemExit)
+      end
+    end
+
+    context 'when the JSON file contains malformed JSON' do
+      before do
+        allow(File).to receive(:read).with('tmp/openapi_swagger_doc.json')
+          .and_return('{ broken json ]')
+      end
+
+      it 'raises JSON::ParserError when computing hash' do
+        expect { run_rake_task('gitlab:openapi:v2:check_docs') }
+          .to raise_error(JSON::ParserError)
       end
     end
   end

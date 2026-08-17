@@ -86,6 +86,8 @@ export default {
   fix: () => import(/* webpackChunkName: 'hl-fix' */ 'highlight.js/lib/languages/fix'),
   flix: () => import(/* webpackChunkName: 'hl-flix' */ 'highlight.js/lib/languages/flix'),
   fortran: () => import(/* webpackChunkName: 'hl-fortran' */ 'highlight.js/lib/languages/fortran'),
+  freedesktop: () =>
+    import(/* webpackChunkName: 'hl-freedesktop' */ 'highlight.js/lib/languages/freedesktop'),
   fsharp: () => import(/* webpackChunkName: 'hl-fsharp' */ 'highlight.js/lib/languages/fsharp'),
   gams: () => import(/* webpackChunkName: 'hl-gams' */ 'highlight.js/lib/languages/gams'),
   gauss: () => import(/* webpackChunkName: 'hl-gauss' */ 'highlight.js/lib/languages/gauss'),

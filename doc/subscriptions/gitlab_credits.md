@@ -516,11 +516,11 @@ The following cap types are available:
 |---|---|---|---|
 | Subscription cap | All users on the subscription | On-Demand only | Customers Portal |
 | Flat user cap | Individual users (default limit) | All | GraphQL API |
-| Per-user override | Specific users (overrides the flat cap) | All | GraphQL API |
+| Per-user override | A specific user's total usage, including their included credits. Overrides the flat cap. A user can therefore consume up to whichever is larger: their included allocation, or their cap. | All | GraphQL API |
 
 When on-demand usage in the current billing period reaches or exceeds the configured cap,
 all Agent Platform features (Duo Chat, Code Suggestions, Flows, and Agents)
-are suspended for all users on that subscription or instance. For user-level caps,
+are suspended for all users on that subscription or instance, and GitLab sends an email notification to billing account managers. For user-level caps,
 only the individual user who reached their cap is suspended.
 
 Flat user caps and per-user override caps apply to usage beyond a user's included allocation.
@@ -538,8 +538,27 @@ Caps are enforced using the most recent usage data available. Because data
 is not real time, limited additional GitLab Credits usage may occur before
 enforcement takes effect.
 
-When subscription on-demand usage reaches the configured cap, GitLab sends an
-email notification to billing account managers.
+Caps do not stop users from consuming their included GitLab Credits. Enforcement begins per user, and only after that user's included allocation is exhausted. Until then, the user retains full GitLab Duo Agent Platform access regardless of the cap value, including a cap of `0`.
+
+To stop all GitLab Credits consumption immediately, regardless of included
+balances, disable GitLab Duo for the affected users or namespace.
+
+How the cap value is applied then depends on the cap type:
+
+- A **subscription-level cap** applies to on-demand usage only. The cap is the amount of on-demand usage allowed across the subscription, in addition to every user's included credits.
+- A **per-user cap** applies to a user's total usage, including their included credits. A user can therefore consume up to whichever is larger: their included allocation, or their cap.
+
+#### Examples
+
+For a subscription-level cap, consider a subscription that has 10 users, each with 100 included GitLab Credits. The billing account manager sets the subscription-level on-demand cap to `0`.
+
+- A user who has already used all 100 of their included credits is blocked from Agent Platform features immediately (on the next enforcement check), because any further usage would be on-demand.
+- A user who has only used 40 of their included credits can continue using Agent Platform features and consume their remaining 60 included credits. The `0` cap does not apply to them yet.
+
+For a per-user cap, consider a user that has 24 included GitLab Credits.
+
+- With a per-user cap of `50`, the user is blocked after 50 credits in total, 26 credits beyond their included allocation.
+- With a per-user cap of `10`, the user is blocked after 24 credits, when their included allocation is exhausted.
 
 #### Set a subscription-level usage cap
 

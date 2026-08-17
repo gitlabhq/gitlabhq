@@ -25,7 +25,7 @@ end
 
 ## All of the key/value pairs should be defined in FOSS
 
-**Summary**: All enums needs to be defined in FOSS, if a model is also part of the FOSS.
+**Summary**: All enums need to be defined in FOSS, if a model is also part of the FOSS.
 
 ```ruby
 class Model < ApplicationRecord
@@ -36,7 +36,7 @@ class Model < ApplicationRecord
 end
 ```
 
-When you add a new key/value pair to a `enum` and if it's EE-specific, you might be
+When you add a new key/value pair to an `enum` and if it's EE-specific, you might be
 tempted to organize the `enum` as the following:
 
 ```ruby
@@ -73,11 +73,11 @@ module EE
 end
 ```
 
-This works as-is, however, it has a couple of downside that:
+This works as-is, however, it has a couple of downsides:
 
 - Someone could define a key/value pair in EE that is **conflicted** with a value defined in FOSS.
   For example, define `job_activity_limit_exceeded: 1` in `EE::Enums::Pipeline`.
-- When it happens, the feature works totally different.
+- When it happens, the feature works totally differently.
   For example, we cannot figure out `failure_reason` is either `config_error` or `job_activity_limit_exceeded`.
 - When it happens, we have to ship a database migration to fix the data integrity,
   which might be impossible if you cannot recover the original value.
@@ -98,7 +98,7 @@ module EE
 end
 ```
 
-This looks working as a workaround, however, this approach has some downsides that:
+This seems to work as a workaround, however, this approach has some downsides:
 
 - Features could move from EE to FOSS or vice versa. Therefore, the offset might be mixed between FOSS and EE in the future.
   For example, when you move `job_activity_limit_exceeded` to FOSS, you see `{ unknown_failure: 0, config_error: 1, job_activity_limit_exceeded: 1_000 }`.

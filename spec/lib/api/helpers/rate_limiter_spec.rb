@@ -58,6 +58,7 @@ RSpec.describe API::Helpers::RateLimiter do
       end
 
       it 'skips rate limit if set to "1"' do
+        stub_feature_flags(rate_limiting_rule_bypass_header: false)
         allow(request).to receive(:get_header).with(Gitlab::Throttle.bypass_header).and_return('1')
 
         expect(::Gitlab::ApplicationRateLimiter).not_to receive(:throttled?)
