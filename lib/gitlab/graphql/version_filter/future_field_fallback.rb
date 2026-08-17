@@ -30,8 +30,7 @@ module Gitlab
             GraphQL::Schema::Field.new(
               owner: self,
               name: name,
-              type: GraphQL::Types::Boolean,
-              fallback_value: nil
+              resolver_class: Resolvers::NilResolver
             )
           end
         end
