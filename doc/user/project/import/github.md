@@ -434,7 +434,7 @@ The proxy needs to:
 
 GitHub API uses the `Link` header for pagination.
 
-After configuring the proxy, test it by making API requests. Below there are some examples of commands to test the API:
+After configuring the proxy, test it by making API requests. Below are some example commands to test the API:
 
 ```shell
 curl --header "Authorization: Bearer <YOUR-TOKEN>" "https://{PROXY_HOSTNAME}/user"
