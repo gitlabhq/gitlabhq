@@ -10,7 +10,6 @@ module API
 
     before do
       authenticate_non_get!
-      set_current_organization(user: current_user)
     end
 
     allow_access_with_scope :ai_workflows, if: ->(request) { request.get? || request.head? }

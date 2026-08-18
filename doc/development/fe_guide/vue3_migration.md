@@ -20,7 +20,7 @@ it uses module aliasing to swap out certain dependencies, including Vue itself, 
 Some of these replacement libraries are maintained by the team. They act as thin wrappers around existing
 libraries, making them Vue 3-compatible without requiring any changes in consumer code.
 
-## Setup GDK to use Vue 3 (@vue/compat)
+## Set up GDK to use Vue 3 (@vue/compat)
 
 This guide walks you through configuring the GitLab Development Kit (GDK) to use Vite as the build tool with Vue 3.
 
@@ -322,7 +322,7 @@ Some libraries rely on Vue.js 2 internals. They might not work with `@vue/compat
 
 **Goals**
 
-- We should add as few changes as possible to existing code to support new libraries. Instead, we should **add** new code, which acts as **facade**, making the new version compatible with the old one
+- We should add as few changes as possible to existing code to support new libraries. Instead, we should **add** new code, which acts as **a facade**, making the new version compatible with the old one
 - Switching between new and old versions should be hidden inside tooling (webpack / jest) and should not be exposed to the code
 - All facades specific to migration should live in the same directory to simplify future migration steps
 

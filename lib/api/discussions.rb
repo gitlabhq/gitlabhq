@@ -14,7 +14,6 @@ module API
 
     before do
       authenticate!
-      set_current_organization
     end
 
     urgency :low, [

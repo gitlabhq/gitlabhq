@@ -49,7 +49,7 @@ try {
 
 **When should you report an error**? We want to avoid reporting errors that we either don't care
 about, or have no control over. For example, we shouldn't report validation errors when a user fills
-out a form incorrectly. However, if that form submission fails because or a server error,
+out a form incorrectly. However, if that form submission fails because of a server error,
 this is an error we want Sentry to know about.
 
 By default your local development instance does not have Sentry configured. Calls to Sentry are
@@ -82,7 +82,7 @@ user interface. Sentry also provides alerts for folks interested in getting noti
 
 ### Filtering errors
 
-We receive several thousands of reports per day, so team members can filter errors based on their
+We receive several thousand reports per day, so team members can filter errors based on their
 work area.
 
 We mark errors with two additional custom `tags` to help identify their source:

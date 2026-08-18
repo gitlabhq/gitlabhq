@@ -103,7 +103,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
               merge_request_note = match_mr1_note('unmarked as a \\*\\*Work In Progress\\*\\*')
 
               expect(merge_request_note.noteable_type).to eq('MergeRequest')
-              expect(merge_request_note.system).to eq(true)
+              expect(merge_request_note.system).to be(true)
               expect(merge_request_note.system_note_metadata.action).to eq('title')
               expect(merge_request_note.system_note_metadata.commit_count).to be_nil
             end
@@ -112,7 +112,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
               merge_request_note = match_mr1_note('added 3 commits')
 
               expect(merge_request_note.noteable_type).to eq('MergeRequest')
-              expect(merge_request_note.system).to eq(true)
+              expect(merge_request_note.system).to be(true)
               expect(merge_request_note.system_note_metadata.action).to eq('commit')
               expect(merge_request_note.system_note_metadata.commit_count).to eq(3)
             end
@@ -144,7 +144,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
           expect(pipeline.merge_request.id).to be > 0
           expect(pipeline.merge_request.target_branch).to eq('feature')
           expect(pipeline.merge_request.source_branch).to eq('feature_conflict')
-          expect(pipeline.merge_request.merge_when_pipeline_succeeds).to eq(false)
+          expect(pipeline.merge_request.merge_when_pipeline_succeeds).to be(false)
         end
 
         it 'restores pipelines based on ascending id order' do
@@ -359,7 +359,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
 
         it 'sets auto merge to false for all merge requests' do
           MergeRequest.find_each do |merge_request|
-            expect(merge_request.merge_when_pipeline_succeeds).to eq(false)
+            expect(merge_request.merge_when_pipeline_succeeds).to be(false)
           end
         end
 
@@ -434,32 +434,32 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
         it 'restores project ci_cd_settings', :aggregate_failures do
           settings = @project.ci_cd_settings
 
-          expect(settings.group_runners_enabled?).to eq(false)
-          expect(settings.merge_pipelines_enabled?).to eq(false)
+          expect(settings.group_runners_enabled?).to be(false)
+          expect(settings.merge_pipelines_enabled?).to be(false)
           expect(settings.default_git_depth).to eq(5)
-          expect(settings.forward_deployment_enabled?).to eq(false)
-          expect(settings.merge_trains_enabled?).to eq(false)
-          expect(settings.auto_rollback_enabled?).to eq(false)
-          expect(settings.keep_latest_artifact?).to eq(true)
-          expect(settings.job_token_scope_enabled?).to eq(true)
+          expect(settings.forward_deployment_enabled?).to be(false)
+          expect(settings.merge_trains_enabled?).to be(false)
+          expect(settings.auto_rollback_enabled?).to be(false)
+          expect(settings.keep_latest_artifact?).to be(true)
+          expect(settings.job_token_scope_enabled?).to be(true)
           expect(settings.runner_token_expiration_interval).to eq(1.month.to_i)
-          expect(settings.separated_caches?).to eq(true)
-          expect(settings.allow_fork_pipelines_to_run_in_parent_project?).to eq(false)
-          expect(settings.inbound_job_token_scope_enabled?).to eq(true)
-          expect(settings.forward_deployment_rollback_allowed?).to eq(true)
-          expect(settings.merge_trains_skip_train_allowed?).to eq(false)
+          expect(settings.separated_caches?).to be(true)
+          expect(settings.allow_fork_pipelines_to_run_in_parent_project?).to be(false)
+          expect(settings.inbound_job_token_scope_enabled?).to be(true)
+          expect(settings.forward_deployment_rollback_allowed?).to be(true)
+          expect(settings.merge_trains_skip_train_allowed?).to be(false)
           expect(settings.restrict_pipeline_cancellation_role).to eq('developer').or eq(0)
           expect(settings.pipeline_variables_minimum_override_role).to eq('developer')
-          expect(settings.push_repository_for_job_token_allowed?).to eq(false)
+          expect(settings.push_repository_for_job_token_allowed?).to be(false)
           expect(settings.id_token_sub_claim_components).to eq(%w[project_path ref_type ref])
           expect(settings.delete_pipelines_in_seconds).to eq(1.month.to_i)
-          expect(settings.allow_composite_identities_to_run_pipelines?).to eq(false)
-          expect(settings.display_pipeline_variables?).to eq(false)
+          expect(settings.allow_composite_identities_to_run_pipelines?).to be(false)
+          expect(settings.display_pipeline_variables?).to be(false)
           expect(settings.resource_group_default_process_mode).to eq('unordered')
         end
 
         it 'restores `auto_devops`' do
-          expect(@project.auto_devops_enabled?).to eq(true)
+          expect(@project.auto_devops_enabled?).to be(true)
           expect(@project.auto_devops.deploy_strategy).to eq('continuous')
         end
 
@@ -527,7 +527,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
             expect(pipeline_schedule.ref).to eq('master')
             expect(pipeline_schedule.cron).to eq('0 4 * * 0')
             expect(pipeline_schedule.cron_timezone).to eq('UTC')
-            expect(pipeline_schedule.active).to eq(false)
+            expect(pipeline_schedule.active).to be(false)
             expect(pipeline_schedule.owner_id).to eq(@user.id)
           end
         end
@@ -759,7 +759,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
       it 'fails to restore the project' do
         result = described_class.new(user: user, shared: shared, project: project).restore
 
-        expect(result).to eq(false)
+        expect(result).to be(false)
         expect(shared.errors).to include('invalid import format')
       end
     end
@@ -775,7 +775,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
           setup_import_export_config('light')
           setup_reader
 
-          expect(restored_project_json).to eq(true)
+          expect(restored_project_json).to be(true)
         end
 
         it 'issue system note metadata restored successfully' do
@@ -783,7 +783,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
           note = project.issues.first.notes.find { |n| n.note.match(/#{note_content}/) }
 
           expect(note.noteable_type).to eq('Issue')
-          expect(note.system).to eq(true)
+          expect(note.system).to be(true)
           expect(note.system_note_metadata.action).to eq('merge')
           expect(note.system_note_metadata.commit_count).to be_nil
         end
@@ -810,7 +810,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
           setup_import_export_config('multi_pipeline_ref_one_external_pr')
           setup_reader
 
-          expect(restored_project_json).to eq(true)
+          expect(restored_project_json).to be(true)
         end
 
         it_behaves_like 'restores project successfully',
@@ -843,7 +843,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
         end
 
         it 'report post import error' do
-          expect(restored_project_json).to eq(false)
+          expect(restored_project_json).to be(false)
           expect(shared.errors).to include('post_import_error')
         end
       end
@@ -858,7 +858,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
           expect(project).to receive(:merge_requests).and_call_original
           expect(project).to receive(:merge_requests).and_raise(exception)
           expect(project).to receive(:merge_requests).and_call_original
-          expect(restored_project_json).to eq(true)
+          expect(restored_project_json).to be(true)
         end
 
         it_behaves_like 'restores project successfully',
@@ -897,14 +897,14 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
 
           project.create_import_data(data: { override_params: { visibility_level: Gitlab::VisibilityLevel::INTERNAL.to_s } })
 
-          expect(restored_project_json).to eq(true)
+          expect(restored_project_json).to be(true)
           expect(project.visibility_level).to eq(Gitlab::VisibilityLevel::INTERNAL)
         end
 
         it 'overwrites the params stored in the JSON' do
           project.create_import_data(data: { override_params: { description: "Overridden" } })
 
-          expect(restored_project_json).to eq(true)
+          expect(restored_project_json).to be(true)
           expect(project.description).to eq("Overridden")
         end
 
@@ -913,7 +913,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
 
           project.create_import_data(data: { override_params: { lfs_enabled: !original_value } })
 
-          expect(restored_project_json).to eq(true)
+          expect(restored_project_json).to be(true)
           expect(project.lfs_enabled).to eq(original_value)
         end
 
@@ -923,7 +923,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
 
           project.create_import_data(data: { override_params: disabled_access_levels })
 
-          expect(restored_project_json).to eq(true)
+          expect(restored_project_json).to be(true)
 
           aggregate_failures do
             access_level_keys.each do |key|
@@ -955,7 +955,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
           setup_import_export_config('group')
           setup_reader
 
-          expect(restored_project_json).to eq(true)
+          expect(restored_project_json).to be(true)
         end
 
         it_behaves_like 'restores project successfully',
@@ -999,7 +999,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
 
           expect_any_instance_of(Gitlab::ImportExport::Shared).not_to receive(:error)
 
-          expect(restored_project_json).to eq(true)
+          expect(restored_project_json).to be(true)
           expect(project.labels.count).to eq(1)
         end
 
@@ -1008,7 +1008,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
 
           expect_any_instance_of(Gitlab::ImportExport::Shared).not_to receive(:error)
 
-          expect(restored_project_json).to eq(true)
+          expect(restored_project_json).to be(true)
           expect(project.group.milestones.count).to eq(1)
           expect(project.milestones.count).to eq(0)
         end
@@ -1035,7 +1035,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
         it 'preserves the project milestone IID' do
           expect_any_instance_of(Gitlab::ImportExport::Shared).not_to receive(:error)
 
-          expect(restored_project_json).to eq(true)
+          expect(restored_project_json).to be(true)
           expect(project.milestones.count).to eq(2)
           expect(Milestone.find_by_title('Another milestone').iid).to eq(1)
           expect(Milestone.find_by_title('Group-level milestone').iid).to eq(2)
@@ -1051,14 +1051,14 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
         it 'converts empty external classification authorization labels to nil' do
           project.create_import_data(data: { override_params: { external_authorization_classification_label: "" } })
 
-          expect(restored_project_json).to eq(true)
+          expect(restored_project_json).to be(true)
           expect(project.external_authorization_classification_label).to be_nil
         end
 
         it 'preserves valid external classification authorization labels' do
           project.create_import_data(data: { override_params: { external_authorization_classification_label: "foobar" } })
 
-          expect(restored_project_json).to eq(true)
+          expect(restored_project_json).to be(true)
           expect(project.external_authorization_classification_label).to eq("foobar")
         end
       end
@@ -1085,7 +1085,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
           let(:visibility) { Gitlab::VisibilityLevel::PRIVATE }
 
           it 'uses the project visibility' do
-            expect(restorer.restore).to eq(true)
+            expect(restorer.restore).to be(true)
             expect(restorer.project.visibility_level).to eq(visibility)
           end
         end
@@ -1097,7 +1097,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
             it 'uses private visibility' do
               stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::INTERNAL])
 
-              expect(restorer.restore).to eq(true)
+              expect(restorer.restore).to be(true)
               expect(restorer.project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
             end
           end
@@ -1115,7 +1115,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
             let(:visibility) { Gitlab::VisibilityLevel::PUBLIC }
 
             it 'uses the group visibility' do
-              expect(restorer.restore).to eq(true)
+              expect(restorer.restore).to be(true)
               expect(restorer.project.visibility_level).to eq(group_visibility)
             end
           end
@@ -1125,7 +1125,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
             let(:visibility) { Gitlab::VisibilityLevel::PRIVATE }
 
             it 'uses the project visibility' do
-              expect(restorer.restore).to eq(true)
+              expect(restorer.restore).to be(true)
               expect(restorer.project.visibility_level).to eq(visibility)
             end
           end
@@ -1135,7 +1135,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
             let(:visibility) { Gitlab::VisibilityLevel::PUBLIC }
 
             it 'uses the group visibility' do
-              expect(restorer.restore).to eq(true)
+              expect(restorer.restore).to be(true)
               expect(restorer.project.visibility_level).to eq(group_visibility)
             end
 
@@ -1143,7 +1143,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
               it 'sets private visibility' do
                 stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::INTERNAL])
 
-                expect(restorer.restore).to eq(true)
+                expect(restorer.restore).to be(true)
                 expect(restorer.project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
               end
             end

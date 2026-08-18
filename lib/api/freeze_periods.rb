@@ -7,7 +7,6 @@ module API
     freeze_periods_tags = %w[freeze_periods]
     before do
       authenticate!
-      set_current_organization
     end
 
     feature_category :continuous_delivery

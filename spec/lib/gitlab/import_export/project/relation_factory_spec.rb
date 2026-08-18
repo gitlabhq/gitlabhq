@@ -88,7 +88,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
     end
 
     it 'has a nil token' do
-      expect(created_object.token).to eq(nil)
+      expect(created_object.token).to be_nil
     end
 
     context 'original service exists' do
@@ -176,7 +176,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
     end
 
     it 'has auto merge set to false' do
-      expect(created_object.merge_when_pipeline_succeeds).to eq(false)
+      expect(created_object.merge_when_pipeline_succeeds).to be(false)
     end
 
     it 'inserts backticks around username mentions' do
@@ -427,7 +427,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
         let(:value) { v }
 
         it "the created object is not active" do
-          expect(created_object.active).to eq(false)
+          expect(created_object.active).to be(false)
         end
       end
     end

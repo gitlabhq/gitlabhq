@@ -7,7 +7,7 @@ title: Assignable Permissions
 
 ## Assignable Permissions
 
-Assignable permissions bundle one or more raw permissions into user-facing permission groups. They allow you to adjust the level of granularity presented to users, letting the product group decide whether to group permissions finely (e.g., read issue and read snippet permissions separately) or more broadly (e.g., all read work item permissions together). This maintains fine-grained control at the code level while providing a user-friendly experience in the UI.
+Assignable permissions bundle one or more raw permissions into user-facing permission groups. You can use them to adjust the level of granularity presented to users, letting the product group decide whether to group permissions finely (e.g., read issue and read snippet permissions separately) or more broadly (e.g., all read work item permissions together). This maintains fine-grained control at the code level while providing a user-friendly experience in the UI.
 
 ### Create the Assignable Permission File
 

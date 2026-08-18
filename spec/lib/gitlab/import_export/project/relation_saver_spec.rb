@@ -57,7 +57,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationSaver, feature_category: :
       it 'successfully serializes without errors' do
         result = relation_saver.save
 
-        expect(result).to eq(true)
+        expect(result).to be(true)
         expect(shared.errors).to be_empty
       end
     end
@@ -83,7 +83,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationSaver, feature_category: :
       it 'successfully serializes without errors' do
         result = relation_saver.save
 
-        expect(result).to eq(true)
+        expect(result).to be(true)
         expect(shared.errors).to be_empty
       end
     end
@@ -94,7 +94,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationSaver, feature_category: :
       it 'returns false and register the error' do
         result = relation_saver.save
 
-        expect(result).to eq(false)
+        expect(result).to be(false)
         expect(shared.errors).to be_present
       end
     end
@@ -107,7 +107,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationSaver, feature_category: :
 
         result = relation_saver.save
 
-        expect(result).to eq(false)
+        expect(result).to be(false)
         expect(shared.errors).to include('Error!')
       end
     end

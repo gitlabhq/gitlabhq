@@ -4,7 +4,6 @@ module API
   # External applications API
   class Applications < ::API::Base
     before do
-      set_current_organization
       authenticated_as_admin!
     end
 

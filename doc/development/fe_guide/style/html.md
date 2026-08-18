@@ -43,7 +43,7 @@ for a description on what each tag semantically means.
 
 ### Button type
 
-Button tags requires a `type` attribute according to the [W3C HTML specification](https://www.w3.org/TR/2011/WD-html5-20110525/the-button-element.html#dom-button-type).
+Button tags require a `type` attribute according to the [W3C HTML specification](https://www.w3.org/TR/2011/WD-html5-20110525/the-button-element.html#dom-button-type).
 
 ```html
 // bad

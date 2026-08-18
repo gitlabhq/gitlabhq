@@ -114,7 +114,7 @@ RSpec.describe Gitlab::ImportExport::Importer, feature_category: :importers do
         importer.execute
 
         expect(FileUtils).to have_received(:rm_rf).with(shared.base_path)
-        expect(Dir.exist?(shared.base_path)).to eq(false)
+        expect(Dir.exist?(shared.base_path)).to be(false)
       end
 
       it 'sets the correct visibility_level when visibility level is a string' do

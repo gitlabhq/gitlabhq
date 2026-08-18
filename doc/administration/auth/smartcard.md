@@ -108,7 +108,7 @@ Certificate:
 {{< /details >}}
 
 GitLab implements a standard way of certificate matching following
-[RFC4523](https://www.rfc-editor.org/rfc/rfc4523). It uses the
+[RFC4523](https://www.rfc-editor.org/info/rfc4523/). It uses the
 `certificateExactMatch` certificate matching rule against the `userCertificate`
 attribute. As a prerequisite, you must use an LDAP server that:
 

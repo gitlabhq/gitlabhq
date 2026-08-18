@@ -19,7 +19,7 @@ We appreciate your contributions and are here to support your learning while at 
 
 Our teaching style prioritizes practical learning.
 Lessons include an introduction to the problem, theory, live coding walkthroughs, and similar issues for you to tackle.
-As you progress, the complexity of the tasks increase, helping you grow your skills.
+As you progress, the complexity of the tasks increases, helping you grow your skills.
 
 Join us on this journey of front-end development at GitLab. Say hello in [the Discord community](https://discord.com/invite/gitlab) and let's learn and improve together.
 
@@ -41,7 +41,7 @@ Each week consists of the following sessions:
 - 2-hour live coding lesson with a practical task for participants to complete.
 - 2 x 2-hour dedicated office hours sessions where participants can work on the task assigned in the lesson with GitLab frontend engineers. (2 sessions in different timezones as this will require participants to join synchronously)
 
-A fortnightly 1-on-1 mentoring sessions are also available to each participant.
+Fortnightly 1-on-1 mentoring sessions are also available to each participant.
 
 There are 10 places available on the course.
 The date will be set after the course material has been prepared.

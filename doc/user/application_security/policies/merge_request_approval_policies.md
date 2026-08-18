@@ -309,9 +309,9 @@ This rule enforces the defined actions based on license findings.
 | `branch_type`  | `string` | true if `branches` field does not exist       | `default` or `protected`     | The types of protected branches the given policy applies to. Cannot be used with the `branches` field. Default branches must also be `protected`.                                                                   |
 | `branch_exceptions` | `array` of `string` | false                                         | Names of branches            | Target branches to exclude from this rule.                                                                                                                                                                                 |
 | `match_on_inclusion_license` | `boolean` | true if `licenses` field does not exist       | `true`, `false`              | Whether the rule matches inclusion or exclusion of licenses listed in `license_types`.                                                                                                                              |
-| `license_types` | `array` of `string` | true if `licenses` field does not exist       | license types                | [SPDX license names](https://spdx.org/licenses) to match on, for example `Affero General Public License v1.0` or `MIT License`.                                                                                     |
+| `license_types` | `array` of `string` | true if `licenses` field does not exist       | license types                | [SPDX license names](https://spdx.org/licenses/) to match on, for example `Affero General Public License v1.0` or `MIT License`.                                                                                     |
 | `license_states` | `array` of `string` | true                                          | `newly_detected`, `detected` | Whether to match newly detected and/or previously detected licenses. The `newly_detected` state triggers approval when either a new package is introduced or when a new license for an existing package is detected. |
-| `licenses`     | `object` | true if `license_types` field does not exist  | `licenses` object            | [SPDX license names](https://spdx.org/licenses) to match on including package exceptions.                                                                                                                        |
+| `licenses`     | `object` | true if `license_types` field does not exist  | `licenses` object            | [SPDX license names](https://spdx.org/licenses/) to match on including package exceptions.                                                                                                                        |
 
 ### `licenses` object
 
@@ -327,11 +327,11 @@ package exclusions.
 
 | Field  | Type     | Required | Possible values   | Description                                        |
 |--------|----------|----------|-------------------|----------------------------------------------------|
-| `name` | `string` | true     | SPDX license name | [SPDX license name](https://spdx.org/licenses).    |
+| `name` | `string` | true     | SPDX license name | [SPDX license name](https://spdx.org/licenses/).    |
 | `packages` | `object` | false    | `packages` object | List of packages exceptions for the given license. |
 
 > [!note]
-> The `name` field must be a valid [SPDX license name](https://spdx.org/licenses).
+> The `name` field must be a valid [SPDX license name](https://spdx.org/licenses/).
 > The value `unknown` is not a recognized SPDX license name, and is not supported in
 > the `licenses` field. Package-level exclusions configured for `unknown` licenses are
 > ignored during merge request approval evaluation. To manage packages with `unknown`

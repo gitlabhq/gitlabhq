@@ -212,7 +212,7 @@ RSpec.describe Gitlab::ImportExport::Group::RelationFactory, :clean_gitlab_redis
     end
 
     it do
-      expect(created_object).to eq(nil)
+      expect(created_object).to be_nil
     end
   end
 

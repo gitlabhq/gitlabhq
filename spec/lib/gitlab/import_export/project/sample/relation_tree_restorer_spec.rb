@@ -38,7 +38,7 @@ RSpec.describe Gitlab::ImportExport::Project::Sample::RelationTreeRestorer, :cle
 
   shared_examples 'import project successfully' do
     it 'restores project tree' do
-      expect(subject).to eq(true)
+      expect(subject).to be(true)
     end
 
     describe 'imported project' do

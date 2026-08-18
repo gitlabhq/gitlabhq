@@ -36,7 +36,6 @@ module API
       not_found! unless Gitlab::CurrentSettings.bulk_import_enabled?
 
       authenticate!
-      set_current_organization
     end
 
     resource :bulk_imports do

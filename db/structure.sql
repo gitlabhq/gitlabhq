@@ -6818,7 +6818,14 @@ CREATE TABLE merge_request_diff_commits_b5377a7a34 (
     merge_request_commits_metadata_id bigint NOT NULL,
     merge_request_diff_id bigint NOT NULL,
     project_id bigint NOT NULL,
-    relative_order integer NOT NULL
+    relative_order integer NOT NULL,
+    sha bytea,
+    message text,
+    commit_author_id bigint,
+    committer_id bigint,
+    authored_date timestamp without time zone,
+    committed_date timestamp without time zone,
+    trailers jsonb DEFAULT '{}'::jsonb
 )
 PARTITION BY RANGE (project_id);
 

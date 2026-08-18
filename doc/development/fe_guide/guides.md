@@ -7,6 +7,6 @@ title: Guides
 
 This section contains guides to help our developers.
 For example, you can find information about how to accomplish a specific task,
-or how get proficient with a tool.
+or how to get proficient with a tool.
 
 Guidelines related to one specific technology, like Vue, should not be added to this section. Instead, add them to the `Tech Stack` section.

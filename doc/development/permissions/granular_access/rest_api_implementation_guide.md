@@ -257,7 +257,7 @@ The bypass is gated to `:project` and `:group` boundaries. `:user` and `:instanc
 - Add the decorator to **every endpoint** individually, even if multiple endpoints use the same permission
 - The decorator goes **immediately before** the HTTP method definition (`get`, `post`, `put`, `delete`)
 - Use the exact permission name (symbol) defined in your YAML files
-- Use `boundary_type` or `boundary` for single-boundary endpoints; use `boundaries` array for multi-boundary endpoints
+- Use `boundary_type` or `boundary` for single-boundary endpoints. Use the `boundaries` array for multi-boundary endpoints
 - Use `skip_granular_token_authorization` exclusively for endpoints that are unauthenticated or authenticate by other means than a personal access token. Never use it to bypass permission checks on an endpoint that accepts PAT authentication
 
 ### Step 6: Add Authorization Tests

@@ -41,8 +41,8 @@ can help you learn how to integrate Vue Apollo.
 
 For other use cases, check out the [Usage outside of Vue](#usage-outside-of-vue) section.
 
-We use [Immer](https://immerjs.github.io/immer/) for immutable cache updates;
-see [Immutability and cache updates](#immutability-and-cache-updates) for more information.
+We use [Immer](https://immerjs.github.io/immer/) for immutable cache updates.
+See [Immutability and cache updates](#immutability-and-cache-updates) for more information.
 
 ### Tooling
 
@@ -103,7 +103,7 @@ Default client accepts two parameters: `resolvers` and `config`.
 
 ### Multiple client queries for the same object
 
-If you are making multiple queries to the same Apollo client object you might encounter the following error: `Cache data may be lost when replacing the someProperty field of a Query object. To address this problem, either ensure all objects of SomeEntityhave an id or a custom merge function`. We are already checking `id` presence for every GraphQL type that has an `id`, so this shouldn't be the case (unless you see this warning when running unit tests; in this case ensure your mocked responses contain an `id` whenever it's requested).
+If you are making multiple queries to the same Apollo client object you might encounter the following error: `Cache data may be lost when replacing the someProperty field of a Query object. To address this problem, either ensure all objects of SomeEntity have an id or a custom merge function`. We are already checking `id` presence for every GraphQL type that has an `id`, so this shouldn't be the case (unless you see this warning when running unit tests. In this case, ensure your mocked responses contain an `id` whenever it's requested).
 
 When `SomeEntity` type doesn't have an `id` property in the GraphQL schema, to fix this warning we need to define a custom merge function.
 
@@ -236,7 +236,7 @@ query allReleases(...) {
 
 ## Skip query with async variables
 
-Whenever a query has one or more variable that requires another query to have executed before it can run, it is **vital** to add a `skip()` property to the query with all relations.
+Whenever a query has one or more variables that require another query to have executed before it can run, it is **vital** to add a `skip()` property to the query with all relations.
 
 Failing to do so will result in the query executing twice: once with the default value (whatever was defined on the `data` property or `undefined`) and once more once the initial query is resolved, triggering a new variable value to be injected in the smart query and then refetched by Apollo.
 
@@ -451,7 +451,7 @@ It is possible to manage an application state with Apollo when creating your def
 #### Using client-side resolvers
 
 The default state can be set by writing to the cache after setting up the default client. In the
-example below, we are using query with `@client` Apollo directive to write the initial data to
+example below, we are using a query with the `@client` Apollo directive to write the initial data to
 Apollo cache and then get this state in the Vue component:
 
 ```javascript
@@ -622,7 +622,7 @@ of the backend.
 
 #### Implementing frontend queries and mutations ahead of the backend
 
-In such case, the frontend defines GraphQL schemas or fields that do not correspond to any
+In such a case, the frontend defines GraphQL schemas or fields that do not correspond to any
 backend resolver yet. This is fine as long as the implementation is properly feature-flagged so it
 does not translate to public-facing errors in the product. However, we do validate client-side
 queries/mutations against the backend GraphQL schema with the `graphql-verify` CI job.
@@ -660,7 +660,7 @@ the appropriate issue.
 #### Feature-flagged queries
 
 In cases where the backend is complete and the frontend is being implemented behind a feature flag,
-a couple options are available to leverage the feature flag in the GraphQL queries.
+a couple of options are available to leverage the feature flag in the GraphQL queries.
 
 ##### The `@include` directive
 
@@ -767,7 +767,7 @@ for connection types. This means a "cursor" is used to keep track of where in th
 set the next items should be fetched from. [GraphQL Ruby Connection Concepts](https://graphql-ruby.org/pagination/connection_concepts.html)
 is a good overview and introduction to connections.
 
-Every connection type (for example, `DesignConnection` and `DiscussionConnection`) has a field `pageInfo` that contains an information required for pagination:
+Every connection type (for example, `DesignConnection` and `DiscussionConnection`) has a field `pageInfo` that contains information required for pagination:
 
 ```javascript
 pageInfo {
@@ -1300,7 +1300,7 @@ If you are using Chrome and keep seeing `200` HTTP status codes, it might be thi
 
 ## Subscriptions
 
-We use [subscriptions](https://www.apollographql.com/docs/react/data/subscriptions/) to receive real-time updates from GraphQL API via websockets. Currently, the number of existing subscriptions is limited, you can check a list of available ones in [GraphqiQL explorer](https://gitlab.com/-/graphql-explorer)
+We use [subscriptions](https://www.apollographql.com/docs/react/data/subscriptions/) to receive real-time updates from the GraphQL API via websockets. Currently, the number of existing subscriptions is limited. You can check a list of available ones in the [GraphiQL explorer](https://gitlab.com/-/graphql-explorer)
 
 Refer to the [Real-time widgets developer guide](../real_time.md) for a comprehensive introduction to subscriptions.
 
@@ -2166,7 +2166,6 @@ When [using Vuex](#using-with-vuex), disable the cache when:
 
 - The data is being cached elsewhere
 - The use case does not need caching
-  if the data is being cached elsewhere, or if there is no need for it for the given use case.
 
 ```javascript
 import createDefaultClient, { fetchPolicies } from '~/lib/graphql';
@@ -2264,7 +2263,7 @@ To improve performance, sometimes we want to make initial GraphQL queries early.
   for your application. To add GraphQL startup calls, we use
   `add_page_startup_graphql_call` helper where the first parameter is a path to the
   query, the second one is an object containing query variables. Path to the query is
-  relative to `app/graphql/queries` folder: for example, if we need a
+  relative to `app/graphql/queries` folder: for example, if we need an
   `app/graphql/queries/repository/files.query.graphql` query, the path is
   `repository/files`.
 
@@ -2276,11 +2275,11 @@ If your unit test is failing because the response contains empty objects instead
 `__typename` field to the mocked responses.
 
 Alternatively, [GraphQL query fixtures](../testing_guide/frontend_testing.md#graphql-query-fixtures)
-automatically adds the `__typename` for you upon generation.
+automatically add the `__typename` for you upon generation.
 
 ### Warning about losing cache data
 
-Sometimes you can see a warning in the console: `Cache data may be lost when replacing the someProperty field of a Query object. To address this problem, either ensure all objects of SomeEntityhave an id or a custom merge function`. Check section about [multiple queries](#multiple-client-queries-for-the-same-object) to resolve an issue.
+Sometimes you can see a warning in the console: `Cache data may be lost when replacing the someProperty field of a Query object. To address this problem, either ensure all objects of SomeEntity have an id or a custom merge function`. Check section about [multiple queries](#multiple-client-queries-for-the-same-object) to resolve an issue.
 
   ```yaml
   - current_route_path = request.fullpath.match(/-\/tree\/[^\/]+\/(.+$)/).to_a[1]

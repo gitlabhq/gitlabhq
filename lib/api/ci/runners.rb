@@ -8,7 +8,6 @@ module API
 
       before do
         authenticate!
-        set_current_organization
       end
 
       feature_category :runner_core

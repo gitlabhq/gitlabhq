@@ -216,7 +216,7 @@ GitLab can display the results of one or more reports in:
 {{< /details >}}
 
 This report is a Software Bill of Materials describing the components of a project
-following the [CycloneDX](https://cyclonedx.org/docs/1.4) protocol format.
+following the [CycloneDX](https://cyclonedx.org/docs/1.4/json/) protocol format.
 
 You can specify multiple CycloneDX reports per job. These can be either supplied
 as a list of filenames, a filename pattern, or both:

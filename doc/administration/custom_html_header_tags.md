@@ -30,7 +30,7 @@ Before enabling this feature, you should understand the security implications th
 A previously legit external resource could end up being compromised and then used to extract
 pretty much any data from any user in the GitLab instance. For that reason,
 you should never add resources from untrusted external sources. If possible, you should always
-use integrity checks like [Subresource Integrity](https://www.w3.org/TR/SRI/) with third-party
+use integrity checks like [Subresource Integrity](https://www.w3.org/TR/sri/) with third-party
 resources to confirm the authenticity of the resources that are loaded.
 
 Limit the functionality you are adding by using HTML header tags to the minimum.

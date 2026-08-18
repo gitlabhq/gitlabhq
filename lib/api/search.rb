@@ -23,7 +23,6 @@ module API
 
     before do
       authenticate!
-      set_current_organization
 
       check_rate_limit!(
         :search_rate_limit,

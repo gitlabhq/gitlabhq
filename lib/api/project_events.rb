@@ -7,8 +7,6 @@ module API
 
     helpers ::API::Helpers::EventsHelpers
 
-    before { set_current_organization }
-
     feature_category :groups_and_projects
 
     # TODO: Set higher urgency after resolving https://gitlab.com/gitlab-org/gitlab/-/issues/357839

@@ -29,7 +29,7 @@ The following GitLab projects use TypeScript:
 
 ## Recommendations
 
-### Setup ESLint and TypeScript configuration
+### Set up ESLint and TypeScript configuration
 
 When setting up a new TypeScript project, configure strict type-safety rules for
 ESLint and TypeScript. This ensures that the project remains as type-safe as possible.
@@ -44,7 +44,7 @@ For `tsconfig.json`:
   This enforces the strongest type-checking capabilities in the project and
   prohibits overriding type-safety.
 - Use [`"skipLibCheck": true`](https://www.typescriptlang.org/tsconfig/#skipLibCheck).
-  This improves compile time by only checking references `.d.ts`
+  This improves compile time by only checking referenced `.d.ts`
   files as opposed to all `.d.ts` files in `node_modules`.
 
 For `.eslintrc.json` (or `.eslintrc.js`):
@@ -123,7 +123,7 @@ function handler(data: unknown) {
 
 ```
 
-There's some rare cases this might be acceptable (consider
+There are some rare cases where this might be acceptable (consider
 [this test utility](https://gitlab.com/gitlab-org/gitlab-web-ide/-/blob/3ea8191ed066811caa4fb108713e7538b8d8def1/packages/vscode-extension-web-ide/test-utils/createFakePartial.ts#L1)). However, 99% of the
 time, there's a better way.
 

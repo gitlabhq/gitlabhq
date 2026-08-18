@@ -10,8 +10,6 @@ module API
     allow_access_with_scope :read_user, if: ->(request) { request.get? || request.head? }
     allow_access_with_scope :ai_workflows, if: ->(request) { request_current_user_events?(request) }
 
-    before { set_current_organization }
-
     feature_category :user_profile
     urgency :low
 

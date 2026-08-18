@@ -68,7 +68,7 @@ RSpec.describe API::Helpers, feature_category: :api do
   end
 
   describe '#find_project' do
-    let(:project) { create(:project) }
+    let_it_be(:project) { create(:project) }
 
     shared_examples 'project finder' do
       context 'when project exists' do
@@ -384,7 +384,7 @@ RSpec.describe API::Helpers, feature_category: :api do
     end
 
     context 'support for IDs and paths as argument' do
-      let_it_be_with_reload(:project) { create(:project) }
+      let_it_be(:project) { create(:project) }
 
       let(:user) { project.first_owner }
 
@@ -438,7 +438,7 @@ RSpec.describe API::Helpers, feature_category: :api do
   end
 
   describe '#find_pipeline' do
-    let(:pipeline) { create(:ci_pipeline) }
+    let_it_be(:pipeline) { create(:ci_pipeline) }
 
     shared_examples 'pipeline finder' do
       context 'when pipeline exists' do
@@ -553,7 +553,7 @@ RSpec.describe API::Helpers, feature_category: :api do
     end
 
     context 'support for IDs and paths as argument' do
-      let_it_be_with_reload(:project) { create(:project) }
+      let_it_be(:project) { create(:project) }
       let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
 
       let(:user) { project.first_owner }
@@ -719,7 +719,7 @@ RSpec.describe API::Helpers, feature_category: :api do
     end
 
     context 'with support for IDs and paths as arguments' do
-      let_it_be_with_reload(:group) { create(:group) }
+      let_it_be(:group) { create(:group) }
 
       let(:user) { group.first_owner }
 
@@ -863,7 +863,7 @@ RSpec.describe API::Helpers, feature_category: :api do
   end
 
   describe '#find_namespace' do
-    let(:namespace) { create(:namespace) }
+    let_it_be(:namespace) { create(:namespace) }
 
     shared_examples 'namespace finder' do
       context 'when namespace exists' do
@@ -901,7 +901,7 @@ RSpec.describe API::Helpers, feature_category: :api do
     end
 
     context 'when namespace is a project namespace' do
-      let_it_be_with_reload(:project) { create(:project) }
+      let_it_be(:project) { create(:project) }
 
       it 'returns nil by id by default' do
         expect(helper.find_namespace(project.project_namespace.id)).to be_nil
@@ -932,7 +932,7 @@ RSpec.describe API::Helpers, feature_category: :api do
 
   describe '#find_namespace_by_path' do
     context 'when project namespaces are allowed' do
-      let_it_be_with_reload(:project) { create(:project, :private) }
+      let_it_be(:project) { create(:project, :private) }
 
       it 'falls back to the project namespace when not found via namespace lookup' do
         expect(::Namespace).to receive(:find_by_full_path).with(project.full_path).and_return(nil)
@@ -951,7 +951,7 @@ RSpec.describe API::Helpers, feature_category: :api do
   end
 
   shared_examples 'user namespace finder' do
-    let(:user1) { create(:user) }
+    let_it_be(:user1) { create(:user) }
 
     before do
       allow(helper).to receive(:current_user).and_return(user1)
@@ -960,10 +960,10 @@ RSpec.describe API::Helpers, feature_category: :api do
     end
 
     context 'when namespace is group' do
-      let(:namespace) { create(:group) }
+      let_it_be_with_reload(:namespace) { create(:group) }
 
       context 'when user has access to group' do
-        before do
+        before_all do
           namespace.add_guest(user1)
           namespace.save!
         end
@@ -981,7 +981,7 @@ RSpec.describe API::Helpers, feature_category: :api do
     end
 
     context "when namespace is user's personal namespace" do
-      let(:namespace) { create(:namespace) }
+      let_it_be_with_reload(:namespace) { create(:namespace) }
 
       context 'when user owns the namespace' do
         before do
@@ -1010,7 +1010,7 @@ RSpec.describe API::Helpers, feature_category: :api do
     it_behaves_like 'user namespace finder'
 
     context 'when namespace is a project namespace' do
-      let_it_be_with_reload(:project) { create(:project, :private) }
+      let_it_be(:project) { create(:project, :private) }
       let(:current_user) { project.first_owner }
 
       before do
@@ -1071,7 +1071,7 @@ RSpec.describe API::Helpers, feature_category: :api do
 
   describe '#find_namespace_by_path!' do
     context 'when namespace is a project namespace' do
-      let_it_be_with_reload(:project) { create(:project, :private) }
+      let_it_be(:project) { create(:project, :private) }
       let(:current_user) { project.first_owner }
 
       before do
@@ -1131,7 +1131,7 @@ RSpec.describe API::Helpers, feature_category: :api do
   end
 
   describe '#authorized_project_scope?' do
-    let_it_be_with_reload(:project) { create(:project) }
+    let_it_be(:project) { create(:project) }
     let_it_be(:other_project) { create(:project) }
     let_it_be(:job) { create(:ci_build) }
 
@@ -1292,7 +1292,7 @@ RSpec.describe API::Helpers, feature_category: :api do
   describe '#track_event' do
     let_it_be(:user) { create(:user) }
     let_it_be(:namespace) { create(:namespace) }
-    let_it_be_with_reload(:project) { create(:project) }
+    let_it_be(:project) { create(:project, namespace: namespace) }
     let(:event_name) { 'i_compliance_dashboard' }
     let(:unknown_event) { 'unknown' }
 
@@ -2195,8 +2195,8 @@ RSpec.describe API::Helpers, feature_category: :api do
   end
 
   describe '#boundaries_for_endpoint' do
-    let_it_be_with_reload(:project) { create(:project) }
-    let_it_be_with_reload(:group) { create(:group) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, group: group) }
     let(:access_token) { instance_double(PersonalAccessToken, granular?: true) }
 
     before do
@@ -2380,7 +2380,6 @@ RSpec.describe API::Helpers, feature_category: :api do
 
   describe '#authorize_granular_token?' do
     let(:token) { instance_double(PersonalAccessToken) }
-    let_it_be(:user) { create(:user) }
 
     before do
       allow(helper).to receive(:access_token).and_return(token)

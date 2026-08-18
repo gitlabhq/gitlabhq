@@ -47,7 +47,7 @@ Make sure you have:
   - [GitLab CLI (`glab`)](https://docs.gitlab.com/cli/) 1.85.0 or later, authenticated with `glab auth login`
   - `curl` or another HTTP client
 - Go 1.21 or later installed
-- [The `buf` CLI](https://buf.build/docs/installation) installed for generating Protobuf code
+- [The `buf` CLI](https://buf.build/docs/installation/) installed for generating Protobuf code
 - The following feature flags enabled on your GitLab instance:
   - `job_router`
   - `job_router_admission_control`

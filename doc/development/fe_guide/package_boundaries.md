@@ -12,7 +12,7 @@ separable.
 A package spans both editions. `app/assets/javascripts/ci/` and `ee/app/assets/javascripts/ci/` are
 the same package, so EE code that imports its CE counterpart is internal to the package and allowed.
 
-`config/frontend_packages.mjs` defines three kinds of package.
+`config/frontend_packages.mjs` defines three kinds of packages.
 
 | Kind | Members | May import | May be imported by |
 | ---- | ------- | ---------- | ------------------ |

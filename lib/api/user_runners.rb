@@ -10,7 +10,6 @@ module API
     resource :user do
       before do
         authenticate!
-        set_current_organization
       end
 
       desc 'Create a runner owned by currently authenticated user' do

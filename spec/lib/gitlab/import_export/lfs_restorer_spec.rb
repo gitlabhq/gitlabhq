@@ -47,7 +47,7 @@ RSpec.describe Gitlab::ImportExport::LfsRestorer, :clean_gitlab_redis_shared_sta
       end
 
       it 'succeeds' do
-        expect(restorer.restore).to eq(true)
+        expect(restorer.restore).to be(true)
         expect(shared.errors).to be_empty
       end
 

@@ -24,7 +24,7 @@ There are 3 recommended high impact metrics (core web vitals) to review on each 
 - [Interaction to Next Paint](https://web.dev/articles/inp)
 - [Cumulative Layout Shift](https://web.dev/articles/cls)
 
-For these metrics, lower numbers are better as it means that the website is more performant.
+For these metrics, lower numbers are better because that means the website is more performant.
 
 The dashboard also surfaces [Total Blocking Time (TBT)](https://web.dev/articles/tbt), which measures how long the main thread is blocked during page load. TBT is not a Core Web Vital (it is a lab metric, not measurable in the field), but it is a useful diagnostic for identifying interactivity problems and is available on the Sitespeed dashboard.
 
@@ -102,7 +102,7 @@ It takes several arguments of which the measurement's name is the only one requi
   performance.measure('My component', undefined, 'my-component-end')
   ```
 
-To query a particular `measure`, You can use the same API, as for `mark`:
+To query a particular `measure`, you can use the same API, as for `mark`:
 
 ```javascript
 performance.getEntriesByName('My component')
@@ -234,7 +234,7 @@ app-*-end   // for an end 'mark'
 app-*       // for 'measure'
 ```
 
-For example, `'webide-init-editor-start`, `mr-diffs-mark-file-tree-end`, and so on. We do it to
+For example, `webide-init-editor-start`, `mr-diffs-mark-file-tree-end`, and so on. We do it to
 help identify marks and measures coming from the different apps on the same page.
 
 ## Best Practices
@@ -304,7 +304,7 @@ Both `prefetch` and `preload` links bring the loading performance benefit to the
 fetched asynchronously, but contrary to [deferring the loading](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-defer)
 of the assets which is used for other JavaScript resources in the product by default, `prefetch` and
 `preload` neither parse nor execute the fetched script unless explicitly imported in any JavaScript
-module. This allows to cache the fetched resources without blocking the execution of the
+module. This allows the fetched resources to be cached without blocking the execution of the
 remaining page resources.
 
 To prefetch a JavaScript chunk in a HAML view, `:prefetch_asset_tags` with the combination of

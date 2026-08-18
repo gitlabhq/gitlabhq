@@ -129,9 +129,9 @@ RSpec.describe Gitlab::ImportExport::SnippetRepoRestorer, :clean_gitlab_redis_sh
         aggregate_failures do
           expect(restorer.restore).to be false
           expect(shared.errors.first).to match(/Invalid repository bundle/)
-          expect(snippet.repository_exists?).to eq false
+          expect(snippet.repository_exists?).to be false
           expect(snippet.reload.snippet_repository).to be_nil
-          expect(gitlab_shell.repository_exists?(shard_name, path)).to eq false
+          expect(gitlab_shell.repository_exists?(shard_name, path)).to be false
         end
       end
     end

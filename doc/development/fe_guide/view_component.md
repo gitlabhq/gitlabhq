@@ -22,7 +22,7 @@ Some of the components of our [Pajamas](https://design.gitlab.com) design system
 available as a ViewComponent in `app/components/pajamas`.
 
 > [!note]
-> We are still in the process of creating these components, so not every Pajamas component is available as ViewComponent.
+> We are still in the process of creating these components, so not every Pajamas component is available as a ViewComponent.
 > Reach out to the [Design Systems team](https://handbook.gitlab.com/handbook/engineering/development/dev/foundations/design-system/)
 > if the component you are looking for is not yet available.
 
@@ -415,7 +415,7 @@ For the full list of options, see its
 - If you are making changes to an existing Haml view and see, for example, a
   button that is still implemented with plain Haml, consider migrating it to use a ViewComponent.
 - If you decide to create a new component, consider creating [previews](https://viewcomponent.org/guide/previews.html) for it, too.
-  This will help others to discover your component with Lookbook, also it makes it much easier to test its different states.
+  This will help others to discover your component with Lookbook. It also makes it much easier to test its different states.
 
 ### Preview layouts
 

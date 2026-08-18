@@ -97,8 +97,8 @@ below will make it easy to manage this, without unnecessary overhead.
 1. If you don't agree with a set weight, discuss with other developers until
    consensus is reached about the weight
 1. Issue weights are an abstract measurement of complexity of the issue. Do not
-   relate issue weight directly to time. This is called [anchoring](https://en.wikipedia.org/wiki/Anchoring_(cognitive_bias))
-   and something you want to avoid.
+   relate issue weight directly to time. This is called [anchoring](https://en.wikipedia.org/wiki/Anchoring_(cognitive_bias)),
+   and it's something you want to avoid.
 1. Something that has a weight of 1 (or no weight) is really small and simple.
    Something that is 9 is rewriting a large fundamental part of GitLab,
    which might lead to many hard problems to solve. Changing some text in GitLab

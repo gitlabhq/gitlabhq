@@ -17,7 +17,7 @@ official [Vuex documentation](https://vuex.vuejs.org).
 
 Vuex is composed of State, Getters, Mutations, Actions, and Modules.
 
-When a user selects an action, we need to `dispatch` it. This action `commits` a mutation that changes the state. The action itself does not update the state; only a mutation should update the state.
+When a user selects an action, we need to `dispatch` it. This action `commits` a mutation that changes the state. The action itself does not update the state. Only a mutation should update the state.
 
 ## File structure
 
@@ -86,7 +86,7 @@ You can use `mapState` to access state properties in the components.
 
 An action is a payload of information to send data from our application to our store.
 
-An action is usually composed by a `type` and a `payload` and they describe what happened. Unlike [mutations](#mutationsjs), actions can contain asynchronous operations - that's why we always need to handle asynchronous logic in actions.
+An action is usually composed of a `type` and a `payload` and they describe what happened. Unlike [mutations](#mutationsjs), actions can contain asynchronous operations - that's why we always need to handle asynchronous logic in actions.
 
 In this file, we write the actions that call mutations for handling a list of users:
 
@@ -159,7 +159,7 @@ Instead of creating a mutation to toggle the loading state, we should:
       - `PUT`: `updateSomething`
       - `DELETE`: `deleteSomething`
 
-As a result, we can dispatch the `fetchNamespace` action from the component and it is responsible to commit `REQUEST_NAMESPACE`, `RECEIVE_NAMESPACE_SUCCESS`, and `RECEIVE_NAMESPACE_ERROR` mutations.
+As a result, we can dispatch the `fetchNamespace` action from the component and it is responsible for committing `REQUEST_NAMESPACE`, `RECEIVE_NAMESPACE_SUCCESS`, and `RECEIVE_NAMESPACE_ERROR` mutations.
 
 > Previously, we were dispatching actions from the `fetchNamespace` action instead of committing mutation, so don't be confused if you find a different pattern in the older parts of the codebase. However, we encourage leveraging a new pattern whenever you write new Vuex stores.
 
@@ -171,7 +171,7 @@ By following this pattern we guarantee:
 
 #### Updating complex state
 
-Sometimes, especially when the state is complex, is really hard to traverse the state to precisely update what the mutation needs to update.
+Sometimes, especially when the state is complex, it is really hard to traverse the state to precisely update what the mutation needs to update.
 Ideally a `vuex` state should be as normalized/decoupled as possible but this is not always the case.
 
 It's important to remember that the code is much easier to read and maintain when the `portion of the mutated state` is selected and mutated in the mutation itself.
@@ -233,7 +233,7 @@ export default {
 This approach is better because:
 
 - It selects and updates the state in the mutation, which is more maintainable.
-- It has no external dependencies, if the correct `itemId` is passed the state is correctly updated.
+- It has no external dependencies. If the correct `itemId` is passed, the state is correctly updated.
 - It does not have reactivity caveats, as we generate a new `item` to avoid coupling to the initial state.
 
 A mutation written like this is easier to maintain. In addition, we avoid errors due to the limitation of the reactivity system.
@@ -241,7 +241,7 @@ A mutation written like this is easier to maintain. In addition, we avoid errors
 ### `getters.js`
 
 Sometimes we may need to get derived state based on store state, like filtering for a specific prop.
-Using a getter also caches the result based on dependencies due to [how computed props work](https://v2.vuejs.org/v2/guide/computed.html#Computed-Caching-vs-Methods)
+Using a getter also caches the result based on dependencies due to [how computed props work](https://v2.vuejs.org/v2/guide/computed.html#Computed-Caching-vs-Methods).
 This can be done through the `getters`:
 
 ```javascript

@@ -10,7 +10,7 @@ GitLab recommends using GitOps (also known as pull-based deployment) for deploym
 However, your company might not be able to transition to GitOps, or you might have certain (typically non-production) reasons to use
 a pipeline-based approach. This page describes best practices for using GitOps for enterprise, with some considerations for pipeline-based deployments.
 
-For a description of the advantages of GitOps, see [the OpenGitOps initiative](https://opengitops.dev/about).
+For a description of the advantages of GitOps, see [the OpenGitOps initiative](https://opengitops.dev/about/).
 
 ## GitOps
 

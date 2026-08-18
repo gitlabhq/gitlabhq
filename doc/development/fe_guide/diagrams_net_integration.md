@@ -17,7 +17,7 @@ file of the GitLab repository.
 
 ## IFrame sandbox
 
-The GitLab application embeds the diagrams.net editor inside an iframe. IFrames creates a
+The GitLab application embeds the diagrams.net editor inside an iframe. IFrames create a
 sandboxed environment that disallows the diagrams.net editor from accessing the GitLab
 application's browsing context thus protecting user data and enhancing security.
 
@@ -52,7 +52,7 @@ react to the message. The diagrams.net editor sends the following events:
   diagrams.net editor.
 - `prompt`: This event has a `value` attribute with the
   diagram's filename. If the `value` property is an empty value,
-  the GitLab application should send a `prompt`requesting the user to introduce a filename.
+  the GitLab application should send a `prompt` requesting the user to introduce a filename.
 - `export`: This event has a `data` attribute that contains
   the diagram created by the user in the SVG format.
 
@@ -80,4 +80,4 @@ classDiagram
 ```
 
 The diagrams.net integration calls these methods to upload a diagram to the GitLab
-application or get a diagrams embedded as an uploaded resource in the Markdown Editor.
+application or get a diagram embedded as an uploaded resource in the Markdown Editor.

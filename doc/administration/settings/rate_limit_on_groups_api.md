@@ -60,7 +60,7 @@ Requests over the rate limit are logged into the `auth.log` file.
 For example, if you set a limit of 400 for `GET /groups/:id`, requests to the API endpoint that
 exceed a rate of 400 per minute are blocked. Access to the endpoint is restored after one minute.
 
-## Rate limit on listing group members
+## Rate limit on listing group and project members
 
 {{< history >}}
 
@@ -89,7 +89,7 @@ To modify this rate limit for both endpoints:
 The rate limit:
 
 - Defaults to 200 requests every minute.
-- Applies for each group and user.
+- Applies to each authenticated user. If requests are not authenticated, the rate limit applies to the IP address.
 - Is configured through the Projects API rate limits settings. For more information, see [Configure rate limits on listing project members](rate_limit_on_projects_api.md#configure-rate-limits-on-listing-project-members).
 - Can be set to `0` to disable the rate limit for both endpoints.
 

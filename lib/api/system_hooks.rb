@@ -11,7 +11,6 @@ module API
       authenticate!
       ability = route.request_method == 'GET' ? :read_web_hook : :admin_web_hook
       authorize! ability
-      set_current_organization
     end
 
     helpers ::API::Helpers::WebHooksHelpers

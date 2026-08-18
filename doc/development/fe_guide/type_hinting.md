@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Type hinting overview
 ---
 
-The Frontend codebase of the GitLab project currently does not require nor enforces types. Adding
+The Frontend codebase of the GitLab project currently does not require or enforce types. Adding
 type annotations is optional, and we don't currently enforce any type safety in the JavaScript
 codebase. However, type annotations might be very helpful in adding clarity to the codebase,
 especially in shared utilities code. This document aims to cover how type hinting currently works,
@@ -75,7 +75,7 @@ function createUrl(config) {
 
 #### Annotating types of variables that are not immediately assigned a value
 
-For tools and IDEs it's hard to infer type of a value that doesn't immediately receive a value. We
+For tools and IDEs it's hard to infer the type of a value that doesn't immediately receive a value. We
 can use [`@type`](https://jsdoc.app/tags-type) notation to assign type to such variables:
 
 ```javascript
@@ -83,7 +83,7 @@ can use [`@type`](https://jsdoc.app/tags-type) notation to assign type to such v
 let value;
 ```
 
-Consult [JSDoc official website](https://jsdoc.app/) for more syntax details.
+Consult the [JSDoc official website](https://jsdoc.app/) for more syntax details.
 
 ### Tips for using JSDoc
 
@@ -146,7 +146,7 @@ wrapper = shallowMount(/* ... */);
 
 #### JSDoc is limited
 
-As was stated above, JSDoc has limited vocabulary. And using it would not describe the type fully.
+As was stated above, JSDoc has a limited vocabulary. And using it would not describe the type fully.
 But sometimes it's possible to use 3rd party library's type definitions to make type inference to
 work for our code. Here's an example of such approach:
 
@@ -156,8 +156,8 @@ work for our code. Here's an example of such approach:
 + export const mountExtended = flowRight(extendedWrapper, mount);
 ```
 
-Here we use TypeScript type definitions from `flowRight` function, to add inferred type definitions to
-`mountExtended` function. In this case `mountExtended` arguments will be of same type as `mount`
+Here we use TypeScript type definitions from the `flowRight` function to add inferred type definitions to
+the `mountExtended` function. In this case, the `mountExtended` arguments will be of the same type as the `mount`
 arguments. And return type will be the same as `extendedWrapper` return type.
 
 We can still use JSDoc's syntax to add description to the function, for example:
@@ -186,7 +186,7 @@ memory the TS server is allowed to use. To do this, add the following to your `s
 
 ### Aliases
 
-Our codebase uses many aliases for imports. For example, `import Api from '~/api';` would import a
+Our codebase uses many aliases for imports. For example, `import Api from '~/api';` would import an
 `app/assets/javascripts/api.js` file. But IDEs might not know that alias and so might not know the
 type of the `Api`. To fix that for most IDEs, we need to create a
 [`jsconfig.json`](https://code.visualstudio.com/docs/languages/jsconfig) file.
@@ -199,14 +199,14 @@ run from the GitLab project root:
 node scripts/frontend/create_jsconfig.js
 ```
 
-`jsconfig.json` is added to gitignore list, so creating or changing it does not cause Git changes in
+`jsconfig.json` is added to the gitignore list, so creating or changing it does not cause Git changes in
 the GitLab project. This also means it is not included in Git pulls, so it has to be manually
 generated or updated.
 
 ### 3rd party TypeScript definitions
 
 While more and more libraries use TypeScript for type definitions, some still might have JSDoc
-annotated types or no types at all. To cover that gap, TypeScript community started a
+annotated types or no types at all. To cover that gap, the TypeScript community started a
 [DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped) initiative, that creates and
 supports standalone type definitions for popular JavaScript libraries. We can use those definitions
 by either explicitly installing the type packages (`yarn add -D "@types/lodash"`) or by using a
@@ -215,8 +215,8 @@ that is available in some Language Services
 (for example, [ATA in VS Code](https://github.com/microsoft/TypeScript/wiki/JavaScript-Language-Service-in-Visual-Studio#user-content--automatic-acquisition-of-type-definitions)).
 
 Automatic Type Acquisition (ATA) automatically fetches type definitions from the DefinitelyTyped
-list. But for ATA to work, a globally installed `npm` might be required. IDEs can provide a fallback
-configuration options to set location of the `npm` executables. Consult your IDE documentation for
+list. But for ATA to work, a globally installed `npm` might be required. IDEs can provide fallback
+configuration options to set the location of the `npm` executables. Consult your IDE documentation for
 details.
 
 ATA is not guaranteed to work and Lodash is a backbone for many of our utility functions,

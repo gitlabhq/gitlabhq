@@ -44,8 +44,3 @@ Rails/RedundantForeignKey:
     - 'ee/app/models/issuable_metric_image.rb'
     - 'ee/app/models/iteration.rb'
     - 'ee/app/models/security/orchestration_policy_configuration.rb'
-    - 'ee/app/models/security/orchestration_policy_rule_schedule.rb'
-    - 'ee/app/models/vulnerabilities/feedback.rb'
-    - 'ee/app/models/vulnerabilities/finding.rb'
-    - 'ee/app/models/vulnerabilities/finding_signature.rb'
-    - 'ee/app/models/vulnerabilities/identifier.rb'

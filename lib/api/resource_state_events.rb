@@ -9,7 +9,6 @@ module API
 
     before do
       authenticate!
-      set_current_organization
     end
 
     Helpers::ResourceEventsHelpers.eventable_types.each do |eventable_type, details|

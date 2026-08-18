@@ -4,7 +4,6 @@ module API
   class ImportGithub < ::API::Base
     before do
       authenticate!
-      set_current_organization
     end
 
     feature_category :importers

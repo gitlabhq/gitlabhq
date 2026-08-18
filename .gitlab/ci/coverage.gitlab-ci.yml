@@ -111,7 +111,7 @@ test-coverage:export-per-test-rspec:
         --pattern "$JOB_PATTERN" \
         --batch-size 10 \
         --output-glob 'tmp/per-test-coverage-rspec-*.ndjson' \
-        --process-command "bundle exec test-coverage --per-test-coverage 'tmp/per-test-coverage-rspec-*.ndjson' --test-reports 'rspec/rspec-*.json' --jest-quarantine-file scripts/frontend/quarantined_vue3_specs.txt --skip-aggregation --clickhouse-url ${CLICKHOUSE_URL} --clickhouse-database ${CLICKHOUSE_DATABASE} --clickhouse-username ${CLICKHOUSE_USERNAME}"
+        --process-command "bundle exec test-coverage --per-test-coverage 'tmp/per-test-coverage-rspec-*.ndjson' --test-reports 'rspec/rspec-*.json' --jest-quarantine-file scripts/frontend/quarantined_vue3_specs.txt --skip-aggregation --clickhouse-url ${CLICKHOUSE_URL} --clickhouse-database ${CLICKHOUSE_DATABASE} --clickhouse-shared-database ${CLICKHOUSE_SHARED_DB} --clickhouse-username ${CLICKHOUSE_USERNAME}"
 
 test-coverage:export-per-test-jest:
   extends:

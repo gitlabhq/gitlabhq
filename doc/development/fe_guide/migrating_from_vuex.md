@@ -124,7 +124,7 @@ const apolloProvider = new VueApollo({
 });
 ```
 
-For our example, let's call our field `app.status`, and we need is to define queries and mutations that use the `@client` directives. Let's create them right now:
+For our example, let's call our field `app.status`, and what we need is to define queries and mutations that use the `@client` directives. Let's create them right now:
 
 ```javascript
 // get_app_status.query.graphql
@@ -248,9 +248,9 @@ export const fetchSummary = ({ state, commit, dispatch }) => {
 };
 ```
 
-We have two options here. If this action is only used once, there is nothing preventing us from just moving all of this code from the `actions.js` file to the component that does the fetching. Then, it would be easy to remove all the state related code in favor of `data` properties. In that case, `isLoading` and `errorMessages` would both live along with it because it's only used once.
+We have two options here. If this action is only used once, there is nothing preventing us from just moving all of this code from the `actions.js` file to the component that does the fetching. Then, it would be easy to remove all the state related code in favor of `data` properties. In that case, `isLoading` and `errorMessage` would both live along with it because it's only used once.
 
-If we are reusing this function multiple time (or plan to), then that Apollo Client can be leveraged to do what it does best: network calls and caching. In this section, we assume Apollo Client knowledge and that you know how to set it up, but feel free to read through [the GraphQL documentation](graphql.md).
+If we are reusing this function multiple times (or plan to), then Apollo Client can be leveraged to do what it does best: network calls and caching. In this section, we assume Apollo Client knowledge and that you know how to set it up, but feel free to read through [the GraphQL documentation](graphql.md).
 
 We can use a local GraphQL query (with an `@client` directive) to structure how we want to receive the data, and then use a client-side resolver to tell Apollo Client how to resolve that query. We can take a look at our REST call in the browser network tab and determine which structure suits the use case. In our example, we could write our query like:
 
@@ -278,7 +278,7 @@ The structure here is arbitrary in the sense that we could write this however we
 
 Additionally, we are passing an `endpoint` argument to our field `testReportSummary`. This would not be necessary in pure `GraphQL`, but our resolver is going to need that information to make the `REST` call later.
 
-Now we need to write a client-side resolver. When we mark a field with an `@client` directive, it is **not sent to the server**, and Apollo Client instead expects us to [define our own code to resolve the value](graphql.md#using-client-side-resolvers). We can write a client-side resolver for `testReportSummary` inside the `cacheConfig` object that we pass to Apollo Client. We want this resolver to make the Axios call and return whatever data structure we want. That this is also the perfect place to transfer a getter if it was always used when accessing the API data or massaging the data structure:
+Now we need to write a client-side resolver. When we mark a field with an `@client` directive, it is **not sent to the server**, and Apollo Client instead expects us to [define our own code to resolve the value](graphql.md#using-client-side-resolvers). We can write a client-side resolver for `testReportSummary` inside the `cacheConfig` object that we pass to Apollo Client. We want this resolver to make the Axios call and return whatever data structure we want. This is also the perfect place to transfer a getter if it was always used when accessing the API data or massaging the data structure:
 
 ```javascript
 // graphql_config.js
@@ -294,7 +294,7 @@ export const resolvers = {
 
 Any time we make a call to the `testReportSummary @client` field, this resolver is executed and returns the result of the operation, which is essentially doing the same job as the `VueX` action did.
 
-If we assume that our GraphQL call is stored inside a data property called `testReportSummary`, we can replace `isLoading` with `this.$apollo.queries.testReportSummary.lodaing` in any component that fires this query. Errors can be handled inside the `error` hook of the Query.
+If we assume that our GraphQL call is stored inside a data property called `testReportSummary`, we can replace `isLoading` with `this.$apollo.queries.testReportSummary.loading` in any component that fires this query. Errors can be handled inside the `error` hook of the Query.
 
 ### Migration strategy
 
@@ -307,4 +307,4 @@ Now that we have gone through each type of data, let's review how to plan for th
 1. Replace shared read/write operations with Apollo Client `@client` directives.
 1. Replace network data with Apollo Client, either with actual GraphQL calls when available or by using client-side resolvers to make REST calls.
 
-If it is impossible to quickly replace shared read/write operations or network data (for example in one or two milestones), consider making a different Vue component behind a feature flag that is exclusively functional with Apollo Client, and rename the current component that uses VueX with a `legacy-` prefix. The newer component might not be able to implement all functionality right away, but we can progressively add them as we make MRs. This way, our legacy component is exclusively using VueX as a store and the new one is only Apollo. After the new component has re-implemented all the logic, we can turn the Feature Flag on and ensure that it behaves as expected.
+If it is impossible to quickly replace shared read/write operations or network data (for example in one or two milestones), consider making a different Vue component behind a feature flag that is exclusively functional with Apollo Client, and rename the current component that uses VueX with a `legacy-` prefix. The newer component might not be able to implement all functionality right away, but we can progressively add functionality as we make MRs. This way, our legacy component is exclusively using VueX as a store and the new one is only Apollo. After the new component has re-implemented all the logic, we can turn the Feature Flag on and ensure that it behaves as expected.

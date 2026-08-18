@@ -56,6 +56,7 @@ You can set these rate limits in the **Admin** area of your instance:
 - [User and IP rate limits](../administration/settings/user_and_ip_rate_limits.md)
 - [Package registry rate limits](../administration/settings/package_registry_rate_limits.md)
 - [Git LFS rate limits](../administration/settings/git_lfs_rate_limits.md)
+- [Rate limits on Git HTTP](../administration/settings/git_http_rate_limits.md)
 - [Rate limits on Git SSH operations](../administration/settings/rate_limits_on_git_ssh_operations.md)
 - [Files API rate limits](../administration/settings/files_api_rate_limits.md)
 - [Deprecated API rate limits](../administration/settings/deprecated_api_rate_limits.md)

@@ -33,7 +33,7 @@ Mousetrap.bind(keysFor(TOGGLE_PERFORMANCE_BAR), togglePerformanceBar);
 
 `keybindings.js` stores keyboard shortcut customizations as a JSON string in
 `localStorage`. When `keysFor` is called, it uses the provided command object's
-`id` to lookup any customizations found in `localStorage` and returns the custom
+`id` to look up any customizations found in `localStorage` and returns the custom
 keybindings, or the default keybindings if the command has not been customized.
 There is no UI to edit these customizations.
 
@@ -78,7 +78,7 @@ import { keysFor, MAKE_COFFEE } from '~/behaviors/shortcuts/keybindings'
 Mousetrap.bind(keysFor(MAKE_COFFEE), makeCoffee);
 ```
 
-See the existing the command definitions in `keybindings.js` for more examples.
+See the existing command definitions in `keybindings.js` for more examples.
 
 ## Disabling shortcuts
 

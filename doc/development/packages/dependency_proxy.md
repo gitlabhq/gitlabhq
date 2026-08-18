@@ -72,7 +72,7 @@ When a Docker client authenticates with a registry, the registry tells the clien
 (JWT) and to use it for all subsequent requests. This allows the authentication service to live in a separate
 application from the registry. For example, the GitLab container registry directs Docker clients to get a token
 from `https://gitlab.com/jwt/auth`. This endpoint is part of the `gitlab-org/gitlab` project, also known as the
-rails project or web service.
+Rails project or web service.
 
 When a user tries to sign in to the dependency proxy with a Docker client, we must tell it where to get a JWT. We
 can use the same endpoint we use with the container registry: `https://gitlab.com/jwt/auth`. But in our case,

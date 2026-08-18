@@ -22,14 +22,14 @@ RSpec.describe Gitlab::ImportExport::DecompressedArchiveSizeValidator, feature_c
       end
 
       it 'returns true' do
-        expect(subject.valid?).to eq(true)
+        expect(subject.valid?).to be(true)
       end
 
       context 'when waiter thread no longer exists' do
         it 'does not raise exception' do
           allow(Process).to receive(:getpgid).and_raise(Errno::ESRCH)
 
-          expect(subject.valid?).to eq(true)
+          expect(subject.valid?).to be(true)
         end
       end
     end
@@ -49,7 +49,7 @@ RSpec.describe Gitlab::ImportExport::DecompressedArchiveSizeValidator, feature_c
             decompressed_size_limit: 1,
             message: 'Decompressed archive size limit reached'
           )
-        expect(subject.valid?).to eq(false)
+        expect(subject.valid?).to be(false)
       end
     end
 
@@ -64,7 +64,7 @@ RSpec.describe Gitlab::ImportExport::DecompressedArchiveSizeValidator, feature_c
         expect(::Import::Framework::Logger)
           .not_to receive(:info)
           .with(hash_including(message: 'Decompressed archive size limit reached'))
-        expect(subject.valid?).to eq(true)
+        expect(subject.valid?).to be(true)
       end
     end
 
@@ -90,7 +90,7 @@ RSpec.describe Gitlab::ImportExport::DecompressedArchiveSizeValidator, feature_c
               message: error_message
             )
           expect(Process).to receive(:kill).with(-1, 2).twice
-          expect(subject.valid?).to eq(false)
+          expect(subject.valid?).to be(false)
         end
       end
 
@@ -127,7 +127,7 @@ RSpec.describe Gitlab::ImportExport::DecompressedArchiveSizeValidator, feature_c
         let(:error_message) { 'Invalid path' }
 
         it 'returns false' do
-          expect(subject.valid?).to eq(false)
+          expect(subject.valid?).to be(false)
         end
       end
 
@@ -136,7 +136,7 @@ RSpec.describe Gitlab::ImportExport::DecompressedArchiveSizeValidator, feature_c
         let(:error_message) { 'Invalid path' }
 
         it 'returns false' do
-          expect(subject.valid?).to eq(false)
+          expect(subject.valid?).to be(false)
         end
       end
 
@@ -149,7 +149,7 @@ RSpec.describe Gitlab::ImportExport::DecompressedArchiveSizeValidator, feature_c
         end
 
         it 'returns false' do
-          expect(subject.valid?).to eq(false)
+          expect(subject.valid?).to be(false)
         end
       end
 
@@ -176,7 +176,7 @@ RSpec.describe Gitlab::ImportExport::DecompressedArchiveSizeValidator, feature_c
         end
 
         it 'returns false' do
-          expect(subject.valid?).to eq(false)
+          expect(subject.valid?).to be(false)
         end
       end
     end

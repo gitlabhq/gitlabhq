@@ -67,7 +67,7 @@ all form components, such as the [checkbox](https://design.gitlab.com/components
 doesn't imply that the component should not be used.
 
 GitLab always asks to use `<gl-*>` components whenever a suitable component exists.
-It makes codebase unified and more comfortable to maintain/refactor in the future.
+It makes the codebase unified and more comfortable to maintain/refactor in the future.
 
 Ensure a [Product Designer](https://about.gitlab.com/company/team/?department=ux-department)
 reviews the use of the non-conforming component as part of the MR review. Make a
@@ -102,7 +102,7 @@ Sometimes it's necessary to test locally what the frontend production build woul
 1. Run `yarn webpack-prod && gdk restart rails-web`.
 
 The production build takes a few minutes to be completed. Any code changes at this point are
-displayed only after executing the item 3 above again.
+displayed only after executing item 3 above again.
 
 To return to the standard development mode:
 

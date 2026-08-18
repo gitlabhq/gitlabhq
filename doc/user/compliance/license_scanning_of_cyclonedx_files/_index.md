@@ -301,7 +301,7 @@ To enable or disable license scanning for CycloneDX files:
 
 ### A CycloneDX file is not being scanned and appears to provide no results
 
-Ensure that the CycloneDX file adheres to the [CycloneDX JSON specification](https://cyclonedx.org/docs/latest/json). This specification does [not permit duplicate entries](https://cyclonedx.org/docs/latest/json/#components). Projects that contain multiple SBOM files should either report each SBOM file up as individual CI report artifacts or they should ensure that duplicates are removed if the SBOMs are merged as part of the CI pipeline.
+Ensure that the CycloneDX file adheres to the [CycloneDX JSON specification](https://cyclonedx.org/docs/1.7/json/). This specification does [not permit duplicate entries](https://cyclonedx.org/docs/1.7/json/#components). Projects that contain multiple SBOM files should either report each SBOM file up as individual CI report artifacts or they should ensure that duplicates are removed if the SBOMs are merged as part of the CI pipeline.
 
 You can validate CycloneDX SBOM files against the `CycloneDX JSON specification` as follows:
 

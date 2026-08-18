@@ -9,12 +9,6 @@ module API
       class Subscriptions < ::API::Base
         feature_category :integrations
 
-        before do
-          # Resolve the org from the header (for cell routing) without touching
-          # current_user, so the FIT bearer is not validated as a GitLab token.
-          set_current_organization(user: nil)
-        end
-
         helpers ::API::Integrations::JiraForge::Helpers
 
         namespace :integrations do

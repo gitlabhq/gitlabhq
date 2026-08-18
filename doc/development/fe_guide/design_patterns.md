@@ -68,7 +68,7 @@ Here are some historic examples where this pattern was identified to be problema
 
 #### When could the Shared Global Object pattern be actually appropriate?
 
-Shared Global Object's solve the problem of making something globally accessible. This pattern
+Shared Global Objects solve the problem of making something globally accessible. This pattern
 could be appropriate:
 
 - When a responsibility is truly global and should be referenced across the application

@@ -152,7 +152,7 @@ RSpec.describe Gitlab::ImportExport::Base::RelationFactory, feature_category: :i
           it 'does not store the object original users' do
             subject
 
-            expect(original_users_map).to eq(nil)
+            expect(original_users_map).to be_nil
           end
         end
 

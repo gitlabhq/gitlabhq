@@ -258,7 +258,7 @@ RSpec.describe Gitlab::ImportExport::FileImporter, feature_category: :importers 
     it 'returns false and sets an error on shared' do
       result = import
 
-      expect(result).to eq(false)
+      expect(result).to be(false)
       expect(shared.errors.join).to eq('foo')
     end
 
@@ -272,7 +272,7 @@ RSpec.describe Gitlab::ImportExport::FileImporter, feature_category: :importers 
       it 'returns false and sets an error on shared' do
         result = import
 
-        expect(result).to eq(false)
+        expect(result).to be(false)
         expect(shared.errors.join).to eq('File shares hard link')
       end
 
@@ -311,7 +311,7 @@ RSpec.describe Gitlab::ImportExport::FileImporter, feature_category: :importers 
     it 'returns false and sets an error on shared' do
       result = file_importer.import
 
-      expect(result).to eq(false)
+      expect(result).to be(false)
       expect(shared.errors.join).to eq('Decompressed archive size validation failed.')
     end
   end

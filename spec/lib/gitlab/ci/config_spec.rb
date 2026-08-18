@@ -182,8 +182,17 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
   end
 
   describe '#included_components' do
-    let_it_be(:project1) { create(:project, :catalog_resource_with_components, create_tag: '1.0.0') }
-    let_it_be(:project2) { create(:project, :catalog_resource_with_components, create_tag: '1.0.0') }
+    let_it_be(:group) { create(:group) }
+
+    let_it_be(:project1) do
+      create(:project, :catalog_resource_with_components, create_tag: '1.0.0', group: group, creator: user,
+        developers: user)
+    end
+
+    let_it_be(:project2) do
+      create(:project, :catalog_resource_with_components, create_tag: '1.0.0', group: group, creator: user,
+        developers: user)
+    end
 
     let(:config) { described_class.new(yml, project: project1, user: user) }
     let(:server_fqdn) { 'acme.com' }
@@ -202,9 +211,6 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
     subject(:included_components) { config.included_components }
 
     before do
-      project1.add_developer(user)
-      project2.add_developer(user)
-
       allow(Gitlab.config.gitlab).to receive(:server_fqdn).and_return(server_fqdn)
     end
 
@@ -437,8 +443,8 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
 
   context "when using 'include' directive" do
     let_it_be(:group) { create(:group) }
-    let_it_be(:project) { create(:project, :small_repo, group: group) }
-    let_it_be(:main_project) { create(:project, :small_repo, :public, group: group) }
+    let_it_be(:project) { create(:project, :small_repo, group: group, creator: user) }
+    let_it_be(:main_project) { create(:project, :small_repo, :public, group: group, creator: user) }
 
     let(:project_sha) { project.commit.id }
     let(:main_project_sha) { main_project.commit.id }
@@ -499,12 +505,14 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
       }
     end
 
-    before do
-      stub_full_request(remote_location).to_return(body: remote_file_content)
-
+    before_all do
       create(:ci_variable, project: project, key: "REF", value: "HEAD")
       create(:ci_group_variable, group: group, key: "FILENAME", value: ".gitlab-ci.yml")
       create(:ci_instance_variable, key: 'MAIN_PROJECT', value: main_project.full_path)
+    end
+
+    before do
+      stub_full_request(remote_location).to_return(body: remote_file_content)
     end
 
     around do |example|
@@ -836,10 +844,10 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
       let(:parent_pipeline) { nil }
 
       context 'when used in the context of a child pipeline' do
+        let_it_be(:parent_pipeline) { create(:ci_pipeline) }
         # This job has ci_build_artifacts.zip artifact archive which
         # contains generated.yml
-        let!(:job) { create(:ci_build, :artifacts, name: 'rspec', pipeline: parent_pipeline) }
-        let(:parent_pipeline) { create(:ci_pipeline) }
+        let_it_be(:job) { create(:ci_build, :artifacts, name: 'rspec', pipeline: parent_pipeline) }
 
         it 'returns valid config' do
           expect(config).to be_valid
@@ -913,7 +921,7 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
         HEREDOC
       end
 
-      before do
+      before_all do
         project.add_developer(user)
       end
 

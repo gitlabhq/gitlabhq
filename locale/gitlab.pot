@@ -30230,9 +30230,6 @@ msgstr ""
 msgid "DuoAgentsPlatform|Conditions"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Config Path"
-msgstr ""
-
 msgid "DuoAgentsPlatform|Configuration path"
 msgstr ""
 
@@ -30266,16 +30263,10 @@ msgstr ""
 msgid "DuoAgentsPlatform|Create trigger"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Create triggers to automatically run pipelines when specified events occur in your project."
-msgstr ""
-
 msgid "DuoAgentsPlatform|Customize agents for this project"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Data Analyst"
-msgstr ""
-
-msgid "DuoAgentsPlatform|Default"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Delegated to subagent"
@@ -30312,9 +30303,6 @@ msgid "DuoAgentsPlatform|Enter the path to your configuration file."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Event"
-msgstr ""
-
-msgid "DuoAgentsPlatform|Event type"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Every 15 minutes"
@@ -30411,9 +30399,6 @@ msgid "DuoAgentsPlatform|List directory"
 msgstr ""
 
 msgid "DuoAgentsPlatform|List files"
-msgstr ""
-
-msgid "DuoAgentsPlatform|Manage automated flows within your project."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Modify plan"
@@ -30641,7 +30626,13 @@ msgstr ""
 msgid "DuoAgentsPlatform|Triggers"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Triggers connect flows or external agents to events in this project. Create a trigger to determine when your flows or external agents are run."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Triggers might run a few minutes after the scheduled time to distribute load across the system."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Triggers run a flow or external agent when defined events occur."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Try GitLab Duo Agent Platform"
@@ -59497,6 +59488,9 @@ msgstr ""
 msgid "PolicyStore|Developer"
 msgstr ""
 
+msgid "PolicyStore|Disable"
+msgstr ""
+
 msgid "PolicyStore|Disabled"
 msgstr ""
 
@@ -59507,6 +59501,9 @@ msgid "PolicyStore|Discard this policy?"
 msgstr ""
 
 msgid "PolicyStore|Edit policy"
+msgstr ""
+
+msgid "PolicyStore|Enable"
 msgstr ""
 
 msgid "PolicyStore|Enforce"
@@ -59687,6 +59684,9 @@ msgid "PolicyStore|The policy could not be loaded from the Policy Store API. Ref
 msgstr ""
 
 msgid "PolicyStore|The policy could not be saved. Try again."
+msgstr ""
+
+msgid "PolicyStore|The policy could not be updated. Try again."
 msgstr ""
 
 msgid "PolicyStore|This policy will be enabled for %{scope} in Audit mode. Events will be logged only."
@@ -95321,6 +95321,9 @@ msgid "is not linked to a SAML account or has an inactive SCIM identity. For inf
 msgstr ""
 
 msgid "is not one of"
+msgstr ""
+
+msgid "is not valid YAML: %{message}"
 msgstr ""
 
 msgid "is not valid."

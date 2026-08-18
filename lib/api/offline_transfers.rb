@@ -116,7 +116,6 @@ module API
         provider, credentials = object_storage_provider_and_credentials
         storage_config = { bucket: declared_params[:bucket], provider: provider, credentials: credentials }
 
-        set_current_organization
         response = ::Import::Offline::Exports::CreateService.new(
           current_user,
           declared_params[:entities],
@@ -204,7 +203,6 @@ module API
           object_storage_credentials: credentials
         }
 
-        set_current_organization
         response = ::Import::Offline::Imports::CreateService.new(
           storage_config,
           declared_params.slice(:entities),

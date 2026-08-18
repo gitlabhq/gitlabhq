@@ -9,7 +9,6 @@ module API
     before do
       authenticate!
       authorize! :admin_service_accounts, user_project
-      set_current_organization
     end
 
     helpers ::API::Helpers::PersonalAccessTokensHelpers

@@ -114,11 +114,17 @@ module Gitlab
       # case-insensitive match to tolerate types whose stored name does not match
       # `titleize` output (e.g. acronyms like `API`).
       def find_work_item_type_by_name(type_name)
-        name_str = type_name.to_s.strip.delete_prefix('"').delete_suffix('"')
+        name_str = normalize_type_name(type_name)
         return if name_str.empty?
 
         types = ::WorkItems::TypesFramework::Provider.new(quick_action_target.namespace).filtered_types
         types.find { |type| type.name.casecmp(name_str) == 0 }
+      end
+
+      # Shared with the EE override of `find_work_item_type_by_name`, which needs the same
+      # quote/whitespace handling when resolving a type name against a different namespace.
+      def normalize_type_name(type_name)
+        type_name.to_s.strip.delete_prefix('"').delete_suffix('"')
       end
 
       def validate_type(type)

@@ -64,7 +64,7 @@ TypeError: $ is not a function
     at Object.<anonymous> (~/workspace/gdk/gitlab/node_modules/core-js/modules/esnext.global-this.js:2:1)
 ```
 
-**Remedy - Try moving the script into a separate repository and point to it to files in the GitLab repository**
+**Remedy - Try moving the script into a separate repository and point it to files in the GitLab repository**
 
 ## Using Vue component issues
 
@@ -74,7 +74,7 @@ When trying to render our component GlFilteredSearch, you might get an error in 
 
 `cannot read suggestionsListClass of undefined`
 
-Currently, `vue-apollo` tries to [manually call a component's `provide()` in the `beforeCreate` part](https://github.com/vuejs/vue-apollo/blob/35e27ec398d844869e1bbbde73c6068b8aabe78a/packages/vue-apollo/src/mixin.js#L149) of the component lifecycle. This means that when a `provide()` references props, which aren't actually setup until after `created`, it will blow up.
+Currently, `vue-apollo` tries to [manually call a component's `provide()` in the `beforeCreate` part](https://github.com/vuejs/vue-apollo/blob/35e27ec398d844869e1bbbde73c6068b8aabe78a/packages/vue-apollo/src/mixin.js#L149) of the component lifecycle. This means that when a `provide()` references props, which aren't actually set up until after `created`, it will blow up.
 
 See this [closed MR](https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/2019#note_514671251) for more context.
 
@@ -96,7 +96,7 @@ VueApollo will skip manually running `provide()` if it sees that an `apolloProvi
 
 ### console errors when writing to cache
 
-If you see errors like `Missing field 'descriptionHtml' while writing result` , it means we are not adhering to the GraphQL response structure while writing to the Apollo client cache. It seems you're encountering a GraphQL error ("Missing field 'description'") within your web application, likely related to how you're handling Apollo Client's cache and data updates. The error stack trace provides clues about the specific parts of the Apollo Client code where the problem occurs.
+If you see errors like `Missing field 'descriptionHtml' while writing result`, it means we are not adhering to the GraphQL response structure while writing to the Apollo client cache. It seems you're encountering a GraphQL error ("Missing field 'description'") within your web application, likely related to how you're handling Apollo Client's cache and data updates. The error stack trace provides clues about the specific parts of the Apollo Client code where the problem occurs.
 
 **The Core Issue**:
 

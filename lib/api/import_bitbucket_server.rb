@@ -5,10 +5,6 @@ module API
     feature_category :importers
     urgency :low
 
-    before do
-      set_current_organization
-    end
-
     helpers do
       def client
         @client ||= BitbucketServer::Client.new(

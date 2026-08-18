@@ -65,7 +65,7 @@ RSpec.describe Gitlab::ImportExport::Base::RelationObjectSaver, feature_category
         saver.execute
 
         issue = project.issues.last
-        expect(issue.sentry_issue.persisted?).to eq(true)
+        expect(issue.sentry_issue.persisted?).to be(true)
       end
     end
 
@@ -83,7 +83,7 @@ RSpec.describe Gitlab::ImportExport::Base::RelationObjectSaver, feature_category
 
         issue = project.issues.last
 
-        expect(invalid_note.persisted?).to eq(false)
+        expect(invalid_note.persisted?).to be(false)
         expect(issue.notes.count).to eq(1)
       end
 
@@ -95,12 +95,12 @@ RSpec.describe Gitlab::ImportExport::Base::RelationObjectSaver, feature_category
         let(:relation_object) { build(:merge_request, source_project: project, target_project: project, approvals: [approval_1, approval_2]) }
 
         it 'saves the subrelation' do
-          expect(approval_1.valid?).to eq(false)
+          expect(approval_1.valid?).to be(false)
 
           saver.execute
 
           expect(project.merge_requests.first.approvals.count).to eq(2)
-          expect(project.merge_requests.first.approvals.first.persisted?).to eq(true)
+          expect(project.merge_requests.first.approvals.first.persisted?).to be(true)
         end
       end
 
@@ -253,7 +253,7 @@ RSpec.describe Gitlab::ImportExport::Base::RelationObjectSaver, feature_category
         end
 
         saver.execute
-        expect(saver.failed_subrelations.present?).to eq(true)
+        expect(saver.failed_subrelations.present?).to be(true)
         expect(saver.failed_subrelations.pluck(:record)).to match_array(notes.first)
         expect(saver.failed_subrelations.pluck(:exception)).to all(be_a(ActiveRecord::QueryCanceled))
       end

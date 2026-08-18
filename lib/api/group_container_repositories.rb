@@ -9,7 +9,6 @@ module API
 
     before do
       authorize_read_group_container_images!
-      set_current_organization
     end
 
     feature_category :container_registry

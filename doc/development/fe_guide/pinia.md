@@ -213,7 +213,7 @@ Instead, the store itself should be properly tested and the component tests shou
 
 #### Setting up initial state
 
-Pinia doesn't allow to unstub actions once they've been stubbed.
+Pinia doesn't allow unstubbing actions once they've been stubbed.
 That means you can not use them to set the initial state if you didn't set `stubActions: false`.
 
 In that case it is allowed to set the state directly:
@@ -288,7 +288,7 @@ Follow these steps to iterate over the migration process and split the work onto
 1. Identify the store you are going to migrate.
    Start with the file that defines your store via `new Vuex.Store()` and go from there.
    Include all the modules that are used inside this store.
-1. Create a migration issue, assign a migration DRI(s) and list all the store modules you're going to migrate.
+1. Create a migration issue, assign migration DRI(s) and list all the store modules you're going to migrate.
    Track your migration progress in that issue. If necessary, split the migration into multiple issues.
 1. Create a new CODEOWNERS (`.gitlab/CODEOWNERS`) rule for the store files you're migrating, include all the Vuex module dependencies and store specs.
 
@@ -392,7 +392,7 @@ In such cases prefer migrating nested modules first:
 ### Avoiding circular dependencies
 
 It is imperative that you don't create circular dependencies in your Pinia stores.
-Unfortunately Vuex design allows to create interdependent modules that we have to refactor later.
+Unfortunately, the Vuex design allows creating interdependent modules that we have to refactor later.
 
 An example circular dependency in store design:
 
@@ -588,7 +588,7 @@ Always prefer testing each action call explicitly.
 
 #### Custom getters
 
-Pinia allows to define custom getters in Vue 3. Since we're using Vue 2 this is not possible.
+Pinia allows defining custom getters in Vue 3. Since we're using Vue 2 this is not possible.
 To work around this you can use `createCustomGetters` helper from `helpers/pinia_helpers`.
 
 ##### Before

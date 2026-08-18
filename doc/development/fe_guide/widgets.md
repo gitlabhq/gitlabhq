@@ -111,7 +111,7 @@ updateAssignees(assigneeUsernames) {
 }
 ```
 
-Sometimes, we want to listen to the changes on the different Vue application like `NotesApp`.
+Sometimes, we want to listen to the changes on a different Vue application, like `NotesApp`.
 In this case, we can use a renderless component that imports a client and listens to a certain query:
 
 ```javascript

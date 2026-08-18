@@ -39,7 +39,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationTreeRestorer, :clean_gitla
   shared_examples 'import project successfully' do
     describe 'imported project' do
       it 'has the project attributes and relations', :aggregate_failures do
-        expect(subject).to eq(true)
+        expect(subject).to be(true)
 
         project = Project.find_by_path('project')
 
@@ -55,7 +55,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationTreeRestorer, :clean_gitla
       end
 
       it 'assigns the correct import source' do
-        expect(subject).to eq(true)
+        expect(subject).to be(true)
 
         project = Project.find_by_path('project')
 
@@ -92,7 +92,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationTreeRestorer, :clean_gitla
       end
 
       it 'does not overwrite has_external_issue_tracker' do
-        expect(relation_tree_restorer.restore).to eq(true)
+        expect(relation_tree_restorer.restore).to be(true)
 
         project = Project.find_by_path('project')
 
@@ -105,7 +105,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationTreeRestorer, :clean_gitla
       let(:attributes) { relation_reader.consume_attributes(importable_name).merge('archived' => true) }
 
       it 'sets the project namespace state to archived' do
-        expect(relation_tree_restorer.restore).to eq(true)
+        expect(relation_tree_restorer.restore).to be(true)
 
         project = Project.find_by_path('project')
 
@@ -117,7 +117,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationTreeRestorer, :clean_gitla
       let(:attributes) { relation_reader.consume_attributes(importable_name).merge('archived' => false) }
 
       it 'does not archive the project namespace' do
-        expect(relation_tree_restorer.restore).to eq(true)
+        expect(relation_tree_restorer.restore).to be(true)
 
         project = Project.find_by_path('project')
 
@@ -129,7 +129,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationTreeRestorer, :clean_gitla
       let(:attributes) { relation_reader.consume_attributes(importable_name).except('archived') }
 
       it 'does not archive the project namespace' do
-        expect(relation_tree_restorer.restore).to eq(true)
+        expect(relation_tree_restorer.restore).to be(true)
 
         project = Project.find_by_path('project')
 
@@ -157,7 +157,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationTreeRestorer, :clean_gitla
           )
         )
 
-        expect(relation_tree_restorer.restore).to eq(true)
+        expect(relation_tree_restorer.restore).to be(true)
       end
       # rubocop:enable RSpec/AnyInstanceOf
     end

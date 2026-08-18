@@ -37,7 +37,7 @@ RSpec.describe Gitlab::ImportExport::Project::ImportTask, :request_store, :silen
       it 'performs project import successfully' do
         expect { subject }.to output(/Done!/).to_stdout
         expect { subject }.not_to raise_error
-        expect(subject).to eq(true)
+        expect(subject).to be(true)
 
         expect(project.name).to eq(project_name)
         expect(project.merge_requests.count).to be > 0
@@ -67,7 +67,7 @@ RSpec.describe Gitlab::ImportExport::Project::ImportTask, :request_store, :silen
     it 'performs project import successfully' do
       expect { subject }.to output(not_imported_message).to_stdout
       expect { subject }.not_to raise_error
-      expect(subject).to eq(true)
+      expect(subject).to be(true)
 
       expect(project.merge_requests).to be_empty
       expect(project.import_state.last_error).to be_nil

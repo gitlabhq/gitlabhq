@@ -4,7 +4,6 @@ module API
   class ImportBitbucket < ::API::Base
     before do
       authenticate!
-      set_current_organization
     end
 
     feature_category :importers

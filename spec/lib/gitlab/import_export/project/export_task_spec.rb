@@ -41,7 +41,7 @@ RSpec.describe Gitlab::ImportExport::Project::ExportTask, :silence_stdout, featu
     it 'performs project export successfully' do
       expect { subject }.to output(/Done!/).to_stdout
 
-      expect(subject).to eq(true)
+      expect(subject).to be(true)
 
       expect(File).to exist(file_path)
     end
@@ -55,7 +55,7 @@ RSpec.describe Gitlab::ImportExport::Project::ExportTask, :silence_stdout, featu
     end
 
     it 'returns false' do
-      expect(subject).to eq(false)
+      expect(subject).to be(false)
     end
   end
 
@@ -67,7 +67,7 @@ RSpec.describe Gitlab::ImportExport::Project::ExportTask, :silence_stdout, featu
     end
 
     it 'returns false' do
-      expect(subject).to eq(false)
+      expect(subject).to be(false)
     end
   end
 
@@ -81,7 +81,7 @@ RSpec.describe Gitlab::ImportExport::Project::ExportTask, :silence_stdout, featu
     it 'error is logged' do
       expect(rake_task).to receive(:error).and_call_original
 
-      expect(subject).to eq(false)
+      expect(subject).to be(false)
     end
   end
 
@@ -95,7 +95,7 @@ RSpec.describe Gitlab::ImportExport::Project::ExportTask, :silence_stdout, featu
     it 'error is logged' do
       expect(rake_task).to receive(:error).and_call_original
 
-      expect(subject).to eq(false)
+      expect(subject).to be(false)
     end
   end
 end

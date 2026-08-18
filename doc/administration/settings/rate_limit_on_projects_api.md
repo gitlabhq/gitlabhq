@@ -120,7 +120,7 @@ To change the rate limit:
 The rate limit:
 
 - Defaults to 200 requests every minute.
-- Applies to each project and user.
+- Applies to each authenticated user. If requests are not authenticated, the rate limit applies to the IP address.
 - Can be set to `0` to disable rate limits.
 
 Requests over the rate limit are logged into the `auth.log` file.

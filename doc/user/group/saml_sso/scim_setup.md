@@ -23,7 +23,7 @@ GitLab SAML SSO SCIM doesn't support updating users.
 
 When SCIM is enabled for a GitLab group, membership of that group is synchronized between GitLab and an identity provider.
 
-The [internal GitLab group SCIM API](../../../development/internal_api/_index.md#group-scim-api) implements part of [the RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644).
+The [internal GitLab group SCIM API](../../../development/internal_api/_index.md#group-scim-api) implements part of [the RFC7644 protocol](https://www.rfc-editor.org/info/rfc7644/).
 Identity providers can use the [internal GitLab group SCIM API](../../../development/internal_api/_index.md#group-scim-api) to develop a SCIM app.
 
 To set up SCIM on GitLab Self-Managed, see [Configure SCIM for GitLab Self-Managed](../../../administration/settings/scim_setup.md).

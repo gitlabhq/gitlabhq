@@ -253,7 +253,7 @@ describe('MyComponent', () => {
    ```
 
 1. If you require both `mount` _and_ `shallowMount` within the same set of tests, it
-   can be useful define a `mountFn` parameter for the `createComponent` factory that accepts
+   can be useful to define a `mountFn` parameter for the `createComponent` factory that accepts
    the mounting function (`mount` or `shallowMount`) to be used to mount the component:
 
    ```javascript
@@ -316,7 +316,7 @@ describe('MyComponent', () => {
    ```
 
    The exception here is when you wish to test component reactivity in some way.
-   For example, you may want to test the output of a component when after a particular watcher has
+   For example, you may want to test the output of a component after a particular watcher has
    executed. Using `setProps` to test such behavior is okay.
 1. Avoid using [`setData`](https://v1.test-utils.vuejs.org/api/wrapper/#setdata) which sets the
    component's internal state and circumvents testing the actual I/O of the component.
