@@ -15,18 +15,22 @@ module Gitlab
     #
     # QueryRecorder re-enables this tag for the duration of its block so that
     # source attribution keeps working when the tag is globally disabled.
-    LINE_TAG = { line: ->(context) { Tags.line(context) } }.freeze
+    #
+    # The handlers below outlive code reloads in development: they are captured
+    # once at boot, but Zeitwerk unloads this module tree on reload. Tags must
+    # be fully qualified so each call resolves the currently loaded module.
+    LINE_TAG = { line: ->(context) { ::Gitlab::QueryLogs::Tags.line(context) } }.freeze
 
     def self.tags
       tags = [
         { application: Gitlab.process_name },
-        { correlation_id: ->(context) { Tags.correlation_id(context) } },
-        { jid: ->(context) { Tags.jid(context) } },
-        { endpoint_id: ->(context) { Tags.endpoint_id(context) } },
-        { db_config_database: ->(context) { Tags.db_config_database(context) } },
-        { db_config_name: ->(context) { Tags.db_config_name(context) } },
-        { console_hostname: ->(context) { Tags.console_hostname(context) } },
-        { console_username: ->(context) { Tags.console_username(context) } }
+        { correlation_id: ->(context) { ::Gitlab::QueryLogs::Tags.correlation_id(context) } },
+        { jid: ->(context) { ::Gitlab::QueryLogs::Tags.jid(context) } },
+        { endpoint_id: ->(context) { ::Gitlab::QueryLogs::Tags.endpoint_id(context) } },
+        { db_config_database: ->(context) { ::Gitlab::QueryLogs::Tags.db_config_database(context) } },
+        { db_config_name: ->(context) { ::Gitlab::QueryLogs::Tags.db_config_name(context) } },
+        { console_hostname: ->(context) { ::Gitlab::QueryLogs::Tags.console_hostname(context) } },
+        { console_username: ->(context) { ::Gitlab::QueryLogs::Tags.console_username(context) } }
       ]
 
       tags << LINE_TAG if line_enabled?

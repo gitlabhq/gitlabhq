@@ -167,7 +167,7 @@ To resolve, ask the user to enter their LDAP username and password into the **LD
 
 #### Invalid credentials on sign-in
 
-If that the sign-in credentials used are accurate on LDAP, ensure the following
+If the sign-in credentials used are accurate on LDAP, ensure the following
 are true for the user in question:
 
 - Make sure the user you are binding with has enough permissions to read the user's
@@ -330,7 +330,7 @@ uid: John
 There's a lot here, so let's go over what could be helpful when debugging.
 
 First, GitLab looks for all users that have previously
-signed in with LDAP and iterate on them. Each user's sync starts with
+signed in with LDAP and iterates on them. Each user's sync starts with
 the following line that contains the user's username and email, as they
 exist in GitLab now:
 
@@ -450,7 +450,7 @@ things to debug the situation.
   and press **Sync now** (sync one group) or [run the group sync Rake task](../../raketasks/ldap.md#run-a-group-sync)
   (sync all groups).
 
-If all of the checks looks good, jump in to a little more advanced debugging in
+If all of the checks look good, jump in to a little more advanced debugging in
 the rails console.
 
 1. Enter the [rails console](#rails-console).

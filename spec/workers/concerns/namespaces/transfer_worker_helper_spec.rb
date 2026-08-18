@@ -24,15 +24,18 @@ RSpec.describe Namespaces::TransferWorkerHelper, feature_category: :groups_and_p
         group.start_transfer!(transition_user: user)
       end
 
-      it 'cancels the state and logs a warning' do
+      it 'cancels the state and logs a warning with the standardised payload' do
         allow(Gitlab::AppLogger).to receive(:warn)
 
         worker.cancel_stale_transfer_state(group, group_id: group.id)
 
         expect(group.reload).to be_ancestor_inherited
         expect(Gitlab::AppLogger).to have_received(:warn).with(hash_including(
-          message: 'Cancelling stale transfer state',
-          group_id: group.id
+          'message' => 'Cancelling stale transfer state',
+          'group_id' => group.id,
+          'gl_namespace_id' => group.id,
+          'namespace_type' => 'group',
+          'correlation_id' => kind_of(String)
         ))
       end
     end

@@ -76,8 +76,8 @@ Each component serves a specific purpose:
 
 ### Why use `issue_same_number_of_queries_as` over `exceed_query_limit`
 
-Prefer `issue_same_number_of_queries_as` over `exceed_query_limit` because it is **bidirectional**;
-it fails if the query count increases OR decreases unexpectedly.
+Prefer `issue_same_number_of_queries_as` over `exceed_query_limit` because it is **bidirectional**.
+It fails if the query count increases OR decreases unexpectedly.
 This helps catch unintended changes in either direction,
 such as when a refactor accidentally removes necessary queries
 or when dead code is being executed.

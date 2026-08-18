@@ -18,7 +18,7 @@ export default {
       required: true,
     },
   },
-  emits: ['continueEditing', 'discardDraft'],
+  emits: ['continue-editing', 'discard-draft'],
   computed: {
     cancelConfirmationText() {
       return sprintf(
@@ -30,9 +30,9 @@ export default {
   methods: {
     handleCancelConfirmationAction(decision) {
       if (decision === 'continueEditing') {
-        this.$emit('continueEditing');
+        this.$emit('continue-editing');
       } else {
-        this.$emit('discardDraft');
+        this.$emit('discard-draft');
       }
     },
   },

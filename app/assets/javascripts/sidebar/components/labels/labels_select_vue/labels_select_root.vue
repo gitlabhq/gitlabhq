@@ -132,7 +132,7 @@ export default {
       default: false,
     },
   },
-  emits: ['label-removed', 'onDropdownClose', 'toggle-collapse', 'update-selected-labels'],
+  emits: ['label-removed', 'toggle-collapse', 'update-selected-labels'],
   data() {
     return {
       contentIsOnViewport: true,
@@ -216,7 +216,7 @@ export default {
         const labels = this.isDropdownVariantEmbedded
           ? state.labels.filter(filterSetLabelsFn)
           : state.labels.filter(filterTouchedLabelsFn);
-        this.handleDropdownClose(labels, state.labels.filter(filterTouchedLabelsFn));
+        this.handleDropdownClose(labels);
       }
     },
     /**
@@ -279,11 +279,10 @@ export default {
         isInDropdownContents
       );
     },
-    handleDropdownClose(labels, touchedLabels) {
+    handleDropdownClose(labels) {
       // Only emit label updates if there are any
       // labels to update on UI.
       if (labels.length) this.$emit('update-selected-labels', labels);
-      this.$emit('onDropdownClose', touchedLabels);
     },
     handleCollapsedValueClick() {
       this.$emit('toggle-collapse');

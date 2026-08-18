@@ -40,7 +40,7 @@ With pagination, the data is split into equal pieces (pages). On the first visit
 
 ### Pick the right approach
 
-Let the database handle the pagination, filtering, and data retrieval. Implementing in-memory pagination on the backend (`paginate_array` from Kaminari) or on the frontend (JavaScript) might work for a few hundreds of records. If application limits are not defined, things can get out of control quickly.
+Let the database handle the pagination, filtering, and data retrieval. Implementing in-memory pagination on the backend (`paginate_array` from Kaminari) or on the frontend (JavaScript) might work for a few hundred records. If application limits are not defined, things can get out of control quickly.
 
 ### Reduce complexity
 
@@ -57,7 +57,7 @@ It's not possible to make all filter and sort combinations performant, so we sho
 
 ### Prepare for scaling
 
-Offset-based pagination is the easiest way to paginate over records, however, it does not scale well for large database tables. As a long-term solution, [keyset pagination](keyset_pagination.md) is preferred. Switching between offset and keyset pagination is generally straightforward and can be done without affecting the end-user if the following conditions are met:
+Offset-based pagination is the easiest way to paginate over records. However, it does not scale well for large database tables. As a long-term solution, [keyset pagination](keyset_pagination.md) is preferred. Switching between offset and keyset pagination is generally straightforward and can be done without affecting the end-user if the following conditions are met:
 
 - Avoid presenting total counts, prefer limit counts.
   - Example: count maximum 1001 records, and then on the UI show 1000+ if the count is 1001, show the actual number otherwise.
@@ -96,7 +96,7 @@ Example pagination bar:
 
 ![Page selector rendered by Kaminari](img/offset_pagination_ui_v13_11.jpg)
 
-The Kaminari gem renders a nice pagination bar on the UI with page numbers and optionally quick shortcuts the next, previous, first, and last page buttons. To render these buttons, Kaminari needs to know the number of rows, and for that, a count query is executed.
+The Kaminari gem renders a nice pagination bar on the UI with page numbers and optionally quick shortcuts to the next, previous, first, and last page buttons. To render these buttons, Kaminari needs to know the number of rows, and for that, a count query is executed.
 
 ```sql
 SELECT COUNT(*) FROM issues WHERE project_id = 1
@@ -106,7 +106,7 @@ SELECT COUNT(*) FROM issues WHERE project_id = 1
 
 ##### Index coverage
 
-To achieve the good performance, the `ORDER BY` clause needs to be covered by an index.
+To achieve good performance, the `ORDER BY` clause needs to be covered by an index.
 
 Assuming that we have the following index:
 
@@ -169,7 +169,7 @@ When we paginate over a large dataset, we might notice that the response time ge
 
 From the user point of view, this might not be always noticeable. As the user paginates forward, the previous rows might be still in the buffer cache of the database. If the user shares the link with someone else and it's opened after a few minutes or hours, the response time might be significantly higher or it would even time out.
 
-When requesting a large page number, the database needs to read `PAGE * PAGE_SIZE` rows. This makes offset pagination **unsuitable for large database tables** however, with an [optimization technique](offset_pagination_optimization.md) the overall performance of the database queries can be slightly improved.
+When requesting a large page number, the database needs to read `PAGE * PAGE_SIZE` rows. This makes offset pagination **unsuitable for large database tables**. However, with an [optimization technique](offset_pagination_optimization.md) the overall performance of the database queries can be slightly improved.
 
 Example: listing users on the Admin area
 
@@ -217,7 +217,7 @@ We can argue that a typical user does not visit these pages. However, API users 
 
 ### Keyset pagination
 
-Keyset pagination addresses the performance concerns of "skipping" previous rows when requesting a large page, however, it's not a drop-in replacement for offset-based pagination. When moving an API endpoint from offset-based pagination to keyset-based pagination, both must be supported. Removing one type of pagination entirely is a [breaking changes](../../update/terminology.md#breaking-change).
+Keyset pagination addresses the performance concerns of "skipping" previous rows when requesting a large page. However, it's not a drop-in replacement for offset-based pagination. When moving an API endpoint from offset-based pagination to keyset-based pagination, both must be supported. Removing one type of pagination entirely is a [breaking changes](../../update/terminology.md#breaking-change).
 
 Keyset pagination used in both the [GraphQL API](../graphql_guide/pagination.md#keyset-pagination) and the [REST API](../../api/rest/_index.md#keyset-based-pagination).
 
@@ -286,7 +286,7 @@ Keyset pagination can only provide the next, previous, first, and last pages.
 
 ##### Complexity
 
-Building queries when we order by a single column is very easy, however, things get more complex if tie-breaker or multi-column ordering is used. The complexity increases if the columns are nullable.
+Building queries when we order by a single column is very easy. However, things get more complex if tie-breaker or multi-column ordering is used. The complexity increases if the columns are nullable.
 
 Example: ordering by `id` and `created_at` where `created_at` is nullable, query for getting the second page:
 
@@ -303,7 +303,8 @@ LIMIT 20
 
 ##### Tooling
 
-A generic keyset pagination library is available within the GitLab project which can most of the cases easily replace the existing, Kaminari based pagination with significant performance improvements when dealing with large datasets.
+A generic keyset pagination library is available within the GitLab project which can, in most cases,
+easily replace the existing, Kaminari-based pagination with significant performance improvements when dealing with large datasets.
 
 Example:
 

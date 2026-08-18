@@ -96,7 +96,7 @@ To add a broadcast message:
 1. For **Type**, select `banner` or `notification`.
 1. Select a **Theme**. The default theme is `indigo`.
 1. To enable users to dismiss the broadcast message, select **Dismissable**.
-1. Optional. To skip showing the broadcast message in the command line as a Git remote response, select clear the **Git remote responses**.
+1. Optional. To skip showing the broadcast message in the command line as a Git remote response, clear the **Git remote responses** checkbox.
 1. Optional. To show the message only to a subset of users, select **Target broadcast message**:
    - Show to all users on all pages.
    - Show to all users on specific matching pages.

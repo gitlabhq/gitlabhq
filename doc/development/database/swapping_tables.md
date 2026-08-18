@@ -51,6 +51,6 @@ reset_pk_sequence!('events')
 ```
 
 Failure to reset the primary keys results in newly created rows starting
-with an ID value of 1. Depending on the existing data this can then lead to
-duplicate key constraints from popping up, preventing users from creating new
+with an ID value of 1. Depending on the existing data, this can then lead to
+duplicate key constraints popping up, preventing users from creating new
 data.

@@ -68,7 +68,7 @@ it needs to run:
 The decision whether any of the analyzed data structures need to be optimized is
 based on the size of the repository:
 
-- Objects are repacked frequently the bigger the total size of all objects.
+- Objects are repacked more frequently the bigger the total size of all objects.
 - References are repacked less frequently the more references there are in
   total.
 

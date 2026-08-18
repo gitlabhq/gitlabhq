@@ -42,6 +42,7 @@ module Gitlab
             bridge_pipeline_is_child_pipeline: 'creation of child pipeline not allowed from another child pipeline',
             downstream_pipeline_creation_failed: 'downstream pipeline can not be created',
             secrets_provider_not_found: 'secrets provider can not be found',
+            secrets_manager_access_denied: 'namespace does not have access to GitLab Secrets Manager',
             reached_max_descendant_pipelines_depth: 'reached maximum depth of child pipelines',
             reached_max_pipeline_hierarchy_size: 'downstream pipeline tree is too large',
             project_deleted: 'pipeline project was deleted',

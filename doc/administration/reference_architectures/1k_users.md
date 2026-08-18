@@ -129,7 +129,7 @@ or [external object storage service](../object_storage.md). It improves performa
 You can leverage Elasticsearch and [enable advanced search](../../integration/advanced_search/elasticsearch.md)
 for faster, more advanced code search across your entire GitLab instance.
 
-Elasticsearch cluster design and requirements depends on your
+Elasticsearch cluster design and requirements depend on your
 data. For recommended best practices about how to set up your Elasticsearch
 cluster alongside your instance, see
 [choose the optimal cluster configuration](../../integration/advanced_search/elasticsearch.md#guidance-on-choosing-optimal-cluster-configuration).

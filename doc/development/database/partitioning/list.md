@@ -56,7 +56,7 @@ end
 ### Step 3 - Enforce unique constraint
 
 Change all unique indexes to include the partitioning key column,
-including the primary key index. You can start by adding an unique
+including the primary key index. You can start by adding a unique
 index on `[primary_key_column, :partition_id]`, which will be
 required for the next two steps. For example, in a rails migration:
 
@@ -122,7 +122,7 @@ end
 
 The `on_update: :cascade` option is mandatory if we want the partitioning column
 to be updated. This will cascade the update to all dependent rows. Without
-specifying it, updating the partition column on the target table we would
+specifying it, updating the partition column on the target table would
 result in a `Key is still referenced from table ...` error and updating the
 partition column on the source table would raise a
 `Key is not present in table ...` error.
@@ -130,7 +130,7 @@ partition column on the source table would raise a
 ### Step 5 - Swap primary key
 
 Swap the primary key including the partitioning key column. This can be done only after
-including the partition key for all references foreign keys. For example, in a rails migration:
+including the partition key for all referenced foreign keys. For example, in a rails migration:
 
 ```ruby
 class PreparePrimaryKeyForPartitioning < Gitlab::Database::Migration[2.1]
@@ -306,7 +306,7 @@ Steps:
 
 - Add the foreign key to the partitioned table and validate it asynchronously,
   [for example](https://gitlab.com/gitlab-org/gitlab/-/blob/65d63f6a00196c3a7d59f15191920f271ab2b145/db/post_migrate/20230524135543_replace_ci_build_pending_states_foreign_key.rb).
-- Validate it synchronously after the asynchronously validation was completed on GitLab.com,
+- Validate it synchronously after the asynchronous validation was completed on GitLab.com,
   [for example](https://gitlab.com/gitlab-org/gitlab/-/blob/65d63f6a00196c3a7d59f15191920f271ab2b145/db/post_migrate/20230530140456_validate_fk_ci_build_pending_states_p_ci_builds.rb).
 - Remove the old foreign key and rename the new one to the old name,
   [for example](https://gitlab.com/gitlab-org/gitlab/-/blob/65d63f6a00196c3a7d59f15191920f271ab2b145/db/post_migrate/20230615083713_replace_old_fk_ci_build_pending_states_to_builds.rb#L9).

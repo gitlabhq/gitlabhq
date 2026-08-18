@@ -30,7 +30,7 @@ repositories.
 1. Check for any branch/references lock files in `refs/heads`.
 
 The existence of `config.lock` or reference locks
-alone do not necessarily indicate a problem. Lock files are routinely created
+alone does not necessarily indicate a problem. Lock files are routinely created
 and removed as Git and GitLab perform operations on the repository. They serve
 to prevent data integrity issues. However, if a Git operation is interrupted these
 locks may not be cleaned up properly.

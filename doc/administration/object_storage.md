@@ -124,7 +124,7 @@ common set of parameters.
 | Setting           | Description                       |
 |-------------------|-----------------------------------|
 | `enabled`         | Enable or disable object storage. |
-| `proxy_download`  | Set to `true` to [enable proxying all files served](#proxy-download). Option allows to reduce egress traffic as this allows clients to download directly from remote storage instead of proxying all data. |
+| `proxy_download`  | Set to `true` to [enable proxying all files served](#proxy-download). This option reduces egress traffic as it allows clients to download directly from remote storage instead of proxying all data. |
 | `connection`      | Various [connection options](#configure-the-connection-settings) described below. |
 | `storage_options` | Options to use when saving new objects, such as [server side encryption](#server-side-encryption-headers). |
 | `objects`         | [Object-specific configuration](#configure-the-parameters-of-each-object). |
@@ -1222,7 +1222,7 @@ In storage-specific configuration:
 
 - Object storage configuration for all types of objects such as CI/CD artifacts, LFS
   files, and upload attachments is configured independently.
-- Object store connection parameters such as passwords and endpoint URLs is duplicated for each type.
+- Object store connection parameters such as passwords and endpoint URLs are duplicated for each type.
 
 For example, a Linux package installation might have the following configuration:
 
@@ -1247,7 +1247,7 @@ Rails and Workhorse components need access to object storage, the
 consolidated form avoids excessive duplication of credentials.
 
 The consolidated form is used only if all lines from
-the original form is omitted. To move to the consolidated form, remove the
+the original form are omitted. To move to the consolidated form, remove the
 original configuration (for example, `artifacts_object_store_enabled`, or
 `uploads_object_store_connection`)
 

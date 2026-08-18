@@ -279,7 +279,7 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
 
         expect(subject.includes).to contain_exactly(
           {
-            type: :file,
+            type: :project,
             location: '.gitlab-ci-include.yml',
             blob: "http://localhost/#{project.full_path}/-/blob/#{project.commit.sha}/.gitlab-ci-include.yml",
             raw: "http://localhost/#{project.full_path}/-/raw/#{project.commit.sha}/.gitlab-ci-include.yml",
@@ -308,7 +308,7 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
 
           expect(subject.includes).to contain_exactly(
             {
-              type: :file,
+              type: :project,
               location: '.gitlab-ci-include.yml',
               blob: "http://localhost/#{project.full_path}/-/blob/#{project.commit.sha}/.gitlab-ci-include.yml",
               raw: "http://localhost/#{project.full_path}/-/raw/#{project.commit.sha}/.gitlab-ci-include.yml",
@@ -908,7 +908,7 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
       it 'expands the ref' do
         expect(subject.includes).to contain_exactly(
           {
-            type: :file,
+            type: :project,
             location: '.gitlab-ci-include.yml',
             blob: "http://localhost/#{project.full_path}/-/blob/#{project.commit.sha}/.gitlab-ci-include.yml",
             raw: "http://localhost/#{project.full_path}/-/raw/#{project.commit.sha}/.gitlab-ci-include.yml",
@@ -934,7 +934,7 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
         it 'expands the ref' do
           expect(subject.includes).to contain_exactly(
             {
-              type: :file,
+              type: :project,
               location: '.gitlab-ci-include.yml',
               blob: "http://localhost/#{project.full_path}/-/blob/#{project.commit.sha}/.gitlab-ci-include.yml",
               raw: "http://localhost/#{project.full_path}/-/raw/#{project.commit.sha}/.gitlab-ci-include.yml",

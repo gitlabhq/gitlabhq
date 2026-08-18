@@ -8,7 +8,6 @@ import { parseBoolean } from '~/lib/utils/common_utils';
 import { EVENT_OPEN_GLOBAL_SEARCH } from '~/vue_shared/global_search/constants';
 import { staticBreadcrumbs } from '~/lib/utils/breadcrumbs_state';
 import { adminRootPath } from '~/lib/utils/path_helpers/instance_admin';
-import { exploreAnalyticsDashboardsPath } from '~/lib/utils/path_helpers/explore';
 import { newUserRegistrationPath, newUserSessionPath } from '~/lib/utils/path_helpers/routes';
 import SuperSidebarToggle from './super_sidebar_toggle.vue';
 import CreateMenu from './create_menu.vue';
@@ -90,10 +89,14 @@ export default {
           this.sidebarData.admin_mode.admin_mode_active)
       );
     },
+    // Supplied by EE only, and only when the feature flag is on. The route
+    // itself is EE-only, so FOSS has no path helper to build it from.
+    analyticsDashboardsPath() {
+      return this.sidebarData.analytics_dashboards_path;
+    },
   },
   methods: {
     adminRootPath,
-    exploreAnalyticsDashboardsPath,
     newUserRegistrationPath,
     signInPath() {
       return newUserSessionPath({ redirect_to_referer: 'yes' });
@@ -194,9 +197,9 @@ export default {
       />
       <template v-if="isLoggedIn">
         <gl-button
-          v-if="glFeatures.exploreAnalyticsDashboards"
+          v-if="analyticsDashboardsPath"
           v-gl-tooltip.bottom="$options.i18n.analyticsDashboardsBtnText"
-          :href="exploreAnalyticsDashboardsPath()"
+          :href="analyticsDashboardsPath"
           :aria-label="$options.i18n.analyticsDashboardsBtnText"
           category="tertiary"
           icon="chart"

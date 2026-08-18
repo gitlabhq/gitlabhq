@@ -388,7 +388,7 @@ To create an inbound PrivateLink connection:
    }
    ```
 
-1. Recommended. To configure a secondary region, select **Secondary region** under **Regions**. This will create endpoint services in the both regions with the specified IAM principals.
+1. Recommended. To configure a secondary region, select **Secondary region** under **Regions**. This will create endpoint services in both regions with the specified IAM principals.
 1. Select **Save**. GitLab creates the endpoint services and the service endpoint names
    become available on the **Configuration** page.
 

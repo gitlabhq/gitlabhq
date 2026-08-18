@@ -237,12 +237,12 @@ seconds:
 
 User clone and fetch activity using HTTP transport appears in the log as `action: git_upload_pack`.
 
-In addition, the log contains the originating IP address,
+In addition, the log contains the originating IP address
 (`remote_ip`), the user's ID (`user_id`), and username (`username`).
 
 Some endpoints (such as `/search`) may make requests to Elasticsearch if using
 [advanced search](../../user/search/advanced_search.md). These
-additionally log `elasticsearch_calls` and `elasticsearch_call_duration_s`,
+additionally log `elasticsearch_calls` and `elasticsearch_duration_s`,
 which correspond to:
 
 - `elasticsearch_calls`: Total number of calls to Elasticsearch
@@ -913,7 +913,7 @@ This log is located:
 - In the `/home/git/gitlab/log/web_hooks.log` file on self-compiled installations.
 - On the Sidekiq pods under the `subcomponent="web_hooks"` key on Helm chart installations.
 
-The back-off, disablement, and re-enablement events for Webhook are recorded in this file. For example:
+The back-off, disablement, and re-enablement events for webhooks are recorded in this file. For example:
 
 ```json
 {"severity":"INFO","time":"2020-11-24T02:30:59.860Z","hook_id":12,"action":"backoff","disabled_until":"2020-11-24T04:30:59.860Z","recent_failures":2}
@@ -927,7 +927,7 @@ Reconfigure log files are in `/var/log/gitlab/reconfigure` for Linux package ins
 don't have reconfigure logs. A reconfigure log is populated whenever `gitlab-ctl reconfigure` is run manually or as part
 of an upgrade.
 
-Reconfigure logs files are named according to the UNIX timestamp of when the reconfigure
+Reconfigure log files are named according to the UNIX timestamp of when the reconfigure
 was initiated, such as `1509705644.log`
 
 ## `sidekiq_exporter.log` and `web_exporter.log`
@@ -1247,7 +1247,7 @@ This log is located:
 
 {{< /details >}}
 
-The `secret_push_protection.log` file logs information related to [secret push protection](../../user/application_security/secret_detection/secret_push_protection/_index.md) feature.
+The `secret_push_protection.log` file logs information related to the [secret push protection](../../user/application_security/secret_detection/secret_push_protection/_index.md) feature.
 
 This log is located:
 
@@ -1315,7 +1315,7 @@ This log is located:
 - In the `/home/git/gitlab/log/user_experience_slis.log` file on self-compiled installations.
 - On the Webservice pods under the `subcomponent="user_experience_slis"` key on Helm chart installations.
 
-It contains a JSON structured log for User Experience SLIs that match with its metrics.
+It contains a JSON structured log for User Experience SLIs that match with their metrics.
 
 Each line contains JSON that can be ingested by services like Elasticsearch.
 
@@ -1567,7 +1567,7 @@ in that file. For example:
 {"severity":"INFO","time":"2020-12-04T09:29:44.592Z","correlation_id":"33680b1490ccd35981b03639c406a697","filename":"app/models/ci/pipeline.rb","method_path":"app/models/ci/pipeline.rb:each_with_object","request_id":"rYHomD0VJS4","duration_ms":26.889,"count":2,"query_type": "active-record"}
 ```
 
-These statistics are logged on .com only, disabled on self-deployments.
+These statistics are logged on .com only, and are disabled on self-deployments.
 
 ## Gathering logs
 

@@ -85,10 +85,10 @@ These settings limit file imports and exports for groups and projects.
 |:------------------------|:------------------------------|
 | Project import          | 6 import requests             |
 | Project export          | 6 export requests             |
-| Project export download | 1 download requests           |
+| Project export download | 1 download request            |
 | Group import            | 6 import requests             |
 | Group export            | 6 export requests             |
-| Group export download   | 1 download requests           |
+| Group export download   | 1 download request            |
 
 These settings [can be configured](settings/import_export_rate_limits.md).
 

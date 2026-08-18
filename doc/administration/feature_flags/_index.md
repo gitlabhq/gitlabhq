@@ -22,7 +22,7 @@ flags for a number of reasons, such as:
 
 - To test the feature.
 - To get feedback from users and customers while in an early stage of the development of the feature.
-- To evaluate users adoption.
+- To evaluate user adoption.
 - To evaluate how it impacts the performance of GitLab.
 - To build it in smaller pieces throughout releases.
 
@@ -55,7 +55,7 @@ Before enabling a disabled feature flag in a production GitLab environment, it i
 Features that are disabled by default may change or be removed without notice in a future version of GitLab.
 
 Features behind default-disabled feature flags are not recommended for use in a production environment
-and problems caused by using a default disabled features aren't covered by GitLab Support.
+and problems caused by using features that are disabled by default aren't covered by GitLab Support.
 
 Security issues found in features that are disabled by default are patched in regular releases
 and do not follow our regular [maintenance policy](../../policy/maintenance.md#patch-releases)

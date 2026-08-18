@@ -12,7 +12,7 @@ title: Audit event streaming for instances
 
 {{< /details >}}
 
-Audit event streaming for instances, administrators can:
+With audit event streaming for instances, administrators can:
 
 - Set a streaming destination for an entire instance to receive all audit events about that instance as structured JSON.
 - Manage their audit logs in third-party systems. Any service that can receive structured JSON data can be used as the
@@ -54,9 +54,9 @@ To add a streaming destination for an instance:
 1. On the main area, select the **Streams** tab.
 1. Select **Add streaming destination** and select **HTTP endpoint** to show the section for adding destinations.
 1. In the **Name** and **Destination URL** fields, add a destination name and URL.
-1. Optional. To add custom HTTP headers, select **Add header** to create a new name and value pair, and input their values. Repeat this step for as many name and value pairs are required. You can add up to 20 headers per streaming destination.
+1. Optional. To add custom HTTP headers, select **Add header** to create a new name and value pair, and input their values. Repeat this step for as many name and value pairs as required. You can add up to 20 headers per streaming destination.
 1. To make the header active, select the **Active** checkbox. The header will be sent with the audit event.
-1. Select **Add header** to create a new name and value pair. Repeat this step for as many name and value pairs are required. You can add up to
+1. Select **Add header** to create a new name and value pair. Repeat this step for as many name and value pairs as required. You can add up to
    20 headers per streaming destination.
 1. After all headers have been filled out, select **Add** to add the new streaming destination.
 
@@ -161,9 +161,9 @@ To add Google Cloud Logging streaming destinations to an instance:
 1. On the main area, select the **Streams** tab.
 1. Select **Add streaming destination** and select **Google Cloud Logging** to show the section for adding destinations.
 1. Enter a random string to use as a name for the new destination.
-1. Enter the Google project ID and Google client email from the previously-created
+1. Enter the Google project ID and Google client email from the previously created
    Google Cloud service account key.
-1. Enter the Google private key from the previously-created Google Cloud service account key.
+1. Enter the Google private key from the previously created Google Cloud service account key.
    It should be in PEM format, and start with `-----BEGIN PRIVATE KEY-----`.
    Do not upload the entire JSON key.
 1. Enter a random string to use as a log ID for the new destination. You can use this later to filter log results in Google Cloud.
@@ -182,22 +182,22 @@ To update Google Cloud Logging streaming destinations to an instance:
 1. On the main area, select the **Streams** tab.
 1. Select the Google Cloud Logging stream to expand.
 1. Enter a random string to use as a name for the destination.
-1. Enter the Google project ID and Google client email from previously-created Google Cloud service account key to update the destination.
+1. Enter the Google project ID and Google client email from a previously created Google Cloud service account key to update the destination.
 1. Enter a random string to update the log ID for the destination. You can use this later to filter log results in Google Cloud.
 1. Select **Add a new private key** and enter a Google private key to update the private key.
 1. Select **Save** to update the streaming destination.
 
 ## AWS S3 destinations
 
-Manage AWS S3 destinations for entire instance.
+Manage AWS S3 destinations for an entire instance.
 
 ### Prerequisites
 
 Before setting up AWS S3 streaming audit events, you must:
 
-1. Create a access key for AWS with the appropriate credentials and permissions. This account is used to configure audit log streaming authentication.
+1. Create an access key for AWS with the appropriate credentials and permissions. This account is used to configure audit log streaming authentication.
    For more information, see [Managing access keys](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html?icmpid=docs_iam_console#Using_CreateAccessKey).
-1. Create a AWS S3 bucket. This bucket is used to store audit log streaming data. For more information, see [Creating a bucket](https://docs.aws.amazon.com/AmazonS3/latest/userguide/create-bucket-overview.html)
+1. Create an AWS S3 bucket. This bucket is used to store audit log streaming data. For more information, see [Creating a bucket](https://docs.aws.amazon.com/AmazonS3/latest/userguide/create-bucket-overview.html)
 
 ### Add a new AWS S3 destination
 
@@ -212,7 +212,7 @@ To add AWS S3 streaming destinations to an instance:
 1. On the main area, select the **Streams** tab.
 1. Select **Add streaming destination** and select **AWS S3** to show the section for adding destinations.
 1. Enter a random string to use as a name for the new destination.
-1. Enter the **Access Key ID**, **Secret Access Key**, **Bucket Name**, and **AWS Region** from previously-created AWS
+1. Enter the **Access Key ID**, **Secret Access Key**, **Bucket Name**, and **AWS Region** from a previously created AWS
    access key and bucket to add to the new destination.
 1. Select **Add** to add the new streaming destination.
 
@@ -230,7 +230,7 @@ To update an AWS S3 streaming destination to an instance:
 1. Select the AWS S3 stream to expand.
 1. Enter a random string to use as a name for the destination.
 1. To update the destination, enter the **Access Key ID**, **Secret Access Key**, **Bucket Name**, and **AWS Region**
-   from the previously-created AWS access key and bucket.
+   from the previously created AWS access key and bucket.
 1. Select **Add a new Secret Access Key** and enter an AWS Secret Access Key to update the Secret Access Key.
 1. Select **Save**.
 

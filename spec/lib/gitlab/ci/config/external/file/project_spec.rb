@@ -263,7 +263,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project, feature_category: :p
       is_expected.to eq(
         context_project: context_project.full_path,
         context_sha: project_sha,
-        type: :file,
+        type: :project,
         location: 'file.yml',
         blob: "http://localhost/#{project.full_path}/-/blob/#{project_sha}/file.yml",
         raw: "http://localhost/#{project.full_path}/-/raw/#{project_sha}/file.yml",
@@ -292,7 +292,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project, feature_category: :p
         is_expected.to eq(
           context_project: context_project.full_path,
           context_sha: project_sha,
-          type: :file,
+          type: :project,
           location: 'file.yml',
           blob: "http://localhost/#{namespace_path}/[MASKED]xxxxxxx/-/blob/#{included_project_sha}/file.yml",
           raw: "http://localhost/#{namespace_path}/[MASKED]xxxxxxx/-/raw/#{included_project_sha}/file.yml",

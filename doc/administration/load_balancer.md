@@ -3,7 +3,7 @@ stage: GitLab Delivery
 group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Load Balancer for multi-node GitLab
-description: Use a load balancer with multi-node a multi-node instance.
+description: Use a load balancer with a multi-node instance.
 ---
 
 {{< details >}}
@@ -17,7 +17,7 @@ In a multi-node GitLab configuration, you need a load balancer to route
 traffic to the application servers. The specifics on which load balancer to use
 or the exact configuration is beyond the scope of GitLab documentation. We hope
 that if you're managing HA systems like GitLab you have a load balancer of
-choice already. Some examples including HAProxy (open-source), F5 Big-IP LTM,
+choice already. Some examples include HAProxy (open-source), F5 Big-IP LTM,
 and Citrix NetScaler. This documentation outlines what ports and protocols
 to use with GitLab.
 
@@ -36,7 +36,7 @@ options:
 
 Configure your load balancers to pass connections on port 443 as 'TCP' rather
 than 'HTTP(S)' protocol. This passes the connection to the application nodes
-NGINX service untouched. NGINX has the SSL certificate and listen on port 443.
+NGINX service untouched. NGINX has the SSL certificate and listens on port 443.
 
 See the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/)
 for details on managing SSL certificates and configuring NGINX.
@@ -55,7 +55,7 @@ for details.
 ### Load Balancers terminate SSL with backend SSL
 
 Configure your load balancers to use the `HTTP(S)` protocol rather than `TCP`.
-The load balancers is responsible for managing SSL certificates that
+The load balancers are responsible for managing SSL certificates that
 end users see.
 
 Traffic is secure between the load balancers and NGINX in this
@@ -122,7 +122,7 @@ Configure DNS for an alternate SSH hostname such as `altssh.gitlab.example.com`.
 
 ## Readiness check
 
-It is strongly recommend that multi-node deployments configure load balancers to use the [readiness check](monitoring/health_check.md#readiness) to ensure a node is ready to accept traffic, before routing traffic to it. This is especially important when using Puma, because there is a brief period during a restart where Puma doesn't accept requests.
+It is strongly recommended that multi-node deployments configure load balancers to use the [readiness check](monitoring/health_check.md#readiness) to ensure a node is ready to accept traffic, before routing traffic to it. This is especially important when using Puma, because there is a brief period during a restart where Puma doesn't accept requests.
 
 > [!warning]
 > Using the `all=1` parameter with the readiness check in GitLab versions 15.4 to 15.8 may cause [increased Praefect memory usage](https://gitlab.com/gitlab-org/gitaly/-/issues/4751) and lead to memory errors.
@@ -132,7 +132,7 @@ It is strongly recommend that multi-node deployments configure load balancers to
 ### The health check is returning a `408` HTTP code via the load balancer
 
 If you are using the [AWS Classic Load Balancer](https://docs.aws.amazon.com/en_en/elasticloadbalancing/latest/classic/elb-ssl-security-policy.html#ssl-ciphers),
-you must to enable the `AES256-GCM-SHA384` cipher in NGINX.
+you must enable the `AES256-GCM-SHA384` cipher in NGINX.
 See [AES256-GCM-SHA384 SSL cipher no longer allowed by default by NGINX](../update/versions/gitlab_15_changes.md#1500)
 for more information.
 

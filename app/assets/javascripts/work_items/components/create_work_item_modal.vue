@@ -440,17 +440,17 @@ export default {
         :allow-any-namespace="allowAnyNamespace"
         :allow-projects-only="allowProjectsOnly"
         :create-source="createSource"
-        @changeType="selectedWorkItemTypeName = $event"
-        @confirmCancel="handleConfirmCancellation"
-        @discardDraft="handleDiscardDraft('createModal')"
+        @change-type="selectedWorkItemTypeName = $event"
+        @confirm-cancel="handleConfirmCancellation"
+        @discard-draft="handleDiscardDraft('createModal')"
         @work-item-created="handleCreated"
       />
     </gl-modal>
     <create-work-item-cancel-confirmation-modal
       :is-visible="isConfirmationModalVisible"
       :work-item-type="selectedWorkItemTypeName || ''"
-      @continueEditing="handleContinueEditing"
-      @discardDraft="handleDiscardDraft('confirmModal')"
+      @continue-editing="handleContinueEditing"
+      @discard-draft="handleDiscardDraft('confirmModal')"
     />
   </div>
 </template>

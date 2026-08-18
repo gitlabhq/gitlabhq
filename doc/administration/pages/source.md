@@ -61,7 +61,7 @@ Before proceeding with the Pages configuration, make sure that:
 
 ### DNS configuration
 
-GitLab Pages must run on their own virtual host. In your DNS server or provider, add a
+GitLab Pages must run on its own virtual host. In your DNS server or provider, add a
 [wildcard DNS `A` record](https://en.wikipedia.org/wiki/Wildcard_DNS_record) pointing to the host
 that GitLab runs on. For example:
 

@@ -23,7 +23,7 @@ The configuration for doing so depends on your desired outcome.
 ## Make the repositories read-only
 
 The first thing you want to accomplish is to ensure that no changes can be
-made to your repositories. There's two ways you can accomplish that:
+made to your repositories. You can accomplish that in two ways:
 
 - Either stop Puma to make the internal API unreachable:
 

@@ -269,6 +269,14 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
       execute_transfer
     end
 
+    it 'records a success transfer metric and duration' do
+      expect(::Gitlab::Metrics::Transfers).to receive(:count_transfer).with(namespace_type: 'project', result: 'success')
+      expect(::Gitlab::Metrics::Transfers).to receive(:observe_transfer_duration)
+        .with(duration_s: kind_of(Numeric), namespace_type: 'project')
+
+      execute_transfer
+    end
+
     it 'moves the disk path', :aggregate_failures do
       old_path = project.repository.disk_path
       old_full_path = project.repository.full_path
@@ -459,6 +467,12 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
       expect(transfer_result).to be false
       expect(project.namespace).to eq(user.namespace)
       expect(project.errors.messages[:new_namespace].first).to eq 'Please select a new namespace for your project.'
+    end
+
+    it 'records a failure transfer metric' do
+      expect(::Gitlab::Metrics::Transfers).to receive(:count_transfer).with(namespace_type: 'project', result: 'failure')
+
+      execute_transfer
     end
 
     context 'when project has an associated project namespace' do
@@ -1162,8 +1176,11 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
         service.schedule_async_transfer(new_namespace)
 
         expect(Gitlab::AppLogger).to have_received(:warn).with(hash_including(
-          message: 'Cancelling stale transfer state - no active worker lease found',
-          project_id: project.id
+          'message' => 'Cancelling stale transfer state - no active worker lease found',
+          'gl_project_id' => project.id,
+          'gl_namespace_id' => project.project_namespace.id,
+          'namespace_type' => 'project',
+          'correlation_id' => kind_of(String)
         ))
       end
     end

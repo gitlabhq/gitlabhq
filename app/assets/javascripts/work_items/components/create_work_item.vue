@@ -282,11 +282,11 @@ export default {
     },
   },
   emits: [
-    'changeType',
-    'confirmCancel',
-    'discardDraft',
+    'change-type',
+    'confirm-cancel',
+    'discard-draft',
     'error',
-    'updateType',
+    'update-type',
     'work-item-created',
   ],
   data() {
@@ -759,13 +759,13 @@ export default {
       as you can choose the work item type in the dropdown
     */
     selectedWorkItemTypeName(newValue) {
-      this.$emit('updateType', newValue);
+      this.$emit('update-type', newValue);
     },
     selectedWorkItemTypeId(newId) {
       if (newId) {
         // Whenever the ID changes, find the name and tell the parent
         const typeName = this.findWorkItemTypeById(newId)?.name;
-        this.$emit('changeType', typeName);
+        this.$emit('change-type', typeName);
       }
     },
   },
@@ -812,7 +812,7 @@ export default {
           (type) => type?.name === WORK_ITEM_TYPE_NAME_ISSUE || type?.id === issueTypeGid,
         ) || this.creatableWorkItemTypes.at(0);
       this.selectedWorkItemTypeId = defaultSelectedWorkItemType?.id;
-      this.$emit('changeType', defaultSelectedWorkItemType?.name);
+      this.$emit('change-type', defaultSelectedWorkItemType?.name);
     },
     processWorkItemTypes() {
       // Only process if both queries have completed
@@ -885,7 +885,7 @@ export default {
 
       if (selectedWorkItemType) {
         this.selectedWorkItemTypeId = selectedWorkItemType?.id;
-        this.$emit('changeType', selectedWorkItemType.name);
+        this.$emit('change-type', selectedWorkItemType.name);
       } else {
         this.showWorkItemTypeSelect = true;
         this.setDefaultWorkItemType();
@@ -966,7 +966,7 @@ export default {
         },
       });
 
-      this.$emit('changeType', this.selectedWorkItemTypeName);
+      this.$emit('change-type', this.selectedWorkItemTypeName);
     },
     async updateDraftData(type, value) {
       // loading is set to true at the start of createWorkItem and intentionally
@@ -1217,9 +1217,9 @@ export default {
        * if they want to discard the draft
        */
       if (this.isFormFilled) {
-        this.$emit('confirmCancel');
+        this.$emit('confirm-cancel');
       } else {
-        this.$emit('discardDraft');
+        this.$emit('discard-draft');
         this.handleDiscardDraft();
       }
     },

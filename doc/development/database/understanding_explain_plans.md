@@ -95,7 +95,7 @@ Every query plan consists of nodes. Nodes can be nested, and are executed from
 the inside out. This means that the innermost node is executed before an outer
 node. This can be best thought of as nested function calls, returning their
 results as they unwind. For example, a plan starting with an `Aggregate`
-followed by a `Nested Loop`, followed by an `Index Only scan` can be thought of
+followed by a `Nested Loop`, followed by an `Index Only Scan` can be thought of
 as the following Ruby code:
 
 ```ruby
@@ -116,7 +116,7 @@ Aggregate  (cost=922411.76..922411.77 rows=1 width=8)
         Filter: (visibility_level = ANY ('{0,20}'::integer[]))
 ```
 
-Here the first node executed is `Seq scan on projects`. The `Filter:` is an
+Here the first node executed is `Seq Scan on projects`. The `Filter:` is an
 additional filter applied to the results of the node. A filter is very similar
 to Ruby's `Array#select`: it takes the input rows, applies the filter, and
 produces a new list of rows. After the node is done, we perform the `Aggregate`
@@ -154,7 +154,7 @@ Seq Scan on projects  (cost=0.00..908044.47 rows=5746914 width=0)
 Here we can see that our cost ranges from `0.00..908044.47` (we cover this in
 a moment), and we estimate (since we're using `EXPLAIN` and not `EXPLAIN
 ANALYZE`) a total of 5,746,914 rows to be produced by this node. The `width`
-statistics describes the estimated width of each row, in bytes.
+statistic describes the estimated width of each row, in bytes.
 
 The `costs` field specifies how expensive a node was. The cost is measured in
 arbitrary units determined by the query planner's cost parameters. What
@@ -247,7 +247,7 @@ case the node includes a `Heap Fetches:` statistic.
 
 A scan on an index that required retrieving some data from the table.
 
-### Bitmap Index Scan and Bitmap Heap scan
+### Bitmap Index Scan and Bitmap Heap Scan
 
 Bitmap scans fall between sequential scans and index scans. These are typically
 used when we would read too much data from an index scan, but too little to
@@ -467,7 +467,7 @@ result, so, during optimization, look at the number of buffers used (read and hi
 and work on reducing these numbers. Reduced timing is the consequence of reduced
 buffer numbers. [Database Lab Engine](#database-lab-engine) guarantees that the plan is structurally
 identical to production (and overall number of buffers is the same as on production),
-but difference in cache state and I/O speed may lead to different timings.
+but a difference in cache state and I/O speed may lead to different timings.
 
 ## Queries that can't be optimized
 
@@ -541,7 +541,7 @@ So no matter what we do, this query retrieves 98% of the entire table. Since
 most time is spent doing exactly that, there isn't really much we can do to
 improve this query, other than _not_ running it at all.
 
-What is important here is that while some may recommend to straight up add an
+What is important here is that while some may recommend straight up adding an
 index the moment you see a sequential scan, it is _much more important_ to first
 understand what your query does, how much data it retrieves, and so on. After
 all, you cannot optimize something you do not understand.

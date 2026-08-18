@@ -66,12 +66,8 @@ describe('LabelsSelectRoot', () => {
           },
         );
 
-        // We're utilizing `onDropdownClose` event emitted from the component to always include `touchedLabels`
-        // while the first param of the method is the labels list which were added/removed.
         expect(wrapper.emitted('update-selected-labels')).toHaveLength(1);
         expect(wrapper.emitted('update-selected-labels')[0]).toEqual([touchedLabels]);
-        expect(wrapper.emitted('onDropdownClose')).toHaveLength(1);
-        expect(wrapper.emitted('onDropdownClose')[0]).toEqual([touchedLabels]);
       });
 
       it('calls `handleDropdownClose` with state.labels filterd using `set` prop when dropdown variant is `embedded`', () => {
@@ -98,8 +94,6 @@ describe('LabelsSelectRoot', () => {
             },
           ],
         ]);
-        expect(wrapper.emitted('onDropdownClose')).toHaveLength(1);
-        expect(wrapper.emitted('onDropdownClose')[0]).toEqual([[]]);
       });
     });
 

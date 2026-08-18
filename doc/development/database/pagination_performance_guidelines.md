@@ -87,7 +87,7 @@ Execution plan:
                I/O Timings: read=0.983 write=0.000
 ```
 
-As you can see the query read 22 rows using the same index. The database compared the 20th, 21th, and 22th value of the `created_at` column and determined that the 22th value differ thus checking the next record is not needed. In this example the 20th and 21th column had the same `created_at` value.
+As you can see the query read 22 rows using the same index. The database compared the 20th, 21st, and 22nd values of the `created_at` column and determined that the 22nd value differs, so checking the next record is not needed. In this example the 20th and 21st column values had the same `created_at` value.
 
 Incremental sorting works well with timestamp columns where duplicated values are unlikely hence the incremental sorting will perform badly or won't be used at all when the column has very few distinct values (like an enum).
 
@@ -127,11 +127,11 @@ LIMIT 20
 OFFSET 0
 ```
 
-With PostgreSQL version 11, the planner first looks up all issues matching the `project_id` filter and then join all `issue_metrics` rows. The ordering of rows happens in memory. In case the joined relation is always present (1:1 relationship), the database reads `N * 2` rows where N is the number of rows matching the `project_id` filter.
+With PostgreSQL version 11, the planner first looks up all issues matching the `project_id` filter and then joins all `issue_metrics` rows. The ordering of rows happens in memory. In case the joined relation is always present (1:1 relationship), the database reads `N * 2` rows where N is the number of rows matching the `project_id` filter.
 
 For performance reasons, we should avoid mixing columns from different tables when specifying the `ORDER BY` clause.
 
-In this particular case there is no simple way (like index creation) to improve the query. We might think that changing the `issues.id` column to `issue_metrics.issue_id` helps, however, this likely makes the query perform worse because it might force the database to process all rows in the `issue_metrics` table.
+In this particular case there is no simple way (like index creation) to improve the query. We might think that changing the `issues.id` column to `issue_metrics.issue_id` helps. However, this likely makes the query perform worse because it might force the database to process all rows in the `issue_metrics` table.
 
 One idea to address this problem is denormalization. Adding the `project_id` column to the `issue_metrics` table makes the filtering and sorting efficient:
 
@@ -275,7 +275,7 @@ LIMIT 20
 OFFSET 0
 ```
 
-We might be tempted to add an index on `project_id`, `confidential`, and `iid` to improve the database query, however, in this case it's probably unnecessary. Based on the data distribution in the table, confidential issues are rare. Filtering them out does not make the database query significantly slower. The database might read a few extra rows, the performance difference might not even be visible to the end-user.
+We might be tempted to add an index on `project_id`, `confidential`, and `iid` to improve the database query. However, in this case it's probably unnecessary. Based on the data distribution in the table, confidential issues are rare. Filtering them out does not make the database query significantly slower. The database might read a few extra rows, the performance difference might not even be visible to the end-user.
 
 On the other hand, if we implemented a special filter where we only show confidential issues, we need the index. Finding 20 confidential issues might require the database to scan hundreds of rows or, in the worst case, all issues in the project.
 
@@ -346,7 +346,7 @@ In most cases, joined relations do not return too many rows, and we end up with 
 
 A similar problem could be a double join, where the filter exists in the 2nd `JOIN` query. Example: `Issue -> LabelLink -> Label(name=bug)`.
 
-There is no easy way to fix these problems. Denormalization of data could help significantly, however, it has also negative effects (data duplication and keeping the data up to date).
+There is no easy way to fix these problems. Denormalization of data could help significantly. However, it also has negative effects (data duplication and keeping the data up to date).
 
 Ideas for improving the `issue_assignees` filter:
 
@@ -377,7 +377,7 @@ Ideas for improving the `issue_assignees` filter:
   OFFSET 0
   ```
 
-The query now performs well for any number of `issue_assignees` records, however, we pay a very high price for it:
+The query now performs well for any number of `issue_assignees` records. However, we pay a very high price for it:
 
 - Two columns are duplicated which increases the database size.
 - We need to keep the two columns in sync.

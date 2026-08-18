@@ -70,7 +70,7 @@ Administrators are added as owners so they can add additional users to the group
 
 ## Update all users in a given group to `project_limit:0` and `can_create_group: false`
 
-To update all users in given group to `project_limit: 0` and `can_create_group: false`, run:
+To update all users in a given group to `project_limit: 0` and `can_create_group: false`, run:
 
 ```shell
 # omnibus-gitlab
@@ -153,7 +153,7 @@ To rotate the two-factor authentication encryption key:
 
    The `<old key>` value can be read from `config/secrets.yml` (`<new key>` was
    generated earlier). The **encrypted** values for the user 2FA secrets are
-   written to the specified `filename`. You can use this to rollback in case of
+   written to the specified `filename`. You can use this to roll back in case of
    error.
 
 1. Change `config/secrets.yml` to set `otp_key_base` to `<new key>` and restart. Again, make sure
@@ -168,7 +168,7 @@ To rotate the two-factor authentication encryption key:
    ```
 
 If there are any problems (perhaps using the wrong value for `old_key`), you can
-restore your backup of `config/secrets.yml` and rollback the changes:
+restore your backup of `config/secrets.yml` and roll back the changes:
 
 ```shell
 # omnibus-gitlab

@@ -22,7 +22,7 @@ It is important for compliance teams to be confident that their controls and
 requirements are set up correctly, but also that they stay set up correctly.
 One way of doing this is manually checking settings periodically, but this is
 error prone and time consuming. A better approach is to use single-source-of-truth
-settings and automation to ensure that whatever a compliance team has configured,
+settings and automation to ensure that whatever a compliance team has configured
 stays configured and working correctly. These features can help you automate
 compliance:
 
@@ -58,7 +58,7 @@ and secure supply chain best practices:
 | Feature                                                                       | Instances                            | Groups                               | Projects                             | Description |
 |:------------------------------------------------------------------------------|:-------------------------------------|:-------------------------------------|:-------------------------------------|:------------|
 | [Credentials inventory](../credentials_inventory.md)                             | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | Keep track of the credentials used by all of the users in a GitLab instance. |
-| [Granular user roles<br/>and flexible permissions](../../user/permissions.md)    | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | Manage access and permissions with five different user roles and settings for external users. Set permissions according to people's role, rather than either read or write access to a repository. Don't share the source code with people that only need access to the issue tracker. |
+| [Granular user roles<br/>and flexible permissions](../../user/permissions.md)    | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | Manage access and permissions with five different user roles and settings for external users. Set permissions according to people's roles, rather than either read or write access to a repository. Don't share the source code with people that only need access to the issue tracker. |
 | [Merge request approvals](../../user/project/merge_requests/approvals/_index.md) | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | Configure approvals required for merge requests. |
 | [Push rules](../../user/project/repository/push_rules.md)                        | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | Control pushes to your repositories. |
 | [Security policies](../../user/application_security/policies/_index.md)          | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | Configure customizable policies that require merge request approval based on policy rules, or enforce security scanners to execute in project pipelines for compliance requirements. Policies can be enforced granularly against specific projects, or all projects in a group or subgroup. |

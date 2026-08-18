@@ -79,7 +79,7 @@ options:
 
 Due to the complexities of running the Linux package with LDAP and the complexities of
 maintaining ID mapping without LDAP, in most cases you should enable numeric UIDs
-and GIDs (which is off by default in some cases) for simplified permission
+and GIDs (which are off by default in some cases) for simplified permission
 management between systems:
 
 - [NetApp instructions](https://docs.netapp.com/a/ontap/7-mode/8.2.4/File-Access-And-Protocols-Management-Guide-For-7-Mode.pdf)
@@ -172,8 +172,8 @@ use the `hard` option, because (from the man page):
 
 Other vendors make similar recommendations, including
 [Recommended mount options for read-write directories](https://help.sap.com/docs/SUPPORT_CONTENT/basis/3354611703.html) and NetApp's
-[knowledge base](https://kb.netapp.com/on-prem/ontap/da/NAS/NAS-KBs/What_are_the_differences_between_hard_mount_and_soft_mount),
-they highlight that if the NFS client driver caches data, `soft` means there is no certainty if
+[knowledge base](https://kb.netapp.com/on-prem/ontap/da/NAS/NAS-KBs/What_are_the_differences_between_hard_mount_and_soft_mount).
+They highlight that if the NFS client driver caches data, `soft` means there is no certainty if
 writes by GitLab are actually on disk.
 
 Mount points set with the option `hard` may not perform as well, and if the
@@ -203,7 +203,7 @@ where newly added loose refs can be seen as missing on a different client with a
 
 ### A single NFS mount
 
-It's recommended to nest all GitLab data directories within a mount, that allows automatic
+It's recommended to nest all GitLab data directories within a mount, which allows automatic
 restore of backups without manually moving existing data.
 
 ```plaintext
@@ -256,7 +256,7 @@ are empty before attempting a restore. Read more about the
 
 When using default Linux package configuration, you need to share 3 data locations
 between all GitLab cluster nodes. No other locations should be shared. The
-following are the 3 locations need to be shared:
+following are the 3 locations that need to be shared:
 
 | Location | Description | Default configuration |
 | -------- | ----------- | --------------------- |
@@ -335,13 +335,13 @@ If you do choose to use these, avoid storing GitLab log files (for example, thos
 there because this also affects performance. We recommend that the log files be
 stored on a local volume.
 
-For more details on the experience of using a cloud-based file systems with GitLab,
+For more details on the experience of using a cloud-based file system with GitLab,
 see this [Commit Brooklyn 2019 video](https://www.youtube.com/watch?v=K6OS8WodRBQ&t=313).
 
 ### Avoid using CephFS and GlusterFS
 
 GitLab strongly recommends against using CephFS and GlusterFS.
-These distributed file systems are not well-suited for the GitLab input/output access patterns because Git uses many small files and access times and file locking times to propagate makes Git activity very slow.
+These distributed file systems are not well-suited for the GitLab input/output access patterns because Git uses many small files and access times and file locking times to propagate make Git activity very slow.
 
 ### Avoid using PostgreSQL with NFS
 

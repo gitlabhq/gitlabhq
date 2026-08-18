@@ -9,7 +9,9 @@ module Types
 
         value 'remote', description: 'Remote include.', value: :remote
         value 'local', description: 'Local include.', value: :local
-        value 'file', description: 'Project file include.', value: :file
+        # The internal `:project` include type is exposed as `file` to keep the GraphQL API stable.
+        # See https://gitlab.com/gitlab-org/gitlab/-/issues/600839.
+        value 'file', description: 'Project file include.', value: :project
         value 'template', description: 'Template include.', value: :template
         value 'component', description: 'Component include.', value: :component
       end

@@ -53,7 +53,7 @@ Make sure you either:
 
 - Allow port `4000` in your firewall.
 - Use a different port.
-  In following examples, replace the leftmost `4000` with a different port number.
+  In the following examples, replace the leftmost `4000` with a different port number.
 
 To run the GitLab product documentation website in a Docker container:
 
@@ -286,9 +286,9 @@ To upgrade to a later version [using your own web-server](#self-host-the-product
 Local search is included in versions 15.6 and later. If you're using an earlier
 version, the search doesn't work.
 
-For more information, read about the
+For more information, see the
 [different types of searches](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/doc/search.md)
-GitLab Docs are using.
+the GitLab documentation is using.
 
 ### The Docker image is not found
 

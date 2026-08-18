@@ -81,7 +81,7 @@ Security is an important part of the onboarding process. Securing your instance 
 While this isn't an exhaustive list, following these steps gives you a solid start for securing your instance.
 
 - Use a long root password, stored in a vault.
-- Install trusted SSL certificate and establish a process for renewal and revocation.
+- Install a trusted SSL certificate and establish a process for renewal and revocation.
 - [Configure SSH key restrictions](../security/ssh_keys_restrictions.md) according to your organization's guidelines.
 - [Turn off new user account creation](settings/sign_up_restrictions.md#disable-new-user-account-creation).
 - Require email confirmation.

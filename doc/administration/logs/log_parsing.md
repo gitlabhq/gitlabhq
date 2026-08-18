@@ -40,7 +40,7 @@ Find the respective full paths in the [GitLab logs sections](_index.md#productio
 When [log files are rotated](https://smarden.org/runit/svlogd.8), they are renamed in
 Unix timestamp format and compressed with `gzip`. The resulting file name looks like
 `@40000000624492fa18da6f34.s`. These files must be handled differently before parsing,
-than the more recent log files:
+than more recent log files:
 
 - To uncompress the file, use `gunzip -S .s @40000000624492fa18da6f34.s`, replacing
   the filename with your compressed log file's name.
@@ -361,7 +361,7 @@ jq --raw-output '[
  1234 …01-12T01…  some_user  FindCommit  namespace/subgroup/project
 ```
 
-This example shows a custom tool or script causing unexpectedly high of [request rate (>15 RPS)](../reference_architectures/_index.md#available-reference-architectures) on Gitaly.
+This example shows a custom tool or script causing an unexpectedly high [request rate (>15 RPS)](../reference_architectures/_index.md#available-reference-architectures) on Gitaly.
 The hourly aggregation helps to:
 
 - Correlate spikes of bot or user activity to data from monitoring tools such as [Prometheus](../monitoring/prometheus/_index.md).

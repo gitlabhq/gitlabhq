@@ -101,7 +101,7 @@ end
 Writing your own file hook can be tricky and it's easier if you can check it
 without altering the system. A Rake task is provided so that you can use it
 in a staging environment to test your file hook before using it in production.
-The Rake task uses a sample data and execute each of file hook. The output
+The Rake task uses sample data and executes each file hook. The output
 should be enough to determine if the system sees your file hook and if it was
 executed without errors.
 

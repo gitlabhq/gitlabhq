@@ -74519,6 +74519,12 @@
               "description": "A job that failed due to downstream project trigger resolved to empty.",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "SECRETS_MANAGER_ACCESS_DENIED",
+              "description": "A job that failed due to secrets manager access denied.",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null

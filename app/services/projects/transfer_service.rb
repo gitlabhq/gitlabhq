@@ -11,6 +11,7 @@
 module Projects
   class TransferService < BaseService
     include Gitlab::ShellAdapter
+    include Namespaces::TransferLogging
 
     TransferError = Class.new(StandardError)
 
@@ -32,8 +33,8 @@ module Projects
       log_transfer(project, new_namespace, nil)
     end
 
-    def log_project_transfer_error(project, new_namespace, error_message)
-      log_transfer(project, new_namespace, error_message)
+    def log_project_transfer_error(project, new_namespace, error)
+      log_transfer(project, new_namespace, error)
     end
 
     def schedule_async_transfer(new_namespace)
@@ -62,7 +63,7 @@ module Projects
       project.reset
       project.errors.add(:new_namespace, ex.message)
 
-      log_project_transfer_error(project, @new_namespace, ex.message)
+      log_project_transfer_error(project, @new_namespace, ex)
 
       ServiceResponse.error(message: ex.message)
     end
@@ -72,17 +73,22 @@ module Projects
 
       @new_namespace = new_namespace
       @owner_of_personal_project_before_transfer = project.namespace.owner if project.personal?
+      start_time = Gitlab::Metrics::System.monotonic_time
 
       transfer(project)
 
+      duration_s = elapsed_seconds(start_time)
       log_project_transfer_success(project, @new_namespace)
+      ::Gitlab::Metrics::Transfers.count_transfer(namespace_type: 'project', result: 'success')
+      ::Gitlab::Metrics::Transfers.observe_transfer_duration(duration_s: duration_s, namespace_type: 'project')
 
       true
     rescue Projects::TransferService::TransferError => ex
       project.reset
       project.errors.add(:new_namespace, ex.message)
 
-      log_project_transfer_error(project, @new_namespace, ex.message)
+      log_project_transfer_error(project, @new_namespace, ex)
+      ::Gitlab::Metrics::Transfers.count_transfer(namespace_type: 'project', result: 'failure')
 
       false
     end
@@ -91,21 +97,27 @@ module Projects
 
     attr_reader :old_path, :new_path, :new_namespace, :old_namespace
 
-    def log_transfer(project, new_namespace, error_message = nil)
-      action = error_message.nil? ? "was" : "was not"
+    def log_transfer(project, new_namespace, error = nil)
+      action = error.nil? ? "was" : "was not"
+      # `old_namespace` is captured up front in `transfer` (before the namespace change is
+      # persisted), so it reflects the pre-transfer namespace consistently on both the success
+      # and failure paths. Falling back to `project.namespace` covers failures raised before
+      # `transfer` runs (e.g. from `ensure_allowed_transfer`), where nothing has changed yet.
+      pre_transfer_namespace = old_namespace || project.namespace
 
-      log_payload = {
+      log_payload = build_transfer_log_payload(
         message: "Project #{action} transferred to a new namespace",
-        project_id: project.id,
-        project_path: project.full_path,
-        project_namespace: project.namespace.full_path,
-        namespace_id: project.namespace_id,
+        namespace: project.project_namespace,
+        error: error,
+        gl_project_id: project.id,
+        gl_project_path: project.full_path,
+        old_project_namespace: pre_transfer_namespace&.full_path,
+        old_namespace_id: pre_transfer_namespace&.id,
         new_namespace_id: new_namespace&.id,
-        new_project_namespace: new_namespace&.full_path,
-        error_message: error_message
-      }
+        new_project_namespace: new_namespace&.full_path
+      )
 
-      if error_message.nil?
+      if error.nil?
         ::Gitlab::AppLogger.info(log_payload)
       else
         ::Gitlab::AppLogger.error(log_payload)
@@ -122,9 +134,11 @@ module Projects
       return if Gitlab::ExclusiveLease.get_uuid(lease_key)
 
       Gitlab::AppLogger.warn(
-        message: 'Cancelling stale transfer state - no active worker lease found',
-        state: project_namespace.state,
-        project_id: project.id
+        build_transfer_log_payload(
+          message: 'Cancelling stale transfer state - no active worker lease found',
+          namespace: project_namespace,
+          gl_project_id: project.id
+        )
       )
       project_namespace.cancel_transfer!
     end

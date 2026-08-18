@@ -19,7 +19,7 @@ end
 ```
 
 While it may be tempting to store serialized data in the database there are many
-problems with this. This document outlines these problems and provide an
+problems with this. This document outlines these problems and provides an
 alternative.
 
 ## Serialized Data Is Less Powerful
@@ -74,7 +74,7 @@ of documents with variable fields). In other words, it's a waste.
 
 ## Consistent Fields
 
-One argument sometimes made in favour of serialized data is having to store
+One argument sometimes made in favor of serialized data is having to store
 widely varying fields and values. Sometimes this is truly the case, and then
 perhaps it might make sense to use serialized data. However, in 99% of the cases
 the fields and types stored tend to be the same for every row. Even if there is
@@ -84,6 +84,6 @@ you don't need.
 ## The Solution
 
 The solution is to use separate columns and/or separate tables.
-This allows you to use all the features provided by your database, it
-makes it easier to manage and migrate the data, you conserve space, you can
-index the data efficiently and so forth.
+You can use all the features provided by your database. This
+makes it easier to manage and migrate the data, and you conserve space. You can also
+index the data efficiently, and so forth.

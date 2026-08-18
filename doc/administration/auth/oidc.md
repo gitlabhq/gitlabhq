@@ -481,7 +481,7 @@ Add the [provider's configuration](https://docs.gitlab.com/charts/charts/globals
 
 {{< /tabs >}}
 
-As you migrate from `azure_oauth2` to `omniauth_openid_connect` as part of upgrading to GitLab 17.0 or later, the `sub` claim value set for your organization can vary. `azure_oauth2` uses Microsoft V1 endpoint while `azure_activedirectory_v2` and `omniauth_openid_connect` both use Microsoft V2 endpoint with a common `sub` value.
+As you migrate from `azure_oauth2` to `omniauth_openid_connect` as part of upgrading to GitLab 17.0 or later, the `sub` claim value set for your organization can vary. `azure_oauth2` uses the Microsoft V1 endpoint while `azure_activedirectory_v2` and `omniauth_openid_connect` both use the Microsoft V2 endpoint with a common `sub` value.
 
 - **For users with an email address in Entra ID**, to allow falling back to email address and updating the user's identity,
   use one of the following methods:
@@ -581,7 +581,7 @@ but `LocalAccounts` authenticates against local Active Directory accounts. Befor
    ```
 
    The policy name is lowercase in the URL. For example, `B2C_1A_signup_signin`
-   policy appears as `b2c_1a_signup_sigin`.
+   policy appears as `b2c_1a_signup_signin`.
 
    Ensure you include the trailing forward slash.
 
@@ -1263,7 +1263,7 @@ response to assign users as auditors based on group membership, configure GitLab
 ### Administrator groups
 
 Your IdP must pass group information to GitLab in the OIDC response. To use this
-response to assign users as administrator based on group membership, configure GitLab to identify:
+response to assign users as administrators based on group membership, configure GitLab to identify:
 
 - Where to look for the groups in the OIDC response, using the `groups_attribute` setting.
 - Which group memberships grant the user administrator access, using the
@@ -1433,7 +1433,7 @@ This feature is an [experiment](../../policy/development_stages_support.md) and 
 To enable step-up authentication for Admin Mode:
 
 1. Edit your GitLab configuration file (`gitlab.yml` or `/etc/gitlab/gitlab.rb`) to enable
-   step-up authentication for an specific OmniAuth provider.
+   step-up authentication for a specific OmniAuth provider.
 
    ```yaml
    production: &base
@@ -1625,7 +1625,7 @@ You can also add step-up authentication providers available to all groups in you
 To add a step-up authentication provider for groups:
 
 1. Edit your GitLab configuration file (`gitlab.yml` or `/etc/gitlab/gitlab.rb`) to enable
-   step-up authentication for an specific OmniAuth provider.
+   step-up authentication for a specific OmniAuth provider.
 
    ```yaml
    production: &base

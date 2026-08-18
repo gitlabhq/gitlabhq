@@ -29,7 +29,7 @@ there can be multiple benefits, such as:
 Unfortunately, not all models fit a partitioning scheme, and there are
 significant drawbacks if implemented incorrectly. Additionally,
 **tables can only be partitioned at their creation**, making it nontrivial
-to apply partitioning to a busy database. A suite of migration tools are available
+to apply partitioning to a busy database. A suite of migration tools is available
 to enable backend developers to partition existing tables, but the
 migration process is rather heavy, taking multiple steps split across
 several releases. Due to the limitations of partitioning and the related

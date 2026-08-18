@@ -148,6 +148,16 @@ Users with the Owner role for the subgroup can now control GitLab Duo availabili
 
 ## Turn GitLab Duo on or off
 
+On GitLab.com, a GitLab Duo seat belongs to the user it is assigned to, not to the
+group that assigned it. Turning GitLab Duo off for a group prevents members from
+using GitLab Duo features with that group's projects, but it does not revoke their
+seats. Members can still use GitLab Duo with projects in other groups where it is
+turned on.
+
+For Code Suggestions in the IDE, when the repository cannot be resolved to a GitLab
+project, GitLab uses the user's default namespace for GitLab Duo instead. If GitLab
+Duo is turned off for that namespace, Code Suggestions is unavailable.
+
 ### On GitLab.com
 
 #### For a top-level group

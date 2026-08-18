@@ -275,7 +275,7 @@ RSpec.describe Gitlab::Ci::Config::External::Processor, feature_category: :pipel
               extra: {},
               context_project: project.full_path,
               context_sha: sha },
-            { type: :file,
+            { type: :project,
               location: 'templates/my-workflow.yml',
               blob: "http://localhost/#{another_project.full_path}/-/blob/#{another_project.commit.sha}/templates/my-workflow.yml",
               raw: "http://localhost/#{another_project.full_path}/-/raw/#{another_project.commit.sha}/templates/my-workflow.yml",
@@ -439,14 +439,14 @@ RSpec.describe Gitlab::Ci::Config::External::Processor, feature_category: :pipel
         perform
 
         expect(context.includes).to contain_exactly(
-          { type: :file,
+          { type: :project,
             location: 'templates/my-build.yml',
             blob: "http://localhost/#{another_project.full_path}/-/blob/#{another_project.commit.sha}/templates/my-build.yml",
             raw: "http://localhost/#{another_project.full_path}/-/raw/#{another_project.commit.sha}/templates/my-build.yml",
             extra: { project: another_project.full_path, ref: 'HEAD' },
             context_project: project.full_path,
             context_sha: sha },
-          { type: :file,
+          { type: :project,
             blob: "http://localhost/#{another_project.full_path}/-/blob/#{another_project.commit.sha}/templates/my-test.yml",
             raw: "http://localhost/#{another_project.full_path}/-/raw/#{another_project.commit.sha}/templates/my-test.yml",
             location: 'templates/my-test.yml',

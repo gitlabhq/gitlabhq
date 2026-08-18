@@ -297,28 +297,6 @@ export const exploreSnippetsPath = /*#__PURE__*/ (...args) => {
 /**
  * Generates the Rails route:
  *
- * - href: `/explore/analytics_dashboards(/*vueroute)(.:format)`
- * - Path helper: `explore_analytics_dashboards_path`
- * - URL helper: `explore_analytics_dashboards_url`
- * - controller#action: `explore/analytics_dashboards#index`
- *
- * @param {object | undefined} options
- * @returns {string} route path
- */
-export const exploreAnalyticsDashboardsPath = /*#__PURE__*/ (...args) => {
-  const _organizationExploreAnalyticsDashboardsPath = /*#__PURE__*/ __jsr.r({"organization_path":{"r":true},"vueroute":{},"format":{}}, [2,[7,"/"],[2,[6,"o"],[2,[7,"/"],[2,[3,"organization_path"],[2,[7,"/"],[2,[6,"explore"],[2,[7,"/"],[2,[6,"analytics_dashboards"],[2,[1,[2,[7,"/"],[5,[3,"vueroute"]]]],[1,[2,[8,"."],[3,"format"]]]]]]]]]]]]);
-  const _exploreAnalyticsDashboardsPath = /*#__PURE__*/ __jsr.r({"vueroute":{},"format":{}}, [2,[7,"/"],[2,[6,"explore"],[2,[7,"/"],[2,[6,"analytics_dashboards"],[2,[1,[2,[7,"/"],[5,[3,"vueroute"]]]],[1,[2,[8,"."],[3,"format"]]]]]]]]);
-
-  if (hasOrganizationScopedPaths()) {
-    return _organizationExploreAnalyticsDashboardsPath(gon.current_organization.path, ...args);
-  }
-
-  return _exploreAnalyticsDashboardsPath(...args);
-};
-
-/**
- * Generates the Rails route:
- *
  * - href: `/explore(.:format)`
  * - Path helper: `explore_root_path`
  * - URL helper: `explore_root_url`

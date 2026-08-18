@@ -6,7 +6,7 @@ title: Database required stops
 ---
 
 This page describes which database changes require GitLab upgrade stops. If you're interested
-about a comprehensive list of causes, refer to [causes of required stops](../avoiding_required_stops.md#causes-of-required-stops).
+in a comprehensive list of causes, refer to [causes of required stops](../avoiding_required_stops.md#causes-of-required-stops).
 
 [Required stops](../../update/upgrade_paths.md) will now consistently land on minor versions X.2, X.5, X.8, and X.11. This is to ensure predictable upgrade paths for users. Any changes to the database that require a stop can make use of these releases. The instructions below are used to add required upgrade stops.
 
@@ -23,8 +23,8 @@ introduce stops when the impact is widespread.
 - **Mitigation**: Schedule finalization for the first minor version after the next required stop. By waiting for the
   next required stop, we ensure the customers jumping between required stops will have an opportunity to run the
   migrations in the background ensuring their services remain operational. Otherwise, finalizing migrations in the
-  required stop would force synchronous execution during upgrade from previous required stop, causing downtime if the
-  migration runtime exceed the maintenance window.
+  required stop would force synchronous execution during the upgrade from the previous required stop, causing downtime if the
+  migration runtime exceeds the maintenance window.
 
 ### Improperly finalized background migrations
 
@@ -62,7 +62,7 @@ these scenarios may cause issues:
 
 ### Bugs in migration related tooling
 
-In a few circumstances, bugs in migration related tooling has required us to introduce stops. While we aim
+In a few circumstances, bugs in migration related tooling have required us to introduce stops. While we aim
 to prevent these in testing, sometimes they happen.
 
 - **Cause**: There have been a few different causes where we recognized these too late.
@@ -70,5 +70,5 @@ to prevent these in testing, sometimes they happen.
 
 ## Adding a required stop
 
-If you plan to introduce a change the falls into one of the above scenarios,
+If you plan to introduce a change that falls into one of the above scenarios,
 see [adding required stops](../avoiding_required_stops.md#adding-required-stops).

@@ -255,17 +255,17 @@ describe('Create work item component', () => {
       });
     });
 
-    it('emits "confirmCancel" event on Cancel button click if form is filled', async () => {
+    it('emits `confirm-cancel` event on Cancel button click if form is filled', async () => {
       await updateWorkItemTitle();
       findCancelButton().vm.$emit('click');
 
-      expect(wrapper.emitted('confirmCancel')).toEqual([[]]);
+      expect(wrapper.emitted('confirm-cancel')).toEqual([[]]);
     });
 
-    it('emits "discardDraft" event on Cancel button click if form is filled', () => {
+    it('emits `discard-draft` event on Cancel button click if form is filled', () => {
       findCancelButton().vm.$emit('click');
 
-      expect(wrapper.emitted('discardDraft')).toEqual([[]]);
+      expect(wrapper.emitted('discard-draft')).toEqual([[]]);
     });
 
     it.each`
@@ -623,7 +623,7 @@ describe('Create work item component', () => {
       expect(findSelect().attributes('value')).toBe(mockId);
     });
 
-    it('sets new work item cache and emits changeType on select', async () => {
+    it('sets new work item cache and emits `change-type` on select', async () => {
       createComponent({ props: { preselectedWorkItemType: null, relatedItem: mockRelatedItem } });
       await resolveAll();
       const mockId = 'Issue';
@@ -643,7 +643,7 @@ describe('Create work item component', () => {
         }),
       );
 
-      expect(wrapper.emitted('changeType')).toBeDefined();
+      expect(wrapper.emitted('change-type')).toBeDefined();
     });
 
     it('sets selected work item type in localStorage draft', async () => {
@@ -681,7 +681,7 @@ describe('Create work item component', () => {
       expect(findFormTitle().text()).toBe('New Epic');
     });
 
-    it('emits "changeType" with the type name when "selectedWorkItemTypeId" changes', async () => {
+    it('emits `change-type` with the type name when "selectedWorkItemTypeId" changes', async () => {
       // Initialize component without a preselected type so the dropdown is active
       createComponent({ props: { preselectedWorkItemType: null } });
       await resolveAll();
@@ -694,7 +694,21 @@ describe('Create work item component', () => {
       findSelect().vm.$emit('input', mockIssueType.id);
       await nextTick();
 
-      expect(wrapper.emitted('changeType')).toContainEqual([WORK_ITEM_TYPE_NAME_ISSUE]);
+      expect(wrapper.emitted('change-type')).toContainEqual([WORK_ITEM_TYPE_NAME_ISSUE]);
+    });
+
+    it('emits `update-type` with the type name when "selectedWorkItemTypeName" changes', async () => {
+      createComponent({ props: { preselectedWorkItemType: null } });
+      await resolveAll();
+
+      const mockIssueType = namespaceWorkItemTypes.find(
+        (type) => type.name === WORK_ITEM_TYPE_NAME_ISSUE,
+      );
+
+      findSelect().vm.$emit('input', mockIssueType.id);
+      await nextTick();
+
+      expect(wrapper.emitted('update-type')).toContainEqual([WORK_ITEM_TYPE_NAME_ISSUE]);
     });
   });
 

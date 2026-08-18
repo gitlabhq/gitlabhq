@@ -290,3 +290,19 @@ To resolve this error, enable the Secrets Manager
 for your project or group.
 
 Wait for provisioning to complete and create the secret before re-running the pipeline.
+
+### Error: `namespace does not have access to GitLab Secrets Manager`
+
+Jobs that request secrets from GitLab Secrets Manager fail with this error before a runner
+picks them up when the top-level group does not have access to GitLab Secrets Manager.
+Possible causes:
+
+- The trial has expired.
+- The group has no GitLab credits available.
+- On-demand billing is turned off.
+- The subscription grace period has expired.
+- The open beta has ended and the namespace did not opt in.
+
+To restore access, start a trial or purchase GitLab Secrets Manager for the top-level group.
+Alternatively, make sure the top-level group has GitLab credits available and on-demand
+billing enabled.

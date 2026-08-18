@@ -21,7 +21,7 @@ First, consider whether GitLab Self-Managed is the right choice for you and your
 
 Running any application in production is complex, and the same applies for GitLab. While we aim to make this as smooth as possible, there are still the general complexities based on your design. Typically, you have to manage all aspects such as hardware, operating systems, networking, storage, security, GitLab itself, and more. This includes both the initial setup of the environment and the longer term maintenance.
 
-You must have a working knowledge of running and maintaining applications in production if you decide to go down this route. If you aren't in this position, our [Professional Services](https://about.gitlab.com/services/#implementation-services) team offers implementation services. Those who want a more managed solution long term, can explore our other offerings such as [GitLab.com](../../subscriptions/manage_seats.md#gitlabcom-billing-and-usage) or [GitLab Dedicated](../../subscriptions/gitlab_dedicated/_index.md).
+You must have a working knowledge of running and maintaining applications in production if you decide to go down this route. If you aren't in this position, our [Professional Services](https://about.gitlab.com/services/#implementation-services) team offers implementation services. Those who want a more managed solution long term can explore our other offerings such as [GitLab.com](../../subscriptions/manage_seats.md#gitlabcom-billing-and-usage) or [GitLab Dedicated](../../subscriptions/gitlab_dedicated/_index.md).
 
 If you are considering using the GitLab Self-Managed approach, we encourage you to read through this page in full, specifically the following sections:
 
@@ -132,7 +132,7 @@ With standalone setups, especially single node environments, various options are
 
 High Availability ensures every component in the GitLab setup can handle failures through various mechanisms. However, to achieve this is complex, and the environments required can be sizable.
 
-For environments serving 3,000 or more users, we generally recommend using an HA strategy. At this level, outages have a bigger impact against more users. All the architectures in this range have HA built in by design for this reason.
+For environments serving 3,000 or more users, we generally recommend using an HA strategy. At this level, outages have a bigger impact on more users. All the architectures in this range have HA built in by design for this reason.
 
 #### Do you need High Availability (HA)?
 
@@ -326,7 +326,7 @@ The performance implications are largely software in nature. Additional hardware
 > If this applies to you, we strongly recommend you follow the linked documentation and reach out to your GitLab representative or our [Support team](https://about.gitlab.com/support/) for further guidance.
 
 Large monorepos come with notable cost. If you have such a repository,
-follow these guidance to ensure good performance and to keep costs in check:
+follow this guidance to ensure good performance and to keep costs in check:
 
 - [Optimize the large monorepo](../../user/project/repository/monorepos/_index.md). Using features such as
   [LFS](../../user/project/repository/monorepos/_index.md#use-git-lfs-for-large-binary-files) to not store binaries, and other approaches for reducing repository size, can
@@ -490,7 +490,7 @@ issues.
 These architectures use the official Linux packages or [Helm Charts](https://docs.gitlab.com/charts/) to
 install and configure the various components. The components are
 installed on separate machines (virtualized or Bare Metal). Machine hardware
-requirements listed in the "Configuration" columns on specific reference architecture pages. Equivalent VM standard sizes are listed
+requirements are listed in the "Configuration" columns on specific reference architecture pages. Equivalent VM standard sizes are listed
 in the GCP/AWS/Azure columns of each [available architecture](#available-reference-architectures).
 
 You can run GitLab components on Docker, including Docker Compose. Docker is well supported and provides consistent specifications across environments.

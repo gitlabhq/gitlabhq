@@ -177,8 +177,8 @@ DatabaseCleaner::ActiveRecord::Deletion.prepend(DatabaseCleanerDeletionBatchPatc
 # db/structure.sql loses it. Re-assert ALWAYS after cleaning.
 # https://gitlab.com/gitlab-org/gitlab/-/work_items/613826
 #
-# Parents only (tgparentid = 0): the ALTER cascades to partitions, and Postgres
-# rejects it on a partition's cloned child trigger.
+# Parents only (tgparentid = 0): ALTER on a partitioned parent recurses to its
+# partitions, so the cloned child triggers need no statement of their own.
 module DatabaseCleanerPreserveAlwaysTriggersPatch
   ALWAYS_TRIGGERS_SQL = <<~SQL
     SELECT n.nspname, c.relname, t.tgname FROM pg_trigger t

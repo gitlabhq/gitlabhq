@@ -14,7 +14,7 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
   let_it_be(:user) { create(:user) }
 
   let(:project) { create(:project, :repository, name: 'Shop') }
-  let(:project2) { create(:project, :repository, name: 'Another Project', path: 'another-project') }
+  let_it_be_with_reload(:project2) { create(:project, :repository, name: 'Another Project', path: 'another-project') }
   let(:project_tree_path_root_ref) { project_tree_path(project, project.repository.root_ref) }
   let(:project2_tree_path_root_ref) { project_tree_path(project2, project2.repository.root_ref) }
 
@@ -194,7 +194,7 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
   end
 
   context 'when an user does not have write access', :js do
-    before do
+    before_all do
       project2.add_reporter(user)
     end
 
@@ -328,7 +328,10 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
     end
 
     context 'when the user already had a fork of the project', :js do
-      let!(:forked_project) { fork_project(project2, user, namespace: user.namespace, repository: true) }
+      # Shared across examples to avoid redundant Gitaly fork creation.
+      # Note: git repository state accumulates (e.g. commits/branches from earlier examples)
+      # since Gitaly isn't reset between examples. Current examples tolerate this.
+      let_it_be(:forked_project) { fork_project(project2, user, namespace: user.namespace, repository: true) }
 
       it 'links to the forked project for editing', :sidekiq_might_not_need_inline do
         visit(project2_tree_path_root_ref)

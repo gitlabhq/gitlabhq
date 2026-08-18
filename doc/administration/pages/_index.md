@@ -135,7 +135,7 @@ added `gitlab.io` [in 2016](https://gitlab.com/gitlab-com/gl-infra/reliability/-
 
 ### DNS configuration
 
-GitLab Pages run on their own virtual host. In your DNS server or provider, add a
+GitLab Pages runs on its own virtual host. In your DNS server or provider, add a
 [wildcard DNS `A` record](https://en.wikipedia.org/wiki/Wildcard_DNS_record) pointing to the host
 that GitLab runs on. For example:
 
@@ -1344,7 +1344,7 @@ stored every time a Pages site is updated.
 
 ## Backup
 
-GitLab Pages are part of the [regular backup](../backup_restore/_index.md), so there is no
+GitLab Pages is part of the [regular backup](../backup_restore/_index.md), so there is no
 separate backup to configure.
 
 ## Security

@@ -78,7 +78,7 @@ The Debian community created many package repository systems before things like 
 
 ## What are GPG keys, and what are signed releases
 
-A [GPG key](https://www.gnupg.org/) is a public/private key pair for secure data transmission. Similar to an SSH key, there is a private and public key. Whoever has the _public key can encrypt data_, and whoever has the _private key can decrypt data_ that was encrypted using the public key. You can also use GPG keys to sign data. Whoever has the private key can sign data or a file, and whoever has the public key can then check the signature and trust it came from the person with the matching private key.
+A [GPG key](https://www.gnupg.org/) is a public/private key pair for secure data transmission. Similar to an SSH key, there is a private key and a public key. Whoever has the _public key can encrypt data_, and whoever has the _private key can decrypt data_ that was encrypted using the public key. You can also use GPG keys to sign data. Whoever has the private key can sign data or a file, and whoever has the public key can then check the signature and trust it came from the person with the matching private key.
 
 We use GPG to sign the release file for the Debian packages. The release file is an index of all packages within a given distribution and their respective digests.
 
@@ -93,7 +93,7 @@ When a [file upload](../../api/packages/debian.md#upload-a-package-file) occurs:
 
 Once we know which package the file belongs to, it is associated with that package, and the "incoming" package is removed if no more files remain. The "unknown" status of the file is updated to the correct file type.
 
-Next, if the file is a `.changes` format:
+Next, if the file is in `.changes` format:
 
 1. The `.changes` file is parsed and any files listed within it are updated. All uploaded non-`.changes` files are correctly associated with various distributions and packages.
 1. The `::Packages::Debian::GenerateDistributionWorker` and thus `::Packages::Debian::GenerateDistributionService` are run.

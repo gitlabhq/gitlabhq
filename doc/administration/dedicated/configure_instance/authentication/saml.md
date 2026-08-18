@@ -71,7 +71,7 @@ To verify that your SAML configuration is successful:
    and helps validate your SAML settings.
 1. Try signing in through the SAML provider to ensure the authentication flow works correctly.
 
-If troubleshooting information, see [troubleshooting SAML](../../../../user/group/saml_sso/troubleshooting.md).
+For troubleshooting information, see [troubleshooting SAML](../../../../user/group/saml_sso/troubleshooting.md).
 
 ## Add a SAML provider with a Support Request
 

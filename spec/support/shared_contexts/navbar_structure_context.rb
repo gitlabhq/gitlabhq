@@ -284,10 +284,13 @@ RSpec.shared_context '"Explore" navbar structure' do
         }
       end,
 
-      {
-        nav_item: _("Analytics dashboards"),
-        nav_sub_items: []
-      },
+      if Gitlab.ee?
+        {
+          nav_item: _("Analytics dashboards"),
+          nav_sub_items: []
+        }
+      end,
+
       {
         nav_item: _("Topics"),
         nav_sub_items: []

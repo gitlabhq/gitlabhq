@@ -57,8 +57,6 @@ export default {
     'app/assets/javascripts/vue_merge_request_widget/components/states/ready_to_merge.vue',
     'app/assets/javascripts/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue',
     'app/assets/javascripts/vue_shared/components/markdown/markdown_editor.vue',
-    'app/assets/javascripts/work_items/components/create_work_item.vue',
-    'app/assets/javascripts/work_items/components/create_work_item_cancel_confirmation_modal.vue',
     'app/assets/javascripts/work_items/components/design_management/design_preview/design_sidebar.vue',
     'app/assets/javascripts/work_items/components/design_management/design_preview/image.vue',
     'app/assets/javascripts/work_items/components/notes/work_item_add_note.vue',

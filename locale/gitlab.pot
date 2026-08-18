@@ -23135,12 +23135,6 @@ msgstr[1] ""
 msgid "ContinuousDeployment|%{environmentsCount} of %{totalEnvironmentsCount} environments"
 msgstr ""
 
-msgid "ContinuousDeployment|%{timeAgo}"
-msgstr ""
-
-msgid "ContinuousDeployment|%{timeAgo} by %{user}"
-msgstr ""
-
 msgid "ContinuousDeployment|+ Add another service"
 msgstr ""
 
@@ -23315,9 +23309,6 @@ msgstr ""
 msgid "ContinuousDeployment|Docs"
 msgstr ""
 
-msgid "ContinuousDeployment|Drift detected"
-msgstr ""
-
 msgid "ContinuousDeployment|Edit"
 msgstr ""
 
@@ -23417,9 +23408,6 @@ msgstr ""
 msgid "ContinuousDeployment|In progress"
 msgstr ""
 
-msgid "ContinuousDeployment|In sync"
-msgstr ""
-
 msgid "ContinuousDeployment|Issue tracker"
 msgstr ""
 
@@ -23487,9 +23475,6 @@ msgid "ContinuousDeployment|On-call rotation"
 msgstr ""
 
 msgid "ContinuousDeployment|Other"
-msgstr ""
-
-msgid "ContinuousDeployment|Out of sync"
 msgstr ""
 
 msgid "ContinuousDeployment|Paused"
@@ -23595,15 +23580,6 @@ msgid "ContinuousDeployment|Succeeded"
 msgstr ""
 
 msgid "ContinuousDeployment|Superseded"
-msgstr ""
-
-msgid "ContinuousDeployment|Sync"
-msgstr ""
-
-msgid "ContinuousDeployment|Sync status"
-msgstr ""
-
-msgid "ContinuousDeployment|Synced"
 msgstr ""
 
 msgid "ContinuousDeployment|Target"

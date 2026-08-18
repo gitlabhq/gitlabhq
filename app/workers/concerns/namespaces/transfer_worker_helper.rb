@@ -4,15 +4,19 @@ module Namespaces
   module TransferWorkerHelper
     extend ActiveSupport::Concern
 
+    include Namespaces::TransferLogging
+
     private
 
     def cancel_stale_transfer_state(namespace, **log_params)
       return unless namespace.transfer_in_progress?
 
       Gitlab::AppLogger.warn(
-        message: 'Cancelling stale transfer state',
-        state: namespace.state,
-        **log_params
+        build_transfer_log_payload(
+          message: 'Cancelling stale transfer state',
+          namespace: namespace,
+          **log_params
+        )
       )
       namespace.cancel_transfer!
     end

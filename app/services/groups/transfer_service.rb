@@ -2,6 +2,8 @@
 
 module Groups
   class TransferService < Groups::BaseService
+    include Namespaces::TransferLogging
+
     TransferError = Class.new(StandardError)
 
     # Shorter lock retry timing for Sidekiq context (~2 minutes worst case).
@@ -27,8 +29,8 @@ module Groups
       log_transfer(group, new_parent_group, nil)
     end
 
-    def log_group_transfer_error(group, new_parent_group, error_message)
-      log_transfer(group, new_parent_group, error_message)
+    def log_group_transfer_error(group, new_parent_group, error)
+      log_transfer(group, new_parent_group, error)
     end
 
     def schedule_async_transfer(new_parent_group)
@@ -56,49 +58,58 @@ module Groups
       @group.errors.clear
       @error = e.message
 
-      log_group_transfer_error(@group, @new_parent_group, e.message)
+      log_group_transfer_error(@group, @new_parent_group, e)
 
       ServiceResponse.error(message: e.message)
     end
 
     def execute(new_parent_group)
       @new_parent_group = new_parent_group
+      start_time = Gitlab::Metrics::System.monotonic_time
+
       ensure_allowed_transfer
       proceed_to_transfer
 
+      duration_s = elapsed_seconds(start_time)
       log_group_transfer_success(@group, @new_parent_group)
+      ::Gitlab::Metrics::Transfers.count_transfer(namespace_type: 'group', result: 'success')
+      ::Gitlab::Metrics::Transfers.observe_transfer_duration(duration_s: duration_s, namespace_type: 'group')
 
+      true
     rescue ServiceDesk::RefreshProjectKeyAddressSlugsService::AddressSlugConflictError => e
       @group.errors.clear
       @error = service_desk_address_conflict_message(e.message)
 
-      log_group_transfer_error(@group, @new_parent_group, e.message)
+      log_group_transfer_error(@group, @new_parent_group, e)
+      ::Gitlab::Metrics::Transfers.count_transfer(namespace_type: 'group', result: 'failure')
 
       false
     rescue TransferError, ActiveRecord::RecordInvalid, Gitlab::UpdatePathError => e
       @group.errors.clear
       @error = s_("TransferGroup|Transfer failed: %{error_message}") % { error_message: e.message }
 
-      log_group_transfer_error(@group, @new_parent_group, e.message)
+      log_group_transfer_error(@group, @new_parent_group, e)
+      ::Gitlab::Metrics::Transfers.count_transfer(namespace_type: 'group', result: 'failure')
 
       false
     end
 
     private
 
-    def log_transfer(group, new_namespace, error_message = nil)
-      action = error_message.nil? ? "was" : "was not"
+    def log_transfer(group, new_namespace, error = nil)
+      action = error.nil? ? "was" : "was not"
 
-      log_payload = {
+      log_payload = build_transfer_log_payload(
         message: "Group #{action} transferred to a new namespace",
+        namespace: group,
+        error: error,
         group_path: group.full_path,
         group_id: group.id,
         new_parent_group_path: new_parent_group&.full_path,
-        new_parent_group_id: new_parent_group&.id,
-        error_message: error_message
-      }
+        new_parent_group_id: new_parent_group&.id
+      )
 
-      if error_message.nil?
+      if error.nil?
         ::Gitlab::AppLogger.info(log_payload)
       else
         ::Gitlab::AppLogger.error(log_payload)
@@ -204,9 +215,11 @@ module Groups
       return if Gitlab::ExclusiveLease.get_uuid(lease_key)
 
       Gitlab::AppLogger.warn(
-        message: 'Cancelling stale transfer state - no active worker lease found',
-        state: group.state,
-        group_id: group.id
+        build_transfer_log_payload(
+          message: 'Cancelling stale transfer state - no active worker lease found',
+          namespace: group,
+          group_id: group.id
+        )
       )
       group.cancel_transfer!
     end

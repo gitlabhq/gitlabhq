@@ -24,7 +24,7 @@ To do that, sign in with an administrator account and follow these steps:
 1. In the upper-right corner, select **Admin**.
 1. Go to **Settings** > **General**.
 1. Expand the **Kroki** section.
-1. Select **Enable Kroki** checkbox.
+1. Select the **Enable Kroki** checkbox.
 1. Enter the **Kroki URL**, for example, `https://kroki.io`.
 
 To prevent browsers from sending diagram content to the external Kroki service,

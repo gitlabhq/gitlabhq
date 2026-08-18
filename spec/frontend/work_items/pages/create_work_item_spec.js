@@ -246,7 +246,7 @@ describe('Create work item page component', () => {
     it('modal is displayed when user clicks cancel on the form', async () => {
       createComponent();
 
-      findCreateWorkItem().vm.$emit('confirmCancel');
+      findCreateWorkItem().vm.$emit('confirm-cancel');
       await nextTick();
 
       expect(findCancelConfirmationModal().props('isVisible')).toBe(true);
@@ -255,12 +255,12 @@ describe('Create work item page component', () => {
     it('confirmation modal closes when user clicks "Continue Editing"', async () => {
       createComponent();
 
-      findCreateWorkItem().vm.$emit('confirmCancel');
+      findCreateWorkItem().vm.$emit('confirm-cancel');
       await nextTick();
 
       expect(findCancelConfirmationModal().props('isVisible')).toBe(true);
 
-      findCancelConfirmationModal().vm.$emit('continueEditing');
+      findCancelConfirmationModal().vm.$emit('continue-editing');
       await nextTick();
 
       expect(findCancelConfirmationModal().props('isVisible')).toBe(false);
@@ -281,12 +281,12 @@ describe('Create work item page component', () => {
 
       createComponent({ $router: { history: historyMock, go: goMock }, $route: routeMock });
 
-      findCreateWorkItem().vm.$emit('confirmCancel');
+      findCreateWorkItem().vm.$emit('confirm-cancel');
       await nextTick();
 
       expect(findCancelConfirmationModal().props('isVisible')).toBe(true);
 
-      findCancelConfirmationModal().vm.$emit('discardDraft');
+      findCancelConfirmationModal().vm.$emit('discard-draft');
       await nextTick();
 
       expect(findCancelConfirmationModal().props('isVisible')).toBe(false);
@@ -309,12 +309,12 @@ describe('Create work item page component', () => {
 
       createComponent({ $router: { history: historyMock }, $route: routeMock });
 
-      findCreateWorkItem().vm.$emit('confirmCancel');
+      findCreateWorkItem().vm.$emit('confirm-cancel');
       await nextTick();
 
       expect(findCancelConfirmationModal().props('isVisible')).toBe(true);
 
-      findCancelConfirmationModal().vm.$emit('discardDraft');
+      findCancelConfirmationModal().vm.$emit('discard-draft');
       await nextTick();
 
       expect(findCancelConfirmationModal().props('isVisible')).toBe(false);
@@ -339,12 +339,12 @@ describe('Create work item page component', () => {
         $route: routeMock,
       });
 
-      findCreateWorkItem().vm.$emit('confirmCancel');
+      findCreateWorkItem().vm.$emit('confirm-cancel');
       await nextTick();
 
       expect(findCancelConfirmationModal().props('isVisible')).toBe(true);
 
-      findCancelConfirmationModal().vm.$emit('discardDraft');
+      findCancelConfirmationModal().vm.$emit('discard-draft');
       await nextTick();
 
       expect(findCancelConfirmationModal().props('isVisible')).toBe(false);
@@ -369,12 +369,12 @@ describe('Create work item page component', () => {
         $route: routeMock,
       });
 
-      findCreateWorkItem().vm.$emit('confirmCancel');
+      findCreateWorkItem().vm.$emit('confirm-cancel');
       await nextTick();
 
       expect(findCancelConfirmationModal().props('isVisible')).toBe(true);
 
-      findCancelConfirmationModal().vm.$emit('discardDraft');
+      findCancelConfirmationModal().vm.$emit('discard-draft');
       await nextTick();
 
       expect(findCancelConfirmationModal().props('isVisible')).toBe(false);

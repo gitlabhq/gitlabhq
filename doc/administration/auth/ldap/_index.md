@@ -493,10 +493,9 @@ attribute can be either:
 
 The user's LDAP sign in is the LDAP attribute [specified as `uid`](#basic-configuration-settings).
 
-All of the following LDAP attributes are optional. If you define these attributes,
 All of the following LDAP attributes are optional. You only need to specify attributes
 that differ from the default. If you specify one, for example `username`, you do not
-need to specify the others, defaults will apply.
+need to specify the others. Defaults will apply.
 
 If you define any of them, you must do so in an `attributes` hash.
 
@@ -654,8 +653,8 @@ Example configuration that uses `displayName` for the user's name and an array o
 
 {{< /details >}}
 
-These LDAP sync configuration settings are optional, excluding `group_base` which
-required when `external_groups` is configured:
+These LDAP sync configuration settings are optional, excluding `group_base`, which
+is required when `external_groups` is configured:
 
 | Setting           | Description | Examples |
 |-------------------|-------------|----------|

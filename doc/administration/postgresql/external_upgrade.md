@@ -24,8 +24,8 @@ kinds of upgrades exist for PostgreSQL databases:
   poor database performance and high CPU use on the database server.
 
 All major cloud providers support in-place major version upgrades of database
-instances, using the `pg_upgrade` utility. However you must follow the pre- and
-post- upgrade steps to reduce the risk of performance degradation or database disruption.
+instances, using the `pg_upgrade` utility. However, you must follow the pre- and
+post-upgrade steps to reduce the risk of performance degradation or database disruption.
 
 Read carefully the major version upgrade steps of your external database platform:
 

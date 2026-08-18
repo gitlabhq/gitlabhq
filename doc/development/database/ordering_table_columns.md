@@ -19,14 +19,14 @@ the following column. Let's consider an example:
 - `user_id` (integer, 4 bytes)
 
 The first column is a 4-byte integer. The next is text of variable length. The
-`text` data type requires 1-word alignment, and on 64-bit platform, 1 word is 8
+`text` data type requires 1-word alignment, and on a 64-bit platform, 1 word is 8
 bytes. To meet the alignment requirements, four zeros are to be added right
 after the first column, so `id` occupies 4 bytes, then 4 bytes of alignment
 padding, and only next `name` is being stored. Therefore, in this case, 8 bytes
 are spent for storing a 4-byte integer.
 
 The space between rows is also subject to alignment padding. The `user_id`
-column takes only 4 bytes, and on 64-bit platform, 4 zeroes are added for
+column takes only 4 bytes, and on a 64-bit platform, 4 zeroes are added for
 alignment padding, to allow storing the next row beginning with the "clear" word.
 
 As a result, the actual size of each column would be (omitting variable length
@@ -57,8 +57,8 @@ We are using `integer` in the examples to showcase a more realistic reordering s
 
 While the [PostgreSQL documentation](https://www.postgresql.org/docs/16/datatype.html) contains plenty
 of information we list the sizes of common types here so it's easier to
-look them up. Here "word" refers to the word size, which is 4 bytes for a 32
-bits platform and 8 bytes for a 64 bits platform.
+look them up. Here "word" refers to the word size, which is 4 bytes for a 32-bit
+platform and 8 bytes for a 64-bit platform.
 
 | Type             | Size                                 | Alignment needed |
 |:-----------------|:-------------------------------------|:-----------|

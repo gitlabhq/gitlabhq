@@ -45,7 +45,7 @@ You must have GitLab 19.0 or later.
 
 ## Set up your environment
 
-Unlike GitLab Duo (non-agentic), the Agent Platform runs flows on runners and uses service accounts to create commits and pipelines. This requires configuration requirements that non-agentic features did not have.
+Unlike GitLab Duo (non-agentic), the Agent Platform runs flows on runners and uses service accounts to create commits and pipelines. This requires configuration that non-agentic features did not have.
 
 To set up your environment for the Agent Platform:
 

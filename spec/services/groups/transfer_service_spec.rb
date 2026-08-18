@@ -215,6 +215,13 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
           transfer_service.execute(nil)
           expect(transfer_service.error).to eq('Transfer failed: Group is already a root group.')
         end
+
+        it 'records a failure transfer metric' do
+          expect(::Gitlab::Metrics::Transfers).to receive(:count_transfer)
+            .with(namespace_type: 'group', result: 'failure')
+
+          transfer_service.execute(nil)
+        end
       end
 
       context 'when the user does not have the right policies' do
@@ -1189,6 +1196,15 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
         transfer_service.execute(target)
       end
 
+      it 'records a success transfer metric and duration' do
+        expect(::Gitlab::Metrics::Transfers).to receive(:count_transfer)
+          .with(namespace_type: 'group', result: 'success')
+        expect(::Gitlab::Metrics::Transfers).to receive(:observe_transfer_duration)
+          .with(duration_s: kind_of(Numeric), namespace_type: 'group')
+
+        transfer_service.execute(target)
+      end
+
       it 'creates a transferred activity event' do
         expect { transfer_service.execute(target) }.to change {
           Event.transferred_action.where(group: group, project: nil).count
@@ -1350,8 +1366,11 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
         schedule
 
         expect(Gitlab::AppLogger).to have_received(:warn).with(hash_including(
-          message: 'Cancelling stale transfer state - no active worker lease found',
-          group_id: group.id
+          'message' => 'Cancelling stale transfer state - no active worker lease found',
+          'group_id' => group.id,
+          'gl_namespace_id' => group.id,
+          'namespace_type' => 'group',
+          'correlation_id' => kind_of(String)
         ))
       end
     end

@@ -81,7 +81,7 @@ Consider the next release as "Release N.M+1".
   renamed manually in a separate migration, which can be also part of the release M.N+1.
 - Foreign key columns might still contain the old table name. For smaller tables, follow our
   [standard column rename process](avoiding_downtime_in_migrations.md#renaming-columns)
-- Avoid renaming database tables which are using with triggers.
+- Avoid renaming database tables which are used with triggers.
 - Table modifications (add or remove columns) are not allowed during the rename process. Make sure that all changes to the table happen before the rename migration is started (or in the next release).
 - As the index names might change, verify that the model does not use bulk insert
   (for example, `insert_all` and `upsert_all`) with the `unique_by: index_name` option.

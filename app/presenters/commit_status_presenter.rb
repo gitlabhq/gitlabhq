@@ -37,6 +37,7 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
     bridge_pipeline_is_child_pipeline: 'This job belongs to a child pipeline and cannot create further child pipelines',
     downstream_pipeline_creation_failed: 'The downstream pipeline could not be created',
     secrets_provider_not_found: 'The secrets provider can not be found. Check your CI/CD variables and try again.',
+    secrets_manager_access_denied: 'This job could not retrieve secrets because the namespace does not have access to GitLab Secrets Manager. To restore access, start a trial or purchase GitLab Secrets Manager for the top-level group, or make sure the group has GitLab credits available and on-demand billing enabled.',
     reached_max_descendant_pipelines_depth: 'You reached the maximum depth of child pipelines',
     reached_max_pipeline_hierarchy_size: 'The downstream pipeline tree is too large',
     project_deleted: 'The job belongs to a deleted project',
@@ -94,7 +95,8 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
   def troubleshooting_doc
     {
       environment_creation_failure: help_page_path('ci/environments/_index.md', anchor: 'error-job-would-create-an-environment-with-an-invalid-parameter'),
-      failed_outdated_deployment_job: help_page_path('ci/environments/deployment_safety.md', anchor: 'prevent-outdated-deployment-jobs')
+      failed_outdated_deployment_job: help_page_path('ci/environments/deployment_safety.md', anchor: 'prevent-outdated-deployment-jobs'),
+      secrets_manager_access_denied: help_page_path('ci/secrets/secrets_manager/_index.md', anchor: 'error-namespace-does-not-have-access-to-gitlab-secrets-manager')
     }.freeze
   end
 

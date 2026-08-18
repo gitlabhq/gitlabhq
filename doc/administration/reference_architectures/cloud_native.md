@@ -84,7 +84,7 @@ For recommended managed service providers (such as GCP Cloud SQL, AWS RDS, Azure
 
 ## Available architectures
 
-These architectures are designed around target RPS ranges representing typical production workload patterns. RPS targets serve as starting points, your specific capacity needs depend on workload composition and usage patterns. For guidance on RPS composition and when adjustments are needed, see [Understanding RPS composition](../../install/sizing.md#understanding-rps-composition-and-workload-patterns).
+These architectures are designed around target RPS ranges representing typical production workload patterns. RPS targets serve as starting points. Your specific capacity needs depend on workload composition and usage patterns. For guidance on RPS composition and when adjustments are needed, see [Understanding RPS composition](../../install/sizing.md#understanding-rps-composition-and-workload-patterns).
 
 | Size | Target RPS | Intended Workload |
 |------|------------|-------------------|

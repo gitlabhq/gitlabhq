@@ -331,13 +331,13 @@ describe('CreateWorkItemModal', () => {
     });
   });
 
-  describe('when "changeType" event is emitted', () => {
+  describe('when `change-type` event is emitted', () => {
     it('updates the selected type', async () => {
       createComponent();
 
       expect(wrapper.find('h2').text()).toBe('New Epic');
 
-      findForm().vm.$emit('changeType', WORK_ITEM_TYPE_NAME_KEY_RESULT);
+      findForm().vm.$emit('change-type', WORK_ITEM_TYPE_NAME_KEY_RESULT);
       await nextTick();
       findForm().vm.$emit('work-item-created', { webUrl: '/', workItem: {} });
 
@@ -361,7 +361,7 @@ describe('CreateWorkItemModal', () => {
       await wrapper.setProps({ visible: true });
       expect(findCreateModal().props('visible')).toBe(true);
 
-      findForm().vm.$emit('confirmCancel');
+      findForm().vm.$emit('confirm-cancel');
       await nextTick();
 
       expect(findCancelConfirmationModal().props('isVisible')).toBe(true);
@@ -374,12 +374,12 @@ describe('CreateWorkItemModal', () => {
       await wrapper.setProps({ visible: true });
       expect(findCreateModal().props('visible')).toBe(true);
 
-      findForm().vm.$emit('confirmCancel');
+      findForm().vm.$emit('confirm-cancel');
       await nextTick();
 
       expect(findCancelConfirmationModal().props('isVisible')).toBe(true);
 
-      findCancelConfirmationModal().vm.$emit('continueEditing');
+      findCancelConfirmationModal().vm.$emit('continue-editing');
       await nextTick();
 
       expect(findCancelConfirmationModal().props('isVisible')).toBe(false);

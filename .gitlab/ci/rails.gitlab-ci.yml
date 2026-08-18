@@ -289,61 +289,76 @@ rspec system pg17 praefect:
     - !reference [".rails:rules:praefect-with-db", rules]
 
 # Variants of Gitaly jobs where repositories will be created with the MVCC backend enabled.
+# These do not run automatically; set the pipeline:run-gitaly-mvcc label to trigger them all.
 rspec migration pg17 gitaly-mvcc:
   extends:
     - rspec migration pg17
     - .gitaly-mvcc
+  rules:
+    - !reference [".rails:rules:gitaly-mvcc", rules]
 
 rspec background_migration pg17 gitaly-mvcc:
   extends:
     - rspec background_migration pg17
     - .gitaly-mvcc
+  rules:
+    - !reference [".rails:rules:gitaly-mvcc", rules]
 
 rspec unit pg17 gitaly-mvcc:
   extends:
     - rspec unit pg17
     - .gitaly-mvcc
+  rules:
+    - !reference [".rails:rules:gitaly-mvcc", rules]
 
 rspec integration pg17 gitaly-mvcc:
   extends:
     - rspec integration pg17
     - .gitaly-mvcc
+  rules:
+    - !reference [".rails:rules:gitaly-mvcc", rules]
 
 rspec system pg17 gitaly-mvcc:
   extends:
     - rspec system pg17
     - .gitaly-mvcc
   rules:
-    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
-    - !reference [".rails:rules:ee-and-foss-system", rules]
+    - !reference [".rails:rules:gitaly-mvcc-system", rules]
 
 rspec-ee migration pg17 gitaly-mvcc:
   extends:
     - rspec-ee migration pg17
     - .gitaly-mvcc
+  rules:
+    - !reference [".rails:rules:gitaly-mvcc-ee", rules]
 
 rspec-ee background_migration pg17 gitaly-mvcc:
   extends:
     - rspec-ee background_migration pg17
     - .gitaly-mvcc
+  rules:
+    - !reference [".rails:rules:gitaly-mvcc-ee", rules]
 
 rspec-ee unit pg17 gitaly-mvcc:
   extends:
     - rspec-ee unit pg17
     - .gitaly-mvcc
+  rules:
+    - !reference [".rails:rules:gitaly-mvcc-ee", rules]
 
 rspec-ee integration pg17 gitaly-mvcc:
   extends:
     - rspec-ee integration pg17
     - .gitaly-mvcc
+  rules:
+    - !reference [".rails:rules:gitaly-mvcc-ee", rules]
 
 rspec-ee system pg17 gitaly-mvcc:
   extends:
     - rspec-ee system pg17
     - .gitaly-mvcc
   rules:
-    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
-    - !reference [".rails:rules:ee-only-system", rules]
+    - !reference [".rails:rules:gitaly-mvcc-ee-system", rules]
 
 rspec fast_spec_helper:
   extends:

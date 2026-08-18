@@ -191,7 +191,7 @@ To monitor queues and disable jobs:
 
 ### Geo secondaries
 
-When primary is in Maintenance Mode, secondary also automatically goes into Maintenance Mode.
+When the primary is in Maintenance Mode, the secondary also automatically goes into Maintenance Mode.
 
 It is important that you do not disable replication before enabling Maintenance Mode.
 

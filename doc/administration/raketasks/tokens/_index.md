@@ -240,7 +240,7 @@ To extend expiration dates on all tokens matching a given expiration date:
    If you enter `y`, the tool extends the expiration date
    for all the tokens with the selected expiration date.
 
-   If you enter `N`, the tool aborts the update task and return to the
+   If you enter `N`, the tool aborts the update task and returns to the
    original analyze output.
 
 ### Remove expiration dates

@@ -27,7 +27,7 @@ attached to use GitLab enterprise features. This license data is held instance-w
 is, there typically only exist a few relevant records. This information is kept in a table
 `licenses` which is very small.
 
-We consider this *read-mostly* data, because it follows above outlined characteristics:
+We consider this *read-mostly* data, because it follows the above outlined characteristics:
 
 - **Rare writes**: license data very rarely sees any writes after having inserted the license.
 - **Frequent reads**: license data is read extremely often to check if enterprise features can be used.
@@ -132,7 +132,7 @@ increased pressure. In comparison, reading data from PostgreSQL replicas can be 
 several read-only replicas. Even though a query to the database might be more expensive, the
 load is balanced across more nodes.
 
-### Read read-mostly data from replica
+### Read read-mostly data from a replica
 
 With or without caching implemented, we also must make sure to read data from database replicas if
 we can. This supports our efforts to scale reads across many database replicas and removes

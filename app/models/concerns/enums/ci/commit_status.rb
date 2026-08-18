@@ -57,7 +57,8 @@ module Enums
           job_router_failure: 1_014,
           job_token_expired: 1_015,
           id_token_burned_project_path: 1_016,
-          downstream_project_trigger_resolved_to_empty: 1_017
+          downstream_project_trigger_resolved_to_empty: 1_017,
+          secrets_manager_access_denied: 1_018
         }
       end
 

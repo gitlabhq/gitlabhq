@@ -144,28 +144,28 @@ The following group-level GraphQL APIs for audit event streaming destinations ar
 
 Deprecated mutations:
 
-- `externalAuditEventDestinationCreate` — use `groupAuditEventStreamingDestinationsCreate` instead.
-- `externalAuditEventDestinationDestroy` — use `groupAuditEventStreamingDestinationsDelete` instead.
-- `externalAuditEventDestinationUpdate` — use `groupAuditEventStreamingDestinationsUpdate` instead.
-- `googleCloudLoggingConfigurationCreate` — use `groupAuditEventStreamingDestinationsCreate` with `gcpLogging` category instead.
-- `googleCloudLoggingConfigurationDestroy` — use `groupAuditEventStreamingDestinationsDelete` instead.
-- `googleCloudLoggingConfigurationUpdate` — use `groupAuditEventStreamingDestinationsUpdate` instead.
-- `auditEventsAmazonS3ConfigurationCreate` — use `groupAuditEventStreamingDestinationsCreate` with `amazonS3` category instead.
-- `auditEventsAmazonS3ConfigurationDelete` — use `groupAuditEventStreamingDestinationsDelete` instead.
-- `auditEventsAmazonS3ConfigurationUpdate` — use `groupAuditEventStreamingDestinationsUpdate` instead.
-- `auditEventsStreamingHeadersCreate` — configure headers by using the streaming destination configuration using `groupAuditEventStreamingDestinationsUpdate`.
-- `auditEventsStreamingHeadersDestroy` — configure headers by using the streaming destination configuration using `groupAuditEventStreamingDestinationsUpdate`.
-- `auditEventsStreamingHeadersUpdate` — configure headers by using the streaming destination configuration using `groupAuditEventStreamingDestinationsUpdate`.
-- `auditEventsStreamingDestinationEventsAdd` — use `auditEventsGroupDestinationEventsAdd` instead.
-- `auditEventsStreamingDestinationEventsRemove` — use `auditEventsGroupDestinationEventsRemove` instead.
-- `auditEventsStreamingHttpNamespaceFiltersAdd` — use `auditEventsGroupDestinationNamespaceFilterCreate` instead.
-- `auditEventsStreamingHttpNamespaceFiltersDelete` — use `auditEventsGroupDestinationNamespaceFilterDelete` instead.
+- `externalAuditEventDestinationCreate` - use `groupAuditEventStreamingDestinationsCreate` instead.
+- `externalAuditEventDestinationDestroy` - use `groupAuditEventStreamingDestinationsDelete` instead.
+- `externalAuditEventDestinationUpdate` - use `groupAuditEventStreamingDestinationsUpdate` instead.
+- `googleCloudLoggingConfigurationCreate` - use `groupAuditEventStreamingDestinationsCreate` with `gcpLogging` category instead.
+- `googleCloudLoggingConfigurationDestroy` - use `groupAuditEventStreamingDestinationsDelete` instead.
+- `googleCloudLoggingConfigurationUpdate` - use `groupAuditEventStreamingDestinationsUpdate` instead.
+- `auditEventsAmazonS3ConfigurationCreate` - use `groupAuditEventStreamingDestinationsCreate` with `amazonS3` category instead.
+- `auditEventsAmazonS3ConfigurationDelete` - use `groupAuditEventStreamingDestinationsDelete` instead.
+- `auditEventsAmazonS3ConfigurationUpdate` - use `groupAuditEventStreamingDestinationsUpdate` instead.
+- `auditEventsStreamingHeadersCreate` - configure headers by using the streaming destination configuration using `groupAuditEventStreamingDestinationsUpdate`.
+- `auditEventsStreamingHeadersDestroy` - configure headers by using the streaming destination configuration using `groupAuditEventStreamingDestinationsUpdate`.
+- `auditEventsStreamingHeadersUpdate` - configure headers by using the streaming destination configuration using `groupAuditEventStreamingDestinationsUpdate`.
+- `auditEventsStreamingDestinationEventsAdd` - use `auditEventsGroupDestinationEventsAdd` instead.
+- `auditEventsStreamingDestinationEventsRemove` - use `auditEventsGroupDestinationEventsRemove` instead.
+- `auditEventsStreamingHttpNamespaceFiltersAdd` - use `auditEventsGroupDestinationNamespaceFilterCreate` instead.
+- `auditEventsStreamingHttpNamespaceFiltersDelete` - use `auditEventsGroupDestinationNamespaceFilterDelete` instead.
 
 Deprecated group fields:
 
-- `Group.externalAuditEventDestinations` — use `Group.externalAuditEventStreamingDestinations` instead.
-- `Group.googleCloudLoggingConfigurations` — use `Group.externalAuditEventStreamingDestinations` with `gcpLogging` category instead.
-- `Group.amazonS3Configurations` — use `Group.externalAuditEventStreamingDestinations` with `amazonS3` category instead.
+- `Group.externalAuditEventDestinations` - use `Group.externalAuditEventStreamingDestinations` instead.
+- `Group.googleCloudLoggingConfigurations` - use `Group.externalAuditEventStreamingDestinations` with `gcpLogging` category instead.
+- `Group.amazonS3Configurations` - use `Group.externalAuditEventStreamingDestinations` with `amazonS3` category instead.
 
 The new unified streaming destination APIs support all destination categories (HTTP, Google Cloud Logging, Amazon S3) through a single set of endpoints with a `category` parameter.
 
@@ -179,26 +179,26 @@ The following instance-level GraphQL APIs for audit event streaming destinations
 
 Deprecated mutations:
 
-- `instanceExternalAuditEventDestinationCreate` — use `instanceAuditEventStreamingDestinationsCreate` instead.
-- `instanceExternalAuditEventDestinationDestroy` — use `instanceAuditEventStreamingDestinationsDelete` instead.
-- `instanceExternalAuditEventDestinationUpdate` — use `instanceAuditEventStreamingDestinationsUpdate` instead.
-- `instanceGoogleCloudLoggingConfigurationCreate` — use `instanceAuditEventStreamingDestinationsCreate` with `gcpLogging` category instead.
-- `instanceGoogleCloudLoggingConfigurationDestroy` — use `instanceAuditEventStreamingDestinationsDelete` instead.
-- `instanceGoogleCloudLoggingConfigurationUpdate` — use `instanceAuditEventStreamingDestinationsUpdate` instead.
-- `auditEventsInstanceAmazonS3ConfigurationCreate` — use `instanceAuditEventStreamingDestinationsCreate` with `amazonS3` category instead.
-- `auditEventsInstanceAmazonS3ConfigurationDelete` — use `instanceAuditEventStreamingDestinationsDelete` instead.
-- `auditEventsInstanceAmazonS3ConfigurationUpdate` — use `instanceAuditEventStreamingDestinationsUpdate` instead.
-- `auditEventsStreamingInstanceHeadersCreate` — configure headers by using the streaming destination configuration using `instanceAuditEventStreamingDestinationsUpdate`.
-- `auditEventsStreamingInstanceHeadersDestroy` — configure headers by using the streaming destination configuration using `instanceAuditEventStreamingDestinationsUpdate`.
-- `auditEventsStreamingInstanceHeadersUpdate` — configure headers by using the streaming destination configuration using `instanceAuditEventStreamingDestinationsUpdate`.
-- `auditEventsStreamingDestinationInstanceEventsAdd` — use `auditEventsInstanceDestinationEventsAdd` instead.
-- `auditEventsStreamingDestinationInstanceEventsRemove` — use `auditEventsInstanceDestinationEventsRemove` instead.
+- `instanceExternalAuditEventDestinationCreate` - use `instanceAuditEventStreamingDestinationsCreate` instead.
+- `instanceExternalAuditEventDestinationDestroy` - use `instanceAuditEventStreamingDestinationsDelete` instead.
+- `instanceExternalAuditEventDestinationUpdate` - use `instanceAuditEventStreamingDestinationsUpdate` instead.
+- `instanceGoogleCloudLoggingConfigurationCreate` - use `instanceAuditEventStreamingDestinationsCreate` with `gcpLogging` category instead.
+- `instanceGoogleCloudLoggingConfigurationDestroy` - use `instanceAuditEventStreamingDestinationsDelete` instead.
+- `instanceGoogleCloudLoggingConfigurationUpdate` - use `instanceAuditEventStreamingDestinationsUpdate` instead.
+- `auditEventsInstanceAmazonS3ConfigurationCreate` - use `instanceAuditEventStreamingDestinationsCreate` with `amazonS3` category instead.
+- `auditEventsInstanceAmazonS3ConfigurationDelete` - use `instanceAuditEventStreamingDestinationsDelete` instead.
+- `auditEventsInstanceAmazonS3ConfigurationUpdate` - use `instanceAuditEventStreamingDestinationsUpdate` instead.
+- `auditEventsStreamingInstanceHeadersCreate` - configure headers by using the streaming destination configuration using `instanceAuditEventStreamingDestinationsUpdate`.
+- `auditEventsStreamingInstanceHeadersDestroy` - configure headers by using the streaming destination configuration using `instanceAuditEventStreamingDestinationsUpdate`.
+- `auditEventsStreamingInstanceHeadersUpdate` - configure headers by using the streaming destination configuration using `instanceAuditEventStreamingDestinationsUpdate`.
+- `auditEventsStreamingDestinationInstanceEventsAdd` - use `auditEventsInstanceDestinationEventsAdd` instead.
+- `auditEventsStreamingDestinationInstanceEventsRemove` - use `auditEventsInstanceDestinationEventsRemove` instead.
 
 Deprecated query fields:
 
-- `instanceExternalAuditEventDestinations` — use `auditEventsInstanceStreamingDestinations` instead.
-- `instanceGoogleCloudLoggingConfigurations` — use `auditEventsInstanceStreamingDestinations` with `gcpLogging` category instead.
-- `auditEventsInstanceAmazonS3Configurations` — use `auditEventsInstanceStreamingDestinations` with `amazonS3` category instead.
+- `instanceExternalAuditEventDestinations` - use `auditEventsInstanceStreamingDestinations` instead.
+- `instanceGoogleCloudLoggingConfigurations` - use `auditEventsInstanceStreamingDestinations` with `gcpLogging` category instead.
+- `auditEventsInstanceAmazonS3Configurations` - use `auditEventsInstanceStreamingDestinations` with `amazonS3` category instead.
 
 The new unified streaming destination APIs support all destination categories (HTTP, Google Cloud Logging, Amazon S3) through a single set of endpoints with a `category` parameter.
 
@@ -648,7 +648,7 @@ To continue to use `heroku/builder:22` after GitLab 19.0, set `AUTO_DEVOPS_BUILD
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/groups/gitlab-org/-/work_items/18493).
 
 The **Trending** tab in **Explore** > **Projects** and its associated GraphQL arguments are deprecated in GitLab 18.8 and will be removed in GitLab 19.0.
-In the month before the GitLab 19.0 release, the ***Trending** tab redirects to the **Active** tab sorted by stars in descending order on GitLab.com.
+In the month before the GitLab 19.0 release, the **Trending** tab redirects to the **Active** tab sorted by stars in descending order on GitLab.com.
 
 **What's being removed**
 

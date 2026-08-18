@@ -87,7 +87,7 @@ This content has been moved to a [new location](replication_and_failover.md#conf
 
 ## Backups
 
-Do not backup or restore GitLab through a PgBouncer connection: it causes a GitLab outage.
+Do not back up or restore GitLab through a PgBouncer connection: it causes a GitLab outage.
 
 [Read more about this and how to reconfigure backups](../backup_restore/backup_gitlab.md#back-up-and-restore-for-installations-using-pgbouncer).
 

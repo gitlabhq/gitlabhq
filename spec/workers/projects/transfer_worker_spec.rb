@@ -26,6 +26,15 @@ RSpec.describe Projects::TransferWorker, feature_category: :groups_and_projects 
         expect(project_namespace.reload).to be_ancestor_inherited
       end
 
+      it 'records a success transfer metric and duration' do
+        expect(::Gitlab::Metrics::Transfers).to receive(:count_transfer)
+          .with(namespace_type: 'project', result: 'success')
+        expect(::Gitlab::Metrics::Transfers).to receive(:observe_transfer_duration)
+          .with(duration_s: kind_of(Numeric), namespace_type: 'project')
+
+        perform
+      end
+
       context 'when a pending transfer-failed todo exists for the user' do
         it 'marks the transfer-failed todo as done on successful transfer' do
           transfer_failed_todo = TodoService.new.transfer_failed(project, user).first
@@ -50,8 +59,11 @@ RSpec.describe Projects::TransferWorker, feature_category: :groups_and_projects 
           expect(project.reload.namespace).to eq(new_namespace)
           expect(project_namespace.reload).to be_ancestor_inherited
           expect(Gitlab::AppLogger).to have_received(:warn).with(hash_including(
-            message: 'Cancelling stale transfer state',
-            project_id: project.id
+            'message' => 'Cancelling stale transfer state',
+            'gl_project_id' => project.id,
+            'gl_namespace_id' => project_namespace.id,
+            'namespace_type' => 'project',
+            'correlation_id' => kind_of(String)
           ))
         end
       end
@@ -74,6 +86,7 @@ RSpec.describe Projects::TransferWorker, feature_category: :groups_and_projects 
           expect_next_instance_of(::Projects::TransferService) do |service|
             expect(service).to receive(:execute).with(new_namespace).and_return(false)
           end
+
           expect { perform }.to change {
             Todo.where(
               user: user,
@@ -92,6 +105,8 @@ RSpec.describe Projects::TransferWorker, feature_category: :groups_and_projects 
           expect_next_instance_of(::Projects::TransferService) do |service|
             expect(service).to receive(:execute).and_raise(StandardError, 'something went wrong')
           end
+          expect(::Gitlab::Metrics::Transfers).to receive(:count_transfer)
+            .with(namespace_type: 'project', result: 'failure')
 
           allow(Gitlab::AppLogger).to receive(:error)
 
@@ -107,10 +122,15 @@ RSpec.describe Projects::TransferWorker, feature_category: :groups_and_projects 
           }.by(1)
           expect(project_namespace.reload).not_to be_transfer_in_progress
           expect(Gitlab::AppLogger).to have_received(:error).with(hash_including(
-            message: 'Projects::TransferWorker failed',
-            project_id: project.id,
-            new_namespace_id: new_namespace.id,
-            error: 'something went wrong'
+            'message' => 'Projects::TransferWorker failed',
+            'gl_project_id' => project.id,
+            'new_namespace_id' => new_namespace.id,
+            'error_type' => 'StandardError',
+            'error_message' => 'something went wrong',
+            'gl_namespace_id' => project_namespace.id,
+            'namespace_type' => 'project',
+            'correlation_id' => kind_of(String),
+            'duration_s' => kind_of(Numeric)
           ))
         end
       end
@@ -155,15 +175,17 @@ RSpec.describe Projects::TransferWorker, feature_category: :groups_and_projects 
           expect { perform }.to raise_error(StandardError, 'transfer failed')
 
           expect(Gitlab::AppLogger).to have_received(:error).with(hash_including(
-            message: 'Projects::TransferWorker failed to cancel transfer state',
-            project_id: project.id,
-            error: 'cancel failed'
+            'message' => 'Projects::TransferWorker failed to cancel transfer state',
+            'gl_project_id' => project.id,
+            'error_type' => 'StandardError',
+            'error_message' => 'cancel failed'
           ))
           expect(Gitlab::AppLogger).to have_received(:error).with(hash_including(
-            message: 'Projects::TransferWorker failed',
-            project_id: project.id,
-            new_namespace_id: new_namespace.id,
-            error: 'transfer failed'
+            'message' => 'Projects::TransferWorker failed',
+            'gl_project_id' => project.id,
+            'new_namespace_id' => new_namespace.id,
+            'error_type' => 'StandardError',
+            'error_message' => 'transfer failed'
           ))
         end
       end
@@ -187,9 +209,9 @@ RSpec.describe Projects::TransferWorker, feature_category: :groups_and_projects 
           }
           expect(project_namespace.reload).not_to be_transfer_in_progress
           expect(Gitlab::AppLogger).to have_received(:error).with(hash_including(
-            message: 'Projects::TransferWorker failed',
-            project_id: project.id,
-            new_namespace_id: new_namespace.id
+            'message' => 'Projects::TransferWorker failed',
+            'gl_project_id' => project.id,
+            'new_namespace_id' => new_namespace.id
           ))
         end
       end

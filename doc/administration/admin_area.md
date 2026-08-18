@@ -94,7 +94,7 @@ To delete a project:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Overview** > **Projects**.
-1. Find the project you want to edit and select **Actions** ({{< icon name="ellipsis_v" >}}) > **Delete**.
+1. Find the project you want to delete and select **Actions** ({{< icon name="ellipsis_v" >}}) > **Delete**.
 1. On the confirmation dialog, select **Yes, delete project**.
 
 ## Administering users
@@ -318,7 +318,7 @@ To delete a group:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **Overview** > **Groups**.
-1. Find the group you want to edit and select **Actions** ({{< icon name="ellipsis_v" >}}) > **Delete**.
+1. Find the group you want to delete and select **Actions** ({{< icon name="ellipsis_v" >}}) > **Delete**.
 1. On the confirmation dialog, select **Confirm**.
 
 ## Administering topics
@@ -548,7 +548,7 @@ The Sidekiq dashboard contains:
 - A tab for each [job's lifecycle status](https://github.com/sidekiq/sidekiq/wiki/Job-Lifecycle).
 - A breakdown of background job statistics.
 - A live graph of **Processed** and **Failed** jobs, with a selectable polling interval.
-- An historical graph of **Processed** and **Failed** jobs, with a selectable time span.
+- A historical graph of **Processed** and **Failed** jobs, with a selectable time span.
 - Redis statistics, including:
   - Version number
   - Uptime, measured in days

@@ -18,7 +18,7 @@ A Consul cluster consists of both
 The servers run on their own nodes and the clients run on other nodes that in
 turn communicate with the servers.
 
-GitLab Premium includes a bundled version of [Consul](https://www.consul.io/)
+GitLab Premium includes a bundled version of [Consul](https://www.consul.io/),
 a service networking solution that you can manage by using `/etc/gitlab/gitlab.rb`.
 
 ## Prerequisites
@@ -38,7 +38,7 @@ On each Consul server node:
    `EXTERNAL_URL` value when asked.
 1. Edit `/etc/gitlab/gitlab.rb`, and add the following by replacing the values
    noted in the `retry_join` section. In the example below, there are three
-   nodes, two denoted with their IP, and one with its FQDN, you can use either
+   nodes, two denoted with their IP, and one with its FQDN. You can use either
    notation:
 
    ```ruby
@@ -82,7 +82,7 @@ There are two ways you can secure the communication between the Consul nodes, us
 
 ### TLS encryption
 
-By default TLS is not enabled for the Consul cluster, the default configuration
+By default, TLS is not enabled for the Consul cluster. The default configuration
 options and their defaults are:
 
 ```ruby
@@ -495,7 +495,7 @@ To fix this:
 If you have lost enough Consul nodes in the cluster to break quorum, then the cluster
 is considered to have failed and cannot function without manual intervention.
 In that case, you can either recreate the nodes from scratch or attempt a
-recover.
+recovery.
 
 #### Recreate from scratch
 

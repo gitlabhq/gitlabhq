@@ -34,12 +34,12 @@ use integrity checks like [Subresource Integrity](https://www.w3.org/TR/SRI/) wi
 resources to confirm the authenticity of the resources that are loaded.
 
 Limit the functionality you are adding by using HTML header tags to the minimum.
-Otherwise, it could cause also stability or functionality issues if you, for example,
+Otherwise, it could also cause stability or functionality issues if you, for example,
 interact with other application code from GitLab.
 
 ## Add a custom HTML header tag
 
-You must add the externals sources to the Content Security Policy which is
+You must add the external sources to the Content Security Policy which is
 available in the `content_security_policy` option. For the following example, you
 must extend the `script_src` and `style_src`.
 

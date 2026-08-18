@@ -121,6 +121,9 @@
 .if-merge-request-labels-run-rspec-vue3: &if-merge-request-labels-run-rspec-vue3
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-rspec-vue3/'
 
+.if-merge-request-labels-run-gitaly-mvcc: &if-merge-request-labels-run-gitaly-mvcc
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-gitaly-mvcc/'
+
 .if-merge-request-labels-run-all-e2e: &if-merge-request-labels-run-all-e2e
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-all-e2e/'
 
@@ -2917,6 +2920,34 @@
   rules:
     - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
     - <<: *if-merge-request-labels-run-rspec-vue3
+
+# Gitaly MVCC backend jobs only run when the pipeline:run-gitaly-mvcc label is
+# set, since the backend is still under development. The -ee variants add the
+# if-not-ee guard so the rspec-ee jobs stay excluded in FOSS contexts.
+.rails:rules:gitaly-mvcc:
+  rules:
+    - <<: *if-fork-merge-request
+      when: never
+    - <<: *if-merge-request-labels-run-gitaly-mvcc
+
+.rails:rules:gitaly-mvcc-ee:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - !reference [".rails:rules:gitaly-mvcc", rules]
+
+.rails:rules:gitaly-mvcc-system:
+  rules:
+    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
+    - <<: *if-fork-merge-request
+      when: never
+    - <<: *if-merge-request-labels-run-gitaly-mvcc
+
+.rails:rules:gitaly-mvcc-ee-system:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - !reference [".rails:rules:gitaly-mvcc-system", rules]
 
 .rails:rules:ee-and-foss-system:
   rules:

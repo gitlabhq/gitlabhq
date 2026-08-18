@@ -575,7 +575,7 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
             extra: {},
             context_project: project.full_path,
             context_sha: project_sha },
-          { type: :file,
+          { type: :project,
             location: '.gitlab-ci.yml',
             blob: "http://localhost/#{main_project.full_path}/-/blob/#{main_project_sha}/.gitlab-ci.yml",
             raw: "http://localhost/#{main_project.full_path}/-/raw/#{main_project_sha}/.gitlab-ci.yml",

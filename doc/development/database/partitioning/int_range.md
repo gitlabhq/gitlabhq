@@ -18,7 +18,7 @@ title: Int range partitioning
 ## Description
 
 Int range partitioning is a technique for dividing a large table into smaller,
-more manageable chunks based on an integer column. Such that each partition
+more manageable chunks based on an integer column, such that each partition
 contains a range of integers.
 This can be particularly useful for tables with large numbers of rows,
 as it can significantly improve query performance, reduce storage requirements, and simplify maintenance tasks.

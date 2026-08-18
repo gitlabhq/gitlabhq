@@ -12,7 +12,7 @@ title: Troubleshooting Redis
 
 {{< /details >}}
 
-There are a lot of moving parts that must be taken care carefully
+There are a lot of moving parts that must be taken care of carefully
 in order for the HA setup to work as expected.
 
 Before proceeding with the troubleshooting below, check your firewall rules:
@@ -34,7 +34,7 @@ Start Redis troubleshooting with a basic Redis activity check:
 1. Go to your GitLab UI and browse to a handful of pages. Any page works, such as
    group or project overviews, issues, or files in repositories.
 1. Check the `stat` output again and verify that the values for `keys`, `clients`,
-   `requests`, and `connections` increases as you browse. If the numbers go up,
+   `requests`, and `connections` increase as you browse. If the numbers go up,
    basic Redis functionality is working and GitLab can connect to it.
 
 ## Troubleshooting Redis replication
@@ -62,7 +62,7 @@ repl_backlog_histlen:1048576
 ```
 
 When it's a `replica`, you see details of the primary connection and if
-its `up` or `down`:
+it's `up` or `down`:
 
 ```plaintext
 # Replication
@@ -95,7 +95,7 @@ To reduce CPU usage on Redis caused by Sidekiq you can both:
 - If you are using GitLab 16.6 and earlier, increase the [`SIDEKIQ_SEMI_RELIABLE_FETCH_TIMEOUT` environment variable](../environment_variables.md) to improve CPU usage on Redis.
   On GitLab 16.7 and later, the [default value is 5](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139583), which should be sufficient.
 
-The `SIDEKIQ_SEMI_RELIABLE_FETCH_TIMEOUT` option reduces the overhead that tearing down and connecting causes, but increase the shutdown delay of Sidekiq.
+The `SIDEKIQ_SEMI_RELIABLE_FETCH_TIMEOUT` option reduces the overhead that tearing down and connecting causes, but increases the shutdown delay of Sidekiq.
 
 ## Troubleshooting Sentinel
 

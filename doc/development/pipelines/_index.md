@@ -324,6 +324,10 @@ If you want to force all the RSpec jobs to run regardless of your changes, you c
 > [!warning]
 > Forcing all jobs on docs only related MRs would not have the prerequisite jobs and would lead to errors
 
+The `gitaly-mvcc` RSpec jobs run the suite against a Gitaly server that uses the MVCC storage backend.
+They do not run automatically.
+To run them all, add the `pipeline:run-gitaly-mvcc` label to the merge request and start a new pipeline.
+
 ### End-to-end jobs
 
 For more information, see [End-to-end test pipelines](../testing_guide/end_to_end/test_pipelines.md).

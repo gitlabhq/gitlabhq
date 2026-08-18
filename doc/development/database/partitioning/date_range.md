@@ -200,7 +200,7 @@ default grace period.
 
 The first step is to add a migration to create the partitioned copy of
 the original table. This migration creates the appropriate
-partitions based on the data in the original table, and install a
+partitions based on the data in the original table, and installs a
 trigger that syncs writes from the original table into the
 partitioned copy.
 
@@ -295,7 +295,7 @@ and require unique names. Create a subclass of `BackfillPartitionedTable` in
 class BackfillPartitionedAuditEvents < BackfillPartitionedTable; end
 ```
 
-This step [queues a batched background migration](../batched_background_migrations.md#enqueue-a-batched-background-migration) internally with BATCH_SIZE and SUB_BATCH_SIZE as `50,000` and `2,500`. Refer [Batched Background migrations guide](../batched_background_migrations.md) for more details.
+This step [queues a batched background migration](../batched_background_migrations.md#enqueue-a-batched-background-migration) internally with BATCH_SIZE and SUB_BATCH_SIZE as `50,000` and `2,500`. Refer to [Batched Background migrations guide](../batched_background_migrations.md) for more details.
 
 ### Step 3: Post-backfill cleanup (Release after a required stop post Step 2)
 

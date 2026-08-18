@@ -22,7 +22,7 @@ application.
 
 Let's first consider entities with no inherent time-related bias for their data.
 
-A record for a user or a project may be equally important and frequently accessed, irrelevant to when
+A record for a user or a project may be equally important and frequently accessed, regardless of when
 it was created. We cannot predict by using a user's `id` or `created_at` how often the related
 record is accessed or updated.
 
@@ -59,7 +59,7 @@ inflict a considerable performance penalty to queries.
 
 In contrast, large datasets over about 50 million records, or 100 GB in size, add a significant
 overhead to constantly accessing a really small subset of the data. In those cases, we would want to
-use the time-decay effect in our advantage and reduce the actively accessed dataset.
+use the time-decay effect to our advantage and reduce the actively accessed dataset.
 
 ### Data access methods
 
@@ -225,7 +225,7 @@ We might consider a number of strategies for moving data outside of the database
    drops this data from the database, and then loads the CSV into a different data store.
 1. Loading the data in the background by using the API provided by the data store.
 
-This may be a not viable solution for large datasets; as long as bulk uploading using files is an
+This may not be a viable solution for large datasets. As long as bulk uploading using files is an
 option, it should outperform API calls.
 
 ## Use cases
@@ -253,7 +253,7 @@ The important characteristics of `web_hook_logs` are the following:
 Additionally, we were at the time trying to prune the data by using a background worker
 (`PruneWebHookLogsWorker`), which could not [keep up with the rate of inserts](https://gitlab.com/gitlab-org/gitlab/-/issues/256088).
 
-As a result, on March 2021 there were still not deleted records since July 2020 and the table was
+As a result, in March 2021 there were still not deleted records since July 2020 and the table was
 increasing in size by more than 2 million records per day instead of staying at a more or less
 stable size.
 
@@ -269,8 +269,8 @@ The process required follows:
    Using the `created_at` column is straightforward in this case: it is a natural
    partitioning key when a retention policy exists and there were no conflicting access patterns.
 1. After we decide on the partitioning key, we can create the partitions and backfill
-   them (copy data from the existing table). We can't just partition an existing table;
-   we have to create a new partitioned table.
+   them (copy data from the existing table). We can't just partition an existing table.
+   We have to create a new partitioned table.
 
    So, we have to create the partitioned table and all the related partitions, start copying everything
    over, and also add sync triggers so that any new data or updates/deletes to existing data can be
@@ -284,13 +284,13 @@ The process required follows:
 
    [MR with all the necessary details](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57580)
 1. Add any remaining foreign keys and secondary indexes to the partitioned table. This brings
-   its schema on par with the original non partitioned table before we can swap them in the next milestone.
+   its schema on par with the original non-partitioned table before we can swap them in the next milestone.
 
    We are not adding them at the beginning as they are adding overhead to each insert and they
    would slow down the initial backfilling of the table (in this case for more than half a billion
    records, which can add up significantly). So we create a lightweight, vanilla version of the
    table, copy all the data and then add any remaining indexes and foreign keys.
-1. Swap the base table with partitioned copy: this is when the partitioned table
+1. Swap the base table with the partitioned copy: this is when the partitioned table
    starts actively being used by the application.
 
    Dropping the original table is a destructive operation, and we want to make sure that we had no
@@ -306,7 +306,7 @@ The process required follows:
    pruning strategy by dropping past partitions.
 
    In this case, the worker makes sure that only 4 partitions are always active (as the
-   retention policy is 90 days) and drop any partitions older than four months. We have to keep 4
+   retention policy is 90 days) and drops any partitions older than four months. We have to keep 4
    months of partitions while the current month is still active, as going 90 days back takes you to
    the fourth oldest partition.
 
@@ -329,7 +329,7 @@ In addition, `audit_events` is a write-heavy table with very few reads (queries)
 very simple schema, not connected with the rest of the database (no incoming or outgoing FK
 constraints) and with only two indexes defined over it.
 
-The later was important at the time as not having Foreign Key constraints meant that we could
+The latter was important at the time as not having Foreign Key constraints meant that we could
 partition it while we were still in PostgreSQL 11. *This is not a concern any more now that we have
 moved to PostgreSQL 12 as a required default, as can be seen for the `web_hook_logs` use case above.*
 

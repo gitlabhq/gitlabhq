@@ -7,7 +7,12 @@ module API
         class Result
           class Include < Grape::Entity
             expose :type, as: :type,
-              documentation: { type: 'String', example: 'local' }
+              documentation: { type: 'String', example: 'local' } do |include_data|
+                # The internal `:project` include type is exposed as `file` to keep the REST API stable.
+                # See https://gitlab.com/gitlab-org/gitlab/-/issues/600839.
+                type = include_data[:type]
+                type == :project ? 'file' : type.to_s
+              end
             expose :location, as: :location,
               documentation: { type: 'String', example: '.gitlab/ci/build-images.gitlab-ci.yml' }
             expose :blob, as: :blob,

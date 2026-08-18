@@ -543,7 +543,7 @@ group :development do
 
   gem 'gdk-toogle', '~> 1.0', require: 'toogle', feature_category: :tooling
 
-  gem 'grpc-tools', '~> 1.81.0', feature_category: :system_access
+  gem 'grpc-tools', '~> 1.83.0', feature_category: :system_access
 
   # Used by
   # * `lib/tasks/gitlab/security/update_banned_ssh_keys.rake`

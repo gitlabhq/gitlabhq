@@ -26,8 +26,8 @@ Git abuse rate limiting does not apply to instance administrators, [deploy token
 1. In the left sidebar, select **Settings** > **Reporting**.
 1. Expand **Git abuse rate limit**.
 1. Update the Git abuse rate limit settings:
-   1. Enter a number in the **Number of repositories** field, greater than or equal to `0` and less than or equal to `10000`. This number specifies the maximum amount of unique repositories a user can download in the specified time period before they're banned. When set to `0`, Git abuse rate limiting is disabled.
-   1. Enter a number in the **Reporting time period (seconds)** field, greater than or equal to `0` and less than or equal to `864000` (10 days). This number specifies the time in seconds a user can download the maximum amount of repositories before they're banned. When set to `0`, Git abuse rate limiting is disabled.
+   1. Enter a number in the **Number of repositories** field, greater than or equal to `0` and less than or equal to `10000`. This number specifies the maximum number of unique repositories a user can download in the specified time period before they're banned. When set to `0`, Git abuse rate limiting is disabled.
+   1. Enter a number in the **Reporting time period (seconds)** field, greater than or equal to `0` and less than or equal to `864000` (10 days). This number specifies the time in seconds a user can download the maximum number of repositories before they're banned. When set to `0`, Git abuse rate limiting is disabled.
    1. Optional. Exclude up to `100` users by adding them to the **Excluded users** field. Excluded users are not automatically banned.
    1. Add up to `100` users to the **Send notifications to** field. You must select at least one user. All application administrators are selected by default.
    1. Optional. Turn on the **Automatically ban users from this namespace when they exceed the specified limits** toggle to enable automatic banning.

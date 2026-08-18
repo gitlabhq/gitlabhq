@@ -130,7 +130,7 @@ The `gitlab:check` Rake task runs the following Rake tasks:
 - `gitlab:app:check`
 - `gitlab:geo:check` (only if you're running [Geo](../geo/replication/troubleshooting/common.md#health-check-rake-task))
 
-It checks that each component was set up according to the installation guide and suggest fixes
+It checks that each component was set up according to the installation guide and suggests fixes
 for issues found. This command must be run from your application server and doesn't work correctly on
 component servers like [Gitaly](../gitaly/configure_gitaly.md#run-gitaly-on-its-own-server).
 
@@ -164,7 +164,7 @@ To run `gitlab:check`, run:
   > [!note]
   > Due to the specific architecture of Helm-based GitLab installations, the output may contain
   > false negatives for connectivity verification to `gitlab-shell`, Sidekiq, and `systemd`-related files.
-  > These reported failures are expected and do not indicate actual issues, disregard them when reviewing diagnostic results.
+  > These reported failures are expected and do not indicate actual issues. Disregard them when reviewing diagnostic results.
 
 Use `SANITIZE=true` for `gitlab:check` if you want to omit project names from the output.
 

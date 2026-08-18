@@ -28,7 +28,7 @@ which executes several times per day. The model that uses sliding list partition
 
 [PartitionManager](https://gitlab.com/gitlab-org/gitlab/blob/b3f6a67dbcd01509128f5c21a8f6d4f69b7776f5/lib/gitlab/database/partitioning/partition_manager.rb#L40)
 uses `next_partition_if` and `detach_partition_if` to determine `missing_partitions` and `extra_partitions` respectively.
-Define blocks for them, so that it can be dynamically decided when to add new partition and drop the old ones.
+Define blocks for them, so that it can be dynamically decided when to add a new partition and drop the old ones.
 
 > [!note]
 > Make sure proper indexes are used for filter conditions used within the partitioning blocks.

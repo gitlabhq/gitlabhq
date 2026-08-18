@@ -24,6 +24,15 @@ RSpec.describe Namespaces::Groups::TransferWorker, feature_category: :groups_and
         expect(group.reload).to have_attributes(parent: new_parent_group, state: 'ancestor_inherited')
       end
 
+      it 'records a success transfer metric and duration' do
+        expect(::Gitlab::Metrics::Transfers).to receive(:count_transfer)
+          .with(namespace_type: 'group', result: 'success')
+        expect(::Gitlab::Metrics::Transfers).to receive(:observe_transfer_duration)
+          .with(duration_s: kind_of(Numeric), namespace_type: 'group')
+
+        perform
+      end
+
       context 'when a pending transfer-failed todo exists for the user' do
         it 'marks the transfer-failed todo as done on successful transfer' do
           transfer_failed_todo = TodoService.new.transfer_failed(group, user).first
@@ -47,8 +56,11 @@ RSpec.describe Namespaces::Groups::TransferWorker, feature_category: :groups_and
 
           expect(group.reload).to have_attributes(parent: new_parent_group, state: 'ancestor_inherited')
           expect(Gitlab::AppLogger).to have_received(:warn).with(hash_including(
-            message: 'Cancelling stale transfer state',
-            group_id: group.id
+            'message' => 'Cancelling stale transfer state',
+            'group_id' => group.id,
+            'gl_namespace_id' => group.id,
+            'namespace_type' => 'group',
+            'correlation_id' => kind_of(String)
           ))
         end
       end
@@ -70,6 +82,7 @@ RSpec.describe Namespaces::Groups::TransferWorker, feature_category: :groups_and
           expect_next_instance_of(::Groups::TransferService, group, user) do |service|
             expect(service).to receive(:execute).with(new_parent_group).and_return(false)
           end
+
           expect { perform }.to change {
             Todo.where(
               user: user,
@@ -88,6 +101,8 @@ RSpec.describe Namespaces::Groups::TransferWorker, feature_category: :groups_and
           expect_next_instance_of(::Groups::TransferService, group, user) do |service|
             expect(service).to receive(:execute).and_raise(StandardError, 'something went wrong')
           end
+          expect(::Gitlab::Metrics::Transfers).to receive(:count_transfer)
+            .with(namespace_type: 'group', result: 'failure')
 
           allow(Gitlab::AppLogger).to receive(:error)
 
@@ -104,10 +119,15 @@ RSpec.describe Namespaces::Groups::TransferWorker, feature_category: :groups_and
 
           expect(group.reload.state).to eq('ancestor_inherited')
           expect(Gitlab::AppLogger).to have_received(:error).with(hash_including(
-            message: 'Namespaces::Groups::TransferWorker failed',
-            group_id: group.id,
-            new_parent_group_id: new_parent_group.id,
-            error: 'something went wrong'
+            'message' => 'Namespaces::Groups::TransferWorker failed',
+            'group_id' => group.id,
+            'new_parent_group_id' => new_parent_group.id,
+            'error_type' => 'StandardError',
+            'error_message' => 'something went wrong',
+            'gl_namespace_id' => group.id,
+            'namespace_type' => 'group',
+            'correlation_id' => kind_of(String),
+            'duration_s' => kind_of(Numeric)
           ))
         end
       end
@@ -152,12 +172,14 @@ RSpec.describe Namespaces::Groups::TransferWorker, feature_category: :groups_and
           expect { perform }.to raise_error(StandardError, 'transfer failed')
 
           expect(Gitlab::AppLogger).to have_received(:error).with(hash_including(
-            message: 'Namespaces::Groups::TransferWorker failed to cancel transfer state',
-            error: 'cancel failed'
+            'message' => 'Namespaces::Groups::TransferWorker failed to cancel transfer state',
+            'error_type' => 'StandardError',
+            'error_message' => 'cancel failed'
           ))
           expect(Gitlab::AppLogger).to have_received(:error).with(hash_including(
-            message: 'Namespaces::Groups::TransferWorker failed',
-            error: 'transfer failed'
+            'message' => 'Namespaces::Groups::TransferWorker failed',
+            'error_type' => 'StandardError',
+            'error_message' => 'transfer failed'
           ))
         end
       end
@@ -179,9 +201,9 @@ RSpec.describe Namespaces::Groups::TransferWorker, feature_category: :groups_and
           }
 
           expect(Gitlab::AppLogger).to have_received(:error).with(hash_including(
-            message: 'Namespaces::Groups::TransferWorker failed',
-            group_id: group.id,
-            new_parent_group_id: new_parent_group.id
+            'message' => 'Namespaces::Groups::TransferWorker failed',
+            'group_id' => group.id,
+            'new_parent_group_id' => new_parent_group.id
           ))
 
           expect(group.reload.state).to eq('creation_in_progress')
@@ -253,10 +275,11 @@ RSpec.describe Namespaces::Groups::TransferWorker, feature_category: :groups_and
           expect { perform }.to raise_error(StandardError, 'transfer failed')
 
           expect(Gitlab::AppLogger).to have_received(:error).with(hash_including(
-            message: 'Namespaces::Groups::TransferWorker failed',
-            group_id: group.id,
-            new_parent_group_id: nil,
-            error: 'transfer failed'
+            'message' => 'Namespaces::Groups::TransferWorker failed',
+            'group_id' => group.id,
+            'new_parent_group_id' => nil,
+            'error_type' => 'StandardError',
+            'error_message' => 'transfer failed'
           ))
         end
       end
