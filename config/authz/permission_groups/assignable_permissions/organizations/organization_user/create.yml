@@ -1,0 +1,9 @@
+---
+name: create_organization_user
+description: Grants the ability to create organization users
+boundaries:
+  - instance
+available_for:
+  - granular_access_token
+permissions:
+  - create_organization_user

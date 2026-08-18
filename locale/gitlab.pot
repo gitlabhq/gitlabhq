@@ -11790,7 +11790,10 @@ msgid_plural "Are you sure you want to import %d repositories?"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Are you sure you want to lock %{name}?"
+msgid "Are you sure you want to lock the \"%{name}\" directory?"
+msgstr ""
+
+msgid "Are you sure you want to lock the \"%{name}\" file?"
 msgstr ""
 
 msgid "Are you sure you want to lock this directory?"
@@ -11868,10 +11871,13 @@ msgstr ""
 msgid "Are you sure you want to stop this environment?"
 msgstr ""
 
-msgid "Are you sure you want to unlock %{name}?"
+msgid "Are you sure you want to unlock %{path_lock_path}?"
 msgstr ""
 
-msgid "Are you sure you want to unlock %{path_lock_path}?"
+msgid "Are you sure you want to unlock the \"%{name}\" directory?"
+msgstr ""
+
+msgid "Are you sure you want to unlock the \"%{name}\" file?"
 msgstr ""
 
 msgid "Are you sure you want to unlock this directory?"
@@ -28995,12 +29001,6 @@ msgstr ""
 msgid "Directories cannot be uploaded. Please upload a single file instead."
 msgstr ""
 
-msgid "Directory locked"
-msgstr ""
-
-msgid "Directory locked by %{name}"
-msgstr ""
-
 msgid "Directory name"
 msgstr ""
 
@@ -34423,6 +34423,9 @@ msgid "Failed to create resources"
 msgstr ""
 
 msgid "Failed to create security category"
+msgstr ""
+
+msgid "Failed to create the organization user"
 msgstr ""
 
 msgid "Failed to create wiki"
@@ -80437,6 +80440,9 @@ msgstr ""
 msgid "The page could not be displayed because it timed out."
 msgstr ""
 
+msgid "The parent directory \"%{path}\" is locked. To unlock this directory, unlock \"%{path}\"."
+msgstr ""
+
 msgid "The parent group is archived. This group and its data are %{strong_open}read-only%{strong_close}."
 msgstr ""
 
@@ -80639,6 +80645,15 @@ msgid "The update action will time out after %{number_of_minutes} minutes. For b
 msgstr ""
 
 msgid "The uploaded file was invalid. Supported file extensions are %{extensions}."
+msgstr ""
+
+msgid "The user cannot be added because their home organization is isolated"
+msgstr ""
+
+msgid "The user could not be found"
+msgstr ""
+
+msgid "The user is already a member of the organization"
 msgstr ""
 
 msgid "The user is being deleted."
@@ -85203,7 +85218,7 @@ msgstr ""
 msgid "UsageQuota|Additional compute minutes"
 msgstr ""
 
-msgid "UsageQuota|An error occured while loading the storage usage details. Please refresh the page to try again."
+msgid "UsageQuota|An error occurred while loading the storage usage details. Please refresh the page to try again."
 msgstr ""
 
 msgid "UsageQuota|Any additional purchased storage will be displayed here."
@@ -87141,6 +87156,9 @@ msgid "View job currently using resource"
 msgstr ""
 
 msgid "View labels"
+msgstr ""
+
+msgid "View lock"
 msgstr ""
 
 msgid "View logs"
@@ -92918,6 +92936,9 @@ msgstr ""
 msgid "You cannot invite a new member to %{strong_start}%{project_name}%{strong_end}. User invitations are disabled by the %{actor}."
 msgstr ""
 
+msgid "You cannot lock this directory because \"%{path}\" inside it is locked."
+msgstr ""
+
 msgid "You cannot mirror a repository to itself."
 msgstr ""
 
@@ -93126,6 +93147,9 @@ msgid "You have insufficient permissions to create an on-call schedule for this 
 msgstr ""
 
 msgid "You have insufficient permissions to create an organization from this group."
+msgstr ""
+
+msgid "You have insufficient permissions to create an organization user"
 msgstr ""
 
 msgid "You have insufficient permissions to create organizations"

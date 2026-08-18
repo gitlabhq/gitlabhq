@@ -115,6 +115,6 @@ export default {
     show-friendly-text
     sync-filter-and-sort
     terms-as-tokens
-    @onFilter="$emit('filter', $event)"
+    @on-filter="$emit('filter', $event)"
   />
 </template>

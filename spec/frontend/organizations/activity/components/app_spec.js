@@ -129,7 +129,7 @@ describe('OrganizationsActivityApp', () => {
     });
 
     it('when filter is updated with empty value, calls API with event_filter: all', () => {
-      findFilteredSearchBar().vm.$emit('onFilter', []);
+      findFilteredSearchBar().vm.$emit('on-filter', []);
 
       expect(axios.get).toHaveBeenCalledWith(defaultProps.organizationActivityPath, {
         params: {
@@ -141,7 +141,7 @@ describe('OrganizationsActivityApp', () => {
     });
 
     it(`when filter is updated with ${MOCK_SELECTED_CONTRIBUTION_TYPE.type}: ${MOCK_CONTRIBUTION_TYPE_VALUE.data}, calls API with event_filter: ${MOCK_CONTRIBUTION_TYPE_VALUE.data}`, () => {
-      findFilteredSearchBar().vm.$emit('onFilter', [MOCK_SELECTED_CONTRIBUTION_TYPE]);
+      findFilteredSearchBar().vm.$emit('on-filter', [MOCK_SELECTED_CONTRIBUTION_TYPE]);
 
       expect(axios.get).toHaveBeenCalledWith(defaultProps.organizationActivityPath, {
         params: {

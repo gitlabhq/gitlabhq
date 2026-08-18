@@ -121,8 +121,6 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
 
   context 'when creating more than one child in a row' do
     before do
-      stub_feature_flags(accessible_disabled_button: true)
-
       sign_in(user)
 
       visit project_issue_path(project, issue)

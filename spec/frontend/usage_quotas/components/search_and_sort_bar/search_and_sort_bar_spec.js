@@ -22,18 +22,18 @@ describe('SearchAndSortBar', () => {
     });
   };
 
-  describe('onFilter', () => {
+  describe('on-filter', () => {
     const onFilter = jest.fn();
 
     beforeEach(() => {
       createComponent({
-        listeners: { onFilter },
+        listeners: { 'on-filter': onFilter },
       });
     });
 
     it('parses and propagates emitted search event', () => {
       const filteredSearchBar = findFilteredSearchBar();
-      filteredSearchBar.vm.$emit('onFilter', [
+      filteredSearchBar.vm.$emit('on-filter', [
         {
           id: 'token-1',
           type: FILTERED_SEARCH_TERM,
@@ -62,19 +62,19 @@ describe('SearchAndSortBar', () => {
     });
   });
 
-  describe('onSort', () => {
+  describe('on-sort', () => {
     const onSort = jest.fn();
 
     beforeEach(() => {
       createComponent({
-        listeners: { onSort },
+        listeners: { 'on-sort': onSort },
       });
     });
 
     it('propagates emitted sorting value', () => {
       const SORTING_VALUE = 'name_desc';
       const filteredSearchBar = findFilteredSearchBar();
-      filteredSearchBar.vm.$emit('onSort', SORTING_VALUE);
+      filteredSearchBar.vm.$emit('on-sort', SORTING_VALUE);
 
       expect(onSort).toHaveBeenCalledTimes(1);
       expect(onSort).toHaveBeenCalledWith(SORTING_VALUE);

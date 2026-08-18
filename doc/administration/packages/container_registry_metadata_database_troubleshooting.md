@@ -290,4 +290,4 @@ For GitLab 18.8 and 18.9, you can disable the lockfile checks by setting
 the `REGISTRY_FF_ENFORCE_LOCKFILES` container registry feature flag to `false`.
 While this disables the checks, this error is meant to ensure the integrity of
 your registry data and it is preferable to confirm which metadata storage you
-are using. `REGISTRY_FF_ENFORCE_LOCKFILES` feature flag removed in GitLab 18.10. For more information, see [Container registry feature flags](container_registry.md#container-registry-feature-flags).
+are using. The `REGISTRY_FF_ENFORCE_LOCKFILES` feature flag was removed in GitLab 18.10. For more information, see [Container registry feature flags](container_registry.md#container-registry-feature-flags).

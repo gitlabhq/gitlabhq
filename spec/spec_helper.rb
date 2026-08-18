@@ -345,12 +345,6 @@ RSpec.configure do |config|
       # This feature is wip and should not be enabled in tests by default
       stub_feature_flags(iam_svc_login: false)
 
-      # accessible_disabled_button switches GlButton from the native `disabled` attribute
-      # to `aria-disabled`, which breaks Capybara `disabled:` button matchers suite-wide.
-      # Default off in tests during rollout; see
-      # https://gitlab.com/gitlab-org/gitlab/-/work_items/600158
-      stub_feature_flags(accessible_disabled_button: false)
-
       # This middleware fires use_pat for every PAT-authenticated request
       # enabling it by default breaks existing specs that use strict receive(:track_event) expectations
       stub_feature_flags(track_api_request_from_personal_access_token: false)

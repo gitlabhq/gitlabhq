@@ -48,7 +48,7 @@ Some Git operations can consume excessive resources up to the point of exhaustio
 - Unexpectedly high traffic.
 - Operations running against large repositories that don't follow best practices.
 
-The activity on specific repositories that consume these resources are known as "noisy neighbors", and can result in
+The activity on specific repositories that consume these resources is known as "noisy neighbors", and can result in
 degraded Git performance for other repositories hosted on the Gitaly server.
 
 As a hard protection, Gitaly can use cgroups to tell the kernel to terminate these operations before they hog all
@@ -184,7 +184,7 @@ To configure repository cgroups in Gitaly, use the following settings for `gital
   0 implies no limit. This value cannot exceed that of the top level `memory_bytes`.
 - `repositories.cpu_shares` is the CPU limit that is imposed on all Git processes contained in a repository cgroup.
   0 implies no limit. The maximum is 1024 shares, which represents 100% of CPU.
-  This value cannot exceed that of the top level`cpu_shares`.
+  This value cannot exceed that of the top level `cpu_shares`.
 - `repositories.cpu_quota_us` is the [`cfs_quota_us`](https://docs.kernel.org/scheduler/sched-bwc.html#management)
   that is imposed on all Git processes contained in a repository cgroup. A Git
   process can't use more than the given quota. We set

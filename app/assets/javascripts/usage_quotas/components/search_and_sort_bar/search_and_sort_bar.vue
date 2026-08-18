@@ -30,7 +30,7 @@ export default {
       required: false,
     },
   },
-  emits: ['onFilter', 'onSort'],
+  emits: ['on-filter', 'on-sort'],
   methods: {
     onFilter(searchTerms) {
       const searchQuery = searchTerms.reduce((terms, searchTerm) => {
@@ -41,10 +41,10 @@ export default {
         return `${terms} ${searchTerm.value.data}`;
       }, '');
 
-      this.$emit('onFilter', searchQuery.trim() || null);
+      this.$emit('on-filter', searchQuery.trim() || null);
     },
     onSort(value) {
-      this.$emit('onSort', value);
+      this.$emit('on-sort', value);
     },
   },
 };
@@ -58,7 +58,7 @@ export default {
     :sort-options="sortOptions"
     :initial-sort-by="initialSortBy"
     class="gl-grow"
-    @onFilter="onFilter"
-    @onSort="onSort"
+    @on-filter="onFilter"
+    @on-sort="onSort"
   />
 </template>

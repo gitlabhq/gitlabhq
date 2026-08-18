@@ -285,12 +285,12 @@ describe('EmailCode', () => {
       createComponent();
 
       expect(findVerifyButton().props('loading')).toBe(true);
-      expect(findVerifyButton().attributes('disabled')).toBeDefined();
+      expect(findVerifyButton().props('disabled')).toBe(true);
 
       await waitForPromises();
 
       expect(findVerifyButton().props('loading')).toBe(false);
-      expect(findVerifyButton().attributes('disabled')).toBeUndefined();
+      expect(findVerifyButton().props('disabled')).toBe(false);
     });
 
     it('holds a verify submitted mid-flight until the auto-send has landed', async () => {

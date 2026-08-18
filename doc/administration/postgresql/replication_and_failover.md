@@ -90,7 +90,7 @@ to avoid the network becoming a single point of failure.
 Each database node runs four services:
 
 - `PostgreSQL`: The database itself.
-- `Patroni`: Communicates with other Patroni services in the cluster and handles failover when issues with the leader server occurs. The failover procedure consists of:
+- `Patroni`: Communicates with other Patroni services in the cluster and handles failover when issues with the leader server occur. The failover procedure consists of:
   - Selecting a new leader for the cluster.
   - Promoting the new node to leader.
   - Instructing remaining servers to follow the new leader node.
@@ -99,7 +99,7 @@ Each database node runs four services:
 
 ### Consul server node
 
-The Consul server node runs the Consul server service. These nodes must have reached the quorum and elected a leader before Patroni cluster bootstrap; otherwise, database nodes wait until such Consul leader is elected.
+The Consul server node runs the Consul server service. These nodes must have reached the quorum and elected a leader before Patroni cluster bootstrap; otherwise, database nodes wait until such a Consul leader is elected.
 
 ### PgBouncer node
 
@@ -133,8 +133,8 @@ For read queries against data that haven't been recently changed and are up to d
 #### Replication
 
 - Patroni actively manages the running PostgreSQL processes and configuration.
-- PostgreSQL secondaries connect to the primary database servers [PostgreSQL default port](../package_information/defaults.md)
-- Consul servers and agents connect to each others [Consul default ports](../package_information/defaults.md)
+- PostgreSQL secondaries connect to the primary database server's [PostgreSQL default port](../package_information/defaults.md)
+- Consul servers and agents connect to each other's [Consul default ports](../package_information/defaults.md)
 
 ## Setting it up
 
@@ -564,7 +564,7 @@ gitlab-rake gitlab:db:configure
 
 ### Backups
 
-Do not backup or restore GitLab through a PgBouncer connection: this causes a GitLab outage.
+Do not back up or restore GitLab through a PgBouncer connection: this causes a GitLab outage.
 
 [Read more about this and how to reconfigure backups](../backup_restore/backup_gitlab.md#back-up-and-restore-for-installations-using-pgbouncer).
 
@@ -727,14 +727,14 @@ After deploying the configuration follow these steps:
 
 ## Patroni
 
-Patroni is an opinionated solution for PostgreSQL high-availability. It takes the control of PostgreSQL, overrides its configuration, and manages its lifecycle (start, stop, restart). Patroni is the only option for PostgreSQL 12+ clustering and for cascading replication for Geo deployments.
+Patroni is an opinionated solution for PostgreSQL high-availability. It takes control of PostgreSQL, overrides its configuration, and manages its lifecycle (start, stop, restart). Patroni is the only option for PostgreSQL 12+ clustering and for cascading replication for Geo deployments.
 
 The fundamental [architecture](#example-recommended-setup-manual-steps) does not change for Patroni.
-You do not need any special consideration for Patroni while provisioning your database nodes. Patroni heavily relies on Consul to store the state of the cluster and elect a leader. Any failure in Consul cluster and its leader election propagates to the Patroni cluster as well.
+You do not need any special consideration for Patroni while provisioning your database nodes. Patroni heavily relies on Consul to store the state of the cluster and elect a leader. Any failure in the Consul cluster and its leader election propagates to the Patroni cluster as well.
 
 Patroni monitors the cluster and handles any failover. When the primary node fails, it works with Consul to notify PgBouncer. On failure, Patroni handles the transitioning of the old primary to a replica and rejoins it to the cluster automatically.
 
-With Patroni, the connection flow is slightly different. Patroni on each node connects to Consul agent to join the cluster. Only after this point it decides if the node is the primary or a replica. Based on this decision, it configures and starts PostgreSQL which it communicates with directly over a Unix socket. This means that if the Consul cluster is not functional or does not have a leader, Patroni and by extension PostgreSQL does not start. Patroni also exposes a REST API which can be accessed via its [default port](../package_information/defaults.md)
+With Patroni, the connection flow is slightly different. Patroni on each node connects to Consul agent to join the cluster. Only after this point it decides if the node is the primary or a replica. Based on this decision, it configures and starts PostgreSQL which it communicates with directly over a Unix socket. This means that if the Consul cluster is not functional or does not have a leader, Patroni and by extension PostgreSQL do not start. Patroni also exposes a REST API which can be accessed via its [default port](../package_information/defaults.md)
 on each node.
 
 ### Check replication status
@@ -966,7 +966,7 @@ Here are a few key facts that you must consider before upgrading PostgreSQL:
   GitLab deployment is down for the duration of database upgrade or, at least, as long as your leader
   node is upgraded. This can be a significant downtime depending on the size of your database.
 - Upgrading PostgreSQL creates a new data directory with a new control data. From the perspective of Patroni, this is a new cluster that needs to be bootstrapped again. Therefore, as part of the upgrade procedure, the cluster state (stored in Consul) is wiped out. After the upgrade is complete, Patroni bootstraps a new cluster. This changes your cluster ID.
-- The procedures for upgrading leader and replicas are not the same. That is why it is important to use the right procedure on each node.
+- The procedures for upgrading the leader and replicas are not the same. That is why it is important to use the right procedure on each node.
 - Upgrading a replica node deletes the data directory and resynchronizes it from the leader using the
   configured replication method (`pg_basebackup` is the only available option). It might take some
   time for replica to catch up with the leader, depending on the size of your database.
@@ -1089,7 +1089,7 @@ cluster.
 #### Preflight check
 
 We rely on PostgreSQL [logical replication](https://www.postgresql.org/docs/16/logical-replication.html)
-to support near-zero-downtime upgrades of Patroni clusters. The of
+to support near-zero-downtime upgrades of Patroni clusters. The
 [logical replication requirements](https://www.postgresql.org/docs/16/logical-replication-restrictions.html)
 must be met. In particular, `wal_level` must be `logical`. To check the `wal_level`,
 run the following command with `gitlab-psql` on any node of the existing cluster:
@@ -1230,7 +1230,7 @@ To do the switch on all PgBouncer nodes:
 
 #### Clean up
 
-After completing these steps, then you can clean up the resources of the old Patroni cluster.
+After completing these steps, you can clean up the resources of the old Patroni cluster.
 They are no longer needed. However, before removing the resources, remove the
 logical replication subscription on the new leader by running `DROP SUBSCRIPTION patroni_upgrade`
 with `gitlab-psql`.

@@ -86,25 +86,6 @@ RSpec.describe MergeRequests::RemoveApprovalService, feature_category: :code_rev
         let!(:approval) { create(:approval, user: user, merge_request: merge_request) }
 
         it_behaves_like 'blocks approval removal for a locked merge request'
-
-        context 'when the prevent_approval_removal_during_merge feature flag is disabled' do
-          before do
-            stub_feature_flags(prevent_approval_removal_during_merge: false)
-          end
-
-          it 'logs the approval deletion instead of blocking it' do
-            expect(merge_request).to receive(:log_approval_deletion_on_merged_or_locked_mr).with(
-              source: 'MergeRequests::RemoveApprovalService',
-              current_user: user
-            )
-
-            execute!
-          end
-
-          it 'removes the approval' do
-            expect { execute! }.to change { merge_request.approvals.size }.from(2).to(1)
-          end
-        end
       end
 
       it 'removes the approval' do

@@ -65,13 +65,13 @@ describe('TermsApp', () => {
   describe('accept button', () => {
     it('is disabled until user scrolls to the bottom of the terms', async () => {
       createComponent();
-      expect(findButton(defaultProvide.paths.accept).attributes('disabled')).toBe('disabled');
+      expect(findButton(defaultProvide.paths.accept).attributes('aria-disabled')).toBe('true');
 
       wrapper.findComponent(GlIntersectionObserver).vm.$emit('appear');
 
       await nextTick();
 
-      expect(findButton(defaultProvide.paths.accept).attributes('disabled')).toBeUndefined();
+      expect(findButton(defaultProvide.paths.accept).attributes('aria-disabled')).toBeUndefined();
     });
 
     describe('when user has permissions to accept', () => {

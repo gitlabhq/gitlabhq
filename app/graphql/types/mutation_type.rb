@@ -135,6 +135,7 @@ module Types
     mount_mutation Mutations::Organizations::Create, experiment: { milestone: '16.6' }
     mount_mutation Mutations::Organizations::Delete, experiment: { milestone: '19.1' }
     mount_mutation Mutations::Organizations::Update, experiment: { milestone: '16.7' }
+    mount_mutation Mutations::Organizations::OrganizationUsers::Create, experiment: { milestone: '19.3' }
     mount_mutation Mutations::Organizations::OrganizationUsers::Delete, experiment: { milestone: '19.3' }
     mount_mutation Mutations::Organizations::OrganizationUsers::Update, experiment: { milestone: '17.5' }
     mount_mutation Mutations::Organizations::Restore, experiment: { milestone: '19.3' }

@@ -1204,7 +1204,7 @@ describe('planning-view', () => {
           provide: { isIssueRepositioningDisabled: true },
         });
 
-        findFilteredSearchBar().vm.$emit('onSort', RELATIVE_POSITION_ASC);
+        findFilteredSearchBar().vm.$emit('on-sort', RELATIVE_POSITION_ASC);
         await nextTick();
 
         expect(createAlert).toHaveBeenCalledWith({
@@ -1274,7 +1274,7 @@ describe('planning-view', () => {
     it('updates queryVariables on list-view with filter params', async () => {
       await mountComponent();
 
-      findFilteredSearchBar().vm.$emit('onFilter', [
+      findFilteredSearchBar().vm.$emit('on-filter', [
         { type: FILTERED_SEARCH_TERM, value: { data: 'find issues', operator: 'undefined' } },
         { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
         { type: TOKEN_TYPE_SEARCH_WITHIN, value: { data: 'TITLE', operator: OPERATOR_IS } },
@@ -1298,14 +1298,14 @@ describe('planning-view', () => {
         await mountComponent();
 
         // First submit changes the variables, so Apollo reloads the list reactively.
-        findFilteredSearchBar().vm.$emit('onFilter', filterTokens);
+        findFilteredSearchBar().vm.$emit('on-filter', filterTokens);
         await waitForPromises();
 
         const evictSpy = jest.spyOn(getCache(), 'evict');
 
         // Re-submitting identical tokens does not change the variables, so the list
         // must be reloaded explicitly.
-        findFilteredSearchBar().vm.$emit('onFilter', [...filterTokens]);
+        findFilteredSearchBar().vm.$emit('on-filter', [...filterTokens]);
         await waitForPromises();
 
         expect(evictSpy).toHaveBeenCalledWith(expect.objectContaining({ fieldName: 'workItems' }));
@@ -1314,11 +1314,11 @@ describe('planning-view', () => {
       it('refetches the work item counts', async () => {
         await mountComponent();
 
-        findFilteredSearchBar().vm.$emit('onFilter', filterTokens);
+        findFilteredSearchBar().vm.$emit('on-filter', filterTokens);
         await waitForPromises();
         const initialCallCount = defaultCountsOnlyHandler.mock.calls.length;
 
-        findFilteredSearchBar().vm.$emit('onFilter', [...filterTokens]);
+        findFilteredSearchBar().vm.$emit('on-filter', [...filterTokens]);
         await waitForPromises();
 
         expect(defaultCountsOnlyHandler.mock.calls.length).toBeGreaterThan(initialCallCount);
@@ -1329,7 +1329,7 @@ describe('planning-view', () => {
 
         const evictSpy = jest.spyOn(getCache(), 'evict');
 
-        findFilteredSearchBar().vm.$emit('onFilter', filterTokens);
+        findFilteredSearchBar().vm.$emit('on-filter', filterTokens);
         await waitForPromises();
 
         // A changed filter changes the variables, so Apollo reloads reactively and no
@@ -1343,7 +1343,7 @@ describe('planning-view', () => {
     it('sets iid in queryVariables when user enters a number with #', async () => {
       await mountComponent();
 
-      findFilteredSearchBar().vm.$emit('onFilter', [
+      findFilteredSearchBar().vm.$emit('on-filter', [
         { type: FILTERED_SEARCH_TERM, value: { data: '#23', operator: 'undefined' } },
       ]);
       await nextTick();
@@ -1356,7 +1356,7 @@ describe('planning-view', () => {
     it('sets search in queryVariables when user enters a number without #', async () => {
       await mountComponent();
 
-      findFilteredSearchBar().vm.$emit('onFilter', [
+      findFilteredSearchBar().vm.$emit('on-filter', [
         { type: FILTERED_SEARCH_TERM, value: { data: '23', operator: 'undefined' } },
       ]);
       await nextTick();
@@ -1406,7 +1406,7 @@ describe('planning-view', () => {
       it('passes excludeProjects: true and includeDescendants: false to list-view queryVariables', async () => {
         await mountComponent();
 
-        findFilteredSearchBar().vm.$emit('onFilter', [
+        findFilteredSearchBar().vm.$emit('on-filter', [
           {
             type: TOKEN_TYPE_GROUP,
             value: { data: 'path/to/another/group', operator: OPERATOR_IS },
@@ -1425,7 +1425,7 @@ describe('planning-view', () => {
       it('passes excludeProjects: false and includeDescendants: true to list-view queryVariables', async () => {
         await mountComponent();
 
-        findFilteredSearchBar().vm.$emit('onFilter', [
+        findFilteredSearchBar().vm.$emit('on-filter', [
           { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
         ]);
         await nextTick();
@@ -1508,7 +1508,7 @@ describe('planning-view', () => {
           await mountComponent();
         }
 
-        findFilteredSearchBar().vm.$emit('onSort', sortKey);
+        findFilteredSearchBar().vm.$emit('on-sort', sortKey);
         await waitForPromises();
         await nextTick();
 
@@ -1522,7 +1522,7 @@ describe('planning-view', () => {
       it('calls mutation to save sort preference', async () => {
         await mountComponent();
 
-        findFilteredSearchBar().vm.$emit('onSort', UPDATED_DESC);
+        findFilteredSearchBar().vm.$emit('on-sort', UPDATED_DESC);
 
         expect(userPreferenceMutationHandler).toHaveBeenCalledWith({
           sort: UPDATED_DESC,
@@ -1537,7 +1537,7 @@ describe('planning-view', () => {
           .mockResolvedValue(workItemUserPreferenceUpdateMutationResponseWithErrors);
         await mountComponent({ userPreferenceMutationResponse: mutationMock });
 
-        findFilteredSearchBar().vm.$emit('onSort', UPDATED_DESC);
+        findFilteredSearchBar().vm.$emit('on-sort', UPDATED_DESC);
         await waitForPromises();
 
         expect(Sentry.captureException).toHaveBeenCalledWith(new Error('oh no!'));
@@ -1548,7 +1548,7 @@ describe('planning-view', () => {
       it('does not call mutation to save sort preference', async () => {
         await mountComponent({ isLoggedInValue: false });
 
-        findFilteredSearchBar().vm.$emit('onSort', CREATED_DESC);
+        findFilteredSearchBar().vm.$emit('on-sort', CREATED_DESC);
 
         expect(userPreferenceMutationHandler).not.toHaveBeenCalled();
       });
@@ -1781,7 +1781,7 @@ describe('planning-view', () => {
         it('renders "Save view" button when filters change', async () => {
           await mountDefault();
 
-          findFilteredSearchBar().vm.$emit('onFilter', [
+          findFilteredSearchBar().vm.$emit('on-filter', [
             { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
             { type: TOKEN_TYPE_SEARCH_WITHIN, value: { data: 'TITLE', operator: OPERATOR_IS } },
           ]);
@@ -1793,7 +1793,7 @@ describe('planning-view', () => {
         it('opens the new saved view modal when clicking "Save view"', async () => {
           await mountDefault();
 
-          findFilteredSearchBar().vm.$emit('onFilter', [
+          findFilteredSearchBar().vm.$emit('on-filter', [
             { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
             { type: TOKEN_TYPE_SEARCH_WITHIN, value: { data: 'TITLE', operator: OPERATOR_IS } },
           ]);
@@ -1810,7 +1810,7 @@ describe('planning-view', () => {
             provide: { canCreateSavedView: false },
           });
 
-          findFilteredSearchBar().vm.$emit('onFilter', [
+          findFilteredSearchBar().vm.$emit('on-filter', [
             { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
             { type: TOKEN_TYPE_SEARCH_WITHIN, value: { data: 'TITLE', operator: OPERATOR_IS } },
           ]);
@@ -1826,7 +1826,7 @@ describe('planning-view', () => {
           });
 
           it('restores All Items filters when navigating All Items → Saved View → All Items', async () => {
-            findFilteredSearchBar().vm.$emit('onFilter', [
+            findFilteredSearchBar().vm.$emit('on-filter', [
               { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
             ]);
             await nextTick();
@@ -1866,7 +1866,7 @@ describe('planning-view', () => {
         });
 
         it('does not render the "Save view" button when filters change', async () => {
-          findFilteredSearchBar().vm.$emit('onFilter', [
+          findFilteredSearchBar().vm.$emit('on-filter', [
             { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
             { type: TOKEN_TYPE_SEARCH_WITHIN, value: { data: 'TITLE', operator: OPERATOR_IS } },
           ]);
@@ -1876,7 +1876,7 @@ describe('planning-view', () => {
         });
 
         it('does not render the "Save view" button when sort changes', async () => {
-          findFilteredSearchBar().vm.$emit('onSort', UPDATED_DESC);
+          findFilteredSearchBar().vm.$emit('on-sort', UPDATED_DESC);
           await nextTick();
           await waitForPromises();
 
@@ -1945,7 +1945,7 @@ describe('planning-view', () => {
         });
 
         it('renders "Save changes" and "Reset to defaults" buttons when filters change', async () => {
-          findFilteredSearchBar().vm.$emit('onFilter', [
+          findFilteredSearchBar().vm.$emit('on-filter', [
             { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
             { type: TOKEN_TYPE_SEARCH_WITHIN, value: { data: 'TITLE', operator: OPERATOR_IS } },
           ]);
@@ -1956,7 +1956,7 @@ describe('planning-view', () => {
         });
 
         it('renders "Save changes" and "Reset to defaults" button when sort changes', async () => {
-          findFilteredSearchBar().vm.$emit('onSort', CREATED_DESC);
+          findFilteredSearchBar().vm.$emit('on-sort', CREATED_DESC);
           await nextTick();
 
           expect(findResetViewButton().exists()).toBe(true);
@@ -1975,7 +1975,7 @@ describe('planning-view', () => {
         });
 
         it('persists unsaved data when navigating back to the saved view', async () => {
-          findFilteredSearchBar().vm.$emit('onSort', CREATED_DESC);
+          findFilteredSearchBar().vm.$emit('on-sort', CREATED_DESC);
           await nextTick();
 
           await router.push({ name: 'savedView', params: { type: 'work_items', view_id: '4' } });
@@ -1987,7 +1987,7 @@ describe('planning-view', () => {
         });
 
         it('restores filters in-session when switching between saved views', async () => {
-          findFilteredSearchBar().vm.$emit('onFilter', [
+          findFilteredSearchBar().vm.$emit('on-filter', [
             { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
           ]);
           await nextTick();
@@ -2018,7 +2018,7 @@ describe('planning-view', () => {
         });
 
         it('resets filters, hides action buttons and resets local storage draft', async () => {
-          findFilteredSearchBar().vm.$emit('onFilter', [
+          findFilteredSearchBar().vm.$emit('on-filter', [
             { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
           ]);
           await waitForPromises();
@@ -2198,7 +2198,7 @@ describe('planning-view', () => {
               route: { name: 'savedView', params: { type: 'work_items', view_id: '3' } },
             });
 
-            findFilteredSearchBar().vm.$emit('onFilter', [
+            findFilteredSearchBar().vm.$emit('on-filter', [
               { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
             ]);
             await nextTick();
@@ -2232,7 +2232,7 @@ describe('planning-view', () => {
               route: { name: 'savedView', params: { type: 'work_items', view_id: '3' } },
             });
 
-            findFilteredSearchBar().vm.$emit('onFilter', [
+            findFilteredSearchBar().vm.$emit('on-filter', [
               { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
             ]);
 
@@ -2325,7 +2325,7 @@ describe('planning-view', () => {
           },
         });
 
-        findFilteredSearchBar().vm.$emit('onFilter', [
+        findFilteredSearchBar().vm.$emit('on-filter', [
           { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
         ]);
         await nextTick();
@@ -2343,7 +2343,7 @@ describe('planning-view', () => {
           },
         });
 
-        findFilteredSearchBar().vm.$emit('onFilter', [
+        findFilteredSearchBar().vm.$emit('on-filter', [
           { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
         ]);
 
@@ -2849,7 +2849,7 @@ describe('planning-view', () => {
 
       it('passes CREATED_ASC sort to list-view queryVariables', async () => {
         await mountComponent();
-        findFilteredSearchBar().vm.$emit('onSort', CREATED_ASC);
+        findFilteredSearchBar().vm.$emit('on-sort', CREATED_ASC);
         await waitForPromises();
 
         expect(findListView().props('queryVariables')).toMatchObject({ sort: CREATED_ASC });
@@ -2857,7 +2857,7 @@ describe('planning-view', () => {
 
       it('passes TITLE_ASC sort to list-view queryVariables', async () => {
         await mountComponent();
-        findFilteredSearchBar().vm.$emit('onSort', TITLE_ASC);
+        findFilteredSearchBar().vm.$emit('on-sort', TITLE_ASC);
         await waitForPromises();
 
         expect(findListView().props('queryVariables')).toMatchObject({ sort: TITLE_ASC });
@@ -2865,7 +2865,7 @@ describe('planning-view', () => {
 
       it('passes TITLE_DESC sort to list-view queryVariables', async () => {
         await mountComponent();
-        findFilteredSearchBar().vm.$emit('onSort', TITLE_DESC);
+        findFilteredSearchBar().vm.$emit('on-sort', TITLE_DESC);
         await waitForPromises();
 
         expect(findListView().props('queryVariables')).toMatchObject({ sort: TITLE_DESC });
@@ -2873,7 +2873,7 @@ describe('planning-view', () => {
 
       it('passes UPDATED_DESC sort to list-view queryVariables', async () => {
         await mountComponent();
-        findFilteredSearchBar().vm.$emit('onSort', UPDATED_DESC);
+        findFilteredSearchBar().vm.$emit('on-sort', UPDATED_DESC);
         await waitForPromises();
 
         expect(findListView().props('queryVariables')).toMatchObject({ sort: UPDATED_DESC });
@@ -2881,7 +2881,7 @@ describe('planning-view', () => {
 
       it('passes UPDATED_ASC sort to list-view queryVariables', async () => {
         await mountComponent();
-        findFilteredSearchBar().vm.$emit('onSort', UPDATED_ASC);
+        findFilteredSearchBar().vm.$emit('on-sort', UPDATED_ASC);
         await waitForPromises();
 
         expect(findListView().props('queryVariables')).toMatchObject({ sort: UPDATED_ASC });
@@ -2889,7 +2889,7 @@ describe('planning-view', () => {
 
       it('passes the correct sort key to queryVariables when sorting by updated date ascending', async () => {
         await mountComponent();
-        findFilteredSearchBar().vm.$emit('onSort', UPDATED_ASC);
+        findFilteredSearchBar().vm.$emit('on-sort', UPDATED_ASC);
         await waitForPromises();
 
         expect(findListView().props('queryVariables')).toMatchObject({ sort: UPDATED_ASC });
@@ -2943,10 +2943,10 @@ describe('planning-view', () => {
       expect(findFilteredSearchBar().props('sortOptions')).toEqual([]);
     });
 
-    it('still propagates sort changes when FilteredSearchBar emits onSort', async () => {
+    it('still propagates sort changes when FilteredSearchBar emits on-sort', async () => {
       expect(findFilteredSearchBar().props('initialSortBy')).toBe(CREATED_DESC);
 
-      findFilteredSearchBar().vm.$emit('onSort', UPDATED_DESC);
+      findFilteredSearchBar().vm.$emit('on-sort', UPDATED_DESC);
       await waitForPromises();
 
       expect(findFilteredSearchBar().props('initialSortBy')).toBe(UPDATED_DESC);
@@ -3240,7 +3240,7 @@ describe('planning-view', () => {
         });
 
         it('saves the current view mode', async () => {
-          findFilteredSearchBar().vm.$emit('onFilter', [
+          findFilteredSearchBar().vm.$emit('on-filter', [
             { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
           ]);
           await nextTick();

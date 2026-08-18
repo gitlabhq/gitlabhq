@@ -70,11 +70,11 @@ describe('FilteredSearchAndSort', () => {
     expect(wrapper.findByTestId('default-slot').exists()).toBe(true);
   });
 
-  describe('when `FilteredSearchBarRoot` emits `onFilter` event', () => {
+  describe('when `FilteredSearchBarRoot` emits `on-filter` event', () => {
     beforeEach(() => {
       createComponent();
 
-      findFilteredSearchAndSortRoot().vm.$emit('onFilter', [
+      findFilteredSearchAndSortRoot().vm.$emit('on-filter', [
         { type: FILTERED_SEARCH_TERM, value: { data: 'foo bar' } },
       ]);
     });

@@ -899,15 +899,16 @@ Grants the ability to create, delete, read, restore, and update organizations.
 | Restore | Instance | Mutation | `OrganizationRestore` |
 | Update | Instance | Mutation | `OrganizationConfirm` |
 | Update | Instance | Mutation | `OrganizationUpdate` |
-| Update | Instance | Mutation | `OrganizationUserUpdate` |
 
 #### Organization User
 
-Grants the ability to delete organization users.
+Grants the ability to create, delete, and update organization users.
 
 | Action | Access | Kind | Name |
 | ------ | ------ | ---- | ---- |
+| Create | Instance | Mutation | `OrganizationUserCreate` |
 | Delete | Instance | Mutation | `OrganizationUserDelete` |
+| Update | Instance | Mutation | `OrganizationUserUpdate` |
 
 ### Packages and Registry resources
 

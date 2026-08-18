@@ -63,7 +63,13 @@ module Gitlab
       #             authenticated rules, runner_id present blocking the
       #             unauthenticated ones - as it does on every other path.
       #
-      # All three are :skip: they terminate evaluation while permitting, so the
+      # user_allowlist (GITLAB_THROTTLE_USER_ALLOWLIST) is the fourth, on every
+      # limiter: a full bypass, wider than Rack::Attack's safelist only for rules
+      # that cannot fire on a user anyway (the dead collector path, EE's
+      # Alertmanager-only incident throttle). See
+      # gitlab-com/gl-infra/production-engineering#29320 and #29563.
+      #
+      # All four are :skip: they terminate evaluation while permitting, so the
       # throttle rules below never run, and they perform no Redis write (the
       # bypass volume made these counters the majority of the shadow's Redis
       # load; see gitlab-com/gl-infra/production-engineering#29052). The
@@ -75,6 +81,7 @@ module Gitlab
       module Limiters
         BYPASS_RULE_NAME = 'bypass_header'
         RUNNER_RULE_NAME = 'runner_jobs'
+        ALLOWLIST_RULE_NAME = 'user_allowlist'
 
         class << self
           # Every limiter, keyed by name, with the full ordered rule set built.
@@ -106,14 +113,15 @@ module Gitlab
             )
           end
 
-          # The terminating :skip rules ahead of the throttle rules. bypass is on
-          # every limiter (the safelist skips all throttles); skip is on the limiters
-          # whose unauthenticated throttles exclude should_be_skipped? paths; the
-          # runner-jobs rule is on the general limiter, whose authenticated API throttle
-          # excludes runner- and job-token-authenticated requests on the runner-jobs
-          # path (the runner_jobs fact).
+          # The terminating :skip rules ahead of the throttle rules. bypass and
+          # user_allowlist are on every limiter (the safelist and the allowlist
+          # skip all throttles); skip is on the limiters whose unauthenticated
+          # throttles exclude should_be_skipped? paths; the runner-jobs rule is on
+          # the general limiter, whose authenticated API throttle excludes runner-
+          # and job-token-authenticated requests on the runner-jobs path (the
+          # runner_jobs fact).
           def synthetic_rules(limiter_name)
-            rules = [skip_rule(BYPASS_RULE_NAME, { bypass: true })]
+            rules = [skip_rule(BYPASS_RULE_NAME, { bypass: true }), user_allowlist_rule].compact
 
             if [ThrottleRegistry::GENERAL, ThrottleRegistry::PROTECTED].include?(limiter_name)
               ThrottleRegistry.skip_matches.each do |name, match|
@@ -140,6 +148,15 @@ module Gitlab
               period: 60,
               action: :skip
             )
+          end
+
+          # IDs are stringified to match the requester_id fact; the requester_type
+          # gate keeps a DeployToken sharing an allowlisted user's numeric id counted.
+          def user_allowlist_rule
+            ids = ::Gitlab::RackAttack.user_allowlist.to_a
+            return if ids.empty?
+
+            skip_rule(ALLOWLIST_RULE_NAME, { requester_type: 'user', requester_id: { oneOf: ids.map(&:to_s) } })
           end
 
           # A throttle declaring :claims in the registry builds as an ordered

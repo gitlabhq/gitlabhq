@@ -31,6 +31,17 @@ describe('pipeline graph job item', () => {
 
   const findActionVueComponent = () => wrapper.findComponent(ActionComponent);
   const findActionComponent = () => wrapper.findComponentByTestId('ci-action-button');
+  // job_item.vue passes a bare `disabled` attribute to ActionComponent, which declares no
+  // such prop. Vue 2 applies it straight to the DOM node, so it never reaches GlButton's
+  // `disabled` prop and stays a native attribute. Vue 3 resolves it into the prop, so
+  // GlButton renders `aria-disabled` instead. Accept either signal.
+  const isActionComponentDisabled = () => {
+    const action = findActionComponent();
+
+    return (
+      action.attributes('disabled') !== undefined || action.attributes('aria-disabled') === 'true'
+    );
+  };
   const findJobItemContent = () => wrapper.findByTestId('ci-job-item-content');
   const findJobNameRow = () => wrapper.findByTestId('job-name-row');
   const findStageName = () => wrapper.findByTestId('stage-name-in-job');
@@ -159,7 +170,7 @@ describe('pipeline graph job item', () => {
 
       expect(actionComponent.exists()).toBe(true);
       expect(actionComponent.props('actionIcon')).toBe('retry');
-      expect(actionComponent.attributes('disabled')).toBeUndefined();
+      expect(isActionComponentDisabled()).toBe(false);
     });
 
     it('should render disabled action icon when user cannot run the action', () => {
@@ -173,7 +184,7 @@ describe('pipeline graph job item', () => {
 
       expect(actionComponent.exists()).toBe(true);
       expect(actionComponent.props('actionIcon')).toBe('stop');
-      expect(actionComponent.attributes('disabled')).toBeDefined();
+      expect(isActionComponentDisabled()).toBe(true);
     });
 
     it('action icon tooltip text when job has passed but can be ran again', () => {

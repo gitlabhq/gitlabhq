@@ -91,6 +91,7 @@ module API
 
         desc 'Download a chart' do
           detail 'Downloads a specified chart for a project.'
+          produces %w[application/octet-stream]
           success code: 200
           failure [
             { code: 401, message: 'Unauthorized' },

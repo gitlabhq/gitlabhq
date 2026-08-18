@@ -2429,15 +2429,6 @@ class MergeRequest < ApplicationRecord
     relation
   end
 
-  # Note that this could also return SHA from now dangling commits
-  #
-  def all_commit_shas
-    return commit_shas unless persisted?
-
-    all_commit_shas_from_metadata
-  end
-  strong_memoize_attr :all_commit_shas
-
   def merge_commit
     @merge_commit ||= project.commit(merge_commit_sha) if merge_commit_sha
   end
@@ -2917,6 +2908,17 @@ class MergeRequest < ApplicationRecord
   end
 
   def commit_exists?(sha)
+    existing_commit_shas([sha]).any?
+  end
+
+  # Returns the subset of `shas` that belong to this merge request's commits.
+  #
+  # SHAs are matched exactly, so callers must pass full SHAs. The number of
+  # queries depends on how many SHAs are given, not on how many commits the
+  # merge request has.
+  def existing_commit_shas(shas)
+    return [] if shas.empty?
+
     diff_commits_subquery = MergeRequestDiffCommit
       .where('merge_request_diff_commits.merge_request_commits_metadata_id = merge_request_commits_metadata.id')
       .where_exists(
@@ -2926,17 +2928,28 @@ class MergeRequest < ApplicationRecord
     diff_commits_subquery = diff_commits_subquery.where(project_id: target_project_id) if project_id_pruning_enabled?
 
     # Data can be found in either table until backfill completes. First look for SHAs in table
-    # `merge_request_commits_metadata`, if not found look in `merge_request_diff_commits`.
-    return true if MergeRequest::CommitsMetadata
-      .where(project: project, sha: sha)
-      .where_exists(diff_commits_subquery)
-      .exists?
+    # `merge_request_commits_metadata`, then look for the ones we did not find in
+    # `merge_request_diff_commits`.
+    found_shas = shas.each_slice(MAX_PLUCK).flat_map do |slice|
+      MergeRequest::CommitsMetadata
+        .where(project: project, sha: slice)
+        .where_exists(diff_commits_subquery)
+        .limit(slice.size)
+        .pluck(:sha)
+    end
 
     # We skip querying `merge_request_diff_commits` table when FF `mr_diff_commits_read_new_table` is enabled.
     # This flag will only be enabled when new table is fully populated
-    return false if read_new_commits_table?
+    return found_shas if read_new_commits_table?
 
-    all_commits.exists?(sha: sha)
+    missing_shas = shas - found_shas
+    return found_shas if missing_shas.empty?
+
+    # The same SHA is stored once per diff version, so without `distinct` the
+    # LIMIT could be filled by duplicates before all matches are found.
+    found_shas + missing_shas.each_slice(MAX_PLUCK).flat_map do |slice|
+      all_commits.where(sha: slice).distinct.limit(slice.size).pluck(:sha)
+    end
   end
 
   %w[
@@ -3397,25 +3410,6 @@ class MergeRequest < ApplicationRecord
     !!pipeline
       &.latest_report_builds_in_self_and_project_descendants(::Ci::JobArtifact.of_report_type(report_type))
       &.exists?
-  end
-
-  def all_commit_shas_from_metadata
-    commits_subquery = all_commits.select(:merge_request_commits_metadata_id)
-    migrated_shas = MergeRequest::CommitsMetadata
-                      .joins(
-                        "INNER JOIN (#{commits_subquery.to_sql}) AS diff_commits " \
-                          "ON diff_commits.merge_request_commits_metadata_id = merge_request_commits_metadata.id"
-                      )
-                      .where(project_id: project_id)
-                      .pluck(:sha)
-
-    return migrated_shas.uniq if read_new_commits_table?
-
-    # We need to query SHAs from `merge_request_diff_commits` table to account
-    # for records that don't have `merge_request_commits_metadata_id` populated yet
-    unmigrated_shas = all_commits.where(merge_request_commits_metadata_id: nil).pluck(:sha)
-
-    (migrated_shas + unmigrated_shas).uniq
   end
 
   def resolve_diff_version(diff_options = {})

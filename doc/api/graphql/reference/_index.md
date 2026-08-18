@@ -6623,6 +6623,7 @@ Arguments:
 | <a id="mutation-cdartifactsourcecreate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-cdartifactsourcecreate-name"></a>`name` | [`String!`](#string) | Name of the artifact source. |
 | <a id="mutation-cdartifactsourcecreate-serviceid"></a>`serviceId` | [`CdServiceID!`](#cdserviceid) | Global ID of the service to create the artifact source for. |
+| <a id="mutation-cdartifactsourcecreate-sourceconfig"></a>`sourceConfig` | [`JSON`](#json) | Configuration of the artifact source, defined by the consuming driver. |
 | <a id="mutation-cdartifactsourcecreate-sourceref"></a>`sourceRef` | [`String!`](#string) | Reference of the artifact source. |
 
 Fields:
@@ -14191,6 +14192,35 @@ Fields:
 | <a id="mutation-organizationupdate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-organizationupdate-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutation-organizationupdate-organization"></a>`organization` | [`Organization`](#organization) | Organization after mutation. |
+
+### `Mutation.organizationUserCreate`
+
+{{< details >}}
+
+- Introduced in GitLab 19.3.
+- Status: Experiment.
+
+{{< /details >}}
+
+Input type: `OrganizationUserCreateInput`
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-organizationusercreate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-organizationusercreate-email"></a>`email` | [`String`](#string) | Email of the user to add to the organization. |
+| <a id="mutation-organizationusercreate-organizationid"></a>`organizationId` | [`OrganizationsOrganizationID!`](#organizationsorganizationid) | ID of the organization to add the user to. |
+| <a id="mutation-organizationusercreate-usertype"></a>`userType` | [`OrganizationUserType!`](#organizationusertype) | Type to add the organization user with. |
+| <a id="mutation-organizationusercreate-username"></a>`username` | [`String`](#string) | Username of the user to add to the organization. |
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-organizationusercreate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-organizationusercreate-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-organizationusercreate-organizationuser"></a>`organizationUser` {{< icon name="warning-solid" >}} | [`OrganizationUser`](#organizationuser) | Introduced in GitLab 19.3. Status: Experiment. Organization user added by the mutation. |
 
 ### `Mutation.organizationUserDelete`
 
@@ -36336,6 +36366,7 @@ Fields:
 | <a id="cdartifactsource-id"></a>`id` | [`CdArtifactSourceID!`](#cdartifactsourceid) | Global ID of the artifact source. |
 | <a id="cdartifactsource-name"></a>`name` | [`String`](#string) | Name of the artifact source. |
 | <a id="cdartifactsource-service"></a>`service` | [`CdService`](#cdservice) | Service the artifact source belongs to. |
+| <a id="cdartifactsource-sourceconfig"></a>`sourceConfig` | [`JSON`](#json) | Configuration of the artifact source, defined by the consuming driver. |
 | <a id="cdartifactsource-sourceref"></a>`sourceRef` | [`String`](#string) | Reference of the artifact source. |
 | <a id="cdartifactsource-updatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the artifact source was last updated. |
 | <a id="cdartifactsource-versions"></a>`versions` {{< icon name="warning-solid" >}} | [`CdVersionConnection`](#cdversionconnection) | Introduced in GitLab 19.2. Status: Experiment. Versions of the artifact source. |
@@ -41667,6 +41698,7 @@ Fields:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="duomessage-additionalcontext"></a>`additionalContext` | [`[AiAdditionalContext!]`](#aiadditionalcontext) | Additional context items attached to the message. |
+| <a id="duomessage-alternativecount"></a>`alternativeCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | Introduced in GitLab 19.3. Status: Experiment. Number of other versions of the turn, from the user retrying it, excluding the one shown. Set on the user message anchoring the turn, `0` when it has no alternatives. Returns `null` on every message, if the `dw_read_blobs_graphql` feature flag is disabled, or if the session does not store incremental checkpoints. |
 | <a id="duomessage-componentname"></a>`componentName` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.0. Status: Experiment. Component name associated with the message. |
 | <a id="duomessage-content"></a>`content` | [`String!`](#string) | Content of the message. |
 | <a id="duomessage-correlationid"></a>`correlationId` | [`String`](#string) | Optional client-supplied identifier echoed back to correlate this message with the request that initiated it. |
@@ -68982,6 +69014,15 @@ Access level of an organization user.
 | <a id="organizationuseraccesslevel-default"></a>`DEFAULT` {{< icon name="warning-solid" >}} | Introduced in GitLab 16.11. Status: Experiment. Guest access. |
 | <a id="organizationuseraccesslevel-owner"></a>`OWNER` {{< icon name="warning-solid" >}} | Introduced in GitLab 16.11. Status: Experiment. Owner access. |
 
+### `OrganizationUserType`
+
+Type of an organization user.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="organizationusertype-admin"></a>`ADMIN` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.3. Status: Experiment. Organization administrator. |
+| <a id="organizationusertype-user"></a>`USER` {{< icon name="warning-solid" >}} | Introduced in GitLab 19.3. Status: Experiment. Regular organization user. |
+
 ### `OrganizationVisibility`
 
 Visibilities available to an organization.
@@ -75155,6 +75196,7 @@ Arguments:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="cdartifactsourceinput-name"></a>`name` | [`String!`](#string) | Name of the artifact source. |
+| <a id="cdartifactsourceinput-sourceconfig"></a>`sourceConfig` | [`JSON`](#json) | Configuration of the artifact source, defined by the consuming driver. |
 | <a id="cdartifactsourceinput-sourceref"></a>`sourceRef` | [`String!`](#string) | Reference of the artifact source. |
 
 ### `CdEnvironmentDriverBindingInput`

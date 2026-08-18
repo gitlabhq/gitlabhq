@@ -2,6 +2,7 @@
 
 exports[`SidebarTodo template renders component container element with proper data attributes 1`] = `
 <gl-button-stub
+  accessibledisabled="true"
   aria-label="Mark to-do items done"
   buttontextclasses=""
   category="primary"

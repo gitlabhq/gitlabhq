@@ -3974,6 +3974,7 @@ incompatible with personal access tokens.
 | `GET` | `/ai/duo_workflows/workflows/:id/checkpoints` | AI workflows OAuth token |
 | `POST` | `/ai/duo_workflows/workflows/:id/checkpoints` | AI workflows OAuth token |
 | `GET` | `/ai/duo_workflows/workflows/:id/checkpoints/:checkpoint_id` | AI workflows OAuth token |
+| `GET` | `/ai/duo_workflows/workflows/:id/checkpoints/by_thread_ts` | AI workflows OAuth token |
 | `GET` | `/ai/duo_workflows/workflows/:id/events` | AI workflows OAuth token |
 | `POST` | `/ai/duo_workflows/workflows/:id/events` | AI workflows OAuth token |
 | `PUT` | `/ai/duo_workflows/workflows/:id/events/:event_id` | AI workflows OAuth token |

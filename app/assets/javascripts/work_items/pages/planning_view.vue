@@ -1888,7 +1888,7 @@ export default {
         this.persistSavedViewDraft();
       }
 
-      // onFilter fires on every search submit (search icon / Enter). When the
+      // on-filter fires on every search submit (search icon / Enter). When the
       // variables change, Apollo re-runs the list query on its own. When they
       // don't, force a reload so the query still re-runs on every submit.
       if (isEqual(previousQueryVariables, this.queryVariables)) {
@@ -2126,7 +2126,6 @@ export default {
           </template>
         </saved-views-selectors>
       </template>
-      <!-- eslint-disable vue/v-on-event-hyphenation -->
       <filtered-search-bar
         ref="filteredSearchBar"
         :namespace="rootPageFullPath"
@@ -2143,10 +2142,9 @@ export default {
         class="row-content-block gl-grow gl-border-t-0 @sm/panel:gl-flex"
         data-testid="issuable-search-container"
         @checked-input="handleAllIssuablesCheckedInput"
-        @onFilter="handleFilter"
-        @onSort="handleSort"
+        @on-filter="handleFilter"
+        @on-sort="handleSort"
       >
-        <!-- eslint-enable vue/v-on-event-hyphenation -->
         <template #user-preference>
           <gl-button
             icon="preferences"
@@ -2167,7 +2165,6 @@ export default {
             v-if="isStickyHeaderVisible"
             class="sticky-filter gl-fixed gl-left-auto gl-right-auto gl-z-3 gl-hidden @sm/panel:gl-block"
           >
-            <!-- eslint-disable vue/v-on-event-hyphenation -->
             <filtered-search-bar
               ref="stickyFilteredSearchBar"
               :namespace="rootPageFullPath"
@@ -2184,10 +2181,9 @@ export default {
               class="row-content-block gl-grow gl-border-t-0 @sm/panel:gl-flex"
               data-testid="issuable-sticky-search-container"
               @checked-input="handleAllIssuablesCheckedInput"
-              @onFilter="handleFilter"
-              @onSort="handleSort"
+              @on-filter="handleFilter"
+              @on-sort="handleSort"
             >
-              <!-- eslint-enable vue/v-on-event-hyphenation -->
               <template #user-preference>
                 <gl-button
                   icon="preferences"

@@ -11,10 +11,10 @@ storage entry in the GitLab configuration.
 
 Gitaly provides the same server certificates as client certificates in TLS
 connections to GitLab. This can be used as part of a mutual TLS authentication strategy
-when combined with reverse proxies (for example, NGINX) that validate client certificate
+when combined with reverse proxies (for example, NGINX) that validate client certificates
 to grant access to GitLab.
 
-You must supply your own certificates as this isn't provided automatically. The certificate
+You must supply your own certificates as these aren't provided automatically. The certificate
 corresponding to each Gitaly server must be installed on that Gitaly server.
 
 Additionally, the certificate (or its certificate authority) must be installed on all:
@@ -210,7 +210,7 @@ To update the Gitaly certificates after initial configuration:
 
 {{< tab title="Linux package (Omnibus)" >}}
 
-If the content of your SSL certificates under the `/etc/gitlab/ssl` directory have been updated, but no configuration changes have been made to
+If the content of your SSL certificates under the `/etc/gitlab/ssl` directory has been updated, but no configuration changes have been made to
 `/etc/gitlab/gitlab.rb`, then reconfiguring GitLab doesn't affect Gitaly. Instead, you must restart Gitaly manually for the certificates to be loaded
 by the Gitaly process:
 
@@ -231,7 +231,7 @@ If you change or update the certificates in `/etc/gitlab/trusted-certs` without 
 
 {{< tab title="Self-compiled (source)" >}}
 
-If the content of your SSL certificates under the `/etc/gitlab/ssl` directory have been updated, you must
+If the content of your SSL certificates under the `/etc/gitlab/ssl` directory has been updated, you must
 [restart GitLab](../restart_gitlab.md#self-compiled-installations) for the certificates to be loaded by the Gitaly process.
 
 If you change or update the certificates in `/usr/local/share/ca-certificates`, you must:

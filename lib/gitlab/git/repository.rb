@@ -25,8 +25,7 @@ module Gitlab
         skip_merges: false,
         after: nil,
         before: nil,
-        all: false,
-        message_regex: nil
+        all: false
       }.freeze
 
       NoRepository = Class.new(::Gitlab::Git::BaseError)
@@ -380,12 +379,9 @@ module Gitlab
       #     path: 'app/models',
       #     limit: 10,
       #     offset: 5,
-      #     after: Time.new(2016, 4, 21, 14, 32, 10),
-      #     message_regex: 'project'
+      #     after: Time.new(2016, 4, 21, 14, 32, 10)
       #   )
       def log(options)
-        raise ArgumentError, 'Invalid message_regex pattern' unless valid_message_regex?(options[:message_regex])
-
         options = DEFAULT_LOG_OPTIONS.merge(options)
 
         limit = options[:limit]
@@ -1313,14 +1309,6 @@ module Gitlab
       # rubocop: enable CodeReuse/ActiveRecord
 
       private
-
-      def valid_message_regex?(pattern)
-        return true unless pattern
-
-        !!Gitlab::UntrustedRegexp.new(pattern)
-      rescue RegexpError
-        false
-      end
 
       def check_blobs_generated(base, head, changed_paths)
         wrapped_gitaly_errors do

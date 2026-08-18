@@ -341,7 +341,6 @@
 - source_code_pushed
 - unique_active_user
 - user_created_analytics_dashboard
-- users_clicking_license_testing_visiting_external_website
 - users_clicking_registration_features_offer
 - users_creating_merge_requests_with_security_policies
 - users_creating_work_items
@@ -370,4 +369,3 @@
 - users_visiting_security_vulnerabilities
 - users_visiting_security_vulnerability_report
 - users_visiting_testing_license_compliance_full_report
-- users_visiting_testing_manage_license_compliance

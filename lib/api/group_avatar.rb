@@ -13,6 +13,7 @@ module API
       desc 'Download a group avatar' do
         detail 'Downloads a group avatar image.'
         tags %w[avatars]
+        produces %w[application/octet-stream]
         success code: 200
       end
 

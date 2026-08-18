@@ -185,7 +185,9 @@ RSpec.shared_examples 'work items labels' do |namespace_type|
   end
 
   it 'adds and removes a label', :aggregate_failures do
-    within_testid 'work-item-labels' do
+    # Tag-qualified: the Edit button's tooltip also carries data-testid="work-item-labels" and is
+    # teleported to the top of <body>, so a bare testid scope can resolve to that <div> instead.
+    within 'section[data-testid="work-item-labels"]' do
       expect(page).not_to have_css '.gl-label', text: label2.title
 
       click_button 'Edit'
@@ -234,7 +236,7 @@ RSpec.shared_examples 'work items labels' do |namespace_type|
       expect(page).not_to have_css '.gl-label', text: label2.title
     end
 
-    within_testid 'work-item-labels' do
+    within 'section[data-testid="work-item-labels"]' do
       click_button 'Edit'
       select_listbox_item(label2.title)
       click_button 'Apply'
@@ -250,7 +252,7 @@ RSpec.shared_examples 'work items labels' do |namespace_type|
   end
 
   it 'creates, auto-selects, and adds new label' do
-    within_testid 'work-item-labels' do
+    within 'section[data-testid="work-item-labels"]' do
       click_button 'Edit'
       expect(page).to have_selector('.gl-new-dropdown-item[role="option"]', minimum: 1)
 

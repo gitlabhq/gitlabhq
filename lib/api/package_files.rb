@@ -119,6 +119,7 @@ module API
 
       desc 'Download a package file' do
         detail 'This feature was introduced in GitLab 18.4'
+        produces %w[application/octet-stream]
         success code: 200
         failure [
           { code: 401, message: 'Unauthorized' },

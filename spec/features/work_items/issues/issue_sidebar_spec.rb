@@ -158,7 +158,9 @@ RSpec.describe 'Issue Sidebar', :js, feature_category: :team_planning do
         end
 
         it 'adds and removes a label' do
-          within_testid('work-item-labels') do
+          # Tag-qualified: the Edit button's tooltip also carries data-testid="work-item-labels"
+          # and is teleported to the top of <body>, so a bare testid scope can hit that <div>.
+          within('section[data-testid="work-item-labels"]') do
             click_button 'Edit'
             select_listbox_item(stretch.name)
             click_button 'Apply'
@@ -174,7 +176,7 @@ RSpec.describe 'Issue Sidebar', :js, feature_category: :team_planning do
         end
 
         it 'creates new label' do
-          within_testid('work-item-labels') do
+          within('section[data-testid="work-item-labels"]') do
             click_button 'Edit'
             expect(page).to have_selector('.gl-new-dropdown-item[role="option"]', minimum: 1)
 

@@ -444,6 +444,13 @@ module Gitlab
               period: 1.minute,
               action: :limit
             ),
+            organization_user_create: ::Labkit::RateLimit::Rule.new(
+              name: 'limit_organization_user_creates_by_user',
+              characteristics: %i[user],
+              limit: 20,
+              period: 1.minute,
+              action: :limit
+            ),
             permanent_email_failure: ::Labkit::RateLimit::Rule.new(
               name: 'limit_permanent_email_failures_by_email',
               characteristics: %i[email],

@@ -101,14 +101,16 @@ describe('FilteredSearchBarRoot', () => {
         findGlSorting().vm.$emit('sortByChange', mockSortOptions[1].id);
         await nextTick();
 
-        expect(wrapper.emitted('onSort')[0]).toEqual([mockSortOptions[1].sortDirection.descending]);
+        expect(wrapper.emitted('on-sort')[0]).toEqual([
+          mockSortOptions[1].sortDirection.descending,
+        ]);
       });
 
       it('emits an event with the selectedSortDirection provided by default', async () => {
         findGlSorting().vm.$emit('sortDirectionChange', true);
         await nextTick();
 
-        expect(wrapper.emitted('onSort')[0]).toEqual([mockSortOptions[0].sortDirection.ascending]);
+        expect(wrapper.emitted('on-sort')[0]).toEqual([mockSortOptions[0].sortDirection.ascending]);
       });
     });
 
@@ -194,16 +196,16 @@ describe('FilteredSearchBarRoot', () => {
   });
 
   describe('events', () => {
-    it('emits component event `onFilter` with empty array and true when initially selected filter value was cleared', async () => {
+    it('emits component event `on-filter` with empty array and true when initially selected filter value was cleared', async () => {
       createComponent({ propsData: { initialFilterValue: [tokenValueLabel] } });
 
       wrapper.findComponent(GlFilteredSearch).vm.$emit('clear');
 
       await nextTick();
-      expect(wrapper.emitted('onFilter')[0]).toEqual([[], true]);
+      expect(wrapper.emitted('on-filter')[0]).toEqual([[], true]);
     });
 
-    it('emits component event `onInput` on filteredsearch input component', async () => {
+    it('emits component event `on-input` on filteredsearch input component', async () => {
       const mockFilters = [tokenValueAuthor, 'foo'];
       createComponent();
 
@@ -211,7 +213,7 @@ describe('FilteredSearchBarRoot', () => {
 
       await nextTick();
 
-      expect(wrapper.emitted('onInput')[0]).toEqual([mockFilters]);
+      expect(wrapper.emitted('on-input')[0]).toEqual([mockFilters]);
     });
   });
 
@@ -248,14 +250,16 @@ describe('FilteredSearchBarRoot', () => {
     });
 
     describe('handleSortOptionChange', () => {
-      it('emits component event `onSort` with selected sort by value', async () => {
+      it('emits component event `on-sort` with selected sort by value', async () => {
         createComponent({ propsData: { sortOptions: mockSortOptions } });
 
         findGlSorting().vm.$emit('sortByChange', mockSortOptions[1].id);
         await nextTick();
 
         expect(wrapper.vm.selectedSortOption).toEqual(mockSortOptions[1]);
-        expect(wrapper.emitted('onSort')[0]).toEqual([mockSortOptions[1].sortDirection.descending]);
+        expect(wrapper.emitted('on-sort')[0]).toEqual([
+          mockSortOptions[1].sortDirection.descending,
+        ]);
       });
     });
 
@@ -278,19 +282,19 @@ describe('FilteredSearchBarRoot', () => {
         expect(findGlSorting().props('isAscending')).toBe(true);
       });
 
-      it('emits component event `onSort` with opposite of currently selected sort by value', () => {
+      it('emits component event `on-sort` with opposite of currently selected sort by value', () => {
         findGlSorting().vm.$emit('sortDirectionChange', true);
 
-        expect(wrapper.emitted('onSort')[0]).toEqual([mockSortOptions[0].sortDirection.ascending]);
+        expect(wrapper.emitted('on-sort')[0]).toEqual([mockSortOptions[0].sortDirection.ascending]);
       });
     });
 
     describe('handleHistoryItemSelected', () => {
-      it('emits `onFilter` event with provided filters param', () => {
+      it('emits `on-filter` event with provided filters param', () => {
         createComponent();
-        expect(wrapper.emitted('onFilter')).toEqual(undefined);
+        expect(wrapper.emitted('on-filter')).toEqual(undefined);
         findGlFilteredSearch().vm.$emit('history-item-selected', mockHistoryItems[0]);
-        expect(wrapper.emitted('onFilter')[0]).toEqual([mockHistoryItems[0]]);
+        expect(wrapper.emitted('on-filter')[0]).toEqual([mockHistoryItems[0]]);
       });
     });
 
@@ -358,12 +362,12 @@ describe('FilteredSearchBarRoot', () => {
         expect(wrapper.vm.blurSearchInput).toHaveBeenCalled();
       });
 
-      it('emits component event `onFilter` with provided filters param', async () => {
-        expect(wrapper.emitted('onFilter')).toEqual(undefined);
+      it('emits component event `on-filter` with provided filters param', async () => {
+        expect(wrapper.emitted('on-filter')).toEqual(undefined);
         findGlFilteredSearch().vm.$emit('submit');
         await nextTick();
 
-        expect(wrapper.emitted('onFilter')[0]).toEqual([mockFilters]);
+        expect(wrapper.emitted('on-filter')[0]).toEqual([mockFilters]);
       });
     });
 

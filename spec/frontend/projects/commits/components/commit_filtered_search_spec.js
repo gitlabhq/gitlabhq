@@ -102,56 +102,56 @@ describe('CommitFilteredSearch', () => {
   });
 
   describe('events', () => {
-    it('emits filter event when FilteredSearchBar emits onFilter', () => {
+    it('emits filter event when FilteredSearchBar emits on-filter', () => {
       const filterTokens = [{ type: TOKEN_TYPE_AUTHOR, value: { data: 'author1' } }];
 
-      findFilteredSearchBar().vm.$emit('onFilter', filterTokens);
+      findFilteredSearchBar().vm.$emit('on-filter', filterTokens);
 
       expect(wrapper.emitted('filter')).toEqual([[filterTokens]]);
     });
 
-    it('emits filter event with message token when FilteredSearchBar emits onFilter', () => {
+    it('emits filter event with message token when FilteredSearchBar emits on-filter', () => {
       const filterTokens = [{ type: TOKEN_TYPE_MESSAGE, value: { data: 'fix bug' } }];
 
-      findFilteredSearchBar().vm.$emit('onFilter', filterTokens);
+      findFilteredSearchBar().vm.$emit('on-filter', filterTokens);
 
       expect(wrapper.emitted('filter')).toEqual([[filterTokens]]);
     });
 
-    it('emits filter event with multiple tokens when FilteredSearchBar emits onFilter', () => {
+    it('emits filter event with multiple tokens when FilteredSearchBar emits on-filter', () => {
       const filterTokens = [
         { type: TOKEN_TYPE_AUTHOR, value: { data: 'author1' } },
         { type: TOKEN_TYPE_MESSAGE, value: { data: 'fix bug' } },
       ];
 
-      findFilteredSearchBar().vm.$emit('onFilter', filterTokens);
+      findFilteredSearchBar().vm.$emit('on-filter', filterTokens);
 
       expect(wrapper.emitted('filter')).toEqual([[filterTokens]]);
     });
 
-    it('emits filter event with committed-after token when FilteredSearchBar emits onFilter', () => {
+    it('emits filter event with committed-after token when FilteredSearchBar emits on-filter', () => {
       const filterTokens = [{ type: TOKEN_TYPE_COMMITTED_AFTER, value: { data: '2025-01-01' } }];
 
-      findFilteredSearchBar().vm.$emit('onFilter', filterTokens);
+      findFilteredSearchBar().vm.$emit('on-filter', filterTokens);
 
       expect(wrapper.emitted('filter')).toEqual([[filterTokens]]);
     });
 
-    it('emits filter event with committed-before token when FilteredSearchBar emits onFilter', () => {
+    it('emits filter event with committed-before token when FilteredSearchBar emits on-filter', () => {
       const filterTokens = [{ type: TOKEN_TYPE_COMMITTED_BEFORE, value: { data: '2025-12-31' } }];
 
-      findFilteredSearchBar().vm.$emit('onFilter', filterTokens);
+      findFilteredSearchBar().vm.$emit('on-filter', filterTokens);
 
       expect(wrapper.emitted('filter')).toEqual([[filterTokens]]);
     });
 
-    it('emits filter event with date range tokens when FilteredSearchBar emits onFilter', () => {
+    it('emits filter event with date range tokens when FilteredSearchBar emits on-filter', () => {
       const filterTokens = [
         { type: TOKEN_TYPE_COMMITTED_AFTER, value: { data: '2025-01-01' } },
         { type: TOKEN_TYPE_COMMITTED_BEFORE, value: { data: '2025-12-31' } },
       ];
 
-      findFilteredSearchBar().vm.$emit('onFilter', filterTokens);
+      findFilteredSearchBar().vm.$emit('on-filter', filterTokens);
 
       expect(wrapper.emitted('filter')).toEqual([[filterTokens]]);
     });

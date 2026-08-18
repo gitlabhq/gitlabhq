@@ -271,6 +271,12 @@ RSpec.describe Banzai::Filter::SanitizationFilter, feature_category: :markdown d
 
         %(<table><tr><th class="task-table-item"><input type="checkbox" class="task-list-item-checkbox"></th></tr></table>) | %(<table><tbody><tr><th class="task-table-item"><input type="checkbox" class="task-list-item-checkbox"></th></tr></tbody></table>)
         %(<table><tr><th class="other-class"><input type="checkbox" class="other-checkbox"></th></tr></table>) | %(<table><tbody><tr><th></th></tr></tbody></table>)
+
+        %q(<img src="example.jpg" class="glfm-float-right">) | %q(<img src="example.jpg" class="glfm-float-right">)
+        %q(<img src="example.jpg" class="glfm-float-left">)  | %q(<img src="example.jpg" class="glfm-float-left">)
+        %q(<img src="example.jpg" class="glfm-float-none">)  | %q(<img src="example.jpg" class="glfm-float-none">)
+        %q(<img src="example.jpg" class="other-class">)      | %q(<img src="example.jpg">)
+        %q(<img src="example.jpg" class="glfm-float-right other-class">) | %q(<img src="example.jpg">)
       end
       # rubocop:enable Layout/LineLength
 

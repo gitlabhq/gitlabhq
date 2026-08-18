@@ -128,7 +128,7 @@ export default {
           :recent-searches-storage-key="filteredSearchRecentSearchesStorageKey"
           :search-input-placeholder="searchInputPlaceholder"
           terms-as-tokens
-          @onFilter="onFilter"
+          @on-filter="onFilter"
         />
       </div>
       <div v-if="glSlots().default">

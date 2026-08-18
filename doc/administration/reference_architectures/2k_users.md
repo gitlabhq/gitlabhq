@@ -50,7 +50,7 @@ For a full list of reference architectures, see
    Refer to [large monorepos](_index.md#large-monorepos) for more information.
 7. Can be placed in Auto Scaling Groups (ASGs) as the component doesn't store any [stateful data](_index.md#autoscaling-of-stateful-nodes).
    However, [Cloud Native Hybrid setups](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) are generally preferred as certain components
-   such as like [migrations](#gitlab-rails-post-configuration) and [Mailroom](../incoming_email.md) can only be run on one node, which is handled better in Kubernetes.
+   such as [migrations](#gitlab-rails-post-configuration) and [Mailroom](../incoming_email.md) can only be run on one node, which is handled better in Kubernetes.
 <!-- markdownlint-enable MD029 -->
 
 > [!note]
@@ -604,7 +604,7 @@ To configure Gitaly with TLS:
 
 ## Configure Sidekiq
 
-Sidekiq requires connection to the [Redis](#configure-redis),
+Sidekiq requires a connection to the [Redis](#configure-redis),
 [PostgreSQL](#configure-postgresql) and [Gitaly](#configure-gitaly) instances.
 It also requires a connection to [Object Storage](#configure-the-object-storage) as recommended.
 
@@ -1120,7 +1120,7 @@ the overall makeup as desired as long as the minimum CPU and Memory requirements
 - The [Webservice](#webservice) and [Sidekiq](#sidekiq) target node pool totals are given for GitLab components only. Additional resources are required for the chosen Kubernetes provider's system processes. The given examples take this into account.
 - The [Supporting](#supporting) target node pool total is given generally to accommodate several resources for supporting the GitLab deployment and any additional deployments you may wish to make depending on your requirements. Similar to the other node pools, the chosen Kubernetes provider's system processes also require resources. The given examples take this into account.
 - In production deployments, it's not required to assign pods to specific nodes. However, it is recommended to have several nodes in each pool spread across different availability zones to align with resilient cloud architecture practices.
-- Enabling autoscaling, such as Cluster Autoscaler, for efficiency reasons is encouraged, but it's generally recommended targeting a floor of 75% for Webservice and Sidekiq pods to ensure ongoing performance.
+- Enabling autoscaling, such as Cluster Autoscaler, for efficiency reasons is encouraged, but it's generally recommended to target a floor of 75% for Webservice and Sidekiq pods to ensure ongoing performance.
 
 Next are the backend components that run on static compute VMs using the Linux package (or External PaaS
 services where applicable):
@@ -1203,7 +1203,7 @@ For further information on Webservice resource usage, see the Charts documentati
 
 ##### Gateway API / Ingress
 
-It's also recommended deploying the Gateway API or Ingress controller pods across the Webservice nodes as a DaemonSet. This allows the controllers to scale dynamically with the Webservice pods they serve, and takes advantage of the higher network bandwidth larger machine types typically have.
+It's also recommended to deploy the Gateway API or Ingress controller pods across the Webservice nodes as a DaemonSet. This allows the controllers to scale dynamically with the Webservice pods they serve, and takes advantage of the higher network bandwidth larger machine types typically have.
 
 This isn't a strict requirement. The Gateway API or Ingress controller pods can be deployed as desired as long as they have enough resources to handle the web traffic.
 

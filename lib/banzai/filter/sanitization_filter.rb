@@ -9,6 +9,7 @@ module Banzai
       # Styles used by Markdown for table alignment
       TABLE_ALIGNMENT_PATTERN = /text-align: (?<alignment>center|left|right)/
       ALLOWED_IDIFF_CLASSES = %w[idiff left right deletion addition].freeze
+      ALLOWED_IMG_CLASSES = %w[glfm-float-right glfm-float-left glfm-float-none].freeze
       HEADER_NODE_NAMES = %w[h1 h2 h3 h4 h5 h6].freeze
       TASK_LIST_ITEM_CHECKBOX_PARENTS = %w[li td th].freeze
       JSON_TABLE_FIELD_KEYS = Set.new(%w[key label sortable]).freeze
@@ -74,6 +75,7 @@ module Banzai
         allowlist[:attributes]['li'].push('class')
         allowlist[:attributes]['th'].push('class')
         allowlist[:attributes]['td'].push('class')
+        allowlist[:attributes]['img'].push('class')
         allowlist[:attributes]['input'] = %w[class]
         allowlist[:transformers].push(self.class.method(:remove_unsafe_classes))
       end
@@ -111,7 +113,7 @@ module Banzai
           end
         end
 
-        def remove_unsafe_classes(env) # rubocop:disable Metrics/CyclomaticComplexity -- dispatch method.
+        def remove_unsafe_classes(env) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity -- dispatch method.
           node = env[:node]
 
           return unless node.has_attribute?('class')
@@ -133,6 +135,8 @@ module Banzai
             node.remove_attribute('class') if remove_li_class?(node)
           when 'th', 'td'
             node.remove_attribute('class') if remove_th_td_class?(node)
+          when 'img'
+            node.remove_attribute('class') if remove_img_class?(node)
           when 'input'
             node.remove_attribute('class') if remove_input_class?(node)
           end
@@ -175,6 +179,10 @@ module Banzai
 
         def remove_th_td_class?(node)
           node['class'] != 'task-table-item'
+        end
+
+        def remove_img_class?(node)
+          (node['class'].split - ALLOWED_IMG_CLASSES).present?
         end
 
         def remove_input_class?(node)

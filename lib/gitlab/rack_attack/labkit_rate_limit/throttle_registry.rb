@@ -35,8 +35,8 @@ module Gitlab
       #                   resolved once with [:api, :rss, :ics] and shared by the api
       #                   and web rules (they agree on api paths, where rss/ics auth is
       #                   inert). :ip and :path are always present; :requester_id and
-      #                   :aid are nil for an unauthenticated (or non-collector, or
-      #                   allowlisted) request, so a rule that counts by one carries a
+      #                   :aid are nil for an unauthenticated (or non-collector)
+      #                   request, so a rule that counts by one carries a
       #                   presence gate on the id ({ requester_id => /./ }, { aid => /./ })
       #                   in its :match, which suppresses it when the value is absent -
       #                   mirroring the Rack::Attack lambda returning nil.

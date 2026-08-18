@@ -111,6 +111,59 @@ describe('mousetrap utils', () => {
     });
   });
 
+  describe('pause and unpause', () => {
+    let clearStopCallbacksForTests;
+    let clearPausesForTests;
+    let addStopCallback;
+
+    const isShortcutStopped = () =>
+      Mousetrap.prototype.stopCallback.call({}, { type: 'keydown' }, document, 'enter');
+
+    beforeEach(async () => {
+      ({ addStopCallback, clearStopCallbacksForTests, clearPausesForTests } =
+        await import('~/lib/mousetrap'));
+      clearStopCallbacksForTests();
+      clearPausesForTests();
+    });
+
+    afterEach(() => {
+      clearPausesForTests();
+    });
+
+    it('stops shortcuts while paused and resumes them on unpause', () => {
+      Mousetrap.pause();
+      expect(isShortcutStopped()).toBe(true);
+
+      Mousetrap.unpause();
+      expect(isShortcutStopped()).toBe(originalMethodReturnValue);
+    });
+
+    it('keeps shortcuts stopped until every caller has unpaused', () => {
+      Mousetrap.pause();
+      Mousetrap.pause();
+
+      Mousetrap.unpause();
+      expect(isShortcutStopped()).toBe(true);
+
+      Mousetrap.unpause();
+      expect(isShortcutStopped()).toBe(originalMethodReturnValue);
+    });
+
+    it('ignores an unpause that has no matching pause', () => {
+      Mousetrap.unpause();
+      Mousetrap.pause();
+
+      expect(isShortcutStopped()).toBe(true);
+    });
+
+    it('takes precedence over a stop callback that would allow the shortcut', () => {
+      addStopCallback(() => false);
+      Mousetrap.pause();
+
+      expect(isShortcutStopped()).toBe(true);
+    });
+  });
+
   describe('input focus lock', () => {
     let clearStopCallbacks;
     let suppressShortcutsUntilInputFocus;

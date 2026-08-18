@@ -131,6 +131,28 @@ RSpec.describe Banzai::Filter::References::CommitReferenceFilter, feature_catego
         expect(doc.css('a').first[:href]).to eq(url)
       end
 
+      it 'handles abbreviated merge request contextual commit references' do
+        url = urls.diffs_project_merge_request_url(project, noteable, commit_id: commit.id)
+        doc = reference_filter("See #{reference[0...8]}", noteable: noteable)
+
+        expect(doc.css('a').first[:href]).to eq(url)
+      end
+
+      it 'only looks up the SHAs that are referenced in the text' do
+        expect(noteable).to receive(:existing_commit_shas).with([commit.id]).and_call_original
+
+        reference_filter("See #{reference}", noteable: noteable)
+      end
+
+      it 'does not look up SHAs referenced in other projects' do
+        other_project = create(:project, :public, :repository)
+        other_reference = "#{other_project.full_path}@#{other_project.commit.id}"
+
+        expect(noteable).to receive(:existing_commit_shas).with([commit.id]).and_call_original
+
+        reference_filter("See #{reference} and #{other_reference}", noteable: noteable)
+      end
+
       context "a doc with many (29) strings that could be SHAs" do
         let!(:oids) { noteable.commits.collect(&:id) }
 

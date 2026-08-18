@@ -37,7 +37,7 @@ describe('CustomEmailForm', () => {
     await nextTick();
     findForm().trigger('submit');
 
-    expect(findSubmit().find('button').attributes('disabled')).toBeDefined();
+    expect(findSubmit().find('button').attributes('aria-disabled')).toBe('true');
     expect(wrapper.emitted('submit')).toEqual(undefined);
   };
 

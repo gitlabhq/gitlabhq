@@ -38,6 +38,8 @@ module API
       resource :projects, requirements: ::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc 'Retrieve job artifacts' do
           detail 'Retrieves the artifacts archive for the latest successful job on a specified branch or tag.'
+          produces %w[application/octet-stream]
+          success code: 200
           failure [
             { code: 401, message: 'Unauthorized' },
             { code: 403, message: 'Forbidden' },
@@ -137,6 +139,8 @@ module API
 
         desc 'Download the artifacts archive from a job' do
           detail 'This feature was introduced in GitLab 8.5'
+          produces %w[application/octet-stream]
+          success code: 200
           failure [
             { code: 401, message: 'Unauthorized' },
             { code: 403, message: 'Forbidden' },

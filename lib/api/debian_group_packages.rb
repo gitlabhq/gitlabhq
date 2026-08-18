@@ -40,6 +40,7 @@ module API
 
         desc 'Download Debian package' do
           detail 'This feature was introduced in GitLab 14.2'
+          produces %w[application/octet-stream]
           success code: 200
           failure [
             { code: 401, message: 'Unauthorized' },

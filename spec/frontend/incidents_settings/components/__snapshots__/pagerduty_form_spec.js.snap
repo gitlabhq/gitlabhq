@@ -47,6 +47,7 @@ exports[`Alert integration settings form should match the default snapshot 1`] =
         />
       </gl-form-input-group-stub>
       <gl-button-stub
+        accessibledisabled="true"
         buttontextclasses=""
         category="primary"
         class="gl-mt-5"

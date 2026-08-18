@@ -303,7 +303,11 @@ RSpec.describe 'Environment', feature_category: :environment_management do
       expect(page).to have_button('Stop')
     end
 
-    it 'user deletes the branch with running environment', :js do
+    it 'user deletes the branch with running environment', :js,
+      quarantine: {
+        issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/43917',
+        type: :flaky
+      } do
       visit project_branches_filtered_path(project, state: 'all', search: 'feature')
 
       remove_branch_with_hooks(project, user, 'feature') do

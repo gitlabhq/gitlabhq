@@ -973,6 +973,19 @@
     position: relative;
     bottom: -3px;
   }
+
+  /* Custom classes we explicitly support */
+  .glfm-float-left {
+    float: left;
+  }
+
+  .glfm-float-right {
+    float: right;
+  }
+
+  .glfm-float-none {
+    float: none;
+  }
 }
 
 /**

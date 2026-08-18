@@ -295,9 +295,14 @@ export default {
       </gl-form-group>
 
       <section class="gl-mt-5">
-        <gl-button block variant="confirm" type="submit" :disabled="!inputValidation.state">{{
-          $options.i18n.submitButton
-        }}</gl-button>
+        <gl-button
+          block
+          variant="confirm"
+          type="submit"
+          class="js-no-auto-disable"
+          :disabled="!inputValidation.state"
+          >{{ $options.i18n.submitButton }}</gl-button
+        >
       </section>
 
       <!-- Skip button -->

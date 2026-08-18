@@ -16,7 +16,7 @@ title: 'Reference architecture: Up to 60 RPS or 3,000 users'
 This page describes the GitLab reference architecture designed to target a peak load of 60 requests per second (RPS), the typical peak load of up to 3,000 users, both manual and automated, based on real data.
 
 This architecture is the smallest one available with HA built in. If you require HA but
-have a lower user count or total load the [Supported Modifications for lower user counts](#supported-modifications-for-lower-user-counts-ha)
+have a lower user count or total load, the [Supported Modifications for lower user counts](#supported-modifications-for-lower-user-counts-ha)
 section details how to reduce this architecture's size while maintaining HA.
 
 For a full list of reference architectures, see
@@ -59,7 +59,7 @@ For a full list of reference architectures, see
    However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can significantly impact Git and Gitaly performance and further adjustments will likely be required.
 8. Can be placed in Auto Scaling Groups (ASGs) as the component doesn't store any [stateful data](_index.md#autoscaling-of-stateful-nodes).
    However, [Cloud Native Hybrid setups](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) are generally preferred as certain components
-   such as like [migrations](#gitlab-rails-post-configuration) and [Mailroom](../incoming_email.md) can only be run on one node, which is handled better in Kubernetes.
+   such as [migrations](#gitlab-rails-post-configuration) and [Mailroom](../incoming_email.md) can only be run on one node, which is handled better in Kubernetes.
 <!-- markdownlint-enable MD029 -->
 
 > [!note]
@@ -167,7 +167,7 @@ These targets are based on actual customer data reflecting total environmental l
 
 For more information about our testing methodology, see the [validation and test results](_index.md#validation-and-test-results) section.
 
-### Performance Considerations
+### Performance considerations
 
 You may need additional adjustments if your environment has:
 
@@ -198,7 +198,7 @@ To set up GitLab and its components to accommodate up to 60 RPS or 3,000 users:
 1. [Configure Redis](#configure-redis), which stores session data, temporary
    cache information, and background job queues.
 1. [Configure Gitaly Cluster (Praefect)](#configure-gitaly-cluster-praefect),
-   provides access to the Git repositories.
+   which provides access to the Git repositories.
 1. [Configure Sidekiq](#configure-sidekiq) for background job processing.
 1. [Configure the main GitLab Rails application](#configure-gitlab-rails)
    to run Puma, Workhorse, GitLab Shell, and to serve all frontend
@@ -665,7 +665,7 @@ but do not provide the `EXTERNAL_URL` value.
    # END user configuration
    ```
 
-PostgreSQL, with Patroni managing its failover, defaults to use `pg_rewind` by default to handle conflicts.
+PostgreSQL, with Patroni managing its failover, defaults to using `pg_rewind` to handle conflicts.
 Like most failover handling methods, this has a small chance of leading to data loss.
 For more information, see the various [Patroni replication methods](../postgresql/replication_and_failover.md#selecting-the-appropriate-patroni-replication-method).
 
@@ -826,7 +826,7 @@ The following IPs are used as an example:
 
 ## Configure Redis
 
-Using [Redis](https://redis.io/) in scalable environment is possible using a **Primary** x **Replica**
+Using [Redis](https://redis.io/) in a scalable environment is possible using a **Primary** x **Replica**
 topology with a [Redis Sentinel](https://redis.io/docs/latest/operate/oss_and_stack/management/sentinel/) service to watch and automatically
 start the failover procedure.
 
@@ -901,8 +901,8 @@ a node and change its status from primary to replica (and vice versa).
    sentinel['bind'] = '0.0.0.0'
    sentinel['quorum'] = 2
 
-   # IP address pointing to a local IP that the other machines can reach to.
-   # You can also set bind to '0.0.0.0' which listen in all interfaces.
+   # IP address pointing to a local IP that the other machines can reach.
+   # You can also set bind to '0.0.0.0' which listens on all interfaces.
    # If you really must bind to an external accessible IP, make
    # sure you add extra firewall rules to prevent unauthorized access.
    redis['bind'] = '10.6.0.61'
@@ -963,8 +963,8 @@ a node and change its status from primary to replica (and vice versa).
    sentinel['bind'] = '0.0.0.0'
    sentinel['quorum'] = 2
 
-   # IP address pointing to a local IP that the other machines can reach to.
-   # You can also set bind to '0.0.0.0' which listen in all interfaces.
+   # IP address pointing to a local IP that the other machines can reach.
+   # You can also set bind to '0.0.0.0' which listens on all interfaces.
    # If you really must bind to an external accessible IP, make
    # sure you add extra firewall rules to prevent unauthorized access.
    redis['bind'] = '10.6.0.62'
@@ -1247,7 +1247,7 @@ Praefect requires several secret tokens to secure communications across the clus
 Gitaly Cluster (Praefect) nodes are configured in Praefect via a `virtual storage`. Each storage contains
 the details of each Gitaly node that makes up the cluster. Each storage is also given a name
 and this name is used in several areas of the configuration. In this guide, the name of the storage will be
-`default`. Also, this guide is geared towards new installs, if upgrading an existing environment
+`default`. Also, this guide is geared towards new installs. If upgrading an existing environment
 to use Gitaly Cluster (Praefect), you might have to use a different name.
 Refer to the [Gitaly Cluster (Praefect) documentation](../gitaly/praefect/configure.md#praefect) for more information.
 
@@ -1368,7 +1368,7 @@ To configure the Praefect nodes, on each one:
 
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
    the file of the same name on this server. If this is the first Linux package node you are configuring then you can skip this step.
-1. Praefect requires to run some database migrations, much like the main GitLab application. For this
+1. Praefect needs to run some database migrations, much like the main GitLab application. For this
    you should select **one Praefect node only to run the migrations**, AKA the _Deploy Node_. This node
    must be configured first before the others as follows:
 
@@ -1617,7 +1617,7 @@ To configure Praefect with TLS:
 
 ## Configure Sidekiq
 
-Sidekiq requires connection to the [Redis](#configure-redis),
+Sidekiq requires a connection to the [Redis](#configure-redis),
 [PostgreSQL](#configure-postgresql) and [Gitaly](#configure-gitaly) instances.
 It also requires a connection to [Object Storage](#configure-the-object-storage) as recommended.
 
@@ -2155,7 +2155,7 @@ supported modifications you can make to this architecture to reduce complexity a
 It should be noted that to achieve HA with GitLab, the 60 RPS or 3,000 users architecture's makeup is ultimately what is
 required. Each component has various considerations and rules to follow, and the architecture
 meets all of these. Smaller versions of this architecture will be fundamentally the same,
-but with smaller performance requirements, the following modifications are supported as follows:
+but with smaller performance requirements. The following modifications are supported as follows:
 
 > [!note]
 > If not stated below, no other modifications are supported for lower use counts.
@@ -2221,7 +2221,7 @@ the overall makeup as desired as long as the minimum CPU and Memory requirements
 - The [Webservice](#webservice) and [Sidekiq](#sidekiq) target node pool totals are given for GitLab components only. Additional resources are required for the chosen Kubernetes provider's system processes. The given examples take this into account.
 - The [Supporting](#supporting) target node pool total is given generally to accommodate several resources for supporting the GitLab deployment as well as any additional deployments you may wish to make depending on your requirements. Similar to the other node pools, the chosen Kubernetes provider's system processes also require resources. The given examples take this into account.
 - In production deployments, it's not required to assign pods to specific nodes. However, it is recommended to have several nodes in each pool spread across different availability zones to align with resilient cloud architecture practices.
-- Enabling autoscaling, such as Cluster Autoscaler, for efficiency reasons is encouraged, but it's generally recommended targeting a floor of 75% for Webservice and Sidekiq pods to ensure ongoing performance.
+- Enabling autoscaling, such as Cluster Autoscaler, for efficiency reasons is encouraged, but it's generally recommended to target a floor of 75% for Webservice and Sidekiq pods to ensure ongoing performance.
 
 Next are the backend components that run on static compute VMs using the Linux package (or External PaaS
 services where applicable):
@@ -2344,7 +2344,7 @@ For further information on Webservice resource usage, see the Charts documentati
 
 ##### Gateway API / Ingress
 
-It's also recommended deploying the Gateway API or Ingress controller pods across the Webservice nodes as a DaemonSet. This allows the controllers to scale dynamically with the Webservice pods they serve, and takes advantage of the higher network bandwidth larger machine types typically have.
+It's also recommended to deploy the Gateway API or Ingress controller pods across the Webservice nodes as a DaemonSet. This allows the controllers to scale dynamically with the Webservice pods they serve, and takes advantage of the higher network bandwidth larger machine types typically have.
 
 This isn't a strict requirement. The Gateway API or Ingress controller pods can be deployed as desired as long as they have enough resources to handle the web traffic.
 

@@ -128,7 +128,7 @@ describe('Design reply form component', () => {
 
   describe('when form has no text', () => {
     it('submit button is disabled', () => {
-      expect(findSubmitButton().attributes().disabled).toBe('disabled');
+      expect(findSubmitButton().attributes()['aria-disabled']).toBe('true');
     });
 
     it.each`
@@ -157,7 +157,7 @@ describe('Design reply form component', () => {
   describe('when the form has text', () => {
     it('submit button is enabled', () => {
       createComponent({ props: { value: mockComment } });
-      expect(findSubmitButton().attributes().disabled).toBeUndefined();
+      expect(findSubmitButton().attributes()['aria-disabled']).toBeUndefined();
     });
 
     it('calls a mutation on submit button click event', () => {

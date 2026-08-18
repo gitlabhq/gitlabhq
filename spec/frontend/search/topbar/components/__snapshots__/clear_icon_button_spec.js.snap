@@ -2,6 +2,7 @@
 
 exports[`Clear Icon Button renders successfully 1`] = `
 <gl-button-stub
+  accessibledisabled="true"
   aria-label="Tooltip Text"
   buttontextclasses=""
   category="tertiary"

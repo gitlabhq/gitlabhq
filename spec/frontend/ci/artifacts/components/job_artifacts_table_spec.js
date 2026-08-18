@@ -370,7 +370,7 @@ describe('JobArtifactsTable component', () => {
 
       await waitForPromises();
 
-      expect(findDownloadButton().attributes('disabled')).toBeDefined();
+      expect(findDownloadButton().attributes('aria-disabled')).toBe('true');
     });
   });
 
@@ -397,7 +397,7 @@ describe('JobArtifactsTable component', () => {
 
       await waitForPromises();
 
-      expect(findBrowseButton().attributes('disabled')).toBeDefined();
+      expect(findBrowseButton().attributes('aria-disabled')).toBe('true');
     });
 
     it('is disabled when job has no metadata.gz', async () => {
@@ -414,7 +414,7 @@ describe('JobArtifactsTable component', () => {
 
       await waitForPromises();
 
-      expect(findBrowseButton().attributes('disabled')).toBe('disabled');
+      expect(findBrowseButton().attributes('aria-disabled')).toBe('true');
     });
 
     it('is disabled when job has no artifacts', async () => {
@@ -431,7 +431,7 @@ describe('JobArtifactsTable component', () => {
 
       await waitForPromises();
 
-      expect(findBrowseButton().attributes('disabled')).toBe('disabled');
+      expect(findBrowseButton().attributes('aria-disabled')).toBe('true');
     });
   });
 

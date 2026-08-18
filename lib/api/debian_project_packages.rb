@@ -56,6 +56,7 @@ module API
 
         desc 'Download a Debian package file' do
           detail 'Downloads a specified Debian package file for a project.'
+          produces %w[application/octet-stream]
           success code: 200
           failure [
             { code: 401, message: 'Unauthorized' },

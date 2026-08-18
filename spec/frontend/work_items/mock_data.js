@@ -10306,7 +10306,6 @@ export const workItemMetadataProviderResponse = {
         issuesList: '/flightjs/Flight/-/issues',
         contributionGuidePath: '/flightjs/Flight/-/blob/master/CONTRIBUTING.md',
         epicsList: '/groups/flightjs/-/epics',
-        groupIssues: '/groups/flightjs/-/issues',
         labelsFetch:
           '/flightjs/Flight/-/labels.json?include_ancestor_groups=true\u0026only_group_labels=true',
         labelsManage: '/flightjs/Flight/-/labels',
@@ -10476,7 +10475,6 @@ export const mockMetadataQueryResponse = {
         __typename: 'LinkPaths',
         issuesList: '/issues',
         epicsList: '/epics',
-        groupIssues: '/group/issues',
         labelsFetch: '/labels/fetch',
         labelsManage: '/labels/manage',
         newProject: '/projects/new',
@@ -10486,7 +10484,6 @@ export const mockMetadataQueryResponse = {
         calendarPath: '/calendar',
         rssPath: '/rss',
         autocompleteAwardEmojisPath: '/emojis',
-        newTrialPath: '/trial',
         newIssuePath: '/issues/new',
         groupPath: '/group',
         releasesPath: '/releases',

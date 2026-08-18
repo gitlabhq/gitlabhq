@@ -626,24 +626,6 @@ RSpec.describe Repository, feature_category: :source_code_management do
         end
       end
 
-      context 'when include_referenced_by is passed' do
-        let(:ref) { '5937ac0a7beb003549fc5fd26fc247adbce4a52e' }
-        let(:include_referenced_by) { ['refs/tags'] }
-        let(:kwargs) { { limit: 1, include_referenced_by: include_referenced_by } }
-
-        it 'returns commits with referenced_by that match the patterns' do
-          expect(commits.first.referenced_by).to match_array(['refs/tags/v1.1.0'])
-        end
-
-        context 'and matching multiple references' do
-          let(:include_referenced_by) { ['refs/tags', 'refs/heads'] }
-
-          it 'returns commits with referenced_by that match all patterns' do
-            expect(commits.first.referenced_by).to match_array(['refs/tags/v1.1.0', 'refs/heads/improve/awesome', 'refs/heads/merge-test'])
-          end
-        end
-      end
-
       context "when 'order' flag is set" do
         let(:kwargs) { { limit: 1, order: 'topo' } }
 

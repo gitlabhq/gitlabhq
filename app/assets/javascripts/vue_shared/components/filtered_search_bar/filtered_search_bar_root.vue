@@ -119,7 +119,7 @@ export default {
       default: true,
     },
   },
-  emits: ['checked-input', 'onSort', 'onFilter', 'onInput', 'token-complete', 'token-destroy'],
+  emits: ['checked-input', 'on-sort', 'on-filter', 'on-input', 'token-complete', 'token-destroy'],
   data() {
     return {
       recentSearchesPromise: null,
@@ -251,7 +251,7 @@ export default {
         });
     },
     /**
-     * When user hits Enter/Return key while typing tokens, we emit `onFilter`
+     * When user hits Enter/Return key while typing tokens, we emit `on-filter`
      * event immediately so at that time, we don't want to keep tokens dropdown
      * visible on UI so this is essentially a hack which allows us to do that
      * until `GlFilteredSearch` natively supports this.
@@ -287,14 +287,14 @@ export default {
     },
     handleSortByChange(sortById) {
       this.sortById = sortById;
-      this.$emit('onSort', this.selectedSortOption.sortDirection[this.selectedSortDirection]);
+      this.$emit('on-sort', this.selectedSortOption.sortDirection[this.selectedSortDirection]);
     },
     handleSortDirectionChange(isAscending) {
       this.sortDirectionAscending = isAscending;
-      this.$emit('onSort', this.selectedSortOption.sortDirection[this.selectedSortDirection]);
+      this.$emit('on-sort', this.selectedSortOption.sortDirection[this.selectedSortDirection]);
     },
     handleHistoryItemSelected(filters) {
-      this.$emit('onFilter', this.removeQuotesEnclosure(filters));
+      this.$emit('on-filter', this.removeQuotesEnclosure(filters));
     },
     handleClearHistory() {
       const resultantSearches = this.recentSearchesStore.setRecentSearches([]);
@@ -322,7 +322,7 @@ export default {
             // https://gitlab.com/gitlab-org/gitlab-foss/issues/30821
           });
       }
-      this.$emit('onFilter', this.removeQuotesEnclosure(filterTokens));
+      this.$emit('on-filter', this.removeQuotesEnclosure(filterTokens));
     },
     historyTokenOptionTitle(historyToken) {
       const tokenOption = this.tokens
@@ -337,7 +337,7 @@ export default {
     },
     onClear() {
       const cleared = true;
-      this.$emit('onFilter', [], cleared);
+      this.$emit('on-filter', [], cleared);
     },
     updateSelectedSortValues() {
       Object.assign(this, this.getInitialSort());
@@ -365,7 +365,7 @@ export default {
       };
     },
     onInput(tokens) {
-      this.$emit('onInput', this.removeQuotesEnclosure(uniqueTokens(tokens)));
+      this.$emit('on-input', this.removeQuotesEnclosure(uniqueTokens(tokens)));
     },
     onTokenComplete(token) {
       this.$emit('token-complete', token);

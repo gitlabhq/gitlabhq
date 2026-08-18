@@ -388,3 +388,155 @@ func waitDone(t *testing.T, done chan bool) {
 		t.Fatal("time out waiting request to arrive")
 	}
 }
+
+func TestCheckOriginByForwardedHost(t *testing.T) {
+	tests := []struct {
+		name           string
+		origin         string
+		host           string
+		xForwardedHost string
+		wantAllow      bool
+	}{
+		{
+			name:      "allows when Origin is absent",
+			host:      "internal.example.com:3333",
+			wantAllow: true,
+		},
+		{
+			name:           "allows when Origin matches X-Forwarded-Host",
+			origin:         "https://gitlab.com",
+			host:           "internal.example.com:3333",
+			xForwardedHost: "gitlab.com",
+			wantAllow:      true,
+		},
+		{
+			name:      "allows when Origin matches Host and X-Forwarded-Host is absent",
+			origin:    "https://gdk.test:3000",
+			host:      "gdk.test:3000",
+			wantAllow: true,
+		},
+		{
+			name:           "rejects when Origin matches Host but not X-Forwarded-Host",
+			origin:         "https://gdk.test:3000",
+			host:           "gdk.test:3000",
+			xForwardedHost: "other.example.com",
+			wantAllow:      false,
+		},
+		{
+			name:           "rejects when Origin does not match X-Forwarded-Host",
+			origin:         "https://evil.example.com",
+			host:           "internal.example.com:3333",
+			xForwardedHost: "gitlab.com",
+			wantAllow:      false,
+		},
+		{
+			name:      "rejects when Origin does not match Host and X-Forwarded-Host is absent",
+			origin:    "https://evil.example.com",
+			host:      "gdk.test:3000",
+			wantAllow: false,
+		},
+		{
+			name:      "rejects when Origin is an invalid URL",
+			origin:    "://not-a-url",
+			host:      "gdk.test:3000",
+			wantAllow: false,
+		},
+		{
+			name:           "comparison is case-insensitive",
+			origin:         "https://GitLab.COM",
+			host:           "internal.example.com:3333",
+			xForwardedHost: "gitlab.com",
+			wantAllow:      true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			r, err := http.NewRequest(http.MethodGet, "/", nil)
+			require.NoError(t, err)
+
+			r.Host = tt.host
+			if tt.origin != "" {
+				r.Header.Set("Origin", tt.origin)
+			}
+			if tt.xForwardedHost != "" {
+				r.Header.Set("X-Forwarded-Host", tt.xForwardedHost)
+			}
+
+			got := checkOriginByForwardedHost(r)
+			require.Equal(t, tt.wantAllow, got)
+		})
+	}
+}
+
+func TestHandler_CheckOriginByForwardedHost_AllowsMatchingForwardedHost(t *testing.T) {
+	testhelper.ConfigureSecret()
+
+	server := setupTestServer(t)
+
+	apiServer, apiClient := setupAPIServer(t, `{
+		"DuoWorkflow": {
+			"Service": {
+				"URI": "`+server.Addr+`",
+				"Headers": {"Authorization": "Bearer test"},
+				"Secure": false
+			},
+			"CheckOriginByForwardedHost": true
+		}
+	}`)
+	defer apiServer.Close()
+
+	httpServer := httptest.NewServer(NewHandler(apiClient, initRdb(t), http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}), "").Build())
+	defer httpServer.Close()
+
+	wsURL := "ws" + strings.TrimPrefix(httpServer.URL, "http") + "/duo"
+
+	// Dial with an Origin that matches X-Forwarded-Host but not the internal Host,
+	// simulating the HTTP Router rewriting the Host header.
+	dialer := websocket.Dialer{}
+	reqHeader := http.Header{}
+	reqHeader.Set("Origin", "http://public.example.com")
+	reqHeader.Set("X-Forwarded-Host", "public.example.com")
+
+	wsConn, resp, err := dialer.Dial(wsURL, reqHeader)
+	if resp != nil {
+		_ = resp.Body.Close()
+	}
+	require.NoError(t, err, "expected WebSocket upgrade to succeed when Origin matches X-Forwarded-Host")
+	defer wsConn.Close()
+}
+
+func TestHandler_CheckOriginByForwardedHost_RejectsMismatchedOrigin(t *testing.T) {
+	testhelper.ConfigureSecret()
+
+	server := setupTestServer(t)
+
+	apiServer, apiClient := setupAPIServer(t, `{
+		"DuoWorkflow": {
+			"Service": {
+				"URI": "`+server.Addr+`",
+				"Headers": {"Authorization": "Bearer test"},
+				"Secure": false
+			},
+			"CheckOriginByForwardedHost": true
+		}
+	}`)
+	defer apiServer.Close()
+
+	httpServer := httptest.NewServer(NewHandler(apiClient, initRdb(t), http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}), "").Build())
+	defer httpServer.Close()
+
+	wsURL := "ws" + strings.TrimPrefix(httpServer.URL, "http") + "/duo"
+
+	dialer := websocket.Dialer{}
+	reqHeader := http.Header{}
+	reqHeader.Set("Origin", "http://evil.example.com")
+	reqHeader.Set("X-Forwarded-Host", "public.example.com")
+
+	_, resp, err := dialer.Dial(wsURL, reqHeader)
+	if resp != nil {
+		defer resp.Body.Close()
+	}
+	require.Error(t, err, "expected WebSocket upgrade to fail when Origin does not match X-Forwarded-Host")
+	require.Equal(t, http.StatusForbidden, resp.StatusCode)
+}

@@ -184,6 +184,8 @@ RSpec.describe 'Labkit::RateLimit rack middleware', :clean_gitlab_redis_rate_lim
 
     before do
       allow(Gitlab::RackAttack).to receive(:user_allowlist).and_return(Set.new([token.user_id]))
+      # The allowlist is baked into the memoized rule set; rebuild it after stubbing.
+      Gitlab::RackAttack::LabkitRateLimit::Limiters.reset!
       stub_application_setting(
         throttle_authenticated_api_enabled: true,
         throttle_authenticated_api_requests_per_period: 1000,
@@ -195,10 +197,14 @@ RSpec.describe 'Labkit::RateLimit rack middleware', :clean_gitlab_redis_rate_lim
       stub_feature_flags(rate_limiter_use_labkit_rack_cohort_2: true)
     end
 
+    after do
+      Gitlab::RackAttack::LabkitRateLimit::Limiters.reset!
+    end
+
     # An allowlisted user is authenticated, so they must escape the authenticated API
-    # throttle (via the blank requester id) AND the unauthenticated one (they are not
-    # anonymous) - as Rack::Attack does, where their throttled_identifer is nil and
-    # unauthenticated? is false.
+    # throttle (claimed by the user_allowlist skip rule, which does not count) AND the
+    # unauthenticated one (they are not anonymous) - as Rack::Attack does, where their
+    # throttled_identifer is nil and unauthenticated? is false.
     it 'is exempt from both the authenticated and unauthenticated API throttles', :aggregate_failures do
       get '/api/v4/projects', params: { private_token: token.token }
 

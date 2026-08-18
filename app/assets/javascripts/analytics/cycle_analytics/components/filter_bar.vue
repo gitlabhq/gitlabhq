@@ -151,7 +151,7 @@ export default {
       :tokens="tokens"
       :initial-filter-value="initialFilterValue()"
       terms-as-tokens
-      @onFilter="handleFilter"
+      @on-filter="handleFilter"
     />
     <url-sync :query="query" />
   </div>

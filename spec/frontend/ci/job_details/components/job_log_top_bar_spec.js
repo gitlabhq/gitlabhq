@@ -149,7 +149,7 @@ describe('JobLogTopBar', () => {
         });
 
         it('renders disabled scroll top button', () => {
-          expect(findScrollTop().attributes('disabled')).toBeDefined();
+          expect(findScrollTop().attributes('aria-disabled')).toBe('true');
         });
 
         it('does not emit scroll-job-log-top event on click', async () => {
@@ -182,7 +182,7 @@ describe('JobLogTopBar', () => {
         });
 
         it('renders disabled scroll bottom button', () => {
-          expect(findScrollBottom().attributes('disabled')).toEqual('disabled');
+          expect(findScrollBottom().attributes('aria-disabled')).toEqual('true');
         });
 
         it('does not emit scroll-job-log-bottom event on click', async () => {
@@ -319,8 +319,8 @@ describe('JobLogTopBar', () => {
     });
 
     it('prev and next buttons are disabled initially', () => {
-      expect(findJobLogSearchPreviousButton().attributes('disabled')).toBe('disabled');
-      expect(findJobLogSearchNextButton().attributes('disabled')).toBe('disabled');
+      expect(findJobLogSearchPreviousButton().attributes('aria-disabled')).toBe('true');
+      expect(findJobLogSearchNextButton().attributes('aria-disabled')).toBe('true');
     });
 
     it('prev and next buttons are disabled when search has exactly one result', async () => {
@@ -328,8 +328,8 @@ describe('JobLogTopBar', () => {
       findJobLogSearch().vm.$emit('submit');
       await nextTick();
 
-      expect(findJobLogSearchPreviousButton().attributes('disabled')).toBe('disabled');
-      expect(findJobLogSearchNextButton().attributes('disabled')).toBe('disabled');
+      expect(findJobLogSearchPreviousButton().attributes('aria-disabled')).toBe('true');
+      expect(findJobLogSearchNextButton().attributes('aria-disabled')).toBe('true');
     });
 
     it('prev button is enabled after next button is clicked when search has multiple results', async () => {
@@ -337,12 +337,12 @@ describe('JobLogTopBar', () => {
       findJobLogSearch().vm.$emit('submit');
       await nextTick();
 
-      expect(findJobLogSearchPreviousButton().attributes('disabled')).toBe('disabled');
+      expect(findJobLogSearchPreviousButton().attributes('aria-disabled')).toBe('true');
 
       findJobLogSearchNextButton().vm.$emit('click');
       await nextTick();
 
-      expect(findJobLogSearchPreviousButton().attributes('disabled')).toBeUndefined();
+      expect(findJobLogSearchPreviousButton().attributes('aria-disabled')).toBeUndefined();
     });
 
     it('next button is enabled when search has multiple results', async () => {
@@ -350,7 +350,7 @@ describe('JobLogTopBar', () => {
       findJobLogSearch().vm.$emit('submit');
       await nextTick();
 
-      expect(findJobLogSearchNextButton().attributes('disabled')).toBeUndefined();
+      expect(findJobLogSearchNextButton().attributes('aria-disabled')).toBeUndefined();
     });
 
     it('prev button is disabled when already at the first result', async () => {
@@ -361,12 +361,12 @@ describe('JobLogTopBar', () => {
       findJobLogSearchNextButton().vm.$emit('click');
       await nextTick();
 
-      expect(findJobLogSearchPreviousButton().attributes('disabled')).toBeUndefined();
+      expect(findJobLogSearchPreviousButton().attributes('aria-disabled')).toBeUndefined();
 
       findJobLogSearchPreviousButton().vm.$emit('click');
       await nextTick();
 
-      expect(findJobLogSearchPreviousButton().attributes('disabled')).toBe('disabled');
+      expect(findJobLogSearchPreviousButton().attributes('aria-disabled')).toBe('true');
     });
 
     it('next button is disabled when already at the last result', async () => {
@@ -377,7 +377,7 @@ describe('JobLogTopBar', () => {
       [...Array(4)].forEach(() => findJobLogSearchNextButton().vm.$emit('click'));
       await nextTick();
 
-      expect(findJobLogSearchNextButton().attributes('disabled')).toBe('disabled');
+      expect(findJobLogSearchNextButton().attributes('aria-disabled')).toBe('true');
     });
 
     it('displays job log search', () => {
@@ -402,7 +402,7 @@ describe('JobLogTopBar', () => {
       createWrapper();
 
       expect(findShowFullScreenButton().exists()).toBe(true);
-      expect(findShowFullScreenButton().attributes('disabled')).toBe('disabled');
+      expect(findShowFullScreenButton().attributes('aria-disabled')).toBe('true');
     });
 
     it('displays a enabled "Show fullscreen" button', () => {
@@ -411,7 +411,7 @@ describe('JobLogTopBar', () => {
       });
 
       expect(findShowFullScreenButton().exists()).toBe(true);
-      expect(findShowFullScreenButton().attributes('disabled')).toBeUndefined();
+      expect(findShowFullScreenButton().attributes('aria-disabled')).toBeUndefined();
     });
 
     it('emits a enter-fullscreen event when the show fullscreen is clicked', async () => {
@@ -431,7 +431,7 @@ describe('JobLogTopBar', () => {
       });
 
       expect(findExitFullScreenButton().exists()).toBe(true);
-      expect(findExitFullScreenButton().attributes('disabled')).toBeUndefined();
+      expect(findExitFullScreenButton().attributes('aria-disabled')).toBeUndefined();
     });
 
     it('emits a exit-fullscreen event when the exit fullscreen is clicked', async () => {

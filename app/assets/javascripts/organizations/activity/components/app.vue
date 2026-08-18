@@ -137,7 +137,7 @@ export default {
       :namespace="$options.FILTERED_SEARCH_NAMESPACE"
       :tokens="availableTokens"
       terms-as-tokens
-      @onFilter="onSearchFilter"
+      @on-filter="onSearchFilter"
     />
 
     <template v-if="!showEmptyState">

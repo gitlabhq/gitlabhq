@@ -281,9 +281,9 @@ requests are queued and only rejected if the queue is full or the maximum waitin
 
 Gitaly supports two concurrency limits:
 
-- An [RPC concurrency limit](#limit-rpc-concurrency), which allow you to configure a maximum number of simultaneous in-flight requests for each
+- An [RPC concurrency limit](#limit-rpc-concurrency), which allows you to configure a maximum number of simultaneous in-flight requests for each
   Gitaly RPC. The limit is scoped by RPC and repository.
-- A [Pack-objects concurrency limit](#limit-pack-objects-concurrency), which restricts the number of concurrent Git data transfer request by IP.
+- A [Pack-objects concurrency limit](#limit-pack-objects-concurrency), which restricts the number of concurrent Git data transfer requests by IP.
 
 If this limit is exceeded, either:
 
@@ -320,7 +320,7 @@ Adaptive limiting is enabled for each RPC or pack-objects cache individually. Ho
 
 - `adaptive` sets whether the adaptiveness is enabled.
 - `max_limit` is the maximum concurrency limit. Gitaly increases the current limit until it reaches this number. This should be a generous value that the system can fully support under typical conditions.
-- `min_limit` is the is the minimum concurrency limit of the configured RPC. When the host machine has a resource problem, Gitaly quickly reduces the limit until reaching this value. Setting `min_limit` to 0 could completely shut down processing, which is typically undesirable.
+- `min_limit` is the minimum concurrency limit of the configured RPC. When the host machine has a resource problem, Gitaly quickly reduces the limit until reaching this value. Setting `min_limit` to 0 could completely shut down processing, which is typically undesirable.
 - `initial_limit` provides a reasonable starting point between these extremes.
 
 ### Enable adaptiveness for RPC concurrency

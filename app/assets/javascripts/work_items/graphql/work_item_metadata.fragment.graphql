@@ -30,7 +30,6 @@ fragment WorkItemLinkPaths on NamespacesLinkPaths {
   calendarPath
   rssPath
   autocompleteAwardEmojisPath
-  newTrialPath
   newIssuePath
   groupPath
   namespaceFullPath

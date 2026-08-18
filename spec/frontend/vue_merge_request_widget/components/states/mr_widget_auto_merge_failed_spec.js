@@ -44,7 +44,7 @@ describe('MRWidgetAutoMergeFailed', () => {
 
     await nextTick();
 
-    expect(findButton().attributes('disabled')).toBeDefined();
+    expect(findButton().attributes('aria-disabled')).toBe('true');
     expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
   });
 });

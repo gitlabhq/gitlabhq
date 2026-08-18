@@ -108,14 +108,14 @@ describe('IssuableListRoot component', () => {
       });
     });
 
-    it('emits "filter" event when "onFilter" event is emitted', () => {
-      findFilteredSearchBar().vm.$emit('onFilter');
+    it('emits "filter" event when "on-filter" event is emitted', () => {
+      findFilteredSearchBar().vm.$emit('on-filter');
 
       expect(wrapper.emitted('filter')).toEqual([[]]);
     });
 
-    it('emits "sort" event when "onSort" event is emitted', () => {
-      findFilteredSearchBar().vm.$emit('onSort');
+    it('emits "sort" event when "on-sort" event is emitted', () => {
+      findFilteredSearchBar().vm.$emit('on-sort');
 
       expect(wrapper.emitted('sort')).toEqual([[]]);
     });

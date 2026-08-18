@@ -448,25 +448,25 @@ describe('AlertsSettingsForm', () => {
     it('should not be able to submit when no integration type is selected', async () => {
       await selectOptionAtIndex(0);
 
-      expect(findSubmitButton().attributes('disabled')).toBeDefined();
+      expect(findSubmitButton().attributes('aria-disabled')).toBe('true');
     });
 
     it('should not be able to submit when HTTP integration form is invalid', async () => {
       await selectOptionAtIndex(1);
       await findNameFieldComponent().vm.$emit('input', '');
-      expect(findSubmitButton().attributes('disabled')).toBeDefined();
+      expect(findSubmitButton().attributes('aria-disabled')).toBe('true');
     });
 
     it('should be able to submit when HTTP integration  form is valid', async () => {
       await selectOptionAtIndex(1);
       await findNameFieldComponent().vm.$emit('input', 'Name');
-      expect(findSubmitButton().attributes('disabled')).toBe(undefined);
+      expect(findSubmitButton().attributes('aria-disabled')).toBeUndefined();
     });
 
     it('should be able to submit when Prometheus integration  form is valid', async () => {
       await selectOptionAtIndex(2);
 
-      expect(findSubmitButton().attributes('disabled')).toBe(undefined);
+      expect(findSubmitButton().attributes('aria-disabled')).toBeUndefined();
     });
 
     it('should be able to submit when form is dirty', async () => {
@@ -474,20 +474,20 @@ describe('AlertsSettingsForm', () => {
       await createComponent({ currentIntegration });
 
       await findNameFieldComponent().vm.$emit('input', 'Updated name');
-      expect(findSubmitButton().attributes('disabled')).toBe(undefined);
+      expect(findSubmitButton().attributes('aria-disabled')).toBeUndefined();
     });
 
     it('should not be able to submit when form is pristine', async () => {
       const currentIntegration = { type: typeSet.http, name: 'Existing integration' };
       await createComponent({ currentIntegration });
-      expect(findSubmitButton().attributes('disabled')).toBeDefined();
+      expect(findSubmitButton().attributes('aria-disabled')).toBe('true');
     });
 
     it('should disable submit button after click on validation failure', async () => {
       await selectOptionAtIndex(1);
       await findSubmitButton().trigger('click');
 
-      expect(findSubmitButton().attributes('disabled')).toBeDefined();
+      expect(findSubmitButton().attributes('aria-disabled')).toBe('true');
     });
 
     it('should scroll to invalid field on validation failure', async () => {

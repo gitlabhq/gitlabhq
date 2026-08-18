@@ -78,23 +78,10 @@ module Gitlab
         # without Gitlab::RackAttack::Request#throttled_identifer so this classifier
         # carries no dependency on the throttle-identifier-string method. It reuses
         # the lower-level auth primitive #authenticated_identifier (a pure auth
-        # lookup with no throttle semantics and no side effects), then applies the
-        # one throttle concern that lives in throttled_identifer and must be
-        # preserved: an allowlisted user is exempt from the identity throttles.
+        # lookup with no throttle semantics and no side effects).
         #
-        # requester_id is tri-state, so allowlisted is distinct from anonymous:
-        #   - a real id  -> counted by the authenticated rules (requester_id: /./);
-        #   - nil        -> anonymous, matched by the unauthenticated rules
-        #                   (requester_id: nil), which throttle by IP;
-        #   - '' (blank) -> allowlisted: matches neither the presence gate (/./ needs a
-        #                   character) nor the nil gate (nil == '' is false), so no
-        #                   identity throttle counts it. A still-nil id here would make
-        #                   the allowlisted user look anonymous and be IP-throttled,
-        #                   because unauthenticated? is false for them (they ARE
-        #                   authenticated). Collector-style throttles that key off aid,
-        #                   not the requester, still apply, mirroring Rack::Attack
-        #                   (whose allowlist only nils throttled_identifer, leaving the
-        #                   aid-keyed collector to fire).
+        # An allowlisted user keeps their real id here: the exemption is the
+        # user_allowlist :skip rule in Limiters, not a classifier concern.
         #
         # The id is stringified: requester.id is an Integer, but the presence gate
         # (requester_id: /./) and Labkit's redis-key encoding compare it as a
@@ -106,24 +93,11 @@ module Gitlab
         # Labkit joins into one redis key - equivalent to the old "type:id" string,
         # and keeping a DeployToken and a User with the same numeric id on distinct
         # counters via the type segment.
-        #
-        # Unlike throttled_identifer, this deliberately does NOT set
-        # Gitlab::Instrumentation::Throttle.safelist for an allowlisted user: that is
-        # throttle-instrumentation coupling (the thing being decoupled), and the real
-        # Rack::Attack stack sets the safelist itself on the same request, so the
-        # observable behavior is unchanged.
         def requester(request_formats)
           identifier = authenticated_identifier(request_formats)
           return {} unless identifier
 
-          identifier_type = identifier[:identifier_type]
-          identifier_id = identifier[:identifier_id]
-
-          if identifier_type == :user && ::Gitlab::RackAttack.user_allowlist.include?(identifier_id)
-            return { id: '', type: '' }
-          end
-
-          { id: identifier_id.to_s, type: identifier_type.to_s }
+          { id: identifier[:identifier_id].to_s, type: identifier[:identifier_type].to_s }
         end
 
         # Boolean facts a rule matches on, coerced to strict true/false in

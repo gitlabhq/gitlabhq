@@ -4,7 +4,7 @@ classes:
 - Ai::DuoWorkflows::CheckpointHeader
 feature_categories:
 - duo_agent_platform
-description: Slim per-checkpoint header for incremental Duo Workflow checkpoint storage. Stores the langgraph checkpoint minus channel_values (channel_versions, versions_seen, v, ts, pending_sends) plus its metadata, so a CheckpointTuple can be rebuilt by overlaying channel_values reconstructed from p_duo_workflows_checkpoint_blobs.
+description: Slim per-checkpoint header for incremental Duo Workflow checkpoint storage. Stores the langgraph checkpoint minus channel_values (channel_versions, versions_seen, v, ts, pending_sends) plus its metadata, so a CheckpointTuple can be rebuilt by overlaying channel_values reconstructed from p_duo_workflows_checkpoint_blobs. Also stores channel_keys, the names of the channels the checkpoint had, so the read path knows which channels to keep or were deleted.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/244914
 milestone: '19.2'
 gitlab_schema: gitlab_main_org

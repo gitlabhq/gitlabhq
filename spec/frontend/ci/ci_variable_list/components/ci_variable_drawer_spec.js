@@ -655,7 +655,7 @@ describe('CI Variable Drawer', () => {
           itif(canSubmit)(`can submit when value is ${value} and expanded=${expanded}`, () => {
             /* eslint-disable jest/no-standalone-expect */
             expect(findInvalidMaskedValueErrorList().text()).toBe('');
-            expect(findConfirmBtn().attributes('disabled')).toBeUndefined();
+            expect(findConfirmBtn().attributes('aria-disabled')).toBeUndefined();
             /* eslint-enable jest/no-standalone-expect */
           });
 
@@ -667,7 +667,7 @@ describe('CI Variable Drawer', () => {
 
               /* eslint-disable jest/no-standalone-expect */
               expect(errorText).toBe(`${maskedValidationIssuesTitle} ${validationIssueText}`);
-              expect(findConfirmBtn().attributes('disabled')).toBeDefined();
+              expect(findConfirmBtn().attributes('aria-disabled')).toBe('true');
               /* eslint-enable jest/no-standalone-expect */
             },
           );
@@ -730,7 +730,7 @@ describe('CI Variable Drawer', () => {
 
         expect(findHiddenVariableTip().exists()).toBe(false);
         expect(findInvalidMaskedValueErrorList().text()).toBe('');
-        expect(findConfirmBtn().attributes('disabled')).toBeUndefined();
+        expect(findConfirmBtn().attributes('aria-disabled')).toBeUndefined();
 
         findValueField().vm.$emit('input', 'dollar$ign');
 
@@ -738,7 +738,7 @@ describe('CI Variable Drawer', () => {
 
         expect(findHiddenVariableTip().exists()).toBe(false);
         expect(findInvalidMaskedValueErrorList().text()).not.toBe('');
-        expect(findConfirmBtn().attributes('disabled')).toBeDefined();
+        expect(findConfirmBtn().attributes('aria-disabled')).toBe('true');
       });
 
       it('when editing a hidden variable, value field is replaced with a hint', () => {

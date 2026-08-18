@@ -165,8 +165,9 @@ type DuoWorkflow struct {
 	McpServers                map[string]McpServerConfig
 	LockConcurrentFlow        bool
 	// ServerCapabilities is a list of capability strings provided by Rails.
-	ServerCapabilities  []string
-	TimeoutHTTPRequests bool
+	ServerCapabilities         []string
+	TimeoutHTTPRequests        bool
+	CheckOriginByForwardedHost bool
 }
 
 // Response represents a structure containing various GitLab-related environment variables.

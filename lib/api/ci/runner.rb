@@ -414,6 +414,7 @@ module API
 
         desc 'Download job artifacts' do
           detail 'Downloads artifacts for a specified job.'
+          produces %w[application/octet-stream]
           success [
             { code: 200, message: 'Download allowed' },
             { code: 302, message: 'Found' }

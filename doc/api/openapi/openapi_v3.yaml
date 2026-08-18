@@ -1868,6 +1868,41 @@ paths:
           nullable: true
           maxLength: 4096
         in: query
+  "/api/v4/ai/duo_workflows/workflows/{id}/checkpoints/by_thread_ts":
+    get:
+      operationId: getApiV4AiDuoWorkflowsWorkflowsIdCheckpointsByThreadTs
+      summary: Get a workflow checkpoint reconstructed from incremental blobs
+      tags:
+      - GitLab Duo workflows
+      - Internal operations
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Not Found
+        '400':
+          description: Bad Request
+      parameters:
+      - name: id
+        required: true
+        description: The ID of the workflow
+        schema:
+          type: integer
+        in: path
+      - name: thread_ts
+        required: true
+        description: The langgraph thread_ts of the checkpoint
+        schema:
+          type: string
+          nullable: true
+        in: query
+      - name: accept_compressed
+        required: false
+        description: Return compressed checkpoint
+        schema:
+          type: boolean
+          nullable: true
+        in: query
   "/api/v4/ai/duo_workflows/workflows/{id}/checkpoints/{checkpoint_id}":
     get:
       operationId: getApiV4AiDuoWorkflowsWorkflowsIdCheckpointsCheckpointId
@@ -4697,7 +4732,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_4460f88c4a6d"
+              "$ref": "#/components/schemas/RequestBody_c0052911b7d9"
   "/api/v4/security/groups/{id}/vulnerability_exports":
     post:
       operationId: postApiV4SecurityGroupsIdVulnerabilityExports
@@ -4729,7 +4764,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_4460f88c4a6d"
+              "$ref": "#/components/schemas/RequestBody_c0052911b7d9"
   "/api/v4/security/vulnerability_exports":
     post:
       operationId: postApiV4SecurityVulnerabilityExports
@@ -96488,7 +96523,7 @@ components:
           type: boolean
           description: Whether hidden groups should be removed
           nullable: true
-    RequestBody_4460f88c4a6d:
+    RequestBody_c0052911b7d9:
       type: object
       properties:
         export_format:
@@ -96515,7 +96550,7 @@ components:
             the frontend in the report data field.
 
             Unsupported keys are discarded. If the data
-            doesn't fit the component it is keyed to, the
+            does not fit the component it is keyed to, the
             component is ignored and an error is logged.
           properties:
             project_vulnerabilities_history:

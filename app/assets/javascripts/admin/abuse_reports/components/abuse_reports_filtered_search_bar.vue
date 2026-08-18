@@ -108,12 +108,6 @@ export default {
 </script>
 
 <template>
-  <!--
-    FilteredSearchBarRoot emits camelCase events (onFilter, onSort) used by 27+ consumers.
-    In Vue 2, event names are case-sensitive, so these cannot be hyphenated without updating
-    the shared component and all consumers. See https://gitlab.com/gitlab-org/gitlab/-/issues/583560
-  -->
-  <!-- eslint-disable vue/v-on-event-hyphenation -->
   <filtered-search-bar
     :namespace="$options.filteredSearchNamespace"
     :tokens="tokens"
@@ -123,8 +117,7 @@ export default {
     :initial-sort-by="initialSortBy"
     :sort-options="currentSortOptions"
     data-testid="abuse-reports-filtered-search-bar"
-    @onFilter="handleFilter"
-    @onSort="handleSort"
+    @on-filter="handleFilter"
+    @on-sort="handleSort"
   />
-  <!-- eslint-enable vue/v-on-event-hyphenation -->
 </template>

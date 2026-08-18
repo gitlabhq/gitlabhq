@@ -234,7 +234,7 @@ Docker and Kubernetes do not use local storage.
 
 ### Use object storage
 
-Instead of relying on the local storage, you can use an object storage to store
+Instead of relying on the local storage, you can use object storage to store
 packages.
 
 For more information, see how to use the

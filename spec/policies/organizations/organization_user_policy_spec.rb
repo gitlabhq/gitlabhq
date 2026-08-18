@@ -92,6 +92,45 @@ RSpec.describe Organizations::OrganizationUserPolicy, feature_category: :organiz
     end
   end
 
+  context 'for create_organization_user policy' do
+    # Refind so the memoized `owner_user_ids` used by the policy is not shared between examples.
+    let_it_be_with_refind(:organization) { create(:organization) }
+
+    let(:organization_user) { organization.organization_users.new }
+
+    context 'when the current user is not a member of the organization' do
+      it { expect_disallowed(:create_organization_user) }
+    end
+
+    context 'when the current user is not an owner' do
+      before_all do
+        create(:organization_user, organization: organization, user: current_user)
+      end
+
+      it { expect_disallowed(:create_organization_user) }
+    end
+
+    context 'when the current user is an owner' do
+      before_all do
+        create(:organization_user, :owner, organization: organization, user: current_user)
+      end
+
+      it { expect_allowed(:create_organization_user) }
+    end
+
+    context 'for admin user' do
+      let_it_be_with_refind(:current_user) { create(:admin) }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { expect_allowed(:create_organization_user) }
+      end
+
+      context 'when admin mode is disabled' do
+        it { expect_disallowed(:create_organization_user) }
+      end
+    end
+  end
+
   context 'for update_organization_user policy' do
     let_it_be(:user_policy) { :update_organization_user }
 

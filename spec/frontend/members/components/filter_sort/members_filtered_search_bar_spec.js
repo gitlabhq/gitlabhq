@@ -181,7 +181,7 @@ describe('MembersFilteredSearchBar', () => {
     it('adds correct filter query params', () => {
       createComponent();
 
-      findFilteredSearchBar().vm.$emit('onFilter', [
+      findFilteredSearchBar().vm.$emit('on-filter', [
         { type: FILTERED_SEARCH_TOKEN_TWO_FACTOR.type, value: { data: 'enabled', operator: '=' } },
       ]);
 
@@ -191,7 +191,7 @@ describe('MembersFilteredSearchBar', () => {
     it('adds search query param', () => {
       createComponent();
 
-      findFilteredSearchBar().vm.$emit('onFilter', [
+      findFilteredSearchBar().vm.$emit('on-filter', [
         { type: FILTERED_SEARCH_TOKEN_TWO_FACTOR.type, value: { data: 'enabled', operator: '=' } },
         { type: FILTERED_SEARCH_TERM, value: { data: 'foobar' } },
       ]);
@@ -202,7 +202,7 @@ describe('MembersFilteredSearchBar', () => {
     it('adds search query param with multiple words', () => {
       createComponent();
 
-      findFilteredSearchBar().vm.$emit('onFilter', [
+      findFilteredSearchBar().vm.$emit('on-filter', [
         { type: FILTERED_SEARCH_TOKEN_TWO_FACTOR.type, value: { data: 'enabled', operator: '=' } },
         { type: FILTERED_SEARCH_TERM, value: { data: 'foo bar baz' } },
       ]);
@@ -217,7 +217,7 @@ describe('MembersFilteredSearchBar', () => {
 
       createComponent();
 
-      findFilteredSearchBar().vm.$emit('onFilter', [
+      findFilteredSearchBar().vm.$emit('on-filter', [
         { type: FILTERED_SEARCH_TOKEN_TWO_FACTOR.type, value: { data: 'enabled', operator: '=' } },
         { type: FILTERED_SEARCH_TERM, value: { data: 'foobar' } },
       ]);
@@ -232,7 +232,7 @@ describe('MembersFilteredSearchBar', () => {
 
       createComponent();
 
-      findFilteredSearchBar().vm.$emit('onFilter', [
+      findFilteredSearchBar().vm.$emit('on-filter', [
         { type: FILTERED_SEARCH_TERM, value: { data: 'foobar' } },
       ]);
 

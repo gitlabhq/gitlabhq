@@ -80,7 +80,6 @@ describe('Work items router', () => {
         hasIssuableHealthStatusFeature: false,
         labelsManagePath: 'test-project-path/labels',
         reportAbusePath: '/report/abuse/path',
-        newTrialPath: '',
       },
       propsData: {
         rootPageFullPath: '/',

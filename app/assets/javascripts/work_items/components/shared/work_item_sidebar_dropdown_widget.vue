@@ -240,7 +240,7 @@ export default {
     :is-updating="updateInProgress"
     :tooltip-text="tooltipText"
     @start-editing="isEditing = true"
-    @stopEditing="isEditing = false"
+    @stop-editing="isEditing = false"
   >
     <template #title>
       {{ dropdownLabel }}

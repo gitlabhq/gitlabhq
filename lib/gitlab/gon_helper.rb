@@ -110,7 +110,6 @@ module Gitlab
       push_frontend_feature_flag(:work_items_client_side_boards, current_user)
       push_frontend_feature_flag(:editor_sticky_table_headers, current_user)
       push_frontend_feature_flag(:hide_unpinned_sidebar_items, current_user)
-      push_frontend_feature_flag(:accessible_disabled_button, current_user, type: :gitlab_com_derisk)
       push_frontend_feature_flag(:markdown_sortable_table_columns, current_user)
       # Needed for globally-rendered components such as work item reference popovers.
       push_frontend_feature_flag(:work_item_features_field, current_user)

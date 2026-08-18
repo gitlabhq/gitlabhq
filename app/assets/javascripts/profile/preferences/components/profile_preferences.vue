@@ -162,6 +162,7 @@ export default {
         variant="confirm"
         name="commit"
         type="submit"
+        class="js-no-auto-disable"
         :disabled="!isSubmitEnabled"
         :value="$options.i18n.saveChanges"
       >

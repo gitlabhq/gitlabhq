@@ -44,7 +44,9 @@ module Gitlab
         rescue ArgumentError => e
           raise unless e.message.include?('could not find starting OID')
 
-          raise Gitlab::Git::InvalidPageToken, "Invalid page token: #{pagination_params&.dig(:page_token)}"
+          # e.cause is the GRPC::BadStatus, so the gRPC status and metadata survive.
+          raise Gitlab::Git::InvalidPageToken.new(e.cause),
+            "Invalid page token: #{pagination_params&.dig(:page_token)}"
         end
 
         private

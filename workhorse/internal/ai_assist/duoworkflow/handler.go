@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
+	"strings"
 	"sync"
 	"time"
 
@@ -69,6 +71,36 @@ const (
 	errorTypeOther         = "other"
 )
 
+// checkOriginByForwardedHost is a custom WebSocket origin check that compares
+// the Origin header against X-Forwarded-Host (set by the HTTP Router / nginx)
+// rather than the Host header. This is needed because the HTTP Router rewrites
+// the Host header to an internal hostname, causing the default gorilla/websocket
+// origin check to reject legitimate browser connections.
+//
+// If X-Forwarded-Host is absent, the check falls back to the Host header so
+// that direct connections (e.g. in development without a router) still work.
+func checkOriginByForwardedHost(r *http.Request) bool {
+	origin := r.Header.Get("Origin")
+	if origin == "" {
+		return true
+	}
+
+	u, err := url.Parse(origin)
+	if err != nil {
+		return false
+	}
+
+	// Prefer X-Forwarded-Host (set by the HTTP Router / nginx) over Host so
+	// that the comparison uses the public-facing hostname rather than the
+	// internal one that the router may have substituted.
+	host := r.Header.Get("X-Forwarded-Host")
+	if host == "" {
+		host = r.Host
+	}
+
+	return strings.EqualFold(u.Host, host)
+}
+
 // Build returns an HTTP handler that processes Duo Workflow WebSocket connections.
 // The handler performs pre-authorization checks, upgrades the connection to WebSocket,
 // and manages the lifecycle of the workflow runner including registration and cleanup.
@@ -76,7 +108,12 @@ func (h *Handler) Build() http.Handler {
 	return h.rails.PreAuthorizeHandler(func(w http.ResponseWriter, r *http.Request, a *api.Response) {
 		connectionsTotal.Inc()
 
-		conn, err := h.upgrader.Upgrade(w, r, nil)
+		upgrader := h.upgrader
+		if a.DuoWorkflow != nil && a.DuoWorkflow.CheckOriginByForwardedHost {
+			upgrader.CheckOrigin = checkOriginByForwardedHost
+		}
+
+		conn, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {
 			connectionErrorsTotal.WithLabelValues(errorTypeOther).Inc()
 			fail.Request(w, r, fmt.Errorf("failed to upgrade: %v", err))

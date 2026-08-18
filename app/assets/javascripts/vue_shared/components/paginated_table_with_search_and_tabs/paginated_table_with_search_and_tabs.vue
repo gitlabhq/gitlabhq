@@ -294,7 +294,7 @@ export default {
         :recent-searches-storage-key="filterSearchKey"
         :class="{ 'gl-border-b-0': showItems }"
         class="row-content-block"
-        @onFilter="handleFilterItems"
+        @on-filter="handleFilterItems"
       />
     </div>
 

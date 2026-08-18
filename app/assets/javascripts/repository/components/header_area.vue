@@ -55,9 +55,6 @@ export default {
     LockDirectoryButton: defineAsyncComponent(
       () => import('ee_component/repository/components/lock_directory_button.vue'),
     ),
-    HeaderLockIcon: defineAsyncComponent(
-      () => import('ee_component/repository/components/header_area/header_lock_icon.vue'),
-    ),
     FileTreeBrowserToggle,
   },
   directives: {
@@ -131,12 +128,6 @@ export default {
       type: String,
       required: true,
     },
-  },
-  data() {
-    return {
-      directoryLocked: false,
-      lockUser: null,
-    };
   },
   computed: {
     ...mapState(useFileTreeBrowserVisibility, [
@@ -261,10 +252,6 @@ export default {
       this.trackEvent(FIND_FILE_BUTTON_CLICK);
       Shortcuts.focusSearchFile();
     },
-    onLockedDirectory({ isLocked, lockUser }) {
-      this.directoryLocked = isLocked;
-      this.lockUser = lockUser;
-    },
   },
 };
 </script>
@@ -328,11 +315,6 @@ export default {
           class="gl-inline-flex"
           :class="{ 'gl-text-subtle': isTreeView }"
         />{{ directoryName }}
-        <header-lock-icon
-          v-if="!isRoot && isTreeView"
-          :is-locked="directoryLocked"
-          :lock-user="lockUser"
-        />
       </h1>
       <!-- Tree controls -->
       <div
@@ -360,12 +342,7 @@ export default {
           :new-dir-path="newDirPath"
         />
         <!-- EE lock directory -->
-        <lock-directory-button
-          v-if="!isRoot"
-          :project-path="projectPath"
-          :path="currentPath"
-          @locked-directory="onLockedDirectory"
-        />
+        <lock-directory-button v-if="!isRoot" :project-path="projectPath" :path="currentPath" />
         <gl-button
           v-gl-tooltip.html="findFileTooltip"
           :aria-keyshortcuts="findFileShortcutKey"

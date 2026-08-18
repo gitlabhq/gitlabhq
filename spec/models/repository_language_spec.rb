@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe RepositoryLanguage do
-  let(:repository_language) { build(:repository_language) }
+  subject(:repository_language) { build(:repository_language) }
 
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
@@ -14,5 +14,7 @@ RSpec.describe RepositoryLanguage do
     it { is_expected.to allow_value(0).for(:share) }
     it { is_expected.to allow_value(100.0).for(:share) }
     it { is_expected.not_to allow_value(100.1).for(:share) }
+    it { is_expected.to validate_uniqueness_of(:programming_language).scoped_to(:project_id) }
+    it { is_expected.to validate_uniqueness_of(:language_id).scoped_to(:project_id).allow_nil }
   end
 end

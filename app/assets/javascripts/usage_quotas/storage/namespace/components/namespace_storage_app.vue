@@ -153,7 +153,7 @@ export default {
     >
       {{
         s__(
-          'UsageQuota|An error occured while loading the storage usage details. Please refresh the page to try again.',
+          'UsageQuota|An error occurred while loading the storage usage details. Please refresh the page to try again.',
         )
       }}
     </gl-alert>
@@ -181,7 +181,7 @@ export default {
         <search-and-sort-bar
           :namespace="namespaceId"
           :search-input-placeholder="__('Search')"
-          @onFilter="onSearch"
+          @on-filter="onSearch"
         />
       </div>
       <project-list

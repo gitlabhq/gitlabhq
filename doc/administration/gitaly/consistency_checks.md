@@ -9,7 +9,7 @@ Gitaly runs repository consistency checks:
 
 - When triggering a repository check.
 - When changes are fetched from a mirrored repository.
-- When users push changes into repository.
+- When users push changes into a repository.
 
 These consistency checks verify that a repository has all required objects and
 that these objects are valid objects. They can be categorized as:
@@ -28,7 +28,7 @@ Gitaly by default [disables consistency checks for a range of cosmetic issues](#
 that don't negatively impact repository consistency.
 
 By default, Gitaly doesn't disable basic or security-related checks so
-to not distribute objects that can trigger known vulnerabilities in Git
+as not to distribute objects that can trigger known vulnerabilities in Git
 clients. This also limits the ability to import repositories containing such
 objects even if the project doesn't have malicious intent.
 

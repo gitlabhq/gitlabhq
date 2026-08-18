@@ -38,6 +38,7 @@ exports[`Merge request dashboard collapsible section renders section 1`] = `
         data-testid="crud-actions"
       >
         <gl-button-stub
+          accessibledisabled="true"
           aria-label="Approved list help popover"
           buttontextclasses=""
           category="primary"
@@ -53,6 +54,7 @@ exports[`Merge request dashboard collapsible section renders section 1`] = `
           class="-gl-translate-y-1/2 gl-absolute gl-border-l gl-border-strong gl-flex gl-h-5 gl-items-center gl-pl-3 gl-right-3 gl-top-1/2"
         >
           <gl-button-stub
+            accessibledisabled="true"
             aria-controls=""
             aria-expanded="true"
             aria-label="Collapse"
