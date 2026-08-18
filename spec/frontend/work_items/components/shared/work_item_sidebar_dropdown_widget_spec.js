@@ -2,12 +2,12 @@ import { GlCollapsibleListbox } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { groupIterationsResponse } from 'jest/work_items/mock_data';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { keysFor } from '~/behaviors/shortcuts/keybindings';
 import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
 import WorkItemSidebarWidget from '~/work_items/components/shared/work_item_sidebar_widget.vue';
 
-jest.mock('~/behaviors/shortcuts/shortcuts_toggle');
+jest.mock('~/behaviors/shortcuts/shortcuts_disabled');
 jest.mock('~/behaviors/shortcuts/keybindings');
 jest.mock('~/lib/mousetrap');
 

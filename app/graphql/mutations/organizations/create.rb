@@ -23,12 +23,21 @@ module Mutations
       def resolve(args)
         authorize!(:global)
 
+        return error_feature_flag unless Feature.enabled?(:organization_switching, current_user)
+
         result = ::Organizations::CreateService.new(
           current_user: current_user,
           params: args
         ).execute
 
         { organization: result.payload[:organization], errors: result.errors }
+      end
+
+      private
+
+      def error_feature_flag
+        # Don't translate feature flag error because it's temporary.
+        { organization: nil, errors: ['Feature flag `organization_switching` is not enabled for this user.'] }
       end
     end
   end

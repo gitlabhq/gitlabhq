@@ -62,9 +62,10 @@ module Projects
       end
 
       def build_ids
-        return [] unless params[:build_ids]
+        ids = params.permit(:build_ids, build_ids: [])[:build_ids]
+        return [] unless ids
 
-        params[:build_ids].split(",")
+        ids.is_a?(Array) ? ids : ids.split(",")
       end
 
       def test_suite

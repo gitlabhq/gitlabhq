@@ -14,12 +14,13 @@ Each path is expected to move into the
 
 | Entry point | Current gate |
 |--------------|--------------|
-| [Self-serve flow](#self-serve-flow) | `organization_switching` feature flag and the `:create_organization` ability |
+| [New organization form](#new-organization-form) | `organization_switching` feature flag and the `:create_organization` ability |
 | [GraphQL mutation](#graphql-mutation) | The `:create_organization` ability only |
 | [REST API](#rest-api) | `organization_switching` feature flag, the `:create_organization` ability, and a rate limit |
 | [Top-level group backfill and confirm](#top-level-group-backfill-and-confirm-ops) | ChatOps production access to two ops feature flags |
+| [Create organization from group settings](#create-organization-from-group-settings) | `create_org_from_group_settings` release flag, `:create_organization` ability, and `:admin_group` ability. |
 
-### Self-serve flow
+### New organization form
 
 The "New organization" form (`Organizations::OrganizationsController#new`), its navigation entry
 (`Nav::NewDropdownHelper`), and the "New" control on the organization list and the admin
@@ -32,7 +33,7 @@ The navigation entry and the "New" control are visibility only, not enforcement.
 ### GraphQL mutation
 
 The self-serve flow submits to `Mutations::Organizations::Create`.
-The mutation checks the `:create_organization` ability, but not the `organization_switching`
+The mutation checks the `:create_organization` ability and the `organization_switching`
 feature flag.
 It then calls `Organizations::CreateService`, which checks the ability again.
 Anyone with GraphQL access and the ability can call this mutation directly, bypassing the
@@ -42,7 +43,7 @@ self-serve flow entirely.
 
 `POST /organizations` (`lib/api/organizations.rb`) checks the `organization_switching` feature
 flag, the `:create_organization` ability, and a rate limit, then calls
-`Organizations::CreateService`, which checks the ability and the feature flag again.
+`Organizations::CreateService`, which checks the ability again.
 This path is independent of the self-serve flow, and reachable with a personal access token.
 
 ### Top-level group backfill and confirm (ops)
@@ -60,6 +61,19 @@ ops feature flag:
 Both workers call their service with `skip_authorization: true`, bypassing the ability and every
 other gate on this page.
 Access is gated only by who can run ChatOps commands in production.
+
+### Create organization from group settings
+
+This is the self-serve process for onboarding beta customers.
+It is gated behind the `create_org_from_group_settings` release flag which supports the group actor.
+This allows a group owner to create and confirm an organization for their TLG from Settings -> General -> Advanced.
+This is how the flow works:
+
+1. Check if TLG has an unconfirmed non-default organization. If they do, then means their TLG has already been backfilled and we skip to step 3.
+1. Make an API call to `/groups/<group-path>/-/create_organization_from_group`. This creates an organization as unconfirmed and transfers the group into it.
+1. Select other TLGs the current user is an owner of to move into the organization.
+1. Make a GraphQL call to `Mutations::Organizations::Confirm`. This transfers other TLGs that were selected and confirms the organization.
+1. Confirming the organization triggers `Organizations::ActivateService` which transfers groups and projects into the organization and creates organization user records for all members of the groups/projects. Group members that are owners of all the TLGs become administrators of the organization.
 
 ## The `:create_organization` ability
 

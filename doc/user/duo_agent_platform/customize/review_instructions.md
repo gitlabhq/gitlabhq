@@ -191,11 +191,31 @@ Prerequisites:
 
 To configure custom review instructions for a group:
 
+{{< tabs >}}
+
+{{< tab title="GitLab.com" >}}
+
 1. In the top bar, select **Search or go to** and find your top-level group.
-1. In the left sidebar, select **Settings** > **General** > **GitLab Duo features**.
+1. In the left sidebar, select **Settings** > **GitLab Duo**.
+1. Select **Change configuration**.
+1. Under **GitLab Duo features** > **Customize code review**, select the project that contains
+   the `.gitlab/duo/mr-review-instructions.yaml` file with your group's review instructions.
+1. Select **Save changes**.
+
+{{< /tab >}}
+
+{{< tab title="GitLab Self-Managed and GitLab Dedicated" >}}
+
+1. In the top bar, select **Search or go to** and find your top-level group.
+1. In the left sidebar, select **Settings** > **General**.
+1. Expand **GitLab Duo features**.
 1. Under **Customize code review**, select the project that contains the
    `.gitlab/duo/mr-review-instructions.yaml` file with your group's review instructions.
 1. Select **Save changes**.
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Configure custom review instructions for an instance
 

@@ -54,7 +54,7 @@ class Projects::PipelinesController < Projects::ApplicationController
     @pipelines = Ci::PipelinesFinder
       .new(project, current_user, index_params)
       .execute
-      .page(params[:page])
+      .page(pagination_params[:page])
 
     @pipelines_count = limited_pipelines_count(project)
 
@@ -148,12 +148,12 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def stage
-    @stage = pipeline.stage(params[:stage])
+    @stage = pipeline.stage(stage_params[:stage])
     return not_found unless @stage
 
     render json: StageSerializer
       .new(project: @project, current_user: @current_user)
-      .represent(@stage, details: true, retried: params[:retried])
+      .represent(@stage, details: true, retried: stage_params[:retried])
   end
 
   def retry
@@ -248,7 +248,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def show_represent_params
-    { grouped: true, expanded: params[:expanded].to_a.map(&:to_i) }
+    { grouped: true, expanded: params.permit(expanded: [])[:expanded].to_a.map(&:to_i) }
   end
 
   def create_params
@@ -264,7 +264,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def redirect_for_legacy_scope_filter
-    return unless %w[running pending].include?(params[:scope])
+    return unless %w[running pending].include?(index_params[:scope])
 
     redirect_to url_for(safe_params.except(:scope).merge(status: safe_params[:scope])), status: :moved_permanently
   end
@@ -275,9 +275,9 @@ class Projects::PipelinesController < Projects::ApplicationController
 
     pipelines =
       if find_latest_pipeline?
-        project.latest_pipelines(ref: params['ref'], limit: 100)
+        project.latest_pipelines(ref: find_pipeline_params[:ref], limit: 100)
       else
-        project.all_pipelines.id_in(params[:id])
+        project.all_pipelines.id_in(find_pipeline_params[:id])
       end
 
     @pipeline = pipelines
@@ -291,14 +291,18 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   def set_pipeline_path
     @pipeline_path ||= if find_latest_pipeline?
-                         latest_project_pipelines_path(@project, params['ref'])
+                         latest_project_pipelines_path(@project, find_pipeline_params[:ref])
                        else
                          project_pipeline_path(@project, @pipeline)
                        end
   end
 
   def find_latest_pipeline?
-    params[:id].blank? && params[:latest]
+    find_pipeline_params[:id].blank? && find_pipeline_params[:latest]
+  end
+
+  def find_pipeline_params
+    params.permit(:id, :latest, :ref)
   end
 
   def disable_query_limiting
@@ -327,7 +331,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   def pipeline_test_report
     strong_memoize(:pipeline_test_report) do
       @pipeline.accessible_test_reports(current_user).tap do |reports|
-        reports.with_attachment! if params[:scope] == 'with_attachment'
+        reports.with_attachment! if test_report_params[:scope] == 'with_attachment'
       end
     end
   end
@@ -336,8 +340,21 @@ class Projects::PipelinesController < Projects::ApplicationController
     params.permit(:scope, :username, :ref, :status, :source)
   end
 
+  def test_report_params
+    params.permit(:scope)
+  end
+
+  def stage_params
+    params.permit(:stage, :retried)
+  end
+
+  def charts_params
+    params.permit(:chart)
+  end
+
   def should_track_ci_cd_pipelines?
-    params[:chart].blank? || params[:chart] == 'pipelines'
+    chart = charts_params[:chart]
+    chart.blank? || chart == 'pipelines'
   end
 
   def tracking_namespace_source

@@ -330,11 +330,42 @@ Prerequisites:
 
 To configure exclusion rules for a group:
 
-1. In the top bar, select **Search or go to** and find your group.
-1. In the left sidebar, select **Settings** > **General** > **GitLab Duo features**.
+{{< tabs >}}
+
+{{< tab title="GitLab.com" >}}
+
+For a top-level group:
+
+1. In the top bar, select **Search or go to** and find your top-level group.
+1. In the left sidebar, select **Settings** > **GitLab Duo**.
+1. Select **Change configuration**.
+1. Under **GitLab Duo features** > **Customize code review**, select the project that contains
+   the `.gitlab/duo/mr-review-automated-rules.yaml` file.
+1. Select **Save changes**.
+
+For a group or subgroup:
+
+1. In the top bar, select **Search or go to** and find your group or subgroup.
+1. In the left sidebar, select **Settings** > **General**.
+1. Expand **GitLab Duo features**.
 1. Under **Customize code review**, select the project that contains the
    `.gitlab/duo/mr-review-automated-rules.yaml` file.
 1. Select **Save changes**.
+
+{{< /tab >}}
+
+{{< tab title="GitLab Self-Managed and GitLab Dedicated" >}}
+
+1. In the top bar, select **Search or go to** and find your group or subgroup.
+1. In the left sidebar, select **Settings** > **General**.
+1. Expand **GitLab Duo features**.
+1. Under **Customize code review**, select the project that contains the
+   `.gitlab/duo/mr-review-automated-rules.yaml` file.
+1. Select **Save changes**.
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Troubleshooting
 

@@ -200,8 +200,6 @@ module Gitlab
         end
 
         def with_updated_scope(stored, changes)
-          changes = changes_excluding_restated(stored, changes)
-
           return stored.merge(changes) unless recompile_scope?(stored, changes)
 
           rego_supplied = changes.key?(:scope_rego) && !blank?(changes[:scope_rego])
@@ -230,6 +228,26 @@ module Gitlab
 
         def compiled_scope_rego(policy_scope, policy_name:)
           ScopeTranspiler.new(policy_scope, policy_name: policy_name).transpile
+        end
+
+        def with_updated_rules(attributes, changes)
+          return attributes unless changes.key?(:rules)
+
+          with_compiled_rules(attributes)
+        end
+
+        def with_compiled_rules(attributes)
+          rules = attributes[:rules] || []
+
+          unless rules.is_a?(Array)
+            raise PolicyStore::ValidationError, "rules must be an array of { type, value } entries"
+          end
+
+          compiled = rules.each_with_index.map do |rule, index|
+            rule.merge('rego' => RuleTranspiler.new(rule, rule_index: index).transpile)
+          end
+
+          attributes.merge(rules: compiled)
         end
       end
     end

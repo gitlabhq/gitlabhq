@@ -15,7 +15,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
 import { keysFor, ISSUABLE_EDIT_DESCRIPTION } from '~/behaviors/shortcuts/keybindings';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { sanitize } from '~/lib/dompurify';
 import {
   STATUS_CLOSED,

@@ -18,10 +18,10 @@ RSpec.shared_examples 'a policy repository' do
     {
       organization_id: organization_id,
       namespace_id: namespace_id,
-      name: 'My approval policy',
-      description: 'Requires approval for scan findings',
+      name: 'My deployment policy',
+      description: 'Requires approval for production deployments',
       trigger_type: trigger_type,
-      rules: [{ 'type' => 'scan_finding' }],
+      rules: [{ 'type' => 'environment', 'value' => { 'tiers' => ['production'] } }],
       actions: [{ 'type' => 'require_approval' }],
       policy_scope: { 'compliance_frameworks' => [{ 'id' => 5 }] },
       scope_rego: 'package gitlab.scope',
@@ -49,10 +49,9 @@ RSpec.shared_examples 'a policy repository' do
         id: be_truthy,
         organization_id: organization_id,
         namespace_id: namespace_id,
-        name: 'My approval policy',
-        description: 'Requires approval for scan findings',
+        name: 'My deployment policy',
+        description: 'Requires approval for production deployments',
         trigger_type: trigger_type,
-        rules: [{ 'type' => 'scan_finding' }],
         actions: [{ 'type' => 'require_approval' }],
         scope_rego: 'package gitlab.scope',
         mode: 'audit',
@@ -92,14 +91,14 @@ RSpec.shared_examples 'a policy repository' do
 
     it 'stores symbol-keyed json attributes with string keys, matching what jsonb returns' do
       symbol_keyed = attributes.merge(
-        rules: [{ type: :scan_finding }],
+        rules: [{ type: :environment, value: { tiers: [:production] } }],
         actions: [{ type: :require_approval }],
         policy_scope: { compliance_frameworks: [{ id: 5 }] },
         scope_rego: nil
       )
 
       expect(repository.create(symbol_keyed)).to have_attributes(
-        rules: [{ 'type' => 'scan_finding' }],
+        rules: [a_hash_including('type' => 'environment', 'value' => { 'tiers' => ['production'] })],
         actions: [{ 'type' => 'require_approval' }],
         policy_scope: { 'compliance_frameworks' => [{ 'id' => 5 }] }
       )
@@ -124,6 +123,88 @@ RSpec.shared_examples 'a policy repository' do
         expect { repository.create(attributes.merge(attribute => nil)) }
           .to raise_error(Gitlab::PolicyStore::ValidationError, /#{attribute}/i)
       end
+    end
+
+    it 'compiles each rule into a rego key on that rule', :aggregate_failures do
+      policy = repository.create(attributes)
+
+      expect(policy.rules.length).to eq(1)
+      expect(policy.rules.first).to include(
+        'type' => 'environment',
+        'value' => { 'tiers' => ['production'] },
+        'rego' => a_string_including('input.environment.tier in {"production"}')
+      )
+    end
+
+    it 'compiles every rule in the array, not only the first', :aggregate_failures do
+      two_rules = [
+        { 'type' => 'environment', 'value' => { 'names' => ['production'] } },
+        { 'type' => 'custom', 'value' => "package governance\n\nallow := true\n" }
+      ]
+
+      policy = repository.create(attributes.merge(rules: two_rules))
+
+      expect(policy.rules.map { |rule| rule['type'] }).to eq(%w[environment custom])
+      expect(policy.rules).to all(include('rego'))
+    end
+
+    it 'normalizes symbol-keyed rules to string keys, matching a jsonb round trip' do
+      symbol_keyed = [{ type: 'environment', value: { tiers: ['production'] } }]
+
+      policy = repository.create(attributes.merge(rules: symbol_keyed))
+
+      expect(policy.rules.first.keys).to contain_exactly('type', 'value', 'rego')
+    end
+
+    it 'overwrites an authored rego, since it is derived from the rule and not authored' do
+      supplied = [{ 'type' => 'environment', 'value' => { 'tiers' => ['production'] }, 'rego' => 'stale' }]
+
+      policy = repository.create(attributes.merge(rules: supplied))
+
+      expect(policy.rules.first['rego']).to include('package governance')
+    end
+
+    it 'leaves an empty rules array alone' do
+      policy = repository.create(attributes.merge(rules: []))
+
+      expect(policy.rules).to eq([])
+    end
+
+    it 'raises ValidationError when rules is not an array' do
+      expect { repository.create(attributes.merge(rules: { 'rules' => [{ 'type' => 'custom' }] })) }
+        .to raise_error(Gitlab::PolicyStore::ValidationError, /rules must be an array/)
+    end
+
+    it 'raises ValidationError for a rule type it cannot compile' do
+      uncompilable = [{ 'type' => 'invalid_type', 'value' => {} }]
+
+      expect { repository.create(attributes.merge(rules: uncompilable)) }
+        .to raise_error(Gitlab::PolicyStore::ValidationError, /rule 0: unsupported rule type/)
+    end
+
+    it 'reports a name conflict before compiling, so the cheap check answers first' do
+      repository.create(attributes)
+
+      expect { repository.create(attributes.merge(rules: [{ 'type' => 'invalid_type' }])) }
+        .to raise_error(Gitlab::PolicyStore::ValidationError, /taken/i)
+    end
+
+    it 'reports a name conflict before the limit on a compiled program, for the same reason' do
+      repository.create(attributes)
+
+      expect { repository.create(attributes.merge(scope_rego: 'a' * 5000)) }
+        .to raise_error(Gitlab::PolicyStore::ValidationError, /taken/i)
+    end
+
+    it 'names the offending index when a later rule fails to compile' do
+      mixed = [
+        { 'type' => 'environment', 'value' => { 'tiers' => ['production'] } },
+        { 'type' => 'environment', 'value' => {} }
+      ]
+
+      expect { repository.create(attributes.merge(rules: mixed)) }
+        .to raise_error(Gitlab::PolicyStore::ValidationError,
+          /rule 1: environment rule requires at least one of names or tiers/)
     end
 
     it 'accepts a policy with no namespace_id' do
@@ -238,7 +319,7 @@ RSpec.shared_examples 'a policy repository' do
       updated = repository.update(created.id,
         description: 'Rewritten',
         trigger_type: other_trigger_type,
-        rules: [{ 'type' => 'license_finding' }],
+        rules: [{ 'type' => 'environment', 'value' => { 'tiers' => ['staging'] } }],
         actions: [{ 'type' => 'send_bot_message' }],
         mode: 'warn',
         lifecycle_state: 'disabled')
@@ -246,11 +327,91 @@ RSpec.shared_examples 'a policy repository' do
       expect(updated).to have_attributes(
         description: 'Rewritten',
         trigger_type: other_trigger_type,
-        rules: [{ 'type' => 'license_finding' }],
+        rules: [a_hash_including('type' => 'environment', 'value' => { 'tiers' => ['staging'] })],
         actions: [{ 'type' => 'send_bot_message' }],
         mode: 'warn',
         lifecycle_state: 'disabled'
       )
+    end
+
+    it 'compiles a rule supplied through update, the way create does' do
+      created = repository.create(attributes)
+
+      updated = repository.update(created.id,
+        rules: [{ 'type' => 'environment', 'value' => { 'tiers' => ['staging'] } }])
+
+      expect(updated.rules.first['rego']).to include('input.environment.tier in {"staging"}')
+    end
+
+    it 'recompiles every rule in the array, not only the one that changed' do
+      created = repository.create(attributes)
+
+      updated = repository.update(created.id, rules: [
+        { 'type' => 'environment', 'value' => { 'tiers' => ['staging'] } },
+        { 'type' => 'custom', 'value' => "package governance\n\nallow := true\n" }
+      ])
+
+      expect(updated.rules).to all(include('rego'))
+    end
+
+    it 'overwrites a rego supplied through update, since it is derived and not authored' do
+      created = repository.create(attributes)
+
+      updated = repository.update(created.id,
+        rules: [{ 'type' => 'environment', 'value' => { 'tiers' => ['staging'] }, 'rego' => 'package attacker' }])
+
+      expect(updated.rules.first['rego']).to include('package governance')
+    end
+
+    it 'raises ValidationError for a rule type update cannot compile' do
+      created = repository.create(attributes)
+
+      expect { repository.update(created.id, rules: [{ 'type' => 'invalid_type' }]) }
+        .to raise_error(Gitlab::PolicyStore::ValidationError, /rule 0: unsupported rule type/)
+    end
+
+    it 'reports a name conflict before compiling, matching what create does' do
+      repository.create(attributes)
+      other = repository.create(attributes.merge(name: 'Another policy'))
+
+      expect { repository.update(other.id, name: attributes[:name], rules: [{ 'type' => 'invalid_type' }]) }
+        .to raise_error(Gitlab::PolicyStore::ValidationError, /taken/i)
+    end
+
+    it 'names the offending index when a later rule fails to compile on update' do
+      created = repository.create(attributes)
+
+      mixed = [
+        { 'type' => 'environment', 'value' => { 'tiers' => ['staging'] } },
+        { 'type' => 'environment', 'value' => {} }
+      ]
+
+      expect { repository.update(created.id, rules: mixed) }
+        .to raise_error(Gitlab::PolicyStore::ValidationError,
+          /rule 1: environment rule requires at least one of names or tiers/)
+    end
+
+    it 'raises ValidationError when an update sets rules to something other than an array' do
+      created = repository.create(attributes)
+
+      expect { repository.update(created.id, rules: { 'rules' => [{ 'type' => 'custom' }] }) }
+        .to raise_error(Gitlab::PolicyStore::ValidationError, /rules must be an array/)
+    end
+
+    it 'leaves a compiled rule alone when an update touches nothing but name' do
+      created = repository.create(attributes)
+
+      updated = repository.update(created.id, name: 'Renamed policy')
+
+      expect(updated.rules).to eq(created.rules)
+    end
+
+    it 'leaves the version alone when an update resends the compiled rules array' do
+      created = repository.create(attributes)
+
+      updated = repository.update(created.id, rules: created.rules)
+
+      expect(updated.version).to eq(created.version)
     end
 
     it 'leaves attributes the caller did not supply untouched' do
@@ -411,7 +572,7 @@ RSpec.shared_examples 'a policy repository' do
         name: +'Tamperable policy',
         trigger_type: +trigger_type,
         mode: +'audit',
-        rules: [{ 'type' => +'scan_finding' }],
+        rules: [{ 'type' => +'environment', 'value' => { 'tiers' => [+'production'] } }],
         actions: [{ 'type' => +'require_approval' }],
         policy_scope: { 'compliance_frameworks' => [{ 'id' => 5 }] },
         scope_rego: nil
@@ -437,7 +598,7 @@ RSpec.shared_examples 'a policy repository' do
       expect(stored.name).to eq('Tamperable policy')
       expect(stored.trigger_type).to eq(trigger_type)
       expect(stored.mode).to eq('audit')
-      expect(stored.rules).to eq([{ 'type' => 'scan_finding' }])
+      expect(stored.rules.first['type']).to eq('environment')
       expect(stored.actions).to eq([{ 'type' => 'require_approval' }])
       expect(stored.policy_scope).to eq({ 'compliance_frameworks' => [{ 'id' => 5 }] })
     end
@@ -473,10 +634,9 @@ RSpec.shared_examples 'a policy repository' do
 
       expect(repository.find(created.id)).to eq(created)
       expect(repository.find(created.id)).to have_attributes(
-        name: 'My approval policy',
-        description: 'Requires approval for scan findings',
+        name: 'My deployment policy',
+        description: 'Requires approval for production deployments',
         trigger_type: trigger_type,
-        rules: [{ 'type' => 'scan_finding' }],
         mode: 'audit'
       )
     end

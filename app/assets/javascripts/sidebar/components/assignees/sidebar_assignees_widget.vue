@@ -6,7 +6,7 @@ import { __, n__ } from '~/locale';
 import UserSelect from '~/vue_shared/components/user_select/user_select.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { keysFor, ISSUE_MR_CHANGE_ASSIGNEE } from '~/behaviors/shortcuts/keybindings';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { sanitize } from '~/lib/dompurify';
 import { observable } from '~/lib/utils/observable';
 import { assigneesQueries } from '../../queries/constants';

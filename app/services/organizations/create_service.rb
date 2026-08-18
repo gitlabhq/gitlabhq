@@ -3,10 +3,7 @@
 module Organizations
   class CreateService < ::Organizations::BaseService
     def execute(skip_authorization: false)
-      unless skip_authorization
-        return error_no_permissions unless can?(current_user, :create_organization)
-        return error_feature_flag unless Feature.enabled?(:organization_switching, current_user)
-      end
+      return error_no_permissions unless skip_authorization || can?(current_user, :create_organization)
 
       add_organization_owner_attributes unless skip_authorization
       organization = Organization.new(params)
@@ -41,11 +38,6 @@ module Organizations
       message = organization.errors.full_messages || _('Failed to create organization')
 
       ServiceResponse.error(message: Array(message))
-    end
-
-    def error_feature_flag
-      # Don't translate feature flag error because it's temporary.
-      ServiceResponse.error(message: ['Feature flag `organization_switching` is not enabled for this user.'])
     end
   end
 end

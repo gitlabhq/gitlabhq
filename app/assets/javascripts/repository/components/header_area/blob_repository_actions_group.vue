@@ -3,7 +3,7 @@ import { GlDisclosureDropdownGroup, GlDisclosureDropdownItem } from '@gitlab/ui'
 import { __ } from '~/locale';
 import Shortcuts from '~/behaviors/shortcuts/shortcuts';
 import { keysFor, START_SEARCH_PROJECT_FILE } from '~/behaviors/shortcuts/keybindings';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { InternalEvents } from '~/tracking';
 import { FIND_FILE_BUTTON_CLICK } from '~/tracking/constants';
 import { showBlameButton } from '~/repository/utils/storage_info_utils';

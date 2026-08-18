@@ -33,7 +33,7 @@ import {
   GO_TO_YOUR_REVIEW_REQUESTS,
   DUO_CHAT,
 } from './keybindings';
-import { disableShortcuts, shouldDisableShortcuts } from './shortcuts_toggle';
+import { shouldDisableShortcuts } from './shortcuts_disabled';
 
 /**
  * The key used to save and fetch the local Mousetrap instance
@@ -131,7 +131,7 @@ export default class Shortcuts {
     $(document).on('click', '.js-shortcuts-modal-trigger', this.onToggleHelp);
 
     if (shouldDisableShortcuts()) {
-      disableShortcuts();
+      Mousetrap.pause();
     }
 
     this.filterSelectors = [

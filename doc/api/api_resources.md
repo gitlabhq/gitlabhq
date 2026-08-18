@@ -208,6 +208,7 @@ The following API resources are available outside of project and group contexts 
 | [Pages domains](pages_domains.md)                                                            | `/pages/domains` (also available for projects) |
 | [Personal access tokens](personal_access_tokens.md)                                          | `/personal_access_tokens` |
 | [Plan limits](plan_limits.md)                                                                | `/application/plan_limits` |
+| [Policy store](policy_store.md)                                                              | `/security/policy_store`, `/organizations/:id/security/policy_store` |
 | [Project repository storage moves](project_repository_storage_moves.md)                      | `/project_repository_storage_moves` |
 | [Projects](projects.md)                                                                      | `/users/:id/projects` (also available for projects) |
 | [Runners](runners.md)                                                                        | `/runners` (also available for projects) |

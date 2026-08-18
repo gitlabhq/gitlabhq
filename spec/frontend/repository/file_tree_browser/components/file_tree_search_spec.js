@@ -9,11 +9,11 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { Mousetrap } from '~/lib/mousetrap';
 import { FOCUS_FILE_TREE_BROWSER_FILTER_BAR, keysFor } from '~/behaviors/shortcuts/keybindings';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
 import HighlightedText from '~/vue_shared/components/highlighted_text.vue';
 
-jest.mock('~/behaviors/shortcuts/shortcuts_toggle');
+jest.mock('~/behaviors/shortcuts/shortcuts_disabled');
 
 describe('FileTreeSearch', () => {
   let wrapper;

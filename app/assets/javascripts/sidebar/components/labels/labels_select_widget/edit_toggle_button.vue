@@ -1,7 +1,7 @@
 <script>
 import { GlButton, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
 import { keysFor, ISSUABLE_CHANGE_LABEL } from '~/behaviors/shortcuts/keybindings';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { sanitize } from '~/lib/dompurify';
 
 export default {

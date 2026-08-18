@@ -7985,6 +7985,9 @@ msgstr ""
 msgid "Agent or flow already enabled"
 msgstr ""
 
+msgid "AgentArtifacts|%{author} on behalf of %{humanAuthor}"
+msgstr ""
+
 msgid "AgentArtifacts|%{workflowDefinition} session %{workflowId}"
 msgstr ""
 
@@ -83010,9 +83013,6 @@ msgid "Toggle keyboard shortcuts help dialog"
 msgstr ""
 
 msgid "Toggle project select"
-msgstr ""
-
-msgid "Toggle shortcuts"
 msgstr ""
 
 msgid "Toggle sidebar"

@@ -10,7 +10,7 @@ import getRefMixin from '~/repository/mixins/get_ref';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import initSourcegraph from '~/sourcegraph';
 import Shortcuts from '~/behaviors/shortcuts/shortcuts';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { keysFor, START_SEARCH_PROJECT_FILE } from '~/behaviors/shortcuts/keybindings';
 import { sanitize } from '~/lib/dompurify';
 import { InternalEvents } from '~/tracking';

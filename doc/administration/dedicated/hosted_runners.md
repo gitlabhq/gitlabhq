@@ -79,6 +79,19 @@ To avoid rate limits, instead use:
 
 The runners are configured to run in `privileged` mode to support [Docker in Docker](../../ci/docker/using_docker_build.md#use-docker-in-docker) to build Docker images natively or run multiple containers within your isolated job.
 
+## Plan runner stack concurrency
+
+Each production runner stack supports up to 1,000 concurrently running jobs. The limit applies
+to running jobs, not submitted jobs. When a stack reaches the limit, any additional jobs stay
+queued until capacity becomes available.
+
+To send jobs to a specific stack, use that stack's runner tag. If you expect more than 1,000 jobs
+to run at the same time, use runner tags to distribute jobs across multiple stacks.
+
+For service level agreement (SLA) calculations, a job that takes more than 5 minutes to start is
+not counted as a slow job if the stack was already running 1,000 jobs when the job entered the
+pending state.
+
 ## Manage hosted runners
 
 ### Manage hosted runners in Switchboard

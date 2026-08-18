@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlButtonGroup, GlDisclosureDropdownItem } from '@gitlab/ui';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { InternalEvents } from '~/tracking';
 
 export default {

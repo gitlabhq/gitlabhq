@@ -221,4 +221,73 @@ RSpec.describe API::WorkItems::Children, feature_category: :portfolio_management
 
     it_behaves_like 'attach child work item endpoint'
   end
+
+  shared_context 'for detach child work item' do
+    let_it_be(:unauthorized_user) { create(:user, guest_of: project) }
+    let_it_be_with_reload(:attached_child) { create(:work_item, :task, project: project) }
+    let(:other_parent_work_item) { create(:work_item, :issue, project: project) }
+
+    let(:unreadable_child_work_item) do
+      other_project = create(:project, :private)
+      child = create(:work_item, :task, project: other_project)
+      create(:parent_link, work_item: child, work_item_parent: parent_work_item)
+      child
+    end
+
+    let(:unlinked_unreadable_child_work_item) do
+      other_project = create(:project, :private)
+      create(:work_item, :task, project: other_project)
+    end
+
+    let(:cross_boundary_attached_child) do
+      other_project = create(:project, :private, reporters: user)
+      child = create(:work_item, :task, project: other_project)
+      create(:parent_link, work_item: child, work_item_parent: parent_work_item)
+      child
+    end
+
+    before_all do
+      create(:parent_link, work_item: attached_child, work_item_parent: parent_work_item)
+    end
+  end
+
+  describe 'DELETE /projects/:id/-/work_items/:work_item_iid/children/:child_id' do
+    include_context 'for detach child work item'
+
+    let(:path_for) do
+      ->(work_item_iid:, child_id:) { "/projects/#{project.id}/-/work_items/#{work_item_iid}/children/#{child_id}" }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :update_work_item, expected_success_status: :no_content do
+      let(:boundary_object) { project }
+      let(:api_request_path) { path_for.call(work_item_iid: parent_work_item.iid, child_id: attached_child.id) }
+      let(:request) do
+        delete api(api_request_path, personal_access_token: pat)
+      end
+    end
+
+    it_behaves_like 'detach child work item endpoint'
+  end
+
+  describe 'DELETE /namespaces/:id/-/work_items/:work_item_iid/children/:child_id' do
+    include_context 'for detach child work item'
+
+    let(:project_namespace) { CGI.escape(project.project_namespace.full_path) }
+
+    let(:path_for) do
+      ->(work_item_iid:, child_id:) {
+        "/namespaces/#{project_namespace}/-/work_items/#{work_item_iid}/children/#{child_id}"
+      }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :update_work_item, expected_success_status: :no_content do
+      let(:boundary_object) { project }
+      let(:api_request_path) { path_for.call(work_item_iid: parent_work_item.iid, child_id: attached_child.id) }
+      let(:request) do
+        delete api(api_request_path, personal_access_token: pat)
+      end
+    end
+
+    it_behaves_like 'detach child work item endpoint'
+  end
 end

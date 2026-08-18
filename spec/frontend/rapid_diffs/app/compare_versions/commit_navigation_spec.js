@@ -3,10 +3,10 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CommitNavigation from '~/rapid_diffs/app/compare_versions/commit_navigation.vue';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
-jest.mock('~/behaviors/shortcuts/shortcuts_toggle');
+jest.mock('~/behaviors/shortcuts/shortcuts_disabled');
 
 describe('CommitNavigation', () => {
   let wrapper;

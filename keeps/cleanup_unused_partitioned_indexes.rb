@@ -25,7 +25,7 @@ module Keeps
   # ```
   class CleanupUnusedPartitionedIndexes < ::Gitlab::Housekeeper::Keep
     MIGRATION_TEMPLATE = 'generator_templates/active_record/migration/'
-    FALLBACK_REVIEWER_FEATURE_CATEGORY = 'database'
+    FALLBACK_ASSIGNEE_FEATURE_CATEGORY = 'database'
 
     MIMIR_LOOKBACK_DAYS = Keeps::Helpers::GrafanaUnusedIndexQuery::LOOKBACK_DAYS
     private_constant :MIMIR_LOOKBACK_DAYS
@@ -200,7 +200,7 @@ module Keeps
       change.title = "Remove unused partitioned index #{ctx[:name]}".truncate(72)
       change.changelog_type = 'other'
       change.labels = labels(ctx[:tablename])
-      change.reviewers = Array(pick_reviewer(ctx[:tablename], change.identifiers))
+      change.assignees = Array(pick_assignee(ctx[:tablename], change.identifiers))
       change.description = description_for(ctx)
     end
 
@@ -309,13 +309,15 @@ module Keeps
       )
     end
 
-    # Pick one reviewer (from the primary feature category) but label across all.
-    def pick_reviewer(table_name, identifiers)
+    # Pick one assignee (from the primary feature category) but label across all.
+    # The groups helper's reviewer roulette does the picking; this keep assigns
+    # the person instead of requesting review.
+    def pick_assignee(table_name, identifiers)
       feature_category = dictionary_feature_categories(table_name).first
 
       groups_helper.pick_reviewer_for_feature_category(
         feature_category, identifiers,
-        fallback_feature_category: FALLBACK_REVIEWER_FEATURE_CATEGORY
+        fallback_feature_category: FALLBACK_ASSIGNEE_FEATURE_CATEGORY
       )
     end
 

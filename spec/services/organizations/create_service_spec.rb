@@ -74,18 +74,5 @@ RSpec.describe Organizations::CreateService, feature_category: :organization do
         end
       end
     end
-
-    context 'when `organization_switching` FF is disabled', :saas do
-      before do
-        stub_feature_flags(organization_switching: false)
-      end
-
-      it 'returns an error' do
-        expect(response).to be_error
-
-        expect(response.message)
-          .to match_array(['Feature flag `organization_switching` is not enabled for this user.'])
-      end
-    end
   end
 end

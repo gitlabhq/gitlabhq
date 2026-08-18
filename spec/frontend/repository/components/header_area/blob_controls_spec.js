@@ -44,7 +44,7 @@ jest.mock('~/lib/utils/common_utils', () => ({
   isLoggedIn: jest.fn().mockReturnValue(true),
 }));
 jest.mock('~/sentry/sentry_browser_wrapper');
-jest.mock('~/behaviors/shortcuts/shortcuts_toggle', () => ({
+jest.mock('~/behaviors/shortcuts/shortcuts_disabled', () => ({
   shouldDisableShortcuts: () => false,
 }));
 

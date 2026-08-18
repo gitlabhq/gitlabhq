@@ -2,13 +2,13 @@ import { nextTick } from 'vue';
 import { GlDisclosureDropdownItem } from '@gitlab/ui';
 import PermalinkDropdownItem from '~/repository/components/header_area/permalink_dropdown_item.vue';
 import { keysFor, PROJECT_FILES_COPY_FILE_PERMALINK } from '~/behaviors/shortcuts/keybindings';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { Mousetrap } from '~/lib/mousetrap';
 import { hashState, updateHash } from '~/blob/state';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 
-jest.mock('~/behaviors/shortcuts/shortcuts_toggle');
+jest.mock('~/behaviors/shortcuts/shortcuts_disabled');
 jest.mock('~/blob/state');
 
 const relativePermalinkPath =

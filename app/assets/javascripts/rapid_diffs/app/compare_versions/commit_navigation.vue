@@ -6,7 +6,7 @@ import {
   MR_COMMITS_NEXT_COMMIT,
   MR_COMMITS_PREVIOUS_COMMIT,
 } from '~/behaviors/shortcuts/keybindings';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { sanitize } from '~/lib/dompurify';
 import { removeParams, setUrlParams } from '~/lib/utils/url_utility';
 

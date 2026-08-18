@@ -13,7 +13,7 @@ import {
   MR_NEXT_UNRESOLVED_DISCUSSION,
   MR_PREVIOUS_UNRESOLVED_DISCUSSION,
 } from '~/behaviors/shortcuts/keybindings';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { sanitize } from '~/lib/dompurify';
 import { useNotes } from '~/notes/store/legacy_notes';
 import discussionNavigation from '../mixins/discussion_navigation';

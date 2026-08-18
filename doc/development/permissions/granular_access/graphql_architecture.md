@@ -36,10 +36,6 @@ When the flag is disabled, granular PATs do not work for GraphQL requests.
   - `boundary_argument`: Argument name containing the boundary.
   - `boundary_type`: The type of authorization boundary (`project`, `group`, `user`,
     `instance`). Used for validation and documentation of the permission boundary.
-  - `traversal`: When `true`, the directive verifies only that the token is scoped to the
-    boundary (`read_boundary`). The listed permissions are not enforced on the field
-    itself. Use for entry-point fields like `Query.group(fullPath:)` where downstream
-    fields enforce the real permissions.
 
 ### 3. Boundary extractor
 
@@ -331,7 +327,6 @@ These errors indicate that a directive is misconfigured, and are surfaced during
 
 - An invalid permission name raises `InvalidInputError` in `AuthorizeGranularScopesService`, and is also caught by the `gitlab:permissions:validate` Rake task against `Authz::PermissionGroups::Assignable.all_permissions`.
 - A `boundaries:` entry that is not a Hash with a `boundary_type` key raises `ArgumentError`.
-- Passing `traversal: true` to a type-level `authorize_granular_token` raises `ArgumentError`. Use `granular_scope_directive(traversal: true)` on the field definition instead.
 
 ## See also
 

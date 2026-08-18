@@ -27,6 +27,10 @@
     "AmazonS3ConfigurationType",
     "InstanceAmazonS3ConfigurationType"
   ],
+  "ArtifactRegistryPackage": [
+    "ArtifactRegistryMavenPackage",
+    "ArtifactRegistryNpmPackage"
+  ],
   "AuditEventStreamingDestinationInterface": [
     "GroupAuditEventStreamingDestination",
     "InstanceAuditEventStreamingDestination"

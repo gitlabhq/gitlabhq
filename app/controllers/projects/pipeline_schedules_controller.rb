@@ -16,9 +16,9 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
   urgency :low
 
   def index
-    @scope = params[:scope]
+    @scope = params.permit(:scope)[:scope]
     @all_schedules = Ci::PipelineSchedulesFinder.new(@project).execute
-    @schedules = Ci::PipelineSchedulesFinder.new(@project).execute(scope: params[:scope])
+    @schedules = Ci::PipelineSchedulesFinder.new(@project).execute(scope: @scope)
   end
 
   def new; end
@@ -95,7 +95,7 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
   end
 
   def schedule
-    @schedule ||= project.pipeline_schedules.find(params[:id])
+    @schedule ||= project.pipeline_schedules.find(params.permit(:id)[:id])
   end
 
   def schedule_params
@@ -106,7 +106,7 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
 
   def new_schedule
     # We need the `ref` here for `authorize_create_pipeline_schedule!`
-    @schedule ||= project.pipeline_schedules.new(ref: params.dig(:schedule, :ref))
+    @schedule ||= project.pipeline_schedules.new(ref: params.permit(schedule: [:ref]).dig(:schedule, :ref))
   end
 
   def authorize_create_pipeline_schedule!

@@ -1,7 +1,7 @@
 <script>
 import { GlAnimatedSidebarIcon, GlButton, GlTooltip } from '@gitlab/ui';
 import { mapActions, mapState } from 'pinia';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { __ } from '~/locale';
 import {
   keysFor,

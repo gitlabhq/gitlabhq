@@ -331,6 +331,51 @@ Example:
 Show me all comments on merge request 5 in project gitlab-org/gitlab
 ```
 
+## `save_merge_request_review`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/605881) in GitLab 19.4.
+
+{{< /history >}}
+
+Writes merge request review artifacts as the authenticated user. Each call performs
+exactly one operation, selected with the `method` parameter:
+
+| Method               | Action |
+|----------------------|--------|
+| `create_note`        | Adds a top-level comment. |
+| `reply_discussion`   | Replies in an existing discussion. |
+| `create_diff_note`   | Comments on a specific diff line. |
+| `resolve_discussion` | Resolves or unresolves a discussion. |
+| `submit_review`      | Posts multiple diff comments and an optional summary in one call. |
+| `post_duo_review`    | Asks GitLab Duo to review the merge request. Requires GitLab Duo Code Review. |
+
+| Parameter           | Type    | Required | Description |
+|---------------------|---------|----------|-------------|
+| `url`               | string  | No       | URL of the GitLab merge request. Required if `project_id` and `merge_request_iid` are missing. |
+| `project_id`        | string  | No       | ID or path of the project. Required if `url` is missing. |
+| `merge_request_iid` | integer | No       | Internal ID of the merge request. Required if `url` is missing. |
+| `method`            | string  | Yes      | The operation to perform. Parameters that belong to a different method are rejected. |
+| `body`              | string  | No       | Note text. Required for `create_note`, `reply_discussion`, and `create_diff_note`. Lines cannot start with `/` to avoid triggering quick actions (for example, `/merge`). |
+| `discussion_id`     | string  | No       | Discussion to act on. Required for `reply_discussion` and `resolve_discussion`. Accepts a global ID or a bare discussion ID. |
+| `internal`          | boolean | No       | For `create_note`, marks the note as internal. |
+| `resolved`          | boolean | No       | For `resolve_discussion`: `true` resolves, `false` unresolves. Required for that method. |
+| `old_path`          | string  | No       | For `create_diff_note`, the file path before the change. Provide `old_path` or `new_path`, or both. |
+| `new_path`          | string  | No       | For `create_diff_note`, the file path after the change. |
+| `old_line`          | integer | No       | For `create_diff_note`, the line number in the old version. Provide `old_line` or `new_line`, or both. |
+| `new_line`          | integer | No       | For `create_diff_note`, the line number in the new version. |
+| `comments`          | array   | No       | For `submit_review`, 1-20 diff comments. Each entry takes `file` and `body` (required), and `old_line`, `new_line`, and `suggestion` (optional). Required for that method. `file` is the post-change path; for renamed files, use `create_diff_note` instead. |
+| `verdict`           | string  | No       | For `submit_review`, an overall verdict prefixed to the summary note. |
+| `summary`           | string  | No       | For `submit_review`, a summary note posted after the diff comments. |
+| `summary_internal`  | boolean | No       | For `submit_review`, marks the summary note as internal. |
+
+Example:
+
+```plaintext
+Review merge request 42 in project gitlab-org/gitlab and leave your findings as diff comments with a summary
+```
+
 ## `add_branch`
 
 {{< history >}}

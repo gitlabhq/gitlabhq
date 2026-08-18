@@ -81,8 +81,7 @@ RSpec.describe Gitlab::Graphql::Authz::AuthorizeGranularToken, feature_category:
           { boundary_type: :project },
           { boundary: :project },
           { boundary_argument: :project_path },
-          { boundaries: [{ boundary_type: :project }] },
-          { traversal: true }
+          { boundaries: [{ boundary_type: :project }] }
         ]
 
         other_args.each do |other_arg|
@@ -96,16 +95,6 @@ RSpec.describe Gitlab::Graphql::Authz::AuthorizeGranularToken, feature_category:
     context 'when neither permissions nor a skip reason is given' do
       it 'raises ArgumentError' do
         expect { test_type.authorize_granular_token }.to raise_error(ArgumentError, /permissions/)
-      end
-    end
-
-    context 'when traversal: true is passed' do
-      it 'raises ArgumentError to prevent misuse on type-level directives' do
-        expect do
-          test_type.authorize_granular_token(
-            permissions: :read_group, boundary: :itself, boundary_type: :group, traversal: true
-          )
-        end.to raise_error(ArgumentError, /not valid on a type-level/)
       end
     end
 
@@ -190,29 +179,6 @@ RSpec.describe Gitlab::Graphql::Authz::AuthorizeGranularToken, feature_category:
           boundary: 'project'
         }
       }])
-    end
-
-    it 'forwards traversal: true into the directive arguments hash' do
-      result = test_type.granular_scope_directive(
-        permissions: :read_group, boundary_argument: :full_path, boundary_type: :group, traversal: true
-      )
-
-      expect(result).to eq([{
-        Directives::Authz::GranularScope => {
-          permissions: ['read_group'],
-          boundary_argument: 'full_path',
-          boundary_type: 'GROUP',
-          traversal: true
-        }
-      }])
-    end
-
-    it 'omits traversal from the arguments when not supplied' do
-      result = test_type.granular_scope_directive(
-        permissions: :read_group, boundary_argument: :full_path, boundary_type: :group
-      )
-
-      expect(result.first[Directives::Authz::GranularScope]).not_to have_key(:traversal)
     end
   end
 

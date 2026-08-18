@@ -74,8 +74,12 @@ class Projects::TriggersController < Projects::ApplicationController
   end
 
   def trigger
-    @trigger ||= project.triggers.find(params[:id])
+    @trigger ||= project.triggers.find(find_trigger_params[:id])
       .present(current_user: current_user)
+  end
+
+  def find_trigger_params
+    params.permit(:id)
   end
 
   def trigger_params

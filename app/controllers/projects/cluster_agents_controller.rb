@@ -10,7 +10,7 @@ class Projects::ClusterAgentsController < Projects::ApplicationController
   urgency :low
 
   def show
-    @agent_name = params[:name]
+    @agent_name = params.permit(:name)[:name]
   end
 end
 

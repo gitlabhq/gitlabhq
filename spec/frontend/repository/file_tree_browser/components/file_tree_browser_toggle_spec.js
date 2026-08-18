@@ -5,7 +5,7 @@ import { createTestingPinia } from '@pinia/testing';
 import { PiniaVuePlugin } from 'pinia';
 import FileTreeBrowserToggle from '~/repository/file_tree_browser/components/file_tree_browser_toggle.vue';
 import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
 import Shortcut from '~/behaviors/shortcuts/shortcut.vue';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import {
@@ -13,7 +13,7 @@ import {
   EVENT_EXPAND_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE,
 } from '~/repository/constants';
 
-jest.mock('~/behaviors/shortcuts/shortcuts_toggle');
+jest.mock('~/behaviors/shortcuts/shortcuts_disabled');
 
 Vue.use(PiniaVuePlugin);
 

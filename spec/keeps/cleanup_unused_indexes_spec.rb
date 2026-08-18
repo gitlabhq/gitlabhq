@@ -242,7 +242,7 @@ RSpec.describe Keeps::CleanupUnusedIndexes, feature_category: :database do
         migrate: nil,
         reset_db: nil,
         labels: %w[group::foo maintenance::removal],
-        pick_reviewer: 'engineer-handle'
+        pick_assignee: 'engineer-handle'
       )
     end
 
@@ -257,8 +257,8 @@ RSpec.describe Keeps::CleanupUnusedIndexes, feature_category: :database do
         'db/structure.sql'
       )
       expect(result.labels).to eq(%w[group::foo maintenance::removal])
-      expect(result.reviewers).to eq(['engineer-handle'])
-      expect(result.assignees).to be_blank
+      expect(result.assignees).to eq(['engineer-handle'])
+      expect(result.reviewers).to be_blank
     end
 
     it 'regenerates db/structure.sql by applying the migration', :aggregate_failures do

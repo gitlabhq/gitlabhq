@@ -205,6 +205,7 @@ Grants the ability to create and read continuous deployment application flow def
 | ------ | ------ | ---- | ---- |
 | Create | Instance | Mutation | `CdApplicationFlowDefinitionCreate` |
 | Read | Instance | Type | `CdApplicationFlowDefinition` |
+| Read | Instance | Type | `CdDefinitionStep` |
 
 #### CD Application Link
 

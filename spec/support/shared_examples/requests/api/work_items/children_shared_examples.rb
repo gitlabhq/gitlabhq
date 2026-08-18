@@ -151,3 +151,132 @@ RSpec.shared_examples 'attach child work item endpoint' do
     expect(response).to have_gitlab_http_status(:forbidden)
   end
 end
+
+# Requires:
+# - `user`, `parent_work_item`, `attached_child` (a work item currently attached as a child of `parent_work_item`)
+# - `path_for` - proc accepting `work_item_iid:` and `child_id:`, returning the full request path
+# - `api_request_path` - `path_for` called with `parent_work_item.iid` and `attached_child.id`
+# - `unauthorized_user` - a user who can read but not update the parent
+# - `unreadable_child_work_item` - a work item currently attached as a child of `parent_work_item`
+#   that the current user cannot admin
+# - `unlinked_unreadable_child_work_item` - a work item the current user cannot admin, not attached
+#   to `parent_work_item`
+# - `cross_boundary_attached_child` - a work item living in a different project than `parent_work_item`,
+#   currently attached as its child
+# - `other_parent_work_item` - a different, valid parent for `attached_child`
+RSpec.shared_examples 'detach child work item endpoint' do
+  let(:api_request_path) { path_for.call(work_item_iid: parent_work_item.iid, child_id: attached_child.id) }
+
+  it 'detaches the child work item' do
+    delete api(api_request_path, user)
+
+    expect(response).to have_gitlab_http_status(:no_content)
+    expect(response.body).to be_empty
+    expect(attached_child.reload.work_item_parent).to be_nil
+  end
+
+  it 'detaches the child across projects' do
+    path = path_for.call(work_item_iid: parent_work_item.iid, child_id: cross_boundary_attached_child.id)
+
+    delete api(path, user)
+
+    expect(response).to have_gitlab_http_status(:no_content)
+    expect(cross_boundary_attached_child.reload.work_item_parent).to be_nil
+  end
+
+  it 'returns 404 when re-detaching an already detached child' do
+    delete api(api_request_path, user)
+    expect(response).to have_gitlab_http_status(:no_content)
+
+    delete api(api_request_path, user)
+    expect(response).to have_gitlab_http_status(:not_found)
+  end
+
+  it 'returns 404 when the child is linked to a different parent' do
+    path = path_for.call(work_item_iid: other_parent_work_item.iid, child_id: attached_child.id)
+
+    delete api(path, user)
+
+    expect(response).to have_gitlab_http_status(:not_found)
+    expect(attached_child.reload.work_item_parent).to eq(parent_work_item)
+  end
+
+  it 'returns 404 when the parent work item does not exist' do
+    path = path_for.call(work_item_iid: non_existing_record_iid, child_id: attached_child.id)
+
+    delete api(path, user)
+
+    expect(response).to have_gitlab_http_status(:not_found)
+  end
+
+  it 'returns 404 when the child work item does not exist' do
+    path = path_for.call(work_item_iid: parent_work_item.iid, child_id: non_existing_record_id)
+
+    delete api(path, user)
+
+    expect(response).to have_gitlab_http_status(:not_found)
+  end
+
+  it 'returns 404 when child is not linked to a parent' do
+    other_child = create(:work_item, :task, project: project)
+    path = path_for.call(work_item_iid: parent_work_item.iid, child_id: other_child.id)
+
+    delete api(path, user)
+
+    expect(response).to have_gitlab_http_status(:not_found)
+  end
+
+  it 'returns 404 when the user cannot admin the parent link on the child' do
+    path = path_for.call(work_item_iid: parent_work_item.iid, child_id: unreadable_child_work_item.id)
+
+    delete api(path, user)
+
+    expect(response).to have_gitlab_http_status(:not_found)
+  end
+
+  it 'does not disclose whether an inaccessible child exists' do
+    expected_message = ::API::Helpers::WorkItems::HierarchyFinders::CHILD_NOT_FOUND_MESSAGE
+
+    linked_path = path_for.call(work_item_iid: parent_work_item.iid, child_id: unreadable_child_work_item.id)
+    delete api(linked_path, user)
+    expect(json_response['message']).to eq(expected_message)
+
+    unlinked_path =
+      path_for.call(work_item_iid: parent_work_item.iid, child_id: unlinked_unreadable_child_work_item.id)
+    delete api(unlinked_path, user)
+    expect(json_response['message']).to eq(expected_message)
+
+    missing_path = path_for.call(work_item_iid: parent_work_item.iid, child_id: non_existing_record_id)
+    delete api(missing_path, user)
+    expect(json_response['message']).to eq(expected_message)
+  end
+
+  it 'returns 403 when the user cannot update the parent' do
+    delete api(api_request_path, unauthorized_user)
+
+    expect(response).to have_gitlab_http_status(:forbidden)
+  end
+
+  it 'returns 401 when the user is not logged in' do
+    delete api(api_request_path)
+
+    expect(response).to have_gitlab_http_status(:unauthorized)
+  end
+
+  it 'returns 400 when child_id is not a number' do
+    path = path_for.call(work_item_iid: parent_work_item.iid, child_id: 'not-a-number')
+
+    delete api(path, user)
+
+    expect(response).to have_gitlab_http_status(:bad_request)
+    expect(json_response['error']).to eq('child_id is invalid')
+  end
+
+  it 'returns forbidden when the feature flag is disabled' do
+    stub_feature_flags(work_item_rest_api: false)
+
+    delete api(api_request_path, user)
+
+    expect(response).to have_gitlab_http_status(:forbidden)
+  end
+end

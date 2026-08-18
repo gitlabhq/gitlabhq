@@ -24,7 +24,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import { sanitize } from '~/lib/dompurify';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { keysFor, ISSUABLE_EDIT_DESCRIPTION } from '~/behaviors/shortcuts/keybindings';
 import ShortcutsWorkItems from '~/behaviors/shortcuts/shortcuts_work_items';
 import { glSlotsMixin } from '~/lib/utils/vue3compat/gl_slots_mixin';

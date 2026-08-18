@@ -16,12 +16,14 @@ import NoteSignedOutWidget from '~/rapid_diffs/app/discussions/note_signed_out_w
 import NoteableDiscussion from '~/rapid_diffs/app/discussions/noteable_discussion.vue';
 import DiscussionNotes from '~/rapid_diffs/app/discussions/discussion_notes.vue';
 import { isLoggedIn } from '~/lib/utils/common_utils';
+import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 
 jest.mock('~/alert');
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
 jest.mock('~/lib/utils/secret_detection');
 jest.mock('~/lib/utils/common_utils');
 jest.mock('~/lib/utils/autosave');
+jest.mock('~/behaviors/markdown/copy_as_gfm');
 
 describe('NoteableDiscussion', () => {
   let wrapper;
@@ -41,13 +43,20 @@ describe('NoteableDiscussion', () => {
     endpoints: { createNote: '/api/notes' },
   };
 
-  const createComponent = ({ props = {}, provide = {}, repliesVisible = true } = {}) => {
+  const createComponent = ({
+    props = {},
+    provide = {},
+    stubs = {},
+    listeners = {},
+    repliesVisible = true,
+  } = {}) => {
     wrapper = shallowMount(NoteableDiscussion, {
       propsData: {
         ...defaultProps,
         discussion: createDiscussion(),
         ...props,
       },
+      listeners,
       provide: merge({ store }, defaultProvide, provide),
       stubs: {
         DiscussionNotes: stubComponent(DiscussionNotes, {
@@ -57,6 +66,7 @@ describe('NoteableDiscussion', () => {
           template: `<ul><slot name="footer" :repliesVisible="repliesVisible"></slot></ul>`,
         }),
         ResolveWithDuoDropdownItem: true,
+        ...stubs,
       },
     });
   };
@@ -181,6 +191,53 @@ describe('NoteableDiscussion', () => {
     createComponent();
     wrapper.findComponent(DiscussionNotes).vm.$emit('note-edited', { note, value });
     expect(wrapper.emitted('note-edited')).toStrictEqual([[{ note, value }]]);
+  });
+
+  describe('quote reply', () => {
+    beforeEach(() => {
+      jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => cb());
+      CopyAsGFM.selectionToGfm.mockResolvedValue('> quoted text');
+    });
+
+    it('opens the reply form with the quoted selection when quoteReply fires', async () => {
+      const append = jest.fn();
+      createComponent({
+        props: { discussion: createDiscussion({ isReplying: true }) },
+        stubs: { NoteForm: stubComponent(NoteForm, { methods: { append } }) },
+      });
+
+      wrapper
+        .find('[data-testid="discussion-content"]')
+        .element.dispatchEvent(new CustomEvent('quoteReply'));
+      await waitForPromises();
+      await nextTick();
+
+      expect(wrapper.emitted('start-replying')).toStrictEqual([[]]);
+      expect(append).toHaveBeenCalledWith('> quoted text');
+    });
+
+    it('opens the reply form and quotes the selection when quoteReply fires while not replying', async () => {
+      const append = jest.fn();
+      const discussion = createDiscussion({ isReplying: false });
+      createComponent({
+        props: { discussion },
+        listeners: {
+          'start-replying': () => {
+            wrapper.setProps({ discussion: { ...discussion, isReplying: true } });
+          },
+        },
+        stubs: { NoteForm: stubComponent(NoteForm, { methods: { append } }) },
+      });
+
+      wrapper
+        .find('[data-testid="discussion-content"]')
+        .element.dispatchEvent(new CustomEvent('quoteReply'));
+      await waitForPromises();
+      await nextTick();
+
+      expect(wrapper.emitted('start-replying')).toStrictEqual([[]]);
+      expect(append).toHaveBeenCalledWith('> quoted text');
+    });
   });
 
   describe('timelineLayout prop', () => {

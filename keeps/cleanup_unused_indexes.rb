@@ -10,7 +10,7 @@ module Keeps
   # For each PostgreSQL index with no activity on GitLab.com, generates a
   # post-deploy migration that removes it synchronously with
   # `remove_concurrent_index_by_name` and yields a Change so the runner opens a
-  # merge request. For large tables the reviewer should switch to asynchronous
+  # merge request. For large tables the assignee should switch to asynchronous
   # removal instead, per `doc/development/database/adding_database_indexes.md`.
   #
   # Requires `GITLAB_GRAFANA_API_URL`, `GITLAB_GRAFANA_API_KEY`,
@@ -24,7 +24,7 @@ module Keeps
   # ```
   class CleanupUnusedIndexes < ::Gitlab::Housekeeper::Keep
     MIGRATION_TEMPLATE = 'generator_templates/active_record/migration/'
-    FALLBACK_REVIEWER_FEATURE_CATEGORY = 'database'
+    FALLBACK_ASSIGNEE_FEATURE_CATEGORY = 'database'
 
     # Sourced from the helper so the rendered description can't drift from
     # the actual query window.
@@ -189,7 +189,7 @@ module Keeps
       change.title = "Remove unused index #{ctx[:name]}".truncate(72)
       change.changelog_type = 'other'
       change.labels = labels(ctx[:tablename])
-      change.reviewers = Array(pick_reviewer(ctx[:tablename], change.identifiers))
+      change.assignees = Array(pick_assignee(ctx[:tablename], change.identifiers))
       change.description = description_for(ctx)
     end
 
@@ -302,13 +302,15 @@ module Keeps
       )
     end
 
-    # Pick one reviewer (from the primary feature category) but label across all.
-    def pick_reviewer(table_name, identifiers)
+    # Pick one assignee (from the primary feature category) but label across all.
+    # The groups helper's reviewer roulette does the picking; this keep assigns
+    # the person instead of requesting review.
+    def pick_assignee(table_name, identifiers)
       feature_category = dictionary_feature_categories(table_name).first
 
       groups_helper.pick_reviewer_for_feature_category(
         feature_category, identifiers,
-        fallback_feature_category: FALLBACK_REVIEWER_FEATURE_CATEGORY
+        fallback_feature_category: FALLBACK_ASSIGNEE_FEATURE_CATEGORY
       )
     end
 

@@ -10,7 +10,7 @@ import { visitUrl, appendLineRangeHashToUrl } from '~/lib/utils/url_utility';
 import Tracking from '~/tracking';
 import ConfirmForkModal from '~/vue_shared/components/web_ide/confirm_fork_modal.vue';
 import { keysFor, GO_TO_PROJECT_WEBIDE } from '~/behaviors/shortcuts/keybindings';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { KEY_EDIT, KEY_WEB_IDE, KEY_GITPOD, KEY_PIPELINE_EDITOR } from './constants';
 
 export const i18n = {

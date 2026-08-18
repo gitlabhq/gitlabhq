@@ -2,7 +2,7 @@
 import { GlCollapsibleListbox } from '@gitlab/ui';
 import { debounce, isEmpty } from 'lodash-es';
 import { keysFor } from '~/behaviors/shortcuts/keybindings';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { sanitize, titleInLinkSafeHtmlConfig } from '~/lib/dompurify';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { __, sprintf } from '~/locale';

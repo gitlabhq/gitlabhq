@@ -21,6 +21,10 @@ module API
         { code: 422, message: 'Unprocessable entity - the hierarchy is not valid' }
       ]).freeze
 
+      DETACH_CHILD_FAILURE_RESPONSES = (FAILURE_RESPONSES + [
+        { code: 422, message: 'Unprocessable entity - the child could not be detached' }
+      ]).freeze
+
       resource :namespaces do
         params do
           requires :id, types: [String, Integer], desc: 'The ID or URL-encoded full path of the namespace'
@@ -78,6 +82,31 @@ module API
             resource_parent = resolve_namespace_resource_parent!(params[:id])
 
             attach_child_work_item!(resource_parent, params[:work_item_iid], params[:child_id])
+          end
+
+          desc 'Detach a child work item.' do
+            detail 'Remove a work item as a child of a work item in a namespace. ' \
+              'Project and group namespaces are supported.'
+            hidden true
+            success code: 204
+            failure DETACH_CHILD_FAILURE_RESPONSES
+            tags WORK_ITEMS_TAGS
+          end
+          params do
+            requires :work_item_iid, type: Integer, desc: 'The internal ID of the parent work item'
+            requires :child_id, type: Integer,
+              desc: 'The ID of the child work item to detach from the parent. ' \
+                'The internal ID (iid) cannot be used because the child ' \
+                'can belong to a different namespace than the parent.'
+          end
+          route_setting :lifecycle, :experiment
+          route_setting :authorization,
+            permissions: :update_work_item,
+            boundaries: [{ boundary_type: :group }, { boundary_type: :project }]
+          delete ':work_item_iid/children/:child_id' do
+            resource_parent = resolve_namespace_resource_parent!(params[:id])
+
+            detach_child_work_item!(resource_parent, params[:work_item_iid], params[:child_id])
           end
         end
       end
@@ -138,6 +167,30 @@ module API
 
             attach_child_work_item!(project, params[:work_item_iid], params[:child_id])
           end
+
+          desc 'Detach a child work item from a work item in a project.' do
+            detail 'Remove a work item as a child of a work item in a project.'
+            hidden true
+            success code: 204
+            failure DETACH_CHILD_FAILURE_RESPONSES
+            tags WORK_ITEMS_TAGS
+          end
+          params do
+            requires :work_item_iid, type: Integer, desc: 'The internal ID of the parent work item'
+            requires :child_id, type: Integer,
+              desc: 'The ID of the child work item to detach from the parent. ' \
+                'The internal ID (iid) cannot be used because the child ' \
+                'can belong to a different namespace than the parent.'
+          end
+          route_setting :lifecycle, :experiment
+          route_setting :authorization,
+            permissions: :update_work_item,
+            boundary_type: :project
+          delete ':work_item_iid/children/:child_id' do
+            project = find_project!(params[:id])
+
+            detach_child_work_item!(project, params[:work_item_iid], params[:child_id])
+          end
         end
       end
 
@@ -195,6 +248,30 @@ module API
             group = find_group!(params[:id])
 
             attach_child_work_item!(group, params[:work_item_iid], params[:child_id])
+          end
+
+          desc 'Detach a child work item from a work item in a group.' do
+            detail 'Remove a work item as a child of a work item in a group.'
+            hidden true
+            success code: 204
+            failure DETACH_CHILD_FAILURE_RESPONSES
+            tags WORK_ITEMS_TAGS
+          end
+          params do
+            requires :work_item_iid, type: Integer, desc: 'The internal ID of the parent work item'
+            requires :child_id, type: Integer,
+              desc: 'The ID of the child work item to detach from the parent. ' \
+                'The internal ID (iid) cannot be used because the child ' \
+                'can belong to a different namespace than the parent.'
+          end
+          route_setting :lifecycle, :experiment
+          route_setting :authorization,
+            permissions: :update_work_item,
+            boundary_type: :group
+          delete ':work_item_iid/children/:child_id' do
+            group = find_group!(params[:id])
+
+            detach_child_work_item!(group, params[:work_item_iid], params[:child_id])
           end
         end
       end

@@ -339,18 +339,24 @@ on both on GitLab.com and GitLab Self-Managed instances prior to removal.
 ### Automated detection and removal
 
 The [`CleanupUnusedIndexes` keep](https://gitlab.com/gitlab-org/gitlab/-/blob/master/keeps/cleanup_unused_indexes.rb)
-runs on a schedule through [`gitlab-housekeeper`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-housekeeper)
-and automates the first steps of this process.
-The keep does the following:
+and the [`CleanupUnusedPartitionedIndexes` keep](https://gitlab.com/gitlab-org/gitlab/-/blob/master/keeps/cleanup_unused_partitioned_indexes.rb)
+run on a schedule through [`gitlab-housekeeper`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-housekeeper)
+and automate the first steps of this process. `CleanupUnusedIndexes` handles regular, non-unique
+indexes. `CleanupUnusedPartitionedIndexes` handles partitioned parent indexes.
 
-- Finds non-unique indexes with no recorded scans on GitLab.com, based on the
-  `pg_stat_user_indexes_idx_scan` metric.
-- Skips indexes that support a foreign key and indexes on the
+Both keeps do the following:
+
+- Find non-unique indexes with no recorded scans on GitLab.com, based on the
+  `pg_stat_user_indexes_idx_scan` metric. For a partitioned index, this means every attached
+  child partition index shows zero scans.
+- Skip indexes that support a foreign key and indexes on the
   [keep list](https://gitlab.com/gitlab-org/gitlab/-/blob/master/keeps/cleanup_unused_indexes/index_keep_list.yml).
-- Opens a merge request, labeled `automation:cleanup-unused-indexes`, with a post-deployment
-  migration that removes the index.
-- Requests review from an engineer on the team that owns the affected table, based on the table's
-  `db/docs` dictionary entry, and falls back to a database team member when it cannot find one.
+- Open a merge request, labeled `automation:cleanup-unused-indexes`, with a post-deployment
+  migration that removes the index. For a partitioned index, the migration removes the parent
+  index with `remove_concurrent_partitioned_index_by_name`, which cascades to every partition.
+  Partitioned indexes have no asynchronous removal path.
+- Assign the merge request to a member of the team that owns the affected table, based on the
+  table's `db/docs` dictionary entry, and fall back to a database team member if none can be found.
 
 A merge request from this automation is a removal proposal, not a final verdict.
 The zero-scan signal covers a short window on GitLab.com only, so you must still complete the
@@ -362,7 +368,7 @@ past six months.
 
 If your team receives one of these merge requests and the index must stay, add the index to the
 [keep list](https://gitlab.com/gitlab-org/gitlab/-/blob/master/keeps/cleanup_unused_indexes/index_keep_list.yml) and close the merge request.
-The keep does not propose to remove an index on that list again.
+Neither keep proposes to remove an index on that list again.
 
 ### Finding possible unused indexes
 

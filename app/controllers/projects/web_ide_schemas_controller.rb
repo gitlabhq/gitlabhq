@@ -11,7 +11,7 @@ class Projects::WebIdeSchemasController < Projects::ApplicationController
     return respond_422 unless branch_sha
 
     result = ::Ide::SchemasConfigService.new(project, current_user, sha: branch_sha,
-      filename: params[:filename]).execute
+      filename: params.permit(:filename)[:filename]).execute
 
     if result[:status] == :success
       render json: result[:schema]
@@ -23,8 +23,9 @@ class Projects::WebIdeSchemasController < Projects::ApplicationController
   private
 
   def branch_sha
-    return unless params[:branch].present?
+    branch = params.permit(:branch)[:branch]
+    return unless branch.present?
 
-    project.commit(params[:branch])&.id
+    project.commit(branch)&.id
   end
 end

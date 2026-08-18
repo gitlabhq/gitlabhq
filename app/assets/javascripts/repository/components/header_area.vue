@@ -4,7 +4,7 @@ import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { mapActions, mapState } from 'pinia';
 import { __ } from '~/locale';
 import Shortcuts from '~/behaviors/shortcuts/shortcuts';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
 import {
   keysFor,
   TOGGLE_FILE_TREE_BROWSER_VISIBILITY,

@@ -10,7 +10,7 @@ import {
 import { mapState } from 'pinia';
 import { __ } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { sanitize, titleInLinkSafeHtmlConfig } from '~/lib/dompurify';
 import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';

@@ -1,0 +1,462 @@
+---
+stage: Security Risk Management
+group: Security Policies
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: REST API to manage security policies stored in the policy store for an organization.
+title: Policy store API
+---
+
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/606971) in GitLab 19.3 [with a feature flag](../administration/feature_flags/_index.md) named `security_policies_v2`. Disabled by default.
+
+{{< /history >}}
+
+> [!warning]
+> This feature is an [experiment](../policy/development_stages_support.md).
+> Policies created through this API are held in memory only.
+> They do not survive a restart and are not shared between application processes.
+> The endpoints can change without notice.
+
+Use this API to author [security policies](../user/application_security/policies/_index.md)
+in the policy store.
+A policy belongs to an organization, responds to a single trigger, and carries the rules and
+actions that make up its behavior.
+
+These endpoints are available only when both of the following are true:
+
+- The `security_policies_v2` feature flag is enabled.
+- An administrator has enabled the policy store experiment for the instance in
+  **Admin** > **Settings** > **Security and compliance**.
+
+When either is not true, the endpoints return `404 Not Found`.
+When the instance is not licensed for security orchestration policies, they return
+`403 Forbidden`.
+
+## Catalogs
+
+The catalog endpoints describe what a policy can be built from.
+They return the same static content for every caller, so they take no authentication and no
+permission.
+
+### List all triggers
+
+List all triggers a policy can respond to.
+
+```plaintext
+GET /security/policy_store/triggers
+```
+
+If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following
+response attributes:
+
+| Attribute | Type   | Description |
+| --------- | ------ | ----------- |
+| `[].id`   | string | ID of the trigger, used as `trigger_type` when authoring a policy. |
+| `[].name` | string | Display name of the trigger. |
+
+Example request:
+
+```shell
+curl --request GET \
+  --url "https://gitlab.example.com/api/v4/security/policy_store/triggers"
+```
+
+Example response:
+
+```json
+[
+  { "id": "deployment_requested", "name": "Deployment" }
+]
+```
+
+### List all actions
+
+List all actions a policy can take.
+
+```plaintext
+GET /security/policy_store/actions
+```
+
+If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following
+response attributes:
+
+| Attribute | Type   | Description |
+| --------- | ------ | ----------- |
+| `[].id`   | string | ID of the action. |
+| `[].name` | string | Display name of the action. |
+
+Example request:
+
+```shell
+curl --request GET \
+  --url "https://gitlab.example.com/api/v4/security/policy_store/actions"
+```
+
+Example response:
+
+```json
+[
+  { "id": "block", "name": "Block" },
+  { "id": "require_approval", "name": "Require approval" }
+]
+```
+
+### List all rule kinds
+
+List all rule kinds a policy can be built from.
+
+```plaintext
+GET /security/policy_store/rules
+```
+
+If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following
+response attributes:
+
+| Attribute | Type   | Description |
+| --------- | ------ | ----------- |
+| `[].id`   | string | ID of the rule kind. |
+| `[].name` | string | Display name of the rule kind. |
+
+Example request:
+
+```shell
+curl --request GET \
+  --url "https://gitlab.example.com/api/v4/security/policy_store/rules"
+```
+
+Example response:
+
+```json
+[
+  { "id": "custom", "name": "Custom" },
+  { "id": "calendar", "name": "Calendar" },
+  { "id": "environment", "name": "Environment" }
+]
+```
+
+## Policies
+
+Every call to a policy endpoint must be [authenticated](rest/authentication.md), and the
+caller must be an owner of the organization or an instance administrator.
+A caller who cannot administer the organization receives `403 Forbidden`, and one who cannot
+see the organization at all receives `404 Not Found`.
+
+A policy that belongs to another organization is indistinguishable from one that does not
+exist.
+An ID cannot be used to read or change a policy across organizations.
+
+### Policy scope
+
+A policy applies everywhere unless it carries a scope.
+A scope is authored one of two ways, and a request may use one or the other but not both:
+
+- `policy_scope`: structured data that GitLab compiles into `scope_rego`.
+- `scope_rego`: a [Rego](https://www.openpolicyagent.org/docs/policy-language) program
+  supplied directly, stored as authored.
+
+A request that supplies both returns `400 Bad Request`.
+An empty `scope_rego` does not count as the second form, so
+[Update a policy](#update-a-policy) accepts it alongside `policy_scope` to retire an authored
+program and recompile.
+
+`scope_rego` is always present in a response, because a policy with no scope compiles to a
+program that applies to every project.
+`policy_scope` is `null` when the Rego was authored directly, because a hand-written program
+has no structured form.
+
+### Rules and actions
+
+`rules` and `actions` are arrays.
+Each entry has the following attributes:
+
+| Attribute | Type           | Required | Description |
+| --------- | -------------- | -------- | ----------- |
+| `type`    | string         | Yes      | For a rule, one of the IDs returned by [List all rule kinds](#list-all-rule-kinds). For an action, one of the IDs returned by [List all actions](#list-all-actions). |
+| `value`   | string or hash | No       | What the entry acts on. A `custom` rule takes Rego source as a string. A `calendar` or `environment` rule takes a hash, as does every action. |
+
+A request replaces the whole array.
+You cannot add or remove a single entry.
+
+Send `rules` and `actions` as JSON with a `Content-Type: application/json` header.
+A form-encoded body cannot express their nested structure.
+
+### Response attributes
+
+The policy endpoints return the following attributes:
+
+| Attribute         | Type            | Description |
+| ----------------- | --------------- | ----------- |
+| `actions`         | array           | Actions the policy takes. |
+| `created_at`      | string          | Date and time the policy was created. `null` while the policy store is held in memory. |
+| `description`     | string          | Description of the policy. |
+| `id`              | integer         | ID of the policy. |
+| `lifecycle_state` | string          | Either `active` or `disabled`. |
+| `mode`            | string          | One of `audit`, `warn`, or `enforce`. |
+| `name`            | string          | Name of the policy. |
+| `namespace_id`    | integer         | ID of the group that owns the policy. Always `null` today, because no endpoint accepts a `namespace_id` attribute, so every policy created through this API is owned by its organization. |
+| `organization_id` | integer         | ID of the organization the policy belongs to. |
+| `policy_scope`    | object          | Structured scope of the policy, or `null` when the Rego was authored directly. |
+| `rules`           | array           | Rules of the policy. |
+| `scope_rego`      | string          | Compiled scope of the policy, as Rego. |
+| `trigger_type`    | string          | Trigger the policy responds to. |
+| `updated_at`      | string          | Date and time the policy was last changed. `null` while the policy store is held in memory. |
+| `version`         | integer         | Revision of the policy. An update that changes at least one value raises it by one. |
+
+### List all policies
+
+List all policies belonging to an organization.
+
+```plaintext
+GET /organizations/:id/security/policy_store
+```
+
+Supported attributes:
+
+| Attribute      | Type    | Required | Description |
+| -------------- | ------- | -------- | ----------- |
+| `id`           | integer | Yes      | ID of the organization. |
+| `trigger_type` | string  | No       | Return only the policies that respond to this trigger. One of the IDs returned by [List all triggers](#list-all-triggers). |
+
+If successful, returns [`200`](rest/troubleshooting.md#status-codes) and an array of
+[policy attributes](#response-attributes).
+
+Example request:
+
+```shell
+curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/organizations/1/security/policy_store"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 1,
+    "organization_id": 1,
+    "namespace_id": null,
+    "name": "Block deployments on critical findings",
+    "description": null,
+    "version": 1,
+    "trigger_type": "deployment_requested",
+    "rules": [{ "type": "custom", "value": "package governance" }],
+    "actions": [{ "type": "block" }],
+    "policy_scope": null,
+    "scope_rego": "package gitlab.scope\n\napplicable := [result.policy | some result in results; result.applies]\n...",
+    "mode": "enforce",
+    "lifecycle_state": "active",
+    "created_at": null,
+    "updated_at": null
+  }
+]
+```
+
+### Retrieve a policy
+
+Retrieve a single policy from an organization.
+
+```plaintext
+GET /organizations/:id/security/policy_store/:policy_id
+```
+
+Supported attributes:
+
+| Attribute   | Type    | Required | Description |
+| ----------- | ------- | -------- | ----------- |
+| `id`        | integer | Yes      | ID of the organization. |
+| `policy_id` | integer | Yes      | ID of the policy. |
+
+If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the
+[policy attributes](#response-attributes).
+
+Example request:
+
+```shell
+curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/organizations/1/security/policy_store/1"
+```
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "organization_id": 1,
+  "namespace_id": null,
+  "name": "Block deployments on critical findings",
+  "description": null,
+  "version": 1,
+  "trigger_type": "deployment_requested",
+  "rules": [{ "type": "custom", "value": "package governance" }],
+  "actions": [{ "type": "block" }],
+  "policy_scope": null,
+  "scope_rego": "package gitlab.scope\n\napplicable := [result.policy | some result in results; result.applies]\n...",
+  "mode": "enforce",
+  "lifecycle_state": "active",
+  "created_at": null,
+  "updated_at": null
+}
+```
+
+### Create a policy
+
+Create a policy in an organization.
+
+```plaintext
+POST /organizations/:id/security/policy_store
+```
+
+Supported attributes:
+
+| Attribute         | Type    | Required | Description |
+| ----------------- | ------- | -------- | ----------- |
+| `id`              | integer | Yes      | ID of the organization. |
+| `name`            | string  | Yes      | Name of the policy. Maximum 255 characters. |
+| `rules`           | array   | Yes      | Rules of the policy. At least one entry is required. |
+| `trigger_type`    | string  | Yes      | Trigger the policy responds to. One of the IDs returned by [List all triggers](#list-all-triggers). |
+| `actions`         | array   | No       | Actions the policy takes. |
+| `description`     | string  | No       | Description of the policy. Maximum 4096 characters. |
+| `lifecycle_state` | string  | No       | Either `active` or `disabled`. Defaults to `active`. |
+| `mode`            | string  | No       | One of `audit`, `warn`, or `enforce`. Defaults to `enforce`. |
+| `policy_scope`    | object  | No       | Structured scope of the policy. Cannot be combined with `scope_rego`. Rejected when it compiles to more than 4096 characters of Rego. |
+| `scope_rego`      | string  | No       | Scope of the policy, authored as Rego. Cannot be combined with `policy_scope`. Maximum 4096 characters. |
+
+If successful, returns [`201`](rest/troubleshooting.md#status-codes) and the
+[policy attributes](#response-attributes).
+Returns `400 Bad Request` when an attribute is invalid or both scope forms are supplied.
+
+Example request:
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "name": "Block deployments on critical findings",
+    "trigger_type": "deployment_requested",
+    "rules": [{ "type": "custom", "value": "package governance" }],
+    "actions": [{ "type": "block" }],
+    "policy_scope": { "compliance_frameworks": [{ "id": 5 }] }
+  }' \
+  --url "https://gitlab.example.com/api/v4/organizations/1/security/policy_store"
+```
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "organization_id": 1,
+  "namespace_id": null,
+  "name": "Block deployments on critical findings",
+  "description": null,
+  "version": 1,
+  "trigger_type": "deployment_requested",
+  "rules": [{ "type": "custom", "value": "package governance" }],
+  "actions": [{ "type": "block" }],
+  "policy_scope": { "compliance_frameworks": [{ "id": 5 }] },
+  "scope_rego": "package gitlab.scope\n\napplicable := [result.policy | some result in results; result.applies]\n...",
+  "mode": "enforce",
+  "lifecycle_state": "active",
+  "created_at": null,
+  "updated_at": null
+}
+```
+
+### Update a policy
+
+Update a policy in an organization.
+Every attribute other than the path parameters is optional, but a request must name at least one.
+Attributes that are not sent are left as they are, and an update that changes at least one
+value raises `version` by one.
+A request that restates the stored values changes nothing, and leaves `version` as it is.
+
+```plaintext
+PATCH /organizations/:id/security/policy_store/:policy_id
+```
+
+Supported attributes:
+
+| Attribute         | Type    | Required | Description |
+| ----------------- | ------- | -------- | ----------- |
+| `id`              | integer | Yes      | ID of the organization. |
+| `policy_id`       | integer | Yes      | ID of the policy. |
+| `actions`         | array   | No       | Actions the policy takes. Replaces the stored actions. |
+| `description`     | string  | No       | Description of the policy. Maximum 4096 characters. |
+| `lifecycle_state` | string  | No       | Either `active` or `disabled`. |
+| `mode`            | string  | No       | One of `audit`, `warn`, or `enforce`. |
+| `name`            | string  | No       | Name of the policy. Maximum 255 characters. |
+| `policy_scope`    | object  | No       | Structured scope of the policy. Cannot be combined with a non-empty `scope_rego`. |
+| `rules`           | array   | No       | Rules of the policy. Replaces the stored rules. |
+| `scope_rego`      | string  | No       | Scope of the policy, authored as Rego. Maximum 4096 characters. Send an empty value to retire an authored program and recompile from `policy_scope`. |
+| `trigger_type`    | string  | No       | Trigger the policy responds to. One of the IDs returned by [List all triggers](#list-all-triggers). |
+
+When you rename a policy, GitLab must recompile a generated `scope_rego`, because the policy
+name appears in the generated program.
+A `scope_rego` that was authored directly is left as it is.
+
+If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the
+[policy attributes](#response-attributes).
+
+Example request:
+
+```shell
+curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" \
+  --data-urlencode "name=Renamed policy" \
+  --url "https://gitlab.example.com/api/v4/organizations/1/security/policy_store/1"
+```
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "organization_id": 1,
+  "namespace_id": null,
+  "name": "Renamed policy",
+  "description": null,
+  "version": 2,
+  "trigger_type": "deployment_requested",
+  "rules": [{ "type": "custom", "value": "package governance" }],
+  "actions": [{ "type": "block" }],
+  "policy_scope": null,
+  "scope_rego": "package gitlab.scope\n\napplicable := [result.policy | some result in results; result.applies]\n...",
+  "mode": "enforce",
+  "lifecycle_state": "active",
+  "created_at": null,
+  "updated_at": null
+}
+```
+
+### Delete a policy
+
+Delete a policy from an organization.
+
+```plaintext
+DELETE /organizations/:id/security/policy_store/:policy_id
+```
+
+Supported attributes:
+
+| Attribute   | Type    | Required | Description |
+| ----------- | ------- | -------- | ----------- |
+| `id`        | integer | Yes      | ID of the organization. |
+| `policy_id` | integer | Yes      | ID of the policy. |
+
+If successful, returns [`204`](rest/troubleshooting.md#status-codes) and an empty response
+body.
+
+Example request:
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/organizations/1/security/policy_store/1"
+```

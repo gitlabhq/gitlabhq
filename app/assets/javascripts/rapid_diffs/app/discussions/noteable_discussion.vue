@@ -6,6 +6,7 @@ import { isLoggedIn } from '~/lib/utils/common_utils';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
 import { suppressShortcutsUntilInputFocus } from '~/lib/mousetrap';
+import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 import { s__, __, sprintf } from '~/locale';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import { createAlert } from '~/alert';
@@ -173,6 +174,13 @@ export default {
         });
       }
     },
+    async onQuoteReply() {
+      const text = await CopyAsGFM.selectionToGfm();
+      // prevent the hotkey keystroke from landing in the reply form
+      requestAnimationFrame(() => {
+        this.showReplyForm(text);
+      });
+    },
     cancelReplyForm: ignoreWhilePending(async function cancelReplyForm(shouldConfirm, isDirty) {
       if (shouldConfirm && isDirty) {
         const msg = sprintf(
@@ -246,6 +254,7 @@ export default {
     :data-discussion-resolvable="resolvable || undefined"
     :data-discussion-resolved="discussion.resolved || undefined"
     data-testid="discussion-content"
+    @quoteReply="onQuoteReply"
   >
     <discussion-notes
       :notes="discussion.notes"

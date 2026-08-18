@@ -7,8 +7,9 @@ import {
   MR_COMMITS_PREVIOUS_COMMIT,
   MR_TOGGLE_REVIEW,
   MR_TOGGLE_DIFF_VIEW_TYPE,
+  ISSUABLE_COMMENT_OR_REPLY,
 } from '~/behaviors/shortcuts/keybindings';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
 import { pinia } from '~/pinia/instance';
 import { useMergeRequestVersions } from '~/merge_request/stores/merge_request_versions';
@@ -17,6 +18,7 @@ import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
 import { INLINE_DIFF_VIEW_TYPE, PARALLEL_DIFF_VIEW_TYPE } from '~/diffs/constants';
 import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
 import { COLLAPSE_FILE_BY_USER, EXPAND_FILE } from '~/rapid_diffs/adapter_events';
+import { querySelectionClosest } from '~/lib/utils/selection';
 
 function clampIndex(index, length) {
   if (length === 0) return -1;
@@ -85,6 +87,13 @@ export function toggleFileReview(file) {
   }
 }
 
+export function quoteReply() {
+  const container = querySelectionClosest('.js-discussion-container');
+  if (!container) return;
+
+  container.dispatchEvent(new CustomEvent('quoteReply'));
+}
+
 export function toggleDiffViewType() {
   const store = useDiffsView(pinia);
   const nextViewType =
@@ -105,6 +114,7 @@ export function initHotkeys() {
     [keysFor(MR_COMMITS_PREVIOUS_COMMIT), () => navigateCommit('previous')],
     [keysFor(MR_TOGGLE_REVIEW), () => toggleFileReview(nav.getCurrentFile())],
     [keysFor(MR_TOGGLE_DIFF_VIEW_TYPE), () => toggleDiffViewType()],
+    [keysFor(ISSUABLE_COMMENT_OR_REPLY), () => quoteReply()],
   ];
 
   bindings.forEach(([keys, handler]) => Mousetrap.bind(keys, handler));

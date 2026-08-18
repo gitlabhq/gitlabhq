@@ -23,9 +23,9 @@ persistence object ever crosses the component boundary.
 policy = Gitlab::PolicyStore.create(
   organization_id: 1,
   namespace_id: 7, # omit for a policy owned by the organization itself
-  name: "My approval policy",
+  name: "My deployment policy",
   trigger_type: "deployment_requested",
-  rules: [{ type: "scan_finding" }],
+  rules: [{ type: "environment", value: { tiers: ["production"] } }],
   actions: [{ type: "require_approval" }],
   policy_scope: { compliance_frameworks: [{ id: 5 }] },
   mode: "audit"
@@ -107,6 +107,87 @@ Gitlab::PolicyStore.create(
 The generated program is `package gitlab.scope`, per
 [GOVERN-006: Policy scope as Rego and quick-check strategy](https://gitlab.com/gitlab-org/architecture/govern/design-doc/-/blob/main/decisions/006-policy-scope-rego-quick-check.md).
 The gem compiles it. Evaluating a program against a project is the engine's job.
+
+## Rule compilation
+
+On create and on update, every entry in a policy's `rules` array is compiled by
+`Gitlab::PolicyStore::RuleTranspiler` and the resulting program is written back to that
+entry under `rego`. An update recompiles the whole array whenever `rules` is part of the
+change set, and leaves the stored programs alone otherwise. It is stored per rule rather
+than in a column of its own, because rules compile one program each and a policy can
+carry several:
+
+```ruby
+Gitlab::PolicyStore.create(
+  organization_id: 1, name: "No production deployments",
+  trigger_type: "deployment_requested",
+  rules: [{ type: "environment", value: { tiers: ["production"] } }]
+).rules
+# => [{ "type" => "environment",
+#       "value" => { "tiers" => ["production"] },
+#       "rego" => "package governance\n\n# rule 0: environment\n\n..." }]
+```
+
+An authored `rego` does not survive, unlike an authored `scope_rego`: it is derived from
+the rule rather than authored, and a rule of type `custom` is how a program gets
+hand-written. Entries are normalized to string keys, so the array a caller reads back is
+the array a jsonb column would give them.
+
+`update` keeps rule compilation consistent with `create`:
+
+- **Supplying a changed `rules` array recompiles all of it.** Every entry runs back
+  through the transpiler, the same as `create`. Resending the stored array unchanged is
+  dropped as a restatement before any of this, and so is not supplying it at all, and
+  both leave the stored programs alone.
+- **A rename leaves a compiled program alone**, unlike a compiled `scope_rego`: a rename
+  regenerates `scope_rego`, because the transpiler emits the policy name into it, but
+  `RuleTranspiler` never sees the policy name, so a rename changes nothing under `rego`.
+- **An authored `rego` does not survive an update either.** Resending a rule with a
+  hand-written `rego` stores the compiled `package governance` program in its place, the
+  same as `create`.
+- **A rule that cannot compile fails the update the same way it fails a create**, naming
+  the rule's index in the same message, so the policy is not stored.
+
+The transpiler is also usable on its own, one rule at a time:
+
+```ruby
+Gitlab::PolicyStore::RuleTranspiler.new(
+  { type: "environment", value: { tiers: ["production"] } },
+  rule_index: 0
+).transpile
+# => "package governance\n\n# rule 0: environment\n\nviolation contains ..."
+```
+
+Four properties of that compilation, each of which a caller has to work with:
+
+- **One rule in, one program out.** Each entry's `rego` carries its own `package` line,
+  so `rules` is stored per rule rather than as one program per policy, and `custom` is
+  stored as authored rather than reformatted. A combined per-policy module is still
+  reachable, by keeping the first `package governance` line and stripping it from the
+  rest. Doing that in the API serialization layer is under discussion, because
+  evaluating one module per policy is measurably cheaper than one per rule. A violation
+  the transpiler emits carries its `rule_index` so that attribution survives a merge,
+  since `violation` is a set and two rules emitting identical objects would deduplicate.
+  A `custom` program is stored as authored, so only its author can do the same for it.
+- **A policy still fires when any one of its rules fires**, but that OR belongs to
+  whoever evaluates the programs, whether it runs each separately and concatenates the
+  violations or evaluates one merged module. This is the reverse of scope compilation,
+  which ANDs its criteria, because a scope narrows while a rule broadens.
+- **Emitted programs are `package governance` and expose `violation`**, which is one
+  of the three shapes the Policy Engine parses (`allow`, `deny[msg]`,
+  `violation[{}]`). GOVERN-006 specifies `gitlab.policy` for policy evaluation;
+  nothing written so far uses it, and reconciling the two is tracked separately.
+- **A rule type with no emitter raises `ValidationError`**, as does a rule that could
+  only compile to something inert: an environment rule matching on nothing, or a `custom`
+  program declaring a package other than `governance`, which the Policy Engine would query
+  and find nothing in. Compilation is what stops such a policy from being stored, on create
+  and on update alike. Skipping any of them would let a policy save, look enforcing, and
+  enforce nothing. An empty `rules` array is not one of these cases: it compiles to nothing
+  and saves.
+
+`Rules::ALL` advertises `calendar` as authorable, but no emitter for it has landed yet, so
+a `calendar` rule is refused as an unsupported type for now. Its emitter, and the
+timestamp normalization freeze windows need, are tracked separately.
 
 ## Repository Contract
 

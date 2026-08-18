@@ -2463,6 +2463,8 @@ Grants the ability to create, delete, read, and update work items such as epics 
 | Update | Project | `PUT` | `/projects/:id/snippets/:noteable_id/discussions/:discussion_id/notes/:note_id` |
 | Update | Project | `PUT` | `/projects/:id/snippets/:noteable_id/notes/:note_id` |
 | Update | Project | `PUT` | `/projects/:id/wiki_pages/:noteable_id/notes/:note_id` |
+| Update | Project | `DELETE` | `/namespaces/:id/-/work_items/:work_item_iid/children/:child_id` |
+| Update | Project | `DELETE` | `/projects/:id/-/work_items/:work_item_iid/children/:child_id` |
 | Update | Group | `POST` | `/groups/:id/-/work_items/:work_item_iid/children/:child_id` |
 | Update | Group | `POST` | `/namespaces/:id/-/work_items/:work_item_iid/children/:child_id` |
 | Update | Group | `PATCH` | `/groups/:id/-/work_items/:work_item_iid` |
@@ -2477,6 +2479,8 @@ Grants the ability to create, delete, read, and update work items such as epics 
 | Update | Group | `PUT` | `/groups/:id/epics/:noteable_id/notes/:note_id` |
 | Update | Group | `PUT` | `/groups/:id/milestones/:milestone_id` |
 | Update | Group | `PUT` | `/groups/:id/wiki_pages/:noteable_id/notes/:note_id` |
+| Update | Group | `DELETE` | `/groups/:id/-/work_items/:work_item_iid/children/:child_id` |
+| Update | Group | `DELETE` | `/namespaces/:id/-/work_items/:work_item_iid/children/:child_id` |
 
 ### Projects resources
 

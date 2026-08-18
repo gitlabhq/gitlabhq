@@ -63,8 +63,10 @@ $work-item-overview-gap-width: 2rem;
 
 // In the work item detail panel the dynamic panel's .panel-content-inner is the
 // scroll container, so the work item detail must not become one itself: its
-// overflow would trap the sticky sidebar and stop it from sticking.
-.work-item-detail-panel .work-item-detail-panel-content {
+// overflow would trap the sticky sidebar and stop it from sticking. Scope this
+// to the .panel-content-inner structure so panels that reuse these classes
+// without a dynamic panel (e.g. the work plan panel) keep their own scrolling.
+.work-item-detail-panel .panel-content-inner .work-item-detail-panel-content {
   overflow: visible;
 }
 

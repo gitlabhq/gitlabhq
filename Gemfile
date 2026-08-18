@@ -761,7 +761,7 @@ gem 'zstd-ruby', '~> 2.0', require: 'zstd-ruby', feature_category: :software_com
 gem 'arr-pm', '~> 0.0.12', feature_category: :package_registry
 
 # Remote Development
-gem 'devfile', '~> 0.5.3', feature_category: :workspaces
+gem 'devfile', '~> 0.5.4', feature_category: :workspaces
 gem 'hashdiff', '~> 1.2.0', feature_category: :workspaces
 
 # Apple plist parsing

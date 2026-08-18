@@ -1,0 +1,28 @@
+# @feature_category: mcp_server
+mutation createDiffNote($input: CreateDiffNoteInput!) {
+  createDiffNote(input: $input) {
+    note {
+      id
+      body
+      url
+      author {
+        id
+        name
+        username
+      }
+      discussion {
+        id
+        replyId
+        resolvable
+        resolved
+      }
+      position {
+        newPath
+        oldPath
+        newLine
+        oldLine
+      }
+    }
+    errors
+  }
+}

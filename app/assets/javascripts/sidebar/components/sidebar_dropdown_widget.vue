@@ -15,7 +15,7 @@ import { timeFor } from '~/lib/utils/datetime_utility';
 import { __ } from '~/locale';
 import { sanitize } from '~/lib/dompurify';
 import { keysFor } from '~/behaviors/shortcuts/keybindings';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
 import {
   dropdowni18nText,
   IssuableAttributeState,

@@ -17,7 +17,7 @@ module Projects
 
       def pipeline
         strong_memoize(:pipeline) do
-          project.all_pipelines.find(params[:pipeline_id]).tap do |pipeline|
+          project.all_pipelines.find(params.permit(:pipeline_id)[:pipeline_id]).tap do |pipeline|
             render_404 unless can?(current_user, :read_pipeline, pipeline)
           end
         end

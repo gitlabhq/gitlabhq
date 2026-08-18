@@ -19,7 +19,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { __, s__, sprintf } from '~/locale';
 import { getModifierKey } from '~/constants';
 import Tracking from '~/tracking';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import toast from '~/vue_shared/plugins/global_toast';
 import { isLoggedIn } from '~/lib/utils/common_utils';

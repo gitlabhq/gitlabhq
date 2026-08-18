@@ -10,7 +10,7 @@ import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import axios from '~/lib/utils/axios_utils';
 import { ARROW_DOWN_KEY, ARROW_UP_KEY, ENTER_KEY, ESC_KEY } from '~/lib/utils/keys';
 import { FOCUS_FILE_TREE_BROWSER_FILTER_BAR, keysFor } from '~/behaviors/shortcuts/keybindings';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
 import { Mousetrap } from '~/lib/mousetrap';
 import { InternalEvents } from '~/tracking';

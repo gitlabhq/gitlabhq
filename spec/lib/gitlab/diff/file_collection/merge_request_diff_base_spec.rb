@@ -11,7 +11,7 @@ RSpec.describe Gitlab::Diff::FileCollection::MergeRequestDiffBase do
 
     context 'when it is not overflown' do
       it 'returns false' do
-        expect(overflown).to eq(false)
+        expect(overflown).to be(false)
       end
     end
 
@@ -21,7 +21,7 @@ RSpec.describe Gitlab::Diff::FileCollection::MergeRequestDiffBase do
       end
 
       it 'returns true' do
-        expect(overflown).to eq(true)
+        expect(overflown).to be(true)
       end
     end
   end

@@ -21844,6 +21844,29 @@ Fields:
 | <a id="approvalprojectruleedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="approvalprojectruleedge-node"></a>`node` | [`ApprovalProjectRule`](#approvalprojectrule) | The item at the end of the edge. |
 
+#### `ArtifactRegistryPackageConnection`
+
+The connection type for [`ArtifactRegistryPackage`](#artifactregistrypackage).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistrypackageconnection-edges"></a>`edges` | [`[ArtifactRegistryPackageEdge]`](#artifactregistrypackageedge) | A list of edges. |
+| <a id="artifactregistrypackageconnection-nodes"></a>`nodes` | [`[ArtifactRegistryPackage]`](#artifactregistrypackage) | A list of nodes. |
+| <a id="artifactregistrypackageconnection-pageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ArtifactRegistryPackageEdge`
+
+The edge type for [`ArtifactRegistryPackage`](#artifactregistrypackage).
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistrypackageedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="artifactregistrypackageedge-node"></a>`node` | [`ArtifactRegistryPackage`](#artifactregistrypackage) | The item at the end of the edge. |
+
 #### `ArtifactRegistryRepositoryConnection`
 
 The connection type for [`ArtifactRegistryRepository`](#artifactregistryrepository).
@@ -34939,6 +34962,31 @@ Fields:
 | <a id="approvalscanresultpolicy-name"></a>`name` | [`String!`](#string) | Represents the name of the policy. |
 | <a id="approvalscanresultpolicy-reporttype"></a>`reportType` | [`ApprovalReportType!`](#approvalreporttype) | Represents the report_type of the approval rule. |
 
+### `ArtifactRegistryMavenPackage`
+
+Maven package in an Artifact Registry repository.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistrymavenpackage-artifactid"></a>`artifactId` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.3. Status: Experiment. Maven artifact ID coordinate of the package. |
+| <a id="artifactregistrymavenpackage-groupid"></a>`groupId` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.3. Status: Experiment. Maven group ID coordinate of the package. |
+| <a id="artifactregistrymavenpackage-id"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | Introduced in GitLab 19.3. Status: Experiment. ID of the package in Artifact Registry. |
+
+### `ArtifactRegistryNpmPackage`
+
+npm package in an Artifact Registry repository.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistrynpmpackage-id"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | Introduced in GitLab 19.3. Status: Experiment. ID of the package in Artifact Registry. |
+| <a id="artifactregistrynpmpackage-name"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.3. Status: Experiment. Name of the package, including its scope when it has one. |
+| <a id="artifactregistrynpmpackage-scope"></a>`scope` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.3. Status: Experiment. npm scope of the package. Null for an unscoped package. |
+| <a id="artifactregistrynpmpackage-versionscount"></a>`versionsCount` {{< icon name="warning-solid" >}} | [`Int!`](#int) | Introduced in GitLab 19.3. Status: Experiment. Number of versions of the package. Buffered, so it can lag the version list. |
+
 ### `ArtifactRegistryRepository`
 
 Repository in Artifact Registry.
@@ -34956,6 +35004,25 @@ Fields:
 | <a id="artifactregistryrepository-settings"></a>`settings` {{< icon name="warning-solid" >}} | [`JSON!`](#json) | Introduced in GitLab 19.3. Status: Experiment. Kind-specific configuration, discriminated by format and kind. Empty for hosted repositories. |
 | <a id="artifactregistryrepository-sizebytes"></a>`sizeBytes` {{< icon name="warning-solid" >}} | [`BigInt!`](#bigint) | Introduced in GitLab 19.3. Status: Experiment. Storage the repository occupies, in bytes. Buffered, so it can lag. |
 | <a id="artifactregistryrepository-visibility"></a>`visibility` {{< icon name="warning-solid" >}} | [`ArtifactRegistryRepositoryVisibility!`](#artifactregistryrepositoryvisibility) | Introduced in GitLab 19.3. Status: Experiment. Who can read the repository. |
+
+### `ArtifactRegistryRepositoryDetails`
+
+Repository in Artifact Registry, with the packages it holds.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="artifactregistryrepositorydetails-description"></a>`description` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.3. Status: Experiment. Human-readable description of the repository. Null when unset. |
+| <a id="artifactregistryrepositorydetails-downloadscount"></a>`downloadsCount` {{< icon name="warning-solid" >}} | [`BigInt!`](#bigint) | Introduced in GitLab 19.3. Status: Experiment. Number of artifact downloads from the repository. Buffered, so it can lag. |
+| <a id="artifactregistryrepositorydetails-format"></a>`format` {{< icon name="warning-solid" >}} | [`ArtifactRegistryRepositoryFormat!`](#artifactregistryrepositoryformat) | Introduced in GitLab 19.3. Status: Experiment. Package format the repository holds. |
+| <a id="artifactregistryrepositorydetails-kind"></a>`kind` {{< icon name="warning-solid" >}} | [`ArtifactRegistryRepositoryKind!`](#artifactregistryrepositorykind) | Introduced in GitLab 19.3. Status: Experiment. How the repository sources its artifacts. |
+| <a id="artifactregistryrepositorydetails-lastupdatedat"></a>`lastUpdatedAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | Introduced in GitLab 19.3. Status: Experiment. Time the repository content last changed. Null when the content never changed. |
+| <a id="artifactregistryrepositorydetails-name"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | Introduced in GitLab 19.3. Status: Experiment. Name of the repository, unique within its namespace. |
+| <a id="artifactregistryrepositorydetails-packages"></a>`packages` {{< icon name="warning-solid" >}} | [`ArtifactRegistryPackageConnection`](#artifactregistrypackageconnection) | Introduced in GitLab 19.3. Status: Experiment. Packages the repository holds, ordered by name. Can be selected once per operation, so one operation reads packages for one repository. Returns `null` for a repository holding images, for a repository that is gone, and when Artifact Registry rejects the read. |
+| <a id="artifactregistryrepositorydetails-settings"></a>`settings` {{< icon name="warning-solid" >}} | [`JSON!`](#json) | Introduced in GitLab 19.3. Status: Experiment. Kind-specific configuration, discriminated by format and kind. Empty for hosted repositories. |
+| <a id="artifactregistryrepositorydetails-sizebytes"></a>`sizeBytes` {{< icon name="warning-solid" >}} | [`BigInt!`](#bigint) | Introduced in GitLab 19.3. Status: Experiment. Storage the repository occupies, in bytes. Buffered, so it can lag. |
+| <a id="artifactregistryrepositorydetails-visibility"></a>`visibility` {{< icon name="warning-solid" >}} | [`ArtifactRegistryRepositoryVisibility!`](#artifactregistryrepositoryvisibility) | Introduced in GitLab 19.3. Status: Experiment. Who can read the repository. |
 
 ### `ArtifactRegistryRoleAssignment`
 
@@ -36316,6 +36383,7 @@ Fields:
 | <a id="cdapplicationflowdefinition-application"></a>`application` | [`CdApplication`](#cdapplication) | Application the flow definition belongs to. |
 | <a id="cdapplicationflowdefinition-createdat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the application flow definition was created. |
 | <a id="cdapplicationflowdefinition-definition"></a>`definition` {{< icon name="warning-solid" >}} | [`String`](#string) | Introduced in GitLab 19.2. Status: Experiment. Body of the application flow definition. |
+| <a id="cdapplicationflowdefinition-definitionsteps"></a>`definitionSteps` {{< icon name="warning-solid" >}} | [`[CdDefinitionStep!]`](#cddefinitionstep) | Introduced in GitLab 19.3. Status: Experiment. Top-level nodes of the flow definition's static step tree, computed from its YAML and not persisted. A stage node exposes its nested steps through its own `steps` field. |
 | <a id="cdapplicationflowdefinition-id"></a>`id` | [`CdApplicationFlowDefinitionID!`](#cdapplicationflowdefinitionid) | Global ID of the application flow definition. |
 | <a id="cdapplicationflowdefinition-updatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the application flow definition was last updated. |
 | <a id="cdapplicationflowdefinition-version"></a>`version` | [`Int!`](#int) | Version of the application flow definition. |
@@ -36370,6 +36438,22 @@ Fields:
 | <a id="cdartifactsource-sourceref"></a>`sourceRef` | [`String`](#string) | Reference of the artifact source. |
 | <a id="cdartifactsource-updatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the artifact source was last updated. |
 | <a id="cdartifactsource-versions"></a>`versions` {{< icon name="warning-solid" >}} | [`CdVersionConnection`](#cdversionconnection) | Introduced in GitLab 19.2. Status: Experiment. Versions of the artifact source. |
+
+### `CdDefinitionStep`
+
+Node in a continuous deployment flow definition step tree, computed from its YAML and not persisted.
+
+Fields:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cddefinitionstep-environment"></a>`environment` | [`CdEnvironment`](#cdenvironment) | Environment the step targets, null for steps that target no environment (for example a stage container or a wait step) or that name an environment that does not exist. |
+| <a id="cddefinitionstep-name"></a>`name` | [`String`](#string) | Name of the step, as defined by the flow definition. |
+| <a id="cddefinitionstep-params"></a>`params` | [`JSON`](#json) | Step-specific configuration copied from the flow definition (for example wait seconds or canary service weights). |
+| <a id="cddefinitionstep-parentpath"></a>`parentPath` | [`String`](#string) | Path of the parent step, null for a top-level step. |
+| <a id="cddefinitionstep-path"></a>`path` | [`String!`](#string) | Position of the step in the flow definition tree (for example "0", "0.1"). |
+| <a id="cddefinitionstep-steptype"></a>`stepType` | [`String!`](#string) | Type of the step, as defined by the flow definition (for example "com.gitlab.cd.steps.stage" or a deploy driver step type). |
+| <a id="cddefinitionstep-steps"></a>`steps` | [`[CdDefinitionStep!]`](#cddefinitionstep) | Nested steps, for a stage step. Empty for any other step type. |
 
 ### `CdDeployment`
 
@@ -52785,7 +52869,7 @@ Arguments:
 
 Single Artifact Registry repository in the organization, by name. Returns `null` when not found or when the `artifact_registry_ui` feature flag is disabled.
 
-Returns [`ArtifactRegistryRepository`](#artifactregistryrepository).
+Returns [`ArtifactRegistryRepositoryDetails`](#artifactregistryrepositorydetails).
 
 Arguments:
 
@@ -72891,6 +72975,15 @@ One of:
 - [`AiCatalogFlow`](#aicatalogflow)
 - [`AiCatalogThirdPartyFlow`](#aicatalogthirdpartyflow)
 - [`AiFoundationalChatAgent`](#aifoundationalchatagent)
+
+#### `ArtifactRegistryPackage`
+
+Package in an Artifact Registry repository, by package format.
+
+One of:
+
+- [`ArtifactRegistryMavenPackage`](#artifactregistrymavenpackage)
+- [`ArtifactRegistryNpmPackage`](#artifactregistrynpmpackage)
 
 #### `CiJobTokenScopeTarget`
 

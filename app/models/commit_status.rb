@@ -11,7 +11,6 @@ class CommitStatus < Ci::ApplicationRecord
 
   ignore_column :environment_auto_stop_in, remove_with: '18.4', remove_after: '2025-09-01'
   ignore_columns %i[options yaml_variables], remove_with: '19.3', remove_after: '2026-08-15' # https://gitlab.com/gitlab-org/gitlab/-/work_items/604404
-  ignore_column :execution_config_id, remove_with: '19.4', remove_after: '2026-08-21' # https://gitlab.com/gitlab-org/gitlab/-/work_items/583736
 
   self.table_name = :p_ci_builds
   self.sequence_name = :ci_builds_id_seq

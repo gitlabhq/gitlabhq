@@ -7,6 +7,7 @@ import {
   MR_COMMITS_NEXT_COMMIT,
   MR_TOGGLE_REVIEW,
   MR_TOGGLE_DIFF_VIEW_TYPE,
+  ISSUABLE_COMMENT_OR_REPLY,
 } from '~/behaviors/shortcuts/keybindings';
 import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
 import { visitUrl } from '~/lib/utils/url_utility';
@@ -21,6 +22,7 @@ import {
   navigateCommit,
   toggleFileReview,
   toggleDiffViewType,
+  quoteReply,
 } from '~/rapid_diffs/app/init_hotkeys';
 
 jest.mock('~/lib/utils/url_utility', () => ({
@@ -303,6 +305,74 @@ describe('initHotkeys', () => {
       Mousetrap.trigger(keysFor(MR_TOGGLE_DIFF_VIEW_TYPE)[0]);
 
       expect(updateViewType).toHaveBeenCalledWith(PARALLEL_DIFF_VIEW_TYPE);
+    });
+  });
+
+  describe('quoteReply', () => {
+    let container;
+
+    const selectWithin = (node) => {
+      const range = document.createRange();
+      range.selectNodeContents(node);
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+    };
+
+    beforeEach(() => {
+      container = document.createElement('div');
+      container.classList.add('js-discussion-container');
+      container.textContent = 'a comment';
+      document.body.appendChild(container);
+    });
+
+    afterEach(() => {
+      window.getSelection().removeAllRanges();
+      container.remove();
+    });
+
+    it('dispatches quoteReply on the discussion container closest to the selection', () => {
+      const listener = jest.fn();
+      container.addEventListener('quoteReply', listener);
+      selectWithin(container);
+
+      quoteReply();
+
+      expect(listener).toHaveBeenCalledTimes(1);
+    });
+
+    it('does nothing when there is no selection', () => {
+      const listener = jest.fn();
+      container.addEventListener('quoteReply', listener);
+
+      expect(() => quoteReply()).not.toThrow();
+      expect(listener).not.toHaveBeenCalled();
+    });
+
+    it('does nothing when the selection is outside a discussion container', () => {
+      const listener = jest.fn();
+      container.addEventListener('quoteReply', listener);
+
+      const outside = document.createElement('p');
+      outside.textContent = 'unrelated text';
+      document.body.appendChild(outside);
+      selectWithin(outside);
+
+      quoteReply();
+
+      expect(listener).not.toHaveBeenCalled();
+      outside.remove();
+    });
+
+    it('binds to Mousetrap keybindings', () => {
+      const listener = jest.fn();
+      container.addEventListener('quoteReply', listener);
+      selectWithin(container);
+      teardown = initHotkeys();
+
+      Mousetrap.trigger(keysFor(ISSUABLE_COMMENT_OR_REPLY)[0]);
+
+      expect(listener).toHaveBeenCalledTimes(1);
     });
   });
 

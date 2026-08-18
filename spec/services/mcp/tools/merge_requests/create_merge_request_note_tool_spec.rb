@@ -153,7 +153,7 @@ RSpec.describe Mcp::Tools::MergeRequests::CreateMergeRequestNoteTool, feature_ca
 
       it 'raises ArgumentError' do
         expect { tool.build_variables }
-          .to raise_error(ArgumentError, 'Merge request not found: it does not exist or you do not have access to it.')
+          .to raise_error(ArgumentError, 'Merge request not found or you do not have access to it.')
       end
     end
 
@@ -167,7 +167,7 @@ RSpec.describe Mcp::Tools::MergeRequests::CreateMergeRequestNoteTool, feature_ca
 
       it 'raises ArgumentError' do
         expect { tool.build_variables }
-          .to raise_error(ArgumentError, 'Merge request not found: it does not exist or you do not have access to it.')
+          .to raise_error(ArgumentError, 'Merge request not found or you do not have access to it.')
       end
     end
   end
@@ -222,7 +222,7 @@ RSpec.describe Mcp::Tools::MergeRequests::CreateMergeRequestNoteTool, feature_ca
 
       it 'raises error before executing GraphQL' do
         expect { tool.execute }.to raise_error(ArgumentError,
-          'Merge request not found: it does not exist or you do not have access to it.')
+          'Merge request not found or you do not have access to it.')
       end
     end
   end

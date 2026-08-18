@@ -125,7 +125,6 @@ authorize_granular_token(permissions:, boundary_type: nil, boundary: nil, bounda
 | `boundary` | Symbol representing the method to call on the resolved object to extract the boundary (for example, `:project`). Use `:itself` when the resolved object is the Project or Group itself (for example, on `ProjectType` and `GroupType`). Use `:user` or `:instance` for standalone resources. |
 | `boundary_argument` | Symbol representing the argument name containing the boundary path (for example, `:project_path`). |
 | `boundaries` | Array of boundary hashes for resources that support multiple boundary types. Each hash requires a `boundary_type` key and can include `boundary` or `boundary_argument`. For more details, see [Multiple boundaries](#multiple-boundaries). |
-| `traversal` | Set to `true` on a per-field directive (passed through `granular_scope_directive`) for entry-point fields. Passing it to a type-level `authorize_granular_token` raises an `ArgumentError`. For more details, see [Entry-point fields](#entry-point-fields). Not currently enforced. |
 | `skip_reason` | Symbol declaring that a type intentionally opts out of granular-token authorization. Use instead of `permissions:` and a boundary, not alongside them. For more details, see [Skip authorization with `skip_reason`](#skip-authorization-with-skip_reason). |
 
 **For object types:**
@@ -244,44 +243,6 @@ For an instance runner, `runner.owner` returns a `User`, so neither the project 
 directive matches, and the standalone `instance` boundary applies.
 For more details, see [Multiple boundaries](graphql_architecture.md#multiple-boundaries).
 
-#### Entry-point fields
-
-> [!note]
-> `traversal` is declared on the directive but is not currently enforced by `GranularScopeAuthorization`.
-> A field marked `traversal: true` enforces the listed permissions like any other field.
-> Enforcement is pending reimplementation. `Query.group` and `Query.project` do not currently
-> declare the directive, and fields without granular-token directives do not perform granular
-> checks themselves.
-
-Top-level fields that resolve a boundary from a path argument, such as
-`Query.group(fullPath:)` and `Query.project(fullPath:)`, do not expose data
-themselves. Downstream fields enforce the actual permissions. Use
-`traversal: true` on the directive so the entry point requires only that the
-token is scoped to the boundary, not the listed permission.
-
-```ruby
-field :group, Types::GroupType,
-  null: true,
-  resolver: Resolvers::GroupResolver,
-  description: "Find a group.",
-  directives: granular_scope_directive(
-    permissions: :read_group, boundary_argument: :full_path, boundary_type: :group,
-    traversal: true
-  )
-```
-
-Without `traversal: true` on such a directive, a token scoped to a child
-resource (for example, `read_member`) cannot reach the parent in GraphQL, even
-though the equivalent REST endpoint allows it. With `traversal: true`, the
-token reaches the parent and only the downstream fields the user queries
-enforce specific permissions.
-
-The `permissions:` argument is still required because it documents the boundary
-the entry point operates on, even though the field itself does not enforce it.
-
-`traversal: true` only applies to `project` and `group` boundary types. For all
-other boundary types, the listed permissions are enforced as normal.
-
 #### Traversal between authorized types
 
 When a field on an authorized type returns another type that also declares
@@ -304,9 +265,9 @@ query {
 }
 ```
 
-An automatic skip of the owner type's directive on traversal fields, so that a
-token with only `read_member` could reach members through the group, was
-previously implemented and is pending reimplementation. Do not rely on it.
+An automatic skip of the owner type's directive, so that a token with only
+`read_member` could reach members through the group, was previously
+implemented and is pending reimplementation. Do not rely on it.
 
 #### Skip authorization with `skip_reason`
 

@@ -29,7 +29,8 @@ class Projects::WebIdeTerminalsController < Projects::ApplicationController
   end
 
   def create
-    result = ::Ci::CreateWebIdeTerminalService.new(project, current_user, ref: params[:branch]).execute
+    result = ::Ci::CreateWebIdeTerminalService.new(project, current_user, ref: terminal_params[:branch])
+      .execute
 
     if result[:status] == :error
       render status: :bad_request, json: result[:message]
@@ -81,14 +82,19 @@ class Projects::WebIdeTerminalsController < Projects::ApplicationController
     access_denied! unless can?(current_user, ability, build)
   end
 
+  def terminal_params
+    params.permit(:id, :branch)
+  end
+
   def build
-    @build ||= project.builds.find(params[:id])
+    @build ||= project.builds.find(terminal_params[:id])
   end
 
   def branch_sha
-    return unless params[:branch].present?
+    branch = terminal_params[:branch]
+    return unless branch.present?
 
-    project.commit(params[:branch])&.id
+    project.commit(branch)&.id
   end
 
   def render_terminal(current_build)

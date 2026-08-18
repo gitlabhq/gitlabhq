@@ -10,12 +10,12 @@ import {
   MR_TOGGLE_FILE_BROWSER,
   MR_FOCUS_FILE_BROWSER,
 } from '~/behaviors/shortcuts/keybindings';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_disabled';
 import { Mousetrap } from '~/lib/mousetrap';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { setHTMLFixture } from 'helpers/fixtures';
 
-jest.mock('~/behaviors/shortcuts/shortcuts_toggle');
+jest.mock('~/behaviors/shortcuts/shortcuts_disabled');
 
 const toggleHotkeys = keysFor(MR_TOGGLE_FILE_BROWSER);
 const focusHotkeys = keysFor(MR_FOCUS_FILE_BROWSER);

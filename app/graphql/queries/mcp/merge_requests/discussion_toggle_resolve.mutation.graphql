@@ -1,0 +1,18 @@
+# @feature_category: mcp_server
+mutation discussionToggleResolve($input: DiscussionToggleResolveInput!) {
+  discussionToggleResolve(input: $input) {
+    discussion {
+      id
+      replyId
+      resolvable
+      resolved
+      notes {
+        nodes {
+          id
+          url
+        }
+      }
+    }
+    errors
+  }
+}
